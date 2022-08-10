@@ -1,0 +1,53 @@
+id: zwave_poore_message_generator_pdu
+label: message_generator_pdu
+category: '[zwave_poore]'
+
+templates:
+  imports: import zwave_poore
+  make: zwave_poore.message_generator_pdu(${repetition_interval},${configuration},${home_id},${source_node_id},${frame_control},${destination_node_id},${command_class},${command})
+
+
+parameters:
+- id: repetition_interval
+  label: Repetition Interval
+  dtype: float
+  default: 1
+- id: configuration
+  label: Configuration
+  dtype: float
+  default: 1
+- id: home_id
+  label: Home ID
+  dtype: string
+  default: "fa1c0b48"
+- id: source_node_id
+  label: Source Node ID
+  dtype: string
+  default: "01"
+- id: frame_control
+  label: Frame Control
+  dtype: string
+  default: "4107"
+- id: destination_node_id
+  label: Destination Node ID
+  dtype: string
+  default: "02"
+- id: command_class
+  label: Command Class
+  dtype: string
+  default: "26"
+- id: command
+  label: Command
+  dtype: string
+  default: "0163"
+
+outputs:
+- label: out
+  domain: message
+  dtype: message
+  vlen: 1
+  optional: 0
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

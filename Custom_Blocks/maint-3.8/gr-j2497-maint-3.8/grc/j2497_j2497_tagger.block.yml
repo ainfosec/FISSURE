@@ -1,0 +1,29 @@
+id: j2497_j2497_tagger
+label: j2497_tagger
+category: '[j2497]'
+
+templates:
+  imports: import j2497
+  make: j2497.j2497_tagger()
+
+
+inputs:
+- label: signal
+  domain: stream
+  dtype: complex
+  vlen: 1
+  optional: 0
+- label: tagger
+  domain: stream
+  dtype: float
+  vlen: 1
+  optional: 0  
+
+outputs:
+- label: out
+  domain: stream
+  dtype: complex
+  vlen: 1
+  optional: 0
+
+file_format: 1

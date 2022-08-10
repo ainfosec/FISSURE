@@ -1,24 +1,26 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Tpms Fsk Limesdr Receive
-# Generated: Thu Jun  9 13:53:51 2022
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import analog
-from gnuradio import blocks
-from gnuradio import eng_notation
-from gnuradio import filter
-from gnuradio import gr
-from gnuradio.eng_option import eng_option
-from gnuradio.filter import firdes
-from optparse import OptionParser
-import limesdr
 import math
+from gnuradio import blocks
+from gnuradio import filter
+from gnuradio.filter import firdes
+from gnuradio import gr
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+import limesdr
 import tpms_poore
-
 
 class TPMS_FSK_LimeSDR_Receive(gr.top_block):
 
@@ -39,17 +41,29 @@ class TPMS_FSK_LimeSDR_Receive(gr.top_block):
         # Blocks
         ##################################################
         self.tpms_poore_decoder_0 = tpms_poore.decoder()
-        self.limesdr_source_0 = limesdr.source('', int(rx_channel), '')
-        self.limesdr_source_0.set_sample_rate(sample_rate)
-        self.limesdr_source_0.set_center_freq(rx_frequency, 0)
-        self.limesdr_source_0.set_bandwidth(5e6,0)
-        self.limesdr_source_0.set_gain(int(rx_gain),0)
-        self.limesdr_source_0.set_antenna(255,0)
-        self.limesdr_source_0.calibrate(5e6, 0)
+        self.limesdr_source_0 = limesdr.source('', 0, '', False)
 
-        self.fir_filter_xxx_1_0 = filter.fir_filter_fff(1, (50*[0.02]))
+
+        self.limesdr_source_0.set_sample_rate(sample_rate)
+
+
+        self.limesdr_source_0.set_center_freq(rx_frequency, 0)
+
+        self.limesdr_source_0.set_bandwidth(5e6, 0)
+
+
+
+
+        self.limesdr_source_0.set_gain(int(rx_gain), 0)
+
+
+        self.limesdr_source_0.set_antenna(255, 0)
+
+
+        self.limesdr_source_0.calibrate(5e6, 0)
+        self.fir_filter_xxx_1_0 = filter.fir_filter_fff(1, 50*[0.02])
         self.fir_filter_xxx_1_0.declare_sample_delay(0)
-        self.fir_filter_xxx_0 = filter.fir_filter_fff(1, (4*[0.25]))
+        self.fir_filter_xxx_0 = filter.fir_filter_fff(1, 4*[0.25])
         self.fir_filter_xxx_0.declare_sample_delay(0)
         self.blocks_threshold_ff_0_0 = blocks.threshold_ff(threshold, threshold, 0)
         self.blocks_threshold_ff_0 = blocks.threshold_ff(-4, -4, 0)
@@ -61,15 +75,17 @@ class TPMS_FSK_LimeSDR_Receive(gr.top_block):
         self.blocks_burst_tagger_1 = blocks.burst_tagger(gr.sizeof_gr_complex)
         self.blocks_burst_tagger_1.set_true_tag('burst',True)
         self.blocks_burst_tagger_1.set_false_tag('burst',False)
-
         self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf(sample_rate/(2*math.pi*80000/8.0))
-        self.analog_agc_xx_0 = analog.agc_cc(.05, 1.0, 0)
+        self.analog_agc_xx_0 = analog.agc_cc(0.05, 1, 0)
         self.analog_agc_xx_0.set_max_gain(20)
+
+
 
         ##################################################
         # Connections
         ##################################################
         self.msg_connect((self.tpms_poore_decoder_0, 'out'), (self.blocks_message_debug_0, 'print'))
+        self.connect((self.analog_agc_xx_0, 0), (self.blocks_complex_to_mag_squared_0_0, 0))
         self.connect((self.analog_agc_xx_0, 0), (self.blocks_delay_1, 0))
         self.connect((self.analog_quadrature_demod_cf_0, 0), (self.fir_filter_xxx_0, 0))
         self.connect((self.blocks_burst_tagger_1, 0), (self.analog_quadrature_demod_cf_0, 0))
@@ -82,7 +98,6 @@ class TPMS_FSK_LimeSDR_Receive(gr.top_block):
         self.connect((self.fir_filter_xxx_0, 0), (self.blocks_threshold_ff_0, 0))
         self.connect((self.fir_filter_xxx_1_0, 0), (self.blocks_threshold_ff_0_0, 0))
         self.connect((self.limesdr_source_0, 0), (self.analog_agc_xx_0, 0))
-        self.connect((self.limesdr_source_0, 0), (self.blocks_complex_to_mag_squared_0_0, 0))
 
     def get_threshold(self):
         return self.threshold
@@ -104,8 +119,8 @@ class TPMS_FSK_LimeSDR_Receive(gr.top_block):
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.limesdr_source_0.set_gain(int(self.rx_gain),0)
-        self.limesdr_source_0.set_gain(int(self.rx_gain),1)
+        self.limesdr_source_0.set_gain(int(self.rx_gain), 0)
+        self.limesdr_source_0.set_gain(int(self.rx_gain), 1)
 
     def get_rx_frequency(self):
         return self.rx_frequency
@@ -127,12 +142,21 @@ class TPMS_FSK_LimeSDR_Receive(gr.top_block):
         self.notes = notes
 
 
-def main(top_block_cls=TPMS_FSK_LimeSDR_Receive, options=None):
 
+def main(top_block_cls=TPMS_FSK_LimeSDR_Receive, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

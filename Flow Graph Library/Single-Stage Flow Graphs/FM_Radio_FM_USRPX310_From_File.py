@@ -1,23 +1,26 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Fm Usrpx310 From File
-# Generated: Sun Jan  9 15:07:00 2022
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import analog
 from gnuradio import blocks
-from gnuradio import eng_notation
+import pmt
 from gnuradio import filter
 from gnuradio import gr
-from gnuradio import uhd
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio import uhd
 import time
-
 
 class FM_Radio_FM_USRPX310_From_File(gr.top_block):
 
@@ -41,19 +44,23 @@ class FM_Radio_FM_USRPX310_From_File(gr.top_block):
         # Blocks
         ##################################################
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
-        	",".join(("addr=" + ip_address, "")),
-        	uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
+            ",".join(("addr=" + ip_address, "")),
+            uhd.stream_args(
+                cpu_format="fc32",
+                args='',
+                channels=list(range(0,1)),
+            ),
+            '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_usrp_channel, 0)
-        self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
         self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
         self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
         self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
-        self.fractional_resampler_xx_0 = filter.fractional_resampler_ff(0, 48000/sample_rate)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_float*1, filepath, True)
+        self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.mmse_resampler_xx_0 = filter.mmse_resampler_ff(0, 48000/sample_rate)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_float*1, filepath, True, 0, 0)
+        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.analog_wfm_tx_0 = analog.wfm_tx(
         	audio_rate=480000,
         	quad_rate=480000,
@@ -62,12 +69,14 @@ class FM_Radio_FM_USRPX310_From_File(gr.top_block):
         	fh=-1.0,
         )
 
+
+
         ##################################################
         # Connections
         ##################################################
         self.connect((self.analog_wfm_tx_0, 0), (self.uhd_usrp_sink_0, 0))
-        self.connect((self.blocks_file_source_0, 0), (self.fractional_resampler_xx_0, 0))
-        self.connect((self.fractional_resampler_xx_0, 0), (self.analog_wfm_tx_0, 0))
+        self.connect((self.blocks_file_source_0, 0), (self.mmse_resampler_xx_0, 0))
+        self.connect((self.mmse_resampler_xx_0, 0), (self.analog_wfm_tx_0, 0))
 
     def get_tx_usrp_gain(self):
         return self.tx_usrp_gain
@@ -75,7 +84,6 @@ class FM_Radio_FM_USRPX310_From_File(gr.top_block):
     def set_tx_usrp_gain(self, tx_usrp_gain):
         self.tx_usrp_gain = tx_usrp_gain
         self.uhd_usrp_sink_0.set_gain(self.tx_usrp_gain, 0)
-
 
     def get_tx_usrp_channel(self):
         return self.tx_usrp_channel
@@ -102,8 +110,8 @@ class FM_Radio_FM_USRPX310_From_File(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
+        self.mmse_resampler_xx_0.set_resamp_ratio(48000/self.sample_rate)
         self.uhd_usrp_sink_0.set_samp_rate(self.sample_rate)
-        self.fractional_resampler_xx_0.set_resamp_ratio(48000/self.sample_rate)
 
     def get_repeat(self):
         return self.repeat
@@ -131,12 +139,21 @@ class FM_Radio_FM_USRPX310_From_File(gr.top_block):
         self.blocks_file_source_0.open(self.filepath, True)
 
 
-def main(top_block_cls=FM_Radio_FM_USRPX310_From_File, options=None):
 
+def main(top_block_cls=FM_Radio_FM_USRPX310_From_File, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

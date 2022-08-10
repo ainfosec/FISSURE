@@ -1,0 +1,42 @@
+name: "IRC Notification"
+on:
+  push:
+  pull_request:
+    types: [opened]
+  issues:
+    types: [opened]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: irc push
+        uses: rectalogic/notify-irc@v1
+        if: github.event_name == 'push'
+        with:
+          server: irc.blafasel.de
+          channel: "#iridium"
+          nickname: GitHub
+          notice: true
+          message: |
+            ${{ github.actor }} pushed to ${{ github.event.ref }}: ${{ join(github.event.commits.*.message) }}
+      - name: irc pull request
+        uses: rectalogic/notify-irc@v1
+        if: github.event_name == 'pull_request'
+        with:
+          server: irc.blafasel.de
+          channel: "#iridium"
+          nickname: GitHub
+          notice: true
+          message: |
+            ${{ github.actor }} opened PR #${{ github.event.number }} ${{ github.event.pull_request.title }} - ${{ github.event.pull_request.html_url }}
+      - name: irc issue created
+        uses: rectalogic/notify-irc@v1
+        if: github.event_name == 'issues'
+        with:
+          server: irc.blafasel.de
+          channel: "#iridium"
+          nickname: GitHub
+          notice: true
+          message: |
+            ${{ github.actor }} opened issue #${{ github.event.issue.number }} ${{ github.event.issue.title }} - ${{ github.event.issue.url }}

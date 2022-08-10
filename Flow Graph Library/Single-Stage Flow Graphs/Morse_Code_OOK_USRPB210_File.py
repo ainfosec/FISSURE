@@ -1,25 +1,27 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Morse Code Ook Usrpb210 File
-# Generated: Sat Jan  1 21:47:23 2022
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import analog
 from gnuradio import audio
 from gnuradio import blocks
-from gnuradio import eng_notation
 from gnuradio import filter
-from gnuradio import gr
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+from gnuradio import gr
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
 import epy_block_0
 import foo
 import pmt
-
 
 class Morse_Code_OOK_USRPB210_File(gr.top_block):
 
@@ -44,35 +46,49 @@ class Morse_Code_OOK_USRPB210_File(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.root_raised_cosine_filter_0_0 = filter.fir_filter_fff(1, firdes.root_raised_cosine(
-        	1, audio_rate, symbol_rate, 0.35, 200))
-        self.root_raised_cosine_filter_0 = filter.fir_filter_fff(1, firdes.root_raised_cosine(
-        	1, audio_rate, symbol_rate, 0.35, 200))
-        self.fractional_resampler_xx_0 = filter.fractional_resampler_cc(0, sample_rate/audio_rate)
+        self.root_raised_cosine_filter_0_0 = filter.fir_filter_fff(
+            1,
+            firdes.root_raised_cosine(
+                1,
+                audio_rate,
+                symbol_rate,
+                0.35,
+                200))
+        self.root_raised_cosine_filter_0 = filter.fir_filter_fff(
+            1,
+            firdes.root_raised_cosine(
+                1,
+                audio_rate,
+                symbol_rate,
+                0.35,
+                200))
+        self.mmse_resampler_xx_0 = filter.mmse_resampler_cc(0, sample_rate/audio_rate)
         self.foo_periodic_msg_source_0 = foo.periodic_msg_source(pmt.intern(str(text)), 60000, 1, True, False)
         self.epy_block_0 = epy_block_0.mc_sync_block()
         self.blocks_uchar_to_float_0 = blocks.uchar_to_float()
         self.blocks_repeat_0 = blocks.repeat(gr.sizeof_char*1, repeat)
         self.blocks_multiply_xx_0 = blocks.multiply_vff(1)
-        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((volume, ))
+        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(volume)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, filepath, False)
         self.blocks_file_sink_0.set_unbuffered(False)
         self.audio_sink_0 = audio.sink(48000, '', True)
-        self.analog_sig_source_x_0 = analog.sig_source_f(audio_rate, analog.GR_COS_WAVE, freq, 0.5, 0)
+        self.analog_sig_source_x_0 = analog.sig_source_f(audio_rate, analog.GR_COS_WAVE, freq, 0.5, 0, 0)
+
+
 
         ##################################################
         # Connections
         ##################################################
         self.msg_connect((self.foo_periodic_msg_source_0, 'out'), (self.epy_block_0, 'msg_in'))
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_const_vxx_0, 0))
-        self.connect((self.blocks_float_to_complex_0, 0), (self.fractional_resampler_xx_0, 0))
+        self.connect((self.blocks_float_to_complex_0, 0), (self.mmse_resampler_xx_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_multiply_xx_0, 1))
         self.connect((self.blocks_multiply_xx_0, 0), (self.audio_sink_0, 0))
         self.connect((self.blocks_repeat_0, 0), (self.blocks_uchar_to_float_0, 0))
         self.connect((self.blocks_uchar_to_float_0, 0), (self.root_raised_cosine_filter_0, 0))
         self.connect((self.epy_block_0, 0), (self.blocks_repeat_0, 0))
-        self.connect((self.fractional_resampler_xx_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.mmse_resampler_xx_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.root_raised_cosine_filter_0, 0), (self.root_raised_cosine_filter_0_0, 0))
         self.connect((self.root_raised_cosine_filter_0_0, 0), (self.blocks_float_to_complex_0, 0))
         self.connect((self.root_raised_cosine_filter_0_0, 0), (self.blocks_multiply_xx_0, 0))
@@ -82,7 +98,7 @@ class Morse_Code_OOK_USRPB210_File(gr.top_block):
 
     def set_volume(self, volume):
         self.volume = volume
-        self.blocks_multiply_const_vxx_0.set_k((self.volume, ))
+        self.blocks_multiply_const_vxx_0.set_k(self.volume)
 
     def get_text(self):
         return self.text
@@ -95,8 +111,8 @@ class Morse_Code_OOK_USRPB210_File(gr.top_block):
 
     def set_symbol_rate(self, symbol_rate):
         self.symbol_rate = symbol_rate
-        self.root_raised_cosine_filter_0_0.set_taps(firdes.root_raised_cosine(1, self.audio_rate, self.symbol_rate, 0.35, 200))
         self.root_raised_cosine_filter_0.set_taps(firdes.root_raised_cosine(1, self.audio_rate, self.symbol_rate, 0.35, 200))
+        self.root_raised_cosine_filter_0_0.set_taps(firdes.root_raised_cosine(1, self.audio_rate, self.symbol_rate, 0.35, 200))
 
     def get_speed(self):
         return self.speed
@@ -115,7 +131,7 @@ class Morse_Code_OOK_USRPB210_File(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        self.fractional_resampler_xx_0.set_resamp_ratio(self.sample_rate/self.audio_rate)
+        self.mmse_resampler_xx_0.set_resamp_ratio(self.sample_rate/self.audio_rate)
 
     def get_repeat(self):
         return self.repeat
@@ -149,18 +165,27 @@ class Morse_Code_OOK_USRPB210_File(gr.top_block):
 
     def set_audio_rate(self, audio_rate):
         self.audio_rate = audio_rate
-        self.root_raised_cosine_filter_0_0.set_taps(firdes.root_raised_cosine(1, self.audio_rate, self.symbol_rate, 0.35, 200))
-        self.root_raised_cosine_filter_0.set_taps(firdes.root_raised_cosine(1, self.audio_rate, self.symbol_rate, 0.35, 200))
-        self.fractional_resampler_xx_0.set_resamp_ratio(self.sample_rate/self.audio_rate)
         self.analog_sig_source_x_0.set_sampling_freq(self.audio_rate)
+        self.mmse_resampler_xx_0.set_resamp_ratio(self.sample_rate/self.audio_rate)
+        self.root_raised_cosine_filter_0.set_taps(firdes.root_raised_cosine(1, self.audio_rate, self.symbol_rate, 0.35, 200))
+        self.root_raised_cosine_filter_0_0.set_taps(firdes.root_raised_cosine(1, self.audio_rate, self.symbol_rate, 0.35, 200))
+
 
 
 def main(top_block_cls=Morse_Code_OOK_USRPB210_File, options=None):
-
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

@@ -1,0 +1,203 @@
+id: limesdr_rfe
+label: LimeRFE Control
+category: '[LimeSDR]'
+
+parameters:
+- id: comm_type
+  label: Communication
+  dtype: enum
+  options:       ['0', '1']
+  option_labels: ['Direct USB', 'SDR']
+  default: 0
+  category: General
+
+- id: com_port
+  label: USB COM Port
+  dtype: string
+  hide: ${ ('part' if int(comm_type) == 0 else 'all') }
+  category: General
+
+- id: sdr_serial
+  label: SDR Device Serial
+  dtype: string
+  hide: ${ ('part' if int(comm_type) == 1 else 'all') }
+  category: General
+
+- id: filename
+  label: Configuration File
+  dtype: file_open
+  hide: part
+  category: Advanced
+
+- id: fan
+  label: Enable Fan
+  dtype: int
+  options: ['0','1']
+  option_labels: ['False', 'True']
+  default: 0
+  hide: part
+  category: General
+
+- id: mode
+  label: Mode
+  dtype: int
+  options:       ['0', '1', '3', '2']
+  option_labels: ['RX', 'TX', 'RX+TX', 'NONE']
+  default: 0
+  category: General
+
+- id: rx_channel
+  label: RX Channel
+  dtype: enum
+  options:       ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12', '13', '14', '15', '16', '-2']
+  option_labels: ['Wideband 1-1000', 'Wideband 1000-4000', 'HAM 30', 'HAM 50-70', 'HAM 144-146', 'HAM 220-225',
+  'HAM 430-440','HAM 902-928','HAM 1240-1325', 'HAM 2300-2450', 'HAM 3300-3500', 'Cellular Band 1', 
+  'Cellular Band 2/PCS-1900', 'Cellular Band 3/PCS-1800', 'Cellular Band 7', 'Cellular Band 38', 'Auto']
+  option_attributes:
+        hide_tx_channel: [none, none, none, none, none, none, none, none, none, none, none, all, all, all, all, all,none]
+        hide_notch:      [none, all, none, none, none, none, none, all, all, all, all, all, all, all, all, all, all]
+  default: 1
+  category: General
+
+- id: rx_port
+  label: RX Port
+  dtype: enum
+  options:       ['1', '3']
+  option_labels: ['TX/RX(J3)', '30 MHz TX/RX(J5)']
+  default: 1
+  category: General
+
+- id: atten
+  label: RX Attenuation(dB)
+  dtype: int
+  options:       ['0', '1', '2', '3', '4', '5', '6', '7']
+  option_labels: ['0', '2', '4', '6', '8','10', '12', '14']
+  default: 0
+  hide: part
+  category: General
+
+- id: notch
+  label: AM FM Notch Filter
+  dtype: int
+  options: ['0','1']
+  option_labels: ['Disabled', 'Enabled']
+  #hide: ${ rx_channel.hide_notch }
+  hide: part
+  default: 1
+  category: General
+
+
+- id: tx_channel
+  label: TX Channel
+  dtype: enum
+  options:       ['1', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '-2']
+  option_labels: ['Wideband 1-1000', 'Wideband 1000-4000', 'HAM 30', 'HAM 50-70', 'HAM 144-146', 'HAM 220-225',
+  'HAM 430-440','HAM 902-928','HAM 1240-1325', 'HAM 2300-2450', 'HAM 3300-3500', 'Auto']
+  hide: ${rx_channel.hide_tx_channel}
+  default: 1
+  category: General
+
+- id: tx_port
+  label: TX Port
+  dtype: enum
+  options:       ['1', '2', '3']
+  option_labels: ['TX/RX(J3)', 'TX (J4)', '30 MHz TX/RX(J5)']
+  default: 1
+  category: General
+
+templates:
+  imports: import limesdr
+  make: |-
+    limesdr.rfe(${comm_type}, 
+    % if int(comm_type()) == 0:
+      ${com_port},
+    % else:
+      ${sdr_serial},
+    % endif
+    ${filename},
+    ${rx_channel},
+    % if int(rx_channel) > 11:
+      ${rx_channel},
+    % else: 
+      ${tx_channel},
+    %endif
+     ${rx_port}, ${tx_port}, ${mode}, ${notch}, ${atten})
+  callbacks:
+  - change_mode(${mode})
+  - set_fan(${fan})
+  - set_attenuation(${atten})
+  - set_notch(${notch})
+
+
+file_format: 1
+
+documentation: |-
+  -------------------------------------------------------------------------------------------------------------------
+  COMMUNICATION
+
+  Type of communication used to configure LimeRFE board.
+  Direct USB: LimeRFE is configured directly through USB COM port
+  SDR: LimeRFE is configured through LimeSDR device GPIO ports
+
+  -------------------------------------------------------------------------------------------------------------------
+  USB COM PORT
+
+  Specified USB COM Port device is connected to e.g. /dev/ttyUSB0 on linux or COM0 on windows
+  -------------------------------------------------------------------------------------------------------------------
+  SDR DEVICE SERIAL
+
+  SDR Device serial number obtained by running
+
+    LimeUtil --find
+
+  If left blank, the first device in the list will be used to configure LimeRFE board
+  -------------------------------------------------------------------------------------------------------------------
+  ENABLE FAN
+
+  Enable or disable fan connected to LimeRFE device
+  -------------------------------------------------------------------------------------------------------------------
+  MODE
+
+  Select LimeRFE mode to be used, valid values are: RX(0), TX(1), RX+TX(2), NONE(3)
+
+  -------------------------------------------------------------------------------------------------------------------
+  RX CHANNEL
+
+  Select RX channel to be configured, if Cellular Bands are selected, the same channel is set for TX
+
+  -------------------------------------------------------------------------------------------------------------------
+  RX PORT
+
+  Select hardware port to be used for receive
+
+  -------------------------------------------------------------------------------------------------------------------
+  RX ATTENUATION
+
+  Specifies the attenuation in the RX path. Attenuation [dB] = 2 * attenuation.
+  Valid value range is [0,7]
+
+  -------------------------------------------------------------------------------------------------------------------
+  AM FM NOTCH FILTER
+
+  Enables or disables AM FM notch filter
+
+  Note: Only works for specific channels(see block diagram of LimeRFE)
+
+  -------------------------------------------------------------------------------------------------------------------
+  TX CHANNEL
+
+  Select TX channel to be configured
+
+  -------------------------------------------------------------------------------------------------------------------
+  TX PORT
+
+  Select hardware port to be used for transmit
+
+  -------------------------------------------------------------------------------------------------------------------
+  CONFIGURATION FILE
+  
+  This setting is available in "Advanced" tab of grc block. 
+  If set LimeRFE device will be configured using already generated .ini file
+
+  Note: .ini file must be generated using LimeSuite->Modules->LimeRFE->save, general LimeSuite .ini file will not work
+  -------------------------------------------------------------------------------------------------------------------

@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import yaml
 import copy
 
@@ -9,7 +10,7 @@ def getFields(library, protocol, packet_type):
     try: 
         fields = sorted(library['Protocols'][protocol]['Packet Types'][packet_type]['Fields'], key=lambda x: library['Protocols'][
                             protocol]['Packet Types'][packet_type]['Fields'][x]['Sort Order'])        
-    except KeyError,e:
+    except KeyError as e:
         fields = []
     return fields
 
@@ -46,7 +47,7 @@ def getPacketTypes(library, protocol):
     try: 
         packettypes = sorted(library['Protocols'][protocol]['Packet Types'], key=lambda x: library['Protocols'][
                                         protocol]['Packet Types'][x]['Sort Order'])
-    except KeyError,e:
+    except KeyError as e:
         packettypes = []
     return packettypes
 
@@ -55,7 +56,7 @@ def getFieldProperties(library, protocol, packet_type, field):
     """
     try: 
         field_properties = library['Protocols'][protocol]['Packet Types'][packet_type]['Fields'][field]        
-    except KeyError,e:
+    except KeyError as e:
         field_properties = []
     return field_properties
     
@@ -67,7 +68,7 @@ def getDefaults(library, protocol, packet_type):
                             protocol]['Packet Types'][packet_type]['Fields'][x]['Sort Order'])        
         default_field_data = [library['Protocols'][protocol]['Packet Types'][
                             packet_type]['Fields'][field]['Default Value'] for field in fields]        
-    except KeyError, e:
+    except KeyError as  e:
         fields = []
         default_field_data = []
     return default_field_data
@@ -85,8 +86,8 @@ def getProtocols(library):
     """
     """
     try: 
-        protocols = [protocols for protocols in library['Protocols'].iterkeys()]
-    except KeyError,e:
+        protocols = [protocols for protocols in library['Protocols']]
+    except KeyError as e:
         protocols = []
     return protocols
     
@@ -95,7 +96,7 @@ def getProtocol(library, protocol_name):
     """
     try: 
         protocol = library['Protocols'][protocol_name]
-    except KeyError,e:
+    except KeyError as e:
         protocol = []
     return protocol
     
@@ -106,13 +107,13 @@ def getDemodulationFlowGraphsModulation(library, protocol=None):
     if protocol:
         try:
             get_modulation.extend(library['Protocols'][protocol]['Demodulation Flow Graphs'])                        
-        except KeyError,e:
+        except KeyError as e:
             pass
     else:
         for protocol in getProtocols(library):         
             try:
                 get_modulation.extend(library['Protocols'][protocol]['Demodulation Flow Graphs']) 
-            except KeyError,e:
+            except KeyError as e:
                 pass
                 
     return list(set(get_modulation))      
@@ -148,7 +149,7 @@ def getDemodulationFlowGraphsHardware(library, protocol=None, modulation=None):
             else:
                 for m in library['Protocols'][protocol]['Demodulation Flow Graphs']:
                     get_hardware.extend(library['Protocols'][protocol]['Demodulation Flow Graphs'][m])                        
-        except KeyError,e:
+        except KeyError as e:
             pass
     else:
         for protocol in getProtocols(library):         
@@ -158,7 +159,7 @@ def getDemodulationFlowGraphsHardware(library, protocol=None, modulation=None):
                 else:
                     for m in library['Protocols'][protocol]['Demodulation Flow Graphs']:
                         get_hardware.extend(library['Protocols'][protocol]['Demodulation Flow Graphs'][m]) 
-            except KeyError,e:
+            except KeyError as e:
                 pass
                 
     return list(set(get_hardware))  
@@ -189,8 +190,8 @@ def getDemodulationFlowGraphs(library, protocol=None, modulation=None, hardware=
                     else:
                         for h in library['Protocols'][protocol]['Demodulation Flow Graphs'][m]:
                             demod_flowgraphs.extend(library['Protocols'][protocol]['Demodulation Flow Graphs'][m][h])                        
-        except KeyError,e:
-            #print "Error: No Demodulation Flowgraph Defined ",e, "for protocol", protocol
+        except KeyError as e:
+            #print("Error: No Demodulation Flowgraph Defined ",e, "for protocol", protocol)
             pass
     else:
         for protocol in getProtocols(library):         
@@ -214,8 +215,8 @@ def getDemodulationFlowGraphs(library, protocol=None, modulation=None, hardware=
                         else:
                             for h in library['Protocols'][protocol]['Demodulation Flow Graphs'][m]:
                                 demod_flowgraphs.extend(library['Protocols'][protocol]['Demodulation Flow Graphs'][m][h])
-            except KeyError,e:
-                #print "Error: No Demodulation Flowgraph Defined ",e, "for protocol", protocol
+            except KeyError as e:
+                #print("Error: No Demodulation Flowgraph Defined ",e, "for protocol", protocol)
                 pass
                 
     return list(set(demod_flowgraphs))  # Only the Unique Values
@@ -251,9 +252,9 @@ def getAllSOIs(library):
     for protocol in getProtocols(library):         
         try:
             sois.update({protocol: library['Protocols'][protocol]['SOI Data']})
-        except KeyError,e:
+        except KeyError as e:
             pass
-            #print "Error: No Key ",e, "for protocol", protocol
+            #print("Error: No Key ",e, "for protocol", protocol)
 
     return sois
     
@@ -263,9 +264,9 @@ def getSOIs(library, protocol):
     sois = {}
     try:
         sois = library['Protocols'][protocol]['SOI Data']     
-    except KeyError,e:
+    except KeyError as e:
         pass
-        #print "Error: No Key ",e, "for protocol", protocol
+        #print("Error: No Key ",e, "for protocol", protocol)
     
     return sois
     
@@ -280,9 +281,9 @@ def getAttacks(library, protocol):
         for n in attacks:
             if n not in exclude_list:
                 updated_attacks.append(n)
-    except KeyError,e:
+    except KeyError as e:
         pass
-        #print "Error: No Key ",e, "for protocol", protocol
+        #print("Error: No Key ",e, "for protocol", protocol)
     
     return updated_attacks    
     
@@ -292,9 +293,9 @@ def getStatistics(library, protocol):
     statistics = {}
     try:
         statistics = library['Protocols'][protocol]['Statistics']     
-    except KeyError,e:
+    except KeyError as e:
         pass
-        #print "Error: No Key ",e, "for protocol", protocol
+        #print("Error: No Key ",e, "for protocol", protocol)
     
     return statistics    
     
@@ -305,9 +306,9 @@ def getStatisticValues(library, protocol, statistic):
     try:
         if library['Protocols'][protocol]['Statistics'][statistic] != "None":
             values = library['Protocols'][protocol]['Statistics'][statistic]
-    except KeyError,e:
+    except KeyError as e:
         pass
-        #print "Error: No Key ",e, "for protocol", protocol
+        #print("Error: No Key ",e, "for protocol", protocol)
     
     return values      
 
@@ -317,9 +318,9 @@ def getModulations(library, protocol):
     modulations = []
     try:
         modulations = library['Protocols'][protocol]['Modulation Types']
-    except KeyError,e:
+    except KeyError as e:
         pass
-        #print "Error: No Key ",e, "for protocol", protocol
+        #print("Error: No Key ",e, "for protocol", protocol)
         
     return modulations
     
@@ -351,7 +352,7 @@ def addPacketType(library, protocol, packet_type):
     """
     try:
         library['Protocols'][protocol]['Packet Types'].update(packet_type)
-    except KeyError,e:
+    except KeyError as e:
         library['Protocols'][protocol].update({'Packet Types':packet_type})
         
 def addDissector(library, protocol, packet_type, dissector_filename, dissector_port):
@@ -360,7 +361,7 @@ def addDissector(library, protocol, packet_type, dissector_filename, dissector_p
     try:
         dissector_dict = {'Filename':dissector_filename, 'Port':dissector_port}
         library['Protocols'][protocol]['Packet Types'][packet_type]['Dissector'].update(dissector_dict)
-    except KeyError,e:
+    except KeyError as e:
         library['Protocols'][protocol]['Packet Types'][packet_type].update({'Dissector':dissector_dict})
  
 def addProtocol(library, protocol=newProtocol()):
@@ -374,7 +375,7 @@ def addModulation(library, protocol, modulation):
     # Check if Template Exists
     try: 
         library['Protocols'][protocol]['Modulation Types'].append(modulation)
-    except KeyError,e:
+    except KeyError as e:
         library['Protocols'][protocol].update({'Modulation Types':[modulation]})   
         
     ## Add Initial Template
@@ -475,7 +476,7 @@ def addAttack(library, protocol, attack):
         # Check if Hardware Exists
         library['Protocols'][protocol]['Attacks'][attack[0]][attack[1]]['Hardware'][attack[3]]
         hardware_exists = [1]
-    except KeyError,e:
+    except KeyError as e:
         pass    
     
     # Add Attack and 'Attack' Key if not Already Present
@@ -627,7 +628,7 @@ def SOI_AutoSelect( list1, SOI_priorities, SOI_filters ):
 		"must_contain" is a list containing elements that narrows the SOI list further by checking for matches after the SOI list is sorted by priority
 	""" 
 	
-	#print 'Unsorted list: {}' .format(list1)	
+	#print('Unsorted list: {}' .format(list1))
 	
 	# Sort the list by element priority
 	descending = False
@@ -677,17 +678,17 @@ def SOI_AutoSelect( list1, SOI_priorities, SOI_filters ):
 					new_list_matching.append(list1[soi])
 			list1 = new_list_matching 
 					
-	#print 'Sorted list: {}' .format(list1)
+	#print('Sorted list: {}' .format(list1))
 		
 		
 	# Check if the list is empty
 	if len(list1) > 0:
 		soi = list1[0]
 	else:
-		print "No SOI Matches the Criteria"
+		print("No SOI Matches the Criteria")
 		soi = []
 			
-	print 'Selected SOI: {}' .format(soi)	
+	print('Selected SOI: {}' .format(soi))
 		
 	return soi
 
@@ -702,7 +703,7 @@ def SOI_LibraryCheck( soi ):
 	# (Modulation_Type, Modulation_Sub_Parameters, Same_Modulation_Type_Index) : (Flow_Graph_Name, [Default_Variables], [Default_Values], [Potential_Attacks])
 
 	# Find Flow Graphs with Same Modulation Type	
-	same_modulation_list_names=[v[0] for k,v in SOI_library.iteritems() if k[0]==soi[0]]  # Look Through Each Key in the Search Dictionary	
+	same_modulation_list_names=[v[0] for k,v in SOI_library.items() if k[0]==soi[0]]  # Look Through Each Key in the Search Dictionary	
 	if not same_modulation_list_names:
 		same_modulation_list_names = [v[0] for v in SOI_library.values()]
 	
@@ -714,24 +715,24 @@ def SOI_LibraryCheck( soi ):
      
 if __name__ == '__main__':
     pass
-    # print "Testing  Lib Utils with current library..."
+    # print("Testing  Lib Utils with current library...")
     # filename1='/home/user/FISSURE/YAML/library.yaml'
     # with open(filename1) as library:
         # pd_library=yaml.load(library)
     # prots=getProtocols(pd_library)
-    # print prots
+    # print(prots)
     # sois = getSOIs(pd_library)
-    # print sois
+    # print(sois)
     # demods = getDemodulationFlowGraphs(pd_library)
-    # print demods
+    # print(demods)
     # for prot in prots:
-       # print "Protocol :", prot
+       # print("Protocol :", prot)
        # pkts=getPacketTypes(pd_library,prot)
-       # print "Packets in ", prot, ": ",pkts    
+       # print("Packets in ", prot, ": ",pkts)
        # for pkt in pkts:
           # flds = getFields(pd_library, prot, pkt)
           # defaults = getDefaults(pd_library, prot, pkt)
           # for i in range(len(flds)):
-             # print "Fields ",i, ": ", flds[i], "default = ", defaults[i]
+             # print("Fields ",i, ": ", flds[i], "default = ", defaults[i])
           
     

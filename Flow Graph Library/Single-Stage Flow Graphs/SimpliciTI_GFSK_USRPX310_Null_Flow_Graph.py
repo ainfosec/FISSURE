@@ -1,19 +1,21 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Simpliciti Gfsk Usrpx310 Null Flow Graph
-# Generated: Sun Jan  9 14:10:18 2022
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
-from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
-
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
 
 class SimpliciTI_GFSK_USRPX310_Null_Flow_Graph(gr.top_block):
 
@@ -32,6 +34,8 @@ class SimpliciTI_GFSK_USRPX310_Null_Flow_Graph(gr.top_block):
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, samp_rate,True)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_gr_complex*1)
+
+
 
         ##################################################
         # Connections
@@ -53,12 +57,21 @@ class SimpliciTI_GFSK_USRPX310_Null_Flow_Graph(gr.top_block):
         self.notes = notes
 
 
-def main(top_block_cls=SimpliciTI_GFSK_USRPX310_Null_Flow_Graph, options=None):
 
+def main(top_block_cls=SimpliciTI_GFSK_USRPX310_Null_Flow_Graph, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

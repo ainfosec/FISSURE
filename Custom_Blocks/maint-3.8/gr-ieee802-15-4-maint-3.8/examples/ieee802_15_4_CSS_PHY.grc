@@ -1,0 +1,861 @@
+options:
+  parameters:
+    author: Felix Wunsch
+    category: '[IEEE802.15.4]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: IEEE 802.15.4 CSS PHY
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: hb
+    hier_block_src_path: '.:'
+    id: ieee802_15_4_css_phy
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: IEEE 802.15.4 CSS PHY
+    window_size: 1280, 1024
+  states:
+    coordinate: [10, 10]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: bits_per_cw
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Bits per codeword
+    short_id: ''
+    type: intx
+    value: '1'
+  states:
+    coordinate: [648, -6]
+    rotation: 0
+    state: enabled
+- name: blocks_complex_to_float_0
+  id: blocks_complex_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    coordinate: [808, 752.0]
+    rotation: 180
+    state: enabled
+- name: blocks_deinterleave_0
+  id: blocks_deinterleave
+  parameters:
+    affinity: ''
+    alias: ''
+    blocksize: '1'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '2'
+    type: byte
+    vlen: '1'
+  states:
+    coordinate: [648, 232.0]
+    rotation: 0
+    state: enabled
+- name: blocks_interleave_0_0
+  id: blocks_interleave
+  parameters:
+    affinity: ''
+    alias: ''
+    blocksize: '1'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '2'
+    type: byte
+    vlen: '1'
+  states:
+    coordinate: [128, 928.0]
+    rotation: 0
+    state: enabled
+- name: blocks_keep_m_in_n_0_0_0
+  id: blocks_keep_m_in_n
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    m: sym_per_frame-len(preamble)-len(sfd)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n: sym_per_frame
+    offset: len(preamble)+len(sfd)
+    type: float
+  states:
+    coordinate: [600, 836.0]
+    rotation: 180
+    state: enabled
+- name: blocks_keep_m_in_n_0_0_0_0
+  id: blocks_keep_m_in_n
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    m: sym_per_frame-len(preamble)-len(sfd)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n: sym_per_frame
+    offset: len(preamble)+len(sfd)
+    type: float
+  states:
+    coordinate: [600, 748.0]
+    rotation: 180
+    state: enabled
+- name: blocks_multiply_const_vxx_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: np.exp(1j*np.pi/4)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    coordinate: [1000, 764.0]
+    rotation: 180
+    state: enabled
+- name: blocks_stream_to_tagged_stream_0
+  id: blocks_stream_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    len_tag_key: '"burst_len"'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    packet_len: nsamp_frame
+    type: complex
+    vlen: '1'
+  states:
+    coordinate: [192, 380.0]
+    rotation: 180
+    state: enabled
+- name: chirp_seq
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Chirp sequence
+    short_id: ''
+    type: ''
+    value: '[]'
+  states:
+    coordinate: [184, 73]
+    rotation: 0
+    state: enabled
+- name: codewords
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Codewords
+    short_id: ''
+    type: ''
+    value: '[[0,0],[1,1]]'
+  states:
+    coordinate: [800, -7]
+    rotation: 0
+    state: enabled
+- name: digital_costas_loop_cc_0
+  id: digital_costas_loop_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    order: '4'
+    use_snr: 'False'
+    w: 2 * math.pi / 100
+  states:
+    coordinate: [376, 592.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_codeword_mapper_bi_0
+  id: ieee802_15_4_codeword_mapper_bi
+  parameters:
+    affinity: ''
+    alias: ''
+    bits_per_cw: bits_per_cw
+    codewords: codewords
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [840, 196.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_codeword_mapper_bi_0_0
+  id: ieee802_15_4_codeword_mapper_bi
+  parameters:
+    affinity: ''
+    alias: ''
+    bits_per_cw: bits_per_cw
+    codewords: codewords
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [840, 260.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_codeword_soft_demapper_fb_0
+  id: ieee802_15_4_codeword_soft_demapper_fb
+  parameters:
+    affinity: ''
+    alias: ''
+    bits_per_cw: bits_per_cw
+    codewords: codewords
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [144, 756.0]
+    rotation: 180
+    state: enabled
+- name: ieee802_15_4_codeword_soft_demapper_fb_0_0
+  id: ieee802_15_4_codeword_soft_demapper_fb
+  parameters:
+    affinity: ''
+    alias: ''
+    bits_per_cw: bits_per_cw
+    codewords: codewords
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [152, 836.0]
+    rotation: 180
+    state: enabled
+- name: ieee802_15_4_deinterleaver_ff_0
+  id: ieee802_15_4_deinterleaver_ff
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    intlv_seq: intlv_seq
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [384, 852.0]
+    rotation: 180
+    state: enabled
+- name: ieee802_15_4_deinterleaver_ff_0_0
+  id: ieee802_15_4_deinterleaver_ff
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    intlv_seq: intlv_seq
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [384, 764.0]
+    rotation: 180
+    state: enabled
+- name: ieee802_15_4_dqcsk_mapper_fc_0
+  id: ieee802_15_4_dqcsk_mapper_fc
+  parameters:
+    affinity: ''
+    alias: ''
+    chirp_seq: chirp_seq
+    comment: ''
+    len_subchirp: len_sub
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nsym_frame: sym_per_frame
+    num_subchirps: num_subchirps
+    time_gap_1: time_gap_1
+    time_gap_2: time_gap_2
+  states:
+    coordinate: [416, 348.0]
+    rotation: 180
+    state: enabled
+- name: ieee802_15_4_dqpsk_mapper_ff_0
+  id: ieee802_15_4_dqpsk_mapper_ff
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    forward: 'True'
+    framelen: sym_per_frame
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [664, 380.0]
+    rotation: 180
+    state: enabled
+- name: ieee802_15_4_dqpsk_soft_demapper_cc_0
+  id: ieee802_15_4_dqpsk_soft_demapper_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    framelen: sym_per_frame
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [1032, 668.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_frame_buffer_cc_0
+  id: ieee802_15_4_frame_buffer_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nsym_frame: sym_per_frame
+  states:
+    coordinate: [848, 668.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_interleaver_ii_0
+  id: ieee802_15_4_interleaver_ii
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    forward: 'True'
+    intlv_seq: intlv_seq
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [1064, 196.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_interleaver_ii_0_0
+  id: ieee802_15_4_interleaver_ii
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    forward: 'True'
+    intlv_seq: intlv_seq
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [1064, 260.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_multiuser_chirp_detector_cc_0
+  id: ieee802_15_4_multiuser_chirp_detector_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    chirp_seq: chirp_seq
+    comment: ''
+    len_subchirp: len_sub
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    threshold: threshold
+    time_gap_1: len(time_gap_1)
+    time_gap_2: len(time_gap_2)
+  states:
+    coordinate: [152, 588.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_phr_prefixer_0
+  id: ieee802_15_4_phr_prefixer
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    phr: phr
+  states:
+    coordinate: [288, 244.0]
+    rotation: 0
+    state: true
+- name: ieee802_15_4_phr_removal_0_0
+  id: ieee802_15_4_phr_removal
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    phr: phr
+  states:
+    coordinate: [448, 940.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_preamble_sfd_prefixer_ii_0
+  id: ieee802_15_4_preamble_sfd_prefixer_ii
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nsym_frame: sym_per_frame
+    preamble: preamble
+    sfd: sfd
+  states:
+    coordinate: [1024, 433]
+    rotation: 180
+    state: enabled
+- name: ieee802_15_4_preamble_sfd_prefixer_ii_0_0
+  id: ieee802_15_4_preamble_sfd_prefixer_ii
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nsym_frame: sym_per_frame
+    preamble: preamble
+    sfd: sfd
+  states:
+    coordinate: [1040, 337]
+    rotation: 180
+    state: enabled
+- name: ieee802_15_4_preamble_tagger_cc_0
+  id: ieee802_15_4_preamble_tagger_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    len_preamble: len(preamble)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [640, 668.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_qpsk_mapper_if_0
+  id: ieee802_15_4_qpsk_mapper_if
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    coordinate: [856, 376.0]
+    rotation: 180
+    state: enabled
+- name: ieee802_15_4_zeropadding_b_0
+  id: ieee802_15_4_zeropadding_b
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nzeros: nzeros_padding
+  states:
+    coordinate: [488, 244.0]
+    rotation: 0
+    state: enabled
+- name: ieee802_15_4_zeropadding_removal_b_0_0
+  id: ieee802_15_4_zeropadding_removal_b
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nzeros: nzeros_padding
+    phr_payload_len: nbytes_payload*8+len(phr)
+  states:
+    coordinate: [248, 932.0]
+    rotation: 0
+    state: enabled
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import numpy as np
+  states:
+    coordinate: [8, 126]
+    rotation: 0
+    state: enabled
+- name: import_1
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import math
+  states:
+    coordinate: [8, 173]
+    rotation: 0
+    state: enabled
+- name: intlv_seq
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Interleaver sequence
+    short_id: ''
+    type: ''
+    value: '[]'
+  states:
+    coordinate: [904, -7]
+    rotation: 0
+    state: enabled
+- name: len_sub
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Samples per subchirp
+    short_id: ''
+    type: intx
+    value: '1'
+  states:
+    coordinate: [552, 90]
+    rotation: 0
+    state: enabled
+- name: nbytes_payload
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Num payload bytes
+    short_id: ''
+    type: intx
+    value: '127'
+  states:
+    coordinate: [344, -6]
+    rotation: 0
+    state: enabled
+- name: nsamp_frame
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Samples per frame
+    short_id: ''
+    type: long
+    value: '1'
+  states:
+    coordinate: [1008, 90]
+    rotation: 0
+    state: enabled
+- name: num_subchirps
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Num subchirps per sequence
+    short_id: ''
+    type: intx
+    value: '1'
+  states:
+    coordinate: [720, 90]
+    rotation: 0
+    state: enabled
+- name: nzeros_padding
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Num padded zeros
+    short_id: ''
+    type: intx
+    value: '0'
+  states:
+    coordinate: [496, -6]
+    rotation: 0
+    state: enabled
+- name: pad_sink_0
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: txout
+    num_streams: '1'
+    optional: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    coordinate: [48, 388.0]
+    rotation: 180
+    state: enabled
+- name: pad_sink_1
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: det_out
+    num_streams: '1'
+    optional: 'True'
+    type: complex
+    vlen: '1'
+  states:
+    coordinate: [336, 524.0]
+    rotation: 0
+    state: enabled
+- name: pad_sink_1_0
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: rxout
+    num_streams: '1'
+    optional: 'False'
+    type: message
+    vlen: '1'
+  states:
+    coordinate: [600, 940.0]
+    rotation: 0
+    state: enabled
+- name: pad_sink_2
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: costas_out
+    num_streams: '1'
+    optional: 'True'
+    type: complex
+    vlen: '1'
+  states:
+    coordinate: [648, 580.0]
+    rotation: 0
+    state: enabled
+- name: pad_sink_3
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: framer_out
+    num_streams: '1'
+    optional: 'True'
+    type: complex
+    vlen: '1'
+  states:
+    coordinate: [1048, 604.0]
+    rotation: 0
+    state: enabled
+- name: pad_sink_4
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: qpsk_out
+    num_streams: '1'
+    optional: 'True'
+    type: complex
+    vlen: '1'
+  states:
+    coordinate: [1032, 812.0]
+    rotation: 0
+    state: enabled
+- name: pad_source_0
+  id: pad_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: rxin
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '1'
+    optional: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    coordinate: [16, 620.0]
+    rotation: 0
+    state: enabled
+- name: pad_source_1
+  id: pad_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: txin
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '1'
+    optional: 'False'
+    type: message
+    vlen: '1'
+  states:
+    coordinate: [16, 246]
+    rotation: 0
+    state: enabled
+- name: phr
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: PHR
+    short_id: ''
+    type: ''
+    value: '[0 for i in range(12)]'
+  states:
+    coordinate: [184, -7]
+    rotation: 0
+    state: enabled
+- name: preamble
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Preamble
+    short_id: ''
+    type: ''
+    value: ()
+  states:
+    coordinate: [888, 89]
+    rotation: 0
+    state: enabled
+- name: sfd
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: SFD
+    short_id: ''
+    type: ''
+    value: ()
+  states:
+    coordinate: [904, 89]
+    rotation: 0
+    state: enabled
+- name: sym_per_frame
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Symbols per frame
+    short_id: ''
+    type: ''
+    value: '1'
+  states:
+    coordinate: [1040, 1]
+    rotation: 0
+    state: enabled
+- name: threshold
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Threshold
+    short_id: ''
+    type: eng_float
+    value: '0'
+  states:
+    coordinate: [96, 151]
+    rotation: 0
+    state: enabled
+- name: time_gap_1
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Time gap 1
+    short_id: ''
+    type: ''
+    value: ()
+  states:
+    coordinate: [320, 89]
+    rotation: 0
+    state: enabled
+- name: time_gap_2
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Time gap 2
+    short_id: ''
+    type: ''
+    value: ()
+  states:
+    coordinate: [440, 89]
+    rotation: 0
+    state: enabled
+
+connections:
+- [blocks_complex_to_float_0, '0', blocks_keep_m_in_n_0_0_0, '0']
+- [blocks_complex_to_float_0, '1', blocks_keep_m_in_n_0_0_0_0, '0']
+- [blocks_deinterleave_0, '0', ieee802_15_4_codeword_mapper_bi_0, '0']
+- [blocks_deinterleave_0, '1', ieee802_15_4_codeword_mapper_bi_0_0, '0']
+- [blocks_interleave_0_0, '0', ieee802_15_4_zeropadding_removal_b_0_0, '0']
+- [blocks_keep_m_in_n_0_0_0, '0', ieee802_15_4_deinterleaver_ff_0, '0']
+- [blocks_keep_m_in_n_0_0_0_0, '0', ieee802_15_4_deinterleaver_ff_0_0, '0']
+- [blocks_multiply_const_vxx_0, '0', blocks_complex_to_float_0, '0']
+- [blocks_multiply_const_vxx_0, '0', pad_sink_4, '0']
+- [blocks_stream_to_tagged_stream_0, '0', pad_sink_0, '0']
+- [digital_costas_loop_cc_0, '0', ieee802_15_4_preamble_tagger_cc_0, '0']
+- [digital_costas_loop_cc_0, '0', pad_sink_2, '0']
+- [ieee802_15_4_codeword_mapper_bi_0, '0', ieee802_15_4_interleaver_ii_0, '0']
+- [ieee802_15_4_codeword_mapper_bi_0_0, '0', ieee802_15_4_interleaver_ii_0_0, '0']
+- [ieee802_15_4_codeword_soft_demapper_fb_0, '0', blocks_interleave_0_0, '1']
+- [ieee802_15_4_codeword_soft_demapper_fb_0_0, '0', blocks_interleave_0_0, '0']
+- [ieee802_15_4_deinterleaver_ff_0, '0', ieee802_15_4_codeword_soft_demapper_fb_0_0,
+  '0']
+- [ieee802_15_4_deinterleaver_ff_0_0, '0', ieee802_15_4_codeword_soft_demapper_fb_0,
+  '0']
+- [ieee802_15_4_dqcsk_mapper_fc_0, '0', blocks_stream_to_tagged_stream_0, '0']
+- [ieee802_15_4_dqpsk_mapper_ff_0, '0', ieee802_15_4_dqcsk_mapper_fc_0, '0']
+- [ieee802_15_4_dqpsk_soft_demapper_cc_0, '0', blocks_multiply_const_vxx_0, '0']
+- [ieee802_15_4_frame_buffer_cc_0, '0', ieee802_15_4_dqpsk_soft_demapper_cc_0, '0']
+- [ieee802_15_4_frame_buffer_cc_0, '0', pad_sink_3, '0']
+- [ieee802_15_4_interleaver_ii_0, '0', ieee802_15_4_preamble_sfd_prefixer_ii_0, '0']
+- [ieee802_15_4_interleaver_ii_0_0, '0', ieee802_15_4_preamble_sfd_prefixer_ii_0_0,
+  '0']
+- [ieee802_15_4_multiuser_chirp_detector_cc_0, '0', digital_costas_loop_cc_0, '0']
+- [ieee802_15_4_multiuser_chirp_detector_cc_0, '0', pad_sink_1, '0']
+- [ieee802_15_4_phr_prefixer_0, out, ieee802_15_4_zeropadding_b_0, in]
+- [ieee802_15_4_phr_removal_0_0, out, pad_sink_1_0, in0]
+- [ieee802_15_4_preamble_sfd_prefixer_ii_0, '0', ieee802_15_4_qpsk_mapper_if_0, '0']
+- [ieee802_15_4_preamble_sfd_prefixer_ii_0_0, '0', ieee802_15_4_qpsk_mapper_if_0,
+  '1']
+- [ieee802_15_4_preamble_tagger_cc_0, '0', ieee802_15_4_frame_buffer_cc_0, '0']
+- [ieee802_15_4_qpsk_mapper_if_0, '0', ieee802_15_4_dqpsk_mapper_ff_0, '0']
+- [ieee802_15_4_zeropadding_b_0, '0', blocks_deinterleave_0, '0']
+- [ieee802_15_4_zeropadding_removal_b_0_0, out, ieee802_15_4_phr_removal_0_0, in]
+- [pad_source_0, '0', ieee802_15_4_multiuser_chirp_detector_cc_0, '0']
+- [pad_source_1, out0, ieee802_15_4_phr_prefixer_0, in]
+
+metadata:
+  file_format: 1

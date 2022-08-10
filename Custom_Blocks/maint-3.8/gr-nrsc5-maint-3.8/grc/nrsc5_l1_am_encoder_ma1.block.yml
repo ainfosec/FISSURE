@@ -1,0 +1,28 @@
+id: nrsc5_l1_am_encoder_ma1
+label: 'Layer 1 AM encoder: MA1'
+category: '[NRSC-5]'
+
+inputs:
+-   label: p1
+    domain: stream
+    dtype: byte
+    vlen: 3750
+-   label: p3
+    domain: stream
+    dtype: byte
+    vlen: 24000
+-   label: pids
+    domain: stream
+    dtype: byte
+    vlen: 80
+
+outputs:
+-   domain: stream
+    dtype: complex
+    vlen: 256
+
+templates:
+  imports: import nrsc5
+  make: nrsc5.l1_am_encoder(1)
+
+file_format: 1

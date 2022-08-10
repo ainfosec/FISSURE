@@ -1,22 +1,24 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Dect Gfsk Usrpx310 File Sink
-# Generated: Sun Jan  9 14:23:59 2022
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
 from gnuradio import digital
-from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio import uhd
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio import uhd
 import time
-
 
 class DECT_GFSK_USRPX310_File_Sink(gr.top_block):
 
@@ -43,46 +45,47 @@ class DECT_GFSK_USRPX310_File_Sink(gr.top_block):
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-        	",".join(('"addr="+ip_address', "")),
-        	uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
+            ",".join(('"addr="+ip_address', "")),
+            uhd.stream_args(
+                cpu_format="fc32",
+                args='',
+                channels=list(range(0,1)),
+            ),
         )
         self.uhd_usrp_source_0.set_subdev_spec('rx_usrp_channel', 0)
-        self.uhd_usrp_source_0.set_samp_rate(sample_rate)
         self.uhd_usrp_source_0.set_center_freq(rx_frequency, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna('rx_usrp_antenna', 0)
+        self.uhd_usrp_source_0.set_samp_rate(sample_rate)
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
         self.digital_packet_headerparser_b_0 = digital.packet_headerparser_b(header_formatter.base())
         self.digital_header_payload_demux_0 = digital.header_payload_demux(
-        	  388,
-        	  1,
-        	  0,
-        	  "sandwich",
-        	  "go",
-        	  False,
-        	  gr.sizeof_char,
-        	  "rx_time",
-                  int(sample_rate),
-                  (),
-                  0,
-            )
+            388,
+            1,
+            0,
+            "sandwich",
+            "go",
+            False,
+            gr.sizeof_char,
+            "rx_time",
+            int(sample_rate),
+            (),
+            0)
         self.digital_gmsk_demod_0 = digital.gmsk_demod(
-        	samples_per_symbol=int(sample_rate/dect_symbol_rate),
-        	gain_mu=0.175,
-        	mu=0.5,
-        	omega_relative_limit=0.005,
-        	freq_error=0.0,
-        	verbose=False,
-        	log=False,
-        )
-        self.digital_correlate_access_code_tag_bb_0 = digital.correlate_access_code_tag_bb('10101010101010101110100110001010', 0, "go")
+            samples_per_symbol=int(sample_rate/dect_symbol_rate),
+            gain_mu=0.175,
+            mu=0.5,
+            omega_relative_limit=0.005,
+            freq_error=0.0,
+            verbose=False,log=False)
+        self.digital_correlate_access_code_tag_xx_0 = digital.correlate_access_code_tag_bb('10101010101010101110100110001010', 0, "go")
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_char*1)
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_char*1)
         self.blocks_head_0_0 = blocks.head(gr.sizeof_char*1, recording_length)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, filepath, False)
         self.blocks_file_sink_0.set_unbuffered(False)
+
+
 
         ##################################################
         # Connections
@@ -90,8 +93,8 @@ class DECT_GFSK_USRPX310_File_Sink(gr.top_block):
         self.msg_connect((self.digital_packet_headerparser_b_0, 'header_data'), (self.digital_header_payload_demux_0, 'header_data'))
         self.connect((self.blocks_head_0_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_null_source_0, 0), (self.digital_header_payload_demux_0, 1))
-        self.connect((self.digital_correlate_access_code_tag_bb_0, 0), (self.digital_header_payload_demux_0, 0))
-        self.connect((self.digital_gmsk_demod_0, 0), (self.digital_correlate_access_code_tag_bb_0, 0))
+        self.connect((self.digital_correlate_access_code_tag_xx_0, 0), (self.digital_header_payload_demux_0, 0))
+        self.connect((self.digital_gmsk_demod_0, 0), (self.digital_correlate_access_code_tag_xx_0, 0))
         self.connect((self.digital_header_payload_demux_0, 0), (self.blocks_head_0_0, 0))
         self.connect((self.digital_header_payload_demux_0, 1), (self.blocks_null_sink_0, 0))
         self.connect((self.digital_header_payload_demux_0, 0), (self.digital_packet_headerparser_b_0, 0))
@@ -117,7 +120,6 @@ class DECT_GFSK_USRPX310_File_Sink(gr.top_block):
     def set_rx_usrp_gain(self, rx_usrp_gain):
         self.rx_usrp_gain = rx_usrp_gain
         self.uhd_usrp_source_0.set_gain(self.rx_usrp_gain, 0)
-
 
     def get_rx_frequency(self):
         return self.rx_frequency
@@ -177,12 +179,21 @@ class DECT_GFSK_USRPX310_File_Sink(gr.top_block):
         self.dect_channel_bandwidth = dect_channel_bandwidth
 
 
-def main(top_block_cls=DECT_GFSK_USRPX310_File_Sink, options=None):
 
+def main(top_block_cls=DECT_GFSK_USRPX310_File_Sink, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

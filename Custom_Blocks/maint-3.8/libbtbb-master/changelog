@@ -1,0 +1,51 @@
+libbtbb (2020-12-R1) unstable; urgency=low
+  * Python 3 support
+  * Minor bugfixes
+
+ -- Mike Ryan <mikeryan@lacklustre.net>  25 Dec 2020 13:30:00 -0800
+
+libbtbb (2018-12-R1) unstable; urgency=low
+  * No changes, just keeping version parity with Ubertooth 2018-12-R1
+
+ -- Mike Ryan <mikeryan@lacklustre.net>  04 Dec 2018 21:50:00 -0800
+
+libbtbb (2018-08-R1) unstable; urgency=low
+  * No changes, just keeping version parity with Ubertooth 2018-08-R1
+
+ -- Mike Ryan <mikeryan@lacklustre.net>  07 Aug 2018 15:36:00 -0700
+
+libbtbb (2018-06-R1) unstable; urgency=low
+  * Minor bugfix and version bump for 2018-06-R1 Ubertooth release
+
+ -- Mike Ryan <mikeryan@lacklustre.net>  26 Jun 2018 13:20:00 -0700
+
+libbtbb (2017-03-R2) unstable; urgency=low
+  * Remove dependency on libpcap, simplifying build process
+  
+ -- Dominic Spill <dominicgs@gmail.com>  01 Mar 2017 10:39:00 -0700   
+ 
+ libbtbb (2015-10-R1) unstable; urgency=low
+  * This is a minor bug fix release. It includes fixes to clock
+    recovery and piconet survey mode
+  
+ -- Dominic Spill <dominicgs@gmail.com>  12 Oct 2015 03:10:00 -0700   
+ 
+ libbtbb (2015-09-R2) unstable; urgency=low
+  * New PCAP format for BR and EDR packets
+  * Wireshark dissector for BR/EDR PCAP format
+  * BLE PCAPNG support
+  * Improved support for AFH
+  * Numerous bug fixes
+  
+ -- Dominic Spill <dominicgs@gmail.com>  05 Sep 2015 05:30:00 -0700   
+
+libbtbb (2014-02-R2) unstable; urgency=low
+  * This release adds new features while including a complete rewrite of the
+    Basic Rate API.
+  * Bluetooth Low Energy support (aka Bluetooth Smart)
+  * Limited support for AFH
+  * Cleaned up Basic Rate API - btbb.h
+  * Wireshark plugins support v1.10
+  * Numerous bug fixes
+
+ -- Dominic Spill <dominicgs@gmail.com>  20 Feb 2014 06:06:00 -0700   

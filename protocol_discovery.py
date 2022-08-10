@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import zmq
 import time
 import re
@@ -79,6 +81,8 @@ class ProtocolDiscovery():
         # Main Event Loop
         try:
             while True:
+                #print("PD LOOPING!!!")
+
                 # Read Messages in the ZMQ Queues
                 if self.hiprfisr_connected == True:
                     self.readHIPRFISR_Messages()
@@ -134,13 +138,13 @@ class ProtocolDiscovery():
             self.pd_sub_listener = fissure_listener(os.path.dirname(os.path.realpath(__file__)) + '/YAML/pd.yaml',hiprfisr_ip_address,hiprfisr_pub_port,zmq.SUB, logcfg = os.path.dirname(os.path.realpath(__file__)) + "/YAML/logging.yaml", logsource = "pd") 
             sub_connected = True
         except:
-            print "Error creating PD SUB and connecting to HIPRFISR PUB"
+            print("Error creating PD SUB and connecting to HIPRFISR PUB")
             
         # PD SUB to Dashboard PUB
         try:
             self.pd_sub_listener.initialize_port(dashboard_ip_address,dashboard_pub_port)  # Need to Update IP Address        
         except:
-            print "Unable to connect PD SUB to Dashboard PUB"   
+            print("Unable to connect PD SUB to Dashboard PUB") 
             
         # PD SUB to FGE Flow Graph PUB
         pd_bits_port = self.settings_dictionary['pd_bits_port']
@@ -156,8 +160,8 @@ class ProtocolDiscovery():
 
             self.pd_bit_sub_listener.setsockopt_string(zmq.SUBSCRIBE,u'')
 
-        except KeyError, e:
-            print "Unable to connect PD SUB to FGE PUB"    
+        except KeyError as e:
+            print("Unable to connect PD SUB to FGE PUB")
             
     def readSUB_Messages(self):
         """ Read all the messages in the pd_sub_listener and handle accordingly.
@@ -281,7 +285,7 @@ class ProtocolDiscovery():
          self.my_output_buffer = ""    
          while(not stop_event.is_set()):      
             try:
-                msg = socket.recv(zmq.NOBLOCK)
+                msg = socket.recv_string(zmq.NOBLOCK)
             except zmq.ZMQError:
                 msg = ""        
             if msg:
@@ -289,8 +293,8 @@ class ProtocolDiscovery():
                     grinput = msg[3:]  # Part of ZMQ header (Command Length, Command)
             else:
                 grinput = ""
-
-            self.my_output_buffer += binascii.hexlify(grinput)
+            
+            self.my_output_buffer += grinput  # Buffer needs to be a string
             if len(self.my_output_buffer) > self.max_buffer:
                 self.my_output_buffer = self.my_output_buffer[(len(self.my_output_buffer) - self.max_buffer):]        
             if self.flush_buffer:     
@@ -327,17 +331,17 @@ class ProtocolDiscovery():
         flow_graph_names = []
         if soi_data[1] == "":
             for s in get_sois:
-                flow_graph_names.extend(getDemodulationFlowGraphs(self.pd_library,s[s.keys()[0]]['Protocol'],None,hardware))
+                flow_graph_names.extend(getDemodulationFlowGraphs(self.pd_library,s[list(s.keys())[0]]['Protocol'],None,hardware))
         
         # Keep Names with Same Modulation 
         else:
             for s in get_sois:
-                flow_graph_names.extend(getDemodulationFlowGraphs(self.pd_library,s[s.keys()[0]]['Protocol'],soi_data[1],hardware))
+                flow_graph_names.extend(getDemodulationFlowGraphs(self.pd_library,s[list(s.keys())[0]]['Protocol'],soi_data[1],hardware))
         
         return list(set(flow_graph_names)) # Only the unique values
         
         # Find Flow Graphs with Same Modulation Type    
-        #~ same_modulation_protocol_names = {protocol: getDemodulationFlowGraphs(pd_library,protocol) for protocol,mod in getModulations(pd_library).iteritems() if modulation in mod}      
+        #~ same_modulation_protocol_names = {protocol: getDemodulationFlowGraphs(pd_library,protocol) for protocol,mod in getModulations(pd_library).items() if modulation in mod}      
             
         #~ pd_pub_server.sendmsg('Status', Identifier = 'PD', MessageName='Set Recommended Flow Graphs', Parameters=same_modulation_protocol_names) 
 
@@ -366,7 +370,7 @@ class ProtocolDiscovery():
             all_soi = getAllSOIs(self.pd_library)  
             
             # Cycle through each Protocol    
-            for protocol,soi_items in all_soi.iteritems():   
+            for protocol,soi_items in all_soi.items():   
                 soi_data_item_found = [False, False, False, False, False, False] 
                 and_cases = [True, True, True, True, True, True]
                 
@@ -442,8 +446,8 @@ class ProtocolDiscovery():
                               def_dict.update({prots:{pkts: mydefs}})     
                 
             # Search for Field Data Instances in the Entire Hex Dictionary of the Packet Types, Returns {Packet Type: Protocol}
-            for protocols,vals in def_dict.iteritems():
-                for packets,packet_vals in vals.iteritems():
+            for protocols,vals in def_dict.items():
+                for packets,packet_vals in vals.items():
                     if field_data in packet_vals:
                         packet_type_protocol_dict[packets] = {'End Frequency': '', 'Protocol': protocols, 'Modulation': '', 'Notes': '', 'Continuous': '', 'Bandwidth': '', 'Frequency': '', 'Start Frequency': ''}                 
                         
@@ -471,7 +475,7 @@ class ProtocolDiscovery():
         if not self.hiprfisr_buffer: 
             self.hiprfisr_buffer = self.my_output_buffer            
         self.pd_pub_server.sendmsg('Status', Identifier = 'PD', MessageName='Return Captured Buffer', Parameters=self.hiprfisr_buffer)
-        #~ print "Sending buffer to HIPRFISR/Dashboard"
+        #~ print("Sending buffer to HIPRFISR/Dashboard")
 
     def findPreambles(self):
         """ Callback to send the current best estimate of preamble stats to HIPRFISR so user can see preamble candidates in the latest buffer.
@@ -482,7 +486,7 @@ class ProtocolDiscovery():
             self.hiprfisr_buffer = self.my_output_buffer       
         self.FindPreamblesThreaded = ThreadingCallback(self.pd_pub_server,'Found Preambles', self.minStdMaxLenMedPktPreambles, self.hiprfisr_buffer,self.min_size,self.max_size,self.ranking,self.num_std)    
         self.FindPreamblesThreaded.start()
-        #~ print "Finding Preambles and Sending to HIPRFISR/Dashboard"
+        #~ print("Finding Preambles and Sending to HIPRFISR/Dashboard")
         
     def searchLibraryCallback(self,soi_data, field_data):
         """ Callback to search the library for matching SOI values, field values, and statistics.
@@ -504,15 +508,15 @@ class ProtocolDiscovery():
             # starts threaded callback to return value to HIPRFISR
             if self.finding_preambles:
                 if len(self.my_output_buffer) >= self.min_buffer:
-                    #~ print "Searching for preambles"                    
+                    #~ print("Searching for preambles")             
                     self.finding_preambles = False            
                     self.findPreambles()
                 else:
                     pass
-                    #~ print "Filling Buffer..."
+                    #~ print("Filling Buffer...")
             else: 
                 try:
-                    #~ print "waiting for Preamble return from thread"
+                    #~ print("waiting for Preamble return from thread")
                     self.FindPreamblesThreaded.returnval                
                 except: # AttributeError:            
                     # Thread Hasn't Returned Yet
@@ -521,7 +525,7 @@ class ProtocolDiscovery():
                     # Starts Threaded Callback to Search Library with already Searched Return Value (could also do this from HIPRFISR/Dashboard Selected result
                     if self.lib_search:
                         self.lib_search = False
-                        self.findPreamblesInLibrary(self.FindPreamblesThreaded.returnval.keys()[0])
+                        self.findPreamblesInLibrary(list(self.FindPreamblesThreaded.returnval.keys())[0])
                             
     #~ def findPacketLengths(data,preambles):
         #~ """ Finds the packet lengths of the data for each selected preamble???
@@ -574,7 +578,7 @@ class ProtocolDiscovery():
         """
         slicestats = {}
         idxs = {}
-        for preamble in preambles.iterkeys():
+        for preamble in preambles.keys():
             idxs = self.findAll(datablob,preamble)
             mdian = np.median(np.diff(idxs))
             meanie = np.mean(np.diff(idxs))
@@ -595,43 +599,43 @@ class ProtocolDiscovery():
          slice_medians = self.slicingStats(fcs,data) 
          
          # Filter Preambles that Minimize (within 2) Standard Deviation on Packet Length (i.e. only Looking for one Packet Type)    
-         min_std_dev = np.min(zip(*slice_medians.values())[3])
+         min_std_dev = np.min(list(zip(*slice_medians.values()))[3])
          
          # we could also filter out preambles that don't contain the most common 
          # "letters" of the alphabet over the data blob, but that's for a future task             
-         min_std_dev_preambles = {keys: values for keys, values in slice_medians.iteritems() if values[3]<=num_std_dev*min_std_dev}
+         min_std_dev_preambles = {keys: values for keys, values in slice_medians.items() if values[3]<=num_std_dev*min_std_dev}
          
          # Find the Median Number of Slices Across all Preambles
          # (preambles that produce the average number of packets should be a common enough preamble)
-         print min_std_dev_preambles.values()
-         median_num_slices = np.floor(np.median(zip(*min_std_dev_preambles.values())[4]))    
+         #print(min_std_dev_preambles.values())
+         median_num_slices = np.floor(np.median(list(zip(*min_std_dev_preambles.values()))[4]))    
          
          # Find the Median Packet Length when using those Preambles (we're assuming a single type of packet pops up more than others to give us a bit of something to go on)          
-         median_length = np.median(zip(*slice_medians.values())[1])  # Not used?
+         median_length = np.median(list(zip(*slice_medians.values()))[1])  # Not used?
          
          # Filter out Preambles that don't give us the Median Number of Slices (we're allowing for multiple preambles to pass through)
-         candidate_preambles = {keys: values for keys, values in slice_medians.iteritems() if values[4]==median_num_slices}  # Not used?
+         candidate_preambles = {keys: values for keys, values in slice_medians.items() if values[4]==median_num_slices}  # Not used?
          
          # Pick the Longest Preambles of those that are Left (the longest common substring that minimizes the standard deviation and produces packets of the median length)
-         max_length_min_std_dev = np.max(zip(*min_std_dev_preambles.values())[0])
-         min_std_dev_max_length_preambles = {keys: values for keys, values in min_std_dev_preambles.iteritems() if values[0]==max_length_min_std_dev}     
+         max_length_min_std_dev = np.max(list(zip(*min_std_dev_preambles.values()))[0])
+         min_std_dev_max_length_preambles = {keys: values for keys, values in min_std_dev_preambles.items() if values[0]==max_length_min_std_dev}     
          
-         #~ print "FCS"
-         #~ print fcs
-         #~ print "SLICE MEDIANS"
-         #~ print slice_medians
-         #~ print "MIN STD DEV"
-         #~ print min_std_dev
-         #~ print "MIN STD DEV PREAMBLES"
-         #~ print min_std_dev_preambles
-         #~ print "MEDIAN LENGTH"
-         #~ print median_length
-         #~ print "CANDIDATE PREAMBLES"
-         #~ print candidate_preambles
-         #~ print "MAX LENGTH MIN STD DEV"
-         #~ print max_length_min_std_dev
-         #~ print "MIN STD DEV MAX LENGTH PREAMBLES"
-         #~ print min_std_dev_max_length_preambles
+         #~ print("FCS")
+         #~ print(fcs)
+         #~ print("SLICE MEDIANS")
+         #~ print(slice_medians)
+         #~ print("MIN STD DEV")
+         #~ print(min_std_dev)
+         #~ print("MIN STD DEV PREAMBLES")
+         #~ print(min_std_dev_preambles)
+         #~ print("MEDIAN LENGTH")
+         #~ print(median_length)
+         #~ print("CANDIDATE PREAMBLES")
+         #~ print(candidate_preambles)
+         #~ print("MAX LENGTH MIN STD DEV")
+         #~ print(max_length_min_std_dev)
+         #~ print("MIN STD DEV MAX LENGTH PREAMBLES")
+         #~ print(min_std_dev_max_length_preambles)
          
          return [slice_medians, candidate_preambles, min_std_dev_max_length_preambles]
      
@@ -725,8 +729,8 @@ class ProtocolDiscovery():
             self.gr_srv.setDaemon(True)
             self.gr_srv.start()                 
          
-        except KeyError, e:
-            print "Unable to connect PD SUB to FGE PUB"  
+        except KeyError as e:
+            print("Unable to connect PD SUB to FGE PUB")
                 
     def findEntropyCallback(self, message_length, preamble):
         """ Calls the findEntropy() function in a new thread and returns a message on the pub socket when completed.
@@ -749,18 +753,18 @@ class ProtocolDiscovery():
         idxs_diff = np.diff(idxs)
         for n in range(0,len(idxs_diff)):
             if idxs_diff[n] >= int(message_length/4):  # Message Length is in Bits, Divide by Four Converts to Hex
-                packet_list.append(current_buffer[idxs[n]:idxs[n]+message_length/4])
+                packet_list.append(current_buffer[idxs[n]:idxs[n]+int(message_length/4)])
         
         # Convert Hex to Binary
         binary_packet_list = []
-        # ~ print len(packet_list)
+        # ~ print(len(packet_list))
         for packet in packet_list:
             hex_len = len(packet)
             bin_str = bin(int(packet, 16))[2:].zfill(hex_len*4)
             binary_packet_list.append(bin_str)
             
         # Convert Packets into Lists of Bit Positions
-        # ~ print len(binary_packet_list[0])
+        # ~ print(len(binary_packet_list[0]))
         bit_pos = []
         for i in range (0, len(binary_packet_list[0])):
             bit_pos.append([])

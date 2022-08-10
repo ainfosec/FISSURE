@@ -1,6 +1,7 @@
-#!/usr/bin/env python2
-from PyQt4 import QtCore, QtGui, uic
+#!/usr/bin/env python3
+from PyQt5 import QtCore, QtGui, uic, QtWidgets
 
+from PyQt5.QtGui import QPainter, QPen, QBrush
 
 import subprocess
 import os
@@ -18,79 +19,87 @@ form_class2 = uic.loadUiType(fissure_directory + "/UI/install2.ui")[0]
 larger_categories = ['Minimum Install','Hardware','Out-of-Tree Modules']
 
 ########################################################################
-############################# Ubuntu 18.04 #############################
+############################ Ubuntu 20.04.1 ############################
 ########################################################################
 
-programs_ubuntu18_04 = []
+programs_ubuntu20_04 = []
 
 # Misc. Dependencies
-programs_ubuntu18_04.append(('Misc. Dependencies',
+programs_ubuntu20_04.append(('Misc. Dependencies',
 """sudo apt-get -y update
 sudo apt-get -y install cmake
 sudo apt-get install -y python-setuptools python-dev build-essential
-sudo apt install -y python-pip
-sudo python2 -m pip install --upgrade setuptools
-sudo python2 -m pip install Cheetah
-sudo python2 -m pip install --upgrade pip
-sudo python2 -m pip install --upgrade virtualenv
-# sudo python -mpip uninstall matplotlib 
-sudo python2 -m pip install matplotlib
-sudo python2 -m pip install --upgrade PyYAML --ignore-installed
-sudo apt-get install -y python-scipy
+sudo apt-get install -y curl
+curl https://bootstrap.pypa.io./pip/2.7/get-pip.py | sudo python2  # Installs pip 20.3.4
+sudo apt-get install -y python3-pip
+sudo python3 -m pip install cmake --upgrade
+sudo apt install -y python3-testresources
+sudo python3 -m pip install --upgrade setuptools
+sudo python3 -m pip install --upgrade virtualenv
+sudo python3 -m pip install matplotlib
+sudo python3 -m pip install PyYAML==5.1
+sudo python3 -m pip install pyyaml
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-scipy/python-scipy_0.19.1-2ubuntu1_amd64.deb
+sudo apt-get install -y ./python-scipy_0.19.1-2ubuntu1_amd64.deb
+rm python-scipy_0.19.1-2ubuntu1_amd64.deb
 sudo apt-get install -y gedit
-sudo apt-get install -y software-properties-common
+sudo apt-get install -y software-properties-common #python-software-properties # does Python3
 sudo add-apt-repository -y ppa:git-core/ppa
 sudo apt-get -y update
 sudo apt-get install -y git 
 sudo apt-get install -y libcanberra-gtk-module
-sudo apt-get install -y python3-pip
-sudo python2 -m pip install bitarray
+sudo python3 -m pip install bitarray
 sudo apt install net-tools
-sudo python2 -m pip install crcmod
-sudo apt-get install -y python3-pip
-sudo python3 -m pip install pyopenssl
-sudo python3 -m pip install cryptography
+sudo python3 -m pip install crcmod
 sudo python3 -m pip install pycrypto
+sudo apt-get install -y python-tk
+sudo python3 -m pip install pyzmq
+sudo apt-get install -y libosmocore-dev
+sudo apt-get install -y liborc-0.4-dev
 sudo apt-get install -y expect
 sudo add-apt-repository --y ppa:wireshark-dev/stable  # Latest Wireshark
 sudo apt-get update
 sudo python3 -m pip install pyshark
 sudo apt-get install -y tshark  # Installs Wireshark, launching without sudo permissions and copying FISSURE dissectors happens later
+sudo python3 -m pip install pypcapfile
 sudo python2 -m pip install pypcapfile
-sudo python2 -m pip install psutil
-sudo python2 -m pip install pyserial
+sudo python2 -m pip install netaddr
+sudo python3 -m pip install psutil
+sudo python3 -m pip install pyserial
 sudo apt-get install -y gpsd-clients python-gi-cairo
-sudo python2 -m pip install pandas
+sudo python3 -m pip install pandas
 sudo apt-get install -y dsniff
-source ~/.bashrc
+sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d  # removes sudo apt-get update warnings
+sudo apt-get -y install ncurses-term
+. ~/.bashrc
 """,True,'Minimum Install'))
 
 # fissure Command 
-programs_ubuntu18_04.append(('fissure Command',
-"""mkdir -p ~/.local/bin  # Open a new terminal to use fissure command
+programs_ubuntu20_04.append(('fissure Command',
+"""mkdir -p ~/.local/bin
 if grep -Fq "~/.local/bin" ~/.bashrc
 then
   echo "~/.local/bin is already in ~/.bashrc"
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 fi
-/bin/echo -e "python2 """ + fissure_directory + """/dashboard.py" > ~/.local/bin/fissure
+/bin/echo -e "python3 """ + fissure_directory + """/dashboard.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\nStartupWMClass=dashboard.py\nName=FISSURE\nTerminal=false\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
 echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
-source ~/.bashrc
+. ~/.bashrc
 ########## Verify ##########
 ls ~/.local/bin/fissure
 """,True,'Minimum Install'))
 
 # GNU Radio
-programs_ubuntu18_04.append(('GNU Radio',
+programs_ubuntu20_04.append(('GNU Radio',
 """sudo apt-get install -y gnuradio
-sudo rm -f /usr/share/mime/packages/gnuradio.xml
-sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml
-sudo update-mime-database -V /usr/share/mime/
+#sudo rm -f /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
+#sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
+#sudo update-mime-database -V /usr/share/mime/  # Is this still needed for 20.04.1?
 
 # Configure GNU Radio
 (gnuradio-companion &) && sleep 5 && killall gnuradio-companion
@@ -102,6 +111,16 @@ sudo mkdir /usr/share/uhd
 sudo chmod -R 777 /usr/share/uhd
 uhd_images_downloader
 
+# Find OOT Modules
+printf "\\n%s\\n" "export PYTHONPATH=/usr/local/lib/python3.8/site-packages:/usr/local/lib/python3/dist-packages:/usr/lib/python3/site-packages:$PYTHONPATH" >> ~/.bashrc
+printf "\\n%s\\n" "export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> ~/.bashrc
+printf "\\n%s\\n" "export PYTHONPATH=/usr/local/lib/python3/dist-packages:/usr/lib/python3/site-packages:$PYTHONPATH" >> ~/.profile  # For GRC without terminal
+printf "\\n%s\\n" "export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> ~/.profile  # For GRC without terminal
+. ~/.bashrc
+sudo apt-get install -y libzmq3-dev swig cmake
+sudo sh -c "/bin/echo -e '/usr/local/lib' >> /etc/ld.so.conf"
+sudo ldconfig
+
 sudo apt-get install -y libzmq3-dev
 sudo apt-get install -y swig
 sudo sh -c "/bin/echo -e '/usr/local/lib' >> /etc/ld.so.conf"
@@ -111,15 +130,16 @@ gnuradio-companion --help
 """,True,'Minimum Install'))
 
 # Scapy
-programs_ubuntu18_04.append(('Scapy',
-"""sudo python2 -m pip install scapy
-sudo python3 -m pip install scapy
+programs_ubuntu20_04.append(('Scapy',
+"""sudo python3 -m pip install scapy
+sudo python2 -m pip install scapy
+#sudo apt-get install -y scapy
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
 """,True,'Minimum Install'))
 
 # Wireshark
-programs_ubuntu18_04.append(('Wireshark',
+programs_ubuntu20_04.append(('Wireshark',
 """sudo add-apt-repository --y ppa:wireshark-dev/stable  # Gets installed with Misc. Dependencies (tshark), ESP32 Bluetooth Classic Sniffer
 sudo apt-get update
 sudo apt install -y wireshark wireshark-dev
@@ -136,7 +156,7 @@ wireshark --help
 """,True,'Minimum Install'))
 
 # LimeSDR
-programs_ubuntu18_04.append(('LimeSDR',
+programs_ubuntu20_04.append(('LimeSDR',
 """sudo add-apt-repository -y ppa:myriadrf/drivers
 sudo apt-get update
 sudo apt-get install -y limesuite liblimesuite-dev limesuite-udev limesuite-images
@@ -147,8 +167,8 @@ ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
 # BladeRF
-programs_ubuntu18_04.append(('BladeRF',
-"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget				
+programs_ubuntu20_04.append(('BladeRF',
+"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 pkg-config git wget  # no package: libtecla1-dev       
 sudo apt-get install -y bladerf
 sudo apt-get install -y bladerf-fpga-hostedx115
 ########## Verify ##########
@@ -156,7 +176,7 @@ bladeRF-cli --help
 """,True,'Hardware'))
 
 # USRP X300 Series
-programs_ubuntu18_04.append(('USRP X300 Series',
+programs_ubuntu20_04.append(('USRP X300 Series',
 """mkdir -p ~/Installed_by_FISSURE  # Set MTU to 9000 and run uhd_image_loader command
 cd ~/Installed_by_FISSURE
 wget https://codeload.github.com/EttusResearch/uhd/zip/release_003_010_003_000 -O uhd.zip
@@ -164,10 +184,13 @@ unzip uhd.zip
 cd uhd-release_003_010_003_000/host/include
 sudo cp -Rv uhd/rfnoc /usr/share/uhd/
 rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
+/usr/lib/uhd/utils/uhd_images_downloader.py
+#"/usr/bin/uhd_image_loader" --args="type=x300,addr=192.168.40.2"  # Use your X310 IP
+sudo sysctl -w net.core.wmem_max=24862979
 """,True,'Hardware'))
 
 # HackRF
-programs_ubuntu18_04.append(('HackRF',
+programs_ubuntu20_04.append(('HackRF',
 """sudo apt-get install -y libusb-1.0-0-dev
 mkdir -p ~/Installed_by_FISSURE
 cp -R """ + fissure_directory + """/Tools/hackrf-2018.01.1/ ~/Installed_by_FISSURE/
@@ -188,31 +211,36 @@ hackrf_sweep --help
 """,True,'Hardware'))
 
 # 8812au Driver
-programs_ubuntu18_04.append(('8812au Driver',
-"""mkdir -p ~/Installed_by_FISSURE
-gzip -dc """ + fissure_directory + """/Tools/rtl8812au.tar.gz | tar -zxf - -C ~/Installed_by_FISSURE
+programs_ubuntu20_04.append(('8812au Driver',
+"""sudo apt-get -y install dkms
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/aircrack-ng/rtl8812au/
 cd ~/Installed_by_FISSURE/rtl8812au
-make
-sudo make install
-sudo modprobe 8812au
-# This method below breaks < 20.04 on reboot
-#sudo apt-get install -y dkms
-#mkdir -p ~/Installed_by_FISSURE
-#cd ~/Installed_by_FISSURE
-#git clone https://github.com/aircrack-ng/rtl8812au -b v5.3.4
-#cd rtl8812au/
-#sudo ./dkms-install.sh
+sudo make dkms_install
 """,True,'Hardware'))
 
 # Zigbee Sniffer
-programs_ubuntu18_04.append(('Zigbee Sniffer',
+programs_ubuntu20_04.append(('Zigbee Sniffer',
 """cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
 cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
 sudo python3 setup.py install
+sudo add-apt-repository -y ppa:rock-core/qt4  # PyQt4
+sudo apt-get update
+wget http://archive.ubuntu.com/ubuntu/pool/universe/q/qt-assistant-compat/libqtassistantclient4_4.6.3-7build1_amd64.deb -O ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb 
+sudo apt-get install -y ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-qt4/python-qt4_4.12.1+dfsg-2_amd64.deb -O ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+sudo apt-get install -y ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-pyaudio/python-pyaudio_0.2.11-1build2_amd64.deb -O ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+sudo apt-get install -y ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+rm ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
+rm ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+rm ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+sudo apt-get install -y mlocate
 """,True,'Hardware'))
 
 # fl2k
-programs_ubuntu18_04.append(('fl2k',
+programs_ubuntu20_04.append(('fl2k',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.osmocom.org/osmo-fl2k.git
@@ -230,8 +258,8 @@ ls /usr/local/bin/fl2k_test
 """,True,'Hardware'))
 
 # Proxmark3
-programs_ubuntu18_04.append(('Proxmark3',
-"""sudo apt-get install -y p7zip git build-essential libreadline5 libreadline-dev libusb-0.1-4 libusb-dev libqt4-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libpcsclite-dev
+programs_ubuntu20_04.append(('Proxmark3',
+"""sudo apt-get install -y p7zip git build-essential libreadline5 libreadline-dev libusb-0.1-4 libusb-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libreadline-dev libpcsclite-dev gcc-arm-none-eabi
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/Proxmark/proxmark3.git
@@ -242,8 +270,8 @@ ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
 """,True,'Hardware'))
 
 # gr-acars
-programs_ubuntu18_04.append(('gr-acars',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-acars/
+programs_ubuntu20_04.append(('gr-acars',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-acars/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -252,12 +280,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import acars"
+python3 -c "import acars"
 """,True,'Out-of-Tree Modules'))
 
-# gr-adsb
-programs_ubuntu18_04.append(('gr-adsb',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/
+# gr-adsb-master
+programs_ubuntu20_04.append(('gr-adsb-master',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-adsb-master/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -266,12 +294,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import adsb"
+python3 -c "import adsb"
 """,True,'Out-of-Tree Modules'))
 
 # gr-ainfosec
-programs_ubuntu18_04.append(('gr-ainfosec',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ainfosec/
+programs_ubuntu20_04.append(('gr-ainfosec',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ainfosec/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -280,12 +308,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import ainfosec"
+python3 -c "import ainfosec"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ais
-programs_ubuntu18_04.append(('gr-ais',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ais/
+# gr-ais-master
+programs_ubuntu20_04.append(('gr-ais-master',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ais-master/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -294,12 +322,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import ais"
+python3 -c "import ais"
 """,True,'Out-of-Tree Modules'))
 
-# gr-bluetooth-master
-programs_ubuntu18_04.append(('gr-bluetooth-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/libbtbb-master/
+# gr-bluetooth-maint-3.8
+programs_ubuntu20_04.append(('gr-bluetooth-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/libbtbb-master/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -307,7 +335,7 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth-master/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-bluetooth-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -319,9 +347,9 @@ sudo ldconfig
 ls /usr/local/bin/btrx
 """,True,'Out-of-Tree Modules'))
 
-# gr-clapper_plus
-programs_ubuntu18_04.append(('gr-clapper_plus',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/
+# gr-clapper_plus-maint-3.8
+programs_ubuntu20_04.append(('gr-clapper_plus-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-clapper_plus-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -330,12 +358,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import clapper_plus"
+python3 -c "import clapper_plus"
 """,True,'Out-of-Tree Modules'))
 
-# gr-dect2
-programs_ubuntu18_04.append(('gr-dect2',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-dect2/
+# gr-dect2-master
+programs_ubuntu20_04.append(('gr-dect2-master',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2-master/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -344,12 +372,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import dect2"
+python3 -c "import dect2"
 """,True,'Out-of-Tree Modules'))
 
-# gr-foo-master
-programs_ubuntu18_04.append(('gr-foo-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo-master/
+# gr-foo-maint-3.8
+programs_ubuntu20_04.append(('gr-foo-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-foo-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -358,12 +386,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import foo"
+python3 -c "import foo"
 """,True,'Out-of-Tree Modules'))
 
 # gr-fuzzer
-programs_ubuntu18_04.append(('gr-fuzzer',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-fuzzer/
+programs_ubuntu20_04.append(('gr-fuzzer',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-fuzzer/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -372,12 +400,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import fuzzer"
+python3 -c "import fuzzer"
 """,True,'Out-of-Tree Modules'))
 
-# gr-garage_door
-programs_ubuntu18_04.append(('gr-garage_door',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/
+# gr-garage_door-maint-3.8
+programs_ubuntu20_04.append(('gr-garage_door-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-garage_door-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -386,12 +414,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import garage_door"
+python3 -c "import garage_door"
 """,True,'Out-of-Tree Modules'))
 
 # gr-gsm-master
-programs_ubuntu18_04.append(('gr-gsm-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-gsm-master/
+programs_ubuntu20_04.append(('gr-gsm-master',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm-master/
 sudo rm -Rf build
 sudo apt-get install -y gr-osmosdr
 mkdir build
@@ -405,43 +433,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import grgsm"
+python3 -c "import grgsm"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-11-master
-programs_ubuntu18_04.append(('gr-ieee802-11-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/examples/wifi_phy_hier.grc
-########## Verify ##########
-python2 -c "import ieee802_11"
-""",True,'Out-of-Tree Modules'))
-
-# gr-ieee802-15-4-maint-3.7
-programs_ubuntu18_04.append(('gr-ieee802-15-4-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_OQPSK_PHY.grc
-########## Verify ##########
-python2 -c "import ieee802_15_4"
-""",True,'Out-of-Tree Modules'))
-
-# gr-iridium-maint-3.7
-programs_ubuntu18_04.append(('gr-iridium-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-iridium-maint-3.7/
+# gr-ieee802-11-maint-3.8
+programs_ubuntu20_04.append(('gr-ieee802-11-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-11-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -450,12 +447,28 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import iridium"
+python3 -c "import ieee802_11"
 """,True,'Out-of-Tree Modules'))
 
-# gr-j2497
-programs_ubuntu18_04.append(('gr-j2497',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/
+# gr-ieee802-15-4-maint-3.8
+programs_ubuntu20_04.append(('gr-ieee802-15-4-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/examples/ieee802_15_4_CSS_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/examples/ieee802_15_4_OQPSK_PHY.grc
+########## Verify ##########
+python3 -c "import ieee802_15_4"
+""",True,'Out-of-Tree Modules'))
+
+# gr-iridium-maint-3.8
+programs_ubuntu20_04.append(('gr-iridium-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-iridium-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -464,12 +477,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import J2497"
+python3 -c "import iridium"
 """,True,'Out-of-Tree Modules'))
 
-# gr-limesdr
-programs_ubuntu18_04.append(('gr-limesdr',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/
+# gr-j2497-maint-3.8
+programs_ubuntu20_04.append(('gr-j2497-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-j2497-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -478,13 +491,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import limesdr"
+python3 -c "import j2497"
 """,True,'Out-of-Tree Modules'))
 
-# gr-nrsc5-maint-3.7
-programs_ubuntu18_04.append(('gr-nrsc5-maint-3.7',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5-maint-3.7/
+# gr-limesdr-gr-3.8
+programs_ubuntu20_04.append(('gr-limesdr-gr-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-limesdr-gr-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -493,12 +505,27 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import nrsc5"
+python3 -c "import limesdr"
 """,True,'Out-of-Tree Modules'))
 
-# gr-paint-maint-3.7
-programs_ubuntu18_04.append(('gr-paint-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
+# gr-nrsc5-maint-3.8
+programs_ubuntu20_04.append(('gr-nrsc5-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-nrsc5-maint-3.8/
+sudo rm -Rf build
+sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+python3 -c "import nrsc5"
+""",True,'Out-of-Tree Modules'))
+
+# gr-paint-maint-3.8
+programs_ubuntu20_04.append(('gr-paint-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -506,17 +533,17 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint-maint-3.8/
 gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
 ########## Verify ##########
-python2 -c "import paint"
+python3 -c "import paint"
 """,True,'Out-of-Tree Modules'))
 
-# gr-rds-maint-3.7
-programs_ubuntu18_04.append(('gr-rds-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds-maint-3.7/
+# gr-rds-maint-3.8
+programs_ubuntu20_04.append(('gr-rds-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -525,12 +552,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import rds"
+python3 -c "import rds"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms-master
-programs_ubuntu18_04.append(('gr-tpms-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms-master/
+# gr-tpms_poore-maint-3.8
+programs_ubuntu20_04.append(('gr-tpms_poore-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-tpms_poore-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -539,12 +566,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import tpms"
+python3 -c "import tpms_poore"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms_poore-maint-3.7
-programs_ubuntu18_04.append(('gr-tpms_poore-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore-maint-3.7/
+# gr-X10-maint-3.8
+programs_ubuntu20_04.append(('gr-X10-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-X10-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -553,12 +580,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import tpms_poore"
+python3 -c "import X10"
 """,True,'Out-of-Tree Modules'))
 
-# gr-X10
-programs_ubuntu18_04.append(('gr-X10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/
+# gr-zwave_poore-maint-3.8
+programs_ubuntu20_04.append(('gr-zwave_poore-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-zwave_poore-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -567,61 +594,29 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import X10"
-""",True,'Out-of-Tree Modules'))
-
-# gr-Zwave
-programs_ubuntu18_04.append(('gr-Zwave',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-Zwave/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import Zwave"
-""",True,'Out-of-Tree Modules'))
-
-# gr-zwave_poore
-programs_ubuntu18_04.append(('gr-zwave_poore',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import zwave_poore"
+python3 -c "import zwave_poore"
 """,True,'Out-of-Tree Modules'))
 
 # QSpectrumAnalyzer
-programs_ubuntu18_04.append(('QSpectrumAnalyzer',
+programs_ubuntu20_04.append(('QSpectrumAnalyzer',
 """#sudo add-apt-repository -y ppa:myriadrf/drivers
 #sudo apt-get -y update
-sudo apt-get install -y python3-pip python3-pyqt5 python3-numpy python3-scipy soapysdr python3-soapysdr
+sudo apt-get install -y python3-pip python3-pyqt5 python3-numpy python3-scipy python3-soapysdr  # No package: soapysdr
 sudo apt-get install -y soapysdr-module-rtlsdr soapysdr-module-airspy soapysdr-module-hackrf soapysdr-module-lms7
-python3 -m pip install --user qspectrumanalyzer
-PATH=$PATH:~/.local/bin
-export PATH
-. ~/.bashrc
-sudo cp ~/.local/bin/qspectrumanalyzer /usr/local/bin/
+python3 -m pip install --user qspectrumanalyzer  # log in again, run without sudo
 ########## Verify ##########
 ls ~/.local/bin/qspectrumanalyzer
 """,True,None))
 
 # GQRX
-programs_ubuntu18_04.append(('GQRX',
+programs_ubuntu20_04.append(('GQRX',
 """sudo apt-get install -y gqrx-sdr
 ########## Verify ##########
 ls /usr/bin/gqrx
 """,True,None))
 
 # Dump1090
-programs_ubuntu18_04.append(('Dump1090',
+programs_ubuntu20_04.append(('Dump1090',
 """sudo apt-get install -y libusb-1.0-0-dev
 sudo apt-get install -y librtlsdr-dev
 mkdir -p ~/Installed_by_FISSURE
@@ -633,29 +628,28 @@ make
 """,True,None))
 
 # QtDesigner
-programs_ubuntu18_04.append(('QtDesigner',
-"""sudo apt-get install -y python-qt4 qt4-designer
+programs_ubuntu20_04.append(('QtDesigner',
+"""sudo apt-get install -y build-essential qtcreator qt5-default
 ########## Verify ##########
 ls /usr/bin/designer
 """,True,None))
 
 # Grip
-programs_ubuntu18_04.append(('Grip',
-"""python2 -m pip install grip
-source ~/.bashrc
+programs_ubuntu20_04.append(('Grip',
+"""sudo python3 -m pip install grip
 ########## Verify ##########
 grip --help
 """,True,None))
 
 # Kismet
-programs_ubuntu18_04.append(('Kismet',
-"""sudo apt-get install -y kismet
+programs_ubuntu20_04.append(('Kismet',
+"""sudo apt-get install -y kismet  # add your computer's username to the group
 ########## Verify ##########
 ls /usr/bin/kismet
 """,True,None))
 
 # UDP Replay
-programs_ubuntu18_04.append(('UDP Replay',
+programs_ubuntu20_04.append(('UDP Replay',
 """sudo apt-get install -y libpcap-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -671,75 +665,80 @@ ls /usr/local/bin/udpreplay
 """,True,None))
 
 # V2Verifier
-programs_ubuntu18_04.append(('V2Verifier',
+programs_ubuntu20_04.append(('V2Verifier',
 """sudo apt-get install -y libgmp3-dev python3-tk python3-pil.imagetk
-python3 -m pip install fastecdsa
-python3 -m pip install -U pyyaml
+sudo python3 -m pip install fastecdsa
+sudo python3 -m pip install -U pyyaml
 #sudo apt install -y git cmake libuhd-dev uhd-host swig libgmp3-dev python3-pip python3-tk python3-pil 
 #python3-pil.imagetk gnuradio
 #Needs gr-foo and gr-ieee802-11
 """,True,None))
 
-# OpenBTS
-programs_ubuntu18_04.append(('OpenBTS',
-"""sudo apt-get install -y software-properties-common
-sudo add-apt-repository -y ppa:git-core/ppa
-sudo apt-get update
-sudo apt-get install -y git
-sudo apt-get install -y asterisk
-sudo apt-get install -y twinkle
-sudo apt-get install -y autoconf libtool libosip2-dev libortp-dev libusb-1.0-0-dev g++ sqlite3 libsqlite3-dev erlang libreadline6-dev libncurses5-dev
-mkdir -p ~/Installed_by_FISSURE/OpenBTS
-cd ~/Installed_by_FISSURE/OpenBTS
-git clone https://github.com/RangeNetworks/dev.git
-cd dev
-./clone.sh
-./switchto.sh master
-cd liba53/
-sudo make install
-cd ..
-git clone https://github.com/tom-2015/fakecoredumper.git
-cd fakecoredumper
-chmod +x install.sh
-./install.sh
-cd ..
-sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/build.sh ./build.sh
-sudo apt install g++-5 -y
-sudo update-alternatives --remove-all gcc
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5 
-./build.sh B210
-sudo mkdir /etc/OpenBTS
-cd openbts
-sudo sqlite3 -init ./apps/OpenBTS.example.sql /etc/OpenBTS/OpenBTS.db ".quit"
-#sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/usrp_b210_fpga.bin /usr/share/uhd/images/usrp_b210_fpga.bin
-cd apps
-ln -s ../Transceiver52M/transceiver .
-sudo apt-get install -y sqlitebrowser
-sudo mkdir -p /var/lib/asterisk/sqlite3dir
-cd ../../subscriberRegistry
-make
-cd apps
-cp """ + fissure_directory + """/Tools/openbts_files_18_04/sipauthserve.example.sql sipauthserve.example.sql
-sudo sqlite3 -init sipauthserve.example.sql /etc/OpenBTS/sipauthserve.db ".quit"
-cd ../../smqueue
-autoconf -i
-./configure
-make
-cp """ + fissure_directory + """/Tools/openbts_files_18_04/smqueue.example.sql smqueue/smqueue.example.sql
-sudo sqlite3 -init smqueue/smqueue.example.sql /etc/OpenBTS/smqueue.db ".quit"
-sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/sip.conf /etc/asterisk/sip.conf
-sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/extensions.conf /etc/asterisk/extensions.conf
-sudo apt-get install -y pcscd pcsc-tools libccid libpcsclite-dev
-cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/pysim
-cd pysim
-sudo python3 -m pip install -r requirements.txt
-sudo update-alternatives --remove-all gcc
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-""",True,None))
+# # OpenBTS, requires old packages not meant for 20.04
+# programs_ubuntu20_04.append(('OpenBTS',
+# """sudo apt-get install -y software-properties-common  
+# sudo add-apt-repository -y ppa:git-core/ppa
+# sudo apt-get update
+# sudo apt-get install -y git
+# sudo apt-get install -y asterisk
+# sudo apt-get install -y twinkle
+# sudo apt-get install -y autoconf libtool libosip2-dev libortp-dev libusb-1.0-0-dev g++ sqlite3 libsqlite3-dev erlang libreadline6-dev libncurses5-dev
+# mkdir ~/Installed_by_FISSURE/OpenBTS
+# cd ~/Installed_by_FISSURE/OpenBTS
+# git clone https://github.com/RangeNetworks/dev.git
+# cd dev
+# ./clone.sh
+# ./switchto.sh master
+# cd liba53/
+# sudo make install
+# cd ..
+# git clone https://github.com/tom-2015/fakecoredumper.git
+# cd fakecoredumper
+# chmod +x install.sh
+# ./install.sh
+# cd ..
+# sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/build.sh ./build.sh
+# #sudo apt install g++-5 -y
+# #sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5 
+# wget http://archive.ubuntu.com/ubuntu/pool/universe/l/linphone/libortp9_3.6.1-3build1_amd64.deb
+# sudo dpkg -i libortp9_3.6.1-3build1_amd64.deb
+# wget http://archive.ubuntu.com/ubuntu/pool/universe/s/srtp/libsrtp0_1.4.5~20130609~dfsg-2ubuntu1_amd64.deb
+# sudo dpkg -i libsrtp0_1.4.5~20130609~dfsg-2ubuntu1_amd64.deb
+# wget http://archive.ubuntu.com/ubuntu/pool/universe/p/pyzmq/python-zmq_16.0.2-2build2_amd64.deb
+# sudo dpkg -i python-zmq_16.0.2-2build2_amd64.deb 
+# ./build.sh B210
+# sudo mkdir /etc/OpenBTS
+# cd openbts
+# sudo sqlite3 -init ./apps/OpenBTS.example.sql /etc/OpenBTS/OpenBTS.db ".quit"
+# #sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/usrp_b210_fpga.bin /usr/share/uhd/images/usrp_b210_fpga.bin
+# cd apps
+# ln -s ../Transceiver52M/transceiver .
+# sudo apt-get install -y sqlitebrowser
+# sudo mkdir -p /var/lib/asterisk/sqlite3dir
+# cd ../../subscriberRegistry
+# make
+# cd apps
+# cp """ + fissure_directory + """/Tools/openbts_files_18_04/sipauthserve.example.sql sipauthserve.example.sql
+# sudo sqlite3 -init sipauthserve.example.sql /etc/OpenBTS/sipauthserve.db ".quit"
+# cd ../../smqueue
+# autoconf -i
+# ./configure
+# make
+# cp """ + fissure_directory + """/Tools/openbts_files_18_04/smqueue.example.sql smqueue/smqueue.example.sql
+# sudo sqlite3 -init smqueue/smqueue.example.sql /etc/OpenBTS/smqueue.db ".quit"
+# sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/sip.conf /etc/asterisk/sip.conf
+# sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/extensions.conf /etc/asterisk/extensions.conf
+# sudo apt-get install -y pcscd pcsc-tools libccid libpcsclite-dev
+# cd ~/Installed_by_FISSURE
+# git clone git://git.osmocom.org/pysim
+# cd pysim
+# sudo pip3 install -r requirements.txt
+# sudo update-alternatives --remove-all gcc
+# sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+# """,True))
 
 # srsRAN/srsLTE
-programs_ubuntu18_04.append(('srsRAN',
+programs_ubuntu20_04.append(('srsRAN',
 """sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
 sudo apt-get install -y libboost-system-dev libboost-test-dev libboost-thread-dev libqwt-qt5-dev qtbase5-dev  # srsGUI
 mkdir -p ~/Installed_by_FISSURE
@@ -751,7 +750,6 @@ cd build
 cmake ..
 make
 sudo make install
-mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/srsRAN/srsRAN.git
 cp """ + fissure_directory + """/Tools/IMSI-Catcher_4G/cell_search.c ~/Installed_by_FISSURE/srsRAN/lib/examples/  # IMSI-Catcher 4G
@@ -778,8 +776,9 @@ srsenb --help
 """,True,None))
 
 # FALCON
-programs_ubuntu18_04.append(('FALCON',
+programs_ubuntu20_04.append(('FALCON',
 """sudo apt-get install -y build-essential git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev  # For srsLTE
+mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y libglib2.0-dev libudev-dev libcurl4-gnutls-dev libboost-all-dev qtdeclarative5-dev libqt5charts5-dev  # FALCON
 git clone https://github.com/falkenber9/falcon.git
@@ -796,21 +795,21 @@ ls /usr/bin/FalconGUI
 """,True,None))
 
 # Aircrack-ng
-programs_ubuntu18_04.append(('Aircrack-ng',
+programs_ubuntu20_04.append(('Aircrack-ng',
 """sudo apt-get install -y aircrack-ng
 ########## Verify ##########
 aircrack-ng --help
 """,True,None))
 
 # Geany
-programs_ubuntu18_04.append(('Geany',
-"""sudo apt-get install -y geany
+programs_ubuntu20_04.append(('Geany',
+"""sudo apt-get install -y geany  # needs [styling] line_height=0;2; added to Tools>Configuration Files>filetypes.common to see underscores
 ########## Verify ##########
 geany --help
 """,True,None))
 
 # Arduino IDE
-programs_ubuntu18_04.append(('Arduino IDE',
+programs_ubuntu20_04.append(('Arduino IDE',
 """wget -P ~/Installed_by_FISSURE/ https://downloads.arduino.cc/arduino-1.8.15-linux64.tar.xz
 cd ~/Installed_by_FISSURE
 tar -xf arduino-1.8.15-linux64.tar.xz
@@ -823,22 +822,30 @@ arduino --version
 """,True,None))
 
 # Minicom
-programs_ubuntu18_04.append(('Minicom',
+programs_ubuntu20_04.append(('Minicom',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
 """,True,None))
 
 # PuTTY
-programs_ubuntu18_04.append(('PuTTY',
+programs_ubuntu20_04.append(('PuTTY',
 """sudo apt-get install -y putty
 ########## Verify ##########
 putty --help
 """,True,None))
 
 # openHAB
-programs_ubuntu18_04.append(('openHAB',
-"""wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
+programs_ubuntu20_04.append(('openHAB',
+"""sudo apt-get -yq install gnupg curl
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
+cd ~/Downloads
+curl -O https://cdn.azul.com/zulu/bin/zulu-repo_1.0.0-2_all.deb
+sudo apt-get install ./zulu-repo_1.0.0-2_all.deb
+sudo apt-get update
+sudo apt-get install -y zulu11-jdk
+rm zulu-repo_1.0.0-2_all.deb
+wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
 sudo apt-get update && sudo apt-get install -y openhab
@@ -847,7 +854,7 @@ ls /usr/bin/openhab-cli
 """,True,None))
 
 # rtl-zwave
-programs_ubuntu18_04.append(('rtl-zwave',
+programs_ubuntu20_04.append(('rtl-zwave',
 """mkdir -p ~/Installed_by_FISSURE
 sudo apt-get install -y libpcap-dev
 cp -R """ + fissure_directory + """/Tools/rtl-zwave-master ~/Installed_by_FISSURE/
@@ -858,7 +865,7 @@ ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
 """,True,None))
 
 # waving-z
-programs_ubuntu18_04.append(('waving-z',
+programs_ubuntu20_04.append(('waving-z',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE/
 git clone https://github.com/baol/waving-z.git
@@ -872,7 +879,7 @@ ls ~/Installed_by_FISSURE/waving-z/build/wave-in
 """,True,None))
 
 # baudline
-programs_ubuntu18_04.append(('baudline',
+programs_ubuntu20_04.append(('baudline',
 """mkdir -p ~/Installed_by_FISSURE
 tar -xf """ + fissure_directory + """/Tools/baudline_1.08_linux_x86_64.tar.gz -C ~/Installed_by_FISSURE
 ########## Verify ##########
@@ -880,7 +887,7 @@ tar -xf """ + fissure_directory + """/Tools/baudline_1.08_linux_x86_64.tar.gz -C
 """,True,None))
 
 # Universal Radio Hacker
-programs_ubuntu18_04.append(('Universal Radio Hacker',
+programs_ubuntu20_04.append(('Universal Radio Hacker',
 """sudo python3 -m pip install cython
 sudo python3 -m pip install urh
 ########## Verify ##########
@@ -888,14 +895,14 @@ urh --version
 """,True,None))
 
 # Inspectrum
-programs_ubuntu18_04.append(('Inspectrum',
+programs_ubuntu20_04.append(('Inspectrum',
 """sudo apt-get install -y inspectrum
 ########## Verify ##########
 inspectrum --help
 """,True,None))
 
 # OpenCPN
-programs_ubuntu18_04.append(('OpenCPN',
+programs_ubuntu20_04.append(('OpenCPN',
 """sudo add-apt-repository -y ppa:opencpn/opencpn
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C865EB40
 sudo apt-get update
@@ -905,7 +912,7 @@ ls /usr/bin/opencpn
 """,True,None))
 
 # Kalibrate
-programs_ubuntu18_04.append(('Kalibrate',
+programs_ubuntu20_04.append(('Kalibrate',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/steve-m/kalibrate-rtl.git
@@ -916,7 +923,7 @@ ls ~/Installed_by_FISSURE/kalibrate-rtl/src/kal
 """,True,None))
 
 # retrogram-rtlsdr
-programs_ubuntu18_04.append(('retrogram-rtlsdr',
+programs_ubuntu20_04.append(('retrogram-rtlsdr',
 """mkdir -p ~/Installed_by_FISSURE
 sudo apt-get install -y librtlsdr-dev libncurses5-dev libboost-program-options-dev
 cp -R """ + fissure_directory + """/Tools/retrogram-rtlsdr-master ~/Installed_by_FISSURE/
@@ -927,7 +934,7 @@ ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
 """,True,None))
 
 # RTLSDR-Airband
-programs_ubuntu18_04.append(('RTLSDR-Airband',
+programs_ubuntu20_04.append(('RTLSDR-Airband',
 """sudo apt-get install -y build-essential cmake pkg-config libmp3lame-dev libshout3-dev libconfig++-dev libfftw3-dev libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -943,13 +950,12 @@ rtl_airband -h
 """,True,None))
 
 # Spektrum
-programs_ubuntu18_04.append(('Spektrum',
+programs_ubuntu20_04.append(('Spektrum',
 """echo 'blacklist dvb_usb_rtl28xxu' | sudo tee /etc/modprobe.d/rtl-sdr.conf  # Restart computer to use RTL device
 echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", GROUP="adm", MODE="0666"' | sudo tee /etc/udev/rules.d/20.rtlsdr.rules
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -P ~/Installed_by_FISSURE/ https://github.com/pavels/spektrum/releases/download/2.1.0/spektrum-linux64.tar.gz
-cd ~/Installed_by_FISSURE
 tar -xf spektrum-linux64.tar.gz
 rm spektrum-linux64.tar.gz
 ########## Verify ##########
@@ -957,7 +963,7 @@ ls ~/Installed_by_FISSURE/spektrum/spektrum
 """,True,None))
 
 # SDRTrunk
-programs_ubuntu18_04.append(('SDRTrunk',
+programs_ubuntu20_04.append(('SDRTrunk',
 """#sudo apt-get -yq install gnupg curl  # Java (if needed)
 #sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
 #cd ~/Downloads
@@ -969,7 +975,6 @@ programs_ubuntu18_04.append(('SDRTrunk',
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -P ~/Installed_by_FISSURE/ https://github.com/DSheirer/sdrtrunk/releases/download/v0.5.0-alpha.6/sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
-cd ~/Installed_by_FISSURE
 unzip -q sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 rm sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 ########## Verify ##########
@@ -977,23 +982,25 @@ ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 """,True,None))
 
 # Audio Tools
-programs_ubuntu18_04.append(('Audio Tools',
+programs_ubuntu20_04.append(('Audio Tools',
 """sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
 ########## Verify ##########
 audacity --version && sox --version
 """,True,None))
 
 # Video Tools
-programs_ubuntu18_04.append(('Video Tools',
+programs_ubuntu20_04.append(('Video Tools',
 """sudo apt-get install -y snapd
 sudo snap install vlc
+sudo apt-add-repository -y ppa:maarten-baert/simplescreenrecorder
+sudo apt-get update
 sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
 """,True,None))
 
 # radiosonde_auto_rx
-programs_ubuntu18_04.append(('radiosonde_auto_rx',
+programs_ubuntu20_04.append(('radiosonde_auto_rx',
 """sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip python3-flask sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1007,12 +1014,21 @@ ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
 """,True,None))
 
 # SdrGlut
-programs_ubuntu18_04.append(('SdrGlut',
-"""sudo apt-get install -y librtaudio-dev libsoapysdr0.6 libsoapysdr-dev libopenal-dev libliquid-dev freeglut3 freeglut3-dev libalut0 libalut-dev libsndfile1-dev
+programs_ubuntu20_04.append(('SdrGlut',
+"""sudo apt-get install -y librtaudio-dev libsoapysdr-dev libopenal-dev libliquid-dev freeglut3 freeglut3-dev libalut0 libalut-dev libsndfile1-dev 
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/jgaeddert/liquid-dsp.git
+cd liquid-dsp/
+./bootstrap.sh
+./configure
+make
+sudo make install
+sudo ldconfig
 cd ~/Installed_by_FISSURE
 git clone https://github.com/righthalfplane/SdrGlut.git
 cp -f """ + fissure_directory + """/Tools/SdrGlut/firstFile.h ~/Installed_by_FISSURE/SdrGlut/MainSource/
+cp -f """ + fissure_directory + """/Tools/SdrGlut/makefileUbunta ~/Installed_by_FISSURE/SdrGlut/makefileUbunta
 cd SdrGlut
 make -f makefileUbunta
 ########## Verify ##########
@@ -1020,12 +1036,13 @@ ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 """,True,None))
 
 # rehex
-programs_ubuntu18_04.append(('rehex',
-"""sudo apt-get install -y build-essential git libwxgtk3.0-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev gtk2.0 libgtk2.0-dev
+programs_ubuntu20_04.append(('rehex',
+"""sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/solemnwarning/rehex.git
 cd rehex
+sudo git config --global --add safe.directory """ + os.path.expanduser('~') + """/Installed_by_FISSURE/rehex
 sudo cpan Template
 sudo make install
 ########## Verify ##########
@@ -1033,8 +1050,9 @@ ls /usr/local/bin/rehex
 """,True,None))
 
 # ZEPASSD
-programs_ubuntu18_04.append(('ZEPASSD',
+programs_ubuntu20_04.append(('ZEPASSD',
 """#sudo apt-get install -y # boost.program-options, boost.crc, boost.circular-buffer, libfftw3, libuhd 3.9.5 or later
+sudo apt-get install -y libuhd-dev  # Might need to be installed a second time?
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/pvachon/zepassd.git
@@ -1045,7 +1063,7 @@ ls ~/Installed_by_FISSURE/zepassd/zepassd
 """,True,None))
 
 # iridium-toolkit
-programs_ubuntu18_04.append(('iridium-toolkit',
+programs_ubuntu20_04.append(('iridium-toolkit',
 """#Python (2.7), NumPy (scipy), crcmod
 sudo apt-get install -y mplayer
 mkdir -p ~/Installed_by_FISSURE
@@ -1060,7 +1078,7 @@ ls ~/Installed_by_FISSURE/osmo-ir77/codec/ir77_ambe_decode
 """,True,None))
 
 # IridiumLive
-programs_ubuntu18_04.append(('IridiumLive',
+programs_ubuntu20_04.append(('IridiumLive',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/microp11/iridiumlive.git
@@ -1074,19 +1092,26 @@ ls ~/Installed_by_FISSURE/linux-x64/IridiumLive
 """,True,None))
 
 # NETATTACK2
-programs_ubuntu18_04.append(('NETATTACK2',
-"""sudo python2 -m pip install netifaces
-sudo apt-get install -y python-scapy python-nmap python-nfqueue nmap
+programs_ubuntu20_04.append(('NETATTACK2',
+"""#sudo pip install netifaces  # fix for python2
+#sudo apt-get install -y python-scapy python-nmap python-nfqueue nmap  # this needs to be fixed, can it still run with python2?
+sudo python2 -m pip install netifaces
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/chrizator/netattack2.git
+sudo python2 -m pip install nmap
+cd netattack2
+wget http://archive.ubuntu.com/ubuntu/pool/universe/libn/libnetfilter-queue/libnetfilter-queue1_1.0.2-2_amd64.deb
+sudo dpkg -i libnetfilter-queue1_1.0.2-2_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/n/nfqueue-bindings/python-nfqueue_0.6-1build2_amd64.deb
+sudo dpkg -i python-nfqueue_0.6-1build2_amd64.deb 
 """,True,None))
 
 # Wifite
-programs_ubuntu18_04.append(('Wifite',
+programs_ubuntu20_04.append(('Wifite',
 """# python, iwconfig, ifconfig, Aircrack-ng, tshark, reaver, bully, coWPAtty, pyrit, hashcat, hcxdumptool, hcxpcaptool
 sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger
-sudo python2 -m pip install psycopg2-binary scapy
+sudo python3 -m pip install psycopg2-binary scapy
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/derv82/wifite2.git
@@ -1113,6 +1138,7 @@ cd Pyrit-v0.5.0
 wget https://github.com/JPaulMora/Pyrit/releases/download/v0.5.0/Pyrit-v0.5.0.zip
 unzip -q Pyrit-v0.5.0.zip
 rm Pyrit-v0.5.0.zip
+sudo apt-get install -y python2-dev
 python2 setup.py clean
 python2 setup.py build
 sudo python2 setup.py install
@@ -1127,13 +1153,15 @@ cd hcxtools
 make
 sudo make install
 sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
+#sudo apt-get install -y tshark
 ########## Verify ##########
 ~/Installed_by_FISSURE/wifite2/Wifite.py --help
 """,True,None))
 
 # rtl_433
-programs_ubuntu18_04.append(('rtl_433',
-"""sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
+programs_ubuntu20_04.append(('rtl_433',
+"""#sudo apt-get install -y rtl-433
+sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/merbanan/rtl_433.git
@@ -1148,9 +1176,8 @@ rtl_433 -help
 """,True,None))
 
 # RouterSploit
-programs_ubuntu18_04.append(('RouterSploit',
-"""#sudo add-apt-repository universe
-sudo apt-get install -y python3-pip libglib2.0-dev rustc
+programs_ubuntu20_04.append(('RouterSploit',
+"""sudo apt-get install -y python3-pip libglib2.0-dev rustc
 sudo python3 -m pip install setuptools-rust
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1164,7 +1191,7 @@ python3 -m pip install bluepy
 """,True,None))
 
 # Metasploit
-programs_ubuntu18_04.append(('Metasploit',
+programs_ubuntu20_04.append(('Metasploit',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 mkdir metasploit
@@ -1175,45 +1202,47 @@ ls /usr/bin/msfconsole
 """,True,None))
 
 # monitor_rtl433
-programs_ubuntu18_04.append(('monitor_rtl433',
+programs_ubuntu20_04.append(('monitor_rtl433',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mcbridejc/monitor_rtl433.git
 cd monitor_rtl433
 sudo python3 setup.py install
+sudo python3 -m pip install python-dateutil
+sudo python3 -m pip install flask_table
 ########## Verify ##########
-ls /usr/local/bin/monitor_rtl433
+ls /usr/bin/monitor_rtl433
 """,True,None))
 
 # scan-ssid
-programs_ubuntu18_04.append(('scan-ssid',
+programs_ubuntu20_04.append(('scan-ssid',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y iw
 git clone https://github.com/Resethel/scan-ssid.git
 cd scan-ssid
 sudo cp scan-ssid /usr/local/bin
-sudo chmod 755 /usr/local/bin/scan-ssid
+sudo chmod 755 /usr/local/bin/scan-ssid  # can't be in monitor mode, managed only
 ########## Verify ##########
 scan-ssid --help
 """,True,None))
 
 # minimodem
-programs_ubuntu18_04.append(('minimodem',
+programs_ubuntu20_04.append(('minimodem',
 """sudo apt-get install -y minimodem
 ########## Verify ##########
 minimodem --version
 """,True,None))
 
 # WSJT-X
-programs_ubuntu18_04.append(('WSJT-X',
+programs_ubuntu20_04.append(('WSJT-X',
 """sudo apt-get install -y wsjtx
 ########## Verify ##########
 ls /usr/bin/wsjtx
 """,True,None))
 
 # Google Earth Pro
-programs_ubuntu18_04.append(('Google Earth Pro',
+programs_ubuntu20_04.append(('Google Earth Pro',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_current_amd64.deb
@@ -1223,14 +1252,14 @@ ls /usr/bin/google-earth-pro
 """,True,None))
 
 # gr-air-modes
-programs_ubuntu18_04.append(('gr-air-modes',
+programs_ubuntu20_04.append(('gr-air-modes',
 """sudo apt-get install -y gr-air-modes
 ########## Verify ##########
 modes_rx --help
 """,True,None))
 
 # ESP8266 Deauther v2
-programs_ubuntu18_04.append(('ESP8266 Deauther v2',
+programs_ubuntu20_04.append(('ESP8266 Deauther v2',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
@@ -1239,13 +1268,14 @@ rm v2.zip
 """,True,None))
 
 # Viking
-programs_ubuntu18_04.append(('Viking',
+programs_ubuntu20_04.append(('Viking',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.code.sf.net/p/viking/code viking
 sudo apt install -y gtk-doc-tools docbook-xsl yelp-tools libpng-dev libgtk-3-dev libicu-dev libjson-glib-dev intltool
 sudo apt-get install -y libcurl4-gnutls-dev libglib2.0-dev-bin
-sudo apt-get install -y libsqlite3-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev libnova-dev
+sudo apt-get install -y libsqlite3-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev
+sudo apt-get install -y autopoint libnova-dev
 cd viking
 ./autogen.sh
 ./configure
@@ -1256,30 +1286,29 @@ viking --help
 """,True,None))
 
 # PyGPSClient
-programs_ubuntu18_04.append(('PyGPSClient',
-"""sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk libjpeg-dev zlib1g-dev
-sudo apt install -y tk-devel
+programs_ubuntu20_04.append(('PyGPSClient',
+"""sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk
 sudo python3 -m pip install --upgrade PyGPSClient
 ########## Verify ##########
 ls /usr/local/bin/pygpsclient
 """,True,None))
 
 # Gpredict
-programs_ubuntu18_04.append(('Gpredict',
+programs_ubuntu20_04.append(('Gpredict',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
 """,True,None))
 
 # FoxtrotGPS
-programs_ubuntu18_04.append(('FoxtrotGPS',
+programs_ubuntu20_04.append(('FoxtrotGPS',
 """sudo apt-get install -y foxtrotgps
 ########## Verify ##########
 foxtrotgps --help
 """,True,None))
 
 # multimon-ng
-programs_ubuntu18_04.append(('multimon-ng',
+programs_ubuntu20_04.append(('multimon-ng',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/EliasOenal/multimonNG.git
@@ -1294,14 +1323,14 @@ ls /usr/local/bin/multimon-ng
 """,True,None))
 
 # Xastir
-programs_ubuntu18_04.append(('Xastir',
-"""sudo apt-get install -y xastir
+programs_ubuntu20_04.append(('Xastir',
+"""sudo apt-get install -y xastir  # should non-superusers be allowed? sure, why not.
 ########## Verify ##########
 sudo xastir -V
 """,True,None))
 
 # LTE-Cell-Scanner
-programs_ubuntu18_04.append(('LTE-Cell-Scanner',
+programs_ubuntu20_04.append(('LTE-Cell-Scanner',
 """sudo apt-get install -y cmake libncurses5-dev liblapack-dev libblas-dev libboost-thread-dev libboost-system-dev libitpp-dev librtlsdr-dev libfftw3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1317,38 +1346,39 @@ ls /usr/local/bin/CellSearch
 """,True,None))
 
 # btscanner
-programs_ubuntu18_04.append(('btscanner',
+programs_ubuntu20_04.append(('btscanner',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
 """,True,None))
 
 # hcidump
-programs_ubuntu18_04.append(('hcidump',
+programs_ubuntu20_04.append(('hcidump',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
 """,True,None))
 
 # GraphicsMagick
-programs_ubuntu18_04.append(('GraphicsMagick',
+programs_ubuntu20_04.append(('GraphicsMagick',
 """sudo apt-get install -y graphicsmagick-imagemagick-compat
 ########## Verify ##########
 gm -help
 """,True,None))
 
 # Spectrum Painter
-programs_ubuntu18_04.append(('Spectrum Painter',
-"""mkdir -p ~/Installed_by_FISSURE
+programs_ubuntu20_04.append(('Spectrum Painter',
+"""sudo python3 -m pip install numpy imageio 
+mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/polygon/spectrum_painter.git
 #cd spectrum_painter/
-#python3 -m pip install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
+#pip3 install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
 """,True,None))
 
 # nrsc5 and nrsc5-gui
-programs_ubuntu18_04.append(('nrsc5',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev
+programs_ubuntu20_04.append(('nrsc5',
+"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/theori-io/nrsc5.git
@@ -1369,51 +1399,45 @@ git clone https://github.com/cmnybo/nrsc5-gui.git
 nrsc5 -v
 """,True,None))
 
-# HAM2MON
-programs_ubuntu18_04.append(('HAM2MON',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-git clone https://github.com/madengr/ham2mon.git
-########## Verify ##########
-~/Installed_by_FISSURE/ham2mon/apps/ham2mon.py --help
-""",True,None))
+# # HAM2MON  # Doesn't work for 20.04
+# programs_ubuntu20_04.append(('HAM2MON',
+# """mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/madengr/ham2mon.git
+# """,True,None))
 
 # Anki
-programs_ubuntu18_04.append(('Anki',
+programs_ubuntu20_04.append(('Anki',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
 """,True,None))
 
 # Bless
-programs_ubuntu18_04.append(('Bless',
+programs_ubuntu20_04.append(('Bless',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
 """,True,None))
 
 # trackerjacker
-programs_ubuntu18_04.append(('trackerjacker',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-git clone https://github.com/calebmadrigal/trackerjacker.git
-cd trackerjacker
-sudo python3 setup.py install
+programs_ubuntu20_04.append(('trackerjacker',
+"""sudo python3 -m pip install trackerjacker  # Downgrades Python3 Scapy from 2.4.5 to 2.4.0
 ########## Verify ##########
 sudo trackerjacker --help
 """,True,None))
 
 # airgeddon
-programs_ubuntu18_04.append(('airgeddon',
-"""sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only libxcrypt-dev john libnl-3-dev libnl-genl-3-dev
+programs_ubuntu20_04.append(('airgeddon',
+"""sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only john
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone --depth 1 https://github.com/v1s1t0r1sh3r3/airgeddon.git
 #asleap
-git clone https://github.com/joswr1ght/asleap
+mkdir asleap
 cd asleap
-make
-sudo cp asleap /usr/bin/
+wget http://http.kali.org/pool/main/a/asleap/asleap_2.3~git20201128.254acab-0kali1_amd64.deb
+sudo dpkg -i asleap_2.3~git20201128.254acab-0kali1_amd64.deb
 #bettercap
 sudo apt-get install -y build-essential libpcap-dev net-tools 
 cd ~/Installed_by_FISSURE
@@ -1424,6 +1448,7 @@ unzip -q bettercap_linux_amd64_v2.31.1.zip
 rm bettercap_linux_amd64_v2.31.1.zip
 sudo cp bettercap /usr/bin/
 #mdk4
+sudo apt-get install -y libnl-genl-3-dev
 cd ~/Installed_by_FISSURE
 git clone https://github.com/aircrack-ng/mdk4
 cd mdk4
@@ -1432,100 +1457,108 @@ sudo make install
 """,True,None))
 
 # Hydra
-programs_ubuntu18_04.append(('Hydra',
+programs_ubuntu20_04.append(('Hydra',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
 """,True,None))
 
 # ESP32 Bluetooth Classic Sniffer - FIX
-programs_ubuntu18_04.append(('ESP32 Bluetooth Classic Sniffer',
-"""mkdir -p ~/Installed_by_FISSURE  # Install after Wireshark, requires Wireshark 3.4, cannot get it to work with other versions
+programs_ubuntu20_04.append(('ESP32 BT Classic Sniffer',
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
 cd ~/Installed_by_FISSURE
 #git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
 #cd esp32_bluetooth_classic_sniffer
 #sudo ./requirements.sh
 #./build.sh
-#sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.4
+##sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.4
 #rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 """,False,None))
 
 
 
 ########################################################################
-############################# Ubuntu 18.04.5 #############################
+############################ Ubuntu 20.04.4 ############################
 ########################################################################
 
-programs_ubuntu18_04_5 = []
+programs_ubuntu20_04_4 = []
 
 # Misc. Dependencies
-programs_ubuntu18_04_5.append(('Misc. Dependencies',
+programs_ubuntu20_04_4.append(('Misc. Dependencies',
 """sudo apt-get -y update
 sudo apt-get -y install cmake
 sudo apt-get install -y python-setuptools python-dev build-essential
-sudo apt install -y python-pip
-sudo python2 -m pip install --upgrade setuptools
-sudo python2 -m pip install Cheetah
-sudo python2 -m pip install --upgrade pip
-sudo python2 -m pip install --upgrade virtualenv
-# sudo python2 -m pip uninstall matplotlib 
-sudo python2 -m pip install matplotlib
-sudo python2 -m pip install --upgrade PyYAML --ignore-installed
-sudo apt-get install -y python-scipy
+sudo apt-get install -y curl
+curl https://bootstrap.pypa.io./pip/2.7/get-pip.py | sudo python2  # Installs pip 20.3.4
+sudo apt-get install -y python3-pip
+sudo python3 -m pip install cmake --upgrade
+sudo apt install -y python3-testresources
+sudo python3 -m pip install --upgrade setuptools
+sudo python3 -m pip install --upgrade virtualenv
+sudo python3 -m pip install matplotlib
+sudo python3 -m pip install PyYAML==5.1
+sudo python3 -m pip install pyyaml
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-scipy/python-scipy_0.19.1-2ubuntu1_amd64.deb
+sudo apt-get install -y ./python-scipy_0.19.1-2ubuntu1_amd64.deb
+rm python-scipy_0.19.1-2ubuntu1_amd64.deb
 sudo apt-get install -y gedit
-sudo apt-get install -y software-properties-common
+sudo apt-get install -y software-properties-common #python-software-properties # does Python3
 sudo add-apt-repository -y ppa:git-core/ppa
 sudo apt-get -y update
-sudo apt-get install -y git
+sudo apt-get install -y git 
 sudo apt-get install -y libcanberra-gtk-module
-sudo apt-get install -y python3-pip
-sudo python2 -m pip install bitarray
+sudo python3 -m pip install bitarray
 sudo apt install net-tools
-sudo python2 -m pip install crcmod
-sudo apt-get install -y python3-pip
-sudo python3 -m pip install pyopenssl
-sudo python3 -m pip install cryptography
+sudo python3 -m pip install crcmod
 sudo python3 -m pip install pycrypto
+sudo apt-get install -y python-tk
+sudo python3 -m pip install pyzmq
+sudo apt-get install -y libosmocore-dev
+sudo apt-get install -y liborc-0.4-dev
 sudo apt-get install -y expect
 sudo add-apt-repository --y ppa:wireshark-dev/stable  # Latest Wireshark
 sudo apt-get update
 sudo python3 -m pip install pyshark
 sudo apt-get install -y tshark  # Installs Wireshark, launching without sudo permissions and copying FISSURE dissectors happens later
+sudo python3 -m pip install pypcapfile
 sudo python2 -m pip install pypcapfile
-sudo python2 -m pip install psutil
-sudo python2 -m pip install pyserial
+sudo python2 -m pip install netaddr
+sudo python3 -m pip install psutil
+sudo python3 -m pip install pyserial
 sudo apt-get install -y gpsd-clients python-gi-cairo
-sudo python2 -m pip install pandas
+sudo python3 -m pip install pandas
 sudo apt-get install -y dsniff
-source ~/.bashrc
+sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d  # removes sudo apt-get update warnings
+sudo apt-get -y install ncurses-term
+. ~/.bashrc
 """,True,'Minimum Install'))
 
 # fissure Command 
-programs_ubuntu18_04_5.append(('fissure Command',
-"""mkdir -p ~/.local/bin  # Open a new terminal to use fissure command
+programs_ubuntu20_04_4.append(('fissure Command',
+"""mkdir -p ~/.local/bin
 if grep -Fq "~/.local/bin" ~/.bashrc
 then
   echo "~/.local/bin is already in ~/.bashrc"
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 fi
-/bin/echo -e "python2 """ + fissure_directory + """/dashboard.py" > ~/.local/bin/fissure
+/bin/echo -e "python3 """ + fissure_directory + """/dashboard.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\nStartupWMClass=dashboard.py\nName=FISSURE\nTerminal=false\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
 echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
-source ~/.bashrc
+. ~/.bashrc
 ########## Verify ##########
 ls ~/.local/bin/fissure
 """,True,'Minimum Install'))
 
 # GNU Radio
-programs_ubuntu18_04_5.append(('GNU Radio',
+programs_ubuntu20_04_4.append(('GNU Radio',
 """sudo apt-get install -y gnuradio
-sudo rm -f /usr/share/mime/packages/gnuradio.xml
-sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml
-sudo update-mime-database -V /usr/share/mime/
+#sudo rm -f /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
+#sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
+#sudo update-mime-database -V /usr/share/mime/  # Is this still needed for 20.04.1?
 
 # Configure GNU Radio
 (gnuradio-companion &) && sleep 5 && killall gnuradio-companion
@@ -1537,6 +1570,16 @@ sudo mkdir /usr/share/uhd
 sudo chmod -R 777 /usr/share/uhd
 uhd_images_downloader
 
+# Find OOT Modules
+printf "\\n%s\\n" "export PYTHONPATH=/usr/local/lib/python3.8/site-packages:/usr/local/lib/python3/dist-packages:/usr/lib/python3/site-packages:$PYTHONPATH" >> ~/.bashrc
+printf "\\n%s\\n" "export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> ~/.bashrc
+printf "\\n%s\\n" "export PYTHONPATH=/usr/local/lib/python3/dist-packages:/usr/lib/python3/site-packages:$PYTHONPATH" >> ~/.profile  # For GRC without terminal
+printf "\\n%s\\n" "export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> ~/.profile  # For GRC without terminal
+. ~/.bashrc
+sudo apt-get install -y libzmq3-dev swig cmake
+sudo sh -c "/bin/echo -e '/usr/local/lib' >> /etc/ld.so.conf"
+sudo ldconfig
+
 sudo apt-get install -y libzmq3-dev
 sudo apt-get install -y swig
 sudo sh -c "/bin/echo -e '/usr/local/lib' >> /etc/ld.so.conf"
@@ -1546,15 +1589,16 @@ gnuradio-companion --help
 """,True,'Minimum Install'))
 
 # Scapy
-programs_ubuntu18_04_5.append(('Scapy',
-"""sudo python2 -m pip install scapy
-sudo python3 -m pip install scapy
+programs_ubuntu20_04_4.append(('Scapy',
+"""sudo python3 -m pip install scapy
+sudo python2 -m pip install scapy
+#sudo apt-get install -y scapy
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
 """,True,'Minimum Install'))
 
 # Wireshark
-programs_ubuntu18_04_5.append(('Wireshark',
+programs_ubuntu20_04_4.append(('Wireshark',
 """sudo add-apt-repository --y ppa:wireshark-dev/stable  # Gets installed with Misc. Dependencies (tshark), ESP32 Bluetooth Classic Sniffer
 sudo apt-get update
 sudo apt install -y wireshark wireshark-dev
@@ -1571,7 +1615,7 @@ wireshark --help
 """,True,'Minimum Install'))
 
 # LimeSDR
-programs_ubuntu18_04_5.append(('LimeSDR',
+programs_ubuntu20_04_4.append(('LimeSDR',
 """sudo add-apt-repository -y ppa:myriadrf/drivers
 sudo apt-get update
 sudo apt-get install -y limesuite liblimesuite-dev limesuite-udev limesuite-images
@@ -1582,8 +1626,8 @@ ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
 # BladeRF
-programs_ubuntu18_04_5.append(('BladeRF',
-"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget				
+programs_ubuntu20_04_4.append(('BladeRF',
+"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 pkg-config git wget  # no package: libtecla1-dev       
 sudo apt-get install -y bladerf
 sudo apt-get install -y bladerf-fpga-hostedx115
 ########## Verify ##########
@@ -1591,7 +1635,7 @@ bladeRF-cli --help
 """,True,'Hardware'))
 
 # USRP X300 Series
-programs_ubuntu18_04_5.append(('USRP X300 Series',
+programs_ubuntu20_04_4.append(('USRP X300 Series',
 """mkdir -p ~/Installed_by_FISSURE  # Set MTU to 9000 and run uhd_image_loader command
 cd ~/Installed_by_FISSURE
 wget https://codeload.github.com/EttusResearch/uhd/zip/release_003_010_003_000 -O uhd.zip
@@ -1599,10 +1643,13 @@ unzip uhd.zip
 cd uhd-release_003_010_003_000/host/include
 sudo cp -Rv uhd/rfnoc /usr/share/uhd/
 rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
+/usr/lib/uhd/utils/uhd_images_downloader.py
+#"/usr/bin/uhd_image_loader" --args="type=x300,addr=192.168.40.2"  # Use your X310 IP
+sudo sysctl -w net.core.wmem_max=24862979
 """,True,'Hardware'))
 
 # HackRF
-programs_ubuntu18_04_5.append(('HackRF',
+programs_ubuntu20_04_4.append(('HackRF',
 """sudo apt-get install -y libusb-1.0-0-dev
 mkdir -p ~/Installed_by_FISSURE
 cp -R """ + fissure_directory + """/Tools/hackrf-2018.01.1/ ~/Installed_by_FISSURE/
@@ -1623,31 +1670,36 @@ hackrf_sweep --help
 """,True,'Hardware'))
 
 # 8812au Driver
-programs_ubuntu18_04_5.append(('8812au Driver',
-"""mkdir -p ~/Installed_by_FISSURE
-gzip -dc """ + fissure_directory + """/Tools/rtl8812au.tar.gz | tar -zxf - -C ~/Installed_by_FISSURE
+programs_ubuntu20_04_4.append(('8812au Driver',
+"""sudo apt-get -y install dkms
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/aircrack-ng/rtl8812au/
 cd ~/Installed_by_FISSURE/rtl8812au
-make
-sudo make install
-sudo modprobe 8812au
-# This method below breaks < 20.04 on reboot
-#sudo apt-get install -y dkms
-#mkdir -p ~/Installed_by_FISSURE
-#cd ~/Installed_by_FISSURE
-#git clone https://github.com/aircrack-ng/rtl8812au -b v5.3.4
-#cd rtl8812au/
-#sudo ./dkms-install.sh
+sudo make dkms_install
 """,True,'Hardware'))
 
 # Zigbee Sniffer
-programs_ubuntu18_04_5.append(('Zigbee Sniffer',
+programs_ubuntu20_04_4.append(('Zigbee Sniffer',
 """cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
 cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
 sudo python3 setup.py install
+sudo add-apt-repository -y ppa:rock-core/qt4  # PyQt4
+sudo apt-get update
+wget http://archive.ubuntu.com/ubuntu/pool/universe/q/qt-assistant-compat/libqtassistantclient4_4.6.3-7build1_amd64.deb -O ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb 
+sudo apt-get install -y ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-qt4/python-qt4_4.12.1+dfsg-2_amd64.deb -O ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+sudo apt-get install -y ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-pyaudio/python-pyaudio_0.2.11-1build2_amd64.deb -O ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+sudo apt-get install -y ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+rm ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
+rm ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+rm ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+sudo apt-get install -y mlocate
 """,True,'Hardware'))
 
 # fl2k
-programs_ubuntu18_04_5.append(('fl2k',
+programs_ubuntu20_04_4.append(('fl2k',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.osmocom.org/osmo-fl2k.git
@@ -1665,8 +1717,8 @@ ls /usr/local/bin/fl2k_test
 """,True,'Hardware'))
 
 # Proxmark3
-programs_ubuntu18_04_5.append(('Proxmark3',
-"""sudo apt-get install -y p7zip git build-essential libreadline5 libreadline-dev libusb-0.1-4 libusb-dev libqt4-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libpcsclite-dev
+programs_ubuntu20_04_4.append(('Proxmark3',
+"""sudo apt-get install -y p7zip git build-essential libreadline5 libreadline-dev libusb-0.1-4 libusb-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libreadline-dev libpcsclite-dev gcc-arm-none-eabi
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/Proxmark/proxmark3.git
@@ -1677,8 +1729,8 @@ ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
 """,True,'Hardware'))
 
 # gr-acars
-programs_ubuntu18_04_5.append(('gr-acars',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-acars/
+programs_ubuntu20_04_4.append(('gr-acars',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-acars/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1687,12 +1739,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import acars"
+python3 -c "import acars"
 """,True,'Out-of-Tree Modules'))
 
-# gr-adsb
-programs_ubuntu18_04_5.append(('gr-adsb',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/
+# gr-adsb-master
+programs_ubuntu20_04_4.append(('gr-adsb-master',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-adsb-master/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1701,12 +1753,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import adsb"
+python3 -c "import adsb"
 """,True,'Out-of-Tree Modules'))
 
 # gr-ainfosec
-programs_ubuntu18_04_5.append(('gr-ainfosec',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ainfosec/
+programs_ubuntu20_04_4.append(('gr-ainfosec',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ainfosec/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1715,12 +1767,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import ainfosec"
+python3 -c "import ainfosec"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ais
-programs_ubuntu18_04_5.append(('gr-ais',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ais/
+# gr-ais-master
+programs_ubuntu20_04_4.append(('gr-ais-master',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ais-master/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1729,12 +1781,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import ais"
+python3 -c "import ais"
 """,True,'Out-of-Tree Modules'))
 
-# gr-bluetooth-master
-programs_ubuntu18_04_5.append(('gr-bluetooth-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/libbtbb-master/
+# gr-bluetooth-maint-3.8
+programs_ubuntu20_04_4.append(('gr-bluetooth-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/libbtbb-master/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1742,7 +1794,7 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth-master/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-bluetooth-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1754,9 +1806,9 @@ sudo ldconfig
 ls /usr/local/bin/btrx
 """,True,'Out-of-Tree Modules'))
 
-# gr-clapper_plus
-programs_ubuntu18_04_5.append(('gr-clapper_plus',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/
+# gr-clapper_plus-maint-3.8
+programs_ubuntu20_04_4.append(('gr-clapper_plus-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-clapper_plus-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1765,12 +1817,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import clapper_plus"
+python3 -c "import clapper_plus"
 """,True,'Out-of-Tree Modules'))
 
-# gr-dect2
-programs_ubuntu18_04_5.append(('gr-dect2',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-dect2/
+# gr-dect2-master
+programs_ubuntu20_04_4.append(('gr-dect2-master',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2-master/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1779,12 +1831,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import dect2"
+python3 -c "import dect2"
 """,True,'Out-of-Tree Modules'))
 
-# gr-foo-master
-programs_ubuntu18_04_5.append(('gr-foo-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo-master/
+# gr-foo-maint-3.8
+programs_ubuntu20_04_4.append(('gr-foo-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-foo-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1793,12 +1845,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import foo"
+python3 -c "import foo"
 """,True,'Out-of-Tree Modules'))
 
 # gr-fuzzer
-programs_ubuntu18_04_5.append(('gr-fuzzer',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-fuzzer/
+programs_ubuntu20_04_4.append(('gr-fuzzer',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-fuzzer/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1807,12 +1859,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import fuzzer"
+python3 -c "import fuzzer"
 """,True,'Out-of-Tree Modules'))
 
-# gr-garage_door
-programs_ubuntu18_04_5.append(('gr-garage_door',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/
+# gr-garage_door-maint-3.8
+programs_ubuntu20_04_4.append(('gr-garage_door-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-garage_door-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1821,12 +1873,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import garage_door"
+python3 -c "import garage_door"
 """,True,'Out-of-Tree Modules'))
 
 # gr-gsm-master
-programs_ubuntu18_04_5.append(('gr-gsm-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-gsm-master/
+programs_ubuntu20_04_4.append(('gr-gsm-master',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm-master/
 sudo rm -Rf build
 sudo apt-get install -y gr-osmosdr
 mkdir build
@@ -1840,43 +1892,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import grgsm"
+python3 -c "import grgsm"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-11-master
-programs_ubuntu18_04_5.append(('gr-ieee802-11-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/examples/wifi_phy_hier.grc
-########## Verify ##########
-python2 -c "import ieee802_11"
-""",True,'Out-of-Tree Modules'))
-
-# gr-ieee802-15-4-maint-3.7
-programs_ubuntu18_04_5.append(('gr-ieee802-15-4-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_OQPSK_PHY.grc
-########## Verify ##########
-python2 -c "import ieee802_15_4"
-""",True,'Out-of-Tree Modules'))
-
-# gr-iridium-maint-3.7
-programs_ubuntu18_04_5.append(('gr-iridium-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-iridium-maint-3.7/
+# gr-ieee802-11-maint-3.8
+programs_ubuntu20_04_4.append(('gr-ieee802-11-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-11-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1885,12 +1906,28 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import iridium"
+python3 -c "import ieee802_11"
 """,True,'Out-of-Tree Modules'))
 
-# gr-j2497
-programs_ubuntu18_04_5.append(('gr-j2497',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/
+# gr-ieee802-15-4-maint-3.8
+programs_ubuntu20_04_4.append(('gr-ieee802-15-4-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/examples/ieee802_15_4_CSS_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/examples/ieee802_15_4_OQPSK_PHY.grc
+########## Verify ##########
+python3 -c "import ieee802_15_4"
+""",True,'Out-of-Tree Modules'))
+
+# gr-iridium-maint-3.8
+programs_ubuntu20_04_4.append(('gr-iridium-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-iridium-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1899,12 +1936,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import J2497"
+python3 -c "import iridium"
 """,True,'Out-of-Tree Modules'))
 
-# gr-limesdr
-programs_ubuntu18_04_5.append(('gr-limesdr',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/
+# gr-j2497-maint-3.8
+programs_ubuntu20_04_4.append(('gr-j2497-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-j2497-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1913,13 +1950,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import limesdr"
+python3 -c "import j2497"
 """,True,'Out-of-Tree Modules'))
 
-# gr-nrsc5-maint-3.7
-programs_ubuntu18_04_5.append(('gr-nrsc5-maint-3.7',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5-maint-3.7/
+# gr-limesdr-gr-3.8
+programs_ubuntu20_04_4.append(('gr-limesdr-gr-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-limesdr-gr-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1928,12 +1964,27 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import nrsc5"
+python3 -c "import limesdr"
 """,True,'Out-of-Tree Modules'))
 
-# gr-paint-maint-3.7
-programs_ubuntu18_04_5.append(('gr-paint-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
+# gr-nrsc5-maint-3.8
+programs_ubuntu20_04_4.append(('gr-nrsc5-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-nrsc5-maint-3.8/
+sudo rm -Rf build
+sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+python3 -c "import nrsc5"
+""",True,'Out-of-Tree Modules'))
+
+# gr-paint-maint-3.8
+programs_ubuntu20_04_4.append(('gr-paint-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1941,17 +1992,17 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint-maint-3.8/
 gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
 ########## Verify ##########
-python2 -c "import paint"
+python3 -c "import paint"
 """,True,'Out-of-Tree Modules'))
 
-# gr-rds-maint-3.7
-programs_ubuntu18_04_5.append(('gr-rds-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds-maint-3.7/
+# gr-rds-maint-3.8
+programs_ubuntu20_04_4.append(('gr-rds-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1960,12 +2011,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import rds"
+python3 -c "import rds"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms-master
-programs_ubuntu18_04_5.append(('gr-tpms-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms-master/
+# gr-tpms_poore-maint-3.8
+programs_ubuntu20_04_4.append(('gr-tpms_poore-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-tpms_poore-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1974,12 +2025,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import tpms"
+python3 -c "import tpms_poore"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms_poore-maint-3.7
-programs_ubuntu18_04_5.append(('gr-tpms_poore-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore-maint-3.7/
+# gr-X10-maint-3.8
+programs_ubuntu20_04_4.append(('gr-X10-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-X10-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1988,12 +2039,12 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import tpms_poore"
+python3 -c "import X10"
 """,True,'Out-of-Tree Modules'))
 
-# gr-X10
-programs_ubuntu18_04_5.append(('gr-X10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/
+# gr-zwave_poore-maint-3.8
+programs_ubuntu20_04_4.append(('gr-zwave_poore-maint-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-zwave_poore-maint-3.8/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -2002,61 +2053,29 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python2 -c "import X10"
-""",True,'Out-of-Tree Modules'))
-
-# gr-Zwave
-programs_ubuntu18_04_5.append(('gr-Zwave',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-Zwave/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import Zwave"
-""",True,'Out-of-Tree Modules'))
-
-# gr-zwave_poore
-programs_ubuntu18_04_5.append(('gr-zwave_poore',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import zwave_poore"
+python3 -c "import zwave_poore"
 """,True,'Out-of-Tree Modules'))
 
 # QSpectrumAnalyzer
-programs_ubuntu18_04_5.append(('QSpectrumAnalyzer',
+programs_ubuntu20_04_4.append(('QSpectrumAnalyzer',
 """#sudo add-apt-repository -y ppa:myriadrf/drivers
 #sudo apt-get -y update
-sudo apt-get install -y python3-pip python3-pyqt5 python3-numpy python3-scipy soapysdr python3-soapysdr
+sudo apt-get install -y python3-pip python3-pyqt5 python3-numpy python3-scipy python3-soapysdr  # No package: soapysdr
 sudo apt-get install -y soapysdr-module-rtlsdr soapysdr-module-airspy soapysdr-module-hackrf soapysdr-module-lms7
-python3 -m pip install --user qspectrumanalyzer
-PATH=$PATH:~/.local/bin
-export PATH
-. ~/.bashrc
-sudo cp ~/.local/bin/qspectrumanalyzer /usr/local/bin/
+python3 -m pip install --user qspectrumanalyzer  # log in again, run without sudo
 ########## Verify ##########
 ls ~/.local/bin/qspectrumanalyzer
 """,True,None))
 
 # GQRX
-programs_ubuntu18_04_5.append(('GQRX',
+programs_ubuntu20_04_4.append(('GQRX',
 """sudo apt-get install -y gqrx-sdr
 ########## Verify ##########
 ls /usr/bin/gqrx
 """,True,None))
 
 # Dump1090
-programs_ubuntu18_04_5.append(('Dump1090',
+programs_ubuntu20_04_4.append(('Dump1090',
 """sudo apt-get install -y libusb-1.0-0-dev
 sudo apt-get install -y librtlsdr-dev
 mkdir -p ~/Installed_by_FISSURE
@@ -2068,29 +2087,28 @@ make
 """,True,None))
 
 # QtDesigner
-programs_ubuntu18_04_5.append(('QtDesigner',
-"""sudo apt-get install -y python-qt4 qt4-designer
+programs_ubuntu20_04_4.append(('QtDesigner',
+"""sudo apt-get install -y build-essential qtcreator qt5-default
 ########## Verify ##########
 ls /usr/bin/designer
 """,True,None))
 
 # Grip
-programs_ubuntu18_04_5.append(('Grip',
-"""python2 -m pip install grip
-source ~/.bashrc
+programs_ubuntu20_04_4.append(('Grip',
+"""sudo python3 -m pip install grip
 ########## Verify ##########
 grip --help
 """,True,None))
 
 # Kismet
-programs_ubuntu18_04_5.append(('Kismet',
-"""sudo apt-get install -y kismet
+programs_ubuntu20_04_4.append(('Kismet',
+"""sudo apt-get install -y kismet  # add your computer's username to the group
 ########## Verify ##########
 ls /usr/bin/kismet
 """,True,None))
 
 # UDP Replay
-programs_ubuntu18_04_5.append(('UDP Replay',
+programs_ubuntu20_04_4.append(('UDP Replay',
 """sudo apt-get install -y libpcap-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -2106,78 +2124,80 @@ ls /usr/local/bin/udpreplay
 """,True,None))
 
 # V2Verifier
-programs_ubuntu18_04_5.append(('V2Verifier',
+programs_ubuntu20_04_4.append(('V2Verifier',
 """sudo apt-get install -y libgmp3-dev python3-tk python3-pil.imagetk
-python3 -m pip install fastecdsa
-python3 -m pip install -U pyyaml
+sudo python3 -m pip install fastecdsa
+sudo python3 -m pip install -U pyyaml
 #sudo apt install -y git cmake libuhd-dev uhd-host swig libgmp3-dev python3-pip python3-tk python3-pil 
 #python3-pil.imagetk gnuradio
 #Needs gr-foo and gr-ieee802-11
 """,True,None))
 
-# OpenBTS
-programs_ubuntu18_04_5.append(('OpenBTS',
-"""sudo apt-get install -y software-properties-common
-sudo add-apt-repository -y ppa:git-core/ppa
-sudo apt-get update
-sudo apt-get install -y git
-sudo apt-get install -y asterisk
-sudo apt-get install -y twinkle
-sudo apt-get install -y autoconf libtool libosip2-dev libortp-dev libusb-1.0-0-dev g++ sqlite3 libsqlite3-dev erlang libreadline6-dev libncurses5-dev
-mkdir -p ~/Installed_by_FISSURE/OpenBTS
-cd ~/Installed_by_FISSURE/OpenBTS
-git clone https://github.com/RangeNetworks/dev.git
-cd dev
-./clone.sh
-./switchto.sh master
-cd liba53/
-sudo make install
-cd ..
-git clone https://github.com/tom-2015/fakecoredumper.git
-cd fakecoredumper
-chmod +x install.sh
-./install.sh
-cd ..
-sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/build.sh ./build.sh
-sudo apt install g++-5 -y
-sudo update-alternatives --remove-all gcc
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5 
-sudo chmod +x build.sh
-./build.sh B210
-sudo mkdir /etc/OpenBTS
-cd openbts
-sudo sqlite3 -init ./apps/OpenBTS.example.sql /etc/OpenBTS/OpenBTS.db ".quit"
-#sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/usrp_b210_fpga.bin /usr/share/uhd/images/usrp_b210_fpga.bin
-cd apps
-ln -s ../Transceiver52M/transceiver .
-sudo apt-get install -y sqlitebrowser
-sudo mkdir -p /var/lib/asterisk/sqlite3dir
-cd ../../subscriberRegistry
-make
-cd apps
-cp """ + fissure_directory + """/Tools/openbts_files_18_04/sipauthserve.example.sql sipauthserve.example.sql
-sudo sqlite3 -init sipauthserve.example.sql /etc/OpenBTS/sipauthserve.db ".quit"
-cd ../../smqueue
-autoconf -i
-./configure
-make
-cp """ + fissure_directory + """/Tools/openbts_files_18_04/smqueue.example.sql smqueue/smqueue.example.sql
-sudo sqlite3 -init smqueue/smqueue.example.sql /etc/OpenBTS/smqueue.db ".quit"
-sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/sip.conf /etc/asterisk/sip.conf
-sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/extensions.conf /etc/asterisk/extensions.conf
-sudo apt-get install -y pcscd pcsc-tools libccid libpcsclite-dev
-cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/pysim
-cd pysim
-sudo apt-get install -y python3-pip swig
-sudo python3 -m pip install -r requirements.txt
-sudo update-alternatives --remove-all gcc
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-sudo uhd_images_downloader
-""",True,None))
+# # OpenBTS, requires old packages not meant for 20.04
+# programs_ubuntu20_04_4.append(('OpenBTS',
+# """sudo apt-get install -y software-properties-common  
+# sudo add-apt-repository -y ppa:git-core/ppa
+# sudo apt-get update
+# sudo apt-get install -y git
+# sudo apt-get install -y asterisk
+# sudo apt-get install -y twinkle
+# sudo apt-get install -y autoconf libtool libosip2-dev libortp-dev libusb-1.0-0-dev g++ sqlite3 libsqlite3-dev erlang libreadline6-dev libncurses5-dev
+# mkdir ~/Installed_by_FISSURE/OpenBTS
+# cd ~/Installed_by_FISSURE/OpenBTS
+# git clone https://github.com/RangeNetworks/dev.git
+# cd dev
+# ./clone.sh
+# ./switchto.sh master
+# cd liba53/
+# sudo make install
+# cd ..
+# git clone https://github.com/tom-2015/fakecoredumper.git
+# cd fakecoredumper
+# chmod +x install.sh
+# ./install.sh
+# cd ..
+# sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/build.sh ./build.sh
+# #sudo apt install g++-5 -y
+# #sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5 
+# wget http://archive.ubuntu.com/ubuntu/pool/universe/l/linphone/libortp9_3.6.1-3build1_amd64.deb
+# sudo dpkg -i libortp9_3.6.1-3build1_amd64.deb
+# wget http://archive.ubuntu.com/ubuntu/pool/universe/s/srtp/libsrtp0_1.4.5~20130609~dfsg-2ubuntu1_amd64.deb
+# sudo dpkg -i libsrtp0_1.4.5~20130609~dfsg-2ubuntu1_amd64.deb
+# wget http://archive.ubuntu.com/ubuntu/pool/universe/p/pyzmq/python-zmq_16.0.2-2build2_amd64.deb
+# sudo dpkg -i python-zmq_16.0.2-2build2_amd64.deb 
+# ./build.sh B210
+# sudo mkdir /etc/OpenBTS
+# cd openbts
+# sudo sqlite3 -init ./apps/OpenBTS.example.sql /etc/OpenBTS/OpenBTS.db ".quit"
+# #sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/usrp_b210_fpga.bin /usr/share/uhd/images/usrp_b210_fpga.bin
+# cd apps
+# ln -s ../Transceiver52M/transceiver .
+# sudo apt-get install -y sqlitebrowser
+# sudo mkdir -p /var/lib/asterisk/sqlite3dir
+# cd ../../subscriberRegistry
+# make
+# cd apps
+# cp """ + fissure_directory + """/Tools/openbts_files_18_04/sipauthserve.example.sql sipauthserve.example.sql
+# sudo sqlite3 -init sipauthserve.example.sql /etc/OpenBTS/sipauthserve.db ".quit"
+# cd ../../smqueue
+# autoconf -i
+# ./configure
+# make
+# cp """ + fissure_directory + """/Tools/openbts_files_18_04/smqueue.example.sql smqueue/smqueue.example.sql
+# sudo sqlite3 -init smqueue/smqueue.example.sql /etc/OpenBTS/smqueue.db ".quit"
+# sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/sip.conf /etc/asterisk/sip.conf
+# sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/extensions.conf /etc/asterisk/extensions.conf
+# sudo apt-get install -y pcscd pcsc-tools libccid libpcsclite-dev
+# cd ~/Installed_by_FISSURE
+# git clone git://git.osmocom.org/pysim
+# cd pysim
+# sudo pip3 install -r requirements.txt
+# sudo update-alternatives --remove-all gcc
+# sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
+# """,True))
 
 # srsRAN/srsLTE
-programs_ubuntu18_04_5.append(('srsRAN',
+programs_ubuntu20_04_4.append(('srsRAN',
 """sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
 sudo apt-get install -y libboost-system-dev libboost-test-dev libboost-thread-dev libqwt-qt5-dev qtbase5-dev  # srsGUI
 mkdir -p ~/Installed_by_FISSURE
@@ -2215,7 +2235,7 @@ srsenb --help
 """,True,None))
 
 # FALCON
-programs_ubuntu18_04_5.append(('FALCON',
+programs_ubuntu20_04_4.append(('FALCON',
 """sudo apt-get install -y build-essential git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev  # For srsLTE
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -2234,21 +2254,21 @@ ls /usr/bin/FalconGUI
 """,True,None))
 
 # Aircrack-ng
-programs_ubuntu18_04_5.append(('Aircrack-ng',
+programs_ubuntu20_04_4.append(('Aircrack-ng',
 """sudo apt-get install -y aircrack-ng
 ########## Verify ##########
 aircrack-ng --help
 """,True,None))
 
 # Geany
-programs_ubuntu18_04_5.append(('Geany',
-"""sudo apt-get install -y geany
+programs_ubuntu20_04_4.append(('Geany',
+"""sudo apt-get install -y geany  # needs [styling] line_height=0;2; added to Tools>Configuration Files>filetypes.common to see underscores
 ########## Verify ##########
 geany --help
 """,True,None))
 
 # Arduino IDE
-programs_ubuntu18_04_5.append(('Arduino IDE',
+programs_ubuntu20_04_4.append(('Arduino IDE',
 """wget -P ~/Installed_by_FISSURE/ https://downloads.arduino.cc/arduino-1.8.15-linux64.tar.xz
 cd ~/Installed_by_FISSURE
 tar -xf arduino-1.8.15-linux64.tar.xz
@@ -2261,22 +2281,30 @@ arduino --version
 """,True,None))
 
 # Minicom
-programs_ubuntu18_04_5.append(('Minicom',
+programs_ubuntu20_04_4.append(('Minicom',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
 """,True,None))
 
 # PuTTY
-programs_ubuntu18_04_5.append(('PuTTY',
+programs_ubuntu20_04_4.append(('PuTTY',
 """sudo apt-get install -y putty
 ########## Verify ##########
 putty --help
 """,True,None))
 
 # openHAB
-programs_ubuntu18_04_5.append(('openHAB',
-"""wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
+programs_ubuntu20_04_4.append(('openHAB',
+"""sudo apt-get -yq install gnupg curl
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
+cd ~/Downloads
+curl -O https://cdn.azul.com/zulu/bin/zulu-repo_1.0.0-2_all.deb
+sudo apt-get install ./zulu-repo_1.0.0-2_all.deb
+sudo apt-get update
+sudo apt-get install -y zulu11-jdk
+rm zulu-repo_1.0.0-2_all.deb
+wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
 sudo apt-get update && sudo apt-get install -y openhab
@@ -2285,7 +2313,7 @@ ls /usr/bin/openhab-cli
 """,True,None))
 
 # rtl-zwave
-programs_ubuntu18_04_5.append(('rtl-zwave',
+programs_ubuntu20_04_4.append(('rtl-zwave',
 """mkdir -p ~/Installed_by_FISSURE
 sudo apt-get install -y libpcap-dev
 cp -R """ + fissure_directory + """/Tools/rtl-zwave-master ~/Installed_by_FISSURE/
@@ -2296,7 +2324,7 @@ ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
 """,True,None))
 
 # waving-z
-programs_ubuntu18_04_5.append(('waving-z',
+programs_ubuntu20_04_4.append(('waving-z',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE/
 git clone https://github.com/baol/waving-z.git
@@ -2310,7 +2338,7 @@ ls ~/Installed_by_FISSURE/waving-z/build/wave-in
 """,True,None))
 
 # baudline
-programs_ubuntu18_04_5.append(('baudline',
+programs_ubuntu20_04_4.append(('baudline',
 """mkdir -p ~/Installed_by_FISSURE
 tar -xf """ + fissure_directory + """/Tools/baudline_1.08_linux_x86_64.tar.gz -C ~/Installed_by_FISSURE
 ########## Verify ##########
@@ -2318,7 +2346,7 @@ tar -xf """ + fissure_directory + """/Tools/baudline_1.08_linux_x86_64.tar.gz -C
 """,True,None))
 
 # Universal Radio Hacker
-programs_ubuntu18_04_5.append(('Universal Radio Hacker',
+programs_ubuntu20_04_4.append(('Universal Radio Hacker',
 """sudo python3 -m pip install cython
 sudo python3 -m pip install urh
 ########## Verify ##########
@@ -2326,14 +2354,14 @@ urh --version
 """,True,None))
 
 # Inspectrum
-programs_ubuntu18_04_5.append(('Inspectrum',
+programs_ubuntu20_04_4.append(('Inspectrum',
 """sudo apt-get install -y inspectrum
 ########## Verify ##########
 inspectrum --help
 """,True,None))
 
 # OpenCPN
-programs_ubuntu18_04_5.append(('OpenCPN',
+programs_ubuntu20_04_4.append(('OpenCPN',
 """sudo add-apt-repository -y ppa:opencpn/opencpn
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C865EB40
 sudo apt-get update
@@ -2343,7 +2371,7 @@ ls /usr/bin/opencpn
 """,True,None))
 
 # Kalibrate
-programs_ubuntu18_04_5.append(('Kalibrate',
+programs_ubuntu20_04_4.append(('Kalibrate',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/steve-m/kalibrate-rtl.git
@@ -2354,7 +2382,7 @@ ls ~/Installed_by_FISSURE/kalibrate-rtl/src/kal
 """,True,None))
 
 # retrogram-rtlsdr
-programs_ubuntu18_04_5.append(('retrogram-rtlsdr',
+programs_ubuntu20_04_4.append(('retrogram-rtlsdr',
 """mkdir -p ~/Installed_by_FISSURE
 sudo apt-get install -y librtlsdr-dev libncurses5-dev libboost-program-options-dev
 cp -R """ + fissure_directory + """/Tools/retrogram-rtlsdr-master ~/Installed_by_FISSURE/
@@ -2365,7 +2393,7 @@ ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
 """,True,None))
 
 # RTLSDR-Airband
-programs_ubuntu18_04_5.append(('RTLSDR-Airband',
+programs_ubuntu20_04_4.append(('RTLSDR-Airband',
 """sudo apt-get install -y build-essential cmake pkg-config libmp3lame-dev libshout3-dev libconfig++-dev libfftw3-dev libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -2381,13 +2409,12 @@ rtl_airband -h
 """,True,None))
 
 # Spektrum
-programs_ubuntu18_04_5.append(('Spektrum',
+programs_ubuntu20_04_4.append(('Spektrum',
 """echo 'blacklist dvb_usb_rtl28xxu' | sudo tee /etc/modprobe.d/rtl-sdr.conf  # Restart computer to use RTL device
 echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", GROUP="adm", MODE="0666"' | sudo tee /etc/udev/rules.d/20.rtlsdr.rules
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -P ~/Installed_by_FISSURE/ https://github.com/pavels/spektrum/releases/download/2.1.0/spektrum-linux64.tar.gz
-cd ~/Installed_by_FISSURE
 tar -xf spektrum-linux64.tar.gz
 rm spektrum-linux64.tar.gz
 ########## Verify ##########
@@ -2395,7 +2422,7 @@ ls ~/Installed_by_FISSURE/spektrum/spektrum
 """,True,None))
 
 # SDRTrunk
-programs_ubuntu18_04_5.append(('SDRTrunk',
+programs_ubuntu20_04_4.append(('SDRTrunk',
 """#sudo apt-get -yq install gnupg curl  # Java (if needed)
 #sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
 #cd ~/Downloads
@@ -2407,7 +2434,6 @@ programs_ubuntu18_04_5.append(('SDRTrunk',
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -P ~/Installed_by_FISSURE/ https://github.com/DSheirer/sdrtrunk/releases/download/v0.5.0-alpha.6/sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
-cd ~/Installed_by_FISSURE
 unzip -q sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 rm sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 ########## Verify ##########
@@ -2415,23 +2441,25 @@ ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 """,True,None))
 
 # Audio Tools
-programs_ubuntu18_04_5.append(('Audio Tools',
+programs_ubuntu20_04_4.append(('Audio Tools',
 """sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
 ########## Verify ##########
 audacity --version && sox --version
 """,True,None))
 
 # Video Tools
-programs_ubuntu18_04_5.append(('Video Tools',
+programs_ubuntu20_04_4.append(('Video Tools',
 """sudo apt-get install -y snapd
 sudo snap install vlc
+sudo apt-add-repository -y ppa:maarten-baert/simplescreenrecorder
+sudo apt-get update
 sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
 """,True,None))
 
 # radiosonde_auto_rx
-programs_ubuntu18_04_5.append(('radiosonde_auto_rx',
+programs_ubuntu20_04_4.append(('radiosonde_auto_rx',
 """sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip python3-flask sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -2445,12 +2473,21 @@ ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
 """,True,None))
 
 # SdrGlut
-programs_ubuntu18_04_5.append(('SdrGlut',
-"""sudo apt-get install -y librtaudio-dev libsoapysdr0.6 libsoapysdr-dev libopenal-dev libliquid-dev freeglut3 freeglut3-dev libalut0 libalut-dev libsndfile1-dev
+programs_ubuntu20_04_4.append(('SdrGlut',
+"""sudo apt-get install -y librtaudio-dev libsoapysdr-dev libopenal-dev libliquid-dev freeglut3 freeglut3-dev libalut0 libalut-dev libsndfile1-dev 
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/jgaeddert/liquid-dsp.git
+cd liquid-dsp/
+./bootstrap.sh
+./configure
+make
+sudo make install
+sudo ldconfig
 cd ~/Installed_by_FISSURE
 git clone https://github.com/righthalfplane/SdrGlut.git
 cp -f """ + fissure_directory + """/Tools/SdrGlut/firstFile.h ~/Installed_by_FISSURE/SdrGlut/MainSource/
+cp -f """ + fissure_directory + """/Tools/SdrGlut/makefileUbunta ~/Installed_by_FISSURE/SdrGlut/makefileUbunta
 cd SdrGlut
 make -f makefileUbunta
 ########## Verify ##########
@@ -2458,12 +2495,13 @@ ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 """,True,None))
 
 # rehex
-programs_ubuntu18_04_5.append(('rehex',
-"""sudo apt-get install -y build-essential git libwxgtk3.0-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev gtk2.0 libgtk2.0-dev
+programs_ubuntu20_04_4.append(('rehex',
+"""sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/solemnwarning/rehex.git
 cd rehex
+sudo git config --global --add safe.directory """ + os.path.expanduser('~') + """/Installed_by_FISSURE/rehex
 sudo cpan Template
 sudo make install
 ########## Verify ##########
@@ -2471,8 +2509,9 @@ ls /usr/local/bin/rehex
 """,True,None))
 
 # ZEPASSD
-programs_ubuntu18_04_5.append(('ZEPASSD',
+programs_ubuntu20_04_4.append(('ZEPASSD',
 """#sudo apt-get install -y # boost.program-options, boost.crc, boost.circular-buffer, libfftw3, libuhd 3.9.5 or later
+sudo apt-get install -y libuhd-dev  # Might need to be installed a second time?
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/pvachon/zepassd.git
@@ -2483,7 +2522,7 @@ ls ~/Installed_by_FISSURE/zepassd/zepassd
 """,True,None))
 
 # iridium-toolkit
-programs_ubuntu18_04_5.append(('iridium-toolkit',
+programs_ubuntu20_04_4.append(('iridium-toolkit',
 """#Python (2.7), NumPy (scipy), crcmod
 sudo apt-get install -y mplayer
 mkdir -p ~/Installed_by_FISSURE
@@ -2498,7 +2537,7 @@ ls ~/Installed_by_FISSURE/osmo-ir77/codec/ir77_ambe_decode
 """,True,None))
 
 # IridiumLive
-programs_ubuntu18_04_5.append(('IridiumLive',
+programs_ubuntu20_04_4.append(('IridiumLive',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/microp11/iridiumlive.git
@@ -2512,19 +2551,26 @@ ls ~/Installed_by_FISSURE/linux-x64/IridiumLive
 """,True,None))
 
 # NETATTACK2
-programs_ubuntu18_04_5.append(('NETATTACK2',
-"""sudo python2 -m pip install netifaces
-sudo apt-get install -y python-scapy python-nmap python-nfqueue nmap
+programs_ubuntu20_04_4.append(('NETATTACK2',
+"""#sudo pip install netifaces  # fix for python2
+#sudo apt-get install -y python-scapy python-nmap python-nfqueue nmap  # this needs to be fixed, can it still run with python2?
+sudo python2 -m pip install netifaces
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/chrizator/netattack2.git
+sudo python2 -m pip install nmap
+cd netattack2
+wget http://archive.ubuntu.com/ubuntu/pool/universe/libn/libnetfilter-queue/libnetfilter-queue1_1.0.2-2_amd64.deb
+sudo dpkg -i libnetfilter-queue1_1.0.2-2_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/n/nfqueue-bindings/python-nfqueue_0.6-1build2_amd64.deb
+sudo dpkg -i python-nfqueue_0.6-1build2_amd64.deb 
 """,True,None))
 
 # Wifite
-programs_ubuntu18_04_5.append(('Wifite',
+programs_ubuntu20_04_4.append(('Wifite',
 """# python, iwconfig, ifconfig, Aircrack-ng, tshark, reaver, bully, coWPAtty, pyrit, hashcat, hcxdumptool, hcxpcaptool
 sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger
-sudo python2 -m pip install psycopg2-binary scapy
+sudo python3 -m pip install psycopg2-binary scapy
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/derv82/wifite2.git
@@ -2551,6 +2597,7 @@ cd Pyrit-v0.5.0
 wget https://github.com/JPaulMora/Pyrit/releases/download/v0.5.0/Pyrit-v0.5.0.zip
 unzip -q Pyrit-v0.5.0.zip
 rm Pyrit-v0.5.0.zip
+sudo apt-get install -y python2-dev
 python2 setup.py clean
 python2 setup.py build
 sudo python2 setup.py install
@@ -2565,13 +2612,15 @@ cd hcxtools
 make
 sudo make install
 sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
+#sudo apt-get install -y tshark
 ########## Verify ##########
 ~/Installed_by_FISSURE/wifite2/Wifite.py --help
 """,True,None))
 
 # rtl_433
-programs_ubuntu18_04_5.append(('rtl_433',
-"""sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
+programs_ubuntu20_04_4.append(('rtl_433',
+"""#sudo apt-get install -y rtl-433
+sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/merbanan/rtl_433.git
@@ -2586,9 +2635,8 @@ rtl_433 -help
 """,True,None))
 
 # RouterSploit
-programs_ubuntu18_04_5.append(('RouterSploit',
-"""#sudo add-apt-repository universe
-sudo apt-get install -y python3-pip libglib2.0-dev rustc
+programs_ubuntu20_04_4.append(('RouterSploit',
+"""sudo apt-get install -y python3-pip libglib2.0-dev rustc
 sudo python3 -m pip install setuptools-rust
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -2602,7 +2650,7 @@ python3 -m pip install bluepy
 """,True,None))
 
 # Metasploit
-programs_ubuntu18_04_5.append(('Metasploit',
+programs_ubuntu20_04_4.append(('Metasploit',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 mkdir metasploit
@@ -2613,45 +2661,47 @@ ls /usr/bin/msfconsole
 """,True,None))
 
 # monitor_rtl433
-programs_ubuntu18_04_5.append(('monitor_rtl433',
+programs_ubuntu20_04_4.append(('monitor_rtl433',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mcbridejc/monitor_rtl433.git
 cd monitor_rtl433
 sudo python3 setup.py install
+sudo python3 -m pip install python-dateutil
+sudo python3 -m pip install flask_table
 ########## Verify ##########
-ls /usr/local/bin/monitor_rtl433
+ls /usr/bin/monitor_rtl433
 """,True,None))
 
 # scan-ssid
-programs_ubuntu18_04_5.append(('scan-ssid',
+programs_ubuntu20_04_4.append(('scan-ssid',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y iw
 git clone https://github.com/Resethel/scan-ssid.git
 cd scan-ssid
 sudo cp scan-ssid /usr/local/bin
-sudo chmod 755 /usr/local/bin/scan-ssid
+sudo chmod 755 /usr/local/bin/scan-ssid  # can't be in monitor mode, managed only
 ########## Verify ##########
 scan-ssid --help
 """,True,None))
 
 # minimodem
-programs_ubuntu18_04_5.append(('minimodem',
+programs_ubuntu20_04_4.append(('minimodem',
 """sudo apt-get install -y minimodem
 ########## Verify ##########
 minimodem --version
 """,True,None))
 
 # WSJT-X
-programs_ubuntu18_04_5.append(('WSJT-X',
+programs_ubuntu20_04_4.append(('WSJT-X',
 """sudo apt-get install -y wsjtx
 ########## Verify ##########
 ls /usr/bin/wsjtx
 """,True,None))
 
 # Google Earth Pro
-programs_ubuntu18_04_5.append(('Google Earth Pro',
+programs_ubuntu20_04_4.append(('Google Earth Pro',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_current_amd64.deb
@@ -2661,14 +2711,14 @@ ls /usr/bin/google-earth-pro
 """,True,None))
 
 # gr-air-modes
-programs_ubuntu18_04_5.append(('gr-air-modes',
+programs_ubuntu20_04_4.append(('gr-air-modes',
 """sudo apt-get install -y gr-air-modes
 ########## Verify ##########
 modes_rx --help
 """,True,None))
 
 # ESP8266 Deauther v2
-programs_ubuntu18_04_5.append(('ESP8266 Deauther v2',
+programs_ubuntu20_04_4.append(('ESP8266 Deauther v2',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
@@ -2677,13 +2727,14 @@ rm v2.zip
 """,True,None))
 
 # Viking
-programs_ubuntu18_04_5.append(('Viking',
+programs_ubuntu20_04_4.append(('Viking',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.code.sf.net/p/viking/code viking
 sudo apt install -y gtk-doc-tools docbook-xsl yelp-tools libpng-dev libgtk-3-dev libicu-dev libjson-glib-dev intltool
 sudo apt-get install -y libcurl4-gnutls-dev libglib2.0-dev-bin
-sudo apt-get install -y libsqlite3-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev libnova-dev
+sudo apt-get install -y libsqlite3-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev
+sudo apt-get install -y autopoint libnova-dev
 cd viking
 ./autogen.sh
 ./configure
@@ -2694,30 +2745,29 @@ viking --help
 """,True,None))
 
 # PyGPSClient
-programs_ubuntu18_04_5.append(('PyGPSClient',
-"""sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk libjpeg-dev zlib1g-dev
-sudo apt install -y tk-devel
+programs_ubuntu20_04_4.append(('PyGPSClient',
+"""sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk
 sudo python3 -m pip install --upgrade PyGPSClient
 ########## Verify ##########
 ls /usr/local/bin/pygpsclient
 """,True,None))
 
 # Gpredict
-programs_ubuntu18_04_5.append(('Gpredict',
+programs_ubuntu20_04_4.append(('Gpredict',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
 """,True,None))
 
 # FoxtrotGPS
-programs_ubuntu18_04_5.append(('FoxtrotGPS',
+programs_ubuntu20_04_4.append(('FoxtrotGPS',
 """sudo apt-get install -y foxtrotgps
 ########## Verify ##########
 foxtrotgps --help
 """,True,None))
 
 # multimon-ng
-programs_ubuntu18_04_5.append(('multimon-ng',
+programs_ubuntu20_04_4.append(('multimon-ng',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/EliasOenal/multimonNG.git
@@ -2732,14 +2782,14 @@ ls /usr/local/bin/multimon-ng
 """,True,None))
 
 # Xastir
-programs_ubuntu18_04_5.append(('Xastir',
-"""sudo apt-get install -y xastir
+programs_ubuntu20_04_4.append(('Xastir',
+"""sudo apt-get install -y xastir  # should non-superusers be allowed? sure, why not.
 ########## Verify ##########
 sudo xastir -V
 """,True,None))
 
 # LTE-Cell-Scanner
-programs_ubuntu18_04_5.append(('LTE-Cell-Scanner',
+programs_ubuntu20_04_4.append(('LTE-Cell-Scanner',
 """sudo apt-get install -y cmake libncurses5-dev liblapack-dev libblas-dev libboost-thread-dev libboost-system-dev libitpp-dev librtlsdr-dev libfftw3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -2755,39 +2805,39 @@ ls /usr/local/bin/CellSearch
 """,True,None))
 
 # btscanner
-programs_ubuntu18_04_5.append(('btscanner',
+programs_ubuntu20_04_4.append(('btscanner',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
 """,True,None))
 
 # hcidump
-programs_ubuntu18_04_5.append(('hcidump',
+programs_ubuntu20_04_4.append(('hcidump',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
 """,True,None))
 
 # GraphicsMagick
-programs_ubuntu18_04_5.append(('GraphicsMagick',
+programs_ubuntu20_04_4.append(('GraphicsMagick',
 """sudo apt-get install -y graphicsmagick-imagemagick-compat
 ########## Verify ##########
 gm -help
 """,True,None))
 
 # Spectrum Painter
-programs_ubuntu18_04_5.append(('Spectrum Painter',
-"""sudo python3 -m pip install numpy imageio
+programs_ubuntu20_04_4.append(('Spectrum Painter',
+"""sudo python3 -m pip install numpy imageio 
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/polygon/spectrum_painter.git
 #cd spectrum_painter/
-#python3 -m pip install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
+#pip3 install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
 """,True,None))
 
 # nrsc5 and nrsc5-gui
-programs_ubuntu18_04_5.append(('nrsc5',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev
+programs_ubuntu20_04_4.append(('nrsc5',
+"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/theori-io/nrsc5.git
@@ -2808,51 +2858,45 @@ git clone https://github.com/cmnybo/nrsc5-gui.git
 nrsc5 -v
 """,True,None))
 
-# HAM2MON
-programs_ubuntu18_04_5.append(('HAM2MON',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-git clone https://github.com/madengr/ham2mon.git
-########## Verify ##########
-~/Installed_by_FISSURE/ham2mon/apps/ham2mon.py --help
-""",True,None))
+# # HAM2MON  # Doesn't work for 20.04
+# programs_ubuntu20_04_4.append(('HAM2MON',
+# """mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/madengr/ham2mon.git
+# """,True,None))
 
 # Anki
-programs_ubuntu18_04_5.append(('Anki',
+programs_ubuntu20_04_4.append(('Anki',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
 """,True,None))
 
 # Bless
-programs_ubuntu18_04_5.append(('Bless',
+programs_ubuntu20_04_4.append(('Bless',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
 """,True,None))
 
 # trackerjacker
-programs_ubuntu18_04_5.append(('trackerjacker',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-git clone https://github.com/calebmadrigal/trackerjacker.git
-cd trackerjacker
-sudo python3 setup.py install
+programs_ubuntu20_04_4.append(('trackerjacker',
+"""sudo python3 -m pip install trackerjacker  # Downgrades Python3 Scapy from 2.4.5 to 2.4.0
 ########## Verify ##########
 sudo trackerjacker --help
 """,True,None))
 
 # airgeddon
-programs_ubuntu18_04_5.append(('airgeddon',
-"""sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only libxcrypt-dev john libnl-3-dev libnl-genl-3-dev
+programs_ubuntu20_04_4.append(('airgeddon',
+"""sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only john
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone --depth 1 https://github.com/v1s1t0r1sh3r3/airgeddon.git
 #asleap
-git clone https://github.com/joswr1ght/asleap
+mkdir asleap
 cd asleap
-make
-sudo cp asleap /usr/bin/
+wget http://http.kali.org/pool/main/a/asleap/asleap_2.3~git20201128.254acab-0kali1_amd64.deb
+sudo dpkg -i asleap_2.3~git20201128.254acab-0kali1_amd64.deb
 #bettercap
 sudo apt-get install -y build-essential libpcap-dev net-tools 
 cd ~/Installed_by_FISSURE
@@ -2863,6 +2907,7 @@ unzip -q bettercap_linux_amd64_v2.31.1.zip
 rm bettercap_linux_amd64_v2.31.1.zip
 sudo cp bettercap /usr/bin/
 #mdk4
+sudo apt-get install -y libnl-genl-3-dev
 cd ~/Installed_by_FISSURE
 git clone https://github.com/aircrack-ng/mdk4
 cd mdk4
@@ -2871,102 +2916,107 @@ sudo make install
 """,True,None))
 
 # Hydra
-programs_ubuntu18_04_5.append(('Hydra',
+programs_ubuntu20_04_4.append(('Hydra',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
 """,True,None))
 
 # ESP32 Bluetooth Classic Sniffer - FIX
-programs_ubuntu18_04_5.append(('ESP32 Bluetooth Classic Sniffer',
+programs_ubuntu20_04_4.append(('ESP32 BT Classic Sniffer',
 """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
 cd ~/Installed_by_FISSURE
 #git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
-#cd esp32_bluetooth_classic_sniffer/dissectors
-#sed -i 's/3.4/3.6/g' build.sh
-##cp """ + fissure_directory + """/Tools/esp32_bluetooth_classic_sniffer/18-04-5_3-6_config.h config.h
-#cd ..
+#cd esp32_bluetooth_classic_sniffer
 #sudo ./requirements.sh
 #./build.sh
-#sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.6
-#rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" error
+##sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.4
+#rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 """,False,None))
 
 
 ########################################################################
-############################# Ubuntu 18.04.6 #############################
+############################ Ubuntu 22.04 ##############################
 ########################################################################
 
-programs_ubuntu18_04_6 = []
+programs_ubuntu22_04 = []
 
 # Misc. Dependencies
-programs_ubuntu18_04_6.append(('Misc. Dependencies',
+programs_ubuntu22_04.append(('Misc. Dependencies',
 """sudo apt-get -y update
 sudo apt-get -y install cmake
-sudo apt-get install -y python-setuptools python-dev build-essential
-sudo apt install -y python-pip
-sudo python2 -m pip install --upgrade setuptools
-sudo python2 -m pip install Cheetah
-sudo python2 -m pip install --upgrade pip
-sudo python2 -m pip install --upgrade virtualenv
-# sudo python2 -m pip uninstall matplotlib 
-sudo python2 -m pip install matplotlib
-sudo python2 -m pip install --upgrade PyYAML --ignore-installed
-sudo apt-get install -y python-scipy
+sudo apt-get install -y python-setuptools python-dev-is-python3 build-essential
+sudo apt-get install -y curl
+curl https://bootstrap.pypa.io./pip/2.7/get-pip.py | sudo python2  # Installs pip 20.3.4
+sudo apt-get install -y python3-pip
+sudo python3 -m pip install cmake --upgrade
+sudo apt install -y python3-testresources
+sudo python3 -m pip install --upgrade setuptools
+sudo python3 -m pip install --upgrade virtualenv
+sudo python3 -m pip install matplotlib
+sudo python3 -m pip install PyYAML==5.1
+sudo python3 -m pip install pyyaml
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-scipy/python-scipy_0.19.1-2ubuntu1_amd64.deb
+sudo apt-get install -y ./python-scipy_0.19.1-2ubuntu1_amd64.deb  # FIX?
+rm python-scipy_0.19.1-2ubuntu1_amd64.deb
 sudo apt-get install -y gedit
-sudo apt-get install -y software-properties-common
+sudo apt-get install -y software-properties-common #python-software-properties # does Python3
 sudo add-apt-repository -y ppa:git-core/ppa
 sudo apt-get -y update
-sudo apt-get install -y git
+sudo apt-get install -y git 
 sudo apt-get install -y libcanberra-gtk-module
-sudo apt-get install -y python3-pip
-sudo python2 -m pip install bitarray
+sudo python3 -m pip install bitarray
 sudo apt install net-tools
-sudo python2 -m pip install crcmod
-sudo apt-get install -y python3-pip
-sudo python3 -m pip install pyopenssl
-sudo python3 -m pip install cryptography
+sudo python3 -m pip install crcmod
 sudo python3 -m pip install pycrypto
+sudo apt-get install -y python-tk
+sudo python3 -m pip install pyzmq
+sudo apt-get install -y libosmocore-dev
+sudo apt-get install -y liborc-0.4-dev
 sudo apt-get install -y expect
 sudo add-apt-repository --y ppa:wireshark-dev/stable  # Latest Wireshark
 sudo apt-get update
 sudo python3 -m pip install pyshark
 sudo apt-get install -y tshark  # Installs Wireshark, launching without sudo permissions and copying FISSURE dissectors happens later
+sudo python3 -m pip install pypcapfile
 sudo python2 -m pip install pypcapfile
-sudo python2 -m pip install psutil
-sudo python2 -m pip install pyserial
-sudo apt-get install -y gpsd-clients python-gi-cairo
-sudo python2 -m pip install pandas
+sudo python2 -m pip install netaddr
+sudo python3 -m pip install psutil
+sudo python3 -m pip install pyserial
+sudo apt-get install -y gpsd-clients python3-gi-cairo
+sudo python3 -m pip install pandas
 sudo apt-get install -y dsniff
-source ~/.bashrc
-""",True,'Minimum Install'))
+sudo apt-get install -y ncurses-term
+. ~/.bashrc
+""",True,"Minimum Install"))
 
 # fissure Command 
-programs_ubuntu18_04_6.append(('fissure Command',
-"""mkdir -p ~/.local/bin  # Open a new terminal to use fissure command
+programs_ubuntu22_04.append(('fissure Command',
+"""mkdir -p ~/.local/bin
 if grep -Fq "~/.local/bin" ~/.bashrc
 then
   echo "~/.local/bin is already in ~/.bashrc"
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 fi
-/bin/echo -e "python2 """ + fissure_directory + """/dashboard.py" > ~/.local/bin/fissure
+/bin/echo -e "python3 """ + fissure_directory + """/dashboard.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\nStartupWMClass=dashboard.py\nName=FISSURE\nTerminal=false\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
 echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
-source ~/.bashrc
+. ~/.bashrc
 ########## Verify ##########
 ls ~/.local/bin/fissure
-""",True,'Minimum Install'))
+""",True,"Minimum Install"))
 
 # GNU Radio
-programs_ubuntu18_04_6.append(('GNU Radio',
+programs_ubuntu22_04.append(('GNU Radio',
 """sudo apt-get install -y gnuradio
-sudo rm -f /usr/share/mime/packages/gnuradio.xml
-sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml
-sudo update-mime-database -V /usr/share/mime/
+sudo apt-get install -y uhd_host
+#sudo rm -f /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
+#sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
+#sudo update-mime-database -V /usr/share/mime/  # Is this still needed for 20.04.1?
 
 # Configure GNU Radio
 (gnuradio-companion &) && sleep 5 && killall gnuradio-companion
@@ -2978,27 +3028,33 @@ sudo mkdir /usr/share/uhd
 sudo chmod -R 777 /usr/share/uhd
 uhd_images_downloader
 
-sudo apt-get install -y libzmq3-dev
-sudo apt-get install -y swig
+# Find OOT Modules
+printf "\\n%s\\n" "export PYTHONPATH=/usr/local/lib/python3.8/site-packages:/usr/local/lib/python3/dist-packages:/usr/lib/python3/site-packages:$PYTHONPATH" >> ~/.bashrc
+printf "\\n%s\\n" "export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> ~/.bashrc
+printf "\\n%s\\n" "export PYTHONPATH=/usr/local/lib/python3/dist-packages:/usr/lib/python3/site-packages:$PYTHONPATH" >> ~/.profile  # For GRC without terminal
+printf "\\n%s\\n" "export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> ~/.profile  # For GRC without terminal
+. ~/.bashrc
+sudo apt-get install -y libzmq3-dev swig cmake
 sudo sh -c "/bin/echo -e '/usr/local/lib' >> /etc/ld.so.conf"
 sudo ldconfig
 ########## Verify ##########
 gnuradio-companion --help
-""",True,'Minimum Install'))
+""",True,"Minimum Install"))
 
 # Scapy
-programs_ubuntu18_04_6.append(('Scapy',
-"""sudo python2 -m pip install scapy
-sudo python3 -m pip install scapy
+programs_ubuntu22_04.append(('Scapy',
+"""sudo apt-get install -y python3-scapy
+#sudo python3 -m pip install scapy  # Causes errors
+sudo python2 -m pip install scapy
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
-""",True,'Minimum Install'))
+""",True,"Minimum Install"))
 
 # Wireshark
-programs_ubuntu18_04_6.append(('Wireshark',
+programs_ubuntu22_04.append(('Wireshark',
 """sudo add-apt-repository --y ppa:wireshark-dev/stable  # Gets installed with Misc. Dependencies (tshark), ESP32 Bluetooth Classic Sniffer
 sudo apt-get update
-sudo apt install -y wireshark wireshark-dev
+sudo apt install -y wireshark wireshark-dev  # Yes
 sudo groupadd wireshark
 sudo usermod -a -G wireshark $USER
 sudo chgrp wireshark /usr/bin/dumpcap
@@ -3009,13 +3065,13 @@ mkdir -p ~/.config/wireshark/plugins
 cp -a """ + fissure_directory + """/Dissectors/. ~/.config/wireshark/plugins
 ########## Verify ##########
 wireshark --help
-""",True,'Minimum Install'))
+""",True,"Minimum Install"))
 
 # LimeSDR
-programs_ubuntu18_04_6.append(('LimeSDR',
-"""sudo add-apt-repository -y ppa:myriadrf/drivers
-sudo apt-get update
-sudo apt-get install -y limesuite liblimesuite-dev limesuite-udev limesuite-images
+programs_ubuntu22_04.append(('LimeSDR',
+"""#sudo add-apt-repository -y ppa:myriadrf/drivers  # doesn't work
+#sudo apt-get update
+sudo apt-get install -y limesuite liblimesuite-dev limesuite-udev  # No limesuite-images on 22.04
 sudo apt-get install -y soapysdr-tools soapysdr-module-lms7
 sudo apt-get install -y libboost-all-dev swig
 ########## Verify ##########
@@ -3023,27 +3079,30 @@ ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
 # BladeRF
-programs_ubuntu18_04_6.append(('BladeRF',
-"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget				
+programs_ubuntu22_04.append(('BladeRF',
+"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 pkg-config git wget  # no package: libtecla1-dev       
 sudo apt-get install -y bladerf
 sudo apt-get install -y bladerf-fpga-hostedx115
 ########## Verify ##########
 bladeRF-cli --help
 """,True,'Hardware'))
 
-# USRP X300 Series
-programs_ubuntu18_04_6.append(('USRP X300 Series',
+# USRP X300 Series - FIX
+programs_ubuntu22_04.append(('USRP X300 Series',
 """mkdir -p ~/Installed_by_FISSURE  # Set MTU to 9000 and run uhd_image_loader command
 cd ~/Installed_by_FISSURE
-wget https://codeload.github.com/EttusResearch/uhd/zip/release_003_010_003_000 -O uhd.zip
-unzip uhd.zip
-cd uhd-release_003_010_003_000/host/include
-sudo cp -Rv uhd/rfnoc /usr/share/uhd/
-rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
+#wget https://codeload.github.com/EttusResearch/uhd/zip/release_003_010_003_000 -O uhd.zip
+#unzip uhd.zip
+#cd uhd-release_003_010_003_000/host/include
+#sudo cp -Rv uhd/rfnoc /usr/share/uhd/
+#rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
+/usr/lib/uhd/utils/uhd_images_downloader.py
+#"/usr/bin/uhd_image_loader" --args="type=x300,addr=192.168.40.2"  # Use your X310 IP
+sudo sysctl -w net.core.wmem_max=24862979
 """,True,'Hardware'))
 
 # HackRF
-programs_ubuntu18_04_6.append(('HackRF',
+programs_ubuntu22_04.append(('HackRF',
 """sudo apt-get install -y libusb-1.0-0-dev
 mkdir -p ~/Installed_by_FISSURE
 cp -R """ + fissure_directory + """/Tools/hackrf-2018.01.1/ ~/Installed_by_FISSURE/
@@ -3064,31 +3123,37 @@ hackrf_sweep --help
 """,True,'Hardware'))
 
 # 8812au Driver
-programs_ubuntu18_04_6.append(('8812au Driver',
-"""mkdir -p ~/Installed_by_FISSURE
-gzip -dc """ + fissure_directory + """/Tools/rtl8812au.tar.gz | tar -zxf - -C ~/Installed_by_FISSURE
+programs_ubuntu22_04.append(('8812au Driver',
+"""# Still Broken, Needs Replacement Driver
+sudo apt-get -y install dkms
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/aircrack-ng/rtl8812au/
 cd ~/Installed_by_FISSURE/rtl8812au
-make
-sudo make install
-sudo modprobe 8812au
-# This method below breaks < 20.04 on reboot
-#sudo apt-get install -y dkms
-#mkdir -p ~/Installed_by_FISSURE
-#cd ~/Installed_by_FISSURE
-#git clone https://github.com/aircrack-ng/rtl8812au -b v5.3.4
-#cd rtl8812au/
-#sudo ./dkms-install.sh
+sudo make dkms_install
 """,True,'Hardware'))
 
 # Zigbee Sniffer
-programs_ubuntu18_04_6.append(('Zigbee Sniffer',
+programs_ubuntu22_04.append(('Zigbee Sniffer',
 """cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
 cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
 sudo python3 setup.py install
+#sudo add-apt-repository -y ppa:rock-core/qt4  # PyQt4, doesn't work
+#sudo apt-get update
+wget http://archive.ubuntu.com/ubuntu/pool/universe/q/qt-assistant-compat/libqtassistantclient4_4.6.3-7build1_amd64.deb -O ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb 
+sudo apt-get install -y ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-qt4/python-qt4_4.12.1+dfsg-2_amd64.deb -O ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+sudo apt-get install -y ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-pyaudio/python-pyaudio_0.2.11-1build2_amd64.deb -O ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+sudo apt-get install -y ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+rm ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
+rm ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+rm ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+sudo apt-get install -y mlocate
 """,True,'Hardware'))
 
 # fl2k
-programs_ubuntu18_04_6.append(('fl2k',
+programs_ubuntu22_04.append(('fl2k',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.osmocom.org/osmo-fl2k.git
@@ -3106,8 +3171,8 @@ ls /usr/local/bin/fl2k_test
 """,True,'Hardware'))
 
 # Proxmark3
-programs_ubuntu18_04_6.append(('Proxmark3',
-"""sudo apt-get install -y p7zip git build-essential libreadline5 libreadline-dev libusb-0.1-4 libusb-dev libqt4-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libpcsclite-dev
+programs_ubuntu22_04.append(('Proxmark3',
+"""sudo apt-get install -y p7zip git build-essential libreadline8 libreadline-dev libusb-0.1-4 libusb-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libreadline-dev libpcsclite-dev gcc-arm-none-eabi
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/Proxmark/proxmark3.git
@@ -3117,387 +3182,26 @@ make clean && make all
 ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
 """,True,'Hardware'))
 
-# gr-acars
-programs_ubuntu18_04_6.append(('gr-acars',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-acars/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import acars"
-""",True,'Out-of-Tree Modules'))
-
-# gr-adsb
-programs_ubuntu18_04_6.append(('gr-adsb',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import adsb"
-""",True,'Out-of-Tree Modules'))
-
-# gr-ainfosec
-programs_ubuntu18_04_6.append(('gr-ainfosec',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ainfosec/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import ainfosec"
-""",True,'Out-of-Tree Modules'))
-
-# gr-ais
-programs_ubuntu18_04_6.append(('gr-ais',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ais/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import ais"
-""",True,'Out-of-Tree Modules'))
-
-# gr-bluetooth-master
-programs_ubuntu18_04_6.append(('gr-bluetooth-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/libbtbb-master/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth-master/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-ls /usr/local/bin/btrx
-""",True,'Out-of-Tree Modules'))
-
-# gr-clapper_plus
-programs_ubuntu18_04_6.append(('gr-clapper_plus',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import clapper_plus"
-""",True,'Out-of-Tree Modules'))
-
-# gr-dect2
-programs_ubuntu18_04_6.append(('gr-dect2',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-dect2/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import dect2"
-""",True,'Out-of-Tree Modules'))
-
-# gr-foo-master
-programs_ubuntu18_04_6.append(('gr-foo-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo-master/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import foo"
-""",True,'Out-of-Tree Modules'))
-
-# gr-fuzzer
-programs_ubuntu18_04_6.append(('gr-fuzzer',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-fuzzer/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import fuzzer"
-""",True,'Out-of-Tree Modules'))
-
-# gr-garage_door
-programs_ubuntu18_04_6.append(('gr-garage_door',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import garage_door"
-""",True,'Out-of-Tree Modules'))
-
-# gr-gsm-master
-programs_ubuntu18_04_6.append(('gr-gsm-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-gsm-master/
-sudo rm -Rf build
-sudo apt-get install -y gr-osmosdr
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-# gr-gsm needs to be made twice for "import arfcn" block to work
-make 
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import grgsm"
-""",True,'Out-of-Tree Modules'))
-
-# gr-ieee802-11-master
-programs_ubuntu18_04_6.append(('gr-ieee802-11-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/examples/wifi_phy_hier.grc
-########## Verify ##########
-python2 -c "import ieee802_11"
-""",True,'Out-of-Tree Modules'))
-
-# gr-ieee802-15-4-maint-3.7
-programs_ubuntu18_04_6.append(('gr-ieee802-15-4-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_OQPSK_PHY.grc
-########## Verify ##########
-python2 -c "import ieee802_15_4"
-""",True,'Out-of-Tree Modules'))
-
-# gr-iridium-maint-3.7
-programs_ubuntu18_04_6.append(('gr-iridium-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-iridium-maint-3.7/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import iridium"
-""",True,'Out-of-Tree Modules'))
-
-# gr-j2497
-programs_ubuntu18_04_6.append(('gr-j2497',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import J2497"
-""",True,'Out-of-Tree Modules'))
-
-# gr-limesdr
-programs_ubuntu18_04_6.append(('gr-limesdr',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import limesdr"
-""",True,'Out-of-Tree Modules'))
-
-# gr-nrsc5-maint-3.7
-programs_ubuntu18_04_6.append(('gr-nrsc5-maint-3.7',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5-maint-3.7/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import nrsc5"
-""",True,'Out-of-Tree Modules'))
-
-# gr-paint-maint-3.7
-programs_ubuntu18_04_6.append(('gr-paint-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
-gcc tgatoluma.c -o tgatoluma
-chmod +x tgatoluma
-cp tgatoluma ~/.local/bin/
-########## Verify ##########
-python2 -c "import paint"
-""",True,'Out-of-Tree Modules'))
-
-# gr-rds-maint-3.7
-programs_ubuntu18_04_6.append(('gr-rds-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds-maint-3.7/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import rds"
-""",True,'Out-of-Tree Modules'))
-
-# gr-tpms-master
-programs_ubuntu18_04_6.append(('gr-tpms-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms-master/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import tpms"
-""",True,'Out-of-Tree Modules'))
-
-# gr-tpms_poore-maint-3.7
-programs_ubuntu18_04_6.append(('gr-tpms_poore-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore-maint-3.7/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import tpms_poore"
-""",True,'Out-of-Tree Modules'))
-
-# gr-X10
-programs_ubuntu18_04_6.append(('gr-X10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import X10"
-""",True,'Out-of-Tree Modules'))
-
-# gr-Zwave
-programs_ubuntu18_04_6.append(('gr-Zwave',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-Zwave/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import Zwave"
-""",True,'Out-of-Tree Modules'))
-
-# gr-zwave_poore
-programs_ubuntu18_04_6.append(('gr-zwave_poore',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python2 -c "import zwave_poore"
-""",True,'Out-of-Tree Modules'))
-
 # QSpectrumAnalyzer
-programs_ubuntu18_04_6.append(('QSpectrumAnalyzer',
+programs_ubuntu22_04.append(('QSpectrumAnalyzer',
 """#sudo add-apt-repository -y ppa:myriadrf/drivers
 #sudo apt-get -y update
-sudo apt-get install -y python3-pip python3-pyqt5 python3-numpy python3-scipy soapysdr python3-soapysdr
+sudo apt-get install -y python3-pip python3-pyqt5 python3-numpy python3-scipy python3-soapysdr  # No package: soapysdr
 sudo apt-get install -y soapysdr-module-rtlsdr soapysdr-module-airspy soapysdr-module-hackrf soapysdr-module-lms7
-python3 -m pip install --user qspectrumanalyzer
-PATH=$PATH:~/.local/bin
-export PATH
-. ~/.bashrc
-sudo cp ~/.local/bin/qspectrumanalyzer /usr/local/bin/
+python3 -m pip install --user qspectrumanalyzer  # log in again, run without sudo
 ########## Verify ##########
 ls ~/.local/bin/qspectrumanalyzer
 """,True,None))
 
 # GQRX
-programs_ubuntu18_04_6.append(('GQRX',
+programs_ubuntu22_04.append(('GQRX',
 """sudo apt-get install -y gqrx-sdr
 ########## Verify ##########
 ls /usr/bin/gqrx
 """,True,None))
 
 # Dump1090
-programs_ubuntu18_04_6.append(('Dump1090',
+programs_ubuntu22_04.append(('Dump1090',
 """sudo apt-get install -y libusb-1.0-0-dev
 sudo apt-get install -y librtlsdr-dev
 mkdir -p ~/Installed_by_FISSURE
@@ -3509,29 +3213,26 @@ make
 """,True,None))
 
 # QtDesigner
-programs_ubuntu18_04_6.append(('QtDesigner',
-"""sudo apt-get install -y python-qt4 qt4-designer
+programs_ubuntu22_04.append(('QtDesigner',
+"""sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
 ########## Verify ##########
 ls /usr/bin/designer
 """,True,None))
 
 # Grip
-programs_ubuntu18_04_6.append(('Grip',
-"""python2 -m pip install grip
-source ~/.bashrc
+programs_ubuntu22_04.append(('Grip',
+"""sudo python3 -m pip install grip
 ########## Verify ##########
 grip --help
 """,True,None))
 
-# Kismet
-programs_ubuntu18_04_6.append(('Kismet',
-"""sudo apt-get install -y kismet
-########## Verify ##########
-ls /usr/bin/kismet
+# Kismet - FIX
+programs_ubuntu22_04.append(('Kismet',
+"""#sudo apt-get install -y kismet  # add your computer's username to the group
 """,True,None))
 
 # UDP Replay
-programs_ubuntu18_04_6.append(('UDP Replay',
+programs_ubuntu22_04.append(('UDP Replay',
 """sudo apt-get install -y libpcap-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3547,78 +3248,17 @@ ls /usr/local/bin/udpreplay
 """,True,None))
 
 # V2Verifier
-programs_ubuntu18_04_6.append(('V2Verifier',
+programs_ubuntu22_04.append(('V2Verifier',
 """sudo apt-get install -y libgmp3-dev python3-tk python3-pil.imagetk
-python3 -m pip install fastecdsa
-python3 -m pip install -U pyyaml
+sudo python3 -m pip install fastecdsa
+sudo python3 -m pip install -U pyyaml
 #sudo apt install -y git cmake libuhd-dev uhd-host swig libgmp3-dev python3-pip python3-tk python3-pil 
 #python3-pil.imagetk gnuradio
 #Needs gr-foo and gr-ieee802-11
 """,True,None))
 
-# OpenBTS
-programs_ubuntu18_04_6.append(('OpenBTS',
-"""sudo apt-get install -y software-properties-common
-sudo add-apt-repository -y ppa:git-core/ppa
-sudo apt-get update
-sudo apt-get install -y git
-sudo apt-get install -y asterisk
-sudo apt-get install -y twinkle
-sudo apt-get install -y autoconf libtool libosip2-dev libortp-dev libusb-1.0-0-dev g++ sqlite3 libsqlite3-dev erlang libreadline6-dev libncurses5-dev
-mkdir -p ~/Installed_by_FISSURE/OpenBTS
-cd ~/Installed_by_FISSURE/OpenBTS
-git clone https://github.com/RangeNetworks/dev.git
-cd dev
-./clone.sh
-./switchto.sh master
-cd liba53/
-sudo make install
-cd ..
-git clone https://github.com/tom-2015/fakecoredumper.git
-cd fakecoredumper
-chmod +x install.sh
-./install.sh
-cd ..
-sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/build.sh ./build.sh
-sudo apt install g++-5 -y
-sudo update-alternatives --remove-all gcc
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-5 60 --slave /usr/bin/g++ g++ /usr/bin/g++-5 
-sudo chmod +x build.sh
-./build.sh B210
-sudo mkdir /etc/OpenBTS
-cd openbts
-sudo sqlite3 -init ./apps/OpenBTS.example.sql /etc/OpenBTS/OpenBTS.db ".quit"
-#sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/usrp_b210_fpga.bin /usr/share/uhd/images/usrp_b210_fpga.bin
-cd apps
-ln -s ../Transceiver52M/transceiver .
-sudo apt-get install -y sqlitebrowser
-sudo mkdir -p /var/lib/asterisk/sqlite3dir
-cd ../../subscriberRegistry
-make
-cd apps
-cp """ + fissure_directory + """/Tools/openbts_files_18_04/sipauthserve.example.sql sipauthserve.example.sql
-sudo sqlite3 -init sipauthserve.example.sql /etc/OpenBTS/sipauthserve.db ".quit"
-cd ../../smqueue
-autoconf -i
-./configure
-make
-cp """ + fissure_directory + """/Tools/openbts_files_18_04/smqueue.example.sql smqueue/smqueue.example.sql
-sudo sqlite3 -init smqueue/smqueue.example.sql /etc/OpenBTS/smqueue.db ".quit"
-sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/sip.conf /etc/asterisk/sip.conf
-sudo cp """ + fissure_directory + """/Tools/openbts_files_18_04/extensions.conf /etc/asterisk/extensions.conf
-sudo apt-get install -y pcscd pcsc-tools libccid libpcsclite-dev
-cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/pysim
-cd pysim
-sudo apt-get install -y python3-pip swig
-sudo python3 -m pip install -r requirements.txt
-sudo update-alternatives --remove-all gcc
-sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-sudo uhd_images_downloader
-""",True,None))
-
 # srsRAN/srsLTE
-programs_ubuntu18_04_6.append(('srsRAN',
+programs_ubuntu22_04.append(('srsRAN',
 """sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
 sudo apt-get install -y libboost-system-dev libboost-test-dev libboost-thread-dev libqwt-qt5-dev qtbase5-dev  # srsGUI
 mkdir -p ~/Installed_by_FISSURE
@@ -3655,8 +3295,8 @@ sudo apt-get install -y fortune cowsay lolcat  # IMSI-Catcher 4G
 srsenb --help
 """,True,None))
 
-# FALCON
-programs_ubuntu18_04_6.append(('FALCON',
+# FALCON - FIX (needs older soapysdr version?)
+programs_ubuntu22_04.append(('FALCON',
 """sudo apt-get install -y build-essential git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev  # For srsLTE
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3675,21 +3315,21 @@ ls /usr/bin/FalconGUI
 """,True,None))
 
 # Aircrack-ng
-programs_ubuntu18_04_6.append(('Aircrack-ng',
+programs_ubuntu22_04.append(('Aircrack-ng',
 """sudo apt-get install -y aircrack-ng
 ########## Verify ##########
 aircrack-ng --help
 """,True,None))
 
 # Geany
-programs_ubuntu18_04_6.append(('Geany',
+programs_ubuntu22_04.append(('Geany',
 """sudo apt-get install -y geany
 ########## Verify ##########
 geany --help
 """,True,None))
 
 # Arduino IDE
-programs_ubuntu18_04_6.append(('Arduino IDE',
+programs_ubuntu22_04.append(('Arduino IDE',
 """wget -P ~/Installed_by_FISSURE/ https://downloads.arduino.cc/arduino-1.8.15-linux64.tar.xz
 cd ~/Installed_by_FISSURE
 tar -xf arduino-1.8.15-linux64.tar.xz
@@ -3702,22 +3342,30 @@ arduino --version
 """,True,None))
 
 # Minicom
-programs_ubuntu18_04_6.append(('Minicom',
+programs_ubuntu22_04.append(('Minicom',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
 """,True,None))
 
 # PuTTY
-programs_ubuntu18_04_6.append(('PuTTY',
+programs_ubuntu22_04.append(('PuTTY',
 """sudo apt-get install -y putty
 ########## Verify ##########
 putty --help
 """,True,None))
 
-# openHAB
-programs_ubuntu18_04_6.append(('openHAB',
-"""wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
+# openHAB - FIX
+programs_ubuntu22_04.append(('openHAB',
+"""sudo apt-get -yq install gnupg curl
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
+cd ~/Downloads
+curl -O https://cdn.azul.com/zulu/bin/zulu-repo_1.0.0-2_all.deb
+sudo apt-get install ./zulu-repo_1.0.0-2_all.deb
+sudo apt-get update
+sudo apt-get install -y zulu11-jdk
+rm zulu-repo_1.0.0-2_all.deb
+wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
 sudo apt-get update && sudo apt-get install -y openhab
@@ -3726,7 +3374,7 @@ ls /usr/bin/openhab-cli
 """,True,None))
 
 # rtl-zwave
-programs_ubuntu18_04_6.append(('rtl-zwave',
+programs_ubuntu22_04.append(('rtl-zwave',
 """mkdir -p ~/Installed_by_FISSURE
 sudo apt-get install -y libpcap-dev
 cp -R """ + fissure_directory + """/Tools/rtl-zwave-master ~/Installed_by_FISSURE/
@@ -3737,7 +3385,7 @@ ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
 """,True,None))
 
 # waving-z
-programs_ubuntu18_04_6.append(('waving-z',
+programs_ubuntu22_04.append(('waving-z',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE/
 git clone https://github.com/baol/waving-z.git
@@ -3751,15 +3399,15 @@ ls ~/Installed_by_FISSURE/waving-z/build/wave-in
 """,True,None))
 
 # baudline
-programs_ubuntu18_04_6.append(('baudline',
+programs_ubuntu22_04.append(('baudline',
 """mkdir -p ~/Installed_by_FISSURE
 tar -xf """ + fissure_directory + """/Tools/baudline_1.08_linux_x86_64.tar.gz -C ~/Installed_by_FISSURE
 ########## Verify ##########
 ~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
 """,True,None))
 
-# Universal Radio Hacker
-programs_ubuntu18_04_6.append(('Universal Radio Hacker',
+# Universal Radio Hacker - FIX
+programs_ubuntu22_04.append(('Universal Radio Hacker',
 """sudo python3 -m pip install cython
 sudo python3 -m pip install urh
 ########## Verify ##########
@@ -3767,16 +3415,16 @@ urh --version
 """,True,None))
 
 # Inspectrum
-programs_ubuntu18_04_6.append(('Inspectrum',
+programs_ubuntu22_04.append(('Inspectrum',
 """sudo apt-get install -y inspectrum
 ########## Verify ##########
 inspectrum --help
 """,True,None))
 
 # OpenCPN
-programs_ubuntu18_04_6.append(('OpenCPN',
+programs_ubuntu22_04.append(('OpenCPN',
 """sudo add-apt-repository -y ppa:opencpn/opencpn
-sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C865EB40
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C865EB40  # FIX
 sudo apt-get update
 sudo apt-get install -y opencpn
 ########## Verify ##########
@@ -3784,7 +3432,7 @@ ls /usr/bin/opencpn
 """,True,None))
 
 # Kalibrate
-programs_ubuntu18_04_6.append(('Kalibrate',
+programs_ubuntu22_04.append(('Kalibrate',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/steve-m/kalibrate-rtl.git
@@ -3795,7 +3443,7 @@ ls ~/Installed_by_FISSURE/kalibrate-rtl/src/kal
 """,True,None))
 
 # retrogram-rtlsdr
-programs_ubuntu18_04_6.append(('retrogram-rtlsdr',
+programs_ubuntu22_04.append(('retrogram-rtlsdr',
 """mkdir -p ~/Installed_by_FISSURE
 sudo apt-get install -y librtlsdr-dev libncurses5-dev libboost-program-options-dev
 cp -R """ + fissure_directory + """/Tools/retrogram-rtlsdr-master ~/Installed_by_FISSURE/
@@ -3806,7 +3454,7 @@ ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
 """,True,None))
 
 # RTLSDR-Airband
-programs_ubuntu18_04_6.append(('RTLSDR-Airband',
+programs_ubuntu22_04.append(('RTLSDR-Airband',
 """sudo apt-get install -y build-essential cmake pkg-config libmp3lame-dev libshout3-dev libconfig++-dev libfftw3-dev libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3822,13 +3470,12 @@ rtl_airband -h
 """,True,None))
 
 # Spektrum
-programs_ubuntu18_04_6.append(('Spektrum',
+programs_ubuntu22_04.append(('Spektrum',
 """echo 'blacklist dvb_usb_rtl28xxu' | sudo tee /etc/modprobe.d/rtl-sdr.conf  # Restart computer to use RTL device
 echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", GROUP="adm", MODE="0666"' | sudo tee /etc/udev/rules.d/20.rtlsdr.rules
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -P ~/Installed_by_FISSURE/ https://github.com/pavels/spektrum/releases/download/2.1.0/spektrum-linux64.tar.gz
-cd ~/Installed_by_FISSURE
 tar -xf spektrum-linux64.tar.gz
 rm spektrum-linux64.tar.gz
 ########## Verify ##########
@@ -3836,7 +3483,7 @@ ls ~/Installed_by_FISSURE/spektrum/spektrum
 """,True,None))
 
 # SDRTrunk
-programs_ubuntu18_04_6.append(('SDRTrunk',
+programs_ubuntu22_04.append(('SDRTrunk',
 """#sudo apt-get -yq install gnupg curl  # Java (if needed)
 #sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
 #cd ~/Downloads
@@ -3848,7 +3495,6 @@ programs_ubuntu18_04_6.append(('SDRTrunk',
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -P ~/Installed_by_FISSURE/ https://github.com/DSheirer/sdrtrunk/releases/download/v0.5.0-alpha.6/sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
-cd ~/Installed_by_FISSURE
 unzip -q sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 rm sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 ########## Verify ##########
@@ -3856,14 +3502,14 @@ ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 """,True,None))
 
 # Audio Tools
-programs_ubuntu18_04_6.append(('Audio Tools',
+programs_ubuntu22_04.append(('Audio Tools',
 """sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
 ########## Verify ##########
 audacity --version && sox --version
 """,True,None))
 
 # Video Tools
-programs_ubuntu18_04_6.append(('Video Tools',
+programs_ubuntu22_04.append(('Video Tools',
 """sudo apt-get install -y snapd
 sudo snap install vlc
 sudo apt-get install -y simplescreenrecorder
@@ -3872,7 +3518,7 @@ simplescreenrecorder --help
 """,True,None))
 
 # radiosonde_auto_rx
-programs_ubuntu18_04_6.append(('radiosonde_auto_rx',
+programs_ubuntu22_04.append(('radiosonde_auto_rx',
 """sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip python3-flask sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3885,13 +3531,22 @@ sudo python3 -m pip install -r requirements.txt
 ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
 """,True,None))
 
-# SdrGlut
-programs_ubuntu18_04_6.append(('SdrGlut',
-"""sudo apt-get install -y librtaudio-dev libsoapysdr0.6 libsoapysdr-dev libopenal-dev libliquid-dev freeglut3 freeglut3-dev libalut0 libalut-dev libsndfile1-dev
+# SdrGlut - FIX
+programs_ubuntu22_04.append(('SdrGlut',
+"""sudo apt-get install -y librtaudio-dev libsoapysdr-dev libopenal-dev libliquid-dev freeglut3 freeglut3-dev libalut0 libalut-dev libsndfile1-dev 
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/jgaeddert/liquid-dsp.git
+cd liquid-dsp/
+./bootstrap.sh
+./configure
+make
+sudo make install
+sudo ldconfig
 cd ~/Installed_by_FISSURE
 git clone https://github.com/righthalfplane/SdrGlut.git
 cp -f """ + fissure_directory + """/Tools/SdrGlut/firstFile.h ~/Installed_by_FISSURE/SdrGlut/MainSource/
+cp -f """ + fissure_directory + """/Tools/SdrGlut/makefileUbunta ~/Installed_by_FISSURE/SdrGlut/makefileUbunta
 cd SdrGlut
 make -f makefileUbunta
 ########## Verify ##########
@@ -3899,12 +3554,13 @@ ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 """,True,None))
 
 # rehex
-programs_ubuntu18_04_6.append(('rehex',
-"""sudo apt-get install -y build-essential git libwxgtk3.0-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev gtk2.0 libgtk2.0-dev
+programs_ubuntu22_04.append(('rehex',
+"""sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/solemnwarning/rehex.git
 cd rehex
+sudo git config --global --add safe.directory """ + os.path.expanduser('~') + """/Installed_by_FISSURE/rehex
 sudo cpan Template
 sudo make install
 ########## Verify ##########
@@ -3912,7 +3568,7 @@ ls /usr/local/bin/rehex
 """,True,None))
 
 # ZEPASSD
-programs_ubuntu18_04_6.append(('ZEPASSD',
+programs_ubuntu22_04.append(('ZEPASSD',
 """#sudo apt-get install -y # boost.program-options, boost.crc, boost.circular-buffer, libfftw3, libuhd 3.9.5 or later
 sudo apt-get install -y libuhd-dev
 mkdir -p ~/Installed_by_FISSURE
@@ -3925,7 +3581,7 @@ ls ~/Installed_by_FISSURE/zepassd/zepassd
 """,True,None))
 
 # iridium-toolkit
-programs_ubuntu18_04_6.append(('iridium-toolkit',
+programs_ubuntu22_04.append(('iridium-toolkit',
 """#Python (2.7), NumPy (scipy), crcmod
 sudo apt-get install -y mplayer
 mkdir -p ~/Installed_by_FISSURE
@@ -3940,7 +3596,7 @@ ls ~/Installed_by_FISSURE/osmo-ir77/codec/ir77_ambe_decode
 """,True,None))
 
 # IridiumLive
-programs_ubuntu18_04_6.append(('IridiumLive',
+programs_ubuntu22_04.append(('IridiumLive',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/microp11/iridiumlive.git
@@ -3953,20 +3609,27 @@ sudo chmod +x IridiumLive
 ls ~/Installed_by_FISSURE/linux-x64/IridiumLive
 """,True,None))
 
-# NETATTACK2
-programs_ubuntu18_04_6.append(('NETATTACK2',
-"""sudo python2 -m pip install netifaces
-sudo apt-get install -y python-scapy python-nmap python-nfqueue nmap
+# NETATTACK2 - Fix
+programs_ubuntu22_04.append(('NETATTACK2',
+"""#sudo pip install netifaces  # fix for python2
+#sudo apt-get install -y python-scapy python-nmap python-nfqueue nmap  # this needs to be fixed, can it still run with python2?
+sudo python2 -m pip install netifaces
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/chrizator/netattack2.git
+sudo python2 -m pip install nmap
+cd netattack2
+wget http://archive.ubuntu.com/ubuntu/pool/universe/libn/libnetfilter-queue/libnetfilter-queue1_1.0.2-2_amd64.deb
+sudo dpkg -i libnetfilter-queue1_1.0.2-2_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/n/nfqueue-bindings/python-nfqueue_0.6-1build2_amd64.deb
+sudo dpkg -i python-nfqueue_0.6-1build2_amd64.deb 
 """,True,None))
 
 # Wifite
-programs_ubuntu18_04_6.append(('Wifite',
+programs_ubuntu22_04.append(('Wifite',
 """# python, iwconfig, ifconfig, Aircrack-ng, tshark, reaver, bully, coWPAtty, pyrit, hashcat, hcxdumptool, hcxpcaptool
-sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger
-sudo python2 -m pip install psycopg2-binary scapy
+sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger python-is-python3
+sudo python3 -m pip install psycopg2-binary #scapy (python3 scapy with pip causes errors)
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/derv82/wifite2.git
@@ -3993,6 +3656,7 @@ cd Pyrit-v0.5.0
 wget https://github.com/JPaulMora/Pyrit/releases/download/v0.5.0/Pyrit-v0.5.0.zip
 unzip -q Pyrit-v0.5.0.zip
 rm Pyrit-v0.5.0.zip
+sudo apt-get install -y python2-dev
 python2 setup.py clean
 python2 setup.py build
 sudo python2 setup.py install
@@ -4007,13 +3671,13 @@ cd hcxtools
 make
 sudo make install
 sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
-########## Verify ##########
-~/Installed_by_FISSURE/wifite2/Wifite.py --help
+#sudo apt-get install -y tshark
 """,True,None))
 
 # rtl_433
-programs_ubuntu18_04_6.append(('rtl_433',
-"""sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
+programs_ubuntu22_04.append(('rtl_433',
+"""#sudo apt-get install -y rtl-433
+sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/merbanan/rtl_433.git
@@ -4028,9 +3692,8 @@ rtl_433 -help
 """,True,None))
 
 # RouterSploit
-programs_ubuntu18_04_6.append(('RouterSploit',
-"""#sudo add-apt-repository universe
-sudo apt-get install -y python3-pip libglib2.0-dev rustc
+programs_ubuntu22_04.append(('RouterSploit',
+"""sudo apt-get install -y python3-pip libglib2.0-dev rustc
 sudo python3 -m pip install setuptools-rust
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -4043,8 +3706,8 @@ python3 -m pip install bluepy
 ~/Installed_by_FISSURE/routersploit/rsf.py --help
 """,True,None))
 
-# Metasploit
-programs_ubuntu18_04_6.append(('Metasploit',
+# Metasploit - FIX
+programs_ubuntu22_04.append(('Metasploit',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 mkdir metasploit
@@ -4055,45 +3718,47 @@ ls /usr/bin/msfconsole
 """,True,None))
 
 # monitor_rtl433
-programs_ubuntu18_04_6.append(('monitor_rtl433',
+programs_ubuntu22_04.append(('monitor_rtl433',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mcbridejc/monitor_rtl433.git
 cd monitor_rtl433
 sudo python3 setup.py install
+sudo python3 -m pip install python-dateutil
+sudo python3 -m pip install flask_table
 ########## Verify ##########
-ls /usr/local/bin/monitor_rtl433
+ls /usr/bin/monitor_rtl433
 """,True,None))
 
 # scan-ssid
-programs_ubuntu18_04_6.append(('scan-ssid',
+programs_ubuntu22_04.append(('scan-ssid',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y iw
 git clone https://github.com/Resethel/scan-ssid.git
 cd scan-ssid
 sudo cp scan-ssid /usr/local/bin
-sudo chmod 755 /usr/local/bin/scan-ssid
+sudo chmod 755 /usr/local/bin/scan-ssid  # can't be in monitor mode, managed only
 ########## Verify ##########
 scan-ssid --help
 """,True,None))
 
 # minimodem
-programs_ubuntu18_04_6.append(('minimodem',
+programs_ubuntu22_04.append(('minimodem',
 """sudo apt-get install -y minimodem
 ########## Verify ##########
 minimodem --version
 """,True,None))
 
 # WSJT-X
-programs_ubuntu18_04_6.append(('WSJT-X',
+programs_ubuntu22_04.append(('WSJT-X',
 """sudo apt-get install -y wsjtx
 ########## Verify ##########
 ls /usr/bin/wsjtx
 """,True,None))
 
 # Google Earth Pro
-programs_ubuntu18_04_6.append(('Google Earth Pro',
+programs_ubuntu22_04.append(('Google Earth Pro',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_current_amd64.deb
@@ -4103,14 +3768,14 @@ ls /usr/bin/google-earth-pro
 """,True,None))
 
 # gr-air-modes
-programs_ubuntu18_04_6.append(('gr-air-modes',
+programs_ubuntu22_04.append(('gr-air-modes',
 """sudo apt-get install -y gr-air-modes
 ########## Verify ##########
 modes_rx --help
 """,True,None))
 
 # ESP8266 Deauther v2
-programs_ubuntu18_04_6.append(('ESP8266 Deauther v2',
+programs_ubuntu22_04.append(('ESP8266 Deauther v2',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
@@ -4119,13 +3784,14 @@ rm v2.zip
 """,True,None))
 
 # Viking
-programs_ubuntu18_04_6.append(('Viking',
+programs_ubuntu22_04.append(('Viking',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.code.sf.net/p/viking/code viking
 sudo apt install -y gtk-doc-tools docbook-xsl yelp-tools libpng-dev libgtk-3-dev libicu-dev libjson-glib-dev intltool
 sudo apt-get install -y libcurl4-gnutls-dev libglib2.0-dev-bin
-sudo apt-get install -y libsqlite3-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev libnova-dev
+sudo apt-get install -y libsqlite3-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev
+sudo apt-get install -y autopoint libnova-dev
 cd viking
 ./autogen.sh
 ./configure
@@ -4136,30 +3802,29 @@ viking --help
 """,True,None))
 
 # PyGPSClient
-programs_ubuntu18_04_6.append(('PyGPSClient',
-"""sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk libjpeg-dev zlib1g-dev
-sudo apt install -y tk-devel
+programs_ubuntu22_04.append(('PyGPSClient',
+"""sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk
 sudo python3 -m pip install --upgrade PyGPSClient
 ########## Verify ##########
 ls /usr/local/bin/pygpsclient
 """,True,None))
 
 # Gpredict
-programs_ubuntu18_04_6.append(('Gpredict',
+programs_ubuntu22_04.append(('Gpredict',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
 """,True,None))
 
 # FoxtrotGPS
-programs_ubuntu18_04_6.append(('FoxtrotGPS',
+programs_ubuntu22_04.append(('FoxtrotGPS',
 """sudo apt-get install -y foxtrotgps
 ########## Verify ##########
 foxtrotgps --help
 """,True,None))
 
 # multimon-ng
-programs_ubuntu18_04_6.append(('multimon-ng',
+programs_ubuntu22_04.append(('multimon-ng',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/EliasOenal/multimonNG.git
@@ -4174,14 +3839,14 @@ ls /usr/local/bin/multimon-ng
 """,True,None))
 
 # Xastir
-programs_ubuntu18_04_6.append(('Xastir',
-"""sudo apt-get install -y xastir
+programs_ubuntu22_04.append(('Xastir',
+"""sudo apt-get install -y xastir  # should non-superusers be allowed? sure, why not.
 ########## Verify ##########
 sudo xastir -V
 """,True,None))
 
 # LTE-Cell-Scanner
-programs_ubuntu18_04_6.append(('LTE-Cell-Scanner',
+programs_ubuntu22_04.append(('LTE-Cell-Scanner',
 """sudo apt-get install -y cmake libncurses5-dev liblapack-dev libblas-dev libboost-thread-dev libboost-system-dev libitpp-dev librtlsdr-dev libfftw3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -4197,39 +3862,39 @@ ls /usr/local/bin/CellSearch
 """,True,None))
 
 # btscanner
-programs_ubuntu18_04_6.append(('btscanner',
+programs_ubuntu22_04.append(('btscanner',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
 """,True,None))
 
 # hcidump
-programs_ubuntu18_04_6.append(('hcidump',
+programs_ubuntu22_04.append(('hcidump',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
 """,True,None))
 
 # GraphicsMagick
-programs_ubuntu18_04_6.append(('GraphicsMagick',
+programs_ubuntu22_04.append(('GraphicsMagick',
 """sudo apt-get install -y graphicsmagick-imagemagick-compat
 ########## Verify ##########
 gm -help
 """,True,None))
 
 # Spectrum Painter
-programs_ubuntu18_04_6.append(('Spectrum Painter',
-"""sudo python3 -m pip install numpy imageio
+programs_ubuntu22_04.append(('Spectrum Painter',
+"""sudo python3 -m pip install numpy imageio 
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/polygon/spectrum_painter.git
 #cd spectrum_painter/
-#python3 -m pip install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
+#pip3 install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
 """,True,None))
 
 # nrsc5 and nrsc5-gui
-programs_ubuntu18_04_6.append(('nrsc5',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev
+programs_ubuntu22_04.append(('nrsc5',
+"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/theori-io/nrsc5.git
@@ -4250,51 +3915,46 @@ git clone https://github.com/cmnybo/nrsc5-gui.git
 nrsc5 -v
 """,True,None))
 
-# HAM2MON
-programs_ubuntu18_04_6.append(('HAM2MON',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-git clone https://github.com/madengr/ham2mon.git
-########## Verify ##########
-~/Installed_by_FISSURE/ham2mon/apps/ham2mon.py --help
-""",True,None))
+# # HAM2MON  # Doesn't work for 22.04
+# programs_ubuntu22_04.append(('HAM2MON',
+# """mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/madengr/ham2mon.git
+# """,True,None))
 
 # Anki
-programs_ubuntu18_04_6.append(('Anki',
+programs_ubuntu22_04.append(('Anki',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
 """,True,None))
 
 # Bless
-programs_ubuntu18_04_6.append(('Bless',
+programs_ubuntu22_04.append(('Bless',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
 """,True,None))
 
 # trackerjacker
-programs_ubuntu18_04_6.append(('trackerjacker',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-git clone https://github.com/calebmadrigal/trackerjacker.git
-cd trackerjacker
-sudo python3 setup.py install
+programs_ubuntu22_04.append(('trackerjacker',
+"""sudo ln -s -f /usr/lib/x86_64-linux-gnu/libc.a /usr/lib/x86_64-linux-gnu/liblibc.a  # Python3.9 missing file
+sudo python3 -m pip install trackerjacker
 ########## Verify ##########
 sudo trackerjacker --help
 """,True,None))
 
 # airgeddon
-programs_ubuntu18_04_6.append(('airgeddon',
-"""sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only libxcrypt-dev john libnl-3-dev libnl-genl-3-dev
+programs_ubuntu22_04.append(('airgeddon',
+"""sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only john
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone --depth 1 https://github.com/v1s1t0r1sh3r3/airgeddon.git
 #asleap
-git clone https://github.com/joswr1ght/asleap
+mkdir asleap
 cd asleap
-make
-sudo cp asleap /usr/bin/
+wget http://http.kali.org/pool/main/a/asleap/asleap_2.3~git20201128.254acab-0kali1_amd64.deb
+sudo dpkg -i asleap_2.3~git20201128.254acab-0kali1_amd64.deb
 #bettercap
 sudo apt-get install -y build-essential libpcap-dev net-tools 
 cd ~/Installed_by_FISSURE
@@ -4305,6 +3965,7 @@ unzip -q bettercap_linux_amd64_v2.31.1.zip
 rm bettercap_linux_amd64_v2.31.1.zip
 sudo cp bettercap /usr/bin/
 #mdk4
+sudo apt-get install -y libnl-genl-3-dev
 cd ~/Installed_by_FISSURE
 git clone https://github.com/aircrack-ng/mdk4
 cd mdk4
@@ -4313,36 +3974,34 @@ sudo make install
 """,True,None))
 
 # Hydra
-programs_ubuntu18_04_6.append(('Hydra',
+programs_ubuntu22_04.append(('Hydra',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
 """,True,None))
 
 # ESP32 Bluetooth Classic Sniffer - FIX
-programs_ubuntu18_04_6.append(('ESP32 Bluetooth Classic Sniffer',
+programs_ubuntu22_04.append(('ESP32 BT Classic Sniffer',
 """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
 cd ~/Installed_by_FISSURE
 #git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
-#cd esp32_bluetooth_classic_sniffer/dissectors
-#sed -i 's/3.4/3.6/g' build.sh
-##cp """ + fissure_directory + """/Tools/esp32_bluetooth_classic_sniffer/18-04-5_3-6_config.h config.h
-#cd ..
+#cd esp32_bluetooth_classic_sniffer
 #sudo ./requirements.sh
 #./build.sh
-#sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.6
-#rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" error
+##sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.4
+#rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 """,False,None))
 
 
-
 ########################################################################
+       
 
-class InstallDialog2(QtGui.QDialog, form_class2):
+
+class InstallDialog2(QtWidgets.QDialog, form_class2):
     def __init__(self,programs):
         """ Software Selection Dialog
         """
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.setupUi(self)
         
         # Prevent Resizing/Maximizing
@@ -4356,7 +4015,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         
         # Create Categories
         for c in larger_categories:
-            parent = QtGui.QTreeWidgetItem(self.treeWidget_software)
+            parent = QtWidgets.QTreeWidgetItem(self.treeWidget_software)
             parent.setText(0,c)
             parent.setFlags(parent.flags() | QtCore.Qt.ItemIsTristate | QtCore.Qt.ItemIsUserCheckable)
             parent.setCheckState(0, QtCore.Qt.Checked)
@@ -4369,11 +4028,11 @@ class InstallDialog2(QtGui.QDialog, form_class2):
                 parent_name = programs[row][3]
                 
                 # Iterate the Tree
-                iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget_software)
+                iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
                 while iterator.value():
                     item = iterator.value()
                     if item.text(0) == parent_name:
-                        child = QtGui.QTreeWidgetItem(item)
+                        child = QtWidgets.QTreeWidgetItem(item)
                         child.setFlags(child.flags() | QtCore.Qt.ItemIsUserCheckable)
                         child.setText(0, programs[row][0])
                         if programs[row][2] == True:
@@ -4385,7 +4044,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
             
             # No Category
             else:            
-                parent = QtGui.QTreeWidgetItem(self.treeWidget_software)
+                parent = QtWidgets.QTreeWidgetItem(self.treeWidget_software)
                 parent.setText(0,programs[row][0])
                 parent.setFlags(parent.flags() | QtCore.Qt.ItemIsTristate | QtCore.Qt.ItemIsUserCheckable)
                 if programs[row][2] == True:
@@ -4407,22 +4066,22 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         
     def _slotOK_Clicked(self):
         """ Install the software.
-        """       
+        """      
         # Find Number of Checked Items and Store Names (prevents checking after starting the install)
         get_checked_items = 0
-        iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget_software)
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
         self.checked_items = []
         while iterator.value():
             item = iterator.value()
-            if item.checkState(0) == 2:
+            if item.checkState(0) == 2:    
                 # Ignore Categories
-                if item.text(0) not in larger_categories:
+                if item.text(0) not in larger_categories:       
                     get_checked_items = get_checked_items + 1
                     self.checked_items.append(item.text(0))     
             iterator+=1   
             
         # Reset the Colors
-        iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget_software)
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
         while iterator.value():
             item = iterator.value()
             item.setForeground(0,QtGui.QColor('Black'))
@@ -4431,7 +4090,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         # Show Progress Bar
         self.progressBar1.show()      
         self.progressBar1.setMaximum(get_checked_items+1)
-        QtGui.QApplication.processEvents()
+        QtWidgets.QApplication.processEvents()
         self.pushButton_ok.setEnabled(False)
 
         # Iterate the Checked Items
@@ -4459,7 +4118,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
                     self.checked_index = self.checked_index + 1
                     
                     while self.loop == True:
-                        QtGui.QApplication.processEvents()
+                        QtWidgets.QApplication.processEvents()
                         time.sleep(0.1)
 
         # Finished
@@ -4469,7 +4128,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         self.progressBar1.hide()   
         self.pushButton_ok.setEnabled(True)
         #self.accept()
-        
+
         
     @QtCore.pyqtSlot()
     def on_finished(self):
@@ -4477,7 +4136,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         """
         # Verify
         if len(self.verify_code) > 0:
-            iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget_software)
+            iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
             while iterator.value():
                 item = iterator.value()
                 if item.text(0) == self.checked_items[self.checked_index-1]:
@@ -4494,6 +4153,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
                     break
                 iterator+=1  
             
+        
         self.loop = False
         
     def _slotCancelClicked(self):
@@ -4520,7 +4180,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         """ Unchecks all the checkboxes.
         """
         # Iterate the Tree
-        iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget_software)
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
         while iterator.value():
             item = iterator.value()
             item.setCheckState(0, QtCore.Qt.Unchecked)
@@ -4530,7 +4190,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         """ Checks the default checkboxes.
         """
         # Iterate the Tree
-        iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget_software)
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
         while iterator.value():
             item = iterator.value()            
             for p in range(0,len(self.programs)):
@@ -4541,9 +4201,9 @@ class InstallDialog2(QtGui.QDialog, form_class2):
                         item.setCheckState(0, QtCore.Qt.Unchecked)
                     break           
             iterator+=1  
-            
-        
 
+        
+        
 class MyThread(QtCore.QThread):
     def __init__(self, n, parent=None):
         QtCore.QThread.__init__(self, parent)
@@ -4551,18 +4211,19 @@ class MyThread(QtCore.QThread):
 
     def run(self):
         try:
-            #print self.n
+            #print(self.n)
             p1 = subprocess.Popen(self.n, shell=True)
             p1.wait()
         except:
-            print "FAILURE"
+            print("FAILURE")
+        
 
 
-class InstallDialog1(QtGui.QDialog, form_class):
+class InstallDialog1(QtWidgets.QDialog, form_class):
     def __init__(self):
         """ Operating System Dialog
         """
-        QtGui.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self)
         self.setupUi(self)
         
         # Prevent Resizing/Maximizing
@@ -4572,18 +4233,16 @@ class InstallDialog1(QtGui.QDialog, form_class):
         self._connectSlots()  
         
         # Detect Operating System
-        process = subprocess.Popen('lsb_release -d', shell=True, stdout=subprocess.PIPE)
+        process = subprocess.Popen('lsb_release -d', shell=True, stdout=subprocess.PIPE, encoding='utf8')
         stdout = process.communicate()[0]
         
         # Select Radio Button
-        if "Ubuntu 18.04.6" in stdout:
-            self.radioButton_ubuntu18_04_6.setChecked(True)
-        elif "Ubuntu 18.04.5" in stdout:
-            self.radioButton_ubuntu18_04_5.setChecked(True)
-        elif "Ubuntu 18.04" in stdout:
-            self.radioButton_ubuntu18_04.setChecked(True)
-        # elif "Ubuntu 20.04.1" in stdout:
-            # self.radioButton_ubuntu20_04.setChecked(True)
+        if "Ubuntu 20.04.1" in stdout:
+            self.radioButton_ubuntu20_04.setChecked(True)
+        elif "Ubuntu 20.04.4" in stdout:
+            self.radioButton_ubuntu20_04_4.setChecked(True)            
+        elif "Ubuntu 22.04" in stdout:
+            self.radioButton_ubuntu22_04.setChecked(True)
         
         self.get_os = ""
         
@@ -4598,14 +4257,12 @@ class InstallDialog1(QtGui.QDialog, form_class):
         """ Return to open the second install dialog.
         """        
         # Select Software for Operating System
-        if self.radioButton_ubuntu18_04.isChecked():
-            self.get_os = "Ubuntu 18.04"
-        elif self.radioButton_ubuntu18_04_5.isChecked():
-            self.get_os = "Ubuntu 18.04.5"
-        elif self.radioButton_ubuntu18_04_6.isChecked():
-            self.get_os = "Ubuntu 18.04.6"
-        # elif self.radioButton_ubuntu20_04.isChecked():
-            # self.get_os = "Ubuntu 20.04.1"
+        if self.radioButton_ubuntu20_04.isChecked():
+            self.get_os = "Ubuntu 20.04.1"
+        elif self.radioButton_ubuntu20_04_4.isChecked():
+            self.get_os = "Ubuntu 20.04.4"            
+        elif self.radioButton_ubuntu22_04.isChecked():
+            self.get_os = "Ubuntu 22.04"
             
         self.accept()
         
@@ -4618,28 +4275,26 @@ class InstallDialog1(QtGui.QDialog, form_class):
 def main(argv):
     """ The start of everything.
     """   
-    app = QtGui.QApplication(argv,True) 
+    app = QtWidgets.QApplication(argv) 
     
     # Operating System Dialog
     install_dlg1 = InstallDialog1()
-    install_dlg1.show()	
+    install_dlg1.show() 
     
     # OK Clicked
-    if install_dlg1.exec_() == QtGui.QDialog.Accepted:
-        if install_dlg1.get_os == "Ubuntu 18.04":
-            install_dlg2 = InstallDialog2(programs_ubuntu18_04)
-        elif install_dlg1.get_os == "Ubuntu 18.04.5":
-            install_dlg2 = InstallDialog2(programs_ubuntu18_04_5)
-        elif install_dlg1.get_os == "Ubuntu 18.04.6":
-            install_dlg2 = InstallDialog2(programs_ubuntu18_04_6)
-        # elif install_dlg1.get_os == "Ubuntu 20.04.1":
-            # install_dlg2 = InstallDialog2(programs_ubuntu20_04)
-        install_dlg2.show()	
+    if install_dlg1.exec_() == QtWidgets.QDialog.Accepted:
+        if install_dlg1.get_os == "Ubuntu 20.04.1":
+            install_dlg2 = InstallDialog2(programs_ubuntu20_04)
+        elif install_dlg1.get_os == "Ubuntu 20.04.4":
+            install_dlg2 = InstallDialog2(programs_ubuntu20_04_4)            
+        elif install_dlg1.get_os == "Ubuntu 22.04":
+            install_dlg2 = InstallDialog2(programs_ubuntu22_04)
+        install_dlg2.show() 
         
         # Install Clicked
-        if install_dlg2.exec_() == QtGui.QDialog.Accepted:
+        if install_dlg2.exec_() == QtWidgets.QDialog.Accepted:
             pass
-        #    print "Install Complete"
+        #    print("Install Complete")
             
     sys.exit()
     

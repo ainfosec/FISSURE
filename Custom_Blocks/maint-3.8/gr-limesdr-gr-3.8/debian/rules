@@ -1,0 +1,7 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@ --with python3
+
+override_dh_auto_configure:
+	dh_auto_configure -- -DENABLE_RFE=ON

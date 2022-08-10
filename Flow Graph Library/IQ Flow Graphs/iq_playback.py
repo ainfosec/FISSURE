@@ -1,21 +1,24 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Iq Playback
-# Generated: Mon Sep  6 11:46:12 2021
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
-from gnuradio import eng_notation
+import pmt
 from gnuradio import gr
-from gnuradio import uhd
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio import uhd
 import time
-
 
 class iq_playback(gr.top_block):
 
@@ -36,18 +39,24 @@ class iq_playback(gr.top_block):
         # Blocks
         ##################################################
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
-        	",".join(("ip_addr="+ip_address, "")),
-        	uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
+            ",".join(("ip_addr="+ip_address, "")),
+            uhd.stream_args(
+                cpu_format="fc32",
+                args='',
+                channels=list(range(0,1)),
+            ),
+            '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_channel, 0)
-        self.uhd_usrp_sink_0.set_samp_rate(float(sample_rate)*1e6)
         self.uhd_usrp_sink_0.set_center_freq(float(tx_frequency)*1e6, 0)
         self.uhd_usrp_sink_0.set_gain(float(tx_gain), 0)
         self.uhd_usrp_sink_0.set_antenna('TX/RX', 0)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, filepath, True)
+        self.uhd_usrp_sink_0.set_samp_rate(float(sample_rate)*1e6)
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, filepath, True, 0, 0)
+        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
+
+
 
         ##################################################
         # Connections
@@ -60,7 +69,6 @@ class iq_playback(gr.top_block):
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
         self.uhd_usrp_sink_0.set_gain(float(self.tx_gain), 0)
-
 
     def get_tx_frequency(self):
         return self.tx_frequency
@@ -96,9 +104,18 @@ class iq_playback(gr.top_block):
         self.blocks_file_source_0.open(self.filepath, True)
 
 
-def main(top_block_cls=iq_playback, options=None):
 
+def main(top_block_cls=iq_playback, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     tb.wait()
 

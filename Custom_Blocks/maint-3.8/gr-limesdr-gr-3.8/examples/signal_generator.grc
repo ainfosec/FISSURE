@@ -1,0 +1,307 @@
+options:
+  parameters:
+    author: Lime Microsystems
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: signal_generator
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Signal generator
+    window_size: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: analog_filter
+  id: variable_qtgui_entry
+  parameters:
+    comment: ''
+    gui_hint: 1,0,1,1
+    label: Analog filter bandwidth [MHz]
+    type: real
+    value: samp_rate/1e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [339, 8]
+    rotation: 0
+    state: true
+- name: baseband
+  id: variable_qtgui_entry
+  parameters:
+    comment: ''
+    gui_hint: 0,0,1,1
+    label: TX Baseband [MHz]
+    type: real
+    value: '100'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [178, 8]
+    rotation: 0
+    state: true
+- name: digital_filter
+  id: variable_qtgui_entry
+  parameters:
+    comment: ''
+    gui_hint: 1,1,1,1
+    label: Digital filter bandwidth [MHz]
+    type: real
+    value: samp_rate/1e6 - 0.3
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [339, 88]
+    rotation: 0
+    state: true
+- name: gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: 5,0,1,2
+    label: Gain [dB]
+    min_len: '70'
+    orient: Qt.Horizontal
+    rangeType: int
+    start: '0'
+    step: '1'
+    stop: '60'
+    value: '40'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [510, 8]
+    rotation: 0
+    state: true
+- name: nco
+  id: variable_qtgui_entry
+  parameters:
+    comment: ''
+    gui_hint: 0,1,1,1
+    label: NCO [MHz]
+    type: real
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [178, 87]
+    rotation: 0
+    state: true
+- name: pa_path
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: 4,0
+    label: PA Path
+    label0: Auto
+    label1: Band1
+    label2: Band2
+    label3: W
+    label4: ''
+    labels: '[]'
+    num_opts: '3'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[0, 1, 2]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '255'
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 170]
+    rotation: 0
+    state: true
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: 5e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [9, 103]
+    rotation: 0
+    state: enabled
+- name: signal_freq
+  id: variable_qtgui_entry
+  parameters:
+    comment: ''
+    gui_hint: 2,0,1,1
+    label: Signal frequency [MHz]
+    type: real
+    value: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [633, 6]
+    rotation: 0
+    state: true
+- name: signal_samp_rate
+  id: variable_qtgui_entry
+  parameters:
+    comment: ''
+    gui_hint: 2,1,1,1
+    label: Signal sampling rate [MHz]
+    type: real
+    value: samp_rate/1e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [633, 86]
+    rotation: 0
+    state: true
+- name: waveform
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: 4,1
+    label: Waveform
+    label0: Cosine
+    label1: Square
+    label2: Triangle
+    label3: Saw tooth
+    label4: Saw tooth
+    labels: '["0","1","2","3","4","5"]'
+    num_opts: '4'
+    option1: '103'
+    option2: '104'
+    option3: '105'
+    option4: '105'
+    options: '[100, 101, 102,103,104,105]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '102'
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [815, 5]
+    rotation: 0
+    state: true
+- name: analog_sig_source_x_0
+  id: analog_sig_source_x
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: '1'
+    comment: ''
+    freq: signal_freq*1e6
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    phase: '0'
+    samp_rate: signal_samp_rate*1e6
+    type: complex
+    waveform: waveform
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [193, 219]
+    rotation: 0
+    state: true
+- name: limesdr_sink_0
+  id: limesdr_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    allow_tcxo_dac: '0'
+    analog_bandw_ch0: analog_filter*1e6
+    analog_bandw_ch1: 5e6
+    calibr_bandw_ch0: samp_rate
+    calibr_bandw_ch1: 2.5e6
+    channel_mode: '0'
+    comment: ''
+    dacVal: '180'
+    digital_bandw_ch0: digital_filter*1e6
+    digital_bandw_ch1: samp_rate
+    filename: ''
+    gain_dB_ch0: gain
+    gain_dB_ch1: '1'
+    length_tag_name: ''
+    nco_freq_ch0: nco
+    nco_freq_ch1: '0'
+    oversample: '0'
+    pa_path_ch0: pa_path
+    pa_path_ch1: '255'
+    rf_freq: baseband*1e6
+    samp_rate: samp_rate
+    serial: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [533, 296]
+    rotation: 0
+    state: enabled
+- name: qtgui_sink_x_0
+  id: qtgui_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    bw: samp_rate
+    comment: ''
+    fc: baseband*1e6
+    fftsize: '4096'
+    gui_hint: 6,0,5,2
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    plotconst: 'True'
+    plotfreq: 'True'
+    plottime: 'True'
+    plotwaterfall: 'True'
+    rate: '10'
+    showports: 'False'
+    showrf: 'True'
+    type: complex
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [533, 173]
+    rotation: 0
+    state: true
+
+connections:
+- [analog_sig_source_x_0, '0', limesdr_sink_0, '0']
+- [analog_sig_source_x_0, '0', qtgui_sink_x_0, '0']
+
+metadata:
+  file_format: 1

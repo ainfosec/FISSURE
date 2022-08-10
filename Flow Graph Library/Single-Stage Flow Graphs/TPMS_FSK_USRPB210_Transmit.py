@@ -1,23 +1,25 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Tpms Fsk Usrpb210 Transmit
-# Generated: Sat Jan  1 21:49:43 2022
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
 from gnuradio import digital
-from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio import uhd
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio import uhd
 import time
 import tpms_poore
-
 
 class TPMS_FSK_USRPB210_Transmit(gr.top_block):
 
@@ -48,29 +50,33 @@ class TPMS_FSK_USRPB210_Transmit(gr.top_block):
         # Blocks
         ##################################################
         self.uhd_usrp_sink_1_0 = uhd.usrp_sink(
-        	",".join((serial, "")),
-        	uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
-        	'packet_len',
+            ",".join((serial, "")),
+            uhd.stream_args(
+                cpu_format="fc32",
+                args='',
+                channels=list(range(0,1)),
+            ),
+            'packet_len',
         )
-        self.uhd_usrp_sink_1_0.set_samp_rate(1e6)
         self.uhd_usrp_sink_1_0.set_center_freq(tx_freq, 0)
         self.uhd_usrp_sink_1_0.set_gain(tx_gain, 0)
         self.uhd_usrp_sink_1_0.set_antenna('TX/RX', 0)
-        self.tpms_poore_message_generator_pdu_0 = tpms_poore.message_generator_pdu(repetition_interval, configuration, sensor_id, battery_status, counter, unknown1, unknown2, self_test, tire_pressure_psi, tire_temperature_c)
+        self.uhd_usrp_sink_1_0.set_samp_rate(1e6)
+        self.uhd_usrp_sink_1_0.set_time_unknown_pps(uhd.time_spec())
+        self.tpms_poore_message_generator_pdu_0 = tpms_poore.message_generator_pdu(repetition_interval,configuration,sensor_id,battery_status,counter,unknown1,unknown2,self_test,tire_pressure_psi,tire_temperature_c)
         self.digital_gfsk_mod_0 = digital.gfsk_mod(
-        	samples_per_symbol=100,
-        	sensitivity=0.25,
-        	bt=0.65,
-        	verbose=False,
-        	log=False,
-        )
+            samples_per_symbol=100,
+            sensitivity=0.25,
+            bt=0.65,
+            verbose=False,
+            log=False)
         self.blocks_tag_gate_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
+        self.blocks_tag_gate_0.set_single_key("")
         self.blocks_stream_to_tagged_stream_0 = blocks.stream_to_tagged_stream(gr.sizeof_gr_complex, 1, 100*8*20, "packet_len")
         self.blocks_pdu_to_tagged_stream_0 = blocks.pdu_to_tagged_stream(blocks.byte_t, 'packet_len')
         self.blocks_delay_0 = blocks.delay(gr.sizeof_gr_complex*1, 15800)
+
+
 
         ##################################################
         # Connections
@@ -100,7 +106,6 @@ class TPMS_FSK_USRPB210_Transmit(gr.top_block):
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
         self.uhd_usrp_sink_1_0.set_gain(self.tx_gain, 0)
-
 
     def get_tx_freq(self):
         return self.tx_freq
@@ -182,12 +187,21 @@ class TPMS_FSK_USRPB210_Transmit(gr.top_block):
         self.battery_status = battery_status
 
 
-def main(top_block_cls=TPMS_FSK_USRPB210_Transmit, options=None):
 
+def main(top_block_cls=TPMS_FSK_USRPB210_Transmit, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

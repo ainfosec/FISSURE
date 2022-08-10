@@ -1,0 +1,12 @@
+gr-limesdr (3.1.5-1) unstable; urgency=low
+
+  * Moved .ini file loading to advanced tab in GRC block description
+  * Added MIMO phase align option
+  * Added method to write LMS registers
+
+ -- Lime Microsystems <info@limemicro.com>  Thu, 29 Oct 2020 14:00:00 +0300
+gr-limesdr (3.1.3-1) unstable; urgency=low
+
+  * initial gr-limesdr debian packaging for GNURadio3.8
+
+ -- Lime Microsystems <info@limemicro.com>  Tue, 14 Jul 2020 16:08:15 +0300

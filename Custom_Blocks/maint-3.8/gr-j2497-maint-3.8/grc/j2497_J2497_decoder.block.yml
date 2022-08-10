@@ -1,0 +1,39 @@
+id: j2497_J2497_decoder
+label: J2497_decoder
+category: '[j2497]'
+
+templates:
+  imports: import j2497
+  make: j2497.J2497_decoder(${if_peak_threshold},${if_peak_offset},${do_udp},${udp_port})
+
+parameters:
+- id: if_peak_threshold
+  label: IF Peak Threshold
+  dtype: float
+- id: if_peak_offset
+  label: Bit Transition - Start Tag Offset
+  dtype: int
+- id: do_udp
+  label: Send Message Bytes over UDP
+  dtype: bool
+  default: False
+- id: udp_port
+  label: UDP Port
+  dtype: int
+  default: 6972  
+
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+  vlen: 1
+  optional: 0
+
+outputs:
+- label: out
+  domain: message
+  dtype: message
+  vlen: 1
+  optional: 0
+
+file_format: 1

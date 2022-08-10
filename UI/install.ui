@@ -49,7 +49,7 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">QLabel#label1{
+    <string notr="true">QLabel#label1 {
    qproperty-alignment: AlignCenter;
 	border: 1px solid #17365D;
 	border-top-left-radius: 15px;
@@ -59,9 +59,7 @@
 	color: rgb(255, 255, 255);
 	max-height: 20px;
 	font: bold 10pt &quot;Ubuntu&quot;;
-}
-
-</string>
+}</string>
    </property>
    <property name="text">
     <string>Operating System</string>
@@ -93,20 +91,10 @@
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
-   <widget class="QRadioButton" name="radioButton_ubuntu18_04_6">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>55</y>
-      <width>150</width>
-      <height>25</height>
-     </rect>
+   <widget class="QRadioButton" name="radioButton_ubuntu20_04">
+    <property name="enabled">
+     <bool>true</bool>
     </property>
-    <property name="text">
-     <string>Ubuntu 18.04.6</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_ubuntu18_04">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -116,10 +104,29 @@
      </rect>
     </property>
     <property name="text">
-     <string>Ubuntu 18.04</string>
+     <string>Ubuntu 20.04.1</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton_ubuntu18_04_5">
+   <widget class="QRadioButton" name="radioButton_ubuntu22_04">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>55</y>
+      <width>180</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ubuntu 22.04 (beta)</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_ubuntu20_04_4">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -129,7 +136,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Ubuntu 18.04.5</string>
+     <string>Ubuntu 20.04.4</string>
     </property>
    </widget>
   </widget>

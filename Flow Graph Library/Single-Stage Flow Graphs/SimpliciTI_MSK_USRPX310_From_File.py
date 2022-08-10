@@ -1,22 +1,25 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Simpliciti Msk Usrpx310 From File
-# Generated: Sun Jan  9 14:10:08 2022
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
+import pmt
 from gnuradio import digital
-from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio import uhd
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio import uhd
 import time
-
 
 class SimpliciTI_MSK_USRPX310_From_File(gr.top_block):
 
@@ -39,31 +42,36 @@ class SimpliciTI_MSK_USRPX310_From_File(gr.top_block):
         # Blocks
         ##################################################
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
-        	",".join(("", "addr=" + ip_address)),
-        	uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
+            ",".join(("", "addr=" + ip_address)),
+            uhd.stream_args(
+                cpu_format="fc32",
+                args='',
+                channels=list(range(0,1)),
+            ),
+            '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_usrp_channel, 0)
-        self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
         self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
         self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
         self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
+        self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
         self.digital_gfsk_mod_0 = digital.gfsk_mod(
-        	samples_per_symbol=4,
-        	sensitivity=0.2,
-        	bt=0.5,
-        	verbose=False,
-        	log=False,
-        )
+            samples_per_symbol=4,
+            sensitivity=0.2,
+            bt=0.5,
+            verbose=False,
+            log=False)
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(8)
         self.blocks_not_xx_0_0 = blocks.not_bb()
-        self.blocks_multiply_const_vxx_1 = blocks.multiply_const_vcc((0.1, ))
-        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((-1, ))
+        self.blocks_multiply_const_vxx_1 = blocks.multiply_const_cc(0.1)
+        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(-1)
         self.blocks_float_to_char_0 = blocks.float_to_char(1, 1)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, filepath, True)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, filepath, True, 0, 0)
+        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
+
+
 
         ##################################################
         # Connections
@@ -83,7 +91,6 @@ class SimpliciTI_MSK_USRPX310_From_File(gr.top_block):
     def set_tx_usrp_gain(self, tx_usrp_gain):
         self.tx_usrp_gain = tx_usrp_gain
         self.uhd_usrp_sink_0.set_gain(self.tx_usrp_gain, 0)
-
 
     def get_tx_usrp_channel(self):
         return self.tx_usrp_channel
@@ -132,12 +139,21 @@ class SimpliciTI_MSK_USRPX310_From_File(gr.top_block):
         self.blocks_file_source_0.open(self.filepath, True)
 
 
-def main(top_block_cls=SimpliciTI_MSK_USRPX310_From_File, options=None):
 
+def main(top_block_cls=SimpliciTI_MSK_USRPX310_From_File, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

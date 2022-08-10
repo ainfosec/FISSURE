@@ -1,0 +1,111 @@
+
+
+
+CFLAGS = -O3 -DNO_FORTRAN -Wno-deprecated-declarations -pthread -I/usr/local/hdf-64/include -I/usr/X11R6/include  -I./DrawFindPointHistory -I./MainSource -I./KdTree-routines -I./glui-routines/include -I./CExpress -I./FMRadio -I./Radio
+
+CXXFLAGS = -O3 -std=gnu++11 -Wno-deprecated-declarations -DNO_FORTRAN -I./Digital -pthread -I./glui-routines/include -I/usr/local/hdf-64/include -I/usr/X11R6/include  -I./DrawFindPointHistory  -I ./SdrFile -I./MainSource -I./KdTree-routines -I./glui-routines/include -I./CExpress -I./Classes -I./SdrGlut -I./FMRadio  -I./Radio
+
+#CFLAGS = -g -I/usr/local/hdf-64/include -I/usr/X11R6/include  -I./DrawFindPointHistory -I./MainSource -I./KdTree-routines -I./glui-routines/include -I./CExpress -Wall 
+
+#CXXFLAGS = -g -I./glui-routines/include -I/usr/local/hdf-64/include -I/usr/X11R6/include  -I./DrawFindPointHistory  -I./MainSource -I./KdTree-routines -I./glui-routines/include -I./CExpress  -I./Classes -Wall 
+
+
+CFILES= ./MainSource/Geom.c \
+	./MainSource/Getpalette.c \
+	./MainSource/mThread.c  \
+	./MainSource/Scene.c  ./MainSource/Utilities.c \
+	./DrawFindPointHistory/DrawFindPointHistory.c DrawFindPointHistory/GridPlot.c  \
+	./CExpress/FFT2.c \
+	./CExpress/Utilities2.c \
+	./MainSource/BackgroundQ.c  \
+	./MainSource/cMalloc.c \
+	./MainSource/SceneList.c \
+	./MainSource/LoadTemperature.c ./Classes/FileDB.c ./SimpleOpenGL/glutMain.c
+
+
+
+COBJS= ./MainSource/Getpalette.o \
+	./MainSource/mThread.o  \
+	./MainSource/Scene.o  ./MainSource/Utilities.o \
+	./DrawFindPointHistory/GridPlot.o  \
+	./CExpress/FFT2.o \
+	./CExpress/Utilities2.o \
+	./MainSource/BackgroundQ.o  \
+	./MainSource/cMalloc.o \
+	./MainSource/SceneList.o \
+	./MainSource/File8.o \
+	./MainSource/sceneDisplay.o 
+	
+	
+
+CCFILES= ./glui-routines/algebra3.cpp ./glui-routines/arcball.cpp ./glui-routines/glui.cpp \
+	./glui-routines/glui_add_controls.cpp ./glui-routines/glui_bitmap_img_data.cpp \
+	./glui-routines/glui_bitmaps.cpp ./glui-routines/glui_button.cpp \
+	./glui-routines/glui_checkbox.cpp ./glui-routines/glui_column.cpp \
+	./glui-routines/glui_commandline.cpp ./glui-routines/glui_control.cpp \
+	./glui-routines/glui_edittext.cpp ./glui-routines/glui_filebrowser.cpp \
+	./glui-routines/glui_list.cpp ./glui-routines/glui_listbox.cpp \
+	./glui-routines/glui_mouse_iaction.cpp ./glui-routines/glui_node.cpp \
+	./glui-routines/glui_panel.cpp ./glui-routines/glui_radio.cpp \
+	./glui-routines/glui_rollout.cpp ./glui-routines/glui_rotation.cpp \
+	./glui-routines/glui_scrollbar.cpp ./glui-routines/glui_separator.cpp \
+	./glui-routines/glui_spinner.cpp ./glui-routines/glui_statictext.cpp \
+	./glui-routines/glui_string.cpp ./glui-routines/glui_textbox.cpp \
+	./glui-routines/glui_translation.cpp	./glui-routines/glui_tree.cpp \
+	./glui-routines/glui_treepanel.cpp	./glui-routines/glui_window.cpp \
+	./glui-routines/quaternion.cpp	./glui-routines/tools/ppm.cpp \
+	./MainSource/QuitDialog.cpp ./DrawFindPointHistory/PlotAttributes.cpp \
+	./MainSource/DialogRangeData.cpp	./MainSource/DialogView.cpp ./MainSource/DialogSave.cpp ./MainSource/DialogViewFactorTests.cpp \
+	./MainSource/main.cpp ./DrawFindPointHistory/pointTimeHistory.cpp  \
+	./MainSource/DialogPreferences.cpp ./MainSource/DialogOpacity.cpp ./MainSource/DialogRecipe.cpp ./MainSource/OpenWindows.cpp \
+	./Classes/CFlight.cpp ./Classes/CAres.cpp ./Classes/CAresPreferences.cpp ./Classes/CAresWrite.cpp ./Classes/CObjectList.cpp \
+	./Classes/CAresRangeDialog.cpp ./MainSource/DialogOverWrite.cpp   ./Classes/CFlightPreferences.cpp ./Classes/CBomb.cpp ./Classes/CObjects.cpp \
+	./MainSource/DialogFolder.cpp  ./Classes/CLine3D.cpp ./Classes/CPath.cpp ./Classes/CTown.cpp ./Classes/CPathDataSelection.cpp \
+	./Classes/DialogSelectionBox.cpp ./Classes/CWindowRangeDialog.cpp ./Classes/CCloud.cpp ./CExpress/doRx3Batch.cpp ./Classes/CObjectList2.cpp \
+	./Classes/ObjectListCalculate.cpp ./Classes/CImages.cpp  ./Classes/CImagesContours.cpp \
+	./CExpress/uFilesBatchSds3d.cpp \
+	./Classes/CLines.cpp ./Classes/CLInesPlotLabels.cpp ./Classes/ClinesAttributes.cpp \
+	./Classes/Contours.cpp ./Classes/ClinesPlotAttributes.cpp ./Classes/CLinesPlotBox.cpp \
+	./Radio/Radio.cpp ./Radio/DialogRadio.cpp ./Radio/RaceFastsdr.cpp ./SimpleOpenGL/raceFMCsdr.cpp ./MainSource/printInfo.cpp \
+	./Digital/Poly.cpp ./Digital/BatchFile.cpp ./MainSource/eMemory.cpp ./Radio/send.cpp ./Radio/WriteToWindow.cpp ./MainSource/dialogTime.cpp
+
+
+
+
+
+
+CCOBJS = ./glui-routines/algebra3.o ./glui-routines/arcball.o ./glui-routines/glui.o \
+	./glui-routines/glui_add_controls.o ./glui-routines/glui_bitmap_img_data.o \
+	./glui-routines/glui_bitmaps.o ./glui-routines/glui_button.o \
+	./glui-routines/glui_checkbox.o ./glui-routines/glui_column.o \
+	./glui-routines/glui_commandline.o ./glui-routines/glui_control.o \
+	./glui-routines/glui_edittext.o ./glui-routines/glui_filebrowser.o \
+	./glui-routines/glui_list.o ./glui-routines/glui_listbox.o \
+	./glui-routines/glui_mouse_iaction.o ./glui-routines/glui_node.o \
+	./glui-routines/glui_panel.o ./glui-routines/glui_radio.o \
+	./glui-routines/glui_rollout.o ./glui-routines/glui_rotation.o \
+	./glui-routines/glui_scrollbar.o ./glui-routines/glui_separator.o \
+	./glui-routines/glui_spinner.o ./glui-routines/glui_statictext.o \
+	./glui-routines/glui_string.o ./glui-routines/glui_textbox.o \
+	./glui-routines/glui_translation.o	./glui-routines/glui_tree.o \
+	./glui-routines/glui_treepanel.o	./glui-routines/glui_window.o \
+	./glui-routines/quaternion.o	./glui-routines/tools/ppm.o \
+	./MainSource/QuitDialog.o \
+	./MainSource/main.o  ./MainSource/audiolib.o \
+	./Classes/CWindow.o  \
+	./Classes/CLines.o ./Classes/CLInesPlotLabels.o ./Classes/ClinesAttributes.o ./Classes/ClinesPlotAttributes.o ./Classes/CLinesPlotBox.o \
+	./Radio/Radio.o ./Radio/DialogRadio.o ./Radio/RaceFastsdr.o ./MainSource/DialogFileOpen.o ./SdrFile/SdrFile.o \
+    ./MainSource/DialogSave.o ./SdrFile/DialogSdrFile.o ./MainSource/DialogFolder.o \
+	./MainSource/PlayIQ.o ./MainSource/RecordIQ.o ./MainSource/printInfo.o ./Classes/Transmit.o ./MainSource/WriteToGLUIWindow.o \
+ 	./Digital/Poly.o ./Digital/BatchFile.o ./MainSource/eMemory.o  ./Radio/send.o ./Radio/WriteToWindow.o ./MainSource/dialogTime.o ./SdrFile/AudioFile.o ./SdrFile/DialogAudioFile.o
+
+
+
+fireball:  ${COBJS} ${CCOBJS}
+# ${CXX} ${CFLAGS} -o fireball.x ${COBJS} ${CCOBJS} -lm -L/usr/local/hdf-64/lib -L/usr/X11R6/lib -lX11 -lpthread -ldf -ljpeg -lz -framework OpenGL -framework GLUT
+#	${CXX} ${CFLAGS} -o fireball.x ${COBJS} ${CCOBJS} -lm -L/usr/local/hdf-64/lib -L/usr/X11R6/lib -L../Rx3/recipe/lib -L/usr/local/gfortran/lib/ -lgfortran -lrx3_64 -lX11 -lpthread -ldf -ljpeg -lz -lglut -lgl -lglu -lglew -lgdal
+#	${CXX} ${CFLAGS} -o fireball.x ${COBJS} ${CCOBJS} -lm -L/usr/local -L/usr/X11R6/lib -L/usr/local/gfortran/lib/ -lX11 -lpthread -ldf -ljpeg -lz -lglut -lgl -lglu -lglew -lgdal
+	${CXX} ${CFLAGS} -o sdrglut.x ${COBJS} ${CCOBJS} /usr/local/lib/libliquid.a -lm -L/usr/local -L/usr/X11/lib -lX11 -lpthread -lglut -lGL -lGLU -lopenal -lrtaudio -lliquid -lSoapySDR -lsndfile -lfftw3 -lfftw3f
+
+# ./MainSource/mThreadPC.cpp
+# ./MainSource/mThreadPC.o

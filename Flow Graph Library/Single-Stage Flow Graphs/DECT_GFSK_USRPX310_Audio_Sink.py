@@ -1,25 +1,27 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Dect Gfsk Usrpx310 Audio Sink
-# Generated: Sun Jan  9 14:24:08 2022
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import audio
 from gnuradio import blocks
-from gnuradio import eng_notation
 from gnuradio import filter
-from gnuradio import gr
-from gnuradio import uhd
-from gnuradio import vocoder
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
-import dect2
+from gnuradio import gr
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio import uhd
 import time
-
+from gnuradio import vocoder
+import dect2
 
 class DECT_GFSK_USRPX310_Audio_Sink(gr.top_block):
 
@@ -48,29 +50,32 @@ class DECT_GFSK_USRPX310_Audio_Sink(gr.top_block):
         ##################################################
         self.vocoder_g721_decode_bs_0 = vocoder.g721_decode_bs()
         self.uhd_usrp_source_0 = uhd.usrp_source(
-        	",".join(('', "addr="+ip_address)),
-        	uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
+            ",".join(('', "addr="+ip_address)),
+            uhd.stream_args(
+                cpu_format="fc32",
+                args='',
+                channels=list(range(0,1)),
+            ),
         )
-        self.uhd_usrp_source_0.set_samp_rate(baseband_sampling_rate)
         self.uhd_usrp_source_0.set_center_freq(rx_freq, 0)
         self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.uhd_usrp_source_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0.set_samp_rate(baseband_sampling_rate)
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
         self.rational_resampler_xxx_0 = filter.rational_resampler_fff(
                 interpolation=6,
                 decimation=1,
                 taps=None,
-                fractional_bw=None,
-        )
-        self.rational_resampler = filter.rational_resampler_base_ccc(3, 2, (firdes.low_pass_2(1, 3*baseband_sampling_rate, dect_occupied_bandwidth/2, (dect_channel_bandwidth - dect_occupied_bandwidth)/2, 30)))
-        self.fractional_resampler = filter.fractional_resampler_cc(0, (3.0*baseband_sampling_rate/2.0)/dect_symbol_rate/4.0)
+                fractional_bw=None)
+        self.rational_resampler = filter.rational_resampler_base_ccc(3, 2, firdes.low_pass_2(1, 3*baseband_sampling_rate, dect_occupied_bandwidth/2, (dect_channel_bandwidth - dect_occupied_bandwidth)/2, 30))
+        self.mmse_resampler_xx_0 = filter.mmse_resampler_cc(0, (3.0*baseband_sampling_rate/2.0)/dect_symbol_rate/4.0)
         self.dect2_phase_diff_0 = dect2.phase_diff()
         self.dect2_packet_receiver_0 = dect2.packet_receiver()
         self.dect2_packet_decoder_0 = dect2.packet_decoder()
         self.blocks_short_to_float_0 = blocks.short_to_float(1, 32768)
         self.audio_sink_0 = audio.sink(48000, '', True)
+
+
 
         ##################################################
         # Connections
@@ -80,8 +85,8 @@ class DECT_GFSK_USRPX310_Audio_Sink(gr.top_block):
         self.connect((self.dect2_packet_decoder_0, 0), (self.vocoder_g721_decode_bs_0, 0))
         self.connect((self.dect2_packet_receiver_0, 0), (self.dect2_packet_decoder_0, 0))
         self.connect((self.dect2_phase_diff_0, 0), (self.dect2_packet_receiver_0, 0))
-        self.connect((self.fractional_resampler, 0), (self.dect2_phase_diff_0, 0))
-        self.connect((self.rational_resampler, 0), (self.fractional_resampler, 0))
+        self.connect((self.mmse_resampler_xx_0, 0), (self.dect2_phase_diff_0, 0))
+        self.connect((self.rational_resampler, 0), (self.mmse_resampler_xx_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.audio_sink_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.rational_resampler, 0))
         self.connect((self.vocoder_g721_decode_bs_0, 0), (self.blocks_short_to_float_0, 0))
@@ -117,7 +122,6 @@ class DECT_GFSK_USRPX310_Audio_Sink(gr.top_block):
         self.rx_gain = rx_gain
         self.uhd_usrp_source_0.set_gain(self.rx_gain, 0)
 
-
     def get_rx_freq(self):
         return self.rx_freq
 
@@ -149,38 +153,47 @@ class DECT_GFSK_USRPX310_Audio_Sink(gr.top_block):
 
     def set_dect_symbol_rate(self, dect_symbol_rate):
         self.dect_symbol_rate = dect_symbol_rate
-        self.fractional_resampler.set_resamp_ratio((3.0*self.baseband_sampling_rate/2.0)/self.dect_symbol_rate/4.0)
+        self.mmse_resampler_xx_0.set_resamp_ratio((3.0*self.baseband_sampling_rate/2.0)/self.dect_symbol_rate/4.0)
 
     def get_dect_occupied_bandwidth(self):
         return self.dect_occupied_bandwidth
 
     def set_dect_occupied_bandwidth(self, dect_occupied_bandwidth):
         self.dect_occupied_bandwidth = dect_occupied_bandwidth
-        self.rational_resampler.set_taps((firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30)))
+        self.rational_resampler.set_taps(firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30))
 
     def get_dect_channel_bandwidth(self):
         return self.dect_channel_bandwidth
 
     def set_dect_channel_bandwidth(self, dect_channel_bandwidth):
         self.dect_channel_bandwidth = dect_channel_bandwidth
-        self.rational_resampler.set_taps((firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30)))
+        self.rational_resampler.set_taps(firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30))
 
     def get_baseband_sampling_rate(self):
         return self.baseband_sampling_rate
 
     def set_baseband_sampling_rate(self, baseband_sampling_rate):
         self.baseband_sampling_rate = baseband_sampling_rate
+        self.mmse_resampler_xx_0.set_resamp_ratio((3.0*self.baseband_sampling_rate/2.0)/self.dect_symbol_rate/4.0)
+        self.rational_resampler.set_taps(firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30))
         self.uhd_usrp_source_0.set_samp_rate(self.baseband_sampling_rate)
-        self.rational_resampler.set_taps((firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30)))
-        self.fractional_resampler.set_resamp_ratio((3.0*self.baseband_sampling_rate/2.0)/self.dect_symbol_rate/4.0)
+
 
 
 def main(top_block_cls=DECT_GFSK_USRPX310_Audio_Sink, options=None):
-
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

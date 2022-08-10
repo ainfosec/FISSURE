@@ -1,0 +1,44 @@
+id: acars_acars
+label: acars
+category: '[acars]'
+
+parameters:
+- id: threshold
+  label: Threshold
+  dtype: float
+  default: '3'
+- id: filename
+  label: filename
+  dtype: string
+  default: '/tmp/log'
+- id: saveall
+  label: Save Raw Data
+  dtype: bool
+  default: False
+
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+
+asserts:
+   - ${ threshold > 0 }
+
+templates:
+  imports: import acars
+  make: acars.acars(${threshold}, ${filename}, ${saveall})
+  callbacks:
+   - set_seuil(${threshold})
+
+#  Make one 'inputs' list entry per input and one 'outputs' list entry per output.
+#  Keys include:
+#      * label (an identifier for the GUI)
+#      * domain (optional - stream or message. Default is stream)
+#      * dtype (e.g. int, float, complex, byte, short, xxx_vector, ...)
+#      * vlen (optional - data stream vector length. Default is 1)
+#      * optional (optional - set to 1 for optional inputs. Default is 0)
+
+documentation: |-
+     The gr-acars decodes ACARS messages in an incoming stream of floats generated at the output of an AM demodulator block at a rate assumed to be 48000 ksamples/s. The two arguments are the Threshold which is the multiplication factor applied to the signal standard deviation which to detect (threshold) if a message is being transmitted.  The file filename is used to save the output aldo displayed on the GNU Radio Companion console.
+
+file_format: 1

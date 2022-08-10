@@ -1,0 +1,292 @@
+options:
+  parameters:
+    author: Lime Microsystems
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: fm_transmitter
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: FM transmitter
+    window_size: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: baseband
+  id: variable_qtgui_entry
+  parameters:
+    comment: ''
+    gui_hint: 0,0,1,2
+    label: TX Baseband [MHz]
+    type: real
+    value: '446.094'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [180, 8]
+    rotation: 0
+    state: true
+- name: gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: 1,0,1,1
+    label: Gain [dB]
+    min_len: '70'
+    orient: Qt.Horizontal
+    rangeType: int
+    start: '0'
+    step: '1'
+    stop: '60'
+    value: '40'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [336, 9]
+    rotation: 0
+    state: true
+- name: pa_path
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: 1,1,1,1
+    label: PA Path
+    label0: Auto
+    label1: Band1
+    label2: Band2
+    label3: W
+    label4: ''
+    labels: '[]'
+    num_opts: '3'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[0, 1, 2]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '255'
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [462, 8]
+    rotation: 0
+    state: true
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: 2e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [10, 106]
+    rotation: 0
+    state: enabled
+- name: analog_nbfm_tx_0
+  id: analog_nbfm_tx
+  parameters:
+    affinity: ''
+    alias: ''
+    audio_rate: '48000'
+    comment: ''
+    fh: '-1.0'
+    max_dev: 2e3
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    quad_rate: '480000'
+    tau: 75e-6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [249, 189]
+    rotation: 0
+    state: true
+- name: blocks_wavfile_source_0
+  id: blocks_wavfile_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    file: '.../examples/guitar.wav'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nchan: '1'
+    repeat: 'True'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 213]
+    rotation: 0
+    state: true
+- name: limesdr_sink_0_0
+  id: limesdr_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    allow_tcxo_dac: '0'
+    analog_bandw_ch0: 5e6
+    analog_bandw_ch1: 5e6
+    calibr_bandw_ch0: 2.5e6
+    calibr_bandw_ch1: 2.5e6
+    channel_mode: '0'
+    comment: ''
+    dacVal: '180'
+    digital_bandw_ch0: samp_rate
+    digital_bandw_ch1: samp_rate
+    filename: ''
+    gain_dB_ch0: gain
+    gain_dB_ch1: '1'
+    length_tag_name: ''
+    nco_freq_ch0: '0'
+    nco_freq_ch1: '0'
+    oversample: '0'
+    pa_path_ch0: pa_path
+    pa_path_ch1: '255'
+    rf_freq: baseband*1e6
+    samp_rate: samp_rate
+    serial: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [755, 197]
+    rotation: 0
+    state: enabled
+- name: qtgui_freq_sink_x_0
+  id: qtgui_freq_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    average: '1.0'
+    axislabels: 'True'
+    bw: samp_rate
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    ctrlpanel: 'False'
+    fc: baseband*1e6
+    fftsize: '2048'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: 2,0,1,2
+    label: Relative Gain
+    label1: ''
+    label10: ''''''
+    label2: ''''''
+    label3: ''''''
+    label4: ''''''
+    label5: ''''''
+    label6: ''''''
+    label7: ''''''
+    label8: ''''''
+    label9: ''''''
+    legend: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '"Transmiting data"'
+    nconnections: '1'
+    showports: 'False'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_tag: '""'
+    type: complex
+    units: dB
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+    ymax: '10'
+    ymin: '-140'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [755, 302]
+    rotation: 0
+    state: true
+- name: rational_resampler_xxx_0
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: '6'
+    fbw: '0'
+    interp: '25'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: ''
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [533, 197]
+    rotation: 0
+    state: true
+
+connections:
+- [analog_nbfm_tx_0, '0', rational_resampler_xxx_0, '0']
+- [blocks_wavfile_source_0, '0', analog_nbfm_tx_0, '0']
+- [rational_resampler_xxx_0, '0', limesdr_sink_0_0, '0']
+- [rational_resampler_xxx_0, '0', qtgui_freq_sink_x_0, '0']
+
+metadata:
+  file_format: 1

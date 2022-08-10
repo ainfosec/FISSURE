@@ -1,21 +1,23 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Clapper Plus Ook Limesdr Transmit
-# Generated: Sat Sep 18 21:13:53 2021
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
-from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
 import clapper_plus
 import limesdr
-
 
 class Clapper_Plus_OOK_LimeSDR_Transmit(gr.top_block):
 
@@ -36,17 +38,31 @@ class Clapper_Plus_OOK_LimeSDR_Transmit(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.limesdr_sink_0 = limesdr.sink('', int(tx_channel), '', '')
-        self.limesdr_sink_0.set_sample_rate(sample_rate)
-        self.limesdr_sink_0.set_center_freq(tx_frequency, 0)
-        self.limesdr_sink_0.set_bandwidth(5e6,0)
-        self.limesdr_sink_0.set_gain(int(tx_gain),0)
-        self.limesdr_sink_0.set_antenna(255,0)
-        self.limesdr_sink_0.calibrate(5e6, 0)
+        self.limesdr_sink_0 = limesdr.sink('', 0, '', '')
 
+
+        self.limesdr_sink_0.set_sample_rate(sample_rate)
+
+
+        self.limesdr_sink_0.set_center_freq(tx_frequency, 0)
+
+        self.limesdr_sink_0.set_bandwidth(5e6, 0)
+
+
+
+
+        self.limesdr_sink_0.set_gain(int(tx_gain), 0)
+
+
+        self.limesdr_sink_0.set_antenna(255, 0)
+
+
+        self.limesdr_sink_0.calibrate(5e6, 0)
         self.clapper_plus_message_generator_433_0 = clapper_plus.message_generator_433(button2or3,sample_rate,press_repetition_interval)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
-        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((0.9, ))
+        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_cc(0.9)
+
+
 
         ##################################################
         # Connections
@@ -60,8 +76,8 @@ class Clapper_Plus_OOK_LimeSDR_Transmit(gr.top_block):
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.limesdr_sink_0.set_gain(int(self.tx_gain),0)
-        self.limesdr_sink_0.set_gain(int(self.tx_gain),1)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain), 0)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain), 1)
 
     def get_tx_frequency(self):
         return self.tx_frequency
@@ -81,7 +97,7 @@ class Clapper_Plus_OOK_LimeSDR_Transmit(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        self.clapper_plus_message_generator_433_0.set_sample_rate(self.sample_rate)
+        self.clapper_plus_message_generator_433_0.set_sampe_rate(self.sample_rate)
 
     def get_press_repetition_interval(self):
         return self.press_repetition_interval
@@ -104,12 +120,21 @@ class Clapper_Plus_OOK_LimeSDR_Transmit(gr.top_block):
         self.clapper_plus_message_generator_433_0.set_button(self.button2or3)
 
 
-def main(top_block_cls=Clapper_Plus_OOK_LimeSDR_Transmit, options=None):
 
+def main(top_block_cls=Clapper_Plus_OOK_LimeSDR_Transmit, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

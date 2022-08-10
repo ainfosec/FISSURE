@@ -1,20 +1,25 @@
-#!/usr/bin/env python
-##################################################
-# Gnuradio Python Flow Graph
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
+# GNU Radio Python Flow Graph
 # Title: Test
 # Description: Generic demodulation flow graph for MSK signals.
-# Generated: Fri Apr 22 13:40:42 2016
-##################################################
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
-from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio import uhd
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
-import numpy
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio import uhd
 import time
+import numpy
 
 class test(gr.top_block):
 
@@ -42,26 +47,29 @@ class test(gr.top_block):
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-        	",".join(("addr=" + ip_address, "")),
-        	uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
+            ",".join(("addr=" + ip_address, "")),
+            uhd.stream_args(
+                cpu_format="fc32",
+                args='',
+                channels=list(range(0,1)),
+            ),
         )
-        self.uhd_usrp_source_0.set_clock_source("internal", 0)
         self.uhd_usrp_source_0.set_subdev_spec(rx_usrp_channel, 0)
-        self.uhd_usrp_source_0.set_samp_rate(sample_rate)
+        self.uhd_usrp_source_0.set_clock_source('internal', 0)
         self.uhd_usrp_source_0.set_center_freq(rx_frequency, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
         self.uhd_usrp_source_0.set_bandwidth(sample_rate, 0)
+        self.uhd_usrp_source_0.set_samp_rate(sample_rate)
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_gr_complex*1)
+
+
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.uhd_usrp_source_0, 0), (self.blocks_null_sink_0, 0))    
-
+        self.connect((self.uhd_usrp_source_0, 0), (self.blocks_null_sink_0, 0))
 
     def get_time_out(self):
         return self.time_out
@@ -147,14 +155,26 @@ class test(gr.top_block):
         self.address = address
 
 
-if __name__ == '__main__':
-    parser = OptionParser(option_class=eng_option, usage="%prog: [options]")
-    (options, args) = parser.parse_args()
-    tb = test()
+
+def main(top_block_cls=test, options=None):
+    tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()
     tb.wait()
+
+
+if __name__ == '__main__':
+    main()

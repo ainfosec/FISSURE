@@ -1,20 +1,22 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Sniffer Async
-# Generated: Sat Feb 12 22:26:45 2022
-##################################################
+# GNU Radio version: 3.8.1.0
 
-
-from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio import zeromq
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio import zeromq
 import ainfosec
-
 
 class Sniffer_async(gr.top_block):
 
@@ -32,6 +34,8 @@ class Sniffer_async(gr.top_block):
         ##################################################
         self.zeromq_sub_msg_source_0 = zeromq.sub_msg_source("tcp://" + address, 100)
         self.ainfosec_UDP_to_Wireshark_Async_0 = ainfosec.UDP_to_Wireshark_Async(port)
+
+
 
         ##################################################
         # Connections
@@ -51,12 +55,21 @@ class Sniffer_async(gr.top_block):
         self.address = address
 
 
-def main(top_block_cls=Sniffer_async, options=None):
 
+def main(top_block_cls=Sniffer_async, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

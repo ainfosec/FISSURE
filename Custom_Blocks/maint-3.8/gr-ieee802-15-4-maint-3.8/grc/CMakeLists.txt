@@ -1,0 +1,26 @@
+install(FILES
+ieee802_15_4_access_code_prefixer.block.yml
+ieee802_15_4_access_code_removal_b.block.yml
+ieee802_15_4_chips_to_bits_fb.block.yml
+ieee802_15_4_codeword_demapper_ib.block.yml
+ieee802_15_4_codeword_mapper_bi.block.yml
+ieee802_15_4_codeword_soft_demapper_fb.block.yml
+ieee802_15_4_deinterleaver_ff.block.yml
+ieee802_15_4_dqcsk_demapper_cc.block.yml
+ieee802_15_4_dqcsk_mapper_fc.block.yml
+ieee802_15_4_dqpsk_mapper_ff.block.yml
+ieee802_15_4_dqpsk_soft_demapper_cc.block.yml
+ieee802_15_4_frame_buffer_cc.block.yml
+ieee802_15_4_interleaver_ii.block.yml
+ieee802_15_4_mac.block.yml
+ieee802_15_4_multiuser_chirp_detector_cc.block.yml
+ieee802_15_4_packet_sink.block.yml
+ieee802_15_4_phr_prefixer.block.yml
+ieee802_15_4_phr_removal.block.yml
+ieee802_15_4_preamble_sfd_prefixer_ii.block.yml
+ieee802_15_4_preamble_tagger_cc.block.yml
+ieee802_15_4_qpsk_demapper_fi.block.yml
+ieee802_15_4_qpsk_mapper_if.block.yml
+ieee802_15_4_rime_stack.block.yml
+ieee802_15_4_zeropadding_b.block.yml
+ieee802_15_4_zeropadding_removal_b.block.yml DESTINATION share/gnuradio/grc/blocks)

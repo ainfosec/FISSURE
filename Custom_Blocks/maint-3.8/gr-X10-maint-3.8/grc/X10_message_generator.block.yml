@@ -1,0 +1,48 @@
+id: X10_message_generator
+label: message_generator
+category: '[X10]'
+
+templates:
+  imports: import X10
+  make: X10.message_generator(${sample_rate},${address_code},${data_code},${press_duration},${press_repetition_interval})
+
+
+parameters:
+- id: sample_rate
+  label: Sample Rate
+  dtype: float
+- id: address_code
+  label: Address Code
+  dtype: string
+  default: "0x60"
+- id: data_code
+  label: Data Code
+  dtype: string
+  default: "0x00"
+- id: press_duration
+  label: Press Duration
+  dtype: float
+  default: 1
+- id: press_repetition_interval
+  label: Press Repetition Interval
+  dtype: float
+  default: 10
+
+
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+  vlen: 1
+  optional: 0
+
+
+outputs:
+- label: out
+  domain: stream
+  dtype: complex
+  vlen: 1
+  optional: 0
+
+
+file_format: 1

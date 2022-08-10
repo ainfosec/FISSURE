@@ -1,10 +1,11 @@
 #!/bin/sh
 
 sudo service network-manager stop
-sudo ifconfig wlan0 down
-sudo ifconfig wlan0 up
-sudo ifconfig wlan0 down
-sudo iwconfig wlan0 mode monitor
-sudo ifconfig wlan0 up
-sudo iwconfig wlan0 channel 1
+sudo service NetworkManager stop  # 22.04
+sudo ifconfig wlx00c0caafc90c down
+sudo ifconfig wlx00c0caafc90c up
+sudo ifconfig wlx00c0caafc90c down
+sudo iwconfig wlx00c0caafc90c mode monitor
+sudo ifconfig wlx00c0caafc90c up
+sudo iwconfig wlx00c0caafc90c channel 1
 

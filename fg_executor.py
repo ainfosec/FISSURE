@@ -1,18 +1,20 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import time
 import random
 import yaml
 import zmq
+import os   
+import threading
+import sys
+from tempfile import mkstemp
+from shutil import move
+from os import remove, close
+import inspect,sys,types
+import subprocess
 from fissureclass import fissure_listener
 from fissureclass import fissure_server
 
-import os   
-    
-import threading
-from PyQt4 import QtCore, QtGui, uic    
-
-import sys
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + '/Flow Graph Library/PD Flow Graphs')
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + '/Flow Graph Library/Single-Stage Flow Graphs')
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + '/Flow Graph Library/Fuzzing Flow Graphs')
@@ -26,13 +28,6 @@ sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + '/Flow Graph Li
 # from gnuradio import uhd
 # from gnuradio import zeromq
 # from gnuradio import audio
-
-from tempfile import mkstemp
-from shutil import move
-from os import remove, close
-
-import inspect,sys,imp
-import subprocess
     
     
 # Insert Any Argument While Executing to Run Locally
@@ -64,7 +59,8 @@ class FGE_Executor():
         
         # Main Event Loop
         try:
-            while True:                            
+            while True:      
+                #print("FGE LOOPING!!!")
                 # Read Messages in the ZMQ Queues
                 if self.hiprfisr_connected == True:
                     self.readHIPRFISR_Messages()
@@ -108,13 +104,13 @@ class FGE_Executor():
             self.fge_sub_listener = fissure_listener(os.path.dirname(os.path.realpath(__file__)) + '/YAML/fge.yaml',hiprfisr_ip_address,hiprfisr_pub_port,zmq.SUB, logcfg = os.path.dirname(os.path.realpath(__file__)) + "/YAML/logging.yaml", logsource = "fge")
             sub_connected = True
         except:
-            print "Error creating FGE SUB and connecting to HIPRFISR PUB"
+            print("Error creating FGE SUB and connecting to HIPRFISR PUB")
             
         # FGE SUB to Dashboard PUB    
         try:
             self.fge_sub_listener.initialize_port(dashboard_ip_address,dashboard_pub_port) 
         except:
-            print "Unable to connect FGE SUB to Dashboard PUB"  
+            print("Unable to connect FGE SUB to Dashboard PUB")
                 
     def readSUB_Messages(self):
         """ Read all the messages in the self.fge_sub_listener and handle accordingly
@@ -270,7 +266,7 @@ class FGE_Executor():
             for n in variable_values:
                 arguments = arguments + n + " "
                 
-            osCommandString = "python " + '"' + filepath + '" ' + arguments
+            osCommandString = "python3 " + '"' + filepath + '" ' + arguments
             proc = subprocess.Popen(osCommandString + " &", shell=True)#, stderr=subprocess.PIPE) 
             #output, error = proc.communicate()
               
@@ -312,7 +308,7 @@ class FGE_Executor():
             # Python2
             else:
                 osCommandString = "sudo python2 " + '"' + flow_graph_filename + '" ' + arguments
-                print osCommandString
+                print(osCommandString)
                 
             # In FISSURE Dashboard
             #proc = subprocess.Popen(osCommandString + " &", shell=True)#, stderr=subprocess.PIPE) 
@@ -407,8 +403,8 @@ class FGE_Executor():
         
         # Compile
         sticode=compile(new_stistr,'<string>','exec')
-        loadedmod = imp.new_module('stiimp')
-        exec sticode in loadedmod.__dict__
+        loadedmod = types.ModuleType('stiimp')       
+        exec(sticode, loadedmod.__dict__)
         
         return loadedmod, class_name
             
@@ -425,18 +421,18 @@ class FGE_Executor():
             c_thread = threading.Thread(target=self.runFlowGraphGUI_Thread, args=(stop_event,flow_graph_filename,variable_names,variable_values))
         # Python2, Python3
         else:
-            #print variable_names
-            #print variable_values
-            #print type(variable_values)
-            #print repr(variable_values)
+            #print(variable_names)
+            #print(variable_values)
+            #print(type(variable_values))
+            #print(repr(variable_values))
             #print type(repr(variable_values))
             #for n in range(0,len(variable_values)):
-                #print "asdfasd"
-                #print variable_values[n]
+                #print("asdfasd")
+                #print(variable_values[n])
                 #variable_values[n] = variable_values[n].replace('`','\`')
-            #print "after"
-            #print variable_values
-            #print "function"
+            #print("after")
+            #print(variable_values)
+            #print("function")
             c_thread = threading.Thread(target=self.runPythonScriptThread, args=(stop_event,file_type,flow_graph_filename,variable_names,variable_values))  # backticks execute commands
 
         c_thread.daemon = True
@@ -451,7 +447,7 @@ class FGE_Executor():
             #os.system("sudo pkill -f " + '"' + self.attack_script_name +'"')  # Make terminal responsible for killing scripts
             
             #script_pid = subprocess.check_output("pgrep -f '" + self.attack_script_name + "'", shell=True)
-            #print script_pid
+            #print(script_pid)
             #os.system("sudo kill " + str(script_pid))
         elif parameter == "Flow Graph - GUI":
             os.system("pkill -f " + '"' + self.attack_script_name +'"')
@@ -619,7 +615,7 @@ class FGE_Executor():
             for n in variable_values:
                 arguments = arguments + n + " "
                 
-            osCommandString = "python " + '"' + filepath + '" ' + arguments
+            osCommandString = "python3 " + '"' + filepath + '" ' + arguments
             proc = subprocess.Popen(osCommandString + " &", shell=True)
               
             self.flowGraphStarted("Inspection")  # Signals to other components 
@@ -797,7 +793,7 @@ class FGE_Executor():
                             
                 # Call the Set Function of the Flow Graph
                 self.setVariable("Attack",variable, generic_value)
-                print "Set " + variable + " to: {}" .format(generic_value)
+                print("Set " + variable + " to: {}" .format(generic_value))
                 
                 # Generate New Value
                 if fuzzing_type[n] == "Sequential":     

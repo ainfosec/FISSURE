@@ -4,9 +4,6 @@ import time
 import random
 import yaml
 import zmq
-from fissureclass import fissure_listener
-from fissureclass import fissure_server
-
 import threading
 import sys
 import os
@@ -17,8 +14,11 @@ sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + '/Flow Graph Li
 # from gnuradio import uhd
 # from gnuradio import zeromq
 # from gnuradio import audio
-import inspect,imp
+import inspect,types
 import csv
+from fissureclass import fissure_listener
+from fissureclass import fissure_server
+
     
 # Insert Any Argument While Executing to Run Locally
 try:
@@ -50,6 +50,7 @@ class TSI_Component:
         # Main Event Loop
         try:
             while True:
+                #print("TSI LOOPING")
                 # TSI Activated
                 if self.running_TSI == True:                 
                     # Add Messages Randomly (For Testing)
@@ -100,13 +101,13 @@ class TSI_Component:
             self.tsi_sub_listener = fissure_listener(os.path.dirname(os.path.realpath(__file__)) + '/YAML/tsi.yaml',hiprfisr_ip_address,hiprfisr_pub_port,zmq.SUB, logcfg = os.path.dirname(os.path.realpath(__file__)) + "/YAML/logging.yaml", logsource = "tsi")
             sub_connected = True
         except:
-            print "Error creating TSI SUB and connecting to HIPRFISR PUB"
+            print("Error creating TSI SUB and connecting to HIPRFISR PUB")
             
         # TSI SUB to Dashboard PUB
         try:
             self.tsi_sub_listener.initialize_port(hiprfisr_ip_address,dashboard_pub_port)  
         except:
-            print "Unable to connect TSI SUB to Dashboard PUB"  
+            print("Unable to connect TSI SUB to Dashboard PUB") 
             
     def readSUB_Messages(self):
         """ Read all the messages in the self.tsi_sub_listener and handle accordingly
@@ -252,8 +253,8 @@ class TSI_Component:
         
         # Compile
         sticode=compile(new_stistr,'<string>','exec')
-        loadedmod = imp.new_module('stiimp')
-        exec sticode in loadedmod.__dict__
+        loadedmod = types.ModuleType('stiimp')
+        exec(sticode, loadedmod.__dict__)
         
         return loadedmod, class_name
         
@@ -275,7 +276,7 @@ class TSI_Component:
         """ Begins TSI processing of signals after receiving the command from the HIPRFISR
         """        
         self.running_TSI = True
-        print "TSI: Starting TSI Detector..."
+        print("TSI: Starting TSI Detector...")
         
         # Make a New Wideband Thread
         if detector in ["wideband_x310.py","wideband_b210.py","wideband_hackrf.py","wideband_b205mini.py","wideband_rtl2832u.py","wideband_limesdr.py","wideband_bladerf.py","Simulator","IQ File"]:
@@ -353,7 +354,7 @@ class TSI_Component:
                     
         # # Error Loading Flow Graph              
         # except Exception as e:
-            # print "Error: " + str(e)
+            # print("Error: " + str(e))
             # self.running_TSI = False
             # self.running_wideband = False
             # self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Detector Flow Graph Error', Parameters = e)  
@@ -362,7 +363,7 @@ class TSI_Component:
     def runDetectorSimulatorThread(self, variable_names, variable_values):
         """ Runs the simulator in the new thread.
         """       
-        print "SIMULATOR THREAD STARTED"
+        print("SIMULATOR THREAD STARTED")
         self.running_TSI_simulator = True
         
         while self.running_TSI_simulator == True:      
@@ -381,10 +382,10 @@ class TSI_Component:
     def widebandUpdateThread(self, stop_event, class_name, variable_names, variable_values):
         """ Updates the wideband flow graph parameters in the new thread.
         """ 
-        print "WIDEBAND UPDATE THREAD STARTED!!!"
-        #print self.running_TSI_wideband
-        #print self.wideband_band
-        #print self.wideband_start_freq[self.wideband_band]
+        print("WIDEBAND UPDATE THREAD STARTED!!!")
+        #print(self.running_TSI_wideband)
+        #print(self.wideband_band)
+        #print(self.wideband_start_freq[self.wideband_band])
         
         # Wideband Sweep Logic
         new_freq = self.wideband_start_freq[self.wideband_band]
@@ -448,7 +449,7 @@ class TSI_Component:
     def stopTSI_Detector(self):
         """ Pauses TSI processing of signals after receiving the command from the HIPRFISR
         """    
-        print "TSI: Stopping TSI Detector..."  
+        print("TSI: Stopping TSI Detector...")
         self.running_TSI = False
         self.running_TSI_wideband = False
         
@@ -706,8 +707,8 @@ class TSI_Component:
     def setHeartbeatInterval(self, interval):
         """ Updates the heartbeat interval to match the rest of the system components.
         """
-        print "\nUPDATE HEARTBEAT INTERVAL"
-        print interval
+        print("\nUPDATE HEARTBEAT INTERVAL")
+        print(interval)
         
     
         

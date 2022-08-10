@@ -1,0 +1,30 @@
+id: adsb_demod
+label: ADS-B Demod
+category: '[ADS-B]'
+
+templates:
+  imports: import adsb
+  make: adsb.demod(${fs})
+
+parameters:
+- id: fs
+  label: Sample Rate
+  dtype: float
+  default: 2e6
+
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+  vlen: 1
+
+outputs:
+- label: demodulated
+  domain: message
+  optional: 1
+- label: out
+  domain: stream
+  dtype: float
+  vlen: 1
+
+file_format: 1

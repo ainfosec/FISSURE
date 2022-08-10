@@ -1,25 +1,27 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Tpms Fsk Usrpb205Mini Receive
-# Generated: Thu Jun  9 13:53:49 2022
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import analog
-from gnuradio import blocks
-from gnuradio import eng_notation
-from gnuradio import filter
-from gnuradio import gr
-from gnuradio import uhd
-from gnuradio.eng_option import eng_option
-from gnuradio.filter import firdes
-from optparse import OptionParser
 import math
+from gnuradio import blocks
+from gnuradio import filter
+from gnuradio.filter import firdes
+from gnuradio import gr
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio import uhd
 import time
 import tpms_poore
-
 
 class TPMS_FSK_USRPB205mini_Receive(gr.top_block):
 
@@ -42,21 +44,23 @@ class TPMS_FSK_USRPB205mini_Receive(gr.top_block):
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-        	",".join((serial, "")),
-        	uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
+            ",".join((serial, "")),
+            uhd.stream_args(
+                cpu_format="fc32",
+                args='',
+                channels=list(range(0,1)),
+            ),
         )
         self.uhd_usrp_source_0.set_subdev_spec(rx_usrp_channel, 0)
-        self.uhd_usrp_source_0.set_samp_rate(sample_rate)
         self.uhd_usrp_source_0.set_center_freq(rx_usrp_frequency, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_samp_rate(sample_rate)
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
         self.tpms_poore_decoder_0 = tpms_poore.decoder()
-        self.fir_filter_xxx_1_0 = filter.fir_filter_fff(1, (50*[0.02]))
+        self.fir_filter_xxx_1_0 = filter.fir_filter_fff(1, 50*[0.02])
         self.fir_filter_xxx_1_0.declare_sample_delay(0)
-        self.fir_filter_xxx_0 = filter.fir_filter_fff(1, (4*[0.25]))
+        self.fir_filter_xxx_0 = filter.fir_filter_fff(1, 4*[0.25])
         self.fir_filter_xxx_0.declare_sample_delay(0)
         self.blocks_threshold_ff_0_0 = blocks.threshold_ff(threshold, threshold, 0)
         self.blocks_threshold_ff_0 = blocks.threshold_ff(-4, -4, 0)
@@ -68,15 +72,17 @@ class TPMS_FSK_USRPB205mini_Receive(gr.top_block):
         self.blocks_burst_tagger_1 = blocks.burst_tagger(gr.sizeof_gr_complex)
         self.blocks_burst_tagger_1.set_true_tag('burst',True)
         self.blocks_burst_tagger_1.set_false_tag('burst',False)
-
         self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf(sample_rate/(2*math.pi*80000/8.0))
-        self.analog_agc_xx_0 = analog.agc_cc(.05, 1.0, 0)
+        self.analog_agc_xx_0 = analog.agc_cc(0.05, 1, 0)
         self.analog_agc_xx_0.set_max_gain(20)
+
+
 
         ##################################################
         # Connections
         ##################################################
         self.msg_connect((self.tpms_poore_decoder_0, 'out'), (self.blocks_message_debug_0, 'print'))
+        self.connect((self.analog_agc_xx_0, 0), (self.blocks_complex_to_mag_squared_0_0, 0))
         self.connect((self.analog_agc_xx_0, 0), (self.blocks_delay_1, 0))
         self.connect((self.analog_quadrature_demod_cf_0, 0), (self.fir_filter_xxx_0, 0))
         self.connect((self.blocks_burst_tagger_1, 0), (self.analog_quadrature_demod_cf_0, 0))
@@ -89,7 +95,6 @@ class TPMS_FSK_USRPB205mini_Receive(gr.top_block):
         self.connect((self.fir_filter_xxx_0, 0), (self.blocks_threshold_ff_0, 0))
         self.connect((self.fir_filter_xxx_1_0, 0), (self.blocks_threshold_ff_0_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.analog_agc_xx_0, 0))
-        self.connect((self.uhd_usrp_source_0, 0), (self.blocks_complex_to_mag_squared_0_0, 0))
 
     def get_threshold(self):
         return self.threshold
@@ -110,8 +115,8 @@ class TPMS_FSK_USRPB205mini_Receive(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        self.uhd_usrp_source_0.set_samp_rate(self.sample_rate)
         self.analog_quadrature_demod_cf_0.set_gain(self.sample_rate/(2*math.pi*80000/8.0))
+        self.uhd_usrp_source_0.set_samp_rate(self.sample_rate)
 
     def get_rx_usrp_gain(self):
         return self.rx_usrp_gain
@@ -119,7 +124,6 @@ class TPMS_FSK_USRPB205mini_Receive(gr.top_block):
     def set_rx_usrp_gain(self, rx_usrp_gain):
         self.rx_usrp_gain = rx_usrp_gain
         self.uhd_usrp_source_0.set_gain(self.rx_usrp_gain, 0)
-
 
     def get_rx_usrp_frequency(self):
         return self.rx_usrp_frequency
@@ -148,12 +152,21 @@ class TPMS_FSK_USRPB205mini_Receive(gr.top_block):
         self.notes = notes
 
 
-def main(top_block_cls=TPMS_FSK_USRPB205mini_Receive, options=None):
 
+def main(top_block_cls=TPMS_FSK_USRPB205mini_Receive, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

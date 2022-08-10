@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import time
 import os
@@ -84,11 +84,11 @@ class Hiprfisr():
                 # SOI Check (and Auto Select)
                 if self.process_sois:
                     selected_SOI = self.SOI_Check(int(self.settings_dictionary['SOI_trigger_mode'])) 
-                    #~ print "Selected SOI: " + str(selected_SOI)
-                    #~ print "Auto-Start PD: " + str(self.auto_start_pd)
+                    #~ print("Selected SOI: " + str(selected_SOI))
+                    #~ print("Auto-Start PD: " + str(self.auto_start_pd))
                     #~ if self.auto_start_pd == True:               
                         #~ # Start Protocol Discovery
-                        #~ print "START PROTOCOL DISCOVERY HERE"
+                        #~ print("START PROTOCOL DISCOVERY HERE")
                         #~ startPD()              
                         #~ #runFlowGraph(library_entry)      
                                 #~ 
@@ -173,7 +173,7 @@ class Hiprfisr():
     def saveConfiguration(self,filename, data):
         """ Saves the HIPRFISR settings to a YAML file
         """
-        stream = file(filename,'w')
+        stream = open(filename,'w')
         yaml.dump(data, stream)
                
     def connect(self):
@@ -228,7 +228,7 @@ class Hiprfisr():
             try:
                 self.hiprfisr_sub_listener = fissure_listener(os.path.dirname(os.path.realpath(__file__)) + '/YAML/hiprfisr.yaml',dashboard_ip_address,dashboard_pub_port,zmq.SUB, logcfg = os.path.dirname(os.path.realpath(__file__)) + "/YAML/logging.yaml", logsource = "hiprfisr")  
             except:
-                print "Unable to connect HIPRFISR SUB to Dashboard PUB" 
+                print("Unable to connect HIPRFISR SUB to Dashboard PUB")
                 temp_sub_connected = False  
                 
             # TSI PUBs
@@ -238,7 +238,7 @@ class Hiprfisr():
                 self.hiprfisr_sub_listener.initialize_port(tsi_ip_address,tsi_pub_port_classification)
                     
             except:
-                print "Unable to connect HIPRFISR SUB to TSI PUB"
+                print("Unable to connect HIPRFISR SUB to TSI PUB")
                 temp_sub_connected = False
                 
             # FGE PUB
@@ -246,7 +246,7 @@ class Hiprfisr():
                 self.hiprfisr_sub_listener.initialize_port(fge_ip_address,fge_pub_port)
                     
             except:
-                print "Unable to connect HIPRFISR SUB to FGE PUB"
+                print("Unable to connect HIPRFISR SUB to FGE PUB")
                 temp_sub_connected = False      
                 
             # PD PUB        
@@ -254,7 +254,7 @@ class Hiprfisr():
                 self.hiprfisr_sub_listener.initialize_port(pd_ip_address,pd_pub_port)
 
             except:
-                print "Unable to connect HIPRFISR SUB to PD PUB"
+                print("Unable to connect HIPRFISR SUB to PD PUB")
                 temp_sub_connected = False
                 
             self.sub_connected = temp_sub_connected
@@ -272,11 +272,11 @@ class Hiprfisr():
                 # Add SOI or Wideband Message to their List  # Moved to PUB/SUB
                 #if parsed['Type'] == 'SOI':
                     #new_SOI = (parsed['ModulationType'], parsed['Frequency'], parsed['Power'])
-                    #print new_SOI
+                    #print(new_SOI)
                     #self.soi_list.append(new_SOI)
                 #elif parsed['Type'] == 'Wideband':
                     #new_wideband = (parsed['Frequency'], parsed['Power'], parsed['Timestamp'])
-                    #print new_wideband
+                    #print(new_wideband)
                     #self.wideband_list.append(new_wideband)
                 
                 pass
@@ -706,11 +706,11 @@ class Hiprfisr():
         
         # Manual Selection
         if trigger_mode == 0:  
-            print "TRIGGER MODE 0"
+            print("TRIGGER MODE 0")
             if self.soi_manually_triggered == True:  
                 self.process_sois = False    
                 self.soi_manually_triggered = False
-                print 'SOI Triggered Manually: New Target Selected'                         
+                print('SOI Triggered Manually: New Target Selected')
                 returned_SOI = self.settings_dictionary['target_SOI']
                 
                 # Search Library for Flow Graphs
@@ -719,11 +719,11 @@ class Hiprfisr():
                 
         # Time Elapsed      
         elif trigger_mode == 1:  
-            print "TRIGGER MODE 1"
+            print("TRIGGER MODE 1")
             current_time = time.time()
             if (current_time-float(self.settings_dictionary['SOI_trigger_time'])) > float(self.settings_dictionary['SOI_trigger_timeout']):  # SOI_trigger_time should not be in YAML           
                 self.settings_dictionary['SOI_trigger_time'] = str(current_time)
-                print 'SOI Timeout: Selecting New Target'
+                print('SOI Timeout: Selecting New Target')
                 
                 if len(self.soi_list) > 0:  # If the SOI list is not empty
                     # Choose SOI from the current list      
@@ -735,7 +735,7 @@ class Hiprfisr():
         elif trigger_mode == 2:  
             if len(self.soi_list) >= int(self.settings_dictionary['SOI_quantity_limit']):
                 self.process_sois = False 
-                print 'SOI Quantity Reached: Selecting New Target'          
+                print('SOI Quantity Reached: Selecting New Target')
                 # Choose SOI from the current list      
                 returned_SOI = SOI_AutoSelect( self.soi_list, self.soi_priorities, self.soi_filters  ) # What happens if nothing is returned? 
                 # Send Message to Dashboard to Check Radio Button
@@ -807,10 +807,10 @@ class Hiprfisr():
         if len(list1) > 0:
             soi = list1[0]
         else:
-            print "No SOI Matches the Criteria"
+            print("No SOI Matches the Criteria")
             soi = []
                 
-        print 'Selected SOI: {}' .format(soi)   
+        print('Selected SOI: {}' .format(soi))
             
         return soi  
         
@@ -1022,7 +1022,7 @@ class Hiprfisr():
         """ Adds new data to the library.
         """            
         # Make a Backup of the Current Library    
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_add.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_add.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5)  
         
         # Check Protocol
@@ -1084,7 +1084,7 @@ class Hiprfisr():
             addProtocol(self.pd_library, make_new_protocol) 
                               
         # Save File  
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5)  
         
         # Send Message to Components to Update Library
@@ -1095,7 +1095,7 @@ class Hiprfisr():
         """ Removes demodulation flow graph from the library.
         """
         # Make a Backup of the Current Library    
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_remove.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_remove.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5)  
                    
         # Delete Demodulation Flow Graph From Library
@@ -1117,7 +1117,7 @@ class Hiprfisr():
                 pass
         
         # Save File
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5)  
         
         # Send Message to Components to Update Library
@@ -1127,14 +1127,14 @@ class Hiprfisr():
         """ Removes SOI from the library.
         """     
         # Make a Backup of the Current Library    
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_remove.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_remove.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5) 
         
         # Delete SOI From Library
         removeSOI(self.pd_library, protocol_name, soi)
           
         # Save File
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5)  
         
         # Send Message to Components to Update Library
@@ -1144,14 +1144,14 @@ class Hiprfisr():
         """ Removes packet type from the library.
         """     
         # Make a Backup of the Current Library    
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_remove.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_remove.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5) 
         
         # Delete Packet Type From Library
         removePacketType(self.pd_library, protocol_name, packet_type)
           
         # Save File
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5)  
         
         # Send Message to Components to Update Library
@@ -1161,14 +1161,14 @@ class Hiprfisr():
         """ Removes modulation type from the library.
         """     
         # Make a Backup of the Current Library    
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_remove.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_remove.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5) 
         
         # Delete Modulation Type From Library
         removeModulationType(self.pd_library, protocol_name, modulation_type)
           
         # Save File
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5)  
         
         # Send Message to Components to Update Library
@@ -1178,7 +1178,7 @@ class Hiprfisr():
         """ Removes attacks from the library.
         """    
         # Make a Backup of the Current Library    
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_remove.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/Library Backups/library_backup_remove.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5)  
                    
         # Delete Attacks From Library
@@ -1213,7 +1213,7 @@ class Hiprfisr():
             try:
                 if len(self.pd_library["Protocols"][protocol_name]["Attacks"][n]) == 0:
                     no_more_attacks[n] = True
-            except KeyError,e:
+            except KeyError as e:
                 no_more_attacks[n] = True
 
         # Delete Attacks from Library Tree
@@ -1249,7 +1249,7 @@ class Hiprfisr():
             del self.pd_library["Protocols"][protocol_name]
                                                 
         # Save File
-        stream = file(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
+        stream = open(os.path.dirname(os.path.realpath(__file__)) + '/YAML/library.yaml', 'w')
         yaml.dump(self.pd_library, stream, default_flow_style=False, indent=5)  
         
         # Send Message to Components to Update Library

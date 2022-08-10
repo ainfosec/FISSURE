@@ -1,21 +1,23 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: X10 Ook Limesdr X10 On
-# Generated: Sun Sep 19 10:21:44 2021
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
-from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
 import X10
 import limesdr
-
 
 class X10_OOK_LimeSDR_X10_On(gr.top_block):
 
@@ -39,17 +41,31 @@ class X10_OOK_LimeSDR_X10_On(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.limesdr_sink_0 = limesdr.sink('', int(tx_channel), '', '')
-        self.limesdr_sink_0.set_sample_rate(sample_rate)
-        self.limesdr_sink_0.set_center_freq(tx_frequency, 0)
-        self.limesdr_sink_0.set_bandwidth(5e6,0)
-        self.limesdr_sink_0.set_gain(int(tx_gain),0)
-        self.limesdr_sink_0.set_antenna(255,0)
-        self.limesdr_sink_0.calibrate(5e6, 0)
+        self.limesdr_sink_0 = limesdr.sink('', 0, '', '')
 
+
+        self.limesdr_sink_0.set_sample_rate(sample_rate)
+
+
+        self.limesdr_sink_0.set_center_freq(tx_frequency, 0)
+
+        self.limesdr_sink_0.set_bandwidth(5e6, 0)
+
+
+
+
+        self.limesdr_sink_0.set_gain(int(tx_gain), 0)
+
+
+        self.limesdr_sink_0.set_antenna(255, 0)
+
+
+        self.limesdr_sink_0.calibrate(5e6, 0)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
-        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((0.9, ))
+        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_cc(0.9)
         self.X10_message_generator_0 = X10.message_generator(sample_rate,address_code,data_code,press_duration,press_repetition_interval)
+
+
 
         ##################################################
         # Connections
@@ -63,8 +79,8 @@ class X10_OOK_LimeSDR_X10_On(gr.top_block):
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.limesdr_sink_0.set_gain(int(self.tx_gain),0)
-        self.limesdr_sink_0.set_gain(int(self.tx_gain),1)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain), 0)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain), 1)
 
     def get_tx_frequency(self):
         return self.tx_frequency
@@ -90,21 +106,18 @@ class X10_OOK_LimeSDR_X10_On(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        self.X10_message_generator_0.set_sample_rate(self.sample_rate)
 
     def get_press_repetition_interval(self):
         return self.press_repetition_interval
 
     def set_press_repetition_interval(self, press_repetition_interval):
         self.press_repetition_interval = press_repetition_interval
-        self.X10_message_generator_0.set_press_repetition_interval(self.press_repetition_interval)
 
     def get_press_duration(self):
         return self.press_duration
 
     def set_press_duration(self, press_duration):
         self.press_duration = press_duration
-        self.X10_message_generator_0.set_press_duration(self.press_duration)
 
     def get_notes(self):
         return self.notes
@@ -117,22 +130,29 @@ class X10_OOK_LimeSDR_X10_On(gr.top_block):
 
     def set_data_code(self, data_code):
         self.data_code = data_code
-        self.X10_message_generator_0.set_data_code(self.data_code)
 
     def get_address_code(self):
         return self.address_code
 
     def set_address_code(self, address_code):
         self.address_code = address_code
-        self.X10_message_generator_0.set_address_code(self.address_code)
+
 
 
 def main(top_block_cls=X10_OOK_LimeSDR_X10_On, options=None):
-
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

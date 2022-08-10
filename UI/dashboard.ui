@@ -58,7 +58,7 @@
          <x>0</x>
          <y>0</y>
          <width>1261</width>
-         <height>977</height>
+         <height>980</height>
         </rect>
        </property>
        <property name="styleSheet">
@@ -67,14 +67,23 @@
 }</string>
        </property>
        <layout class="QGridLayout" name="gridLayout_2" columnstretch="0">
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
         <property name="horizontalSpacing">
          <number>0</number>
         </property>
         <property name="verticalSpacing">
          <number>4</number>
-        </property>
-        <property name="margin">
-         <number>0</number>
         </property>
         <item row="0" column="0">
          <widget class="QFrame" name="frame_top">
@@ -900,7 +909,7 @@ QTabBar::tab:!selected {
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <widget class="QGroupBox" name="groupBox_automation_targeting">
+            <widget class="QFrame" name="frame_automation_targeting">
              <property name="enabled">
               <bool>false</bool>
              </property>
@@ -911,9 +920,6 @@ QTabBar::tab:!selected {
                <width>380</width>
                <height>275</height>
               </rect>
-             </property>
-             <property name="title">
-              <string/>
              </property>
              <widget class="QLabel" name="label_soi_priority_row2">
               <property name="geometry">
@@ -1174,14 +1180,14 @@ QTabBar::tab:!selected {
              <attribute name="horizontalHeaderStretchLastSection">
               <bool>true</bool>
              </attribute>
+             <attribute name="verticalHeaderMinimumSectionSize">
+              <number>20</number>
+             </attribute>
              <attribute name="verticalHeaderDefaultSectionSize">
               <number>20</number>
              </attribute>
              <attribute name="verticalHeaderHighlightSections">
               <bool>false</bool>
-             </attribute>
-             <attribute name="verticalHeaderMinimumSectionSize">
-              <number>20</number>
              </attribute>
              <row>
               <property name="text">
@@ -1193,7 +1199,7 @@ QTabBar::tab:!selected {
                </font>
               </property>
               <property name="textAlignment">
-               <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+               <set>AlignCenter</set>
               </property>
              </row>
              <row>
@@ -1206,7 +1212,7 @@ QTabBar::tab:!selected {
                </font>
               </property>
               <property name="textAlignment">
-               <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+               <set>AlignCenter</set>
               </property>
              </row>
              <row>
@@ -1219,7 +1225,7 @@ QTabBar::tab:!selected {
                </font>
               </property>
               <property name="textAlignment">
-               <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+               <set>AlignCenter</set>
               </property>
              </row>
              <row>
@@ -1233,7 +1239,7 @@ QTabBar::tab:!selected {
                </font>
               </property>
               <property name="textAlignment">
-               <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+               <set>AlignCenter</set>
               </property>
              </row>
              <row>
@@ -1246,7 +1252,7 @@ QTabBar::tab:!selected {
                </font>
               </property>
               <property name="textAlignment">
-               <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+               <set>AlignCenter</set>
               </property>
              </row>
              <column>
@@ -1259,7 +1265,7 @@ QTabBar::tab:!selected {
                <string>2418</string>
               </property>
               <property name="textAlignment">
-               <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+               <set>AlignCenter</set>
               </property>
              </item>
              <item row="1" column="0">
@@ -1267,7 +1273,7 @@ QTabBar::tab:!selected {
                <string>2428</string>
               </property>
               <property name="textAlignment">
-               <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+               <set>AlignCenter</set>
               </property>
              </item>
              <item row="2" column="0">
@@ -1275,7 +1281,7 @@ QTabBar::tab:!selected {
                <string>20</string>
               </property>
               <property name="textAlignment">
-               <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+               <set>AlignCenter</set>
               </property>
              </item>
              <item row="3" column="0">
@@ -1288,7 +1294,7 @@ QTabBar::tab:!selected {
                </font>
               </property>
               <property name="textAlignment">
-               <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+               <set>AlignCenter</set>
               </property>
              </item>
              <item row="4" column="0">
@@ -1296,7 +1302,7 @@ QTabBar::tab:!selected {
                <string>100</string>
               </property>
               <property name="textAlignment">
-               <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+               <set>AlignCenter</set>
               </property>
              </item>
             </widget>
@@ -1762,11 +1768,11 @@ QTabBar::tab:!selected {
                 <property name="cornerButtonEnabled">
                  <bool>false</bool>
                 </property>
-                <attribute name="horizontalHeaderDefaultSectionSize">
-                 <number>50</number>
-                </attribute>
                 <attribute name="horizontalHeaderMinimumSectionSize">
                  <number>5</number>
+                </attribute>
+                <attribute name="horizontalHeaderDefaultSectionSize">
+                 <number>50</number>
                 </attribute>
                 <attribute name="horizontalHeaderStretchLastSection">
                  <bool>true</bool>
@@ -1847,7 +1853,7 @@ QTabBar::tab:!selected {
                  <enum>QFrame::StyledPanel</enum>
                 </property>
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>3</number>
                 </property>
                 <widget class="QWidget" name="page_9">
                  <widget class="QPushButton" name="pushButton_tsi_delete_preset">
@@ -2032,14 +2038,14 @@ QTabBar::tab:!selected {
                   <attribute name="horizontalHeaderStretchLastSection">
                    <bool>true</bool>
                   </attribute>
+                  <attribute name="verticalHeaderMinimumSectionSize">
+                   <number>20</number>
+                  </attribute>
                   <attribute name="verticalHeaderDefaultSectionSize">
                    <number>20</number>
                   </attribute>
                   <attribute name="verticalHeaderHighlightSections">
                    <bool>false</bool>
-                  </attribute>
-                  <attribute name="verticalHeaderMinimumSectionSize">
-                   <number>20</number>
                   </attribute>
                   <row>
                    <property name="text">
@@ -2051,7 +2057,7 @@ QTabBar::tab:!selected {
                     </font>
                    </property>
                    <property name="textAlignment">
-                    <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                    <set>AlignCenter</set>
                    </property>
                   </row>
                   <row>
@@ -2064,7 +2070,7 @@ QTabBar::tab:!selected {
                     </font>
                    </property>
                    <property name="textAlignment">
-                    <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                    <set>AlignCenter</set>
                    </property>
                   </row>
                   <row>
@@ -2077,7 +2083,7 @@ QTabBar::tab:!selected {
                     </font>
                    </property>
                    <property name="textAlignment">
-                    <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                    <set>AlignCenter</set>
                    </property>
                   </row>
                   <row>
@@ -2091,7 +2097,7 @@ QTabBar::tab:!selected {
                     </font>
                    </property>
                    <property name="textAlignment">
-                    <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                    <set>AlignCenter</set>
                    </property>
                   </row>
                  </widget>
@@ -4026,7 +4032,7 @@ p, li { white-space: pre-wrap; }
                 </rect>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>1</number>
                </property>
                <widget class="QWidget" name="page_3">
                 <widget class="QLabel" name="label_tsi_classifier">
@@ -4221,7 +4227,7 @@ p, li { white-space: pre-wrap; }
              <attribute name="title">
               <string>Status</string>
              </attribute>
-             <widget class="QGroupBox" name="groupBox_pd_status_current_soi">
+             <widget class="QFrame" name="frame_pd_status_current_soi">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -4232,9 +4238,6 @@ p, li { white-space: pre-wrap; }
                 <width>420</width>
                 <height>220</height>
                </rect>
-              </property>
-              <property name="title">
-               <string/>
               </property>
               <widget class="QLabel" name="label_237">
                <property name="geometry">
@@ -4379,7 +4382,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </widget>
              </widget>
-             <widget class="QGroupBox" name="groupBox_pd_status_bitstream_buffer">
+             <widget class="QFrame" name="frame_pd_status_bitstream_buffer">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -4390,9 +4393,6 @@ p, li { white-space: pre-wrap; }
                 <width>545</width>
                 <height>130</height>
                </rect>
-              </property>
-              <property name="title">
-               <string/>
               </property>
               <widget class="QLabel" name="label_238">
                <property name="geometry">
@@ -4617,7 +4617,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </widget>
              </widget>
-             <widget class="QGroupBox" name="groupBox_pd_status_zmq_pub">
+             <widget class="QFrame" name="frame_pd_status_zmq_pub">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -4629,8 +4629,8 @@ p, li { white-space: pre-wrap; }
                 <height>130</height>
                </rect>
               </property>
-              <property name="title">
-               <string/>
+              <property name="styleSheet">
+               <string notr="true"/>
               </property>
               <widget class="QLabel" name="label_239">
                <property name="geometry">
@@ -5283,7 +5283,7 @@ p, li { white-space: pre-wrap; }
              <attribute name="title">
               <string>Demodulation</string>
              </attribute>
-             <widget class="QGroupBox" name="groupBox_flow_graph_lookup">
+             <widget class="QFrame" name="frame_flow_graph_lookup">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -5291,9 +5291,6 @@ p, li { white-space: pre-wrap; }
                 <width>1206</width>
                 <height>361</height>
                </rect>
-              </property>
-              <property name="title">
-               <string/>
               </property>
               <widget class="QLabel" name="label_233">
                <property name="geometry">
@@ -6173,7 +6170,7 @@ p, li { white-space: pre-wrap; }
                <enum>Qt::Horizontal</enum>
               </property>
              </widget>
-             <widget class="QGroupBox" name="groupBox_flow_graph">
+             <widget class="QFrame" name="frame_flow_graph">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -6181,9 +6178,6 @@ p, li { white-space: pre-wrap; }
                 <width>1210</width>
                 <height>460</height>
                </rect>
-              </property>
-              <property name="title">
-               <string/>
               </property>
               <widget class="QLabel" name="label_235">
                <property name="geometry">
@@ -7654,7 +7648,7 @@ p, li { white-space: pre-wrap; }
                <property name="frameShadow">
                 <enum>QFrame::Raised</enum>
                </property>
-               <widget class="QGroupBox" name="groupBox_pd_bit_slicing_manual_slicing">
+               <widget class="QFrame" name="frame_pd_bit_slicing_manual_slicing">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -7673,9 +7667,6 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="autoFillBackground">
                  <bool>false</bool>
-                </property>
-                <property name="title">
-                 <string>Manual Slicing</string>
                 </property>
                 <widget class="QPushButton" name="pushButton_pd_bit_slicing_split_fields">
                  <property name="enabled">
@@ -7870,7 +7861,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                 </widget>
                </widget>
-               <widget class="QGroupBox" name="groupBox_pd_bit_slicing_library">
+               <widget class="QFrame" name="frame_pd_bit_slicing_library">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -7886,9 +7877,6 @@ p, li { white-space: pre-wrap; }
                  <font>
                   <pointsize>10</pointsize>
                  </font>
-                </property>
-                <property name="title">
-                 <string>Library</string>
                 </property>
                 <widget class="QPushButton" name="pushButton_pd_bit_slicing_search_library">
                  <property name="enabled">
@@ -7923,7 +7911,7 @@ p, li { white-space: pre-wrap; }
                  </property>
                 </widget>
                </widget>
-               <widget class="QGroupBox" name="groupBox_pd_bit_slicing_automated_slicing">
+               <widget class="QFrame" name="frame_pd_bit_slicing_automated_slicing">
                 <property name="enabled">
                  <bool>false</bool>
                 </property>
@@ -7939,9 +7927,6 @@ p, li { white-space: pre-wrap; }
                  <font>
                   <pointsize>10</pointsize>
                  </font>
-                </property>
-                <property name="title">
-                 <string>Automated Slicing</string>
                 </property>
                 <widget class="QPushButton" name="pushButton_pd_bit_slicing_detect_fields">
                  <property name="enabled">
@@ -8792,7 +8777,7 @@ p, li { white-space: pre-wrap; }
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <widget class="QGroupBox" name="groupBox_pd_dissectors_editor">
+              <widget class="QFrame" name="frame_pd_dissectors_editor">
                <property name="geometry">
                 <rect>
                  <x>0</x>
@@ -8800,9 +8785,6 @@ p, li { white-space: pre-wrap; }
                  <width>1206</width>
                  <height>645</height>
                 </rect>
-               </property>
-               <property name="title">
-                <string/>
                </property>
                <widget class="QPushButton" name="pushButton_pd_dissectors_construct">
                 <property name="geometry">
@@ -10218,7 +10200,7 @@ p, li { white-space: pre-wrap; }
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <widget class="QGroupBox" name="groupBox">
+              <widget class="QFrame" name="frame">
                <property name="geometry">
                 <rect>
                  <x>-115</x>
@@ -10226,9 +10208,6 @@ p, li { white-space: pre-wrap; }
                  <width>1181</width>
                  <height>367</height>
                 </rect>
-               </property>
-               <property name="title">
-                <string/>
                </property>
                <widget class="QLabel" name="label_34">
                 <property name="geometry">
@@ -10664,7 +10643,7 @@ p, li { white-space: pre-wrap; }
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <widget class="QGroupBox" name="groupBox_2">
+              <widget class="QFrame" name="frame_2">
                <property name="geometry">
                 <rect>
                  <x>-40</x>
@@ -10672,9 +10651,6 @@ p, li { white-space: pre-wrap; }
                  <width>1120</width>
                  <height>402</height>
                 </rect>
-               </property>
-               <property name="title">
-                <string/>
                </property>
                <widget class="QTextEdit" name="textEdit_pd_crc_crc2">
                 <property name="enabled">
@@ -12311,7 +12287,7 @@ p, li { white-space: pre-wrap; }
                  <number>1</number>
                 </property>
                 <property name="currentIndex">
-                 <number>0</number>
+                 <number>1</number>
                 </property>
                 <widget class="QWidget" name="Fields">
                  <widget class="QLabel" name="label_245">
@@ -12612,10 +12588,10 @@ p, li { white-space: pre-wrap; }
                    <attribute name="horizontalHeaderStretchLastSection">
                     <bool>false</bool>
                    </attribute>
-                   <attribute name="verticalHeaderDefaultSectionSize">
+                   <attribute name="verticalHeaderMinimumSectionSize">
                     <number>24</number>
                    </attribute>
-                   <attribute name="verticalHeaderMinimumSectionSize">
+                   <attribute name="verticalHeaderDefaultSectionSize">
                     <number>24</number>
                    </attribute>
                    <attribute name="verticalHeaderStretchLastSection">
@@ -12851,11 +12827,11 @@ p, li { white-space: pre-wrap; }
                      <pointsize>10</pointsize>
                     </font>
                    </property>
-                   <attribute name="horizontalHeaderDefaultSectionSize">
-                    <number>100</number>
-                   </attribute>
                    <attribute name="horizontalHeaderMinimumSectionSize">
                     <number>5</number>
+                   </attribute>
+                   <attribute name="horizontalHeaderDefaultSectionSize">
+                    <number>100</number>
                    </attribute>
                    <attribute name="horizontalHeaderStretchLastSection">
                     <bool>true</bool>
@@ -14838,7 +14814,7 @@ QTabBar::tab:!selected {
              <number>0</number>
             </property>
             <widget class="QWidget" name="Record">
-             <widget class="QGroupBox" name="groupBox_iq_record">
+             <widget class="QFrame" name="frame_iq_record">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -14849,9 +14825,6 @@ QTabBar::tab:!selected {
                 <width>1200</width>
                 <height>210</height>
                </rect>
-              </property>
-              <property name="title">
-               <string/>
               </property>
               <widget class="QLabel" name="label_224">
                <property name="geometry">
@@ -14937,11 +14910,11 @@ QTabBar::tab:!selected {
                   <pointsize>9</pointsize>
                  </font>
                 </property>
-                <attribute name="horizontalHeaderDefaultSectionSize">
-                 <number>140</number>
-                </attribute>
                 <attribute name="horizontalHeaderMinimumSectionSize">
                  <number>5</number>
+                </attribute>
+                <attribute name="horizontalHeaderDefaultSectionSize">
+                 <number>140</number>
                 </attribute>
                 <attribute name="horizontalHeaderStretchLastSection">
                  <bool>true</bool>
@@ -14970,7 +14943,7 @@ QTabBar::tab:!selected {
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -14983,7 +14956,7 @@ QTabBar::tab:!selected {
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -14996,7 +14969,7 @@ QTabBar::tab:!selected {
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15009,7 +14982,7 @@ QTabBar::tab:!selected {
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15022,7 +14995,7 @@ QTabBar::tab:!selected {
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15035,7 +15008,7 @@ QTabBar::tab:!selected {
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15048,7 +15021,7 @@ QTabBar::tab:!selected {
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15061,7 +15034,7 @@ QTabBar::tab:!selected {
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15074,7 +15047,7 @@ QTabBar::tab:!selected {
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15087,7 +15060,7 @@ QTabBar::tab:!selected {
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <item row="0" column="0">
@@ -15095,7 +15068,7 @@ QTabBar::tab:!selected {
                   <string>data_file.iq</string>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="1">
@@ -15103,7 +15076,7 @@ QTabBar::tab:!selected {
                   <string>2412</string>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="2">
@@ -15111,7 +15084,7 @@ QTabBar::tab:!selected {
                   <string/>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="3">
@@ -15119,7 +15092,7 @@ QTabBar::tab:!selected {
                   <string/>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="4">
@@ -15127,7 +15100,7 @@ QTabBar::tab:!selected {
                   <string>20</string>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="5">
@@ -15135,7 +15108,7 @@ QTabBar::tab:!selected {
                   <string>1</string>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="6">
@@ -15143,7 +15116,7 @@ QTabBar::tab:!selected {
                   <string>1000000</string>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="7">
@@ -15151,7 +15124,7 @@ QTabBar::tab:!selected {
                   <string>1</string>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="8">
@@ -15159,7 +15132,7 @@ QTabBar::tab:!selected {
                   <string/>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                  <property name="flags">
                   <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsUserCheckable</set>
@@ -15170,7 +15143,7 @@ QTabBar::tab:!selected {
                   <string>5.0</string>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                </widget>
@@ -15269,7 +15242,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </widget>
             <widget class="QWidget" name="Playback">
-             <widget class="QGroupBox" name="groupBox_iq_playback">
+             <widget class="QFrame" name="frame_iq_playback">
               <property name="enabled">
                <bool>false</bool>
               </property>
@@ -15280,9 +15253,6 @@ p, li { white-space: pre-wrap; }
                 <width>1200</width>
                 <height>211</height>
                </rect>
-              </property>
-              <property name="title">
-               <string/>
               </property>
               <widget class="QLabel" name="label_225">
                <property name="geometry">
@@ -15428,11 +15398,11 @@ p, li { white-space: pre-wrap; }
                 <property name="horizontalScrollBarPolicy">
                  <enum>Qt::ScrollBarAlwaysOff</enum>
                 </property>
-                <attribute name="horizontalHeaderDefaultSectionSize">
-                 <number>140</number>
-                </attribute>
                 <attribute name="horizontalHeaderMinimumSectionSize">
                  <number>5</number>
+                </attribute>
+                <attribute name="horizontalHeaderDefaultSectionSize">
+                 <number>140</number>
                 </attribute>
                 <attribute name="horizontalHeaderStretchLastSection">
                  <bool>true</bool>
@@ -15461,7 +15431,7 @@ p, li { white-space: pre-wrap; }
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15474,7 +15444,7 @@ p, li { white-space: pre-wrap; }
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15487,7 +15457,7 @@ p, li { white-space: pre-wrap; }
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15500,7 +15470,7 @@ p, li { white-space: pre-wrap; }
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15513,7 +15483,7 @@ p, li { white-space: pre-wrap; }
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15526,7 +15496,7 @@ p, li { white-space: pre-wrap; }
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <column>
@@ -15539,7 +15509,7 @@ p, li { white-space: pre-wrap; }
                   </font>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </column>
                 <item row="0" column="0">
@@ -15547,7 +15517,7 @@ p, li { white-space: pre-wrap; }
                   <string>2412</string>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="1">
@@ -15555,7 +15525,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="2">
@@ -15563,7 +15533,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="3">
@@ -15571,7 +15541,7 @@ p, li { white-space: pre-wrap; }
                   <string>50</string>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="4">
@@ -15579,7 +15549,7 @@ p, li { white-space: pre-wrap; }
                   <string>1</string>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                 <item row="0" column="5">
@@ -15587,7 +15557,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                  <property name="flags">
                   <set>ItemIsSelectable|ItemIsDragEnabled|ItemIsUserCheckable</set>
@@ -15598,7 +15568,7 @@ p, li { white-space: pre-wrap; }
                   <string/>
                  </property>
                  <property name="textAlignment">
-                  <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+                  <set>AlignCenter</set>
                  </property>
                 </item>
                </widget>
@@ -15726,7 +15696,7 @@ p, li { white-space: pre-wrap; }
                 </rect>
                </property>
                <property name="currentIndex">
-                <number>0</number>
+                <number>9</number>
                </property>
                <widget class="QWidget" name="page_Computer"/>
                <widget class="QWidget" name="page_USRP_X310"/>
@@ -25004,7 +24974,7 @@ Flow Graphs</string>
 }</string>
               </property>
               <property name="currentIndex">
-               <number>0</number>
+               <number>3</number>
               </property>
               <widget class="QWidget" name="page_12">
                <widget class="QTextEdit" name="textEdit_library_pd_new_protocol">
@@ -26317,7 +26287,7 @@ p, li { white-space: pre-wrap; }
              <bool>false</bool>
             </property>
            </widget>
-           <widget class="QFrame" name="frame">
+           <widget class="QFrame" name="frame_ignore">
             <property name="geometry">
              <rect>
               <x>1050</x>
@@ -26327,7 +26297,7 @@ p, li { white-space: pre-wrap; }
              </rect>
             </property>
             <property name="styleSheet">
-             <string notr="true">QFrame#frame {
+             <string notr="true">QFrame#frame_ignore {
 	background-color: rgb(251, 251, 251);
 	border: 1px solid #17365D;
 	border-bottom-left-radius: 15px;
@@ -26462,7 +26432,7 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </widget>
-           <widget class="QFrame" name="frame_2">
+           <widget class="QFrame" name="frame_permit">
             <property name="geometry">
              <rect>
               <x>1050</x>
@@ -26472,7 +26442,7 @@ p, li { white-space: pre-wrap; }
              </rect>
             </property>
             <property name="styleSheet">
-             <string notr="true">QFrame#frame_2 {
+             <string notr="true">QFrame#frame_permit {
 	background-color: rgb(251, 251, 251);
 	border: 1px solid #17365D;
 	border-bottom-left-radius: 15px;
@@ -26925,7 +26895,7 @@ p, li { white-space: pre-wrap; }
      <x>0</x>
      <y>0</y>
      <width>1279</width>
-     <height>25</height>
+     <height>22</height>
     </rect>
    </property>
    <property name="defaultUp">
@@ -27095,7 +27065,6 @@ p, li { white-space: pre-wrap; }
      <property name="title">
       <string>Z-Wave</string>
      </property>
-     <addaction name="actionZwave"/>
      <addaction name="actionZwave_tx"/>
      <addaction name="actionZwave_rx"/>
     </widget>
@@ -27177,12 +27146,12 @@ p, li { white-space: pre-wrap; }
       <addaction name="actionESP8266_Deauther_Web_Interface"/>
       <addaction name="actionESP8266_Deauther_Credentials"/>
      </widget>
-     <widget class="QMenu" name="menuWhoishere_py">
+     <widget class="QMenu" name="menuwhoishere_py">
       <property name="title">
        <string>whoishere.py</string>
       </property>
-      <addaction name="actionWhoishere_py_2"/>
-      <addaction name="actionWhoishere_conf"/>
+      <addaction name="actionwhoishere_py_2"/>
+      <addaction name="actionwhoishere_conf"/>
      </widget>
      <addaction name="actionMonitorModeTool"/>
      <addaction name="actionIwlist_scan"/>
@@ -27203,7 +27172,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionTrackerjacker"/>
      <addaction name="actionSanitized_IEEE_OUI_Data"/>
      <addaction name="actionAirgeddon"/>
-     <addaction name="menuWhoishere_py"/>
+     <addaction name="menuwhoishere_py"/>
     </widget>
     <widget class="QMenu" name="menuHardware_2">
      <property name="title">
@@ -27280,7 +27249,6 @@ p, li { white-space: pre-wrap; }
      <property name="title">
       <string>GSM</string>
      </property>
-     <addaction name="actionOpenBTS"/>
      <addaction name="actionGrgsm_scanner"/>
      <addaction name="actionKalibrate"/>
      <addaction name="actionPySim_read"/>
@@ -27334,7 +27302,6 @@ p, li { white-space: pre-wrap; }
       <addaction name="actionRadioQTH_Available_Call_Signs"/>
       <addaction name="actionAE7Q_Available_Call_Signs"/>
      </widget>
-     <addaction name="actionHam2mon"/>
      <addaction name="actionWSJT_X"/>
      <addaction name="actionWSPRnet_Map"/>
      <addaction name="actionEvery_Time_Zone"/>
@@ -27344,12 +27311,6 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionLicense_Search"/>
      <addaction name="actionEchoLink_Link_Status"/>
      <addaction name="actionSolarHam"/>
-    </widget>
-    <widget class="QMenu" name="menuTPMS">
-     <property name="title">
-      <string>TPMS</string>
-     </property>
-     <addaction name="actionTpms_rx"/>
     </widget>
     <widget class="QMenu" name="menuV2V">
      <property name="title">
@@ -27503,7 +27464,7 @@ p, li { white-space: pre-wrap; }
       <string>HD Radio</string>
      </property>
      <addaction name="actionNrsc5"/>
-     <addaction name="actionNrsc5_gui"/>
+     <addaction name="actionnrsc5_gui"/>
     </widget>
     <widget class="QMenu" name="menuZigBee">
      <property name="title">
@@ -27541,9 +27502,8 @@ p, li { white-space: pre-wrap; }
     <addaction name="menuRadiosonde"/>
     <addaction name="menuRFID"/>
     <addaction name="menuSatellite"/>
-    <addaction name="menuSDR_Tools_2"/>
     <addaction name="menuSSH"/>
-    <addaction name="menuTPMS"/>
+    <addaction name="menuSDR_Tools_2"/>
     <addaction name="menuTrunked_Radio"/>
     <addaction name="menuV2V"/>
     <addaction name="menuVideo"/>
@@ -28742,12 +28702,12 @@ p, li { white-space: pre-wrap; }
     <string>airgeddon</string>
    </property>
   </action>
-  <action name="actionWhoishere_py_2">
+  <action name="actionwhoishere_py_2">
    <property name="text">
     <string>whoishere.py</string>
    </property>
   </action>
-  <action name="actionWhoishere_conf">
+  <action name="actionwhoishere_conf">
    <property name="text">
     <string>whoishere.conf</string>
    </property>
@@ -28757,14 +28717,14 @@ p, li { white-space: pre-wrap; }
     <string>Hydra</string>
    </property>
   </action>
-  <action name="actionssh_login">
-   <property name="text">
-    <string>ssh_login</string>
-   </property>
-  </action>
   <action name="actionSecLists">
    <property name="text">
     <string>SecLists</string>
+   </property>
+  </action>
+  <action name="actionssh_login">
+   <property name="text">
+    <string>ssh_login</string>
    </property>
   </action>
   <action name="actionMetasploit_Wordlists">
@@ -28812,7 +28772,7 @@ p, li { white-space: pre-wrap; }
     <string>PySDR.org</string>
    </property>
   </action>
-  <action name="actionNrsc5_gui">
+  <action name="actionnrsc5_gui">
    <property name="text">
     <string>nrsc5-gui</string>
    </property>

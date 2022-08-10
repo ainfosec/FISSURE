@@ -44,7 +44,7 @@ if __name__ == "__main__":
     udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         
     # Craft Beacon Frame
-    frame = Dot11FCS(addr1='ff:ff:ff:ff:ff:ff', addr2=get_mac_address, addr3=get_mac_address)/Dot11Beacon()/Dot11Elt(ID='SSID', info=get_ssid)
+    frame = Dot11FCS(addr1='ff:ff:ff:ff:ff:ff', addr2=get_mac_address, addr3=get_mac_address)/Dot11Beacon()/Dot11Elt(ID='SSID', info=get_ssid)  # Dot11FCS not in Python3 scapy
     
     # Send
     while True:

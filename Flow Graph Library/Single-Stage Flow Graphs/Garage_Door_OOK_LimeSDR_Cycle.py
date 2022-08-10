@@ -1,21 +1,23 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Garage Door Ook Limesdr Cycle
-# Generated: Sun Sep 19 09:34:33 2021
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
-from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
 import garage_door
 import limesdr
-
 
 class Garage_Door_OOK_LimeSDR_Cycle(gr.top_block):
 
@@ -38,17 +40,31 @@ class Garage_Door_OOK_LimeSDR_Cycle(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.limesdr_sink_0 = limesdr.sink('', int(tx_channel), '', '')
-        self.limesdr_sink_0.set_sample_rate(sample_rate)
-        self.limesdr_sink_0.set_center_freq(tx_frequency, 0)
-        self.limesdr_sink_0.set_bandwidth(5e6,0)
-        self.limesdr_sink_0.set_gain(int(tx_gain),0)
-        self.limesdr_sink_0.set_antenna(255,0)
-        self.limesdr_sink_0.calibrate(5e6, 0)
+        self.limesdr_sink_0 = limesdr.sink('', 0, '', '')
 
+
+        self.limesdr_sink_0.set_sample_rate(sample_rate)
+
+
+        self.limesdr_sink_0.set_center_freq(tx_frequency, 0)
+
+        self.limesdr_sink_0.set_bandwidth(5e6, 0)
+
+
+
+
+        self.limesdr_sink_0.set_gain(int(tx_gain), 0)
+
+
+        self.limesdr_sink_0.set_antenna(255, 0)
+
+
+        self.limesdr_sink_0.calibrate(5e6, 0)
         self.garage_door_message_cycler_0 = garage_door.message_cycler(sample_rate,dip_interval,starting_dip,bursts_per_dip,burst_interval)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
-        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((0.9, ))
+        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_cc(0.9)
+
+
 
         ##################################################
         # Connections
@@ -62,8 +78,8 @@ class Garage_Door_OOK_LimeSDR_Cycle(gr.top_block):
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.limesdr_sink_0.set_gain(int(self.tx_gain),0)
-        self.limesdr_sink_0.set_gain(int(self.tx_gain),1)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain), 0)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain), 1)
 
     def get_tx_frequency(self):
         return self.tx_frequency
@@ -120,12 +136,21 @@ class Garage_Door_OOK_LimeSDR_Cycle(gr.top_block):
         self.garage_door_message_cycler_0.set_burst_interval(self.burst_interval)
 
 
-def main(top_block_cls=Garage_Door_OOK_LimeSDR_Cycle, options=None):
 
+def main(top_block_cls=Garage_Door_OOK_LimeSDR_Cycle, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

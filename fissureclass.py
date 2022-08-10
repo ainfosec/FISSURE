@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import zmq
 import yaml
@@ -48,7 +48,7 @@ class fissure_server(object):
           config["handlers"]["file"]["filename"] = os.path.dirname(os.path.realpath(__file__)) + "/" + config["handlers"]["file"]["filename"]
         logging.config.dictConfig(config)
         global logger           
-        logger = logging.getLogger(logsource)	
+        logger = logging.getLogger(logsource)   
         self.initialize_port(ip, port)
         self.initialize_schema(yamldoc)
            
@@ -59,7 +59,7 @@ class fissure_server(object):
         return self.socket.bind(portinit)
     
     def send(self,msg):
-        self.socket.send(msg)
+        self.socket.send_string(msg)
         
     def recvwait(self):
         msg = self.socket.recv()
@@ -67,7 +67,7 @@ class fissure_server(object):
         
     def recv(self):
         try:
-           msg = self.socket.recv(zmq.NOBLOCK)
+           msg = self.socket.recv_string(zmq.NOBLOCK)
         except zmq.ZMQError:
             msg = None        
         return msg
@@ -75,7 +75,7 @@ class fissure_server(object):
     def recvmsg(self):
         msgrcvd = self.recv()
         if msgrcvd == None:
-		    parsed = None 
+            parsed = None 
         else:   
             if any(x in msgrcvd for x in self.ignore_list):
                 pass
@@ -97,7 +97,7 @@ class fissure_server(object):
         msgrcvd = self.recvwait()        
         if any(x in msgrcvd for x in self.ignore_list):               
             pass
-        else:	
+        else:   
             logger.debug("Received message: %s",msgrcvd.replace('/',' '))
         parsed = self.parsemsg(msgrcvd)
         return parsed   
@@ -157,9 +157,8 @@ class fissure_server(object):
 class fissure_listener(fissure_server):    
         
     def initialize_port(self, ip, port):
-        if self.socket.getsockopt(zmq.TYPE)==zmq.SUB:                        
-            self.socket.setsockopt(zmq.SUBSCRIBE, '')
-
+        if self.socket.getsockopt(zmq.TYPE)==zmq.SUB:       
+            self.socket.setsockopt_string(zmq.SUBSCRIBE, '')
         portinit="tcp://{}:{}".format(ip, port)        
         logger.info("Port Connected to %s",portinit)
         return self.socket.connect(portinit)        
@@ -211,12 +210,12 @@ class fissure_listener(fissure_server):
     
 # # Callback for Testing
 # def do_TSI(*args, **kwargs):    
-    # print "Doing TSI!", args, kwargs
+    # print("Doing TSI!", args, kwargs)
         
 # class flowgraph1(object):
     # #callback #2 for testing
     # def do_TSI(self, *args, **kwargs):    
-        # print "Doing TSI!", args, kwargs
+        # print("Doing TSI!", args, kwargs)
     
     
 if __name__ == '__main__':    
@@ -231,26 +230,26 @@ if __name__ == '__main__':
     fs.sendmsg(cmd,Identifier = 'HIPRFISR', Commands='Set Freq', Parameters = '2.4e7 50e6' )
     time.sleep(waitforsending) #non-instantaneous time for non-blocking receive    
     parsed = fl.recvmsg()      
-    print "parsed message = ", parsed 
-    print "Callback to execute=", parsed['callback'], "Parameters = ", parsed['Parameters']
+    print("parsed message = ", parsed) 
+    print("Callback to execute=", parsed['callback'], "Parameters = ", parsed['Parameters'])
     
     fs.sendmsg(cmd,Identifier = 'HIPRFISR', Commands='Run', Parameters = 'DECT 2.4e7 50e6' )
     time.sleep(waitforsending) #non-instantaneous time for non-blocking receive    
     parsed = fl.recvmsg()       
-    print parsed 
-    print "Callback to execute=", parsed['callback'], "Parameters = ", parsed['Parameters']
+    print(parsed)
+    print("Callback to execute=", parsed['callback'], "Parameters = ", parsed['Parameters'])
     
     #now execute a callback!
     fs.sendmsg(cmd,Identifier = 'HIPRFISR', Commands='Run TSI', Parameters = 'DECT 2.4e7 50e6' )
     time.sleep(waitforsending) #non-instantaneous time for non-blocking receive    
     parsed = fl.recvmsg()      
-    print parsed 
-    print "Callback to execute=", parsed['callback'], "Parameters = ", parsed['Parameters']
+    print(parsed)
+    print("Callback to execute=", parsed['callback'], "Parameters = ", parsed['Parameters'])
     logger.info("Executing Callback, Run TSI")
     globalslocalcontext=globals().copy() #if the callback is a function...   
     globalslocalcontext.update(locals())  #if it was a class member, you'd just pass the class in here
-    print '\n fdgfdgdgfdgfdghd {} \n' .format(globalslocalcontext)
-    print 'hjgjhgk: {} \n' .format(parsed)
+    print('\n fdgfdgdgfdgfdghd {} \n' .format(globalslocalcontext))
+    print('hjgjhgk: {} \n' .format(parsed))
     
     fl.runcallback(globalslocalcontext,parsed)
     
@@ -258,7 +257,7 @@ if __name__ == '__main__':
     #fs.sendmsg(cmd,Identifier = 'HIPRFISR', Commands='Run TSI', Parameters = '[DECT, 2.4e7, 50e6]' )
     #time.sleep(waitforsending) #non-instantaneous time for non-blocking receive    
     #parsed = fl.recvmsg()      
-    #print parsed 
+    #print(parsed)
     #print "Callback to execute=", parsed['callback'], "Parameters = ", parsed['Parameters']
     #logger.info("Executing Callback, Run TSI")
     #globalslocalcontext=globals().copy() #if the callback is a function... 
@@ -269,7 +268,7 @@ if __name__ == '__main__':
     #fs.sendmsg(cmd,Identifier = 'HIPRFISR', Commands='Run TSI', Parameters = '{Modtype=DECT, freq=2.4e7, bw=50e6}' )
     #time.sleep(waitforsending) #non-instantaneous time for non-blocking receive    
     #parsed = fl.recvmsg()      
-    #print parsed 
+    #print(parsed)
     #print "Callback to execute=", parsed['callback'], "Parameters = ", parsed['Parameters']
     #logger.info("Executing Callback, Run TSI")
     #globalslocalcontext=globals().copy() #if the callback is a function... 
@@ -280,7 +279,7 @@ if __name__ == '__main__':
     #fs.sendmsg(cmd,Identifier = 'HIPRFISR', Commands='Run TSI', Parameters = '{Modtype=DECT, freq=2.4e7, bw=50e6}' )
     #time.sleep(waitforsending) #non-instantaneous time for non-blocking receive    
     #parsed = fl.recvmsg()      
-    #print parsed 
+    #print(parsed)
     #print "Callback to execute=", parsed['callback'], "Parameters = ", parsed['Parameters']
     #logger.info("Executing Callback inside flowgraph, Run TSI")
     #flowgraph = flowgraph1()
@@ -290,12 +289,12 @@ if __name__ == '__main__':
     #fl.sendmsg(soi,Identifier = 'TSI', ModulationType='FSK', Frequency = '2.4e7', Bandwidth='50e6' )
     #time.sleep(waitforsending) #non-instantaneous time for non-blocking receive    
     #parsed = fs.recvmsg()      
-    #print "parsed message = ", parsed     
+    #print("parsed message = ", parsed)
 
     #fl.sendmsg('Status',Identifier = 'TSI', Status = 'Wideband', Pieces='50e6 3db {}'.format(time.time()) )
     #time.sleep(waitforsending) #non-instantaneous time for non-blocking receive    
     #parsed = fs.recvmsg()      
-    #print "parsed message = ", parsed 
+    #print("parsed message = ", parsed)
     
     #pc_id='TSI'
     #sdr_count = 2
@@ -305,13 +304,13 @@ if __name__ == '__main__':
     #fl.sendmsg('Status',Identifier = 'TSI', Status = 'Heartbeat', Pieces='{}, {}, {}, {}, {}' .format(pc_id, sdr_count, sdr1, sdr2, sdr3) )
     #time.sleep(waitforsending) #non-instantaneous time for non-blocking receive    
     #parsed = fs.recvmsg()      
-    #print "parsed message = ", parsed 
+    #print("parsed message = ", parsed)
     
     #fs.sendmsg(cmd,Commands='Change Bandwidth', Identifier = 'HIPRFISR', Parameters = '30db' )
     #time.sleep(waitforsending) #non-instantaneous time for non-blocking receive    
     #parsed = fl.recvmsg()      
-    #print "parsed message = ", parsed 
-    #print fl.callbacks
+    #print("parsed message = ", parsed)
+    #print(fl.callbacks)
     
     
     

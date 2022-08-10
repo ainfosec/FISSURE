@@ -1,0 +1,33 @@
+id: j2497_J2497_decoder_corr
+label: J2497_decoder_corr
+category: '[j2497]'
+
+templates:
+  imports: import j2497
+  make: j2497.J2497_decoder_corr(${do_udp},${udp_port})
+
+parameters:
+- id: do_udp
+  label: Send Message Bytes over UDP
+  dtype: bool
+  default: False
+- id: udp_port
+  label: UDP Port
+  dtype: int
+  default: 6972
+
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+  vlen: 1
+  optional: 0
+
+outputs:
+- label: out
+  domain: message
+  dtype: message
+  vlen: 1
+  optional: 0
+
+file_format: 1

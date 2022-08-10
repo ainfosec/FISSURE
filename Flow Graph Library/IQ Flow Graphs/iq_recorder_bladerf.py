@@ -1,21 +1,23 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Iq Recorder Bladerf
-# Generated: Mon Sep  6 11:46:38 2021
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
-from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
 import osmosdr
 import time
-
 
 class iq_recorder_bladerf(gr.top_block):
 
@@ -36,23 +38,24 @@ class iq_recorder_bladerf(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.rtlsdr_source_0_0 = osmosdr.source( args="numchan=" + str(1) + " " + 'bladerf=0' )
+        self.rtlsdr_source_0_0 = osmosdr.source(
+            args="numchan=" + str(1) + " " + 'bladerf=0'
+        )
+        self.rtlsdr_source_0_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.rtlsdr_source_0_0.set_sample_rate(float(sample_rate)*1e6)
         self.rtlsdr_source_0_0.set_center_freq(rx_frequency*1e6, 0)
         self.rtlsdr_source_0_0.set_freq_corr(0, 0)
-        self.rtlsdr_source_0_0.set_dc_offset_mode(0, 0)
-        self.rtlsdr_source_0_0.set_iq_balance_mode(0, 0)
-        self.rtlsdr_source_0_0.set_gain_mode(False, 0)
         self.rtlsdr_source_0_0.set_gain(14, 0)
         self.rtlsdr_source_0_0.set_if_gain(24, 0)
         self.rtlsdr_source_0_0.set_bb_gain(rx_gain, 0)
         self.rtlsdr_source_0_0.set_antenna('', 0)
         self.rtlsdr_source_0_0.set_bandwidth(0, 0)
-
         self.blocks_skiphead_0 = blocks.skiphead(gr.sizeof_gr_complex*1, 200000)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, file_length)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, filepath, False)
         self.blocks_file_sink_0.set_unbuffered(False)
+
+
 
         ##################################################
         # Connections
@@ -109,9 +112,18 @@ class iq_recorder_bladerf(gr.top_block):
         self.blocks_head_0.set_length(self.file_length)
 
 
-def main(top_block_cls=iq_recorder_bladerf, options=None):
 
+def main(top_block_cls=iq_recorder_bladerf, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     tb.wait()
 

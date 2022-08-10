@@ -1,0 +1,270 @@
+options:
+  parameters:
+    author: schneider
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: no_gui
+    hier_block_src_path: '.:'
+    id: iridium_subscriber_demod_half
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: run
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Iridium Subscriber Demod Half
+    window_size: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: fft_size
+  id: variable
+  parameters:
+    comment: ''
+    value: int(math.pow(2, 1 + int(math.log(samp_rate / 2  / 1000, 2))))
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [728, 12.0]
+    rotation: 0
+    state: true
+- name: input_filter
+  id: variable
+  parameters:
+    comment: ''
+    value: firdes.low_pass_2(1, samp_rate/2, 40e3/2, 40e3, 40)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [832, 12.0]
+    rotation: 0
+    state: enabled
+- name: publisher_transition
+  id: variable
+  parameters:
+    comment: ''
+    value: 500e3/4
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [408, 12.0]
+    rotation: 0
+    state: true
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: 10e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [208, 12.0]
+    rotation: 0
+    state: enabled
+- name: start_finder_filter
+  id: variable
+  parameters:
+    comment: ''
+    value: firdes.low_pass_2(1, 250000, 5e3, 10e3, 60)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [552, 12.0]
+    rotation: 0
+    state: enabled
+- name: fosphor_qt_sink_c_0
+  id: fosphor_qt_sink_c
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    freq_center: '0'
+    freq_span: samp_rate/2
+    gui_hint: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    wintype: firdes.WIN_BLACKMAN_hARRIS
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [296, 156.0]
+    rotation: 0
+    state: disabled
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import math
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [304, 12.0]
+    rotation: 0
+    state: true
+- name: iridium_burst_downmix_0_0
+  id: iridium_burst_downmix
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    handle_multiple_frames_per_burst: 'True'
+    hard_max_queue_len: '1000'
+    input_taps: input_filter
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    sample_rate: int(samp_rate/2)
+    search_depth: int(0.007 * 250000)
+    start_finder_taps: start_finder_filter
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1088, 268.0]
+    rotation: 0
+    state: enabled
+- name: iridium_fft_burst_tagger_0
+  id: iridium_fft_burst_tagger
+  parameters:
+    affinity: ''
+    alias: ''
+    burst_post_len: 8 * fft_size
+    burst_pre_len: 2 * fft_size
+    burst_width: int(40e3)
+    center_frequency: 1622e6 + samp_rate/4-publisher_transition
+    comment: ''
+    debug: 'False'
+    fft_size: fft_size
+    history_size: '512'
+    max_bursts: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    sample_rate: int(samp_rate/2)
+    threshold: '7'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [464, 224.0]
+    rotation: 0
+    state: enabled
+- name: iridium_frame_sorter_0
+  id: iridium_frame_sorter
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1632, 296.0]
+    rotation: 0
+    state: true
+- name: iridium_iridium_frame_printer_0
+  id: iridium_iridium_frame_printer
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1792, 296.0]
+    rotation: 0
+    state: enabled
+- name: iridium_iridium_qpsk_demod_cpp_0
+  id: iridium_iridium_qpsk_demod_cpp
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1400, 296.0]
+    rotation: 0
+    state: enabled
+- name: iridium_tagged_burst_to_pdu_0
+  id: iridium_tagged_burst_to_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    drop_overflow: 'False'
+    max_burst_size: int(samp_rate/2 * 0.09)
+    max_outstanding: '500'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    relative_center_frequency: '0.0'
+    relative_sample_rate: '1.0'
+    relative_span: '1.0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [776, 268.0]
+    rotation: 0
+    state: enabled
+- name: zeromq_sub_source_0
+  id: zeromq_sub_source
+  parameters:
+    address: tcp://10.42.0.169:12345
+    affinity: ''
+    alias: ''
+    comment: ''
+    hwm: '-1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    pass_tags: 'False'
+    timeout: '100'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [80, 276.0]
+    rotation: 0
+    state: true
+
+connections:
+- [iridium_burst_downmix_0_0, burst_handled, iridium_tagged_burst_to_pdu_0, burst_handled]
+- [iridium_burst_downmix_0_0, cpdus, iridium_iridium_qpsk_demod_cpp_0, cpdus]
+- [iridium_fft_burst_tagger_0, '0', iridium_tagged_burst_to_pdu_0, '0']
+- [iridium_frame_sorter_0, pdus, iridium_iridium_frame_printer_0, pdus]
+- [iridium_iridium_qpsk_demod_cpp_0, pdus, iridium_frame_sorter_0, pdus]
+- [iridium_tagged_burst_to_pdu_0, cpdus, iridium_burst_downmix_0_0, cpdus]
+- [zeromq_sub_source_0, '0', fosphor_qt_sink_c_0, '0']
+- [zeromq_sub_source_0, '0', iridium_fft_burst_tagger_0, '0']
+
+metadata:
+  file_format: 1

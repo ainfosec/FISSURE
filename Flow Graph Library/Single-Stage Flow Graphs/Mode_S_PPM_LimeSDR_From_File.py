@@ -1,22 +1,24 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Mode S Ppm Limesdr From File
-# Generated: Sun Sep 19 09:38:35 2021
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
-from gnuradio import eng_notation
 from gnuradio import gr
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
 import ainfosec
 import fuzzer
 import limesdr
-
 
 class Mode_S_PPM_LimeSDR_From_File(gr.top_block):
 
@@ -37,21 +39,35 @@ class Mode_S_PPM_LimeSDR_From_File(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.limesdr_sink_0 = limesdr.sink('', int(tx_channel), '', '')
-        self.limesdr_sink_0.set_sample_rate(sample_rate)
-        self.limesdr_sink_0.set_center_freq(tx_frequency, 0)
-        self.limesdr_sink_0.set_bandwidth(5e6,0)
-        self.limesdr_sink_0.set_gain(int(tx_gain),0)
-        self.limesdr_sink_0.set_antenna(255,0)
-        self.limesdr_sink_0.calibrate(5e6, 0)
+        self.limesdr_sink_0 = limesdr.sink('', 0, '', '')
 
-        self.fuzzer_packet_insert_0 = fuzzer.packet_insert((0, ), int(sample_rate*transmit_interval/8), 0)
+
+        self.limesdr_sink_0.set_sample_rate(sample_rate)
+
+
+        self.limesdr_sink_0.set_center_freq(tx_frequency, 0)
+
+        self.limesdr_sink_0.set_bandwidth(5e6, 0)
+
+
+
+
+        self.limesdr_sink_0.set_gain(int(tx_gain), 0)
+
+
+        self.limesdr_sink_0.set_antenna(255, 0)
+
+
+        self.limesdr_sink_0.calibrate(5e6, 0)
+        self.fuzzer_packet_insert_0 = fuzzer.packet_insert([0],int(sample_rate*transmit_interval/8),0)
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(8)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_char*1)
-        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((.3, ))
+        self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(.3)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
         self.ainfosec_adsb_encode_0 = ainfosec.adsb_encode(filepath)
+
+
 
         ##################################################
         # Connections
@@ -69,8 +85,8 @@ class Mode_S_PPM_LimeSDR_From_File(gr.top_block):
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.limesdr_sink_0.set_gain(int(self.tx_gain),0)
-        self.limesdr_sink_0.set_gain(int(self.tx_gain),1)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain), 0)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain), 1)
 
     def get_tx_frequency(self):
         return self.tx_frequency
@@ -110,12 +126,21 @@ class Mode_S_PPM_LimeSDR_From_File(gr.top_block):
         self.filepath = filepath
 
 
-def main(top_block_cls=Mode_S_PPM_LimeSDR_From_File, options=None):
 
+def main(top_block_cls=Mode_S_PPM_LimeSDR_From_File, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

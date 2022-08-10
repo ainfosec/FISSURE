@@ -1,26 +1,28 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Wideband Bladerf
-# Generated: Thu Jun  2 17:56:44 2022
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import analog
 from gnuradio import blocks
-from gnuradio import eng_notation
 from gnuradio import fft
+from gnuradio.fft import window
 from gnuradio import filter
 from gnuradio import gr
-from gnuradio.eng_option import eng_option
-from gnuradio.fft import window
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
 import ainfosec
 import osmosdr
 import time
-
 
 class wideband_bladerf(gr.top_block):
 
@@ -43,34 +45,35 @@ class wideband_bladerf(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + 'bladerf=0' )
+        self.osmosdr_source_0 = osmosdr.source(
+            args="numchan=" + str(1) + " " + 'bladerf=0'
+        )
+        self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(sample_rate)
         self.osmosdr_source_0.set_center_freq(rx_freq, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
-        self.osmosdr_source_0.set_dc_offset_mode(2, 0)
-        self.osmosdr_source_0.set_iq_balance_mode(1, 0)
-        self.osmosdr_source_0.set_gain_mode(False, 0)
         self.osmosdr_source_0.set_gain(gain, 0)
         self.osmosdr_source_0.set_if_gain(20, 0)
         self.osmosdr_source_0.set_bb_gain(20, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(0, 0)
-
-        self.fft_vxx_0 = fft.fft_vcc(fft_size, True, (window.blackmanharris(fft_size)), True, 1)
+        self.fft_vxx_0 = fft.fft_vcc(fft_size, True, window.blackmanharris(fft_size), True, 1)
         self.dc_blocker_xx_0 = filter.dc_blocker_cc(32, False)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_nlog10_ff_0 = blocks.nlog10_ff(10, 1, 0)
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(-70, 1e-4, 0, True)
-        self.ainfosec_wideband_detector_0 = ainfosec.wideband_detector("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
+        self.ainfosec_wideband_detector1_0 = ainfosec.wideband_detector1("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
+
+
 
         ##################################################
         # Connections
         ##################################################
         self.connect((self.analog_pwr_squelch_xx_0, 0), (self.blocks_stream_to_vector_1, 0))
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.blocks_nlog10_ff_0, 0))
-        self.connect((self.blocks_nlog10_ff_0, 0), (self.ainfosec_wideband_detector_0, 0))
+        self.connect((self.blocks_nlog10_ff_0, 0), (self.ainfosec_wideband_detector1_0, 0))
         self.connect((self.blocks_stream_to_vector_1, 0), (self.fft_vxx_0, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
         self.connect((self.dc_blocker_xx_0, 0), (self.analog_pwr_squelch_xx_0, 0))
@@ -94,16 +97,16 @@ class wideband_bladerf(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
+        self.ainfosec_wideband_detector1_0.set_sample_rate(self.sample_rate)
         self.osmosdr_source_0.set_sample_rate(self.sample_rate)
-        self.ainfosec_wideband_detector_0.set_sample_rate(self.sample_rate)
 
     def get_rx_freq(self):
         return self.rx_freq
 
     def set_rx_freq(self, rx_freq):
         self.rx_freq = rx_freq
+        self.ainfosec_wideband_detector1_0.set_rx_freq(self.rx_freq)
         self.osmosdr_source_0.set_center_freq(self.rx_freq, 0)
-        self.ainfosec_wideband_detector_0.set_rx_freq(self.rx_freq)
 
     def get_ip_address(self):
         return self.ip_address
@@ -123,7 +126,7 @@ class wideband_bladerf(gr.top_block):
 
     def set_fft_size(self, fft_size):
         self.fft_size = fft_size
-        self.ainfosec_wideband_detector_0.set_fft_size(self.fft_size)
+        self.ainfosec_wideband_detector1_0.set_fft_size(self.fft_size)
 
     def get_channel(self):
         return self.channel
@@ -138,12 +141,21 @@ class wideband_bladerf(gr.top_block):
         self.antenna = antenna
 
 
-def main(top_block_cls=wideband_bladerf, options=None):
 
+def main(top_block_cls=wideband_bladerf, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

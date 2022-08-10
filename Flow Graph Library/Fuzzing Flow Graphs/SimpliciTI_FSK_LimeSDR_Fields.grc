@@ -1,1279 +1,486 @@
-<?xml version='1.0' encoding='utf-8'?>
-<?grc format='1' created='3.7.11'?>
-<flow_graph>
-  <timestamp>Mon Jan  4 11:46:57 2016</timestamp>
-  <block>
-    <key>options</key>
-    <param>
-      <key>author</key>
-      <value></value>
-    </param>
-    <param>
-      <key>window_size</key>
-      <value>1280, 1024</value>
-    </param>
-    <param>
-      <key>category</key>
-      <value>Custom</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>description</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(10, 10)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>generate_options</key>
-      <value>no_gui</value>
-    </param>
-    <param>
-      <key>hier_block_src_path</key>
-      <value>.:</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>SimpliciTI_FSK_LimeSDR_Fields</value>
-    </param>
-    <param>
-      <key>max_nouts</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>qt_qss_theme</key>
-      <value></value>
-    </param>
-    <param>
-      <key>realtime_scheduling</key>
-      <value></value>
-    </param>
-    <param>
-      <key>run_command</key>
-      <value>{python} -u {filename}</value>
-    </param>
-    <param>
-      <key>run_options</key>
-      <value>prompt</value>
-    </param>
-    <param>
-      <key>run</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>thread_safe_setters</key>
-      <value></value>
-    </param>
-    <param>
-      <key>title</key>
-      <value></value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(16, 452)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>data_rate</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>2398.9677429</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(16, 195)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>filepath</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/Attack Files/SimpliciTI_Add_Node2.bin"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(568, 451)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fuzzing_data</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"0"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(400, 515)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fuzzing_fields</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"['Temperature LSB','Voltage']"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(568, 515)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fuzzing_interval</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"1"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(400, 707)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fuzzing_max</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"['255','255']"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(400, 643)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fuzzing_min</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"['0','0']"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(568, 643)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fuzzing_packet_type</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"ED-Data"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(568, 579)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fuzzing_protocol</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"SimpliciTI"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(400, 451)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fuzzing_seed</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"0"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(400, 579)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fuzzing_type</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"['Random','Sequential']"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(400, 387)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>library_filepath</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"~/FISSURE/YAML/library.yaml"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(16, 131)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>sample_rate</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>4e6</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(16, 516)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>sampling_factor</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>100</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(16, 580)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>sampling_multiple</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>16</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(16, 324)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>tx_channel</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(16, 388)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>tx_frequency</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>2425.715e6</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(16, 260)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>tx_gain</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>60</value>
-    </param>
-  </block>
-  <block>
-    <key>blocks_char_to_float</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(768, 51)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>blocks_char_to_float_0</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>scale</key>
-      <value>1</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>1</value>
-    </param>
-  </block>
-  <block>
-    <key>blocks_float_to_char</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(1152, 51)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>blocks_float_to_char_0</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>scale</key>
-      <value>1</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>1</value>
-    </param>
-  </block>
-  <block>
-    <key>blocks_multiply_const_vxx</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>const</key>
-      <value>-1</value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(952, 51)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>blocks_multiply_const_vxx_0</value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>float</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>1</value>
-    </param>
-  </block>
-  <block>
-    <key>blocks_multiply_const_vxx</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>const</key>
-      <value>0.1</value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(888, 275)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>blocks_multiply_const_vxx_1</value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>complex</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>1</value>
-    </param>
-  </block>
-  <block>
-    <key>blocks_null_source</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>bus_conns</key>
-      <value>[[0,],]</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(280, 48)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>blocks_null_source_0</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>num_outputs</key>
-      <value>1</value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>byte</value>
-    </param>
-    <param>
-      <key>vlen</key>
-      <value>1</value>
-    </param>
-  </block>
-  <block>
-    <key>blocks_unpack_k_bits_bb</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(616, 51)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>blocks_unpack_k_bits_bb_0</value>
-    </param>
-    <param>
-      <key>k</key>
-      <value>8</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>digital_gfsk_mod</key>
-    <param>
-      <key>bt</key>
-      <value>0.5</value>
-    </param>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(440, 243)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>digital_gfsk_mod_0</value>
-    </param>
-    <param>
-      <key>log</key>
-      <value>False</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>samples_per_symbol</key>
-      <value>200</value>
-    </param>
-    <param>
-      <key>sensitivity</key>
-      <value>0.1</value>
-    </param>
-    <param>
-      <key>verbose</key>
-      <value>False</value>
-    </param>
-  </block>
-  <block>
-    <key>fractional_resampler_xx</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(640, 264)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fractional_resampler_xx_0_0_0_0</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>phase_shift</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>resamp_ratio</key>
-      <value>sampling_factor*data_rate*sampling_multiple/sample_rate</value>
-    </param>
-    <param>
-      <key>type</key>
-      <value>complex</value>
-    </param>
-  </block>
-  <block>
-    <key>fuzzer_fuzzer</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>fuzzing_data</key>
-      <value>fuzzing_data</value>
-    </param>
-    <param>
-      <key>fuzzing_fields</key>
-      <value>fuzzing_fields</value>
-    </param>
-    <param>
-      <key>fuzzing_interval</key>
-      <value>fuzzing_interval</value>
-    </param>
-    <param>
-      <key>fuzzing_max</key>
-      <value>fuzzing_max</value>
-    </param>
-    <param>
-      <key>fuzzing_min</key>
-      <value>fuzzing_min</value>
-    </param>
-    <param>
-      <key>fuzzing_packet_type</key>
-      <value>fuzzing_packet_type</value>
-    </param>
-    <param>
-      <key>fuzzing_protocol</key>
-      <value>fuzzing_protocol</value>
-    </param>
-    <param>
-      <key>fuzzing_seed</key>
-      <value>fuzzing_seed</value>
-    </param>
-    <param>
-      <key>fuzzing_type</key>
-      <value>fuzzing_type</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(192, 91)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fuzzer_fuzzer_0</value>
-    </param>
-    <param>
-      <key>library_filepath</key>
-      <value>library_filepath</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>fuzzer_packet_insert</key>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(456, 51)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>fuzzer_packet_insert_0</value>
-    </param>
-    <param>
-      <key>maxoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>minoutbuf</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>offset</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>period</key>
-      <value>20</value>
-    </param>
-    <param>
-      <key>vector</key>
-      <value>0</value>
-    </param>
-  </block>
-  <block>
-    <key>limesdr_sink</key>
-    <param>
-      <key>allow_tcxo_dac</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>alias</key>
-      <value></value>
-    </param>
-    <param>
-      <key>analog_bandw_ch0</key>
-      <value>5e6</value>
-    </param>
-    <param>
-      <key>calibr_bandw_ch0</key>
-      <value>5e6</value>
-    </param>
-    <param>
-      <key>digital_bandw_ch0</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>gain_dB_ch0</key>
-      <value>int(tx_gain)</value>
-    </param>
-    <param>
-      <key>nco_freq_ch0</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>pa_path_ch0</key>
-      <value>255</value>
-    </param>
-    <param>
-      <key>analog_bandw_ch1</key>
-      <value>5e6</value>
-    </param>
-    <param>
-      <key>calibr_bandw_ch1</key>
-      <value>5e6</value>
-    </param>
-    <param>
-      <key>digital_bandw_ch1</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>gain_dB_ch1</key>
-      <value>int(tx_gain)</value>
-    </param>
-    <param>
-      <key>nco_freq_ch1</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>pa_path_ch1</key>
-      <value>1</value>
-    </param>
-    <param>
-      <key>channel_mode</key>
-      <value>int(tx_channel)</value>
-    </param>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>affinity</key>
-      <value></value>
-    </param>
-    <param>
-      <key>serial</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>filename</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(1072, 188)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>limesdr_sink_0</value>
-    </param>
-    <param>
-      <key>length_tag_name</key>
-      <value></value>
-    </param>
-    <param>
-      <key>oversample</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>rf_freq</key>
-      <value>tx_frequency</value>
-    </param>
-    <param>
-      <key>samp_rate</key>
-      <value>sample_rate</value>
-    </param>
-    <param>
-      <key>dacVal</key>
-      <value>125</value>
-    </param>
-  </block>
-  <connection>
-    <source_block_id>blocks_char_to_float_0</source_block_id>
-    <sink_block_id>blocks_multiply_const_vxx_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>blocks_float_to_char_0</source_block_id>
-    <sink_block_id>digital_gfsk_mod_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>blocks_multiply_const_vxx_0</source_block_id>
-    <sink_block_id>blocks_float_to_char_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>blocks_multiply_const_vxx_1</source_block_id>
-    <sink_block_id>limesdr_sink_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>blocks_null_source_0</source_block_id>
-    <sink_block_id>fuzzer_packet_insert_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>blocks_unpack_k_bits_bb_0</source_block_id>
-    <sink_block_id>blocks_char_to_float_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>digital_gfsk_mod_0</source_block_id>
-    <sink_block_id>fractional_resampler_xx_0_0_0_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>fractional_resampler_xx_0_0_0_0</source_block_id>
-    <sink_block_id>blocks_multiply_const_vxx_1</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>fuzzer_fuzzer_0</source_block_id>
-    <sink_block_id>fuzzer_packet_insert_0</sink_block_id>
-    <source_key>packet_out</source_key>
-    <sink_key>packet_in</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>fuzzer_packet_insert_0</source_block_id>
-    <sink_block_id>blocks_unpack_k_bits_bb_0</sink_block_id>
-    <source_key>0</source_key>
-    <sink_key>0</sink_key>
-  </connection>
-</flow_graph>
+options:
+  parameters:
+    author: ''
+    category: Custom
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: no_gui
+    hier_block_src_path: '.:'
+    id: SimpliciTI_FSK_LimeSDR_Fields
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: ''
+    window_size: 1280, 1024
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [10, 10]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: data_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '2398.9677429'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 452]
+    rotation: 0
+    state: enabled
+- name: filepath
+  id: variable
+  parameters:
+    comment: ''
+    value: '"/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/Attack
+      Files/SimpliciTI_Add_Node2.bin"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 195]
+    rotation: 0
+    state: enabled
+- name: fuzzing_data
+  id: variable
+  parameters:
+    comment: ''
+    value: '"0"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [568, 451]
+    rotation: 0
+    state: enabled
+- name: fuzzing_fields
+  id: variable
+  parameters:
+    comment: ''
+    value: '"[''Temperature LSB'',''Voltage'']"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [400, 515]
+    rotation: 0
+    state: enabled
+- name: fuzzing_interval
+  id: variable
+  parameters:
+    comment: ''
+    value: '"1"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [568, 515]
+    rotation: 0
+    state: enabled
+- name: fuzzing_max
+  id: variable
+  parameters:
+    comment: ''
+    value: '"[''255'',''255'']"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [400, 707]
+    rotation: 0
+    state: enabled
+- name: fuzzing_min
+  id: variable
+  parameters:
+    comment: ''
+    value: '"[''0'',''0'']"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [400, 643]
+    rotation: 0
+    state: enabled
+- name: fuzzing_packet_type
+  id: variable
+  parameters:
+    comment: ''
+    value: '"ED-Data"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [568, 643]
+    rotation: 0
+    state: enabled
+- name: fuzzing_protocol
+  id: variable
+  parameters:
+    comment: ''
+    value: '"SimpliciTI"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [568, 579]
+    rotation: 0
+    state: enabled
+- name: fuzzing_seed
+  id: variable
+  parameters:
+    comment: ''
+    value: '"0"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [400, 451]
+    rotation: 0
+    state: enabled
+- name: fuzzing_type
+  id: variable
+  parameters:
+    comment: ''
+    value: '"[''Random'',''Sequential'']"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [400, 579]
+    rotation: 0
+    state: enabled
+- name: library_filepath
+  id: variable
+  parameters:
+    comment: ''
+    value: '"~/FISSURE/YAML/library.yaml"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [400, 387]
+    rotation: 0
+    state: enabled
+- name: sample_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: 4e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 131]
+    rotation: 0
+    state: enabled
+- name: sampling_factor
+  id: variable
+  parameters:
+    comment: ''
+    value: '100'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 516]
+    rotation: 0
+    state: enabled
+- name: sampling_multiple
+  id: variable
+  parameters:
+    comment: ''
+    value: '16'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 580]
+    rotation: 0
+    state: enabled
+- name: tx_channel
+  id: variable
+  parameters:
+    comment: ''
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 324]
+    rotation: 0
+    state: enabled
+- name: tx_frequency
+  id: variable
+  parameters:
+    comment: ''
+    value: 2425.715e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 388]
+    rotation: 0
+    state: enabled
+- name: tx_gain
+  id: variable
+  parameters:
+    comment: ''
+    value: '60'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 260]
+    rotation: 0
+    state: enabled
+- name: blocks_char_to_float_0
+  id: blocks_char_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '1'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [768, 51]
+    rotation: 0
+    state: enabled
+- name: blocks_float_to_char_0
+  id: blocks_float_to_char
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '1'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1152, 51]
+    rotation: 0
+    state: enabled
+- name: blocks_multiply_const_vxx_0
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: '-1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: float
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [952, 51]
+    rotation: 0
+    state: enabled
+- name: blocks_multiply_const_vxx_1
+  id: blocks_multiply_const_vxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    const: '0.1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [888, 275]
+    rotation: 0
+    state: enabled
+- name: blocks_null_source_0
+  id: blocks_null_source
+  parameters:
+    affinity: ''
+    alias: ''
+    bus_structure_source: '[[0,],]'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_outputs: '1'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [280, 48]
+    rotation: 0
+    state: enabled
+- name: blocks_unpack_k_bits_bb_0
+  id: blocks_unpack_k_bits_bb
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    k: '8'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [616, 51]
+    rotation: 0
+    state: enabled
+- name: digital_gfsk_mod_0
+  id: digital_gfsk_mod
+  parameters:
+    affinity: ''
+    alias: ''
+    bt: '0.5'
+    comment: ''
+    log: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_symbol: '200'
+    sensitivity: '0.1'
+    verbose: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [440, 243]
+    rotation: 0
+    state: enabled
+- name: fuzzer_fuzzer_0
+  id: fuzzer_fuzzer
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    fuzzing_data: fuzzing_data
+    fuzzing_fields: fuzzing_fields
+    fuzzing_interval: fuzzing_interval
+    fuzzing_max: fuzzing_max
+    fuzzing_min: fuzzing_min
+    fuzzing_packet_type: fuzzing_packet_type
+    fuzzing_protocol: fuzzing_protocol
+    fuzzing_seed: fuzzing_seed
+    fuzzing_type: fuzzing_type
+    library_filepath: library_filepath
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [192, 91]
+    rotation: 0
+    state: enabled
+- name: fuzzer_packet_insert_0
+  id: fuzzer_packet_insert
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    period: '20'
+    vector: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 51]
+    rotation: 0
+    state: enabled
+- name: limesdr_sink_0
+  id: limesdr_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    allow_tcxo_dac: '0'
+    analog_bandw_ch0: 5e6
+    analog_bandw_ch1: 5e6
+    calibr_bandw_ch0: 5e6
+    calibr_bandw_ch1: 5e6
+    channel_mode: '0'
+    comment: ''
+    dacVal: '125'
+    digital_bandw_ch0: '0'
+    digital_bandw_ch1: '0'
+    filename: ''
+    gain_dB_ch0: int(tx_gain)
+    gain_dB_ch1: int(tx_gain)
+    length_tag_name: ''
+    nco_freq_ch0: '0'
+    nco_freq_ch1: '0'
+    oversample: '0'
+    pa_path_ch0: '255'
+    pa_path_ch1: '1'
+    rf_freq: tx_frequency
+    samp_rate: sample_rate
+    serial: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1072, 188]
+    rotation: 0
+    state: enabled
+- name: mmse_resampler_xx_0
+  id: mmse_resampler_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    phase_shift: '0'
+    resamp_ratio: sampling_factor*data_rate*sampling_multiple/sample_rate
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [654, 291]
+    rotation: 0
+    state: true
+
+connections:
+- [blocks_char_to_float_0, '0', blocks_multiply_const_vxx_0, '0']
+- [blocks_float_to_char_0, '0', digital_gfsk_mod_0, '0']
+- [blocks_multiply_const_vxx_0, '0', blocks_float_to_char_0, '0']
+- [blocks_multiply_const_vxx_1, '0', limesdr_sink_0, '0']
+- [blocks_null_source_0, '0', fuzzer_packet_insert_0, '0']
+- [blocks_unpack_k_bits_bb_0, '0', blocks_char_to_float_0, '0']
+- [digital_gfsk_mod_0, '0', mmse_resampler_xx_0, '0']
+- [fuzzer_fuzzer_0, packet_out, fuzzer_packet_insert_0, packet_in]
+- [fuzzer_packet_insert_0, '0', blocks_unpack_k_bits_bb_0, '0']
+- [mmse_resampler_xx_0, '0', blocks_multiply_const_vxx_1, '0']
+
+metadata:
+  file_format: 1

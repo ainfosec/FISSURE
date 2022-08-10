@@ -1,21 +1,24 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Simpliciti Simulated
 # Description: Captured SimpliciTI data is repeated from a file source.
-# Generated: Fri Oct  8 19:42:45 2021
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
-from gnuradio import eng_notation
+import pmt
 from gnuradio import gr
-from gnuradio import zeromq
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from optparse import OptionParser
-
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio import zeromq
 
 class SimpliciTI_Simulated(gr.top_block):
 
@@ -32,7 +35,10 @@ class SimpliciTI_Simulated(gr.top_block):
         ##################################################
         self.zeromq_pub_sink_0 = zeromq.pub_sink(gr.sizeof_char, 1, 'tcp://*:5066', 100, False, -1)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_char*1, samp_rate,True)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/user/FISSURE/Crafted Packets/simpliciti_data.bin', True)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, '/home/user/FISSURE/Crafted Packets/simpliciti_data.bin', True, 0, 0)
+        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
+
+
 
         ##################################################
         # Connections
@@ -48,12 +54,21 @@ class SimpliciTI_Simulated(gr.top_block):
         self.blocks_throttle_0.set_sample_rate(self.samp_rate)
 
 
-def main(top_block_cls=SimpliciTI_Simulated, options=None):
 
+def main(top_block_cls=SimpliciTI_Simulated, options=None):
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

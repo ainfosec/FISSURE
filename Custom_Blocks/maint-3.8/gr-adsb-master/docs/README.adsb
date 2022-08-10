@@ -1,0 +1,11 @@
+This is the adsb-write-a-block package meant as a guide to building
+out-of-tree packages. To use the adsb blocks, the Python namespaces
+is in 'adsb', which is imported as:
+
+    import adsb
+
+See the Doxygen documentation for details about the blocks available
+in this package. A quick listing of the details can be found in Python
+after importing by using:
+
+    help(adsb)

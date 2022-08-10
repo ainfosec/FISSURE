@@ -1,23 +1,26 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Iq File
-# Generated: Thu Jun  2 17:55:59 2022
-##################################################
-
+# GNU Radio version: 3.8.1.0
 
 from gnuradio import analog
 from gnuradio import blocks
-from gnuradio import eng_notation
+import pmt
 from gnuradio import fft
-from gnuradio import gr
-from gnuradio.eng_option import eng_option
 from gnuradio.fft import window
+from gnuradio import gr
 from gnuradio.filter import firdes
-from optparse import OptionParser
+import sys
+import signal
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
 import ainfosec
-
 
 class iq_file(gr.top_block):
 
@@ -36,15 +39,18 @@ class iq_file(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.fft_vxx_0 = fft.fft_vcc(fft_size, True, (window.blackmanharris(fft_size)), True, 1)
+        self.fft_vxx_0 = fft.fft_vcc(fft_size, True, window.blackmanharris(fft_size), True, 1)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_throttle_0 = blocks.throttle(gr.sizeof_gr_complex*1, sample_rate,True)
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_nlog10_ff_0 = blocks.nlog10_ff(10, 1, 0)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, filepath, True)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, filepath, True, 0, 0)
+        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(-10, 1e-4, 0, True)
-        self.ainfosec_wideband_detector_0 = ainfosec.wideband_detector("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
+        self.ainfosec_wideband_detector1_0 = ainfosec.wideband_detector1("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
+
+
 
         ##################################################
         # Connections
@@ -52,7 +58,7 @@ class iq_file(gr.top_block):
         self.connect((self.analog_pwr_squelch_xx_0, 0), (self.blocks_stream_to_vector_1, 0))
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.blocks_nlog10_ff_0, 0))
         self.connect((self.blocks_file_source_0, 0), (self.blocks_throttle_0, 0))
-        self.connect((self.blocks_nlog10_ff_0, 0), (self.ainfosec_wideband_detector_0, 0))
+        self.connect((self.blocks_nlog10_ff_0, 0), (self.ainfosec_wideband_detector1_0, 0))
         self.connect((self.blocks_stream_to_vector_1, 0), (self.fft_vxx_0, 0))
         self.connect((self.blocks_throttle_0, 0), (self.analog_pwr_squelch_xx_0, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
@@ -69,15 +75,15 @@ class iq_file(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
+        self.ainfosec_wideband_detector1_0.set_sample_rate(self.sample_rate)
         self.blocks_throttle_0.set_sample_rate(self.sample_rate)
-        self.ainfosec_wideband_detector_0.set_sample_rate(self.sample_rate)
 
     def get_rx_freq(self):
         return self.rx_freq
 
     def set_rx_freq(self, rx_freq):
         self.rx_freq = rx_freq
-        self.ainfosec_wideband_detector_0.set_rx_freq(self.rx_freq)
+        self.ainfosec_wideband_detector1_0.set_rx_freq(self.rx_freq)
 
     def get_filepath(self):
         return self.filepath
@@ -91,15 +97,24 @@ class iq_file(gr.top_block):
 
     def set_fft_size(self, fft_size):
         self.fft_size = fft_size
-        self.ainfosec_wideband_detector_0.set_fft_size(self.fft_size)
+        self.ainfosec_wideband_detector1_0.set_fft_size(self.fft_size)
+
 
 
 def main(top_block_cls=iq_file, options=None):
-
     tb = top_block_cls()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
     tb.start()
     try:
-        raw_input('Press Enter to quit: ')
+        input('Press Enter to quit: ')
     except EOFError:
         pass
     tb.stop()

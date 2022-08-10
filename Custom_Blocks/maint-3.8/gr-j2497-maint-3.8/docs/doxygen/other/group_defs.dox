@@ -1,0 +1,7 @@
+/*!
+ * \defgroup block GNU Radio J2497 C++ Signal Processing Blocks
+ * \brief All C++ blocks that can be used from the J2497 GNU Radio
+ *        module are listed here or in the subcategories below.
+ *
+ */
+

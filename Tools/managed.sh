@@ -1,6 +1,7 @@
 #!/bin/sh
 
-sudo ifconfig wlan0 down
-sudo iwconfig wlan0 mode managed
-sudo ifconfig wlan0 up
+sudo ifconfig wlx00c0caafc90c down
+sudo iwconfig wlx00c0caafc90c mode managed
+sudo ifconfig wlx00c0caafc90c up
 sudo service network-manager start
+sudo service NetworkManager start  # 22.04

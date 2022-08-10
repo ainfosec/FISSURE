@@ -401,13 +401,13 @@ Protocols:
                     Default:
                          Hardware:
                               LimeSDR:
-                                   Python3 Script: wifi_tx_beacon.py
+                                   Python2 Script: wifi_tx_beacon.py
                               USRP B205mini:
-                                   Python3 Script: wifi_tx_beacon.py
+                                   Python2 Script: wifi_tx_beacon.py
                               USRP B210:
-                                   Python3 Script: wifi_tx_beacon.py                         
+                                   Python2 Script: wifi_tx_beacon.py                         
                               USRP X310:
-                                   Python3 Script: wifi_tx_beacon.py
+                                   Python2 Script: wifi_tx_beacon.py
                802.11x - wifi_tx ICMP:
                     Default:
                          Hardware:
