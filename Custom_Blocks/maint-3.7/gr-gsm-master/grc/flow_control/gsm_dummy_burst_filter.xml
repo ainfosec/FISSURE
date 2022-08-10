@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<block>
+  <name>Dummy Burst Filter</name>
+  <key>gsm_dummy_burst_filter</key>
+  <import>import grgsm</import>
+  <make>grgsm.dummy_burst_filter()</make>
+
+  <sink>
+    <name>in</name>
+    <type>message</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <doc>
+This block filters dummy bursts. 
+
+For more information on dummy bursts, see GSM 05.02.
+  </doc>
+</block>

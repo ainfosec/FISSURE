@@ -1,0 +1,226 @@
+#!/usr/bin/env python
+# vim: set ts=4 sw=4 tw=0 et pm=:
+import time
+import getopt
+import sys
+import threading
+import os.path
+
+import multiprocessing
+import iridium.iridium_extractor_flowgraph
+
+queue_len_max = 0
+
+out_count = 0
+in_count = 0
+drop_count = 0
+ok_count = 0
+
+in_count_total = 0
+out_count_total = 0
+drop_count_total = 0
+ok_count_total = 0
+
+last_print = 0
+t0 = time.time()
+
+
+def print_stats(tb):
+    global last_print, queue_len_max, out_count, in_count
+    global drop_count, drop_count_total, ok_count
+    global ok_count_total, out_count_total, in_count_total, t0
+    while True:
+
+        queue_len = tb.get_queue_size()
+        queue_len_max = tb.get_max_queue_size()
+
+        in_count = tb.get_n_detected_bursts() - in_count_total
+        out_count = tb.get_n_handled_bursts() - out_count_total
+        ok_count = tb.get_n_access_ok_bursts() - ok_count_total
+        drop_count = tb.get_n_dropped_bursts() - drop_count_total
+
+        dt = time.time() - last_print
+        in_rate = in_count / dt
+        in_count_total += in_count
+        in_rate_avg = in_count_total / (time.time() - t0)
+        out_rate = out_count/ dt
+        drop_rate = drop_count / dt
+
+        if in_count != 0:
+            ok_ratio = ok_count / float(in_count)
+        else:
+            ok_ratio = 0
+
+        ok_rate = ok_count / dt
+        drop_count_total += drop_count
+        ok_count_total += ok_count
+        out_count_total += out_count
+
+        if in_count_total != 0:
+            ok_ratio_total = ok_count_total / float(in_count_total)
+        else:
+            ok_ratio_total = 0
+
+        ok_rate_avg = ok_count_total / (time.time() - t0)
+
+        stats = ""
+        stats += "%d" % time.time()
+        stats += " | i: %3d/s" % in_rate + " | i_avg: %3d/s" % in_rate_avg
+        stats += " | q: %4d" % queue_len + " | q_max: %4d" % queue_len_max
+        stats += " | o: %3d/s" % out_rate
+        stats += " | ok: %3d%%" % (ok_ratio * 100)
+        stats += " | ok: %3d/s" % ok_rate
+        stats += " | ok_avg: %3d%%" % (ok_ratio_total * 100)
+        stats += " | ok: %10d" % ok_count_total
+        stats += " | ok_avg: %3d/s" % ok_rate_avg
+        stats += " | d: %d" % drop_count_total
+        print >> sys.stderr, stats
+
+        queue_len_max = 0
+        in_count = 0
+        out_count = 0
+        drop_count = 0
+        ok_count = 0
+        last_print = time.time()
+
+        time.sleep(1)
+
+
+
+if __name__ == "__main__":
+    options, remainder = getopt.getopt(sys.argv[1:], 'w:c:r:vd:f:j:oq:b:D:h', ['offset=',
+                                                            'window=',
+                                                            'center=',
+                                                            'rate=',
+                                                            'search-depth=',
+                                                            'verbose',
+                                                            'db=',
+                                                            'format=',
+                                                            'jobs=',
+                                                            'offline',
+                                                            'queuelen=',
+                                                            'burstsize=',
+                                                            'uplink',
+                                                            'downlink',
+                                                            'decimation',
+                                                            'multi-frame',
+                                                            'raw-capture=',
+                                                            'help'
+                                                            ])
+
+    center = None
+    search_window = 40000
+    search_depth = 0.007
+    verbose = False
+    sample_rate = None
+    threshold = 8.5 # about 8.5 dB over noise
+    fmt = None
+    jobs = 4
+    offline = False
+    max_queue_len = 500
+    max_bursts = 0
+    direction = None
+    decimation = 1
+    raw_capture_filename = None
+    handle_multiple_frames_per_burst = False
+
+    if len(remainder) == 0 or remainder[0] == '-':
+        filename = "/dev/stdin"
+    else:
+        filename = remainder[0]
+        if not os.path.isfile(filename):
+            print >> sys.stderr, "Specified input file `%s` does not exist" % filename
+            exit(1)
+
+    if filename.endswith(".conf"):
+        import ConfigParser
+        config = ConfigParser.ConfigParser()
+        config.read(filename)
+        items = config.items("osmosdr-source")
+        d = {key: value for key, value in items}
+
+        sample_rate = int(d['sample_rate'])
+        center = int(d['center_freq'])
+
+        fmt = 'float'
+
+    for opt, arg in options:
+        if opt in ('-w', '--search-window'):
+            search_window = int(arg)
+        elif opt in ('-c', '--center'):
+            center = int(arg)
+        elif opt in ('-r', '--rate'):
+            sample_rate = int(arg)
+        elif opt in ('-s', '--search'):
+            search_depth = float(arg)
+        elif opt in ('-d', '--db'):
+            threshold = float(arg)
+        elif opt in ('-v', '--verbose'):
+            verbose = True
+        elif opt in ('-f', '--format'):
+            fmt = arg
+        elif opt in ('-j', '--jobs'):
+            jobs = int(arg)
+        elif opt in ('-o', '--offline'):
+            offline = True
+        elif opt in ('-q', '--queuelen'):
+            max_queue_len = int(arg)
+        elif opt in ('-b', '--burstsize'):
+            max_bursts = int(arg)
+        #elif opt == '--uplink':
+        #    direction = iridium.UPLINK
+        #elif opt == '--downlink':
+        #    direction = iridium.DOWNLINK
+        elif opt in ('-D', '--decimation'):
+            decimation = int(arg)
+        elif opt == '--multi-frame':
+            handle_multiple_frames_per_burst = True
+        elif opt == '--raw-capture':
+            raw_capture_filename = arg
+        elif opt in ('-h', '--help'):
+            print >> sys.stderr, "Usage: iridium-extractor [options] <filename>"
+            print >> sys.stderr, "\t-c frequency\tset center frequency"
+            print >> sys.stderr, "\t-r rate \tset sample rate"
+            print >> sys.stderr, "\t-f format\tset input format [rtl, hackrf, sc16, float]"
+            print >> sys.stderr, "\t--offline\tturn on offline mode (don't skip samples)"
+            print >> sys.stderr, "\t-D num   \tturn on decimation (multi-channel decoding) "
+            print >> sys.stderr, "\t--multi-frame  \tturn on multiple frame per burst support "
+            print >> sys.stderr, "\t--raw-capture=filename  \tsave raw IQ samples (fc32) to file "
+            print >> sys.stderr, "\t<filename>\traw sample file"
+            print >> sys.stderr, ""
+            print >> sys.stderr, "For more documentation check: https://github.com/muccc/gr-iridium/"
+            exit(-1)
+
+    if sample_rate == None:
+        print >> sys.stderr, "Sample rate missing!"
+        exit(1)
+    if center == None:
+        print >> sys.stderr, "Need to specify center frequency!"
+        exit(1)
+    if fmt == None:
+        print >> sys.stderr, "Need to specify sample format (one of rtl, hackrf, sc16, float)!"
+        exit(1)
+    if decimation < 1:
+        print >> sys.stderr, "Decimation must be > 0"
+        exit(1)
+    if decimation > 1 and decimation % 2:
+        print >> sys.stderr, "Decimations > 1 must be even"
+        exit(1)
+
+
+    tb = iridium.iridium_extractor_flowgraph.FlowGraph(center_frequency=center, sample_rate=sample_rate, decimation=decimation, 
+            filename=filename, sample_format=fmt,
+            threshold=threshold, signal_width=search_window,
+            offline=offline, max_queue_len = max_queue_len,
+            handle_multiple_frames_per_burst=handle_multiple_frames_per_burst,
+            raw_capture_filename=raw_capture_filename,
+            max_bursts=max_bursts,
+            verbose=verbose)
+
+    statistics_thread = threading.Thread(target=print_stats, args=(tb,))
+    statistics_thread.setDaemon(True)
+    statistics_thread.start()
+
+    tb.run()
+
+    print >> sys.stderr, "Done."

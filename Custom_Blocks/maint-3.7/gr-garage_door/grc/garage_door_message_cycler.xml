@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<block>
+  <name>message_cycler</name>
+  <key>garage_door_message_cycler</key>
+  <category>garage_door</category>
+  <import>import garage_door</import>
+  <make>garage_door.message_cycler($sample_rate,$dip_interval,$starting_dip,$bpd,$burst_interval)</make>
+
+  <callback>set_sample_rate($sample_rate)</callback>
+  <callback>set_dip_interval($dip_interval)</callback>
+  <callback>set_dip($starting_dip)</callback>
+  <callback>set_bpd($bpd)</callback>
+  <callback>set_burst_interval($burst_interval)</callback>
+  
+  <param>
+    <name>Sample Rate</name>
+    <key>sample_rate</key>
+    <type>float</type>
+  </param>
+
+  <param>
+    <name>DIP Interval (s)</name>
+    <key>dip_interval</key>
+    <value>0.001</value>
+    <type>float</type>
+  </param>  
+  
+  <param>
+    <name>Starting DIP (0-1023)</name>
+    <key>starting_dip</key>
+    <value>0</value>
+    <type>float</type>
+  </param>  
+  
+  <param>
+    <name>Bursts per DIP</name>
+    <key>bpd</key>
+    <value>5</value>
+    <type>int</type>
+  </param>   
+  
+  <param>
+    <name>Burst Interval (s)</name>
+    <key>burst_interval</key>
+    <value>0.02</value>
+    <type>float</type>
+  </param> 
+  
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+
+
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+</block>

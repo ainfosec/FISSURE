@@ -1,0 +1,12 @@
+gr-gsm (0.41.1-0ppa0) xenial; urgency=low
+
+  * First packaged release of gr-gsm (for Debian).
+
+ -- Piotr Krysik <ptrkrysik@gmail.com>  Sun, 2 Sep 2017 21:00:00 +0100
+
+
+gr-gsm (0.40-0ppa0) xenial; urgency=low
+
+  * Initial upload (Closes: #871055).
+
+ -- Piotr Krysik <ptrkrysik@gmail.com>  Sun, 24 Apr 2016 16:00:00 +0100

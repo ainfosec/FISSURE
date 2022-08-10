@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.8">
+  <compounddef id="group__block" kind="group">
+    <compoundname>block</compoundname>
+    <title>GNU Radio ACARS C++ Signal Processing Blocks</title>
+    <briefdescription>
+<para>All C++ blocks that can be used from the ACARS GNU Radio module are listed here or in the subcategories below. </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<block>
+  <name>RTT measure</name>
+  <key>foo_rtt_measure</key>
+  <category>[Foo]</category>
+  <import>import foo</import>
+  <make>foo.rtt_measure($interval)</make>
+  
+  <param>
+    <name>Send interval</name>
+    <key>interval</key>
+    <value>500</value>
+    <type>int</type>
+  </param>
+  
+  <sink>
+    <name>in</name>
+    <type>message</type>
+  </sink>
+
+  <source>
+    <name>dout</name>
+    <type>byte</type>
+  </source>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+  </source>
+</block>  

@@ -1,0 +1,769 @@
+options:
+  parameters:
+    author: Barry Duggan
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: USRP transmit
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: MorseGen_xmt
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Morse Code Generator
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 12.0]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: center_freq
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Tuning
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: 144.0e6
+    step: 1.0e3
+    stop: 148.0e6
+    value: 144.95e6
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [560, 12.0]
+    rotation: 0
+    state: enabled
+- name: repeat
+  id: variable
+  parameters:
+    comment: ''
+    value: int(1.2 * samp_rate / speed)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [352, 12.0]
+    rotation: 0
+    state: true
+- name: rf_gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: RF Gain
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: int
+    start: '0'
+    step: '1'
+    stop: '76'
+    value: '9'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [448, 12.0]
+    rotation: 0
+    state: true
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '50000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [192, 12.0]
+    rotation: 0
+    state: enabled
+- name: speed
+  id: variable
+  parameters:
+    comment: ''
+    value: '13'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [280, 12.0]
+    rotation: 0
+    state: true
+- name: symbol_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '300'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [192, 76.0]
+    rotation: 0
+    state: true
+- name: usrp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '1000000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [296, 76.0]
+    rotation: 0
+    state: true
+- name: blocks_float_to_complex_0
+  id: blocks_float_to_complex
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [656, 288.0]
+    rotation: 0
+    state: true
+- name: blocks_repeat_0
+  id: blocks_repeat
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    interp: repeat
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: byte
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [552, 148.0]
+    rotation: 0
+    state: enabled
+- name: blocks_repeat_0_0
+  id: blocks_repeat
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: output samp rate = 1M
+    interp: (int)(usrp_rate/samp_rate)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [840, 300.0]
+    rotation: 0
+    state: true
+- name: blocks_uchar_to_float_0
+  id: blocks_uchar_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [744, 152.0]
+    rotation: 0
+    state: enabled
+- name: epy_block_0_0
+  id: epy_block
+  parameters:
+    _source_code: "\"\"\"\nMorse code vector source\n\"\"\"\n\n#  epy_block_0.py\n\
+      #  revised 09/10/2019 - finish code table\n#  revised 09/11/2019 - test for\
+      \ bad character\n#  revised 09/27/2019 - get input from a Message Edit block\
+      \ (code from Volker Schroer dl1ksv)\n\nimport numpy as np\nfrom gnuradio import\
+      \ gr\n\nimport pmt\n\ntextboxValue = \"\"\n\nMorse = {\n  # codes from https://www.itu.int/rec/R-REC-M.1677-1-200910-I/en\n\
+      \    \"A\": \"1,0,1,1,1\",\n    \"B\": \"1,1,1,0,1,0,1,0,1\",\n    \"C\": \"\
+      1,1,1,0,1,0,1,1,1,0,1\",\n    \"D\": \"1,1,1,0,1,0,1\",\n    \"E\": \"1\",\n\
+      \    \"F\": \"1,0,1,0,1,1,1,0,1\",\n    \"G\": \"1,1,1,0,1,1,1,0,1\",\n    \"\
+      H\": \"1,0,1,0,1,0,1\",\n    \"I\": \"1,0,1\",\n    \"J\": \"1,0,1,1,1,0,1,1,1,0,1,1,1\"\
+      ,\n    \"K\": \"1,1,1,0,1,0,1,1,1\",\n    \"L\": \"1,0,1,1,1,0,1,0,1\",\n  \
+      \  \"M\": \"1,1,1,0,1,1,1\",\n    \"N\": \"1,1,1,0,1\",\n    \"O\": \"1,1,1,0,1,1,1,0,1,1,1\"\
+      ,\n    \"P\": \"1,0,1,1,1,0,1,1,1,0,1\",\n    \"Q\": \"1,1,1,0,1,1,1,0,1,0,1,1,1\"\
+      ,\n    \"R\": \"1,0,1,1,1,0,1\",\n    \"S\": \"1,0,1,0,1\",\n    \"T\": \"1,1,1\"\
+      ,\n    \"U\": \"1,0,1,0,1,1,1\",\n    \"V\": \"1,0,1,0,1,0,1,1,1\",\n    \"\
+      W\": \"1,0,1,1,1,0,1,1,1\",\n    \"X\": \"1,1,1,0,1,0,1,0,1,1,1\",\n    \"Y\"\
+      : \"1,1,1,0,1,0,1,1,1,0,1,1,1\",\n    \"Z\": \"1,1,1,0,1,1,1,0,1,0,1\",\n  \
+      \  \" \": \"0\",            # space\n    \"1\": \"1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1\"\
+      ,\n    \"2\": \"1,0,1,0,1,1,1,0,1,1,1,0,1,1,1\",\n    \"3\": \"1,0,1,0,1,0,1,1,1,0,1,1,1\"\
+      ,\n    \"4\": \"1,0,1,0,1,0,1,0,1,1,1\",\n    \"5\": \"1,0,1,0,1,0,1,0,1\",\n\
+      \    \"6\": \"1,1,1,0,1,0,1,0,1,0,1\",\n    \"7\": \"1,1,1,0,1,1,1,0,1,0,1,0,1\"\
+      ,\n    \"8\": \"1,1,1,0,1,1,1,0,1,1,1,0,1,0,1\",\n    \"9\": \"1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1\"\
+      ,\n    \"0\": \"1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1\",\n    \".\": \"1,0,1,1,1,0,1,0,1,1,1,0,1,0,1,1,1\"\
+      ,          # period\n    \",\": \"1,1,1,0,1,1,1,0,1,0,1,0,1,1,1,0,1,1,1\", \
+      \     # comma\n    \":\": \"1,1,1,0,1,1,1,0,1,1,1,0,1,0,1,0,1\",          #\
+      \ colon\n    \"?\": \"1,0,1,0,1,1,1,0,1,1,1,0,1,0,1\",              # question\n\
+      \    \"'\": \"1,0,1,1,1,0,1,1,1,0,1,1,1,0,1,1,1,0,1\",      # apostrophe\n \
+      \   \"-\": \"1,1,1,0,1,0,1,0,1,0,1,0,1,1,1\",              # dash or minus\n\
+      \    \"/\": \"1,1,1,0,1,0,1,0,1,1,1,0,1\",                  # slash\n    \"\
+      (\": \"1,1,1,0,1,0,1,1,1,0,1,1,1,0,1\",              # left parenthesis\n  \
+      \  \")\": \"1,1,1,0,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1\",      # right parenthesis\n\
+      \    \"\\\"\": \"1,0,1,1,1,0,1,0,1,0,1,1,1,0,1\",             # quote\n    \"\
+      =\": \"1,1,1,0,1,0,1,0,1,0,1,1,1\",                  # equals\n    \"+\": \"\
+      1,0,1,1,1,0,1,0,1,1,1,0,1\",                  # plus\n    \"@\": \"1,0,1,1,1,0,1,1,1,0,1,0,1,1,1,0,1\"\
+      ,          # at sign (@)\n  # these punctuation marks are not included in the\
+      \ ITU recommendation,\n  # but are found in https://en.wikipedia.org/wiki/Morse_code\n\
+      \    \"!\": \"1,1,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1,1,1\",      # exclamation point\n\
+      \    \"&\": \"1,0,1,1,1,0,1,0,1,0,1\",                      # ampersand (also\
+      \ prosign for 'WAIT')\n    \";\": \"1,1,1,0,1,0,1,1,1,0,1,0,1,1,1,0,1\",   \
+      \       # semicolon\n    \"_\": \"1,0,1,0,1,1,1,0,1,1,1,0,1,0,1,1,1\",     \
+      \     # underscore\n    \"$\": \"1,0,1,0,1,0,1,1,1,0,1,0,1,0,1,1,1\"       \
+      \    # dollar sign\n      }\n\nclass mc_sync_block(gr.sync_block):\n    \"\"\
+      \"\n    reads input from a message port\n    generates a vector of Morse code\
+      \ bits\n    \"\"\"\n    def __init__(self):\n        gr.sync_block.__init__(self,\n\
+      \            name = \"Morse code vector source\",\n            in_sig = None,\n\
+      \            out_sig = [np.byte])\n        self.message_port_register_in(pmt.intern('msg_in'))\n\
+      \        self.message_port_register_out(pmt.intern('clear_input'))\n       \
+      \ self.set_msg_handler(pmt.intern('msg_in'), self.handle_msg)\n\n    def handle_msg(self,\
+      \ msg):\n        global textboxValue\n        textboxValue = pmt.symbol_to_string\
+      \ (msg)\n        # print (textboxValue)\n    \n    def work(self, input_items,\
+      \ output_items):\n        global Morse\n        global textboxValue\n      \
+      \  bit_stream = \"\"\n        if (len (textboxValue) > 0):\n            for\
+      \ in0 in textboxValue:\n                # get next char\n                inChar\
+      \ = str (in0)\n                # convert to upper case\n                ch =\
+      \ inChar.upper()\n                # test for character in table\n          \
+      \      if (not(ch in Morse)):\n                # print (\"bad char\", ch)\n\
+      \                    ch = \"?\"        # replace bad character with a '?'\n\
+      \                # build vector\n                _dots = str (Morse.get(ch))\n\
+      \                # print (ch, _dots)\n                bit_stream += (_dots +\
+      \ \",0,0,0,\")    # letter space\n\n            bit_stream += \"0,0,0,0\"  \
+      \  # finish with word space\n            # print (bit_stream)\n\n          \
+      \  # get length of string\n            _len = len(bit_stream)\n            #\
+      \ num of elements = (length+1) / 2\n            _num_elem = int((_len+1) / 2)\n\
+      \n            # convert and store elements in output array\n            for\
+      \ x in range (_len):\n                y = int(x / 2)\n                if (bit_stream[x]\
+      \ == '1'):\n                    output_items[0][y] = 1\n                elif\
+      \ (bit_stream[x] == '0'):\n                    output_items[0][y] = 0\n    \
+      \            else:\n                    continue    # skip commas\n\n      \
+      \      # clear input line\n            textboxValue = \"\"\n            self.message_port_pub(pmt.intern('clear_input'),\
+      \ pmt.intern(''))\n        else:\n            _num_elem = 0\n\n        return\
+      \ (_num_elem)\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    _io_cache: ('Morse code vector source', 'mc_sync_block', [], [('msg_in', 'message',
+      1)], [('0', 'byte', 1), ('clear_input', 'message', 1)], '\n    reads input from
+      a message port\n    generates a vector of Morse code bits\n    ', [])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [280, 152.0]
+    rotation: 0
+    state: true
+- name: qtgui_time_sink_x_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'True'
+    entags: 'True'
+    grid: 'False'
+    gui_hint: ''
+    label1: Signal 1
+    label10: Signal 10
+    label2: Signal 2
+    label3: Signal 3
+    label4: Signal 4
+    label5: Signal 5
+    label6: Signal 6
+    label7: Signal 7
+    label8: Signal 8
+    label9: Signal 9
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '""'
+    nconnections: '1'
+    size: '16384'
+    srate: samp_rate
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.5'
+    tr_mode: qtgui.TRIG_MODE_AUTO
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '1.5'
+    ymin: '-1'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [656, 204.0]
+    rotation: 0
+    state: enabled
+- name: root_raised_cosine_filter_0
+  id: root_raised_cosine_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha: '0.35'
+    comment: ''
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    ntaps: '200'
+    samp_rate: samp_rate
+    sym_rate: symbol_rate
+    type: fir_filter_fff
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [176, 244.0]
+    rotation: 0
+    state: true
+- name: root_raised_cosine_filter_0_0
+  id: root_raised_cosine_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha: '0.35'
+    comment: ''
+    decim: '1'
+    gain: '0.95'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    ntaps: '200'
+    samp_rate: samp_rate
+    sym_rate: symbol_rate
+    type: fir_filter_fff
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [408, 244.0]
+    rotation: 0
+    state: true
+- name: uhd_usrp_sink_0
+  id: uhd_usrp_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    ant0: TX/RX
+    ant1: TX/RX
+    ant10: TX/RX
+    ant11: TX/RX
+    ant12: TX/RX
+    ant13: TX/RX
+    ant14: TX/RX
+    ant15: TX/RX
+    ant16: TX/RX
+    ant17: TX/RX
+    ant18: TX/RX
+    ant19: TX/RX
+    ant2: TX/RX
+    ant20: TX/RX
+    ant21: TX/RX
+    ant22: TX/RX
+    ant23: TX/RX
+    ant24: TX/RX
+    ant25: TX/RX
+    ant26: TX/RX
+    ant27: TX/RX
+    ant28: TX/RX
+    ant29: TX/RX
+    ant3: TX/RX
+    ant30: TX/RX
+    ant31: TX/RX
+    ant4: TX/RX
+    ant5: TX/RX
+    ant6: TX/RX
+    ant7: TX/RX
+    ant8: TX/RX
+    ant9: TX/RX
+    bw0: '200000'
+    bw1: '0'
+    bw10: '0'
+    bw11: '0'
+    bw12: '0'
+    bw13: '0'
+    bw14: '0'
+    bw15: '0'
+    bw16: '0'
+    bw17: '0'
+    bw18: '0'
+    bw19: '0'
+    bw2: '0'
+    bw20: '0'
+    bw21: '0'
+    bw22: '0'
+    bw23: '0'
+    bw24: '0'
+    bw25: '0'
+    bw26: '0'
+    bw27: '0'
+    bw28: '0'
+    bw29: '0'
+    bw3: '0'
+    bw30: '0'
+    bw31: '0'
+    bw4: '0'
+    bw5: '0'
+    bw6: '0'
+    bw7: '0'
+    bw8: '0'
+    bw9: '0'
+    center_freq0: center_freq
+    center_freq1: '0'
+    center_freq10: '0'
+    center_freq11: '0'
+    center_freq12: '0'
+    center_freq13: '0'
+    center_freq14: '0'
+    center_freq15: '0'
+    center_freq16: '0'
+    center_freq17: '0'
+    center_freq18: '0'
+    center_freq19: '0'
+    center_freq2: '0'
+    center_freq20: '0'
+    center_freq21: '0'
+    center_freq22: '0'
+    center_freq23: '0'
+    center_freq24: '0'
+    center_freq25: '0'
+    center_freq26: '0'
+    center_freq27: '0'
+    center_freq28: '0'
+    center_freq29: '0'
+    center_freq3: '0'
+    center_freq30: '0'
+    center_freq31: '0'
+    center_freq4: '0'
+    center_freq5: '0'
+    center_freq6: '0'
+    center_freq7: '0'
+    center_freq8: '0'
+    center_freq9: '0'
+    clock_rate: 0e0
+    clock_source0: ''
+    clock_source1: ''
+    clock_source2: ''
+    clock_source3: ''
+    clock_source4: ''
+    clock_source5: ''
+    clock_source6: ''
+    clock_source7: ''
+    comment: ''
+    dev_addr: '""'
+    dev_args: '""'
+    gain0: rf_gain
+    gain1: '0'
+    gain10: '0'
+    gain11: '0'
+    gain12: '0'
+    gain13: '0'
+    gain14: '0'
+    gain15: '0'
+    gain16: '0'
+    gain17: '0'
+    gain18: '0'
+    gain19: '0'
+    gain2: '0'
+    gain20: '0'
+    gain21: '0'
+    gain22: '0'
+    gain23: '0'
+    gain24: '0'
+    gain25: '0'
+    gain26: '0'
+    gain27: '0'
+    gain28: '0'
+    gain29: '0'
+    gain3: '0'
+    gain30: '0'
+    gain31: '0'
+    gain4: '0'
+    gain5: '0'
+    gain6: '0'
+    gain7: '0'
+    gain8: '0'
+    gain9: '0'
+    gain_type0: default
+    gain_type1: default
+    gain_type10: default
+    gain_type11: default
+    gain_type12: default
+    gain_type13: default
+    gain_type14: default
+    gain_type15: default
+    gain_type16: default
+    gain_type17: default
+    gain_type18: default
+    gain_type19: default
+    gain_type2: default
+    gain_type20: default
+    gain_type21: default
+    gain_type22: default
+    gain_type23: default
+    gain_type24: default
+    gain_type25: default
+    gain_type26: default
+    gain_type27: default
+    gain_type28: default
+    gain_type29: default
+    gain_type3: default
+    gain_type30: default
+    gain_type31: default
+    gain_type4: default
+    gain_type5: default
+    gain_type6: default
+    gain_type7: default
+    gain_type8: default
+    gain_type9: default
+    len_tag_name: ''
+    lo_export0: 'False'
+    lo_export1: 'False'
+    lo_export10: 'False'
+    lo_export11: 'False'
+    lo_export12: 'False'
+    lo_export13: 'False'
+    lo_export14: 'False'
+    lo_export15: 'False'
+    lo_export16: 'False'
+    lo_export17: 'False'
+    lo_export18: 'False'
+    lo_export19: 'False'
+    lo_export2: 'False'
+    lo_export20: 'False'
+    lo_export21: 'False'
+    lo_export22: 'False'
+    lo_export23: 'False'
+    lo_export24: 'False'
+    lo_export25: 'False'
+    lo_export26: 'False'
+    lo_export27: 'False'
+    lo_export28: 'False'
+    lo_export29: 'False'
+    lo_export3: 'False'
+    lo_export30: 'False'
+    lo_export31: 'False'
+    lo_export4: 'False'
+    lo_export5: 'False'
+    lo_export6: 'False'
+    lo_export7: 'False'
+    lo_export8: 'False'
+    lo_export9: 'False'
+    lo_source0: internal
+    lo_source1: internal
+    lo_source10: internal
+    lo_source11: internal
+    lo_source12: internal
+    lo_source13: internal
+    lo_source14: internal
+    lo_source15: internal
+    lo_source16: internal
+    lo_source17: internal
+    lo_source18: internal
+    lo_source19: internal
+    lo_source2: internal
+    lo_source20: internal
+    lo_source21: internal
+    lo_source22: internal
+    lo_source23: internal
+    lo_source24: internal
+    lo_source25: internal
+    lo_source26: internal
+    lo_source27: internal
+    lo_source28: internal
+    lo_source29: internal
+    lo_source3: internal
+    lo_source30: internal
+    lo_source31: internal
+    lo_source4: internal
+    lo_source5: internal
+    lo_source6: internal
+    lo_source7: internal
+    lo_source8: internal
+    lo_source9: internal
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nchan: '1'
+    num_mboards: '1'
+    otw: ''
+    samp_rate: usrp_rate
+    sd_spec0: ''
+    sd_spec1: ''
+    sd_spec2: ''
+    sd_spec3: ''
+    sd_spec4: ''
+    sd_spec5: ''
+    sd_spec6: ''
+    sd_spec7: ''
+    show_lo_controls: 'False'
+    stream_args: ''
+    stream_chans: '[]'
+    sync: sync
+    time_source0: ''
+    time_source1: ''
+    time_source2: ''
+    time_source3: ''
+    time_source4: ''
+    time_source5: ''
+    time_source6: ''
+    time_source7: ''
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1048, 236.0]
+    rotation: 0
+    state: true
+- name: virtual_sink_0
+  id: virtual_sink
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: rrc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [912, 148.0]
+    rotation: 0
+    state: true
+- name: virtual_source_0
+  id: virtual_source
+  parameters:
+    alias: ''
+    comment: ''
+    stream_id: rrc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 284.0]
+    rotation: 0
+    state: true
+- name: zeromq_pull_msg_source_0
+  id: zeromq_pull_msg_source
+  parameters:
+    address: tcp://127.0.0.1:50251
+    affinity: ''
+    alias: ''
+    bind: 'False'
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    timeout: '100'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 156.0]
+    rotation: 0
+    state: true
+
+connections:
+- [blocks_float_to_complex_0, '0', blocks_repeat_0_0, '0']
+- [blocks_repeat_0, '0', blocks_uchar_to_float_0, '0']
+- [blocks_repeat_0_0, '0', uhd_usrp_sink_0, '0']
+- [blocks_uchar_to_float_0, '0', virtual_sink_0, '0']
+- [epy_block_0_0, '0', blocks_repeat_0, '0']
+- [root_raised_cosine_filter_0, '0', root_raised_cosine_filter_0_0, '0']
+- [root_raised_cosine_filter_0_0, '0', blocks_float_to_complex_0, '0']
+- [root_raised_cosine_filter_0_0, '0', qtgui_time_sink_x_0, '0']
+- [virtual_source_0, '0', root_raised_cosine_filter_0, '0']
+- [zeromq_pull_msg_source_0, out, epy_block_0_0, msg_in]
+
+metadata:
+  file_format: 1

@@ -1,0 +1,42 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+../include/acars/acars.h
+acars/api.h
+-
+gnuradio/block.h
+-
+
+../include/acars/api.h
+gnuradio/attributes.h
+-
+
+/home/jmfriedt/sdr/gr-acars/lib/acars_impl.cc
+config.h
+/home/jmfriedt/sdr/gr-acars/lib/config.h
+gnuradio/io_signature.h
+-
+acars_impl.h
+/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h
+fftw3.h
+-
+time.h
+-
+
+/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h
+acars/acars.h
+-
+fftw3.h
+-
+
+/usr/local/include/fftw3.h
+stdio.h
+-
+stddef.h
+-
+

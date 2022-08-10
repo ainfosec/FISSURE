@@ -1,0 +1,111 @@
+# Message Types and Verification for Messages sent to/from TSI
+Identifier: TSI
+
+
+# The Generic Categories for Messages
+Message Types:
+    - SOI
+    - Wideband 
+    - Heartbeats
+    - Status
+    - Commands
+
+
+# The Format to Follow for each Message Type
+Schema: 
+      SOI: '$Identifier: $MessageName $ModulationType $Frequency $Power $Bandwidth $Continuous $StartFrequency $EndFrequency $Timestamp $Confidence'    
+      Wideband: '$Identifier: $MessageName $Frequency $Power $Timestamp'
+      Heartbeats: '$Identifier: $MessageName $Time'
+      Status: '$Identifier: $MessageName $Parameters'
+      Commands: '$Identifier: $MessageName $Parameters'
+
+
+# Message Names
+Status:
+     - Connected
+     - Disconnected
+     - Exit Connect Loop
+     - Connect to FGE
+     - Full Library
+
+Heartbeats: 
+     - Heartbeat 
+
+SOI:
+     - Signal Classification
+
+Wideband:
+     - Signal Found
+
+Commands:
+     - Start TSI Detector
+     - Stop TSI Detector
+     - Start IQ Recording
+     - Add Blacklist
+     - Remove Blacklist
+     - Update Configuration
+     - Set Heartbeat Interval
+     - Stop IQ Recording
+     - Update FISSURE Configuration
+
+
+# Callback to Function Lookup
+Start TSI Detector: startTSI_Detector
+Stop TSI Detector: stopTSI_Detector
+Start IQ Recording: startIQ_Recording
+Add Blacklist: addBlacklist
+Remove Blacklist: removeBlacklist
+Update Configuration: updateConfiguration
+Set Heartbeat Interval: setHeartbeatInterval
+Stop IQ Recording: stopIQ_Recording
+Update FISSURE Configuration: updateFISSURE_Configuration
+
+# Function/Parameter Verification 
+startTSI_Detector:
+    Type: callback
+    Parameters:
+             detector
+             variable_names
+             variable_values
+     
+stopTSI_Detector:
+    Type: callback
+    Parameters:
+
+startIQ_Recording:
+    Type: callback
+    Parameters:
+             variable_names
+             variable_values
+
+addBlacklist:
+    Type: callback
+    Parameters:
+             start_frequency
+             end_frequency
+
+removeBlacklist:
+    Type: callback
+    Parameters:
+             start_frequency
+             end_frequency
+
+updateConfiguration:
+    Type: callback
+    Parameters:
+             start_frequency
+             end_frequency
+             step_size   
+             dwell_time
+             
+setHeartbeatInterval:
+    Type: callback
+    Parameters:
+             interval
+             
+stopIQ_Recording:
+    Type: callback 
+    Parameters:        
+
+updateFISSURE_Configuration:
+    Type: callback 

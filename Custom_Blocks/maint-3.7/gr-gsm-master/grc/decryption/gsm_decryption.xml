@@ -1,0 +1,34 @@
+<?xml version="1.0"?>
+<block>
+  <name>Decryption</name>
+  <key>gsm_decryption</key>
+  <import>import grgsm</import>
+  <make>grgsm.decryption($k_c, $a5_version)</make>
+
+  <param>
+    <name>Kc session key</name>
+    <key>k_c</key>
+    <value>[0,0,0,0,0,0,0,0]</value>
+    <type>int_vector</type>
+  </param>
+
+  <param>
+    <name>A5 version</name>
+    <key>a5_version</key>
+    <value>1</value>
+    <type>int</type>
+  </param>
+
+  <check>$a5_version &gt; 0</check>
+  <check>$a5_version &lt; 5</check>
+
+  <sink>
+    <name>bursts</name>
+    <type>message</type>
+  </sink>
+  <source>
+    <name>bursts</name>
+    <type>message</type>
+  </source>
+
+</block>

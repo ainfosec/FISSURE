@@ -1,0 +1,110 @@
+# Copyright 2015,2016 Ron Economos
+#
+# This file is part of gr-paint
+#
+# gr-paint is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+#
+# gr-paint is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with gr-paint; see the file COPYING.  If not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street,
+# Boston, MA 02110-1301, USA.
+
+gr-paint
+======
+
+Author: Ron Economos
+Email: <w6rz@comcast.net>
+
+The goal of this project is to build a software-defined OFDM transmitter
+that "paints" monochrome images into the waterfall of a receiver.
+It is based on https://github.com/polygon/spectrum_painter
+
+After installation, a GNU Radio block called "Spectrum Painter" will
+be available in the "Paint" category. The block converts a byte stream
+of image data into a 4K IFFT OFDM IQ sequence for transmission.
+
+There are two block parameters.
+
+1) Image Width. This is the horizontal size of the image to be transmitted.
+
+2) Line Repeats. This is the number of times a line is repeated. This is
+used to adjust the aspect ratio of the image to be more or less correct.
+Aspect ratio is also affected by sample rate, waterfall update time and
+the size of the waterfall window.
+
+A GNU Radio Companion flow graph (paint_tx.grc) is provided in the apps
+directory. It transmits a test file with a UHD sink setup for an Ettus
+B2X0 SDR. Be sure to select the correct sink for your device.
+
+An image conversion utility (tgatoluma) is included to create image
+files that work with GNU Radio (raw binary). The usage is:
+
+tgatoluma <infile> <outfile>
+
+For example:
+
+tgatoluma image.tga image.bin
+
+The utility will print the horizontal size, and this must be entered into
+the "Image Width" parameter of the block.
+
+The popular program ImageMagick can be used to convert any image to TGA
+format. For example:
+
+convert image.png image.tga
+
+For waterfalls that start at the top, the image needs to be flipped.
+
+convert -flip image.jpg image.tga
+
+Three test images are included.
+
+1) marcy.bin This is a 1920x1080 frame from a cartoon.
+
+2) ramp.bin. This is a 1920x1080 test pattern with a grayscale. Used
+to set the correct contrast with the minimum and maximum levels of the
+QT GUI Waterfall Sink.
+
+3) xhatch.bin This is a 1920x1080 test pattern with circles. Used to set
+the aspect ratio correctly.
+
+A tutorial for creating high quality images with Gqrx is available here:
+
+https://gist.github.com/drmpeg/31a9a7dd6918856aeb60
+
+UPDATE: Chris Kuethe KJ6GVE has submitted an "Image File Source" block
+that allows any image format to be used and avoids the extra steps of
+using ImageMagick and tgatoluma. The flow graph has been updated to include
+the new block and a test PNG image is provided. You still have to enter
+the correct image width into the Spectrum Painter block (the Image File
+Source block will print the image width for you).
+
+UPDATE 11/09/2015: I've added the OFDM Cyclic Prefixer block to the test
+flow graph. This can be used to fine tune the aspect ratio of the image
+in much finer granularity than line repeats. The CP Length can be any value,
+it doesn't have to be a power of two like you see in regular OFDM systems.
+
+I've also added sin(x)/x correction for bladeRF and other SDR transmitters
+that don't compensate for DAC zero-order hold. Note that the Ettus B2X0
+does have sin(x)/x compensation, so it's not turned on in the test flow
+graph.
+
+Build instructions:
+
+    mkdir build
+    cd build
+    cmake ../
+    make
+    sudo make install
+    sudo ldconfig
+
+Contributions are welcome!
+

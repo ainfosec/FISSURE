@@ -1,0 +1,14 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.8">
+  <compounddef id="dir_998c6b723dcf4eed486d757af7c1cef6" kind="dir">
+    <compoundname>acars</compoundname>
+    <innerfile refid="acars_8h">acars.h</innerfile>
+    <innerfile refid="acars__original_8h">acars_original.h</innerfile>
+    <innerfile refid="api_8h">api.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/jmfriedt/sdr/gr-acars/include/acars/"/>
+  </compounddef>
+</doxygen>

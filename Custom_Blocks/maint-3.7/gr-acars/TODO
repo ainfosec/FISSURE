@@ -1,0 +1,4 @@
+current implementation of FFT prevents multiple occurences of the 
+decoder block since the multithreading of the fftw library seems to
+conflict. This limitation prevents decoding mulitple ACARS channels
+simultaneously.

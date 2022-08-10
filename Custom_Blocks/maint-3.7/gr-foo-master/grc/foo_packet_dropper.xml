@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<block>
+  <name>Packet Dropper</name>
+  <key>foo_packet_dropper</key>
+  <category>[Foo]</category>
+  <import>import foo</import>
+  <make>foo.packet_dropper($drop_rate, $seed)</make>
+  
+  <param>
+    <name>Packet drop rate</name>
+    <key>drop_rate</key>
+    <value>0.5</value>
+    <type>real</type>
+  </param>
+  
+  <param>
+    <name>Random seed</name>
+    <key>seed</key>
+    <value>42</value>
+    <type>int</type>
+  </param>
+  
+  <sink>
+    <name>in</name>
+    <type>message</type>
+  </sink>
+  
+  <source>
+    <name>out</name>
+    <type>message</type>
+  </source>
+</block> 

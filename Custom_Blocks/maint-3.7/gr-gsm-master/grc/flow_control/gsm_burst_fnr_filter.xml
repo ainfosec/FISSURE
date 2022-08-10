@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<block>
+  <name>Burst Framenumber Filter</name>
+  <key>gsm_burst_fnr_filter</key>
+  <import>import grgsm</import>
+  <make>grgsm.burst_fnr_filter($mode, $fnr)</make>
+
+  <param>
+    <name>Mode</name>
+    <key>mode</key>
+    <type>enum</type>
+    <option>
+      <name>Less or equal</name>
+      <key>grgsm.FILTER_LESS_OR_EQUAL</key>
+    </option>
+    <option>
+      <name>Greater or equal</name>
+      <key>grgsm.FILTER_GREATER_OR_EQUAL</key>
+    </option>
+  </param>
+  <param>
+    <name>Framenumber</name>
+    <key>fnr</key>
+    <value>1500123</value>
+    <type>int</type>
+  </param>
+  
+  <sink>
+    <name>in</name>
+    <type>message</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <doc>
+Burst framenumber filter forwards only blocks with a framenumber satisfying the configured mode, i.e. if mode is "Less or equal", then only bursts with a smaller or equal framenumber are forwarded.
+  </doc>
+</block>

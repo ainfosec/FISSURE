@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<block>
+  <name>Message Source</name>
+  <key>gsm_message_source</key>
+  <import>import grgsm</import>
+  <make>grgsm.message_source($messages)</make>
+
+  <param>
+    <name>Messages</name>
+    <key>messages</key>
+    <value>["02 04 01 00 00 00 c9 00 00 1d 3c e5 02 00 01 00 15 06 21 00 01 f0 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b",
+"02 04 01 00 00 00 ca 00 00 1d 3c e9 02 00 02 00 15 06 21 00 01 f0 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b",
+"02 04 01 00 00 00 cb 00 00 1d 3d 0e 01 00 00 00 59 06 1a 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 ff e5 04 00",
+"02 04 01 00 00 00 cb 00 00 1d 3d 12 02 00 00 00 15 06 21 00 01 f0 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b 2b"]</value>
+    <type>raw</type>
+    <hide>true</hide>
+  </param>
+
+  <source>
+    <name>msgs</name>
+    <type>message</type>
+  </source>
+
+  <doc>
+This block is a basic message source for testing purposes.
+
+It takes a list of strings as input, where each string
+is a whitespace-separated list of hexadecimal values representing the data bytes of a message including the gsmtap header.
+
+Such strings can be obtained using the message printer with option "Print GSMTap header"
+  </doc>
+</block>

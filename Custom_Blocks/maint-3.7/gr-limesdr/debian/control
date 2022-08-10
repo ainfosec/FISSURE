@@ -1,0 +1,26 @@
+Source: gr-limesdr
+Section: comm
+Priority: optional
+Maintainer: Lime Microsystems <info@limemicro.com>
+Build-Depends: cmake,
+               debhelper (>= 9~),
+               gnuradio-dev,
+               liblimesuite-dev (>= 19.04),
+               pkg-config,
+               python-dev,
+               swig
+X-Python-Version: >= 2.7, << 2.8
+Standards-Version: 4.1.1
+Homepage: http://github.com/myriadrf/gr-limesdr
+Vcs-Git: git://github.com/myriadrf/gr-limesdr.git
+Vcs-Browser: https://github.com/myriadrf/gr-limesdr
+
+Package: gr-limesdr
+Architecture: any
+Pre-Depends: ${misc:Pre-Depends}
+Depends: ${misc:Depends}, ${python:Depends}, ${shlibs:Depends},
+         gnuradio,
+         liblimesuite-dev (>= 19.04)
+Description:GNU-Radio blocks used to interface with various LimeSDR boards.
+ Implementation of GNU-Radio out of tree modules which allow to interface with
+ LimeSDR-USB, LimeSDR-Mini,LimeNET-Micro and LimeSDR-QPCIe boards.

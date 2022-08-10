@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<block>
+  <name>Burst Tagger</name>
+  <key>foo_burst_tagger</key>
+  <category>[Foo]</category>
+  <import>import pmt</import>
+  <import>import foo</import>
+  <make>foo.burst_tagger($tag_name, $mult)</make>
+
+  <param>
+    <name>Tag Name</name>
+    <key>tag_name</key>
+    <value>pmt.intern("burst_len")</value>
+    <type>raw</type>
+  </param>
+
+  <param>
+    <name>Multiplier</name>
+    <key>mult</key>
+    <value>1</value>
+    <type>int</type>
+  </param>
+
+  <check>$mult > 0</check>
+
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+</block>

@@ -1,0 +1,9 @@
+build
+examples/*.py
+.cproject
+.project
+.pydevproject
+.settings
+*.pyc
+**/.DS_Store
+.clang_complete

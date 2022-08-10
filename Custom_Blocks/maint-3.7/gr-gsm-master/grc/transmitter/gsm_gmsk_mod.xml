@@ -1,0 +1,47 @@
+<block>
+  <name>GMSK Modulator for GSM</name>
+  <key>gsm_gmsk_mod</key>
+  <import>from grgsm import gsm_gmsk_mod</import>
+  <make>gsm_gmsk_mod(
+    BT=$BT,
+    pulse_duration=$pulse_duration,
+    sps=$sps,
+)</make>
+  <callback>set_BT($BT)</callback>
+  <callback>set_pulse_duration($pulse_duration)</callback>
+  <callback>set_sps($sps)</callback>
+  <param>
+    <name>3 dB Time-Bandwidth Product</name>
+    <key>BT</key>
+    <value>4</value>
+    <type>raw</type>
+  </param>
+  <param>
+    <name>Pulse Duration</name>
+    <key>pulse_duration</key>
+    <value>4</value>
+    <type>raw</type>
+  </param>
+  <param>
+    <name>Samples/Symbol</name>
+    <key>sps</key>
+    <value>4</value>
+    <type>raw</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+    <vlen>1</vlen>
+    <optional>1</optional>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>complex</type>
+    <vlen>1</vlen>
+    <optional>1</optional>
+  </source>
+  <doc>Piotr Krysik
+GMSK Modulator for GSM
+  </doc>
+  <grc_source>gr-gsm/hier_blocks/transmitter/gsm_gmsk_mod.grc</grc_source>
+</block>

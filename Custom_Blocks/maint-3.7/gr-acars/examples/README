@@ -1,0 +1,6 @@
+This flow graph has been tested with a R820T based receiver: gain should be
+kept around 30, no higher. The older E4000-based DVB-T is known to work
+but has not been tested with the latest update of gr-acars since the dongle
+is no longer commercialized.
+
+

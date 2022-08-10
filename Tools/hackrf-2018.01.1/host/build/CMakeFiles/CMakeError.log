@@ -1,0 +1,20 @@
+Determining if the function pthread_create exists in the pthreads failed with the following output:
+Change Dir: /home/user8/FISSURE/Tools/hackrf-2018.01.1/host/build/CMakeFiles/CMakeTmp
+
+Run Build Command:"/usr/bin/make" "cmTC_dc8df/fast"
+/usr/bin/make -f CMakeFiles/cmTC_dc8df.dir/build.make CMakeFiles/cmTC_dc8df.dir/build
+make[1]: Entering directory '/home/user8/FISSURE/Tools/hackrf-2018.01.1/host/build/CMakeFiles/CMakeTmp'
+Building C object CMakeFiles/cmTC_dc8df.dir/CheckFunctionExists.c.o
+/usr/bin/cc   -std=gnu90 -DCHECK_FUNCTION_EXISTS=pthread_create   -o CMakeFiles/cmTC_dc8df.dir/CheckFunctionExists.c.o   -c /usr/share/cmake-3.10/Modules/CheckFunctionExists.c
+Linking C executable cmTC_dc8df
+/usr/bin/cmake -E cmake_link_script CMakeFiles/cmTC_dc8df.dir/link.txt --verbose=1
+/usr/bin/cc  -std=gnu90 -DCHECK_FUNCTION_EXISTS=pthread_create    -rdynamic CMakeFiles/cmTC_dc8df.dir/CheckFunctionExists.c.o  -o cmTC_dc8df -lpthreads 
+/usr/bin/ld: cannot find -lpthreads
+collect2: error: ld returned 1 exit status
+CMakeFiles/cmTC_dc8df.dir/build.make:97: recipe for target 'cmTC_dc8df' failed
+make[1]: *** [cmTC_dc8df] Error 1
+make[1]: Leaving directory '/home/user8/FISSURE/Tools/hackrf-2018.01.1/host/build/CMakeFiles/CMakeTmp'
+Makefile:126: recipe for target 'cmTC_dc8df/fast' failed
+make: *** [cmTC_dc8df/fast] Error 2
+
+

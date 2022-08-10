@@ -1,0 +1,61 @@
+BTLE Wireshark plugin
+=====================
+
+This plugin is no longer in use, it has been merged in to the Wireshark source
+tree as of release 1.12.
+
+
+This is the Bluetooth Low Energy plugin for Wireshark.
+
+To build this on Debian/Ubuntu/BackTrack linux distributions:
+  sudo apt-get install wireshark-dev wireshark
+  cd libbtbb/wireshark/plugins/btle/
+  cmake .
+  make
+  make install
+
+This will install to the .wireshark/ in your home directory. To override
+this set the DESTDIR environment variable when running cmake.
+
+PPI Support (Patch)
+-------------------
+
+Ubertooth records capture frequency, internal clock state, and certain
+other metadata about packets in a PPI header. It is not possible to add
+PPI support in an external plugin, so if you wish to access these fields
+you must patch Wireshark.
+
+The patch wireshark-1.8-btle-ppi.patch was built against the Ubuntu
+12.10 Quantal Wireshark package. It can be added to the Ubuntu package
+source or applied directly to vanilla Wireshark.
+
+To build a .deb on Ubuntu, follow these instructions:
+
+	mkdir wireshark && cd wireshark
+	apt-get source wireshark
+	cp wireshark-1.8-btle-ppi.patch wireshark-1.8.2/debian/patches
+	echo wireshark-1.8-btle-ppi.patch >> wireshark-1.8.2/debian/patches/series
+	cd wireshark-1.8.2
+	dpkg-buildpackage -rfakeroot
+
+The .deb will be created in the wireshark directory, and it can be
+installed with dpkg -i.
+
+Attribute Protocol Support
+--------------------------
+
+Wireshark trunk has native support for the Bluetooth Attribute protocol.
+If you are using a distro package that does not support it, install the
+plugin found in the btatt directory (above this directory).
+
+If the protocol column of non-empty data packets says L2CAP, you should
+install the plugin. If it says ATT, you do not need the plugin. If it
+says something else, please email me!
+
+Bluetooth Security Manager Protocol
+-----------------------------------
+
+All security-related exchanges (pairing and identity resolution) take
+place over the Bluetooth Security Manager (SM) protocol, which runs on
+L2CAP. If you would like to dissect these packets, build and install the
+plugin found in the btsm directory above this directory.

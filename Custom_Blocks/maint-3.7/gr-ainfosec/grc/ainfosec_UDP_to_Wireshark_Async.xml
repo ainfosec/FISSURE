@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<block>
+  <name>UDP_to_Wireshark_Async</name>
+  <key>ainfosec_UDP_to_Wireshark_Async</key>
+  <category>[ainfosec]</category>
+  <import>import ainfosec</import>
+  <make>ainfosec.UDP_to_Wireshark_Async($port)</make>
+  <param>
+    <name>Port</name>
+    <key>port</key>
+    <value>50000</value>
+    <type>int</type>
+  </param>  
+  <sink>
+    <name>in</name>
+    <type>message</type>
+  </sink>
+</block>

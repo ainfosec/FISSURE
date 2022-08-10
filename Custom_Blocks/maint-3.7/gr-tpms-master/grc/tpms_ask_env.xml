@@ -1,0 +1,23 @@
+<block>
+  <name>Ask env</name>
+  <key>tpms_ask_env</key>
+  <category>TPMS</category>
+  <import>import tpms</import>
+  <make>tpms.ask_env(
+    alpha=$alpha
+  )</make>
+  <callback>set_alpha($alpha)</callback>
+  <param>
+    <name>Alpha</name>
+    <key>alpha</key>
+    <type>float</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+</block>

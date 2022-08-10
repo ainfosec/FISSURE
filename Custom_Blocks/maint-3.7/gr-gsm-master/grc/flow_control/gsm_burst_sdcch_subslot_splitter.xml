@@ -1,0 +1,44 @@
+<?xml version="1.0"?>
+<block>
+  <name>Burst SDCCH Subslot Splitter</name>
+  <key>gsm_burst_sdcch_subslot_splitter</key>
+  <import>import grgsm</import>
+  <make>grgsm.burst_sdcch_subslot_splitter(
+#if int($ports())==4 #
+grgsm.SPLITTER_SDCCH4
+#else
+grgsm.SPLITTER_SDCCH8
+#end if
+  )</make>
+   
+  <param>
+    <name>Mode</name>
+    <key>ports</key>
+    <type>enum</type>
+    <option>
+      <name>SDCCH/8</name>
+      <key>8</key>
+    </option>
+    <option>
+      <name>SDCCH/4</name>
+      <key>4</key>
+    </option>
+  </param>
+    
+  <sink>
+    <name>in</name>
+    <type>message</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+    <nports>$ports</nports>
+    <optional>1</optional>
+  </source>
+
+  <doc>
+Burst SDCCH subslot splitter distributes bursts to eight different output ports depending on the subslots to which the bursts belong.
+This means subslot 0 bursts are sent to port out0, subslot 1 bursts on port out1, and so on.
+  </doc>
+</block>

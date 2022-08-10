@@ -1,0 +1,467 @@
+# Message Types and Verification for Messages sent to/from HIPRFISR
+Identifier: HIPRFISR
+
+
+# The Generic Categories for Messages
+Message Types:
+    - Commands
+    - SOI
+    - Wideband
+    - Status 
+    - Heartbeats
+
+    
+# The Format to Follow for each Message Type
+Schema: 
+      Commands: '$Identifier: $MessageName $Parameters'
+      SOI: '$Identifier: $MessageName $ModulationType $Frequency $Power $Bandwidth $Continuous $StartFrequency $EndFrequency $Timestamp $Confidence'    
+      Wideband: '$Identifier: $MessageName $Frequency $Power $Timestamp'  
+      Heartbeats: '$Identifier: $MessageName $Time'
+      Status: '$Identifier: $MessageName $Parameters'
+      Set: '$Identifier: $Set $Variable $Value'  # Does anything use this? Delete?
+   
+
+# Message Names
+Commands:
+    - Clear SOI List
+    - Clear Wideband List
+    - Run Attack Flow Graph
+    - Run IQ Flow Graph
+    - Run Inspection Flow Graph
+    - Run Sniffer Flow Graph
+    - Run PD Flow Graph
+    - Set Heartbeat Interval
+    - SOI Selection Mode
+    - Set Process SOIs
+    - Set Target SOI
+    - Stop PD Flow Graph
+    - Set Variable
+    - Stop Attack Flow Graph
+    - Stop IQ Flow Graph
+    - Stop Inspection Flow Graph
+    - Stop Sniffer Flow Graph
+    - Set Auto Start PD
+    - Start TSI Detector
+    - Stop TSI Detector
+    - Start PD
+    - Stop PD
+    - Ignore SOIs
+    - Add Blacklist
+    - Remove Blacklist
+    - Update Configuration
+    - Start Physical Fuzzing
+    - Stop Physical Fuzzing
+    - Start Multi-Stage Attack
+    - Stop Multi-Stage Attack
+    - Start Archive Playlist
+    - Stop Archive Playlist
+    - Captured Preamble Stats
+    - Set Window Parameters
+    - Set Buffer Size
+    - Find Preambles
+    - Search Library
+    - Slice By Preamble 
+    - Search Library for Flow Graphs
+    - Clear PD Buffer
+    - Add To Library
+    - Find Entropy
+    - Add Pub Socket
+    - Remove Pub Socket
+    - Remove Attack from Library
+    - Remove Demodulation Flow Graph
+    - Remove SOI
+    - Remove Packet Type
+    - Remove Modulation Type
+    - Update FISSURE Configuration
+
+SOI:
+     - Signal Classification
+
+Wideband:
+     - Signal Found
+
+Heartbeats: 
+     - Heartbeat 
+
+Status:
+     - Full Library
+     - Set Recommended Flow Graphs
+     - Exit Connect Loop
+     - Flow Graph Finished
+     - Flow Graph Started
+     - Detector Flow Graph Error
+     - Flow Graph Error
+     - Flow Graph Finished IQ
+     - Flow Graph Finished IQ Playback
+     - Flow Graph Finished IQ Inspection
+     - Flow Graph Finished Sniffer
+     - Flow Graph Started IQ
+     - Flow Graph Started IQ Playback
+     - Flow Graph Started IQ Inspection
+     - Flow Graph Started Sniffer
+     - Multi-Stage Attack Finished
+     - Archive Playlist Finished
+     - Found Preambles
+     - Found Preambles in Library
+     - Slice By Preamble Return
+     - Buffer Size
+     - Entropy Return
+     - BandID
+     - Connect to TSI
+     - Connect to FGE
+     - Archive Playlist Position
+
+
+# Callback to Function Lookup
+Clear SOI List: clear_SOI_List
+Clear Wideband List: clearWidebandList
+Run Attack Flow Graph: attackFlowGraphStart
+Run IQ Flow Graph: iqFlowGraphStart
+Run Inspection Flow Graph: inspectionFlowGraphStart
+Run Sniffer Flow Graph: snifferFlowGraphStart
+Run PD Flow Graph: protocolDiscoveryFG_Start
+Set Heartbeat Interval: setHeartbeatInterval
+SOI Selection Mode: setSOI_SelectionMode
+Set Process SOIs: setProcessSOIs
+Set Target SOI: setTargetSOI
+Stop PD Flow Graph: protocolDiscoveryFG_Stop
+Set Variable: setVariable 
+Stop Attack Flow Graph: attackFlowGraphStop
+Stop IQ Flow Graph: iqFlowGraphStop
+Stop Inspection Flow Graph: inspectionFlowGraphStop
+Stop Sniffer Flow Graph: snifferFlowGraphStop
+Set Auto Start PD: setAutoStartPD
+Start TSI Detector: startTSI_Detector
+Stop TSI Detector: stopTSI_Detector
+Start PD: startPD
+Stop PD: stopPD
+Ignore SOIs: ignoreSOIs
+Add Blacklist: addBlacklist
+Remove Blacklist: removeBlacklist
+Update Configuration: updateConfiguration
+Start Physical Fuzzing: physicalFuzzingStart
+Stop Physical Fuzzing: physicalFuzzingStop
+Start Multi-Stage Attack: multiStageAttackStart
+Stop Multi-Stage Attack: multiStageAttackStop
+Start Archive Playlist: archivePlaylistStart
+Stop Archive Playlist: archivePlaylistStop
+Set Window Parameters: setWindowParameters
+Find Preambles: findPreambles
+Search Library: searchLibrary
+Slice By Preamble: sliceByPreamble
+Search Library for Flow Graphs: searchLibraryForFlowGraphs
+Set Buffer Size: setBufferSize
+Clear PD Buffer: clearPD_Buffer
+Add To Library: addToLibrary
+Find Entropy: findEntropy
+Add Pub Socket: addPubSocket
+Remove Pub Socket: removePubSocket
+Remove Attack from Library: removeAttackFromLibrary
+Remove Demodulation Flow Graph: removeDemodulationFlowGraph
+Remove SOI: removeSOI
+Remove Packet Type: removePacketType
+Remove Modulation Type: removeModulationType
+Update FISSURE Configuration: updateFISSURE_Configuration
+
+#Function/Parameter Verification 
+clear_SOI_List: 
+    Type: callback
+
+clearWidebandList: 
+    Type: callback
+    
+attackFlowGraphStart:
+    Type: callback
+    Parameters:
+             flow_graph_filepath
+             variable_names
+             variable_values
+             file_type
+    
+iqFlowGraphStart:
+    Type: callback
+    Parameters:
+             flow_graph_filepath
+             variable_names
+             variable_values
+             file_type
+             
+inspectionFlowGraphStart:
+    Type: callback
+    Parameters:
+             flow_graph_filepath
+             variable_names
+             variable_values
+             file_type
+             
+snifferFlowGraphStart:
+    Type: callback
+    Parameters:
+             flow_graph_filepath
+             variable_names
+             variable_values
+
+protocolDiscoveryFG_Start:
+    Type: callback
+    Parameters:
+             flow_graph_filepath
+             variable_names
+             variable_values
+
+setHeartbeatInterval:
+    Type: callback
+    Parameters:
+             interval
+
+setSOI_SelectionMode:
+    Type: callback
+    Parameters:
+             mode
+
+setProcessSOIs:
+    Type: callback
+    Parameters:
+             enabled
+             priorities
+             filters
+             parameters
+
+setTargetSOI:
+    Type: callback
+    Parameters:
+             frequency
+             modulation
+             bandwidth
+             continuous
+             start_frequency
+             end_frequency
+
+stopFlowGraph:
+    Type: callback
+    Parameters:
+             parameter
+
+setVariable:
+    Type: callback
+    Parameters:
+             flow_graph
+             variable
+             value
+
+attackFlowGraphStop:
+    Type: callback
+    Parameters:
+             parameter
+
+iqFlowGraphStop:
+    Type: callback
+    Parameters:
+             parameter
+             
+inspectionFlowGraphStop:
+    Type: callback
+    Parameters:
+             parameter
+             
+snifferFlowGraphStop:
+    Type: callback
+    Parameters:
+             parameter
+
+setAutoStartPD:
+    Type: callback
+    Parameters:
+             value
+
+startTSI_Detector:
+    Type: callback
+    Parameters:
+             detector
+             variable_names
+             variable_values
+
+stopTSI_Detector:
+    Type: callback
+
+startPD: 
+    Type: callback
+
+stopPD: 
+    Type: callback
+
+ignoreSOIs:
+    Type: callback
+    Parameters:
+             dashboard_soi_blacklist
+
+addBlacklist:
+    Type: callback
+    Parameters:
+             start_frequency
+             end_frequency
+
+removeBlacklist:
+    Type: callback
+    Parameters:
+             start_frequency
+             end_frequency
+
+updateConfiguration:
+    Type: callback
+    Parameters:
+             start_frequency
+             end_frequency
+             step_size
+             dwell_time
+
+physicalFuzzingStart: 
+    Type: callback
+    Parameters:
+             fuzzing_variables
+             fuzzing_type
+             fuzzing_min
+             fuzzing_max
+             fuzzing_update_period
+             fuzzing_seed_step
+
+physicalFuzzingStop: 
+    Type: callback
+             
+multiStageAttackStart:
+    Type: callback
+    Parameters:
+             filenames
+             variable_namess
+             variable_values
+             durations
+             repeat
+             file_types
+
+multiStageAttackStop:
+    Type: callback
+    
+archivePlaylistStart:
+    Type: callback
+    Parameters:
+             flow_graph
+             filenames
+             frequencies
+             sample_rates
+             formats
+             channels
+             gains
+             durations
+             repeat
+             ip_address
+             serial
+
+archivePlaylistStop:
+    Type: callback    
+
+setWindowParameters: 
+    Type: callback
+    Parameters:
+             window_min
+             window_max
+             ranking
+             std_deviations
+
+setBufferSize:
+    Type: callback
+    Parameters:
+             min_buffer_size
+             max_buffer_size
+
+findPreambles:
+    Type: callback
+
+searchLibrary:
+    Type: callback
+    Parameters:
+             soi_data
+             field_data
+             
+sliceByPreamble:
+    Type: callback
+    Parameters:
+             preamble
+             first_n
+             estimated_length
+
+searchLibraryForFlowGraphs:
+    Type: callback
+    Parameters:
+             soi_data         
+             hardware
+
+clearPD_Buffer:
+    Type: callback
+
+addToLibrary:
+    Type: callback
+    Parameters:
+             protocol_name
+             packet_name
+             packet_data
+             soi_data
+             statistical_data
+             modulation_type
+             demodulation_fg_data
+             attack
+             dissector
+
+findEntropy:
+    Type: callback
+    Parameters:
+             message_length
+             preamble
+             
+addPubSocket:
+    Type: callback
+    Parameters:
+             ip_address
+             port
+
+removePubSocket:
+    Type: callback
+    Parameters:
+             address
+
+removeAttackFromLibrary:
+    Type: callback
+    Parameters:
+             protocol_name
+             attacks
+             modulations
+             hardware
+             all_content
+             remove_flow_graphs
+
+removeDemodulationFlowGraph:
+    Type: callback
+    Parameters:
+             protocol_name
+             modulation_type
+             hardware
+             demodulation_fg
+
+removeSOI:
+    Type: callback
+    Parameters:
+             protocol_name
+             soi
+
+removePacketType:
+    Type: callback
+    Parameters:
+             protocol_name
+             packet_type
+
+removeModulationType:
+    Type: callback
+    Parameters:
+             protocol_name
+             modulation_type
+             
+updateFISSURE_Configuration: 
+    Type: callback

@@ -1,0 +1,46 @@
+linux; GNU C++ version 7.3.0; Boost_106501; UHD_003.010.003.000-0-unknown
+
+Reading configuration file ue.conf...
+WARNING: cpu0 scaling governor is not set to performance mode. Realtime processing could be compromised. Consider setting it to performance mode before running the application.
+
+Built in Release mode using commit 5275f3336 on branch master.
+
+Opening 1 channels in RF device=default with args=default
+Available RF device list: UHD  soapy  zmq 
+Trying to open RF device 'UHD'
+Opening USRP channels=1, args: type=b200,master_clock_rate=23.04e6
+-- Detected Device: B210
+-- Operating over USB 3.
+-- Initialize CODEC control...
+-- Initialize Radio control...
+-- Performing register loopback test... pass
+-- Performing register loopback test... pass
+-- Performing CODEC loopback test... pass
+-- Performing CODEC loopback test... pass
+-- Asking for clock rate 23.040000 MHz... 
+-- Actually got clock rate 23.040000 MHz.
+-- Performing timer loopback test... pass
+-- Performing timer loopback test... pass
+RF device 'UHD' successfully opened
+Waiting PHY to initialize ... done!
+Attaching UE...
+.
+Found Cell:  Mode=FDD, PCI=215, PRB=75, Ports=4, CP=Normal, CFO=-3.4 KHz
+-- Asking for clock rate 61.440000 MHz... 
+-- Actually got clock rate 61.440000 MHz.
+-- Performing timer loopback test... pass
+-- Performing timer loopback test... pass
+RF status: O=1, U=0, L=0
+.
+Found Cell:  Mode=FDD, PCI=215, PRB=75, Ports=4, CP=Normal, CFO=-3.9 KHz
+.
+Found Cell:  Mode=FDD, PCI=215, PRB=75, Ports=4, CP=Normal, CFO=-3.2 KHz
+.
+Found Cell:  Mode=FDD, PCI=215, PRB=75, Ports=4, CP=Normal, CFO=-3.3 KHz
+.
+Found Cell:  Mode=FDD, PCI=215, PRB=75, Ports=4, CP=Normal, CFO=-3.6 KHz
+.
+Found Cell:  Mode=FDD, PCI=215, PRB=75, Ports=4, CP=Normal, CFO=-3.5 KHz
+Found PLMN:  Id=310410, TAC=3335
+Found PLMN:  Id=313100, TAC=3335
+Could not find Home PLMN Id=00101, trying to connect to PLMN Id=310410

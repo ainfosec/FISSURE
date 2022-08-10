@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<block>
+  <name>message_generator_433</name>
+  <key>clapper_plus_message_generator_433</key>
+  <category>[clapper_plus]</category>
+  <import>import clapper_plus</import>
+  <make>clapper_plus.message_generator_433($button,$sample_rate,$press_repetition_interval)</make>
+
+  <callback>set_button($button)</callback>
+  <callback>set_sample_rate($sample_rate)</callback>
+  <callback>set_press_repetition_interval($press_repetition_interval)</callback>
+  
+  <param>
+    <name>Button 2(L) or 3(R)</name>
+    <key>button</key>
+    <value>2</value>
+    <type>int</type>
+  </param> 
+  
+  <param>
+    <name>Sample Rate</name>
+    <key>sample_rate</key>
+    <type>float</type>
+  </param>
+   
+  <param>
+    <name>Press Repetition Interval</name>
+    <key>press_repetition_interval</key>
+    <value>10</value>
+    <type>float</type>
+  </param>  
+  
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+  
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+</block>

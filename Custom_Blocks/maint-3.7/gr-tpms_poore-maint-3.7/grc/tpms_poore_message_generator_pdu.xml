@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<block>
+  <name>message_generator_pdu</name>
+  <key>tpms_poore_message_generator_pdu</key>
+  <category>[tpms_poore]</category>
+  <import>import tpms_poore</import>
+  <make>tpms_poore.message_generator_pdu($repetition_interval, $configuration, $sensor_id, $battery_status, $counter, $unknown1, $unknown2, $self_test, $tire_pressure, $tire_temp)</make>
+  
+  <param>
+    <name>Repetition Interval</name>
+    <key>repetition_interval</key>
+    <value>1</value>
+    <type>float</type>
+  </param>  
+  
+  <param>
+    <name>Configuration</name>
+    <key>configuration</key>
+    <value>1</value>
+    <type>float</type>
+  </param>    
+  
+  <param>
+    <name>Sensor ID</name>
+    <key>sensor_id</key>
+    <value>"528A510"</value>
+    <type>string</type>
+  </param>  
+  
+  <param>
+    <name>Battery Status</name>
+    <key>battery_status</key>
+    <value>"0"</value>
+    <type>string</type>
+  </param>    
+  
+  <param>
+    <name>Counter</name>
+    <key>counter</key>
+    <value>"00"</value>
+    <type>string</type>
+  </param>    
+  
+  <param>
+    <name>Unknown 1</name>
+    <key>unknown1</key>
+    <value>"0"</value>
+    <type>string</type>
+  </param>
+  
+  <param>
+    <name>Unknown 2</name>
+    <key>unknown2</key>
+    <value>"0"</value>
+    <type>string</type>
+  </param>  
+  
+  <param>
+    <name>Self Test</name>
+    <key>self_test</key>
+    <value>"0"</value>
+    <type>string</type>
+  </param>    
+  
+  <param>
+    <name>Tire Pressure (PSI)</name>
+    <key>tire_pressure</key>
+    <value>5</value>
+    <type>float</type>
+  </param>    
+  
+  <param>
+    <name>Tire Temperature (C)</name>
+    <key>tire_temp</key>
+    <value>20</value>
+    <type>float</type>
+  </param>    
+  
+  <check>$configuration == 1</check>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+  </source>
+</block>

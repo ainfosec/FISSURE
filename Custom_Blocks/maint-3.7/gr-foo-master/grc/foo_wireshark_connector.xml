@@ -1,0 +1,49 @@
+<?xml version="1.0"?>
+<block>
+	<name>Wireshark Connector</name>
+	<key>foo_wireshark_connector</key>
+	<category>[Foo]</category>
+	<import>import foo</import>
+	<make>foo.wireshark_connector($tech, $debug)</make>
+
+	<param>
+		<name>Technology</name>
+		<key>tech</key>
+		<value>127</value>
+		<type>enum</type>
+		<option>
+			<name>WiFi</name>
+			<key>127</key>
+		</option>
+		<option>
+			<name>ZigBee</name>
+			<key>195</key>
+		</option>
+	</param>
+
+	<param>
+		<name>Debug</name>
+		<key>debug</key>
+		<value>False</value>
+		<type>bool</type>
+
+		<option>
+			<name>Enable</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>Disable</name>
+			<key>False</key>
+		</option>
+	</param>
+
+	<sink>
+		<name>in</name>
+		<type>message</type>
+	</sink>
+	<source>
+		<name>out</name>
+		<type>byte</type>
+		<nports>1</nports>
+	</source>
+</block>

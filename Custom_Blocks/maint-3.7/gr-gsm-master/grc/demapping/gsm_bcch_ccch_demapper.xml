@@ -1,0 +1,30 @@
+<block>
+  <name>BCCH + CCCH Demapper</name>
+  <key>gsm_bcch_ccch_demapper</key>
+  <category></category>
+  <import>import grgsm</import>
+  <make>grgsm.gsm_bcch_ccch_demapper(
+    timeslot_nr=$timeslot_nr,
+)</make>
+  <callback>set_timeslot_nr($timeslot_nr)</callback>
+  <param>
+    <name>timeslot_nr</name>
+    <key>timeslot_nr</key>
+    <value>0</value>
+    <type>raw</type>
+  </param>
+  <sink>
+    <name>bursts</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+  <source>
+    <name>bursts</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+  <doc>Piotr Krysik
+Demapper for BCCH + CCCH control channels. This corresponds to channel combination iv specified in GSM 05.02, section 6.4
+</doc>
+  <grc_source>gr-gsm/hier_blocks/demapping/gsm_bcch_ccch_demapper.grc</grc_source>
+</block>

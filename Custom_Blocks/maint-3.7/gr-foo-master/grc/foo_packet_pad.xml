@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+
+<block>
+	<name>Packet Pad</name>
+	<key>foo_packet_pad</key>
+	<category>[Foo]</category>
+	<import>import foo</import>
+	<make>foo.packet_pad($debug, $delay, $delay_sec, $pad_front, $pad_tail)</make>
+
+	<param>
+		<name>Debug</name>
+		<key>debug</key>
+		<value>False</value>
+		<type>bool</type>
+
+		<option>
+			<name>Enable</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>Disable</name>
+			<key>False</key>
+		</option>
+	</param>
+
+	<param>
+		<name>Delay</name>
+		<key>delay</key>
+		<value>False</value>
+		<type>bool</type>
+
+		<option>
+			<name>Enable</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>Disable</name>
+			<key>False</key>
+		</option>
+	</param>
+
+	<param>
+		<name>Delay Sec</name>
+		<key>delay_sec</key>
+		<value>0.001</value>
+		<type>real</type>
+	</param>
+	
+	<param>
+		<name>Pad Front</name>
+		<key>pad_front</key>
+		<value>0</value>
+		<type>int</type>
+	</param>
+	
+	<param>
+		<name>Pad Tail</name>
+		<key>pad_tail</key>
+		<value>0</value>
+		<type>int</type>
+	</param>
+
+        <check>$pad_front >= 0</check>
+        <check>$pad_tail >= 0</check>
+        <check>$delay_sec > 0</check>
+
+	<sink>
+		<name>in</name>
+		<type>complex</type>
+		<nports>1</nports>
+	</sink>
+
+	<source>
+		<name>out</name>
+		<type>complex</type>
+		<nports>1</nports>
+	</source>
+
+</block>

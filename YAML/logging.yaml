@@ -1,0 +1,49 @@
+# version 1.0 HIPRFISR
+version: 1
+disable_existing_loggers: False
+formatters:
+    hiprfisrfmt:
+        format: '%(asctime)s - %(name)s: %(message)s'
+        datefmt: '%m/%d/%Y %I:%M:%S %p'
+
+
+handlers:
+    console:
+        class: logging.StreamHandler
+        level: DEBUG
+        formatter: hiprfisrfmt
+        stream: ext://sys.stdout
+
+    #set file handler for 5 backup log files of ~100MB each max
+    file:
+        class: logging.handlers.RotatingFileHandler
+        level: DEBUG            
+        formatter: hiprfisrfmt
+        filename: Logs/event.log
+        maxBytes: 10000000                
+        backupCount: 5
+    
+
+root:
+    level: DEBUG
+    handlers: [console,file]
+
+tsi:
+    level: DEBUG
+    handler: [console,file]
+
+fge:
+    level: DEBUG
+    handler: [console,file]
+
+dashboard:
+    level: DEBUG
+    handler: [console,file]
+
+hiprfisr:
+    level: DEBUG
+    handler: [console, file]
+
+pd:
+    level: DEBUG
+    handler: [console,file]

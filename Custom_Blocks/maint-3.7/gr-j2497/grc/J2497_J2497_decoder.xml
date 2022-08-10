@@ -1,0 +1,102 @@
+<?xml version="1.0"?>
+<block>
+  <name>J2497_decoder</name>
+  <key>J2497_J2497_decoder</key>
+  <category>J2497</category>
+  <import>import J2497</import>
+  <make>J2497.J2497_decoder($if_peak_threshold,$if_peak_offset,$do_udp,$udp_port)</make>
+
+  <callback>setIF_PeakThreshold($if_peak_threshold)</callback>
+  <callback>setIF_PeakOffset($if_peak_offset)</callback>
+
+  <param>
+    <name>IF Peak Threshold</name>
+    <key>if_peak_threshold</key>
+    <value></value>
+    <type>float</type>
+  </param>
+  
+  <param>
+    <name>Bit Transition - Start Tag Offset </name>
+    <key>if_peak_offset</key>
+    <value></value>
+    <type>int</type>
+  </param>  
+
+  <param>
+    <name>Send Message Bytes over UDP</name>
+    <key>do_udp</key>
+    <value>False</value>
+    <type>bool</type>
+  </param>
+  
+  <param>
+    <name>UDP Port</name>
+    <key>udp_port</key>
+    <value>6972</value>
+    <type>int</type>
+  </param>
+
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+  </source>
+</block>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--
+<?xml version="1.0"?>
+<block>
+  <name>J2497_decoder</name>
+  <key>J2497_J2497_decoder</key>
+  <category>J2497</category>
+  <import>import J2497</import>  
+  <make>J2497.J2497_decoder($if_peak_threshold,$if_peak_offset)</make>
+  <callback>setIF_PeakThreshold($if_peak_threshold)</callback>
+  <callback>setIF_PeakOffset($if_peak_offset)</callback> 
+  
+  <param>
+    <name>if_peak_threshold</name>
+    <key>>if_peak_threshold</key>
+    <value>1</value>
+    <type>int</type>
+  </param>
+  
+  <param>
+    <name>if_peak_offset</name>
+    <key>if_peak_offset</key>
+    <value>106</value>
+    <type>int</type>
+  </param>
+    
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+  </source>
+</block>
+-->

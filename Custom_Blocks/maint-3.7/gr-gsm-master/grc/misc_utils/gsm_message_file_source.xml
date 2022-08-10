@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<block>
+  <name>Message File Source</name>
+  <key>gsm_message_file_source</key>
+  <import>import grgsm</import>
+  <make>grgsm.message_file_source($filename)</make>
+
+  <param>
+    <name>Source file</name>
+    <key>filename</key>
+    <value>/tmp/output.msg</value>
+    <type>file_open</type>
+  </param>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+  </source>
+  
+  <doc>
+This block outputs gsm messages stored in a file.
+  </doc>
+</block>

@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<block>
+  <name>Burst Timeslot Filter</name>
+  <key>gsm_burst_timeslot_filter</key>
+  <import>import grgsm</import>
+  <make>grgsm.burst_timeslot_filter($timeslot)</make>
+
+  <param>
+    <name>Timeslot</name>
+    <key>timeslot</key>
+    <value>0</value>
+    <type>int</type>
+    <hide>none</hide>
+  </param>
+
+  <sink>
+    <name>in</name>
+    <type>message</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <doc>
+This block forwards only bursts in the timeslot given by the parameter
+  </doc>
+</block>

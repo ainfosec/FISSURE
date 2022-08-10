@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<block>
+  <name>Burst Timeslot Splitter</name>
+  <key>gsm_burst_timeslot_splitter</key>
+  <import>import grgsm</import>
+  <make>grgsm.burst_timeslot_splitter()</make>
+
+  <sink>
+    <name>in</name>
+    <type>message</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+    <nports>8</nports>
+    <optional>1</optional>
+  </source>
+
+  <doc>
+Burst timeslot splitter distributes bursts to eight different output ports depending on the timeslots of the bursts. 
+This means timeslot 0 bursts are sent to port out0, timeslot 1 bursts on port out1, and so on.
+  </doc>
+</block>

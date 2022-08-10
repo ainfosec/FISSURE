@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<block>
+	<name>Moving Average</name>
+	<key>ieee802_11_moving_average_xx</key>
+	<category>[IEEE802.11]</category>
+	<import>import ieee802_11</import>
+	<make>ieee802_11.moving_average_$(type.fcn)($length)</make>
+	<callback>set_length($length)</callback>
+	<param>
+		<name>Type</name>
+		<key>type</key>
+		<type>enum</type>
+		<option>
+			<name>Complex</name>
+			<key>complex</key>
+			<opt>fcn:cc</opt>
+			<opt>scale:complex</opt>
+		</option>
+		<option>
+			<name>Float</name>
+			<key>float</key>
+			<opt>fcn:ff</opt>
+			<opt>scale:real</opt>
+		</option>
+	</param>
+
+	<param>
+		<name>Length</name>
+		<key>length</key>
+		<value>48</value>
+		<type>int</type>
+	</param>
+
+	<sink>
+		<name>in</name>
+		<type>$type</type>
+	</sink>
+
+	<source>
+		<name>out</name>
+		<type>$type</type>
+	</source>
+</block>

@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<block>
+  <name>adsb_encode</name>
+  <key>ainfosec_adsb_encode</key>
+  <category>[ainfosec]</category>
+  <import>import ainfosec</import>
+  <make>ainfosec.adsb_encode($data_filepath)</make>
+  <param>
+      <name>Data Filepath</name>
+      <key>data_filepath</key>
+      <value>""</value>
+      <type>string</type>
+  </param>  
+  <source>
+    <name>out</name>
+    <type>message</type>
+  </source>
+</block>

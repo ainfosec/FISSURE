@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<block>
+  <name>pdu_null_sink</name>
+  <key>iridium_pdu_null_sink</key>
+  <category>iridium</category>
+  <import>import iridium</import>
+  <make>iridium.pdu_null_sink()</make>
+
+  <sink>
+    <name>pdus</name>
+    <type>message</type>
+  </sink>
+
+</block>

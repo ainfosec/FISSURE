@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<block>
+  <name>Collect System Info</name>
+  <key>gsm_collect_system_info</key>
+  <import>import grgsm</import>
+  <make>grgsm.collect_system_info()</make>
+  <sink>
+    <name>msgs</name>
+    <type>message</type>
+  </sink>
+    <doc>
+This blocks collect System Information Messages, which can be retrieved using the following methods:
+
+get_framenumbers(): Get the list with the framenumbers of the System Information Messages
+
+get_system_information_type(): Get the types of the System Information Messages
+
+get_data(): Get the whole System Information Messages in Hex representation
+  </doc>
+</block>

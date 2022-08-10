@@ -1,0 +1,68 @@
+#
+# Copyright 2012 Jared Boone
+#
+# This file is part of HackRF.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; see the file COPYING.  If not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street,
+# Boston, MA 02110-1301, USA.
+
+NET "CODEC_CLK"    LOC="23" |IOSTANDARD=LVCMOS33 | TNM=adc_data;
+NET "CODEC_X2_CLK" LOC="27" |IOSTANDARD=LVCMOS33;
+
+NET "CODEC_X2_CLK" TNM_NET = CODEC_X2_CLK;
+TIMESPEC TS_codec_x2_data = PERIOD "CODEC_X2_CLK" 25 ns;
+
+NET "DA<7>" LOC="35" |IOSTANDARD=LVCMOS33 | TNM=adc_data;
+NET "DA<6>" LOC="36" |IOSTANDARD=LVCMOS33 | TNM=adc_data;
+NET "DA<5>" LOC="37" |IOSTANDARD=LVCMOS33 | TNM=adc_data;
+NET "DA<4>" LOC="39" |IOSTANDARD=LVCMOS33 | TNM=adc_data;
+NET "DA<3>" LOC="40" |IOSTANDARD=LVCMOS33 | TNM=adc_data;
+NET "DA<2>" LOC="41" |IOSTANDARD=LVCMOS33 | TNM=adc_data;
+NET "DA<1>" LOC="42" |IOSTANDARD=LVCMOS33 | TNM=adc_data;
+NET "DA<0>" LOC="43" |IOSTANDARD=LVCMOS33 | TNM=adc_data;
+
+NET "DD<9>" LOC="17" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=dac_data;
+NET "DD<8>" LOC="18" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=dac_data;
+NET "DD<7>" LOC="19" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=dac_data;
+NET "DD<6>" LOC="24" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=dac_data;
+NET "DD<5>" LOC="28" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=dac_data;
+NET "DD<4>" LOC="29" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=dac_data;
+NET "DD<3>" LOC="30" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=dac_data;
+NET "DD<2>" LOC="32" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=dac_data;
+NET "DD<1>" LOC="33" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=dac_data;
+NET "DD<0>" LOC="34" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=dac_data;
+
+NET "HOST_DIRECTION" LOC="71" |IOSTANDARD=LVCMOS33 | SLEW=SLOW;
+NET "HOST_DISABLE"   LOC="76" |IOSTANDARD=LVCMOS33 | SLEW=SLOW;
+NET "HOST_CAPTURE"   LOC="91" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=to_host;
+NET "HOST_DATA<7>"   LOC="77" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=to_host;
+NET "HOST_DATA<6>"   LOC="61" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=to_host;
+NET "HOST_DATA<5>"   LOC="64" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=to_host;
+NET "HOST_DATA<4>"   LOC="67" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=to_host;
+NET "HOST_DATA<3>"   LOC="72" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=to_host;
+NET "HOST_DATA<2>"   LOC="74" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=to_host;
+NET "HOST_DATA<1>"   LOC="79" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=to_host;
+NET "HOST_DATA<0>"   LOC="89" |IOSTANDARD=LVCMOS33 | SLEW=SLOW | TNM=to_host;
+
+NET "HOST_DECIM_SEL<2>"		LOC="78" |IOSTANDARD=LVCMOS33;
+NET "HOST_DECIM_SEL<1>"		LOC="81" |IOSTANDARD=LVCMOS33;
+NET "HOST_DECIM_SEL<0>"		LOC="90" |IOSTANDARD=LVCMOS33;
+NET "HOST_Q_INVERT"			LOC="70" |IOSTANDARD=LVCMOS33;
+
+TIMEGRP "adc_data" OFFSET = IN 16 ns BEFORE "CODEC_X2_CLK";
+
+TIMEGRP "dac_data" OFFSET = OUT 15 ns AFTER "CODEC_X2_CLK";
+
+TIMEGRP "to_host" OFFSET = OUT 20 ns AFTER "CODEC_X2_CLK";

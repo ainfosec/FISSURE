@@ -1,0 +1,10 @@
+FROM debian:testing
+MAINTAINER Piotr Krysik
+
+RUN apt-get update && apt-get install -y \
+    gr-gsm
+
+COPY ./ /src/
+RUN ls /src
+
+

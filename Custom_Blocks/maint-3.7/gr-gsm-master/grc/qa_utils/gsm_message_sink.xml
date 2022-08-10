@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<block>
+  <name>Message Sink</name>
+  <key>gsm_message_sink</key>
+  <import>import grgsm</import>
+  <make>grgsm.message_sink()</make>
+
+  <sink>
+    <name>in</name>
+    <type>message</type>
+  </sink>
+  
+  <doc>
+This block is a message sink for testing purposes.
+
+The data can be retrieved using function get_messages()
+
+  </doc>
+</block>

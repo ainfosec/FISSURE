@@ -1,0 +1,24 @@
+#!/bin/bash
+
+if [ ! -e debian ] ; then
+    ln -s dists/debian .
+fi
+
+BASEVERSION=$(dpkg-parsechangelog --show-field Version | cut -d- -f1)
+DEBVERSION=$(dpkg-parsechangelog --show-field Version)
+
+debdir=$(cd $(dirname $0); pwd)
+pkgdir=$(cd $debdir/..; pwd)
+pkgbasedir=$(cd $debdir/..; basename $(pwd))
+cd $pkgdir/..
+
+tar -acf gr-gsm_${BASEVERSION}.orig.tar.gz $pkgbasedir
+cd $pkgdir
+debuild -S -sa
+#pdebuild
+cd ..
+dput ppa:ptrkrysik/gr-gsm gr-gsm_${DEBVERSION}_source.changes
+
+if [ -h debian ] ; then
+    rm debian
+fi

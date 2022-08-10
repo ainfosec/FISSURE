@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<block>
+  <name>Extract Immediate Assignment</name>
+  <key>gsm_extract_immediate_assignment</key>
+  <import>import grgsm</import>
+  <make>grgsm.extract_immediate_assignment($print_immediate_assignments, $ignore_gprs, $unique_references)</make>
+
+  <param>
+    <name>Print</name>
+    <key>print_immediate_assignments</key>
+    <value>False</value>
+    <type>bool</type>
+    <option>
+      <name>False</name>
+      <key>False</key>
+    </option>
+    <option>
+      <name>True</name>
+      <key>True</key>
+    </option>
+  </param>
+  <param>
+    <name>Ignore GPRS</name>
+    <key>ignore_gprs</key>
+    <value>False</value>
+    <type>bool</type>
+    <option>
+      <name>False</name>
+      <key>False</key>
+    </option>
+    <option>
+      <name>True</name>
+      <key>True</key>
+    </option>
+  </param>
+  <param>
+    <name>Unique per request ref</name>
+    <key>unique_references</key>
+    <value>False</value>
+    <type>bool</type>
+    <option>
+      <name>False</name>
+      <key>False</key>
+    </option>
+    <option>
+      <name>True</name>
+      <key>True</key>
+    </option>
+  </param>
+
+  <sink>
+    <name>msgs</name>
+    <type>message</type>
+  </sink>
+
+  <doc>
+Extracts the assignment information from immediate assignments, i.e. timeslot, channel type, etc.
+
+Input: decoded control channel messages
+
+If "Print" is enabled, the information will be printed to output also,
+else the data can be retrieved using functions:
+
+get_frame_numbers(), get_channel_types(), get_timeslots(), get_subchannels(), get_hopping(), get_maios(), get_hsns(), get_arfcns(), get_timing_advances(), get_mobile_allocations()
+
+If "Ignore GPRS" is enabled, the extractor will ignore Immediate Assignments that assign GPRS channels.
+
+If "Unique per request ref" is enabled, the extractor will capture the first Immediate Assignment for every unique request reference, and ignore further duplicate assignments
+
+  </doc>
+</block>

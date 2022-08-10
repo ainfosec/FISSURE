@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.8">
+  <compounddef id="acars__impl_8h" kind="file">
+    <compoundname>acars_impl.h</compoundname>
+    <includes refid="acars_8h" local="no">acars/acars.h</includes>
+    <includes local="no">fftw3.h</includes>
+    <incdepgraph>
+      <node id="45">
+        <label>acars/api.h</label>
+        <link refid="api_8h"/>
+        <childnode refid="46" relation="include">
+        </childnode>
+      </node>
+      <node id="46">
+        <label>gnuradio/attributes.h</label>
+      </node>
+      <node id="48">
+        <label>fftw3.h</label>
+      </node>
+      <node id="47">
+        <label>gnuradio/block.h</label>
+      </node>
+      <node id="43">
+        <label>acars_impl.h</label>
+        <link refid="acars_impl.h"/>
+        <childnode refid="44" relation="include">
+        </childnode>
+        <childnode refid="48" relation="include">
+        </childnode>
+      </node>
+      <node id="44">
+        <label>acars/acars.h</label>
+        <link refid="acars_8h"/>
+        <childnode refid="45" relation="include">
+        </childnode>
+        <childnode refid="47" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <innerclass refid="classgr_1_1acars_1_1acars__impl" prot="public">gr::acars::acars_impl</innerclass>
+    <innernamespace refid="namespacegr">gr</innernamespace>
+    <innernamespace refid="namespacegr_1_1acars">gr::acars</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h"/>
+  </compounddef>
+</doxygen>

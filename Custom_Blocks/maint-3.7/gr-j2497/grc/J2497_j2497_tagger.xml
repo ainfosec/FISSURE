@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<block>
+  <name>j2497_tagger</name>
+  <key>J2497_j2497_tagger</key>
+  <category>[J2497]</category>
+  <import>import J2497</import>
+  <make>J2497.j2497_tagger()</make>
+
+  <sink>
+    <name>signal</name>
+    <type>complex</type>
+  </sink>
+  
+  <sink>
+    <name>tagger</name>
+    <type>float</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+  
+</block>

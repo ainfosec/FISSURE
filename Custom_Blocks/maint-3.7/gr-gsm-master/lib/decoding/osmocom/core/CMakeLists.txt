@@ -1,0 +1,11 @@
+add_sources(
+bits.c
+bitvec.c
+conv_acc.c
+conv_acc_generic.c
+conv.c
+crc16gen.c
+crc64gen.c
+crc8gen.c
+panic.c
+)

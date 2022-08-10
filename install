@@ -1,0 +1,51 @@
+#!/bin/bash
+
+# Check Operating System
+ubuntu20_04=$(lsb_release -d 2>&1 | grep "Ubuntu 20.04")
+if [[ -n "$ubuntu20_04" ]]
+then
+    # Ubuntu 20.04
+    echo "Ubuntu 20.04 detected"
+    echo "This branch is for Ubuntu 18.04, 18.04.5 and 18.04.6 only. Switch to a different FISSURE branch before installing!"
+    exit
+fi
+
+ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
+if [[ -n "$ubuntu22_04" ]]
+then
+    # Ubuntu 22.04
+    echo "Ubuntu 22.04 detected"
+    echo "This branch is for Ubuntu 18.04, 18.04.5 and 18.04.6 only. Switch to a different FISSURE branch before installing!"
+    exit
+fi
+
+python_version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
+if [[ -z "$python_version" ]]
+then
+    # Ubuntu 18.04
+    echo "No Python!" 
+    sudo apt-get -y update
+    sudo apt-get install -y python-setuptools python-dev build-essential        
+fi
+
+qt4_version=$(ls /usr/lib/python2.7/dist-packages/ | grep PyQt4)
+if [[ -z "$qt4_version" ]]
+then
+    # Ubuntu 18.04
+    echo "No Qt4!"
+    sudo apt-get -y install python-qt4
+fi
+
+get_libcanberra=$(locate libcanberra-gtk-module.so 2>&1 | grep "libcanberra-gtk-module.so")
+if [[ -z "$get_libcanberra" ]]
+then
+    # Ubuntu 18.04
+    echo "No libcanberra-gtk-module!"
+    sudo apt-get install -y libcanberra-gtk-module
+fi
+
+
+DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
+$DIR/Installer/installer
+#gnome-terminal -- $DIR/Installer/install  # does a new terminal fix python2 import checks in the next GUI?
+

@@ -1,0 +1,62 @@
+Copy one result from Tower Search Part 1 into Tower Search Part 2 to acquire MCC/MNC/TAC.
+
+##########################################################################################
+
+
+LTE Bands
+	US: 2, 4, 5, 12, 13, 14, 17, 25, 26, 29, 30, 41, 46, 48, 66, 71
+	Europe: 3, 7, 20
+	China, India: 3, 40, 41
+	AT&T: 2, 4, 5, 12, 14, 17, 29, 30, 66
+	Verizon: 2, 4, 5, 13, 46, 48, 66
+	T-Mobile/Sprint: 2, 4, 5, 12, 66, 71/25, 26, 41
+	All: 2, 3, 4, 5, 7, 12, 13, 14, 17, 20, 25, 26, 29, 30, 40, 41, 46, 48, 66, 71
+
+##########################################################################################
+AT&T
+	4G: 
+		700 MHz Lower B/C, Band 12/17 (LTE). 
+		850 MHz Cellular, Band 5 (LTE). 
+		1700/ 2100 MHz AWS, Band 4 (LTE). 
+		1900 MHz PCS, Band 2 (LTE). 
+		2300 MHz WCS, Band 30 (LTE).
+	2G/3G: 
+		850 MHz Cellular, Band 5 (GSM/ GPRS/ EDGE).
+		1900 MHz PCS , Band 2 (GSM/ GPRS/ EDGE). 
+		850 MHz Cellular, Band 5 (UMTS/ HSPA+ up to 21 Mbit/s). 
+		1900 MHz PCS , Band 2 (UMTS/ HSPA+ up to 21 Mbit/s). 	
+
+Boost Mobile
+	4G: 
+		700 MHz Block C, Band 13 (LTE).
+	3G: 
+		850 MHz Cellular, Band 5 (CDMA2000). 1900 MHz PCS, Band 1 (1xRTT/ 1xAdvanced/ EVDO/ eHRPD). 		
+
+Sprint
+	4G: 
+		800 MHz ESMR, Band 26 (LTE). 
+		1900 MHz PCS, Band 25 (LTE). 
+		2.5 GHz BRS/ EBS, Band 41 (TD-LTE/ LTE Advanced).
+	3G: 
+		800 MHz ESMR, Band 10 (CDMA/ 1xAdvanced). 
+		1900 MHz PCS, Band 1 (1xRTT/ 1xAdvanced/ EVDO/ eHRPD).	
+
+T-Mobile
+	4G: 
+		1900 MHz PCS, Band 2 (LTE). 
+		700 MHz Lower Block A, Band 12 (LTE). 
+		1700/ 2100 MHz AWS, Band 4 (UMTS/ HSPA+/ LTE).
+	3G: 
+		1900 MHz PCS, Band 2 (GSM/ GPRS/ EDGE/ UMTS/ HSPA+).	
+
+Verizon Wireless
+	4G: 
+		700 MHz Block C, Band 13 (LTE). 
+		1900 MHz PCS, Band 1 (1xRTT/ EV-DO/ eHRPD). 
+		1900 MHz PCS, Band 2 (LTE). 
+		1700/ 2100 MHz AWS, Band 4 (LTE).
+	3G: 
+		850 MHz, Band 0 (CDMA). 
+		1900 MHz PCS, Band 1 (CDMA).	
+
+

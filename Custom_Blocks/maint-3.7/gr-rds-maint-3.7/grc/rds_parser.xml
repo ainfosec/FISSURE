@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<block>
+	<name>RDS Parser</name>
+	<key>gr_rds_parser</key>
+	<category>[RDS]</category>
+	<import>import rds</import>
+	<make>rds.parser($log, $debug, $pty_locale)</make>
+	<callback>reset();$reset;</callback>
+	<param>
+		<name>Log</name>
+		<key>log</key>
+		<value>False</value>
+		<type>bool</type>
+		<option>
+			<name>Enable</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>Disable</name>
+			<key>False</key>
+		</option>
+	</param>
+	<param>
+		<name>Debug</name>
+		<key>debug</key>
+		<value>False</value>
+		<type>bool</type>
+		<option>
+			<name>Enable</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>Disable</name>
+			<key>False</key>
+		</option>
+	</param>
+	<param>
+		<name>PTY Locale</name>
+		<key>pty_locale</key>
+		<value>0</value>
+		<type>int</type>
+		<option>
+			<name>Europe</name>
+			<key>0</key>
+		</option>
+		<option>
+			<name>North America</name>
+			<key>1</key>
+		</option>
+	</param>
+	<param>
+		<name>Reset</name>
+		<key>reset</key>
+		<value>0</value>
+		<type>raw</type>
+		<hide>part</hide>
+	</param>
+	<sink>
+		<name>in</name>
+		<type>message</type>
+	</sink>
+	<source>
+		<name>out</name>
+		<type>message</type>
+		<optional>1</optional>
+	</source>
+</block>
+

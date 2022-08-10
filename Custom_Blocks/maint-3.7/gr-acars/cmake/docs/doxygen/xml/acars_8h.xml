@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.8">
+  <compounddef id="acars_8h" kind="file">
+    <compoundname>acars.h</compoundname>
+    <includes refid="api_8h" local="no">acars/api.h</includes>
+    <includes local="no">gnuradio/block.h</includes>
+    <includedby refid="acars__impl_8h" local="no">acars_impl.h</includedby>
+    <includedby refid="acars__impl__original_8h" local="no">acars_impl_original.h</includedby>
+    <incdepgraph>
+      <node id="37">
+        <label>acars/api.h</label>
+        <link refid="api_8h"/>
+        <childnode refid="38" relation="include">
+        </childnode>
+      </node>
+      <node id="38">
+        <label>gnuradio/attributes.h</label>
+      </node>
+      <node id="39">
+        <label>gnuradio/block.h</label>
+      </node>
+      <node id="36">
+        <label>acars.h</label>
+        <link refid="acars.h"/>
+        <childnode refid="37" relation="include">
+        </childnode>
+        <childnode refid="39" relation="include">
+        </childnode>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="42">
+        <label>acars_impl_original.h</label>
+        <link refid="acars__impl__original_8h"/>
+      </node>
+      <node id="41">
+        <label>acars_impl.h</label>
+        <link refid="acars__impl_8h"/>
+      </node>
+      <node id="40">
+        <label>acars.h</label>
+        <link refid="acars.h"/>
+        <childnode refid="41" relation="include">
+        </childnode>
+        <childnode refid="42" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+    <innerclass refid="classgr_1_1acars_1_1acars" prot="public">gr::acars::acars</innerclass>
+    <innernamespace refid="namespacegr">gr</innernamespace>
+    <innernamespace refid="namespacegr_1_1acars">gr::acars</innernamespace>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/jmfriedt/sdr/gr-acars/include/acars/acars.h"/>
+  </compounddef>
+</doxygen>

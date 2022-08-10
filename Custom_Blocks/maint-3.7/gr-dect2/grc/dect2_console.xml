@@ -1,0 +1,22 @@
+<block>
+  <name>Console</name>
+  <key>console</key>
+  <category>DECT2</category>
+  <import>import dect2</import>
+  <make>#set $win = 'self.%s'%$id
+dect2.console()
+$(gui_hint()($win))
+  </make>
+  <param>
+    <name>GUI Hint</name>
+    <key>gui_hint</key>
+    <value></value>
+    <type>gui_hint</type>
+    <hide>part</hide>
+  </param>  
+  <sink>
+    <name>in</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+</block>

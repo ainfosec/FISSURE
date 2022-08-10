@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<block>
+  <name>Packet receiver</name>
+  <key>dect2_packet_receiver</key>
+  <category>DECT2</category>
+  <import>import dect2</import>
+  <make>dect2.packet_receiver()</make>
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+  </source>
+  <source>
+    <name>rcvr_msg_out</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source></block>

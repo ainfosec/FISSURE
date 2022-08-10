@@ -1,0 +1,15 @@
+<block>
+  <name>Phase diff</name>
+  <key>dect2_phase_diff</key>
+  <category>DECT2</category>
+  <import>import dect2</import>
+  <make>dect2.phase_diff()</make>
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>float</type>
+  </source>
+</block>

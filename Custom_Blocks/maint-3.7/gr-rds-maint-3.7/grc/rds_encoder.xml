@@ -1,0 +1,377 @@
+<?xml version="1.0"?>
+<block>
+	<name>RDS Encoder</name>
+	<key>gr_rds_encoder</key>
+	<category>[RDS]</category>
+	<import>import rds</import>
+	<make>rds.encoder($pty_locale, $pty, $ms, $ps, $af1,
+			$tp, $ta, $pi_country_code, $pi_coverage_area,
+			$pi_reference_number, $radiotext)
+	</make>
+	<callback>set_ps($ps)</callback>
+	<param>
+		<name>PTY Locale</name>
+		<key>pty_locale</key>
+		<value>0</value>
+		<type>int</type>
+		<option>
+			<name>Europe</name>
+			<key>0</key>
+		</option>
+		<option>
+			<name>North America</name>
+			<key>1</key>
+		</option>
+	</param>
+	<param>
+		<name>PTY</name>
+		<key>pty</key>
+		<value>14</value>
+		<type>int</type>
+		<option>
+			<name>Undefined</name>
+			<key>0</key>
+		</option>
+		<option>
+			<name>News</name>
+			<key>1</key>
+		</option>
+		<option>
+			<name>Current Affairs / Information</name>
+			<key>2</key>
+		</option>
+		<option>
+			<name>Information / Sports</name>
+			<key>3</key>
+		</option>
+		<option>
+			<name>Sport / Talk</name>
+			<key>4</key>
+		</option>
+		<option>
+			<name>Education / Rock</name>
+			<key>5</key>
+		</option>
+		<option>
+			<name>Drama / Classic Rock</name>
+			<key>6</key>
+		</option>
+		<option>
+			<name>Culture / Adult Hits</name>
+			<key>7</key>
+		</option>
+		<option>
+			<name>Science / Soft Rock</name>
+			<key>8</key>
+		</option>
+		<option>
+			<name>Varied / Top 40</name>
+			<key>9</key>
+		</option>
+		<option>
+			<name>Pop Music / Country</name>
+			<key>10</key>
+		</option>
+		<option>
+			<name>Rock Music / Oldies</name>
+			<key>11</key>
+		</option>
+		<option>
+			<name>Easy Listening / Soft</name>
+			<key>12</key>
+		</option>
+		<option>
+			<name>Light Classical / Nostalgia</name>
+			<key>13</key>
+		</option>
+		<option>
+			<name>Serious Classical / Jazz</name>
+			<key>14</key>
+		</option>
+		<option>
+			<name>Other Music / Classical</name>
+			<key>15</key>
+		</option>
+		<option>
+			<name>Weather / Rhythm &amp; Blues</name>
+			<key>16</key>
+		</option>
+		<option>
+			<name>Finance / Soft Rhythm &amp; Blues</name>
+			<key>17</key>
+		</option>
+		<option>
+			<name>Children’s Programmes / Language</name>
+			<key>18</key>
+		</option>
+		<option>
+			<name>Social Affairs / Religious Music</name>
+			<key>19</key>
+		</option>
+		<option>
+			<name>Religion / Religious Talk</name>
+			<key>20</key>
+		</option>
+		<option>
+			<name>Phone-In / Personality</name>
+			<key>21</key>
+		</option>
+		<option>
+			<name>Travel / Public</name>
+			<key>22</key>
+		</option>
+		<option>
+			<name>Leisure / College</name>
+			<key>23</key>
+		</option>
+		<option>
+			<name>Jazz Music / Spanish Talk</name>
+			<key>24</key>
+		</option>
+		<option>
+			<name>Country Music / Spanish Music</name>
+			<key>25</key>
+		</option>
+		<option>
+			<name>National Music / Hip Hop</name>
+			<key>26</key>
+		</option>
+		<option>
+			<name>Oldies Music / Unassigned</name>
+			<key>27</key>
+		</option>
+		<option>
+			<name>Folk Music / Unassigned</name>
+			<key>28</key>
+		</option>
+		<option>
+			<name>Documentary / Weather</name>
+			<key>29</key>
+		</option>
+		<option>
+			<name>Alarm Test / Emergency Test</name>
+			<key>30</key>
+		</option>
+		<option>
+			<name>Alarm / Emergency</name>
+			<key>31</key>
+		</option>
+	</param>
+	<param>
+		<name>MS</name>
+		<key>ms</key>
+		<value>True</value>
+		<type>bool</type>
+		<option>
+			<name>Music</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>Speech</name>
+			<key>False</key>
+		</option>
+	</param>
+	<param>
+		<name>PS</name>
+		<key>ps</key>
+		<value>WDR 3</value>
+		<type>string</type>
+	</param>
+	<param>
+		<name>AF1</name>
+		<key>af1</key>
+		<value>89.8e6</value>
+		<type>float</type>
+	</param>
+	<param>
+		<name>TP</name>
+		<key>tp</key>
+		<value>True</value>
+		<type>bool</type>
+		<option>
+			<name>True</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>False</name>
+			<key>False</key>
+		</option>
+	</param>
+	<param>
+		<name>TA</name>
+		<key>ta</key>
+		<value>False</value>
+		<type>bool</type>
+		<option>
+			<name>True</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>False</name>
+			<key>False</key>
+		</option>
+	</param>
+	<param>
+		<name>PI Country Code</name>
+		<key>pi_country_code</key>
+		<value>13</value>
+		<type>int</type>
+		<option>
+			<name>DE</name>
+			<key>1</key>
+		</option>
+		<option>
+			<name>DZ</name>
+			<key>2</key>
+		</option>
+		<option>
+			<name>AD</name>
+			<key>3</key>
+		</option>
+		<option>
+			<name>IL</name>
+			<key>4</key>
+		</option>
+		<option>
+			<name>IT</name>
+			<key>5</key>
+		</option>
+		<option>
+			<name>BE</name>
+			<key>6</key>
+		</option>
+		<option>
+			<name>RU</name>
+			<key>7</key>
+		</option>
+		<option>
+			<name>PS</name>
+			<key>8</key>
+		</option>
+		<option>
+			<name>AL</name>
+			<key>9</key>
+		</option>
+		<option>
+			<name>AT</name>
+			<key>10</key>
+		</option>
+		<option>
+			<name>HU</name>
+			<key>11</key>
+		</option>
+		<option>
+			<name>MT</name>
+			<key>12</key>
+		</option>
+		<option>
+			<name>DE</name>
+			<key>13</key>
+		</option>
+		<option>
+			<name>EG</name>
+			<key>15</key>
+		</option>
+	</param>
+	<param>
+		<name>PI Coverage Area</name>
+		<key>pi_coverage_area</key>
+		<value>3</value>
+		<type>int</type>
+		<option>
+			<name>Local</name>
+			<key>0</key>
+		</option>
+		<option>
+			<name>International</name>
+			<key>1</key>
+		</option>
+		<option>
+			<name>National</name>
+			<key>2</key>
+		</option>
+		<option>
+			<name>Supra-regional</name>
+			<key>3</key>
+		</option>
+		<option>
+			<name>Regional 1</name>
+			<key>4</key>
+		</option>
+		<option>
+			<name>Regional 2</name>
+			<key>5</key>
+		</option>
+		<option>
+			<name>Regional 3</name>
+			<key>6</key>
+		</option>
+		<option>
+			<name>Regional 4</name>
+			<key>7</key>
+		</option>
+		<option>
+			<name>Regional 5</name>
+			<key>8</key>
+		</option>
+		<option>
+			<name>Regional 6</name>
+			<key>9</key>
+		</option>
+		<option>
+			<name>Regional 7</name>
+			<key>10</key>
+		</option>
+		<option>
+			<name>Regional 8</name>
+			<key>11</key>
+		</option>
+		<option>
+			<name>Regional 9</name>
+			<key>12</key>
+		</option>
+		<option>
+			<name>Regional 10</name>
+			<key>13</key>
+		</option>
+		<option>
+			<name>Regional 11</name>
+			<key>14</key>
+		</option>
+		<option>
+			<name>Regional 12</name>
+			<key>15</key>
+		</option>
+	</param>
+	<param>
+		<name>PI Program Reference Number</name>
+		<key>pi_reference_number</key>
+		<value>147</value>
+		<type>int</type>
+	</param>
+	<param>
+		<name>Radiotext</name>
+		<key>radiotext</key>
+		<value>GNU Radio &lt;3</value>
+		<type>string</type>
+	</param>
+	<sink>
+		<name>rds in</name>
+		<type>message</type>
+		<optional>1</optional>
+	</sink>
+	<source>
+		<name>out</name>
+		<type>byte</type>
+	</source>
+	<doc>
+PTY: Program Type (depending on PTY locale)
+MS: Speech/Music
+PS: Program Service Name
+AF: Alternate Frequency
+TP: Traffic Program
+TA: Traffic Announcment
+PI: Program Identification (country code, coverage area, reference number)
+Radiotext: Radiotext (obviously)
+	</doc>
+</block>

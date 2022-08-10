@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<block>
+  <name>Burst Sink</name>
+  <key>gsm_burst_sink</key>
+  <import>import grgsm</import>
+  <make>grgsm.burst_sink()</make>
+
+  <sink>
+    <name>in</name>
+    <type>message</type>
+  </sink>
+</block>

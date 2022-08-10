@@ -1,0 +1,61 @@
+<block>
+  <name>GSM Input Adaptor</name>
+  <key>gsm_input</key>
+  <category></category>
+  <import>import grgsm</import>
+  <make>grgsm.gsm_input(
+    ppm=$ppm,
+    osr=$osr,
+    fc=$fc,
+    samp_rate_in=$samp_rate_in,
+)</make>
+  <callback>set_ppm($ppm)</callback>
+  <callback>set_osr($osr)</callback>
+  <callback>set_fc($fc)</callback>
+  <callback>set_samp_rate_in($samp_rate_in)</callback>
+  <param>
+    <name>ppm</name>
+    <key>ppm</key>
+    <value>ppm</value>
+    <type>float</type>
+    <hide>part</hide>
+  </param>
+  <param>
+    <name>OSR</name>
+    <key>osr</key>
+    <value>osr</value>
+    <type>int</type>
+    <hide>part</hide>
+  </param>
+  <param>
+    <name>fc</name>
+    <key>fc</key>
+    <value>fc</value>
+    <type>float</type>
+    <hide>part</hide>
+  </param>
+  <param>
+    <name>samp_rate_in</name>
+    <key>samp_rate_in</key>
+    <value>samp_rate_in</value>
+    <type>float</type>
+    <hide>part</hide>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+    <vlen>1</vlen>
+  </sink>
+  <sink>
+    <name>ctrl_in</name>
+    <type>message</type>
+    <optional>True</optional>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>complex</type>
+    <vlen>1</vlen>
+  </source>
+  <doc>Piotr Krysik
+Adaptor of input stream for the GSM receiver. Contains frequency offset corrector and resampler to correct carrier frequency and sampling frequency offsets. At the end it has LP filter for filtering of a GSM channel.</doc>
+</block>

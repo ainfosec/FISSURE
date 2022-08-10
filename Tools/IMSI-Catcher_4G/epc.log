@@ -1,0 +1,82 @@
+2022-02-12T03:54:26.998526 [EPC    ] [I] 
+
+Built in Release mode using commit 5275f3336 on branch master.
+
+---  Software Radio Systems EPC log ---
+
+
+2022-02-12T03:54:26.998531 [EPC    ] [I] Using binary srsepc with arguments: epc.conf 
+2022-02-12T03:54:26.998633 [HSS    ] [I] Opened DB file: /home/user/.config/srsran/user_db.csv
+2022-02-12T03:54:26.998730 [HSS    ] [I] HSS Initialized. DB file /home/user/.config/srsran/user_db.csv, MCC: 62224, MNC: 62480
+2022-02-12T03:54:26.998787 [S1AP   ] [I] S1-MME Initializing
+2022-02-12T03:54:26.998845 [COMN   ] [D] [    0] Successfully bound to address 127.0.1.100:36412
+2022-02-12T03:54:26.998861 [S1AP   ] [I] S1AP Initialized
+2022-02-12T03:54:26.998863 [MME GTPC] [I] Initializing MME S11 interface.
+2022-02-12T03:54:26.998876 [MME GTPC] [I] MME S11 Initialized
+2022-02-12T03:54:26.998887 [MME GTPC] [I] MME GTP-C Initialized
+2022-02-12T03:54:26.998899 [S1AP   ] [I] MME Initialized. MCC: 0xf310, MNC: 0xf410
+2022-02-12T03:54:26.998947 [GTPU   ] [I] TUN file descriptor = 6
+2022-02-12T03:54:27.000298 [GTPU   ] [I] Initialized SGi interface
+2022-02-12T03:54:27.000322 [GTPU   ] [I] S1-U socket = 7
+2022-02-12T03:54:27.000329 [GTPU   ] [I] S1-U IP = 127.0.1.100, Port = 2152 
+2022-02-12T03:54:27.000330 [GTPU   ] [I] Initialized S1-U interface
+2022-02-12T03:54:27.000331 [GTPU   ] [I] SPGW GTP-U Initialized.
+2022-02-12T03:54:27.000348 [SPGW GTPC] [I] Initializing SPGW S11 interface.
+2022-02-12T03:54:27.001030 [SPGW GTPC] [I] SPGW S11 Initialized.
+2022-02-12T03:54:27.001046 [SPGW   ] [I] SP-GW Initialized.
+2022-02-12T03:54:27.035191 [S1AP   ] [D] Waiting for S1-MME or S11 Message
+2022-02-12T03:54:27.035235 [GTPU   ] [I] IPv6 not supported yet.
+2022-02-12T03:54:30.661848 [S1AP   ] [I] Received S1AP msg. Size: 49
+2022-02-12T03:54:30.662032 [S1AP   ] [I] Received Initiating PDU
+2022-02-12T03:54:30.662033 [S1AP   ] [I] Received S1 Setup Request.
+2022-02-12T03:54:30.662054 [S1AP   ] [I] Received S1 Setup Request.
+2022-02-12T03:54:30.662056 [S1AP   ] [D] eNB SCTP association Id: 6
+2022-02-12T03:54:30.662067 [S1AP   ] [I] S1 Setup Request - eNB Name: srsenb01, eNB id: 0x19b
+2022-02-12T03:54:30.662070 [S1AP   ] [I] S1 Setup Request - MCC:310, MNC:410, PLMN: 1261569
+2022-02-12T03:54:30.662079 [S1AP   ] [I] S1 Setup Request - TAC 13109, B-PLMN 0x134001
+2022-02-12T03:54:30.662099 [S1AP   ] [I] Adding new eNB context. eNB ID 411
+2022-02-12T03:54:30.662121 [S1AP   ] [D] Sending S1 Setup Response
+2022-02-12T03:54:30.662142 [S1AP   ] [D] Transmitting S1AP PDU. eNB SCTP association Id: 6
+2022-02-12T03:54:30.662208 [S1AP   ] [D] S1 Setup Response sent
+2022-02-12T03:54:30.662219 [S1AP   ] [I] Sending S1 Setup Response
+2022-02-12T03:54:30.662221 [S1AP   ] [D] Waiting for S1-MME or S11 Message
+2022-02-12T03:54:31.278639 [GTPU   ] [I] IPv6 not supported yet.
+2022-02-12T03:54:39.726675 [GTPU   ] [I] IPv6 not supported yet.
+2022-02-12T03:54:45.614158 [S1AP   ] [I] Received S1AP msg. Size: 199
+2022-02-12T03:54:45.614207 [S1AP   ] [I] Received Initiating PDU
+2022-02-12T03:54:45.614208 [S1AP   ] [I] Received Initial UE Message.
+2022-02-12T03:54:45.614231 [S1AP   ] [I] Initial UE message: LIBLTE_MME_MSG_TYPE_ATTACH_REQUEST
+2022-02-12T03:54:45.614239 [S1AP   ] [I] Received Initial UE message -- Attach Request
+2022-02-12T03:54:45.614283 [S1AP   ] [D] Could not find IMSI from M-TMSI 0xcf9ed07f
+2022-02-12T03:54:45.614294 [NAS    ] [I] Attach request -- M-TMSI: 0xcf9ed07f
+2022-02-12T03:54:45.614306 [NAS    ] [I] Attach request -- eNB-UE S1AP Id: 1
+2022-02-12T03:54:45.614316 [NAS    ] [I] Attach request -- Attach type: 2
+2022-02-12T03:54:45.614324 [NAS    ] [I] Attach Request -- UE Network Capabilities EEA: 11110000
+2022-02-12T03:54:45.614331 [NAS    ] [I] Attach Request -- UE Network Capabilities EIA: 01110000
+2022-02-12T03:54:45.614338 [NAS    ] [I] Attach Request -- MS Network Capabilities Present: true
+2022-02-12T03:54:45.614346 [NAS    ] [I] PDN Connectivity Request -- EPS Bearer Identity requested: 0
+2022-02-12T03:54:45.614352 [NAS    ] [I] PDN Connectivity Request -- Procedure Transaction Id: 14
+2022-02-12T03:54:45.614359 [NAS    ] [I] PDN Connectivity Request -- ESM Information Transfer requested: true
+2022-02-12T03:54:45.614375 [S1AP   ] [D] Saved UE context corresponding to MME UE S1AP Id 1
+2022-02-12T03:54:45.614376 [S1AP   ] [D] Added UE with MME-UE S1AP Id 1 to eNB with association 6
+2022-02-12T03:54:45.614377 [NAS    ] [I] Packing Identity Request
+2022-02-12T03:54:45.614383 [S1AP   ] [D] Sending message to eNB with SCTP association 6. MME UE S1AP ID 1, eNB UE S1AP ID 1
+2022-02-12T03:54:45.614410 [S1AP   ] [D] Transmitting S1AP PDU. eNB SCTP association Id: 6
+2022-02-12T03:54:45.614490 [S1AP   ] [D] Waiting for S1-MME or S11 Message
+2022-02-12T03:54:45.633909 [S1AP   ] [I] Received S1AP msg. Size: 63
+2022-02-12T03:54:45.633936 [S1AP   ] [I] Received Initiating PDU
+2022-02-12T03:54:45.633937 [S1AP   ] [I] Received Uplink NAS Transport Message.
+2022-02-12T03:54:45.633938 [S1AP   ] [D] Received uplink NAS and found UE NAS context. MME-UE S1AP id: 1
+2022-02-12T03:54:45.634106 [NAS    ] [W] Integrity check failure. Algorithm=EIA1
+2022-02-12T03:54:45.634109 [NAS    ] [W] UL Local: est_count=139, old_count=0, MAC=[8e de 32 69], Received: UL count=139, MAC=[e0 3a 14 0e]
+2022-02-12T03:54:45.634109 [S1AP   ] [W] Invalid MAC message. Even if security header indicates integrity protection (Maybe: Identity Response or Authentication Response)
+2022-02-12T03:54:45.634112 [S1AP   ] [I] UL NAS: sec_hdr_type: LIBLTE_MME_SECURITY_HDR_TYPE_INTEGRITY, mac_vaild: no, msg_encrypted: no
+2022-02-12T03:54:45.634113 [S1AP   ] [I] UL NAS: Received Identity Response
+2022-02-12T03:54:45.634129 [NAS    ] [I] ID response -- IMSI: 310280031031064
+2022-02-12T03:54:45.634141 [HSS    ] [I] User not found. IMSI: 310280031031064
+2022-02-12T03:54:45.634147 [HSS    ] [E] User not found at HSS. IMSI: 310280031031064
+2022-02-12T03:54:45.634154 [NAS    ] [I] User not found. IMSI 310280031031064
+2022-02-12T03:54:45.634160 [S1AP   ] [D] Waiting for S1-MME or S11 Message
+2022-02-12T03:54:55.598666 [GTPU   ] [I] IPv6 not supported yet.
+2022-02-12T03:54:55.902453 [S1AP   ] [I] Deleting eNB context. eNB Id: 0x19b
+2022-02-12T03:54:55.942845 [HSS    ] [I] Opened DB file: /home/user/.config/srsran/user_db.csv

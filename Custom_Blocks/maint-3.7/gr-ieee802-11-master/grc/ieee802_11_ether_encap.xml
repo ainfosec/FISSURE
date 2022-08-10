@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+
+<block>
+	<name>Ethernet Encapsulation</name>
+	<key>ieee802_11_ether_encap</key>
+	<category>[IEEE802.11]</category>
+	<import>import ieee802_11</import>
+	<make>ieee802_11.ether_encap($debug)</make>
+
+	<param>
+		<name>Debug</name>
+		<key>debug</key>
+		<value>False</value>
+		<type>bool</type>
+
+		<option>
+			<name>Enable</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>Disable</name>
+			<key>False</key>
+		</option>
+	</param>
+
+	<sink>
+		<name>from tap</name>
+		<type>message</type>
+		<optional>1</optional>
+	</sink>
+
+	<sink>
+		<name>from wifi</name>
+		<type>message</type>
+		<optional>1</optional>
+	</sink>
+
+	<source>
+		<name>to tap</name>
+		<type>message</type>
+		<optional>1</optional>
+	</source>
+
+	<source>
+		<name>to wifi</name>
+		<type>message</type>
+		<optional>1</optional>
+	</source>
+</block>
+

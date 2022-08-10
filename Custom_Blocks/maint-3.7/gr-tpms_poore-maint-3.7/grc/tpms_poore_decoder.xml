@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<block>
+  <name>decoder</name>
+  <key>tpms_poore_decoder</key>
+  <category>[tpms_poore]</category>
+  <import>import tpms_poore</import>
+  <make>tpms_poore.decoder()</make>
+
+
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+  </source>
+  
+  <source>
+    <name>bytes</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>  
+</block>

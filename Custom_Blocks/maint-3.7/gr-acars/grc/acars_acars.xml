@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<block>
+  <name>decodeur</name>
+  <key>acars_decodeur</key>
+  <category>acars</category>
+  <import>import acars</import>
+  <make>acars.acars($seuil,$filename)</make>
+  <callback>set_seuil($seuil)</callback>
+  
+  <param>
+    <name>Threshold</name>
+    <key>seuil</key>
+    <type>real</type>
+  </param>
+
+  <param>
+    <name>Log filename</name>
+    <key>filename</key>
+    <type>string</type>
+  </param>
+
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+
+</block>

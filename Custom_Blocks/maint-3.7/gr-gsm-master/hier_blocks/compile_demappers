@@ -1,0 +1,37 @@
+#!/bin/bash
+
+#This is just helper script for manual compilation of hierarhical blocks
+#by gr-gsm developers
+#Author: Piotr Krysik
+
+cd demapping
+for p in *.grc
+do
+    echo $p
+    grcc $p -d `pwd`
+done
+cd ..
+
+mv ~/.grc_gnuradio/gsm_* .
+
+for file in *.py.xml
+do
+    cat $file | sed 's/.*\<import\>.*/  <import>import grgsm<\/import>/' \
+              | sed 's/<make>/<make>grgsm./' \
+              | sed "s/.*.py//" \
+              | sed 's/<grc_source>.*hier_blocks/<grc_source>gr-gsm\/hier_blocks/' \
+              > ${file}2
+
+    mv ${file}2 $file
+
+    mv "$file" "`basename $file .py.xml`.xml"
+done
+
+for py in *.py
+do
+    cat $py |sed 's/gr.hier_block2/grgsm.hier_block/' > ${py}2
+    mv ${py}2 $py
+done
+
+mv *.py ../python/demapping
+mv *.xml ../grc/demapping

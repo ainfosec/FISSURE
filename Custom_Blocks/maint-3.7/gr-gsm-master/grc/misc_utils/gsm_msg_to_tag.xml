@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<block>
+  <name>Message To Tag</name>
+  <key>gsm_msg_to_tag</key>
+  <import>import grgsm</import>
+  <make>grgsm.msg_to_tag()</make>
+
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+
+  <sink>
+    <name>msg</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+</block>

@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<block>
+  <name>TCH/F decoder</name>
+  <key>gsm_tch_f_decoder</key>
+  <import>import grgsm</import>
+  <make>grgsm.tch_f_decoder($mode, $boundary_check)</make>
+
+  <param>
+    <name>TCH coding mode</name>
+    <key>mode</key>
+    <type>enum</type>
+    <option>
+      <name>GSM-FR</name>
+      <key>grgsm.TCH_FS</key>
+    </option>
+    <option>
+      <name>GSM-EFR</name>
+      <key>grgsm.TCH_EFR</key>
+    </option>
+    <option>
+      <name>GSM-AMR 12.2</name>
+      <key>grgsm.TCH_AFS12_2</key>
+    </option>
+    <option>
+      <name>GSM-AMR 10.2</name>
+      <key>grgsm.TCH_AFS10_2</key>
+    </option>
+    <option>
+      <name>GSM-AMR 7.95</name>
+      <key>grgsm.TCH_AFS7_95</key>
+    </option>
+    <option>
+      <name>GSM-AMR 7.4</name>
+      <key>grgsm.TCH_AFS7_4</key>
+    </option>
+    <option>
+      <name>GSM-AMR 6.7</name>
+      <key>grgsm.TCH_AFS6_7</key>
+    </option>
+    <option>
+      <name>GSM-AMR 5.9</name>
+      <key>grgsm.TCH_AFS5_9</key>
+    </option>
+    <option>
+      <name>GSM-AMR 5.15</name>
+      <key>grgsm.TCH_AFS5_15</key>
+    </option>
+    <option>
+      <name>GSM-AMR 4.75</name>
+      <key>grgsm.TCH_AFS4_75</key>
+    </option>
+  </param>
+  <param>
+    <name>Voice boundary detection</name>
+    <key>boundary_check</key>
+    <value>False</value>
+    <type>bool</type>
+    <option>
+      <name>False</name>
+      <key>False</key>
+    </option>
+    <option>
+      <name>True</name>
+      <key>True</key>
+    </option>
+  </param>
+  
+  <sink>
+    <name>bursts</name>
+    <type>message</type>
+  </sink>
+  <source>
+    <name>msgs</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+  <source>
+    <name>voice</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+    
+  <doc>
+If "Voice boundary detection" is enabled, then only bursts are decoded as voice where
+
+- the framenumber is greater then the framenumber of a received "Connect" or "Connect Acknowlegde" message, and 
+- the framenumber is less then the framenumber of a "Release" message 
+  </doc>
+  
+</block>

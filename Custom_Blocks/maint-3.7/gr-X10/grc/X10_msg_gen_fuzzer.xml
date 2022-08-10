@@ -1,0 +1,64 @@
+<?xml version="1.0"?>
+<block>
+  <name>msg_gen_fuzzer</name>
+  <key>X10_msg_gen_fuzzer</key>
+  <category>X10</category>
+  <import>import X10</import>
+  <make>X10.msg_gen_fuzzer($sample_rate,$address_code,$data_code,$press_duration,$press_repetition_interval)</make>
+
+  <callback>set_sample_rate($sample_rate)</callback>
+  <callback>set_address_code($address_code)</callback>
+  <callback>set_data_code($data_code)</callback>
+  <callback>set_press_duration($press_duration)</callback>
+  <callback>set_press_repetition_interval($press_repetition_interval)</callback>
+  
+  <param>
+    <name>Sample Rate</name>
+    <key>sample_rate</key>
+    <type>float</type>
+  </param>
+  
+  <param>
+    <name>Address Code</name>
+    <key>address_code</key>
+    <value>"0x60"</value>
+    <type>string</type>    
+  </param>
+  
+  <param>
+    <name>Data Code</name>
+    <key>data_code</key>
+    <value>"0x00"</value>
+    <type>string</type>    
+  </param>  
+  
+  <param>
+    <name>Press Duration</name>
+    <key>press_duration</key>
+    <value>1</value>
+    <type>float</type>
+  </param>  
+
+  <param>
+    <name>Press Repetition Interval</name>
+    <key>press_repetition_interval</key>
+    <value>10</value>
+    <type>float</type>
+  </param>  
+  
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+  
+  <sink>
+    <name>fuzzer_in</name>
+    <type>message</type>
+  </sink>  
+
+
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+</block>

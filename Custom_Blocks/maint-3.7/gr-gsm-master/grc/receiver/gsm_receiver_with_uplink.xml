@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<block>
+  <name>GSM Receiver (with uplink)</name>
+  <key>gsm_receiver_with_uplink</key>
+  <import>import grgsm</import>
+  <make>grgsm.receiver($osr, $cell_allocation, $tseq_nums, True)</make>
+
+  <param>
+    <name>Oversampling ratio</name>
+    <key>osr</key>
+    <value>4</value>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>Cell allocation</name>
+    <key>cell_allocation</key>
+    <value>[0]</value>
+    <type>float_vector</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>TSEQ numbers</name>
+    <key>tseq_nums</key>
+    <value>[]</value>
+    <type>int_vector</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>Num Streams</name>
+    <key>num_streams</key>
+    <value>1</value>
+    <type>int</type>
+    <hide>part</hide>
+  </param>
+
+  <check>$num_streams &gt;= 0</check>
+  
+  <sink>
+    <name>C</name>
+    <type>complex</type>
+    <nports>$num_streams</nports>
+  </sink>
+
+
+  <sink>
+    <name>C_up</name>
+    <type>complex</type>
+    <nports>$num_streams</nports>
+  </sink>
+
+  <source>
+    <name>C0</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+  
+  <source>
+    <name>CX</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <source>
+    <name>measurements</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+</block>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<block>
+  <name>Preprocess Tx burst</name>
+  <key>gsm_preprocess_tx_burst</key>
+  <import>import grgsm</import>
+  <make>grgsm.preprocess_tx_burst()</make>
+
+  <sink>
+    <name>bursts_in</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+
+  <source>
+    <name>bursts_out</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+</block>

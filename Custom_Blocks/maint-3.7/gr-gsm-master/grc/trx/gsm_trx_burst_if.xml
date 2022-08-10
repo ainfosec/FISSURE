@@ -1,0 +1,65 @@
+<?xml version="1.0"?>
+<block>
+  <name>TRX Burst Interface</name>
+  <key>gsm_trx_burst_if</key>
+  <import>import grgsm</import>
+  <make>grgsm.trx_burst_if($bind_addr, $remote_addr, $base_port)</make>
+
+  <param>
+    <name>base_port</name>
+    <key>base_port</key>
+    <value>5700</value>
+    <type>string</type>
+  </param>
+
+  <param>
+    <name>bind_addr</name>
+    <key>bind_addr</key>
+    <value>0.0.0.0</value>
+    <type>string</type>
+  </param>
+
+  <param>
+    <name>remote_addr</name>
+    <key>remote_addr</key>
+    <value>127.0.0.1</value>
+    <type>string</type>
+  </param>
+
+  <sink>
+    <name>bursts</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+
+  <source>
+    <name>bursts</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+  <doc>
+      OsmoTRX like UDP burst interface for external applications.
+
+      There are two UDP connections, where each message carries
+      one radio burst with header. Give a base port B (5700 by default).
+      One connection at port P=B+100+2 is used for sending received bursts
+      to an external application. Another one at port P=B+2 is used to
+      obtain to be transmitted bursts.
+
+      Received burst format:
+      1 byte timeslot index
+      4 bytes GSM frame number, big endian
+      1 byte RSSI in -dBm
+      2 bytes correlator timing offset in 1/256 symbol steps,
+          2's-comp, big endian
+      148 bytes soft symbol estimates, 0 -&gt; definite "0",
+          255 -&gt; definite "1"
+
+      To be transmitted burst format:
+      1 byte timeslot index
+      4 bytes GSM frame number, big endian
+      1 byte transmit level wrt ARFCN max, -dB (attenuation)
+      148 bytes output symbol values, 0 &amp; 1
+  </doc>
+</block>

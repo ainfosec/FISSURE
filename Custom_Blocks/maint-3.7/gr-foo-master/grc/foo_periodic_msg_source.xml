@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<block>
+	<name>Periodic Message Source</name>
+	<key>foo_periodic_msg_source</key>
+	<category>[Foo]</category>
+	<import>import foo</import>
+	<import>import pmt</import>
+	<make>foo.periodic_msg_source($msg, $interval, $num, $quit, $debug)</make>
+	<param>
+		<name>Message PMT</name>
+		<key>msg</key>
+		<value>pmt.intern("Hello World!")</value>
+		<type>raw</type>
+	</param>
+	<param>
+		<name>Period (ms)</name>
+		<key>interval</key>
+		<value>1000</value>
+		<type>int</type>
+	</param>
+	<param>
+		<name>Quit</name>
+		<key>quit</key>
+		<value>True</value>
+		<type>bool</type>
+		<option>
+			<name>Enable</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>Disable</name>
+			<key>False</key>
+		</option>
+	</param>
+	<param>
+		<name>Debug</name>
+		<key>debug</key>
+		<value>False</value>
+		<type>bool</type>
+		<option>
+			<name>Enable</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>Disable</name>
+			<key>False</key>
+		</option>
+	</param>
+	<param>
+		<name>Num Messages</name>
+		<key>num</key>
+		<value>-1</value>
+		<type>int</type>
+	</param>
+	<source>
+		<name>out</name>
+		<type>message</type>
+		<optional>1</optional>
+	</source>
+</block>

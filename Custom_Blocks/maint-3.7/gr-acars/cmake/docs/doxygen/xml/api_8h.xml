@@ -1,0 +1,68 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.8">
+  <compounddef id="api_8h" kind="file">
+    <compoundname>api.h</compoundname>
+    <includes local="no">gnuradio/attributes.h</includes>
+    <includedby refid="acars_8h" local="no">acars.h</includedby>
+    <includedby refid="acars__original_8h" local="no">acars_original.h</includedby>
+    <incdepgraph>
+      <node id="61">
+        <label>api.h</label>
+        <link refid="api.h"/>
+        <childnode refid="62" relation="include">
+        </childnode>
+      </node>
+      <node id="62">
+        <label>gnuradio/attributes.h</label>
+      </node>
+    </incdepgraph>
+    <invincdepgraph>
+      <node id="63">
+        <label>api.h</label>
+        <link refid="api.h"/>
+        <childnode refid="64" relation="include">
+        </childnode>
+        <childnode refid="67" relation="include">
+        </childnode>
+      </node>
+      <node id="66">
+        <label>acars_impl_original.h</label>
+        <link refid="acars__impl__original_8h"/>
+      </node>
+      <node id="67">
+        <label>acars_original.h</label>
+        <link refid="acars__original_8h"/>
+      </node>
+      <node id="65">
+        <label>acars_impl.h</label>
+        <link refid="acars__impl_8h"/>
+      </node>
+      <node id="64">
+        <label>acars.h</label>
+        <link refid="acars_8h"/>
+        <childnode refid="65" relation="include">
+        </childnode>
+        <childnode refid="66" relation="include">
+        </childnode>
+      </node>
+    </invincdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="api_8h_1a38ca0c36f273e214d5b0b6d1490b53c2" prot="public" static="no">
+        <name>ACARS_API</name>
+        <initializer>__GR_ATTR_IMPORT</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/include/acars/api.h" line="30" column="12" bodyfile="/home/jmfriedt/sdr/gr-acars/include/acars/api.h" bodystart="30" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/jmfriedt/sdr/gr-acars/include/acars/api.h"/>
+  </compounddef>
+</doxygen>

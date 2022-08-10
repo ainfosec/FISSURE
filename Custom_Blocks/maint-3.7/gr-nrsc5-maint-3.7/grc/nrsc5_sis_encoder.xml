@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<block>
+  <name>SIS encoder</name>
+  <key>nrsc5_sis_encoder</key>
+  <category>[NRSC-5]</category>
+  <import>import nrsc5</import>
+  <make>nrsc5.sis_encoder($short_name)</make>
+  <param>
+    <name>Station name</name>
+    <key>short_name</key>
+    <value>ABCD</value>
+    <type>string</type>
+  </param>
+  <check>len($short_name) == 4</check>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+    <vlen>80</vlen>
+  </source>
+</block>

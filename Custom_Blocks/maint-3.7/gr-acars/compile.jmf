@@ -1,0 +1,3 @@
+To compile and install on a GNU/Debian binary distribution of 
+GNURadio (located in /usr instead of /usr/local):
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr ..

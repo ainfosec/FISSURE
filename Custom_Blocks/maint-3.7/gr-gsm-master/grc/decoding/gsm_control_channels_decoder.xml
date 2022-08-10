@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<block>
+  <name>Control channels decoder</name>
+  <key>gsm_control_channels_decoder</key>
+  <import>import grgsm</import>
+  <make>grgsm.control_channels_decoder()</make>
+  <sink>
+    <name>bursts</name>
+    <type>message</type>
+  </sink>
+  <source>
+    <name>msgs</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+</block>

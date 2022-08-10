@@ -1,0 +1,67 @@
+startup_automation_mode: Manual
+SOI_trigger_mode: 0
+SOI_trigger_time: 0
+SOI_trigger_timeout: 10
+SOI_quantity_limit: 5
+target_SOI: 0
+
+buffer_size_interval: 2
+
+disabled_running_flow_graph_variables:
+  - ip_address
+  - tx_usrp_channel 
+  - rx_usrp_channel
+  - tx_usrp_antenna
+  - rx_usrp_antenna
+  - filepath
+
+fft_size: 4096
+fft_sample_rate: 1e6
+morse_code_amplitude_threshold: 0.5
+morse_code_error_tolerance: 0.05
+morse_code_same_letter_spacing: 1
+morse_code_between_letter_spacing: 3
+morse_code_between_word_spacing: 7
+moving_avg_points: 5
+
+hardware_tsi: ''
+hardware_pd: ''
+hardware_attack: ''
+hardware_iq: ''
+hardware_archive: ''
+hardware_ip_tsi: ''
+hardware_ip_pd: ''
+hardware_ip_attack: ''
+hardware_ip_iq: ''
+hardware_ip_archive: ''
+hardware_serial_tsi: ''
+hardware_serial_pd: ''
+hardware_serial_attack: ''
+hardware_serial_iq: ''
+hardware_serial_archive: ''
+hardware_interface_tsi: ''
+hardware_interface_pd: ''
+hardware_interface_attack: ''
+hardware_interface_iq: ''
+hardware_interface_archive: ''
+hardware_daughterboard_tsi: ''
+hardware_daughterboard_pd: ''
+hardware_daughterboard_attack: ''
+hardware_daughterboard_iq: ''
+hardware_daughterboard_archive: ''
+
+heartbeat_interval: 5
+failure_multiple: 5
+dashboard_hiprfisr_dealer_port: 5051
+tsi_hiprfisr_dealer_port: 5052
+fge_hiprfisr_dealer_port: 5053
+pd_hiprfisr_dealer_port: 5054
+hiprfisr_pub_port: 5055
+dashboard_pub_port: 5057
+tsi_pub_port: 5059
+tsi_pub_port_id: 5060
+tsi_pub_port_classification: 5065
+fge_pub_port: 5061
+pd_pub_port: 5063
+pd_bits_port: 5066
+clear_log_file_on_startup: True

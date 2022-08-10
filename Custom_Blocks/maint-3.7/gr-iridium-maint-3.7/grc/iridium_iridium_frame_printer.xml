@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<block>
+  <name>iridium_frame_printer</name>
+  <key>iridium_iridium_frame_printer</key>
+  <category>iridium</category>
+  <import>import iridium</import>
+  <make>iridium.iridium_frame_printer()</make>
+
+  <sink>
+    <name>pdus</name>
+    <type>message</type>
+  </sink>
+
+</block>

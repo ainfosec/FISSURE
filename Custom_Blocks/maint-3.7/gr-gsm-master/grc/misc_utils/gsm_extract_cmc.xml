@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<block>
+  <name>Extract Cipher Mode Command</name>
+  <key>gsm_extract_cmc</key>
+  <import>import grgsm</import>
+  <make>grgsm.extract_cmc()</make>
+  <sink>
+    <name>msgs</name>
+    <type>message</type>
+  </sink>
+  <doc>
+Extracts the framenumber and the assigned encryption algorithm from Cipher Mode Commands.
+
+Input: decoded control channel messages
+
+The information can be retrieved using following functions:
+get_frame_numbers(), get_a5_versions()
+
+</doc>
+</block>

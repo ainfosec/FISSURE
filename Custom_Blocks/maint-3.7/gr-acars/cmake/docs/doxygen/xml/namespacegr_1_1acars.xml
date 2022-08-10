@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.8">
+  <compounddef id="namespacegr_1_1acars" kind="namespace">
+    <compoundname>gr::acars</compoundname>
+    <innerclass refid="classgr_1_1acars_1_1acars" prot="public">gr::acars::acars</innerclass>
+    <innerclass refid="classgr_1_1acars_1_1acars__impl" prot="public">gr::acars::acars_impl</innerclass>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/jmfriedt/sdr/gr-acars/include/acars/acars.h" line="29" column="1"/>
+  </compounddef>
+</doxygen>

@@ -1,0 +1,5 @@
+chirpz.py - implementation of chirpz transform
+gsm_input.py - adapts signal to the input of the gsm receiver, executes clock offset correction
+fcch_detector.py - (experimental componen for a new gsm receiver) detects fcch bursts
+fcch_burst_tagger.py - (experimental componen for a new gsm receiver) part of fcch_detector - add fcch tag when FCCH burst is found
+sch_detector.py - (experimental componen for a new gsm receiver) unfinished block that detects exact position of a SCH burst based on fcch tags, should probably also read content of SCH bursts

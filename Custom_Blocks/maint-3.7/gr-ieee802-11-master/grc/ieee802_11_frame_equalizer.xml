@@ -1,0 +1,105 @@
+<?xml version="1.0"?>
+
+<block>
+	<name>WiFi Frame Equalizer</name>
+	<key>ieee802_11_frame_equalizer</key>
+	<category>[IEEE802.11]</category>
+	<import>import ieee802_11</import>
+	<make>ieee802_11.frame_equalizer($algo, $freq, $bw, $log, $debug)</make>
+	<callback>set_algorithm($algo)</callback>
+	<callback>set_frequency($freq)</callback>
+	<callback>set_bandwidth($bw)</callback>
+
+	<param>
+		<name>Algorithm</name>
+		<key>algo</key>
+		<value>ieee802_11.LS</value>
+		<type>int</type>
+
+		<option>
+			<name>LS</name>
+			<key>ieee802_11.LS</key>
+		</option>
+		<option>
+			<name>LMS</name>
+			<key>ieee802_11.LMS</key>
+		</option>
+		<option>
+			<name>Comb</name>
+			<key>ieee802_11.COMB</key>
+		</option>
+		<option>
+			<name>STA</name>
+			<key>ieee802_11.STA</key>
+		</option>
+	</param>
+
+	<param>
+		<name>Frequency</name>
+		<key>freq</key>
+		<value>5.89e9</value>
+		<type>real</type>
+	</param>
+
+	<param>
+		<name>Bandwidth</name>
+		<key>bw</key>
+		<value>10e6</value>
+		<type>real</type>
+	</param>
+
+	<param>
+		<name>Log</name>
+		<key>log</key>
+		<value>False</value>
+		<type>bool</type>
+
+		<option>
+			<name>Enable</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>Disable</name>
+			<key>False</key>
+		</option>
+	</param>
+
+	<param>
+		<name>Debug</name>
+		<key>debug</key>
+		<value>False</value>
+		<type>bool</type>
+
+		<option>
+			<name>Enable</name>
+			<key>True</key>
+		</option>
+		<option>
+			<name>Disable</name>
+			<key>False</key>
+		</option>
+	</param>
+
+	<sink>
+		<name>in</name>
+		<type>complex</type>
+		<vlen>64</vlen>
+		<nports>1</nports>
+	</sink>
+
+	<source>
+		<name>out</name>
+		<type>byte</type>
+		<vlen>48</vlen>
+		<nports>1</nports>
+	</source>
+
+	<source>
+		<name>symbols</name>
+		<type>message</type>
+        <optional>1</optional>
+	</source>
+
+</block>
+
+

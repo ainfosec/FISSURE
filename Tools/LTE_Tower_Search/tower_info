@@ -1,0 +1,65 @@
+linux; GNU C++ version 7.3.0; Boost_106501; UHD_003.010.003.000-0-unknown
+
+Reading configuration file ue.conf...
+WARNING: cpu0 scaling governor is not set to performance mode. Realtime processing could be compromised. Consider setting it to performance mode before running the application.
+
+Built in Release mode using commit eccf106f8 on branch master.
+
+Opening 1 channels in RF device=default with args=default
+Opening USRP channels=1, args: type=b200,master_clock_rate=23.04e6
+-- Detected Device: B205mini
+-- Operating over USB 3.
+-- Initialize CODEC control...
+-- Initialize Radio control...
+-- Performing register loopback test... pass
+-- Performing CODEC loopback test... pass
+-- Asking for clock rate 23.040000 MHz... 
+-- Actually got clock rate 23.040000 MHz.
+-- Performing timer loopback test... pass
+Waiting PHY to initialize ... done!
+Attaching UE...
+.
+.
+Found Cell:  Mode=FDD, PCI=276, PRB=50, Ports=4, CFO=2.5 KHz
+.
+.
+Found Cell:  Mode=FDD, PCI=276, PRB=50, Ports=4, CFO=3.9 KHz
+.
+Found Cell:  Mode=FDD, PCI=276, PRB=50, Ports=4, CFO=1.1 KHz
+.
+.
+.......
+..........
+.
+.
+.
+.
+.
+..
+.
+.
+..
+..
+.....
+...
+Found Cell:  Mode=FDD, PCI=276, PRB=50, Ports=4, CFO=2.1 KHz
+.
+..
+.
+..
+.
+.
+.
+.
+.
+Found Cell:  Mode=FDD, PCI=276, PRB=50, Ports=4, CFO=4.7 KHz
+.
+.
+.
+Found Cell:  Mode=FDD, PCI=276, PRB=50, Ports=4, CFO=3.8 KHz
+.
+Found Cell:  Mode=FDD, PCI=276, PRB=50, Ports=4, CFO=2.3 KHz
+.
+Found Cell:  Mode=FDD, PCI=276, PRB=50, Ports=4, CFO=3.6 KHz
+Found PLMN:  Id=311480, TAC=18290
+Could not find Home PLMN Id=00101, trying to connect to PLMN Id=311480

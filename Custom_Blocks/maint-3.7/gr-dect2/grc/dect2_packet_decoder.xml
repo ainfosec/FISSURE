@@ -1,0 +1,33 @@
+<block>
+  <name>Packet decoder</name>
+  <key>dect2_packet_decoder</key>
+  <category>DECT2</category>
+  <import>import dect2</import>
+  <make>dect2.packet_decoder()</make>
+  <callback>select_rx_part($rx_id)</callback>
+  <param>
+    <name>Part RX ID</name>
+    <key>rx_id</key>
+    <value>0</value>
+    <type>int</type>
+  </param>
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+  </sink>
+  <sink>
+    <name>rcvr_msg_in</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+  </source>
+  <source>
+    <name>log_out</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+
+</block>

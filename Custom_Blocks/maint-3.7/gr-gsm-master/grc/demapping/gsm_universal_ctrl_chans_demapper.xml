@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<block>
+  <name>Universal Control Channels Demapper</name>
+  <key>gsm_universal_ctrl_chans_demapper</key>
+  <import>import grgsm</import>
+  <make>grgsm.universal_ctrl_chans_demapper($timeslot_nr, $downlink_starts_fn_mod51, $downlink_channel_types, $downlink_subslots, $uplink_starts_fn_mod51, $uplink_channel_types, $uplink_subslots)</make>
+
+  <param>
+    <name>timeslot_nr</name>
+    <key>timeslot_nr</key>
+    <value>0</value>
+    <type>int</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>downlink_starts_fn_mod51</name>
+    <key>downlink_starts_fn_mod51</key>
+    <value>[0,0,2,2,2,2,6,6,6,6,0,0,12,12,12,12,16,16,16,16,0,0,22,22,22,22,26,26,26,26,0,0,32,32,32,32,36,36,36,36,0,0,42,42,42,42,46,46,46,46,0,]</value>
+    <type>int_vector</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>downlink_channel_types</name>
+    <key>downlink_channel_types</key>
+    <value>[0,0,1,1,1,1,2,2,2,2,0,0,2,2,2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,2,0,0,2,2,2,2,2,2,2,2,0,]</value>
+    <type>int_vector</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>downlink_subslots</name>
+    <key>downlink_subslots</key>
+    <value>[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]</value>
+    <type>int_vector</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>uplink_starts_fn_mod51</name>
+    <key>uplink_starts_fn_mod51</key>
+    <value>[0,0,0,0,0,0,6,6,6,6,10,10,10,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,37,37,37,37,41,41,41,41,0,0,47,47,47,47]</value>
+    <type>int_vector</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>uplink_channel_types</name>
+    <key>uplink_channel_types</key>
+    <value>[2,2,2,2,0,0,2,2,2,2,2,2,2,2,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,2,2,2,2,2,2,2,2,0,0,2,2,2,2,]</value>
+    <type>int_vector</type>
+    <hide>part</hide>
+  </param>
+  
+  <param>
+    <name>uplink_subslots</name>
+    <key>uplink_subslots</key>
+    <value>[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,]</value>
+    <type>int_vector</type>
+    <hide>part</hide>
+  </param>  
+
+  <sink>
+    <name>bursts</name>
+    <type>message</type>
+  </sink>
+  <source>
+    <name>bursts</name>
+    <type>message</type>
+  </source>
+  <doc>
+      Universal demapper for control channels.
+      Author: Piotr Krysik      
+  </doc>
+</block>

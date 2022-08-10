@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<block>
+	<name>WiFi MAC</name>
+	<key>ieee802_11_mac</key>
+	<category>[IEEE802.11]</category>
+	<import>import ieee802_11</import>
+	<make>ieee802_11.mac($src_mac, $dst_mac, $bss_mac)</make>
+
+	<param>
+		<name>SRC MAC</name>
+		<key>src_mac</key>
+		<value>[0x23, 0x23, 0x23, 0x23, 0x23, 0x23]</value>
+		<type>int_vector</type>
+	</param>
+
+	<param>
+		<name>DST MAC</name>
+		<key>dst_mac</key>
+		<value>[0x42, 0x42, 0x42, 0x42, 0x42, 0x42]</value>
+		<type>int_vector</type>
+	</param>
+
+	<param>
+		<name>BSS MAC</name>
+		<key>bss_mac</key>
+		<value>[0xff, 0xff, 0xff, 0xff, 0xff, 0xff]</value>
+		<type>int_vector</type>
+	</param>
+
+	<check>len($src_mac) == 6</check>
+	<check>len($dst_mac) == 6</check>
+	<check>len($bss_mac) == 6</check>
+	<check>all([x >= 0 and 255 >= x for x in $src_mac])</check>
+	<check>all([x >= 0 and 255 >= x for x in $dst_mac])</check>
+	<check>all([x >= 0 and 255 >= x for x in $bss_mac])</check>
+
+	<sink>
+		<name>app in</name>
+		<type>message</type>
+		<optional>1</optional>
+	</sink>
+
+	<sink>
+		<name>phy in</name>
+		<type>message</type>
+		<optional>1</optional>
+	</sink>
+
+	<source>
+		<name>app out</name>
+		<type>message</type>
+		<optional>1</optional>
+	</source>
+
+	<source>
+		<name>phy out</name>
+		<type>message</type>
+		<optional>1</optional>
+	</source>
+</block>

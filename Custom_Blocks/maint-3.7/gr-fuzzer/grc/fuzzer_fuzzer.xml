@@ -1,0 +1,88 @@
+<?xml version="1.0"?>
+<block>
+  <name>fuzzer</name>
+  <key>fuzzer_fuzzer</key>
+  <category>fuzzer</category>
+  <import>import fuzzer</import>
+  <make>fuzzer.fuzzer($fuzzing_seed,$fuzzing_fields,$fuzzing_type,$fuzzing_min,$fuzzing_max,$fuzzing_data,$fuzzing_interval,$fuzzing_protocol,$fuzzing_packet_type, $library_filepath)</make>
+  
+  <callback>set_fuzzing_seed($fuzzing_seed)</callback>
+  <callback>set_fuzzing_fields($fuzzing_fields)</callback>
+  <callback>set_fuzzing_type($fuzzing_type)</callback>
+  <callback>set_fuzzing_min($fuzzing_min)</callback>
+  <callback>set_fuzzing_max($fuzzing_max)</callback>
+  <callback>set_fuzzing_data($fuzzing_data)</callback>  
+  <callback>set_fuzzing_interval($fuzzing_interval)</callback> 
+  <callback>set_fuzzing_protocol($fuzzing_protocol)</callback> 
+  <callback>set_fuzzing_packet_type($fuzzing_packet_type)</callback> 
+  
+  <param>
+      <name>Fuzzing Seed</name>
+      <key>fuzzing_seed</key>
+      <value>"0"</value>
+      <type>string</type>
+  </param>  
+  <param>
+      <name>Fuzzing Fields</name>
+      <key>fuzzing_fields</key>
+      <value>"0"</value>
+      <type>string</type>
+  </param>  
+  <param>
+      <name>Fuzzing Type</name>
+      <key>fuzzing_type</key>
+      <value>"0"</value>
+      <type>string</type>
+  </param>  
+  <param>
+      <name>Fuzzing Min</name>
+      <key>fuzzing_min</key>
+      <value>"0"</value>
+      <type>string</type>
+  </param>  
+  <param>
+      <name>Fuzzing Max</name>
+      <key>fuzzing_max</key>
+      <value>"0"</value>
+      <type>string</type>
+  </param>  
+  <param>
+      <name>Fuzzing Data</name>
+      <key>fuzzing_data</key>
+      <value>"0"</value>
+      <type>string</type>
+  </param>   
+  <param>
+      <name>Fuzzing Interval</name>
+      <key>fuzzing_interval</key>
+      <value>"0"</value>
+      <type>string</type>
+  </param>        
+  <param>
+      <name>Fuzzing Protocol</name>
+      <key>fuzzing_protocol</key>
+      <value>"0"</value>
+      <type>string</type>
+  </param>    
+  <param>
+      <name>Fuzzing Packet Type</name>
+      <key>fuzzing_packet_type</key>
+      <value>"0"</value>
+      <type>string</type>
+  </param>     
+  <param>
+      <name>Library Filepath</name>
+      <key>library_filepath</key>
+      <value>"~/FISSURE/YAML/library.yaml"</value>
+      <type>string</type>
+  </param>         
+  
+  
+  <source>
+    <name>packet_out</name>
+    <type>message</type>
+  </source>
+
+
+    
+</block>

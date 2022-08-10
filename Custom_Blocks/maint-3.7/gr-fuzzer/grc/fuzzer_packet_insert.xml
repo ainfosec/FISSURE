@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<block>
+  <name>packet_insert</name>
+  <key>fuzzer_packet_insert</key>
+  <category>fuzzer</category>
+  <import>import fuzzer</import>
+  <make>fuzzer.packet_insert($vector, $period, $offset)</make>
+  
+  <param>
+      <name>Vector</name>
+      <key>vector</key>
+      <value>0, 0, 0</value>
+      <type>int_vector</type>
+  </param>
+  <param>
+      <name>Periodicity</name>
+      <key>period</key>
+      <value>100</value>
+      <type>int</type>
+  </param>
+  <param>
+      <name>Offset</name>
+      <key>offset</key>
+      <value>0</value>
+      <type>int</type>
+  </param>
+    
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+  </sink>
+  <sink>
+    <name>packet_in</name>
+    <type>message</type>
+  </sink>  
+  <source>
+    <name>out</name>
+    <type>byte</type>
+  </source>
+  
+  <source>
+    <name>set_mute</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+</block>

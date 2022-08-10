@@ -1,0 +1,9 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.8">
+  <compounddef id="indexpage" kind="page">
+    <compoundname>index</compoundname>
+    <title>GNU Radio&apos;s ACARS Package</title>
+    <detaileddescription>
+<para>Welcome to the GNU Radio ACARS Block</para><para>This is the intro page for the Doxygen manual generated for the ACARS block (<ref refid="main__page_8dox" kindref="compound">docs/doxygen/other/main_page.dox</ref>). Edit it to add more detailed documentation about the new GNU Radio modules contained in this project. </para>    </detaileddescription>
+  </compounddef>
+</doxygen>

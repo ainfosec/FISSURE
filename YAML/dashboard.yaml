@@ -1,0 +1,81 @@
+# Message Types and Verification for Messages sent to/from Dashboard
+Identifier: Dashboard
+
+
+# The Generic Categories for Messages
+Message Types:
+    - Heartbeats # Do we need separate channels for these (or for each component)
+    - Status
+    - Wideband
+    - SOI
+    - Commands
+
+ 
+# The Format to Follow for each Message Type
+Schema: 
+      Heartbeats: '$Identifier: $MessageName $Time'
+      Status: '$Identifier: $MessageName $Parameters'
+      SOI: '$Identifier: $MessageName $ModulationType $Frequency $Power $Bandwidth $Continuous $StartFrequency $EndFrequency $Timestamp $Confidence'    
+      Wideband: '$Identifier: $MessageName $Frequency $Power $Timestamp'  
+      Commands: '$Identifier: $MessageName $Parameters'
+      Set: '$Identifier: $Set $Variable $Value'
+
+
+# Message Names
+Status:
+     - Connected
+     - Disconnected
+     - Exit Connect Loop
+     - Set Recommended Flow Graphs
+     - Full Library
+     - Flow Graph Finished
+     - Flow Graph Started
+     - SOI Chosen
+     - Starting PD
+     - Detector Flow Graph Error
+     - Flow Graph Error
+     - Flow Graph Finished IQ
+     - Flow Graph Finished IQ Playback
+     - Flow Graph Finished IQ Inspection
+     - Flow Graph Finished Sniffer
+     - Flow Graph Started IQ
+     - Flow Graph Started IQ Playback
+     - Flow Graph Started IQ Inspection
+     - Flow Graph Started Sniffer
+     - Multi-Stage Attack Finished
+     - Archive Playlist Finished
+     - Found Preambles
+     - Captured Preamble Stats
+     - Set Window Parameters  # ???
+     - Found Preambles in Library 
+     - Slice By Preamble Return
+     - Buffer Size
+     - Entropy Return
+     - BandID
+     - Connect to FGE
+     - Archive Playlist Position
+
+
+Heartbeats: 
+     - Heartbeat 
+
+SOI:
+     - Signal Classification
+
+Wideband:
+     - Signal Found
+
+
+# Callback to Function Lookup
+
+#Function/Parameter Verification 
+
+
+
+
+
+
+
+
+
+       

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<block>
+  <name>Burst Source</name>
+  <key>gsm_burst_source</key>
+  <import>import grgsm</import>
+  <make>grgsm.burst_source($framenumbers, $timeslots, $bursts)</make>
+
+  <param>
+    <name>Frame numbers</name>
+    <key>framenumbers</key>
+    <value>[]</value>
+    <type>int_vector</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>Timeslots</name>
+    <key>timeslots</key>
+    <value>[]</value>
+    <type>int_vector</type>
+    <hide>part</hide>
+  </param>
+
+  <param>
+    <name>Bursts</name>
+    <key>bursts</key>
+    <value>[[],]</value>
+    <type>raw</type>
+  </param>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+  </source>
+</block>

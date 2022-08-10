@@ -1,0 +1,57 @@
+<block>
+  <name>Clock Offset Corrector Tagged</name>
+  <key>gsm_clock_offset_corrector_tagged</key>
+  <import>import grgsm</import>
+  <make>grgsm.clock_offset_corrector_tagged(
+    fc=$fc,
+    samp_rate_in=$samp_rate_in,
+    ppm=$ppm,
+    osr=$osr
+)</make>
+  <callback>set_fc($fc)</callback>
+  <callback>set_ppm($ppm)</callback>
+  <callback>set_samp_rate_in($samp_rate_in)</callback>
+  <callback>set_osr($osr)</callback>
+  <param>
+    <name>fc</name>
+    <key>fc</key>
+    <value>936.6e6</value>
+    <type>raw</type>
+  </param>
+  <param>
+    <name>ppm</name>
+    <key>ppm</key>
+    <value>0</value>
+    <type>raw</type>
+  </param>
+  <param>
+    <name>samp_rate_in</name>
+    <key>samp_rate_in</key>
+    <value>1625000.0/6.0*4.0</value>
+    <type>raw</type>
+  </param>
+  <param>
+    <name>OSR</name>
+    <key>osr</key>
+    <value>osr</value>
+    <type>raw</type>
+  </param>
+  <sink>
+    <name>ctrl</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+    <vlen>1</vlen>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>complex</type>
+    <vlen>1</vlen>
+  </source>
+  <doc>Piotr Krysik
+Clock offset corrector with blocks that use tags to switch offsets
+  </doc>
+</block>

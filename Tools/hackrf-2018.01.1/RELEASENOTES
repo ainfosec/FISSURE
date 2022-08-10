@@ -1,0 +1,195 @@
+HackRF 2018.01.1 Release Notes
+
+This is a firmware maintenance release that improves reliability of HackRF One
+when booting from the DFU bootloader.  If you do not frequently use DFU boot,
+there is no reason to upgrade to this release.
+
+
+==============================
+HackRF 2017.02.1 Release Notes
+
+To upgrade to this release, you must update libhackrf and hackrf-tools on your
+host computer.  You must also update firmware on your HackRF.  It is important
+to update both the host code and firmware for this release to work properly.
+If you only update one or the other, you may experience unpredictable behavior.
+
+Major changes in this release include:
+
+- Sweep mode: A new firmware function enables wideband spectrum monitoring by
+  rapidly retuning the radio without requiring individual tuning requests from
+  the host computer.  The new hackrf_sweep utility demonstrates this function,
+  allowing you to collect spectrum measurements at a sweep rate of 8 GHz per
+  second.  Thanks to Mike Walters, author of inspectrum, for getting this
+  feature working!
+
+- Hardware synchronization: It is now possible to wire the expansion headers of
+  two or more HackRF Ones together so that they start sampling at the same
+  time.  This is advantageous during phase coherent operation with clock
+  synchronized HackRFs.  See the -H option of hackrf_transfer.  Thank you, Mike
+  Davis!
+
+- A new utility, hackrf_debug, replaces three older debug utilities,
+  hackrf_si5351c, hackrf_max2837, and hackrf_rffc5071.
+
+- Power consumption has been reduced by turning off some microcontroller
+  features we weren't using.
+
+There have been many more enhancements and bug fixes.  For a full list of
+changes, see the git log.
+
+Special thanks to Dominic Spill who has taken over much of the software
+development effort and has helped with nearly every improvement since the
+previous release!
+
+
+==============================
+HackRF 2015.07.2 Release Notes
+
+Bonus release!  This release contains fixes for CMake configuration bugs that
+affected installation of 2015.07.1 on some platforms.
+
+
+==============================
+HackRF 2015.07.1 Release Notes
+
+To upgrade to this release, you must update libhackrf and hackrf-tools on your
+host computer.  You must also update firmware on your HackRF.  It is important
+to update both the host code and firmware for this release to work properly.
+If you only update one or the other, you may experience unpredictable
+behaviour.
+
+Major changes in this release include:
+
+- Multiple HackRF support.  Users with more than one HackRF can target a
+  specific device from software using the device serial number.  The serial
+  number is easy to find with hackrf_info.  Thanks, Hessu!
+
+- Linux kernel module detaching.  A work-around to avoid the unofficial HackRF
+  kernel module in recent kernel versions that has been causing problems for
+  many users.
+
+- Updating the CPLD is now possible from Windows.  There is no CPLD update with
+  this release, but Windows users should now be able to update.
+
+- Support for rad1o hardware, the badge of CCCamp 2015 based on HackRF One.
+  This package contains host software supporting rad1o; for firmware and other
+  resources, refer to: https://rad1o.badge.events.ccc.de/
+
+There have been many more enhancements and bug fixes, for a full list of
+changes, see the git log.
+
+
+==============================
+HackRF 2014.08.1 Release Notes
+
+To upgrade to this release, you must update libhackrf and hackrf-tools on your
+host computer.  You must also update firmware and the CPLD.  It is important to
+update both the firmware and the CPLD for this release to work properly.  If
+you only update one or the other, you may experience an inverted baseband
+spectrum.
+
+For a complete list of changes, see the git log.  Highlights include:
+
+- HackRF now uses high side injection when tuning to frequencies below 2150
+  MHz.  This significantly reduces images on both RX and TX that resulted from
+  harmonics of the front-end local oscillator.  If you ever wondered why you
+  were picking up broadcast FM stations at frequencies well outside the FM
+  broadcast band, they were probably such images.
+
+- A CLKIN firmware bug was fixed.  The bug prevented switching to the external
+  clock source.  Switching now works automatically at the start of every TX or
+  RX operation.  If a clock signal is detected on CLKIN, that external source
+  is used.  If a clock signal is not detected on CLKIN, the internal crystal is
+  used.
+
+- hackrf_transfer now has a signal source mode that transmits a CW signal.
+  Thanks, dovecho!
+
+- The optional udev rules file was moved from hackrf-tools to libhackrf.
+
+
+==============================
+HackRF 2014.04.1 Release Notes
+
+To upgrade to this release, you must install updates to the software on your
+host computer including libhackrf, hackrf-tools, and any other software (e.g.
+gr-osmosdr) that uses libhackrf.  You must also update firmware and the CPLD
+(which should be updated after firmware and host software is updated).
+
+For a complete list of changes, see the git log.  Highlights include:
+
+- The sample format has changed from unsigned 8 bit integers to signed 8 bit
+  integers.  This affects all HackRF software and changes the file format used
+  by hackrf_transfer.  If you need to convert a file from unsigned bytes to
+  signed bytes, I recommend sox:
+
+  $ sox old.ub new.sb
+
+- HackRF One is now supported and is the default target platform when compiling
+  firmware.  To compile firmware for Jawbreaker, set the BOARD variable:
+
+  $ make -e BOARD=JAWBREAKER
+
+- HackRF One hardware design and documentation are complete.  It is now the
+  preferred platform.
+
+- Automatic clock synchronization is enabled in the firmware.  To activate
+  clock synchronization, simply connect an SMA cable from CLKOUT on one HackRF
+  One to CLKIN on another HackRF One.  The clock signal is a 10 MHz square wave
+  at 3.3 V DC.  This also works on Jawbreaker but requires the installation of
+  SMA connectors and a few other components noted in the schematic diagram.
+
+- The automatic tuning algorithm is improved for frequencies above 2150 MHz.
+  The algorithm (in firmware) automatically avoids spurs caused by harmonic
+  relationships between oscillator frequencies in the analog RF section.
+  Similar improvements below 2150 MHz will require further effort.
+
+- An explicit tuning option is now available to select tuning parameters
+  different from those chosen by the automatic tuning algorithm.  Automatic
+  tuning should be preferred for most use cases, but advanced users can use
+  explicit tuning when there is a need, for example, to avoid a particular
+  local oscillator frequency for a specific application.  Explicit tuning is
+  implemented only in hackrf_transfer so far.
+
+- Antenna port power on HackRF One can be enabled or disabled during RX or TX.
+  This is implemented in hackrf_transfer.  When activated, 3.0 to 3.3 V DC is
+  supplied to the antenna port.  This can safely supply up to 50 mA, enabling
+  equipment including some active antennas.
+
+- The firmware compilation and installation instructions have changed.  See
+  firmware/README and firmware/cpld/README for details.
+
+Known bug: CPLD update does not work on Windows.  See:
+https://github.com/mossmann/hackrf/issues/113
+
+Many thanks to Ben Gamari and Jared Boone for their considerable efforts to
+improve the firmware in this release!
+
+
+==============================
+HackRF 2013.07.1 Release Notes
+
+A firmware update is required to take advantage of features of this release and
+for compatibility with future software based on this release.
+
+For a complete list of changes, see the git log.  Highlights include:
+
+- DC offset correction (greatly reducing the spike seen in the center of an FFT
+  display)
+- Intermediate Frequency (IF) selection
+
+
+==============================
+HackRF 2013.06.1 Release Notes
+
+This is the first release of the HackRF project.
+
+This release package is simply a copy of the git repository with the addition
+of a binary firmware image (in the firmware-bin directory) that may be used
+to upgrade the firmware on a HackRF Jawbreaker.  For instructions, see:
+
+https://github.com/mossmann/hackrf/wiki/Updating-Firmware
+
+The git repository is located at:
+
+https://github.com/mossmann/hackrf

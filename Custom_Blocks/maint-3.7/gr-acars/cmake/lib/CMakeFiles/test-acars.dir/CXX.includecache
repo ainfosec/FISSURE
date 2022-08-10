@@ -1,0 +1,34 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/jmfriedt/sdr/gr-acars/lib/qa_acars.cc
+qa_acars.h
+/home/jmfriedt/sdr/gr-acars/lib/qa_acars.h
+
+/home/jmfriedt/sdr/gr-acars/lib/qa_acars.h
+gnuradio/attributes.h
+-
+cppunit/TestSuite.h
+-
+
+/home/jmfriedt/sdr/gr-acars/lib/test_acars.cc
+config.h
+/home/jmfriedt/sdr/gr-acars/lib/config.h
+cppunit/TextTestRunner.h
+-
+cppunit/XmlOutputter.h
+-
+gnuradio/unittests.h
+-
+qa_acars.h
+/home/jmfriedt/sdr/gr-acars/lib/qa_acars.h
+iostream
+-
+fstream
+-
+

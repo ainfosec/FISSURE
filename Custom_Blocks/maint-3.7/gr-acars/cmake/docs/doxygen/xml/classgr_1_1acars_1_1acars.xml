@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.8">
+  <compounddef id="classgr_1_1acars_1_1acars" kind="class" prot="public" abstract="yes">
+    <compoundname>gr::acars::acars</compoundname>
+    <basecompoundref prot="public" virt="virtual">block</basecompoundref>
+    <basecompoundref prot="public" virt="virtual">block</basecompoundref>
+    <derivedcompoundref refid="classgr_1_1acars_1_1acars__impl" prot="public" virt="non-virtual">gr::acars::acars_impl</derivedcompoundref>
+    <derivedcompoundref refid="classgr_1_1acars_1_1acars__impl" prot="public" virt="non-virtual">gr::acars::acars_impl</derivedcompoundref>
+    <includes refid="acars_8h" local="no">acars.h</includes>
+      <sectiondef kind="public-type">
+      <memberdef kind="typedef" id="classgr_1_1acars_1_1acars_1aae82c0e8acf2def03b12fcea71849307" prot="public" static="no">
+        <type>boost::shared_ptr&lt; <ref refid="classgr_1_1acars_1_1acars" kindref="compound">acars</ref> &gt;</type>
+        <definition>typedef boost::shared_ptr&lt;acars&gt; gr::acars::acars::sptr</definition>
+        <argsstring></argsstring>
+        <name>sptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/include/acars/acars.h" line="39" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/include/acars/acars.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="typedef" id="classgr_1_1acars_1_1acars_1aae82c0e8acf2def03b12fcea71849307" prot="public" static="no">
+        <type>boost::shared_ptr&lt; <ref refid="classgr_1_1acars_1_1acars" kindref="compound">acars</ref> &gt;</type>
+        <definition>typedef boost::shared_ptr&lt;acars&gt; gr::acars::acars::sptr</definition>
+        <argsstring></argsstring>
+        <name>sptr</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/include/acars/acars_original.h" line="39" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/include/acars/acars_original.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-static-func">
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars_1affccace259d77bb26a7a22d450208346" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classgr_1_1acars_1_1acars_1aae82c0e8acf2def03b12fcea71849307" kindref="member">sptr</ref></type>
+        <definition>static sptr gr::acars::acars::make</definition>
+        <argsstring>(float, char *)</argsstring>
+        <name>make</name>
+        <param>
+          <type>float</type>
+        </param>
+        <param>
+          <type>char *</type>
+        </param>
+        <briefdescription>
+<para>Return a shared_ptr to a new instance of <ref refid="classgr_1_1acars_1_1acars" kindref="compound">acars::acars</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>To avoid accidental use of raw pointers, <ref refid="classgr_1_1acars_1_1acars" kindref="compound">acars::acars</ref>&apos;s constructor is in a private implementation class. <ref refid="classgr_1_1acars_1_1acars_1affccace259d77bb26a7a22d450208346" kindref="member">acars::acars::make</ref> is the public interface for creating new instances. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/include/acars/acars.h" line="49" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars_1a217e4e4bcc1d840bce8b15546ec76745" prot="public" static="yes" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type><ref refid="classgr_1_1acars_1_1acars_1aae82c0e8acf2def03b12fcea71849307" kindref="member">sptr</ref></type>
+        <definition>static sptr gr::acars::acars::make</definition>
+        <argsstring>()</argsstring>
+        <name>make</name>
+        <briefdescription>
+<para>Return a shared_ptr to a new instance of <ref refid="classgr_1_1acars_1_1acars" kindref="compound">acars::acars</ref>. </para>        </briefdescription>
+        <detaileddescription>
+<para>To avoid accidental use of raw pointers, <ref refid="classgr_1_1acars_1_1acars" kindref="compound">acars::acars</ref>&apos;s constructor is in a private implementation class. <ref refid="classgr_1_1acars_1_1acars_1affccace259d77bb26a7a22d450208346" kindref="member">acars::acars::make</ref> is the public interface for creating new instances. </para>        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/include/acars/acars_original.h" line="49" column="1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars_1a454a0d870cc5cdca5d3fe396c13bcf36" prot="public" static="no" const="no" explicit="no" inline="no" virt="pure-virtual">
+        <type>void</type>
+        <definition>virtual void gr::acars::acars::set_seuil</definition>
+        <argsstring>(float)=0</argsstring>
+        <name>set_seuil</name>
+        <reimplementedby refid="classgr_1_1acars_1_1acars__impl_1a6061ba1f6dc96bf46c9bc2f5e86bd700">set_seuil</reimplementedby>
+        <param>
+          <type>float</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/include/acars/acars.h" line="50" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+<para>&lt;+description of block+&gt; </para>    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="8">
+        <label>gr::acars::acars</label>
+        <link refid="classgr_1_1acars_1_1acars"/>
+        <childnode refid="9" relation="public-inheritance">
+        </childnode>
+        <childnode refid="10" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="11">
+        <label>gr::acars::acars_impl</label>
+        <link refid="classgr_1_1acars_1_1acars__impl"/>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+        <childnode refid="8" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="10">
+        <label>block</label>
+      </node>
+      <node id="9">
+        <label>gr::block</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="12">
+        <label>gr::acars::acars</label>
+        <link refid="classgr_1_1acars_1_1acars"/>
+        <childnode refid="13" relation="public-inheritance">
+        </childnode>
+        <childnode refid="14" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="14">
+        <label>block</label>
+      </node>
+      <node id="13">
+        <label>gr::block</label>
+      </node>
+    </collaborationgraph>
+    <location file="/home/jmfriedt/sdr/gr-acars/include/acars/acars.h" line="37" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/include/acars/acars.h" bodystart="36" bodyend="51"/>
+    <listofallmembers>
+      <member refid="classgr_1_1acars_1_1acars_1affccace259d77bb26a7a22d450208346" prot="public" virt="non-virtual"><scope>gr::acars::acars</scope><name>make</name></member>
+      <member refid="classgr_1_1acars_1_1acars_1a217e4e4bcc1d840bce8b15546ec76745" prot="public" virt="non-virtual"><scope>gr::acars::acars</scope><name>make</name></member>
+      <member refid="classgr_1_1acars_1_1acars_1a454a0d870cc5cdca5d3fe396c13bcf36" prot="public" virt="pure-virtual"><scope>gr::acars::acars</scope><name>set_seuil</name></member>
+      <member refid="classgr_1_1acars_1_1acars_1aae82c0e8acf2def03b12fcea71849307" prot="public" virt="non-virtual"><scope>gr::acars::acars</scope><name>sptr</name></member>
+      <member refid="classgr_1_1acars_1_1acars_1aae82c0e8acf2def03b12fcea71849307" prot="public" virt="non-virtual"><scope>gr::acars::acars</scope><name>sptr</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

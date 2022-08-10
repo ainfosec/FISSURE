@@ -1,0 +1,1 @@
+/usr/bin/c++   -O3 -DNDEBUG    CMakeFiles/_acars_swig_doc_tag.dir/_acars_swig_doc_tag.cpp.o  -o _acars_swig_doc_tag -rdynamic /usr/local/lib/libfftw3.a 

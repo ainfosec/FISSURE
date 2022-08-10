@@ -1,0 +1,38 @@
+<?xml version="1.0"?>
+<block>
+  <name>J2497 Generator</name>
+  <key>J2497_encoder</key>
+  <category>[J2497]</category>
+  <import>import J2497</import>
+  <make>J2497.encoder($mid,$data,$interval,$sample_rate)</make>
+  
+  <param>
+    <name>MID (Hex)</name>
+    <key>mid</key>
+    <value>"0A"</value>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Data (Hex)</name>
+    <key>data</key>
+    <value>"00"</value>
+    <type>string</type>
+  </param>
+  <param>
+    <name>Interval (s)</name>
+    <key>interval</key>
+    <value>1.0</value>
+    <type>float</type>
+  </param>
+  <param>
+    <name>Sample Rate</name>
+    <key>sample_rate</key>
+    <value></value>
+    <type>float</type>
+  </param>
+  
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+</block>

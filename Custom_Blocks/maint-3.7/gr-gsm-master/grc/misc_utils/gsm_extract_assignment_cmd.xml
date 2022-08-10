@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<block>
+  <name>Extract Assignment Command</name>
+  <key>gsm_extract_assignment_cmd</key>
+  <import>import grgsm</import>
+  <make>grgsm.extract_assignment_cmd()</make>
+  <sink>
+    <name>msgs</name>
+    <type>message</type>
+  </sink>
+  <doc>
+Extracts Assignemnt Commands.
+
+Input: decoded control channel messages
+
+The information can be retrieved using following function:
+get_assignment_commands()
+
+</doc>
+</block>

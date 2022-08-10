@@ -1,0 +1,520 @@
+#!/usr/bin/env python
+#
+# Copyright 2009 Joshua Wright, Michael Ossmann
+# 
+# This file is part of gr-bluetooth
+# 
+# gr-bluetooth is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+# 
+# gr-bluetooth is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+# 
+# You should have received a copy of the GNU General Public License
+# along with gr-bluetooth; see the file COPYING.  If not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street,
+# Boston, MA 02110-1301, USA.
+
+import sys
+import struct
+import time
+from pcapdump.pcapdump import *
+
+DLT_EN10MB = 1
+DLT_BLUETOOTH_HCI_H4 = 187
+ELLISYS_CSV_HDR = "\"Depth\",\"Time\",\"Name\",\"Data\"\x0d\x0a"
+ELLISYS_HID_INPUT = "HID Input 1"
+USBHID_MAP = {
+    0x04 : "a",
+    0x05 : "b",
+    0x06 : "c",
+    0x07 : "d",
+    0x08 : "e",
+    0x09 : "f",
+    0x0A : "g",
+    0x0B : "h",
+    0x0C : "i",
+    0x0D : "j",
+    0x0E : "k",
+    0x0F : "l",
+    0x10 : "m",
+    0x11 : "n",
+    0x12 : "o",
+    0x13 : "p",
+    0x14 : "q",
+    0x15 : "r",
+    0x16 : "s",
+    0x17 : "t",
+    0x18 : "u",
+    0x19 : "v",
+    0x1A : "w",
+    0x1B : "x",
+    0x1C : "y",
+    0x1D : "z",
+    0x1E : "1",
+    0x1F : "2",
+    0x20 : "3",
+    0x21 : "4",
+    0x22 : "5",
+    0x23 : "6",
+    0x24 : "7",
+    0x25 : "8",
+    0x26 : "9",
+    0x27 : "0",
+    0x28 : "[Return]\n",
+    0x29 : "[Esc]",
+    0x2A : "[Backspace]",
+    0x2B : "[Tab]\t",
+    0x2C : " ",
+    0x2D : "-",
+    0x2E : "=",
+    0x2F : "[",
+    0x30 : "]",
+    0x31 : "\\",
+    0x32 : "#",
+    0x33 : ";",
+    0x34 : "'",
+    0x35 : "[Grave Accent]",
+    0x36 : ",",
+    0x37 : ".",
+    0x38 : "/",
+    0x39 : "[Caps Lock]",
+    0x3A : "[F1]",
+    0x3B : "[F2]",
+    0x3C : "[F3]",
+    0x3D : "[F4]",
+    0x3E : "[F5]",
+    0x3F : "[F6]",
+    0x40 : "[F7]",
+    0x41 : "[F8]",
+    0x42 : "[F9]",
+    0x43 : "[F10]",
+    0x44 : "[F11]",
+    0x45 : "[F12]",
+    0x46 : "[PrintScreen]",
+    0x47 : "[Scroll]",
+    0x48 : "[Pause]",
+    0x49 : "[Insert]",
+    0x4A : "[Home]",
+    0x4B : "[PageUp]",
+    0x4C : "[Delete]",
+    0x4D : "[End]",
+    0x4E : "[PageDown]",
+    0x4F : "[RightArrow]",
+    0x50 : "[LeftArrow]",
+    0x51 : "[DownArrow]",
+    0x52 : "[UpArrow]",
+    0x53 : "[Keypad Num Lock and Clear]",
+    0x54 : "[Keypad /]",
+    0x55 : "[Keypad *]",
+    0x56 : "[Keypad -]",
+    0x57 : "[Keypad +]",
+    0x58 : "[Keypad Enter]\n",
+    0x59 : "[Keypad 1 and End]",
+    0x5A : "[Keypad 2 and Down Arrow]",
+    0x5B : "[Keypad 3 and PageDn]",
+    0x5C : "[Keypad 4 and Left Arrow]",
+    0x5D : "[Keypad 5]",
+    0x5E : "[Keypad 6 and Right Arrow]",
+    0x5F : "[Keypad 7 and Home]",
+    0x60 : "[Keypad 8 and Up Arrow]",
+    0x61 : "[Keypad 9 and PageUp]",
+    0x62 : "[Keypad 0 and Insert]",
+    0x63 : "[Keypad . and Delete]",
+    0x64 : "\\",
+    0x65 : "[WinKey]",
+    0x66 : "[Power9]",
+    0x67 : "[Keypad =]",
+    0x68 : "[F13]",
+    0x69 : "[F14]",
+    0x6A : "[F15]",
+    0x6B : "[F16]",
+    0x6C : "[F17]",
+    0x6D : "[F18]",
+    0x6E : "[F19]",
+    0x6F : "[F20]",
+    0x70 : "[F21]",
+    0x71 : "[F22]",
+    0x72 : "[F23]",
+    0x73 : "[F24]",
+    0x74 : "[Execute]",
+    0x75 : "[Help]",
+    0x76 : "[Menu]",
+    0x77 : "[Select]",
+    0x78 : "[Stop]",
+    0x79 : "[Again]",
+    0x7A : "[Undo]",
+    0x7B : "[Cut]",
+    0x7C : "[Copy]",
+    0x7D : "[Paste]",
+    0x7E : "[Find]",
+    0x7F : "[Mute]",
+    0x80 : "[Volume Up]",
+    0x81 : "[Volume Down]",
+    0x82 : "[Locking Caps Lock]",
+    0x83 : "[Locking Num Lock]",
+    0x84 : "[Locking Scroll Lock]",
+    0x85 : "[Keypad Comma]",
+    0x86 : "[Keypad Equal]",
+    0x87 : "[International1]",
+    0x88 : "[International2]",
+    0x89 : "[International3]",
+    0x8A : "[International4]",
+    0x8B : "[International5]",
+    0x8C : "[International6]",
+    0x8D : "[International7]",
+    0x8E : "[International8]",
+    0x8F : "[International9]",
+    0x90 : "[LANG1]",
+    0x91 : "[LANG2]",
+    0x92 : "[LANG3]",
+    0x93 : "[LANG4]",
+    0x94 : "[LANG5]",
+    0x95 : "[LANG6]",
+    0x96 : "[LANG7]",
+    0x97 : "[LANG8]",
+    0x98 : "[LANG9]",
+    0x99 : "[Alternate Erase]",
+    0x9A : "[SysReq/Attention]",
+    0x9B : "[Cancel]",
+    0x9C : "[Clear]",
+    0x9D : "[Prior]",
+    0x9E : "[Return]\n",
+    0x9F : "[Separator]",
+    0xA0 : "[Out]",
+    0xA1 : "[Oper]",
+    0xA2 : "[Clear/Again]",
+    0xA3 : "[CrSel/Props]",
+    0xA4 : "[ExSel]",
+    0xB0 : "[Keypad 00]",
+    0xB1 : "[Keypad 000]",
+    0xB2 : "[Thousands Separator]",
+    0xB3 : "[Decimal Separator]",
+    0xB4 : "[Currency Unit]",
+    0xB5 : "[Currency Sub-unit]",
+    0xB6 : "[Keypad (]",
+    0xB7 : "[Keypad )]",
+    0xB8 : "[Keypad {]",
+    0xB9 : "[Keypad }]",
+    0xBA : "[Keypad Tab]\t",
+    0xBB : "[Keypad Backspace]",
+    0xBC : "[Keypad A]",
+    0xBD : "[Keypad B]",
+    0xBE : "[Keypad C]",
+    0xBF : "[Keypad D]",
+    0xC0 : "[Keypad E]",
+    0xC1 : "[Keypad F]",
+    0xC2 : "[Keypad XOR]",
+    0xC3 : "[Keypad ^]",
+    0xC4 : "[Keypad %]",
+    0xC5 : "[Keypad <]",
+    0xC6 : "[Keypad >]",
+    0xC7 : "[Keypad &]",
+    0xC8 : "[Keypad &&]",
+    0xC9 : "[Keypad |]",
+    0xCA : "[Keypad ||]",
+    0xCB : "[Keypad :]",
+    0xCC : "[Keypad #]",
+    0xCD : "[Keypad Space]",
+    0xCE : "[Keypad @]",
+    0xCF : "[Keypad !]",
+    0xD0 : "[Keypad Memory Store]",
+    0xD1 : "[Keypad Memory Recall]",
+    0xD2 : "[Keypad Memory Clear]",
+    0xD3 : "[Keypad Memory Add]",
+    0xD4 : "[Keypad Memory Subtract]",
+    0xD5 : "[Keypad Memory Multiply]",
+    0xD6 : "[Keypad Memory Divide]",
+    0xD7 : "[Keypad +/-]",
+    0xD8 : "[Keypad Clear]",
+    0xD9 : "[Keypad Clear Entry]",
+    0xDA : "[Keypad Binary]",
+    0xDB : "[Keypad Octal]",
+    0xDC : "[Keypad Decimal]",
+    0xDD : "[Keypad Hexadecimal]",
+    0xE0 : "[LeftControl]",
+    0xE1 : "[LeftShift]",
+    0xE2 : "[LeftAlt]",
+    0xE3 : "[LeftWinKey]",
+    0xE4 : "[RightControl]",
+    0xE5 : "[RightShift]",
+    0xE6 : "[RightAlt]",
+    0xE7 : "[RightWinKey]"
+}
+
+# some keycodes represent different things when Shift is held down
+USBHID_SHIFT_MAP = {
+    0x04 : "A",
+    0x05 : "B",
+    0x06 : "C",
+    0x07 : "D",
+    0x08 : "E",
+    0x09 : "F",
+    0x0A : "G",
+    0x0B : "H",
+    0x0C : "I",
+    0x0D : "J",
+    0x0E : "K",
+    0x0F : "L",
+    0x10 : "M",
+    0x11 : "N",
+    0x12 : "O",
+    0x13 : "P",
+    0x14 : "Q",
+    0x15 : "R",
+    0x16 : "S",
+    0x17 : "T",
+    0x18 : "U",
+    0x19 : "V",
+    0x1A : "W",
+    0x1B : "X",
+    0x1C : "Y",
+    0x1D : "Z",
+    0x1E : "!",
+    0x1F : "@",
+    0x20 : "#",
+    0x21 : "$",
+    0x22 : "%",
+    0x23 : "^",
+    0x24 : "&",
+    0x25 : "*",
+    0x26 : "(",
+    0x27 : ")",
+    0x2D : "_",
+    0x2E : "+",
+    0x2F : "{",
+    0x30 : "}",
+    0x31 : "|",
+    0x32 : "~",
+    0x33 : ":",
+    0x34 : "\"",
+    0x35 : "~",
+    0x36 : "<",
+    0x37 : ">",
+    0x38 : "?",
+    0x64 : "|"
+}
+
+# global variable to track currently depressed keys
+active_keys = []
+
+def hid2ascii(scancode, shift):
+    '''
+    Convert the specified scancode value to the ASCII equivalent using the
+    USBHID_MAP list.
+    '''
+    if shift:
+        try:
+            code = USBHID_SHIFT_MAP[scancode]
+            return code
+        except KeyError:
+            pass
+    try:
+        code = USBHID_MAP[scancode]
+    except KeyError:
+        return "[Reserved]" 
+    return code
+
+def usage():
+    print >>sys.stderr, "Usage: btaptap [-r pcapfile.pcap | -e ellisysfile.csv] [-c count] [-h]\n"
+    sys.exit(0)
+
+def parse_l2cap_keydata(l2cappkt):
+    global active_keys
+
+    TRANS_HDR_IN_DATA = 0xA1
+    REPORT_ID_KEYBOARD = 0x01
+    CTRL = 1
+    SHIFT = 2
+    ALT = 4
+    GUI = 8
+
+    # Keyboard keystrokes are only seen in L2CAP packets at least 10 bytes long
+    l2clen = (ord(l2cappkt[1]) << 8) | ord(l2cappkt[0])
+    if l2clen < 10:
+        return
+
+    # Keyboard keystrokes are only carried by Channel ID >= 0x40
+    cid = (ord(l2cappkt[3]) << 8) | ord(l2cappkt[2])
+    if cid < 0x40:
+        return
+    # Ideally we would check for the particular CID for the HID_INTERRUPT
+    # channel, but we don't handle the negotiation (and may not have even
+    # seen it).
+
+    # Transaction Header should indicate input data
+    thdr = ord(l2cappkt[4])
+    if thdr != TRANS_HDR_IN_DATA:
+        return
+
+    # Report ID should indicate this is a keyboard
+    rid = ord(l2cappkt[5])
+    if rid != REPORT_ID_KEYBOARD:
+        return
+
+    # This byte describes modifier key status (one bit per key)
+    mod = ord(l2cappkt[6])
+
+    # We don't care whether left or right modifier keys are pressed, so we
+    # combine the status bits.
+    leftmod = mod & 0x0f
+    rightmod = (mod & 0xf0) >> 4
+    mod = leftmod | rightmod
+
+    # up to six keys can be reported at once
+    keycodes = []
+    #for byte in range(8,14):
+    for byte in range(8,11):
+        keystroke = ord(l2cappkt[byte])
+        if keystroke != 0x00:
+            keycodes.append(keystroke)
+    
+    for keystroke in keycodes:
+        # don't repeat keys that are still held down
+        if active_keys.count(keystroke) == 0:
+
+            if (mod & CTRL):
+                sys.stdout.write("CTRL^")
+            if (mod & ALT):
+                sys.stdout.write("ALT^")
+            if (mod & GUI): # e.g. Windows key
+                sys.stdout.write("GUI^")
+
+            sys.stdout.write(hid2ascii(keystroke, mod & SHIFT))
+
+    active_keys = keycodes
+
+def parse_ellisys_export(exportfile):
+    try:
+        cap = open(exportfile, "r")
+    except (OSError, IOError) as e:
+        print >>sys.stderr, "Unable to open Ellisys capture file."
+        return
+
+    # Check to make sure the CSV file header matches out expectations
+    hdr=cap.readline()
+    if (hdr != ELLISYS_CSV_HDR):
+        print >>sys.stderr, "Invalid CSV file (does not match Ellisys export format)"
+        return
+
+    for packetline in cap.xreadlines():
+        try:
+            (edepth, etime, ename, edata) = packetline.replace('"', '').strip().split(",")
+        except ValueError:
+            continue
+
+        # We are only interedted in HID Input data
+        if (ename != ELLISYS_HID_INPUT): continue
+
+        parse_ellisys_keydata(edata)
+
+def parse_ellisys_keydata(payload):
+    TRANS_HDR_IN_DATA = "\xA1"
+    DEST_CHANNEL_ID = "\x06\x03"
+
+    # Convert space-separated hex into string
+    payload = payload.replace(' ','').decode("hex")
+
+    # The Ellisys CSV file format doesn't give us the L2CAP data, so we fake it here by adding
+    # a 2-byte length field, destination CID, and transaction header
+    packet = chr(len(payload)+1) + "\x00" + DEST_CHANNEL_ID + TRANS_HDR_IN_DATA + payload
+    parse_l2cap_keydata(packet)
+
+def parse_bb_keydata(packet):
+
+    BTBBHDR_TYPE_MASK = 0x78
+    BTBBHDR_TYPE_SHIFT = 3
+    BTBBHDR_TYPE_DM1 = 3
+    BTBBPAYLOADHDR_LLID_MASK = 0x03
+    BTBBPAYLOADHDR_LLID_SHIFT = 0
+    BTBBPAYLOADHDR_LEN_MASK = 0xF8
+    BTBBPAYLOADHDR_LEN_SHIFT = 3
+    LLID_L2CAP = 2
+
+    # Keyboard keystrokes are only seen in frames at least 40 bytes long
+    if len(packet) < 40:
+        return
+
+    # Keyboard keystrokes are only seen in DM1 frames
+    btbbhdr = packet[20:23]
+    type = (ord(btbbhdr[0]) & BTBBHDR_TYPE_MASK) >> BTBBHDR_TYPE_SHIFT
+    if type != BTBBHDR_TYPE_DM1:
+        return
+
+    # Keyboard keystrokes are only seen in L2CAP packets 14 bytes long
+    btbbpayloadhdr = ord(packet[23])
+    llid = btbbpayloadhdr & (BTBBPAYLOADHDR_LLID_MASK) >> BTBBPAYLOADHDR_LLID_SHIFT
+    l2clen = (btbbpayloadhdr & BTBBPAYLOADHDR_LEN_MASK) >> BTBBPAYLOADHDR_LEN_SHIFT
+    #print "Debug btbbpayloadhdr 0x%02x, llid %d, l2clen %d"%(btbbpayloadhdr, llid, l2clen)
+    if llid != LLID_L2CAP or l2clen < 14:
+        return
+
+    parse_l2cap_keydata(packet[24:38])
+
+def parse_hci_keydata(packet):
+
+    HCI_TYPE_ACL_DATA = 2
+
+    # Keyboard keystrokes are only seen in frames at least 19 bytes long
+    if len(packet) < 19:
+        return
+
+    # Keyboard keystrokes are only seen in ACL Data frames
+    type = ord(packet[0])
+    if type != HCI_TYPE_ACL_DATA:
+        return
+
+    parse_l2cap_keydata(packet[5:])
+
+if __name__ == '__main__':
+
+    arg_pcapfile = None
+    arg_ellisysfile = None
+    arg_count = -1
+    packetcount = 0
+
+    while len(sys.argv) > 1:
+        op = sys.argv.pop(1)
+        if op == '-r':
+            arg_pcapfile = sys.argv.pop(1)
+        if op == '-c':
+            arg_count = int(sys.argv.pop(1))
+        if op == '-e':
+            arg_ellisysfile = sys.argv.pop(1)
+        if op == '-h':
+            usage()
+            sys.exit(0)
+
+    if (arg_ellisysfile == None and arg_pcapfile == None):
+        print >>sys.stderr, "Must specify a libpcap capture or an Ellisys CSV file"
+        usage()
+        sys.exit(0)
+
+    if arg_pcapfile != None:
+        cap = PcapReader(arg_pcapfile)
+    
+        while arg_count != packetcount:
+            try:
+                (pheader, packet) = cap.pnext()
+                pkttime = pheader[0]
+                packetcount+=1
+        
+                if cap.datalink() == DLT_EN10MB:
+                    parse_bb_keydata(packet)
+                elif cap.datalink() == DLT_BLUETOOTH_HCI_H4:
+                    parse_hci_keydata(packet)
+                else:
+                    print >>sys.stderr, "Unsupported libpcap data link layer: %d\n" % cap.datalink()
+            except TypeError: # raised when pnext returns Null (end of capture)
+                break
+    
+        cap.close()
+
+    if arg_ellisysfile != None:
+        parse_ellisys_export(arg_ellisysfile)
+
+    print

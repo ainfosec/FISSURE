@@ -1,0 +1,51 @@
+<?xml version="1.0"?>
+<block>
+  <name>message_generator</name>
+  <key>garage_door_message_generator</key>
+  <category>garage_door</category>
+  <import>import garage_door</import>
+  <make>garage_door.message_generator($sample_rate,$dip_positions,$press_duration,$press_repetition_interval)</make>
+
+  <callback>set_sample_rate($sample_rate)</callback>
+  <callback>set_dip_positions($dip_positions)</callback>
+  <callback>set_press_duration($press_duration)</callback>
+  <callback>set_press_repetition_interval($press_repetition_interval)</callback>
+  
+  <param>
+    <name>Sample Rate</name>
+    <key>sample_rate</key>
+    <type>float</type>
+  </param>
+  
+  <param>
+    <name>DIP Positions</name>
+    <key>dip_positions</key>
+    <value>"0000011111"</value>
+    <type>string</type>    
+  </param>
+  
+  <param>
+    <name>Press Duration</name>
+    <key>press_duration</key>
+    <value>1</value>
+    <type>float</type>
+  </param>  
+
+  <param>
+    <name>Press Repetition Interval</name>
+    <key>press_repetition_interval</key>
+    <value>10</value>
+    <type>float</type>
+  </param>  
+  
+  <sink>
+    <name>in</name>
+    <type>complex</type>
+  </sink>
+
+
+  <source>
+    <name>out</name>
+    <type>complex</type>
+  </source>
+</block>

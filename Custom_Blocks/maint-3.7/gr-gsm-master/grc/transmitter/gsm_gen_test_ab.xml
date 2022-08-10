@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<block>
+  <name>Gen Test AB</name>
+  <key>gsm_gen_test_ab</key>
+  <import>import grgsm</import>
+  <make>grgsm.gen_test_ab()</make>
+
+  <sink>
+    <name>bursts_in</name>
+    <type>message</type>
+    <optional>1</optional>
+  </sink>
+
+  <source>
+    <name>bursts_out</name>
+    <type>message</type>
+    <optional>1</optional>
+  </source>
+</block>

@@ -1,0 +1,35 @@
+<?xml version="1.0"?>
+<block>
+  <name>CX Channel Hopper</name>
+  <key>gsm_cx_channel_hopper</key>
+  <import>import grgsm</import>
+  <make>grgsm.cx_channel_hopper($ma, $maio, $hsn)</make>
+  <param>
+    <name>MA</name>
+    <key>ma</key>
+    <value>[]</value>
+    <type>int_vector</type>
+  </param>
+
+  <param>
+    <name>MAIO</name>
+    <key>maio</key>
+    <type>int</type>
+  </param>
+
+  <param>
+    <name>HSN</name>
+    <key>hsn</key>
+    <type>int</type>
+  </param>
+
+  <sink>
+    <name>CX</name>
+    <type>message</type>
+  </sink>
+
+  <source>
+    <name>bursts</name>
+    <type>message</type>
+  </source>
+</block>

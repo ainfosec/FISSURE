@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<block>
+  <name>Layer 1 FM encoder: MP2</name>
+  <key>nrsc5_l1_fm_encoder_mp2</key>
+  <category>[NRSC-5]</category>
+  <import>import nrsc5</import>
+  <make>nrsc5.l1_fm_encoder(2)</make>
+  <sink>
+    <name>p1</name>
+    <type>byte</type>
+    <vlen>146176</vlen>
+  </sink>
+  <sink>
+    <name>p3</name>
+    <type>byte</type>
+    <vlen>2304</vlen>
+  </sink>
+  <sink>
+    <name>pids</name>
+    <type>byte</type>
+    <vlen>80</vlen>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+    <vlen>1048576</vlen>
+  </source>
+</block>

@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<block>
+  <name>Layer 2 encoder</name>
+  <key>nrsc5_l2_encoder</key>
+  <category>[NRSC-5]</category>
+  <import>import nrsc5</import>
+  <make>nrsc5.l2_encoder($num_progs, $first_prog, $size)</make>
+  <param>
+    <name>Programs</name>
+    <key>num_progs</key>
+    <value>1</value>
+    <type>int</type>
+  </param>
+  <param>
+    <name>First prog. no.</name>
+    <key>first_prog</key>
+    <value>0</value>
+    <type>int</type>
+  </param>
+  <param>
+    <name>Frame size</name>
+    <key>size</key>
+    <value>146176</value>
+    <type>int</type>
+    <option>
+      <name>146176</name>
+      <key>146176</key>
+    </option>
+    <option>
+      <name>109312</name>
+      <key>109312</key>
+    </option>
+    <option>
+      <name>72448</name>
+      <key>72448</key>
+    </option>
+    <option>
+      <name>18272</name>
+      <key>18272</key>
+    </option>
+    <option>
+      <name>9216</name>
+      <key>9216</key>
+    </option>
+    <option>
+      <name>4608</name>
+      <key>4608</key>
+    </option>
+    <option>
+      <name>2304</name>
+      <key>2304</key>
+    </option>
+  </param>
+  <check>0 &lt;= $first_prog &lt;= 7</check>
+  <check>1 &lt;= $num_progs &lt;= 8 - $first_prog</check>
+  <sink>
+    <name>hdc</name>
+    <type>byte</type>
+    <nports>$num_progs</nports>
+  </sink>
+  <sink>
+    <name>psd</name>
+    <type>byte</type>
+    <nports>$num_progs</nports>
+  </sink>
+  <source>
+    <name>out</name>
+    <type>byte</type>
+    <vlen>$size</vlen>
+  </source>
+</block>

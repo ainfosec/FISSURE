@@ -1,0 +1,734 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.8">
+  <compounddef id="classgr_1_1acars_1_1acars__impl" kind="class" prot="public">
+    <compoundname>gr::acars::acars_impl</compoundname>
+    <basecompoundref refid="classgr_1_1acars_1_1acars" prot="public" virt="non-virtual">gr::acars::acars</basecompoundref>
+    <basecompoundref refid="classgr_1_1acars_1_1acars" prot="public" virt="non-virtual">gr::acars::acars</basecompoundref>
+    <includes refid="acars__impl_8h" local="no">acars_impl.h</includes>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a5f15d60488410d9dc49ed1b830f3b994" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::acars::acars_impl::_pos</definition>
+        <argsstring></argsstring>
+        <name>_pos</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="33" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="33" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a3332997174cda09569738b2123aa9045" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::acars::acars_impl::_Ntot</definition>
+        <argsstring></argsstring>
+        <name>_Ntot</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="34" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1aba074c9b7bd61ce4015ae27590a4502e" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::acars::acars_impl::_total</definition>
+        <argsstring></argsstring>
+        <name>_total</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="35" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="35" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1add094c40ea1f78755ea68f3efb8ef353" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::acars::acars_impl::_acq</definition>
+        <argsstring></argsstring>
+        <name>_acq</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="36" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="36" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a93b05ce3a236aac1b4c730bafc6077c0" prot="private" static="no" mutable="no">
+        <type>int</type>
+        <definition>int gr::acars::acars_impl::_filenum</definition>
+        <argsstring></argsstring>
+        <name>_filenum</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="37" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="37" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a9260aa4a4b41007fae8458618120336d" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float* gr::acars::acars_impl::_d</definition>
+        <argsstring></argsstring>
+        <name>_d</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="38" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a28c47dd665614664d595118e2c626af6" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float gr::acars::acars_impl::c2400[20]</definition>
+        <argsstring>[20]</argsstring>
+        <name>c2400</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="39" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1af26faac8d76a42b1384537cda7d88423" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float gr::acars::acars_impl::c1200[20]</definition>
+        <argsstring>[20]</argsstring>
+        <name>c1200</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="39" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="39" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a09912039e3fe85e39389a007919963c3" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float gr::acars::acars_impl::s2400[20]</definition>
+        <argsstring>[20]</argsstring>
+        <name>s2400</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="40" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1aee4c4a0463536ada30570ba512a8f963" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float gr::acars::acars_impl::s1200[20]</definition>
+        <argsstring>[20]</argsstring>
+        <name>s1200</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="40" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="40" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a406b26ffde21b8644b9352e435f8a8d5" prot="private" static="no" mutable="no">
+        <type>float</type>
+        <definition>float gr::acars::acars_impl::_seuil</definition>
+        <argsstring></argsstring>
+        <name>_seuil</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="41" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="41" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1ae9145a4849e36f73673d4c5256a632d1" prot="private" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char* gr::acars::acars_impl::_filename</definition>
+        <argsstring></argsstring>
+        <name>_filename</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="42" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="42" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1ae26ac2b91ccb3e317ec54b7e41be19a2" prot="private" static="no" mutable="no">
+        <type>FILE *</type>
+        <definition>FILE* gr::acars::acars_impl::_FICHIER</definition>
+        <argsstring></argsstring>
+        <name>_FICHIER</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="43" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="43" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1ad96a1b52d6f38714ee081399b97389ab" prot="private" static="no" mutable="no">
+        <type>fftw_complex *</type>
+        <definition>fftw_complex* gr::acars::acars_impl::_c2400x13</definition>
+        <argsstring></argsstring>
+        <name>_c2400x13</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="44" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1ada9332bfd64b7c40d50d30e887d60618" prot="private" static="no" mutable="no">
+        <type>fftw_complex *</type>
+        <definition>fftw_complex * gr::acars::acars_impl::_fc2400x13</definition>
+        <argsstring></argsstring>
+        <name>_fc2400x13</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="44" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1ae9aabd0227f7d5a6fc19bf75c4b29c17" prot="private" static="no" mutable="no">
+        <type>fftw_complex *</type>
+        <definition>fftw_complex * gr::acars::acars_impl::_fd</definition>
+        <argsstring></argsstring>
+        <name>_fd</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="44" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a364a19807e76ef190128ad73a61adbfe" prot="private" static="no" mutable="no">
+        <type>fftw_complex *</type>
+        <definition>fftw_complex * gr::acars::acars_impl::_s</definition>
+        <argsstring></argsstring>
+        <name>_s</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="44" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1ab68dbdbfcef0efba9e096f08d3de67c2" prot="private" static="no" mutable="no">
+        <type>fftw_complex *</type>
+        <definition>fftw_complex * gr::acars::acars_impl::_ss</definition>
+        <argsstring></argsstring>
+        <name>_ss</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="44" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="44" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a001e64fc790e248ab51c69207324cd64" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float* gr::acars::acars_impl::_rs12</definition>
+        <argsstring></argsstring>
+        <name>_rs12</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="45" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1aaf1a318e785d2d7506bc4f28a282f0f0" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float * gr::acars::acars_impl::_rs24</definition>
+        <argsstring></argsstring>
+        <name>_rs24</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="45" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a7ae5999b2167a597a19ec54ba0687eca" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float * gr::acars::acars_impl::_rc12</definition>
+        <argsstring></argsstring>
+        <name>_rc12</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="45" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a71917985ed0985d12181c8a32562a07d" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float * gr::acars::acars_impl::_rc24</definition>
+        <argsstring></argsstring>
+        <name>_rc24</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="45" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a9e53f815f74d8ed5a1f73ba9c143535f" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float * gr::acars::acars_impl::_out</definition>
+        <argsstring></argsstring>
+        <name>_out</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="45" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="45" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a4add1db49a4ec6e4af2af2e1f9865eeb" prot="private" static="no" mutable="no">
+        <type>float *</type>
+        <definition>float* gr::acars::acars_impl::_dm</definition>
+        <argsstring></argsstring>
+        <name>_dm</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="46" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="46" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a657cd0310e6553bf0a2c8687bc447121" prot="private" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char* gr::acars::acars_impl::_toutd</definition>
+        <argsstring></argsstring>
+        <name>_toutd</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="47" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a98921ded4110563fb86262d32eb199c6" prot="private" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char * gr::acars::acars_impl::_tout</definition>
+        <argsstring></argsstring>
+        <name>_tout</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="47" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classgr_1_1acars_1_1acars__impl_1a8e008c73a73d07550a7f1cb67f6c313e" prot="private" static="no" mutable="no">
+        <type>char *</type>
+        <definition>char * gr::acars::acars_impl::_message</definition>
+        <argsstring></argsstring>
+        <name>_message</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="47" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="47" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1aa0a171f19e73759b128914f62f36e900" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::acars::acars_impl::acars_decodeur</definition>
+        <argsstring>(float seuil1, char *filename)</argsstring>
+        <name>acars_decodeur</name>
+        <param>
+          <type>float</type>
+          <declname>seuil1</declname>
+        </param>
+        <param>
+          <type>char *</type>
+          <declname>filename</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="49" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1acbc2cfaa72aace3937c4228467d4d182" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::acars::acars_impl::remove_avgf</definition>
+        <argsstring>(float *d, float *out, int tot_len, const float fil_len)</argsstring>
+        <name>remove_avgf</name>
+        <param>
+          <type>float *</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>float *</type>
+          <declname>out</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>tot_len</declname>
+        </param>
+        <param>
+          <type>const float</type>
+          <declname>fil_len</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="51" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1a81c288569e6bff141e2245263ba57c27" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::acars::acars_impl::acars_dec</definition>
+        <argsstring>(float *d, int N, float seuil, float *c2400, float *s2400, float *c1200, float *s1200, FILE *file)</argsstring>
+        <name>acars_dec</name>
+        <param>
+          <type>float *</type>
+          <declname>d</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>N</declname>
+        </param>
+        <param>
+          <type>float</type>
+          <declname>seuil</declname>
+        </param>
+        <param>
+          <type>float *</type>
+          <declname>c2400</declname>
+        </param>
+        <param>
+          <type>float *</type>
+          <declname>s2400</declname>
+        </param>
+        <param>
+          <type>float *</type>
+          <declname>c1200</declname>
+        </param>
+        <param>
+          <type>float *</type>
+          <declname>s1200</declname>
+        </param>
+        <param>
+          <type>FILE *</type>
+          <declname>file</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="52" column="1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1a6061ba1f6dc96bf46c9bc2f5e86bd700" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type>void</type>
+        <definition>void gr::acars::acars_impl::set_seuil</definition>
+        <argsstring>(float)</argsstring>
+        <name>set_seuil</name>
+        <reimplements refid="classgr_1_1acars_1_1acars_1a454a0d870cc5cdca5d3fe396c13bcf36">set_seuil</reimplements>
+        <param>
+          <type>float</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="57" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1ad6fc8d9b21ba40de44547068cf007905" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::acars::acars_impl::acars_impl</definition>
+        <argsstring>(float, char *)</argsstring>
+        <name>acars_impl</name>
+        <param>
+          <type>float</type>
+        </param>
+        <param>
+          <type>char *</type>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="58" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1a5b6f1411cca62842774b5231a1aab28e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::acars::acars_impl::~acars_impl</definition>
+        <argsstring>()</argsstring>
+        <name>~acars_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="59" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1adbdf8f2939f3bf54926b12ad4c748b37" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::acars::acars_impl::forecast</definition>
+        <argsstring>(int noutput_items, gr_vector_int &amp;ninput_items_required)</argsstring>
+        <name>forecast</name>
+        <param>
+          <type>int</type>
+          <declname>noutput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_int &amp;</type>
+          <declname>ninput_items_required</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="62" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1a08c9dbcf21c60049767e05f744453c37" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int gr::acars::acars_impl::general_work</definition>
+        <argsstring>(int noutput_items, gr_vector_int &amp;ninput_items, gr_vector_const_void_star &amp;input_items, gr_vector_void_star &amp;output_items)</argsstring>
+        <name>general_work</name>
+        <param>
+          <type>int</type>
+          <declname>noutput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_int &amp;</type>
+          <declname>ninput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_const_void_star &amp;</type>
+          <declname>input_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_void_star &amp;</type>
+          <declname>output_items</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="64" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1a2414e2a5ec620c134689b1bd40884f20" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::acars::acars_impl::acars_impl</definition>
+        <argsstring>()</argsstring>
+        <name>acars_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl_original.h" line="35" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1a5b6f1411cca62842774b5231a1aab28e" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>gr::acars::acars_impl::~acars_impl</definition>
+        <argsstring>()</argsstring>
+        <name>~acars_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl_original.h" line="36" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1adbdf8f2939f3bf54926b12ad4c748b37" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void gr::acars::acars_impl::forecast</definition>
+        <argsstring>(int noutput_items, gr_vector_int &amp;ninput_items_required)</argsstring>
+        <name>forecast</name>
+        <param>
+          <type>int</type>
+          <declname>noutput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_int &amp;</type>
+          <declname>ninput_items_required</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl_original.h" line="39" column="1"/>
+      </memberdef>
+      <memberdef kind="function" id="classgr_1_1acars_1_1acars__impl_1a08c9dbcf21c60049767e05f744453c37" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>int</type>
+        <definition>int gr::acars::acars_impl::general_work</definition>
+        <argsstring>(int noutput_items, gr_vector_int &amp;ninput_items, gr_vector_const_void_star &amp;input_items, gr_vector_void_star &amp;output_items)</argsstring>
+        <name>general_work</name>
+        <param>
+          <type>int</type>
+          <declname>noutput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_int &amp;</type>
+          <declname>ninput_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_const_void_star &amp;</type>
+          <declname>input_items</declname>
+        </param>
+        <param>
+          <type>gr_vector_void_star &amp;</type>
+          <declname>output_items</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl_original.h" line="41" column="1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="16">
+        <label>gr::acars::acars</label>
+        <link refid="classgr_1_1acars_1_1acars"/>
+        <childnode refid="17" relation="public-inheritance">
+        </childnode>
+        <childnode refid="18" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="15">
+        <label>gr::acars::acars_impl</label>
+        <link refid="classgr_1_1acars_1_1acars__impl"/>
+        <childnode refid="16" relation="public-inheritance">
+        </childnode>
+        <childnode refid="16" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="18">
+        <label>block</label>
+      </node>
+      <node id="17">
+        <label>gr::block</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="20">
+        <label>gr::acars::acars</label>
+        <link refid="classgr_1_1acars_1_1acars"/>
+        <childnode refid="21" relation="public-inheritance">
+        </childnode>
+        <childnode refid="22" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="19">
+        <label>gr::acars::acars_impl</label>
+        <link refid="classgr_1_1acars_1_1acars__impl"/>
+        <childnode refid="20" relation="public-inheritance">
+        </childnode>
+        <childnode refid="20" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="22">
+        <label>block</label>
+      </node>
+      <node id="21">
+        <label>gr::block</label>
+      </node>
+    </collaborationgraph>
+    <location file="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" line="31" column="1" bodyfile="/home/jmfriedt/sdr/gr-acars/lib/acars_impl.h" bodystart="30" bodyend="68"/>
+    <listofallmembers>
+      <member refid="classgr_1_1acars_1_1acars__impl_1add094c40ea1f78755ea68f3efb8ef353" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_acq</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1ad96a1b52d6f38714ee081399b97389ab" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_c2400x13</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a9260aa4a4b41007fae8458618120336d" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_d</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a4add1db49a4ec6e4af2af2e1f9865eeb" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_dm</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1ada9332bfd64b7c40d50d30e887d60618" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_fc2400x13</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1ae9aabd0227f7d5a6fc19bf75c4b29c17" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_fd</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1ae26ac2b91ccb3e317ec54b7e41be19a2" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_FICHIER</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1ae9145a4849e36f73673d4c5256a632d1" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_filename</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a93b05ce3a236aac1b4c730bafc6077c0" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_filenum</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a8e008c73a73d07550a7f1cb67f6c313e" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_message</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a3332997174cda09569738b2123aa9045" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_Ntot</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a9e53f815f74d8ed5a1f73ba9c143535f" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_out</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a5f15d60488410d9dc49ed1b830f3b994" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_pos</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a7ae5999b2167a597a19ec54ba0687eca" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_rc12</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a71917985ed0985d12181c8a32562a07d" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_rc24</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a001e64fc790e248ab51c69207324cd64" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_rs12</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1aaf1a318e785d2d7506bc4f28a282f0f0" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_rs24</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a364a19807e76ef190128ad73a61adbfe" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_s</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a406b26ffde21b8644b9352e435f8a8d5" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_seuil</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1ab68dbdbfcef0efba9e096f08d3de67c2" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_ss</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1aba074c9b7bd61ce4015ae27590a4502e" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_total</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a98921ded4110563fb86262d32eb199c6" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_tout</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a657cd0310e6553bf0a2c8687bc447121" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>_toutd</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a81c288569e6bff141e2245263ba57c27" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>acars_dec</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1aa0a171f19e73759b128914f62f36e900" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>acars_decodeur</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1ad6fc8d9b21ba40de44547068cf007905" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>acars_impl</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a2414e2a5ec620c134689b1bd40884f20" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>acars_impl</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1af26faac8d76a42b1384537cda7d88423" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>c1200</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a28c47dd665614664d595118e2c626af6" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>c2400</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1adbdf8f2939f3bf54926b12ad4c748b37" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>forecast</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1adbdf8f2939f3bf54926b12ad4c748b37" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>forecast</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a08c9dbcf21c60049767e05f744453c37" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>general_work</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a08c9dbcf21c60049767e05f744453c37" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>general_work</name></member>
+      <member refid="classgr_1_1acars_1_1acars_1affccace259d77bb26a7a22d450208346" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>make</name></member>
+      <member refid="classgr_1_1acars_1_1acars_1a217e4e4bcc1d840bce8b15546ec76745" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>make</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1acbc2cfaa72aace3937c4228467d4d182" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>remove_avgf</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1aee4c4a0463536ada30570ba512a8f963" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>s1200</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a09912039e3fe85e39389a007919963c3" prot="private" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>s2400</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a6061ba1f6dc96bf46c9bc2f5e86bd700" prot="public" virt="virtual"><scope>gr::acars::acars_impl</scope><name>set_seuil</name></member>
+      <member refid="classgr_1_1acars_1_1acars_1aae82c0e8acf2def03b12fcea71849307" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>sptr</name></member>
+      <member refid="classgr_1_1acars_1_1acars_1aae82c0e8acf2def03b12fcea71849307" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>sptr</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a5b6f1411cca62842774b5231a1aab28e" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>~acars_impl</name></member>
+      <member refid="classgr_1_1acars_1_1acars__impl_1a5b6f1411cca62842774b5231a1aab28e" prot="public" virt="non-virtual"><scope>gr::acars::acars_impl</scope><name>~acars_impl</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>

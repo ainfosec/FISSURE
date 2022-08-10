@@ -1,0 +1,131 @@
+# Message Types and Verification for Messages sent to/from Protocol Discovery
+Identifier: PD
+
+
+# The Generic Categories for Messages
+Message Types:
+    - Heartbeats
+    - Status
+    - Commands
+
+
+# The Format to Follow for each Message Type
+Schema: 
+      Heartbeats: '$Identifier: $MessageName $Time'
+      Status: '$Identifier: $MessageName $Parameters'
+      Commands: '$Identifier: $MessageName $Parameters'
+
+
+# Message Names
+Status:
+     - Connected
+     - Disconnected
+     - Set Recommended Flow Graphs
+     - Full Library     
+     - Exit Connect Loop
+     - Flow Graph Started
+     - Flow Graph Finished
+     - Flow Graph Error
+     - Connect to TSI
+     - Connect to FGE
+
+Heartbeats: 
+     - Heartbeat 
+
+Commands:
+     - Start PD
+     - Stop PD
+     - Search Library for Flow Graphs
+     - Set Window Parameters
+     - Set Buffer Size
+     - Find Preambles
+     - Search Library
+     - Slice By Preamble
+     - Clear PD Buffer
+     - Find Entropy
+     - Add Pub Socket
+     - Remove Pub Socket
+     - Update FISSURE Configuration
+
+
+# Callback to Function Lookup
+Start PD: startPD
+Stop PD: stopPD
+Search Library for Flow Graphs: searchLibraryForFlowGraphsCallback
+Set Window Parameters: setWindowParameters
+Find Preambles: findPreambles
+Search Library: searchLibraryCallback
+Slice By Preamble: sliceByPreamble
+Set Buffer Size: setBufferSize
+Clear PD Buffer: clearPD_Buffer
+Find Entropy: findEntropyCallback
+Add Pub Socket: addPubSocket
+Remove Pub Socket: removePubSocket
+Update FISSURE Configuration: updateFISSURE_Configuration
+
+
+#Function/Parameter Verification  
+startPD:
+    Type: callback
+
+stopPD:
+    Type: callback
+
+searchLibraryForFlowGraphsCallback:
+    Type: callback
+    Parameters: 
+             soi_data
+             hardware
+
+setWindowParameters: 
+    Type: callback
+    Parameters:
+             window_min
+             window_max
+             ranking
+             std_deviations
+
+setBufferSize:
+    Type: callback
+    Parameters:
+             min_buffer_size
+             max_buffer_size
+
+findPreambles:
+    Type: callback
+
+searchLibraryCallback:
+    Type: callback
+    Parameters:
+             soi_data
+             field_data
+             
+sliceByPreamble:
+    Type: callback
+    Parameters:
+             preamble
+             first_n
+             estimated_length
+
+clearPD_Buffer:
+    Type: callback
+             
+findEntropyCallback:
+    Type: callback
+    Parameters:
+             message_length
+             preamble
+
+addPubSocket:
+    Type: callback
+    Parameters:
+             ip_address
+             port
+
+removePubSocket:
+    Type: callback
+    Parameters:
+             address
+
+updateFISSURE_Configuration:
+    Type: callback

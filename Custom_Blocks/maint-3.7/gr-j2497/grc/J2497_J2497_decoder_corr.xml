@@ -1,0 +1,33 @@
+<?xml version="1.0"?>
+<block>
+  <name>J2497_decoder_corr</name>
+  <key>J2497_J2497_decoder_corr</key>
+  <category>[J2497]</category>
+  <import>import J2497</import>
+  <make>J2497.J2497_decoder_corr($do_udp,$udp_port)</make>
+
+  <param>
+    <name>Send Message Bytes over UDP</name>
+    <key>do_udp</key>
+    <value>False</value>
+    <type>bool</type>
+  </param>
+  
+  <param>
+    <name>UDP Port</name>
+    <key>udp_port</key>
+    <value>6972</value>
+    <type>int</type>
+  </param>
+
+  <sink>
+    <name>in</name>
+    <type>float</type>
+  </sink>
+
+  <source>
+    <name>out</name>
+    <type>message</type>
+  </source>
+  
+</block>

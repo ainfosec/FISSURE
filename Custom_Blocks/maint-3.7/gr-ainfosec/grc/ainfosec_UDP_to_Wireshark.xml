@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<block>
+  <name>UDP_to_Wireshark</name>
+  <key>ainfosec_UDP_to_Wireshark</key>
+  <category>[ainfosec]</category>
+  <import>import ainfosec</import>
+  <make>ainfosec.UDP_to_Wireshark($port)</make>
+  <param>
+    <name>Port</name>
+    <key>port</key>
+    <value>50000</value>
+    <type>int</type>
+  </param>  
+  <sink>
+    <name>in</name>
+    <type>byte</type>
+  </sink>
+</block>

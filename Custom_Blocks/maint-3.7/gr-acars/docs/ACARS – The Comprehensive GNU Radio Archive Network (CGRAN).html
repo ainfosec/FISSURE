@@ -1,0 +1,387 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>
+      ACARS – The Comprehensive GNU Radio Archive Network (CGRAN)
+    </title>
+        <link rel="search" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/search">
+        <link rel="help" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/TracGuide">
+        <link rel="alternate" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/ACARS?format=txt" type="text/x-trac-wiki" title="Plain Text">
+        <link rel="start" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki">
+        <link rel="stylesheet" href="ACARS%20%E2%80%93%20The%20Comprehensive%20GNU%20Radio%20Archive%20Network%20%28CGRAN%29_files/trac.css" type="text/css"><link rel="stylesheet" href="ACARS%20%E2%80%93%20The%20Comprehensive%20GNU%20Radio%20Archive%20Network%20%28CGRAN%29_files/wiki.css" type="text/css"><link rel="stylesheet" href="ACARS%20%E2%80%93%20The%20Comprehensive%20GNU%20Radio%20Archive%20Network%20%28CGRAN%29_files/mentalaxis.css" type="text/css">
+        <link rel="shortcut icon" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/chrome/common/trac.ico" type="image/x-icon">
+        <link rel="icon" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/chrome/common/trac.ico" type="image/x-icon">
+      <link type="application/opensearchdescription+xml" rel="search" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/search/opensearch" title="Search The Comprehensive GNU Radio Archive Network (CGRAN)">
+    <script src="ACARS%20%E2%80%93%20The%20Comprehensive%20GNU%20Radio%20Archive%20Network%20%28CGRAN%29_files/ga.js" async="" type="text/javascript"></script><script type="text/javascript" src="ACARS%20%E2%80%93%20The%20Comprehensive%20GNU%20Radio%20Archive%20Network%20%28CGRAN%29_files/jquery.js"></script><script type="text/javascript" src="ACARS%20%E2%80%93%20The%20Comprehensive%20GNU%20Radio%20Archive%20Network%20%28CGRAN%29_files/trac.js"></script><script type="text/javascript" src="ACARS%20%E2%80%93%20The%20Comprehensive%20GNU%20Radio%20Archive%20Network%20%28CGRAN%29_files/search.js"></script>
+    <!--[if lt IE 7]>
+    <script type="text/javascript" src="/trac/cgran/chrome/common/js/ie_pre7_hacks.js"></script>
+    <![endif]-->
+    <script type="text/javascript">
+      jQuery(document).ready(function($) {
+        $("#content").find("h1,h2,h3,h4,h5,h6").addAnchor("Link to this section");
+      });
+    </script>
+  </head>
+  <body>
+    <div id="banner">
+      <div id="header">
+        <a id="logo" href="https://www.cgran.org/"><img src="ACARS%20%E2%80%93%20The%20Comprehensive%20GNU%20Radio%20Archive%20Network%20%28CGRAN%29_files/cgran_logo.png" alt=""></a>
+      </div>
+      <form id="search" action="/trac/cgran/search" method="get">
+        <div>
+          <label for="proj-search">Search:</label>
+          <input id="proj-search" name="q" size="18" type="text">
+          <input value="Search" type="submit">
+        </div>
+      </form>
+      <div id="metanav" class="nav">
+    <ul>
+      <li class="first"><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/login">Login</a></li><li><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/prefs">Preferences</a></li><li><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/TracGuide">Help/Guide</a></li><li><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/about">About Trac</a></li><li><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/register">Register</a></li><li class="last"><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/reset_password">Forgot your password?</a></li>
+    </ul>
+  </div>
+    </div>
+    <div id="mainnav" class="nav">
+    <ul>
+      <li class="first"><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki">Wiki</a></li><li><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/timeline">Timeline</a></li><li><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/roadmap">Roadmap</a></li><li><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/browser">Browse Source</a></li><li><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/report">View Tickets</a></li><li class="last"><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/search">Search</a></li>
+    </ul>
+  </div>
+    <div id="main">
+      <div id="ctxtnav" class="nav">
+        <h2>Context Navigation</h2>
+          <ul>
+              <li class="first"><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/WikiStart">Start Page</a></li><li><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/TitleIndex">Index</a></li><li><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/ACARS?action=history">History</a></li><li class="last"><a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/ACARS?action=diff&amp;version=24">Last Change</a></li>
+          </ul>
+        <hr>
+      </div>
+      <div id="warning" class="system-message">
+            <strong>Warning:</strong> Can't synchronize with the 
+repository (Unsupported version control system "svn": "Shared object 
+"libapr-1.so.5" not found, required by "_core.so"" ). Look in the Trac 
+log for more information.
+      </div>
+    <div id="content" class="wiki">
+      <div class="wikipage searchable">
+        
+          <h1 id="ProjectName">Project Name<a title="Link to this section" href="#ProjectName" class="anchor"> ¶</a></h1><p>
+GNURadio_Aeronautical
+</p>
+<p>
+<span class="underline">Contributors</span>: J.-M Friedt
+</p>
+<p>
+<span class="underline">Project Root</span>: <a class="source" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/browser/projects/gr-acars">/projects/gr-acars</a>
+</p>
+<p>
+<span class="underline">GNU Radio Compatibility</span>: 
+</p>
+<ul><li>Release: v3.2.2, v3.6.x, v3.7.x
+</li></ul><p>
+  
+<span class="underline">Quick Links</span>:
+</p>
+<ul><li><a class="wiki" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/ACARS#ProjectDescription">Project Description</a>
+</li><li><a class="wiki" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/ACARS#HowToInstall">How To Install</a>
+</li><li><a class="wiki" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/ACARS#HowToRun">How To Run</a>
+</li><li><a class="wiki" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/ACARS#Quickcomparisonwithacarsdec">Quick comparison with acarsdec</a>
+</li></ul><br>
+<h2 id="ProjectDescription">Project Description<a title="Link to this section" href="#ProjectDescription" class="anchor"> ¶</a></h2>
+<blockquote>
+<p>
+<img alt="http://jmfriedt.free.fr/P1070135ann.png" title="http://jmfriedt.free.fr/P1070135ann.png" style="float:right; border: 10px solid" src="ACARS%20%E2%80%93%20The%20Comprehensive%20GNU%20Radio%20Archive%20Network%20%28CGRAN%29_files/P1070135ann.png" width="40%">
+</p>
+</blockquote>
+<p>
+Receiver for the ACARS protocol
+</p>
+<p>
+The ACARS protocol, widely used in plane-to-ground communications, is old enough to be
+well documented and easily decoded using Software Defined Radio (SDR). I have used this
+protocol, since I am not aware of any other opensource ACARS decoding project still
+active, as an opportunity to learn programming in the GNURadio envionment. A detailed
+description of my working methodology, published in the October 2012 French issue of 
+GNU/Linux Magazine <a class="ext-link" href="http://jmfriedt.free.fr/lm_sdr.pdf"><span class="icon">&nbsp;</span>http://jmfriedt.free.fr/lm_sdr.pdf</a>, is available as an English 
+translation of the original article at <a class="ext-link" href="http://jmfriedt.free.fr/en_sdr.pdf"><span class="icon">&nbsp;</span>http://jmfriedt.free.fr/en_sdr.pdf</a>. Someone,
+<a class="ext-link" href="http://foxgulch.com/WordPress/?p=640"><span class="icon">&nbsp;</span>http://foxgulch.com/WordPress/?p=640</a> managed to get this example running so it seems
+functional enough for anyone to test.
+</p>
+<p>
+Currently, the decoder is very verbose: upon detecting a transmission, it will start
+by printing a few information such a threshold value (which I believe to be the parameter
+limiting the receiver performance at the moment: should be dynamically tuned rather than
+using the fixed value of 150 experimetally defined at the moment), and then start decoding.
+Identifying a transmission and decoding its content are two very separate steps: the former
+seems to be working very well, the second less, maybe because I want to decode all the received
+messages rather than selecting only the ones with the best signal to noise ratio.
+</p>
+<p>
+The decoder displays all the raw decoded byte values: if the sentence does not start with the magic
+sequence 2B 2A 16 16 01, then chances are that the sentence will not be decoded correctly. Yet, I am
+hoping that maybe some day we will find a way to correct a missing bit (which then propagates to make
+the whole message unreadable) and thus the raw byte values might be useful. I then interpret each printable
+character as an ASCII value and print the resulting message. If the sentence makes sense, I finally interpret
+the content in terms of plane reference, flight reference, start of text (STX), message content, and end of text
+(ETX). Each recorded sentence is tagged with the computer date at the time of the reception.
+</p>
+<br>
+<h2 id="HowToInstall">How To Install<a title="Link to this section" href="#HowToInstall" class="anchor"> ¶</a></h2>
+<p>
+The decoder requires the libfftw3 library.
+</p>
+<p>
+(from trunk)
+cd build<br>
+cmake .. &amp;&amp; make &amp;&amp; sudo make install
+</p>
+<br>
+<h2 id="HowToRun">How To Run<a title="Link to this section" href="#HowToRun" class="anchor"> ¶</a></h2>
+<p>
+A .grc file for setting the receiver frequency (131.725 MHz for EU, 
+136.800 MHz for NAm), demodulating the AM signal and sending the result 
+to the decoder is
+provided as acars_test.grc, for use with gnuradio-companion. Just 
+execute the grc from gnuradio-companion and enjoy the decoded
+sentences displayed either in the terminal emulator at the bottom of 
+gnuradio-companion, or in the xterm from which gnuradio-companion
+was lauched. A log file is created in /tmp which stores all displayed 
+data for further processing and storage.
+</p>
+<p>
+Currently, the decoder has only been tested with an EZCAP DVB tuner using the OsmoSDR receiver block. Reports of tests with
+the UHD are most welcome.
+</p>
+<p>
+A few examples of <strong>gr-acars</strong> running at the same time than listening to voice communication can be downloaded at 
+<a class="ext-link" href="http://jmfriedt.free.fr/acars_audio1.mp4"><span class="icon">&nbsp;</span>http://jmfriedt.free.fr/acars_audio1.mp4</a> or <a class="ext-link" href="http://jmfriedt.free.fr/acars_audio2.mp4"><span class="icon">&nbsp;</span>http://jmfriedt.free.fr/acars_audio2.mp4</a> or <a class="ext-link" href="http://jmfriedt.free.fr/acars_audio3.mp4"><span class="icon">&nbsp;</span>http://jmfriedt.free.fr/acars_audio3.mp4</a> or <a class="ext-link" href="http://jmfriedt.free.fr/acars_audio4.mp4"><span class="icon">&nbsp;</span>http://jmfriedt.free.fr/acars_audio4.mp4</a> or <a class="ext-link" href="http://jmfriedt.free.fr/acars_audio5.mp4"><span class="icon">&nbsp;</span>http://jmfriedt.free.fr/acars_audio5.mp4</a> or <a class="ext-link" href="http://jmfriedt.free.fr/acars_audio6.mp4"><span class="icon">&nbsp;</span>http://jmfriedt.free.fr/acars_audio6.mp4</a> or <a class="ext-link" href="http://jmfriedt.free.fr/acars_audio7.mp4"><span class="icon">&nbsp;</span>http://jmfriedt.free.fr/acars_audio7.mp4</a>.
+In this example, canals are not filtered so that voice communication 
+prevents efficient ACARS decoding, hence the high failure rate. 
+Nevertheless, ACARS
+sentences are well decoded when the 1 MB wide band is not busy with 
+other activity.
+</p>
+<br>
+<h2 id="Knownbug">Known bug<a title="Link to this section" href="#Knownbug" class="anchor"> ¶</a></h2>
+<p>
+Only one occurence of the decoder can appear in a grc graph, preventing decoding multiple ACARS
+channels simultaneously. The cause has been tracked to the (lack of) FFTW thread safety issue during the
+plan allocation step.
+</p>
+<h2 id="Quickcomparisonwithacarsdec">Quick comparison with acarsdec<a title="Link to this section" href="#Quickcomparisonwithacarsdec" class="anchor"> ¶</a></h2>
+<p>
+acarsdec is an excellent ACARS decoder for the RTL-compatible dongle
+(<a class="ext-link" href="http://sourceforge.net/projects/acarsdec/"><span class="icon">&nbsp;</span>http://sourceforge.net/projects/acarsdec/</a>). Here is a quick comparison of
+two dongles connected to the same antenna, one dongle output being processed by
+acarsdec running on one computer, and the other dongle output processed by this
+software running on GNURadio-3.7.
+</p>
+<p>
+* <strong>gr-acars</strong> output (includes the raw hex values which are then decoded in the various fields of plane
+identifier, flight identifier and payload):
+</p>
+<pre class="wiki">Wed May 14 11:30:08 2014
+2b 2a 16 16 01 48 2e 2e 4d 50 44 43 53 15 51 30 33 02 4d 33 36 41 58 41 30 30 30 30 03 29 1a 7f
++*H..MPDCSQ03M36AXA0000)
+Aircraft=..MPDCS
+STX
+Seq. No=4d 33 36 41 M36A
+Flight=XA0000
+ETX
+
+Wed May 14 11:30:14 2014
+2b 2a 16 16 01 48 2e 2e 4d 50 44 43 53 15 51 30 33 02 4d 33 36 41 58 41 30 30 30 30 03 29 1a 7f
++*H..MPDCSQ03M36AXA0000)
+Aircraft=..MPDCS
+STX
+Seq. No=4d 33 36 41 M36A
+Flight=XA0000
+ETX
+
+Wed May 14 11:30:58 2014
+2b 2a 16 16 01 32 2e 47 2d 45 5a 53 4d 15 51 30 37 02 53 34 37 41 55 32 38 39 41 42 03 28 5e 7f 
++*2.G-EZSMQ07S47AU289AB(^
+Aircraft=.G-EZSM
+STX
+Seq. No=53 34 37 41 S47A
+Flight=U289AB
+ETX
+
+Wed May 14 11:32:05 2014
+2b 2a 16 16 01 4b 2e 2e 4d 50 44 43 53 15 31 37 34 02 4d 33 37 41 58 41 30 30 30 30 50 4f 41 30 31 58 41 30 30 30 30 2f 31 34 31 34 31 31 33 32 45 47 57 55 4c 49 4d 4a 2f 4e 34 36 20 33 38 2e 32 2f 45 20 20 34 20 35 36 2e 30 2f 33 32 35 2f 20 34 36 2f 34 31 30 2f 20 2d 34 39 2f 41 55 54 4f 52 50 2f 31 35 03 60 19 7f
++*K..MPDCS174M37AXA0000POA01XA0000/14141132EGWULIMJ/N46 38.2/E  4 56.0/325/ 46/410/ -49/AUTORP/15`
+Aircraft=..MPDCS
+STX
+Seq. No=4d 33 37 41 M37A
+Flight=XA0000
+POA01XA0000/14141132EGWULIMJ/N46 38.2/E  4 56.0/325/ 46/410/ -49/AUTORP/15ETX
+
+Wed May 14 11:32:16 2014
+2b 2a 16 16 01 4b 2e 2e 4d 50 44 43 53 15 31 37 34 02 4d 33 37 41 58 41 30 30 30 30 50 4f 41 30 31 58 41 30 30 30 30 2f 31 34 31 34 31 31 33 32 45 07 28 2a 33 36 32 35 50 31 4b 49 5f 4c 47 51 4d 50 3a 5f 5f 4b 5f 4a 49 51 4f 50 4c 4d 4a 50 5f 4b 49 50 4b 4e 4f 50 5f 52 4b 46 50 3e 2a 2b 4f 52 50 2f 31 35 03 60 19 7f
++*K..MPDCS174M37AXA0000POA01XA0000/14141132E(*3625P1KI_LGQMP:__K_JIQOPLMJP_KIPKNOP_RKFP&gt;*+ORP/15`
+Aircraft=..MPDCS
+STX
+Seq. No=4d 33 37 41 M37A
+Flight=XA0000
+POA01XA0000/14141132E(*3625P1KI_LGQMP:__K_JIQOPLMJP_KIPKNOP_RKFP&gt;*+ORP/15ETX
+
+Wed May 14 11:32:26 2014
+2b 2a 16 16 01 35 51 51 32 2f 43 43 53 15 31 37 34 02 4d 33 37 41 58 41 30 30 30 30 50 4f 41 30 31 58 41 30 30 30 30 2f 51 4b 4e 4b 4e 4e 4c 4d 3a 38 28 2a 33 36 32 35 50 49 34 36 20 33 38 2e 32 2f 3d 5f 1f 34 20 4d 09 2e 30 2f 33 32 35 2f 20 34 36 2f 34 31 30 2f 60 52 4b 46 50 00 2a 2b 30 2d 2f 50 4e 4a 02 60 19 7f
++*5QQ2/CCS174M37AXA0000POA01XA0000/QKNKNNLM:8(*3625PI46 38.2/=_4 M.0/325/ 46/410/`RKFP*+0-/PNJ`
+Aircraft=QQ2/CCS
+STX
+Seq. No=4d 33 37 41 M37A
+Flight=XA0000
+POA01XA0000/QKNKNNLM:8(*3625PI46 38.2/=_4 M.0/325/ 46/410/`RKFP*+0-/PNJ`
+
+Wed May 14 11:32:32 2014
+2b 2a 16 16 01 4b 2e 2e 4d 50 44 43 53 15 31 37 34 02 4d 33 37 41 58 41 30 40 4f 4f 2f 30 3e 4f 4e 27 3e 4f 4f 4f 4f 28 
++*K..MPDCS174M37AXA0@OO/0&gt;ON'&gt;OOOO(
+Aircraft=..MPDCS
+STX
+Seq. No=4d 33 37 41 M37A
+Flight=XA0@OO
+/0&gt;ON'&gt;OOOO
+
+Wed May 14 11:32:40 2014
+2b 2a 16 16 01 4b 2e 2e 4d 50 44 43 53 15 31 37 34 02 4d 33 37 41 58 41 50 4f 4f 2f 50 4f 41 30 2e 58 41 30 30 30 30 2f 51
++*K..MPDCS174M37AXAPOO/POA0.XA0000/Q
+Aircraft=..MPDCS
+STX
+Seq. No=4d 33 37 41 M37A
+Flight=XAPOO/
+POA0.XA0000/
+
+Wed May 14 11:39:49 2014
+3b 71 3a 0b 11 
+;q:
+
+Wed May 14 11:39:57 2014
+4b 6f 21 7b 7f 21 77 21 3a 5c 30 4e 31 37 11 0e 5c 69 05 5e 21 06 16 06 78 22 33 68 7a 0e 08 4e 17 15 0d 03 0a 43 71 71 1d 0c 61 0c 74 60 02 0b 27 1a 06 31 07 6a 0c 0b 4f 
+Ko!{!w!:\0N17\i^!x"3hzN
+Cqqat`'1jO
+
+Wed May 14 11:40:04 2014
+2b 2a 16 16 01 32 2e 47 2d 45 5a 54 42 15 51 30 32 02 53 37 35 41 55 32 36 33 41 47 03 43 29 7f 55 55 35 2a 2a 56 71
++*2.G-EZTBQ02S75AU263AGC)UU5**Vq
+Aircraft=.G-EZTB
+STX
+Seq. No=53 37 35 41 S75A
+Flight=U263AG
+ETX
+</pre><blockquote>
+<p>
+<img alt="http://jmfriedt.free.fr/acars_demo_grc.png" title="http://jmfriedt.free.fr/acars_demo_grc.png" style="float:right; border: 10px solid" src="ACARS%20%E2%80%93%20The%20Comprehensive%20GNU%20Radio%20Archive%20Network%20%28CGRAN%29_files/acars_demo_grc.png" width="40%">
+</p>
+</blockquote>
+<p>
+* <strong>acarsdec</strong> output recorded at the same time (running acarsdec -r 0 131.525 131.725 131.825):
+</p>
+<pre class="wiki">#2 (-33/0) 14/05/2014 11:30:32 ----------------------------------------------------------
+Aircraft reg: ..MPDCS Flight id: XA0000
+Mode: H Msg. label: Q0
+Block id: 3 Ack: !
+Msg. no: M36A
+Message :
+
+
+#2 (-33/0) 14/05/2014 11:30:39 ----------------------------------------------------------
+Aircraft reg: ..MPDCS Flight id: XA0000
+Mode: 2 Msg. label: Q0
+Block id: 3 Ack: !
+Msg. no: M36A
+Message :
+
+
+#3 (-35/1) 14/05/2014 11:31:01 ----------------------------------------------------------
+Aircraft reg: .G-EZSM Flight id: U289AB
+Mode: 2 Msg. label: Q0
+Block id: 7 Ack: !
+Msg. no: S47A
+Message :
+
+
+#2 (-36/0) 14/05/2014 11:32:08 ----------------------------------------------------------
+Aircraft reg: ..MPDCS Flight id: XA0000
+Mode: K Msg. label: 17
+Block id: 4 Ack: !
+Msg. no: M37A
+Message :
+POA01XA0000/14141132EGWULIMJ/N46 38.2/E  4 56.0/325/ 46/410/ -49/AUTORP/15
+
+#2 (-40/0) 14/05/2014 11:32:29 ----------------------------------------------------------
+Aircraft reg: ..MPDCS Flight id: XA0000
+Mode: K Msg. label: 17
+Block id: 4 Ack: !
+Msg. no: M37A
+Message :
+POA01XA0000/14141132EGWULIMJ/N46 38.2/E  4 56.0/325/ 46/410/ -49/AUTORP/15
+
+#2 (-40/0) 14/05/2014 11:32:50 ----------------------------------------------------------
+Aircraft reg: ..MPDCS Flight id: XA0000
+Mode: 2 Msg. label: 17
+Block id: 4 Ack: !
+Msg. no: M37A
+Message :
+POA01XA0000/14141132EGWULIMJ/N46 38.2/E  4 56.0/325/ 46/410/ -49/AUTORP/15
+
+#1 (-38/0) 14/05/2014 11:39:52 ----------------------------------------------------------
+Aircraft reg: .G-DOCO Flight id: BA2600
+Mode: 2 Msg. label: Q0
+Block id: 7 Ack: !
+Msg. no: S30A
+Message :
+
+
+#1 (-39/0) 14/05/2014 11:39:59 ----------------------------------------------------------
+Aircraft reg: .G-DOCO Flight id: BA2600
+Mode: R Msg. label: 10
+Block id: 8 Ack: !
+Msg. no: M31A
+Message :
+ARR01       LIRP122604RNBA2601 007200004700000200                  00
+
+#3 (-26/0) 14/05/2014 11:40:07 ----------------------------------------------------------
+Aircraft reg: .G-EZTB Flight id: U263AG
+Mode: 2 Msg. label: Q0
+Block id: 2 Ack: !
+Msg. no: S75A
+Message :
+
+
+#1 (-40/2) 14/05/2014 11:40:16 ----------------------------------------------------------
+Aircraft reg: .G-DOCO Flight id: BA2600
+Mode: R Msg. label: 10
+Block id: 8 Ack: !
+Msg. no: M31A
+Message :
+ARR01       LIRP122604RNBA2601 007200004700000200                  00
+
+
+#1 (-39/0) 14/05/2014 11:40:20 ----------------------------------------------------------
+Aircraft reg: .G-DOCO Flight id: BA2600
+Mode: 2 Msg. label: Q0
+Block id: 9 Ack: !
+Msg. no: S32A
+Message :
+</pre>
+        
+        
+      </div>
+    </div>
+    <div id="altlinks">
+      <h3>Download in other formats:</h3>
+      <ul>
+        <li class="last first">
+          <a rel="nofollow" href="https://moo.cmcl.cs.cmu.edu/trac/cgran/wiki/ACARS?format=txt">Plain Text</a>
+        </li>
+      </ul>
+    </div>
+    </div>
+    <div id="footer" xml:lang="en" lang="en"><hr>
+      <a id="tracpowered" href="http://trac.edgewall.org/"><img src="ACARS%20%E2%80%93%20The%20Comprehensive%20GNU%20Radio%20Archive%20Network%20%28CGRAN%29_files/trac_logo_mini.png" alt="Trac Powered" height="30" width="107"></a>
+      <p class="left">
+        Powered by <a href="https://moo.cmcl.cs.cmu.edu/trac/cgran/about"><strong>Trac 0.11.4</strong></a><br>
+        By <a href="http://www.edgewall.org/">Edgewall Software</a>.
+      </p>
+      <p class="right">CGRAN is maintained by <a href="http://www.andrew.cmu.edu/user/gnychis/">George Nychis</a>  <script type="text/javascript">  var _gaq = _gaq || [];   _gaq.push(['_setAccount', 'UA-36447383-1']); _gaq.push(['_trackPageview']);   (function() { var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true; ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s); })(); </script></p>
+    </div>
+  
+</body></html>
