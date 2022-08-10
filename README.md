@@ -11,20 +11,20 @@ The friendly Python codebase and user interface allows beginners to quickly lear
 
 **Supported**
 
-There are two branches within FISSURE to make file navigation easier and reduce code redundancy. The Python2-maint3.7 branch contains a codebase built around Python2, PyQt4, and GNU Radio 3.7; while the Python3-maint3.8 branch is built around Python3, PyQt5, and GNU Radio 3.8.
+There are two branches within FISSURE to make file navigation easier and reduce code redundancy. The Python2_maint-3.7 branch contains a codebase built around Python2, PyQt4, and GNU Radio 3.7; while the Python3_maint-3.8 branch is built around Python3, PyQt5, and GNU Radio 3.8.
 
 Operating System            |  FISSURE Branch
 :-------------------------:|:-------------------------:
-| Ubuntu 18.04 (x64) | Python2-maint3.7 | 
-| Ubuntu 18.04.5 (x64) | Python2-maint3.7 |
-| Ubuntu 18.04.6 (x64) | Python2-maint3.7 |
-| Ubuntu 20.04.1 (x64) | Python3-maint3.8 |
-| Ubuntu 20.04.4 (x64) | Python3-maint3.8 |
+| Ubuntu 18.04 (x64) | Python2_maint-3.7 | 
+| Ubuntu 18.04.5 (x64) | Python2_maint-3.7 |
+| Ubuntu 18.04.6 (x64) | Python2_maint-3.7 |
+| Ubuntu 20.04.1 (x64) | Python3_maint-3.8 |
+| Ubuntu 20.04.4 (x64) | Python3_maint-3.8 |
 
 **In-Progress (beta)**
 Operating System            |  FISSURE Branch
 :-------------------------:|:-------------------------:
-| Ubuntu 22.04 (x64) | Python3-maint3.8 |
+| Ubuntu 22.04 (x64) | Python3_maint-3.8 |
 
 Note: Certain software tools do not work for every OS. Refer to [Software And Conflicts](/Help/Markdown/SoftwareAndConflicts.md)
 
@@ -32,7 +32,7 @@ Note: Certain software tools do not work for every OS. Refer to [Software And Co
 ```
 git clone https://github.com/ainfosec/fissure.git
 cd FISSURE
-git checkout <Python2-maint3.7> or <Python3-maint3.8>
+git checkout <Python2_maint-3.7> or <Python3_maint-3.8>
 ./install
 ```
 
@@ -40,7 +40,7 @@ This will automatically install PyQt software dependencies required to launch th
 
 Next, select the option that best matches your operating system (should be detected automatically if your OS matches an option).
 
-Python2-maint3.7            |  Python3-maint3.8
+Python2_maint-3.7            |  Python3_maint-3.8
 :-------------------------:|:-------------------------:
 ![install1b](/Icons/README/install1b.png)  |  ![install1a](/Icons/README/install1a.png)
 
