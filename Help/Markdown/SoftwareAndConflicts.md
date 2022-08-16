@@ -13,6 +13,7 @@ The following is a table of the major software tools that have been proven to wo
 | btscanner | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | CyberChef | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Dump1090 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Enscribe | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | ESP32 Bluetooth Classic Sniffer | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: | :question: | :question: |
 | ESP8266 Deauther v2 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | FALCON | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
@@ -131,6 +132,7 @@ The following are the software versions that are included with the FISSURE insta
 | btscanner | 2.0 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| Enscribe | 0.1.0 | No | Jason Downer | 
 | ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
@@ -237,6 +239,7 @@ The following are the software versions that are included with the FISSURE insta
 | btscanner | 2.1-6 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| Enscribe | 0.1.0 | No | Jason Downer | 
 | ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
@@ -343,6 +346,7 @@ The following are the software versions that are included with the FISSURE insta
 | btscanner | 2.1-6 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| Enscribe | 0.1.0 | No | Jason Downer | 
 | ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
@@ -449,6 +453,7 @@ The following are the software versions that are included with the FISSURE insta
 | btscanner | 2.1-8 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| Enscribe | 0.1.0 | No | Jason Downer | 
 | ~~ESP32 Bluetooth Classic Sniffer~~ | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
@@ -555,6 +560,7 @@ The following are the software versions that are included with the FISSURE insta
 | btscanner | 2.1-8 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| Enscribe | 0.1.0 | No | Jason Downer | 
 | ~~ESP32 Bluetooth Classic Sniffer~~ | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
@@ -661,6 +667,7 @@ The following are the software versions that are included with the FISSURE insta
 | btscanner | 2.1-9 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| Enscribe | 0.1.0 | No | Jason Downer | 
 | ~~ESP32 Bluetooth Classic Sniffer~~ | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | ~~FALCON~~ | - | Yes | https://github.com/falkenber9/falcon | 

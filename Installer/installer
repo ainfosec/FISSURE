@@ -1463,6 +1463,13 @@ programs_ubuntu20_04.append(('Hydra',
 ls /usr/bin/hydra
 """,True,None))
 
+# Enscribe
+programs_ubuntu20_04.append(('Enscribe',
+"""sudo apt-get install -y enscribe
+########## Verify ##########
+ls /usr/bin/enscribe
+""",True,None))
+
 # ESP32 Bluetooth Classic Sniffer - FIX
 programs_ubuntu20_04.append(('ESP32 BT Classic Sniffer',
 """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
@@ -2922,6 +2929,13 @@ programs_ubuntu20_04_4.append(('Hydra',
 ls /usr/bin/hydra
 """,True,None))
 
+# Enscribe
+programs_ubuntu20_04_4.append(('Enscribe',
+"""sudo apt-get install -y enscribe
+########## Verify ##########
+ls /usr/bin/enscribe
+""",True,None))
+
 # ESP32 Bluetooth Classic Sniffer - FIX
 programs_ubuntu20_04_4.append(('ESP32 BT Classic Sniffer',
 """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
@@ -3978,6 +3992,13 @@ programs_ubuntu22_04.append(('Hydra',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
+""",True,None))
+
+# Enscribe
+programs_ubuntu20_04_4.append(('Enscribe',
+"""sudo apt-get install -y enscribe
+########## Verify ##########
+ls /usr/bin/enscribe
 """,True,None))
 
 # ESP32 Bluetooth Classic Sniffer - FIX
