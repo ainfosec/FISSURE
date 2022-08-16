@@ -1537,7 +1537,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.actionLesson_WiFi_Tools.triggered.connect(self._slotMenuLessonWiFiToolsClicked)
         self.actionPySDR_org.triggered.connect(self._slotMenuHelpPySDR_orgClicked)
         self.actionNrsc5_gui.triggered.connect(self._slotMenuNrsc5_GuiClicked)
-        
+        self.actionJ2497_mod_hackrfdirect.triggered.connect(self._slotMenuStandaloneJ2497_ModHackRF_DirectClicked)
+        self.actionJ2497_mod_fl2k.triggered.connect(self._slotMenuStandaloneJ2497_Mod_fl2kClicked)
+        self.actionJ2497_mod.triggered.connect(self._slotMenuStandaloneJ2497_ModClicked)
+        self.actionEnscribe.triggered.connect(self._slotMenuEnscribeClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -6990,25 +6993,13 @@ class MainWindow(QtGui.QMainWindow, form_class):
         if fname != "":
             # Read the File
             f = open(fname, "rb")
-            byte = f.read(1)
-            hex_str = binascii.hexlify(byte)
-            while byte != "":
-                byte = f.read(1)
-                hex_str = hex_str + binascii.hexlify(byte)
+            byte = f.read()
             f.close()
+            hex_str = binascii.hexlify(byte)
             hex_str = hex_str.upper()
             
             # Set the Assembled Text Box
             self.textEdit_packet_constructed.setPlainText(hex_str)
-            
-            # Set Protocol to Custom
-            self.comboBox_packet_protocols.setCurrentIndex(0)
-            
-            # Set Table to Hex
-            self.tableWidget_attack_packet_editor.cellWidget(0,0).setCurrentIndex(1)
-            
-            # Fill Table Cell
-            self.tableWidget_attack_packet_editor.item(0,1).setText(hex_str)
             
     def _slotAttackFuzzingSelectFileClicked(self):
         """ Loads a flow graph for fuzzing its variables.
@@ -17163,7 +17154,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             get_folder = str(self.comboBox_archive_download_folder.currentText())
             
             # Download        
-            os.system('wget -P ' + get_folder + '/' + ' http://www.christopherpoore.com/archive/' + get_file)
+            os.system('wget -P ' + get_folder + '/' + ' https://fissure.ainfosec.com/' + get_file)
             self._slotArchiveDownloadRefreshClicked()
             
     def _slotArchiveReplayAddClicked(self):
@@ -20562,6 +20553,40 @@ class MainWindow(QtGui.QMainWindow, form_class):
         # Issue the Command
         nrsc5_gui_filepath = os.path.expanduser("~/Installed_by_FISSURE/nrsc5-gui/")
         proc=subprocess.Popen('gnome-terminal -- ./nrsc5_gui.py', shell=True, cwd=nrsc5_gui_filepath)
+        
+    def _slotMenuStandaloneJ2497_ModHackRF_DirectClicked(self):
+        """ Opens the standalone flow graph in GNU Radio Companion.
+        """
+        # Open the Flow Graph in GNU Radio Companion
+        filepath = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/Standalone\ Flow\ Graphs/j2497_mod_hackrfdirect.grc"
+        osCommandString = "gnuradio-companion " + filepath
+        os.system(osCommandString+ " &")
+        
+    def _slotMenuStandaloneJ2497_Mod_fl2kClicked(self):
+        """ Opens the standalone flow graph in GNU Radio Companion.
+        """
+        # Open the Flow Graph in GNU Radio Companion
+        filepath = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/Standalone\ Flow\ Graphs/j2497_mod_fl2k.grc"
+        osCommandString = "gnuradio-companion " + filepath
+        os.system(osCommandString+ " &")
+        
+    def _slotMenuStandaloneJ2497_ModClicked(self):
+        """ Opens the standalone flow graph in GNU Radio Companion.
+        """
+        # Open the Flow Graph in GNU Radio Companion
+        filepath = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/Standalone\ Flow\ Graphs/j2497_mod.grc"
+        osCommandString = "gnuradio-companion " + filepath
+        os.system(osCommandString+ " &")
+        
+    def _slotMenuEnscribeClicked(self):
+        """ Opens a terminal with an example command for enscribe.
+        """
+        # Open a Terminal
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        enscribe_command = "enscribe -oversample -lf=5 -hf=70 -color=yb -wav input.jpg output.wav"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + enscribe_command + '"', shell=True) 
+        
+        
 
 class HelpMenuDialog(QtGui.QDialog, form_class6):
     def __init__(self):

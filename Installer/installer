@@ -1438,6 +1438,13 @@ programs_ubuntu18_04.append(('Hydra',
 ls /usr/bin/hydra
 """,True,None))
 
+# Enscribe
+programs_ubuntu18_04.append(('Enscribe',
+"""sudo apt-get install -y enscribe
+########## Verify ##########
+ls /usr/bin/enscribe
+""",True,None))
+
 # ESP32 Bluetooth Classic Sniffer - FIX
 programs_ubuntu18_04.append(('ESP32 Bluetooth Classic Sniffer',
 """mkdir -p ~/Installed_by_FISSURE  # Install after Wireshark, requires Wireshark 3.4, cannot get it to work with other versions
@@ -2875,6 +2882,13 @@ programs_ubuntu18_04_5.append(('Hydra',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
+""",True,None))
+
+# Enscribe
+programs_ubuntu18_04_5.append(('Enscribe',
+"""sudo apt-get install -y enscribe
+########## Verify ##########
+ls /usr/bin/enscribe
 """,True,None))
 
 # ESP32 Bluetooth Classic Sniffer - FIX
@@ -4317,6 +4331,13 @@ programs_ubuntu18_04_6.append(('Hydra',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
+""",True,None))
+
+# Enscribe
+programs_ubuntu18_04_6.append(('Enscribe',
+"""sudo apt-get install -y enscribe
+########## Verify ##########
+ls /usr/bin/enscribe
 """,True,None))
 
 # ESP32 Bluetooth Classic Sniffer - FIX

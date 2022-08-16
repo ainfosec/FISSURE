@@ -27037,6 +27037,9 @@ p, li { white-space: pre-wrap; }
       <string>J2497</string>
      </property>
      <addaction name="actionJ2497_demod_method1"/>
+     <addaction name="actionJ2497_mod_hackrfdirect"/>
+     <addaction name="actionJ2497_mod_fl2k"/>
+     <addaction name="actionJ2497_mod"/>
     </widget>
     <widget class="QMenu" name="menuStandalone802_11">
      <property name="title">
@@ -27389,6 +27392,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionAudacity"/>
      <addaction name="menuMinimodem"/>
      <addaction name="actionAudioRecord"/>
+     <addaction name="actionEnscribe"/>
     </widget>
     <widget class="QMenu" name="menuRadiosonde">
      <property name="title">
@@ -28815,6 +28819,26 @@ p, li { white-space: pre-wrap; }
   <action name="actionNrsc5_gui">
    <property name="text">
     <string>nrsc5-gui</string>
+   </property>
+  </action>
+  <action name="actionJ2497_mod_hackrfdirect">
+   <property name="text">
+    <string>j2497_mod_hackrfdirect</string>
+   </property>
+  </action>
+  <action name="actionJ2497_mod_fl2k">
+   <property name="text">
+    <string>j2497_mod_fl2k</string>
+   </property>
+  </action>
+  <action name="actionJ2497_mod">
+   <property name="text">
+    <string>j2497_mod</string>
+   </property>
+  </action>
+  <action name="actionEnscribe">
+   <property name="text">
+    <string>Enscribe</string>
    </property>
   </action>
  </widget>
