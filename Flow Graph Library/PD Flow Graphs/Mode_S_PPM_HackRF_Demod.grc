@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<?grc format='1' created='3.7.9'?>
+<?grc format='1' created='3.7.11'?>
 <flow_graph>
   <timestamp>Thu Jun  4 22:49:22 2015</timestamp>
   <block>
@@ -160,6 +160,33 @@
     <param>
       <key>value</key>
       <value>2e6</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(48, 372)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>serial</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>"0"</value>
     </param>
   </block>
   <block>
@@ -1853,7 +1880,7 @@
     </param>
     <param>
       <key>args</key>
-      <value></value>
+      <value>"hackrf=" + str(serial)</value>
     </param>
     <param>
       <key>_enabled</key>

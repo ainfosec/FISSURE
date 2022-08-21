@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Wideband Hackrf
-# Generated: Thu Jun  2 17:56:59 2022
+# Generated: Sun Aug 21 14:53:17 2022
 ##################################################
 
 
@@ -31,7 +31,7 @@ class wideband_hackrf(gr.top_block):
         # Variables
         ##################################################
         self.threshold = threshold = -70
-        self.serial = serial = "False"
+        self.serial = serial = "0"
         self.sample_rate = sample_rate = 20000000
         self.rx_freq = rx_freq = 1200e6
         self.ip_address = ip_address = "N/A"
@@ -43,7 +43,7 @@ class wideband_hackrf(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + 'hackrf=0' )
+        self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + "hackrf=" + str(serial) )
         self.osmosdr_source_0.set_sample_rate(sample_rate)
         self.osmosdr_source_0.set_center_freq(rx_freq, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)

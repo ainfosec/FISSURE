@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Mode S Ppm Hackrf Fields
-# Generated: Fri Oct  8 19:32:51 2021
+# Generated: Sun Aug 21 14:43:54 2022
 ##################################################
 
 
@@ -30,6 +30,7 @@ class Mode_S_PPM_HackRF_Fields(gr.top_block):
         ##################################################
         self.tx_freq = tx_freq = 915e6
         self.transmit_interval = transmit_interval = .1
+        self.serial = serial = "0"
         self.samp_rate = samp_rate = 2e6
         self.library_filepath = library_filepath = "~/FISSURE/YAML/library.yaml"
         self.gain = gain = 10
@@ -52,7 +53,7 @@ class Mode_S_PPM_HackRF_Fields(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.osmosdr_sink_1 = osmosdr.sink( args="numchan=" + str(1) + " " + '' )
+        self.osmosdr_sink_1 = osmosdr.sink( args="numchan=" + str(1) + " " + "hackrf=" + str(serial) )
         self.osmosdr_sink_1.set_sample_rate(samp_rate)
         self.osmosdr_sink_1.set_center_freq(tx_freq, 0)
         self.osmosdr_sink_1.set_freq_corr(0, 0)
@@ -102,6 +103,12 @@ class Mode_S_PPM_HackRF_Fields(gr.top_block):
 
     def set_transmit_interval(self, transmit_interval):
         self.transmit_interval = transmit_interval
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_samp_rate(self):
         return self.samp_rate

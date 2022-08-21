@@ -307,6 +307,33 @@
     </param>
   </block>
   <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(16, 76)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>serial</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>"0"</value>
+    </param>
+  </block>
+  <block>
     <key>blocks_keep_one_in_n</key>
     <param>
       <key>alias</key>
@@ -1704,7 +1731,7 @@
     </param>
     <param>
       <key>args</key>
-      <value>"hackrf=0"</value>
+      <value>"hackrf=" + str(serial)</value>
     </param>
     <param>
       <key>_enabled</key>

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Mode S Ppm Hackrf File Sink
-# Generated: Sun Sep 19 09:36:47 2021
+# Generated: Sun Aug 21 14:50:14 2022
 ##################################################
 
 
@@ -27,6 +27,7 @@ class Mode_S_PPM_HackRF_File_Sink(gr.top_block):
         ##################################################
         # Variables
         ##################################################
+        self.serial = serial = "0"
         self.samp_rate = samp_rate = 2e6
         self.notes = notes = "Decodes ADSB messages and prints the output to stdout and to a file."
         self.gain = gain = 50
@@ -42,7 +43,7 @@ class Mode_S_PPM_HackRF_File_Sink(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + '' )
+        self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + "hackrf=" + str(serial) )
         self.osmosdr_source_0.set_sample_rate(samp_rate)
         self.osmosdr_source_0.set_center_freq(freq, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
@@ -77,6 +78,12 @@ class Mode_S_PPM_HackRF_File_Sink(gr.top_block):
         self.connect((self.blocks_threshold_ff_0, 0), (self.blocks_float_to_uchar_0, 0))
         self.connect((self.digital_correlate_access_code_tag_bb_0, 0), (self.adsb_framer_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_samp_rate(self):
         return self.samp_rate

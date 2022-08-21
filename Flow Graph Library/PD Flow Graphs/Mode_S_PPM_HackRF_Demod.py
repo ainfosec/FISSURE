@@ -3,8 +3,9 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Mode S Ppm Hackrf Demod
-# Generated: Fri Jun 29 14:06:58 2018
+# Generated: Sun Aug 21 14:48:37 2022
 ##################################################
+
 
 from gnuradio import blocks
 from gnuradio import digital
@@ -28,6 +29,7 @@ class Mode_S_PPM_HackRF_Demod(gr.top_block):
         # Variables
         ##################################################
         self.zmq_port = zmq_port = 5066
+        self.serial = serial = "0"
         self.samp_rate = samp_rate = 2e6
         self.gain = gain = 50
         self.freq = freq = 1090e6
@@ -42,7 +44,7 @@ class Mode_S_PPM_HackRF_Demod(gr.top_block):
         # Blocks
         ##################################################
         self.zeromq_pub_sink_0_0 = zeromq.pub_sink(gr.sizeof_char, 1, "tcp://*:" + str(zmq_port), 100, False, -1)
-        self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + "" )
+        self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + "hackrf=" + str(serial) )
         self.osmosdr_source_0.set_sample_rate(samp_rate)
         self.osmosdr_source_0.set_center_freq(freq, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
@@ -52,14 +54,14 @@ class Mode_S_PPM_HackRF_Demod(gr.top_block):
         self.osmosdr_source_0.set_gain(gain, 0)
         self.osmosdr_source_0.set_if_gain(50, 0)
         self.osmosdr_source_0.set_bb_gain(50, 0)
-        self.osmosdr_source_0.set_antenna("", 0)
+        self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(samp_rate, 0)
-          
-        self.digital_correlate_access_code_tag_bb_0 = digital.correlate_access_code_tag_bb("1010000101000000", 0, "adsb_preamble")
+
+        self.digital_correlate_access_code_tag_bb_0 = digital.correlate_access_code_tag_bb('1010000101000000', 0, 'adsb_preamble')
         self.blocks_threshold_ff_0 = blocks.threshold_ff(0.01, 0.01, 0)
         self.blocks_message_source_0 = blocks.message_source(gr.sizeof_char*1, blocks_message_source_0_msgq_in)
         self.blocks_float_to_uchar_0 = blocks.float_to_uchar()
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, "/dev/stdout", True)
+        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/dev/stdout', True)
         self.blocks_file_sink_0.set_unbuffered(True)
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
         self.adsb_framer_0 = adsb.framer(tx_msgq=adsb_framer_0_msgq_out)
@@ -68,19 +70,25 @@ class Mode_S_PPM_HackRF_Demod(gr.top_block):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.blocks_threshold_ff_0, 0))    
-        self.connect((self.blocks_float_to_uchar_0, 0), (self.digital_correlate_access_code_tag_bb_0, 0))    
-        self.connect((self.blocks_message_source_0, 0), (self.blocks_file_sink_0, 0))    
-        self.connect((self.blocks_message_source_0, 0), (self.zeromq_pub_sink_0_0, 0))    
-        self.connect((self.blocks_threshold_ff_0, 0), (self.blocks_float_to_uchar_0, 0))    
-        self.connect((self.digital_correlate_access_code_tag_bb_0, 0), (self.adsb_framer_0, 0))    
-        self.connect((self.osmosdr_source_0, 0), (self.blocks_complex_to_mag_squared_0, 0))    
+        self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.blocks_threshold_ff_0, 0))
+        self.connect((self.blocks_float_to_uchar_0, 0), (self.digital_correlate_access_code_tag_bb_0, 0))
+        self.connect((self.blocks_message_source_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.blocks_message_source_0, 0), (self.zeromq_pub_sink_0_0, 0))
+        self.connect((self.blocks_threshold_ff_0, 0), (self.blocks_float_to_uchar_0, 0))
+        self.connect((self.digital_correlate_access_code_tag_bb_0, 0), (self.adsb_framer_0, 0))
+        self.connect((self.osmosdr_source_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
 
     def get_zmq_port(self):
         return self.zmq_port
 
     def set_zmq_port(self, zmq_port):
         self.zmq_port = zmq_port
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_samp_rate(self):
         return self.samp_rate

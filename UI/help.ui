@@ -7,42 +7,33 @@
     <x>0</x>
     <y>0</y>
     <width>700</width>
-    <height>500</height>
+    <height>700</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dashboard</string>
+   <string>Tab Help</string>
   </property>
-  <widget class="QLabel" name="label_10">
+  <widget class="QFrame" name="frame_63">
    <property name="geometry">
     <rect>
-     <x>35</x>
-     <y>27</y>
-     <width>221</width>
-     <height>17</height>
+     <x>10</x>
+     <y>30</y>
+     <width>680</width>
+     <height>660</height>
     </rect>
    </property>
-   <property name="font">
-    <font>
-     <weight>75</weight>
-     <bold>true</bold>
-    </font>
-   </property>
-   <property name="text">
-    <string>FISSURE How To</string>
-   </property>
-  </widget>
-  <widget class="QFrame" name="frame_3">
-   <property name="geometry">
-    <rect>
-     <x>25</x>
-     <y>55</y>
-     <width>650</width>
-     <height>425</height>
-    </rect>
+   <property name="styleSheet">
+    <string notr="true">QFrame#frame_63 {
+	background-color: rgb(251, 251, 251);
+	border: 1px solid #17365D;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+	
+
+}</string>
    </property>
    <property name="frameShape">
-    <enum>QFrame::NoFrame</enum>
+    <enum>QFrame::StyledPanel</enum>
    </property>
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
@@ -50,9 +41,9 @@
    <widget class="QComboBox" name="comboBox_how_to">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>196</width>
+      <x>55</x>
+      <y>10</y>
+      <width>200</width>
       <height>27</height>
      </rect>
     </property>
@@ -63,47 +54,74 @@
     </item>
     <item>
      <property name="text">
-      <string>TSI Tab</string>
+      <string>TSI</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>Protocol Discovery Tab</string>
+      <string>Protocol Discovery</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>Attack Tab</string>
+      <string>Attack</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>IQ Data Tab</string>
+      <string>IQ Data</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>Packet Crafter Tab</string>
+      <string>Archive</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>Library Tab</string>
+      <string>Packet Crafter</string>
      </property>
     </item>
     <item>
      <property name="text">
-      <string>Log Tab</string>
+      <string>Library</string>
      </property>
     </item>
+    <item>
+     <property name="text">
+      <string>Log</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>15</x>
+      <y>10</y>
+      <width>35</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Tab:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
    </widget>
    <widget class="QStackedWidget" name="stackedWidget_how_to">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>20</y>
-      <width>650</width>
-      <height>400</height>
+      <x>10</x>
+      <y>40</y>
+      <width>660</width>
+      <height>610</height>
      </rect>
     </property>
     <property name="font">
@@ -111,587 +129,3745 @@
       <pointsize>9</pointsize>
      </font>
     </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
     <property name="currentIndex">
      <number>0</number>
     </property>
     <widget class="QWidget" name="page">
+     <property name="styleSheet">
+      <string notr="true">QWidget#page{
+	background-color: rgb(251, 251, 251);
+}</string>
+     </property>
      <widget class="QLabel" name="label_124">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
+        <y>230</y>
         <width>220</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>4) Lock Search Band (Optional)</string>
+       <string>3) Lock search band (optional)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_110">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>10</y>
+        <y>20</y>
         <width>220</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
       </property>
       <property name="text">
        <string>1) Select Automation Mode</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_123">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>30</y>
+        <y>190</y>
         <width>306</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>2) Select Target Protocol</string>
+       <string>1) Select target protocol</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_132">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>50</y>
+        <y>210</y>
         <width>431</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>3) Configure SOI Auto-Select Criteria (Optional)</string>
+       <string>2) Configure SOI auto-select criteria (optional)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_135">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>110</y>
+        <y>270</y>
         <width>220</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>6) Click &quot;Start&quot;</string>
+       <string>5) Click Start</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_150">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>90</y>
+        <y>250</y>
         <width>261</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
-      <property name="text">
-       <string>5) Check RF Hardware Connections</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="page_2">
-     <widget class="QLabel" name="label_112">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>220</width>
-        <height>22</height>
-       </rect>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
       </property>
       <property name="text">
-       <string>2) Add Search Bands to Table</string>
+       <string>4) Check RF hardware connections</string>
       </property>
-     </widget>
-     <widget class="QLabel" name="label_111">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>220</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>1) Click &quot;Start&quot;</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_122">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>241</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>3) Click &quot;Update TSI Configuration&quot;</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_151">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>70</y>
-        <width>276</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>4) Blacklist Frequency Ranges</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_152">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>241</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>5) View Detected Signals</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_153">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>110</y>
-        <width>241</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>6) View Classifier Data</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_154">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>130</y>
-        <width>241</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>7) Target Signal of Interest</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="page_3">
-     <widget class="QLabel" name="label_125">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>236</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>3) Start Demodulation Flow Graph</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_113">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>226</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>2) Search Library for Flow Graphs</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_114">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>220</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>1) Start Protocol Discovery</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_155">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>70</y>
-        <width>236</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>4) Search for Preambles</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_156">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>236</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>5) Slice Buffer by Preamble</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_157">
-      <property name="geometry">
-       <rect>
-        <x>7</x>
-        <y>110</y>
-        <width>236</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>6) Determine Field Delineations</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_160">
-      <property name="geometry">
-       <rect>
-        <x>7</x>
-        <y>130</y>
-        <width>351</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>7) Create Lua Dissectors for New Packet Types</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_161">
-      <property name="geometry">
-       <rect>
-        <x>7</x>
-        <y>150</y>
-        <width>236</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>8) Launch Sniffer</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="page_4">
-     <widget class="QLabel" name="label_115">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>271</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>1) Select Protocol and Modulation Type</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_162">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>316</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>2) Choose Single-Stage, Multi-Stage, or Fuzzing</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_163">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
-        <width>316</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>3) Choose Attack from Tree Widget</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_164">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>70</y>
-        <width>316</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>4) Configure Attack Settings</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_165">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>316</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>5) Start Attack</string>
-      </property>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="page_6">
-     <widget class="QLabel" name="label_116">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>10</y>
-        <width>186</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>1) Configure IQ Settings</string>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_172">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>30</y>
-        <width>186</width>
-        <height>22</height>
+        <y>50</y>
+        <width>220</width>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
       <property name="text">
-       <string>2) Click &quot;Record&quot;</string>
+       <string>Manual</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_173">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>50</y>
-        <width>356</width>
-        <height>22</height>
+        <y>100</y>
+        <width>220</width>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
       <property name="text">
-       <string>3) Transfer Files to &quot;IQ Recordings&quot; Folder (Optional)</string>
+       <string>Discovery (Disabled)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_174">
+     <widget class="QLabel" name="label_229">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>150</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Target (Disabled)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_230">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>300</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Custom (Disabled)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_116">
       <property name="geometry">
        <rect>
         <x>10</x>
         <y>70</y>
-        <width>186</width>
-        <height>22</height>
+        <width>500</width>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>4) Load IQ File</string>
+       <string>User confirms all phases and can edit parameters</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_232">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>500</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Mostly automated, system chooses which signals to target and process</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_233">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>170</y>
+        <width>500</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>User-defined specifications, only pursue targets fitting certain criteria</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_234">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>320</y>
+        <width>500</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) User creates any combination of settings</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_2">
+     <property name="styleSheet">
+      <string notr="true">QWidget#page_2{
+	background-color: rgb(251, 251, 251);
+}</string>
+     </property>
+     <widget class="QLabel" name="label_112">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Add search bands to table</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_111">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Click Start</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_122">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>100</y>
+        <width>241</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>4) Click Update TSI Configuration</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_151">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>276</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>5) Blacklist frequency ranges</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_152">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>241</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>6) View detected signals</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_153">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>160</y>
+        <width>241</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>7) Search signals by frequency in library</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_154">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>210</y>
+        <width>275</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Tune, filter, separate, record, isolate</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_118">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Adjust Advanced Settings</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_119">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Detector/Sweep</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_120">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>190</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Conditioner (Future)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_121">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>240</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Feature Extractor (Future)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_158">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>260</y>
+        <width>400</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Select AI/ML technique, acquire feature set</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_126">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>290</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Classifier (Future)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_159">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>310</y>
+        <width>500</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Choose AI/ML models, classify protocols/emitters, compare results</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_3">
+     <property name="styleSheet">
+      <string notr="true">QWidget#page_3{
+	background-color: rgb(251, 251, 251);
+}</string>
+     </property>
+     <widget class="QLabel" name="label_125">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>110</y>
+        <width>236</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Start demodulation flow graph</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_113">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>226</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Search library for flow graphs</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_114">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Start Protocol Discovery (PD)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_155">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>160</y>
+        <width>236</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Search for preambles</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_156">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>180</y>
+        <width>236</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Slice buffer by preamble</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_157">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>200</y>
+        <width>236</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Determine field delineations</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_160">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>340</y>
+        <width>351</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Create Lua sissectors for new packet types</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_161">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>430</y>
+        <width>300</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Start demodulation flow graph with sniffer sink</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_127">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Status</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_128">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Demodulation</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_129">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Bit Slicing</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_130">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>230</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Data Viewer</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_177">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>250</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Enter binary or hex data, perform binary operations</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_178">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>270</y>
+        <width>500</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Fill Protocol Matching table, apply against protocols in library</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_179">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>290</y>
+        <width>351</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Manually send hex data to PD buffer for analysis</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_131">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>320</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Dissectors</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_180">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>360</y>
+        <width>351</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Follow lesson on Lua dissectors</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_181">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>380</y>
+        <width>500</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Click Update Wireshark to copy all FISSURE dissectors to Wireshark folder</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+      <property name="wordWrap">
+       <bool>false</bool>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_133">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>410</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Sniffer</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_182">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>450</y>
+        <width>500</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Launch sniffer flow graph created for packet type</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_183">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>470</y>
+        <width>300</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Manually send data to sniffer port</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_134">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>500</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>CRC Calculator</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_184">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>520</y>
+        <width>300</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Enter hex, select configuration, calculate CRC</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_185">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>540</y>
+        <width>500</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Enter two messages with known CRCs, find polynomial</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_4">
+     <property name="styleSheet">
+      <string notr="true">QWidget#page_4{
+	background-color: rgb(251, 251, 251);
+}</string>
+     </property>
+     <widget class="QLabel" name="label_115">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>500</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Select protocol, modulation type, hardware combination</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_162">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>316</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Double-click attack in tree widget</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_164">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>316</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Configure attack variables</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_165">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>100</y>
+        <width>316</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>4) Start Attack</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_136">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Single-Stage</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_137">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>150</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Multi-Stage</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_138">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>280</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Fuzzing (Fields)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_139">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>500</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>History</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_186">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>316</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>5) Apply changes while running flow graphs</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_140">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>170</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Double-click attack in tree widget or click Add button</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_141">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>190</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Adjust durations and reorder attacks</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_142">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>210</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Click Generate</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_143">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>230</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>4) Adjust variables, Save, Load, select Repeat</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_144">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>250</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>5) Click Start</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_145">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>300</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Choose fuzzing Fields attack (if available)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_146">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>320</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Choose protocol subcategory</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_147">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>340</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Check fields, select type, enter limits</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_148">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>360</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>4) Start Attack</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_149">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>410</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Choose fuzzing Variables attack</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_163">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>390</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Fuzzing (Variables)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_187">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>430</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Load flow graph</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_188">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>450</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Select variable</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_189">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>470</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>4) Start Attack</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_190">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>520</y>
+        <width>350</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) View attack history, delete rows</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_6">
+     <property name="styleSheet">
+      <string notr="true">QWidget#page_6{
+	background-color: rgb(251, 251, 251);
+}</string>
+     </property>
+     <widget class="QLabel" name="label_174">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>380</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Choose data folder</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_175">
       <property name="geometry">
        <rect>
-        <x>10</x>
-        <y>90</y>
-        <width>186</width>
-        <height>22</height>
+        <x>340</x>
+        <y>420</y>
+        <width>310</width>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>5) Plot IQ Data</string>
+       <string>3) Plot All, plot range, click End to detect last sample</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_195">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Record</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_196">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Assign device to IQ hardware button</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_200">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>310</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Adjust settings in reference to applicable 
+     GNU Radio sinks</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_197">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>120</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Playback</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_198">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Record signals to IQ file(s)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_199">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>140</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Configure settings or copy Record settings</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_201">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>160</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Click Play</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_202">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>190</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Inspection</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_203">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>210</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Double-click flow graph or click Load, Start</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_204">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>230</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Adjust variables in GUI</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_205">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>260</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Crop</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_206">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>280</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Double-click IQ file in Viewer</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_207">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>300</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Enter name for cropped IQ file</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_208">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>320</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Adjust Start/End samples in Viewer</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_209">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>340</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>4) Click Crop</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_210">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>370</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Convert</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_211">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>390</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Choose input file, name output file</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_212">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>410</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Select file types</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_213">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>430</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Click Convert</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_214">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>460</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Append</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_215">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>480</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Choose/enter file 1, file 2, output file</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_216">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>500</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Check Null to append samples to the front or end</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_217">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>520</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Click Append</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_218">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>550</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Transfer</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_219">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>570</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Copy folders or files to new locations</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_220">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>20</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Timeslot</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_221">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>140</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Overlap</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_222">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>190</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Resample</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_223">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>250</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>OFDM</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_224">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>300</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Normalize</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_225">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>60</y>
+        <width>310</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Choose input file with zeros before and after 
+     signal</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_226">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>90</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Adjust sample rate, period, and number of copies</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_227">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>110</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Click Pad Data</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_228">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>160</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Plot data, store data, shift data, add data together</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_235">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>40</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Makes copies of a message at regular intervals</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_236">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>360</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Viewer</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_237">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>210</y>
+        <width>310</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Select input file, specify output file, choose rates,
+     resample</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_238">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>270</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>Experimental</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_239">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>320</y>
+        <width>310</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Select input file, speciy output file, choose
+     min/max, normalize</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_240">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>400</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Double-click/Load File to read data</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_241">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>440</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>4) Use toolbar to zoom, pan, save</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_242">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>460</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>5) Click Cursor, select two points on plot, Get Range</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_243">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>480</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>6) Use functions and analysis buttons</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_244">
+      <property name="geometry">
+       <rect>
+        <x>340</x>
+        <y>500</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>7) Click gear to adjust options</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+    </widget>
+    <widget class="QWidget" name="page_9">
+     <property name="styleSheet">
+      <string notr="true">QWidget#page_9{
+	background-color: rgb(251, 251, 251);
+}</string>
+     </property>
+     <widget class="QLabel" name="label_245">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Select row in Online Archive table</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_231">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Download</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_246">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>110</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Replay</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_247">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Click Download</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_248">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>80</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Plot or delete</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_249">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>130</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Double-click downloaded file or press Add button</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_250">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>150</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Build and configure playlist</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_251">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>170</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Check Repeat, click Start</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
     </widget>
     <widget class="QWidget" name="page_5">
+     <property name="styleSheet">
+      <string notr="true">QWidget#page_5{
+	background-color: rgb(251, 251, 251);
+}</string>
+     </property>
      <widget class="QLabel" name="label_166">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>10</y>
+        <y>40</y>
         <width>261</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>1) Select Protocol and Packet Type</string>
+       <string>1) Select protocol and packet type</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_167">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>30</y>
+        <y>60</y>
         <width>316</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>2) Edit Field Values</string>
+       <string>2) Edit field values</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_168">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>50</y>
+        <y>80</y>
         <width>316</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>3) Calculate CRC (When Applicable)</string>
+       <string>3) Calculate CRC (when applicable)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_169">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
+        <y>100</y>
         <width>316</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>4) Assemble Message</string>
+       <string>4) Assemble message</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_170">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>90</y>
+        <y>120</y>
         <width>316</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>5) Construct Packet Sequence</string>
+       <string>5) Construct packet sequence</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
      <widget class="QLabel" name="label_171">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>110</y>
+        <y>140</y>
         <width>316</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>6) Save Sequence to File</string>
+       <string>6) Save sequence to file</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_252">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>20</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Packet Editor</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_253">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>170</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Scapy</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_254">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>190</y>
+        <width>261</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Put wireless interface in monitor mode</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_255">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>210</y>
+        <width>261</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Select 802.11x and packet type</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_256">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>230</y>
+        <width>261</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Edit field values</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_257">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>250</y>
+        <width>261</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>4) Click Load Data</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_258">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>270</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>5) Click Refresh, enter interval, choose interface</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_259">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>290</y>
+        <width>261</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>6) Click Start</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
     </widget>
     <widget class="QWidget" name="page_8">
-     <widget class="QLabel" name="label_191">
+     <property name="styleSheet">
+      <string notr="true">QWidget#page_8{
+	background-color: rgb(251, 251, 251);
+}</string>
+     </property>
+     <widget class="QLabel" name="label_260">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>70</y>
-        <width>431</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>4) Add/Remove Attacks</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_192">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>30</y>
-        <width>306</width>
-        <height>22</height>
-       </rect>
-      </property>
-      <property name="text">
-       <string>2) Search Library for Protocol</string>
-      </property>
-     </widget>
-     <widget class="QLabel" name="label_193">
-      <property name="geometry">
-       <rect>
-        <x>10</x>
-        <y>50</y>
+        <y>20</y>
         <width>220</width>
-        <height>22</height>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
       <property name="text">
-       <string>3) Add New Protocol Data</string>
+       <string>Browse</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_194">
+     <widget class="QLabel" name="label_261">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>10</y>
-        <width>291</width>
-        <height>22</height>
+        <y>90</y>
+        <width>220</width>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
       <property name="text">
-       <string>1) Browse FISSURE Library by Protocol</string>
+       <string>Gallery</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_262">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>160</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Search</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_263">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>270</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Remove</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_264">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>360</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Add</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_265">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>40</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Choose FISSURE YAML file</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_266">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>60</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Look at the contents</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_267">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>110</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Select protocol</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_268">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>130</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Click through pictures</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_269">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>180</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Enter information for signals of interest (SOIs)</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_270">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>220</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Choose the checkboxes to use during search</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_271">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>200</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Enter data values for messages in library</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_272">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>240</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>4) Search Library</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_273">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>290</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Select Protocol</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_274">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>310</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Choose types to remove from library</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_275">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>330</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>3) Click associated Remove button</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_276">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>380</y>
+        <width>310</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Create new protocol</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_277">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>400</y>
+        <width>310</width>
+        <height>50</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>2) Add modulation type, packet type, signal of
+     interest, statistics, demodulation flow graph, and
+     attacks to existing protocol</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
     </widget>
     <widget class="QWidget" name="page_7">
-     <widget class="QLabel" name="label_117">
+     <property name="styleSheet">
+      <string notr="true">QWidget#page_7{
+	background-color: rgb(251, 251, 251);
+}</string>
+     </property>
+     <widget class="QLabel" name="label_278">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>10</y>
-        <width>186</width>
-        <height>22</height>
+        <y>20</y>
+        <width>220</width>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
       <property name="text">
-       <string>1) View System Log</string>
+       <string>System Log</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
-     <widget class="QLabel" name="label_176">
+     <widget class="QLabel" name="label_279">
       <property name="geometry">
        <rect>
         <x>10</x>
-        <y>30</y>
-        <width>406</width>
-        <height>22</height>
+        <y>40</y>
+        <width>310</width>
+        <height>20</height>
        </rect>
       </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
       <property name="text">
-       <string>2) Save Session Data</string>
+       <string>1) Filter messages to view from log, click Refresh</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_280">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>70</y>
+        <width>220</width>
+        <height>20</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+        <weight>75</weight>
+        <bold>true</bold>
+        <underline>true</underline>
+       </font>
+      </property>
+      <property name="text">
+       <string>Session Notes</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+      </property>
+     </widget>
+     <widget class="QLabel" name="label_281">
+      <property name="geometry">
+       <rect>
+        <x>10</x>
+        <y>90</y>
+        <width>310</width>
+        <height>30</height>
+       </rect>
+      </property>
+      <property name="font">
+       <font>
+        <pointsize>10</pointsize>
+       </font>
+      </property>
+      <property name="text">
+       <string>1) Make notes and save attack history, system log,
+     and session notes</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
       </property>
      </widget>
     </widget>
    </widget>
-   <zorder>stackedWidget_how_to</zorder>
-   <zorder>comboBox_how_to</zorder>
+  </widget>
+  <widget class="QLabel" name="label_293">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>680</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>16777215</width>
+     <height>22</height>
+    </size>
+   </property>
+   <property name="font">
+    <font>
+     <family>Ubuntu</family>
+     <pointsize>10</pointsize>
+     <weight>75</weight>
+     <italic>false</italic>
+     <bold>true</bold>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QLabel#label_293 {
+   qproperty-alignment: AlignCenter;
+	border: 1px solid #17365D;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
+	padding: 0px 0px;
+	color: rgb(255, 255, 255);
+	max-height: 20px;
+	font: bold 10pt &quot;Ubuntu&quot;;
+}</string>
+   </property>
+   <property name="text">
+    <string>FISSURE How To</string>
+   </property>
   </widget>
  </widget>
  <resources/>

@@ -27440,6 +27440,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionGpredict"/>
      <addaction name="actionAPT3000"/>
      <addaction name="actionEsri_Satellite_Map"/>
+     <addaction name="actionOpen_weather"/>
     </widget>
     <widget class="QMenu" name="menu433_MHz">
      <property name="title">
@@ -28839,6 +28840,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionEnscribe">
    <property name="text">
     <string>Enscribe</string>
+   </property>
+  </action>
+  <action name="actionOpen_weather">
+   <property name="text">
+    <string>Open-weather</string>
    </property>
   </action>
  </widget>

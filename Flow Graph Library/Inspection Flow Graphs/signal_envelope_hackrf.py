@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Signal Envelope Hackrf
-# Generated: Tue Sep  1 16:13:31 2020
+# Generated: Sun Aug 21 14:45:27 2022
 ##################################################
 
 from distutils.version import StrictVersion
@@ -69,6 +69,7 @@ class signal_envelope_hackrf(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
+        self.serial = serial = "0"
         self.sample_rate = sample_rate = 1e6
         self.rx_hackrf_gain = rx_hackrf_gain = 40
         self.rx_frequency = rx_frequency = 2412
@@ -165,7 +166,7 @@ class signal_envelope_hackrf(gr.top_block, Qt.QWidget):
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 3, 0, 20, 4)
         [self.top_grid_layout.setRowStretch(r,1) for r in range(3,23)]
         [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
-        self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + "hackrf=0" )
+        self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + "hackrf=" + str(serial) )
         self.osmosdr_source_0.set_sample_rate(sample_rate)
         self.osmosdr_source_0.set_center_freq(rx_frequency*1e6, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
@@ -192,6 +193,12 @@ class signal_envelope_hackrf(gr.top_block, Qt.QWidget):
         self.settings = Qt.QSettings("GNU Radio", "signal_envelope_hackrf")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_sample_rate(self):
         return self.sample_rate

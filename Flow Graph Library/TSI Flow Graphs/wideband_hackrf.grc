@@ -357,7 +357,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>"False"</value>
+      <value>"0"</value>
     </param>
   </block>
   <block>
@@ -2217,7 +2217,7 @@
     </param>
     <param>
       <key>args</key>
-      <value>hackrf=0</value>
+      <value>"hackrf=" + str(serial)</value>
     </param>
     <param>
       <key>_enabled</key>

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Rds Bpsk Hackrf File Source
-# Generated: Sun Sep 19 09:44:04 2021
+# Generated: Sun Aug 21 14:51:22 2022
 ##################################################
 
 
@@ -30,6 +30,7 @@ class RDS_BPSK_HackRF_File_Source(gr.top_block):
         # Variables
         ##################################################
         self.stereo_gain = stereo_gain = .3
+        self.serial = serial = "0"
         self.rds_gain = rds_gain = .5
         self.pilot_gain = pilot_gain = .3
         self.outbuffer = outbuffer = 10
@@ -43,7 +44,7 @@ class RDS_BPSK_HackRF_File_Source(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.osmosdr_sink_0 = osmosdr.sink( args="numchan=" + str(1) + " " + '' )
+        self.osmosdr_sink_0 = osmosdr.sink( args="numchan=" + str(1) + " " + "hackrf=" + str(serial) )
         self.osmosdr_sink_0.set_sample_rate(1e6)
         self.osmosdr_sink_0.set_center_freq(freq, 0)
         self.osmosdr_sink_0.set_freq_corr(0, 0)
@@ -129,6 +130,12 @@ class RDS_BPSK_HackRF_File_Source(gr.top_block):
 
     def set_stereo_gain(self, stereo_gain):
         self.stereo_gain = stereo_gain
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_rds_gain(self):
         return self.rds_gain

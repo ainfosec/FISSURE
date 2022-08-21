@@ -1,65 +1,110 @@
-08/15/2022 09:39:52 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
-08/15/2022 09:39:52 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-08/15/2022 09:39:52 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
-08/15/2022 09:39:52 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-08/15/2022 09:39:52 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
-08/15/2022 09:39:52 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-08/15/2022 09:39:52 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
-08/15/2022 09:39:52 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
-08/15/2022 09:39:52 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
-08/15/2022 09:39:52 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
-08/15/2022 09:39:52 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
-08/15/2022 09:39:52 PM - hiprfisr: End of HIPRFISR Initialization
-08/15/2022 09:39:52 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
-08/15/2022 09:39:52 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/15/2022 09:39:52 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
-08/15/2022 09:39:52 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/15/2022 09:39:52 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
-08/15/2022 09:39:52 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/15/2022 09:39:52 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
-08/15/2022 09:39:52 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/15/2022 09:39:52 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
-08/15/2022 09:39:52 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/15/2022 09:39:52 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
-08/15/2022 09:39:52 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/15/2022 09:39:52 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
-08/15/2022 09:39:52 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
-08/15/2022 09:39:52 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
-08/15/2022 09:39:52 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
-08/15/2022 09:39:52 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
-08/15/2022 09:39:52 PM - hiprfisr: Start of Main Event Loop
-08/15/2022 09:39:53 PM - tsi: Port Connected to tcp://localhost:5052
-08/15/2022 09:39:53 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/15/2022 09:39:53 PM - tsi: Port Initialized to tcp://*:5059
-08/15/2022 09:39:53 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/15/2022 09:39:53 PM - tsi: Port Connected to tcp://127.0.0.1:5055
-08/15/2022 09:39:53 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/15/2022 09:39:53 PM - tsi: Port Connected to tcp://127.0.0.1:5057
-08/15/2022 09:39:53 PM - fge: Port Connected to tcp://127.0.0.1:5053
-08/15/2022 09:39:53 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/15/2022 09:39:53 PM - fge: Port Initialized to tcp://127.0.0.1:5061
-08/15/2022 09:39:53 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/15/2022 09:39:53 PM - fge: Port Connected to tcp://127.0.0.1:5055
-08/15/2022 09:39:53 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/15/2022 09:39:53 PM - fge: Port Connected to tcp://127.0.0.1:5057
-08/15/2022 09:39:53 PM - pd: Port Connected to tcp://127.0.0.1:5054
-08/15/2022 09:39:53 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-08/15/2022 09:39:53 PM - pd: Port Initialized to tcp://127.0.0.1:5063
-08/15/2022 09:39:53 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-08/15/2022 09:39:53 PM - pd: Port Connected to tcp://127.0.0.1:5055
-08/15/2022 09:39:53 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-08/15/2022 09:39:53 PM - pd: Port Connected to tcp://127.0.0.1:5057
-08/15/2022 09:39:54 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
-08/15/2022 09:39:54 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
-08/15/2022 09:39:54 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
-08/15/2022 09:39:55 PM - dashboard: Received message: HIPRFISR: Connected TSI
-08/15/2022 09:39:55 PM - dashboard: Received message: HIPRFISR: Connected FGE
-08/15/2022 09:39:55 PM - dashboard: Received message: HIPRFISR: Connected PD
-08/15/2022 09:42:18 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
-08/15/2022 09:42:18 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
-08/15/2022 09:42:18 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
-08/15/2022 09:42:18 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
-08/15/2022 09:42:18 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
-08/15/2022 09:42:18 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
-08/15/2022 09:43:00 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-08/15/2022 09:43:00 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters
+08/21/2022 03:04:56 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
+08/21/2022 03:04:56 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+08/21/2022 03:04:56 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
+08/21/2022 03:04:56 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+08/21/2022 03:04:56 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
+08/21/2022 03:04:56 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+08/21/2022 03:04:56 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
+08/21/2022 03:04:56 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
+08/21/2022 03:04:56 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
+08/21/2022 03:04:56 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
+08/21/2022 03:04:56 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
+08/21/2022 03:04:56 PM - hiprfisr: End of HIPRFISR Initialization
+08/21/2022 03:04:56 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
+08/21/2022 03:04:56 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/21/2022 03:04:56 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
+08/21/2022 03:04:56 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/21/2022 03:04:56 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
+08/21/2022 03:04:56 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/21/2022 03:04:56 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
+08/21/2022 03:04:56 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/21/2022 03:04:56 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
+08/21/2022 03:04:57 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/21/2022 03:04:57 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
+08/21/2022 03:04:57 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/21/2022 03:04:57 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
+08/21/2022 03:04:57 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
+08/21/2022 03:04:57 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
+08/21/2022 03:04:57 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
+08/21/2022 03:04:57 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
+08/21/2022 03:04:57 PM - hiprfisr: Start of Main Event Loop
+08/21/2022 03:04:57 PM - tsi: Port Connected to tcp://localhost:5052
+08/21/2022 03:04:57 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/21/2022 03:04:57 PM - tsi: Port Initialized to tcp://*:5059
+08/21/2022 03:04:57 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/21/2022 03:04:57 PM - tsi: Port Connected to tcp://127.0.0.1:5055
+08/21/2022 03:04:57 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/21/2022 03:04:57 PM - tsi: Port Connected to tcp://127.0.0.1:5057
+08/21/2022 03:04:57 PM - fge: Port Connected to tcp://127.0.0.1:5053
+08/21/2022 03:04:57 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/21/2022 03:04:57 PM - fge: Port Initialized to tcp://127.0.0.1:5061
+08/21/2022 03:04:57 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/21/2022 03:04:57 PM - fge: Port Connected to tcp://127.0.0.1:5055
+08/21/2022 03:04:57 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/21/2022 03:04:57 PM - fge: Port Connected to tcp://127.0.0.1:5057
+08/21/2022 03:04:58 PM - pd: Port Connected to tcp://127.0.0.1:5054
+08/21/2022 03:04:58 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+08/21/2022 03:04:58 PM - pd: Port Initialized to tcp://127.0.0.1:5063
+08/21/2022 03:04:58 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+08/21/2022 03:04:58 PM - pd: Port Connected to tcp://127.0.0.1:5055
+08/21/2022 03:04:58 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+08/21/2022 03:04:58 PM - pd: Port Connected to tcp://127.0.0.1:5057
+08/21/2022 03:04:58 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
+08/21/2022 03:04:58 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
+08/21/2022 03:04:58 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
+08/21/2022 03:04:59 PM - dashboard: Received message: HIPRFISR: Connected TSI
+08/21/2022 03:04:59 PM - dashboard: Received message: HIPRFISR: Connected FGE
+08/21/2022 03:04:59 PM - dashboard: Received message: HIPRFISR: Connected PD
+08/21/2022 03:05:00 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
+08/21/2022 03:05:00 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
+08/21/2022 03:05:01 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
+08/21/2022 03:05:01 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
+08/21/2022 03:05:01 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
+08/21/2022 03:05:01 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
+08/21/2022 03:05:17 PM - dashboard: Sending message: Dashboard: Start Archive Playlist ['archive_replay_hackrf', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq', ' home user FISSURE Archive  TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '14d463dc2f887ce1']
+08/21/2022 03:05:17 PM - hiprfisr: Received message: Dashboard: Start Archive Playlist ['archive_replay_hackrf', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq', ' home user FISSURE Archive  TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '14d463dc2f887ce1']
+08/21/2022 03:05:17 PM - hiprfisr: Executing Callback: archivePlaylistStart with parameters ['archive_replay_hackrf', ['/home/user/FISSURE/Archive//TPMS_Good_315_1MSps.iq', '/home/user/FISSURE/Archive//TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '14d463dc2f887ce1']
+08/21/2022 03:05:17 PM - hiprfisr: Sending message: HIPRFISR: Start Archive Playlist ['archive_replay_hackrf', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq', ' home user FISSURE Archive  TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '14d463dc2f887ce1']
+08/21/2022 03:05:17 PM - fge: Received message: HIPRFISR: Start Archive Playlist ['archive_replay_hackrf', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq', ' home user FISSURE Archive  TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '14d463dc2f887ce1']
+08/21/2022 03:05:17 PM - fge: Executing Callback: archivePlaylistStart with parameters ['archive_replay_hackrf', ['/home/user/FISSURE/Archive//TPMS_Good_315_1MSps.iq', '/home/user/FISSURE/Archive//TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '14d463dc2f887ce1']
+08/21/2022 03:05:17 PM - fge: Sending message: FGE: Archive Playlist Position 0
+08/21/2022 03:05:18 PM - dashboard: Received message: FGE: Archive Playlist Position 0
+08/21/2022 03:05:18 PM - hiprfisr: Received message: FGE: Archive Playlist Position 0
+08/21/2022 03:05:23 PM - dashboard: Sending message: Dashboard: Stop Archive Playlist 
+08/21/2022 03:05:23 PM - fge: Sending message: FGE: Archive Playlist Position 1
+08/21/2022 03:05:23 PM - hiprfisr: Received message: Dashboard: Stop Archive Playlist 
+08/21/2022 03:05:23 PM - hiprfisr: Executing Callback: archivePlaylistStop with parameters 
+08/21/2022 03:05:23 PM - hiprfisr: Sending message: HIPRFISR: Stop Archive Playlist 
+08/21/2022 03:05:23 PM - hiprfisr: Received message: FGE: Archive Playlist Position 1
+08/21/2022 03:05:23 PM - fge: Received message: HIPRFISR: Stop Archive Playlist 
+08/21/2022 03:05:23 PM - fge: Executing Callback: archivePlaylistStop with parameters 
+08/21/2022 03:05:23 PM - fge: Sending message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:24 PM - fge: Sending message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:24 PM - dashboard: Received message: FGE: Archive Playlist Position 1
+08/21/2022 03:05:24 PM - dashboard: Received message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:24 PM - dashboard: Received message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:24 PM - hiprfisr: Received message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:24 PM - hiprfisr: Received message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:33 PM - dashboard: Sending message: Dashboard: Start Archive Playlist ['archive_replay_hackrf', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq', ' home user FISSURE Archive  TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '457863c823636f1f']
+08/21/2022 03:05:34 PM - hiprfisr: Received message: Dashboard: Start Archive Playlist ['archive_replay_hackrf', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq', ' home user FISSURE Archive  TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '457863c823636f1f']
+08/21/2022 03:05:34 PM - hiprfisr: Executing Callback: archivePlaylistStart with parameters ['archive_replay_hackrf', ['/home/user/FISSURE/Archive//TPMS_Good_315_1MSps.iq', '/home/user/FISSURE/Archive//TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '457863c823636f1f']
+08/21/2022 03:05:34 PM - hiprfisr: Sending message: HIPRFISR: Start Archive Playlist ['archive_replay_hackrf', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq', ' home user FISSURE Archive  TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '457863c823636f1f']
+08/21/2022 03:05:34 PM - fge: Received message: HIPRFISR: Start Archive Playlist ['archive_replay_hackrf', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq', ' home user FISSURE Archive  TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '457863c823636f1f']
+08/21/2022 03:05:34 PM - fge: Executing Callback: archivePlaylistStart with parameters ['archive_replay_hackrf', ['/home/user/FISSURE/Archive//TPMS_Good_315_1MSps.iq', '/home/user/FISSURE/Archive//TPMS_Low_315_1MSps.iq'], ['315e6', '315e6'], ['1e6', '1e6'], ['Complex Float 32', 'Complex Float 32'], ['', ''], ['20', '20'], ['5', '5'], False, '', '457863c823636f1f']
+08/21/2022 03:05:34 PM - fge: Sending message: FGE: Archive Playlist Position 0
+08/21/2022 03:05:35 PM - dashboard: Received message: FGE: Archive Playlist Position 0
+08/21/2022 03:05:35 PM - hiprfisr: Received message: FGE: Archive Playlist Position 0
+08/21/2022 03:05:37 PM - dashboard: Sending message: Dashboard: Stop Archive Playlist 
+08/21/2022 03:05:38 PM - hiprfisr: Received message: Dashboard: Stop Archive Playlist 
+08/21/2022 03:05:38 PM - hiprfisr: Executing Callback: archivePlaylistStop with parameters 
+08/21/2022 03:05:38 PM - hiprfisr: Sending message: HIPRFISR: Stop Archive Playlist 
+08/21/2022 03:05:38 PM - fge: Received message: HIPRFISR: Stop Archive Playlist 
+08/21/2022 03:05:38 PM - fge: Executing Callback: archivePlaylistStop with parameters 
+08/21/2022 03:05:38 PM - fge: Sending message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:39 PM - fge: Sending message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:39 PM - dashboard: Received message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:39 PM - dashboard: Received message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:39 PM - hiprfisr: Received message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:39 PM - hiprfisr: Received message: FGE: Archive Playlist Finished 
+08/21/2022 03:05:58 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
+08/21/2022 03:05:58 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters

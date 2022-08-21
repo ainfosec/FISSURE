@@ -280,6 +280,33 @@
     </param>
   </block>
   <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(8, 564)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>serial</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>"0"</value>
+    </param>
+  </block>
+  <block>
     <key>analog_sig_source_x</key>
     <param>
       <key>amp</key>
@@ -1909,7 +1936,7 @@
     </param>
     <param>
       <key>args</key>
-      <value></value>
+      <value>"hackrf=" + str(serial)</value>
     </param>
     <param>
       <key>_enabled</key>
@@ -1917,7 +1944,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(296, 92)</value>
+      <value>(296, 68)</value>
     </param>
     <param>
       <key>_rotation</key>
