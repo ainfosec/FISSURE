@@ -33,7 +33,7 @@ class wideband_hackrf(gr.top_block):
         # Variables
         ##################################################
         self.threshold = threshold = -70
-        self.serial = serial = "False"
+        self.serial = serial = "0"
         self.sample_rate = sample_rate = 20000000
         self.rx_freq = rx_freq = 1200e6
         self.ip_address = ip_address = "N/A"
@@ -46,7 +46,7 @@ class wideband_hackrf(gr.top_block):
         # Blocks
         ##################################################
         self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + 'hackrf=0'
+            args="numchan=" + str(1) + " " + "hackrf="+ serial
         )
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(sample_rate)

@@ -141,12 +141,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"False"'
+    value: '"0"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [872, 20]
+    coordinate: [866, 21]
     rotation: 0
     state: enabled
 - name: threshold
@@ -385,7 +385,7 @@ blocks:
     ant7: ''
     ant8: ''
     ant9: ''
-    args: hackrf=0
+    args: '"hackrf="+ str(serial)'
     bb_gain0: '20'
     bb_gain1: '20'
     bb_gain10: '20'

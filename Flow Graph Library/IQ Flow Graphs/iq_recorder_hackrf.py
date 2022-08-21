@@ -27,6 +27,7 @@ class iq_recorder_hackrf(gr.top_block):
         ##################################################
         # Variables
         ##################################################
+        self.serial = serial = "0"
         self.sample_rate = sample_rate = 1
         self.rx_gain = rx_gain = 25
         self.rx_frequency = rx_frequency = 2412
@@ -39,7 +40,7 @@ class iq_recorder_hackrf(gr.top_block):
         # Blocks
         ##################################################
         self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + "hackrf=0"
+            args="numchan=" + str(1) + " " + "hackrf=" + str(serial)
         )
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(float(sample_rate)*1e6)
@@ -63,6 +64,12 @@ class iq_recorder_hackrf(gr.top_block):
         self.connect((self.blocks_head_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_skiphead_0, 0), (self.blocks_head_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.blocks_skiphead_0, 0))
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_sample_rate(self):
         return self.sample_rate

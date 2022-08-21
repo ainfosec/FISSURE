@@ -31,6 +31,7 @@ class archive_replay_hackrf(gr.top_block):
         self.tx_gain = tx_gain = 30
         self.tx_frequency = tx_frequency = 2425.715e6
         self.tx_channel = tx_channel = "A:0"
+        self.serial = serial = "0"
         self.sample_rate = sample_rate = 4e6
         self.ip_address = ip_address = "192.168.40.2"
         self.filepath = filepath = ""
@@ -39,7 +40,7 @@ class archive_replay_hackrf(gr.top_block):
         # Blocks
         ##################################################
         self.osmosdr_sink_0 = osmosdr.sink(
-            args="numchan=" + str(1) + " " + "hackrf=1"
+            args="numchan=" + str(1) + " " + "hackrf=" + str(serial)
         )
         self.osmosdr_sink_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_sink_0.set_sample_rate(float(sample_rate))
@@ -79,6 +80,12 @@ class archive_replay_hackrf(gr.top_block):
 
     def set_tx_channel(self, tx_channel):
         self.tx_channel = tx_channel
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_sample_rate(self):
         return self.sample_rate

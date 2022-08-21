@@ -1,5 +1,20 @@
 # Change Log
 All notable changes to this project will be documented in this file.
+
+## 2022-08-21
+
+Impacts the Dashboard, Hardware Select UI, and flow graph library.
+ 
+### Added
+
+- Shortcut to Open-weather.community in the Tools Menu
+- Serial number option for HackRFs in flow graphs (does not work with Inspection flow graphs) and Hardware Select UI, added Guess and Probe button functionality
+   
+### Changed
+
+- Updated the Tab Help to better reflect all the tabs
+- Serial number variable to HackRF flow graphs, requires `"hackrf=" + str(serial)` in source/sink blocks
+- Hardware Selection UI width to show longer serial numbers and interface names
  
 ## 2022-08-15
 

@@ -1535,6 +1535,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionj2497_mod_fl2k.triggered.connect(self._slotMenuStandaloneJ2497_fl2kClicked)
         self.actionj2497_mod.triggered.connect(self._slotMenuStandaloneJ2497_ModClicked)
         self.actionEnscribe.triggered.connect(self._slotMenuEnscribeClicked)
+        self.actionOpen_weather.triggered.connect(self._slotMenuOpenWeatherClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -2145,9 +2146,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 value_text = self.dashboard_settings_dictionary['hardware_ip_pd']
                             elif variable_name == "serial":
                                 if len(self.dashboard_settings_dictionary['hardware_serial_pd']) > 0:
-                                    value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_pd']                                
+                                    if self.dashboard_settings_dictionary['hardware_pd'] == "HackRF":
+                                        value_text = self.dashboard_settings_dictionary['hardware_serial_pd']
+                                    else:
+                                        value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_pd']                                
                                 else:
-                                    value_text = "False"
+                                    if self.dashboard_settings_dictionary['hardware_pd'] == "HackRF":
+                                        value_text = ""
+                                    else:
+                                        value_text = "False"
                             
                             # Fill in the "Current Values" Table
                             value = QtWidgets.QTableWidgetItem(value_text)
@@ -2901,9 +2908,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 value_text = self.dashboard_settings_dictionary['hardware_ip_attack']
                             elif variable_name == "serial":
                                 if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
-                                    value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
+                                    if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                        value_text = self.dashboard_settings_dictionary['hardware_serial_attack']
+                                    else:
+                                        value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
                                 else:
-                                    value_text = "False"   
+                                    if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                        value_text = ""
+                                    else:
+                                        value_text = "False"   
                             else:
                                 value_text = get_line.split(' = ')[1].rstrip('\n')
                                 value_text = value_text.replace('"','')
@@ -3001,9 +3014,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                     value_text = self.dashboard_settings_dictionary['hardware_ip_attack']
                                 elif variable_name == "serial":
                                     if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
-                                        value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
+                                        if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                            value_text = self.dashboard_settings_dictionary['hardware_serial_attack']
+                                        else:
+                                            value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
                                     else:
-                                        value_text = "False"   
+                                        if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                            value_text = ""
+                                        else:
+                                            value_text = "False"   
                                 else:
                                     value_text = get_line.split(' = ')[1].rstrip('\n')
                                     value_text = value_text.replace('"','')
@@ -3110,9 +3129,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                         value_text = self.dashboard_settings_dictionary['hardware_ip_attack']
                                     elif variable_name == "serial":
                                         if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
-                                            value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
+                                            if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                                value_text = self.dashboard_settings_dictionary['hardware_serial_attack']
+                                            else:
+                                                value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
                                         else:
-                                            value_text = "False"   
+                                            if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                                value_text = ""
+                                            else:
+                                                value_text = "False"   
                                                                                                    
                                     # Fill in the "Current Values" Table
                                     value = QtWidgets.QTableWidgetItem(value_text)
@@ -3175,9 +3200,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                         value_text = self.dashboard_settings_dictionary['hardware_ip_attack']
                                     elif variable_name == "serial":
                                         if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
-                                            value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
+                                            if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                                value_text = self.dashboard_settings_dictionary['hardware_serial_attack']
+                                            else:
+                                                value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
                                         else:
-                                            value_text = "False"                                        
+                                            if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                                value_text = ""
+                                            else:
+                                                value_text = "False"                                        
                                                                                                    
                                     # Fill in the "Current Values" Table
                                     value = QtWidgets.QTableWidgetItem(value_text)
@@ -6296,9 +6327,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 # Hardware Serial
                 if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
-                    get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']                               
+                    if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                        get_serial = self.dashboard_settings_dictionary['hardware_serial_iq']
+                    else:
+                        get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']                               
                 else:
-                    get_serial = "False"    
+                    if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                        get_serial = ""
+                    else:
+                        get_serial = "False"    
                 
                 # Put them in a List
                 variable_names = ['filepath','ip_address','rx_channel','rx_frequency','sample_rate','rx_gain','rx_antenna','file_length','serial']
@@ -7326,9 +7363,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                     value_text = self.dashboard_settings_dictionary['hardware_ip_attack']
                                 elif variable_name == "serial":
                                     if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
-                                        value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                                
+                                        if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                            value_text = self.dashboard_settings_dictionary['hardware_serial_attack']
+                                        else:
+                                            value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                                
                                     else:
-                                        value_text = "False"                                    
+                                        if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                            value_text = ""
+                                        else:
+                                            value_text = "False"                                    
                                 
                                 # Fill in the "Current Values" Table
                                 value = QtWidgets.QTableWidgetItem(value_text)
@@ -10246,9 +10289,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
                     # Hardware Serial
                     if len(self.dashboard_settings_dictionary['hardware_serial_tsi']) > 0:
-                        get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_tsi']                               
+                        if self.dashboard_settings_dictionary['hardware_tsi'] == "HackRF":
+                            get_serial = self.dashboard_settings_dictionary['hardware_serial_tsi']
+                        else:
+                            get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_tsi']                               
                     else:
-                        get_serial = "False"  
+                        if self.dashboard_settings_dictionary['hardware_tsi'] == "HackRF":
+                            get_serial = ""  
+                        else:
+                            get_serial = "False"  
                     variable_names.append('serial')
                     variable_values.append(get_serial)
 
@@ -11671,6 +11720,45 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         widget_serial.setText(get_serial) 
         widget_serial.setAlignment(QtCore.Qt.AlignCenter)
         
+    def findHackRF(self, widget_serial):      
+        """ Parses the results of 'hackrf_infor' and sets the HackRF serial for an edit box.
+        """   
+        # Get the Text
+        proc=subprocess.Popen("hackrf_info &", shell=True, stdout=subprocess.PIPE, )
+        output=proc.communicate()[0].decode()
+        print(output)
+        
+        # Reset Guess Index
+        get_text = str(widget_serial.toPlainText())
+        if len(get_text) == 0:
+            self.guess_index = 0
+        else:
+            self.guess_index = self.guess_index + 1
+        
+        # Get the Variables and Values
+        device_index = -1
+        device_dict = {}
+        for line in output.splitlines():
+            if "Serial number" in line:                    
+                device_index = device_index + 1
+                device_dict.update({device_index:[]})
+                get_var = line.split(':')[0].strip(' ')
+                get_val = line.split(':')[1].strip(' ').lstrip('0')
+                device_dict[device_index].append((get_var,get_val))
+                
+        # Check Interface Index
+        if self.guess_index > (len(device_dict)-1):
+            self.guess_index = 0  
+                    
+        # Update Dashboard 
+        try:
+            m = device_dict[self.guess_index][0]   
+            if m[0] == 'Serial number':
+                widget_serial.setText(m[1]) 
+                widget_serial.setAlignment(QtCore.Qt.AlignCenter)     
+        except:
+            widget_serial.setText("") 
+            widget_serial.setAlignment(QtCore.Qt.AlignCenter)       
                 
     def _slotLibraryBrowseRemoveDemodFG_Clicked(self):
         """ Removes selected demodulation flow graph from the library.
@@ -12004,9 +12092,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             value_text = self.dashboard_settings_dictionary['hardware_ip_iq']
                         elif variable_name == "serial":
                             if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
-                                value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']                               
+                                if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                                    value_text = self.dashboard_settings_dictionary['hardware_serial_iq']
+                                else:
+                                    value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']                               
                             else:
-                                value_text = "False"   
+                                if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                                    value_text = ""
+                                else:
+                                    value_text = "False"   
                         else:
                             value_text = get_line.split(' = ')[1].rstrip('\n')
                             value_text = value_text.replace('"','')
@@ -15236,9 +15330,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             
             # Hardware Serial
             if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
-                get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']                               
+                if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                    get_serial = self.dashboard_settings_dictionary['hardware_serial_iq']
+                else:
+                    get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']                               
             else:
-                get_serial = "False"  
+                if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                    get_serial = ""
+                else:
+                    get_serial = "False"  
             
             # Put them in a List
             variable_names = ['filepath','ip_address','tx_channel','tx_frequency','sample_rate','tx_gain','tx_antenna','serial']
@@ -17616,9 +17716,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 # Hardware Serial                
                 if len(self.dashboard_settings_dictionary['hardware_serial_archive']) > 0:
-                    get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_archive']                               
+                    if self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
+                        get_serial = self.dashboard_settings_dictionary['hardware_serial_archive']
+                    else:
+                        get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_archive']                               
                 else:
-                    get_serial = "False"  
+                    if self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
+                        get_serial = ""
+                    else:
+                        get_serial = "False"  
                 
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Start Archive Playlist', Parameters = [flow_graph, all_file_list, all_frequency_list, all_sample_rate_list, all_format_list, all_channel_list, all_gain_list, all_duration_list, get_repeat, get_ip_address, get_serial])  
                     
@@ -20614,8 +20720,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Terminal
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         enscribe_command = "enscribe -oversample -lf=5 -hf=70 -color=yb -wav input.jpg output.wav"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + enscribe_command + '"', shell=True)          
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + enscribe_command + '"', shell=True)       
         
+    def _slotMenuOpenWeatherClicked(self):
+        """ Opens the Open-weather website in a browser.
+        """
+        # Open a Browser 
+        os.system("sensible-browser https://open-weather.community/ &") 
 
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
     def __init__(self):
@@ -20625,7 +20736,7 @@ class HelpMenuDialog(QtWidgets.QDialog, form_class6):
         self.setupUi(self)       
             
         # Prevent Resizing/Maximizing
-        self.setFixedSize(700, 500)         
+        self.setFixedSize(700, 700)         
         
         # Do SIGNAL/Slots Connections
         self._connectSlots()    
@@ -20788,7 +20899,7 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
         self.setupUi(self)       
             
         # Prevent Resizing/Maximizing
-        self.setFixedSize(800, 115)         
+        self.setFixedSize(950, 115)         
         
         # Do SIGNAL/Slots Connections
         self._connectSlots()    
@@ -20908,7 +21019,7 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
         elif str(self.comboBox_hardware.currentText()) == "USRP B210":
             self.parent.findB210(self.textEdit_serial)
         elif str(self.comboBox_hardware.currentText()) == "HackRF":
-            pass
+            self.parent.findHackRF(self.textEdit_serial)
         elif str(self.comboBox_hardware.currentText()) == "RTL2832U":
             pass
         elif str(self.comboBox_hardware.currentText()) == "802.11x Adapter":
@@ -20991,6 +21102,22 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             # Create a Dialog Window    
             msgBox = MyMessageBox(my_text = output, height = 75, width = 700)
             msgBox.exec_() 
+            
+        elif (str(self.comboBox_hardware.currentText()) == "HackRF"):
+            # Probe
+            try:
+                self.label_probe.setVisible(True)   
+                QtWidgets.QApplication.processEvents()            
+                proc=subprocess.Popen('hackrf_info &', shell=True, stdout=subprocess.PIPE, )
+                output=proc.communicate()[0].decode()
+                self.label_probe.setVisible(False)                
+            except:
+                self.label_probe.setVisible(False)
+                output = "Error"            
+                
+            # Create a Dialog Window    
+            msgBox = MyMessageBox(my_text = output, height = 300, width = 500)
+            msgBox.exec_() 
                         
     def _slotHardwareChanged(self):
         """ Updates display options for selected hardware.
@@ -21027,9 +21154,9 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             self.comboBox_daughterboard.setVisible(False)
         elif str(self.comboBox_hardware.currentText()) == "HackRF":
             self.textEdit_ip.setVisible(False)
-            self.textEdit_serial.setVisible(False)
-            self.pushButton_guess.setVisible(False)
-            self.pushButton_probe_usrp.setVisible(False)
+            self.textEdit_serial.setVisible(True)
+            self.pushButton_guess.setVisible(True)
+            self.pushButton_probe_usrp.setVisible(True)
             self.textEdit_interface.setVisible(False)
             self.comboBox_daughterboard.setVisible(False)
         elif str(self.comboBox_hardware.currentText()) == "RTL2832U":

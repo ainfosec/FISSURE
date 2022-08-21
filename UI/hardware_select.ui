@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>950</width>
     <height>115</height>
    </rect>
   </property>
@@ -19,9 +19,9 @@
   <widget class="QLabel" name="label_108">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>355</x>
      <y>12</y>
-     <width>90</width>
+     <width>170</width>
      <height>20</height>
     </rect>
    </property>
@@ -44,7 +44,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>720</x>
+     <x>870</x>
      <y>40</y>
      <width>65</width>
      <height>27</height>
@@ -126,7 +126,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>655</x>
+     <x>805</x>
      <y>40</y>
      <width>65</width>
      <height>27</height>
@@ -142,9 +142,9 @@
   <widget class="QLabel" name="label_158">
    <property name="geometry">
     <rect>
-     <x>445</x>
+     <x>530</x>
      <y>12</y>
-     <width>100</width>
+     <width>170</width>
      <height>20</height>
     </rect>
    </property>
@@ -185,7 +185,7 @@
     <rect>
      <x>355</x>
      <y>40</y>
-     <width>90</width>
+     <width>170</width>
      <height>27</height>
     </rect>
    </property>
@@ -250,7 +250,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>7</x>
      <y>37</y>
-     <width>785</width>
+     <width>935</width>
      <height>33</height>
     </rect>
    </property>
@@ -292,9 +292,9 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="geometry">
     <rect>
-     <x>450</x>
+     <x>530</x>
      <y>40</y>
-     <width>100</width>
+     <width>170</width>
      <height>27</height>
     </rect>
    </property>
@@ -312,7 +312,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="pushButton_ok">
    <property name="geometry">
     <rect>
-     <x>250</x>
+     <x>325</x>
      <y>80</y>
      <width>99</width>
      <height>27</height>
@@ -325,7 +325,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="pushButton_cancel">
    <property name="geometry">
     <rect>
-     <x>450</x>
+     <x>525</x>
      <y>80</y>
      <width>99</width>
      <height>27</height>
@@ -341,7 +341,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="pushButton_apply_to_all">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>425</x>
      <y>80</y>
      <width>99</width>
      <height>27</height>
@@ -357,7 +357,7 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="geometry">
     <rect>
-     <x>555</x>
+     <x>705</x>
      <y>40</y>
      <width>95</width>
      <height>27</height>
@@ -387,7 +387,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_159">
    <property name="geometry">
     <rect>
-     <x>545</x>
+     <x>695</x>
      <y>12</y>
      <width>115</width>
      <height>20</height>
@@ -409,7 +409,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_probe">
    <property name="geometry">
     <rect>
-     <x>630</x>
+     <x>780</x>
      <y>80</y>
      <width>155</width>
      <height>27</height>

@@ -73,6 +73,7 @@ class time_sink_hackrf(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
+        self.serial = serial = "0"
         self.sample_rate = sample_rate = 1e6
         self.rx_hackrf_gain = rx_hackrf_gain = 40
         self.rx_frequency = rx_frequency = 2412
@@ -234,7 +235,7 @@ class time_sink_hackrf(gr.top_block, Qt.QWidget):
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + "hackrf=0"
+            args="numchan=" + str(1) + " " + "hackrf=" + str(serial)
         )
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(sample_rate)
@@ -260,6 +261,12 @@ class time_sink_hackrf(gr.top_block, Qt.QWidget):
         self.settings = Qt.QSettings("GNU Radio", "time_sink_hackrf")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_sample_rate(self):
         return self.sample_rate

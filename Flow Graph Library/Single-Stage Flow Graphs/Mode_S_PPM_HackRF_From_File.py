@@ -31,6 +31,7 @@ class Mode_S_PPM_HackRF_From_File(gr.top_block):
         ##################################################
         self.tx_freq = tx_freq = 915e6
         self.transmit_interval = transmit_interval = .1
+        self.serial = serial = "0"
         self.samp_rate = samp_rate = 2e6
         self.notes = notes = "Transmits ADSB binary data supplied from a file."
         self.filepath = filepath = "/home/user/FISSURE/Crafted Packets/adsb_airborne_position_odd1.bin"
@@ -39,7 +40,7 @@ class Mode_S_PPM_HackRF_From_File(gr.top_block):
         # Blocks
         ##################################################
         self.osmosdr_sink_0 = osmosdr.sink(
-            args="numchan=" + str(1) + " " + ''
+            args="numchan=" + str(1) + " " + "hackrf=" + str(serial)
         )
         self.osmosdr_sink_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_sink_0.set_sample_rate(samp_rate)
@@ -83,6 +84,12 @@ class Mode_S_PPM_HackRF_From_File(gr.top_block):
 
     def set_transmit_interval(self, transmit_interval):
         self.transmit_interval = transmit_interval
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_samp_rate(self):
         return self.samp_rate

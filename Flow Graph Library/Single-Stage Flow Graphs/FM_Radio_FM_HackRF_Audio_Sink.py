@@ -30,6 +30,7 @@ class FM_Radio_FM_HackRF_Audio_Sink(gr.top_block):
         ##################################################
         # Variables
         ##################################################
+        self.serial = serial = "0"
         self.sample_rate = sample_rate = 2e6
         self.notes = notes = "Plays FM radio audio."
         self.frequency_offset = frequency_offset = 0.3e6
@@ -45,7 +46,7 @@ class FM_Radio_FM_HackRF_Audio_Sink(gr.top_block):
                 taps=None,
                 fractional_bw=None)
         self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + ''
+            args="numchan=" + str(1) + " " + "hackrf=" + str(serial)
         )
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(sample_rate)
@@ -86,6 +87,12 @@ class FM_Radio_FM_HackRF_Audio_Sink(gr.top_block):
         self.connect((self.low_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.blocks_multiply_xx_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.analog_wfm_rcv_0, 0))
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_sample_rate(self):
         return self.sample_rate
