@@ -114,7 +114,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 
 ## Contributing
 
-Suggestions for improving FISSURE are strongly encouraged. Leave a comment in the [Discussions](https://github.com/ainfosec/gr-j2497/discussions) page if you have any thoughts regarding the following:
+Suggestions for improving FISSURE are strongly encouraged. Leave a comment in the [Discussions](https://github.com/ainfosec/FISSURE/discussions) page if you have any thoughts regarding the following:
 - New feature suggestions and design changes
 - Software tools with installation steps
 - New lessons or additional material for existing lessons
@@ -131,7 +131,7 @@ Contributions to improve FISSURE are crucial to expediting its development. Any 
 4. Push to the branch (`git push origin feature/AmazingFeature`)
 5. Open a pull request
 
-Creating [Issues](https://github.com/ainfosec/gr-j2497/issues) to bring attention to bugs is also welcomed.
+Creating [Issues](https://github.com/ainfosec/FISSURE/issues) to bring attention to bugs is also welcomed.
 
 ## Collaborating
 
