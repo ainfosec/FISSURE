@@ -17818,17 +17818,17 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         if done1 and done2 and done3:
 
-            with open('~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf', 'r') as conf:
+            with open(os.path.expanduser('~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf'), 'r') as conf:
                 data = conf.readlines()
                 data[38] = "dl_earfcn = {}\n".format(dl_earfcn)
                 data[123] = "imei = {}\n".format(imei)
                 data[159] = "apn = {}\n".format(apn)
-                with open('~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf', 'w') as conf:
+                with open(os.path.expanduser('~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf'), 'w') as conf:
                     conf.writelines(data)
-            script_location = os.path.dirname(os.path.realpath(__file__)) + "~/Installed_by_FISSURE/LTE-ciphercheck/build/srsue/src"   
-            config_file_location = os.path.expanduser("~/Installed_by_FISSURE/LTE_ciphercheck/srsueciphercheck.conf")    
-            command_text = 'gnome-terminal -- sudo ' + script_location + 'srsue ' + config_file_location
-            proc = subprocess.Popen(command_text, cwd=script_location, shell=True)
+            srsue_location = os.path.expanduser("~/Installed_by_FISSURE/LTE-ciphercheck/build/srsue/src") 
+            config_file_location = os.path.expanduser("~/Installed_by_FISSURE/LTE_ciphercheck/srsueciphercheck.conf")
+            command_text = 'gnome-terminal -- sudo srsue ' + config_file_location
+            proc = subprocess.Popen(command_text, cwd=srsue_location, shell=True)
 
     def _slotPD_SnifferNetcatClicked(self):
         """ Start a netcat listener in a new terminal.
