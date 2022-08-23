@@ -27287,6 +27287,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionCellmapper"/>
      <addaction name="actionLTE_Cell_Scanner"/>
      <addaction name="actionAntennaSearch"/>
+     <addaction name="actionLTE_ciphercheck"/>
     </widget>
     <widget class="QMenu" name="menuHam_Radio">
      <property name="title">
@@ -27907,6 +27908,11 @@ p, li { white-space: pre-wrap; }
   <action name="action4G_IMSI_Catcher">
    <property name="text">
     <string>4G IMSI-Catcher</string>
+   </property>
+  </action>
+  <action name="actionLTE-ciphercheck">
+   <property name="text">
+    <string>LTE-ciphercheck</string>
    </property>
   </action>
   <action name="actionInspectrum">
