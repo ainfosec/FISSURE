@@ -1358,6 +1358,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionBaudline.triggered.connect(self._slotMenuBaudlineClicked)
         self.actionUniversal_Radio_Hacker.triggered.connect(self._slotMenuURH_Clicked)
         self.action4G_IMSI_Catcher.triggered.connect(self._slotMenu4G_IMSI_CatcherClicked)
+        self.actionLTE_ciphercheck.triggered.connect(self._slotMenuLTE_ciphercheckClicked)
         self.actionInspectrum.triggered.connect(self._slotMenuInspectrumClicked)
         self.actionOpenCPN.triggered.connect(self._slotMenuOpenCPN_Clicked)
         self.actionAis_rx.triggered.connect(self._slotMenuAis_rxClicked)
@@ -17804,6 +17805,31 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             command_text = 'gnome-terminal -- python3 ' + script_location + 'start_sniffing.py -b ' + get_value + ' ' + cell_search_binary_location + ' &'
             proc = subprocess.Popen(command_text, cwd=script_location, shell=True)
         
+    def _slotLTE_ciphercheckClicked(self):
+        """Runs srsue with ciphercheck.conf, gets configuration from gui that will be generated.
+        """
+        # Open the Band Chooser Dialog
+        dl_earfcn, done1 = QInputDialog().getText(self, "Enter target DL_EARFCN",
+                                     "dl_earfcn")
+        apn, done2 = QInputDialog().getText(self, "Enter target APN",
+                                     "apn")
+        imei, done3 = QInputDialog().getText(self, "Enter target IMEI",
+                                     "imei")
+
+        if done1 and done2 and done3:
+
+            with open('~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf', 'r') as conf:
+                data = conf.readlines()
+                data[38] = "dl_earfcn = {}\n".format(dl_earfcn)
+                data[123] = "imei = {}\n".format(imei)
+                data[159] = "apn = {}\n".format(apn)
+                with open('~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf', 'w') as conf:
+                    conf.writelines(data)
+            script_location = os.path.dirname(os.path.realpath(__file__)) + "~/Installed_by_FISSURE/LTE-ciphercheck/build/srsue/src"   
+            config_file_location = os.path.expanduser("~/Installed_by_FISSURE/LTE_ciphercheck/srsueciphercheck.conf")    
+            command_text = 'gnome-terminal -- sudo ' + script_location + 'srsue ' + config_file_location
+            proc = subprocess.Popen(command_text, cwd=script_location, shell=True)
+
     def _slotPD_SnifferNetcatClicked(self):
         """ Start a netcat listener in a new terminal.
         """
