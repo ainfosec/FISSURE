@@ -17805,7 +17805,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             command_text = 'gnome-terminal -- python3 ' + script_location + 'start_sniffing.py -b ' + get_value + ' ' + cell_search_binary_location + ' &'
             proc = subprocess.Popen(command_text, cwd=script_location, shell=True)
         
-    def _slotLTE_ciphercheckClicked(self):
+    def _slotMenuLTE_ciphercheckClicked(self):
         """Runs srsue with ciphercheck.conf, gets configuration from gui that will be generated.
         """
         # Open the Band Chooser Dialog

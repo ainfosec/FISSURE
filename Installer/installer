@@ -777,7 +777,7 @@ srsenb --help
 
 # LTE-ciphercheck
 programs_ubuntu20_04.append(('LTE-ciphercheck',
-"""sudo apt install git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev libuhd-dev libpcsclite-dev pcsc-tools pcscd
+"""sudo apt install -y git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev libuhd-dev libpcsclite-dev pcsc-tools pcscd
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mrlnc/LTE-ciphercheck
@@ -2262,7 +2262,7 @@ srsenb --help
 
 # LTE-ciphercheck
 programs_ubuntu20_04_4.append(('LTE-ciphercheck',
-"""sudo apt install git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev libuhd-dev libpcsclite-dev pcsc-tools pcscd
+"""sudo apt install -y git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev libuhd-dev libpcsclite-dev pcsc-tools pcscd
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mrlnc/LTE-ciphercheck
@@ -3349,7 +3349,7 @@ srsenb --help
 
 # LTE-ciphercheck
 programs_ubuntu22_04.append(('LTE-ciphercheck',
-"""sudo apt install git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev libuhd-dev libpcsclite-dev pcsc-tools pcscd
+"""sudo apt install -y git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev libuhd-dev libpcsclite-dev pcsc-tools pcscd
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mrlnc/LTE-ciphercheck
