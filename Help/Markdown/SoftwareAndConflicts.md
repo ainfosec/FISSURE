@@ -62,6 +62,7 @@ The following is a table of the major software tools that have been proven to wo
 | Kismet | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
 | libbtbb | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | LTE-Cell-Scanner | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| LTE-ciphercheck | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
 | Metasploit | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
 | minicom | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | minimodem | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -181,6 +182,7 @@ The following are the software versions that are included with the FISSURE insta
 | Kismet | Kismet 2016-07-R1 | No | https://www.kismetwireless.net/ |
 | libbtbb | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
+| LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
 | Metasploit | v6.2.4-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
@@ -288,6 +290,7 @@ The following are the software versions that are included with the FISSURE insta
 | Kismet | Kismet 2016-07-R1 | No | https://www.kismetwireless.net/ |
 | libbtbb | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
+| LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
 | Metasploit | v6.1.17-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
@@ -395,6 +398,7 @@ The following are the software versions that are included with the FISSURE insta
 | Kismet | Kismet 2016-07-R1 | No | https://www.kismetwireless.net/ |
 | libbtbb | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
+| LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
 | Metasploit | 6.2.10-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
@@ -502,6 +506,7 @@ The following are the software versions that are included with the FISSURE insta
 | Kismet | Kismet 2016-07-R1 | No | https://www.kismetwireless.net/ |
 | libbtbb | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
+| LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
 | Metasploit | v6.1.44-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
@@ -609,6 +614,7 @@ The following are the software versions that are included with the FISSURE insta
 | Kismet | Kismet 2016-07-R1 | No | https://www.kismetwireless.net/ |
 | libbtbb | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
+| LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
 | Metasploit | v6.1.44-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
@@ -716,6 +722,7 @@ The following are the software versions that are included with the FISSURE insta
 | ~~Kismet~~ | Kismet 2016-07-R1 | No | https://www.kismetwireless.net/ |
 | ~~libbtbb~~ | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
+| LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
 | ~~Metasploit~~ | v6.1.44-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.8 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |

@@ -1536,6 +1536,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionj2497_mod.triggered.connect(self._slotMenuStandaloneJ2497_ModClicked)
         self.actionEnscribe.triggered.connect(self._slotMenuEnscribeClicked)
         self.actionOpen_weather.triggered.connect(self._slotMenuOpenWeatherClicked)
+        self.actionLTE_ciphercheck.triggered.connect(self._slotMenuLTE_ciphercheckClicked)
+        self.actionElectromagnetic_Radiation_Spectrum.triggered.connect(self._slotMenuElectromagneticRadiationSpectrumClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -3495,6 +3497,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         # Values
         all_values_string = ""
+        print("SSSSSSSSSSD")
+        print(len(variable_names))
+        print(len(variable_names[0]))
+        print(type(variable_names))
+        print(type(variable_names[0]))
+        print(variable_names[0])
+        print(variable_names[1])
         for k in range(0,len(variable_names)):
             all_values_string = all_values_string + variable_names[k] + ": " + variable_values[k] + "; "
         all_values_string_item = QtWidgets.QTableWidgetItem(str(all_values_string))
@@ -3833,7 +3842,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Update the "Attack History" Table
         attack_name = str(self.label_selected_attack.text())
         protocol = str(self.label_selected_protocol.text())
-        self.updateAttackHistory(attack_name, protocol, self.attack_flow_graph_variables.keys(), self.attack_flow_graph_variables.values())
+        self.updateAttackHistory(attack_name, protocol, list(self.attack_flow_graph_variables.keys()), list(self.attack_flow_graph_variables.values()))
         
     def _slotTSI_AddBandClicked(self):
         """ Copies the data entered into the Wideband edit boxes to the configuration table and edits the plot
@@ -6960,7 +6969,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Update the "Attack History" Table
         attack_name = str(self.label_attack_fuzzing_selected_attack.text())
         protocol = str(self.label_attack_fuzzing_selected_protocol.text())
-        self.updateAttackHistory(attack_name, protocol, self.attack_flow_graph_variables.keys(), self.attack_flow_graph_variables.values())
+        self.updateAttackHistory(attack_name, protocol, list(self.attack_flow_graph_variables.keys()), list(self.attack_flow_graph_variables.values()))
         
     def _slotPacketAllHexClicked(self):
         """ Converts all values to hex from binary in the packet editor.
@@ -11551,8 +11560,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Parses the results of 'uhd_find_devices' and sets the X310 IP and serial for two edit boxes.
         """
         # Get the Text
-        proc=subprocess.Popen("uhd_find_devices &", shell=True, stdout=subprocess.PIPE, )
-        output=proc.communicate()[0].decode()
+        proc = subprocess.Popen("uhd_find_devices &", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
         
         # Get the Variables and Values
         device_index = -1
@@ -11609,9 +11618,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Parses the results of 'uhd_find_devices' and sets the B210 serial for an edit box.
         """   
         # Get the Text
-        proc=subprocess.Popen("uhd_find_devices &", shell=True, stdout=subprocess.PIPE, )
-        output=proc.communicate()[0].decode()
-        print(output)
+        proc = subprocess.Popen("uhd_find_devices &", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
         
         # Get the Variables and Values
         device_index = -1
@@ -11643,8 +11651,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Parses the results of 'uhd_find_devices' and sets the B205mini serial for an edit box.
         """   
         # Get the Text
-        proc=subprocess.Popen("uhd_find_devices &", shell=True, stdout=subprocess.PIPE, )
-        output=proc.communicate()[0].decode()
+        proc = subprocess.Popen("uhd_find_devices &", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
         
         # Get the Variables and Values
         device_index = -1
@@ -11676,8 +11684,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Parses the results of 'iwconfig' and sets the 802.11x Adapter interface for an edit box.
         """
         # Get the Text
-        proc=subprocess.Popen("iwconfig &", shell=True, stdout=subprocess.PIPE, )
-        output=proc.communicate()[0].decode()
+        proc = subprocess.Popen("iwconfig &", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
         
         # Reset Interface Index
         get_text = str(widget_interface.toPlainText())
@@ -11710,8 +11718,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """  Parses the results of 'LimeUtil --find' and sets the serial number for an edit box.
         """
         # Get the Text
-        proc=subprocess.Popen("LimeUtil --find &", shell=True, stdout=subprocess.PIPE, )
-        output=proc.communicate()[0].decode()
+        proc = subprocess.Popen("LimeUtil --find &", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
         
         # Extract the Serial
         get_serial = output[output.find('serial=')+7:output.rfind(']')]
@@ -11721,12 +11729,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         widget_serial.setAlignment(QtCore.Qt.AlignCenter)
         
     def findHackRF(self, widget_serial):      
-        """ Parses the results of 'hackrf_infor' and sets the HackRF serial for an edit box.
+        """ Parses the results of 'hackrf_info' and sets the HackRF serial for an edit box.
         """   
         # Get the Text
-        proc=subprocess.Popen("hackrf_info &", shell=True, stdout=subprocess.PIPE, )
-        output=proc.communicate()[0].decode()
-        print(output)
+        proc = subprocess.Popen("hackrf_info &", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
         
         # Reset Guess Index
         get_text = str(widget_serial.toPlainText())
@@ -11750,7 +11757,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         if self.guess_index > (len(device_dict)-1):
             self.guess_index = 0  
                     
-        # Update Dashboard 
+        # Update GUI 
         try:
             m = device_dict[self.guess_index][0]   
             if m[0] == 'Serial number':
@@ -20727,6 +20734,41 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open a Browser 
         os.system("sensible-browser https://open-weather.community/ &") 
+        
+    def _slotMenuLTE_ciphercheckClicked(self):
+        """ Asks for config values and then runs LTE-ciphercheck.
+        """
+        # Open the Band Chooser Dialog
+        dl_earfcn, done1 = QtWidgets.QInputDialog().getText(self, "Enter target DL_EARFCN", "dl_earfcn (blank=default)")
+        apn, done2 = QtWidgets.QInputDialog().getText(self, "Enter target APN", "apn (blank=default)")
+        imei, done3 = QtWidgets.QInputDialog().getText(self, "Enter target IMEI", "imei (blank=default)")
+        if done1 and done2 and done3:
+            # Rewrite the Config File
+            with open(os.path.expanduser('~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf'), 'r') as conf:
+                data = conf.readlines()
+                if len(dl_earfcn) > 0:
+                    data[37] = "dl_earfcn = {}\n".format(dl_earfcn)
+                if len(imei) > 0:
+                    data[122] = "imei = {}\n".format(imei)
+                if len(apn) > 0:
+                    data[158] = "apn = {}\n".format(apn)
+                with open(os.path.expanduser('~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf'), 'w') as conf:
+                    conf.writelines(data)
+            
+            # Open a Terminal
+            expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+            srsue_location = os.path.expanduser("~/Installed_by_FISSURE/LTE-ciphercheck/build/srsue/src") 
+            config_file_location = os.path.expanduser("~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf")            
+            command_text = 'sudo ./srsue ' + config_file_location
+            proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + command_text + '"', cwd=srsue_location, shell=True)    
+            
+    def _slotMenuElectromagneticRadiationSpectrumClicked(self):
+        """ Opens the unihedron Electromagnetic Radiation Spectrum Poster in a browser.
+        """
+        # Open a Browser 
+        os.system("sensible-browser http://www.unihedron.com/projects/spectrum/downloads/full_spectrum.jpg &") 
+        
+        
 
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
     def __init__(self):

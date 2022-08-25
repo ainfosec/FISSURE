@@ -1,176 +1,59 @@
-08/21/2022 01:26:54 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
-08/21/2022 01:26:54 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-08/21/2022 01:26:54 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
-08/21/2022 01:26:55 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-08/21/2022 01:26:55 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
-08/21/2022 01:26:55 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-08/21/2022 01:26:55 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
-08/21/2022 01:26:55 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
-08/21/2022 01:26:55 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
-08/21/2022 01:26:55 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
-08/21/2022 01:26:55 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
-08/21/2022 01:26:55 PM - hiprfisr: End of HIPRFISR Initialization
-08/21/2022 01:26:55 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
-08/21/2022 01:26:55 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/21/2022 01:26:55 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
-08/21/2022 01:26:55 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/21/2022 01:26:55 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
-08/21/2022 01:26:55 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/21/2022 01:26:55 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
-08/21/2022 01:26:55 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/21/2022 01:26:55 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
-08/21/2022 01:26:55 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/21/2022 01:26:55 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
-08/21/2022 01:26:55 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/21/2022 01:26:55 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
-08/21/2022 01:26:55 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
-08/21/2022 01:26:55 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
-08/21/2022 01:26:55 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
-08/21/2022 01:26:55 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
-08/21/2022 01:26:55 PM - hiprfisr: Start of Main Event Loop
-08/21/2022 01:26:56 PM - tsi: Port Connected to tcp://localhost:5052
-08/21/2022 01:26:56 PM - fge: Port Connected to tcp://127.0.0.1:5053
-08/21/2022 01:26:56 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/21/2022 01:26:56 PM - tsi: Port Initialized to tcp://*:5059
-08/21/2022 01:26:56 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/21/2022 01:26:56 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/21/2022 01:26:56 PM - fge: Port Initialized to tcp://127.0.0.1:5061
-08/21/2022 01:26:56 PM - tsi: Port Connected to tcp://127.0.0.1:5055
-08/21/2022 01:26:56 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/21/2022 01:26:56 PM - tsi: Port Connected to tcp://127.0.0.1:5057
-08/21/2022 01:26:56 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/21/2022 01:26:56 PM - fge: Port Connected to tcp://127.0.0.1:5055
-08/21/2022 01:26:56 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/21/2022 01:26:56 PM - fge: Port Connected to tcp://127.0.0.1:5057
-08/21/2022 01:26:56 PM - pd: Port Connected to tcp://127.0.0.1:5054
-08/21/2022 01:26:56 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-08/21/2022 01:26:56 PM - pd: Port Initialized to tcp://127.0.0.1:5063
-08/21/2022 01:26:56 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-08/21/2022 01:26:56 PM - pd: Port Connected to tcp://127.0.0.1:5055
-08/21/2022 01:26:56 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-08/21/2022 01:26:56 PM - pd: Port Connected to tcp://127.0.0.1:5057
-08/21/2022 01:26:57 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
-08/21/2022 01:26:57 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
-08/21/2022 01:26:57 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
-08/21/2022 01:26:58 PM - dashboard: Received message: HIPRFISR: Connected TSI
-08/21/2022 01:26:58 PM - dashboard: Received message: HIPRFISR: Connected FGE
-08/21/2022 01:26:58 PM - dashboard: Received message: HIPRFISR: Connected PD
-08/21/2022 01:27:33 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
-08/21/2022 01:27:33 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
-08/21/2022 01:27:34 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
-08/21/2022 01:27:34 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
-08/21/2022 01:27:34 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
-08/21/2022 01:27:34 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
-08/21/2022 01:27:37 PM - dashboard: Sending message: Dashboard: Start TSI Detector ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX RX', '', 'serial=30AD2E1']]
-08/21/2022 01:27:37 PM - hiprfisr: Received message: Dashboard: Start TSI Detector ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX RX', '', 'serial=30AD2E1']]
-08/21/2022 01:27:37 PM - hiprfisr: Executing Callback: startTSI_Detector with parameters ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX/RX', '', 'serial=30AD2E1']]
-08/21/2022 01:27:37 PM - hiprfisr: Sending message: HIPRFISR: Start TSI Detector ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX RX', '', 'serial=30AD2E1']]
-08/21/2022 01:27:38 PM - tsi: Received message: HIPRFISR: Start TSI Detector ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX RX', '', 'serial=30AD2E1']]
-08/21/2022 01:27:38 PM - tsi: Executing Callback: startTSI_Detector with parameters ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX/RX', '', 'serial=30AD2E1']]
-08/21/2022 01:27:44 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-08/21/2022 01:27:45 PM - hiprfisr: Received message: Dashboard: Stop TSI Detector $Parameters
-08/21/2022 01:27:45 PM - hiprfisr: Executing Callback: stopTSI_Detector with parameters None
-08/21/2022 01:27:45 PM - hiprfisr: Sending message: HIPRFISR: Stop TSI Detector $Parameters
-08/21/2022 01:27:45 PM - tsi: Received message: HIPRFISR: Stop TSI Detector $Parameters
-08/21/2022 01:27:45 PM - tsi: Executing Callback: stopTSI_Detector with parameters None
-08/21/2022 01:27:56 PM - dashboard: Sending message: Dashboard: Start TSI Detector ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX RX', '', 'False']]
-08/21/2022 01:27:56 PM - hiprfisr: Received message: Dashboard: Start TSI Detector ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX RX', '', 'False']]
-08/21/2022 01:27:56 PM - hiprfisr: Executing Callback: startTSI_Detector with parameters ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX/RX', '', 'False']]
-08/21/2022 01:27:56 PM - hiprfisr: Sending message: HIPRFISR: Start TSI Detector ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX RX', '', 'False']]
-08/21/2022 01:27:56 PM - tsi: Received message: HIPRFISR: Start TSI Detector ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX RX', '', 'False']]
-08/21/2022 01:27:56 PM - tsi: Executing Callback: startTSI_Detector with parameters ['wideband_b210.py', ['rx_freq', 'sample_rate', 'threshold', 'fft_size', 'gain', 'channel', 'antenna', 'ip_address', 'serial'], ['1.2e9', '10e6', '-70', '512', '60', 'A:A', 'TX/RX', '', 'False']]
-08/21/2022 01:28:01 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-08/21/2022 01:28:02 PM - hiprfisr: Received message: Dashboard: Stop TSI Detector $Parameters
-08/21/2022 01:28:02 PM - hiprfisr: Executing Callback: stopTSI_Detector with parameters None
-08/21/2022 01:28:02 PM - hiprfisr: Sending message: HIPRFISR: Stop TSI Detector $Parameters
-08/21/2022 01:28:03 PM - tsi: Received message: HIPRFISR: Stop TSI Detector $Parameters
-08/21/2022 01:28:03 PM - tsi: Executing Callback: stopTSI_Detector with parameters None
-08/21/2022 01:28:17 PM - dashboard: Sending message: Dashboard: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:17 PM - hiprfisr: Received message: Dashboard: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:17 PM - hiprfisr: Executing Callback: attackFlowGraphStart with parameters ['/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX/RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:17 PM - hiprfisr: Sending message: HIPRFISR: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:18 PM - fge: Received message: HIPRFISR: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:18 PM - fge: Executing Callback: attackFlowGraphStart with parameters ['/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX/RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:22 PM - fge: Sending message: FGE: Flow Graph Started Attack
-08/21/2022 01:28:23 PM - dashboard: Received message: FGE: Flow Graph Started Attack
-08/21/2022 01:28:23 PM - hiprfisr: Received message: FGE: Flow Graph Started Attack
-08/21/2022 01:28:25 PM - dashboard: Sending message: Dashboard: Stop Attack Flow Graph ['']
-08/21/2022 01:28:26 PM - hiprfisr: Received message: Dashboard: Stop Attack Flow Graph ['']
-08/21/2022 01:28:26 PM - hiprfisr: Executing Callback: attackFlowGraphStop with parameters ['']
-08/21/2022 01:28:26 PM - hiprfisr: Sending message: HIPRFISR: Stop Attack Flow Graph ['']
-08/21/2022 01:28:27 PM - fge: Received message: HIPRFISR: Stop Attack Flow Graph ['']
-08/21/2022 01:28:27 PM - fge: Executing Callback: attackFlowGraphStop with parameters ['']
-08/21/2022 01:28:27 PM - hiprfisr: Received message: FGE: Flow Graph Finished Attack
-08/21/2022 01:28:27 PM - fge: Sending message: FGE: Flow Graph Finished Attack
-08/21/2022 01:28:28 PM - dashboard: Received message: FGE: Flow Graph Finished Attack
-08/21/2022 01:28:37 PM - dashboard: Sending message: Dashboard: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:37 PM - hiprfisr: Received message: Dashboard: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:37 PM - hiprfisr: Executing Callback: attackFlowGraphStart with parameters ['/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX/RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:37 PM - hiprfisr: Sending message: HIPRFISR: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:37 PM - fge: Received message: HIPRFISR: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:37 PM - fge: Executing Callback: attackFlowGraphStart with parameters ['/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/X10_OOK_USRPB210_X10_Off.py', ['tx_usrp_gain', 'tx_usrp_frequency', 'tx_usrp_channel', 'tx_usrp_antenna', 'string_variables', 'serial', 'sample_rate', 'press_repetition_interval', 'press_duration', 'data_code', 'address_code'], ['60', '310.8e6', 'A:A', 'TX/RX', '[address_code,data_code]', 'serial=30AD2E1', '1e6', '10', '4', '0x20', '0x60'], 'Flow Graph']
-08/21/2022 01:28:41 PM - fge: Sending message: FGE: Flow Graph Started Attack
-08/21/2022 01:28:41 PM - hiprfisr: Received message: FGE: Flow Graph Started Attack
-08/21/2022 01:28:42 PM - dashboard: Received message: FGE: Flow Graph Started Attack
-08/21/2022 01:28:43 PM - dashboard: Sending message: Dashboard: Stop Attack Flow Graph ['']
-08/21/2022 01:28:43 PM - hiprfisr: Received message: Dashboard: Stop Attack Flow Graph ['']
-08/21/2022 01:28:43 PM - hiprfisr: Executing Callback: attackFlowGraphStop with parameters ['']
-08/21/2022 01:28:43 PM - hiprfisr: Sending message: HIPRFISR: Stop Attack Flow Graph ['']
-08/21/2022 01:28:44 PM - fge: Received message: HIPRFISR: Stop Attack Flow Graph ['']
-08/21/2022 01:28:44 PM - fge: Executing Callback: attackFlowGraphStop with parameters ['']
-08/21/2022 01:28:44 PM - hiprfisr: Received message: FGE: Flow Graph Finished Attack
-08/21/2022 01:28:44 PM - fge: Sending message: FGE: Flow Graph Finished Attack
-08/21/2022 01:28:45 PM - dashboard: Received message: FGE: Flow Graph Finished Attack
-08/21/2022 01:28:52 PM - dashboard: Sending message: Dashboard: Run IQ Flow Graph ['iq_playback_b210', ['filepath', 'ip_address', 'tx_channel', 'tx_frequency', 'sample_rate', 'tx_gain', 'tx_antenna', 'serial'], [' home user FISSURE IQ Recordings ZWAVE_Green_916_1MSps.iq', '', 'A:A', '2412', '1', '60', 'TX RX', 'False'], 'Flow Graph']
-08/21/2022 01:28:52 PM - hiprfisr: Received message: Dashboard: Run IQ Flow Graph ['iq_playback_b210', ['filepath', 'ip_address', 'tx_channel', 'tx_frequency', 'sample_rate', 'tx_gain', 'tx_antenna', 'serial'], [' home user FISSURE IQ Recordings ZWAVE_Green_916_1MSps.iq', '', 'A:A', '2412', '1', '60', 'TX RX', 'False'], 'Flow Graph']
-08/21/2022 01:28:52 PM - hiprfisr: Executing Callback: iqFlowGraphStart with parameters ['iq_playback_b210', ['filepath', 'ip_address', 'tx_channel', 'tx_frequency', 'sample_rate', 'tx_gain', 'tx_antenna', 'serial'], ['/home/user/FISSURE/IQ Recordings/ZWAVE_Green_916_1MSps.iq', '', 'A:A', '2412', '1', '60', 'TX/RX', 'False'], 'Flow Graph']
-08/21/2022 01:28:52 PM - hiprfisr: Sending message: HIPRFISR: Run IQ Flow Graph ['iq_playback_b210', ['filepath', 'ip_address', 'tx_channel', 'tx_frequency', 'sample_rate', 'tx_gain', 'tx_antenna', 'serial'], [' home user FISSURE IQ Recordings ZWAVE_Green_916_1MSps.iq', '', 'A:A', '2412', '1', '60', 'TX RX', 'False'], 'Flow Graph']
-08/21/2022 01:28:52 PM - fge: Received message: HIPRFISR: Run IQ Flow Graph ['iq_playback_b210', ['filepath', 'ip_address', 'tx_channel', 'tx_frequency', 'sample_rate', 'tx_gain', 'tx_antenna', 'serial'], [' home user FISSURE IQ Recordings ZWAVE_Green_916_1MSps.iq', '', 'A:A', '2412', '1', '60', 'TX RX', 'False'], 'Flow Graph']
-08/21/2022 01:28:52 PM - fge: Executing Callback: iqFlowGraphStart with parameters ['iq_playback_b210', ['filepath', 'ip_address', 'tx_channel', 'tx_frequency', 'sample_rate', 'tx_gain', 'tx_antenna', 'serial'], ['/home/user/FISSURE/IQ Recordings/ZWAVE_Green_916_1MSps.iq', '', 'A:A', '2412', '1', '60', 'TX/RX', 'False'], 'Flow Graph']
-08/21/2022 01:28:56 PM - fge: Sending message: FGE: Flow Graph Started IQ Playback []
-08/21/2022 01:28:56 PM - hiprfisr: Received message: FGE: Flow Graph Started IQ Playback []
-08/21/2022 01:28:57 PM - dashboard: Received message: FGE: Flow Graph Started IQ Playback []
-08/21/2022 01:28:58 PM - dashboard: Sending message: Dashboard: Stop IQ Flow Graph ['']
-08/21/2022 01:28:58 PM - hiprfisr: Received message: Dashboard: Stop IQ Flow Graph ['']
-08/21/2022 01:28:58 PM - hiprfisr: Executing Callback: iqFlowGraphStop with parameters ['']
-08/21/2022 01:28:58 PM - hiprfisr: Sending message: HIPRFISR: Stop IQ Flow Graph ['']
-08/21/2022 01:28:59 PM - fge: Received message: HIPRFISR: Stop IQ Flow Graph ['']
-08/21/2022 01:28:59 PM - fge: Executing Callback: iqFlowGraphStop with parameters ['']
-08/21/2022 01:28:59 PM - hiprfisr: Received message: FGE: Flow Graph Finished IQ Playback []
-08/21/2022 01:28:59 PM - fge: Sending message: FGE: Flow Graph Finished IQ Playback []
-08/21/2022 01:29:00 PM - dashboard: Received message: FGE: Flow Graph Finished IQ Playback []
-08/21/2022 01:29:08 PM - dashboard: Sending message: Dashboard: Start Archive Playlist ['archive_replay_b210', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq'], ['315e6'], ['1e6'], ['Complex Float 32'], ['A:A'], ['60'], ['5'], False, '', 'False']
-08/21/2022 01:29:08 PM - hiprfisr: Received message: Dashboard: Start Archive Playlist ['archive_replay_b210', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq'], ['315e6'], ['1e6'], ['Complex Float 32'], ['A:A'], ['60'], ['5'], False, '', 'False']
-08/21/2022 01:29:08 PM - hiprfisr: Executing Callback: archivePlaylistStart with parameters ['archive_replay_b210', ['/home/user/FISSURE/Archive//TPMS_Good_315_1MSps.iq'], ['315e6'], ['1e6'], ['Complex Float 32'], ['A:A'], ['60'], ['5'], False, '', 'False']
-08/21/2022 01:29:08 PM - hiprfisr: Sending message: HIPRFISR: Start Archive Playlist ['archive_replay_b210', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq'], ['315e6'], ['1e6'], ['Complex Float 32'], ['A:A'], ['60'], ['5'], False, '', 'False']
-08/21/2022 01:29:08 PM - fge: Received message: HIPRFISR: Start Archive Playlist ['archive_replay_b210', [' home user FISSURE Archive  TPMS_Good_315_1MSps.iq'], ['315e6'], ['1e6'], ['Complex Float 32'], ['A:A'], ['60'], ['5'], False, '', 'False']
-08/21/2022 01:29:08 PM - fge: Executing Callback: archivePlaylistStart with parameters ['archive_replay_b210', ['/home/user/FISSURE/Archive//TPMS_Good_315_1MSps.iq'], ['315e6'], ['1e6'], ['Complex Float 32'], ['A:A'], ['60'], ['5'], False, '', 'False']
-08/21/2022 01:29:08 PM - fge: Sending message: FGE: Archive Playlist Position 0
-08/21/2022 01:29:09 PM - dashboard: Received message: FGE: Archive Playlist Position 0
-08/21/2022 01:29:09 PM - hiprfisr: Received message: FGE: Archive Playlist Position 0
-08/21/2022 01:29:14 PM - dashboard: Sending message: Dashboard: Stop Archive Playlist 
-08/21/2022 01:29:14 PM - hiprfisr: Received message: Dashboard: Stop Archive Playlist 
-08/21/2022 01:29:14 PM - hiprfisr: Executing Callback: archivePlaylistStop with parameters 
-08/21/2022 01:29:14 PM - hiprfisr: Sending message: HIPRFISR: Stop Archive Playlist 
-08/21/2022 01:29:15 PM - fge: Received message: HIPRFISR: Stop Archive Playlist 
-08/21/2022 01:29:15 PM - fge: Executing Callback: archivePlaylistStop with parameters 
-08/21/2022 01:29:15 PM - fge: Sending message: FGE: Archive Playlist Finished 
-08/21/2022 01:29:15 PM - hiprfisr: Received message: FGE: Archive Playlist Finished 
-08/21/2022 01:29:16 PM - fge: Sending message: FGE: Archive Playlist Finished 
-08/21/2022 01:29:16 PM - dashboard: Received message: FGE: Archive Playlist Finished 
-08/21/2022 01:29:16 PM - dashboard: Received message: FGE: Archive Playlist Finished 
-08/21/2022 01:29:16 PM - hiprfisr: Received message: FGE: Archive Playlist Finished 
-08/21/2022 01:29:31 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
-08/21/2022 01:29:31 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters
-08/21/2022 01:29:31 PM - dashboard: Sending message: Dashboard: Set Auto Start PD False
-08/21/2022 01:29:32 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
-08/21/2022 01:29:32 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
-08/21/2022 01:29:32 PM - hiprfisr: Received message: Dashboard: Stop PD $Parameters
-08/21/2022 01:29:32 PM - hiprfisr: Executing Callback: stopPD with parameters None
-08/21/2022 01:29:32 PM - hiprfisr: Sending message: HIPRFISR: Stop PD $Parameters
-08/21/2022 01:29:32 PM - hiprfisr: Received message: Dashboard: Set Auto Start PD False
-08/21/2022 01:29:32 PM - hiprfisr: Executing Callback: setAutoStartPD with parameters False
-08/21/2022 01:29:33 PM - pd: Received message: HIPRFISR: Stop PD $Parameters
-08/21/2022 01:29:33 PM - pd: Executing Callback: stopPD with parameters None
-08/21/2022 01:30:09 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-08/21/2022 01:30:09 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters
+08/25/2022 01:30:25 AM - dashboard: Port Initialized to tcp://127.0.0.1:5051
+08/25/2022 01:30:25 AM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+08/25/2022 01:30:25 AM - dashboard: Port Initialized to tcp://127.0.0.1:5057
+08/25/2022 01:30:25 AM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+08/25/2022 01:30:25 AM - dashboard: Port Connected to tcp://127.0.0.1:5055
+08/25/2022 01:30:25 AM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+08/25/2022 01:30:25 AM - dashboard: Port Connected to tcp://127.0.0.1:5059
+08/25/2022 01:30:25 AM - dashboard: Port Connected to tcp://127.0.0.1:5060
+08/25/2022 01:30:25 AM - dashboard: Port Connected to tcp://127.0.0.1:5065
+08/25/2022 01:30:25 AM - dashboard: Port Connected to tcp://127.0.0.1:5061
+08/25/2022 01:30:25 AM - dashboard: Port Connected to tcp://127.0.0.1:5063
+08/25/2022 01:30:26 AM - hiprfisr: End of HIPRFISR Initialization
+08/25/2022 01:30:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
+08/25/2022 01:30:26 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/25/2022 01:30:26 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
+08/25/2022 01:30:26 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/25/2022 01:30:26 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
+08/25/2022 01:30:26 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/25/2022 01:30:26 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
+08/25/2022 01:30:26 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/25/2022 01:30:26 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
+08/25/2022 01:30:26 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/25/2022 01:30:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
+08/25/2022 01:30:26 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/25/2022 01:30:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
+08/25/2022 01:30:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
+08/25/2022 01:30:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
+08/25/2022 01:30:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
+08/25/2022 01:30:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
+08/25/2022 01:30:26 AM - hiprfisr: Start of Main Event Loop
+08/25/2022 01:30:26 AM - fge: Port Connected to tcp://127.0.0.1:5053
+08/25/2022 01:30:26 AM - tsi: Port Connected to tcp://localhost:5052
+08/25/2022 01:30:26 AM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/25/2022 01:30:26 AM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/25/2022 01:30:26 AM - tsi: Port Initialized to tcp://*:5059
+08/25/2022 01:30:26 AM - fge: Port Initialized to tcp://127.0.0.1:5061
+08/25/2022 01:30:26 AM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/25/2022 01:30:26 AM - tsi: Port Connected to tcp://127.0.0.1:5055
+08/25/2022 01:30:26 AM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/25/2022 01:30:26 AM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/25/2022 01:30:26 AM - tsi: Port Connected to tcp://127.0.0.1:5057
+08/25/2022 01:30:26 AM - fge: Port Connected to tcp://127.0.0.1:5055
+08/25/2022 01:30:26 AM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/25/2022 01:30:26 AM - fge: Port Connected to tcp://127.0.0.1:5057
+08/25/2022 01:30:27 AM - pd: Port Connected to tcp://127.0.0.1:5054
+08/25/2022 01:30:27 AM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+08/25/2022 01:30:27 AM - pd: Port Initialized to tcp://127.0.0.1:5063
+08/25/2022 01:30:27 AM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+08/25/2022 01:30:27 AM - pd: Port Connected to tcp://127.0.0.1:5055
+08/25/2022 01:30:27 AM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+08/25/2022 01:30:27 AM - pd: Port Connected to tcp://127.0.0.1:5057
+08/25/2022 01:30:27 AM - hiprfisr: Sending message: HIPRFISR: Connected TSI
+08/25/2022 01:30:27 AM - hiprfisr: Sending message: HIPRFISR: Connected FGE
+08/25/2022 01:30:27 AM - hiprfisr: Sending message: HIPRFISR: Connected PD
+08/25/2022 01:30:28 AM - dashboard: Received message: HIPRFISR: Connected TSI
+08/25/2022 01:30:28 AM - dashboard: Received message: HIPRFISR: Connected FGE
+08/25/2022 01:30:28 AM - dashboard: Received message: HIPRFISR: Connected PD
+08/25/2022 01:31:11 AM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
+08/25/2022 01:31:11 AM - dashboard: Sending message: Dashboard: Stop PD $Parameters

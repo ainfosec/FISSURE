@@ -794,6 +794,21 @@ sudo make install
 ls /usr/bin/FalconGUI
 """,True,None))
 
+# LTE-ciphercheck
+programs_ubuntu20_04.append(('LTE-ciphercheck',
+"""sudo apt install -y git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev libuhd-dev libpcsclite-dev pcsc-tools pcscd
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mrlnc/LTE-ciphercheck
+cd LTE-ciphercheck
+mkdir build 
+cd build
+cmake ..
+make srsue
+sudo ldconfig
+cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue/ciphercheck.conf 
+""",True,None))
+
 # Aircrack-ng
 programs_ubuntu20_04.append(('Aircrack-ng',
 """sudo apt-get install -y aircrack-ng
@@ -2260,6 +2275,21 @@ sudo make install
 ls /usr/bin/FalconGUI
 """,True,None))
 
+# LTE-ciphercheck
+programs_ubuntu20_04_4.append(('LTE-ciphercheck',
+"""sudo apt install -y git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev libuhd-dev libpcsclite-dev pcsc-tools pcscd
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mrlnc/LTE-ciphercheck
+cd LTE-ciphercheck
+mkdir build 
+cd build
+cmake ..
+make srsue
+sudo ldconfig
+cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue/ciphercheck.conf 
+""",True,None))
+
 # Aircrack-ng
 programs_ubuntu20_04_4.append(('Aircrack-ng',
 """sudo apt-get install -y aircrack-ng
@@ -3326,6 +3356,21 @@ sudo make install
 #make clean
 ########## Verify ##########
 ls /usr/bin/FalconGUI
+""",True,None))
+
+# LTE-ciphercheck
+programs_ubuntu22_04.append(('LTE-ciphercheck',
+"""sudo apt install -y git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev libuhd-dev libpcsclite-dev pcsc-tools pcscd
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mrlnc/LTE-ciphercheck
+cd LTE-ciphercheck
+mkdir build 
+cd build
+cmake ..
+make srsue
+sudo ldconfig
+cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue/ciphercheck.conf 
 """,True,None))
 
 # Aircrack-ng

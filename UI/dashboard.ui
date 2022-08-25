@@ -26952,6 +26952,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionFccID_Lookup"/>
      <addaction name="actionFSPL_Calculator"/>
      <addaction name="actionWavelength_Calculator"/>
+     <addaction name="actionElectromagnetic_Radiation_Spectrum"/>
     </widget>
     <widget class="QMenu" name="menuSDR_Hardware_References">
      <property name="title">
@@ -27287,6 +27288,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionCellmapper"/>
      <addaction name="actionLTE_Cell_Scanner"/>
      <addaction name="actionAntennaSearch"/>
+     <addaction name="actionLTE_ciphercheck"/>
     </widget>
     <widget class="QMenu" name="menuHam_Radio">
      <property name="title">
@@ -28805,6 +28807,16 @@ p, li { white-space: pre-wrap; }
   <action name="actionOpen_weather">
    <property name="text">
     <string>Open-weather</string>
+   </property>
+  </action>
+  <action name="actionLTE_ciphercheck">
+   <property name="text">
+    <string>LTE-ciphercheck</string>
+   </property>
+  </action>
+  <action name="actionElectromagnetic_Radiation_Spectrum">
+   <property name="text">
+    <string>Electromagnetic Radiation Spectrum</string>
    </property>
   </action>
  </widget>
