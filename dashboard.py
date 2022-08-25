@@ -1542,6 +1542,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.actionJ2497_mod.triggered.connect(self._slotMenuStandaloneJ2497_ModClicked)
         self.actionEnscribe.triggered.connect(self._slotMenuEnscribeClicked)
         self.actionOpen_weather.triggered.connect(self._slotMenuOpenWeatherClicked)
+        self.actionLTE_ciphercheck.triggered.connect(self._slotMenuLTE_ciphercheckClicked)
+        self.actionElectromagnetic_Radiation_Spectrum.triggered.connect(self._slotMenuElectromagneticRadiationSpectrumClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -20696,6 +20698,40 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Open a Browser
         os.system("sensible-browser https://open-weather.community/ &") 
+        
+    def _slotMenuLTE_ciphercheckClicked(self):
+        """ Asks for config values and then runs LTE-ciphercheck.
+        """
+        # Open the Band Chooser Dialog
+        dl_earfcn, done1 = QtGui.QInputDialog().getText(self, "Enter target DL_EARFCN", "dl_earfcn (blank=default)")
+        apn, done2 = QtGui.QInputDialog().getText(self, "Enter target APN", "apn (blank=default)")
+        imei, done3 = QtGui.QInputDialog().getText(self, "Enter target IMEI", "imei (blank=default)")
+        if done1 and done2 and done3:
+            # Rewrite the Config File
+            with open(os.path.expanduser('~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf'), 'r') as conf:
+                data = conf.readlines()
+                if len(dl_earfcn) > 0:
+                    data[37] = "dl_earfcn = {}\n".format(dl_earfcn)
+                if len(imei) > 0:
+                    data[122] = "imei = {}\n".format(imei)
+                if len(apn) > 0:
+                    data[158] = "apn = {}\n".format(apn)
+                with open(os.path.expanduser('~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf'), 'w') as conf:
+                    conf.writelines(data)
+            
+            # Open a Terminal
+            expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+            srsue_location = os.path.expanduser("~/Installed_by_FISSURE/LTE-ciphercheck/build/srsue/src") 
+            config_file_location = os.path.expanduser("~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf")            
+            command_text = 'sudo ./srsue ' + config_file_location
+            proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + command_text + '"', cwd=srsue_location, shell=True) 
+        
+    def _slotMenuElectromagneticRadiationSpectrumClicked(self):
+        """ Opens the unihedron Electromagnetic Radiation Spectrum Poster in a browser.
+        """
+        # Open a Browser 
+        os.system("sensible-browser http://www.unihedron.com/projects/spectrum/downloads/full_spectrum.jpg &") 
+        
         
 
 class HelpMenuDialog(QtGui.QDialog, form_class6):

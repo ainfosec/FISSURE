@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-08-25
+ 
+### Added
+
+- LTE-ciphercheck in installer, menu, software list, example ciphercheck.conf copied from Tools folder during install
+- unihedron Electromagnetic Radiation Spectrum Poster v2 in menu
+ 
+### Fixed
+
+- Attack/Fuzzing Apply buttons were causing errors when adding entries to Attack History for the Python3 branch
+- Link in README for Discussions and Issues pages
+- Commented out `drb_config = drb.conf` in enb.conf for srsRAN in Python2 branch
+
 ## 2022-08-21
 
 Impacts the Dashboard, Hardware Select UI, and flow graph library.
