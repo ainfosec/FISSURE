@@ -101,8 +101,8 @@ class decoder(gr.sync_block):
                 get_message = self.decodeBitstream(get_bits)
 
                 # Print to Output Port
-                self.message_port_pub(pmt.intern("out"), pmt.to_pmt(get_message))
-
+                if get_message != "-1":
+                    self.message_port_pub(pmt.intern("out"), pmt.to_pmt(get_message))
 
             # Reset
             self.start_tag = 0

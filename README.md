@@ -22,8 +22,12 @@ Operating System            |  FISSURE Branch
 | Ubuntu 20.04.4 (x64) | Python3_maint-3.8 |
 
 **In-Progress (beta)**
+
+These operating systems are still in beta status. They are under development and several features are known to be missing. Several items in the installer might conflict with existing programs or fail to install until the status is removed.
+
 Operating System            |  FISSURE Branch
 :-------------------------:|:-------------------------:
+| DragonOS Focal (x86_64) | Python3_maint-3.8 |
 | Ubuntu 22.04 (x64) | Python3_maint-3.8 |
 
 Note: Certain software tools do not work for every OS. Refer to [Software And Conflicts](/Help/Markdown/SoftwareAndConflicts.md)
@@ -36,7 +40,7 @@ git checkout <Python2_maint-3.7> or <Python3_maint-3.8>
 ./install
 ```
 
-This will automatically install PyQt software dependencies required to launch the installation GUIs if they are not found. 
+This will install PyQt software dependencies required to launch the installation GUIs if they are not found. 
 
 Next, select the option that best matches your operating system (should be detected automatically if your OS matches an option).
 

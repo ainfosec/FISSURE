@@ -1,6 +1,26 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-08-27
+
+DragonOS and Ubuntu 22.04 are still in beta status. They are under development and several features are known to be missing. Several items in the installer might conflict with existing programs or fail to install until the status is removed.
+ 
+### Added
+
+- maint-3.10 out-of-tree modules in Custom Blocks folder and the installer; still missing: gr-ainfosec, gr-fuzzer, gr-bluetooth, gr-limesdr(?)
+- Ask to proceed before installing PyQt4/5 and other programs with the first installer program
+- DragonOS Focal install option, software items are still being tested, check back later for a full verified list
+   
+### Changed
+
+- SoftwareAndConflicts 22.04 OOT status
+- README to expand on beta status for operating systems
+ 
+### Fixed
+
+- Updated Python2 branch to the latest gr-tpms_poore for better error handling
+- Fixed 20.04 variable for Enscribe in 22.04 section of the installer
+
 ## 2022-08-25
  
 ### Added

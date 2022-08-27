@@ -2,12 +2,14 @@
 
 This GNU Radio out-of-tree module transmits and receives Tire Pressure Monitoring System (TPMS) signals for the sensor on my car. More sensors and SDRs might be supported/tested in the future. This all works fine for me when I transmit from the driver's seat and when I receive next to the target tire with either a USRP B210 or B205mini using the standard HackRF antenna.
 
+This software has been integrated into [FISSURE: The RF Framework](https://github.com/ainfosec/FISSURE).
+
 # Installation
 
-The maint-3.7 branch is for GNU Radio versions prior to 3.8 while the maint-3.8 is for versions 3.8+.
+The maint-3.7 branch is for GNU Radio versions prior to 3.8 while the maint-3.8 is for version 3.8 and the maint-3.10 is for version >= 3.10.
 
 ```
-sudo python -m pip install crcmod
+sudo python2 -m pip install crcmod
 cd gr-tpms_poore/
 mkdir build
 cd build
