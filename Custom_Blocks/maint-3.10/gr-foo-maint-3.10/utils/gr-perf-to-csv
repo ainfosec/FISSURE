@@ -1,0 +1,82 @@
+#!/usr/bin/env python
+#
+# Copyright 2015 Bastian Bloessl <bloessl@ccs-labs.org>
+#
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+import sys, time
+
+from gnuradio import gr, ctrlport
+from subprocess import Popen, PIPE
+
+class MyApp(object):
+    def __init__(self, args):
+        p = gr.prefs()
+        cp_on = p.get_bool("ControlPort", "on", False)
+        cp_edges = p.get_bool("ControlPort", "edges_list", False)
+        pcs_on = p.get_bool("PerfCounters", "on", False)
+        pcs_exported = p.get_bool("PerfCounters", "export", False)
+        if(not (pcs_on and cp_on and pcs_exported and cp_edges)):
+            print("Configuration has not turned on all of the appropriate ControlPort features:")
+            print("\t[ControlPort] on = {0}".format(cp_on))
+            print("\t[ControlPort] edges_list = {0}".format(cp_edges))
+            print("\t[PerfCounters] on = {0}".format(pcs_on))
+            print("\t[PerfCounters] export = {0}".format(pcs_exported))
+            exit(1)
+
+        from gnuradio.ctrlport.GNURadioControlPortClient import GNURadioControlPortClient
+        GNURadioControlPortClient(args, 'thrift', self.run)
+
+    def run(self, client):
+        input_name = lambda x: x+"::avg input % full"
+
+        tmplist = []
+        knobs = client.getKnobs([])
+        for k in knobs:
+            propname = k.split("::")
+            blockname = propname[0]
+            keyname = propname[1]
+            if(blockname not in tmplist):
+                # only take gr_blocks (no hier_block2)
+                if(knobs.has_key(input_name(blockname))):
+                    tmplist.append(blockname)
+
+        blocks = tmplist
+        blocks.sort()
+
+        # print csv header
+        print(",".join(blocks))
+
+        knobs = map(lambda x: client.Knob("%s::reset_perf_counters" % x), blocks)
+        client.setKnobs(knobs)
+
+        # let the flow graph run for some time
+        time.sleep(60)
+
+        ## get work time for all blocks
+        kl = map(lambda x: "%s::total work time" % x, blocks)
+        wrk_knobs = client.getKnobs(kl)
+
+        work_times = dict(zip(
+                    map(lambda x: x.split("::")[0], wrk_knobs.keys()),
+                    map(lambda x: x.value, wrk_knobs.values())))
+
+        print(",".join(map(lambda x: str(x[1]), sorted(work_times.items()))))
+
+        p = Popen("uptime", stdout=PIPE, close_fds=True, shell=True)
+        print(p.stdout.read())
+
+MyApp(sys.argv)

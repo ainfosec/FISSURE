@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Version=1.0
+Name=GNU Radio GSM live monitor
+GenericName=GSM channel monitor
+Comment=Interactive monitor of a single GSM C0 channel for analysis with network sniffers like Wireshark
+Exec=grgsm_livemon
+Terminal=false
+#Icon=
+Categories=Network;HamRadio;Development;
+Keywords=SDR;Radio;HAM;GSM;

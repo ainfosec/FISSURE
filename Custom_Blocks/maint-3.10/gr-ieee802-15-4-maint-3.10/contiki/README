@@ -1,0 +1,13 @@
+This is an example Contiki firmware for TelosB sensor motes that can be used to test interoperability.
+
+### INSTALLATION
+- install Contiki (http://www.contiki-os.org/)
+- edit the CONTIKI variable in the Makefile to point to your contiki installation directory
+- make
+- make upload
+
+### USAGE
+- press the button to start broadcasting messages
+- every time a broadcast is sent the LEDs change
+- you can configure the IEEE 802.15.4 channel in the project-conf.h
+- type make login to see what the node receives

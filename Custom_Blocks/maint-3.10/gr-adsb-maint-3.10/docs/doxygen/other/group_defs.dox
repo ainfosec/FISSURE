@@ -1,0 +1,6 @@
+/*!
+ * \defgroup block GNU Radio ADSB C++ Signal Processing Blocks
+ * \brief All C++ blocks that can be used from the ADSB GNU Radio
+ *        module are listed here or in the subcategories below.
+ *
+ */

@@ -1,0 +1,5 @@
+Helper programs for grgsm_decode:
+
+-grgsm_capture    (old name: airprobe_rtlsdr_capture.py) - program for capturing GSM signal to a file that can be later processed by grgsm_decode,
+
+-grgsm_channelize (old name: gsm_channelize.py) - splits wideband capture file into multiple files - each contain single GSM channel,

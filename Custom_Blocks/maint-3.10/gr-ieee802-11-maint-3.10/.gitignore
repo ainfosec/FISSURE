@@ -1,0 +1,12 @@
+examples/*.py
+.cproject
+.project
+.pydevproject
+.settings
+**/.DS_Store
+.clang_complete
+*~
+*.pyc
+*.pyo
+build*/
+examples/grc/*.py

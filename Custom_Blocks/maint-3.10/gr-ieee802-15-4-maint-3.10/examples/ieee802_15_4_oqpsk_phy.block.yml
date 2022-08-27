@@ -1,0 +1,36 @@
+id: ieee802_15_4_oqpsk_phy
+label: IEEE802.15.4 OQPSK PHY
+category: '[IEEE802.15.4]'
+
+parameters: []
+
+inputs:
+-   label: rxin
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: txin
+    domain: message
+    dtype: message
+    optional: true
+
+outputs:
+-   label: txout
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: rxout
+    domain: message
+    dtype: message
+    optional: true
+
+templates:
+    imports: 'from ieee802_15_4_oqpsk_phy import ieee802_15_4_oqpsk_phy  # grc-generated
+        hier_block'
+    make: ieee802_15_4_oqpsk_phy()
+    callbacks: []
+
+documentation: ./examples/ieee802_15_4_oqpsk_phy.py
+grc_source: ./examples/ieee802_15_4_OQPSK_PHY.grc
+
+file_format: 1

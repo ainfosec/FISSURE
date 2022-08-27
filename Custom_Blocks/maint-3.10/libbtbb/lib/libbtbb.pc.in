@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=${prefix}/@CMAKE_INSTALL_LIBDIR@
+includedir=${prefix}/@CMAKE_INSTALL_INCLUDEDIR@
+
+Name: Bluetooth Baseband Library
+Description: C Utility Library
+Version: @VERSION@
+Cflags: -I${includedir}/ @BTBB_PC_CFLAGS@
+Libs: -L${libdir} -lbtbb
+Libs.private: @BTBB_PC_LIBS@

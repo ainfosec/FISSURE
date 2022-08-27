@@ -139,6 +139,22 @@
      <string>Ubuntu 20.04.4</string>
     </property>
    </widget>
+   <widget class="QRadioButton" name="radioButton_dragonOS_focal">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>180</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>DragonOS Focal (beta)</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>

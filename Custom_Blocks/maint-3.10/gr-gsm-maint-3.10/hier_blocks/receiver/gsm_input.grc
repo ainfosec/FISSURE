@@ -1,0 +1,260 @@
+options:
+  parameters:
+    author: Piotr Krysik
+    catch_exceptions: 'True'
+    category: ''
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: Adaptor of input stream for the GSM receiver. Contains frequency
+      ofset corrector doing also resampling to integer multiplies of GSM sample rate
+      and LP filter filtering GSM channel.
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: hb
+    hier_block_src_path: '.:'
+    id: gsm_input
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: GSM input adaptor
+    window_size: 1280, 1024
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [10, 10]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: gsm_symb_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: 1625000.0/6.0
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [752, 21]
+    rotation: 0
+    state: enabled
+- name: samp_rate_out
+  id: variable
+  parameters:
+    comment: ''
+    value: gsm_symb_rate*osr
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [632, 19]
+    rotation: 0
+    state: enabled
+- name: ctrl_in
+  id: pad_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: ctrl_in
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '1'
+    optional: 'True'
+    type: message
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [56, 188]
+    rotation: 0
+    state: enabled
+- name: fc
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: fc
+    short_id: ''
+    type: eng_float
+    value: 940e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [231, 22]
+    rotation: 0
+    state: enabled
+- name: gsm_clock_offset_corrector_tagged_0
+  id: gsm_clock_offset_corrector_tagged
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    fc: fc
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    osr: osr
+    ppm: ppm
+    samp_rate_in: samp_rate_in
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [232, 199]
+    rotation: 0
+    state: enabled
+- name: low_pass_filter_0_0
+  id: low_pass_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    beta: '6.76'
+    comment: ''
+    cutoff_freq: 125e3
+    decim: '1'
+    gain: '1'
+    interp: '1'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate_out
+    type: fir_filter_ccf
+    width: 5e3
+    win: window.WIN_HAMMING
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [712, 178]
+    rotation: 0
+    state: enabled
+- name: mmse_resampler_xx_0
+  id: mmse_resampler_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    phase_shift: '0'
+    resamp_ratio: samp_rate_in/samp_rate_out
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [496, 304.0]
+    rotation: 0
+    state: disabled
+- name: osr
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: OSR
+    short_id: ''
+    type: intx
+    value: '4'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [541, 23]
+    rotation: 0
+    state: enabled
+- name: pad_sink_0
+  id: pad_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: out
+    num_streams: '1'
+    optional: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [904, 220]
+    rotation: 0
+    state: enabled
+- name: pad_source_0
+  id: pad_source
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    label: in
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_streams: '1'
+    optional: 'False'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [56, 236]
+    rotation: 0
+    state: enabled
+- name: ppm
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ppm
+    short_id: ''
+    type: eng_float
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [453, 22]
+    rotation: 0
+    state: enabled
+- name: samp_rate_in
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: samp_rate_in
+    short_id: ''
+    type: eng_float
+    value: 1e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [328, 22]
+    rotation: 0
+    state: enabled
+
+connections:
+- [ctrl_in, out, gsm_clock_offset_corrector_tagged_0, ctrl]
+- [gsm_clock_offset_corrector_tagged_0, '0', low_pass_filter_0_0, '0']
+- [gsm_clock_offset_corrector_tagged_0, '0', mmse_resampler_xx_0, '0']
+- [low_pass_filter_0_0, '0', pad_sink_0, '0']
+- [mmse_resampler_xx_0, '0', low_pass_filter_0_0, '0']
+- [pad_source_0, '0', gsm_clock_offset_corrector_tagged_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: v3.11.0.0git-55-g8526e6f8

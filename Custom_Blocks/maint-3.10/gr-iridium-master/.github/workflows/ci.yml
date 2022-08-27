@@ -1,0 +1,126 @@
+name: CI
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+
+jobs:
+  check-formatting:
+    name: Check C++ Formatting
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: gnuradio/clang-format-lint-action@v0.5-4
+      with:
+        source: '.'
+        exclude: './python'
+        extensions: 'h,hpp,cpp,cc,cc.in'
+  check-python-formatting:
+    name: Check Python Formatting
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: quentinguidee/pep8-action@v1
+      with:
+        arguments: '--max-line-length=120 --ignore E265,E266,E402,E501,E704,E712,E713,E714,E711,E722,E741,W504,W605 --exclude *.yml.py,docs/*,python/bindings/*'
+  ubuntu-22-04:
+    name: Ubuntu 22.04
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Install GNU Radio
+        run: |
+         sudo apt update
+         sudo apt install gnuradio-dev cmake libsndfile1-dev
+      - name: Build
+        run: |
+         cmake -B build
+         cmake --build build
+      - name: Install
+        run: |
+         cd build
+         sudo make install
+         sudo ldconfig
+      - name: Unit Tests
+        run: |
+         cd build
+         make test
+      - name: Open SDR with gr-soapy
+        run: |
+         iridium-extractor examples/hackrf-soapy.conf 2>&1 | tee stderr-out
+         cat stderr-out | grep "RuntimeError: no hackrf device matches"
+      - name: Open SDR with gr-osmosdr
+        run: |
+         sudo apt install gr-osmosdr
+         iridium-extractor examples/hackrf-10msps.conf 2>&1 | tee stderr-out
+         cat stderr-out | grep "RuntimeError: Failed to use '0' as HackRF device index: not enough devices"
+  gr-ppa:
+    name: Ubuntu 20.04 + GNURadio PPA
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        ppa: [gnuradio/gnuradio-releases, gnuradio/gnuradio-releases-3.9]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install GNURadio
+        run: |
+         sudo add-apt-repository ppa:${{matrix.ppa}}
+         sudo apt update
+         sudo apt install gnuradio-dev
+         sudo apt install cmake libsndfile-dev libspdlog-dev
+         sudo apt install pybind11-dev
+      - name: Build
+        run: |
+         cmake -B build
+         cmake --build build
+      - name: Install
+        run: |
+         cd build
+         sudo make install
+         sudo ldconfig
+      - name: Unit Tests
+        run: |
+         cd build
+         make test
+      - name: Demod PRBS15 SigMF
+        run: |
+         iridium-extractor test-data/prbs15-2M-20dB.sigmf-meta |grep ^RAW > prbs15-2M-20dB.bits
+         grep "RAW: prbs15-2M-20dB 0000599.9996 1622000000 N:32.12-80.05 I:00000000000 100% 0.13551 179 0011000000110000111100111000000000000011000000000000101000000000001111000000000010001000000000110011000000001010101000000011111111000000100000001000001100000011000010100000101000111100001111001000100010001011001100110011101010101010100111111111111101000000000000111000000000001001000000000011011000000000101101000000001110111000000010011001000000110101011000001011111101000011100000" prbs15-2M-20dB.bits
+      - name: Demod with decimation 4
+        run: |
+         iridium-extractor -D 4 test-data/prbs15-2M-20dB.sigmf-meta |grep ^RAW > prbs15-2M-20dB-D4.bits
+         grep "RAW: prbs15-2M-20dB 0000599.9996 1622000000 N:32.12-80.05 I:00000000000 100% 0.13577 179 0011000000110000111100111000000000000011000000000000101000000000001111000000000010001000000000110011000000001010101000000011111111000000100000001000001100000011000010100000101000111100001111001000100010001011001100110011101010101010100111111111111101000000000000111000000000001001000000000011011000000000101101000000001110111000000010011001000000110101011000001011111101000011100000" prbs15-2M-20dB-D4.bits
+      - name: Demod with decimation 8
+        run: |
+         iridium-extractor -D 8 test-data/prbs15-2M-20dB.sigmf-meta |grep ^RAW > prbs15-2M-20dB-D8.bits
+         grep "RAW: prbs15-2M-20dB 0000599.9996 1622000000 N:32.12-80.05 I:00000000000 100% 0.13643 179 0011000000110000111100111000000000000011000000000000101000000000001111000000000010001000000000110011000000001010101000000011111111000000100000001000001100000011000010100000101000111100001111001000100010001011001100110011101010101010100111111111111101000000000000111000000000001001000000000011011000000000101101000000001110111000000010011001000000110101011000001011111101000011100000" prbs15-2M-20dB-D8.bits
+      - name: Test raw samples
+        run: |
+         ln -s prbs15-2M-20dB.sigmf-data test-data/prbs15-2M-20dB.fc32
+         iridium-extractor --offline -c 1622000000 -r 2000000 -f float test-data/prbs15-2M-20dB.fc32 |grep ^RAW > prbs15-2M-20dB.bits.raw
+         cmp prbs15-2M-20dB.bits prbs15-2M-20dB.bits.raw
+      - name: Test SigMF Archive support
+        run: |
+         tar cf test-data/prbs15-2M-20dB.sigmf test-data/prbs15-2M-20dB.sigmf-*
+         iridium-extractor test-data/prbs15-2M-20dB.sigmf |grep ^RAW > prbs15-2M-20dB.bits.archive
+         cmp prbs15-2M-20dB.bits prbs15-2M-20dB.bits.archive
+      - name: Install gr-osmosdr
+        run: |
+         git clone https://github.com/osmocom/gr-osmosdr
+         cd gr-osmosdr
+         cmake -B build
+         cmake --build build
+         cd build
+         sudo make install
+         sudo ldconfig
+      - name: Open SDR
+        run: |
+         iridium-extractor examples/hackrf-10msps.conf 2>&1 | tee stderr-out
+         cat stderr-out | grep "No supported devices found"
+      - name: Test Open SDR with soapy
+        run: |
+         iridium-extractor examples/hackrf-soapy.conf 2>&1 | tee stderr-out
+         cat stderr-out | grep "RuntimeError: no hackrf device matches"

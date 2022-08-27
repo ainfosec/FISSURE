@@ -3,6 +3,7 @@
 # Check Operating System
 ubuntu20_04=$(lsb_release -d 2>&1 | grep "Ubuntu 20.04")
 ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
+dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal")
 if [[ -n "$ubuntu20_04" ]]
 then
     # Ubuntu 20.04
@@ -13,8 +14,13 @@ then
     # Ubuntu 22.04
     echo "Ubuntu 22.04 detected"
 fi
+if [[ -n "$dragonOS_focal" ]]
+then
+    # DragonOS Focal
+    echo "DragonOS Focal detected"
+fi
 
-if [[ -z "$ubuntu20_04" ]] && [[ -z "$ubuntu22_04" ]]
+if [[ -z "$ubuntu20_04" ]] && [[ -z "$ubuntu22_04" ]] && [[ -z "$dragonOS_focal" ]]
 then
     # Ubuntu 16.04, 18.04
     echo "This branch is for Ubuntu 20.04 and 22.04 only. Switch to a different FISSURE branch before installing!"
@@ -25,18 +31,33 @@ fi
 qt5_version=$(qmake --version | grep "version 5")
 if [[ -z "$qt5_version" ]]
 then
-    echo "No Qt5 found. Installing..."
-    # Ubuntu 20.04
-    if [[ -n "$ubuntu20_04" ]]
-    then
-        sudo apt-get install -y build-essential qtcreator qt5-default python3-pyqt5
-    fi
-    
-    # Ubuntu 22.04
-    if [[ -n "$ubuntu22_04" ]]
-    then
-        sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools python3-pyqt5
-    fi
+    echo "No Qt5 found."
+    read -p "Qt5 is required to open the installer. Do you want to proceed? [y]/n: " yn
+    case $yn in
+        # No
+        [Nn]* ) exit;;       
+        
+        # Yes/Everything Else
+        * ) 
+            # Ubuntu 20.04
+            if [[ -n "$ubuntu20_04" ]]
+            then
+                sudo apt-get install -y build-essential qtcreator qt5-default python3-pyqt5
+            fi
+            
+            # DragonOS Focal
+            if [[ -n "$dragonOS_focal" ]]
+            then
+                sudo apt-get install -y build-essential qtcreator qt5-default python3-pyqt5
+            fi
+            
+            # Ubuntu 22.04
+            if [[ -n "$ubuntu22_04" ]]
+            then
+                sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools python3-pyqt5
+            fi
+        ;;
+    esac
 fi
 
 # Run the Full Installer

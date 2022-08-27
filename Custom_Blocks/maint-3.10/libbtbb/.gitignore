@@ -1,0 +1,17 @@
+*.o
+*.so.*
+*.so
+*.pyc
+
+# Output directory
+build/
+
+# wireshark plugins
+CMakeCache.txt
+CMakeFiles
+cmake_install.cmake
+install_manifest.txt
+plugin.c
+wireshark/plugins/btatt/Makefile
+wireshark/plugins/btle/Makefile
+wireshark/plugins/btsm/Makefile

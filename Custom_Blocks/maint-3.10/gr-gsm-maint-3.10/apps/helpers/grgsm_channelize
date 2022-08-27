@@ -1,0 +1,162 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# @file
+# @author (C) 2015 by Pieter Robyns <pieter.robyns@uhasselt.be>
+# @section LICENSE
+#
+# Gr-gsm is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+#
+# Gr-gsm is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with gr-gsm; see the file COPYING.  If not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street,
+# Boston, MA 02110-1301, USA.
+#
+#
+
+##################################################
+# gr-gsm channelizer
+#
+# Standalone application to channelize a wideband
+# GSM capture file into multiple seperate capture
+# files for the specified ARFCNs.
+##################################################
+
+from gnuradio import blocks
+from gnuradio import eng_notation
+from gnuradio import filter
+from gnuradio import gr
+from gnuradio.eng_option import eng_option
+from gnuradio.filter import firdes
+from argparse import ArgumentParser, ArgumentTypeError, RawDescriptionHelpFormatter
+import gnuradio.gsm.arfcn as arfcn
+from gnuradio.filter import pfb
+import math
+import os
+
+EXTRA_HELP = """
+Example usage:
+grgsm_channelize.py -c my_wideband_capture.cfile -f 925.2e6 990 991 992 993 994 995 1019 1020 1021 1022 1023
+
+The above example will channelize my_wideband_capture.cfile, in this case a cfile captured at
+925.2 MHz centered (ARFCN 975) and 2 Msps. As a result, 12 files will be generated for
+ARFCNs 975 - 1023 at 1 Msps each.
+"""
+
+def eng_float(value):
+    try:
+        return eng_notation.str_to_num(value)
+    except:
+        raise ArgumentTypeError("invalid engineering notation value: {0}".format(value))
+
+class gsm_channelize(gr.top_block):
+    def __init__(self, arfcns, resamp_rate, fc, samp_rate, input_file, dest_dir, data_type="complex"):
+        gr.top_block.__init__(self, "gsm_channelize")
+
+        ##################################################
+        # Parameters
+        ##################################################
+        self.arfcns = arfcns
+        self.resamp_rate = resamp_rate
+        self.fc = fc
+        self.samp_rate = samp_rate
+        self.blocks_resamplers = {}
+        self.blocks_rotators = {}
+        self.blocks_file_sinks = {}
+        
+        ##################################################
+        # Blocks and connections
+        ##################################################
+        self.source = None
+        if data_type == "ishort":
+            self.blocks_file_source = blocks.file_source(gr.sizeof_short, input_file, False)
+            self.source = blocks.interleaved_short_to_complex(False, False)
+            self.connect((self.blocks_file_source, 0), (self.source, 0))
+        elif data_type == "ichar":
+            self.blocks_file_source = blocks.file_source(gr.sizeof_char, input_file, False)
+            self.source = blocks.interleaved_char_to_complex(False)
+            self.connect((self.blocks_file_source, 0), (self.source, 0))
+        elif data_type == "complex":
+            self.source = blocks.file_source(gr.sizeof_gr_complex, input_file, False)
+
+        fc_str = eng_notation.num_to_str(fc)
+        print("Extracting channels %s, given that the center frequency is at %s" % (str(arfcns), eng_notation.num_to_str(fc)))
+
+        for channel in self.arfcns:
+            channel_freq = arfcn.arfcn2downlink(channel)
+            freq_diff = channel_freq - fc
+            freq_diff_str = "+" if 0 <= freq_diff else ""
+            freq_diff_str += eng_notation.num_to_str(freq_diff)
+            print("ARFCN %d is at %sHz %sHz" % (channel, fc_str, freq_diff_str))
+
+            self.blocks_resamplers[channel] = pfb.arb_resampler_ccf( resamp_rate, taps=None, flt_size=32)
+            self.blocks_rotators[channel] = blocks.rotator_cc(-2*math.pi*(freq_diff)/samp_rate)
+            self.connect( (self.source, 0), (self.blocks_rotators[channel], 0) )
+            self.connect( (self.blocks_rotators[channel], 0), (self.blocks_resamplers[channel], 0) )
+
+            self.blocks_file_sinks[channel] = blocks.file_sink(gr.sizeof_gr_complex, dest_dir+"/out_" + str(channel) + ".cfile", False)
+            self.blocks_file_sinks[channel].set_unbuffered(False)
+            self.connect((self.blocks_resamplers[channel], 0), (self.blocks_file_sinks[channel], 0))
+
+
+if __name__ == '__main__':
+    parser = ArgumentParser(formatter_class=RawDescriptionHelpFormatter, description='Split wideband a GSM capture into seperate files per ARFCN.', add_help=True, epilog=EXTRA_HELP)
+    parser.add_argument(dest="arfcns", type=int, nargs='+',
+        help="List of ARFCNs (for PCS1900 add 0x8000 (2**15) to the ARFCN number)")
+    parser.add_argument("-s", "--samp-rate", dest="samp_rate", type=eng_float, default=eng_notation.num_to_str(2e6),
+        help="Sample rate of the wideband capture file [default=%(default)s]")
+    parser.add_argument("-f", "--fc", dest="fc", type=eng_float, default=eng_notation.num_to_str(935e6), required=True,
+        help="Carrier frequency in Hz [default=%(default)s]")
+    parser.add_argument("-o", "--out-samp-rate", dest="out_samp_rate", type=eng_float, default=eng_notation.num_to_str(1e6),
+        help="Sample rate of the output capture files [default=%(default)s]")
+    parser.add_argument("-i", "--input_file", dest="input_file", type=str, required=True,
+        help="Path to wideband GSM capture file")
+    parser.add_argument("-t", "--data_type", dest="data_type", type=str, choices=["complex","ishort","ichar"], default="complex",
+        help="Type of the input file [default=%(default)s]")
+    parser.add_argument("-d", "--dest_dir", dest="dest_dir", type=str, 
+        help="Destination directory - if not given defaults to input file name without extension")
+        
+    args = parser.parse_args()
+
+    for ch in args.arfcns:
+        if not arfcn.is_valid_arfcn(ch):
+            parser.error("ARFCN "+str(ch)+" is not valid\n")
+
+    if not os.path.exists(args.input_file):
+        raise IOError(args.input_file + " does not exist")
+
+    input_filename, _ = os.path.splitext(os.path.basename(args.input_file))
+
+    if args.dest_dir is None:
+        args.dest_dir = input_filename
+    
+    if not os.path.exists("./"+args.dest_dir):
+        os.makedirs("./"+args.dest_dir)
+
+
+    if args.samp_rate % args.out_samp_rate != 0:
+        raise Exception("Input sample rate should be multiple of output sample rate in order to get integer decimation.")
+
+    resamp_rate = args.out_samp_rate / args.samp_rate
+    print("Input sample rate: " + eng_notation.num_to_str(args.samp_rate))
+    print("Output sample rate: " + eng_notation.num_to_str(args.out_samp_rate))
+    print("==> using resample rate of " + str(resamp_rate))
+
+    tb = gsm_channelize(arfcns=args.arfcns,
+         resamp_rate=resamp_rate,
+         fc=args.fc,
+         samp_rate=args.samp_rate,
+         input_file=args.input_file,
+         dest_dir=args.dest_dir,         
+         data_type=args.data_type
+         )
+    tb.start()
+    tb.wait()
+    print("Done!")

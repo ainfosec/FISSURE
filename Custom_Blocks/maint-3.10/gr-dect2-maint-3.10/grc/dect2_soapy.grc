@@ -1,0 +1,422 @@
+options:
+  parameters:
+    author: ''
+    catch_exceptions: 'True'
+    category: Custom
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: top_block
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: ''
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [10, 10]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: baseband_sampling_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: 100000000/32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [10, 74]
+    rotation: 0
+    state: enabled
+- name: dect_channel_bandwidth
+  id: variable
+  parameters:
+    comment: ''
+    value: 1.728e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [10, 270]
+    rotation: 0
+    state: enabled
+- name: dect_occupied_bandwidth
+  id: variable
+  parameters:
+    comment: ''
+    value: 1.2*dect_symbol_rate
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [10, 202]
+    rotation: 0
+    state: enabled
+- name: dect_symbol_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '1152000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [9, 138]
+    rotation: 0
+    state: enabled
+- name: part_id
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Select Part
+    label0: ''
+    label1: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+      "13", "14", "15", "16", "17", "18", "19", "20","21","22","23","24","25","26","27","28","29","30","31","32"]'
+    num_opts: '0'
+    option0: '0'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[0, 1, 2, 3, 4, 5, 6, 7, 8, 9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '0'
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [10, 410]
+    rotation: 0
+    state: enabled
+- name: resample_ratio
+  id: variable
+  parameters:
+    comment: ''
+    value: int((3.0*baseband_sampling_rate/2.0)/dect_symbol_rate/4.0)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [344, 572.0]
+    rotation: 0
+    state: true
+- name: resampler_filter_taps
+  id: variable
+  parameters:
+    comment: ''
+    value: firdes.low_pass_2(1, 3*baseband_sampling_rate, dect_occupied_bandwidth/2,
+      (dect_channel_bandwidth - dect_occupied_bandwidth)/2, 30)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [10, 340]
+    rotation: 0
+    state: enabled
+- name: rx_freq
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: Carrier Number
+    label0: ch0
+    label1: ch1
+    label2: ch2
+    label3: ''
+    label4: ''
+    labels: '["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12",
+      "13", "14", "15", "16", "17", "18", "19", "20","21","22","23","24","25","26","27","28","29","30","31","32"]'
+    num_opts: '0'
+    option0: '0'
+    option1: '1883520000'
+    option2: '1885248000'
+    option3: '3'
+    option4: '4'
+    options: '[1897344000, 1895616000, 1893888000, 1892160000, 1890432000, 1888704000,
+      1886876000, 1885248000, 1883520000, 1881792000, 1899072000, 1900800000, 1902528000,
+      1904256000, 1905984000, 1907712000, 1909440, 1911168000, 1912896000, 1914624000,
+      1916352000, 1918080000, 1919808000, 1921536000, 1923264000, 1924992000, 1926720000,
+      1928448000, 1930176000,  1931904000, 1933632000, 1935360000, 1937088000]'
+    orient: Qt.QVBoxLayout
+    type: real
+    value: '1897344000'
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [11, 548]
+    rotation: 0
+    state: enabled
+- name: rx_gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: ''
+    label: RX Gain
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '30'
+    value: '0'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [201, 408]
+    rotation: 0
+    state: enabled
+- name: audio_sink_0
+  id: audio_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    device_name: plughw:0,0
+    num_inputs: '1'
+    ok_to_block: 'True'
+    samp_rate: '48000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1081, 449]
+    rotation: 0
+    state: enabled
+- name: blocks_short_to_float_0
+  id: blocks_short_to_float
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    scale: '32768'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1057, 192]
+    rotation: 0
+    state: enabled
+- name: console_0
+  id: console
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    gui_hint: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [831, 271]
+    rotation: 0
+    state: enabled
+- name: dect2_packet_decoder_0
+  id: dect2_packet_decoder
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    rx_id: part_id
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [578, 196]
+    rotation: 0
+    state: enabled
+- name: dect2_packet_receiver_0
+  id: dect2_packet_receiver
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [256, 192.0]
+    rotation: 0
+    state: enabled
+- name: dect2_phase_diff_0
+  id: dect2_phase_diff
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1485, 106]
+    rotation: 0
+    state: enabled
+- name: mmse_resampler_xx_0
+  id: mmse_resampler_xx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    phase_shift: '0'
+    resamp_ratio: resample_ratio
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1183, 30]
+    rotation: 0
+    state: true
+- name: rational_resampler_xxx_0
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: '1'
+    fbw: '0'
+    interp: '6'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: ''
+    type: fff
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [847, 425]
+    rotation: 0
+    state: enabled
+- name: rational_resampler_xxx_1
+  id: rational_resampler_xxx
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    decim: '2'
+    fbw: '0'
+    interp: '3'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    taps: resampler_filter_taps
+    type: ccc
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [560, 44.0]
+    rotation: 0
+    state: true
+- name: soapy_custom_source_0
+  id: soapy_custom_source
+  parameters:
+    affinity: ''
+    agc0: 'False'
+    agc1: 'False'
+    alias: ''
+    antenna0: RX
+    antenna1: ''
+    bandwidth0: '0'
+    bandwidth1: '0'
+    center_freq0: rx_freq
+    center_freq1: '0'
+    comment: ''
+    dc_offset0: '0'
+    dc_offset1: '0'
+    dc_removal0: 'True'
+    dc_removal1: 'True'
+    dev_args: ''
+    driver: uhd
+    freq_correction0: '0'
+    freq_correction1: '0'
+    gain0: rx_gain
+    gain1: '0'
+    iq_balance0: '0'
+    iq_balance1: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    nchan: '1'
+    samp_rate: '4000000'
+    settings0: ''
+    settings1: ''
+    stream_args: ''
+    tune_args0: ''
+    tune_args1: ''
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [240, 60.0]
+    rotation: 0
+    state: true
+- name: vocoder_g721_decode_bs_0
+  id: vocoder_g721_decode_bs
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [812, 196]
+    rotation: 0
+    state: enabled
+
+connections:
+- [blocks_short_to_float_0, '0', rational_resampler_xxx_0, '0']
+- [dect2_packet_decoder_0, '0', vocoder_g721_decode_bs_0, '0']
+- [dect2_packet_decoder_0, log_out, console_0, in]
+- [dect2_packet_receiver_0, '0', dect2_packet_decoder_0, '0']
+- [dect2_packet_receiver_0, rcvr_msg_out, dect2_packet_decoder_0, rcvr_msg_in]
+- [dect2_phase_diff_0, '0', dect2_packet_receiver_0, '0']
+- [mmse_resampler_xx_0, '0', dect2_phase_diff_0, '0']
+- [rational_resampler_xxx_0, '0', audio_sink_0, '0']
+- [rational_resampler_xxx_1, '0', mmse_resampler_xx_0, '0']
+- [soapy_custom_source_0, '0', rational_resampler_xxx_1, '0']
+- [vocoder_g721_decode_bs_0, '0', blocks_short_to_float_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: v3.11.0.0git-46-g614681ba

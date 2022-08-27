@@ -1,0 +1,21 @@
+id: ieee802_11_extract_csi
+label: WiFi Extract CSI
+category: '[IEEE802.11]'
+
+templates:
+  imports: import ieee802_11
+  make: ieee802_11.extract_csi()
+
+inputs:
+- label: pdu in
+  domain: message
+  optional: false
+
+outputs:
+- label: csi out
+  domain: stream
+  dtype: complex
+  vlen: 52
+  optional: false
+
+file_format: 1

@@ -1,0 +1,15 @@
+{
+    "global": {
+        "core:datatype": "cf32_le",
+        "core:description": "Synthetic Iridium Frame with PRBS15 payload",
+        "core:sample_rate": 2000000,
+        "core:version": "1.0.0"
+    },
+    "captures": [
+        {
+            "core:datetime": "2020-09-29T23:14:06Z",
+            "core:frequency": 1622000000,
+            "core:sample_start": 0
+        }
+    ]
+}

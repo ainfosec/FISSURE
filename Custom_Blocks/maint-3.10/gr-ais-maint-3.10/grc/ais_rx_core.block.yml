@@ -1,0 +1,79 @@
+id: ais_rx_core
+label: AIS receiver core
+category: '[AIS]'
+
+parameters:
+-   id: bb_sps
+    label: Demod SPS
+    dtype: int
+    default: '4'
+    hide: none
+-   id: bt
+    label: Bandwidth-time product
+    dtype: real
+    default: '0.4'
+    hide: none
+-   id: loopbw
+    label: TED loop bw
+    dtype: real
+    default: '0.05'
+    hide: none
+-   id: samp_rate
+    label: Sample rate
+    dtype: real
+    default: 200e3
+    hide: none
+-   id: threshold
+    label: Preamble correlator threshold
+    dtype: real
+    default: '0.83'
+    hide: none
+
+inputs:
+-   label: in
+    dtype: complex
+    vlen: 1
+
+outputs:
+-   label: corr_sig
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: ted_out
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: ted_error
+    dtype: float
+    vlen: 1
+    optional: true
+-   label: out
+    domain: message
+    dtype: message
+    optional: true
+-   label: corr
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: agc_out
+    dtype: complex
+    vlen: 1
+    optional: true
+
+templates:
+    imports: 'from ais_rx_core import ais_rx_core  # grc-generated hier_block'
+    make: "ais_rx_core(\n    bb_sps=${ bb_sps },\n    bt=${ bt },\n    loopbw=${ loopbw\
+        \ },\n    samp_rate=${ samp_rate },\n    threshold=${ threshold },\n)"
+    callbacks:
+    - set_bb_sps(${ bb_sps })
+    - set_bt(${ bt })
+    - set_loopbw(${ loopbw })
+    - set_samp_rate(${ samp_rate })
+    - set_threshold(${ threshold })
+
+documentation: 'Nick Foster
+
+    /home/hydra/gnuradio/src/modules/gr-ais/apps/ais_rx_core.py'
+grc_source: /home/hydra/gnuradio/src/modules/gr-ais/apps/ais_demod.grc
+
+file_format: 1

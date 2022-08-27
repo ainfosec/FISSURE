@@ -1,0 +1,5 @@
+*.pyc
+*.tar.gz
+*.swp
+*.swo
+build/

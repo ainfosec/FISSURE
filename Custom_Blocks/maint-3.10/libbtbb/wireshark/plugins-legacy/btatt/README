@@ -1,0 +1,11 @@
+Bluetooth ATT Protocol Dissector
+================================
+
+This is a plugin-ized version of the Bluetooth ATT protocol dissector
+from the Wireshark trunk. I made the very minimal changes necessary to
+get it to build as a plugin: defining a couple constants and changing an
+include path.
+
+This plugin is unneccessary if you are using Wireshark trunk. Only use
+it if you are using a distro packaged Wireshark that does not have btatt
+protocol support.

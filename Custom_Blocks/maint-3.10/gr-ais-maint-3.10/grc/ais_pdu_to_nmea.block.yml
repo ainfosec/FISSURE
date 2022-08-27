@@ -1,0 +1,32 @@
+id: pdu_to_nmea
+label: PDU to NMEA
+category: '[AIS]'
+
+parameters:
+-   id: designator
+    label: Channel designator
+    dtype: string
+    default: A
+
+inputs:
+-   label: print
+    dtype: message
+    optional: true
+
+-   label: to_nmea
+    dtype: message
+    optional: true
+
+outputs:
+-   label: out
+    dtype: message
+    vlen: 1
+    optional: true
+
+templates:
+    imports: 'from gnuradio.ais import pdu_to_nmea'
+    make: "pdu_to_nmea(${designator})"
+
+documentation: ''
+
+file_format: 1

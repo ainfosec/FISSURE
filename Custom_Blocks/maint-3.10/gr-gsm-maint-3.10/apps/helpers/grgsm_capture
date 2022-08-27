@@ -1,0 +1,197 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# @file
+# @author (C) 2015 by Roman Khassraf <rkhassraf@gmail.com>
+#         (C) 2019 by Piotr Krysik <ptrkrysik@gmail.com>
+# @section LICENSE
+#
+# Gr-gsm is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 3, or (at your option)
+# any later version.
+#
+# Gr-gsm is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with gr-gsm; see the file COPYING.  If not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street,
+# Boston, MA 02110-1301, USA.
+#
+#
+
+from gnuradio import blocks
+from gnuradio import eng_notation
+from gnuradio import gr
+from gnuradio.eng_option import eng_option
+from gnuradio.filter import firdes
+from optparse import OptionParser, OptionGroup
+import osmosdr
+import time
+from gnuradio import gsm
+import signal
+import sys
+
+class gsm_capture(gr.top_block):
+    def __init__(self,
+                 freq,
+                 gain=30,
+                 samp_rate=1e6,
+                 rec_length=float('Inf'),
+                 freq_corr=0,
+                 output_filename=None,
+                 bandwidth=0,
+                 bb_gain=20,
+                 if_gain=20,
+                 antenna="",
+                 device_args=""):
+        gr.top_block.__init__(self, "Gr-gsm Capture")
+
+        ##################################################
+        # Setting up RF source
+        ##################################################
+
+        self.sdr_source = osmosdr.source(args="numchan=" + str(1) + " " +
+                str(gsm.device.get_default_args(device_args)))
+
+        self.sdr_source.set_sample_rate(samp_rate)
+        self.sdr_source.set_center_freq(freq, 0)
+        self.sdr_source.set_freq_corr(freq_corr, 0)
+        self.sdr_source.set_dc_offset_mode(2, 0)
+        self.sdr_source.set_iq_balance_mode(2, 0)
+        self.sdr_source.set_gain_mode(True, 0)
+        self.sdr_source.set_gain(gain, 0)
+        self.sdr_source.set_if_gain(if_gain, 0)
+        self.sdr_source.set_bb_gain(bb_gain, 0)
+        self.sdr_source.set_antenna("", 0)
+        if bandwidth != 0:
+            self.sdr_source.set_bandwidth(bandwidth, 0)
+
+        ##################################################
+        # The rest of processing blocks
+        ##################################################
+
+        if rec_length != float('Inf'):
+            self.head = \
+                    blocks.head(gr.sizeof_gr_complex, int(samp_rate*rec_length))
+
+        self.file_sink = blocks.file_sink(gr.sizeof_gr_complex*1, \
+                                          output_filename, False)
+        self.file_sink.set_unbuffered(False)
+
+        ##################################################
+        # Connections
+        ##################################################
+
+        if rec_length != float('Inf'): #if recording length is not infinite
+                                            #connect head block after the source
+            self.connect((self.sdr_source, 0), (self.head, 0))
+            self.connect((self.head, 0), (self.file_sink, 0))
+        else:
+            self.connect((self.sdr_source, 0), (self.file_sink, 0))
+
+if __name__ == '__main__':
+
+    parser = OptionParser(option_class=eng_option, usage="%prog [options] output_filename",
+                          description="RTL-SDR capturing app of gr-gsm.")
+
+    parser.add_option("-f", "--freq", dest="freq", type="eng_float",
+                      help="Set frequency [default=%default]")
+
+    parser.add_option("-a", "--arfcn", dest="arfcn", type="intx",
+                      help="Set ARFCN instead of frequency (for PCS1900 add"
+                           "0x8000 (2**15) to the ARFCN number)")
+
+    parser.add_option("-g", "--gain", dest="gain", type="eng_float",
+                      default=eng_notation.num_to_str(30),
+                      help="Set gain [default=%default]")
+
+    parser.add_option("-s", "--samp-rate", dest="samp_rate", type="eng_float",
+                      default=eng_notation.num_to_str(1000000),
+                      help="Set samp_rate [default=%default]")
+
+    parser.add_option("-T", "--rec-length", dest="rec_length", type="float",
+                      default='Inf', help="Set length of recording in seconds "
+                      "[default=infinity]")
+
+    parser.add_option("-p", "--freq-corr", dest="freq_corr", type="eng_float",
+                      default="0", help="Set frequency correction in"
+                      " ppm [default=%default]")
+
+    osmogroup = OptionGroup(parser, 'Additional osmosdr source options',
+                      "Options specific to a subset of SDR receivers "
+                      "supported by osmosdr source.")
+
+    osmogroup.add_option("-w", "--bandwidth", dest="bandwidth", type="eng_float",
+                      default="0", help="Set bandwidth [default=samp_rate]")
+
+    osmogroup.add_option("", "--bb-gain", dest="bb_gain", type="eng_float",
+                      default=eng_notation.num_to_str(20),
+                      help="Set baseband gain [default=%default]")
+
+    osmogroup.add_option("", "--if-gain", dest="if_gain", type="eng_float",
+                      default=eng_notation.num_to_str(20),
+                      help="Set intermediate freque gain [default=%default]")
+
+    osmogroup.add_option("", "--ant", dest="antenna", type="string",
+                      default="", help="Set antenna "
+                      "[default=%default]")
+
+    osmogroup.add_option("", "--args", dest="device_args", type="string",
+                      default="", help="Set device arguments "
+                      "[default=%default]. Use --list-devices the view the available devices")
+
+    osmogroup.add_option("-l", "--list-devices", action="store_true",
+                      help="List available SDR devices, use --args to specify hints")
+
+    parser.add_option_group(osmogroup)
+
+    (options, args) = parser.parse_args()
+
+    if options.list_devices:
+        gsm.device.print_devices(options.device_args)
+        sys.exit(0)
+
+    if not args:
+        parser.error("Please provide an output file name to save the captured data\n")
+
+    output_filename = args[0]
+
+    if (options.freq is None and options.arfcn is None) or \
+       (options.freq is not None and options.arfcn is not None):
+        parser.error("You have to provide either a frequency or"
+                     "an ARFCN (but not both).\n")
+
+    arfcn = 0
+    freq = 0
+    if options.arfcn:
+        if not gsm.arfcn.is_valid_arfcn(options.arfcn):
+            parser.error("ARFCN is not valid\n")
+        else:
+            freq = gsm.arfcn.arfcn2downlink(options.arfcn)
+    elif options.freq:
+        freq = options.freq
+
+    tb = gsm_capture(freq=freq,
+                       gain=options.gain,
+                       freq_corr=options.freq_corr,
+                       samp_rate=options.samp_rate,
+                       output_filename=output_filename,
+                       rec_length=options.rec_length,
+                       bandwidth=options.bandwidth,
+                       bb_gain=options.bb_gain,
+                       if_gain=options.if_gain,
+                       antenna=options.antenna,
+                       device_args=options.device_args)
+
+    def signal_handler(signal, frame):
+        tb.stop()
+        tb.wait()
+        sys.exit(0)
+
+    signal.signal(signal.SIGINT, signal_handler)
+
+    tb.start()
+    tb.wait()

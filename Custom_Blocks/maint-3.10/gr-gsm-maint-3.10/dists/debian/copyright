@@ -1,0 +1,156 @@
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+
+Files: *
+Copyright: 2015-2017, Roman Khassraf <rkhassraf@gmail.com>
+License: GPL-3+
+
+Files: lib/decoding/*
+Copyright: 2009-2017, Piotr Krysik <ptrkrysik@gmail.com>
+License: GPL-3+
+
+Files: lib/decoding/openbts/*
+Copyright: 2012-2014, Range Networks, Inc
+License: AGPL-3+
+
+Files: lib/decoding/openbts/BitVector.cpp
+  lib/decoding/openbts/BitVector.h
+  lib/decoding/openbts/Vector.h
+  lib/decoding/openbts/ViterbiR204.cpp
+  lib/decoding/openbts/ViterbiR204.h
+Copyright: 2014, Range Networks, Inc
+  2008, 2009, 2014, Free Software Foundation, Inc
+License: AGPL-3+
+
+Files: lib/decoding/openbts/GSM610Tables.cpp
+  lib/decoding/openbts/GSM610Tables.h
+Copyright: 2008, Free Software Foundation, Inc
+License: AGPL-3+
+
+Files: lib/decoding/openbts/GSM660Tables.cpp
+  lib/decoding/openbts/GSM660Tables.h
+Copyright: 2010, Sylvain Munaut <tnt@246tNt.com>
+License: AGPL-3+
+
+Files: lib/decoding/osmocom/*
+Copyright: 2016, Tom Tsou <tom.tsou@ettus.com>
+  2013, Andreas Eversberg <jolly@eversberg.eu>
+License: GPL-2+
+
+Files: lib/decoding/osmocom/coding/gsm0503.h
+Copyright: 2016, sysmocom s.f.m.c. GmbH
+License: GPL-2+
+
+Files: lib/decoding/osmocom/coding/gsm0503_coding.c
+  lib/decoding/osmocom/coding/gsm0503_coding.h
+Copyright: 2016, Tom Tsou <tom.tsou@ettus.com>
+  2015, Alexander Chemeris <Alexander.Chemeris@fairwaves.co>
+  2013, Andreas Eversberg <jolly@eversberg.eu>
+License: GPL-2+
+
+Files: lib/decoding/osmocom/coding/gsm0503_conv.c
+Copyright: 2016, sysmocom s.f.m.c. GmbH
+  2011-2016, Sylvain Munaut <tnt@246tNt.com>
+License: GPL-3+
+
+Files: lib/decoding/tch_f_decoder_impl.cc
+Copyright: 2017, Piotr Krysik <ptrkrysik@gmail.com>
+  2015, Roman Khassraf <rkhassraf@gmail.com>
+License: GPL-3+
+
+Files: lib/decoding/tch_f_decoder_impl.h
+Copyright: 2015-2017, Roman Khassraf <rkhassraf@gmail.com>
+License: GPL-3+
+
+Files: lib/decryption/*
+Copyright: 2015, Roman Khassraf <rkhassraf@gmail.com>
+  2014, Piotr Krysik <ptrkrysik@gmail.com>
+License: GPL-3+
+
+Files: lib/decryption/decryption_impl.h
+Copyright: 2009-2017, Piotr Krysik <ptrkrysik@gmail.com>
+License: GPL-3+
+
+Files: lib/demapping/universal_ctrl_chans_demapper_impl.cc
+  lib/demapping/universal_ctrl_chans_demapper_impl.h
+Copyright: 2009-2017, Piotr Krysik <ptrkrysik@gmail.com>
+License: GPL-3+
+
+Files: lib/flow_control/uplink_downlink_splitter_impl.cc
+  lib/flow_control/uplink_downlink_splitter_impl.h
+Copyright: 2009-2017, Piotr Krysik <ptrkrysik@gmail.com>
+License: GPL-3+
+
+Files: lib/misc_utils/bursts_printer_impl.cc
+  lib/misc_utils/bursts_printer_impl.h
+  lib/misc_utils/controlled_fractional_resampler_cc_impl.cc
+  lib/misc_utils/controlled_fractional_resampler_cc_impl.h
+  lib/misc_utils/controlled_rotator_cc_impl.cc
+  lib/misc_utils/controlled_rotator_cc_impl.h
+  lib/misc_utils/extract_system_info_impl.cc
+  lib/misc_utils/extract_system_info_impl.h
+  lib/misc_utils/message_printer_impl.cc
+  lib/misc_utils/message_printer_impl.h
+  lib/misc_utils/msg_to_tag_impl.cc
+  lib/misc_utils/msg_to_tag_impl.h
+  lib/misc_utils/tmsi_dumper_impl.cc
+  lib/misc_utils/tmsi_dumper_impl.h
+Copyright: 2009-2017, Piotr Krysik <ptrkrysik@gmail.com>
+License: GPL-3+
+
+Files: lib/receiver/*
+Copyright: 2009-2017, Piotr Krysik <ptrkrysik@gmail.com>
+License: GPL-3+
+
+Files: lib/receiver/cx_channel_hopper_impl.cc
+  lib/receiver/cx_channel_hopper_impl.h
+Copyright: 2015, Pieter Robyns <pieter.robyns@uhasselt.be>
+License: GPL-3+
+
+Files: python/__init__.py
+  python/build_utils.py
+  python/build_utils_codes.py
+Copyright: 2004, 2008, 2009, 2012, Free Software Foundation, Inc
+License: GPL-3+
+
+Files: python/demapping/*
+Copyright: 2009-2017, Piotr Krysik <ptrkrysik@gmail.com>
+License: GPL-3+
+
+Files: python/misc_utils/*
+Copyright: 2009-2017, Piotr Krysik <ptrkrysik@gmail.com>
+License: GPL-3+
+
+Files: python/misc_utils/arfcn.py
+Copyright: 2015-2017, Roman Khassraf <rkhassraf@gmail.com>
+License: GPL-3+
+
+Files: python/qa_controlled_fractional_resampler_cc.py
+  python/qa_msg_to_tag.py
+  python/qa_uplink_downlink_splitter.py
+Copyright: 2009-2017, Piotr Krysik <ptrkrysik@gmail.com>
+License: GPL-3+
+
+Files: python/receiver/*
+Copyright: 2009-2017, Piotr Krysik <ptrkrysik@gmail.com>
+License: GPL-3+
+
+License: AGPL-3+
+ Please fill license AGPL-3+ from header of lib/decoding/openbts/*
+
+License: GPL-2+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; version 2 dated June, 1991, or (at
+ your option) any later version.
+ .
+ On Debian systems, the complete text of version 2 of the GNU General
+ Public License can be found in '/usr/share/common-licenses/GPL-2'.
+
+License: GPL-3+
+ This program is free software; you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation; version 3 dated June, 2007, or (at
+ your option) any later version.
+ .
+ On Debian systems, the complete text of version 3 of the GNU General
+ Public License can be found in '/usr/share/common-licenses/GPL-3'.

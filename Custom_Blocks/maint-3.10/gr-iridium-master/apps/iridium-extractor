@@ -1,0 +1,384 @@
+#!/usr/bin/env python3
+# vim: set ts=4 sw=4 tw=0 et pm=:
+import time
+import getopt
+import sys
+import threading
+import os.path
+
+import multiprocessing
+import iridium.iridium_extractor_flowgraph
+
+queue_len_max = 0
+
+out_count = 0
+in_count = 0
+drop_count = 0
+in_ok_count = 0
+out_ok_count = 0
+
+in_count_total = 0
+out_count_total = 0
+drop_count_total = 0
+in_ok_count_total = 0
+out_ok_count_total = 0
+
+sample_count_total = 0
+
+last_print = 0
+t0 = time.time()
+
+sample_rate = None
+offline = False
+
+sample_formats = {
+    'float':  'cf32_le',
+    'fc32':   'cf32_le',
+    'cfile':  'cf32_le',
+    'sc16':   'ci16_le',
+    'hackrf': 'ci8',
+    'sc8':    'ci8',
+    'rtl':    'cu8',
+}
+
+def print_stats(tb):
+    global last_print, queue_len_max, out_count, in_count
+    global drop_count, drop_count_total, in_ok_count, out_ok_count, sample_count_total
+    global in_ok_count_total, out_ok_count_total, out_count_total, in_count_total, t0
+    while True:
+
+        queue_len = tb.get_queue_size()
+        queue_len_max = tb.get_max_queue_size()
+
+        in_count = tb.get_n_detected_bursts() - in_count_total
+        out_count = tb.get_n_handled_bursts() - out_count_total
+        in_ok_count = tb.get_n_access_ok_bursts() - in_ok_count_total
+        out_ok_count = tb.get_n_access_ok_sub_bursts() - out_ok_count_total
+        drop_count = tb.get_n_dropped_bursts() - drop_count_total
+        sample_count = tb.get_sample_count() - sample_count_total
+
+        dt = time.time() - last_print
+        in_rate = in_count / dt
+        in_count_total += in_count
+        in_rate_avg = in_count_total / (time.time() - t0)
+        out_rate = out_count/ dt
+        drop_rate = drop_count / dt
+
+        sample_rate_ratio=float(sample_count)/float(sample_rate)/float(dt)
+        sample_count_total += sample_count
+        sample_rate_ratio_avg=float(sample_count_total)/float(sample_rate)/(time.time()-t0)
+
+        if in_count != 0:
+            in_ok_ratio = in_ok_count / float(in_count)
+            out_ok_ratio = out_ok_count / float(in_count)
+        else:
+            in_ok_ratio = 0
+            out_ok_ratio = 0
+
+        ok_rate = out_ok_count / dt
+        drop_count_total += drop_count
+        in_ok_count_total += in_ok_count
+        out_ok_count_total += out_ok_count
+        out_count_total += out_count
+
+        if in_count_total != 0:
+            ok_ratio_total = out_ok_count_total / float(in_count_total)
+        else:
+            ok_ratio_total = 0
+
+        ok_rate_avg = out_ok_count_total / (time.time() - t0)
+
+        stats = ""
+        stats += "%d" % time.time()
+        if offline:
+            stats += " | srr: %.1f%%" % (sample_rate_ratio*100)
+        else:
+            stats += " | i: %3d/s" % in_rate
+        stats += " | i_avg: %3d/s" % in_rate_avg
+        stats += " | q_max: %4d" % queue_len_max
+        stats += " | i_ok: %3d%%" % (in_ok_ratio * 100)
+        stats += " | o: %4d/s" % out_rate
+        stats += " | ok: %3d%%" % (out_ok_ratio * 100)
+        stats += " | ok: %3d/s" % ok_rate
+        stats += " | ok_avg: %3d%%" % (ok_ratio_total * 100)
+        stats += " | ok: %10d" % out_ok_count_total
+        stats += " | ok_avg: %3d/s" % ok_rate_avg
+        stats += " | d: %d" % drop_count_total
+        print(stats, file=sys.stderr)
+        if not offline and sample_rate_ratio < 0.98 and (last_print-t0) > 3:
+            print("WARNING: your SDR seems to be losing samples. ~%dk samples lost (%.0f%%)"%(sample_rate*(1-sample_rate_ratio)/1000,(1-sample_rate_ratio)*100), file=sys.stderr)
+        sys.stderr.flush()
+
+        queue_len_max = 0
+        in_count = 0
+        last_print = time.time()
+
+        time.sleep(1)
+
+
+
+if __name__ == "__main__":
+    options, remainder = getopt.getopt(sys.argv[1:], 'w:c:r:vd:f:oq:b:D:h', [
+                                                            'burst-width=',
+                                                            'center=',
+                                                            'rate=',
+                                                            'verbose',
+                                                            'db=',
+                                                            'format=',
+                                                            'offline',
+                                                            'queuelen=',
+                                                            'burstsize=',
+                                                            'decimation',
+                                                            'multi-frame',
+                                                            'raw-capture=',
+                                                            'debug-id=',
+                                                            'file-info=',
+                                                            'help'
+                                                            ])
+
+    center = None
+    burst_width = 40000
+    verbose = False
+    threshold = 18 # about 18 dB over noise
+    fmt = None
+    max_queue_len = 500
+    max_bursts = 0
+    decimation = 1
+    samples_per_symbol = 10
+    raw_capture_filename = None
+    handle_multiple_frames_per_burst = True
+    debug_id = None
+    file_info = ""
+    cfg = {}
+
+    if len(remainder) == 0 or remainder[0] == '-' or remainder[0] == '/dev/stdin':
+        filename = "/dev/stdin"
+        cfg['source']='stdin'
+    elif len(remainder)==1:
+        filename = remainder[0]
+        if not os.path.exists(filename):
+            print("Specified input file `%s` does not exist" % filename, file=sys.stderr)
+            exit(1)
+        if os.path.isfile(filename):
+            offline = True
+        cfg['source'] = 'file'
+        cfg['file'] = filename
+    else:
+        print("Excess arguments after filename.", file=sys.stderr)
+        exit(1)
+
+    if filename.endswith(".conf"):
+        import configparser
+        config = configparser.ConfigParser()
+        config.read(filename)
+        cfg = {x: dict(config.items(x)) for x in config.sections()}
+        if 'osmosdr-source' in cfg:
+            d=cfg['osmosdr-source']
+            cfg['source']='osmosdr'
+            offline = False
+        elif 'soapy-source' in cfg:
+            d=cfg['soapy-source']
+            cfg['source']='soapy'
+            offline = False
+        elif 'zeromq-sub-source' in cfg:
+            d=cfg['zeromq-sub-source']
+            cfg['source']='zeromq-sub'
+            offline = False
+        elif 'uhd-source' in cfg:
+            d=cfg['uhd-source']
+            cfg['source']='uhd'
+            offline = False
+        else:
+            print("Unsupported .conf file format", file=sys.stderr)
+            exit(1)
+
+        sample_rate = int(d['sample_rate'])
+        center = int(d['center_freq'])
+
+
+        if 'demodulator' in config:
+            d = config['demodulator']
+
+            if 'samples_per_symbol' in d:
+                samples_per_symbol = int(d['samples_per_symbol'])
+
+            if 'decimation' in d:
+                decimation = int(d['decimation'])
+
+        fmt = 'float'
+
+    sigmf = None
+    if filename.endswith(".sigmf-meta") or filename.endswith(".sigmf-data"):
+        import json
+        meta = os.path.splitext(filename)[0]+'.sigmf-meta'
+        sigmf = json.load(open(meta))
+        cfg['source'] = 'file'
+        cfg['file'] = os.path.splitext(filename)[0]+'.sigmf-data'
+
+    if filename.endswith(".sigmf"):
+        import json
+        import tarfile
+        tar = tarfile.open(filename)
+        members = tar.getmembers()
+        meta = [x for x in members if x.name.endswith(".sigmf-meta")][0]
+        sigmf = json.load(tar.extractfile(meta))
+        tardata = [x for x in members if x.name.endswith(".sigmf-data")][0]
+        cfg['source'] = 'object'
+        cfg['object'] = tar.extractfile(tardata)
+        del cfg['file']
+
+    if fmt == 'wav' or (fmt is None and filename.lower().endswith(".wav")):
+        import wave
+        wav = wave.open(filename)
+        if wav.getnchannels()!=2:
+            raise TypeError("wav file must have 2 channels")
+        if wav.getsampwidth()==2:
+            fmt = 'ci16_le'
+        else:
+            raise TypeError("unknown wav format")
+        sample_rate = wav.getframerate()
+        cfg['source'] = 'object'
+        cfg['object'] = wav.getfp()
+        del cfg['file']
+
+    if sigmf is not None:
+        try:
+            sample_rate = int(sigmf['global']['core:sample_rate'])
+        except:
+            pass
+        try:
+            center = int(sigmf['captures'][0]['core:frequency'])
+        except:
+            pass
+        try:
+            fmt = sigmf['global']['core:datatype']
+        except:
+            print("[sigmf] datatype missing.", file=sys.stderr)
+
+    for opt, arg in options:
+        if opt in ('-w', '--burst-width'):
+            burst_width = int(arg)
+        elif opt in ('-c', '--center'):
+            center = int(arg)
+        elif opt in ('-r', '--rate'):
+            sample_rate = int(arg)
+        elif opt in ('-d', '--db'):
+            threshold = float(arg)
+        elif opt in ('-v', '--verbose'):
+            verbose = True
+        elif opt in ('-f', '--format'):
+            fmt = arg
+        elif opt in ('-o', '--offline'):
+            offline = True
+        elif opt in ('-q', '--queuelen'):
+            max_queue_len = int(arg)
+        elif opt in ('-b', '--burstsize'):
+            max_bursts = int(arg)
+        elif opt in ('-D', '--decimation'):
+            decimation = int(arg)
+        elif opt == '--multi-frame':
+            # TODO: Handle an optional "False"
+            handle_multiple_frames_per_burst = True
+        elif opt == '--raw-capture':
+            raw_capture_filename = arg
+        elif opt == '--debug-id':
+            debug_id = int(arg)
+        elif opt == '--file-info':
+            file_info = arg
+        elif opt in ('-h', '--help'):
+            print("Usage: iridium-extractor [options] <filename>", file=sys.stderr)
+            print("\t-c frequency\tset center frequency", file=sys.stderr)
+            print("\t-r rate \tset sample rate", file=sys.stderr)
+            print("\t-f format\tset input format [rtl, hackrf, sc16, float]", file=sys.stderr)
+            print("\t--offline\tturn on offline mode (don't skip samples)", file=sys.stderr)
+            print("\t-D num   \tturn on decimation (multi-channel decoding) ", file=sys.stderr)
+            print("\t--raw-capture=filename  \tsave raw IQ samples (sc16) to file ", file=sys.stderr)
+            print("\t<filename>\traw sample file", file=sys.stderr)
+            print("", file=sys.stderr)
+            print("For more documentation check: https://github.com/muccc/gr-iridium/", file=sys.stderr)
+            exit(-1)
+
+    # check filename extension for sample format
+    extension = os.path.splitext(filename)[-1][1:]
+    if fmt is None and (extension in sample_formats or extension in sample_formats.values()):
+        fmt=extension
+
+    # compatibility mappings
+    if fmt in sample_formats:
+        fmt=sample_formats[fmt]
+
+    if file_info == "" and offline:
+        file_info=filename
+        file_info=os.path.basename(file_info)
+        file_info=os.path.splitext(file_info)[0]
+
+    if sample_rate == None:
+        print("Sample rate missing!", file=sys.stderr)
+        exit(1)
+    if sample_rate % 100000:
+        print("Sample rate must be divisible by 100000!", file=sys.stderr)
+        exit(1)
+    if center == None:
+        print("Need to specify center frequency!", file=sys.stderr)
+        exit(1)
+    if fmt == None:
+        print("Need to specify sample format (one of rtl, hackrf, sc16, float)!", file=sys.stderr)
+        exit(1)
+    if decimation < 1:
+        print("Decimation must be > 0", file=sys.stderr)
+        exit(1)
+    if decimation > 1 and decimation % 2:
+        print("Decimations > 1 must be even", file=sys.stderr)
+        exit(1)
+    if debug_id is not None:
+        if not os.path.isdir('/tmp/signals'):
+            print("/tmp/signals directory missing!", file=sys.stderr)
+            exit(1)
+
+    if raw_capture_filename is not None:
+        import json
+        import datetime
+        data={
+            'global': {
+                'core:datatype': 'ci16_le',
+                'core:description': 'iridium-extractor capture via '+os.path.basename(filename),
+                'core:recorder': 'iridium-extractor',
+                "core:num_channels": 1,
+                'core:sample_rate': sample_rate,
+                'core:version': '1.0.0'
+            },
+            'captures': [
+            {
+                'core:datetime': datetime.datetime.utcnow().replace(microsecond=0).isoformat()+'Z',
+                'core:frequency': center,
+                'core:sample_start': 0
+            }
+            ]
+        }
+
+        if cfg['source'] == 'soapy':
+            data['global']['core:hw']=cfg['soapy-source']['driver']
+
+        with open(raw_capture_filename+'.sigmf-meta', 'w') as outfile:
+            json.dump(data, outfile, indent=4)
+
+    tb = iridium.iridium_extractor_flowgraph.FlowGraph(center_frequency=center, sample_rate=sample_rate, decimation=decimation, 
+            filename=filename, sample_format=fmt,
+            threshold=threshold, burst_width=burst_width,
+            offline=offline, max_queue_len = max_queue_len,
+            handle_multiple_frames_per_burst=handle_multiple_frames_per_burst,
+            raw_capture_filename=raw_capture_filename,
+            debug_id=debug_id,
+            max_bursts=max_bursts,
+            verbose=verbose,
+            file_info=file_info,
+            samples_per_symbol=samples_per_symbol,
+            config=cfg)
+
+    statistics_thread = threading.Thread(target=print_stats, args=(tb,))
+    statistics_thread.daemon = True
+    statistics_thread.start()
+
+    tb.run()
+
+    print("Done.", file=sys.stderr)

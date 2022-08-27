@@ -1,0 +1,155 @@
+id: ieee802_15_4_css_phy
+label: IEEE 802.15.4 CSS PHY
+category: '[IEEE802.15.4]'
+
+parameters:
+-   id: bits_per_cw
+    label: Bits per codeword
+    dtype: int
+    default: '1'
+    hide: none
+-   id: chirp_seq
+    label: Chirp sequence
+    dtype: raw
+    default: '[]'
+    hide: none
+-   id: codewords
+    label: Codewords
+    dtype: raw
+    default: '[[0,0],[1,1]]'
+    hide: none
+-   id: intlv_seq
+    label: Interleaver sequence
+    dtype: raw
+    default: '[]'
+    hide: none
+-   id: len_sub
+    label: Samples per subchirp
+    dtype: int
+    default: '1'
+    hide: none
+-   id: nbytes_payload
+    label: Num payload bytes
+    dtype: int
+    default: '127'
+    hide: none
+-   id: nsamp_frame
+    label: Samples per frame
+    dtype: int
+    default: '1'
+    hide: none
+-   id: num_subchirps
+    label: Num subchirps per sequence
+    dtype: int
+    default: '1'
+    hide: none
+-   id: nzeros_padding
+    label: Num padded zeros
+    dtype: int
+    default: '0'
+    hide: none
+-   id: phr
+    label: PHR
+    dtype: raw
+    default: '[0 for i in range(12)]'
+    hide: none
+-   id: preamble
+    label: Preamble
+    dtype: raw
+    default: ()
+    hide: none
+-   id: sfd
+    label: SFD
+    dtype: raw
+    default: ()
+    hide: none
+-   id: sym_per_frame
+    label: Symbols per frame
+    dtype: raw
+    default: '1'
+    hide: none
+-   id: threshold
+    label: Threshold
+    dtype: real
+    default: '0'
+    hide: none
+-   id: time_gap_1
+    label: Time gap 1
+    dtype: raw
+    default: ()
+    hide: none
+-   id: time_gap_2
+    label: Time gap 2
+    dtype: raw
+    default: ()
+    hide: none
+
+inputs:
+-   label: rxin
+    dtype: complex
+    vlen: 1
+-   label: txin
+    domain: message
+    dtype: message
+
+outputs:
+-   label: txout
+    dtype: complex
+    vlen: 1
+-   label: det_out
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: rxout
+    domain: message
+    dtype: message
+-   label: costas_out
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: framer_out
+    dtype: complex
+    vlen: 1
+    optional: true
+-   label: qpsk_out
+    dtype: complex
+    vlen: 1
+    optional: true
+
+templates:
+    imports: 'from ieee802_15_4_css_phy import ieee802_15_4_css_phy  # grc-generated
+        hier_block'
+    make: "ieee802_15_4_css_phy(\n    bits_per_cw=${ bits_per_cw },\n    chirp_seq=${\
+        \ chirp_seq },\n    codewords=${ codewords },\n    intlv_seq=${ intlv_seq\
+        \ },\n    len_sub=${ len_sub },\n    nbytes_payload=${ nbytes_payload },\n\
+        \    nsamp_frame=${ nsamp_frame },\n    num_subchirps=${ num_subchirps },\n\
+        \    nzeros_padding=${ nzeros_padding },\n    phr=${ phr },\n    preamble=${\
+        \ preamble },\n    sfd=${ sfd },\n    sym_per_frame=${ sym_per_frame },\n\
+        \    threshold=${ threshold },\n    time_gap_1=${ time_gap_1 },\n    time_gap_2=${\
+        \ time_gap_2 },\n)"
+    callbacks:
+    - set_bits_per_cw(${ bits_per_cw })
+    - set_chirp_seq(${ chirp_seq })
+    - set_codewords(${ codewords })
+    - set_intlv_seq(${ intlv_seq })
+    - set_len_sub(${ len_sub })
+    - set_nbytes_payload(${ nbytes_payload })
+    - set_nsamp_frame(${ nsamp_frame })
+    - set_num_subchirps(${ num_subchirps })
+    - set_nzeros_padding(${ nzeros_padding })
+    - set_phr(${ phr })
+    - set_preamble(${ preamble })
+    - set_sfd(${ sfd })
+    - set_sym_per_frame(${ sym_per_frame })
+    - set_threshold(${ threshold })
+    - set_time_gap_1(${ time_gap_1 })
+    - set_time_gap_2(${ time_gap_2 })
+
+documentation: 'Felix Wunsch
+
+    IEEE 802.15.4 CSS PHY
+
+    ./examples/ieee802_15_4_css_phy.py'
+grc_source: ./examples/ieee802_15_4_CSS_PHY.grc
+
+file_format: 1

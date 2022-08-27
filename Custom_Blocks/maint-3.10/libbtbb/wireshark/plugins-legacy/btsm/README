@@ -1,0 +1,14 @@
+BTSM Wireshark plugin
+=====================
+
+This is the Bluetooth Low Energy Security Manager plugin for Wireshark.
+
+To build this on Debian/Ubuntu/BackTrack linux distributions:
+  sudo apt-get install wireshark-dev wireshark
+  cd libbtbb/wireshark/plugins/btsm/
+  cmake .
+  make
+  make install
+
+This will install to the .wireshark/ in your home directory. To override
+this set the DESTDIR environment variable when running cmake.

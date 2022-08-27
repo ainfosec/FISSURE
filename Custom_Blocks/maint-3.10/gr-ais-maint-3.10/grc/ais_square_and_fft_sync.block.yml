@@ -1,0 +1,39 @@
+id: square_and_fft_sync
+label: Square-and-FFT coarse sync
+category: '[AIS]'
+
+parameters:
+-   id: samp_rate
+    label: Sample rate
+    dtype: float
+    default: 250e3
+    hide: none
+-   id: bits_per_sec
+    label: Data rate
+    dtype: float
+    default: 9600
+    hide: none
+-   id: fftlen
+    label: FFT length
+    dtype: int
+    default: 1024
+    hide: none
+
+inputs:
+-   label: in
+    dtype: complex
+    vlen: 1
+
+outputs:
+-   label: out
+    dtype: complex
+    vlen: 1
+    optional: false
+
+templates:
+    imports: 'from gnuradio.ais import square_and_fft_sync_cc'
+    make: "square_and_fft_sync_cc(samplerate=${ samp_rate }, bits_per_sec=${ bits_per_sec }, fftlen=${ fftlen })"
+
+documentation: ''
+
+file_format: 1

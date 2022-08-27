@@ -1,0 +1,33 @@
+* For compiling:
+- on the PC
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr  ../
+make
+sudo make install
+
+- cross-compiling with Buildroot assumed to be installed in $BUILDROOT
+mkdir build
+cd build
+mkdir /tmp/t                 # clean directory for install
+cmake -DCMAKE_INSTALL_PREFIX:PATH=/tmp/t -DCMAKE_TOOLCHAIN_FILE=${BUILDROOT}/output/host/share/buildroot/toolchainfile.cmake -Dpybind11_DIR=${BUILDROOT}/output/build/python-pybind-2.6.1/build/lib/pybind11/share/cmake/pybind11/ ../
+make install
+scp -r /tmp/t root@$IP:/usr  # assumes the target to be accessible at $IP
+
+* linking with libacars found at https://github.com/szpajder/libacars, assuming BUILDROOT points to your cross-compilation environment
+- git clone https://github.com/szpajder/libacars  # clone libacars, in my case in 39ng/examples
+- cd examples/libacars/
+- mkdir build && cd build
+- cmake -DCMAKE_INSTALL_PREFIX:PATH=/tmp/t -DCMAKE_TOOLCHAIN_FILE=${BUILDROOT}/output/host/share/buildroot/toolchainfile.cmake  ../
+- make VERBOSE=1       # check that the cross-compilation compiler is used
+- cd ../../../build/   # back to gr-acars build directory
+- mkdir /tmp/t
+- cmake -DCMAKE_INSTALL_PREFIX:PATH=/tmp/t -DCMAKE_TOOLCHAIN_FILE=${BUILDROOT}/output/host/share/buildroot/toolchainfile.cmake -Dpybind11_DIR=${BUILDROOT}/output/build/python-pybind-2.6.1/build/lib/pybind11/share/cmake/pybind11/ -DCMAKE_CXX_FLAGS="-DLIBACARS -I${HOME}/sdr/gr-acars-code/3.9ng/examples/libacars/ -L${HOME}/sdr/gr-acars-code/3.9ng/examples/libacars/build/libacars -lacars-2" ../
+- make
+- make install
+- scp -r /tmp/t/* root@192.168.1.167:/usr  # assumes RPi4 IP to be 192.168.1.167
+- scp ${HOME}/sdr/gr-acars-code/3.9ng/examples/libacars/build/libacars/*so* root@192.168.1.167:/usr/lib  # assumes RPi4 IP to be 192.168.1.167
+
+* additional decoding resources:
+see http://acarsonline.pbworks.com/w/page/1286730/Message%20Labels
+see https://forum.flightradar24.com/forum/radar-forums/acars/9498-can-anyone-help-decode-these-messages

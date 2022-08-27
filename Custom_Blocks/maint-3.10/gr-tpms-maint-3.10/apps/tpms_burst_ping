@@ -1,0 +1,69 @@
+#!/usr/bin/env python
+
+# Copyright 2014 Jared Boone <jared@sharebrained.com>
+#
+# This file is part of gr-tpms.
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2, or (at your option)
+# any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; see the file COPYING.  If not, write to
+# the Free Software Foundation, Inc., 51 Franklin Street,
+# Boston, MA 02110-1301, USA.
+#
+
+import sys
+import time
+import numpy
+
+import pyaudio
+
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler, EVENT_TYPE_CREATED
+
+audio_sampling_rate = 48000
+ping_hz = 4000
+ping_length = 0.2
+t = numpy.arange(0, ping_length * audio_sampling_rate) / audio_sampling_rate
+w = t * ping_hz * numpy.pi / 2.0
+ping_sound = numpy.sin(w)
+ping_envelope = numpy.power(10, ((t / ping_length) * -100) / 20.0)
+ping_sound *= ping_envelope
+ping_sound = numpy.array(ping_sound, dtype=numpy.float32)
+
+audio_out = pyaudio.PyAudio()
+stream = audio_out.open(format=pyaudio.paFloat32, channels=1, rate=48000, output=True)
+
+class PlayBurstEventHandler(FileSystemEventHandler):
+	def on_created(self, event):
+		if event.event_type == EVENT_TYPE_CREATED and \
+			event.is_directory == False and \
+			event.src_path.endswith(".dat"):
+			print(event.src_path)
+			stream.write(ping_sound)
+
+event_handler = PlayBurstEventHandler()
+
+if len(sys.argv) > 1:
+	watch_path = sys.argv[1]
+else:
+	watch_path = '.'
+
+observer = Observer()
+observer.schedule(event_handler, watch_path, recursive=True)
+observer.start()
+
+try:
+	while True:
+		time.sleep(1)
+except KeyboardInterrupt:
+	observer.stop()
+observer.join()

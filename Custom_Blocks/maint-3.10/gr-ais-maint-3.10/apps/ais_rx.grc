@@ -1,0 +1,379 @@
+options:
+  parameters:
+    author: Nick Foster
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: no_gui
+    hier_block_src_path: '.:'
+    id: ais_rx
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Soapy AIS receiver
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: ais_rx_core_0
+  id: ais_rx_core
+  parameters:
+    affinity: ''
+    alias: ''
+    bb_sps: '4'
+    bt: '0.4'
+    comment: ''
+    loopbw: ted_bw
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    threshold: threshold
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [773, 67]
+    rotation: 0
+    state: true
+- name: ais_rx_core_0_0
+  id: ais_rx_core
+  parameters:
+    affinity: ''
+    alias: ''
+    bb_sps: '4'
+    bt: '0.4'
+    comment: ''
+    loopbw: ted_bw
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    threshold: threshold
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [776, 372]
+    rotation: 0
+    state: true
+- name: ant
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Antenna
+    short_id: ''
+    type: str
+    value: TX/RX
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [578, 616]
+    rotation: 0
+    state: true
+- name: args
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Device args
+    short_id: ''
+    type: str
+    value: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [684, 618]
+    rotation: 0
+    state: true
+- name: blocks_rotator_cc_0
+  id: blocks_rotator_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: A channel
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    phase_inc: 2*math.pi*(-25e3/samp_rate)
+    tag_inc_update: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [498, 139]
+    rotation: 0
+    state: true
+- name: blocks_rotator_cc_0_0
+  id: blocks_rotator_cc
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: B channel
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    phase_inc: 2*math.pi*(25e3/samp_rate)
+    tag_inc_update: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [493, 434]
+    rotation: 0
+    state: true
+- name: gain
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Gain
+    short_id: ''
+    type: intx
+    value: '65'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [60, 613]
+    rotation: 0
+    state: true
+- name: import_0
+  id: import
+  parameters:
+    alias: ''
+    comment: ''
+    imports: import math
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [186, 8]
+    rotation: 0
+    state: true
+- name: pdu_to_nmea_0
+  id: pdu_to_nmea
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    designator: A
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1184, 274]
+    rotation: 0
+    state: true
+- name: pdu_to_nmea_0_0
+  id: pdu_to_nmea
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    designator: B
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1185, 351]
+    rotation: 0
+    state: true
+- name: samp_rate
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Sample rate
+    short_id: ''
+    type: eng_float
+    value: 200e3
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [455, 615]
+    rotation: 0
+    state: true
+- name: soapy_rtlsdr_source_0
+  id: soapy_rtlsdr_source
+  parameters:
+    affinity: ''
+    agc: 'False'
+    alias: ''
+    center_freq: 162e6
+    comment: ''
+    dev_args: ''
+    freq_correction: '0'
+    gain: '65'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: samp_rate
+    type: fc32
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [144, 344.0]
+    rotation: 0
+    state: true
+- name: soapy_source_0
+  id: soapy_source
+  parameters:
+    affinity: ''
+    agc0: 'False'
+    agc1: 'False'
+    alias: ''
+    amp_gain0: '0'
+    ant0: ant
+    ant1: RX2
+    balance0: '0'
+    balance1: '0'
+    bw0: 200e3
+    bw1: '0'
+    center_freq0: 162e6
+    center_freq1: '0'
+    clock_rate: '0'
+    clock_source: ''
+    comment: ''
+    correction0: '0'
+    correction1: '0'
+    dc_offset0: '0'
+    dc_offset1: '0'
+    dc_removal0: 'True'
+    dc_removal1: 'True'
+    dev: driver=rtlsdr
+    dev_args: ''
+    devname: uhd
+    gain_mode0: Overall
+    gain_mode1: Overall
+    ifgr_gain: '59'
+    lna_gain0: '10'
+    lna_gain1: '10'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mix_gain0: '10'
+    nchan: '1'
+    nco_freq0: '0'
+    nco_freq1: '0'
+    overall_gain0: gain
+    overall_gain1: '10'
+    pga_gain0: '24'
+    pga_gain1: '24'
+    rf_gain0: '18'
+    rfgr_gain: '9'
+    rxvga1_gain: '5'
+    rxvga2_gain: '0'
+    samp_rate: samp_rate
+    sdrplay_agc_setpoint: '-30'
+    sdrplay_biastee: 'False'
+    sdrplay_dabnotch: 'False'
+    sdrplay_if_mode: Zero-IF
+    sdrplay_rfnotch: 'False'
+    settings0: ''
+    settings1: ''
+    stream_args: stream_args
+    tia_gain0: '0'
+    tia_gain1: '0'
+    tune_args0: ''
+    tune_args1: ''
+    tuner_gain0: '10'
+    type: fc32
+    vga_gain0: '10'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [195, 109]
+    rotation: 0
+    state: disabled
+- name: stream_args
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Stream args
+    short_id: ''
+    type: str
+    value: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [812, 619]
+    rotation: 0
+    state: true
+- name: ted_bw
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: TED bandwidth
+    short_id: ''
+    type: eng_float
+    value: '0.033'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [152, 614]
+    rotation: 0
+    state: true
+- name: threshold
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: Correlator threshold
+    short_id: ''
+    type: eng_float
+    value: '0.83'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [288, 613]
+    rotation: 0
+    state: true
+
+connections:
+- [ais_rx_core_0, out, pdu_to_nmea_0, print]
+- [ais_rx_core_0_0, out, pdu_to_nmea_0_0, print]
+- [blocks_rotator_cc_0, '0', ais_rx_core_0, '0']
+- [blocks_rotator_cc_0_0, '0', ais_rx_core_0_0, '0']
+- [soapy_rtlsdr_source_0, '0', blocks_rotator_cc_0, '0']
+- [soapy_rtlsdr_source_0, '0', blocks_rotator_cc_0_0, '0']
+- [soapy_source_0, '0', blocks_rotator_cc_0, '0']
+- [soapy_source_0, '0', blocks_rotator_cc_0_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: v3.11.0.0git-55-g8526e6f8

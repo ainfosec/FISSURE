@@ -1,0 +1,22 @@
+#!/usr/bin/make -f
+
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+export DEB_HOST_MULTIARCH
+
+%:
+	dh $@ --with python2 --parallel
+
+override_dh_auto_configure:
+	dh_auto_configure -- -DLIB_SUFFIX="/$(DEB_HOST_MULTIARCH)" -DPythonLibs_FIND_VERSION:STRING="2.7" -DPYTHON_EXECUTABLE:STRING="/usr/bin/python"
+
+override_dh_auto_install:
+	dh_auto_install
+
+	# Remove compiled python files
+	rm -f debian/gr-gsm/usr/lib/python2.7/dist-packages/grgsm/*py[co]
+
+	# Use jquery.js file from libjs-jquery instead, see gr-gsm.links
+	rm -f debian/gr-gsm/usr/share/doc/gr-gsm/html/jquery.js
+
+debian/copyright:
+	cme update dpkg-copyright
