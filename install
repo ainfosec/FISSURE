@@ -64,7 +64,7 @@ then
 fi
 
 get_libcanberra=$(locate libcanberra-gtk-module.so 2>&1 | grep "libcanberra-gtk-module.so")
-if [[ -z "$get_libcanberra111" ]]
+if [[ -z "$get_libcanberra" ]]
 then
     # Ubuntu 18.04
     echo "No libcanberra-gtk-module!"
