@@ -155,7 +155,12 @@ Chris Poore - Assured Information Security, Inc. - poorec@ainfosec.com
 
 Business Development - Assured Information Security, Inc. - bd@ainfosec.com
 
+## Credits
+
+We acknowledge and are grateful to these developers: 
+
+[Credits](/CREDITS.md)
+
 ## Acknowledgments
 
 Special thanks to Dr. Samuel Mantravadi and Joseph Reith for their contributions to this project.
-
