@@ -890,7 +890,10 @@ ls ~/Installed_by_FISSURE/waving-z/build/wave-in
 # baudline
 programs_ubuntu18_04.append(('baudline',
 """mkdir -p ~/Installed_by_FISSURE
-tar -xf """ + fissure_directory + """/Tools/baudline_1.08_linux_x86_64.tar.gz -C ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget -P ~/Installed_by_FISSURE/ https://www.baudline.com/baudline_1.08_linux_x86_64.tar.gz
+tar -xf baudline_1.08_linux_x86_64.tar.gz
+rm baudline_1.08_linux_x86_64.tar.gz
 ########## Verify ##########
 ~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
 """,True,None))
@@ -2351,7 +2354,10 @@ ls ~/Installed_by_FISSURE/waving-z/build/wave-in
 # baudline
 programs_ubuntu18_04_5.append(('baudline',
 """mkdir -p ~/Installed_by_FISSURE
-tar -xf """ + fissure_directory + """/Tools/baudline_1.08_linux_x86_64.tar.gz -C ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget -P ~/Installed_by_FISSURE/ https://www.baudline.com/baudline_1.08_linux_x86_64.tar.gz
+tar -xf baudline_1.08_linux_x86_64.tar.gz
+rm baudline_1.08_linux_x86_64.tar.gz
 ########## Verify ##########
 ~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
 """,True,None))
@@ -3815,7 +3821,10 @@ ls ~/Installed_by_FISSURE/waving-z/build/wave-in
 # baudline
 programs_ubuntu18_04_6.append(('baudline',
 """mkdir -p ~/Installed_by_FISSURE
-tar -xf """ + fissure_directory + """/Tools/baudline_1.08_linux_x86_64.tar.gz -C ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget -P ~/Installed_by_FISSURE/ https://www.baudline.com/baudline_1.08_linux_x86_64.tar.gz
+tar -xf baudline_1.08_linux_x86_64.tar.gz
+rm baudline_1.08_linux_x86_64.tar.gz
 ########## Verify ##########
 ~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
 """,True,None))

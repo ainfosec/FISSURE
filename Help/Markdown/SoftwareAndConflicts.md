@@ -129,7 +129,7 @@ The following are the software versions that are included with the FISSURE insta
 | airgeddon | v11.01 | Yes | https://github.com/v1s1t0r1sh3r3/airgeddon | 
 | Anki | 2.1.0beta36 | No | https://apps.ankiweb.net/ |
 | baudline | version 1.08 | No | https://www.baudline.com/ |
-| Bless | 0.6.0 | No | https://www.thinkpenguin.com/gnu-linux/bless-hex-editor |
+| Bless | 0.6.0 | No | hhttps://github.com/afrantzis/bless |
 | btscanner | 2.0 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 | 
@@ -237,7 +237,7 @@ The following are the software versions that are included with the FISSURE insta
 | airgeddon | v11.01 | Yes | https://github.com/v1s1t0r1sh3r3/airgeddon | 
 | Anki | 2.1.0beta36 | No | https://apps.ankiweb.net/ |
 | baudline | version 1.08 | No | https://www.baudline.com/ |
-| Bless | 0.6.0 | No | https://www.thinkpenguin.com/gnu-linux/bless-hex-editor |
+| Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-6 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 | 
@@ -345,7 +345,7 @@ The following are the software versions that are included with the FISSURE insta
 | airgeddon | v11.01 | Yes | https://github.com/v1s1t0r1sh3r3/airgeddon | 
 | Anki | 2.1.0beta36 | No | https://apps.ankiweb.net/ |
 | baudline | version 1.08 | No | https://www.baudline.com/ |
-| Bless | 0.6.0 | No | https://www.thinkpenguin.com/gnu-linux/bless-hex-editor |
+| Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-6 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 | 
@@ -453,7 +453,7 @@ The following are the software versions that are included with the FISSURE insta
 | airgeddon | v11.01 | Yes | https://github.com/v1s1t0r1sh3r3/airgeddon | 
 | Anki | 2.1.15 | No | https://apps.ankiweb.net/ |
 | baudline | 1.08 | No | https://www.baudline.com/ |
-| Bless | 0.6.0 | No | https://www.thinkpenguin.com/gnu-linux/bless-hex-editor |
+| Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-8 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 
@@ -561,7 +561,7 @@ The following are the software versions that are included with the FISSURE insta
 | airgeddon | v11.01 | Yes | https://github.com/v1s1t0r1sh3r3/airgeddon | 
 | Anki | 2.1.15 | No | https://apps.ankiweb.net/ |
 | baudline | 1.08 | No | https://www.baudline.com/ |
-| Bless | 0.6.0 | No | https://www.thinkpenguin.com/gnu-linux/bless-hex-editor |
+| Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-8 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 
@@ -669,7 +669,7 @@ The following are the software versions that are included with the FISSURE insta
 | airgeddon | v11.01 | Yes | https://github.com/v1s1t0r1sh3r3/airgeddon | 
 | Anki | 2.1.15 | No | https://apps.ankiweb.net/ |
 | baudline | 1.08 | No | https://www.baudline.com/ |
-| Bless | 0.6.3 | No | https://www.thinkpenguin.com/gnu-linux/bless-hex-editor |
+| Bless | 0.6.3 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-9 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 

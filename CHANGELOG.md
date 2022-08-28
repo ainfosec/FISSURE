@@ -1,6 +1,21 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-08-28
+
+We are grateful to all developers whose software is installed and accessed with FISSURE.
+
+### Added
+
+- CREDITS.md
+   
+### Changed
+
+- baudline install, removing local software copy
+- Bless website in Software list
+- Credits section to README
+- Credits in About page
+
 ## 2022-08-27
 
 DragonOS and Ubuntu 22.04 are still in beta status. They are under development and several features are known to be missing. Several items in the installer might conflict with existing programs or fail to install until the status is removed.
