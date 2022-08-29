@@ -4496,6 +4496,7 @@ wireshark --help
 # 8812au Driver
 programs_dragonOS_focal.append(('8812au Driver',
 """sudo apt-get -y install dkms
+sudo apt-get install linux-headers-$(uname -r)
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/aircrack-ng/rtl8812au/
