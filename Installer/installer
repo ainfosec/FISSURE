@@ -4469,7 +4469,7 @@ sudo ln -s /usr/src/falcon/build/src/gui/gui /usr/bin/FalconGUI
 # fissure Command 
 programs_dragonOS_focal.append(('fissure Command',
 """echo "[Desktop Entry]\nStartupWMClass=dashboard\nName=FISSURE\nTerminal=false\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
-echo "Exec=""" + fissure_directory + """/dashboard" >> """ + fissure_directory + """/Installer/fissure.desktop
+echo "Exec=""" + fissure_directory + """/dashboard.py" >> """ + fissure_directory + """/Installer/fissure.desktop
 echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
 ########## Verify ##########
@@ -5000,18 +5000,21 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-limesdr-gr-3.8
-# programs_dragonOS_focal.append(('gr-limesdr-gr-3.8',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-limesdr-gr-3.8/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
+programs_dragonOS_focal.append(('gr-limesdr-gr-3.8',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/
+git clone https://github.com/myriadrf/gr-limesdr.git
+cd gr-limesdr
+git checkout 81464cddca5dbd1fe778d48cba776e25d66005dc 
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
 # ########## Verify ##########
-# python3 -c "import limesdr"
-# """,True,'Out-of-Tree Modules'))
+python3 -c "import limesdr"
+""",True,'Out-of-Tree Modules'))
 
 # # gr-nrsc5-maint-3.8
 # programs_dragonOS_focal.append(('gr-nrsc5-maint-3.8',
