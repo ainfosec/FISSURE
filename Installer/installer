@@ -4547,6 +4547,20 @@ sudo ldconfig
 python3 -c "import acars"
 """,True,'Out-of-Tree Modules'))
 
+# gr-adsb-master
+programs_dragonOS_focal.append(('gr-adsb-master',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-adsb-master/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+python3 -c "import adsb"
+""",True,'Out-of-Tree Modules'))
+
 # gr-ainfosec
 programs_dragonOS_focal.append(('gr-ainfosec',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ainfosec/
