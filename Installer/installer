@@ -4473,7 +4473,7 @@ echo "Exec=""" + fissure_directory + """/dashboard" >> """ + fissure_directory +
 echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
 ########## Verify ##########
-ls /usr/src/fissure
+ls /usr/share/applications/fissure.desktop
 """,True,'Minimum Install'))
 
 # Wireshark
