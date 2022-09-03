@@ -4504,6 +4504,25 @@ cd ~/Installed_by_FISSURE/rtl8812au
 sudo make dkms_install
 """,True,'Hardware'))
 
+# Zigbee Sniffer
+programs_dragonOS_focal.append(('Zigbee Sniffer',
+"""cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
+cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
+sudo python3 setup.py install
+sudo add-apt-repository -y ppa:rock-core/qt4  # PyQt4
+sudo apt-get update
+wget http://archive.ubuntu.com/ubuntu/pool/universe/q/qt-assistant-compat/libqtassistantclient4_4.6.3-7build1_amd64.deb -O ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb 
+sudo apt-get install -y ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-qt4/python-qt4_4.12.1+dfsg-2_amd64.deb -O ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+sudo apt-get install -y ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-pyaudio/python-pyaudio_0.2.11-1build2_amd64.deb -O ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+sudo apt-get install -y ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+rm ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
+rm ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+rm ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+sudo apt-get install -y mlocate
+""",True,'Hardware'))
+
 # fl2k
 programs_dragonOS_focal.append(('fl2k',
 """mkdir -p ~/Installed_by_FISSURE
@@ -4574,6 +4593,20 @@ sudo make install
 sudo ldconfig
 ########## Verify ##########
 python3 -c "import ainfosec"
+""",True,'Out-of-Tree Modules'))
+
+# gr-ais-master
+programs_dragonOS_focal.append(('gr-ais-master',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ais-master/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+python3 -c "import ais"
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth-maint-3.8
@@ -5013,7 +5046,7 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-# ########## Verify ##########
+########## Verify ##########
 python3 -c "import limesdr"
 """,True,'Out-of-Tree Modules'))
 
@@ -5090,11 +5123,11 @@ python3 -c "import limesdr"
 # """,True,None))
 
 # # Grip
-# programs_dragonOS_focal.append(('Grip',
-# """sudo python3 -m pip install grip
-# ########## Verify ##########
-# grip --help
-# """,True,None))
+programs_dragonOS_focal.append(('Grip',
+"""sudo python3 -m pip install grip
+########## Verify ##########
+grip --help
+""",True,None))
 
 # # Kismet
 # programs_dragonOS_focal.append(('Kismet',
@@ -5104,20 +5137,20 @@ python3 -c "import limesdr"
 # """,True,None))
 
 # # UDP Replay
-# programs_dragonOS_focal.append(('UDP Replay',
-# """sudo apt-get install -y libpcap-dev
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/rigtorp/udpreplay.git
-# cd ~/Installed_by_FISSURE/udpreplay
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# ########## Verify ##########
-# ls /usr/local/bin/udpreplay
-# """,True,None))
+programs_dragonOS_focal.append(('UDP Replay',
+"""sudo apt-get install -y libpcap-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/rigtorp/udpreplay.git
+cd ~/Installed_by_FISSURE/udpreplay
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+ls /usr/local/bin/udpreplay
+""",True,None))
 
 # # V2Verifier
 # programs_dragonOS_focal.append(('V2Verifier',
@@ -5219,38 +5252,38 @@ python3 -c "import limesdr"
 # """,True,None))
 
 # # Geany
-# programs_dragonOS_focal.append(('Geany',
-# """sudo apt-get install -y geany  # needs [styling] line_height=0;2; added to Tools>Configuration Files>filetypes.common to see underscores
-# ########## Verify ##########
-# geany --help
-# """,True,None))
+programs_dragonOS_focal.append(('Geany',
+"""sudo apt-get install -y geany  # needs [styling] line_height=0;2; added to Tools>Configuration Files>filetypes.common to see underscores
+########## Verify ##########
+geany --help
+""",True,None))
 
 # # Arduino IDE
-# programs_dragonOS_focal.append(('Arduino IDE',
-# """wget -P ~/Installed_by_FISSURE/ https://downloads.arduino.cc/arduino-1.8.15-linux64.tar.xz
-# cd ~/Installed_by_FISSURE
-# tar -xf arduino-1.8.15-linux64.tar.xz
-# rm arduino-1.8.15-linux64.tar.xz
-# cd arduino-1.8.15/
-# sudo ./install.sh
-# cp -R """ + fissure_directory + """/Tools/Esp8266_listen_trigger/ ~/Installed_by_FISSURE/
-# ########## Verify ##########
-# arduino --version
-# """,True,None))
+programs_dragonOS_focal.append(('Arduino IDE',
+"""wget -P ~/Installed_by_FISSURE/ https://downloads.arduino.cc/arduino-1.8.15-linux64.tar.xz
+cd ~/Installed_by_FISSURE
+tar -xf arduino-1.8.15-linux64.tar.xz
+rm arduino-1.8.15-linux64.tar.xz
+cd arduino-1.8.15/
+sudo ./install.sh
+cp -R """ + fissure_directory + """/Tools/Esp8266_listen_trigger/ ~/Installed_by_FISSURE/
+########## Verify ##########
+arduino --version
+""",True,None))
 
 # # Minicom
-# programs_dragonOS_focal.append(('Minicom',
-# """sudo apt-get install -y minicom
-# ########## Verify ##########
-# ls /usr/bin/minicom
-# """,True,None))
+programs_dragonOS_focal.append(('Minicom',
+"""sudo apt-get install -y minicom
+########## Verify ##########
+ls /usr/bin/minicom
+""",True,None))
 
 # # PuTTY
-# programs_dragonOS_focal.append(('PuTTY',
-# """sudo apt-get install -y putty
-# ########## Verify ##########
-# putty --help
-# """,True,None))
+programs_dragonOS_focal.append(('PuTTY',
+"""sudo apt-get install -y putty
+########## Verify ##########
+putty --help
+""",True,None))
 
 # # openHAB
 # programs_dragonOS_focal.append(('openHAB',
@@ -5271,29 +5304,29 @@ python3 -c "import limesdr"
 # """,True,None))
 
 # # rtl-zwave
-# programs_dragonOS_focal.append(('rtl-zwave',
-# """mkdir -p ~/Installed_by_FISSURE
-# sudo apt-get install -y libpcap-dev
-# cp -R """ + fissure_directory + """/Tools/rtl-zwave-master ~/Installed_by_FISSURE/
-# cd ~/Installed_by_FISSURE/rtl-zwave-master
-# make
-# ########## Verify ##########
-# ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
-# """,True,None))
+programs_dragonOS_focal.append(('rtl-zwave',
+"""mkdir -p ~/Installed_by_FISSURE
+sudo apt-get install -y libpcap-dev
+cp -R """ + fissure_directory + """/Tools/rtl-zwave-master ~/Installed_by_FISSURE/
+cd ~/Installed_by_FISSURE/rtl-zwave-master
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
+""",True,None))
 
 # # waving-z
-# programs_dragonOS_focal.append(('waving-z',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE/
-# git clone https://github.com/baol/waving-z.git
-# cd ~/Installed_by_FISSURE/waving-z
-# mkdir build
-# cd build
-# cmake .. -DCMAKE_BUILD_TYPE=Release
-# cmake --build .
-# ########## Verify ##########
-# ls ~/Installed_by_FISSURE/waving-z/build/wave-in
-# """,True,None))
+programs_dragonOS_focal.append(('waving-z',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE/
+git clone https://github.com/baol/waving-z.git
+cd ~/Installed_by_FISSURE/waving-z
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build .
+########## Verify ##########
+ls ~/Installed_by_FISSURE/waving-z/build/wave-in
+""",True,None))
 
 # # baudline
 # programs_dragonOS_focal.append(('baudline',
@@ -5340,15 +5373,15 @@ python3 -c "import limesdr"
 # """,True,None))
 
 # # retrogram-rtlsdr
-# programs_dragonOS_focal.append(('retrogram-rtlsdr',
-# """mkdir -p ~/Installed_by_FISSURE
-# sudo apt-get install -y librtlsdr-dev libncurses5-dev libboost-program-options-dev
-# cp -R """ + fissure_directory + """/Tools/retrogram-rtlsdr-master ~/Installed_by_FISSURE/
-# cd ~/Installed_by_FISSURE/retrogram-rtlsdr-master
-# make
-# ########## Verify ##########
-# ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
-# """,True,None))
+programs_dragonOS_focal.append(('retrogram-rtlsdr',
+"""mkdir -p ~/Installed_by_FISSURE
+sudo apt-get install -y librtlsdr-dev libncurses5-dev libboost-program-options-dev
+cp -R """ + fissure_directory + """/Tools/retrogram-rtlsdr-master ~/Installed_by_FISSURE/
+cd ~/Installed_by_FISSURE/retrogram-rtlsdr-master
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
+""",True,None))
 
 # # RTLSDR-Airband
 # programs_dragonOS_focal.append(('RTLSDR-Airband',
@@ -5399,11 +5432,11 @@ python3 -c "import limesdr"
 # """,True,None))
 
 # # Audio Tools
-# programs_dragonOS_focal.append(('Audio Tools',
-# """sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
-# ########## Verify ##########
-# audacity --version && sox --version
-# """,True,None))
+programs_dragonOS_focal.append(('Audio Tools',
+"""sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
+########## Verify ##########
+audacity --version && sox --version
+""",True,None))
 
 # # Video Tools
 # programs_dragonOS_focal.append(('Video Tools',
@@ -5632,17 +5665,17 @@ python3 -c "import limesdr"
 # """,True,None))
 
 # # scan-ssid
-# programs_dragonOS_focal.append(('scan-ssid',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# sudo apt-get install -y iw
-# git clone https://github.com/Resethel/scan-ssid.git
-# cd scan-ssid
-# sudo cp scan-ssid /usr/local/bin
-# sudo chmod 755 /usr/local/bin/scan-ssid  # can't be in monitor mode, managed only
-# ########## Verify ##########
-# scan-ssid --help
-# """,True,None))
+programs_dragonOS_focal.append(('scan-ssid',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+sudo apt-get install -y iw
+git clone https://github.com/Resethel/scan-ssid.git
+cd scan-ssid
+sudo cp scan-ssid /usr/local/bin
+sudo chmod 755 /usr/local/bin/scan-ssid  # can't be in monitor mode, managed only
+########## Verify ##########
+scan-ssid --help
+""",True,None))
 
 # # minimodem
 # programs_dragonOS_focal.append(('minimodem',
@@ -5659,14 +5692,14 @@ python3 -c "import limesdr"
 # """,True,None))
 
 # # Google Earth Pro
-# programs_dragonOS_focal.append(('Google Earth Pro',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_current_amd64.deb
-# sudo dpkg -i google-earth-pro-stable_current_amd64.deb
-# ########## Verify ##########
-# ls /usr/bin/google-earth-pro
-# """,True,None))
+programs_dragonOS_focal.append(('Google Earth Pro',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_current_amd64.deb
+sudo dpkg -i google-earth-pro-stable_current_amd64.deb
+########## Verify ##########
+ls /usr/bin/google-earth-pro
+""",True,None))
 
 # # gr-air-modes
 # programs_dragonOS_focal.append(('gr-air-modes',
@@ -5676,13 +5709,13 @@ python3 -c "import limesdr"
 # """,True,None))
 
 # # ESP8266 Deauther v2
-# programs_dragonOS_focal.append(('ESP8266 Deauther v2',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
-# unzip -q v2.zip
-# rm v2.zip
-# """,True,None))
+programs_dragonOS_focal.append(('ESP8266 Deauther v2',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
+unzip -q v2.zip
+rm v2.zip
+""",True,None))
 
 # # Viking
 # programs_dragonOS_focal.append(('Viking',
@@ -5718,11 +5751,11 @@ python3 -c "import limesdr"
 # """,True,None))
 
 # # FoxtrotGPS
-# programs_dragonOS_focal.append(('FoxtrotGPS',
-# """sudo apt-get install -y foxtrotgps
-# ########## Verify ##########
-# foxtrotgps --help
-# """,True,None))
+programs_dragonOS_focal.append(('FoxtrotGPS',
+"""sudo apt-get install -y foxtrotgps
+########## Verify ##########
+foxtrotgps --help
+""",True,None))
 
 # # multimon-ng
 # programs_dragonOS_focal.append(('multimon-ng',
@@ -5763,11 +5796,11 @@ python3 -c "import limesdr"
 # """,True,None))
 
 # # btscanner
-# programs_dragonOS_focal.append(('btscanner',
-# """sudo apt-get install -y btscanner
-# ########## Verify ##########
-# btscanner --help
-# """,True,None))
+programs_dragonOS_focal.append(('btscanner',
+"""sudo apt-get install -y btscanner
+########## Verify ##########
+btscanner --help
+""",True,None))
 
 # # hcidump
 # programs_dragonOS_focal.append(('hcidump',
