@@ -679,7 +679,7 @@ ls /usr/bin/designer
 programs_ubuntu20_04.append(('Grip',
 """sudo python3 -m pip install grip
 ########## Verify ##########
-grip --help
+ls /usr/local/bin/grip
 """,True,None))
 
 # Kismet
@@ -1529,7 +1529,7 @@ programs_ubuntu20_04.append(('Enscribe',
 ls /usr/bin/enscribe
 """,True,None))
 
-# ESP32 Bluetooth Classic Sniffer - FIX
+# ESP32 Bluetooth Classic Sniffer - Fix (needs specific Wireshark version)
 programs_ubuntu20_04.append(('ESP32 BT Classic Sniffer',
 """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
 cd ~/Installed_by_FISSURE
@@ -2204,7 +2204,7 @@ ls /usr/bin/designer
 programs_ubuntu20_04_4.append(('Grip',
 """sudo python3 -m pip install grip
 ########## Verify ##########
-grip --help
+ls /usr/local/bin/grip
 """,True,None))
 
 # Kismet
@@ -3054,7 +3054,7 @@ programs_ubuntu20_04_4.append(('Enscribe',
 ls /usr/bin/enscribe
 """,True,None))
 
-# ESP32 Bluetooth Classic Sniffer - FIX
+# ESP32 Bluetooth Classic Sniffer - Fix (needs specific Wireshark version)
 programs_ubuntu20_04_4.append(('ESP32 BT Classic Sniffer',
 """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
 cd ~/Installed_by_FISSURE
@@ -3337,7 +3337,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import adsb"
+python3 -c "import gnuradio.adsb"
 """,True,'Out-of-Tree Modules'))
 
 # gr-ainfosec
@@ -3351,7 +3351,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import ainfosec"
+python3 -c "import gnuradio.ainfosec"
 """,True,'Out-of-Tree Modules'))
 
 # gr-ais
@@ -3365,7 +3365,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import ais"
+python3 -c "import gnuradio.ais"
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth
@@ -3404,7 +3404,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import clapper_plus"
+python3 -c "import gnuradio.clapper_plus"
 """,True,'Out-of-Tree Modules'))
 
 # gr-dect2
@@ -3418,7 +3418,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import dect2"
+python3 -c "import gnuradio.dect2"
 """,True,'Out-of-Tree Modules'))
 
 # gr-foo
@@ -3446,7 +3446,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import fuzzer"
+python3 -c "import gnuradio.fuzzer"
 """,True,'Out-of-Tree Modules'))
 
 # gr-garage_door
@@ -3460,7 +3460,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import garage_door"
+python3 -c "import gnuradio.garage_door"
 """,True,'Out-of-Tree Modules'))
 
 # gr-gsm
@@ -3479,7 +3479,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import grgsm"
+python3 -c "import gnuradio.gsm"
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-11
@@ -3537,7 +3537,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import j2497"
+python3 -c "import gnuradio.j2497"
 """,True,'Out-of-Tree Modules'))
 
 # gr-limesdr
@@ -3551,7 +3551,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import limesdr"
+python3 -c "import gnuradio.limesdr"
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
@@ -3612,7 +3612,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import tpms"
+python3 -c "import gnuradio.tpms"
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms_poore
@@ -3626,7 +3626,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import tpms_poore"
+python3 -c "import gnuradio.tpms_poore"
 """,True,'Out-of-Tree Modules'))
 
 # gr-X10
@@ -3640,7 +3640,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import X10"
+python3 -c "import gnuradio.X10"
 """,True,'Out-of-Tree Modules'))
 
 # gr-zwave_poore
@@ -3654,7 +3654,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import zwave_poore"
+python3 -c "import gnuradio.zwave_poore"
 """,True,'Out-of-Tree Modules'))
 
 # QSpectrumAnalyzer
@@ -3698,13 +3698,13 @@ ls /usr/bin/designer
 programs_ubuntu22_04.append(('Grip',
 """sudo python3 -m pip install grip
 ########## Verify ##########
-grip --help
+ls /usr/local/bin/grip
 """,True,None))
 
 # Kismet - FIX
 programs_ubuntu22_04.append(('Kismet',
 """#sudo apt-get install -y kismet  # add your computer's username to the group
-""",True,None))
+""",False,None))
 
 # UDP Replay
 programs_ubuntu22_04.append(('UDP Replay',
@@ -3787,7 +3787,7 @@ sudo make install
 #make clean
 ########## Verify ##########
 ls /usr/bin/FalconGUI
-""",True,None))
+""",False,None))
 
 # LTE-ciphercheck
 programs_ubuntu22_04.append(('LTE-ciphercheck',
@@ -3899,7 +3899,7 @@ rm baudline_1.08_linux_x86_64.tar.gz
 ~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
 """,True,None))
 
-# Universal Radio Hacker - FIX
+# Universal Radio Hacker
 programs_ubuntu22_04.append(('Universal Radio Hacker',
 """sudo python3 -m pip install cython
 sudo python3 -m pip install urh
@@ -4024,7 +4024,7 @@ sudo python3 -m pip install -r requirements.txt
 ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
 """,True,None))
 
-# SdrGlut - FIX
+# SdrGlut
 programs_ubuntu22_04.append(('SdrGlut',
 """sudo apt-get install -y librtaudio-dev libsoapysdr-dev libopenal-dev libliquid-dev freeglut3 freeglut3-dev libalut0 libalut-dev libsndfile1-dev 
 mkdir -p ~/Installed_by_FISSURE
@@ -4116,9 +4116,9 @@ wget http://archive.ubuntu.com/ubuntu/pool/universe/libn/libnetfilter-queue/libn
 sudo dpkg -i libnetfilter-queue1_1.0.2-2_amd64.deb
 wget http://archive.ubuntu.com/ubuntu/pool/universe/n/nfqueue-bindings/python-nfqueue_0.6-1build2_amd64.deb
 sudo dpkg -i python-nfqueue_0.6-1build2_amd64.deb 
-""",True,None))
+""",False,None))
 
-# Wifite
+# Wifite - Fix
 programs_ubuntu22_04.append(('Wifite',
 """# python, iwconfig, ifconfig, Aircrack-ng, tshark, reaver, bully, coWPAtty, pyrit, hashcat, hcxdumptool, hcxpcaptool
 sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger python-is-python3
@@ -4165,7 +4165,7 @@ make
 sudo make install
 sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
 #sudo apt-get install -y tshark
-""",True,None))
+""",False,None))
 
 # rtl_433
 programs_ubuntu22_04.append(('rtl_433',
@@ -4199,7 +4199,7 @@ python3 -m pip install bluepy
 ~/Installed_by_FISSURE/routersploit/rsf.py --help
 """,True,None))
 
-# Metasploit - FIX
+# Metasploit
 programs_ubuntu22_04.append(('Metasploit',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -4220,7 +4220,7 @@ sudo python3 setup.py install
 sudo python3 -m pip install python-dateutil
 sudo python3 -m pip install flask_table
 ########## Verify ##########
-ls /usr/bin/monitor_rtl433
+ls /usr/local/bin/monitor_rtl433
 """,True,None))
 
 # scan-ssid
@@ -4429,13 +4429,13 @@ programs_ubuntu22_04.append(('Bless',
 ls /usr/bin/bless
 """,True,None))
 
-# trackerjacker
+# trackerjacker - Fix (needs newer scapy version, something else (netattack2?) resets it, some pieces don't work while running it)
 programs_ubuntu22_04.append(('trackerjacker',
 """sudo ln -s -f /usr/lib/x86_64-linux-gnu/libc.a /usr/lib/x86_64-linux-gnu/liblibc.a  # Python3.9 missing file
 sudo python3 -m pip install trackerjacker
 ########## Verify ##########
 sudo trackerjacker --help
-""",True,None))
+""",False,None))
 
 # airgeddon
 programs_ubuntu22_04.append(('airgeddon',
@@ -4480,7 +4480,7 @@ programs_ubuntu22_04.append(('Enscribe',
 ls /usr/bin/enscribe
 """,True,None))
 
-# ESP32 Bluetooth Classic Sniffer - FIX
+# ESP32 Bluetooth Classic Sniffer - Fix (needs specific Wireshark version)
 programs_ubuntu22_04.append(('ESP32 BT Classic Sniffer',
 """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
 cd ~/Installed_by_FISSURE
@@ -5206,7 +5206,7 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 programs_dragonOS_focal.append(('Grip',
 """sudo python3 -m pip install grip
 ########## Verify ##########
-grip --help
+ls /usr/local/bin/grip
 """,True,None))
 
 # # Kismet
@@ -6000,7 +6000,7 @@ btscanner --help
 # ls /usr/bin/enscribe
 # """,True,None))
 
-# # ESP32 Bluetooth Classic Sniffer - FIX
+# # ESP32 Bluetooth Classic Sniffer - Fix (needs specific Wireshark version)
 # programs_dragonOS_focal.append(('ESP32 BT Classic Sniffer',
 # """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
 # cd ~/Installed_by_FISSURE

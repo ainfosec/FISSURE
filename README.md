@@ -23,7 +23,7 @@ Operating System            |  FISSURE Branch
 
 **In-Progress (beta)**
 
-These operating systems are still in beta status. They are under development and several features are known to be missing. Several items in the installer might conflict with existing programs or fail to install until the status is removed.
+These operating systems are still in beta status. They are under development and several features are known to be missing. Items in the installer might conflict with existing programs or fail to install until the status is removed.
 
 Operating System            |  FISSURE Branch
 :-------------------------:|:-------------------------:
@@ -34,7 +34,7 @@ Note: Certain software tools do not work for every OS. Refer to [Software And Co
 
 **Installation** 
 ```
-git clone https://github.com/ainfosec/fissure.git
+git clone https://github.com/ainfosec/FISSURE.git
 cd FISSURE
 git checkout <Python2_maint-3.7> or <Python3_maint-3.8>
 git submodule update --init
@@ -99,7 +99,7 @@ Refer to the FISSURE Help menu for more details on usage.
 **Hardware**
 
 The following is a list of "supported" hardware with varying levels of integration:
-- USRP: X310, B210, B205mini
+- USRP: X300 series, B210, B205mini
 - HackRF
 - RTL2832U
 - 802.11 Adapters
