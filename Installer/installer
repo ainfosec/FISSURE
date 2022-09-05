@@ -206,7 +206,8 @@ sudo modprobe 8812au
 
 # Zigbee Sniffer
 programs_ubuntu18_04.append(('Zigbee Sniffer',
-"""cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
+"""mkdir -p ~/Installed_by_FISSURE
+cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
 cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
 sudo python3 setup.py install
 """,True,'Hardware'))
@@ -239,6 +240,43 @@ cd proxmark3
 make clean && make all
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
+""",True,'Hardware'))
+
+# PlutoSDR
+programs_ubuntu18_04.append(('PlutoSDR',
+"""sudo apt-get install -y gr-iio
+#sudo apt-get install -y libglib2.0-dev libgtk2.0-dev libgtkdatabox-dev libmatio-dev libfftw3-dev libxml2 libxml2-dev bison flex libavahi-common-dev libavahi-client-dev libjansson-dev cmake libaio-dev libserialport-dev libcdk5-dev libusb-1.0-0-dev doxygen graphviz libgmp-dev swig liborc-dev  # libcurl4-openssl-dev, git  (not available)
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/pcercuei/libini.git
+#cd libini
+#mkdir build && cd build && cmake ../ && make && sudo make install
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/analogdevicesinc/libiio.git
+#cd libiio
+#mkdir build && cd build && cmake ../ && make && sudo make install
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/analogdevicesinc/libad9361-iio.git
+#cd libad9361-iio
+#cmake ./
+#make
+#sudo make install
+cd ~/Installed_by_FISSURE
+git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
+cd iio-oscilloscope
+git checkout origin/master
+mkdir build && cd build
+cmake ../ && make
+sudo make install
+#cd ~/Installed_by_FISSURE  # Did not work
+#git clone https://github.com/analogdevicesinc/gr-iio.git
+#cd gr-iio
+#cmake .
+#make
+#sudo make install
+#cd ..
+#sudo ldconfig
+########## Verify ##########
+python2 -c "from gnuradio import iio"
 """,True,'Hardware'))
 
 # gr-acars
@@ -297,17 +335,20 @@ sudo ldconfig
 python2 -c "import ais"
 """,True,'Out-of-Tree Modules'))
 
-# gr-bluetooth-master
-programs_ubuntu18_04.append(('gr-bluetooth-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/libbtbb-master/
-sudo rm -Rf build
+# gr-bluetooth
+programs_ubuntu18_04.append(('gr-bluetooth',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+rm -Rf libbtbb
+git clone https://github.com/greatscottgadgets/libbtbb -b master
+cd libbtbb
 mkdir build
 cd build
 cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth-master/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -347,9 +388,9 @@ sudo ldconfig
 python2 -c "import dect2"
 """,True,'Out-of-Tree Modules'))
 
-# gr-foo-master
-programs_ubuntu18_04.append(('gr-foo-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo-master/
+# gr-foo
+programs_ubuntu18_04.append(('gr-foo',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -408,9 +449,9 @@ sudo ldconfig
 python2 -c "import grgsm"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-11-master
-programs_ubuntu18_04.append(('gr-ieee802-11-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/
+# gr-ieee802-11
+programs_ubuntu18_04.append(('gr-ieee802-11',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -418,14 +459,14 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/examples/wifi_phy_hier.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/examples/wifi_phy_hier.grc
 ########## Verify ##########
 python2 -c "import ieee802_11"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-15-4-maint-3.7
-programs_ubuntu18_04.append(('gr-ieee802-15-4-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/
+# gr-ieee802-15-4
+programs_ubuntu18_04.append(('gr-ieee802-15-4',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -433,8 +474,8 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_OQPSK_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
 ########## Verify ##########
 python2 -c "import ieee802_15_4"
 """,True,'Out-of-Tree Modules'))
@@ -481,10 +522,10 @@ sudo ldconfig
 python2 -c "import limesdr"
 """,True,'Out-of-Tree Modules'))
 
-# gr-nrsc5-maint-3.7
-programs_ubuntu18_04.append(('gr-nrsc5-maint-3.7',
+# gr-nrsc5
+programs_ubuntu18_04.append(('gr-nrsc5',
 """sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5-maint-3.7/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -496,9 +537,9 @@ sudo ldconfig
 python2 -c "import nrsc5"
 """,True,'Out-of-Tree Modules'))
 
-# gr-paint-maint-3.7
-programs_ubuntu18_04.append(('gr-paint-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
+# gr-paint
+programs_ubuntu18_04.append(('gr-paint',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -506,7 +547,7 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
 gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
@@ -514,9 +555,9 @@ cp tgatoluma ~/.local/bin/
 python2 -c "import paint"
 """,True,'Out-of-Tree Modules'))
 
-# gr-rds-maint-3.7
-programs_ubuntu18_04.append(('gr-rds-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds-maint-3.7/
+# gr-rds
+programs_ubuntu18_04.append(('gr-rds',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -528,9 +569,9 @@ sudo ldconfig
 python2 -c "import rds"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms-master
-programs_ubuntu18_04.append(('gr-tpms-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms-master/
+# gr-tpms
+programs_ubuntu18_04.append(('gr-tpms',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -542,9 +583,9 @@ sudo ldconfig
 python2 -c "import tpms"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms_poore-maint-3.7
-programs_ubuntu18_04.append(('gr-tpms_poore-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore-maint-3.7/
+# gr-tpms_poore
+programs_ubuntu18_04.append(('gr-tpms_poore',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1667,7 +1708,8 @@ sudo modprobe 8812au
 
 # Zigbee Sniffer
 programs_ubuntu18_04_5.append(('Zigbee Sniffer',
-"""cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
+"""mkdir -p ~/Installed_by_FISSURE
+cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
 cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
 sudo python3 setup.py install
 """,True,'Hardware'))
@@ -1700,6 +1742,43 @@ cd proxmark3
 make clean && make all
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
+""",True,'Hardware'))
+
+# PlutoSDR
+programs_ubuntu18_04_5.append(('PlutoSDR',
+"""sudo apt-get install -y gr-iio
+#sudo apt-get install -y libglib2.0-dev libgtk2.0-dev libgtkdatabox-dev libmatio-dev libfftw3-dev libxml2 libxml2-dev bison flex libavahi-common-dev libavahi-client-dev libjansson-dev cmake libaio-dev libserialport-dev libcdk5-dev libusb-1.0-0-dev doxygen graphviz libgmp-dev swig liborc-dev  # libcurl4-openssl-dev, git  (not available)
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/pcercuei/libini.git
+#cd libini
+#mkdir build && cd build && cmake ../ && make && sudo make install
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/analogdevicesinc/libiio.git
+#cd libiio
+#mkdir build && cd build && cmake ../ && make && sudo make install
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/analogdevicesinc/libad9361-iio.git
+#cd libad9361-iio
+#cmake ./
+#make
+#sudo make install
+cd ~/Installed_by_FISSURE
+git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
+cd iio-oscilloscope
+git checkout origin/master
+mkdir build && cd build
+cmake ../ && make
+sudo make install
+#cd ~/Installed_by_FISSURE  # Did not work
+#git clone https://github.com/analogdevicesinc/gr-iio.git
+#cd gr-iio
+#cmake .
+#make
+#sudo make install
+#cd ..
+#sudo ldconfig
+########## Verify ##########
+python2 -c "from gnuradio import iio"
 """,True,'Hardware'))
 
 # gr-acars
@@ -1758,17 +1837,20 @@ sudo ldconfig
 python2 -c "import ais"
 """,True,'Out-of-Tree Modules'))
 
-# gr-bluetooth-master
-programs_ubuntu18_04_5.append(('gr-bluetooth-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/libbtbb-master/
-sudo rm -Rf build
+# gr-bluetooth
+programs_ubuntu18_04_5.append(('gr-bluetooth',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+rm -Rf libbtbb
+git clone https://github.com/greatscottgadgets/libbtbb -b master
+cd libbtbb
 mkdir build
 cd build
 cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth-master/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1808,9 +1890,9 @@ sudo ldconfig
 python2 -c "import dect2"
 """,True,'Out-of-Tree Modules'))
 
-# gr-foo-master
-programs_ubuntu18_04_5.append(('gr-foo-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo-master/
+# gr-foo
+programs_ubuntu18_04_5.append(('gr-foo',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1869,9 +1951,9 @@ sudo ldconfig
 python2 -c "import grgsm"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-11-master
-programs_ubuntu18_04_5.append(('gr-ieee802-11-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/
+# gr-ieee802-11
+programs_ubuntu18_04_5.append(('gr-ieee802-11',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1879,14 +1961,14 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/examples/wifi_phy_hier.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/examples/wifi_phy_hier.grc
 ########## Verify ##########
 python2 -c "import ieee802_11"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-15-4-maint-3.7
-programs_ubuntu18_04_5.append(('gr-ieee802-15-4-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/
+# gr-ieee802-15-4
+programs_ubuntu18_04_5.append(('gr-ieee802-15-4',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1894,8 +1976,8 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_OQPSK_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
 ########## Verify ##########
 python2 -c "import ieee802_15_4"
 """,True,'Out-of-Tree Modules'))
@@ -1942,10 +2024,10 @@ sudo ldconfig
 python2 -c "import limesdr"
 """,True,'Out-of-Tree Modules'))
 
-# gr-nrsc5-maint-3.7
-programs_ubuntu18_04_5.append(('gr-nrsc5-maint-3.7',
+# gr-nrsc5
+programs_ubuntu18_04_5.append(('gr-nrsc5',
 """sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5-maint-3.7/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1957,9 +2039,9 @@ sudo ldconfig
 python2 -c "import nrsc5"
 """,True,'Out-of-Tree Modules'))
 
-# gr-paint-maint-3.7
-programs_ubuntu18_04_5.append(('gr-paint-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
+# gr-paint
+programs_ubuntu18_04_5.append(('gr-paint',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1967,7 +2049,7 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
 gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
@@ -1975,9 +2057,9 @@ cp tgatoluma ~/.local/bin/
 python2 -c "import paint"
 """,True,'Out-of-Tree Modules'))
 
-# gr-rds-maint-3.7
-programs_ubuntu18_04_5.append(('gr-rds-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds-maint-3.7/
+# gr-rds
+programs_ubuntu18_04_5.append(('gr-rds',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1989,9 +2071,9 @@ sudo ldconfig
 python2 -c "import rds"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms-master
-programs_ubuntu18_04_5.append(('gr-tpms-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms-master/
+# gr-tpms
+programs_ubuntu18_04_5.append(('gr-tpms',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -2003,9 +2085,9 @@ sudo ldconfig
 python2 -c "import tpms"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms_poore-maint-3.7
-programs_ubuntu18_04_5.append(('gr-tpms_poore-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore-maint-3.7/
+# gr-tpms_poore
+programs_ubuntu18_04_5.append(('gr-tpms_poore',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3134,7 +3216,8 @@ sudo modprobe 8812au
 
 # Zigbee Sniffer
 programs_ubuntu18_04_6.append(('Zigbee Sniffer',
-"""cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
+"""mkdir -p ~/Installed_by_FISSURE
+cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
 cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
 sudo python3 setup.py install
 """,True,'Hardware'))
@@ -3167,6 +3250,43 @@ cd proxmark3
 make clean && make all
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
+""",True,'Hardware'))
+
+# PlutoSDR
+programs_ubuntu18_04_6.append(('PlutoSDR',
+"""sudo apt-get install -y gr-iio
+#sudo apt-get install -y libglib2.0-dev libgtk2.0-dev libgtkdatabox-dev libmatio-dev libfftw3-dev libxml2 libxml2-dev bison flex libavahi-common-dev libavahi-client-dev libjansson-dev cmake libaio-dev libserialport-dev libcdk5-dev libusb-1.0-0-dev doxygen graphviz libgmp-dev swig liborc-dev  # libcurl4-openssl-dev, git  (not available)
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/pcercuei/libini.git
+#cd libini
+#mkdir build && cd build && cmake ../ && make && sudo make install
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/analogdevicesinc/libiio.git
+#cd libiio
+#mkdir build && cd build && cmake ../ && make && sudo make install
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/analogdevicesinc/libad9361-iio.git
+#cd libad9361-iio
+#cmake ./
+#make
+#sudo make install
+cd ~/Installed_by_FISSURE
+git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
+cd iio-oscilloscope
+git checkout origin/master
+mkdir build && cd build
+cmake ../ && make
+sudo make install
+#cd ~/Installed_by_FISSURE  # Did not work
+#git clone https://github.com/analogdevicesinc/gr-iio.git
+#cd gr-iio
+#cmake .
+#make
+#sudo make install
+#cd ..
+#sudo ldconfig
+########## Verify ##########
+python2 -c "from gnuradio import iio"
 """,True,'Hardware'))
 
 # gr-acars
@@ -3225,17 +3345,20 @@ sudo ldconfig
 python2 -c "import ais"
 """,True,'Out-of-Tree Modules'))
 
-# gr-bluetooth-master
-programs_ubuntu18_04_6.append(('gr-bluetooth-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/libbtbb-master/
-sudo rm -Rf build
+# gr-bluetooth
+programs_ubuntu18_04_6.append(('gr-bluetooth',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+rm -Rf libbtbb
+git clone https://github.com/greatscottgadgets/libbtbb -b master
+cd libbtbb
 mkdir build
 cd build
 cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth-master/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3275,9 +3398,9 @@ sudo ldconfig
 python2 -c "import dect2"
 """,True,'Out-of-Tree Modules'))
 
-# gr-foo-master
-programs_ubuntu18_04_6.append(('gr-foo-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo-master/
+# gr-foo
+programs_ubuntu18_04_6.append(('gr-foo',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3336,9 +3459,9 @@ sudo ldconfig
 python2 -c "import grgsm"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-11-master
-programs_ubuntu18_04_6.append(('gr-ieee802-11-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/
+# gr-ieee802-11
+programs_ubuntu18_04_6.append(('gr-ieee802-11',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3346,14 +3469,14 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11-master/examples/wifi_phy_hier.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/examples/wifi_phy_hier.grc
 ########## Verify ##########
 python2 -c "import ieee802_11"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-15-4-maint-3.7
-programs_ubuntu18_04_6.append(('gr-ieee802-15-4-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/
+# gr-ieee802-15-4
+programs_ubuntu18_04_6.append(('gr-ieee802-15-4',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3361,8 +3484,8 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4-maint-3.7/examples/ieee802_15_4_OQPSK_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
 ########## Verify ##########
 python2 -c "import ieee802_15_4"
 """,True,'Out-of-Tree Modules'))
@@ -3409,10 +3532,10 @@ sudo ldconfig
 python2 -c "import limesdr"
 """,True,'Out-of-Tree Modules'))
 
-# gr-nrsc5-maint-3.7
-programs_ubuntu18_04_6.append(('gr-nrsc5-maint-3.7',
+# gr-nrsc5
+programs_ubuntu18_04_6.append(('gr-nrsc5',
 """sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5-maint-3.7/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3424,9 +3547,9 @@ sudo ldconfig
 python2 -c "import nrsc5"
 """,True,'Out-of-Tree Modules'))
 
-# gr-paint-maint-3.7
-programs_ubuntu18_04_6.append(('gr-paint-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
+# gr-paint
+programs_ubuntu18_04_6.append(('gr-paint',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3434,7 +3557,7 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint-maint-3.7/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
 gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
@@ -3442,9 +3565,9 @@ cp tgatoluma ~/.local/bin/
 python2 -c "import paint"
 """,True,'Out-of-Tree Modules'))
 
-# gr-rds-maint-3.7
-programs_ubuntu18_04_6.append(('gr-rds-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds-maint-3.7/
+# gr-rds
+programs_ubuntu18_04_6.append(('gr-rds',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3456,9 +3579,9 @@ sudo ldconfig
 python2 -c "import rds"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms-master
-programs_ubuntu18_04_6.append(('gr-tpms-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms-master/
+# gr-tpms
+programs_ubuntu18_04_6.append(('gr-tpms',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3470,9 +3593,9 @@ sudo ldconfig
 python2 -c "import tpms"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms_poore-maint-3.7
-programs_ubuntu18_04_6.append(('gr-tpms_poore-maint-3.7',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore-maint-3.7/
+# gr-tpms_poore
+programs_ubuntu18_04_6.append(('gr-tpms_poore',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/
 sudo rm -Rf build
 mkdir build
 cd build

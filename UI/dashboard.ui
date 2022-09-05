@@ -1622,6 +1622,11 @@ QTabBar::tab:!selected {
                 </item>
                 <item>
                  <property name="text">
+                  <string>wideband_plutosdr.py</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
                   <string>Simulator</string>
                  </property>
                 </item>
@@ -6155,6 +6160,16 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <property name="text">
                   <string>bladeRF</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>Open Sniffer</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>PlutoSDR</string>
                  </property>
                 </item>
                </widget>
@@ -13638,6 +13653,11 @@ p, li { white-space: pre-wrap; }
               <string>Open Sniffer</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>PlutoSDR</string>
+             </property>
+            </item>
            </widget>
           </widget>
           <widget class="QWidget" name="tab_iq_data">
@@ -15846,6 +15866,7 @@ p, li { white-space: pre-wrap; }
                <widget class="QWidget" name="page_LimeSDR"/>
                <widget class="QWidget" name="page_bladeRF"/>
                <widget class="QWidget" name="page_Open_Sniffer"/>
+               <widget class="QWidget" name="page_PlutoSDR"/>
               </widget>
              </widget>
              <widget class="QLabel" name="label_38">
@@ -25669,6 +25690,16 @@ Flow Graphs</string>
                   <string>bladeRF</string>
                  </property>
                 </item>
+                <item>
+                 <property name="text">
+                  <string>Open Sniffer</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>PlutoSDR</string>
+                 </property>
+                </item>
                </widget>
                <widget class="QComboBox" name="comboBox_library_pd_modulation_types">
                 <property name="geometry">
@@ -26241,6 +26272,11 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <property name="text">
                   <string>Open Sniffer</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>PlutoSDR</string>
                  </property>
                 </item>
                </widget>
@@ -27168,6 +27204,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionSpektrum"/>
      <addaction name="actionSdrGlut"/>
      <addaction name="actionGr_paint_Converter"/>
+     <addaction name="actionIIO_Oscilloscope"/>
     </widget>
     <widget class="QMenu" name="menu802_11_Tools_2">
      <property name="title">
@@ -28857,6 +28894,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionElectromagnetic_Radiation_Spectrum">
    <property name="text">
     <string>Electromagnetic Radiation Spectrum</string>
+   </property>
+  </action>
+  <action name="actionIIO_Oscilloscope">
+   <property name="text">
+    <string>IIO Oscilloscope</string>
    </property>
   </action>
  </widget>

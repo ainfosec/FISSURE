@@ -1544,6 +1544,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.actionOpen_weather.triggered.connect(self._slotMenuOpenWeatherClicked)
         self.actionLTE_ciphercheck.triggered.connect(self._slotMenuLTE_ciphercheckClicked)
         self.actionElectromagnetic_Radiation_Spectrum.triggered.connect(self._slotMenuElectromagneticRadiationSpectrumClicked)
+        self.actionIIO_Oscilloscope.triggered.connect(self._slotMenuIIO_OscilloscopeClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -6314,6 +6315,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     fname = "iq_recorder_bladerf"
                 elif self.dashboard_settings_dictionary['hardware_iq'] == "Open Sniffer":
                     fname = "iq_recorder"  # Should never be called                    
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "PlutoSDR":
+                    fname = "iq_recorder_plutosdr"                
                     
                 # LimeSDR Channel
                 if self.dashboard_settings_dictionary['hardware_iq'] == "LimeSDR":
@@ -11740,7 +11743,54 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 widget_serial.setAlignment(QtCore.Qt.AlignCenter)
         except:
             widget_serial.setText("")
-            widget_serial.setAlignment(QtCore.Qt.AlignCenter)               
+            widget_serial.setAlignment(QtCore.Qt.AlignCenter)
+                           
+    def findPlutoSDR(self, widget_ip):
+        """ Parses the results of 'avahi-browse' and copies an IP address for the PlutoSDR into an edit box.
+        """
+        # Get the Text
+        proc = subprocess.Popen("avahi-browse -d local _ssh._tcp --resolve -t &", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0]
+
+        # Reset Guess Index
+        get_text = str(widget_ip.toPlainText())
+        if len(get_text) == 0:
+            self.guess_index = 0
+        else:
+            self.guess_index = self.guess_index + 1
+            
+        # Get the Variables and Values
+        device_index = -1
+        device_dict = {}
+        device_found = False
+        for line in output.splitlines():
+            
+            # address = [192.168.#.#] Line
+            if device_found == True:
+                device_index = device_index + 1
+                device_dict.update({device_index:[]})
+                get_var = line.split('=')[0].strip(' ')
+                get_val = line.split('=')[1].strip(' []')
+                device_dict[device_index].append((get_var,get_val))
+                device_found = False
+                
+            # hostname = [pluto.local] Line
+            if "hostname = [pluto" in line:
+                device_found = True
+                
+        # Check Interface Index
+        if self.guess_index > (len(device_dict)-1):
+            self.guess_index = 0
+            
+        # Update GUI
+        try:
+            m = device_dict[self.guess_index][0]
+            if m[0] == 'address':
+                widget_ip.setText(m[1])
+                widget_ip.setAlignment(QtCore.Qt.AlignCenter)
+        except:
+            widget_ip.setText("")
+            widget_ip.setAlignment(QtCore.Qt.AlignCenter)               
                 
     def _slotLibraryBrowseRemoveDemodFG_Clicked(self):
         """ Removes selected demodulation flow graph from the library.
@@ -12028,6 +12078,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.stackedWidget_iq_inspection.setCurrentIndex(8)    
             elif get_hardware == "Open Sniffer":
                 self.stackedWidget_iq_inspection.setCurrentIndex(9)                
+            elif get_hardware == "PlutoSDR":
+                self.stackedWidget_iq_inspection.setCurrentIndex(10)                
                 
             # Enable Frame
             self.frame_iq_inspection_fg.setEnabled(True)
@@ -12342,6 +12394,14 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tuning_matplotlib_widget.freq_start_limit = 1
             self.tuning_matplotlib_widget.freq_end_limit = 6000            
             
+        elif self.dashboard_settings_dictionary['hardware_tsi'] == "PlutoSDR":
+            self.comboBox_tsi_detector.setCurrentIndex(7)  
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png")) 
+            
+            # Tuning Widget Limits
+            self.tuning_matplotlib_widget.freq_start_limit = 325
+            self.tuning_matplotlib_widget.freq_end_limit = 3800         
+            
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_tsi']) > 0:
             self.pushButton_top_tsi.setToolTip(self.dashboard_settings_dictionary['hardware_tsi'])
@@ -12381,7 +12441,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.comboBox_pd_demod_hardware.setCurrentIndex(7)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "Open Sniffer":
             self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/Open_Sniffer.png")) 
-            self.comboBox_pd_demod_hardware.setCurrentIndex(0)
+            self.comboBox_pd_demod_hardware.setCurrentIndex(8)
+        elif self.dashboard_settings_dictionary['hardware_pd'] == "PlutoSDR":
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png")) 
+            self.comboBox_pd_demod_hardware.setCurrentIndex(9)
             
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_pd']) > 0:
@@ -12420,8 +12483,11 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.comboBox_attack_hardware.setCurrentIndex(8)  
             self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/BladeRF.png"))    
         elif self.dashboard_settings_dictionary['hardware_attack'] == "Open Sniffer":
-            self.comboBox_attack_hardware.setCurrentIndex(8)  
+            self.comboBox_attack_hardware.setCurrentIndex(9)  
             self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/Open_Sniffer.png"))    
+        elif self.dashboard_settings_dictionary['hardware_attack'] == "PlutoSDR":
+            self.comboBox_attack_hardware.setCurrentIndex(10)  
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png"))    
             
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_attack']) > 0:
@@ -12684,53 +12750,40 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/Open_Sniffer.png")) 
             self._slotIQ_InspectionHardwareChanged()
             self.groupBox_iq_playback.setEnabled(False)
-            self.groupBox_iq_record.setEnabled(False)            
-        
+            self.groupBox_iq_record.setEnabled(False)
             
-        # # Adjust Existing Channel ComboBoxes and Gain in Replay Tab
-        # for n in range(0, self.tableWidget_archive_replay.rowCount()):
-            # get_combobox = self.tableWidget_archive_replay.cellWidget(n,6)
-            # get_combobox.clear()            
-            # if self.dashboard_settings_dictionary['hardware_archive'] == "USRP X310":
-                # get_combobox.addItem("A:0")
-                # get_combobox.addItem("B:0")    
-                # gain_item = QtGui.QTableWidgetItem("30")
-                # gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-                # self.tableWidget_archive_replay.setItem(n,7,gain_item)
-            # elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B210":
-                # get_combobox.addItem("A:A")
-                # get_combobox.addItem("A:B")
-                # gain_item = QtGui.QTableWidgetItem("60")
-                # gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-                # self.tableWidget_archive_replay.setItem(n,7,gain_item)
-            # elif self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
-                # get_combobox.addItem("")
-                # gain_item = QtGui.QTableWidgetItem("20")
-                # gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-                # self.tableWidget_archive_replay.setItem(n,7,gain_item)
-            # elif self.dashboard_settings_dictionary['hardware_archive'] == "RTL2832U":
-                # get_combobox.addItem("")
-            # elif self.dashboard_settings_dictionary['hardware_archive'] == "802.11x Adapter":
-                # get_combobox.addItem("")
-            # elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B205mini":
-                # get_combobox.addItem("A:A")
-                # get_combobox.addItem("A:B")          
-                # gain_item = QtGui.QTableWidgetItem("60")
-                # gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-                # self.tableWidget_archive_replay.setItem(n,7,gain_item)          
-            # elif self.dashboard_settings_dictionary['hardware_archive'] == "LimeSDR":
-                # get_combobox.addItem("A")
-                # get_combobox.addItem("B")
-                # gain_item = QtGui.QTableWidgetItem("55")
-                # gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-                # self.tableWidget_archive_replay.setItem(n,7,gain_item)
-            # elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF":      
-                # get_combobox.addItem("")      
-                # gain_item = QtGui.QTableWidgetItem("20")
-                # gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-                # self.tableWidget_archive_replay.setItem(n,7,gain_item)   
-            # else:
-                # get_combobox.addItem("")            
+        elif self.dashboard_settings_dictionary['hardware_iq'] == "PlutoSDR":
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png"))
+            
+            # IQ Record
+            comboBox_channel = QtGui.QComboBox(self)
+            comboBox_channel.addItem("")
+            self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
+            comboBox_antenna = QtGui.QComboBox(self)
+            comboBox_antenna.addItem("")
+            self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
+            gain_item = QtGui.QTableWidgetItem("64")
+            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+            self.tableWidget_iq_record.setItem(0,4,gain_item)
+            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
+            
+            # IQ Playback
+            comboBox_playback_channel = QtGui.QComboBox(self)            
+            comboBox_playback_channel.addItem("") 
+            self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
+            comboBox_playback_antenna = QtGui.QComboBox(self)
+            comboBox_playback_antenna.addItem("")
+            self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
+            playback_gain_item = QtGui.QTableWidgetItem("64")
+            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            self.tableWidget_iq_playback.resizeColumnsToContents()
+            self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True) 
+            
+            self._slotIQ_InspectionHardwareChanged()
+            self.groupBox_iq_record.setEnabled(True)           
         
         # Enable Playback and Recording
         self.pushButton_iq_playback.setEnabled(True)
@@ -12770,6 +12823,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/BladeRF.png"))    
         elif self.dashboard_settings_dictionary['hardware_archive'] == "Open Sniffer":
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/Open_Sniffer.png"))    
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png"))    
             
         # Adjust Existing Channel ComboBoxes and Gain in Replay Tab
         for n in range(0, self.tableWidget_archive_replay.rowCount()):
@@ -12817,6 +12872,11 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.tableWidget_archive_replay.setItem(n,7,gain_item)   
             elif self.dashboard_settings_dictionary['hardware_archive'] == "Open Sniffer":
                 get_combobox.addItem("")            
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":      
+                get_combobox.addItem("")      
+                gain_item = QtGui.QTableWidgetItem("64")
+                gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_replay.setItem(n,7,gain_item)
             else:
                 get_combobox.addItem("")
                 
@@ -15252,7 +15312,12 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 else:
                     fname = "iq_playback_bladerf"
             elif self.dashboard_settings_dictionary['hardware_iq'] == "Open Sniffer":
-                fname = "iq_playback"  # Do not allow                    
+                fname = "iq_playback"  # Do not allow      
+            elif self.dashboard_settings_dictionary['hardware_iq'] == "PlutoSDR":
+                if get_repeat == "No":
+                    fname = "iq_playback_single_plutosdr"
+                else:
+                    fname = "iq_playback_plutosdr"
             
             # LimeSDR Channel
             if self.dashboard_settings_dictionary['hardware_iq'] == "LimeSDR":
@@ -17336,6 +17401,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     new_combobox1.addItem("")     
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "Open Sniffer":
                     new_combobox1.addItem("")                        
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
+                    new_combobox1.addItem("")                        
                 else:
                     new_combobox1.addItem("")
                 new_combobox1.setFixedSize(67,24) 
@@ -17363,6 +17430,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     gain_item = QtGui.QTableWidgetItem("20")     
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "Open Sniffer":
                     gain_item = QtGui.QTableWidgetItem("")                                   
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
+                    gain_item = QtGui.QTableWidgetItem("64")                                   
                 else:
                     gain_item = QtGui.QTableWidgetItem("") 
                 gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
@@ -17442,6 +17511,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
             new_combobox1.addItem("")     
         elif self.dashboard_settings_dictionary['hardware_archive'] == "Open Sniffer":
             new_combobox1.addItem("")                        
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
+            new_combobox1.addItem("")                        
         else:
             new_combobox1.addItem("")
         new_combobox1.setFixedSize(67,24) 
@@ -17469,6 +17540,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
             gain_item = QtGui.QTableWidgetItem("20")     
         elif self.dashboard_settings_dictionary['hardware_archive'] == "Open Sniffer":
             gain_item = QtGui.QTableWidgetItem("")                                   
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
+            gain_item = QtGui.QTableWidgetItem("64")                                   
         else:
             gain_item = QtGui.QTableWidgetItem("") 
         gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
@@ -17684,7 +17757,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
             elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF":
                 flow_graph = "archive_replay_bladerf"
             elif self.dashboard_settings_dictionary['hardware_archive'] == "Open Sniffer":
-                flow_graph = ""  # Error                
+                flow_graph = ""  # Error  
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
+                flow_graph = "archive_replay_plutosdr"                            
                             
             # Send "Start Archive Playlist" Message to the HIPRFISR    
             if len(flow_graph) > 0:
@@ -18069,6 +18144,11 @@ class MainWindow(QtGui.QMainWindow, form_class):
         elif get_hardware == "Open Sniffer":
             # Frequency Limits
             if (get_frequency >= 1) and (get_frequency <= 6000):
+                return True                          
+                
+        elif get_hardware == "PlutoSDR":
+            # Frequency Limits
+            if (get_frequency >= 325) and (get_frequency <= 3800):
                 return True                          
         
         # Not in Bounds
@@ -19176,7 +19256,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Displays the advanced settings for the currently selected TSI detector.
         """
         # Switch to Advanced Settings
-        fg_detectors = ['wideband_x310.py','wideband_b210.py','wideband_hackrf.py','wideband_b205mini.py','wideband_rtl2832u.py','wideband_limesdr.py','wideband_bladerf.py']
+        fg_detectors = ['wideband_x310.py','wideband_b210.py','wideband_hackrf.py','wideband_b205mini.py','wideband_rtl2832u.py','wideband_limesdr.py','wideband_bladerf.py','wideband_plutosdr.py']
         
         # Flow Graph Detectors
         if str(self.comboBox_tsi_detector.currentText()) in fg_detectors:
@@ -19298,6 +19378,21 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.spinBox_tsi_detector_fg_gain.setMaximum(14)
             self.spinBox_tsi_detector_fg_gain.setMinimum(0)
             self.spinBox_tsi_detector_fg_gain.setValue(10)
+            self.comboBox_tsi_detector_fg_channel.clear()
+            self.comboBox_tsi_detector_fg_channel.addItem("N/A")
+            self.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fg_antenna.clear()
+            self.comboBox_tsi_detector_fg_antenna.addItem("N/A")
+            self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0) 
+            self.stackedWidget_tsi_detector.setCurrentIndex(0)
+            
+        elif get_detector == 'wideband_plutosdr.py':
+            self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
+            self.spinBox_tsi_detector_fg_threshold.setValue(-70)
+            self.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
+            self.spinBox_tsi_detector_fg_gain.setMaximum(71)
+            self.spinBox_tsi_detector_fg_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fg_gain.setValue(64)
             self.comboBox_tsi_detector_fg_channel.clear()
             self.comboBox_tsi_detector_fg_channel.addItem("N/A")
             self.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
@@ -20732,6 +20827,13 @@ class MainWindow(QtGui.QMainWindow, form_class):
         # Open a Browser 
         os.system("sensible-browser http://www.unihedron.com/projects/spectrum/downloads/full_spectrum.jpg &") 
         
+    def _slotMenuIIO_OscilloscopeClicked(self):
+        """ Opens the IIO Oscilloscope for Analog Devices products (PlutoSDR).
+        """
+        # Open IIO Oscilloscope
+        print "Please wait about 30 seconds for IIO Oscilloscope to load..."
+        os.system("osc &")
+        
         
 
 class HelpMenuDialog(QtGui.QDialog, form_class6):
@@ -20935,6 +21037,8 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             self.comboBox_hardware.setCurrentIndex(8)
         elif hardware == "Open Sniffer":
             self.comboBox_hardware.setCurrentIndex(9)            
+        elif hardware == "PlutoSDR":
+            self.comboBox_hardware.setCurrentIndex(10)            
         
         self.textEdit_ip.setPlainText(ip)
         self.textEdit_ip.setAlignment(QtCore.Qt.AlignCenter)
@@ -21038,6 +21142,8 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             pass
         elif str(self.comboBox_hardware.currentText()) == "Open Sniffer":
             pass            
+        elif str(self.comboBox_hardware.currentText()) == "PlutoSDR":
+            self.parent.findPlutoSDR(self.textEdit_ip)         
 
     def _slotProbeClicked(self):
         """ Opens a message box and copies the results of "uhd_usrp_probe xxx.xxx.xxx.xxx"
@@ -21124,6 +21230,22 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             # Create a Dialog Window    
             msgBox = MyMessageBox(my_text = output, height = 300, width = 500)
             msgBox.exec_() 
+            
+        elif (str(self.comboBox_hardware.currentText()) == "PlutoSDR"):
+            # Probe
+            try:
+                self.label_probe.setVisible(True)   
+                QtGui.QApplication.processEvents()            
+                proc=subprocess.Popen('iio_info -n pluto.local &', shell=True, stdout=subprocess.PIPE, )
+                output=proc.communicate()[0]
+                self.label_probe.setVisible(False)                
+            except:
+                self.label_probe.setVisible(False)
+                output = "Error"            
+                
+            # Create a Dialog Window    
+            msgBox = MyMessageBox(my_text = output, height = 600, width = 900)
+            msgBox.exec_() 
                         
     def _slotHardwareChanged(self):
         """ Updates display options for selected hardware.
@@ -21201,6 +21323,13 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             self.textEdit_interface.setVisible(False)   
             self.comboBox_daughterboard.setVisible(False)
         elif str(self.comboBox_hardware.currentText()) == "Open Sniffer":
+            self.textEdit_ip.setVisible(True)
+            self.textEdit_serial.setVisible(False) 
+            self.pushButton_guess.setVisible(True)     	
+            self.pushButton_probe_usrp.setVisible(True)
+            self.textEdit_interface.setVisible(False)
+            self.comboBox_daughterboard.setVisible(False)            
+        elif str(self.comboBox_hardware.currentText()) == "PlutoSDR":
             self.textEdit_ip.setVisible(True)
             self.textEdit_serial.setVisible(False) 
             self.pushButton_guess.setVisible(True)     	

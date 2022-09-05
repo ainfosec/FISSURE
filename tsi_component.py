@@ -278,7 +278,7 @@ class TSI_Component:
         print "TSI: Starting TSI Detector..."
         
         # Make a New Wideband Thread
-        if detector in ["wideband_x310.py","wideband_b210.py","wideband_hackrf.py","wideband_b205mini.py","wideband_rtl2832u.py","wideband_limesdr.py","wideband_bladerf.py","Simulator","IQ File"]:
+        if detector in ["wideband_x310.py","wideband_b210.py","wideband_hackrf.py","wideband_b205mini.py","wideband_rtl2832u.py","wideband_limesdr.py","wideband_bladerf.py","wideband_plutosdr.py","Simulator","IQ File"]:
             if detector == "wideband_x310.py":
                 flow_graph_filename = "wideband_x310.py"
             elif detector == "wideband_b210.py":
@@ -293,6 +293,8 @@ class TSI_Component:
                 flow_graph_filename = "wideband_limesdr.py"
             elif detector == "wideband_bladerf.py":
                 flow_graph_filename = "wideband_bladerf.py"
+            elif detector == "wideband_plutosdr.py":
+                flow_graph_filename = "wideband_plutosdr.py"
             elif detector == "IQ File":
                 flow_graph_filename = "iq_file.py"
             

@@ -1,6 +1,43 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-09-04
+
+Run these commands to download the Git submodules for the GNU Radio out-of-tree modules:
+```
+cd ./FISSURE
+git submodule update --init
+```
+ 
+### Added
+
+- Submodules to FISSURE repository for most of the out-of-tree modules
+- Initial PlutoSDR support:
+  - PlutoSDR installation with IIO Oscilloscope
+  - ZWAVE PlutoSDR attack for testing
+  - PlutoSDR Inspection flow graphs
+  - PlutoSDR TSI Detector flow graph
+  - PlutoSDR IQ Recording and Playback flow graphs
+  - PlutoSDR Archive Playback flow graph
+- IIO Oscilloscope and gr-iio to CREDITS.md, SoftwareAndConflicts.md
+- IIO Oscilloscope to menu (SDR)
+- Fork locations for OOTs to Credits.md
+- 3.10 OOTs: gr-ainfosec, gr-fuzzer, gr-bluetooth, gr-limesdr, gr-tpms
+   
+### Changed
+
+- Inserted command to download submodules (Out-of-Tree Modules) prior to installation in README.md
+- Removed OOT modules to replace with submodules
+- Made dashboard.py executable
+- Moved install location for libbtbb (gr-bluetooth)
+- Updated OOT folder names in the installer
+ 
+### Fixed
+
+- Python3 error when adding a new attack to the library
+- A couple install issues and some of the missing items with the DragonOS install (not complete yet)
+- OOT Versions in Ubuntu 22.04 SoftwareAndConflicts.md
+
 ## 2022-08-28
 
 We are grateful to all developers whose software is installed and accessed with FISSURE.

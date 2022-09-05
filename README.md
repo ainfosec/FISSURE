@@ -37,6 +37,7 @@ Note: Certain software tools do not work for every OS. Refer to [Software And Co
 git clone https://github.com/ainfosec/fissure.git
 cd FISSURE
 git checkout <Python2_maint-3.7> or <Python3_maint-3.8>
+git submodule update --init
 ./install
 ```
 
@@ -53,6 +54,9 @@ It is recommended to install FISSURE on a clean operating system to avoid existi
 ![install2](/Icons/README/install2.png)
 
 **Usage**
+
+Open a terminal and enter:
+
 ```
 fissure
 ```
@@ -91,6 +95,18 @@ Refer to the FISSURE Help menu for more details on usage.
     <td><img src="/Icons/README/log.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Logging</b></i></small></dt></td>
   </tr>  
 </table>
+
+**Hardware**
+
+The following is a list of "supported" hardware with varying levels of integration:
+- USRP: X310, B210, B205mini
+- HackRF
+- RTL2832U
+- 802.11 Adapters
+- LimeSDR
+- bladeRF
+- Open Sniffer
+- PlutoSDR
 
 
 ## Lessons

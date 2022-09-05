@@ -535,10 +535,10 @@ class FGE_Executor():
         
     def iqFlowGraphStop(self, parameter):
         """ Stop the currently running IQ flow graph.
-        """       
+        """ 
         self.iqflowtoexec.stop()
         self.iqflowtoexec.wait()            
-        del self.iqflowtoexec  # Free up the ports    
+        del self.iqflowtoexec  # Free up the ports 
             
     def iqFlowGraphThread(self, stop_event, flow_graph_filename, variable_names, variable_values):
         """ Runs the IQ script in the new thread.
@@ -549,12 +549,13 @@ class FGE_Executor():
         except:
             pass
             
-        try:                  
+        try:    
             # Overwrite Variables
             loadedmod, class_name = self.overwriteFlowGraphVariables(flow_graph_filename, variable_names, variable_values)
             
             # Call the "__init__" Function
-            self.iqflowtoexec = getattr(loadedmod,class_name)()       
+            self.iqflowtoexec = None
+            self.iqflowtoexec = getattr(loadedmod,class_name)()   
 
             # Start it
             self.iqflowtoexec.start()  
@@ -564,7 +565,7 @@ class FGE_Executor():
                 self.flowGraphStarted("IQ Playback")
                         
             # Let it Run
-            self.iqflowtoexec.wait()                 
+            self.iqflowtoexec.wait() 
 
             # Signal on the PUB that the IQ Flow Graph is Finished
             if "iq_recorder" in flow_graph_filename:
