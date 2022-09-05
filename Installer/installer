@@ -683,9 +683,8 @@ ls /usr/bin/designer
 # Grip
 programs_ubuntu18_04.append(('Grip',
 """python2 -m pip install grip
-source ~/.bashrc
 ########## Verify ##########
-grip --help
+ls ~/.local/bin/grip
 """,True,None))
 
 # Kismet
@@ -2185,9 +2184,8 @@ ls /usr/bin/designer
 # Grip
 programs_ubuntu18_04_5.append(('Grip',
 """python2 -m pip install grip
-source ~/.bashrc
 ########## Verify ##########
-grip --help
+ls ~/.local/bin/grip
 """,True,None))
 
 # Kismet
@@ -3693,9 +3691,8 @@ ls /usr/bin/designer
 # Grip
 programs_ubuntu18_04_6.append(('Grip',
 """python2 -m pip install grip
-source ~/.bashrc
 ########## Verify ##########
-grip --help
+ls ~/.local/bin/grip
 """,True,None))
 
 # Kismet

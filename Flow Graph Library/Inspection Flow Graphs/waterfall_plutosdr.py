@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Waterfall Plutosdr
-# Generated: Sun Sep  4 22:18:27 2022
+# Generated: Mon Sep  5 16:00:00 2022
 ##################################################
 
 from distutils.version import StrictVersion
@@ -137,7 +137,7 @@ class waterfall_plutosdr(gr.top_block, Qt.QWidget):
         self.top_grid_layout.addWidget(self._qtgui_waterfall_sink_x_0_win, 3, 0, 6, 4)
         [self.top_grid_layout.setRowStretch(r,1) for r in range(3,9)]
         [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
-        self.pluto_source_0 = iio.pluto_source("ip:" + str(ip_address), int(float(rx_frequency)*1e6), int(float(sample_rate)), int(20000000), 0x8000, False, True, True, "manual", float(rx_gain), '', True)
+        self.pluto_source_0 = iio.pluto_source("ip:" + str(ip_address), int(float(rx_frequency)*1e6), int(float(sample_rate)), 20000000, 0x8000, False, True, True, "manual", float(rx_gain), '', True)
 
         ##################################################
         # Connections
@@ -156,21 +156,21 @@ class waterfall_plutosdr(gr.top_block, Qt.QWidget):
         self.sample_rate = sample_rate
         self._sample_rate_callback(self.sample_rate)
         self.qtgui_waterfall_sink_x_0.set_frequency_range(0, self.sample_rate)
-        self.pluto_source_0.set_params(int(float(self.rx_frequency)*1e6), int(float(self.sample_rate)), int(20000000), False, True, True, "manual", float(self.rx_gain), '', True)
+        self.pluto_source_0.set_params(int(float(self.rx_frequency)*1e6), int(float(self.sample_rate)), 20000000, False, True, True, "manual", float(self.rx_gain), '', True)
 
     def get_rx_gain(self):
         return self.rx_gain
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.pluto_source_0.set_params(int(float(self.rx_frequency)*1e6), int(float(self.sample_rate)), int(20000000), False, True, True, "manual", float(self.rx_gain), '', True)
+        self.pluto_source_0.set_params(int(float(self.rx_frequency)*1e6), int(float(self.sample_rate)), 20000000, False, True, True, "manual", float(self.rx_gain), '', True)
 
     def get_rx_frequency(self):
         return self.rx_frequency
 
     def set_rx_frequency(self, rx_frequency):
         self.rx_frequency = rx_frequency
-        self.pluto_source_0.set_params(int(float(self.rx_frequency)*1e6), int(float(self.sample_rate)), int(20000000), False, True, True, "manual", float(self.rx_gain), '', True)
+        self.pluto_source_0.set_params(int(float(self.rx_frequency)*1e6), int(float(self.sample_rate)), 20000000, False, True, True, "manual", float(self.rx_gain), '', True)
 
     def get_ip_address(self):
         return self.ip_address

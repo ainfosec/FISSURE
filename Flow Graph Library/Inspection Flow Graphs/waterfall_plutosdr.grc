@@ -389,7 +389,7 @@
     </param>
     <param>
       <key>frequency</key>
-      <value>float(rx_frequency)*1e6</value>
+      <value>int(float(rx_frequency)*1e6)</value>
     </param>
     <param>
       <key>manual_gain</key>
@@ -417,7 +417,7 @@
     </param>
     <param>
       <key>samplerate</key>
-      <value>float(sample_rate)</value>
+      <value>int(float(sample_rate))</value>
     </param>
   </block>
   <block>

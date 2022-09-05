@@ -1064,7 +1064,7 @@
     </param>
     <param>
       <key>frequency</key>
-      <value>tx_freq</value>
+      <value>int(tx_freq)</value>
     </param>
     <param>
       <key>bandwidth</key>
@@ -1072,7 +1072,7 @@
     </param>
     <param>
       <key>samplerate</key>
-      <value>samp_rate</value>
+      <value>int(samp_rate)</value>
     </param>
   </block>
   <block>

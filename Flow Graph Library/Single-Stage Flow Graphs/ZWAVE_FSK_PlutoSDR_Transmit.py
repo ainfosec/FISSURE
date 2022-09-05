@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Zwave Fsk Plutosdr Transmit
-# Generated: Sun Sep  4 15:52:05 2022
+# Generated: Mon Sep  5 16:01:11 2022
 ##################################################
 
 
@@ -45,7 +45,7 @@ class ZWAVE_FSK_PlutoSDR_Transmit(gr.top_block):
         # Blocks
         ##################################################
         self.zwave_poore_message_generator_pdu_0_0_0_1 = zwave_poore.message_generator_pdu(repetition_interval, 1, home_id, source_node_id, frame_control, destination_node_id, command_class, command)
-        self.pluto_sink_0 = iio.pluto_sink("ip:" + ip_address, int(tx_freq), int(samp_rate), int(20000000), 0x8000, False, 89.75 - float(tx_gain), '', True)
+        self.pluto_sink_0 = iio.pluto_sink("ip:" + ip_address, int(tx_freq), int(samp_rate), 20000000, 0x8000, False, 89.75 - float(tx_gain), '', True)
         self.digital_gfsk_mod_0 = digital.gfsk_mod(
         	samples_per_symbol=10,
         	sensitivity=0.25,
@@ -73,14 +73,14 @@ class ZWAVE_FSK_PlutoSDR_Transmit(gr.top_block):
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.pluto_sink_0.set_params(int(self.tx_freq), int(self.samp_rate), int(20000000), 89.75 - float(self.tx_gain), '', True)
+        self.pluto_sink_0.set_params(int(self.tx_freq), int(self.samp_rate), 20000000, 89.75 - float(self.tx_gain), '', True)
 
     def get_tx_freq(self):
         return self.tx_freq
 
     def set_tx_freq(self, tx_freq):
         self.tx_freq = tx_freq
-        self.pluto_sink_0.set_params(int(self.tx_freq), int(self.samp_rate), int(20000000), 89.75 - float(self.tx_gain), '', True)
+        self.pluto_sink_0.set_params(int(self.tx_freq), int(self.samp_rate), 20000000, 89.75 - float(self.tx_gain), '', True)
 
     def get_string_variables(self):
         return self.string_variables
@@ -99,7 +99,7 @@ class ZWAVE_FSK_PlutoSDR_Transmit(gr.top_block):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.pluto_sink_0.set_params(int(self.tx_freq), int(self.samp_rate), int(20000000), 89.75 - float(self.tx_gain), '', True)
+        self.pluto_sink_0.set_params(int(self.tx_freq), int(self.samp_rate), 20000000, 89.75 - float(self.tx_gain), '', True)
 
     def get_repetition_interval(self):
         return self.repetition_interval

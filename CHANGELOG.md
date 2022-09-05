@@ -1,6 +1,21 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-09-05
+
+Ubuntu 22.04 is still not fully supported. The 3.10 flow graphs need to be integrated and tested. There are also a few issues remaining with the install.
+
+### Changed
+
+- Set installer checkbox defaults to False/unchecked for 22.04 tools that are known to not install properly
+ 
+### Fixed
+
+- "Verify" checks for 22.04 OOTs (Python3 imports)
+- Clone command in README was not capitalized (changed fissure to FISSURE)
+- PlutoSDR blocks with 'int' errors for Python2 branch
+- Grip "Verify" check runs a different command
+
 ## 2022-09-04
 
 Run these commands to download the Git submodules for the GNU Radio out-of-tree modules:

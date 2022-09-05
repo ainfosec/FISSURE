@@ -354,7 +354,7 @@
     </param>
     <param>
       <key>frequency</key>
-      <value>float(tx_frequency)*1e6</value>
+      <value>int(float(tx_frequency)*1e6)</value>
     </param>
     <param>
       <key>bandwidth</key>
@@ -362,7 +362,7 @@
     </param>
     <param>
       <key>samplerate</key>
-      <value>float(sample_rate)*1e6</value>
+      <value>int(float(sample_rate)*1e6)</value>
     </param>
   </block>
   <block>

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Wideband Plutosdr
-# Generated: Sun Sep  4 22:19:20 2022
+# Generated: Mon Sep  5 16:01:51 2022
 ##################################################
 
 
@@ -41,7 +41,7 @@ class wideband_plutosdr(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.pluto_source_0 = iio.pluto_source("ip:" + str(ip_address), int(float(rx_freq)), int(float(sample_rate)), int(20000000), 0x8000, True, True, True, "manual", float(gain), '', True)
+        self.pluto_source_0 = iio.pluto_source("ip:" + str(ip_address), int(float(rx_freq)), int(float(sample_rate)), 20000000, 0x8000, True, True, True, "manual", float(gain), '', True)
         self.fft_vxx_0 = fft.fft_vcc(fft_size, True, (window.blackmanharris(fft_size)), True, 1)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fft_size)
@@ -78,7 +78,7 @@ class wideband_plutosdr(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        self.pluto_source_0.set_params(int(float(self.rx_freq)), int(float(self.sample_rate)), int(20000000), True, True, True, "manual", float(self.gain), '', True)
+        self.pluto_source_0.set_params(int(float(self.rx_freq)), int(float(self.sample_rate)), 20000000, True, True, True, "manual", float(self.gain), '', True)
         self.ainfosec_wideband_detector_0.set_sample_rate(self.sample_rate)
 
     def get_rx_freq(self):
@@ -86,7 +86,7 @@ class wideband_plutosdr(gr.top_block):
 
     def set_rx_freq(self, rx_freq):
         self.rx_freq = rx_freq
-        self.pluto_source_0.set_params(int(float(self.rx_freq)), int(float(self.sample_rate)), int(20000000), True, True, True, "manual", float(self.gain), '', True)
+        self.pluto_source_0.set_params(int(float(self.rx_freq)), int(float(self.sample_rate)), 20000000, True, True, True, "manual", float(self.gain), '', True)
         self.ainfosec_wideband_detector_0.set_rx_freq(self.rx_freq)
 
     def get_ip_address(self):
@@ -100,7 +100,7 @@ class wideband_plutosdr(gr.top_block):
 
     def set_gain(self, gain):
         self.gain = gain
-        self.pluto_source_0.set_params(int(float(self.rx_freq)), int(float(self.sample_rate)), int(20000000), True, True, True, "manual", float(self.gain), '', True)
+        self.pluto_source_0.set_params(int(float(self.rx_freq)), int(float(self.sample_rate)), 20000000, True, True, True, "manual", float(self.gain), '', True)
 
     def get_fft_size(self):
         return self.fft_size

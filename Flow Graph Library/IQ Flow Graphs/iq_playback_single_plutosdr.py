@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Iq Playback Single Plutosdr
-# Generated: Sun Sep  4 22:18:16 2022
+# Generated: Mon Sep  5 16:01:59 2022
 ##################################################
 
 
@@ -34,7 +34,7 @@ class iq_playback_single_plutosdr(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.pluto_sink_0 = iio.pluto_sink("ip:" + str(ip_address), int(float(tx_frequency)*1e6), int(float(sample_rate)*1e6), int(20000000), 0x8000, False, 89.75 - float(tx_gain), '', True)
+        self.pluto_sink_0 = iio.pluto_sink("ip:" + str(ip_address), int(float(tx_frequency)*1e6), int(float(sample_rate)*1e6), 20000000, 0x8000, False, 89.75 - float(tx_gain), '', True)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, filepath, False)
 
         ##################################################
@@ -47,14 +47,14 @@ class iq_playback_single_plutosdr(gr.top_block):
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.pluto_sink_0.set_params(int(float(self.tx_frequency)*1e6), int(float(self.sample_rate)*1e6), int(20000000), 89.75 - float(self.tx_gain), '', True)
+        self.pluto_sink_0.set_params(int(float(self.tx_frequency)*1e6), int(float(self.sample_rate)*1e6), 20000000, 89.75 - float(self.tx_gain), '', True)
 
     def get_tx_frequency(self):
         return self.tx_frequency
 
     def set_tx_frequency(self, tx_frequency):
         self.tx_frequency = tx_frequency
-        self.pluto_sink_0.set_params(int(float(self.tx_frequency)*1e6), int(float(self.sample_rate)*1e6), int(20000000), 89.75 - float(self.tx_gain), '', True)
+        self.pluto_sink_0.set_params(int(float(self.tx_frequency)*1e6), int(float(self.sample_rate)*1e6), 20000000, 89.75 - float(self.tx_gain), '', True)
 
     def get_tx_channel(self):
         return self.tx_channel
@@ -67,7 +67,7 @@ class iq_playback_single_plutosdr(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        self.pluto_sink_0.set_params(int(float(self.tx_frequency)*1e6), int(float(self.sample_rate)*1e6), int(20000000), 89.75 - float(self.tx_gain), '', True)
+        self.pluto_sink_0.set_params(int(float(self.tx_frequency)*1e6), int(float(self.sample_rate)*1e6), 20000000, 89.75 - float(self.tx_gain), '', True)
 
     def get_ip_address(self):
         return self.ip_address
