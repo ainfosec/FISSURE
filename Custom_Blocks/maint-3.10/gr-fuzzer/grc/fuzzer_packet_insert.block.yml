@@ -1,0 +1,47 @@
+id: fuzzer_packet_insert
+label: packet_insert
+category: '[fuzzer]'
+
+templates:
+  imports: import fuzzer
+  make: fuzzer.packet_insert(${vector},${period},${offset})
+
+parameters:
+- id: vector
+  label: Vector
+  dtype: int_vector
+  default: 0, 0, 0
+- id: period
+  label: Periodicity
+  dtype: int
+  default: 100
+- id: offset
+  label: Offset
+  dtype: int
+  default: 0
+
+inputs:
+- label: in
+  domain: stream
+  dtype: byte
+  vlen: 1
+  optional: 0
+- label: packet_in
+  domain: message
+  dtype: message
+  vlen: 1
+  optional: 0
+
+outputs:
+- label: out
+  domain: stream
+  dtype: byte
+  vlen: 1
+  optional: 0
+- label: set_mute
+  domain: message
+  dtype: message
+  vlen: 1
+  optional: 1
+
+file_format: 1

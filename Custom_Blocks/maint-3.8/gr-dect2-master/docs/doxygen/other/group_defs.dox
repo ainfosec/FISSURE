@@ -1,7 +1,0 @@
-/*!
- * \defgroup block GNU Radio DECT2 C++ Signal Processing Blocks
- * \brief All C++ blocks that can be used from the DECT2 GNU Radio
- *        module are listed here or in the subcategories below.
- *
- */
-

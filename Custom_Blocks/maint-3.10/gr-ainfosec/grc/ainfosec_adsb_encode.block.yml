@@ -1,0 +1,25 @@
+id: ainfosec_adsb_encode
+label: adsb_encode
+category: '[ainfosec]'
+
+templates:
+  imports: import gnuradio.ainfosec as ainfosec
+  make: ainfosec.adsb_encode(${data_filepath})
+
+
+parameters:
+- id: data_filepath
+  label: Data Filepath
+  dtype: string
+  default: ""
+
+
+outputs:
+- label: out
+  domain: message
+  dtype: message
+  vlen: 1
+  optional: 0
+
+
+file_format: 1

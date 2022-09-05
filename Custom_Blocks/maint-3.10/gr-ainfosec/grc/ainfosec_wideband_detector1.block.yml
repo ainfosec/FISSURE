@@ -1,0 +1,36 @@
+id: ainfosec_wideband_detector1
+label: wideband_detector1
+category: '[ainfosec]'
+
+templates:
+  imports: import gnuradio.ainfosec as ainfosec
+  make: ainfosec.wideband_detector1(${address},${rx_freq},${fft_size},${sample_rate})
+  callbacks:
+  - set_address(${address})
+  - set_rx_freq(${rx_freq})
+  - set_fft_size(${fft_size})
+  - set_sample_rate(${sample_rate}) 
+
+parameters:
+- id: address
+  label: Address
+  dtype: string
+- id: rx_freq
+  label: RX Frequency
+  dtype: float
+- id: fft_size
+  label: FFT Size
+  dtype: int
+- id: sample_rate
+  label: Sample Rate
+  dtype: float
+
+inputs:
+- label: in
+  domain: stream
+  dtype: float
+  vlen: 1
+  optional: 0
+
+
+file_format: 1

@@ -119,6 +119,11 @@
      <string>Open Sniffer</string>
     </property>
    </item>
+   <item>
+    <property name="text">
+     <string>PlutoSDR</string>
+    </property>
+   </item>
   </widget>
   <widget class="QPushButton" name="pushButton_guess">
    <property name="enabled">

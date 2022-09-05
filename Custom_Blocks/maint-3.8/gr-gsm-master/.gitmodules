@@ -1,6 +1,0 @@
-[submodule "test_data"]
-	path = test_data
-	url = https://git.osmocom.org/ptrkrysik/test_data
-[submodule "examples"]
-	path = examples
-	url = https://git.osmocom.org/ptrkrysik/examples

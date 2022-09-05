@@ -222,7 +222,8 @@ sudo make dkms_install
 
 # Zigbee Sniffer
 programs_ubuntu20_04.append(('Zigbee Sniffer',
-"""cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
+"""mkdir -p ~/Installed_by_FISSURE
+cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
 cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
 sudo python3 setup.py install
 sudo add-apt-repository -y ppa:rock-core/qt4  # PyQt4
@@ -269,6 +270,43 @@ make clean && make all
 ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
 """,True,'Hardware'))
 
+# PlutoSDR
+programs_ubuntu20_04.append(('PlutoSDR',
+"""sudo apt-get install -y libglib2.0-dev libgtk2.0-dev libgtkdatabox-dev libmatio-dev libfftw3-dev libxml2 libxml2-dev bison flex libavahi-common-dev libavahi-client-dev libcurl4-openssl-dev libjansson-dev cmake libaio-dev libserialport-dev libcdk5-dev libusb-1.0-0-dev doxygen graphviz git libgmp-dev swig liborc-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/pcercuei/libini.git
+cd libini
+mkdir build && cd build && cmake ../ && make && sudo make install
+cd ~/Installed_by_FISSURE
+git clone https://github.com/analogdevicesinc/libiio.git
+cd libiio
+mkdir build && cd build && cmake ../ && make && sudo make install
+cd ~/Installed_by_FISSURE
+git clone https://github.com/analogdevicesinc/libad9361-iio.git
+cd libad9361-iio
+cmake ./
+make
+sudo make install
+cd ~/Installed_by_FISSURE
+git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
+cd iio-oscilloscope
+git checkout origin/master
+mkdir build && cd build
+cmake ../ && make
+sudo make install
+cd ~/Installed_by_FISSURE
+git clone -b upgrade-3.8 https://github.com/analogdevicesinc/gr-iio.git
+cd gr-iio
+cmake .
+make
+sudo make install
+cd ..
+sudo ldconfig
+########## Verify ##########
+python3 -c "import iio"
+""",True,'Hardware'))
+
 # gr-acars
 programs_ubuntu20_04.append(('gr-acars',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-acars/
@@ -283,9 +321,9 @@ sudo ldconfig
 python3 -c "import acars"
 """,True,'Out-of-Tree Modules'))
 
-# gr-adsb-master
-programs_ubuntu20_04.append(('gr-adsb-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-adsb-master/
+# gr-adsb
+programs_ubuntu20_04.append(('gr-adsb',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-adsb/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -311,9 +349,9 @@ sudo ldconfig
 python3 -c "import ainfosec"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ais-master
-programs_ubuntu20_04.append(('gr-ais-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ais-master/
+# gr-ais
+programs_ubuntu20_04.append(('gr-ais',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ais/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -327,8 +365,11 @@ python3 -c "import ais"
 
 # gr-bluetooth-maint-3.8
 programs_ubuntu20_04.append(('gr-bluetooth-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/libbtbb-master/
-sudo rm -Rf build
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+rm -Rf libbtbb
+git clone https://github.com/greatscottgadgets/libbtbb -b master
+cd libbtbb
 mkdir build
 cd build
 cmake ..
@@ -347,9 +388,9 @@ sudo ldconfig
 ls /usr/local/bin/btrx
 """,True,'Out-of-Tree Modules'))
 
-# gr-clapper_plus-maint-3.8
-programs_ubuntu20_04.append(('gr-clapper_plus-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-clapper_plus-maint-3.8/
+# gr-clapper_plus
+programs_ubuntu20_04.append(('gr-clapper_plus',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-clapper_plus/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -361,9 +402,9 @@ sudo ldconfig
 python3 -c "import clapper_plus"
 """,True,'Out-of-Tree Modules'))
 
-# gr-dect2-master
-programs_ubuntu20_04.append(('gr-dect2-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2-master/
+# gr-dect2
+programs_ubuntu20_04.append(('gr-dect2',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -375,9 +416,9 @@ sudo ldconfig
 python3 -c "import dect2"
 """,True,'Out-of-Tree Modules'))
 
-# gr-foo-maint-3.8
-programs_ubuntu20_04.append(('gr-foo-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-foo-maint-3.8/
+# gr-foo
+programs_ubuntu20_04.append(('gr-foo',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-foo/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -403,9 +444,9 @@ sudo ldconfig
 python3 -c "import fuzzer"
 """,True,'Out-of-Tree Modules'))
 
-# gr-garage_door-maint-3.8
-programs_ubuntu20_04.append(('gr-garage_door-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-garage_door-maint-3.8/
+# gr-garage_door
+programs_ubuntu20_04.append(('gr-garage_door',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-garage_door/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -417,9 +458,9 @@ sudo ldconfig
 python3 -c "import garage_door"
 """,True,'Out-of-Tree Modules'))
 
-# gr-gsm-master
-programs_ubuntu20_04.append(('gr-gsm-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm-master/
+# gr-gsm
+programs_ubuntu20_04.append(('gr-gsm',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm/
 sudo rm -Rf build
 sudo apt-get install -y gr-osmosdr
 mkdir build
@@ -436,9 +477,9 @@ sudo ldconfig
 python3 -c "import grgsm"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-11-maint-3.8
-programs_ubuntu20_04.append(('gr-ieee802-11-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-11-maint-3.8/
+# gr-ieee802-11
+programs_ubuntu20_04.append(('gr-ieee802-11',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-11/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -450,9 +491,9 @@ sudo ldconfig
 python3 -c "import ieee802_11"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-15-4-maint-3.8
-programs_ubuntu20_04.append(('gr-ieee802-15-4-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/
+# gr-ieee802-15-4
+programs_ubuntu20_04.append(('gr-ieee802-15-4',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -460,15 +501,15 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/examples/ieee802_15_4_OQPSK_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
 ########## Verify ##########
 python3 -c "import ieee802_15_4"
 """,True,'Out-of-Tree Modules'))
 
-# gr-iridium-maint-3.8
-programs_ubuntu20_04.append(('gr-iridium-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-iridium-maint-3.8/
+# gr-iridium
+programs_ubuntu20_04.append(('gr-iridium',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-iridium/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -480,9 +521,9 @@ sudo ldconfig
 python3 -c "import iridium"
 """,True,'Out-of-Tree Modules'))
 
-# gr-j2497-maint-3.8
-programs_ubuntu20_04.append(('gr-j2497-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-j2497-maint-3.8/
+# gr-j2497
+programs_ubuntu20_04.append(('gr-j2497',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-j2497/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -494,9 +535,9 @@ sudo ldconfig
 python3 -c "import j2497"
 """,True,'Out-of-Tree Modules'))
 
-# gr-limesdr-gr-3.8
-programs_ubuntu20_04.append(('gr-limesdr-gr-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-limesdr-gr-3.8/
+# gr-limesdr
+programs_ubuntu20_04.append(('gr-limesdr',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-limesdr/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -508,9 +549,9 @@ sudo ldconfig
 python3 -c "import limesdr"
 """,True,'Out-of-Tree Modules'))
 
-# gr-nrsc5-maint-3.8
-programs_ubuntu20_04.append(('gr-nrsc5-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-nrsc5-maint-3.8/
+# gr-nrsc5
+programs_ubuntu20_04.append(('gr-nrsc5',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-nrsc5/
 sudo rm -Rf build
 sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
 mkdir build
@@ -523,9 +564,9 @@ sudo ldconfig
 python3 -c "import nrsc5"
 """,True,'Out-of-Tree Modules'))
 
-# gr-paint-maint-3.8
-programs_ubuntu20_04.append(('gr-paint-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint-maint-3.8/
+# gr-paint
+programs_ubuntu20_04.append(('gr-paint',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -533,7 +574,7 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint-maint-3.8/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint/
 gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
@@ -541,9 +582,9 @@ cp tgatoluma ~/.local/bin/
 python3 -c "import paint"
 """,True,'Out-of-Tree Modules'))
 
-# gr-rds-maint-3.8
-programs_ubuntu20_04.append(('gr-rds-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds-maint-3.8/
+# gr-rds
+programs_ubuntu20_04.append(('gr-rds',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -555,9 +596,9 @@ sudo ldconfig
 python3 -c "import rds"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms_poore-maint-3.8
-programs_ubuntu20_04.append(('gr-tpms_poore-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-tpms_poore-maint-3.8/
+# gr-tpms_poore
+programs_ubuntu20_04.append(('gr-tpms_poore',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-tpms_poore/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -569,9 +610,9 @@ sudo ldconfig
 python3 -c "import tpms_poore"
 """,True,'Out-of-Tree Modules'))
 
-# gr-X10-maint-3.8
-programs_ubuntu20_04.append(('gr-X10-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-X10-maint-3.8/
+# gr-X10
+programs_ubuntu20_04.append(('gr-X10',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-X10/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -583,9 +624,9 @@ sudo ldconfig
 python3 -c "import X10"
 """,True,'Out-of-Tree Modules'))
 
-# gr-zwave_poore-maint-3.8
-programs_ubuntu20_04.append(('gr-zwave_poore-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-zwave_poore-maint-3.8/
+# gr-zwave_poore
+programs_ubuntu20_04.append(('gr-zwave_poore',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-zwave_poore/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1706,7 +1747,8 @@ sudo make dkms_install
 
 # Zigbee Sniffer
 programs_ubuntu20_04_4.append(('Zigbee Sniffer',
-"""cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
+"""mkdir -p ~/Installed_by_FISSURE
+cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
 cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
 sudo python3 setup.py install
 sudo add-apt-repository -y ppa:rock-core/qt4  # PyQt4
@@ -1753,6 +1795,43 @@ make clean && make all
 ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
 """,True,'Hardware'))
 
+# PlutoSDR
+programs_ubuntu20_04_4.append(('PlutoSDR',
+"""sudo apt-get install -y libglib2.0-dev libgtk2.0-dev libgtkdatabox-dev libmatio-dev libfftw3-dev libxml2 libxml2-dev bison flex libavahi-common-dev libavahi-client-dev libcurl4-openssl-dev libjansson-dev cmake libaio-dev libserialport-dev libcdk5-dev libusb-1.0-0-dev doxygen graphviz git libgmp-dev swig liborc-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/pcercuei/libini.git
+cd libini
+mkdir build && cd build && cmake ../ && make && sudo make install
+cd ~/Installed_by_FISSURE
+git clone https://github.com/analogdevicesinc/libiio.git
+cd libiio
+mkdir build && cd build && cmake ../ && make && sudo make install
+cd ~/Installed_by_FISSURE
+git clone https://github.com/analogdevicesinc/libad9361-iio.git
+cd libad9361-iio
+cmake ./
+make
+sudo make install
+cd ~/Installed_by_FISSURE
+git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
+cd iio-oscilloscope
+git checkout origin/master
+mkdir build && cd build
+cmake ../ && make
+sudo make install
+cd ~/Installed_by_FISSURE
+git clone -b upgrade-3.8 https://github.com/analogdevicesinc/gr-iio.git
+cd gr-iio
+cmake .
+make
+sudo make install
+cd ..
+sudo ldconfig
+########## Verify ##########
+python3 -c "import iio"
+""",True,'Hardware'))
+
 # gr-acars
 programs_ubuntu20_04_4.append(('gr-acars',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-acars/
@@ -1767,9 +1846,9 @@ sudo ldconfig
 python3 -c "import acars"
 """,True,'Out-of-Tree Modules'))
 
-# gr-adsb-master
-programs_ubuntu20_04_4.append(('gr-adsb-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-adsb-master/
+# gr-adsb
+programs_ubuntu20_04_4.append(('gr-adsb',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-adsb/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1795,9 +1874,9 @@ sudo ldconfig
 python3 -c "import ainfosec"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ais-master
-programs_ubuntu20_04_4.append(('gr-ais-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ais-master/
+# gr-ais
+programs_ubuntu20_04_4.append(('gr-ais',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ais/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1811,8 +1890,11 @@ python3 -c "import ais"
 
 # gr-bluetooth-maint-3.8
 programs_ubuntu20_04_4.append(('gr-bluetooth-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/libbtbb-master/
-sudo rm -Rf build
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+rm -Rf libbtbb
+git clone https://github.com/greatscottgadgets/libbtbb -b master
+cd libbtbb
 mkdir build
 cd build
 cmake ..
@@ -1831,9 +1913,9 @@ sudo ldconfig
 ls /usr/local/bin/btrx
 """,True,'Out-of-Tree Modules'))
 
-# gr-clapper_plus-maint-3.8
-programs_ubuntu20_04_4.append(('gr-clapper_plus-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-clapper_plus-maint-3.8/
+# gr-clapper_plus
+programs_ubuntu20_04_4.append(('gr-clapper_plus',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-clapper_plus/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1845,9 +1927,9 @@ sudo ldconfig
 python3 -c "import clapper_plus"
 """,True,'Out-of-Tree Modules'))
 
-# gr-dect2-master
-programs_ubuntu20_04_4.append(('gr-dect2-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2-master/
+# gr-dect2
+programs_ubuntu20_04_4.append(('gr-dect2',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1859,9 +1941,9 @@ sudo ldconfig
 python3 -c "import dect2"
 """,True,'Out-of-Tree Modules'))
 
-# gr-foo-maint-3.8
-programs_ubuntu20_04_4.append(('gr-foo-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-foo-maint-3.8/
+# gr-foo
+programs_ubuntu20_04_4.append(('gr-foo',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-foo/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1887,9 +1969,9 @@ sudo ldconfig
 python3 -c "import fuzzer"
 """,True,'Out-of-Tree Modules'))
 
-# gr-garage_door-maint-3.8
-programs_ubuntu20_04_4.append(('gr-garage_door-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-garage_door-maint-3.8/
+# gr-garage_door
+programs_ubuntu20_04_4.append(('gr-garage_door',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-garage_door/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1901,9 +1983,9 @@ sudo ldconfig
 python3 -c "import garage_door"
 """,True,'Out-of-Tree Modules'))
 
-# gr-gsm-master
-programs_ubuntu20_04_4.append(('gr-gsm-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm-master/
+# gr-gsm
+programs_ubuntu20_04_4.append(('gr-gsm',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm/
 sudo rm -Rf build
 sudo apt-get install -y gr-osmosdr
 mkdir build
@@ -1920,9 +2002,9 @@ sudo ldconfig
 python3 -c "import grgsm"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-11-maint-3.8
-programs_ubuntu20_04_4.append(('gr-ieee802-11-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-11-maint-3.8/
+# gr-ieee802-11
+programs_ubuntu20_04_4.append(('gr-ieee802-11',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-11/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1934,9 +2016,9 @@ sudo ldconfig
 python3 -c "import ieee802_11"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-15-4-maint-3.8
-programs_ubuntu20_04_4.append(('gr-ieee802-15-4-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/
+# gr-ieee802-15-4
+programs_ubuntu20_04_4.append(('gr-ieee802-15-4',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1944,15 +2026,15 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/examples/ieee802_15_4_OQPSK_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
 ########## Verify ##########
 python3 -c "import ieee802_15_4"
 """,True,'Out-of-Tree Modules'))
 
-# gr-iridium-maint-3.8
-programs_ubuntu20_04_4.append(('gr-iridium-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-iridium-maint-3.8/
+# gr-iridium
+programs_ubuntu20_04_4.append(('gr-iridium',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-iridium/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1964,9 +2046,9 @@ sudo ldconfig
 python3 -c "import iridium"
 """,True,'Out-of-Tree Modules'))
 
-# gr-j2497-maint-3.8
-programs_ubuntu20_04_4.append(('gr-j2497-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-j2497-maint-3.8/
+# gr-j2497
+programs_ubuntu20_04_4.append(('gr-j2497',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-j2497/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1978,9 +2060,9 @@ sudo ldconfig
 python3 -c "import j2497"
 """,True,'Out-of-Tree Modules'))
 
-# gr-limesdr-gr-3.8
-programs_ubuntu20_04_4.append(('gr-limesdr-gr-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-limesdr-gr-3.8/
+# gr-limesdr
+programs_ubuntu20_04_4.append(('gr-limesdr',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-limesdr/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1992,9 +2074,9 @@ sudo ldconfig
 python3 -c "import limesdr"
 """,True,'Out-of-Tree Modules'))
 
-# gr-nrsc5-maint-3.8
-programs_ubuntu20_04_4.append(('gr-nrsc5-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-nrsc5-maint-3.8/
+# gr-nrsc5
+programs_ubuntu20_04_4.append(('gr-nrsc5',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-nrsc5/
 sudo rm -Rf build
 sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
 mkdir build
@@ -2007,9 +2089,9 @@ sudo ldconfig
 python3 -c "import nrsc5"
 """,True,'Out-of-Tree Modules'))
 
-# gr-paint-maint-3.8
-programs_ubuntu20_04_4.append(('gr-paint-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint-maint-3.8/
+# gr-paint
+programs_ubuntu20_04_4.append(('gr-paint',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -2017,7 +2099,7 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint-maint-3.8/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint/
 gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
@@ -2025,9 +2107,9 @@ cp tgatoluma ~/.local/bin/
 python3 -c "import paint"
 """,True,'Out-of-Tree Modules'))
 
-# gr-rds-maint-3.8
-programs_ubuntu20_04_4.append(('gr-rds-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds-maint-3.8/
+# gr-rds
+programs_ubuntu20_04_4.append(('gr-rds',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -2039,9 +2121,9 @@ sudo ldconfig
 python3 -c "import rds"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms_poore-maint-3.8
-programs_ubuntu20_04_4.append(('gr-tpms_poore-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-tpms_poore-maint-3.8/
+# gr-tpms_poore
+programs_ubuntu20_04_4.append(('gr-tpms_poore',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-tpms_poore/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -2053,9 +2135,9 @@ sudo ldconfig
 python3 -c "import tpms_poore"
 """,True,'Out-of-Tree Modules'))
 
-# gr-X10-maint-3.8
-programs_ubuntu20_04_4.append(('gr-X10-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-X10-maint-3.8/
+# gr-X10
+programs_ubuntu20_04_4.append(('gr-X10',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-X10/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -2067,9 +2149,9 @@ sudo ldconfig
 python3 -c "import X10"
 """,True,'Out-of-Tree Modules'))
 
-# gr-zwave_poore-maint-3.8
-programs_ubuntu20_04_4.append(('gr-zwave_poore-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-zwave_poore-maint-3.8/
+# gr-zwave_poore
+programs_ubuntu20_04_4.append(('gr-zwave_poore',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-zwave_poore/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3182,7 +3264,8 @@ sudo make dkms_install
 
 # Zigbee Sniffer
 programs_ubuntu22_04.append(('Zigbee Sniffer',
-"""cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
+"""mkdir -p ~/Installed_by_FISSURE
+cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
 cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
 sudo python3 setup.py install
 #sudo add-apt-repository -y ppa:rock-core/qt4  # PyQt4, doesn't work
@@ -3243,9 +3326,9 @@ sudo ldconfig
 python3 -c "import acars"
 """,True,'Out-of-Tree Modules'))
 
-# gr-adsb-maint-3.10
-programs_ubuntu22_04.append(('gr-adsb-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-adsb-maint-3.10/
+# gr-adsb
+programs_ubuntu22_04.append(('gr-adsb',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-adsb/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3257,23 +3340,23 @@ sudo ldconfig
 python3 -c "import adsb"
 """,True,'Out-of-Tree Modules'))
 
-# # gr-ainfosec
-# programs_ubuntu22_04.append(('gr-ainfosec',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ainfosec/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# ########## Verify ##########
-# python3 -c "import ainfosec"
-# """,True,'Out-of-Tree Modules'))
+# gr-ainfosec
+programs_ubuntu22_04.append(('gr-ainfosec',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ainfosec/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+python3 -c "import ainfosec"
+""",True,'Out-of-Tree Modules'))
 
-# gr-ais-maint-3.10
-programs_ubuntu22_04.append(('gr-ais-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais-maint-3.10/
+# gr-ais
+programs_ubuntu22_04.append(('gr-ais',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3285,31 +3368,34 @@ sudo ldconfig
 python3 -c "import ais"
 """,True,'Out-of-Tree Modules'))
 
-# # gr-bluetooth-maint-3.10
-# programs_ubuntu22_04.append(('gr-bluetooth-maint-3.10',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/libbtbb-master/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-bluetooth-maint-3.10/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# ########## Verify ##########
-# ls /usr/local/bin/btrx
-# """,True,'Out-of-Tree Modules'))
+# gr-bluetooth
+programs_ubuntu22_04.append(('gr-bluetooth',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+rm -Rf libbtbb
+git clone https://github.com/greatscottgadgets/libbtbb -b master
+cd libbtbb
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-bluetooth/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+ls /usr/local/bin/btrx
+""",True,'Out-of-Tree Modules'))
 
-# gr-clapper_plus-maint-3.10
-programs_ubuntu22_04.append(('gr-clapper_plus-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-clapper_plus-maint-3.10/
+# gr-clapper_plus
+programs_ubuntu22_04.append(('gr-clapper_plus',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-clapper_plus/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3321,9 +3407,9 @@ sudo ldconfig
 python3 -c "import clapper_plus"
 """,True,'Out-of-Tree Modules'))
 
-# gr-dect2-maint-3.10
-programs_ubuntu22_04.append(('gr-dect2-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-dect2-maint-3.10/
+# gr-dect2
+programs_ubuntu22_04.append(('gr-dect2',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-dect2/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3335,9 +3421,9 @@ sudo ldconfig
 python3 -c "import dect2"
 """,True,'Out-of-Tree Modules'))
 
-# gr-foo-maint-3.10
-programs_ubuntu22_04.append(('gr-foo-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-foo-maint-3.10/
+# gr-foo
+programs_ubuntu22_04.append(('gr-foo',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-foo/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3349,23 +3435,23 @@ sudo ldconfig
 python3 -c "import foo"
 """,True,'Out-of-Tree Modules'))
 
-# # gr-fuzzer
-# programs_ubuntu22_04.append(('gr-fuzzer',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-fuzzer/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# ########## Verify ##########
-# python3 -c "import fuzzer"
-# """,True,'Out-of-Tree Modules'))
+# gr-fuzzer
+programs_ubuntu22_04.append(('gr-fuzzer',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-fuzzer/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+python3 -c "import fuzzer"
+""",True,'Out-of-Tree Modules'))
 
-# gr-garage_door-maint-3.10
-programs_ubuntu22_04.append(('gr-garage_door-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-garage_door-maint-3.10/
+# gr-garage_door
+programs_ubuntu22_04.append(('gr-garage_door',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-garage_door/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3377,9 +3463,9 @@ sudo ldconfig
 python3 -c "import garage_door"
 """,True,'Out-of-Tree Modules'))
 
-# gr-gsm-maint-3.10
-programs_ubuntu22_04.append(('gr-gsm-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm-maint-3.10/
+# gr-gsm
+programs_ubuntu22_04.append(('gr-gsm',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm/
 sudo rm -Rf build
 sudo apt-get install -y gr-osmosdr
 mkdir build
@@ -3396,9 +3482,9 @@ sudo ldconfig
 python3 -c "import grgsm"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-11-maint-3.10
-programs_ubuntu22_04.append(('gr-ieee802-11-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-11-maint-3.10/
+# gr-ieee802-11
+programs_ubuntu22_04.append(('gr-ieee802-11',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-11/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3410,9 +3496,9 @@ sudo ldconfig
 python3 -c "import ieee802_11"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-15-4-maint-3.10
-programs_ubuntu22_04.append(('gr-ieee802-15-4-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4-maint-3.10/
+# gr-ieee802-15-4
+programs_ubuntu22_04.append(('gr-ieee802-15-4',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3420,15 +3506,15 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4-maint-3.10/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4-maint-3.10/examples/ieee802_15_4_OQPSK_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
 ########## Verify ##########
 python3 -c "import ieee802_15_4"
 """,True,'Out-of-Tree Modules'))
 
-# gr-iridium-master
-programs_ubuntu22_04.append(('gr-iridium-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-iridium-master/
+# gr-iridium
+programs_ubuntu22_04.append(('gr-iridium',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-iridium/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3440,9 +3526,9 @@ sudo ldconfig
 python3 -c "import iridium"
 """,True,'Out-of-Tree Modules'))
 
-# gr-j2497-maint-3.10
-programs_ubuntu22_04.append(('gr-j2497-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-j2497-maint-3.10/
+# gr-j2497
+programs_ubuntu22_04.append(('gr-j2497',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-j2497/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3454,23 +3540,23 @@ sudo ldconfig
 python3 -c "import j2497"
 """,True,'Out-of-Tree Modules'))
 
-# # gr-limesdr-gr-3.10
-# programs_ubuntu22_04.append(('gr-limesdr-gr-3.10',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-limesdr-gr-3.10/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# ########## Verify ##########
-# python3 -c "import limesdr"
-# """,True,'Out-of-Tree Modules'))
+# gr-limesdr
+programs_ubuntu22_04.append(('gr-limesdr',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-limesdr/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+python3 -c "import limesdr"
+""",True,'Out-of-Tree Modules'))
 
-# gr-nrsc5-master
-programs_ubuntu22_04.append(('gr-nrsc5-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-nrsc5-master/
+# gr-nrsc5
+programs_ubuntu22_04.append(('gr-nrsc5',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-nrsc5/
 sudo rm -Rf build
 sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
 mkdir build
@@ -3483,9 +3569,9 @@ sudo ldconfig
 python3 -c "import nrsc5"
 """,True,'Out-of-Tree Modules'))
 
-# gr-paint-master
-programs_ubuntu22_04.append(('gr-paint-master',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint-master/
+# gr-paint
+programs_ubuntu22_04.append(('gr-paint',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3493,7 +3579,7 @@ cmake ..
 make
 sudo make install
 sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint-master/
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/
 gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
@@ -3501,9 +3587,9 @@ cp tgatoluma ~/.local/bin/
 python3 -c "import paint"
 """,True,'Out-of-Tree Modules'))
 
-# gr-rds-maint-3.10
-programs_ubuntu22_04.append(('gr-rds-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds-maint-3.10/
+# gr-rds
+programs_ubuntu22_04.append(('gr-rds',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3515,9 +3601,9 @@ sudo ldconfig
 python3 -c "import rds"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms-maint-3.10
-programs_ubuntu22_04.append(('gr-tpms-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms-maint-3.10/
+# gr-tpms
+programs_ubuntu22_04.append(('gr-tpms',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3529,9 +3615,9 @@ sudo ldconfig
 python3 -c "import tpms"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms_poore-maint-3.10
-programs_ubuntu22_04.append(('gr-tpms_poore-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms_poore-maint-3.10/
+# gr-tpms_poore
+programs_ubuntu22_04.append(('gr-tpms_poore',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms_poore/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3543,9 +3629,9 @@ sudo ldconfig
 python3 -c "import tpms_poore"
 """,True,'Out-of-Tree Modules'))
 
-# gr-X10-maint-3.10
-programs_ubuntu22_04.append(('gr-X10-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-X10-maint-3.10/
+# gr-X10
+programs_ubuntu22_04.append(('gr-X10',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-X10/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3557,9 +3643,9 @@ sudo ldconfig
 python3 -c "import X10"
 """,True,'Out-of-Tree Modules'))
 
-# gr-zwave_poore-maint-3.10
-programs_ubuntu22_04.append(('gr-zwave_poore-maint-3.10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-zwave_poore-maint-3.10/
+# gr-zwave_poore
+programs_ubuntu22_04.append(('gr-zwave_poore',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-zwave_poore/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -4469,11 +4555,11 @@ sudo ln -s /usr/src/falcon/build/src/gui/gui /usr/bin/FalconGUI
 # fissure Command 
 programs_dragonOS_focal.append(('fissure Command',
 """echo "[Desktop Entry]\nStartupWMClass=dashboard\nName=FISSURE\nTerminal=false\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
-echo "Exec=""" + fissure_directory + """/dashboard" >> """ + fissure_directory + """/Installer/fissure.desktop
+echo "Exec=""" + fissure_directory + """/dashboard.py" >> """ + fissure_directory + """/Installer/fissure.desktop
 echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
 ########## Verify ##########
-ls /usr/src/fissure
+ls /usr/share/applications/fissure.desktop
 """,True,'Minimum Install'))
 
 # Wireshark
@@ -4496,11 +4582,32 @@ wireshark --help
 # 8812au Driver
 programs_dragonOS_focal.append(('8812au Driver',
 """sudo apt-get -y install dkms
+sudo apt-get install -y linux-headers-$(uname -r)
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/aircrack-ng/rtl8812au/
 cd ~/Installed_by_FISSURE/rtl8812au
 sudo make dkms_install
+""",True,'Hardware'))
+
+# Zigbee Sniffer
+programs_dragonOS_focal.append(('Zigbee Sniffer',
+"""mkdir -p ~/Installed_by_FISSURE
+cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
+cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
+sudo python3 setup.py install
+sudo add-apt-repository -y ppa:rock-core/qt4  # PyQt4
+sudo apt-get update
+wget http://archive.ubuntu.com/ubuntu/pool/universe/q/qt-assistant-compat/libqtassistantclient4_4.6.3-7build1_amd64.deb -O ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb 
+sudo apt-get install -y ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-qt4/python-qt4_4.12.1+dfsg-2_amd64.deb -O ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+sudo apt-get install -y ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-pyaudio/python-pyaudio_0.2.11-1build2_amd64.deb -O ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+sudo apt-get install -y ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+rm ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
+rm ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
+rm ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
+sudo apt-get install -y mlocate
 """,True,'Hardware'))
 
 # fl2k
@@ -4547,6 +4654,20 @@ sudo ldconfig
 python3 -c "import acars"
 """,True,'Out-of-Tree Modules'))
 
+# gr-adsb
+programs_dragonOS_focal.append(('gr-adsb',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-adsb/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+python3 -c "import adsb"
+""",True,'Out-of-Tree Modules'))
+
 # gr-ainfosec
 programs_dragonOS_focal.append(('gr-ainfosec',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ainfosec/
@@ -4561,10 +4682,27 @@ sudo ldconfig
 python3 -c "import ainfosec"
 """,True,'Out-of-Tree Modules'))
 
+# gr-ais
+programs_dragonOS_focal.append(('gr-ais',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ais/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+python3 -c "import ais"
+""",True,'Out-of-Tree Modules'))
+
 # gr-bluetooth-maint-3.8
 programs_dragonOS_focal.append(('gr-bluetooth-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/libbtbb-master/
-sudo rm -Rf build
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+rm -Rf libbtbb
+git clone https://github.com/greatscottgadgets/libbtbb -b master
+cd libbtbb
 mkdir build
 cd build
 cmake ..
@@ -4585,9 +4723,9 @@ sudo ln -s /usr/local/lib/python3.8/site-packages/pcapdump/ /usr/local/lib/pytho
 ls /usr/local/bin/btrx
 """,True,'Out-of-Tree Modules'))
 
-# gr-clapper_plus-maint-3.8
-programs_dragonOS_focal.append(('gr-clapper_plus-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-clapper_plus-maint-3.8/
+# gr-clapper_plus
+programs_dragonOS_focal.append(('gr-clapper_plus',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-clapper_plus/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -4613,9 +4751,9 @@ sudo ldconfig
 python3 -c "import fuzzer"
 """,True,'Out-of-Tree Modules'))
 
-# gr-garage_door-maint-3.8
-programs_dragonOS_focal.append(('gr-garage_door-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-garage_door-maint-3.8/
+# gr-garage_door
+programs_dragonOS_focal.append(('gr-garage_door',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-garage_door/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -4627,9 +4765,9 @@ sudo ldconfig
 python3 -c "import garage_door"
 """,True,'Out-of-Tree Modules'))
 
-# gr-ieee802-15-4-maint-3.8
-programs_dragonOS_focal.append(('gr-ieee802-15-4-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/
+# gr-ieee802-15-4
+programs_dragonOS_focal.append(('gr-ieee802-15-4',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -4637,15 +4775,32 @@ cmake ..
 make
 #sudo make install
 #sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4-maint-3.8/examples/ieee802_15_4_OQPSK_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
 ########## Verify ##########
 python3 -c "import ieee802_15_4"
 """,True,'Out-of-Tree Modules'))
 
-# gr-j2497-maint-3.8
-programs_dragonOS_focal.append(('gr-j2497-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-j2497-maint-3.8/
+# gr-limesdr
+programs_dragonOS_focal.append(('gr-limesdr',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/
+git clone https://github.com/myriadrf/gr-limesdr.git
+cd gr-limesdr
+git checkout 81464cddca5dbd1fe778d48cba776e25d66005dc 
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+python3 -c "import limesdr"
+""",True,'Out-of-Tree Modules'))
+
+# gr-j2497
+programs_dragonOS_focal.append(('gr-j2497',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-j2497/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -4657,9 +4812,9 @@ sudo ldconfig
 python3 -c "import j2497"
 """,True,'Out-of-Tree Modules'))
 
-# gr-tpms_poore-maint-3.8
-programs_dragonOS_focal.append(('gr-tpms_poore-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-tpms_poore-maint-3.8/
+# gr-tpms_poore
+programs_dragonOS_focal.append(('gr-tpms_poore',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-tpms_poore/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -4671,9 +4826,9 @@ sudo ldconfig
 python3 -c "import tpms_poore"
 """,True,'Out-of-Tree Modules'))
 
-# gr-X10-maint-3.8
-programs_dragonOS_focal.append(('gr-X10-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-X10-maint-3.8/
+# gr-X10
+programs_dragonOS_focal.append(('gr-X10',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-X10/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -4685,9 +4840,9 @@ sudo ldconfig
 python3 -c "import X10"
 """,True,'Out-of-Tree Modules'))
 
-# gr-zwave_poore-maint-3.8
-programs_dragonOS_focal.append(('gr-zwave_poore-maint-3.8',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-zwave_poore-maint-3.8/
+# gr-zwave_poore
+programs_dragonOS_focal.append(('gr-zwave_poore',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-zwave_poore/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -4863,56 +5018,46 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # hackrf_sweep --help
 # """,True,'Hardware'))
 
-# # Zigbee Sniffer
-# programs_dragonOS_focal.append(('Zigbee Sniffer',
-# """cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
-# cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
-# sudo python3 setup.py install
-# sudo add-apt-repository -y ppa:rock-core/qt4  # PyQt4
-# sudo apt-get update
-# wget http://archive.ubuntu.com/ubuntu/pool/universe/q/qt-assistant-compat/libqtassistantclient4_4.6.3-7build1_amd64.deb -O ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb 
-# sudo apt-get install -y ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
-# wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-qt4/python-qt4_4.12.1+dfsg-2_amd64.deb -O ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
-# sudo apt-get install -y ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
-# wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-pyaudio/python-pyaudio_0.2.11-1build2_amd64.deb -O ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
-# sudo apt-get install -y ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
-# rm ~/Downloads/libqtassistantclient4_4.6.3-7build1_amd64.deb
-# rm ~/Downloads/python-qt4_4.12.1+dfsg-2_amd64.deb
-# rm ~/Downloads/python-pyaudio_0.2.11-1build2_amd64.deb
-# sudo apt-get install -y mlocate
+# # PlutoSDR
+# programs_dragonOS_focal.append(('PlutoSDR',
+# """sudo apt-get install -y libglib2.0-dev libgtk2.0-dev libgtkdatabox-dev libmatio-dev libfftw3-dev libxml2 libxml2-dev bison flex libavahi-common-dev libavahi-client-dev libcurl4-openssl-dev libjansson-dev cmake libaio-dev libserialport-dev libcdk5-dev libusb-1.0-0-dev doxygen graphviz git libgmp-dev swig liborc-dev
+# mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/pcercuei/libini.git
+# cd libini
+# mkdir build && cd build && cmake ../ && make && sudo make install
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/analogdevicesinc/libiio.git
+# cd libiio
+# mkdir build && cd build && cmake ../ && make && sudo make install
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/analogdevicesinc/libad9361-iio.git
+# cd libad9361-iio
+# cmake ./
+# make
+# sudo make install
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
+# cd iio-oscilloscope
+# git checkout origin/master
+# mkdir build && cd build
+# cmake ../ && make
+# sudo make install
+# cd ~/Installed_by_FISSURE
+# git clone -b upgrade-3.8 https://github.com/analogdevicesinc/gr-iio.git
+# cd gr-iio
+# cmake .
+# make
+# sudo make install
+# cd ..
+# sudo ldconfig
+# ########## Verify ##########
+# python3 -c "import iio"
 # """,True,'Hardware'))
 
-# # gr-adsb-master
-# programs_dragonOS_focal.append(('gr-adsb-master',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-adsb-master/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# ########## Verify ##########
-# python3 -c "import adsb"
-# """,True,'Out-of-Tree Modules'))
-
-# # gr-ais-master
-# programs_dragonOS_focal.append(('gr-ais-master',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ais-master/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# ########## Verify ##########
-# python3 -c "import ais"
-# """,True,'Out-of-Tree Modules'))
-
-# # gr-dect2-master
-# programs_dragonOS_focal.append(('gr-dect2-master',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2-master/
+# # gr-dect2
+# programs_dragonOS_focal.append(('gr-dect2',
+# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2/
 # sudo rm -Rf build
 # mkdir build
 # cd build
@@ -4924,9 +5069,9 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # python3 -c "import dect2"
 # """,True,'Out-of-Tree Modules'))
 
-# # gr-foo-maint-3.8
-# programs_dragonOS_focal.append(('gr-foo-maint-3.8',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-foo-maint-3.8/
+# # gr-foo
+# programs_dragonOS_focal.append(('gr-foo',
+# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-foo/
 # sudo rm -Rf build
 # mkdir build
 # cd build
@@ -4938,9 +5083,9 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # python3 -c "import foo"
 # """,True,'Out-of-Tree Modules'))
 
-# # gr-gsm-master
-# programs_dragonOS_focal.append(('gr-gsm-master',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm-master/
+# # gr-gsm
+# programs_dragonOS_focal.append(('gr-gsm',
+# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm/
 # sudo rm -Rf build
 # sudo apt-get install -y gr-osmosdr
 # mkdir build
@@ -4957,9 +5102,9 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # python3 -c "import grgsm"
 # """,True,'Out-of-Tree Modules'))
 
-# # gr-ieee802-11-maint-3.8
-# programs_dragonOS_focal.append(('gr-ieee802-11-maint-3.8',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-11-maint-3.8/
+# # gr-ieee802-11
+# programs_dragonOS_focal.append(('gr-ieee802-11',
+# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-11/
 # sudo rm -Rf build
 # mkdir build
 # cd build
@@ -4971,9 +5116,9 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # python3 -c "import ieee802_11"
 # """,True,'Out-of-Tree Modules'))
 
-# # gr-iridium-maint-3.8
-# programs_dragonOS_focal.append(('gr-iridium-maint-3.8',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-iridium-maint-3.8/
+# # gr-iridium
+# programs_dragonOS_focal.append(('gr-iridium',
+# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-iridium/
 # sudo rm -Rf build
 # mkdir build
 # cd build
@@ -4985,23 +5130,9 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # python3 -c "import iridium"
 # """,True,'Out-of-Tree Modules'))
 
-# # gr-limesdr-gr-3.8
-# programs_dragonOS_focal.append(('gr-limesdr-gr-3.8',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-limesdr-gr-3.8/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# ########## Verify ##########
-# python3 -c "import limesdr"
-# """,True,'Out-of-Tree Modules'))
-
-# # gr-nrsc5-maint-3.8
-# programs_dragonOS_focal.append(('gr-nrsc5-maint-3.8',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-nrsc5-maint-3.8/
+# # gr-nrsc5
+# programs_dragonOS_focal.append(('gr-nrsc5',
+# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-nrsc5/
 # sudo rm -Rf build
 # sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
 # mkdir build
@@ -5014,9 +5145,9 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # python3 -c "import nrsc5"
 # """,True,'Out-of-Tree Modules'))
 
-# # gr-paint-maint-3.8
-# programs_dragonOS_focal.append(('gr-paint-maint-3.8',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint-maint-3.8/
+# # gr-paint
+# programs_dragonOS_focal.append(('gr-paint',
+# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint/
 # sudo rm -Rf build
 # mkdir build
 # cd build
@@ -5024,7 +5155,7 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # make
 # sudo make install
 # sudo ldconfig
-# cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint-maint-3.8/
+# cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-paint/
 # gcc tgatoluma.c -o tgatoluma
 # chmod +x tgatoluma
 # cp tgatoluma ~/.local/bin/
@@ -5032,9 +5163,9 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # python3 -c "import paint"
 # """,True,'Out-of-Tree Modules'))
 
-# # gr-rds-maint-3.8
-# programs_dragonOS_focal.append(('gr-rds-maint-3.8',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds-maint-3.8/
+# # gr-rds
+# programs_dragonOS_focal.append(('gr-rds',
+# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds/
 # sudo rm -Rf build
 # mkdir build
 # cd build
@@ -5071,12 +5202,12 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # ls /usr/bin/designer
 # """,True,None))
 
-# # Grip
-# programs_dragonOS_focal.append(('Grip',
-# """sudo python3 -m pip install grip
-# ########## Verify ##########
-# grip --help
-# """,True,None))
+# Grip
+programs_dragonOS_focal.append(('Grip',
+"""sudo python3 -m pip install grip
+########## Verify ##########
+grip --help
+""",True,None))
 
 # # Kismet
 # programs_dragonOS_focal.append(('Kismet',
@@ -5085,21 +5216,21 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # ls /usr/bin/kismet
 # """,True,None))
 
-# # UDP Replay
-# programs_dragonOS_focal.append(('UDP Replay',
-# """sudo apt-get install -y libpcap-dev
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/rigtorp/udpreplay.git
-# cd ~/Installed_by_FISSURE/udpreplay
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# ########## Verify ##########
-# ls /usr/local/bin/udpreplay
-# """,True,None))
+# UDP Replay
+programs_dragonOS_focal.append(('UDP Replay',
+"""sudo apt-get install -y libpcap-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/rigtorp/udpreplay.git
+cd ~/Installed_by_FISSURE/udpreplay
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+ls /usr/local/bin/udpreplay
+""",True,None))
 
 # # V2Verifier
 # programs_dragonOS_focal.append(('V2Verifier',
@@ -5200,39 +5331,39 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # aircrack-ng --help
 # """,True,None))
 
-# # Geany
-# programs_dragonOS_focal.append(('Geany',
-# """sudo apt-get install -y geany  # needs [styling] line_height=0;2; added to Tools>Configuration Files>filetypes.common to see underscores
-# ########## Verify ##########
-# geany --help
-# """,True,None))
+# Geany
+programs_dragonOS_focal.append(('Geany',
+"""sudo apt-get install -y geany  # needs [styling] line_height=0;2; added to Tools>Configuration Files>filetypes.common to see underscores
+########## Verify ##########
+geany --help
+""",True,None))
 
-# # Arduino IDE
-# programs_dragonOS_focal.append(('Arduino IDE',
-# """wget -P ~/Installed_by_FISSURE/ https://downloads.arduino.cc/arduino-1.8.15-linux64.tar.xz
-# cd ~/Installed_by_FISSURE
-# tar -xf arduino-1.8.15-linux64.tar.xz
-# rm arduino-1.8.15-linux64.tar.xz
-# cd arduino-1.8.15/
-# sudo ./install.sh
-# cp -R """ + fissure_directory + """/Tools/Esp8266_listen_trigger/ ~/Installed_by_FISSURE/
-# ########## Verify ##########
-# arduino --version
-# """,True,None))
+# Arduino IDE
+programs_dragonOS_focal.append(('Arduino IDE',
+"""wget -P ~/Installed_by_FISSURE/ https://downloads.arduino.cc/arduino-1.8.15-linux64.tar.xz
+cd ~/Installed_by_FISSURE
+tar -xf arduino-1.8.15-linux64.tar.xz
+rm arduino-1.8.15-linux64.tar.xz
+cd arduino-1.8.15/
+sudo ./install.sh
+cp -R """ + fissure_directory + """/Tools/Esp8266_listen_trigger/ ~/Installed_by_FISSURE/
+########## Verify ##########
+arduino --version
+""",True,None))
 
-# # Minicom
-# programs_dragonOS_focal.append(('Minicom',
-# """sudo apt-get install -y minicom
-# ########## Verify ##########
-# ls /usr/bin/minicom
-# """,True,None))
+# Minicom
+programs_dragonOS_focal.append(('Minicom',
+"""sudo apt-get install -y minicom
+########## Verify ##########
+ls /usr/bin/minicom
+""",True,None))
 
-# # PuTTY
-# programs_dragonOS_focal.append(('PuTTY',
-# """sudo apt-get install -y putty
-# ########## Verify ##########
-# putty --help
-# """,True,None))
+# PuTTY
+programs_dragonOS_focal.append(('PuTTY',
+"""sudo apt-get install -y putty
+########## Verify ##########
+putty --help
+""",True,None))
 
 # # openHAB
 # programs_dragonOS_focal.append(('openHAB',
@@ -5252,30 +5383,30 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # ls /usr/bin/openhab-cli
 # """,True,None))
 
-# # rtl-zwave
-# programs_dragonOS_focal.append(('rtl-zwave',
-# """mkdir -p ~/Installed_by_FISSURE
-# sudo apt-get install -y libpcap-dev
-# cp -R """ + fissure_directory + """/Tools/rtl-zwave-master ~/Installed_by_FISSURE/
-# cd ~/Installed_by_FISSURE/rtl-zwave-master
-# make
-# ########## Verify ##########
-# ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
-# """,True,None))
+# rtl-zwave
+programs_dragonOS_focal.append(('rtl-zwave',
+"""mkdir -p ~/Installed_by_FISSURE
+sudo apt-get install -y libpcap-dev
+cp -R """ + fissure_directory + """/Tools/rtl-zwave-master ~/Installed_by_FISSURE/
+cd ~/Installed_by_FISSURE/rtl-zwave-master
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
+""",True,None))
 
-# # waving-z
-# programs_dragonOS_focal.append(('waving-z',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE/
-# git clone https://github.com/baol/waving-z.git
-# cd ~/Installed_by_FISSURE/waving-z
-# mkdir build
-# cd build
-# cmake .. -DCMAKE_BUILD_TYPE=Release
-# cmake --build .
-# ########## Verify ##########
-# ls ~/Installed_by_FISSURE/waving-z/build/wave-in
-# """,True,None))
+# waving-z
+programs_dragonOS_focal.append(('waving-z',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE/
+git clone https://github.com/baol/waving-z.git
+cd ~/Installed_by_FISSURE/waving-z
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build .
+########## Verify ##########
+ls ~/Installed_by_FISSURE/waving-z/build/wave-in
+""",True,None))
 
 # # baudline
 # programs_dragonOS_focal.append(('baudline',
@@ -5321,16 +5452,16 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # ls ~/Installed_by_FISSURE/kalibrate-rtl/src/kal
 # """,True,None))
 
-# # retrogram-rtlsdr
-# programs_dragonOS_focal.append(('retrogram-rtlsdr',
-# """mkdir -p ~/Installed_by_FISSURE
-# sudo apt-get install -y librtlsdr-dev libncurses5-dev libboost-program-options-dev
-# cp -R """ + fissure_directory + """/Tools/retrogram-rtlsdr-master ~/Installed_by_FISSURE/
-# cd ~/Installed_by_FISSURE/retrogram-rtlsdr-master
-# make
-# ########## Verify ##########
-# ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
-# """,True,None))
+# retrogram-rtlsdr
+programs_dragonOS_focal.append(('retrogram-rtlsdr',
+"""mkdir -p ~/Installed_by_FISSURE
+sudo apt-get install -y librtlsdr-dev libncurses5-dev libboost-program-options-dev
+cp -R """ + fissure_directory + """/Tools/retrogram-rtlsdr-master ~/Installed_by_FISSURE/
+cd ~/Installed_by_FISSURE/retrogram-rtlsdr-master
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
+""",True,None))
 
 # # RTLSDR-Airband
 # programs_dragonOS_focal.append(('RTLSDR-Airband',
@@ -5380,12 +5511,12 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 # """,True,None))
 
-# # Audio Tools
-# programs_dragonOS_focal.append(('Audio Tools',
-# """sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
-# ########## Verify ##########
-# audacity --version && sox --version
-# """,True,None))
+# Audio Tools
+programs_dragonOS_focal.append(('Audio Tools',
+"""sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
+########## Verify ##########
+audacity --version && sox --version
+""",True,None))
 
 # # Video Tools
 # programs_dragonOS_focal.append(('Video Tools',
@@ -5613,18 +5744,18 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # ls /usr/bin/monitor_rtl433
 # """,True,None))
 
-# # scan-ssid
-# programs_dragonOS_focal.append(('scan-ssid',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# sudo apt-get install -y iw
-# git clone https://github.com/Resethel/scan-ssid.git
-# cd scan-ssid
-# sudo cp scan-ssid /usr/local/bin
-# sudo chmod 755 /usr/local/bin/scan-ssid  # can't be in monitor mode, managed only
-# ########## Verify ##########
-# scan-ssid --help
-# """,True,None))
+# scan-ssid
+programs_dragonOS_focal.append(('scan-ssid',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+sudo apt-get install -y iw
+git clone https://github.com/Resethel/scan-ssid.git
+cd scan-ssid
+sudo cp scan-ssid /usr/local/bin
+sudo chmod 755 /usr/local/bin/scan-ssid  # can't be in monitor mode, managed only
+########## Verify ##########
+scan-ssid --help
+""",True,None))
 
 # # minimodem
 # programs_dragonOS_focal.append(('minimodem',
@@ -5640,15 +5771,15 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # ls /usr/bin/wsjtx
 # """,True,None))
 
-# # Google Earth Pro
-# programs_dragonOS_focal.append(('Google Earth Pro',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_current_amd64.deb
-# sudo dpkg -i google-earth-pro-stable_current_amd64.deb
-# ########## Verify ##########
-# ls /usr/bin/google-earth-pro
-# """,True,None))
+# Google Earth Pro
+programs_dragonOS_focal.append(('Google Earth Pro',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_current_amd64.deb
+sudo dpkg -i google-earth-pro-stable_current_amd64.deb
+########## Verify ##########
+ls /usr/bin/google-earth-pro
+""",True,None))
 
 # # gr-air-modes
 # programs_dragonOS_focal.append(('gr-air-modes',
@@ -5657,13 +5788,13 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # modes_rx --help
 # """,True,None))
 
-# # ESP8266 Deauther v2
-# programs_dragonOS_focal.append(('ESP8266 Deauther v2',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
-# unzip -q v2.zip
-# rm v2.zip
+# ESP8266 Deauther v2
+programs_dragonOS_focal.append(('ESP8266 Deauther v2',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
+unzip -q v2.zip
+rm v2.zip
 # """,True,None))
 
 # # Viking
@@ -5699,12 +5830,12 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # gpredict --help
 # """,True,None))
 
-# # FoxtrotGPS
-# programs_dragonOS_focal.append(('FoxtrotGPS',
-# """sudo apt-get install -y foxtrotgps
-# ########## Verify ##########
-# foxtrotgps --help
-# """,True,None))
+# FoxtrotGPS
+programs_dragonOS_focal.append(('FoxtrotGPS',
+"""sudo apt-get install -y foxtrotgps
+########## Verify ##########
+foxtrotgps --help
+""",True,None))
 
 # # multimon-ng
 # programs_dragonOS_focal.append(('multimon-ng',
@@ -5744,12 +5875,12 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # ls /usr/local/bin/CellSearch
 # """,True,None))
 
-# # btscanner
-# programs_dragonOS_focal.append(('btscanner',
-# """sudo apt-get install -y btscanner
-# ########## Verify ##########
-# btscanner --help
-# """,True,None))
+# btscanner
+programs_dragonOS_focal.append(('btscanner',
+"""sudo apt-get install -y btscanner
+########## Verify ##########
+btscanner --help
+""",True,None))
 
 # # hcidump
 # programs_dragonOS_focal.append(('hcidump',

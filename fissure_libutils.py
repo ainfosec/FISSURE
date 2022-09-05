@@ -500,7 +500,7 @@ def addAttack(library, protocol, attack):
         if tree_parent == attack_item.split(",")[0]:
             index_value = library["Attacks"][file_type + " Attacks"].index(attack_item) + 1
             level = int(attack_item.split(",")[1]) + 1
-            new_attack = attack_dict.keys()[0] + "," + str(level)
+            new_attack = list(attack_dict.keys())[0] + "," + str(level)
             if new_attack not in library["Attacks"][file_type + " Attacks"]:
                 library["Attacks"][file_type + " Attacks"].insert(index_value,new_attack)   
     
@@ -515,7 +515,7 @@ def addSOI(library, protocol, soi):
         # temp_soi_dict[new_key] = existing_sois[s]
 
     # New SOI
-    existing_sois[soi.keys()[0]] = soi.values()[0]
+    existing_sois[list(soi.keys())[0]] = soi.values()[0]
         
     # Add SOI
     try:
