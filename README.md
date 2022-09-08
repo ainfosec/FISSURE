@@ -20,6 +20,7 @@ Operating System            |  FISSURE Branch
 | Ubuntu 18.04.6 (x64) | Python2_maint-3.7 |
 | Ubuntu 20.04.1 (x64) | Python3_maint-3.8 |
 | Ubuntu 20.04.4 (x64) | Python3_maint-3.8 |
+| KDE neon 5.25 (x64) | Python3_maint-3.8 |
 
 **In-Progress (beta)**
 

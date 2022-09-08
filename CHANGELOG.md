@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-09-07
+
+The new KDE neon install follows the same steps as Ubuntu 20.04.4. 
+
+### Added
+
+- Added KDE Neon (User - 5.25/20.04) option to the installer for the Python3 branch. Will be the same steps as 20.04.4 until a difference is found.
+
+### Fixed
+
+- Modified ESP32 Bluetooth Classic Sniffer installation to work with Wireshark 3.6.5.
+
 ## 2022-09-05
 
 Ubuntu 22.04 is still not fully supported. The 3.10 flow graphs need to be integrated and tested. There are also a few issues remaining with the install.

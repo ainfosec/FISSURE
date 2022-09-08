@@ -1504,17 +1504,23 @@ programs_ubuntu18_04.append(('Enscribe',
 ls /usr/bin/enscribe
 """,True,None))
 
-# ESP32 Bluetooth Classic Sniffer - FIX
-programs_ubuntu18_04.append(('ESP32 Bluetooth Classic Sniffer',
-"""mkdir -p ~/Installed_by_FISSURE  # Install after Wireshark, requires Wireshark 3.4, cannot get it to work with other versions
+# ESP32 Bluetooth Classic Sniffer
+programs_ubuntu18_04.append(('ESP32 BT Classic Sniffer',
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
 cd ~/Installed_by_FISSURE
-#git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
-#cd esp32_bluetooth_classic_sniffer
-#sudo ./requirements.sh
-#./build.sh
-#sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.4
-#rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
-""",False,None))
+git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
+cd esp32_bluetooth_classic_sniffer
+rm ./dissectors/config.h
+sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sudo ./requirements.sh
+./build.sh
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+########## Verify ##########
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+""",True,None))
 
 
 
@@ -3009,20 +3015,23 @@ programs_ubuntu18_04_5.append(('Enscribe',
 ls /usr/bin/enscribe
 """,True,None))
 
-# ESP32 Bluetooth Classic Sniffer - FIX
-programs_ubuntu18_04_5.append(('ESP32 Bluetooth Classic Sniffer',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
+# ESP32 Bluetooth Classic Sniffer
+programs_ubuntu18_04_5.append(('ESP32 BT Classic Sniffer',
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
 cd ~/Installed_by_FISSURE
-#git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
-#cd esp32_bluetooth_classic_sniffer/dissectors
-#sed -i 's/3.4/3.6/g' build.sh
-##cp """ + fissure_directory + """/Tools/esp32_bluetooth_classic_sniffer/18-04-5_3-6_config.h config.h
-#cd ..
-#sudo ./requirements.sh
-#./build.sh
-#sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.6
-#rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" error
-""",False,None))
+git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
+cd esp32_bluetooth_classic_sniffer
+rm ./dissectors/config.h
+sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sudo ./requirements.sh
+./build.sh
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+########## Verify ##########
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+""",True,None))
 
 
 ########################################################################
@@ -4517,20 +4526,23 @@ programs_ubuntu18_04_6.append(('Enscribe',
 ls /usr/bin/enscribe
 """,True,None))
 
-# ESP32 Bluetooth Classic Sniffer - FIX
-programs_ubuntu18_04_6.append(('ESP32 Bluetooth Classic Sniffer',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
+# ESP32 Bluetooth Classic Sniffer
+programs_ubuntu18_04_6.append(('ESP32 BT Classic Sniffer',
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
 cd ~/Installed_by_FISSURE
-#git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
-#cd esp32_bluetooth_classic_sniffer/dissectors
-#sed -i 's/3.4/3.6/g' build.sh
-##cp """ + fissure_directory + """/Tools/esp32_bluetooth_classic_sniffer/18-04-5_3-6_config.h config.h
-#cd ..
-#sudo ./requirements.sh
-#./build.sh
-#sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.6
-#rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" error
-""",False,None))
+git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
+cd esp32_bluetooth_classic_sniffer
+rm ./dissectors/config.h
+sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sudo ./requirements.sh
+./build.sh
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+########## Verify ##########
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+""",True,None))
 
 
 
