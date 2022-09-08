@@ -1529,17 +1529,23 @@ programs_ubuntu20_04.append(('Enscribe',
 ls /usr/bin/enscribe
 """,True,None))
 
-# ESP32 Bluetooth Classic Sniffer - Fix (needs specific Wireshark version)
+# ESP32 Bluetooth Classic Sniffer
 programs_ubuntu20_04.append(('ESP32 BT Classic Sniffer',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
 cd ~/Installed_by_FISSURE
-#git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
-#cd esp32_bluetooth_classic_sniffer
-#sudo ./requirements.sh
-#./build.sh
-##sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.4
-#rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
-""",False,None))
+git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
+cd esp32_bluetooth_classic_sniffer
+rm ./dissectors/config.h
+sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sudo ./requirements.sh
+./build.sh
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+########## Verify ##########
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+""",True,None))
 
 
 
@@ -3054,17 +3060,23 @@ programs_ubuntu20_04_4.append(('Enscribe',
 ls /usr/bin/enscribe
 """,True,None))
 
-# ESP32 Bluetooth Classic Sniffer - Fix (needs specific Wireshark version)
+# ESP32 Bluetooth Classic Sniffer
 programs_ubuntu20_04_4.append(('ESP32 BT Classic Sniffer',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
 cd ~/Installed_by_FISSURE
-#git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
-#cd esp32_bluetooth_classic_sniffer
-#sudo ./requirements.sh
-#./build.sh
-##sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.4
-#rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
-""",False,None))
+git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
+cd esp32_bluetooth_classic_sniffer
+rm ./dissectors/config.h
+sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sudo ./requirements.sh
+./build.sh
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+########## Verify ##########
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+""",True,None))
 
 
 ########################################################################
@@ -4480,17 +4492,23 @@ programs_ubuntu22_04.append(('Enscribe',
 ls /usr/bin/enscribe
 """,True,None))
 
-# ESP32 Bluetooth Classic Sniffer - Fix (needs specific Wireshark version)
+# ESP32 Bluetooth Classic Sniffer
 programs_ubuntu22_04.append(('ESP32 BT Classic Sniffer',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
 cd ~/Installed_by_FISSURE
-#git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
-#cd esp32_bluetooth_classic_sniffer
-#sudo ./requirements.sh
-#./build.sh
-##sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.4
-#rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
-""",False,None))
+git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
+cd esp32_bluetooth_classic_sniffer
+rm ./dissectors/config.h
+sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sudo ./requirements.sh
+./build.sh
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+########## Verify ##########
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+""",True,None))
 
 
 
@@ -6000,17 +6018,23 @@ btscanner --help
 # ls /usr/bin/enscribe
 # """,True,None))
 
-# # ESP32 Bluetooth Classic Sniffer - Fix (needs specific Wireshark version)
+# # ESP32 Bluetooth Classic Sniffer
 # programs_dragonOS_focal.append(('ESP32 BT Classic Sniffer',
-# """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4, cannot get it to work with other versions
+# """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
 # cd ~/Installed_by_FISSURE
-# #git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
-# #cd esp32_bluetooth_classic_sniffer
-# #sudo ./requirements.sh
-# #./build.sh
-# ##sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.4/epan/  # Needs to go where "sudo Wireshark" dissectors are located, check Wireshark version for 3.4
-# #rm ~/.local/lib/wireshark/plugins/3.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
-# """,False,None))
+# git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
+# cd esp32_bluetooth_classic_sniffer
+# rm ./dissectors/config.h
+# sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
+# sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
+# sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+# sudo ./requirements.sh
+# ./build.sh
+# sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
+# rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+# ########## Verify ##########
+# ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+# """,True,None))
 
 
 ########################################################################
@@ -6265,6 +6289,9 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
             self.radioButton_ubuntu22_04.setChecked(True)
         elif "DragonOS Focal" in stdout:
             self.radioButton_dragonOS_focal.setChecked(True)
+        elif "KDE neon" in stdout:
+            if "5.25" in stdout:
+                self.radioButton_kde_neon_5_25.setChecked(True)
         
         self.get_os = ""
         
@@ -6287,6 +6314,8 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
             self.get_os = "Ubuntu 22.04"
         elif self.radioButton_dragonOS_focal.isChecked():
             self.get_os = "DragonOS Focal"
+        elif self.radioButton_kde_neon_5_25.isChecked():
+            self.get_os = "KDE neon 5.25"
             
         self.accept()
         
@@ -6315,6 +6344,8 @@ def main(argv):
             install_dlg2 = InstallDialog2(programs_ubuntu22_04)
         elif install_dlg1.get_os == "DragonOS Focal":
             install_dlg2 = InstallDialog2(programs_dragonOS_focal)
+        elif install_dlg1.get_os == "KDE neon 5.25":
+            install_dlg2 = InstallDialog2(programs_ubuntu20_04_4)
         install_dlg2.show() 
         
         # Install Clicked

@@ -14,7 +14,7 @@ The following is a table of the major software tools that have been proven to wo
 | CyberChef | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Dump1090 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Enscribe | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| ESP32 Bluetooth Classic Sniffer | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: | :question: | :question: |
+| ESP32 Bluetooth Classic Sniffer | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | ESP8266 Deauther v2 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | FALCON | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
 | fl2k | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -118,6 +118,7 @@ The following are the software versions that are included with the FISSURE insta
 4. [Ubuntu 20.04.1](#ubuntu_20_04_1)
 5. [Ubuntu 20.04.4](#ubuntu_20_04_4)
 6. [Ubuntu 22.04](#ubuntu_22_04)
+7. [KDE neon 5.25](#ubuntu_20_04_4)
 
 
 <div id="ubuntu_18_04"/> 
@@ -464,7 +465,7 @@ The following are the software versions that are included with the FISSURE insta
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 
 | Enscribe | 0.1.0 | No | Jason Downer | 
-| ~~ESP32 Bluetooth Classic Sniffer~~ | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
+| ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
@@ -574,7 +575,7 @@ The following are the software versions that are included with the FISSURE insta
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 
 | Enscribe | 0.1.0 | No | Jason Downer | 
-| ~~ESP32 Bluetooth Classic Sniffer~~ | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
+| ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
@@ -684,7 +685,7 @@ The following are the software versions that are included with the FISSURE insta
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 
 | Enscribe | 0.1.0 | No | Jason Downer | 
-| ~~ESP32 Bluetooth Classic Sniffer~~ | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
+| ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | ~~FALCON~~ | - | Yes | https://github.com/falkenber9/falcon | 
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
