@@ -1,32 +1,33 @@
 #!/bin/bash
 
 # Check Operating System
+ubuntu18_04=$(lsb_release -d 2>&1 | grep "Ubuntu 18.04")
 ubuntu20_04=$(lsb_release -d 2>&1 | grep "Ubuntu 20.04")
-if [[ -n "$ubuntu20_04" ]]
+dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal")
+kde_neon=$(lsb_release -d 2>&1 | grep "KDE neon")
+ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
+
+if [[ -n "$ubuntu18_04" ]]
 then
-    # Ubuntu 20.04
+    echo "Ubuntu 18.04 detected"
+fi
+
+# Python3_maint-3.8, Ubuntu 20.04, DragonOS Focal, KDE neon
+if [[ -n "$ubuntu20_04" ]] || [[ -n "$dragonOS_focal" ]] || [[ -n "$kde_neon" ]]
+then
     echo "Ubuntu 20.04 detected"
-    echo "This branch is for Ubuntu 18.04, 18.04.5 and 18.04.6 only. Switch to a different FISSURE branch before installing!"
+    echo "This branch is for Ubuntu 18.04, 18.04.5 and 18.04.6 only. Switch to the Python3_maint-3.8 branch and try again!"
     exit
 fi
 
-ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
+# Python3_maint-3.10, Ubuntu 22.04
 if [[ -n "$ubuntu22_04" ]]
 then
-    # Ubuntu 22.04
     echo "Ubuntu 22.04 detected"
-    echo "This branch is for Ubuntu 18.04, 18.04.5 and 18.04.6 only. Switch to a different FISSURE branch before installing!"
+    echo "This branch is for Ubuntu 18.04, 18.04.5 and 18.04.6 only. Switch to the Python3_maint-3.10 branch and try again!"
     exit
 fi
 
-dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal")
-if [[ -n "$dragonOS_focal" ]]
-then
-    # DragonOS Focal
-    echo "DragonOS Focal detected"
-    echo "This branch is for Ubuntu 18.04, 18.04.5 and 18.04.6 only. Switch to a different FISSURE branch before installing!"
-    exit
-fi
 
 python_version=$(python -V 2>&1 | grep -Po '(?<=Python )(.+)')
 if [[ -z "$python_version" ]]

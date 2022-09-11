@@ -11,7 +11,7 @@ The friendly Python codebase and user interface allows beginners to quickly lear
 
 **Supported**
 
-There are two branches within FISSURE to make file navigation easier and reduce code redundancy. The Python2_maint-3.7 branch contains a codebase built around Python2, PyQt4, and GNU Radio 3.7; while the Python3_maint-3.8 branch is built around Python3, PyQt5, and GNU Radio 3.8.
+There are three branches within FISSURE to make file navigation easier and reduce code redundancy. The Python2_maint-3.7 branch contains a codebase built around Python2, PyQt4, and GNU Radio 3.7; the Python3_maint-3.8 branch is built around Python3, PyQt5, and GNU Radio 3.8; and the Python3_maint-3.10 branch is built around Python3, PyQt5, and GNU Radio 3.10.
 
 Operating System            |  FISSURE Branch
 :-------------------------:|:-------------------------:
@@ -29,7 +29,7 @@ These operating systems are still in beta status. They are under development and
 Operating System            |  FISSURE Branch
 :-------------------------:|:-------------------------:
 | DragonOS Focal (x86_64) | Python3_maint-3.8 |
-| Ubuntu 22.04 (x64) | Python3_maint-3.8 |
+| Ubuntu 22.04 (x64) | Python3_maint-3.10 |
 
 Note: Certain software tools do not work for every OS. Refer to [Software And Conflicts](/Help/Markdown/SoftwareAndConflicts.md)
 
@@ -46,9 +46,9 @@ This will install PyQt software dependencies required to launch the installation
 
 Next, select the option that best matches your operating system (should be detected automatically if your OS matches an option).
 
-Python2_maint-3.7            |  Python3_maint-3.8
-:-------------------------:|:-------------------------:
-![install1b](/Icons/README/install1b.png)  |  ![install1a](/Icons/README/install1a.png)
+Python2_maint-3.7            |  Python3_maint-3.8            |  Python3_maint-3.10
+:-------------------------:|:-------------------------:|:-------------------------:
+![install1b](/Icons/README/install1b.png)  |  ![install1a](/Icons/README/install1a.png)  |  ![install1c](/Icons/README/install1c.png)
 
 It is recommended to install FISSURE on a clean operating system to avoid existing conflicts. Select all the recommended checkboxes (Default button) to avoid errors while operating the various tools within FISSURE. There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. If an item contains a "Verify" section at the end, the installer will run the command that follows and highlight the checkbox item green or red depending on if any errors are produced by the command. Checked items without a "Verify" section will remain black following the installation.
 
@@ -135,7 +135,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 
 ## Contributing
 
-Suggestions for improving FISSURE are strongly encouraged. Leave a comment in the [Discussions](https://github.com/ainfosec/FISSURE/discussions) page if you have any thoughts regarding the following:
+Suggestions for improving FISSURE are strongly encouraged. Leave a comment in the [Discussions](https://github.com/ainfosec/FISSURE/discussions) page or in the Discord Server if you have any thoughts regarding the following:
 - New feature suggestions and design changes
 - Software tools with installation steps
 - New lessons or additional material for existing lessons
@@ -165,6 +165,8 @@ GPL-3.0
 For license details, see LICENSE file.
 
 ## Contact
+
+Join the Discord Server: [https://discord.gg/JZDs5sgxcG](https://discord.gg/JZDs5sgxcG)
 
 Follow on Twitter: [@FissureRF](https://twitter.com/fissurerf), [@AinfoSec](https://twitter.com/ainfosec)
 

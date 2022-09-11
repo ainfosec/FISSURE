@@ -1545,6 +1545,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.actionLTE_ciphercheck.triggered.connect(self._slotMenuLTE_ciphercheckClicked)
         self.actionElectromagnetic_Radiation_Spectrum.triggered.connect(self._slotMenuElectromagneticRadiationSpectrumClicked)
         self.actionIIO_Oscilloscope.triggered.connect(self._slotMenuIIO_OscilloscopeClicked)
+        self.actionDiscord.triggered.connect(self._slotMenuHelpDiscordClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -20834,7 +20835,12 @@ class MainWindow(QtGui.QMainWindow, form_class):
         print "Please wait about 30 seconds for IIO Oscilloscope to load..."
         os.system("osc &")
         
-        
+    def _slotMenuHelpDiscordClicked(self):
+        """ Opens a browser to the FISSURE Discord server.
+        """
+        # Open a Browser 
+        os.system("sensible-browser https://discord.gg/JZDs5sgxcG &") 
+                
 
 class HelpMenuDialog(QtGui.QDialog, form_class6):
     def __init__(self):
