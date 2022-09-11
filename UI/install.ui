@@ -107,22 +107,6 @@
      <string>Ubuntu 20.04.1</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton_ubuntu22_04">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>80</y>
-      <width>180</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Ubuntu 22.04 (beta)</string>
-    </property>
-   </widget>
    <widget class="QRadioButton" name="radioButton_ubuntu20_04_4">
     <property name="enabled">
      <bool>true</bool>
@@ -146,7 +130,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>105</y>
+      <y>80</y>
       <width>180</width>
       <height>25</height>
      </rect>

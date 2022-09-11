@@ -27020,6 +27020,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionHelpSoftwareAndConflicts"/>
     <addaction name="actionHelpBuiltWith"/>
     <addaction name="menuGitHub"/>
+    <addaction name="actionDiscord"/>
     <addaction name="separator"/>
     <addaction name="actionHelpAbout"/>
    </widget>
@@ -28859,6 +28860,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionIIO_Oscilloscope">
    <property name="text">
     <string>IIO Oscilloscope</string>
+   </property>
+  </action>
+  <action name="actionDiscord">
+   <property name="text">
+    <string>Discord</string>
    </property>
   </action>
  </widget>
