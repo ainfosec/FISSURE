@@ -6,10 +6,11 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Wifi Default Usrpb205Mini Relay
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -18,10 +19,13 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 
+
+
+
 class Wifi_Default_USRPB205mini_Relay(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Wifi Default Usrpb205Mini Relay")
+        gr.top_block.__init__(self, "Wifi Default Usrpb205Mini Relay", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -47,11 +51,12 @@ class Wifi_Default_USRPB205mini_Relay(gr.top_block):
             ),
         )
         self.uhd_usrp_source_0_0.set_subdev_spec(rx_usrp_channel, 0)
-        self.uhd_usrp_source_0_0.set_center_freq(rx_frequency, 0)
-        self.uhd_usrp_source_0_0.set_gain(rx_usrp_gain, 0)
-        self.uhd_usrp_source_0_0.set_antenna('RX2', 0)
         self.uhd_usrp_source_0_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_source_0_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_source_0_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_source_0_0.set_center_freq(rx_frequency, 0)
+        self.uhd_usrp_source_0_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
             ",".join((serial, "")),
             uhd.stream_args(
@@ -62,18 +67,19 @@ class Wifi_Default_USRPB205mini_Relay(gr.top_block):
             '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(rx_usrp_channel, 0)
-        self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
-        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
-        self.uhd_usrp_sink_0.set_antenna('TX/RX', 0)
         self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec(0))
 
+        self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
+        self.uhd_usrp_sink_0.set_antenna('TX/RX', 0)
+        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
 
 
         ##################################################
         # Connections
         ##################################################
         self.connect((self.uhd_usrp_source_0_0, 0), (self.uhd_usrp_sink_0, 0))
+
 
     def get_tx_usrp_gain(self):
         return self.tx_usrp_gain
@@ -131,18 +137,21 @@ class Wifi_Default_USRPB205mini_Relay(gr.top_block):
 
 
 
+
 def main(top_block_cls=Wifi_Default_USRPB205mini_Relay, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

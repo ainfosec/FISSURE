@@ -6,21 +6,25 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Wifi Default Limesdr Relay
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-import limesdr
+import gnuradio.limesdr as limesdr
+
+
+
 
 class Wifi_Default_LimeSDR_Relay(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Wifi Default Limesdr Relay")
+        gr.top_block.__init__(self, "Wifi Default Limesdr Relay", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -37,46 +41,9 @@ class Wifi_Default_LimeSDR_Relay(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.limesdr_source_0 = limesdr.source('', 0, '', False)
+        self.limesdr_source_0 = limesdr.source('', rx_channel, '')
 
-
-        self.limesdr_source_0.set_sample_rate(sample_rate)
-
-
-        self.limesdr_source_0.set_center_freq(rx_frequency, 0)
-
-        self.limesdr_source_0.set_bandwidth(5e6, 0)
-
-
-
-
-        self.limesdr_source_0.set_gain(int(rx_gain), 0)
-
-
-        self.limesdr_source_0.set_antenna(255, 0)
-
-
-        self.limesdr_source_0.calibrate(5e6, 0)
-        self.limesdr_sink_0 = limesdr.sink('', 0, '', '')
-
-
-        self.limesdr_sink_0.set_sample_rate(sample_rate)
-
-
-        self.limesdr_sink_0.set_center_freq(tx_frequency, 0)
-
-        self.limesdr_sink_0.set_bandwidth(5e6, 0)
-
-
-
-
-        self.limesdr_sink_0.set_gain(int(tx_gain), 0)
-
-
-        self.limesdr_sink_0.set_antenna(255, 0)
-
-
-        self.limesdr_sink_0.calibrate(5e6, 0)
+        self.limesdr_sink_0 = limesdr.sink('', tx_channel, '', '')
 
 
 
@@ -85,13 +52,14 @@ class Wifi_Default_LimeSDR_Relay(gr.top_block):
         ##################################################
         self.connect((self.limesdr_source_0, 0), (self.limesdr_sink_0, 0))
 
+
     def get_tx_gain(self):
         return self.tx_gain
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.limesdr_sink_0.set_gain(int(self.tx_gain), 0)
-        self.limesdr_sink_0.set_gain(int(self.tx_gain), 1)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain),0)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain),1)
 
     def get_tx_frequency(self):
         return self.tx_frequency
@@ -117,8 +85,8 @@ class Wifi_Default_LimeSDR_Relay(gr.top_block):
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.limesdr_source_0.set_gain(int(self.rx_gain), 0)
-        self.limesdr_source_0.set_gain(int(self.rx_gain), 1)
+        self.limesdr_source_0.set_gain(int(self.rx_gain),0)
+        self.limesdr_source_0.set_gain(int(self.rx_gain),1)
 
     def get_rx_frequency(self):
         return self.rx_frequency
@@ -141,18 +109,21 @@ class Wifi_Default_LimeSDR_Relay(gr.top_block):
 
 
 
+
 def main(top_block_cls=Wifi_Default_LimeSDR_Relay, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

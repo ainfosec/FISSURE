@@ -6,9 +6,9 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Waterfall B210
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -26,6 +26,7 @@ from gnuradio import qtgui
 from gnuradio.filter import firdes
 import sip
 from gnuradio import gr
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -34,12 +35,16 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 from gnuradio.qtgui import Range, RangeWidget
+from PyQt5 import QtCore
+
+
+
 from gnuradio import qtgui
 
 class waterfall_b210(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Waterfall B210")
+        gr.top_block.__init__(self, "Waterfall B210", catch_exceptions=True)
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Waterfall B210")
         qtgui.util.check_set_qss()
@@ -83,12 +88,12 @@ class waterfall_b210(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         # Create the options list
-        self._sample_rate_options = [1e6, 5e6, 10e6, 20e6]
+        self._sample_rate_options = [1000000.0, 5000000.0, 10000000.0, 20000000.0]
         # Create the labels list
-        self._sample_rate_labels = ["1 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]
+        self._sample_rate_labels = ['1 MS/s', '5 MS/s', '10 MS/s', '20 MS/s']
         # Create the combo box
         self._sample_rate_tool_bar = Qt.QToolBar(self)
-        self._sample_rate_tool_bar.addWidget(Qt.QLabel('Sample Rate' + ": "))
+        self._sample_rate_tool_bar.addWidget(Qt.QLabel("Sample Rate" + ": "))
         self._sample_rate_combo_box = Qt.QComboBox()
         self._sample_rate_tool_bar.addWidget(self._sample_rate_combo_box)
         for _label in self._sample_rate_labels: self._sample_rate_combo_box.addItem(_label)
@@ -103,19 +108,19 @@ class waterfall_b210(gr.top_block, Qt.QWidget):
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_usrp_gain_range = Range(0, 90, 1, 60, 200)
-        self._rx_usrp_gain_win = RangeWidget(self._rx_usrp_gain_range, self.set_rx_usrp_gain, '              Gain:', "counter_slider", float)
+        self._rx_usrp_gain_win = RangeWidget(self._rx_usrp_gain_range, self.set_rx_usrp_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_grid_layout.addWidget(self._rx_usrp_gain_win, 1, 0, 1, 4)
         for r in range(1, 2):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         # Create the options list
-        self._rx_usrp_antenna_options = ["TX/RX", "RX2"]
+        self._rx_usrp_antenna_options = ['TX/RX', 'RX2']
         # Create the labels list
-        self._rx_usrp_antenna_labels = ["TX/RX", "RX2"]
+        self._rx_usrp_antenna_labels = ['TX/RX', 'RX2']
         # Create the combo box
         self._rx_usrp_antenna_tool_bar = Qt.QToolBar(self)
-        self._rx_usrp_antenna_tool_bar.addWidget(Qt.QLabel('        Antenna' + ": "))
+        self._rx_usrp_antenna_tool_bar.addWidget(Qt.QLabel("        Antenna" + ": "))
         self._rx_usrp_antenna_combo_box = Qt.QComboBox()
         self._rx_usrp_antenna_tool_bar.addWidget(self._rx_usrp_antenna_combo_box)
         for _label in self._rx_usrp_antenna_labels: self._rx_usrp_antenna_combo_box.addItem(_label)
@@ -130,7 +135,7 @@ class waterfall_b210(gr.top_block, Qt.QWidget):
         for c in range(1, 2):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_frequency_range = Range(50, 6000, 1, 2412, 200)
-        self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, ' Freq. (MHz):', "counter_slider", float)
+        self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, " Freq. (MHz):", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_grid_layout.addWidget(self._rx_frequency_win, 2, 0, 1, 4)
         for r in range(2, 3):
             self.top_grid_layout.setRowStretch(r, 1)
@@ -145,18 +150,20 @@ class waterfall_b210(gr.top_block, Qt.QWidget):
             ),
         )
         self.uhd_usrp_source_0.set_subdev_spec(rx_usrp_channel, 0)
-        self.uhd_usrp_source_0.set_center_freq(rx_frequency*1e6, 0)
-        self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
-        self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
         self.uhd_usrp_source_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_source_0.set_center_freq(rx_frequency*1e6, 0)
+        self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
             1024, #size
-            firdes.WIN_BLACKMAN_hARRIS, #wintype
+            window.WIN_BLACKMAN_hARRIS, #wintype
             0, #fc
             sample_rate, #bw
             "", #name
-            1 #number of inputs
+            1, #number of inputs
+            None # parent
         )
         self.qtgui_waterfall_sink_x_0.set_update_time(0.10)
         self.qtgui_waterfall_sink_x_0.enable_grid(False)
@@ -181,7 +188,8 @@ class waterfall_b210(gr.top_block, Qt.QWidget):
 
         self.qtgui_waterfall_sink_x_0.set_intensity_range(-140, 10)
 
-        self._qtgui_waterfall_sink_x_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_0.pyqwidget(), Qt.QWidget)
+        self._qtgui_waterfall_sink_x_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_0.qwidget(), Qt.QWidget)
+
         self.top_grid_layout.addWidget(self._qtgui_waterfall_sink_x_0_win, 3, 0, 6, 4)
         for r in range(3, 9):
             self.top_grid_layout.setRowStretch(r, 1)
@@ -189,15 +197,18 @@ class waterfall_b210(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setColumnStretch(c, 1)
 
 
-
         ##################################################
         # Connections
         ##################################################
         self.connect((self.uhd_usrp_source_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
 
+
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "waterfall_b210")
         self.settings.setValue("geometry", self.saveGeometry())
+        self.stop()
+        self.wait()
+
         event.accept()
 
     def get_serial(self):
@@ -245,6 +256,7 @@ class waterfall_b210(gr.top_block, Qt.QWidget):
 
 
 
+
 def main(top_block_cls=waterfall_b210, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -253,10 +265,15 @@ def main(top_block_cls=waterfall_b210, options=None):
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
+
     tb.start()
+
     tb.show()
 
     def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+
         Qt.QApplication.quit()
 
     signal.signal(signal.SIGINT, sig_handler)
@@ -266,12 +283,7 @@ def main(top_block_cls=waterfall_b210, options=None):
     timer.start(500)
     timer.timeout.connect(lambda: None)
 
-    def quitting():
-        tb.stop()
-        tb.wait()
-    qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
-
 
 if __name__ == '__main__':
     main()

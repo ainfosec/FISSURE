@@ -6,23 +6,27 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Mode S Ppm Usrpb210 Stdout
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 import pmt
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-import adsb
+import gnuradio.adsb as adsb
+
+
+
 
 class Mode_S_PPM_USRPB210_stdout(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Mode S Ppm Usrpb210 Stdout")
+        gr.top_block.__init__(self, "Mode S Ppm Usrpb210 Stdout", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -39,14 +43,13 @@ class Mode_S_PPM_USRPB210_stdout(gr.top_block):
         # Blocks
         ##################################################
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_float*1)
-        self.blocks_message_debug_0 = blocks.message_debug()
+        self.blocks_message_debug_0 = blocks.message_debug(True)
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, '/home/user/adsb.iq', True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
         self.adsb_framer_1 = adsb.framer(samp_rate, .1)
         self.adsb_demod_0 = adsb.demod(samp_rate)
         self.adsb_decoder_0_0 = adsb.decoder("All Messages", "None", "Verbose")
-
 
 
         ##################################################
@@ -58,6 +61,7 @@ class Mode_S_PPM_USRPB210_stdout(gr.top_block):
         self.connect((self.adsb_framer_1, 0), (self.adsb_demod_0, 0))
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.adsb_framer_1, 0))
         self.connect((self.blocks_file_source_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
+
 
     def get_serial(self):
         return self.serial
@@ -103,18 +107,21 @@ class Mode_S_PPM_USRPB210_stdout(gr.top_block):
 
 
 
+
 def main(top_block_cls=Mode_S_PPM_USRPB210_stdout, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     tb.wait()
 
 

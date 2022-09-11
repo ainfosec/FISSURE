@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Wideband Plutosdr
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -19,13 +19,16 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-import ainfosec
-import iio
+from gnuradio import iio
+import gnuradio.ainfosec as ainfosec
+
+
+
 
 class wideband_plutosdr(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Wideband Plutosdr")
+        gr.top_block.__init__(self, "Wideband Plutosdr", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -43,7 +46,16 @@ class wideband_plutosdr(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.iio_pluto_source_0 = iio.pluto_source("ip:" + str(ip_address), int(rx_freq), int(sample_rate), 20000000, 32768, True, True, True, 'manual', gain, '', True)
+        self.iio_pluto_source_0 = iio.fmcomms2_source_fc32("ip:" + str(ip_address) if "ip:" + str(ip_address) else iio.get_pluto_uri(), [True, True], 32768)
+        self.iio_pluto_source_0.set_len_tag_key('packet_len')
+        self.iio_pluto_source_0.set_frequency(int(rx_freq))
+        self.iio_pluto_source_0.set_samplerate(int(sample_rate))
+        self.iio_pluto_source_0.set_gain_mode(0, 'manual')
+        self.iio_pluto_source_0.set_gain(0, gain)
+        self.iio_pluto_source_0.set_quadrature(True)
+        self.iio_pluto_source_0.set_rfdc(True)
+        self.iio_pluto_source_0.set_bbdc(True)
+        self.iio_pluto_source_0.set_filter_params('Auto', '', 0, 0)
         self.fft_vxx_0 = fft.fft_vcc(fft_size, True, window.blackmanharris(fft_size), True, 1)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fft_size)
@@ -51,7 +63,6 @@ class wideband_plutosdr(gr.top_block):
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(-10, 1e-4, 0, True)
         self.ainfosec_wideband_detector1_0 = ainfosec.wideband_detector1("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
-
 
 
         ##################################################
@@ -64,6 +75,7 @@ class wideband_plutosdr(gr.top_block):
         self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
         self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.analog_pwr_squelch_xx_0, 0))
+
 
     def get_threshold(self):
         return self.threshold
@@ -83,7 +95,7 @@ class wideband_plutosdr(gr.top_block):
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self.ainfosec_wideband_detector1_0.set_sample_rate(self.sample_rate)
-        self.iio_pluto_source_0.set_params(int(self.rx_freq), int(self.sample_rate), 20000000, True, True, True, 'manual', self.gain, '', True)
+        self.iio_pluto_source_0.set_samplerate(int(self.sample_rate))
 
     def get_rx_freq(self):
         return self.rx_freq
@@ -91,7 +103,7 @@ class wideband_plutosdr(gr.top_block):
     def set_rx_freq(self, rx_freq):
         self.rx_freq = rx_freq
         self.ainfosec_wideband_detector1_0.set_rx_freq(self.rx_freq)
-        self.iio_pluto_source_0.set_params(int(self.rx_freq), int(self.sample_rate), 20000000, True, True, True, 'manual', self.gain, '', True)
+        self.iio_pluto_source_0.set_frequency(int(self.rx_freq))
 
     def get_ip_address(self):
         return self.ip_address
@@ -104,7 +116,7 @@ class wideband_plutosdr(gr.top_block):
 
     def set_gain(self, gain):
         self.gain = gain
-        self.iio_pluto_source_0.set_params(int(self.rx_freq), int(self.sample_rate), 20000000, True, True, True, 'manual', self.gain, '', True)
+        self.iio_pluto_source_0.set_gain(0, self.gain)
 
     def get_fft_size(self):
         return self.fft_size
@@ -127,18 +139,21 @@ class wideband_plutosdr(gr.top_block):
 
 
 
+
 def main(top_block_cls=wideband_plutosdr, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

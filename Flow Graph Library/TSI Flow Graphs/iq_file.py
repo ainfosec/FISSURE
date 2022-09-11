@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Iq File
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -20,12 +20,15 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-import ainfosec
+import gnuradio.ainfosec as ainfosec
+
+
+
 
 class iq_file(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Iq File")
+        gr.top_block.__init__(self, "Iq File", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -51,7 +54,6 @@ class iq_file(gr.top_block):
         self.ainfosec_wideband_detector1_0 = ainfosec.wideband_detector1("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -63,6 +65,7 @@ class iq_file(gr.top_block):
         self.connect((self.blocks_throttle_0, 0), (self.analog_pwr_squelch_xx_0, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
         self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
+
 
     def get_threshold(self):
         return self.threshold
@@ -101,18 +104,21 @@ class iq_file(gr.top_block):
 
 
 
+
 def main(top_block_cls=iq_file, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

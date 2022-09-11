@@ -6,22 +6,26 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Iq Recorder Limesdr
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-import limesdr
+import gnuradio.limesdr as limesdr
+
+
+
 
 class iq_recorder_limesdr(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Iq Recorder Limesdr")
+        gr.top_block.__init__(self, "Iq Recorder Limesdr", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -38,31 +42,12 @@ class iq_recorder_limesdr(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.limesdr_source_0 = limesdr.source('', 0, '', False)
+        self.limesdr_source_0 = limesdr.source('', int(rx_channel), '')
 
-
-        self.limesdr_source_0.set_sample_rate(sample_rate*1e6)
-
-
-        self.limesdr_source_0.set_center_freq(rx_frequency*1e6, 0)
-
-        self.limesdr_source_0.set_bandwidth(5e6, 0)
-
-
-
-
-        self.limesdr_source_0.set_gain(int(rx_gain), 0)
-
-
-        self.limesdr_source_0.set_antenna(255, 0)
-
-
-        self.limesdr_source_0.calibrate(5e6, 0)
         self.blocks_skiphead_0 = blocks.skiphead(gr.sizeof_gr_complex*1, 200000)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, file_length)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, filepath, False)
         self.blocks_file_sink_0.set_unbuffered(False)
-
 
 
         ##################################################
@@ -71,6 +56,7 @@ class iq_recorder_limesdr(gr.top_block):
         self.connect((self.blocks_head_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_skiphead_0, 0), (self.blocks_head_0, 0))
         self.connect((self.limesdr_source_0, 0), (self.blocks_skiphead_0, 0))
+
 
     def get_sample_rate(self):
         return self.sample_rate
@@ -83,8 +69,8 @@ class iq_recorder_limesdr(gr.top_block):
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.limesdr_source_0.set_gain(int(self.rx_gain), 0)
-        self.limesdr_source_0.set_gain(int(self.rx_gain), 1)
+        self.limesdr_source_0.set_gain(int(self.rx_gain),0)
+        self.limesdr_source_0.set_gain(int(self.rx_gain),1)
 
     def get_rx_frequency(self):
         return self.rx_frequency
@@ -127,18 +113,21 @@ class iq_recorder_limesdr(gr.top_block):
 
 
 
+
 def main(top_block_cls=iq_recorder_limesdr, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     tb.wait()
 
 

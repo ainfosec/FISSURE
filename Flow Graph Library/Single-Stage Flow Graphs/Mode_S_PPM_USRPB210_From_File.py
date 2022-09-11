@@ -6,11 +6,12 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Mode S Ppm Usrpb210 From File
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -18,13 +19,16 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import uhd
 import time
-import ainfosec
 import fuzzer
+import gnuradio.ainfosec as ainfosec
+
+
+
 
 class Mode_S_PPM_USRPB210_From_File(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Mode S Ppm Usrpb210 From File")
+        gr.top_block.__init__(self, "Mode S Ppm Usrpb210 From File", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -49,11 +53,12 @@ class Mode_S_PPM_USRPB210_From_File(gr.top_block):
             ),
             '',
         )
-        self.uhd_usrp_sink_0.set_center_freq(tx_freq, 0)
-        self.uhd_usrp_sink_0.set_gain(gain, 0)
-        self.uhd_usrp_sink_0.set_antenna('TX/RX', 0)
         self.uhd_usrp_sink_0.set_samp_rate(samp_rate)
-        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_sink_0.set_center_freq(tx_freq, 0)
+        self.uhd_usrp_sink_0.set_antenna('TX/RX', 0)
+        self.uhd_usrp_sink_0.set_gain(gain, 0)
         self.fuzzer_packet_insert_0 = fuzzer.packet_insert([0],int(samp_rate*transmit_interval/8),0)
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(8)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_char*1)
@@ -61,7 +66,6 @@ class Mode_S_PPM_USRPB210_From_File(gr.top_block):
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
         self.ainfosec_adsb_encode_0 = ainfosec.adsb_encode(filepath)
-
 
 
         ##################################################
@@ -74,6 +78,7 @@ class Mode_S_PPM_USRPB210_From_File(gr.top_block):
         self.connect((self.blocks_null_source_0, 0), (self.fuzzer_packet_insert_0, 0))
         self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.blocks_char_to_float_0, 0))
         self.connect((self.fuzzer_packet_insert_0, 0), (self.blocks_unpack_k_bits_bb_0, 0))
+
 
     def get_tx_freq(self):
         return self.tx_freq
@@ -122,18 +127,21 @@ class Mode_S_PPM_USRPB210_From_File(gr.top_block):
 
 
 
+
 def main(top_block_cls=Mode_S_PPM_USRPB210_From_File, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

@@ -6,11 +6,12 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Iq Recorder Hackrf
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -19,10 +20,13 @@ from gnuradio import eng_notation
 import osmosdr
 import time
 
+
+
+
 class iq_recorder_hackrf(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Iq Recorder Hackrf")
+        gr.top_block.__init__(self, "Iq Recorder Hackrf", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -46,6 +50,9 @@ class iq_recorder_hackrf(gr.top_block):
         self.osmosdr_source_0.set_sample_rate(float(sample_rate)*1e6)
         self.osmosdr_source_0.set_center_freq(rx_frequency*1e6, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
+        self.osmosdr_source_0.set_dc_offset_mode(0, 0)
+        self.osmosdr_source_0.set_iq_balance_mode(0, 0)
+        self.osmosdr_source_0.set_gain_mode(False, 0)
         self.osmosdr_source_0.set_gain(10, 0)
         self.osmosdr_source_0.set_if_gain(20, 0)
         self.osmosdr_source_0.set_bb_gain(rx_gain, 0)
@@ -57,13 +64,13 @@ class iq_recorder_hackrf(gr.top_block):
         self.blocks_file_sink_0.set_unbuffered(False)
 
 
-
         ##################################################
         # Connections
         ##################################################
         self.connect((self.blocks_head_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_skiphead_0, 0), (self.blocks_head_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.blocks_skiphead_0, 0))
+
 
     def get_serial(self):
         return self.serial
@@ -120,18 +127,21 @@ class iq_recorder_hackrf(gr.top_block):
 
 
 
+
 def main(top_block_cls=iq_recorder_hackrf, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     tb.wait()
 
 

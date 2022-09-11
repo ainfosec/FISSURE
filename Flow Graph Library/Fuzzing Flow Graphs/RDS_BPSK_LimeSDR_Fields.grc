@@ -1,6 +1,7 @@
 options:
   parameters:
     author: ''
+    catch_exceptions: 'True'
     category: RDS
     cmake_opt: ''
     comment: ''
@@ -396,6 +397,7 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
+    en_uvec: 'True'
   states:
     bus_sink: false
     bus_source: false
@@ -831,6 +833,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
+    coding: digital.DIFF_DIFFERENTIAL
     comment: ''
     maxoutbuf: outbuffer
     minoutbuf: '0'
@@ -1136,7 +1139,7 @@ blocks:
     samp_rate: lower_rate
     type: interp_fir_filter_fff
     width: .5e3
-    win: firdes.WIN_HAMMING
+    win: window.WIN_HAMMING
   states:
     bus_sink: false
     bus_source: false

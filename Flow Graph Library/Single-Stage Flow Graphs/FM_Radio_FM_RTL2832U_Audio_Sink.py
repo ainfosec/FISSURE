@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Fm Rtl2832U Audio Sink
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import audio
@@ -14,6 +14,7 @@ from gnuradio import blocks
 from gnuradio import filter
 from gnuradio.filter import firdes
 from gnuradio import gr
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -22,10 +23,13 @@ from gnuradio import eng_notation
 import osmosdr
 import time
 
+
+
+
 class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Fm Radio Fm Rtl2832U Audio Sink")
+        gr.top_block.__init__(self, "Fm Radio Fm Rtl2832U Audio Sink", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -43,8 +47,8 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
                 interpolation=12,
                 decimation=5,
-                taps=None,
-                fractional_bw=None)
+                taps=[],
+                fractional_bw=0)
         self.osmosdr_source_0 = osmosdr.source(
             args="numchan=" + str(1) + " " + ''
         )
@@ -52,6 +56,9 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         self.osmosdr_source_0.set_sample_rate(sample_rate)
         self.osmosdr_source_0.set_center_freq(frequency+frequency_offset, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
+        self.osmosdr_source_0.set_dc_offset_mode(0, 0)
+        self.osmosdr_source_0.set_iq_balance_mode(0, 0)
+        self.osmosdr_source_0.set_gain_mode(False, 0)
         self.osmosdr_source_0.set_gain(10, 0)
         self.osmosdr_source_0.set_if_gain(20, 0)
         self.osmosdr_source_0.set_bb_gain(rx_gain, 0)
@@ -64,7 +71,7 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
                 sample_rate,
                 75e3,
                 25e3,
-                firdes.WIN_HAMMING,
+                window.WIN_HAMMING,
                 6.76))
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(audio_gain)
@@ -74,7 +81,6 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         	audio_decimation=10,
         )
         self.analog_sig_source_x_0 = analog.sig_source_c(sample_rate, analog.GR_COS_WAVE, frequency_offset, 1, 0, 0)
-
 
 
         ##################################################
@@ -88,13 +94,14 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         self.connect((self.osmosdr_source_0, 0), (self.blocks_multiply_xx_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.analog_wfm_rcv_0, 0))
 
+
     def get_sample_rate(self):
         return self.sample_rate
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self.analog_sig_source_x_0.set_sampling_freq(self.sample_rate)
-        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 75e3, 25e3, firdes.WIN_HAMMING, 6.76))
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 75e3, 25e3, window.WIN_HAMMING, 6.76))
         self.osmosdr_source_0.set_sample_rate(self.sample_rate)
 
     def get_rx_gain(self):
@@ -134,18 +141,21 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
 
 
 
+
 def main(top_block_cls=FM_Radio_FM_RTL2832U_Audio_Sink, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

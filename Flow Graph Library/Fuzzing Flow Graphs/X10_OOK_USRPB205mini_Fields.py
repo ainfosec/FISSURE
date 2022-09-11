@@ -6,11 +6,12 @@
 #
 # GNU Radio Python Flow Graph
 # Title: X10 Ook Usrpb205Mini Fields
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -18,13 +19,16 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import uhd
 import time
-import X10
 import fuzzer
+import gnuradio.X10 as X10
+
+
+
 
 class X10_OOK_USRPB205mini_Fields(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "X10 Ook Usrpb205Mini Fields")
+        gr.top_block.__init__(self, "X10 Ook Usrpb205Mini Fields", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -63,16 +67,16 @@ class X10_OOK_USRPB205mini_Fields(gr.top_block):
             '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_usrp_channel, 0)
-        self.uhd_usrp_sink_0.set_center_freq(310.7e6, 0)
-        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
-        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
         self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_sink_0.set_center_freq(310.7e6, 0)
+        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
+        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
         self.fuzzer_fuzzer_0_0 = fuzzer.fuzzer(fuzzing_seed,fuzzing_fields,fuzzing_type,fuzzing_min,fuzzing_max,fuzzing_data,fuzzing_interval,fuzzing_protocol,fuzzing_packet_type,library_filepath)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_cc(0.9)
         self.X10_msg_gen_fuzzer_0 = X10.msg_gen_fuzzer(sample_rate,address_code,data_code,transmit_interval/2,transmit_interval)
-
 
 
         ##################################################
@@ -82,6 +86,7 @@ class X10_OOK_USRPB205mini_Fields(gr.top_block):
         self.connect((self.X10_msg_gen_fuzzer_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.uhd_usrp_sink_0, 0))
         self.connect((self.blocks_null_source_0, 0), (self.X10_msg_gen_fuzzer_0, 0))
+
 
     def get_tx_usrp_gain(self):
         return self.tx_usrp_gain
@@ -213,18 +218,21 @@ class X10_OOK_USRPB205mini_Fields(gr.top_block):
 
 
 
+
 def main(top_block_cls=X10_OOK_USRPB205mini_Fields, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

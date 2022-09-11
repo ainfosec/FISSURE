@@ -1,6 +1,7 @@
 options:
   parameters:
     author: ''
+    catch_exceptions: 'True'
     category: Custom
     cmake_opt: ''
     comment: ''
@@ -46,6 +47,7 @@ blocks:
     labels: '["BPSK 1/2", "BPSK 3/4", "QPSK 1/2", "QPSK 3/4", "16QAM 1/2", "16QAM
       3/4", "64QAM 2/3", "64QAM 3/4"]'
     num_opts: '0'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -95,6 +97,7 @@ blocks:
       11p'', ''174 | 5870.0 | 11p'', ''176 | 5880.0 | 11p'', ''178 | 5890.0 | 11p'',
       ''180 | 5900.0 | 11p'', ''182 | 5910.0 | 11p'', ''184 | 5920.0 | 11p'']'
     num_opts: '0'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -129,7 +132,7 @@ blocks:
     gui_hint: ''
     label: ''
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: int
     start: '10'
     step: '1'
@@ -156,6 +159,7 @@ blocks:
     label4: ''
     labels: '[]'
     num_opts: '3'
+    option0: '0'
     option1: 6e6
     option2: 11e6
     option3: '3'
@@ -191,7 +195,7 @@ blocks:
     gui_hint: ''
     label: ''
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: int
     start: '0'
     step: '1'
@@ -218,6 +222,7 @@ blocks:
     label4: ''
     labels: '["5 MHz", "10 MHz", "20 MHz"]'
     num_opts: '0'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -241,7 +246,7 @@ blocks:
     gui_hint: ''
     label: ''
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: '0'
     step: '0.01'
@@ -326,46 +331,6 @@ blocks:
     coordinate: [240, 396.0]
     rotation: 180
     state: enabled
-- name: blocks_socket_pdu_0_0
-  id: blocks_socket_pdu
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    host: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    mtu: '10000'
-    port: '52001'
-    tcp_no_delay: 'False'
-    type: UDP_SERVER
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [181, 270]
-    rotation: 0
-    state: enabled
-- name: blocks_socket_pdu_0_0_0
-  id: blocks_socket_pdu
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: For Beacons
-    host: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    mtu: '10000'
-    port: '52001'
-    tcp_no_delay: 'False'
-    type: UDP_SERVER
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [957, 373]
-    rotation: 0
-    state: disabled
 - name: blocks_tag_gate_0
   id: blocks_tag_gate
   parameters:
@@ -443,6 +408,46 @@ blocks:
     coordinate: [469, 251]
     rotation: 0
     state: enabled
+- name: network_socket_pdu_1
+  id: network_socket_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    host: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mtu: '10000'
+    port: '52001'
+    tcp_no_delay: 'False'
+    type: UDP_SERVER
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 236.0]
+    rotation: 0
+    state: true
+- name: network_socket_pdu_2
+  id: network_socket_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    host: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    mtu: '10000'
+    port: '52001'
+    tcp_no_delay: 'False'
+    type: TCP_SERVER
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [960, 388.0]
+    rotation: 0
+    state: disabled
 - name: osmosdr_sink_0
   id: osmosdr_sink
   parameters:
@@ -946,6 +951,38 @@ blocks:
     gain7: '0'
     gain8: '0'
     gain9: '0'
+    gain_type0: default
+    gain_type1: default
+    gain_type10: default
+    gain_type11: default
+    gain_type12: default
+    gain_type13: default
+    gain_type14: default
+    gain_type15: default
+    gain_type16: default
+    gain_type17: default
+    gain_type18: default
+    gain_type19: default
+    gain_type2: default
+    gain_type20: default
+    gain_type21: default
+    gain_type22: default
+    gain_type23: default
+    gain_type24: default
+    gain_type25: default
+    gain_type26: default
+    gain_type27: default
+    gain_type28: default
+    gain_type29: default
+    gain_type3: default
+    gain_type30: default
+    gain_type31: default
+    gain_type4: default
+    gain_type5: default
+    gain_type6: default
+    gain_type7: default
+    gain_type8: default
+    gain_type9: default
     len_tag_name: packet_len
     lo_export0: 'False'
     lo_export1: 'False'
@@ -1014,38 +1051,6 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     nchan: '1'
-    norm_gain0: 'True'
-    norm_gain1: 'False'
-    norm_gain10: 'False'
-    norm_gain11: 'False'
-    norm_gain12: 'False'
-    norm_gain13: 'False'
-    norm_gain14: 'False'
-    norm_gain15: 'False'
-    norm_gain16: 'False'
-    norm_gain17: 'False'
-    norm_gain18: 'False'
-    norm_gain19: 'False'
-    norm_gain2: 'False'
-    norm_gain20: 'False'
-    norm_gain21: 'False'
-    norm_gain22: 'False'
-    norm_gain23: 'False'
-    norm_gain24: 'False'
-    norm_gain25: 'False'
-    norm_gain26: 'False'
-    norm_gain27: 'False'
-    norm_gain28: 'False'
-    norm_gain29: 'False'
-    norm_gain3: 'False'
-    norm_gain30: 'False'
-    norm_gain31: 'False'
-    norm_gain4: 'False'
-    norm_gain5: 'False'
-    norm_gain6: 'False'
-    norm_gain7: 'False'
-    norm_gain8: 'False'
-    norm_gain9: 'False'
     num_mboards: '1'
     otw: ''
     samp_rate: samp_rate
@@ -1058,6 +1063,7 @@ blocks:
     sd_spec6: ''
     sd_spec7: ''
     show_lo_controls: 'False'
+    start_time: '-1.0'
     stream_args: ''
     stream_chans: '[]'
     sync: pc_clock
@@ -1102,8 +1108,6 @@ connections:
 - [blocks_keep_one_in_n_0, '0', qtgui_time_sink_x_0_0, '0']
 - [blocks_message_strobe_0_0, strobe, ieee802_11_mac_0, app in]
 - [blocks_multiply_const_vxx_0, '0', foo_packet_pad2_0, '0']
-- [blocks_socket_pdu_0_0, pdus, ieee802_11_mac_0, app in]
-- [blocks_socket_pdu_0_0_0, pdus, wifi_phy_hier_0, mac_in]
 - [blocks_tag_gate_0, '0', blocks_file_sink_0, '0']
 - [blocks_vector_source_x_0, '0', wifi_phy_hier_0, '0']
 - [foo_packet_pad2_0, '0', blocks_keep_one_in_n_0, '0']
@@ -1111,6 +1115,8 @@ connections:
 - [foo_packet_pad2_0, '0', osmosdr_sink_0, '0']
 - [foo_packet_pad2_0, '0', uhd_usrp_sink_0, '0']
 - [ieee802_11_mac_0, phy out, wifi_phy_hier_0, mac_in]
+- [network_socket_pdu_1, pdus, ieee802_11_mac_0, app in]
+- [network_socket_pdu_2, pdus, wifi_phy_hier_0, mac_in]
 - [wifi_phy_hier_0, '0', blocks_multiply_const_vxx_0, '0']
 
 metadata:

@@ -1,13 +1,14 @@
 import sys
-from PyQt4 import QtCore, QtGui, uic
+from PyQt5 import QtCore, QtGui, uic, QtWidgets
 import os
 import time
+import subprocess
 
 Ui_MainWindow, QtBaseClass = uic.loadUiType("main.ui")
 
-class MonitorModeTool(QtGui.QMainWindow, Ui_MainWindow):
+class MonitorModeTool(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
-        QtGui.QMainWindow.__init__(self)
+        QtWidgets.QMainWindow.__init__(self)
         Ui_MainWindow.__init__(self)
         self.setupUi(self)
         self.connect()
@@ -28,7 +29,7 @@ class MonitorModeTool(QtGui.QMainWindow, Ui_MainWindow):
     def refreshInterfaces(self):
         """ Loads all available interfaces in the comboboxes.
         """
-        print "Refreshing Interfaces"
+        print("Refreshing Interfaces")
         
         # Update Interface Comboboxes
         get_interfaces = os.listdir("/sys/class/net/")
@@ -45,7 +46,7 @@ class MonitorModeTool(QtGui.QMainWindow, Ui_MainWindow):
         self.comboBox_managed_mode_interface.setCurrentIndex(self.comboBox_managed_mode_interface.count()-1)
         self.comboBox_aircrack_interface.setCurrentIndex(self.comboBox_aircrack_interface.count()-1)
         
-        print "Done"
+        print("Done")
         
         
     def monitorMode(self):
@@ -61,8 +62,8 @@ class MonitorModeTool(QtGui.QMainWindow, Ui_MainWindow):
         
         # Disable Network Manager
         if get_disable_network_manager == True:
-            os.system("sudo service network-manager stop")
-            self.label_terminal.setText(str(self.label_terminal.text()) + "\n\tsudo service network-manager stop")
+            os.system("sudo service NetworkManager stop")
+            self.label_terminal.setText(str(self.label_terminal.text()) + "\n\tsudo service NetworkManager stop")
         
         # Put into Monitor Mode        
         os.system("sudo ifconfig " + get_interface + " down")
@@ -79,9 +80,10 @@ class MonitorModeTool(QtGui.QMainWindow, Ui_MainWindow):
         # Done
         self.label_terminal.setText(str(self.label_terminal.text()) + "\nDone")
         
-        # Print "ifconfig" Output
-        stdouterr = os.popen4("sudo iwconfig " + get_interface)[1].read()
-        self.label_terminal.setText(str(self.label_terminal.text()) + "\n\n" + stdouterr)
+        # Print "iwconfig" Output
+        proc = subprocess.Popen("sudo iwconfig " + get_interface + ' &', shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
+        self.label_terminal.setText(str(self.label_terminal.text()) + "\n\n" + output)
         
         
     def managedMode(self):
@@ -102,20 +104,21 @@ class MonitorModeTool(QtGui.QMainWindow, Ui_MainWindow):
         self.label_terminal.setText(str(self.label_terminal.text()) + "\n\tsudo ifconfig " + get_interface + " up")
         
         # Start Network Manager
-        os.system("sudo service network-manager start")
-        self.label_terminal.setText(str(self.label_terminal.text()) + "\n\tsudo service network-manager start")
+        os.system("sudo service NetworkManager start")
+        self.label_terminal.setText(str(self.label_terminal.text()) + "\n\tsudo service NetworkManager start")
         
         # Done
         self.label_terminal.setText(str(self.label_terminal.text()) + "\nDone")
         
-        # Print "ifconfig" Output
-        stdouterr = os.popen4("sudo iwconfig " + get_interface)[1].read()
-        self.label_terminal.setText(str(self.label_terminal.text()) + "\n\n" + stdouterr)
+        # Print "iwconfig" Output
+        proc = subprocess.Popen("sudo iwconfig " + get_interface + ' &', shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
+        self.label_terminal.setText(str(self.label_terminal.text()) + "\n\n" + output)
 
     def aircrackStartStop(self):
         """ Starts and stops an Aircrack capture.
         """
-        print "Starting Aircrack Capture"
+        print("Starting Aircrack Capture")
         
         get_interface = str(self.comboBox_aircrack_interface.currentText())
         get_channel = str(self.comboBox_aircrack_channel.currentText())
@@ -128,12 +131,12 @@ class MonitorModeTool(QtGui.QMainWindow, Ui_MainWindow):
         # Run Airodump on New Aircrack Interface
         os.system("sudo airodump-ng -c " + get_channel + " -d " + get_mac_filter + " -w " + get_filepath + " --output-format pcap " + get_interface)
                 
-        print "Done"
+        print("Done")
         
     def aircrackFileOpen(self):
         """ Opens a dialog to select the filepath for new aircrack captures.
         """
-        print "file open clicked"
+        print("file open clicked")
         dlg = QtGui.QFileDialog()
         dlg.setFileMode(QtGui.QFileDialog.AnyFile)
         dlg.setFilter("CAP (*.cap)")
@@ -155,7 +158,7 @@ class MonitorModeTool(QtGui.QMainWindow, Ui_MainWindow):
 if __name__ == "__main__":
     """ main()
     """
-    app = QtGui.QApplication(sys.argv)
+    app = QtWidgets.QApplication(sys.argv)
     window = MonitorModeTool()
     window.show()
     sys.exit(app.exec_())

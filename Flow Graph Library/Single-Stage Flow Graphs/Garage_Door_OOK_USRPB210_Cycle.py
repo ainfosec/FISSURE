@@ -6,11 +6,12 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Garage Door Ook Usrpb210 Cycle
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -18,12 +19,15 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import uhd
 import time
-import garage_door
+import gnuradio.garage_door as garage_door
+
+
+
 
 class Garage_Door_OOK_USRPB210_Cycle(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Garage Door Ook Usrpb210 Cycle")
+        gr.top_block.__init__(self, "Garage Door Ook Usrpb210 Cycle", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -53,15 +57,15 @@ class Garage_Door_OOK_USRPB210_Cycle(gr.top_block):
             '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_usrp_channel, 0)
-        self.uhd_usrp_sink_0.set_center_freq(tx_usrp_frequency, 0)
-        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
-        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
         self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_sink_0.set_center_freq(tx_usrp_frequency, 0)
+        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
+        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
         self.garage_door_message_cycler_0 = garage_door.message_cycler(sample_rate,dip_interval,starting_dip,bursts_per_dip,burst_interval)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_cc(0.9)
-
 
 
         ##################################################
@@ -70,6 +74,7 @@ class Garage_Door_OOK_USRPB210_Cycle(gr.top_block):
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.uhd_usrp_sink_0, 0))
         self.connect((self.blocks_null_source_0, 0), (self.garage_door_message_cycler_0, 0))
         self.connect((self.garage_door_message_cycler_0, 0), (self.blocks_multiply_const_vxx_0, 0))
+
 
     def get_tx_usrp_gain(self):
         return self.tx_usrp_gain
@@ -148,18 +153,21 @@ class Garage_Door_OOK_USRPB210_Cycle(gr.top_block):
 
 
 
+
 def main(top_block_cls=Garage_Door_OOK_USRPB210_Cycle, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

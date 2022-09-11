@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Rds Bpsk Usrpb205Mini Fields
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -14,6 +14,7 @@ from gnuradio import digital
 from gnuradio import filter
 from gnuradio.filter import firdes
 from gnuradio import gr
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -24,10 +25,13 @@ import time
 import fuzzer
 import math
 
+
+
+
 class RDS_BPSK_USRPB205mini_Fields(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Rds Bpsk Usrpb205Mini Fields")
+        gr.top_block.__init__(self, "Rds Bpsk Usrpb205Mini Fields", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -69,11 +73,12 @@ class RDS_BPSK_USRPB205mini_Fields(gr.top_block):
             '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_usrp_channel, 0)
-        self.uhd_usrp_sink_0.set_center_freq(tx_usrp_freq, 0)
-        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
-        self.uhd_usrp_sink_0.set_antenna('TX/RX', 0)
         self.uhd_usrp_sink_0.set_samp_rate(1e6)
-        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_sink_0.set_center_freq(tx_usrp_freq, 0)
+        self.uhd_usrp_sink_0.set_antenna('TX/RX', 0)
+        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
         self.mmse_resampler_xx_1 = filter.mmse_resampler_cc(0, (usrp_rate/10000)/100.0)
         self.mmse_resampler_xx_0 = filter.mmse_resampler_ff(0, .00625)
         self.low_pass_filter_0 = filter.interp_fir_filter_fff(
@@ -83,7 +88,7 @@ class RDS_BPSK_USRPB205mini_Fields(gr.top_block):
                 usrp_rate,
                 2.5e3,
                 .5e3,
-                firdes.WIN_HAMMING,
+                window.WIN_HAMMING,
                 6.76))
         self.gr_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(2)
         self.gr_sig_source_x_0_0 = analog.sig_source_f(usrp_rate, analog.GR_SIN_WAVE, 57e3, 1, 0, 0)
@@ -91,14 +96,13 @@ class RDS_BPSK_USRPB205mini_Fields(gr.top_block):
         self.gr_map_bb_1 = digital.map_bb([1,2])
         self.gr_map_bb_0 = digital.map_bb([-1,1])
         self.gr_frequency_modulator_fc_0 = analog.frequency_modulator_fc(2*math.pi*fm_max_dev/usrp_rate)
-        self.gr_diff_encoder_bb_0 = digital.diff_encoder_bb(2)
+        self.gr_diff_encoder_bb_0 = digital.diff_encoder_bb(2, digital.DIFF_DIFFERENTIAL)
         self.gr_char_to_float_0 = blocks.char_to_float(1, 1)
         self.fuzzer_fuzzer_0_0 = fuzzer.fuzzer(fuzzing_seed,fuzzing_fields,fuzzing_type,fuzzing_min,fuzzing_max,fuzzing_data,fuzzing_interval,fuzzing_protocol,fuzzing_packet_type,library_filepath)
         self.fuzzer_continuous_insert_0 = fuzzer.continuous_insert((99, 147, 114, 129, 114, 161, 206, 17, 122, 136, 204, 130, 179))
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(8)
         self.blocks_null_source_0_0 = blocks.null_source(gr.sizeof_char*1)
         self.blocks_multiply_const_vxx_0_0 = blocks.multiply_const_ff(rds_gain)
-
 
 
         ##################################################
@@ -121,6 +125,7 @@ class RDS_BPSK_USRPB205mini_Fields(gr.top_block):
         self.connect((self.mmse_resampler_xx_0, 0), (self.low_pass_filter_0, 0))
         self.connect((self.mmse_resampler_xx_1, 0), (self.uhd_usrp_sink_0, 0))
 
+
     def get_usrp_rate(self):
         return self.usrp_rate
 
@@ -128,7 +133,7 @@ class RDS_BPSK_USRPB205mini_Fields(gr.top_block):
         self.usrp_rate = usrp_rate
         self.gr_frequency_modulator_fc_0.set_sensitivity(2*math.pi*self.fm_max_dev/self.usrp_rate)
         self.gr_sig_source_x_0_0.set_sampling_freq(self.usrp_rate)
-        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.usrp_rate, 2.5e3, .5e3, firdes.WIN_HAMMING, 6.76))
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.usrp_rate, 2.5e3, .5e3, window.WIN_HAMMING, 6.76))
         self.mmse_resampler_xx_1.set_resamp_ratio((self.usrp_rate/10000)/100.0)
 
     def get_tx_usrp_gain(self):
@@ -269,18 +274,21 @@ class RDS_BPSK_USRPB205mini_Fields(gr.top_block):
 
 
 
+
 def main(top_block_cls=RDS_BPSK_USRPB205mini_Fields, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

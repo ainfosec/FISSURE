@@ -6,11 +6,12 @@
 #
 # GNU Radio Python Flow Graph
 # Title: X10 Ook Usrpx310 X10 Off
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -18,12 +19,15 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import uhd
 import time
-import X10
+import gnuradio.X10 as X10
+
+
+
 
 class X10_OOK_USRPX310_X10_Off(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "X10 Ook Usrpx310 X10 Off")
+        gr.top_block.__init__(self, "X10 Ook Usrpx310 X10 Off", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -54,15 +58,15 @@ class X10_OOK_USRPX310_X10_Off(gr.top_block):
             '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_usrp_channel, 0)
-        self.uhd_usrp_sink_0.set_center_freq(tx_usrp_frequency, 0)
-        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
-        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
         self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_sink_0.set_center_freq(tx_usrp_frequency, 0)
+        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
+        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_cc(0.9)
         self.X10_message_generator_0 = X10.message_generator(sample_rate,address_code,data_code,press_duration,press_repetition_interval)
-
 
 
         ##################################################
@@ -71,6 +75,7 @@ class X10_OOK_USRPX310_X10_Off(gr.top_block):
         self.connect((self.X10_message_generator_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.uhd_usrp_sink_0, 0))
         self.connect((self.blocks_null_source_0, 0), (self.X10_message_generator_0, 0))
+
 
     def get_tx_usrp_gain(self):
         return self.tx_usrp_gain
@@ -110,6 +115,7 @@ class X10_OOK_USRPX310_X10_Off(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
+        self.X10_message_generator_0.set_sample_rate(self.sample_rate)
         self.uhd_usrp_sink_0.set_samp_rate(self.sample_rate)
 
     def get_press_repetition_interval(self):
@@ -117,12 +123,14 @@ class X10_OOK_USRPX310_X10_Off(gr.top_block):
 
     def set_press_repetition_interval(self, press_repetition_interval):
         self.press_repetition_interval = press_repetition_interval
+        self.X10_message_generator_0.set_press_repetition_interval(self.press_repetition_interval)
 
     def get_press_duration(self):
         return self.press_duration
 
     def set_press_duration(self, press_duration):
         self.press_duration = press_duration
+        self.X10_message_generator_0.set_press_duration(self.press_duration)
 
     def get_notes(self):
         return self.notes
@@ -141,12 +149,15 @@ class X10_OOK_USRPX310_X10_Off(gr.top_block):
 
     def set_data_code(self, data_code):
         self.data_code = data_code
+        self.X10_message_generator_0.set_data_code(self.data_code)
 
     def get_address_code(self):
         return self.address_code
 
     def set_address_code(self, address_code):
         self.address_code = address_code
+        self.X10_message_generator_0.set_address_code(self.address_code)
+
 
 
 
@@ -156,12 +167,14 @@ def main(top_block_cls=X10_OOK_USRPX310_X10_Off, options=None):
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

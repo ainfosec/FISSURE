@@ -7,13 +7,14 @@
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Usrpx310 Demod
 # Description: This flow graph demodulates a traditional FM radio signal and sends the audio data over a ZMQ PUB socket as "floats".
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import filter
 from gnuradio.filter import firdes
 from gnuradio import gr
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -23,10 +24,13 @@ from gnuradio import uhd
 import time
 from gnuradio import zeromq
 
+
+
+
 class FM_Radio_USRPX310_Demod(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Fm Radio Usrpx310 Demod")
+        gr.top_block.__init__(self, "Fm Radio Usrpx310 Demod", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -43,7 +47,7 @@ class FM_Radio_USRPX310_Demod(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.zeromq_pub_sink_0 = zeromq.pub_sink(gr.sizeof_float, 1, "tcp://*:" + str(zmq_port), 100, False, -1)
+        self.zeromq_pub_sink_0 = zeromq.pub_sink(gr.sizeof_float, 1, "tcp://*:" + str(zmq_port), 100, False, -1, '')
         self.uhd_usrp_source_0_0 = uhd.usrp_source(
             ",".join(("addr=" + ip_address, "")),
             uhd.stream_args(
@@ -53,16 +57,17 @@ class FM_Radio_USRPX310_Demod(gr.top_block):
             ),
         )
         self.uhd_usrp_source_0_0.set_subdev_spec(rx_usrp_channel, 0)
-        self.uhd_usrp_source_0_0.set_center_freq(frequency+frequency_offset, 0)
-        self.uhd_usrp_source_0_0.set_gain(usrp_gain, 0)
-        self.uhd_usrp_source_0_0.set_antenna(rx_usrp_antenna, 0)
         self.uhd_usrp_source_0_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_source_0_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_source_0_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_source_0_0.set_center_freq(frequency+frequency_offset, 0)
+        self.uhd_usrp_source_0_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0_0.set_gain(usrp_gain, 0)
         self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
                 interpolation=12,
                 decimation=5,
-                taps=None,
-                fractional_bw=None)
+                taps=[],
+                fractional_bw=0)
         self.low_pass_filter_0 = filter.fir_filter_ccf(
             10,
             firdes.low_pass(
@@ -70,7 +75,7 @@ class FM_Radio_USRPX310_Demod(gr.top_block):
                 sample_rate,
                 75e3,
                 25e3,
-                firdes.WIN_HAMMING,
+                window.WIN_HAMMING,
                 6.76))
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(1)
@@ -79,7 +84,6 @@ class FM_Radio_USRPX310_Demod(gr.top_block):
         	audio_decimation=10,
         )
         self.analog_sig_source_x_0 = analog.sig_source_c(sample_rate, analog.GR_COS_WAVE, frequency_offset, 1, 0, 0)
-
 
 
         ##################################################
@@ -92,6 +96,7 @@ class FM_Radio_USRPX310_Demod(gr.top_block):
         self.connect((self.low_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.analog_wfm_rcv_0, 0))
         self.connect((self.uhd_usrp_source_0_0, 0), (self.blocks_multiply_xx_0, 0))
+
 
     def get_zmq_port(self):
         return self.zmq_port
@@ -112,7 +117,7 @@ class FM_Radio_USRPX310_Demod(gr.top_block):
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self.analog_sig_source_x_0.set_sampling_freq(self.sample_rate)
-        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 75e3, 25e3, firdes.WIN_HAMMING, 6.76))
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 75e3, 25e3, window.WIN_HAMMING, 6.76))
         self.uhd_usrp_source_0_0.set_samp_rate(self.sample_rate)
 
     def get_rx_usrp_channel(self):
@@ -151,18 +156,21 @@ class FM_Radio_USRPX310_Demod(gr.top_block):
 
 
 
+
 def main(top_block_cls=FM_Radio_USRPX310_Demod, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

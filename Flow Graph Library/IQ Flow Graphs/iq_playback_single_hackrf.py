@@ -6,12 +6,13 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Iq Playback Single Hackrf
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 import pmt
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -20,10 +21,13 @@ from gnuradio import eng_notation
 import osmosdr
 import time
 
+
+
+
 class iq_playback_single_hackrf(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Iq Playback Single Hackrf")
+        gr.top_block.__init__(self, "Iq Playback Single Hackrf", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -55,11 +59,11 @@ class iq_playback_single_hackrf(gr.top_block):
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
 
 
-
         ##################################################
         # Connections
         ##################################################
         self.connect((self.blocks_file_source_0, 0), (self.osmosdr_sink_0, 0))
+
 
     def get_tx_gain(self):
         return self.tx_gain
@@ -109,18 +113,21 @@ class iq_playback_single_hackrf(gr.top_block):
 
 
 
+
 def main(top_block_cls=iq_playback_single_hackrf, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     tb.wait()
 
 

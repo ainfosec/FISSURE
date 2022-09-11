@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Fm Limesdr File Sink
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import audio
@@ -14,17 +14,21 @@ from gnuradio import blocks
 from gnuradio import filter
 from gnuradio.filter import firdes
 from gnuradio import gr
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-import limesdr
+import gnuradio.limesdr as limesdr
+
+
+
 
 class FM_Radio_FM_LimeSDR_File_Sink(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Fm Radio Fm Limesdr File Sink")
+        gr.top_block.__init__(self, "Fm Radio Fm Limesdr File Sink", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -46,8 +50,8 @@ class FM_Radio_FM_LimeSDR_File_Sink(gr.top_block):
         self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
                 interpolation=12,
                 decimation=5,
-                taps=None,
-                fractional_bw=None)
+                taps=[],
+                fractional_bw=0)
         self.low_pass_filter_0 = filter.fir_filter_ccf(
             10,
             firdes.low_pass(
@@ -55,28 +59,10 @@ class FM_Radio_FM_LimeSDR_File_Sink(gr.top_block):
                 sample_rate,
                 75e3,
                 25e3,
-                firdes.WIN_HAMMING,
+                window.WIN_HAMMING,
                 6.76))
-        self.limesdr_source_0 = limesdr.source('', 0, '', False)
+        self.limesdr_source_0 = limesdr.source('', int(rx_channel), '')
 
-
-        self.limesdr_source_0.set_sample_rate(sample_rate)
-
-
-        self.limesdr_source_0.set_center_freq(rx_frequency, 0)
-
-        self.limesdr_source_0.set_bandwidth(5e6, 0)
-
-
-
-
-        self.limesdr_source_0.set_gain(int(rx_gain), 0)
-
-
-        self.limesdr_source_0.set_antenna(255, 0)
-
-
-        self.limesdr_source_0.calibrate(5e6, 0)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(audio_gain)
         self.blocks_head_0 = blocks.head(gr.sizeof_float*1, int(recording_length))
@@ -89,7 +75,6 @@ class FM_Radio_FM_LimeSDR_File_Sink(gr.top_block):
         	audio_decimation=10,
         )
         self.analog_sig_source_x_0 = analog.sig_source_c(sample_rate, analog.GR_COS_WAVE, frequency_offset, 1, 0, 0)
-
 
 
         ##################################################
@@ -106,21 +91,22 @@ class FM_Radio_FM_LimeSDR_File_Sink(gr.top_block):
         self.connect((self.low_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.analog_wfm_rcv_0, 0))
 
+
     def get_sample_rate(self):
         return self.sample_rate
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self.analog_sig_source_x_0.set_sampling_freq(self.sample_rate)
-        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 75e3, 25e3, firdes.WIN_HAMMING, 6.76))
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 75e3, 25e3, window.WIN_HAMMING, 6.76))
 
     def get_rx_gain(self):
         return self.rx_gain
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.limesdr_source_0.set_gain(int(self.rx_gain), 0)
-        self.limesdr_source_0.set_gain(int(self.rx_gain), 1)
+        self.limesdr_source_0.set_gain(int(self.rx_gain),0)
+        self.limesdr_source_0.set_gain(int(self.rx_gain),1)
 
     def get_rx_frequency(self):
         return self.rx_frequency
@@ -178,18 +164,21 @@ class FM_Radio_FM_LimeSDR_File_Sink(gr.top_block):
 
 
 
+
 def main(top_block_cls=FM_Radio_FM_LimeSDR_File_Sink, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

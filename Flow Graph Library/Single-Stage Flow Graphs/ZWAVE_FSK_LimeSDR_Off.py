@@ -6,24 +6,29 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Zwave Fsk Limesdr Off
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 from gnuradio import digital
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-import limesdr
-import zwave_poore
+from gnuradio import gr, pdu
+import gnuradio.limesdr as limesdr
+import gnuradio.zwave_poore as zwave_poore
+
+
+
 
 class ZWAVE_FSK_LimeSDR_Off(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Zwave Fsk Limesdr Off")
+        gr.top_block.__init__(self, "Zwave Fsk Limesdr Off", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -46,58 +51,41 @@ class ZWAVE_FSK_LimeSDR_Off(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.zwave_poore_message_generator_pdu_0_0 = zwave_poore.message_generator_pdu(repetition_interval,1,home_id,source_node_id,"4108","02","26","0100")
-        self.limesdr_sink_0 = limesdr.sink('', 0, '', 'packet_len')
+        self.zwave_poore_message_generator_pdu_0_0 = zwave_poore.message_generator_pdu(repetition_interval, 1, home_id, source_node_id, "4108", "02", "26", "0100")
+        self.pdu_pdu_to_tagged_stream_0 = pdu.pdu_to_tagged_stream(gr.types.byte_t, 'packet_len')
+        self.limesdr_sink_0 = limesdr.sink('', int(tx_channel), '', 'packet_len')
 
-
-        self.limesdr_sink_0.set_sample_rate(samp_rate)
-
-
-        self.limesdr_sink_0.set_center_freq(tx_frequency, 0)
-
-        self.limesdr_sink_0.set_bandwidth(5e6, 0)
-
-
-
-
-        self.limesdr_sink_0.set_gain(int(tx_gain), 0)
-
-
-        self.limesdr_sink_0.set_antenna(255, 0)
-
-
-        self.limesdr_sink_0.calibrate(5e6, 0)
         self.digital_gfsk_mod_0 = digital.gfsk_mod(
             samples_per_symbol=10,
             sensitivity=0.25,
             bt=0.65,
             verbose=False,
-            log=False)
+            log=False,
+            do_unpack=True)
         self.blocks_tag_gate_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_tag_gate_0.set_single_key("")
         self.blocks_stream_to_tagged_stream_0_0 = blocks.stream_to_tagged_stream(gr.sizeof_gr_complex, 1, 10*8*(26+msg_length+4), "packet_len")
-        self.blocks_pdu_to_tagged_stream_0 = blocks.pdu_to_tagged_stream(blocks.byte_t, 'packet_len')
         self.blocks_delay_0_0 = blocks.delay(gr.sizeof_gr_complex*1, (10*8*(26+msg_length+4))-24)
-
 
 
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.zwave_poore_message_generator_pdu_0_0, 'out'), (self.blocks_pdu_to_tagged_stream_0, 'pdus'))
+        self.msg_connect((self.zwave_poore_message_generator_pdu_0_0, 'out'), (self.pdu_pdu_to_tagged_stream_0, 'pdus'))
         self.connect((self.blocks_delay_0_0, 0), (self.blocks_stream_to_tagged_stream_0_0, 0))
-        self.connect((self.blocks_pdu_to_tagged_stream_0, 0), (self.digital_gfsk_mod_0, 0))
         self.connect((self.blocks_stream_to_tagged_stream_0_0, 0), (self.limesdr_sink_0, 0))
         self.connect((self.blocks_tag_gate_0, 0), (self.blocks_delay_0_0, 0))
         self.connect((self.digital_gfsk_mod_0, 0), (self.blocks_tag_gate_0, 0))
+        self.connect((self.pdu_pdu_to_tagged_stream_0, 0), (self.digital_gfsk_mod_0, 0))
+
 
     def get_tx_gain(self):
         return self.tx_gain
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.limesdr_sink_0.set_gain(int(self.tx_gain), 0)
-        self.limesdr_sink_0.set_gain(int(self.tx_gain), 1)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain),0)
+        self.limesdr_sink_0.set_gain(int(self.tx_gain),1)
 
     def get_tx_frequency(self):
         return self.tx_frequency
@@ -183,18 +171,21 @@ class ZWAVE_FSK_LimeSDR_Off(gr.top_block):
 
 
 
+
 def main(top_block_cls=ZWAVE_FSK_LimeSDR_Off, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

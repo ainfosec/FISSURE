@@ -6,22 +6,26 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Iq Recorder Plutosdr
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-import iio
+from gnuradio import iio
+
+
+
 
 class iq_recorder_plutosdr(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Iq Recorder Plutosdr")
+        gr.top_block.__init__(self, "Iq Recorder Plutosdr", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -38,12 +42,20 @@ class iq_recorder_plutosdr(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.iio_pluto_source_0 = iio.pluto_source("ip:" + str(ip_address), int(float(rx_frequency)*1e6), int(float(sample_rate)*1e6), 20000000, 32768, True, True, True, 'manual', rx_gain, '', True)
+        self.iio_pluto_source_0 = iio.fmcomms2_source_fc32("ip:" + str(ip_address) if "ip:" + str(ip_address) else iio.get_pluto_uri(), [True, True], 32768)
+        self.iio_pluto_source_0.set_len_tag_key('packet_len')
+        self.iio_pluto_source_0.set_frequency(int(float(rx_frequency)*1e6))
+        self.iio_pluto_source_0.set_samplerate(int(float(sample_rate)*1e6))
+        self.iio_pluto_source_0.set_gain_mode(0, 'manual')
+        self.iio_pluto_source_0.set_gain(0, rx_gain)
+        self.iio_pluto_source_0.set_quadrature(True)
+        self.iio_pluto_source_0.set_rfdc(True)
+        self.iio_pluto_source_0.set_bbdc(True)
+        self.iio_pluto_source_0.set_filter_params('Auto', '', 0, 0)
         self.blocks_skiphead_0 = blocks.skiphead(gr.sizeof_gr_complex*1, 200000)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, file_length)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, filepath, False)
         self.blocks_file_sink_0.set_unbuffered(False)
-
 
 
         ##################################################
@@ -53,26 +65,27 @@ class iq_recorder_plutosdr(gr.top_block):
         self.connect((self.blocks_skiphead_0, 0), (self.blocks_head_0, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.blocks_skiphead_0, 0))
 
+
     def get_sample_rate(self):
         return self.sample_rate
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        self.iio_pluto_source_0.set_params(int(float(self.rx_frequency)*1e6), int(float(self.sample_rate)*1e6), 20000000, True, True, True, 'manual', self.rx_gain, '', True)
+        self.iio_pluto_source_0.set_samplerate(int(float(self.sample_rate)*1e6))
 
     def get_rx_gain(self):
         return self.rx_gain
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.iio_pluto_source_0.set_params(int(float(self.rx_frequency)*1e6), int(float(self.sample_rate)*1e6), 20000000, True, True, True, 'manual', self.rx_gain, '', True)
+        self.iio_pluto_source_0.set_gain(0, self.rx_gain)
 
     def get_rx_frequency(self):
         return self.rx_frequency
 
     def set_rx_frequency(self, rx_frequency):
         self.rx_frequency = rx_frequency
-        self.iio_pluto_source_0.set_params(int(float(self.rx_frequency)*1e6), int(float(self.sample_rate)*1e6), 20000000, True, True, True, 'manual', self.rx_gain, '', True)
+        self.iio_pluto_source_0.set_frequency(int(float(self.rx_frequency)*1e6))
 
     def get_rx_channel(self):
         return self.rx_channel
@@ -108,18 +121,21 @@ class iq_recorder_plutosdr(gr.top_block):
 
 
 
+
 def main(top_block_cls=iq_recorder_plutosdr, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     tb.wait()
 
 

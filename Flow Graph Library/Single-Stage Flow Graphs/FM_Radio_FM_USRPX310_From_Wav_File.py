@@ -6,13 +6,14 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Fm Usrpx310 From Wav File
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import filter
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -21,10 +22,13 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 
+
+
+
 class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Fm Radio Fm Usrpx310 From Wav File")
+        gr.top_block.__init__(self, "Fm Radio Fm Usrpx310 From Wav File", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -52,11 +56,12 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
             '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_usrp_channel, 0)
-        self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
-        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
-        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
         self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
+        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
+        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
         self.mmse_resampler_xx_0 = filter.mmse_resampler_ff(0, 48000/sample_rate)
         self.blocks_wavfile_source_0 = blocks.wavfile_source(filepath, True)
         self.analog_wfm_tx_0 = analog.wfm_tx(
@@ -68,13 +73,13 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
         )
 
 
-
         ##################################################
         # Connections
         ##################################################
         self.connect((self.analog_wfm_tx_0, 0), (self.uhd_usrp_sink_0, 0))
         self.connect((self.blocks_wavfile_source_0, 0), (self.mmse_resampler_xx_0, 0))
         self.connect((self.mmse_resampler_xx_0, 0), (self.analog_wfm_tx_0, 0))
+
 
     def get_tx_usrp_gain(self):
         return self.tx_usrp_gain
@@ -137,18 +142,21 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
 
 
 
+
 def main(top_block_cls=FM_Radio_FM_USRPX310_From_Wav_File, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

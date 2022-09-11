@@ -27020,6 +27020,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionHelpSoftwareAndConflicts"/>
     <addaction name="actionHelpBuiltWith"/>
     <addaction name="menuGitHub"/>
+    <addaction name="actionDiscord"/>
     <addaction name="separator"/>
     <addaction name="actionHelpAbout"/>
    </widget>
@@ -27834,6 +27835,9 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionFALCON">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>FALCON</string>
    </property>
@@ -28147,6 +28151,9 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionNETATTACK2">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>NETATTACK2</string>
    </property>
@@ -28657,6 +28664,9 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionTrackerjacker">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>trackerjacker</string>
    </property>
@@ -28847,6 +28857,9 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionLTE_ciphercheck">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>LTE-ciphercheck</string>
    </property>
@@ -28857,8 +28870,16 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionIIO_Oscilloscope">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>IIO Oscilloscope</string>
+   </property>
+  </action>
+  <action name="actionDiscord">
+   <property name="text">
+    <string>Discord</string>
    </property>
   </action>
  </widget>

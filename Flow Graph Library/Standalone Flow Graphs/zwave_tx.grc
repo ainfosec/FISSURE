@@ -1,6 +1,7 @@
 options:
   parameters:
     author: ''
+    catch_exceptions: 'True'
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
@@ -278,23 +279,6 @@ blocks:
     coordinate: [1191, 845]
     rotation: 0
     state: disabled
-- name: blocks_pdu_to_tagged_stream_0
-  id: blocks_pdu_to_tagged_stream
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    tag: packet_len
-    type: byte
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [380, 500]
-    rotation: 0
-    state: true
 - name: blocks_stream_to_tagged_stream_0
   id: blocks_stream_to_tagged_stream
   parameters:
@@ -359,6 +343,7 @@ blocks:
     alias: ''
     bt: '0.65'
     comment: ''
+    do_unpack: 'True'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -370,6 +355,23 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [616, 484]
+    rotation: 0
+    state: true
+- name: pdu_pdu_to_tagged_stream_0
+  id: pdu_pdu_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: packet_len
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [344, 500.0]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0
@@ -711,6 +713,38 @@ blocks:
     gain7: '0'
     gain8: '0'
     gain9: '0'
+    gain_type0: default
+    gain_type1: default
+    gain_type10: default
+    gain_type11: default
+    gain_type12: default
+    gain_type13: default
+    gain_type14: default
+    gain_type15: default
+    gain_type16: default
+    gain_type17: default
+    gain_type18: default
+    gain_type19: default
+    gain_type2: default
+    gain_type20: default
+    gain_type21: default
+    gain_type22: default
+    gain_type23: default
+    gain_type24: default
+    gain_type25: default
+    gain_type26: default
+    gain_type27: default
+    gain_type28: default
+    gain_type29: default
+    gain_type3: default
+    gain_type30: default
+    gain_type31: default
+    gain_type4: default
+    gain_type5: default
+    gain_type6: default
+    gain_type7: default
+    gain_type8: default
+    gain_type9: default
     len_tag_name: packet_len
     lo_export0: 'False'
     lo_export1: 'False'
@@ -779,38 +813,6 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     nchan: '1'
-    norm_gain0: 'False'
-    norm_gain1: 'False'
-    norm_gain10: 'False'
-    norm_gain11: 'False'
-    norm_gain12: 'False'
-    norm_gain13: 'False'
-    norm_gain14: 'False'
-    norm_gain15: 'False'
-    norm_gain16: 'False'
-    norm_gain17: 'False'
-    norm_gain18: 'False'
-    norm_gain19: 'False'
-    norm_gain2: 'False'
-    norm_gain20: 'False'
-    norm_gain21: 'False'
-    norm_gain22: 'False'
-    norm_gain23: 'False'
-    norm_gain24: 'False'
-    norm_gain25: 'False'
-    norm_gain26: 'False'
-    norm_gain27: 'False'
-    norm_gain28: 'False'
-    norm_gain29: 'False'
-    norm_gain3: 'False'
-    norm_gain30: 'False'
-    norm_gain31: 'False'
-    norm_gain4: 'False'
-    norm_gain5: 'False'
-    norm_gain6: 'False'
-    norm_gain7: 'False'
-    norm_gain8: 'False'
-    norm_gain9: 'False'
     num_mboards: '1'
     otw: ''
     samp_rate: sample_rate
@@ -823,6 +825,7 @@ blocks:
     sd_spec6: ''
     sd_spec7: ''
     show_lo_controls: 'False'
+    start_time: '-1.0'
     stream_args: ''
     stream_chans: '[]'
     sync: pc_clock
@@ -1009,7 +1012,6 @@ connections:
 - [blocks_delay_0, '0', blocks_stream_to_tagged_stream_0, '0']
 - [blocks_delay_1, '0', blocks_stream_to_tagged_stream_1, '0']
 - [blocks_head_0, '0', blocks_file_sink_0, '0']
-- [blocks_pdu_to_tagged_stream_0, '0', digital_gfsk_mod_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', analog_quadrature_demod_cf_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', blocks_head_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', qtgui_time_sink_x_0, '0']
@@ -1021,16 +1023,15 @@ connections:
 - [blocks_tag_gate_0, '0', blocks_delay_0, '0']
 - [blocks_tag_gate_0, '0', blocks_delay_1, '0']
 - [digital_gfsk_mod_0, '0', blocks_tag_gate_0, '0']
-- [zwave_poore_message_generator_pdu_0, out, blocks_pdu_to_tagged_stream_0, pdus]
-- [zwave_poore_message_generator_pdu_0_0, out, blocks_pdu_to_tagged_stream_0, pdus]
-- [zwave_poore_message_generator_pdu_0_0_0, out, blocks_pdu_to_tagged_stream_0, pdus]
-- [zwave_poore_message_generator_pdu_0_0_0_0, out, blocks_pdu_to_tagged_stream_0,
+- [pdu_pdu_to_tagged_stream_0, '0', digital_gfsk_mod_0, '0']
+- [zwave_poore_message_generator_pdu_0, out, pdu_pdu_to_tagged_stream_0, pdus]
+- [zwave_poore_message_generator_pdu_0_0, out, pdu_pdu_to_tagged_stream_0, pdus]
+- [zwave_poore_message_generator_pdu_0_0_0, out, pdu_pdu_to_tagged_stream_0, pdus]
+- [zwave_poore_message_generator_pdu_0_0_0_0, out, pdu_pdu_to_tagged_stream_0, pdus]
+- [zwave_poore_message_generator_pdu_0_0_0_0_0, out, pdu_pdu_to_tagged_stream_0, pdus]
+- [zwave_poore_message_generator_pdu_0_0_0_0_0_0, out, pdu_pdu_to_tagged_stream_0,
   pdus]
-- [zwave_poore_message_generator_pdu_0_0_0_0_0, out, blocks_pdu_to_tagged_stream_0,
-  pdus]
-- [zwave_poore_message_generator_pdu_0_0_0_0_0_0, out, blocks_pdu_to_tagged_stream_0,
-  pdus]
-- [zwave_poore_message_generator_pdu_0_0_0_0_0_0_0, out, blocks_pdu_to_tagged_stream_0,
+- [zwave_poore_message_generator_pdu_0_0_0_0_0_0_0, out, pdu_pdu_to_tagged_stream_0,
   pdus]
 
 metadata:

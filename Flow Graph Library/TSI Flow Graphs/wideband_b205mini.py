@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Wideband B205Mini
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -21,12 +21,15 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import uhd
 import time
-import ainfosec
+import gnuradio.ainfosec as ainfosec
+
+
+
 
 class wideband_b205mini(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Wideband B205Mini")
+        gr.top_block.__init__(self, "Wideband B205Mini", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -53,11 +56,12 @@ class wideband_b205mini(gr.top_block):
             ),
         )
         self.uhd_usrp_source_0.set_subdev_spec(channel, 0)
-        self.uhd_usrp_source_0.set_center_freq(rx_freq, 0)
-        self.uhd_usrp_source_0.set_gain(gain, 0)
-        self.uhd_usrp_source_0.set_antenna(antenna, 0)
         self.uhd_usrp_source_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_source_0.set_center_freq(rx_freq, 0)
+        self.uhd_usrp_source_0.set_antenna(antenna, 0)
+        self.uhd_usrp_source_0.set_gain(gain, 0)
         self.fft_vxx_0 = fft.fft_vcc(fft_size, True, window.blackmanharris(fft_size), True, 1)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fft_size)
@@ -65,7 +69,6 @@ class wideband_b205mini(gr.top_block):
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(-70, 1e-4, 0, True)
         self.ainfosec_wideband_detector1_0 = ainfosec.wideband_detector1("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
-
 
 
         ##################################################
@@ -78,6 +81,7 @@ class wideband_b205mini(gr.top_block):
         self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
         self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.analog_pwr_squelch_xx_0, 0))
+
 
     def get_threshold(self):
         return self.threshold
@@ -142,18 +146,21 @@ class wideband_b205mini(gr.top_block):
 
 
 
+
 def main(top_block_cls=wideband_b205mini, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

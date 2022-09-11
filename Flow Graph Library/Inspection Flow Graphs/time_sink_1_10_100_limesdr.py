@@ -6,9 +6,9 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Time Sink 1 10 100 Limesdr
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
-from distutils.version import StrictVersion
+from packaging.version import Version as StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -27,19 +27,24 @@ from gnuradio.filter import firdes
 import sip
 from gnuradio import blocks
 from gnuradio import gr
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
-import limesdr
+from PyQt5 import QtCore
+import gnuradio.limesdr as limesdr
+
+
+
 from gnuradio import qtgui
 
 class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Time Sink 1 10 100 Limesdr")
+        gr.top_block.__init__(self, "Time Sink 1 10 100 Limesdr", catch_exceptions=True)
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Time Sink 1 10 100 Limesdr")
         qtgui.util.check_set_qss()
@@ -80,12 +85,12 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         # Create the options list
-        self._sample_rate_options = [1e6, 5e6, 10e6, 20e6]
+        self._sample_rate_options = [1000000.0, 5000000.0, 10000000.0, 20000000.0]
         # Create the labels list
-        self._sample_rate_labels = ["1 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]
+        self._sample_rate_labels = ['1 MS/s', '5 MS/s', '10 MS/s', '20 MS/s']
         # Create the combo box
         self._sample_rate_tool_bar = Qt.QToolBar(self)
-        self._sample_rate_tool_bar.addWidget(Qt.QLabel('Sample Rate' + ": "))
+        self._sample_rate_tool_bar.addWidget(Qt.QLabel("Sample Rate" + ": "))
         self._sample_rate_combo_box = Qt.QComboBox()
         self._sample_rate_tool_bar.addWidget(self._sample_rate_combo_box)
         for _label in self._sample_rate_labels: self._sample_rate_combo_box.addItem(_label)
@@ -100,14 +105,14 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_gain_range = Range(0, 70, 1, 50, 200)
-        self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, '              Gain:', "counter_slider", float)
+        self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_grid_layout.addWidget(self._rx_gain_win, 1, 0, 1, 4)
         for r in range(1, 2):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_frequency_range = Range(50, 6000, .1, 2412, 200)
-        self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, ' Freq. (MHz):', "counter_slider", float)
+        self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, " Freq. (MHz):", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_grid_layout.addWidget(self._rx_frequency_win, 2, 0, 1, 4)
         for r in range(2, 3):
             self.top_grid_layout.setRowStretch(r, 1)
@@ -117,7 +122,8 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
             100000, #size
             sample_rate, #samp_rate
             "1 in 100", #name
-            1 #number of inputs
+            1, #number of inputs
+            None # parent
         )
         self.qtgui_time_sink_x_0_1.set_update_time(0.1)
         self.qtgui_time_sink_x_0_1.set_y_axis(-1, 1)
@@ -161,7 +167,7 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0_1.set_line_marker(i, markers[i])
             self.qtgui_time_sink_x_0_1.set_line_alpha(i, alphas[i])
 
-        self._qtgui_time_sink_x_0_1_win = sip.wrapinstance(self.qtgui_time_sink_x_0_1.pyqwidget(), Qt.QWidget)
+        self._qtgui_time_sink_x_0_1_win = sip.wrapinstance(self.qtgui_time_sink_x_0_1.qwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_1_win, 26, 0, 10, 4)
         for r in range(26, 36):
             self.top_grid_layout.setRowStretch(r, 1)
@@ -171,7 +177,8 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
             100000, #size
             sample_rate, #samp_rate
             "1 in 10", #name
-            1 #number of inputs
+            1, #number of inputs
+            None # parent
         )
         self.qtgui_time_sink_x_0_0.set_update_time(0.1)
         self.qtgui_time_sink_x_0_0.set_y_axis(-1, 1)
@@ -215,7 +222,7 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0_0.set_line_marker(i, markers[i])
             self.qtgui_time_sink_x_0_0.set_line_alpha(i, alphas[i])
 
-        self._qtgui_time_sink_x_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0.pyqwidget(), Qt.QWidget)
+        self._qtgui_time_sink_x_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0.qwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_win, 15, 0, 10, 4)
         for r in range(15, 25):
             self.top_grid_layout.setRowStretch(r, 1)
@@ -225,7 +232,8 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
             100000, #size
             sample_rate, #samp_rate
             "1 in 1", #name
-            1 #number of inputs
+            1, #number of inputs
+            None # parent
         )
         self.qtgui_time_sink_x_0.set_update_time(0.1)
         self.qtgui_time_sink_x_0.set_y_axis(-1, 1)
@@ -269,35 +277,16 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0.set_line_marker(i, markers[i])
             self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
 
-        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
+        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.qwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 3, 0, 10, 4)
         for r in range(3, 13):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.limesdr_source_0 = limesdr.source('', 0, '', False)
+        self.limesdr_source_0 = limesdr.source('', 0, '')
 
-
-        self.limesdr_source_0.set_sample_rate(sample_rate)
-
-
-        self.limesdr_source_0.set_center_freq(rx_frequency*1e6, 0)
-
-        self.limesdr_source_0.set_bandwidth(5e6, 0)
-
-
-
-
-        self.limesdr_source_0.set_gain(int(rx_gain), 0)
-
-
-        self.limesdr_source_0.set_antenna(255, 0)
-
-
-        self.limesdr_source_0.calibrate(5e6, 0)
         self.blocks_keep_one_in_n_0_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, 100)
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, 10)
-
 
 
         ##################################################
@@ -309,9 +298,13 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
         self.connect((self.limesdr_source_0, 0), (self.blocks_keep_one_in_n_0_0, 0))
         self.connect((self.limesdr_source_0, 0), (self.qtgui_time_sink_x_0, 0))
 
+
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "time_sink_1_10_100_limesdr")
         self.settings.setValue("geometry", self.saveGeometry())
+        self.stop()
+        self.wait()
+
         event.accept()
 
     def get_sample_rate(self):
@@ -329,7 +322,7 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.limesdr_source_0.set_gain(int(self.rx_gain), 0)
+        self.limesdr_source_0.set_gain(int(self.rx_gain),0)
 
     def get_rx_frequency(self):
         return self.rx_frequency
@@ -337,6 +330,7 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
     def set_rx_frequency(self, rx_frequency):
         self.rx_frequency = rx_frequency
         self.limesdr_source_0.set_center_freq(self.rx_frequency*1e6, 0)
+
 
 
 
@@ -348,10 +342,15 @@ def main(top_block_cls=time_sink_1_10_100_limesdr, options=None):
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
+
     tb.start()
+
     tb.show()
 
     def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+
         Qt.QApplication.quit()
 
     signal.signal(signal.SIGINT, sig_handler)
@@ -361,12 +360,7 @@ def main(top_block_cls=time_sink_1_10_100_limesdr, options=None):
     timer.start(500)
     timer.timeout.connect(lambda: None)
 
-    def quitting():
-        tb.stop()
-        tb.wait()
-    qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
-
 
 if __name__ == '__main__':
     main()

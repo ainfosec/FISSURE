@@ -1,11 +1,14 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-##################################################
+
+#
+# SPDX-License-Identifier: GPL-3.0
+#
 # GNU Radio Python Flow Graph
 # Title: Dect Gfsk Usrpx310 Wireshark
-# Generated: Sun Jan  9 14:23:37 2022
-##################################################
+# GNU Radio version: 3.10.1.1
 
+from packaging.version import Version as StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -15,29 +18,60 @@ if __name__ == '__main__':
             x11 = ctypes.cdll.LoadLibrary('libX11.so')
             x11.XInitThreads()
         except:
-            print "Warning: failed to XInitThreads()"
+            print("Warning: failed to XInitThreads()")
 
 from gnuradio import blocks
-from gnuradio import eng_notation
 from gnuradio import filter
-from gnuradio import gr
-from gnuradio import uhd
-from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
-from grc_gnuradio import wxgui as grc_wxgui
-from optparse import OptionParser
-import ainfosec
-import dect2
+from gnuradio import gr
+from gnuradio.fft import window
+import sys
+import signal
+from PyQt5 import Qt
+from argparse import ArgumentParser
+from gnuradio.eng_arg import eng_float, intx
+from gnuradio import eng_notation
+from gnuradio import uhd
 import time
-import wx
+import gnuradio.ainfosec as ainfosec
+import gnuradio.dect2 as dect2
 
 
-class DECT_GFSK_USRPX310_Wireshark(grc_wxgui.top_block_gui):
+
+from gnuradio import qtgui
+
+class DECT_GFSK_USRPX310_Wireshark(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        grc_wxgui.top_block_gui.__init__(self, title="Dect Gfsk Usrpx310 Wireshark")
-        _icon_path = "/usr/share/icons/hicolor/32x32/apps/gnuradio-grc.png"
-        self.SetIcon(wx.Icon(_icon_path, wx.BITMAP_TYPE_ANY))
+        gr.top_block.__init__(self, "Dect Gfsk Usrpx310 Wireshark", catch_exceptions=True)
+        Qt.QWidget.__init__(self)
+        self.setWindowTitle("Dect Gfsk Usrpx310 Wireshark")
+        qtgui.util.check_set_qss()
+        try:
+            self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
+        except:
+            pass
+        self.top_scroll_layout = Qt.QVBoxLayout()
+        self.setLayout(self.top_scroll_layout)
+        self.top_scroll = Qt.QScrollArea()
+        self.top_scroll.setFrameStyle(Qt.QFrame.NoFrame)
+        self.top_scroll_layout.addWidget(self.top_scroll)
+        self.top_scroll.setWidgetResizable(True)
+        self.top_widget = Qt.QWidget()
+        self.top_scroll.setWidget(self.top_widget)
+        self.top_layout = Qt.QVBoxLayout(self.top_widget)
+        self.top_grid_layout = Qt.QGridLayout()
+        self.top_layout.addLayout(self.top_grid_layout)
+
+        self.settings = Qt.QSettings("GNU Radio", "DECT_GFSK_USRPX310_Wireshark")
+
+        try:
+            if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
+                self.restoreGeometry(self.settings.value("geometry").toByteArray())
+            else:
+                self.restoreGeometry(self.settings.value("geometry"))
+        except:
+            pass
 
         ##################################################
         # Variables
@@ -57,27 +91,35 @@ class DECT_GFSK_USRPX310_Wireshark(grc_wxgui.top_block_gui):
         # Blocks
         ##################################################
         self.uhd_usrp_source_0 = uhd.usrp_source(
-        	",".join(('', "addr=" + ip_address)),
-        	uhd.stream_args(
-        		cpu_format="fc32",
-        		channels=range(1),
-        	),
+            ",".join(('', "addr=" + ip_address)),
+            uhd.stream_args(
+                cpu_format="fc32",
+                args='',
+                channels=list(range(0,1)),
+            ),
         )
         self.uhd_usrp_source_0.set_subdev_spec(rx_usrp_channel, 0)
         self.uhd_usrp_source_0.set_samp_rate(baseband_sampling_rate)
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec(0))
+
         self.uhd_usrp_source_0.set_center_freq(rx_freq, 0)
-        self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
-        self.rational_resampler = filter.rational_resampler_base_ccc(3, 2, (firdes.low_pass_2(1, 3*baseband_sampling_rate, dect_occupied_bandwidth/2, (dect_channel_bandwidth - dect_occupied_bandwidth)/2, 30)))
-        self.fractional_resampler = filter.fractional_resampler_cc(0, (3.0*baseband_sampling_rate/2.0)/dect_symbol_rate/4.0)
+        self.uhd_usrp_source_0.set_gain(rx_gain, 0)
+        self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
+                interpolation=3,
+                decimation=2,
+                taps=firdes.low_pass_2(1, 3*baseband_sampling_rate, dect_occupied_bandwidth/2, (dect_channel_bandwidth - dect_occupied_bandwidth)/2, 30),
+                fractional_bw=0)
+        self.mmse_resampler_xx_0 = filter.mmse_resampler_cc(0, (3.0*baseband_sampling_rate/2.0)/dect_symbol_rate/4.0)
         self.dect2_phase_diff_0 = dect2.phase_diff()
         self.dect2_packet_receiver_0 = dect2.packet_receiver()
         self.blocks_vector_source_x_0 = blocks.vector_source_b((0,0,0,0,0,0,170,170,170,233,138), True, 1, [])
         self.blocks_stream_to_tagged_stream_1 = blocks.stream_to_tagged_stream(gr.sizeof_char, 1, 59, "packet_len")
-        self.blocks_stream_mux_0 = blocks.stream_mux(gr.sizeof_char*1, (11, 48))
+        self.blocks_stream_mux_0 = blocks.stream_mux(gr.sizeof_char*1, 11, 48)
         self.blocks_pack_k_bits_bb_0 = blocks.pack_k_bits_bb(8)
         self.blocks_keep_m_in_n_0 = blocks.keep_m_in_n(gr.sizeof_char, 384, 388, 0)
-        self.ainfosec_pcap_fifo_0 = ainfosec.pcap_fifo(50000)
+        self.ainfosec_UDP_to_Wireshark_0 = ainfosec.UDP_to_Wireshark(50000)
+
 
         ##################################################
         # Connections
@@ -85,13 +127,22 @@ class DECT_GFSK_USRPX310_Wireshark(grc_wxgui.top_block_gui):
         self.connect((self.blocks_keep_m_in_n_0, 0), (self.blocks_pack_k_bits_bb_0, 0))
         self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.blocks_stream_mux_0, 1))
         self.connect((self.blocks_stream_mux_0, 0), (self.blocks_stream_to_tagged_stream_1, 0))
-        self.connect((self.blocks_stream_to_tagged_stream_1, 0), (self.ainfosec_pcap_fifo_0, 0))
+        self.connect((self.blocks_stream_to_tagged_stream_1, 0), (self.ainfosec_UDP_to_Wireshark_0, 0))
         self.connect((self.blocks_vector_source_x_0, 0), (self.blocks_stream_mux_0, 0))
         self.connect((self.dect2_packet_receiver_0, 0), (self.blocks_keep_m_in_n_0, 0))
         self.connect((self.dect2_phase_diff_0, 0), (self.dect2_packet_receiver_0, 0))
-        self.connect((self.fractional_resampler, 0), (self.dect2_phase_diff_0, 0))
-        self.connect((self.rational_resampler, 0), (self.fractional_resampler, 0))
-        self.connect((self.uhd_usrp_source_0, 0), (self.rational_resampler, 0))
+        self.connect((self.mmse_resampler_xx_0, 0), (self.dect2_phase_diff_0, 0))
+        self.connect((self.rational_resampler_xxx_0, 0), (self.mmse_resampler_xx_0, 0))
+        self.connect((self.uhd_usrp_source_0, 0), (self.rational_resampler_xxx_0, 0))
+
+
+    def closeEvent(self, event):
+        self.settings = Qt.QSettings("GNU Radio", "DECT_GFSK_USRPX310_Wireshark")
+        self.settings.setValue("geometry", self.saveGeometry())
+        self.stop()
+        self.wait()
+
+        event.accept()
 
     def get_rx_usrp_channel(self):
         return self.rx_usrp_channel
@@ -112,7 +163,6 @@ class DECT_GFSK_USRPX310_Wireshark(grc_wxgui.top_block_gui):
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
         self.uhd_usrp_source_0.set_gain(self.rx_gain, 0)
-
 
     def get_rx_freq(self):
         return self.rx_freq
@@ -138,38 +188,61 @@ class DECT_GFSK_USRPX310_Wireshark(grc_wxgui.top_block_gui):
 
     def set_dect_symbol_rate(self, dect_symbol_rate):
         self.dect_symbol_rate = dect_symbol_rate
-        self.fractional_resampler.set_resamp_ratio((3.0*self.baseband_sampling_rate/2.0)/self.dect_symbol_rate/4.0)
+        self.mmse_resampler_xx_0.set_resamp_ratio((3.0*self.baseband_sampling_rate/2.0)/self.dect_symbol_rate/4.0)
 
     def get_dect_occupied_bandwidth(self):
         return self.dect_occupied_bandwidth
 
     def set_dect_occupied_bandwidth(self, dect_occupied_bandwidth):
         self.dect_occupied_bandwidth = dect_occupied_bandwidth
-        self.rational_resampler.set_taps((firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30)))
+        self.rational_resampler_xxx_0.set_taps(firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30))
 
     def get_dect_channel_bandwidth(self):
         return self.dect_channel_bandwidth
 
     def set_dect_channel_bandwidth(self, dect_channel_bandwidth):
         self.dect_channel_bandwidth = dect_channel_bandwidth
-        self.rational_resampler.set_taps((firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30)))
+        self.rational_resampler_xxx_0.set_taps(firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30))
 
     def get_baseband_sampling_rate(self):
         return self.baseband_sampling_rate
 
     def set_baseband_sampling_rate(self, baseband_sampling_rate):
         self.baseband_sampling_rate = baseband_sampling_rate
+        self.mmse_resampler_xx_0.set_resamp_ratio((3.0*self.baseband_sampling_rate/2.0)/self.dect_symbol_rate/4.0)
+        self.rational_resampler_xxx_0.set_taps(firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30))
         self.uhd_usrp_source_0.set_samp_rate(self.baseband_sampling_rate)
-        self.rational_resampler.set_taps((firdes.low_pass_2(1, 3*self.baseband_sampling_rate, self.dect_occupied_bandwidth/2, (self.dect_channel_bandwidth - self.dect_occupied_bandwidth)/2, 30)))
-        self.fractional_resampler.set_resamp_ratio((3.0*self.baseband_sampling_rate/2.0)/self.dect_symbol_rate/4.0)
+
+
 
 
 def main(top_block_cls=DECT_GFSK_USRPX310_Wireshark, options=None):
 
-    tb = top_block_cls()
-    tb.Start(True)
-    tb.Wait()
+    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
+        style = gr.prefs().get_string('qtgui', 'style', 'raster')
+        Qt.QApplication.setGraphicsSystem(style)
+    qapp = Qt.QApplication(sys.argv)
 
+    tb = top_block_cls()
+
+    tb.start()
+
+    tb.show()
+
+    def sig_handler(sig=None, frame=None):
+        tb.stop()
+        tb.wait()
+
+        Qt.QApplication.quit()
+
+    signal.signal(signal.SIGINT, sig_handler)
+    signal.signal(signal.SIGTERM, sig_handler)
+
+    timer = Qt.QTimer()
+    timer.start(500)
+    timer.timeout.connect(lambda: None)
+
+    qapp.exec_()
 
 if __name__ == '__main__':
     main()

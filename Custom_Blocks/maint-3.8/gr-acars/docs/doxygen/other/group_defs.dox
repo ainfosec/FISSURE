@@ -1,7 +1,0 @@
-/*!
- * \defgroup block GNU Radio ACARS C++ Signal Processing Blocks
- * \brief All C++ blocks that can be used from the ACARS GNU Radio
- *        module are listed here or in the subcategories below.
- *
- */
-

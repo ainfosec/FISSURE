@@ -1,7 +1,0 @@
-/*!
- * \defgroup block GNU Radio BLUETOOTH C++ Signal Processing Blocks
- * \brief All C++ blocks that can be used from the BLUETOOTH GNU Radio
- *        module are listed here or in the subcategories below.
- *
- */
-

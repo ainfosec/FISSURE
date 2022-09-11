@@ -6,13 +6,14 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Simpliciti Msk Usrpx310 From File
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 import pmt
 from gnuradio import digital
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -21,10 +22,13 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 
+
+
+
 class SimpliciTI_MSK_USRPX310_From_File(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Simpliciti Msk Usrpx310 From File")
+        gr.top_block.__init__(self, "Simpliciti Msk Usrpx310 From File", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -51,17 +55,19 @@ class SimpliciTI_MSK_USRPX310_From_File(gr.top_block):
             '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_usrp_channel, 0)
-        self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
-        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
-        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
         self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
+        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
+        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
         self.digital_gfsk_mod_0 = digital.gfsk_mod(
             samples_per_symbol=4,
             sensitivity=0.2,
             bt=0.5,
             verbose=False,
-            log=False)
+            log=False,
+            do_unpack=True)
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(8)
         self.blocks_not_xx_0_0 = blocks.not_bb()
         self.blocks_multiply_const_vxx_1 = blocks.multiply_const_cc(0.1)
@@ -70,7 +76,6 @@ class SimpliciTI_MSK_USRPX310_From_File(gr.top_block):
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_char*1, filepath, True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
-
 
 
         ##################################################
@@ -84,6 +89,7 @@ class SimpliciTI_MSK_USRPX310_From_File(gr.top_block):
         self.connect((self.blocks_not_xx_0_0, 0), (self.digital_gfsk_mod_0, 0))
         self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.blocks_char_to_float_0, 0))
         self.connect((self.digital_gfsk_mod_0, 0), (self.blocks_multiply_const_vxx_1, 0))
+
 
     def get_tx_usrp_gain(self):
         return self.tx_usrp_gain
@@ -140,18 +146,21 @@ class SimpliciTI_MSK_USRPX310_From_File(gr.top_block):
 
 
 
+
 def main(top_block_cls=SimpliciTI_MSK_USRPX310_From_File, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

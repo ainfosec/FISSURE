@@ -1,6 +1,7 @@
 options:
   parameters:
     author: ''
+    catch_exceptions: 'True'
     category: '[GRC Hier Blocks]'
     cmake_opt: ''
     comment: ''
@@ -303,23 +304,6 @@ blocks:
     coordinate: [910, 814]
     rotation: 0
     state: disabled
-- name: blocks_pdu_to_tagged_stream_0
-  id: blocks_pdu_to_tagged_stream
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    tag: packet_len
-    type: byte
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [264, 428]
-    rotation: 0
-    state: enabled
 - name: blocks_stream_to_tagged_stream_0
   id: blocks_stream_to_tagged_stream
   parameters:
@@ -384,6 +368,7 @@ blocks:
     alias: ''
     bt: '0.65'
     comment: ''
+    do_unpack: 'True'
     log: 'False'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -403,20 +388,41 @@ blocks:
     affinity: ''
     alias: ''
     attenuation1: 89.75 - tx_gain
-    auto_filter: 'True'
     bandwidth: '20000000'
     buffer_size: '32768'
     comment: ''
     cyclic: 'False'
     filter: ''
+    filter_source: '''Auto'''
+    fpass: '0'
     frequency: int(tx_freq)
+    fstop: '0'
+    len_tag_key: ''
     samplerate: int(samp_rate)
+    type: fc32
     uri: '"ip:" + str(ip_address)'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
     coordinate: [1080, 613]
+    rotation: 0
+    state: true
+- name: pdu_pdu_to_tagged_stream_0
+  id: pdu_pdu_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: packet_len
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [224, 428.0]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0_0_0
@@ -780,7 +786,6 @@ connections:
 - [blocks_delay_0, '0', blocks_stream_to_tagged_stream_0, '0']
 - [blocks_delay_0_0, '0', blocks_stream_to_tagged_stream_0_0, '0']
 - [blocks_head_0, '0', blocks_file_sink_0, '0']
-- [blocks_pdu_to_tagged_stream_0, '0', digital_gfsk_mod_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', analog_quadrature_demod_cf_0_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', iio_pluto_sink_0, '0']
 - [blocks_stream_to_tagged_stream_0, '0', qtgui_time_sink_x_0_0_0_1, '0']
@@ -791,18 +796,8 @@ connections:
 - [blocks_tag_gate_0, '0', blocks_delay_0, '0']
 - [blocks_tag_gate_0, '0', blocks_delay_0_0, '0']
 - [digital_gfsk_mod_0, '0', blocks_tag_gate_0, '0']
-- [zwave_poore_message_generator_pdu_0, out, blocks_pdu_to_tagged_stream_0, pdus]
-- [zwave_poore_message_generator_pdu_0_0, out, blocks_pdu_to_tagged_stream_0, pdus]
-- [zwave_poore_message_generator_pdu_0_0_0_0_0_0, out, blocks_pdu_to_tagged_stream_0,
-  pdus]
-- [zwave_poore_message_generator_pdu_0_0_0_0_0_0_0, out, blocks_pdu_to_tagged_stream_0,
-  pdus]
-- [zwave_poore_message_generator_pdu_0_0_0_0_0_0_0_0, out, blocks_pdu_to_tagged_stream_0,
-  pdus]
-- [zwave_poore_message_generator_pdu_0_0_0_0_0_0_1, out, blocks_pdu_to_tagged_stream_0,
-  pdus]
-- [zwave_poore_message_generator_pdu_0_0_0_1, out, blocks_pdu_to_tagged_stream_0,
-  pdus]
+- [pdu_pdu_to_tagged_stream_0, '0', digital_gfsk_mod_0, '0']
+- [zwave_poore_message_generator_pdu_0_0_0_1, out, pdu_pdu_to_tagged_stream_0, pdus]
 
 metadata:
   file_format: 1

@@ -6,25 +6,29 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Mode S Ppm Hackrf From File
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-import ainfosec
 import fuzzer
+import gnuradio.ainfosec as ainfosec
 import osmosdr
 import time
+
+
+
 
 class Mode_S_PPM_HackRF_From_File(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Mode S Ppm Hackrf From File")
+        gr.top_block.__init__(self, "Mode S Ppm Hackrf From File", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -60,7 +64,6 @@ class Mode_S_PPM_HackRF_From_File(gr.top_block):
         self.ainfosec_adsb_encode_0 = ainfosec.adsb_encode(filepath)
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -71,6 +74,7 @@ class Mode_S_PPM_HackRF_From_File(gr.top_block):
         self.connect((self.blocks_null_source_0, 0), (self.fuzzer_packet_insert_0, 0))
         self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.blocks_char_to_float_0, 0))
         self.connect((self.fuzzer_packet_insert_0, 0), (self.blocks_unpack_k_bits_bb_0, 0))
+
 
     def get_tx_freq(self):
         return self.tx_freq
@@ -112,18 +116,21 @@ class Mode_S_PPM_HackRF_From_File(gr.top_block):
 
 
 
+
 def main(top_block_cls=Mode_S_PPM_HackRF_From_File, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

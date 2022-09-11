@@ -1,0 +1,69 @@
+id: wifi_phy_hier
+label: WiFi PHY Hier
+category: '[IEEE802.11]'
+
+parameters:
+-   id: bandwidth
+    label: bandwidth
+    dtype: real
+    default: 10e6
+    hide: none
+-   id: chan_est
+    label: chan_est
+    dtype: raw
+    default: ieee802_11.LS
+    hide: none
+-   id: encoding
+    label: encoding
+    dtype: raw
+    default: ieee802_11.BPSK_1_2
+    hide: none
+-   id: frequency
+    label: frequency
+    dtype: real
+    default: 5.89e9
+    hide: none
+-   id: sensitivity
+    label: sensitivity
+    dtype: real
+    default: '0.56'
+    hide: none
+
+inputs:
+-   label: samp_in
+    dtype: complex
+    vlen: 1
+-   label: mac_in
+    domain: message
+    dtype: message
+    optional: true
+
+outputs:
+-   label: samp_out
+    dtype: complex
+    vlen: 1
+-   label: carrier
+    domain: message
+    dtype: message
+    optional: true
+-   label: mac_out
+    domain: message
+    dtype: message
+    optional: true
+
+templates:
+    imports: 'from wifi_phy_hier import wifi_phy_hier  # grc-generated hier_block'
+    make: "wifi_phy_hier(\n    bandwidth=${ bandwidth },\n    chan_est=${ chan_est\
+        \ },\n    encoding=${ encoding },\n    frequency=${ frequency },\n    sensitivity=${\
+        \ sensitivity },\n)"
+    callbacks:
+    - set_bandwidth(${ bandwidth })
+    - set_chan_est(${ chan_est })
+    - set_encoding(${ encoding })
+    - set_frequency(${ frequency })
+    - set_sensitivity(${ sensitivity })
+
+documentation: /home/user/FISSURE/Flow Graph Library/Standalone Flow Graphs/wifi_phy_hier.py
+grc_source: /home/user/FISSURE/Flow Graph Library/Standalone Flow Graphs/wifi_phy_hier.grc
+
+file_format: 1

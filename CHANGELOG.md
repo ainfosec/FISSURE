@@ -1,6 +1,33 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-09-10
+
+Ubuntu 22.04 and the 3.10 OOT modules have been moved to a new branch: Python3_maint-3.10.
+ 
+### Added
+
+- Python3_maint-3.10 branch with 3.10 flow graphs, OOTs, and submodules
+- Discord link to README
+- Python3_maint-3.10 installer image to README
+- Discord link to Help menu
+   
+### Changed
+
+- Removed 3.10 OOT modules and submodules from Python3_maint-3.8 branch
+- Python3_maint-3.8 installer image in README
+- Branch information throughout the README
+- Removed Ubuntu 22.04 from Python3_maint-3.8 installer
+- Python2_maint-3.7 installer warnings and checks for other operating systems
+- Disabled broken 22.04 tools in the Dashboard menu for Python3_maint-3.10 branch
+ 
+### Fixed
+
+- Removed attack history debug messages in Python3_maint-3.8 branch
+- Check for KDE neon/Ubuntu 22.04 in the initial install script in Python3_maint-3.8 branch
+- Updated commands for 802.11 Monitor Mode Tool for Ubuntu 22.04 in Python3_maint-3.10 branch
+- Converted Monitor Mode Tool to Python3/PyQt5 for 3.8, 3.10 branches
+
 ## 2022-09-07
 
 The new KDE neon install follows the same steps as Ubuntu 20.04.4. The GUIs look a little wonky due to the differences in Qt.

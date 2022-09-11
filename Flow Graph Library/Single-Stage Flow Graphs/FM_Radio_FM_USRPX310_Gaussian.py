@@ -6,11 +6,12 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Fm Usrpx310 Gaussian
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -19,10 +20,13 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 
+
+
+
 class FM_Radio_FM_USRPX310_Gaussian(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Fm Radio Fm Usrpx310 Gaussian")
+        gr.top_block.__init__(self, "Fm Radio Fm Usrpx310 Gaussian", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -48,19 +52,20 @@ class FM_Radio_FM_USRPX310_Gaussian(gr.top_block):
             '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_usrp_channel, 0)
-        self.uhd_usrp_sink_0.set_center_freq(frequency, 0)
-        self.uhd_usrp_sink_0.set_gain(usrp_gain, 0)
-        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
         self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
-        self.analog_noise_source_x_0 = analog.noise_source_c(analog.GR_GAUSSIAN, 1, 0)
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec(0))
 
+        self.uhd_usrp_sink_0.set_center_freq(frequency, 0)
+        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
+        self.uhd_usrp_sink_0.set_gain(usrp_gain, 0)
+        self.analog_noise_source_x_0 = analog.noise_source_c(analog.GR_GAUSSIAN, 1, 0)
 
 
         ##################################################
         # Connections
         ##################################################
         self.connect((self.analog_noise_source_x_0, 0), (self.uhd_usrp_sink_0, 0))
+
 
     def get_usrp_gain(self):
         return self.usrp_gain
@@ -110,18 +115,21 @@ class FM_Radio_FM_USRPX310_Gaussian(gr.top_block):
 
 
 
+
 def main(top_block_cls=FM_Radio_FM_USRPX310_Gaussian, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

@@ -6,24 +6,29 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Zwave Fsk Plutosdr Transmit
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 from gnuradio import digital
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-import iio
-import zwave_poore
+from gnuradio import gr, pdu
+from gnuradio import iio
+import gnuradio.zwave_poore as zwave_poore
+
+
+
 
 class ZWAVE_FSK_PlutoSDR_Transmit(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Zwave Fsk Plutosdr Transmit")
+        gr.top_block.__init__(self, "Zwave Fsk Plutosdr Transmit", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -46,45 +51,52 @@ class ZWAVE_FSK_PlutoSDR_Transmit(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.zwave_poore_message_generator_pdu_0_0_0_1 = zwave_poore.message_generator_pdu(repetition_interval,1,home_id,source_node_id,frame_control,destination_node_id,command_class,command)
-        self.iio_pluto_sink_0 = iio.pluto_sink("ip:" + str(ip_address), int(tx_freq), int(samp_rate), 20000000, 32768, False, 89.75 - tx_gain, '', True)
+        self.zwave_poore_message_generator_pdu_0_0_0_1 = zwave_poore.message_generator_pdu(repetition_interval, 1, home_id, source_node_id, frame_control, destination_node_id, command_class, command)
+        self.pdu_pdu_to_tagged_stream_0 = pdu.pdu_to_tagged_stream(gr.types.byte_t, 'packet_len')
+        self.iio_pluto_sink_0 = iio.fmcomms2_sink_fc32("ip:" + str(ip_address) if "ip:" + str(ip_address) else iio.get_pluto_uri(), [True, True], 32768, False)
+        self.iio_pluto_sink_0.set_len_tag_key('')
+        self.iio_pluto_sink_0.set_bandwidth(20000000)
+        self.iio_pluto_sink_0.set_frequency(int(tx_freq))
+        self.iio_pluto_sink_0.set_samplerate(int(samp_rate))
+        self.iio_pluto_sink_0.set_attenuation(0, 89.75 - tx_gain)
+        self.iio_pluto_sink_0.set_filter_params('Auto', '', 0, 0)
         self.digital_gfsk_mod_0 = digital.gfsk_mod(
             samples_per_symbol=10,
             sensitivity=0.25,
             bt=0.65,
             verbose=False,
-            log=False)
+            log=False,
+            do_unpack=True)
         self.blocks_tag_gate_0 = blocks.tag_gate(gr.sizeof_gr_complex * 1, False)
         self.blocks_tag_gate_0.set_single_key("")
         self.blocks_stream_to_tagged_stream_0_0 = blocks.stream_to_tagged_stream(gr.sizeof_gr_complex, 1, 10*8*(26+msg_length+4), "packet_len")
-        self.blocks_pdu_to_tagged_stream_0 = blocks.pdu_to_tagged_stream(blocks.byte_t, 'packet_len')
         self.blocks_delay_0_0 = blocks.delay(gr.sizeof_gr_complex*1, (10*8*(26+msg_length+4))-24)
-
 
 
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.zwave_poore_message_generator_pdu_0_0_0_1, 'out'), (self.blocks_pdu_to_tagged_stream_0, 'pdus'))
+        self.msg_connect((self.zwave_poore_message_generator_pdu_0_0_0_1, 'out'), (self.pdu_pdu_to_tagged_stream_0, 'pdus'))
         self.connect((self.blocks_delay_0_0, 0), (self.blocks_stream_to_tagged_stream_0_0, 0))
-        self.connect((self.blocks_pdu_to_tagged_stream_0, 0), (self.digital_gfsk_mod_0, 0))
         self.connect((self.blocks_stream_to_tagged_stream_0_0, 0), (self.iio_pluto_sink_0, 0))
         self.connect((self.blocks_tag_gate_0, 0), (self.blocks_delay_0_0, 0))
         self.connect((self.digital_gfsk_mod_0, 0), (self.blocks_tag_gate_0, 0))
+        self.connect((self.pdu_pdu_to_tagged_stream_0, 0), (self.digital_gfsk_mod_0, 0))
+
 
     def get_tx_gain(self):
         return self.tx_gain
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.iio_pluto_sink_0.set_params(int(self.tx_freq), int(self.samp_rate), 20000000, 89.75 - self.tx_gain, '', True)
+        self.iio_pluto_sink_0.set_attenuation(89.75 - self.tx_gain)
 
     def get_tx_freq(self):
         return self.tx_freq
 
     def set_tx_freq(self, tx_freq):
         self.tx_freq = tx_freq
-        self.iio_pluto_sink_0.set_params(int(self.tx_freq), int(self.samp_rate), 20000000, 89.75 - self.tx_gain, '', True)
+        self.iio_pluto_sink_0.set_frequency(int(self.tx_freq))
 
     def get_string_variables(self):
         return self.string_variables
@@ -103,7 +115,7 @@ class ZWAVE_FSK_PlutoSDR_Transmit(gr.top_block):
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.iio_pluto_sink_0.set_params(int(self.tx_freq), int(self.samp_rate), 20000000, 89.75 - self.tx_gain, '', True)
+        self.iio_pluto_sink_0.set_samplerate(int(self.samp_rate))
 
     def get_repetition_interval(self):
         return self.repetition_interval
@@ -164,18 +176,21 @@ class ZWAVE_FSK_PlutoSDR_Transmit(gr.top_block):
 
 
 
+
 def main(top_block_cls=ZWAVE_FSK_PlutoSDR_Transmit, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

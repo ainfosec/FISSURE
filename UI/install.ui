@@ -91,22 +91,6 @@
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
-   <widget class="QRadioButton" name="radioButton_ubuntu20_04">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>5</y>
-      <width>150</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Ubuntu 20.04.1</string>
-    </property>
-   </widget>
    <widget class="QRadioButton" name="radioButton_ubuntu22_04">
     <property name="enabled">
      <bool>true</bool>
@@ -114,61 +98,13 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>80</y>
+      <y>5</y>
       <width>180</width>
       <height>25</height>
      </rect>
     </property>
     <property name="text">
-     <string>Ubuntu 22.04 (beta)</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_ubuntu20_04_4">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>150</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Ubuntu 20.04.4</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_dragonOS_focal">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>105</y>
-      <width>180</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>DragonOS Focal (beta)</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_kde_neon_5_25">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>55</y>
-      <width>180</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>KDE neon 5.25 (20.04)</string>
+     <string>Ubuntu 22.04</string>
     </property>
    </widget>
   </widget>

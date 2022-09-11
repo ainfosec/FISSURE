@@ -700,7 +700,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         wideband_time_interval = 1
         narrowband_time_interval = 60  
             
-        while state and not stop_event.isSet():
+        while state and not stop_event.is_set():
 
             # Single Loop Start Time
             start_time = time.time()
@@ -1539,6 +1539,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionLTE_ciphercheck.triggered.connect(self._slotMenuLTE_ciphercheckClicked)
         self.actionElectromagnetic_Radiation_Spectrum.triggered.connect(self._slotMenuElectromagneticRadiationSpectrumClicked)
         self.actionIIO_Oscilloscope.triggered.connect(self._slotMenuIIO_OscilloscopeClicked)
+        self.actionDiscord.triggered.connect(self._slotMenuHelpDiscordClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -3498,13 +3499,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         # Values
         all_values_string = ""
-        print("SSSSSSSSSSD")
-        print(len(variable_names))
-        print(len(variable_names[0]))
-        print(type(variable_names))
-        print(type(variable_names[0]))
-        print(variable_names[0])
-        print(variable_names[1])
         for k in range(0,len(variable_names)):
             all_values_string = all_values_string + variable_names[k] + ": " + variable_values[k] + "; "
         all_values_string_item = QtWidgets.QTableWidgetItem(str(all_values_string))
@@ -12938,7 +12932,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Run Monitor Mode Tool
         monitor_mode_tool_directory = os.path.dirname(os.path.abspath(__file__)) + "/Tools/Monitor_Mode_Tool/"
-        proc=subprocess.Popen("gnome-terminal -- python2 monitor_mode_tool.py", cwd=monitor_mode_tool_directory, shell=True)
+        proc=subprocess.Popen("gnome-terminal -- python3 monitor_mode_tool.py", cwd=monitor_mode_tool_directory, shell=True)
         
     def _slotIQ_CropClicked(self):
         """ Crops a data file to a smaller size.
@@ -20871,6 +20865,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open IIO Oscilloscope
         print("Please wait about 30 seconds for IIO Oscilloscope to load...") 
         os.system("osc &") 
+        
+    def _slotMenuHelpDiscordClicked(self):
+        """ Opens a browser to the FISSURE Discord server.
+        """
+        # Open a Browser 
+        os.system("sensible-browser https://discord.gg/JZDs5sgxcG &") 
         
         
 

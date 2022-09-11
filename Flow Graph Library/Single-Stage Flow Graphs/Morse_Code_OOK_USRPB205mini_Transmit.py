@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Morse Code Ook Usrpb205Mini Transmit
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import audio
@@ -14,6 +14,7 @@ from gnuradio import blocks
 from gnuradio import filter
 from gnuradio.filter import firdes
 from gnuradio import gr
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -21,14 +22,17 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import uhd
 import time
-import epy_block_0
+import Morse_Code_OOK_USRPB205mini_Transmit_epy_block_0 as epy_block_0  # embedded python block
 import foo
 import pmt
+
+
+
 
 class Morse_Code_OOK_USRPB205mini_Transmit(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Morse Code Ook Usrpb205Mini Transmit")
+        gr.top_block.__init__(self, "Morse Code Ook Usrpb205Mini Transmit", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -60,11 +64,12 @@ class Morse_Code_OOK_USRPB205mini_Transmit(gr.top_block):
             '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_channel, 0)
-        self.uhd_usrp_sink_0.set_center_freq(center_freq, 0)
-        self.uhd_usrp_sink_0.set_gain(tx_gain, 0)
-        self.uhd_usrp_sink_0.set_antenna('TX/RX', 0)
         self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_sink_0.set_center_freq(center_freq, 0)
+        self.uhd_usrp_sink_0.set_antenna('TX/RX', 0)
+        self.uhd_usrp_sink_0.set_gain(tx_gain, 0)
         self.root_raised_cosine_filter_0_0 = filter.fir_filter_fff(
             1,
             firdes.root_raised_cosine(
@@ -93,7 +98,6 @@ class Morse_Code_OOK_USRPB205mini_Transmit(gr.top_block):
         self.analog_sig_source_x_0 = analog.sig_source_f(audio_rate, analog.GR_COS_WAVE, freq, 0.5, 0, 0)
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -109,6 +113,7 @@ class Morse_Code_OOK_USRPB205mini_Transmit(gr.top_block):
         self.connect((self.root_raised_cosine_filter_0, 0), (self.root_raised_cosine_filter_0_0, 0))
         self.connect((self.root_raised_cosine_filter_0_0, 0), (self.blocks_float_to_complex_0, 0))
         self.connect((self.root_raised_cosine_filter_0_0, 0), (self.blocks_multiply_xx_0, 0))
+
 
     def get_volume(self):
         return self.volume
@@ -203,18 +208,21 @@ class Morse_Code_OOK_USRPB205mini_Transmit(gr.top_block):
 
 
 
+
 def main(top_block_cls=Morse_Code_OOK_USRPB205mini_Transmit, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

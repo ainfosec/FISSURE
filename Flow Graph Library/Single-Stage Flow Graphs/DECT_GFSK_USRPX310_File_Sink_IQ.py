@@ -6,12 +6,13 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Dect Gfsk Usrpx310 File Sink Iq
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -20,10 +21,13 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 
+
+
+
 class DECT_GFSK_USRPX310_File_Sink_IQ(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Dect Gfsk Usrpx310 File Sink Iq")
+        gr.top_block.__init__(self, "Dect Gfsk Usrpx310 File Sink Iq", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -51,16 +55,16 @@ class DECT_GFSK_USRPX310_File_Sink_IQ(gr.top_block):
             ),
         )
         self.uhd_usrp_source_0.set_subdev_spec('A:0', 0)
-        self.uhd_usrp_source_0.set_center_freq(rx_frequency, 0)
-        self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
-        self.uhd_usrp_source_0.set_antenna('RX2', 0)
         self.uhd_usrp_source_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_source_0.set_center_freq(rx_frequency, 0)
+        self.uhd_usrp_source_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, 100000)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, filepath, False)
         self.blocks_file_sink_0.set_unbuffered(False)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(-42, 0.5, 100, True)
-
 
 
         ##################################################
@@ -69,6 +73,7 @@ class DECT_GFSK_USRPX310_File_Sink_IQ(gr.top_block):
         self.connect((self.analog_pwr_squelch_xx_0, 0), (self.blocks_head_0, 0))
         self.connect((self.blocks_head_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.analog_pwr_squelch_xx_0, 0))
+
 
     def get_sample_rate(self):
         return self.sample_rate
@@ -136,18 +141,21 @@ class DECT_GFSK_USRPX310_File_Sink_IQ(gr.top_block):
 
 
 
+
 def main(top_block_cls=DECT_GFSK_USRPX310_File_Sink_IQ, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

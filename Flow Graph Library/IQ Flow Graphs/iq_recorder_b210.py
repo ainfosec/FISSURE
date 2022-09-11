@@ -6,11 +6,12 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Iq Recorder B210
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -19,10 +20,13 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 
+
+
+
 class iq_recorder_b210(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Iq Recorder B210")
+        gr.top_block.__init__(self, "Iq Recorder B210", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -49,16 +53,16 @@ class iq_recorder_b210(gr.top_block):
             ),
         )
         self.uhd_usrp_source_0_0.set_subdev_spec(rx_channel, 0)
-        self.uhd_usrp_source_0_0.set_center_freq(float(rx_frequency)*1e6, 0)
-        self.uhd_usrp_source_0_0.set_gain(float(rx_gain), 0)
-        self.uhd_usrp_source_0_0.set_antenna(rx_antenna, 0)
         self.uhd_usrp_source_0_0.set_samp_rate(float(sample_rate)*1e6)
-        self.uhd_usrp_source_0_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_source_0_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_source_0_0.set_center_freq(float(rx_frequency)*1e6, 0)
+        self.uhd_usrp_source_0_0.set_antenna(rx_antenna, 0)
+        self.uhd_usrp_source_0_0.set_gain(float(rx_gain), 0)
         self.blocks_skiphead_0 = blocks.skiphead(gr.sizeof_gr_complex*1, 200000)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, file_length)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, filepath, False)
         self.blocks_file_sink_0.set_unbuffered(False)
-
 
 
         ##################################################
@@ -67,6 +71,7 @@ class iq_recorder_b210(gr.top_block):
         self.connect((self.blocks_head_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_skiphead_0, 0), (self.blocks_head_0, 0))
         self.connect((self.uhd_usrp_source_0_0, 0), (self.blocks_skiphead_0, 0))
+
 
     def get_serial(self):
         return self.serial
@@ -130,18 +135,21 @@ class iq_recorder_b210(gr.top_block):
 
 
 
+
 def main(top_block_cls=iq_recorder_b210, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     tb.wait()
 
 

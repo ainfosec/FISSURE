@@ -6,13 +6,14 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Fm Usrpx310 Simple Replay
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
 from gnuradio import blocks
 from gnuradio import filter
 from gnuradio.filter import firdes
 from gnuradio import gr
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -21,10 +22,13 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 
+
+
+
 class FM_Radio_FM_USRPX310_Simple_Replay(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Fm Radio Fm Usrpx310 Simple Replay")
+        gr.top_block.__init__(self, "Fm Radio Fm Usrpx310 Simple Replay", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -55,11 +59,12 @@ class FM_Radio_FM_USRPX310_Simple_Replay(gr.top_block):
             ),
         )
         self.uhd_usrp_source_0.set_subdev_spec(rx_usrp_channel, 0)
-        self.uhd_usrp_source_0.set_center_freq(rx_frequency+frequency_offset, 0)
-        self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
-        self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
         self.uhd_usrp_source_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_source_0.set_center_freq(rx_frequency+frequency_offset, 0)
+        self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
             ",".join(("addr=" + ip_address, "")),
             uhd.stream_args(
@@ -70,16 +75,17 @@ class FM_Radio_FM_USRPX310_Simple_Replay(gr.top_block):
             '',
         )
         self.uhd_usrp_sink_0.set_subdev_spec(tx_usrp_channel, 0)
-        self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
-        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
-        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
         self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_sink_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
+        self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
+        self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
         self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
                 interpolation=12,
                 decimation=5,
-                taps=None,
-                fractional_bw=None)
+                taps=[],
+                fractional_bw=0)
         self.mmse_resampler_xx_0 = filter.mmse_resampler_ff(0, 48000/sample_rate)
         self.low_pass_filter_0 = filter.fir_filter_ccf(
             10,
@@ -88,7 +94,7 @@ class FM_Radio_FM_USRPX310_Simple_Replay(gr.top_block):
                 sample_rate,
                 75e3,
                 25e3,
-                firdes.WIN_HAMMING,
+                window.WIN_HAMMING,
                 6.76))
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(audio_gain)
@@ -106,7 +112,6 @@ class FM_Radio_FM_USRPX310_Simple_Replay(gr.top_block):
         self.analog_sig_source_x_0 = analog.sig_source_c(sample_rate, analog.GR_COS_WAVE, frequency_offset, 1, 0, 0)
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -119,6 +124,7 @@ class FM_Radio_FM_USRPX310_Simple_Replay(gr.top_block):
         self.connect((self.mmse_resampler_xx_0, 0), (self.analog_wfm_tx_0, 0))
         self.connect((self.rational_resampler_xxx_0, 0), (self.analog_wfm_rcv_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_multiply_xx_0, 0))
+
 
     def get_tx_usrp_gain(self):
         return self.tx_usrp_gain
@@ -153,7 +159,7 @@ class FM_Radio_FM_USRPX310_Simple_Replay(gr.top_block):
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self.analog_sig_source_x_0.set_sampling_freq(self.sample_rate)
-        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 75e3, 25e3, firdes.WIN_HAMMING, 6.76))
+        self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 75e3, 25e3, window.WIN_HAMMING, 6.76))
         self.mmse_resampler_xx_0.set_resamp_ratio(48000/self.sample_rate)
         self.uhd_usrp_sink_0.set_samp_rate(self.sample_rate)
         self.uhd_usrp_source_0.set_samp_rate(self.sample_rate)
@@ -214,18 +220,21 @@ class FM_Radio_FM_USRPX310_Simple_Replay(gr.top_block):
 
 
 
+
 def main(top_block_cls=FM_Radio_FM_USRPX310_Simple_Replay, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:
