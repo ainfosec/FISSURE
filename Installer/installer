@@ -3134,8 +3134,6 @@ sudo apt-get install -y dsniff
 sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d  # removes sudo apt-get update warnings
 sudo apt-get -y install ncurses-term
 sudo ln -s /usr/src/falcon/build/src/gui/gui /usr/bin/FalconGUI
-
-# . ~/.bashrc
 # """,True,'Minimum Install'))
 
 # fissure Command 
@@ -3224,6 +3222,43 @@ cd proxmark3
 make clean && make all
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
+""",True,'Hardware'))
+
+# PlutoSDR
+programs_dragonOS_focal.append(('PlutoSDR',
+"""sudo apt-get install -y libglib2.0-dev libgtk2.0-dev libgtkdatabox-dev libmatio-dev libjansson-dev libserialport-dev libcdk5-dev libgmp-dev liborc-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/pcercuei/libini.git
+cd libini
+mkdir build && cd build && cmake ../ && make && sudo make install
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/analogdevicesinc/libiio.git
+# cd libiio
+# mkdir build && cd build && cmake ../ && make && sudo make install
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/analogdevicesinc/libad9361-iio.git
+# cd libad9361-iio
+# cmake ./
+# make
+# sudo make install
+cd ~/Installed_by_FISSURE
+git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
+cd iio-oscilloscope
+git checkout origin/master
+mkdir build && cd build
+cmake ../ && make
+sudo make install
+# cd ~/Installed_by_FISSURE
+# git clone -b upgrade-3.8 https://github.com/analogdevicesinc/gr-iio.git
+# cd gr-iio
+# cmake .
+# make
+# sudo make install
+# cd ..
+sudo ldconfig
+########## Verify ##########
+python3 -c "import iio"
 """,True,'Hardware'))
 
 # gr-acars
@@ -3367,6 +3402,20 @@ grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examp
 python3 -c "import ieee802_15_4"
 """,True,'Out-of-Tree Modules'))
 
+# gr-j2497
+programs_dragonOS_focal.append(('gr-j2497',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-j2497/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+python3 -c "import j2497"
+""",True,'Out-of-Tree Modules'))
+
 # gr-limesdr
 programs_dragonOS_focal.append(('gr-limesdr',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/
@@ -3382,20 +3431,6 @@ sudo make install
 sudo ldconfig
 ########## Verify ##########
 python3 -c "import limesdr"
-""",True,'Out-of-Tree Modules'))
-
-# gr-j2497
-programs_dragonOS_focal.append(('gr-j2497',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-j2497/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-########## Verify ##########
-python3 -c "import j2497"
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms_poore
@@ -3452,6 +3487,46 @@ make
 ~/Installed_by_FISSURE/dump1090/dump1090 --help
 """,True,None))
 
+# QtDesigner
+programs_dragonOS_focal.append(('QtDesigner',
+"""sudo apt-get install -y build-essential qtcreator qt5-default
+########## Verify ##########
+ls /usr/bin/designer
+""",True,None))
+
+# Grip
+programs_dragonOS_focal.append(('Grip',
+"""sudo python3 -m pip install grip
+########## Verify ##########
+ls /usr/local/bin/grip
+""",True,None))
+
+# UDP Replay
+programs_dragonOS_focal.append(('UDP Replay',
+"""sudo apt-get install -y libpcap-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/rigtorp/udpreplay.git
+cd ~/Installed_by_FISSURE/udpreplay
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+ls /usr/local/bin/udpreplay
+""",True,None))
+
+# V2Verifier
+programs_dragonOS_focal.append(('V2Verifier',
+"""sudo apt-get install -y libgmp3-dev python3-tk python3-pil.imagetk
+sudo python3 -m pip install fastecdsa
+sudo python3 -m pip install -U pyyaml
+#sudo apt install -y git cmake libuhd-dev uhd-host swig libgmp3-dev python3-pip python3-tk python3-pil 
+#python3-pil.imagetk gnuradio
+#Needs gr-foo and gr-ieee802-11
+""",True,None))
+
 # srsRAN/srsLTE
 programs_dragonOS_focal.append(('srsRAN',
 """sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
@@ -3503,6 +3578,426 @@ cmake ..
 make srsue
 sudo ldconfig
 cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue/ciphercheck.conf 
+""",True,None))
+
+# Geany
+programs_dragonOS_focal.append(('Geany',
+"""sudo apt-get install -y geany  # needs [styling] line_height=0;2; added to Tools>Configuration Files>filetypes.common to see underscores
+########## Verify ##########
+geany --help
+""",True,None))
+
+# Arduino IDE
+programs_dragonOS_focal.append(('Arduino IDE',
+"""wget -P ~/Installed_by_FISSURE/ https://downloads.arduino.cc/arduino-1.8.15-linux64.tar.xz
+cd ~/Installed_by_FISSURE
+tar -xf arduino-1.8.15-linux64.tar.xz
+rm arduino-1.8.15-linux64.tar.xz
+cd arduino-1.8.15/
+sudo ./install.sh
+cp -R """ + fissure_directory + """/Tools/Esp8266_listen_trigger/ ~/Installed_by_FISSURE/
+########## Verify ##########
+arduino --version
+""",True,None))
+
+# Minicom
+programs_dragonOS_focal.append(('Minicom',
+"""sudo apt-get install -y minicom
+########## Verify ##########
+ls /usr/bin/minicom
+""",True,None))
+
+# PuTTY
+programs_dragonOS_focal.append(('PuTTY',
+"""sudo apt-get install -y putty
+########## Verify ##########
+putty --help
+""",True,None))
+
+# openHAB
+programs_dragonOS_focal.append(('openHAB',
+"""sudo apt-get -yq install gnupg curl
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
+cd ~/Downloads
+curl -O https://cdn.azul.com/zulu/bin/zulu-repo_1.0.0-2_all.deb
+sudo apt-get install ./zulu-repo_1.0.0-2_all.deb
+sudo apt-get update
+sudo apt-get install -y zulu11-jdk
+rm zulu-repo_1.0.0-2_all.deb
+wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
+sudo apt-get install -y apt-transport-https
+echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
+sudo apt-get update && sudo apt-get install -y openhab
+########## Verify ##########
+ls /usr/bin/openhab-cli
+""",True,None))
+
+# rtl-zwave
+programs_dragonOS_focal.append(('rtl-zwave',
+"""mkdir -p ~/Installed_by_FISSURE
+sudo apt-get install -y libpcap-dev
+cp -R """ + fissure_directory + """/Tools/rtl-zwave-master ~/Installed_by_FISSURE/
+cd ~/Installed_by_FISSURE/rtl-zwave-master
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
+""",True,None))
+
+# waving-z
+programs_dragonOS_focal.append(('waving-z',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE/
+git clone https://github.com/baol/waving-z.git
+cd ~/Installed_by_FISSURE/waving-z
+mkdir build
+cd build
+cmake .. -DCMAKE_BUILD_TYPE=Release
+cmake --build .
+########## Verify ##########
+ls ~/Installed_by_FISSURE/waving-z/build/wave-in
+""",True,None))
+
+# baudline
+programs_dragonOS_focal.append(('baudline',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget -P ~/Installed_by_FISSURE/ https://www.baudline.com/baudline_1.08_linux_x86_64.tar.gz
+tar -xf baudline_1.08_linux_x86_64.tar.gz
+rm baudline_1.08_linux_x86_64.tar.gz
+########## Verify ##########
+~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
+""",True,None))
+
+# OpenCPN
+programs_dragonOS_focal.append(('OpenCPN',
+"""sudo add-apt-repository -y ppa:opencpn/opencpn
+sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C865EB40
+sudo apt-get update
+sudo apt-get install -y opencpn
+########## Verify ##########
+ls /usr/bin/opencpn
+""",True,None))
+
+# retrogram-rtlsdr
+programs_dragonOS_focal.append(('retrogram-rtlsdr',
+"""mkdir -p ~/Installed_by_FISSURE
+sudo apt-get install -y librtlsdr-dev libncurses5-dev libboost-program-options-dev
+cp -R """ + fissure_directory + """/Tools/retrogram-rtlsdr-master ~/Installed_by_FISSURE/
+cd ~/Installed_by_FISSURE/retrogram-rtlsdr-master
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
+""",True,None))
+
+# Spektrum
+programs_dragonOS_focal.append(('Spektrum',
+"""echo 'blacklist dvb_usb_rtl28xxu' | sudo tee /etc/modprobe.d/rtl-sdr.conf  # Restart computer to use RTL device
+echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", GROUP="adm", MODE="0666"' | sudo tee /etc/udev/rules.d/20.rtlsdr.rules
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget -P ~/Installed_by_FISSURE/ https://github.com/pavels/spektrum/releases/download/2.1.0/spektrum-linux64.tar.gz
+tar -xf spektrum-linux64.tar.gz
+rm spektrum-linux64.tar.gz
+########## Verify ##########
+ls ~/Installed_by_FISSURE/spektrum/spektrum
+""",True,None))
+
+# Audio Tools
+programs_dragonOS_focal.append(('Audio Tools',
+"""sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
+########## Verify ##########
+audacity --version && sox --version
+""",True,None))
+
+# rehex
+programs_dragonOS_focal.append(('rehex',
+"""sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/solemnwarning/rehex.git
+cd rehex
+sudo git config --global --add safe.directory """ + os.path.expanduser('~') + """/Installed_by_FISSURE/rehex
+sudo cpan Template
+sudo make install
+########## Verify ##########
+ls /usr/local/bin/rehex 
+""",True,None))
+
+# ZEPASSD
+programs_dragonOS_focal.append(('ZEPASSD',
+"""#sudo apt-get install -y # boost.program-options, boost.crc, boost.circular-buffer, libfftw3, libuhd 3.9.5 or later
+sudo apt-get install -y libuhd-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/pvachon/zepassd.git
+cd zepassd
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/zepassd/zepassd
+""",True,None))
+
+# rtl_433
+programs_dragonOS_focal.append(('rtl_433',
+"""#sudo apt-get install -y rtl-433
+sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/merbanan/rtl_433.git
+cd rtl_433/
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+rtl_433 -help
+""",True,None))
+
+# RouterSploit
+programs_dragonOS_focal.append(('RouterSploit',
+"""sudo apt-get install -y python3-pip libglib2.0-dev rustc
+sudo python3 -m pip install setuptools-rust
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://www.github.com/threat9/routersploit
+cd routersploit
+python3 -m pip install setuptools
+python3 -m pip install -r requirements.txt
+python3 -m pip install bluepy
+########## Verify ##########
+~/Installed_by_FISSURE/routersploit/rsf.py --help
+""",True,None))
+
+# Metasploit
+programs_dragonOS_focal.append(('Metasploit',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+mkdir metasploit
+cd metasploit
+curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && chmod 755 msfinstall && ./msfinstall
+########## Verify ##########
+ls /usr/bin/msfconsole
+""",True,None))
+
+# monitor_rtl433
+programs_dragonOS_focal.append(('monitor_rtl433',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mcbridejc/monitor_rtl433.git
+cd monitor_rtl433
+sudo python3 setup.py install
+sudo python3 -m pip install python-dateutil
+sudo python3 -m pip install flask_table
+########## Verify ##########
+ls /usr/bin/monitor_rtl433
+""",True,None))
+
+# scan-ssid
+programs_dragonOS_focal.append(('scan-ssid',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+sudo apt-get install -y iw
+git clone https://github.com/Resethel/scan-ssid.git
+cd scan-ssid
+sudo cp scan-ssid /usr/local/bin
+sudo chmod 755 /usr/local/bin/scan-ssid  # can't be in monitor mode, managed only
+########## Verify ##########
+scan-ssid --help
+""",True,None))
+
+# minimodem
+programs_dragonOS_focal.append(('minimodem',
+"""sudo apt-get install -y minimodem
+########## Verify ##########
+minimodem --version
+""",True,None))
+
+# Google Earth Pro
+programs_dragonOS_focal.append(('Google Earth Pro',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_current_amd64.deb
+sudo dpkg -i google-earth-pro-stable_current_amd64.deb
+########## Verify ##########
+ls /usr/bin/google-earth-pro
+""",True,None))
+
+# ESP8266 Deauther v2
+programs_dragonOS_focal.append(('ESP8266 Deauther v2',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
+unzip -q v2.zip
+rm v2.zip
+""",True,None))
+
+# Viking
+programs_dragonOS_focal.append(('Viking',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone git://git.code.sf.net/p/viking/code viking
+sudo apt install -y gtk-doc-tools docbook-xsl yelp-tools libpng-dev libgtk-3-dev libicu-dev libjson-glib-dev intltool
+sudo apt-get install -y libcurl4-gnutls-dev libglib2.0-dev-bin
+sudo apt-get install -y libsqlite3-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev
+sudo apt-get install -y autopoint libnova-dev
+cd viking
+./autogen.sh
+./configure
+make
+sudo make install
+########## Verify ##########
+viking --help
+""",True,None))
+
+# PyGPSClient
+programs_dragonOS_focal.append(('PyGPSClient',
+"""sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk
+sudo python3 -m pip install --upgrade PyGPSClient
+########## Verify ##########
+ls /usr/local/bin/pygpsclient
+""",True,None))
+
+# FoxtrotGPS
+programs_dragonOS_focal.append(('FoxtrotGPS',
+"""sudo apt-get install -y foxtrotgps
+########## Verify ##########
+foxtrotgps --help
+""",True,None))
+
+# Xastir
+programs_dragonOS_focal.append(('Xastir',
+"""sudo apt-get install -y xastir  # should non-superusers be allowed? sure, why not.
+########## Verify ##########
+sudo xastir -V
+""",True,None))
+
+# btscanner
+programs_dragonOS_focal.append(('btscanner',
+"""sudo apt-get install -y btscanner
+########## Verify ##########
+btscanner --help
+""",True,None))
+
+# hcidump
+programs_dragonOS_focal.append(('hcidump',
+"""sudo apt-get install -y bluez-hcidump
+########## Verify ##########
+hcidump --help
+""",True,None))
+
+# GraphicsMagick
+programs_dragonOS_focal.append(('GraphicsMagick',
+"""sudo apt-get install -y graphicsmagick-imagemagick-compat
+########## Verify ##########
+gm -help
+""",True,None))
+
+# Spectrum Painter
+programs_dragonOS_focal.append(('Spectrum Painter',
+"""sudo python3 -m pip install numpy imageio 
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/polygon/spectrum_painter.git
+#cd spectrum_painter/
+#pip3 install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
+""",True,None))
+
+# nrsc5 and nrsc5-gui
+programs_dragonOS_focal.append(('nrsc5',
+"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/theori-io/nrsc5.git
+cd nrsc5
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+# nrsc5-gui
+python3 -m pip install --upgrade Pillow
+python3 -m pip install pyaudio
+sudo apt-get install -y python-gobject
+cd ~/Installed_by_FISSURE
+git clone https://github.com/cmnybo/nrsc5-gui.git
+########## Verify ##########
+nrsc5 -v
+""",True,None))
+
+# Anki
+programs_dragonOS_focal.append(('Anki',
+"""sudo apt-get install -y anki
+########## Verify ##########
+anki -h
+""",True,None))
+
+# Bless
+programs_dragonOS_focal.append(('Bless',
+"""sudo apt-get install -y bless
+########## Verify ##########
+ls /usr/bin/bless
+""",True,None))
+
+# airgeddon
+programs_dragonOS_focal.append(('airgeddon',
+"""sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only john
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone --depth 1 https://github.com/v1s1t0r1sh3r3/airgeddon.git
+#asleap
+mkdir asleap
+cd asleap
+wget http://http.kali.org/pool/main/a/asleap/asleap_2.3~git20201128.254acab-0kali1_amd64.deb
+sudo dpkg -i asleap_2.3~git20201128.254acab-0kali1_amd64.deb
+#bettercap
+sudo apt-get install -y build-essential libpcap-dev net-tools 
+cd ~/Installed_by_FISSURE
+mkdir bettercap
+cd bettercap
+wget https://github.com/bettercap/bettercap/releases/download/v2.31.1/bettercap_linux_amd64_v2.31.1.zip
+unzip -q bettercap_linux_amd64_v2.31.1.zip
+rm bettercap_linux_amd64_v2.31.1.zip
+sudo cp bettercap /usr/bin/
+#mdk4
+sudo apt-get install -y libnl-genl-3-dev
+cd ~/Installed_by_FISSURE
+git clone https://github.com/aircrack-ng/mdk4
+cd mdk4
+make
+sudo make install
+""",True,None))
+
+# Hydra
+programs_dragonOS_focal.append(('Hydra',
+"""sudo apt-get install -y hydra
+########## Verify ##########
+ls /usr/bin/hydra
+""",True,None))
+
+# Enscribe
+programs_dragonOS_focal.append(('Enscribe',
+"""sudo apt-get install -y enscribe
+########## Verify ##########
+ls /usr/bin/enscribe
+""",True,None))
+
+# ESP32 Bluetooth Classic Sniffer
+programs_dragonOS_focal.append(('ESP32 BT Classic Sniffer',
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
+cd ~/Installed_by_FISSURE
+git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
+cd esp32_bluetooth_classic_sniffer
+rm ./dissectors/config.h
+sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
+sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sudo ./requirements.sh
+./build.sh
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+########## Verify ##########
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 """,True,None))
 
 # # GNU Radio
@@ -3602,43 +4097,6 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # #sudo apt-get install gr-osmosdr  # Not always found in the repositories
 # ########## Verify ##########
 # hackrf_sweep --help
-# """,True,'Hardware'))
-
-# # PlutoSDR
-# programs_dragonOS_focal.append(('PlutoSDR',
-# """sudo apt-get install -y libglib2.0-dev libgtk2.0-dev libgtkdatabox-dev libmatio-dev libfftw3-dev libxml2 libxml2-dev bison flex libavahi-common-dev libavahi-client-dev libcurl4-openssl-dev libjansson-dev cmake libaio-dev libserialport-dev libcdk5-dev libusb-1.0-0-dev doxygen graphviz git libgmp-dev swig liborc-dev
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/pcercuei/libini.git
-# cd libini
-# mkdir build && cd build && cmake ../ && make && sudo make install
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/analogdevicesinc/libiio.git
-# cd libiio
-# mkdir build && cd build && cmake ../ && make && sudo make install
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/analogdevicesinc/libad9361-iio.git
-# cd libad9361-iio
-# cmake ./
-# make
-# sudo make install
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
-# cd iio-oscilloscope
-# git checkout origin/master
-# mkdir build && cd build
-# cmake ../ && make
-# sudo make install
-# cd ~/Installed_by_FISSURE
-# git clone -b upgrade-3.8 https://github.com/analogdevicesinc/gr-iio.git
-# cd gr-iio
-# cmake .
-# make
-# sudo make install
-# cd ..
-# sudo ldconfig
-# ########## Verify ##########
-# python3 -c "import iio"
 # """,True,'Hardware'))
 
 # # gr-dect2
@@ -3763,7 +4221,7 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # python3 -c "import rds"
 # """,True,'Out-of-Tree Modules'))
 
-# # QSpectrumAnalyzer
+# # QSpectrumAnalyzer #Already installed
 # programs_dragonOS_focal.append(('QSpectrumAnalyzer',
 # """#sudo add-apt-repository -y ppa:myriadrf/drivers
 # #sudo apt-get -y update
@@ -3774,58 +4232,18 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 # ls ~/.local/bin/qspectrumanalyzer
 # """,True,None))
 
-# # GQRX
+# # GQRX #Already installed
 # programs_dragonOS_focal.append(('GQRX',
 # """sudo apt-get install -y gqrx-sdr
 # ########## Verify ##########
 # ls /usr/bin/gqrx
 # """,True,None))
 
-# # QtDesigner
-# programs_dragonOS_focal.append(('QtDesigner',
-# """sudo apt-get install -y build-essential qtcreator qt5-default
-# ########## Verify ##########
-# ls /usr/bin/designer
-# """,True,None))
-
-# Grip
-programs_dragonOS_focal.append(('Grip',
-"""sudo python3 -m pip install grip
-########## Verify ##########
-ls /usr/local/bin/grip
-""",True,None))
-
-# # Kismet
+# # Kismet #Already installed
 # programs_dragonOS_focal.append(('Kismet',
 # """sudo apt-get install -y kismet  # add your computer's username to the group
 # ########## Verify ##########
 # ls /usr/bin/kismet
-# """,True,None))
-
-# UDP Replay
-programs_dragonOS_focal.append(('UDP Replay',
-"""sudo apt-get install -y libpcap-dev
-mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-git clone https://github.com/rigtorp/udpreplay.git
-cd ~/Installed_by_FISSURE/udpreplay
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-########## Verify ##########
-ls /usr/local/bin/udpreplay
-""",True,None))
-
-# # V2Verifier
-# programs_dragonOS_focal.append(('V2Verifier',
-# """sudo apt-get install -y libgmp3-dev python3-tk python3-pil.imagetk
-# sudo python3 -m pip install fastecdsa
-# sudo python3 -m pip install -U pyyaml
-# #sudo apt install -y git cmake libuhd-dev uhd-host swig libgmp3-dev python3-pip python3-tk python3-pil 
-# #python3-pil.imagetk gnuradio
-# #Needs gr-foo and gr-ieee802-11
 # """,True,None))
 
 # # # OpenBTS, requires old packages not meant for 20.04
@@ -3891,7 +4309,7 @@ ls /usr/local/bin/udpreplay
 # # sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
 # # """,True))
 
-# # FALCON
+# # FALCON #Already installed
 # programs_dragonOS_focal.append(('FALCON',
 # """sudo apt-get install -y build-essential git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev  # For srsLTE
 # mkdir -p ~/Installed_by_FISSURE
@@ -3910,99 +4328,14 @@ ls /usr/local/bin/udpreplay
 # ls /usr/bin/FalconGUI
 # """,True,None))
 
-# # Aircrack-ng
+# # Aircrack-ng #Already installed
 # programs_dragonOS_focal.append(('Aircrack-ng',
 # """sudo apt-get install -y aircrack-ng
 # ########## Verify ##########
 # aircrack-ng --help
 # """,True,None))
 
-# Geany
-programs_dragonOS_focal.append(('Geany',
-"""sudo apt-get install -y geany  # needs [styling] line_height=0;2; added to Tools>Configuration Files>filetypes.common to see underscores
-########## Verify ##########
-geany --help
-""",True,None))
-
-# Arduino IDE
-programs_dragonOS_focal.append(('Arduino IDE',
-"""wget -P ~/Installed_by_FISSURE/ https://downloads.arduino.cc/arduino-1.8.15-linux64.tar.xz
-cd ~/Installed_by_FISSURE
-tar -xf arduino-1.8.15-linux64.tar.xz
-rm arduino-1.8.15-linux64.tar.xz
-cd arduino-1.8.15/
-sudo ./install.sh
-cp -R """ + fissure_directory + """/Tools/Esp8266_listen_trigger/ ~/Installed_by_FISSURE/
-########## Verify ##########
-arduino --version
-""",True,None))
-
-# Minicom
-programs_dragonOS_focal.append(('Minicom',
-"""sudo apt-get install -y minicom
-########## Verify ##########
-ls /usr/bin/minicom
-""",True,None))
-
-# PuTTY
-programs_dragonOS_focal.append(('PuTTY',
-"""sudo apt-get install -y putty
-########## Verify ##########
-putty --help
-""",True,None))
-
-# # openHAB
-# programs_dragonOS_focal.append(('openHAB',
-# """sudo apt-get -yq install gnupg curl
-# sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
-# cd ~/Downloads
-# curl -O https://cdn.azul.com/zulu/bin/zulu-repo_1.0.0-2_all.deb
-# sudo apt-get install ./zulu-repo_1.0.0-2_all.deb
-# sudo apt-get update
-# sudo apt-get install -y zulu11-jdk
-# rm zulu-repo_1.0.0-2_all.deb
-# wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
-# sudo apt-get install -y apt-transport-https
-# echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
-# sudo apt-get update && sudo apt-get install -y openhab
-# ########## Verify ##########
-# ls /usr/bin/openhab-cli
-# """,True,None))
-
-# rtl-zwave
-programs_dragonOS_focal.append(('rtl-zwave',
-"""mkdir -p ~/Installed_by_FISSURE
-sudo apt-get install -y libpcap-dev
-cp -R """ + fissure_directory + """/Tools/rtl-zwave-master ~/Installed_by_FISSURE/
-cd ~/Installed_by_FISSURE/rtl-zwave-master
-make
-########## Verify ##########
-ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
-""",True,None))
-
-# waving-z
-programs_dragonOS_focal.append(('waving-z',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE/
-git clone https://github.com/baol/waving-z.git
-cd ~/Installed_by_FISSURE/waving-z
-mkdir build
-cd build
-cmake .. -DCMAKE_BUILD_TYPE=Release
-cmake --build .
-########## Verify ##########
-ls ~/Installed_by_FISSURE/waving-z/build/wave-in
-""",True,None))
-
-# # baudline
-# programs_dragonOS_focal.append(('baudline',
-# """mkdir -p ~/Installed_by_FISSURE
-# tar -xf """ + fissure_directory + """/Tools/baudline_1.08_linux_x86_64.tar.gz -C ~/Installed_by_FISSURE
-# ########## Verify ##########
-# ~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
-# """,True,None))
-
-# # Universal Radio Hacker
+# # Universal Radio Hacker #Already installed
 # programs_dragonOS_focal.append(('Universal Radio Hacker',
 # """sudo python3 -m pip install cython
 # sudo python3 -m pip install urh
@@ -4010,24 +4343,14 @@ ls ~/Installed_by_FISSURE/waving-z/build/wave-in
 # urh --version
 # """,True,None))
 
-# # Inspectrum
+# # Inspectrum #Already installed
 # programs_dragonOS_focal.append(('Inspectrum',
 # """sudo apt-get install -y inspectrum
 # ########## Verify ##########
 # inspectrum --help
 # """,True,None))
 
-# # OpenCPN
-# programs_dragonOS_focal.append(('OpenCPN',
-# """sudo add-apt-repository -y ppa:opencpn/opencpn
-# sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C865EB40
-# sudo apt-get update
-# sudo apt-get install -y opencpn
-# ########## Verify ##########
-# ls /usr/bin/opencpn
-# """,True,None))
-
-# # Kalibrate
+# # Kalibrate #Already installed
 # programs_dragonOS_focal.append(('Kalibrate',
 # """mkdir -p ~/Installed_by_FISSURE
 # cd ~/Installed_by_FISSURE
@@ -4038,18 +4361,7 @@ ls ~/Installed_by_FISSURE/waving-z/build/wave-in
 # ls ~/Installed_by_FISSURE/kalibrate-rtl/src/kal
 # """,True,None))
 
-# retrogram-rtlsdr
-programs_dragonOS_focal.append(('retrogram-rtlsdr',
-"""mkdir -p ~/Installed_by_FISSURE
-sudo apt-get install -y librtlsdr-dev libncurses5-dev libboost-program-options-dev
-cp -R """ + fissure_directory + """/Tools/retrogram-rtlsdr-master ~/Installed_by_FISSURE/
-cd ~/Installed_by_FISSURE/retrogram-rtlsdr-master
-make
-########## Verify ##########
-ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
-""",True,None))
-
-# # RTLSDR-Airband
+# # RTLSDR-Airband #Already installed
 # programs_dragonOS_focal.append(('RTLSDR-Airband',
 # """sudo apt-get install -y build-essential cmake pkg-config libmp3lame-dev libshout3-dev libconfig++-dev libfftw3-dev libpulse-dev
 # mkdir -p ~/Installed_by_FISSURE
@@ -4065,20 +4377,7 @@ ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
 # rtl_airband -h
 # """,True,None))
 
-# # Spektrum
-# programs_dragonOS_focal.append(('Spektrum',
-# """echo 'blacklist dvb_usb_rtl28xxu' | sudo tee /etc/modprobe.d/rtl-sdr.conf  # Restart computer to use RTL device
-# echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", GROUP="adm", MODE="0666"' | sudo tee /etc/udev/rules.d/20.rtlsdr.rules
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# wget -P ~/Installed_by_FISSURE/ https://github.com/pavels/spektrum/releases/download/2.1.0/spektrum-linux64.tar.gz
-# tar -xf spektrum-linux64.tar.gz
-# rm spektrum-linux64.tar.gz
-# ########## Verify ##########
-# ls ~/Installed_by_FISSURE/spektrum/spektrum
-# """,True,None))
-
-# # SDRTrunk
+# # SDRTrunk #Already installed
 # programs_dragonOS_focal.append(('SDRTrunk',
 # """#sudo apt-get -yq install gnupg curl  # Java (if needed)
 # #sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
@@ -4097,14 +4396,7 @@ ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
 # ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 # """,True,None))
 
-# Audio Tools
-programs_dragonOS_focal.append(('Audio Tools',
-"""sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
-########## Verify ##########
-audacity --version && sox --version
-""",True,None))
-
-# # Video Tools
+# # Video Tools #Already installed
 # programs_dragonOS_focal.append(('Video Tools',
 # """sudo apt-get install -y snapd
 # sudo snap install vlc
@@ -4151,34 +4443,7 @@ audacity --version && sox --version
 # ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 # """,True,None))
 
-# # rehex
-# programs_dragonOS_focal.append(('rehex',
-# """sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/solemnwarning/rehex.git
-# cd rehex
-# sudo git config --global --add safe.directory """ + os.path.expanduser('~') + """/Installed_by_FISSURE/rehex
-# sudo cpan Template
-# sudo make install
-# ########## Verify ##########
-# ls /usr/local/bin/rehex 
-# """,True,None))
-
-# # ZEPASSD
-# programs_dragonOS_focal.append(('ZEPASSD',
-# """#sudo apt-get install -y # boost.program-options, boost.crc, boost.circular-buffer, libfftw3, libuhd 3.9.5 or later
-# sudo apt-get install -y libuhd-dev  # Might need to be installed a second time?
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/pvachon/zepassd.git
-# cd zepassd
-# make
-# ########## Verify ##########
-# ls ~/Installed_by_FISSURE/zepassd/zepassd
-# """,True,None))
-
-# # iridium-toolkit
+# # iridium-toolkit #Already installed
 # programs_dragonOS_focal.append(('iridium-toolkit',
 # """#Python (2.7), NumPy (scipy), crcmod
 # sudo apt-get install -y mplayer
@@ -4193,7 +4458,7 @@ audacity --version && sox --version
 # ls ~/Installed_by_FISSURE/osmo-ir77/codec/ir77_ambe_decode
 # """,True,None))
 
-# # IridiumLive
+# # IridiumLive #Already installed
 # programs_dragonOS_focal.append(('IridiumLive',
 # """mkdir -p ~/Installed_by_FISSURE
 # cd ~/Installed_by_FISSURE
@@ -4274,156 +4539,28 @@ audacity --version && sox --version
 # ~/Installed_by_FISSURE/wifite2/Wifite.py --help
 # """,True,None))
 
-# # rtl_433
-# programs_dragonOS_focal.append(('rtl_433',
-# """#sudo apt-get install -y rtl-433
-# sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/merbanan/rtl_433.git
-# cd rtl_433/
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# ########## Verify ##########
-# rtl_433 -help
-# """,True,None))
-
-# # RouterSploit
-# programs_dragonOS_focal.append(('RouterSploit',
-# """sudo apt-get install -y python3-pip libglib2.0-dev rustc
-# sudo python3 -m pip install setuptools-rust
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://www.github.com/threat9/routersploit
-# cd routersploit
-# python3 -m pip install setuptools
-# python3 -m pip install -r requirements.txt
-# python3 -m pip install bluepy
-# ########## Verify ##########
-# ~/Installed_by_FISSURE/routersploit/rsf.py --help
-# """,True,None))
-
-# # Metasploit
-# programs_dragonOS_focal.append(('Metasploit',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# mkdir metasploit
-# cd metasploit
-# curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && chmod 755 msfinstall && ./msfinstall
-# ########## Verify ##########
-# ls /usr/bin/msfconsole
-# """,True,None))
-
-# # monitor_rtl433
-# programs_dragonOS_focal.append(('monitor_rtl433',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/mcbridejc/monitor_rtl433.git
-# cd monitor_rtl433
-# sudo python3 setup.py install
-# sudo python3 -m pip install python-dateutil
-# sudo python3 -m pip install flask_table
-# ########## Verify ##########
-# ls /usr/bin/monitor_rtl433
-# """,True,None))
-
-# scan-ssid
-programs_dragonOS_focal.append(('scan-ssid',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-sudo apt-get install -y iw
-git clone https://github.com/Resethel/scan-ssid.git
-cd scan-ssid
-sudo cp scan-ssid /usr/local/bin
-sudo chmod 755 /usr/local/bin/scan-ssid  # can't be in monitor mode, managed only
-########## Verify ##########
-scan-ssid --help
-""",True,None))
-
-# # minimodem
-# programs_dragonOS_focal.append(('minimodem',
-# """sudo apt-get install -y minimodem
-# ########## Verify ##########
-# minimodem --version
-# """,True,None))
-
-# # WSJT-X
+# # WSJT-X #Already installed
 # programs_dragonOS_focal.append(('WSJT-X',
 # """sudo apt-get install -y wsjtx
 # ########## Verify ##########
 # ls /usr/bin/wsjtx
 # """,True,None))
 
-# Google Earth Pro
-programs_dragonOS_focal.append(('Google Earth Pro',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_current_amd64.deb
-sudo dpkg -i google-earth-pro-stable_current_amd64.deb
-########## Verify ##########
-ls /usr/bin/google-earth-pro
-""",True,None))
-
-# # gr-air-modes
+# # gr-air-modes #Already installed
 # programs_dragonOS_focal.append(('gr-air-modes',
 # """sudo apt-get install -y gr-air-modes
 # ########## Verify ##########
 # modes_rx --help
 # """,True,None))
 
-# ESP8266 Deauther v2
-programs_dragonOS_focal.append(('ESP8266 Deauther v2',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
-unzip -q v2.zip
-rm v2.zip
-# """,True,None))
-
-# # Viking
-# programs_dragonOS_focal.append(('Viking',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone git://git.code.sf.net/p/viking/code viking
-# sudo apt install -y gtk-doc-tools docbook-xsl yelp-tools libpng-dev libgtk-3-dev libicu-dev libjson-glib-dev intltool
-# sudo apt-get install -y libcurl4-gnutls-dev libglib2.0-dev-bin
-# sudo apt-get install -y libsqlite3-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev
-# sudo apt-get install -y autopoint libnova-dev
-# cd viking
-# ./autogen.sh
-# ./configure
-# make
-# sudo make install
-# ########## Verify ##########
-# viking --help
-# """,True,None))
-
-# # PyGPSClient
-# programs_dragonOS_focal.append(('PyGPSClient',
-# """sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk
-# sudo python3 -m pip install --upgrade PyGPSClient
-# ########## Verify ##########
-# ls /usr/local/bin/pygpsclient
-# """,True,None))
-
-# # Gpredict
+# # Gpredict #Already installed
 # programs_dragonOS_focal.append(('Gpredict',
 # """sudo apt-get install -y gpredict
 # ########## Verify ##########
 # gpredict --help
 # """,True,None))
 
-# FoxtrotGPS
-programs_dragonOS_focal.append(('FoxtrotGPS',
-"""sudo apt-get install -y foxtrotgps
-########## Verify ##########
-foxtrotgps --help
-""",True,None))
-
-# # multimon-ng
+# # multimon-ng #Already installed
 # programs_dragonOS_focal.append(('multimon-ng',
 # """mkdir -p ~/Installed_by_FISSURE
 # cd ~/Installed_by_FISSURE
@@ -4438,14 +4575,7 @@ foxtrotgps --help
 # ls /usr/local/bin/multimon-ng
 # """,True,None))
 
-# # Xastir
-# programs_dragonOS_focal.append(('Xastir',
-# """sudo apt-get install -y xastir  # should non-superusers be allowed? sure, why not.
-# ########## Verify ##########
-# sudo xastir -V
-# """,True,None))
-
-# # LTE-Cell-Scanner
+# # LTE-Cell-Scanner #Already installed
 # programs_dragonOS_focal.append(('LTE-Cell-Scanner',
 # """sudo apt-get install -y cmake libncurses5-dev liblapack-dev libblas-dev libboost-thread-dev libboost-system-dev libitpp-dev librtlsdr-dev libfftw3-dev
 # mkdir -p ~/Installed_by_FISSURE
@@ -4461,60 +4591,6 @@ foxtrotgps --help
 # ls /usr/local/bin/CellSearch
 # """,True,None))
 
-# btscanner
-programs_dragonOS_focal.append(('btscanner',
-"""sudo apt-get install -y btscanner
-########## Verify ##########
-btscanner --help
-""",True,None))
-
-# # hcidump
-# programs_dragonOS_focal.append(('hcidump',
-# """sudo apt-get install -y bluez-hcidump
-# ########## Verify ##########
-# hcidump --help
-# """,True,None))
-
-# # GraphicsMagick
-# programs_dragonOS_focal.append(('GraphicsMagick',
-# """sudo apt-get install -y graphicsmagick-imagemagick-compat
-# ########## Verify ##########
-# gm -help
-# """,True,None))
-
-# # Spectrum Painter
-# programs_dragonOS_focal.append(('Spectrum Painter',
-# """sudo python3 -m pip install numpy imageio 
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/polygon/spectrum_painter.git
-# #cd spectrum_painter/
-# #pip3 install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
-# """,True,None))
-
-# # nrsc5 and nrsc5-gui
-# programs_dragonOS_focal.append(('nrsc5',
-# """sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/theori-io/nrsc5.git
-# cd nrsc5
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# # nrsc5-gui
-# python3 -m pip install --upgrade Pillow
-# python3 -m pip install pyaudio
-# sudo apt-get install -y python-gobject
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/cmnybo/nrsc5-gui.git
-# ########## Verify ##########
-# nrsc5 -v
-# """,True,None))
-
 # # # HAM2MON  # Doesn't work for 20.04
 # # programs_dragonOS_focal.append(('HAM2MON',
 # # """mkdir -p ~/Installed_by_FISSURE
@@ -4522,86 +4598,11 @@ btscanner --help
 # # git clone https://github.com/madengr/ham2mon.git
 # # """,True,None))
 
-# # Anki
-# programs_dragonOS_focal.append(('Anki',
-# """sudo apt-get install -y anki
-# ########## Verify ##########
-# anki -h
-# """,True,None))
-
-# # Bless
-# programs_dragonOS_focal.append(('Bless',
-# """sudo apt-get install -y bless
-# ########## Verify ##########
-# ls /usr/bin/bless
-# """,True,None))
-
 # # trackerjacker
 # programs_dragonOS_focal.append(('trackerjacker',
 # """sudo python3 -m pip install trackerjacker  # Downgrades Python3 Scapy from 2.4.5 to 2.4.0
 # ########## Verify ##########
 # sudo trackerjacker --help
-# """,True,None))
-
-# # airgeddon
-# programs_dragonOS_focal.append(('airgeddon',
-# """sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only john
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone --depth 1 https://github.com/v1s1t0r1sh3r3/airgeddon.git
-# #asleap
-# mkdir asleap
-# cd asleap
-# wget http://http.kali.org/pool/main/a/asleap/asleap_2.3~git20201128.254acab-0kali1_amd64.deb
-# sudo dpkg -i asleap_2.3~git20201128.254acab-0kali1_amd64.deb
-# #bettercap
-# sudo apt-get install -y build-essential libpcap-dev net-tools 
-# cd ~/Installed_by_FISSURE
-# mkdir bettercap
-# cd bettercap
-# wget https://github.com/bettercap/bettercap/releases/download/v2.31.1/bettercap_linux_amd64_v2.31.1.zip
-# unzip -q bettercap_linux_amd64_v2.31.1.zip
-# rm bettercap_linux_amd64_v2.31.1.zip
-# sudo cp bettercap /usr/bin/
-# #mdk4
-# sudo apt-get install -y libnl-genl-3-dev
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/aircrack-ng/mdk4
-# cd mdk4
-# make
-# sudo make install
-# """,True,None))
-
-# # Hydra
-# programs_dragonOS_focal.append(('Hydra',
-# """sudo apt-get install -y hydra
-# ########## Verify ##########
-# ls /usr/bin/hydra
-# """,True,None))
-
-# # Enscribe
-# programs_dragonOS_focal.append(('Enscribe',
-# """sudo apt-get install -y enscribe
-# ########## Verify ##########
-# ls /usr/bin/enscribe
-# """,True,None))
-
-# # ESP32 Bluetooth Classic Sniffer
-# programs_dragonOS_focal.append(('ESP32 BT Classic Sniffer',
-# """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
-# cd esp32_bluetooth_classic_sniffer
-# rm ./dissectors/config.h
-# sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
-# sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
-# sed -i 's/3.4/3.6/g' ./dissectors/build.sh
-# sudo ./requirements.sh
-# ./build.sh
-# sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
-# rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
-# ########## Verify ##########
-# ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # """,True,None))
 
 

@@ -37,7 +37,7 @@ Note: Certain software tools do not work for every OS. Refer to [Software And Co
 ```
 git clone https://github.com/ainfosec/FISSURE.git
 cd FISSURE
-git checkout <Python2_maint-3.7> or <Python3_maint-3.8>
+git checkout <Python2_maint-3.7> or <Python3_maint-3.8> or <Python3_maint-3.10>
 git submodule update --init
 ./install
 ```

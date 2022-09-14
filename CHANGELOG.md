@@ -1,6 +1,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-09-13
+
+The DragonOS Focal install has only a few more tools that need to be examined.
+   
+### Changed
+
+- Updated installer for DragonOS Focal with more tools
+- Formatted Credits.md
+- Updated README with branch information
+ 
 ## 2022-09-10
 
 Ubuntu 22.04 and the 3.10 OOT modules have been moved to a new branch: Python3_maint-3.10.
