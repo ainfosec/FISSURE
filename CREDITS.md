@@ -111,7 +111,7 @@ Copyright 2010, 2011, 2012 Nick Foster
 License (GPL-3.0): https://github.com/bistromath/gr-air-modes/blob/master/COPYING
 
 **gr-ais**  
-Project: https://github.com/bistromath/gr-ais
+Project: https://github.com/bistromath/gr-ais  
 3.10 Fork: https://github.com/bkerler/gr-ais -b maint-3.10
 
 **gr-bluetooth**  
@@ -126,7 +126,7 @@ License (MIT): https://github.com/cpoore1/gr-clapper_plus/blob/maint-3.10/LICENS
 
 **gr-dect2**  
 Project: https://github.com/pavelyazev/gr-dect2  
-License (GPL-3.0): https://github.com/pavelyazev/gr-dect2/blob/master/COPYING
+License (GPL-3.0): https://github.com/pavelyazev/gr-dect2/blob/master/COPYING  
 3.10 Fork: https://github.com/bkerler/gr-dect2 -b maint-3.10
 
 **gr-foo**  
@@ -139,18 +139,18 @@ License (MIT): https://github.com/cpoore1/gr-garage_door/blob/maint-3.10/LICENSE
 
 **gr-gsm**  
 Project: https://github.com/ptrkrysik/gr-gsm  
-License (GPL-3.0): https://github.com/ptrkrysik/gr-gsm/blob/master/COPYING
+License (GPL-3.0): https://github.com/ptrkrysik/gr-gsm/blob/master/COPYING  
 3.10 Fork: https://github.com/bkerler/gr-gsm -b maint-3.10
 
 **gr-ieee802-11**  
 Project: https://github.com/bastibl/gr-ieee802-11
 
 **gr-ieee802-15-4**  
-Project: https://github.com/bastibl/gr-ieee802-15-4
+Project: https://github.com/bastibl/gr-ieee802-15-4  
 3.10 Fork: https://github.com/bkerler/gr-ieee802-15-4 -b maint-3.10
 
 **gr-iio**
-Project: https://github.com/analogdevicesinc/gr-iio
+Project: https://github.com/analogdevicesinc/gr-iio  
 License (GPL-3.0): https://github.com/analogdevicesinc/gr-iio/blob/master/COPYING
 
 **gr-iridium**  
@@ -182,7 +182,7 @@ License (GPL-3.0): https://github.com/bastibl/gr-rds/blob/maint-3.9/COPYING
 
 **gr-tpms**  
 Project: https://github.com/jboone/gr-tpms  
-License (GPL-2.0): https://github.com/jboone/gr-tpms/blob/master/LICENSE
+License (GPL-2.0): https://github.com/jboone/gr-tpms/blob/master/LICENSE  
 3.10 Fork: https://github.com/bkerler/gr-tpms -b maint-3.10
 
 **gr-tpms_poore**  
@@ -231,7 +231,7 @@ License (AGPL): https://github.com/vanhauser-thc/thc-hydra/blob/master/LICENSE
 Project: Joe Reith, AIS
 
 **IIO Oscilloscope**
-Project: https://github.com/analogdevicesinc/iio-oscilloscope
+Project: https://github.com/analogdevicesinc/iio-oscilloscope  
 License (GPL-2.0): https://github.com/analogdevicesinc/iio-oscilloscope/blob/master/LICENSE
 
 **Inspectrum**  
