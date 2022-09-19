@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>950</width>
+    <width>965</width>
     <height>115</height>
    </rect>
   </property>
@@ -44,7 +44,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>870</x>
+     <x>885</x>
      <y>40</y>
      <width>65</width>
      <height>27</height>
@@ -124,6 +124,16 @@
      <string>PlutoSDR</string>
     </property>
    </item>
+   <item>
+    <property name="text">
+     <string>USRP2</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>USRP N2xx</string>
+    </property>
+   </item>
   </widget>
   <widget class="QPushButton" name="pushButton_guess">
    <property name="enabled">
@@ -131,7 +141,7 @@
    </property>
    <property name="geometry">
     <rect>
-     <x>805</x>
+     <x>815</x>
      <y>40</y>
      <width>65</width>
      <height>27</height>
@@ -255,7 +265,7 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>7</x>
      <y>37</y>
-     <width>935</width>
+     <width>950</width>
      <height>33</height>
     </rect>
    </property>
@@ -317,7 +327,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="pushButton_ok">
    <property name="geometry">
     <rect>
-     <x>325</x>
+     <x>333</x>
      <y>80</y>
      <width>99</width>
      <height>27</height>
@@ -330,7 +340,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="pushButton_cancel">
    <property name="geometry">
     <rect>
-     <x>525</x>
+     <x>533</x>
      <y>80</y>
      <width>99</width>
      <height>27</height>
@@ -346,7 +356,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QPushButton" name="pushButton_apply_to_all">
    <property name="geometry">
     <rect>
-     <x>425</x>
+     <x>433</x>
      <y>80</y>
      <width>99</width>
      <height>27</height>
@@ -364,28 +374,113 @@ p, li { white-space: pre-wrap; }
     <rect>
      <x>705</x>
      <y>40</y>
-     <width>95</width>
+     <width>105</width>
      <height>27</height>
     </rect>
    </property>
    <item>
     <property name="text">
-     <string>CBX</string>
+     <string>CBX-120</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>SBX</string>
+     <string>SBX-120</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>UBX</string>
+     <string>UBX-160</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>WBX</string>
+     <string>WBX-120</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>TwinRX</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>XCVR2450</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>DBSRX2</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>SBX-40</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>UBX-40</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>WBX-40</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>CBX-40</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>LFRX</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>LFTX</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>BasicRX</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>BasicTX</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>TVRX2</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>RFX400</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>RFX900</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>RFX1200</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>RFX1800</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>RFX2400</string>
     </property>
    </item>
   </widget>
@@ -414,7 +509,7 @@ p, li { white-space: pre-wrap; }
   <widget class="QLabel" name="label_probe">
    <property name="geometry">
     <rect>
-     <x>780</x>
+     <x>795</x>
      <y>80</y>
      <width>155</width>
      <height>27</height>

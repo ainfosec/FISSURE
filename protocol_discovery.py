@@ -264,7 +264,7 @@ class ProtocolDiscovery():
         # Start Processing Bits
         self.gr_processing = threading.Event()
         self.gr_srv = threading.Thread(target = self.grRcvThread, args=(self.gr_processing, self.pd_bit_sub_listener,));           
-        self.gr_srv.setDaemon(True)
+        self.gr_srv.daemon = True
         self.gr_srv.start()        
 
     def stopPD(self):

@@ -853,7 +853,8 @@ rm zulu-repo_1.0.0-2_all.deb
 wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
-sudo apt-get update && sudo apt-get install -y openhab
+sudo apt-get update 
+sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
 """,True,None))
