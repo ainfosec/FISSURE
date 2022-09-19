@@ -904,7 +904,8 @@ rm zulu-repo_1.0.0-2_all.deb
 wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
-sudo apt-get update && sudo apt-get install -y openhab
+sudo apt-get update 
+sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
 """,True,None))
@@ -2435,7 +2436,8 @@ rm zulu-repo_1.0.0-2_all.deb
 wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
-sudo apt-get update && sudo apt-get install -y openhab
+sudo apt-get update
+sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
 """,True,None))
@@ -3616,21 +3618,22 @@ putty --help
 
 # openHAB
 programs_dragonOS_focal.append(('openHAB',
-"""sudo apt-get -yq install gnupg curl
-sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
-cd ~/Downloads
-curl -O https://cdn.azul.com/zulu/bin/zulu-repo_1.0.0-2_all.deb
-sudo apt-get install ./zulu-repo_1.0.0-2_all.deb
-sudo apt-get update
-sudo apt-get install -y zulu11-jdk
-rm zulu-repo_1.0.0-2_all.deb
-wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
-sudo apt-get install -y apt-transport-https
-echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
-sudo apt-get update && sudo apt-get install -y openhab
+"""#sudo apt-get -yq install gnupg curl
+#sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
+#cd ~/Downloads
+#curl -O https://cdn.azul.com/zulu/bin/zulu-repo_1.0.0-2_all.deb
+#sudo apt-get install ./zulu-repo_1.0.0-2_all.deb
+#sudo apt-get update
+#sudo apt-get install -y zulu11-jdk
+#rm zulu-repo_1.0.0-2_all.deb
+#wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -  # This is not working
+#sudo apt-get install -y apt-transport-https
+#echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
+#sudo apt-get update
+#sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
-""",True,None))
+""",False,None))
 
 # rtl-zwave
 programs_dragonOS_focal.append(('rtl-zwave',
@@ -3838,7 +3841,7 @@ cd ~/Installed_by_FISSURE
 git clone git://git.code.sf.net/p/viking/code viking
 sudo apt install -y gtk-doc-tools docbook-xsl yelp-tools libpng-dev libgtk-3-dev libicu-dev libjson-glib-dev intltool
 sudo apt-get install -y libcurl4-gnutls-dev libglib2.0-dev-bin
-sudo apt-get install -y libsqlite3-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev
+sudo apt-get install -y libsqlite3-dev libmysqlclient-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev
 sudo apt-get install -y autopoint libnova-dev
 cd viking
 ./autogen.sh

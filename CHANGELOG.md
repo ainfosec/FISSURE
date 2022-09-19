@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-09-18
+
+USRP2 and USRP N2xx support was added but not tested against real devices. Please report any issues.
+ 
+### Added
+
+- USRP2, USRP N2xx support (Dashboard, Hardware Selection GUI, TSI Detector, Inspection flow graphs, IQ record/playback, Archive playback, adding attacks to library)
+- Added more USRP daughterboards for hardware selection
+   
+### Changed
+
+- Removed openHAB as a default option for DragonOS until further examination is completed
+- Listed new hardware in the README
+ 
+### Fixed
+
+- Added a missing package in the DragonOS install for Viking
+
 ## 2022-09-13
 
 The DragonOS Focal install has only a few more tools that need to be examined.
