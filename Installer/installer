@@ -897,7 +897,8 @@ programs_ubuntu18_04.append(('openHAB',
 """wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
-sudo apt-get update && sudo apt-get install -y openhab
+sudo apt-get update
+sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
 """,True,None))
@@ -2407,7 +2408,8 @@ programs_ubuntu18_04_5.append(('openHAB',
 """wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
-sudo apt-get update && sudo apt-get install -y openhab
+sudo apt-get update
+sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
 """,True,None))
@@ -3917,7 +3919,8 @@ programs_ubuntu18_04_6.append(('openHAB',
 """wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
-sudo apt-get update && sudo apt-get install -y openhab
+sudo apt-get update
+sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
 """,True,None))

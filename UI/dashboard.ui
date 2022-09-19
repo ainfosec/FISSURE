@@ -1627,6 +1627,16 @@ QTabBar::tab:!selected {
                 </item>
                 <item>
                  <property name="text">
+                  <string>wideband_usrp2.py</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>wideband_usrp_n2xx.py</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
                   <string>Simulator</string>
                  </property>
                 </item>
@@ -6170,6 +6180,16 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <property name="text">
                   <string>PlutoSDR</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>USRP2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>USRP N2xx</string>
                  </property>
                 </item>
                </widget>
@@ -13658,6 +13678,16 @@ p, li { white-space: pre-wrap; }
               <string>PlutoSDR</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>USRP2</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>USRP N2xx</string>
+             </property>
+            </item>
            </widget>
           </widget>
           <widget class="QWidget" name="tab_iq_data">
@@ -15867,6 +15897,8 @@ p, li { white-space: pre-wrap; }
                <widget class="QWidget" name="page_bladeRF"/>
                <widget class="QWidget" name="page_Open_Sniffer"/>
                <widget class="QWidget" name="page_PlutoSDR"/>
+               <widget class="QWidget" name="page_USRP2"/>
+               <widget class="QWidget" name="page_USRP_N2xx"/>
               </widget>
              </widget>
              <widget class="QLabel" name="label_38">
@@ -26277,6 +26309,16 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <property name="text">
                   <string>PlutoSDR</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>USRP2</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>USRP N2xx</string>
                  </property>
                 </item>
                </widget>

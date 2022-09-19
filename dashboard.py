@@ -6318,6 +6318,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     fname = "iq_recorder"  # Should never be called                    
                 elif self.dashboard_settings_dictionary['hardware_iq'] == "PlutoSDR":
                     fname = "iq_recorder_plutosdr"                
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP2":
+                    fname = "iq_recorder_usrp2"                
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP N2xx":
+                    fname = "iq_recorder_usrp_n2xx"                
                     
                 # LimeSDR Channel
                 if self.dashboard_settings_dictionary['hardware_iq'] == "LimeSDR":
@@ -11581,17 +11585,18 @@ class MainWindow(QtGui.QMainWindow, form_class):
             output = str(proc.communicate()[0])
             widget_probing_label.setVisible(False)
             
-            if "CBX" in output:
+            if "CBX-120" in output:
                 widget_daughterboard.setCurrentIndex(0)
-            elif "SBX" in output:
+            elif "SBX-120" in output:
                 widget_daughterboard.setCurrentIndex(1)
-            elif "UBX" in output:
+            elif "UBX-160" in output:
                 widget_daughterboard.setCurrentIndex(2)
-            elif "WBX" in output:
+            elif "WBX-120" in output:
                 widget_daughterboard.setCurrentIndex(3)            
+            elif "TwinRX" in output:
+                widget_daughterboard.setCurrentIndex(4)            
         except:
             widget_probing_label.setVisible(False)
-            
                             
     def findB210(self, widget_serial):      
         """ Parses the results of 'uhd_find_devices' and sets the B210 serial for an edit box.
@@ -11791,7 +11796,169 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 widget_ip.setAlignment(QtCore.Qt.AlignCenter)
         except:
             widget_ip.setText("")
-            widget_ip.setAlignment(QtCore.Qt.AlignCenter)               
+            widget_ip.setAlignment(QtCore.Qt.AlignCenter)  
+            
+    def findUSRP2(self, widget_ip, widget_serial, widget_daughterboard, widget_probing_label):
+        """ Parses the results of 'uhd_find_devices' and sets the USRP2 IP and serial for two edit boxes.
+        """
+        # Get the Text
+        proc = subprocess.Popen("uhd_find_devices &", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0]      
+        
+        # Get the Variables and Values
+        device_index = -1
+        device_dict = {}
+        record_values = False
+        for line in output.splitlines():
+            if len(line.strip()) == 0:
+                record_values = False
+            if record_values == True:
+                get_var = line.split(':')[0].strip(' ')
+                get_val = line.split(':')[1].strip(' ')
+                device_dict[device_index].append((get_var,get_val))
+            if "Device Address" in line:                    
+                device_index = device_index + 1
+                device_dict.update({device_index:[]})
+                record_values = True
+                
+        # Find USRP2
+        for n in range(0,len(device_dict)):
+            for nn in device_dict[n]:
+                if 'usrp2' in nn: 
+                    # Update Dashboard                      
+                    for m in device_dict[n]:
+                        if m[0] == 'addr':
+                            widget_ip.setText(m[1])
+                            widget_ip.setAlignment(QtCore.Qt.AlignCenter)
+                        if m[0] == 'serial':
+                            widget_serial.setText(m[1]) 
+                            widget_serial.setAlignment(QtCore.Qt.AlignCenter) 
+                            
+        # Find Daughterboard
+        try:
+            # Probe
+            get_ip = str(widget_ip.toPlainText())
+            widget_probing_label.setVisible(True)
+            QtGui.QApplication.processEvents()
+            proc = subprocess.Popen('uhd_usrp_probe --args="addr=' + get_ip + '" &', shell=True, stdout=subprocess.PIPE, )
+            output = str(proc.communicate()[0])
+            widget_probing_label.setVisible(False)
+            
+            if "XCVR2450" in output:
+                widget_daughterboard.setCurrentIndex(5)
+            elif "DBSRX" in output:
+                widget_daughterboard.setCurrentIndex(6)     
+            elif "SBX-40" in output:
+                widget_daughterboard.setCurrentIndex(7)     
+            elif "UBX-40" in output:
+                widget_daughterboard.setCurrentIndex(8)     
+            elif "WBX-40" in output:
+                widget_daughterboard.setCurrentIndex(9)     
+            elif "CBX-40" in output:
+                widget_daughterboard.setCurrentIndex(10)     
+            elif "LFRX" in output:
+                widget_daughterboard.setCurrentIndex(11)     
+            elif "LFTX" in output:
+                widget_daughterboard.setCurrentIndex(12)     
+            elif "BasicRX" in output:
+                widget_daughterboard.setCurrentIndex(13)     
+            elif "BasicTX" in output:
+                widget_daughterboard.setCurrentIndex(14)     
+            elif "TVRX2" in output:
+                widget_daughterboard.setCurrentIndex(15)                     
+            elif "RFX400" in output:
+                widget_daughterboard.setCurrentIndex(16)     
+            elif "RFX900" in output:
+                widget_daughterboard.setCurrentIndex(17)     
+            elif "RFX1200" in output:
+                widget_daughterboard.setCurrentIndex(18)     
+            elif "RFX1800" in output:
+                widget_daughterboard.setCurrentIndex(19)     
+            elif "RFX2400" in output:
+                widget_daughterboard.setCurrentIndex(20)     
+        except:
+            widget_probing_label.setVisible(False)                        
+            
+    def findUSRP_N2xx(self, widget_ip, widget_serial, widget_daughterboard, widget_probing_label):
+        """ Parses the results of 'uhd_find_devices' and sets the USRP N2xx IP and serial for two edit boxes.
+        """
+        # Get the Text
+        proc = subprocess.Popen("uhd_find_devices &", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0]
+        
+        # Get the Variables and Values
+        device_index = -1
+        device_dict = {}
+        record_values = False
+        for line in output.splitlines():
+            if len(line.strip()) == 0:
+                record_values = False
+            if record_values == True:
+                get_var = line.split(':')[0].strip(' ')
+                get_val = line.split(':')[1].strip(' ')
+                device_dict[device_index].append((get_var,get_val))
+            if "Device Address" in line:                    
+                device_index = device_index + 1
+                device_dict.update({device_index:[]})
+                record_values = True
+                
+        # Find USRP N2xx
+        for n in range(0,len(device_dict)):
+            for nn in device_dict[n]:
+                if 'usrp2' in nn: 
+                    # Update Dashboard                      
+                    for m in device_dict[n]:
+                        if m[0] == 'addr':
+                            widget_ip.setText(m[1])
+                            widget_ip.setAlignment(QtCore.Qt.AlignCenter)
+                        if m[0] == 'serial':
+                            widget_serial.setText(m[1]) 
+                            widget_serial.setAlignment(QtCore.Qt.AlignCenter) 
+                            
+        # Find Daughterboard
+        try:
+            # Probe
+            get_ip = str(widget_ip.toPlainText())
+            widget_probing_label.setVisible(True)
+            QtGui.QApplication.processEvents()
+            proc = subprocess.Popen('uhd_usrp_probe --args="addr=' + get_ip + '" &', shell=True, stdout=subprocess.PIPE, )
+            output = str(proc.communicate()[0])
+            widget_probing_label.setVisible(False)
+            
+            if "XCVR2450" in output:
+                widget_daughterboard.setCurrentIndex(5)
+            elif "DBSRX" in output:
+                widget_daughterboard.setCurrentIndex(6)     
+            elif "SBX-40" in output:
+                widget_daughterboard.setCurrentIndex(7)     
+            elif "UBX-40" in output:
+                widget_daughterboard.setCurrentIndex(8)     
+            elif "WBX-40" in output:
+                widget_daughterboard.setCurrentIndex(9)     
+            elif "CBX-40" in output:
+                widget_daughterboard.setCurrentIndex(10)     
+            elif "LFRX" in output:
+                widget_daughterboard.setCurrentIndex(11)     
+            elif "LFTX" in output:
+                widget_daughterboard.setCurrentIndex(12)     
+            elif "BasicRX" in output:
+                widget_daughterboard.setCurrentIndex(13)     
+            elif "BasicTX" in output:
+                widget_daughterboard.setCurrentIndex(14)     
+            elif "TVRX2" in output:
+                widget_daughterboard.setCurrentIndex(15)                     
+            elif "RFX400" in output:
+                widget_daughterboard.setCurrentIndex(16)     
+            elif "RFX900" in output:
+                widget_daughterboard.setCurrentIndex(17)     
+            elif "RFX1200" in output:
+                widget_daughterboard.setCurrentIndex(18)     
+            elif "RFX1800" in output:
+                widget_daughterboard.setCurrentIndex(19)     
+            elif "RFX2400" in output:
+                widget_daughterboard.setCurrentIndex(20)   
+        except:
+            widget_probing_label.setVisible(False)  
                 
     def _slotLibraryBrowseRemoveDemodFG_Clicked(self):
         """ Removes selected demodulation flow graph from the library.
@@ -12081,6 +12248,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.stackedWidget_iq_inspection.setCurrentIndex(9)                
             elif get_hardware == "PlutoSDR":
                 self.stackedWidget_iq_inspection.setCurrentIndex(10)                
+            elif get_hardware == "USRP2":
+                self.stackedWidget_iq_inspection.setCurrentIndex(11)                
+            elif get_hardware == "USRP N2xx":
+                self.stackedWidget_iq_inspection.setCurrentIndex(12)                
                 
             # Enable Frame
             self.frame_iq_inspection_fg.setEnabled(True)
@@ -12318,18 +12489,21 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png")) 
             
             # Tuning Widget Limits
-            if self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "CBX":
+            if self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "CBX-120":
                 self.tuning_matplotlib_widget.freq_start_limit = 1200
                 self.tuning_matplotlib_widget.freq_end_limit = 6000
-            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "SBX":
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "SBX-120":
                 self.tuning_matplotlib_widget.freq_start_limit = 400
                 self.tuning_matplotlib_widget.freq_end_limit = 4400
-            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "UBX":
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "UBX-160":
                 self.tuning_matplotlib_widget.freq_start_limit = 10
                 self.tuning_matplotlib_widget.freq_end_limit = 6000         
-            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "WBX":
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "WBX-120":
                 self.tuning_matplotlib_widget.freq_start_limit = 25
                 self.tuning_matplotlib_widget.freq_end_limit = 2200         
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "TwinRX":
+                self.tuning_matplotlib_widget.freq_start_limit = 10
+                self.tuning_matplotlib_widget.freq_end_limit = 6000         
                    
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP B210":
             self.comboBox_tsi_detector.setCurrentIndex(1)
@@ -12402,6 +12576,114 @@ class MainWindow(QtGui.QMainWindow, form_class):
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 325
             self.tuning_matplotlib_widget.freq_end_limit = 3800         
+
+        elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP2":
+            self.comboBox_tsi_detector.setCurrentIndex(8)
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png")) 
+            
+            # Tuning Widget Limits
+            if self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "XCVR2450":
+                self.tuning_matplotlib_widget.freq_start_limit = 2400
+                self.tuning_matplotlib_widget.freq_end_limit = 6000
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "DBSRX":
+                self.tuning_matplotlib_widget.freq_start_limit = 800
+                self.tuning_matplotlib_widget.freq_end_limit = 2300
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "SBX-40":
+                self.tuning_matplotlib_widget.freq_start_limit = 400
+                self.tuning_matplotlib_widget.freq_end_limit = 4400         
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "UBX-40":
+                self.tuning_matplotlib_widget.freq_start_limit = 10
+                self.tuning_matplotlib_widget.freq_end_limit = 6000    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "WBX-40":
+                self.tuning_matplotlib_widget.freq_start_limit = 50
+                self.tuning_matplotlib_widget.freq_end_limit = 2200    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "CBX-40":
+                self.tuning_matplotlib_widget.freq_start_limit = 1200
+                self.tuning_matplotlib_widget.freq_end_limit = 6000    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "LFRX":
+                self.tuning_matplotlib_widget.freq_start_limit = 0
+                self.tuning_matplotlib_widget.freq_end_limit = 30    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "LFTX":
+                self.tuning_matplotlib_widget.freq_start_limit = 0
+                self.tuning_matplotlib_widget.freq_end_limit = 30    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "BasicRX":
+                self.tuning_matplotlib_widget.freq_start_limit = 1
+                self.tuning_matplotlib_widget.freq_end_limit = 250    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "BasicTX":
+                self.tuning_matplotlib_widget.freq_start_limit = 1
+                self.tuning_matplotlib_widget.freq_end_limit = 250    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "TVRX2":
+                self.tuning_matplotlib_widget.freq_start_limit = 50
+                self.tuning_matplotlib_widget.freq_end_limit = 860    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "RFX400":
+                self.tuning_matplotlib_widget.freq_start_limit = 400
+                self.tuning_matplotlib_widget.freq_end_limit = 500    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "RFX900":
+                self.tuning_matplotlib_widget.freq_start_limit = 750
+                self.tuning_matplotlib_widget.freq_end_limit = 1050    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "RFX1200":
+                self.tuning_matplotlib_widget.freq_start_limit = 1150
+                self.tuning_matplotlib_widget.freq_end_limit = 1450    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "RFX1800":
+                self.tuning_matplotlib_widget.freq_start_limit = 1500
+                self.tuning_matplotlib_widget.freq_end_limit = 2100    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "RFX2400":
+                self.tuning_matplotlib_widget.freq_start_limit = 2300
+                self.tuning_matplotlib_widget.freq_end_limit = 2900    
+                
+        elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP N2xx":
+            self.comboBox_tsi_detector.setCurrentIndex(9)
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png")) 
+            
+            # Tuning Widget Limits
+            if self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "XCVR2450":
+                self.tuning_matplotlib_widget.freq_start_limit = 2400
+                self.tuning_matplotlib_widget.freq_end_limit = 6000
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "DBSRX":
+                self.tuning_matplotlib_widget.freq_start_limit = 800
+                self.tuning_matplotlib_widget.freq_end_limit = 2300
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "SBX-40":
+                self.tuning_matplotlib_widget.freq_start_limit = 400
+                self.tuning_matplotlib_widget.freq_end_limit = 4400         
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "UBX-40":
+                self.tuning_matplotlib_widget.freq_start_limit = 10
+                self.tuning_matplotlib_widget.freq_end_limit = 6000    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "WBX-40":
+                self.tuning_matplotlib_widget.freq_start_limit = 50
+                self.tuning_matplotlib_widget.freq_end_limit = 2200    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "CBX-40":
+                self.tuning_matplotlib_widget.freq_start_limit = 1200
+                self.tuning_matplotlib_widget.freq_end_limit = 6000    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "LFRX":
+                self.tuning_matplotlib_widget.freq_start_limit = 0
+                self.tuning_matplotlib_widget.freq_end_limit = 30    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "LFTX":
+                self.tuning_matplotlib_widget.freq_start_limit = 0
+                self.tuning_matplotlib_widget.freq_end_limit = 30    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "BasicRX":
+                self.tuning_matplotlib_widget.freq_start_limit = 1
+                self.tuning_matplotlib_widget.freq_end_limit = 250    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "BasicTX":
+                self.tuning_matplotlib_widget.freq_start_limit = 1
+                self.tuning_matplotlib_widget.freq_end_limit = 250    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "TVRX2":
+                self.tuning_matplotlib_widget.freq_start_limit = 50
+                self.tuning_matplotlib_widget.freq_end_limit = 860    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "RFX400":
+                self.tuning_matplotlib_widget.freq_start_limit = 400
+                self.tuning_matplotlib_widget.freq_end_limit = 500    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "RFX900":
+                self.tuning_matplotlib_widget.freq_start_limit = 750
+                self.tuning_matplotlib_widget.freq_end_limit = 1050    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "RFX1200":
+                self.tuning_matplotlib_widget.freq_start_limit = 1150
+                self.tuning_matplotlib_widget.freq_end_limit = 1450    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "RFX1800":
+                self.tuning_matplotlib_widget.freq_start_limit = 1500
+                self.tuning_matplotlib_widget.freq_end_limit = 2100    
+            elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "RFX2400":
+                self.tuning_matplotlib_widget.freq_start_limit = 2300
+                self.tuning_matplotlib_widget.freq_end_limit = 2900    
             
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_tsi']) > 0:
@@ -12446,6 +12728,12 @@ class MainWindow(QtGui.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_pd'] == "PlutoSDR":
             self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(9)
+        elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP2":
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png")) 
+            self.comboBox_pd_demod_hardware.setCurrentIndex(10)
+        elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP N2xx":
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png")) 
+            self.comboBox_pd_demod_hardware.setCurrentIndex(11)
             
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_pd']) > 0:
@@ -12489,6 +12777,12 @@ class MainWindow(QtGui.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_attack'] == "PlutoSDR":
             self.comboBox_attack_hardware.setCurrentIndex(10)  
             self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png"))    
+        elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP2":
+            self.comboBox_attack_hardware.setCurrentIndex(11)  
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png"))    
+        elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP N2xx":
+            self.comboBox_attack_hardware.setCurrentIndex(12)  
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png"))    
             
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_attack']) > 0:
@@ -12784,7 +13078,113 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True) 
             
             self._slotIQ_InspectionHardwareChanged()
-            self.groupBox_iq_record.setEnabled(True)           
+            self.groupBox_iq_record.setEnabled(True)   
+            
+        elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP2":
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png"))
+            
+            # IQ Record
+            comboBox_channel = QtGui.QComboBox(self)
+            comboBox_channel.addItem("A:0")
+            comboBox_channel.addItem("B:0") 
+            comboBox_channel.addItem("A:AB") 
+            comboBox_channel.addItem("A:BA") 
+            comboBox_channel.addItem("A:A") 
+            comboBox_channel.addItem("A:B") 
+            comboBox_channel.addItem("B:AB") 
+            comboBox_channel.addItem("B:BA") 
+            comboBox_channel.addItem("B:A") 
+            comboBox_channel.addItem("B:B") 
+            self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
+            comboBox_antenna = QtGui.QComboBox(self)
+            comboBox_antenna.addItem("J1")
+            comboBox_antenna.addItem("J2") 
+            self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
+            gain_item = QtGui.QTableWidgetItem("30")
+            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+            self.tableWidget_iq_record.setItem(0,4,gain_item)
+            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
+            
+            # IQ Playback
+            comboBox_playback_channel = QtGui.QComboBox(self)            
+            comboBox_playback_channel.addItem("A:0")
+            comboBox_playback_channel.addItem("B:0") 
+            comboBox_playback_channel.addItem("A:AB") 
+            comboBox_playback_channel.addItem("A:BA") 
+            comboBox_playback_channel.addItem("A:A") 
+            comboBox_playback_channel.addItem("A:B") 
+            comboBox_playback_channel.addItem("B:AB") 
+            comboBox_playback_channel.addItem("B:BA") 
+            comboBox_playback_channel.addItem("B:A") 
+            comboBox_playback_channel.addItem("B:B")  
+            self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
+            comboBox_playback_antenna = QtGui.QComboBox(self)
+            comboBox_playback_antenna.addItem("J1")
+            comboBox_playback_antenna.addItem("J2")
+            self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
+            playback_gain_item = QtGui.QTableWidgetItem("30")
+            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            self.tableWidget_iq_playback.resizeColumnsToContents() 
+            self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
+            
+            self._slotIQ_InspectionHardwareChanged()
+            self.groupBox_iq_record.setEnabled(True)
+            
+        elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP N2xx":
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png"))
+            
+            # IQ Record
+            comboBox_channel = QtGui.QComboBox(self)
+            comboBox_channel.addItem("A:0")
+            comboBox_channel.addItem("B:0") 
+            comboBox_channel.addItem("A:AB") 
+            comboBox_channel.addItem("A:BA") 
+            comboBox_channel.addItem("A:A") 
+            comboBox_channel.addItem("A:B") 
+            comboBox_channel.addItem("B:AB") 
+            comboBox_channel.addItem("B:BA") 
+            comboBox_channel.addItem("B:A") 
+            comboBox_channel.addItem("B:B") 
+            self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
+            comboBox_antenna = QtGui.QComboBox(self)
+            comboBox_antenna.addItem("J1")
+            comboBox_antenna.addItem("J2") 
+            self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
+            gain_item = QtGui.QTableWidgetItem("30")
+            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+            self.tableWidget_iq_record.setItem(0,4,gain_item)
+            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
+            
+            # IQ Playback
+            comboBox_playback_channel = QtGui.QComboBox(self)            
+            comboBox_playback_channel.addItem("A:0")
+            comboBox_playback_channel.addItem("B:0") 
+            comboBox_playback_channel.addItem("A:AB") 
+            comboBox_playback_channel.addItem("A:BA") 
+            comboBox_playback_channel.addItem("A:A") 
+            comboBox_playback_channel.addItem("A:B") 
+            comboBox_playback_channel.addItem("B:AB") 
+            comboBox_playback_channel.addItem("B:BA") 
+            comboBox_playback_channel.addItem("B:A") 
+            comboBox_playback_channel.addItem("B:B")             
+            self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
+            comboBox_playback_antenna = QtGui.QComboBox(self)
+            comboBox_playback_antenna.addItem("J1")
+            comboBox_playback_antenna.addItem("J2")
+            self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
+            playback_gain_item = QtGui.QTableWidgetItem("30")
+            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            self.tableWidget_iq_playback.resizeColumnsToContents() 
+            self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
+            
+            self._slotIQ_InspectionHardwareChanged()
+            self.groupBox_iq_record.setEnabled(True) 
         
         # Enable Playback and Recording
         self.pushButton_iq_playback.setEnabled(True)
@@ -12826,6 +13226,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/Open_Sniffer.png"))    
         elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png"))    
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP2":
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png"))    
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png"))    
             
         # Adjust Existing Channel ComboBoxes and Gain in Replay Tab
         for n in range(0, self.tableWidget_archive_replay.rowCount()):
@@ -12878,6 +13282,34 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 gain_item = QtGui.QTableWidgetItem("64")
                 gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 self.tableWidget_archive_replay.setItem(n,7,gain_item)
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP2":
+                get_combobox.addItem("A:0")
+                get_combobox.addItem("B:0") 
+                get_combobox.addItem("A:AB") 
+                get_combobox.addItem("A:BA") 
+                get_combobox.addItem("A:A") 
+                get_combobox.addItem("A:B") 
+                get_combobox.addItem("B:AB") 
+                get_combobox.addItem("B:BA") 
+                get_combobox.addItem("B:A") 
+                get_combobox.addItem("B:B")                   
+                gain_item = QtGui.QTableWidgetItem("30")
+                gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_replay.setItem(n,7,gain_item)
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
+                get_combobox.addItem("A:0")
+                get_combobox.addItem("B:0") 
+                get_combobox.addItem("A:AB") 
+                get_combobox.addItem("A:BA") 
+                get_combobox.addItem("A:A") 
+                get_combobox.addItem("A:B") 
+                get_combobox.addItem("B:AB") 
+                get_combobox.addItem("B:BA") 
+                get_combobox.addItem("B:A") 
+                get_combobox.addItem("B:B")   
+                gain_item = QtGui.QTableWidgetItem("30")
+                gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_replay.setItem(n,7,gain_item)  
             else:
                 get_combobox.addItem("")
                 
@@ -15319,6 +15751,16 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     fname = "iq_playback_single_plutosdr"
                 else:
                     fname = "iq_playback_plutosdr"
+            elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP2":                
+                if get_repeat == "No":
+                    fname = "iq_playback_single_usrp2"
+                else:
+                    fname = "iq_playback_usrp2"  
+            elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP N2xx":                
+                if get_repeat == "No":
+                    fname = "iq_playback_single_usrp_n2xx"
+                else:
+                    fname = "iq_playback_usrp_n2xx"  
             
             # LimeSDR Channel
             if self.dashboard_settings_dictionary['hardware_iq'] == "LimeSDR":
@@ -17403,7 +17845,29 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "Open Sniffer":
                     new_combobox1.addItem("")                        
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
-                    new_combobox1.addItem("")                        
+                    new_combobox1.addItem("")
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP2":
+                    new_combobox1.addItem("A:0")
+                    new_combobox1.addItem("B:0") 
+                    new_combobox1.addItem("A:AB") 
+                    new_combobox1.addItem("A:BA") 
+                    new_combobox1.addItem("A:A") 
+                    new_combobox1.addItem("A:B") 
+                    new_combobox1.addItem("B:AB") 
+                    new_combobox1.addItem("B:BA") 
+                    new_combobox1.addItem("B:A") 
+                    new_combobox1.addItem("B:B")      
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
+                    new_combobox1.addItem("A:0")
+                    new_combobox1.addItem("B:0") 
+                    new_combobox1.addItem("A:AB") 
+                    new_combobox1.addItem("A:BA") 
+                    new_combobox1.addItem("A:A") 
+                    new_combobox1.addItem("A:B") 
+                    new_combobox1.addItem("B:AB") 
+                    new_combobox1.addItem("B:BA") 
+                    new_combobox1.addItem("B:A") 
+                    new_combobox1.addItem("B:B")
                 else:
                     new_combobox1.addItem("")
                 new_combobox1.setFixedSize(67,24) 
@@ -17433,6 +17897,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     gain_item = QtGui.QTableWidgetItem("")                                   
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
                     gain_item = QtGui.QTableWidgetItem("64")                                   
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP2":
+                    gain_item = QtGui.QTableWidgetItem("30")                                   
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
+                    gain_item = QtGui.QTableWidgetItem("30")                                   
                 else:
                     gain_item = QtGui.QTableWidgetItem("") 
                 gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
@@ -17513,7 +17981,29 @@ class MainWindow(QtGui.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_archive'] == "Open Sniffer":
             new_combobox1.addItem("")                        
         elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
-            new_combobox1.addItem("")                        
+            new_combobox1.addItem("")
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP2":
+            new_combobox1.addItem("A:0")
+            new_combobox1.addItem("B:0") 
+            new_combobox1.addItem("A:AB") 
+            new_combobox1.addItem("A:BA") 
+            new_combobox1.addItem("A:A") 
+            new_combobox1.addItem("A:B") 
+            new_combobox1.addItem("B:AB") 
+            new_combobox1.addItem("B:BA") 
+            new_combobox1.addItem("B:A") 
+            new_combobox1.addItem("B:B")   
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
+            new_combobox1.addItem("A:0")
+            new_combobox1.addItem("B:0") 
+            new_combobox1.addItem("A:AB") 
+            new_combobox1.addItem("A:BA") 
+            new_combobox1.addItem("A:A") 
+            new_combobox1.addItem("A:B") 
+            new_combobox1.addItem("B:AB") 
+            new_combobox1.addItem("B:BA") 
+            new_combobox1.addItem("B:A") 
+            new_combobox1.addItem("B:B")                           
         else:
             new_combobox1.addItem("")
         new_combobox1.setFixedSize(67,24) 
@@ -17543,6 +18033,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
             gain_item = QtGui.QTableWidgetItem("")                                   
         elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
             gain_item = QtGui.QTableWidgetItem("64")                                   
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP2":
+            gain_item = QtGui.QTableWidgetItem("30")                                   
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
+            gain_item = QtGui.QTableWidgetItem("30")                                   
         else:
             gain_item = QtGui.QTableWidgetItem("") 
         gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
@@ -17760,7 +18254,11 @@ class MainWindow(QtGui.QMainWindow, form_class):
             elif self.dashboard_settings_dictionary['hardware_archive'] == "Open Sniffer":
                 flow_graph = ""  # Error  
             elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
-                flow_graph = "archive_replay_plutosdr"                            
+                flow_graph = "archive_replay_plutosdr"   
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP2":
+                flow_graph = "archive_replay_usrp2"
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
+                flow_graph = "archive_replay_usrp_n2xx"
                             
             # Send "Start Archive Playlist" Message to the HIPRFISR    
             if len(flow_graph) > 0:
@@ -18094,17 +18592,20 @@ class MainWindow(QtGui.QMainWindow, form_class):
                          
         elif get_hardware == "USRP X310":            
             # Frequency Limits
-            if get_daughterboard == "CBX":
+            if get_daughterboard == "CBX-120":
                 if (get_frequency >= 1200) and (get_frequency <= 6000):
                     return True
-            elif get_daughterboard == "SBX":
+            elif get_daughterboard == "SBX-120":
                 if (get_frequency >= 400) and (get_frequency <= 4400):
                     return True                
-            elif get_daughterboard == "UBX":
+            elif get_daughterboard == "UBX-160":
                 if (get_frequency >= 10) and (get_frequency <= 6000):
                     return True                       
-            elif get_daughterboard == "WBX":
+            elif get_daughterboard == "WBX-120":
                 if (get_frequency >= 25) and (get_frequency <= 2200):
+                    return True                       
+            elif get_daughterboard == "TwinRX":
+                if (get_frequency >= 10) and (get_frequency <= 6000):
                     return True                       
                    
         elif get_hardware == "USRP B210":
@@ -18150,7 +18651,109 @@ class MainWindow(QtGui.QMainWindow, form_class):
         elif get_hardware == "PlutoSDR":
             # Frequency Limits
             if (get_frequency >= 325) and (get_frequency <= 3800):
-                return True                          
+                return True      
+                
+        elif get_hardware == "USRP2":            
+            # Frequency Limits
+            if get_daughterboard == "XCVR2450":
+                if (get_frequency >= 2400) and (get_frequency <= 6000):
+                    return True
+            elif get_daughterboard == "DBSRX":
+                if (get_frequency >= 800) and (get_frequency <= 2300):
+                    return True                
+            elif get_daughterboard == "SBX-40":
+                if (get_frequency >= 400) and (get_frequency <= 4400):
+                    return True                       
+            elif get_daughterboard == "UBX-40":
+                if (get_frequency >= 10) and (get_frequency <= 6000):
+                    return True     
+            elif get_daughterboard == "WBX-40":
+                if (get_frequency >= 50) and (get_frequency <= 2200):
+                    return True     
+            elif get_daughterboard == "CBX-40":
+                if (get_frequency >= 1200) and (get_frequency <= 6000):
+                    return True     
+            elif get_daughterboard == "LFRX":
+                if (get_frequency >= 0) and (get_frequency <= 30):
+                    return True     
+            elif get_daughterboard == "LFTX":
+                if (get_frequency >= 0) and (get_frequency <= 30):
+                    return True     
+            elif get_daughterboard == "BasicRX":
+                if (get_frequency >= 1) and (get_frequency <= 250):
+                    return True     
+            elif get_daughterboard == "BasicTX":
+                if (get_frequency >= 1) and (get_frequency <= 250):
+                    return True     
+            elif get_daughterboard == "TVRX2":
+                if (get_frequency >= 50) and (get_frequency <= 860):
+                    return True     
+            elif get_daughterboard == "RFX400":
+                if (get_frequency >= 400) and (get_frequency <= 500):
+                    return True     
+            elif get_daughterboard == "RFX900":
+                if (get_frequency >= 750) and (get_frequency <= 1050):
+                    return True     
+            elif get_daughterboard == "RFX1200":
+                if (get_frequency >= 1150) and (get_frequency <= 1450):
+                    return True     
+            elif get_daughterboard == "RFX1800":
+                if (get_frequency >= 1500) and (get_frequency <= 2100):
+                    return True     
+            elif get_daughterboard == "RFX2400":
+                if (get_frequency >= 2300) and (get_frequency <= 2900):
+                    return True     
+                    
+        elif get_hardware == "USRP N2xx":            
+            # Frequency Limits
+            if get_daughterboard == "XCVR2450":
+                if (get_frequency >= 2400) and (get_frequency <= 6000):
+                    return True
+            elif get_daughterboard == "DBSRX":
+                if (get_frequency >= 800) and (get_frequency <= 2300):
+                    return True                
+            elif get_daughterboard == "SBX-40":
+                if (get_frequency >= 400) and (get_frequency <= 4400):
+                    return True                       
+            elif get_daughterboard == "UBX-40":
+                if (get_frequency >= 10) and (get_frequency <= 6000):
+                    return True     
+            elif get_daughterboard == "WBX-40":
+                if (get_frequency >= 50) and (get_frequency <= 2200):
+                    return True     
+            elif get_daughterboard == "CBX-40":
+                if (get_frequency >= 1200) and (get_frequency <= 6000):
+                    return True     
+            elif get_daughterboard == "LFRX":
+                if (get_frequency >= 0) and (get_frequency <= 30):
+                    return True     
+            elif get_daughterboard == "LFTX":
+                if (get_frequency >= 0) and (get_frequency <= 30):
+                    return True     
+            elif get_daughterboard == "BasicRX":
+                if (get_frequency >= 1) and (get_frequency <= 250):
+                    return True     
+            elif get_daughterboard == "BasicTX":
+                if (get_frequency >= 1) and (get_frequency <= 250):
+                    return True     
+            elif get_daughterboard == "TVRX2":
+                if (get_frequency >= 50) and (get_frequency <= 860):
+                    return True     
+            elif get_daughterboard == "RFX400":
+                if (get_frequency >= 400) and (get_frequency <= 500):
+                    return True     
+            elif get_daughterboard == "RFX900":
+                if (get_frequency >= 750) and (get_frequency <= 1050):
+                    return True     
+            elif get_daughterboard == "RFX1200":
+                if (get_frequency >= 1150) and (get_frequency <= 1450):
+                    return True     
+            elif get_daughterboard == "RFX1800":
+                if (get_frequency >= 1500) and (get_frequency <= 2100):
+                    return True     
+            elif get_daughterboard == "RFX2400":
+                if (get_frequency >= 2300) and (get_frequency <= 2900):
+                    return True   
         
         # Not in Bounds
         return False
@@ -19257,7 +19860,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Displays the advanced settings for the currently selected TSI detector.
         """
         # Switch to Advanced Settings
-        fg_detectors = ['wideband_x310.py','wideband_b210.py','wideband_hackrf.py','wideband_b205mini.py','wideband_rtl2832u.py','wideband_limesdr.py','wideband_bladerf.py','wideband_plutosdr.py']
+        fg_detectors = ['wideband_x310.py','wideband_b210.py','wideband_hackrf.py','wideband_b205mini.py','wideband_rtl2832u.py','wideband_limesdr.py','wideband_bladerf.py','wideband_plutosdr.py','wideband_usrp2.py','wideband_usrp_n2xx.py']
         
         # Flow Graph Detectors
         if str(self.comboBox_tsi_detector.currentText()) in fg_detectors:
@@ -19401,6 +20004,56 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0) 
             self.stackedWidget_tsi_detector.setCurrentIndex(0)
+            
+        elif get_detector == 'wideband_usrp2.py':
+            self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
+            self.spinBox_tsi_detector_fg_threshold.setValue(-70)
+            self.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
+            self.spinBox_tsi_detector_fg_gain.setMaximum(35)
+            self.spinBox_tsi_detector_fg_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fg_gain.setValue(30)
+            self.comboBox_tsi_detector_fg_channel.clear()
+            self.comboBox_tsi_detector_fg_channel.addItem("A:0")
+            self.comboBox_tsi_detector_fg_channel.addItem("B:0") 
+            self.comboBox_tsi_detector_fg_channel.addItem("A:AB") 
+            self.comboBox_tsi_detector_fg_channel.addItem("A:BA") 
+            self.comboBox_tsi_detector_fg_channel.addItem("A:A") 
+            self.comboBox_tsi_detector_fg_channel.addItem("A:B") 
+            self.comboBox_tsi_detector_fg_channel.addItem("B:AB") 
+            self.comboBox_tsi_detector_fg_channel.addItem("B:BA") 
+            self.comboBox_tsi_detector_fg_channel.addItem("B:A") 
+            self.comboBox_tsi_detector_fg_channel.addItem("B:B")            
+            self.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fg_antenna.clear()
+            self.comboBox_tsi_detector_fg_antenna.addItem("J1")
+            self.comboBox_tsi_detector_fg_antenna.addItem("J2")
+            self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)  
+            self.stackedWidget_tsi_detector.setCurrentIndex(0)  
+            
+        elif get_detector == 'wideband_usrp_n2xx.py':
+            self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
+            self.spinBox_tsi_detector_fg_threshold.setValue(-70)
+            self.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
+            self.spinBox_tsi_detector_fg_gain.setMaximum(35)
+            self.spinBox_tsi_detector_fg_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fg_gain.setValue(30)
+            self.comboBox_tsi_detector_fg_channel.clear()
+            self.comboBox_tsi_detector_fg_channel.addItem("A:0")
+            self.comboBox_tsi_detector_fg_channel.addItem("B:0") 
+            self.comboBox_tsi_detector_fg_channel.addItem("A:AB") 
+            self.comboBox_tsi_detector_fg_channel.addItem("A:BA") 
+            self.comboBox_tsi_detector_fg_channel.addItem("A:A") 
+            self.comboBox_tsi_detector_fg_channel.addItem("A:B") 
+            self.comboBox_tsi_detector_fg_channel.addItem("B:AB") 
+            self.comboBox_tsi_detector_fg_channel.addItem("B:BA") 
+            self.comboBox_tsi_detector_fg_channel.addItem("B:A") 
+            self.comboBox_tsi_detector_fg_channel.addItem("B:B")
+            self.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fg_antenna.clear()
+            self.comboBox_tsi_detector_fg_antenna.addItem("J1")
+            self.comboBox_tsi_detector_fg_antenna.addItem("J2")
+            self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)  
+            self.stackedWidget_tsi_detector.setCurrentIndex(0)     
             
         elif get_detector == 'Simulator':
             self.stackedWidget_tsi_detector.setCurrentIndex(2)
@@ -21045,22 +21698,60 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             self.comboBox_hardware.setCurrentIndex(9)            
         elif hardware == "PlutoSDR":
             self.comboBox_hardware.setCurrentIndex(10)            
+        elif hardware == "USRP2":
+            self.comboBox_hardware.setCurrentIndex(11)            
+        elif hardware == "USRP N2xx":
+            self.comboBox_hardware.setCurrentIndex(12)            
         
         self.textEdit_ip.setPlainText(ip)
         self.textEdit_ip.setAlignment(QtCore.Qt.AlignCenter)
         self.textEdit_serial.setPlainText(serial)
         self.textEdit_serial.setAlignment(QtCore.Qt.AlignCenter)
         self.textEdit_interface.setPlainText(interface)
-        self.textEdit_interface.setAlignment(QtCore.Qt.AlignCenter)       
-        
-        if "CBX" in daughterboard:
+        self.textEdit_interface.setAlignment(QtCore.Qt.AlignCenter)
+            
+        if "CBX-120" in daughterboard:
             self.comboBox_daughterboard.setCurrentIndex(0)
-        elif "SBX" in daughterboard:
+        elif "SBX-120" in daughterboard:
             self.comboBox_daughterboard.setCurrentIndex(1)
-        elif "UBX" in daughterboard:
+        elif "UBX-160" in daughterboard:
             self.comboBox_daughterboard.setCurrentIndex(2)
-        elif "WBX" in daughterboard:
-            self.comboBox_daughterboard.setCurrentIndex(3)                    
+        elif "WBX-120" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(3) 
+        elif "TwinRX" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(4) 
+        elif "XCVR2450" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(5) 
+        elif "DBSRX" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(6) 
+        elif "SBX-40" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(7) 
+        elif "UBX-40" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(8) 
+        elif "WBX-40" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(9) 
+        elif "CBX-40" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(10) 
+        elif "LFRX" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(11) 
+        elif "LFTX" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(12) 
+        elif "BasicRX" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(13) 
+        elif "BasicTX" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(14) 
+        elif "TVRX2" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(15) 
+        elif "RFX400" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(16) 
+        elif "RFX900" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(17) 
+        elif "RFX1200" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(18) 
+        elif "RFX1800" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(19) 
+        elif "RFX2400" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(20)       
     
     def _connectSlots(self):
         """ Contains the connect functions for all the signals and slots
@@ -21149,7 +21840,11 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
         elif str(self.comboBox_hardware.currentText()) == "Open Sniffer":
             pass            
         elif str(self.comboBox_hardware.currentText()) == "PlutoSDR":
-            self.parent.findPlutoSDR(self.textEdit_ip)         
+            self.parent.findPlutoSDR(self.textEdit_ip)  
+        elif str(self.comboBox_hardware.currentText()) == "USRP2":       
+            self.parent.findUSRP2(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label_probe)  
+        elif str(self.comboBox_hardware.currentText()) == "USRP N2xx":       
+            self.parent.findUSRP_N2xx(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label_probe)  
 
     def _slotProbeClicked(self):
         """ Opens a message box and copies the results of "uhd_usrp_probe xxx.xxx.xxx.xxx"
@@ -21247,7 +21942,37 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
                 self.label_probe.setVisible(False)                
             except:
                 self.label_probe.setVisible(False)
+                output = "Error"
+                
+        elif str(self.comboBox_hardware.currentText()) == "USRP2":
+            # Get IP Address
+            get_ip = str(self.textEdit_ip.toPlainText())
+            
+            # Probe
+            try:
+                self.label_probe.setVisible(True)
+                QtGui.QApplication.processEvents()
+                proc = subprocess.Popen('uhd_usrp_probe --args="addr=' + get_ip + '" &', shell=True, stdout=subprocess.PIPE, )
+                output = proc.communicate()[0]
+                self.label_probe.setVisible(False)
+            except:
+                self.label_probe.setVisible(False)
                 output = "Error"            
+            
+        elif str(self.comboBox_hardware.currentText()) == "USRP N2xx":
+            # Get IP Address
+            get_ip = str(self.textEdit_ip.toPlainText())
+            
+            # Probe
+            try:
+                self.label_probe.setVisible(True)
+                QtGui.QApplication.processEvents()
+                proc = subprocess.Popen('uhd_usrp_probe --args="addr=' + get_ip + '" &', shell=True, stdout=subprocess.PIPE, )
+                output = proc.communicate()[0]
+                self.label_probe.setVisible(False)
+            except:
+                self.label_probe.setVisible(False)
+                output = "Error"     
                 
             # Create a Dialog Window    
             msgBox = MyMessageBox(my_text = output, height = 600, width = 900)
@@ -21341,7 +22066,21 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             self.pushButton_guess.setVisible(True)     	
             self.pushButton_probe_usrp.setVisible(True)
             self.textEdit_interface.setVisible(False)
-            self.comboBox_daughterboard.setVisible(False)            
+            self.comboBox_daughterboard.setVisible(False)
+        elif str(self.comboBox_hardware.currentText()) == "USRP2":
+            self.textEdit_ip.setVisible(True)
+            self.textEdit_serial.setVisible(True)		
+            self.pushButton_guess.setVisible(True)
+            self.pushButton_probe_usrp.setVisible(True)
+            self.textEdit_interface.setVisible(False)	
+            self.comboBox_daughterboard.setVisible(True)              
+        elif str(self.comboBox_hardware.currentText()) == "USRP N2xx":
+            self.textEdit_ip.setVisible(True)
+            self.textEdit_serial.setVisible(True)		
+            self.pushButton_guess.setVisible(True)
+            self.pushButton_probe_usrp.setVisible(True)
+            self.textEdit_interface.setVisible(False)	
+            self.comboBox_daughterboard.setVisible(True)   
             
     def _slotApplyToAllClicked(self):
         """ Save the current radio settings to all components.
