@@ -33,7 +33,8 @@ GR_PYTHON_INSTALL(
     __init__.py
     adsb_encode.py
     UDP_to_Wireshark.py
-    UDP_to_Wireshark_Async.py DESTINATION ${GR_PYTHON_DIR}/ainfosec
+    UDP_to_Wireshark_Async.py
+    adsb_parser.py DESTINATION ${GR_PYTHON_DIR}/ainfosec
 )
 
 ########################################################################

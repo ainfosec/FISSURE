@@ -507,7 +507,7 @@
     </param>
     <param>
       <key>bb_gain0</key>
-      <value>rx_gain</value>
+      <value>20</value>
     </param>
     <param>
       <key>bw0</key>
@@ -531,7 +531,7 @@
     </param>
     <param>
       <key>if_gain0</key>
-      <value>20</value>
+      <value>rx_gain</value>
     </param>
     <param>
       <key>iq_balance_mode0</key>

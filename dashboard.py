@@ -2152,11 +2152,19 @@ class MainWindow(QtGui.QMainWindow, form_class):
                                 if len(self.dashboard_settings_dictionary['hardware_serial_pd']) > 0:
                                     if self.dashboard_settings_dictionary['hardware_pd'] == "HackRF":
                                         value_text = self.dashboard_settings_dictionary['hardware_serial_pd'] 
+                                    elif self.dashboard_settings_dictionary['hardware_pd'] == "bladeRF":
+                                        value_text = self.dashboard_settings_dictionary['hardware_serial_pd'] 
+                                    elif self.dashboard_settings_dictionary['hardware_pd'] == "bladeRF 2.0":
+                                        value_text = self.dashboard_settings_dictionary['hardware_serial_pd'] 
                                     else:
                                         value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_pd']                                
                                 else:
                                     if self.dashboard_settings_dictionary['hardware_pd'] == "HackRF":
                                         value_text = ""
+                                    elif self.dashboard_settings_dictionary['hardware_pd'] == "bladeRF":
+                                        value_text = "0"
+                                    elif self.dashboard_settings_dictionary['hardware_pd'] == "bladeRF 2.0":
+                                        value_text = "0"
                                     else:
                                         value_text = "False"
                             
@@ -2913,11 +2921,19 @@ class MainWindow(QtGui.QMainWindow, form_class):
                                 if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
                                     if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                         value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
+                                    elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                        value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
+                                    elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                        value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
                                     else:
                                         value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
                                 else:
                                     if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                         value_text = ""
+                                    elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                        value_text = "0"
+                                    elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                        value_text = "0"
                                     else:
                                         value_text = "False"   
                             else:
@@ -3018,11 +3034,19 @@ class MainWindow(QtGui.QMainWindow, form_class):
                                     if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
                                         if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                             value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                            value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                            value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
                                         else:
                                             value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
                                     else:
                                         if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                             value_text = ""
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                            value_text = "0"
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                            value_text = "0"
                                         else:
                                             value_text = "False"   
                                 else:
@@ -3132,11 +3156,19 @@ class MainWindow(QtGui.QMainWindow, form_class):
                                         if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
                                             if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                                 value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
+                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                                value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
+                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                                value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
                                             else:
                                                 value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
                                         else:
                                             if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                                 value_text = ""
+                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                                value_text = "0"
+                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                                value_text = "0"
                                             else:
                                                 value_text = "False"   
                                                                                                    
@@ -3203,11 +3235,19 @@ class MainWindow(QtGui.QMainWindow, form_class):
                                         if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
                                             if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                                 value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
+                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                                value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
+                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                                value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
                                             else:
                                                 value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                               
                                         else:
                                             if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                                 value_text = ""
+                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                                value_text = "0"
+                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                                value_text = "0"
                                             else:
                                                 value_text = "False"                                        
                                                                                                    
@@ -6322,6 +6362,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     fname = "iq_recorder_usrp2"                
                 elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP N2xx":
                     fname = "iq_recorder_usrp_n2xx"                
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                    fname = "iq_recorder_bladerf2"                
                     
                 # LimeSDR Channel
                 if self.dashboard_settings_dictionary['hardware_iq'] == "LimeSDR":
@@ -6334,11 +6376,19 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
                     if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
                         get_serial = self.dashboard_settings_dictionary['hardware_serial_iq'] 
+                    elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                        get_serial = self.dashboard_settings_dictionary['hardware_serial_iq'] 
+                    elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                        get_serial = self.dashboard_settings_dictionary['hardware_serial_iq'] 
                     else:
                         get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']                               
                 else:
                     if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
                         get_serial = ""
+                    elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                        get_serial = "0"
+                    elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                        get_serial = "0"
                     else:
                         get_serial = "False"    
                 
@@ -7368,11 +7418,19 @@ class MainWindow(QtGui.QMainWindow, form_class):
                                     if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
                                         if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                             value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                            value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                            value_text = self.dashboard_settings_dictionary['hardware_serial_attack'] 
                                         else:
                                             value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']                                
                                     else:
                                         if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                             value_text = ""
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                            value_text = "0"
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                            value_text = "0"
                                         else:
                                             value_text = "False"                                    
                                 
@@ -10289,11 +10347,19 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     if len(self.dashboard_settings_dictionary['hardware_serial_tsi']) > 0:
                         if self.dashboard_settings_dictionary['hardware_tsi'] == "HackRF":
                             get_serial = self.dashboard_settings_dictionary['hardware_serial_tsi'] 
+                        elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF":
+                            get_serial = self.dashboard_settings_dictionary['hardware_serial_tsi'] 
+                        elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF 2.0":
+                            get_serial = self.dashboard_settings_dictionary['hardware_serial_tsi'] 
                         else:
                             get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_tsi']                               
                     else:
                         if self.dashboard_settings_dictionary['hardware_tsi'] == "HackRF":
                             get_serial = ""
+                        elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF":
+                            get_serial = "0"
+                        elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF 2.0":
+                            get_serial = "0"
                         else:                            
                             get_serial = "False"  
                     variable_names.append('serial')
@@ -11958,7 +12024,48 @@ class MainWindow(QtGui.QMainWindow, form_class):
             elif "RFX2400" in output:
                 widget_daughterboard.setCurrentIndex(20)   
         except:
-            widget_probing_label.setVisible(False)  
+            widget_probing_label.setVisible(False)
+            
+    def find_bladeRF2(self, widget_serial):      
+        """ Parses the results of 'bladeRF-cli -p' and copies the serial number for the bladeRF into an edit box.
+        """   
+        # Get the Text
+        proc = subprocess.Popen('bladeRF-cli -p &', shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0]
+        
+        # Reset Guess Index
+        get_text = str(widget_serial.toPlainText())
+        if len(get_text) == 0:
+            self.guess_index = 0
+        else:
+            self.guess_index = self.guess_index + 1
+        
+        # Get the Variables and Values
+        device_index = -1
+        device_dict = {}
+        for line in output.splitlines():
+
+            # "Serial:         5519595f67984cc3af24xxxxxxxxxxxx" Line
+            if "Serial:" in line:
+                device_index = device_index + 1
+                device_dict.update({device_index:[]})
+                get_var = line.split(':')[0].strip(' ')
+                get_val = line.split(':')[1].strip(' ')
+                device_dict[device_index].append((get_var,get_val))
+                
+        # Check Interface Index
+        if self.guess_index > (len(device_dict)-1):
+            self.guess_index = 0  
+                    
+        # Update GUI 
+        try:
+            m = device_dict[self.guess_index][0]   
+            if m[0] == 'Serial':
+                widget_serial.setText(m[1]) 
+                widget_serial.setAlignment(QtCore.Qt.AlignCenter)     
+        except:
+            widget_serial.setText("") 
+            widget_serial.setAlignment(QtCore.Qt.AlignCenter)  
                 
     def _slotLibraryBrowseRemoveDemodFG_Clicked(self):
         """ Removes selected demodulation flow graph from the library.
@@ -12252,6 +12359,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.stackedWidget_iq_inspection.setCurrentIndex(11)                
             elif get_hardware == "USRP N2xx":
                 self.stackedWidget_iq_inspection.setCurrentIndex(12)                
+            elif get_hardware == "bladeRF 2.0":
+                self.stackedWidget_iq_inspection.setCurrentIndex(13)                
                 
             # Enable Frame
             self.frame_iq_inspection_fg.setEnabled(True)
@@ -12300,11 +12409,15 @@ class MainWindow(QtGui.QMainWindow, form_class):
                             if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
                                 if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
                                     value_text = self.dashboard_settings_dictionary['hardware_serial_iq']  
+                                elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                                    value_text = self.dashboard_settings_dictionary['hardware_serial_iq']  
                                 else:
                                     value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']                               
                             else:
                                 if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
                                     value_text = "" 
+                                elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                                    value_text = "0" 
                                 else:
                                     value_text = "False"   
                         else:
@@ -12684,6 +12797,14 @@ class MainWindow(QtGui.QMainWindow, form_class):
             elif self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "RFX2400":
                 self.tuning_matplotlib_widget.freq_start_limit = 2300
                 self.tuning_matplotlib_widget.freq_end_limit = 2900    
+                
+        elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF 2.0":
+            self.comboBox_tsi_detector.setCurrentIndex(10)
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/bladeRF2.png")) 
+            
+            # Tuning Widget Limits
+            self.tuning_matplotlib_widget.freq_start_limit = 47
+            self.tuning_matplotlib_widget.freq_end_limit = 6000
             
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_tsi']) > 0:
@@ -12734,6 +12855,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP N2xx":
             self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(11)
+        elif self.dashboard_settings_dictionary['hardware_pd'] == "bladeRF 2.0":
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/bladeRF2.png")) 
+            self.comboBox_pd_demod_hardware.setCurrentIndex(12)
             
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_pd']) > 0:
@@ -12783,6 +12907,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP N2xx":
             self.comboBox_attack_hardware.setCurrentIndex(12)  
             self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png"))    
+        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+            self.comboBox_attack_hardware.setCurrentIndex(13)  
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/bladeRF2.png"))    
             
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_attack']) > 0:
@@ -13004,7 +13131,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             
             self.groupBox_iq_record.setEnabled(True)
             
-        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":  # To Do
+        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF": 
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/BladeRF.png"))
             self._slotIQ_InspectionHardwareChanged()
             
@@ -13185,6 +13312,43 @@ class MainWindow(QtGui.QMainWindow, form_class):
             
             self._slotIQ_InspectionHardwareChanged()
             self.groupBox_iq_record.setEnabled(True) 
+            
+        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/bladeRF2.png"))
+            self._slotIQ_InspectionHardwareChanged()
+            
+            # IQ Record
+            comboBox_channel = QtGui.QComboBox(self)
+            comboBox_channel.addItem("")
+            comboBox_channel.addItem("") 
+            self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
+            comboBox_antenna = QtGui.QComboBox(self)
+            comboBox_antenna.addItem("")
+            comboBox_antenna.addItem("") 
+            self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
+            gain_item = QtGui.QTableWidgetItem("20")
+            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+            self.tableWidget_iq_record.setItem(0,4,gain_item)
+            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
+            
+            # IQ Playback
+            comboBox_playback_channel = QtGui.QComboBox(self)            
+            comboBox_playback_channel.addItem("")
+            comboBox_playback_channel.addItem("") 
+            self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
+            comboBox_playback_antenna = QtGui.QComboBox(self)
+            comboBox_playback_antenna.addItem("")
+            comboBox_playback_antenna.addItem("")
+            self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
+            playback_gain_item = QtGui.QTableWidgetItem("20")
+            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            self.tableWidget_iq_playback.resizeColumnsToContents()
+            self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True) 
+            
+            self.groupBox_iq_record.setEnabled(True)
         
         # Enable Playback and Recording
         self.pushButton_iq_playback.setEnabled(True)
@@ -13230,6 +13394,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png"))    
         elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png"))    
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/bladeRF2.png"))    
             
         # Adjust Existing Channel ComboBoxes and Gain in Replay Tab
         for n in range(0, self.tableWidget_archive_replay.rowCount()):
@@ -13309,7 +13475,12 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 get_combobox.addItem("B:B")   
                 gain_item = QtGui.QTableWidgetItem("30")
                 gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-                self.tableWidget_archive_replay.setItem(n,7,gain_item)  
+                self.tableWidget_archive_replay.setItem(n,7,gain_item)
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":      
+                get_combobox.addItem("")      
+                gain_item = QtGui.QTableWidgetItem("20")
+                gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_replay.setItem(n,7,gain_item) 
             else:
                 get_combobox.addItem("")
                 
@@ -15761,6 +15932,11 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     fname = "iq_playback_single_usrp_n2xx"
                 else:
                     fname = "iq_playback_usrp_n2xx"  
+            elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                if get_repeat == "No":
+                    fname = "iq_playback_single_bladerf2"
+                else:
+                    fname = "iq_playback_bladerf2"
             
             # LimeSDR Channel
             if self.dashboard_settings_dictionary['hardware_iq'] == "LimeSDR":
@@ -15773,11 +15949,19 @@ class MainWindow(QtGui.QMainWindow, form_class):
             if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
                 if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
                     get_serial = self.dashboard_settings_dictionary['hardware_serial_iq'] 
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                    get_serial = self.dashboard_settings_dictionary['hardware_serial_iq'] 
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                    get_serial = self.dashboard_settings_dictionary['hardware_serial_iq'] 
                 else:
                     get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']                               
             else:
                 if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
                     get_serial = ""
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                    get_serial = "0"
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                    get_serial = "0"
                 else:
                     get_serial = "False"  
             
@@ -15893,8 +16077,6 @@ class MainWindow(QtGui.QMainWindow, form_class):
             # Refresh Listbox
             self._slotIQ_RefreshClicked()
             
-
-
     def _slotMenuLoadBladeRF_FPGA_Clicked(self):
         """ Loads the FPGA image for bladeRF. Sometimes required after plugging in.
         """
@@ -17868,6 +18050,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     new_combobox1.addItem("B:BA") 
                     new_combobox1.addItem("B:A") 
                     new_combobox1.addItem("B:B")
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":      
+                    new_combobox1.addItem("") 
                 else:
                     new_combobox1.addItem("")
                 new_combobox1.setFixedSize(67,24) 
@@ -17900,7 +18084,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP2":
                     gain_item = QtGui.QTableWidgetItem("30")                                   
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
-                    gain_item = QtGui.QTableWidgetItem("30")                                   
+                    gain_item = QtGui.QTableWidgetItem("30")
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":         
+                    gain_item = QtGui.QTableWidgetItem("20")  
                 else:
                     gain_item = QtGui.QTableWidgetItem("") 
                 gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
@@ -18003,7 +18189,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
             new_combobox1.addItem("B:AB") 
             new_combobox1.addItem("B:BA") 
             new_combobox1.addItem("B:A") 
-            new_combobox1.addItem("B:B")                           
+            new_combobox1.addItem("B:B")  
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":      
+            new_combobox1.addItem("")     
         else:
             new_combobox1.addItem("")
         new_combobox1.setFixedSize(67,24) 
@@ -18036,7 +18224,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP2":
             gain_item = QtGui.QTableWidgetItem("30")                                   
         elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
-            gain_item = QtGui.QTableWidgetItem("30")                                   
+            gain_item = QtGui.QTableWidgetItem("30")   
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":         
+            gain_item = QtGui.QTableWidgetItem("20")
         else:
             gain_item = QtGui.QTableWidgetItem("") 
         gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
@@ -18259,6 +18449,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 flow_graph = "archive_replay_usrp2"
             elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
                 flow_graph = "archive_replay_usrp_n2xx"
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":
+                flow_graph = "archive_replay_bladerf2"
                             
             # Send "Start Archive Playlist" Message to the HIPRFISR    
             if len(flow_graph) > 0:
@@ -18270,11 +18462,19 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 if len(self.dashboard_settings_dictionary['hardware_serial_archive']) > 0:
                     if self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
                         get_serial = self.dashboard_settings_dictionary['hardware_serial_archive'] 
+                    elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF":
+                        get_serial = self.dashboard_settings_dictionary['hardware_serial_archive'] 
+                    elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":
+                        get_serial = self.dashboard_settings_dictionary['hardware_serial_archive'] 
                     else:
                         get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_archive']                               
                 else:
                     if self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
                         get_serial = ""
+                    elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF":
+                        get_serial = "0"
+                    elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":
+                        get_serial = "0"
                     else:
                         get_serial = "False"  
                 
@@ -18753,7 +18953,12 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     return True     
             elif get_daughterboard == "RFX2400":
                 if (get_frequency >= 2300) and (get_frequency <= 2900):
-                    return True   
+                    return True  
+                    
+        elif get_hardware == "bladeRF 2.0":
+            # Frequency Limits
+            if (get_frequency >= 47) and (get_frequency <= 6000):
+                return True 
         
         # Not in Bounds
         return False
@@ -19860,7 +20065,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Displays the advanced settings for the currently selected TSI detector.
         """
         # Switch to Advanced Settings
-        fg_detectors = ['wideband_x310.py','wideband_b210.py','wideband_hackrf.py','wideband_b205mini.py','wideband_rtl2832u.py','wideband_limesdr.py','wideband_bladerf.py','wideband_plutosdr.py','wideband_usrp2.py','wideband_usrp_n2xx.py']
+        fg_detectors = ['wideband_x310.py','wideband_b210.py','wideband_hackrf.py','wideband_b205mini.py','wideband_rtl2832u.py','wideband_limesdr.py','wideband_bladerf.py','wideband_plutosdr.py','wideband_usrp2.py','wideband_usrp_n2xx.py','wideband_bladerf2.py']
         
         # Flow Graph Detectors
         if str(self.comboBox_tsi_detector.currentText()) in fg_detectors:
@@ -20053,7 +20258,22 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.addItem("J1")
             self.comboBox_tsi_detector_fg_antenna.addItem("J2")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)  
-            self.stackedWidget_tsi_detector.setCurrentIndex(0)     
+            self.stackedWidget_tsi_detector.setCurrentIndex(0)   
+            
+        elif get_detector == 'wideband_bladerf2.py':
+            self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
+            self.spinBox_tsi_detector_fg_threshold.setValue(-70)
+            self.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
+            self.spinBox_tsi_detector_fg_gain.setMaximum(14)
+            self.spinBox_tsi_detector_fg_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fg_gain.setValue(10)
+            self.comboBox_tsi_detector_fg_channel.clear()
+            self.comboBox_tsi_detector_fg_channel.addItem("N/A")
+            self.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fg_antenna.clear()
+            self.comboBox_tsi_detector_fg_antenna.addItem("N/A")
+            self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0) 
+            self.stackedWidget_tsi_detector.setCurrentIndex(0)
             
         elif get_detector == 'Simulator':
             self.stackedWidget_tsi_detector.setCurrentIndex(2)
@@ -21666,7 +21886,7 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
         self.setupUi(self)       
             
         # Prevent Resizing/Maximizing
-        self.setFixedSize(950, 115)         
+        self.setFixedSize(965, 115)         
         
         # Do SIGNAL/Slots Connections
         self._connectSlots()    
@@ -21701,7 +21921,9 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
         elif hardware == "USRP2":
             self.comboBox_hardware.setCurrentIndex(11)            
         elif hardware == "USRP N2xx":
-            self.comboBox_hardware.setCurrentIndex(12)            
+            self.comboBox_hardware.setCurrentIndex(12)
+        elif hardware == "bladeRF 2.0":
+            self.comboBox_hardware.setCurrentIndex(13)
         
         self.textEdit_ip.setPlainText(ip)
         self.textEdit_ip.setAlignment(QtCore.Qt.AlignCenter)
@@ -21836,7 +22058,7 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
         elif str(self.comboBox_hardware.currentText()) == "LimeSDR":
             self.parent.findLimeSDR(self.textEdit_serial)
         elif str(self.comboBox_hardware.currentText()) == "bladeRF":
-            pass
+            self.parent.find_bladeRF2(self.textEdit_serial)
         elif str(self.comboBox_hardware.currentText()) == "Open Sniffer":
             pass            
         elif str(self.comboBox_hardware.currentText()) == "PlutoSDR":
@@ -21844,7 +22066,9 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
         elif str(self.comboBox_hardware.currentText()) == "USRP2":       
             self.parent.findUSRP2(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label_probe)  
         elif str(self.comboBox_hardware.currentText()) == "USRP N2xx":       
-            self.parent.findUSRP_N2xx(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label_probe)  
+            self.parent.findUSRP_N2xx(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label_probe)
+        elif str(self.comboBox_hardware.currentText()) == "bladeRF 2.0":
+            self.parent.find_bladeRF2(self.textEdit_serial)   
 
     def _slotProbeClicked(self):
         """ Opens a message box and copies the results of "uhd_usrp_probe xxx.xxx.xxx.xxx"
@@ -21889,7 +22113,7 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             try:
                 self.label_probe.setVisible(True)
                 QtGui.QApplication.processEvents()
-                proc=subprocess.Popen('bladeRF-cli -p &', shell=True, stdout=subprocess.PIPE, )
+                proc = subprocess.Popen('bladeRF-cli -p &', shell=True, stdout=subprocess.PIPE, )
                 output=proc.communicate()[0]
                 self.label_probe.setVisible(False)               
             except:
@@ -21897,7 +22121,7 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
                 output = "Error"            
                 
             # Create a Dialog Window    
-            msgBox = MyMessageBox(my_text = output)
+            msgBox = MyMessageBox(my_text = output, height = 140, width = 400)
             msgBox.exec_() 
             
         elif (str(self.comboBox_hardware.currentText()) == "LimeSDR"):
@@ -21976,6 +22200,22 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
                 
             # Create a Dialog Window    
             msgBox = MyMessageBox(my_text = output, height = 600, width = 900)
+            msgBox.exec_() 
+                      
+        elif (str(self.comboBox_hardware.currentText()) == "bladeRF 2.0"):
+            # Probe
+            try:
+                self.label_probe.setVisible(True)
+                QtGui.QApplication.processEvents()
+                proc = subprocess.Popen('bladeRF-cli -p &', shell=True, stdout=subprocess.PIPE, )
+                output=proc.communicate()[0]
+                self.label_probe.setVisible(False)               
+            except:
+                self.label_probe.setVisible(False)
+                output = "Error"            
+                
+            # Create a Dialog Window    
+            msgBox = MyMessageBox(my_text = output, height = 140, width = 400)
             msgBox.exec_() 
                         
     def _slotHardwareChanged(self):
@@ -22081,6 +22321,13 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             self.pushButton_probe_usrp.setVisible(True)
             self.textEdit_interface.setVisible(False)	
             self.comboBox_daughterboard.setVisible(True)   
+        elif str(self.comboBox_hardware.currentText()) == "bladeRF 2.0":
+            self.textEdit_ip.setVisible(False)
+            self.textEdit_serial.setVisible(True)
+            self.pushButton_guess.setVisible(True)
+            self.pushButton_probe_usrp.setVisible(True)
+            self.textEdit_interface.setVisible(False)   
+            self.comboBox_daughterboard.setVisible(False)
             
     def _slotApplyToAllClicked(self):
         """ Save the current radio settings to all components.

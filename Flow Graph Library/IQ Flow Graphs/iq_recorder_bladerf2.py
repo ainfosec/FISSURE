@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
-# Title: Iq Recorder Bladerf
-# Generated: Thu Sep 22 19:33:53 2022
+# Title: Iq Recorder Bladerf2
+# Generated: Thu Sep 22 18:56:41 2022
 ##################################################
 
 
@@ -17,10 +17,10 @@ import osmosdr
 import time
 
 
-class iq_recorder_bladerf(gr.top_block):
+class iq_recorder_bladerf2(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Iq Recorder Bladerf")
+        gr.top_block.__init__(self, "Iq Recorder Bladerf2")
 
         ##################################################
         # Variables
@@ -116,7 +116,7 @@ class iq_recorder_bladerf(gr.top_block):
         self.blocks_head_0.set_length(self.file_length)
 
 
-def main(top_block_cls=iq_recorder_bladerf, options=None):
+def main(top_block_cls=iq_recorder_bladerf2, options=None):
 
     tb = top_block_cls()
     tb.start()

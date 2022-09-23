@@ -132,7 +132,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>"192.168.40.2"</value>
+      <value>""</value>
     </param>
   </block>
   <block>
@@ -160,6 +160,33 @@
     <param>
       <key>value</key>
       <value>4e6</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(8, 484)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>serial</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>"0"</value>
     </param>
   </block>
   <block>
@@ -310,7 +337,7 @@
     </param>
     <param>
       <key>bb_gain0</key>
-      <value>tx_gain</value>
+      <value>20</value>
     </param>
     <param>
       <key>bw0</key>
@@ -326,7 +353,7 @@
     </param>
     <param>
       <key>if_gain0</key>
-      <value>20</value>
+      <value>tx_gain</value>
     </param>
     <param>
       <key>gain0</key>
@@ -1210,7 +1237,7 @@
     </param>
     <param>
       <key>args</key>
-      <value>bladerf=0</value>
+      <value>"bladerf=" + str(serial)</value>
     </param>
     <param>
       <key>_enabled</key>

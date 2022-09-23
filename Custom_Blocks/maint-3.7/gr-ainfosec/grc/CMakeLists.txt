@@ -20,5 +20,6 @@ install(FILES
     ainfosec_adsb_encode.xml
     ainfosec_UDP_to_Wireshark.xml
     ainfosec_UDP_to_Wireshark_Async.xml
-    ainfosec_wideband_detector.xml DESTINATION share/gnuradio/grc/blocks
+    ainfosec_wideband_detector.xml
+    ainfosec_adsb_parser.xml DESTINATION share/gnuradio/grc/blocks
 )

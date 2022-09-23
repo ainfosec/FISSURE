@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Archive Replay Bladerf
-# Generated: Mon Sep 20 23:20:07 2021
+# Generated: Thu Sep 22 19:32:10 2022
 ##################################################
 
 
@@ -28,20 +28,21 @@ class archive_replay_bladerf(gr.top_block):
         self.tx_gain = tx_gain = 30
         self.tx_frequency = tx_frequency = 2425.715e6
         self.tx_channel = tx_channel = "A:0"
+        self.serial = serial = "0"
         self.sample_rate = sample_rate = 4e6
-        self.ip_address = ip_address = "192.168.40.2"
+        self.ip_address = ip_address = ""
         self.filepath = filepath = ""
 
         ##################################################
         # Blocks
         ##################################################
-        self.osmosdr_sink_0 = osmosdr.sink( args="numchan=" + str(1) + " " + 'bladerf=0' )
+        self.osmosdr_sink_0 = osmosdr.sink( args="numchan=" + str(1) + " " + "bladerf=" + str(serial) )
         self.osmosdr_sink_0.set_sample_rate(float(sample_rate))
         self.osmosdr_sink_0.set_center_freq(tx_frequency, 0)
         self.osmosdr_sink_0.set_freq_corr(0, 0)
         self.osmosdr_sink_0.set_gain(10, 0)
-        self.osmosdr_sink_0.set_if_gain(20, 0)
-        self.osmosdr_sink_0.set_bb_gain(tx_gain, 0)
+        self.osmosdr_sink_0.set_if_gain(tx_gain, 0)
+        self.osmosdr_sink_0.set_bb_gain(20, 0)
         self.osmosdr_sink_0.set_antenna('', 0)
         self.osmosdr_sink_0.set_bandwidth(0, 0)
 
@@ -57,7 +58,7 @@ class archive_replay_bladerf(gr.top_block):
 
     def set_tx_gain(self, tx_gain):
         self.tx_gain = tx_gain
-        self.osmosdr_sink_0.set_bb_gain(self.tx_gain, 0)
+        self.osmosdr_sink_0.set_if_gain(self.tx_gain, 0)
 
     def get_tx_frequency(self):
         return self.tx_frequency
@@ -71,6 +72,12 @@ class archive_replay_bladerf(gr.top_block):
 
     def set_tx_channel(self, tx_channel):
         self.tx_channel = tx_channel
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_sample_rate(self):
         return self.sample_rate

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
-# Title: Signal Envelope Bladerf
-# Generated: Thu Sep 22 19:32:53 2022
+# Title: Instantaneous Frequency Bladerf2
+# Generated: Thu Sep 22 18:54:06 2022
 ##################################################
 
 from distutils.version import StrictVersion
@@ -29,6 +29,7 @@ from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from gnuradio.qtgui import Range, RangeWidget
 from optparse import OptionParser
+import dect2
 import osmosdr
 import sip
 import sys
@@ -36,12 +37,12 @@ import time
 from gnuradio import qtgui
 
 
-class signal_envelope_bladerf(gr.top_block, Qt.QWidget):
+class instantaneous_frequency_bladerf2(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Signal Envelope Bladerf")
+        gr.top_block.__init__(self, "Instantaneous Frequency Bladerf2")
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Signal Envelope Bladerf")
+        self.setWindowTitle("Instantaneous Frequency Bladerf2")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -59,7 +60,7 @@ class signal_envelope_bladerf(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "signal_envelope_bladerf")
+        self.settings = Qt.QSettings("GNU Radio", "instantaneous_frequency_bladerf2")
 
         if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
             self.restoreGeometry(self.settings.value("geometry").toByteArray())
@@ -115,19 +116,6 @@ class signal_envelope_bladerf(gr.top_block, Qt.QWidget):
         self.top_grid_layout.addWidget(self._decimation_tool_bar, 0, 1, 1, 1)
         [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
         [self.top_grid_layout.setColumnStretch(c,1) for c in range(1,2)]
-        self.rtlsdr_source_0_0 = osmosdr.source( args="numchan=" + str(1) + " " + 'bladerf=0' )
-        self.rtlsdr_source_0_0.set_sample_rate(sample_rate)
-        self.rtlsdr_source_0_0.set_center_freq(rx_frequency*1e6, 0)
-        self.rtlsdr_source_0_0.set_freq_corr(0, 0)
-        self.rtlsdr_source_0_0.set_dc_offset_mode(0, 0)
-        self.rtlsdr_source_0_0.set_iq_balance_mode(0, 0)
-        self.rtlsdr_source_0_0.set_gain_mode(False, 0)
-        self.rtlsdr_source_0_0.set_gain(10, 0)
-        self.rtlsdr_source_0_0.set_if_gain(rx_gain, 0)
-        self.rtlsdr_source_0_0.set_bb_gain(20, 0)
-        self.rtlsdr_source_0_0.set_antenna('', 0)
-        self.rtlsdr_source_0_0.set_bandwidth(0, 0)
-
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
         	100000, #size
         	sample_rate/decimation, #samp_rate
@@ -135,7 +123,7 @@ class signal_envelope_bladerf(gr.top_block, Qt.QWidget):
         	1 #number of inputs
         )
         self.qtgui_time_sink_x_0.set_update_time(0.1)
-        self.qtgui_time_sink_x_0.set_y_axis(-.1, 1)
+        self.qtgui_time_sink_x_0.set_y_axis(-5, 5)
 
         self.qtgui_time_sink_x_0.set_y_label('Amplitude', "")
 
@@ -178,18 +166,31 @@ class signal_envelope_bladerf(gr.top_block, Qt.QWidget):
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 3, 0, 20, 4)
         [self.top_grid_layout.setRowStretch(r,1) for r in range(3,23)]
         [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + 'bladerf=0' )
+        self.osmosdr_source_0.set_sample_rate(sample_rate)
+        self.osmosdr_source_0.set_center_freq(rx_frequency*1e6, 0)
+        self.osmosdr_source_0.set_freq_corr(0, 0)
+        self.osmosdr_source_0.set_dc_offset_mode(0, 0)
+        self.osmosdr_source_0.set_iq_balance_mode(0, 0)
+        self.osmosdr_source_0.set_gain_mode(False, 0)
+        self.osmosdr_source_0.set_gain(10, 0)
+        self.osmosdr_source_0.set_if_gain(rx_gain, 0)
+        self.osmosdr_source_0.set_bb_gain(20, 0)
+        self.osmosdr_source_0.set_antenna('', 0)
+        self.osmosdr_source_0.set_bandwidth(0, 0)
+
+        self.dect2_phase_diff_0 = dect2.phase_diff()
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, decimation)
-        self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.qtgui_time_sink_x_0, 0))
-        self.connect((self.blocks_keep_one_in_n_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
-        self.connect((self.rtlsdr_source_0_0, 0), (self.blocks_keep_one_in_n_0, 0))
+        self.connect((self.blocks_keep_one_in_n_0, 0), (self.dect2_phase_diff_0, 0))
+        self.connect((self.dect2_phase_diff_0, 0), (self.qtgui_time_sink_x_0, 0))
+        self.connect((self.osmosdr_source_0, 0), (self.blocks_keep_one_in_n_0, 0))
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "signal_envelope_bladerf")
+        self.settings = Qt.QSettings("GNU Radio", "instantaneous_frequency_bladerf2")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
@@ -199,22 +200,22 @@ class signal_envelope_bladerf(gr.top_block, Qt.QWidget):
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self._sample_rate_callback(self.sample_rate)
-        self.rtlsdr_source_0_0.set_sample_rate(self.sample_rate)
         self.qtgui_time_sink_x_0.set_samp_rate(self.sample_rate/self.decimation)
+        self.osmosdr_source_0.set_sample_rate(self.sample_rate)
 
     def get_rx_gain(self):
         return self.rx_gain
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.rtlsdr_source_0_0.set_if_gain(self.rx_gain, 0)
+        self.osmosdr_source_0.set_if_gain(self.rx_gain, 0)
 
     def get_rx_frequency(self):
         return self.rx_frequency
 
     def set_rx_frequency(self, rx_frequency):
         self.rx_frequency = rx_frequency
-        self.rtlsdr_source_0_0.set_center_freq(self.rx_frequency*1e6, 0)
+        self.osmosdr_source_0.set_center_freq(self.rx_frequency*1e6, 0)
 
     def get_decimation(self):
         return self.decimation
@@ -226,7 +227,7 @@ class signal_envelope_bladerf(gr.top_block, Qt.QWidget):
         self.blocks_keep_one_in_n_0.set_n(self.decimation)
 
 
-def main(top_block_cls=signal_envelope_bladerf, options=None):
+def main(top_block_cls=instantaneous_frequency_bladerf2, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')

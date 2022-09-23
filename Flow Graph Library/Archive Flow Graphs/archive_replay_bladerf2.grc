@@ -46,7 +46,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>iq_playback_bladerf</value>
+      <value>archive_replay_bladerf2</value>
     </param>
     <param>
       <key>max_nouts</key>
@@ -159,7 +159,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>4</value>
+      <value>4e6</value>
     </param>
   </block>
   <block>
@@ -240,7 +240,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>2425.715</value>
+      <value>2425.715e6</value>
     </param>
   </block>
   <block>
@@ -349,7 +349,7 @@
     </param>
     <param>
       <key>freq0</key>
-      <value>tx_frequency*1e6</value>
+      <value>tx_frequency</value>
     </param>
     <param>
       <key>if_gain0</key>
@@ -1333,7 +1333,7 @@
     </param>
     <param>
       <key>sample_rate</key>
-      <value>float(sample_rate)*1e6</value>
+      <value>float(sample_rate)</value>
     </param>
     <param>
       <key>sync</key>

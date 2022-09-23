@@ -1521,7 +1521,7 @@
     </param>
     <param>
       <key>bb_gain0</key>
-      <value>rx_gain</value>
+      <value>20</value>
     </param>
     <param>
       <key>bw0</key>
@@ -1545,7 +1545,7 @@
     </param>
     <param>
       <key>if_gain0</key>
-      <value>24</value>
+      <value>rx_gain</value>
     </param>
     <param>
       <key>iq_balance_mode0</key>
@@ -1553,7 +1553,7 @@
     </param>
     <param>
       <key>gain0</key>
-      <value>14</value>
+      <value>10</value>
     </param>
     <param>
       <key>ant10</key>

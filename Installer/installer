@@ -146,11 +146,46 @@ sudo apt-get install -y libboost-all-dev swig
 ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
+# gr-osmosdr
+programs_ubuntu18_04.append(('gr-osmosdr',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
+cd gr-osmosdr
+git checkout gr3.7
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+ls /usr/local/bin/osmocom_fft
+""",True,'Hardware'))
+
 # BladeRF
 programs_ubuntu18_04.append(('BladeRF',
-"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget				
-sudo apt-get install -y bladerf
-sudo apt-get install -y bladerf-fpga-hostedx115
+"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget	# bladeRF 2.0 requires gr-osmosdr from source			
+#sudo apt-get install -y bladerf  # 2016 - probe doesn't work for bladeRF 2.0 micro
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/Nuand/bladeRF.git
+cd bladeRF
+cd host
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DINSTALL_UDEV_RULES=ON ../
+make
+sudo make install
+sudo ldconfig
+sudo apt-get install -y bladerf-fpga-hostedx115  # A4, A5, A9 does not exist
+sudo apt-get install -y bladerf-fpga-hostedx40   # A4, A5, A9 does not exist
+sudo mkdir -p /usr/share/Nuand/bladeRF
+sudo wget https://www.nuand.com/fpga/hostedxA4-latest.rbf -O /usr/share/Nuand/bladeRF/hostedxA4.rbf
+sudo wget https://www.nuand.com/fpga/hostedxA5-latest.rbf -O /usr/share/Nuand/bladeRF/hostedxA5.rbf
+sudo wget https://www.nuand.com/fpga/hostedxA9-latest.rbf -O /usr/share/Nuand/bladeRF/hostedxA9.rbf
+#sudo wget https://www.nuand.com/fpga/hostedx40-latest.rbf -O /usr/share/Nuand/bladeRF/hostedx40.rbf  
+#sudo wget https://www.nuand.com/fpga/hostedx115-latest.rbf -O /usr/share/Nuand/bladeRF/hostedx115.rbf  # Causes compatibility errors
 ########## Verify ##########
 bladeRF-cli --help
 """,True,'Hardware'))
@@ -182,7 +217,7 @@ sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53
 sudo udevadm trigger --action=change
 #sudo apt-get install -y hackrf
 #pybombs install gr-osmosdr
-#sudo apt-get install gr-osmosdr  # Not always found in the repositories
+#sudo apt-get install gr-osmosdr  # Installing from source
 ########## Verify ##########
 hackrf_sweep --help
 """,True,'Hardware'))
@@ -434,7 +469,7 @@ python2 -c "import garage_door"
 programs_ubuntu18_04.append(('gr-gsm-master',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-gsm-master/
 sudo rm -Rf build
-sudo apt-get install -y gr-osmosdr
+#sudo apt-get install -y gr-osmosdr  # Installing from source
 mkdir build
 cd build
 cmake ..
@@ -1654,11 +1689,46 @@ sudo apt-get install -y libboost-all-dev swig
 ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
+# gr-osmosdr
+programs_ubuntu18_04_5.append(('gr-osmosdr',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
+cd gr-osmosdr
+git checkout gr3.7
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+ls /usr/local/bin/osmocom_fft
+""",True,'Hardware'))
+
 # BladeRF
 programs_ubuntu18_04_5.append(('BladeRF',
-"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget				
-sudo apt-get install -y bladerf
-sudo apt-get install -y bladerf-fpga-hostedx115
+"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget  # bladeRF 2.0 requires gr-osmosdr from source		
+#sudo apt-get install -y bladerf  # 2016 - probe doesn't work for bladeRF 2.0 micro
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/Nuand/bladeRF.git
+cd bladeRF
+cd host
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DINSTALL_UDEV_RULES=ON ../
+make
+sudo make install
+sudo ldconfig
+sudo apt-get install -y bladerf-fpga-hostedx115  # A4, A5, A9 does not exist
+sudo apt-get install -y bladerf-fpga-hostedx40   # A4, A5, A9 does not exist
+sudo mkdir -p /usr/share/Nuand/bladeRF
+sudo wget https://www.nuand.com/fpga/hostedxA4-latest.rbf -O /usr/share/Nuand/bladeRF/hostedxA4.rbf
+sudo wget https://www.nuand.com/fpga/hostedxA5-latest.rbf -O /usr/share/Nuand/bladeRF/hostedxA5.rbf
+sudo wget https://www.nuand.com/fpga/hostedxA9-latest.rbf -O /usr/share/Nuand/bladeRF/hostedxA9.rbf
+#sudo wget https://www.nuand.com/fpga/hostedx40-latest.rbf -O /usr/share/Nuand/bladeRF/hostedx40.rbf  
+#sudo wget https://www.nuand.com/fpga/hostedx115-latest.rbf -O /usr/share/Nuand/bladeRF/hostedx115.rbf  # Causes compatibility errors
 ########## Verify ##########
 bladeRF-cli --help
 """,True,'Hardware'))
@@ -1690,7 +1760,7 @@ sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53
 sudo udevadm trigger --action=change
 #sudo apt-get install -y hackrf
 #pybombs install gr-osmosdr
-#sudo apt-get install gr-osmosdr  # Not always found in the repositories
+#sudo apt-get install gr-osmosdr  # Installing from source
 ########## Verify ##########
 hackrf_sweep --help
 """,True,'Hardware'))
@@ -1942,7 +2012,7 @@ python2 -c "import garage_door"
 programs_ubuntu18_04_5.append(('gr-gsm-master',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-gsm-master/
 sudo rm -Rf build
-sudo apt-get install -y gr-osmosdr
+#sudo apt-get install -y gr-osmosdr  # Installing from source
 mkdir build
 cd build
 cmake ..
@@ -3165,11 +3235,46 @@ sudo apt-get install -y libboost-all-dev swig
 ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
+# gr-osmosdr
+programs_ubuntu18_04_6.append(('gr-osmosdr',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
+cd gr-osmosdr
+git checkout gr3.7
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+ls /usr/local/bin/osmocom_fft
+""",True,'Hardware'))
+
 # BladeRF
 programs_ubuntu18_04_6.append(('BladeRF',
-"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget				
-sudo apt-get install -y bladerf
-sudo apt-get install -y bladerf-fpga-hostedx115
+"""sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget	# bladeRF 2.0 requires gr-osmosdr from source			
+#sudo apt-get install -y bladerf  # 2016 - probe doesn't work for bladeRF 2.0 micro
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/Nuand/bladeRF.git
+cd bladeRF
+cd host
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local -DINSTALL_UDEV_RULES=ON ../
+make
+sudo make install
+sudo ldconfig
+sudo apt-get install -y bladerf-fpga-hostedx115  # A4, A5, A9 does not exist
+sudo apt-get install -y bladerf-fpga-hostedx40   # A4, A5, A9 does not exist
+sudo mkdir -p /usr/share/Nuand/bladeRF
+sudo wget https://www.nuand.com/fpga/hostedxA4-latest.rbf -O /usr/share/Nuand/bladeRF/hostedxA4.rbf
+sudo wget https://www.nuand.com/fpga/hostedxA5-latest.rbf -O /usr/share/Nuand/bladeRF/hostedxA5.rbf
+sudo wget https://www.nuand.com/fpga/hostedxA9-latest.rbf -O /usr/share/Nuand/bladeRF/hostedxA9.rbf
+#sudo wget https://www.nuand.com/fpga/hostedx40-latest.rbf -O /usr/share/Nuand/bladeRF/hostedx40.rbf  
+#sudo wget https://www.nuand.com/fpga/hostedx115-latest.rbf -O /usr/share/Nuand/bladeRF/hostedx115.rbf  # Causes compatibility errors
 ########## Verify ##########
 bladeRF-cli --help
 """,True,'Hardware'))
@@ -3201,7 +3306,7 @@ sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53
 sudo udevadm trigger --action=change
 #sudo apt-get install -y hackrf
 #pybombs install gr-osmosdr
-#sudo apt-get install gr-osmosdr  # Not always found in the repositories
+#sudo apt-get install gr-osmosdr  # Installing from source
 ########## Verify ##########
 hackrf_sweep --help
 """,True,'Hardware'))
@@ -3453,7 +3558,7 @@ python2 -c "import garage_door"
 programs_ubuntu18_04_6.append(('gr-gsm-master',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-gsm-master/
 sudo rm -Rf build
-sudo apt-get install -y gr-osmosdr
+#sudo apt-get install -y gr-osmosdr  # Installing from source
 mkdir build
 cd build
 cmake ..

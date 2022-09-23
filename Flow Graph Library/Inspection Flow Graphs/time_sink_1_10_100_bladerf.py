@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Time Sink 1 10 100 Bladerf
-# Generated: Mon Jul 19 16:11:15 2021
+# Generated: Thu Sep 22 19:33:02 2022
 ##################################################
 
 from distutils.version import StrictVersion
@@ -107,9 +107,9 @@ class time_sink_1_10_100_bladerf(gr.top_block, Qt.QWidget):
         self.rtlsdr_source_0_0.set_dc_offset_mode(0, 0)
         self.rtlsdr_source_0_0.set_iq_balance_mode(0, 0)
         self.rtlsdr_source_0_0.set_gain_mode(False, 0)
-        self.rtlsdr_source_0_0.set_gain(14, 0)
-        self.rtlsdr_source_0_0.set_if_gain(24, 0)
-        self.rtlsdr_source_0_0.set_bb_gain(rx_gain, 0)
+        self.rtlsdr_source_0_0.set_gain(10, 0)
+        self.rtlsdr_source_0_0.set_if_gain(rx_gain, 0)
+        self.rtlsdr_source_0_0.set_bb_gain(20, 0)
         self.rtlsdr_source_0_0.set_antenna('', 0)
         self.rtlsdr_source_0_0.set_bandwidth(0, 0)
 
@@ -305,7 +305,7 @@ class time_sink_1_10_100_bladerf(gr.top_block, Qt.QWidget):
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.rtlsdr_source_0_0.set_bb_gain(self.rx_gain, 0)
+        self.rtlsdr_source_0_0.set_if_gain(self.rx_gain, 0)
 
     def get_rx_frequency(self):
         return self.rx_frequency

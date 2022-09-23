@@ -105,7 +105,7 @@ The following is a list of "supported" hardware with varying levels of integrati
 - RTL2832U
 - 802.11 Adapters
 - LimeSDR
-- bladeRF
+- bladeRF, bladeRF 2.0 micro
 - Open Sniffer
 - PlutoSDR
 

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
-# Title: Signal Envelope Bladerf
-# Generated: Thu Sep 22 19:32:53 2022
+# Title: Signal Envelope Bladerf2
+# Generated: Thu Sep 22 18:54:32 2022
 ##################################################
 
 from distutils.version import StrictVersion
@@ -36,12 +36,12 @@ import time
 from gnuradio import qtgui
 
 
-class signal_envelope_bladerf(gr.top_block, Qt.QWidget):
+class signal_envelope_bladerf2(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Signal Envelope Bladerf")
+        gr.top_block.__init__(self, "Signal Envelope Bladerf2")
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Signal Envelope Bladerf")
+        self.setWindowTitle("Signal Envelope Bladerf2")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -59,7 +59,7 @@ class signal_envelope_bladerf(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "signal_envelope_bladerf")
+        self.settings = Qt.QSettings("GNU Radio", "signal_envelope_bladerf2")
 
         if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
             self.restoreGeometry(self.settings.value("geometry").toByteArray())
@@ -189,7 +189,7 @@ class signal_envelope_bladerf(gr.top_block, Qt.QWidget):
         self.connect((self.rtlsdr_source_0_0, 0), (self.blocks_keep_one_in_n_0, 0))
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "signal_envelope_bladerf")
+        self.settings = Qt.QSettings("GNU Radio", "signal_envelope_bladerf2")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
@@ -226,7 +226,7 @@ class signal_envelope_bladerf(gr.top_block, Qt.QWidget):
         self.blocks_keep_one_in_n_0.set_n(self.decimation)
 
 
-def main(top_block_cls=signal_envelope_bladerf, options=None):
+def main(top_block_cls=signal_envelope_bladerf2, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')

@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<block>
+  <name>adsb_parser</name>
+  <key>ainfosec_adsb_parser</key>
+  <category>[ainfosec]</category>
+  <import>import ainfosec</import>
+  <make>ainfosec.adsb_parser($port)</make>
+
+  <param>
+    <name>UDP Port</name>
+    <key>port</key>
+    <type>int</type>
+  </param>
+
+  <sink>
+    <name>Decoded PDU</name>
+    <type>message</type>
+  </sink>
+
+</block>

@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
-# Title: Wideband Bladerf
-# Generated: Thu Sep 22 19:35:44 2022
+# Title: Wideband Bladerf2
+# Generated: Thu Sep 22 18:58:39 2022
 ##################################################
 
 
@@ -22,10 +22,10 @@ import osmosdr
 import time
 
 
-class wideband_bladerf(gr.top_block):
+class wideband_bladerf2(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Wideband Bladerf")
+        gr.top_block.__init__(self, "Wideband Bladerf2")
 
         ##################################################
         # Variables
@@ -138,7 +138,7 @@ class wideband_bladerf(gr.top_block):
         self.antenna = antenna
 
 
-def main(top_block_cls=wideband_bladerf, options=None):
+def main(top_block_cls=wideband_bladerf2, options=None):
 
     tb = top_block_cls()
     tb.start()

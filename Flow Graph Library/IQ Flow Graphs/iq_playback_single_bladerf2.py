@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 ##################################################
 # GNU Radio Python Flow Graph
-# Title: Iq Playback Bladerf
-# Generated: Thu Sep 22 19:34:37 2022
+# Title: Iq Playback Single Bladerf2
+# Generated: Thu Sep 22 18:57:34 2022
 ##################################################
 
 
@@ -17,10 +17,10 @@ import osmosdr
 import time
 
 
-class iq_playback_bladerf(gr.top_block):
+class iq_playback_single_bladerf2(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Iq Playback Bladerf")
+        gr.top_block.__init__(self, "Iq Playback Single Bladerf2")
 
         ##################################################
         # Variables
@@ -46,7 +46,7 @@ class iq_playback_bladerf(gr.top_block):
         self.osmosdr_sink_0.set_antenna('', 0)
         self.osmosdr_sink_0.set_bandwidth(0, 0)
 
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, filepath, True)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, filepath, False)
 
         ##################################################
         # Connections
@@ -97,10 +97,10 @@ class iq_playback_bladerf(gr.top_block):
 
     def set_filepath(self, filepath):
         self.filepath = filepath
-        self.blocks_file_source_0.open(self.filepath, True)
+        self.blocks_file_source_0.open(self.filepath, False)
 
 
-def main(top_block_cls=iq_playback_bladerf, options=None):
+def main(top_block_cls=iq_playback_single_bladerf2, options=None):
 
     tb = top_block_cls()
     tb.start()

@@ -46,7 +46,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>iq_playback_bladerf</value>
+      <value>iq_playback_single_bladerf2</value>
     </param>
     <param>
       <key>max_nouts</key>
@@ -318,7 +318,7 @@
     </param>
     <param>
       <key>repeat</key>
-      <value>True</value>
+      <value>False</value>
     </param>
     <param>
       <key>vlen</key>

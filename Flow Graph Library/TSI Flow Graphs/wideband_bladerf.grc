@@ -357,7 +357,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>"False"</value>
+      <value>"0"</value>
     </param>
   </block>
   <block>
@@ -957,7 +957,7 @@
     </param>
     <param>
       <key>if_gain0</key>
-      <value>20</value>
+      <value>gain</value>
     </param>
     <param>
       <key>iq_balance_mode0</key>
@@ -965,7 +965,7 @@
     </param>
     <param>
       <key>gain0</key>
-      <value>gain</value>
+      <value>10</value>
     </param>
     <param>
       <key>ant10</key>
@@ -2217,7 +2217,7 @@
     </param>
     <param>
       <key>args</key>
-      <value>bladerf=0</value>
+      <value>"bladerf=" + str(serial)</value>
     </param>
     <param>
       <key>_enabled</key>
