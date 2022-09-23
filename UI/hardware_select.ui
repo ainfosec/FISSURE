@@ -134,6 +134,11 @@
      <string>USRP N2xx</string>
     </property>
    </item>
+   <item>
+    <property name="text">
+     <string>bladeRF 2.0</string>
+    </property>
+   </item>
   </widget>
   <widget class="QPushButton" name="pushButton_guess">
    <property name="enabled">

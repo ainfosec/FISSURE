@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Iq Playback Bladerf
+# Title: Archive Replay Bladerf2
 # GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
@@ -20,19 +20,19 @@ from gnuradio import eng_notation
 import osmosdr
 import time
 
-class iq_playback_bladerf(gr.top_block):
+class archive_replay_bladerf2(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Iq Playback Bladerf")
+        gr.top_block.__init__(self, "Archive Replay Bladerf2")
 
         ##################################################
         # Variables
         ##################################################
         self.tx_gain = tx_gain = 30
-        self.tx_frequency = tx_frequency = 2425.715
+        self.tx_frequency = tx_frequency = 2425.715e6
         self.tx_channel = tx_channel = ""
         self.serial = serial = "0"
-        self.sample_rate = sample_rate = 4
+        self.sample_rate = sample_rate = 4e6
         self.ip_address = ip_address = ""
         self.filepath = filepath = ""
 
@@ -43,8 +43,8 @@ class iq_playback_bladerf(gr.top_block):
             args="numchan=" + str(1) + " " + "bladerf=" + str(serial)
         )
         self.osmosdr_sink_0.set_time_unknown_pps(osmosdr.time_spec_t())
-        self.osmosdr_sink_0.set_sample_rate(float(sample_rate)*1e6)
-        self.osmosdr_sink_0.set_center_freq(tx_frequency*1e6, 0)
+        self.osmosdr_sink_0.set_sample_rate(float(sample_rate))
+        self.osmosdr_sink_0.set_center_freq(tx_frequency, 0)
         self.osmosdr_sink_0.set_freq_corr(0, 0)
         self.osmosdr_sink_0.set_gain(10, 0)
         self.osmosdr_sink_0.set_if_gain(tx_gain, 0)
@@ -73,7 +73,7 @@ class iq_playback_bladerf(gr.top_block):
 
     def set_tx_frequency(self, tx_frequency):
         self.tx_frequency = tx_frequency
-        self.osmosdr_sink_0.set_center_freq(self.tx_frequency*1e6, 0)
+        self.osmosdr_sink_0.set_center_freq(self.tx_frequency, 0)
 
     def get_tx_channel(self):
         return self.tx_channel
@@ -92,7 +92,7 @@ class iq_playback_bladerf(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        self.osmosdr_sink_0.set_sample_rate(float(self.sample_rate)*1e6)
+        self.osmosdr_sink_0.set_sample_rate(float(self.sample_rate))
 
     def get_ip_address(self):
         return self.ip_address
@@ -109,7 +109,7 @@ class iq_playback_bladerf(gr.top_block):
 
 
 
-def main(top_block_cls=iq_playback_bladerf, options=None):
+def main(top_block_cls=archive_replay_bladerf2, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):

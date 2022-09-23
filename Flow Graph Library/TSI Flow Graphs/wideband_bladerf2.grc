@@ -10,7 +10,7 @@ options:
     gen_linking: dynamic
     generate_options: no_gui
     hier_block_src_path: '.:'
-    id: wideband_bladerf
+    id: wideband_bladerf2
     max_nouts: '0'
     output_language: python
     placement: (0,0)

@@ -35,4 +35,5 @@ except ImportError:
 from .adsb_encode import adsb_encode
 from .UDP_to_Wireshark import UDP_to_Wireshark
 from .UDP_to_Wireshark_Async import UDP_to_Wireshark_Async
+from .adsb_parser import adsb_parser
 #

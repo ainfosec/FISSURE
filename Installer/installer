@@ -170,7 +170,10 @@ ls /usr/bin/LimeSuiteGUI
 programs_ubuntu20_04.append(('BladeRF',
 """sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 pkg-config git wget  # no package: libtecla1-dev       
 sudo apt-get install -y bladerf
-sudo apt-get install -y bladerf-fpga-hostedx115
+sudo apt-get install -y bladerf-fpga-hostedx115  # bladeRF x115
+sudo apt-get install -y bladerf-fpga-hostedx40   # bladeRF x40
+sudo apt-get install -y bladerf-fpga-hostedxa4   # bladeRF xA4
+sudo apt-get install -y bladerf-fpga-hostedxa9   # bladeRF xA9
 ########## Verify ##########
 bladeRF-cli --help
 """,True,'Hardware'))
@@ -1702,7 +1705,10 @@ ls /usr/bin/LimeSuiteGUI
 programs_ubuntu20_04_4.append(('BladeRF',
 """sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 pkg-config git wget  # no package: libtecla1-dev       
 sudo apt-get install -y bladerf
-sudo apt-get install -y bladerf-fpga-hostedx115
+sudo apt-get install -y bladerf-fpga-hostedx115  # bladeRF x115
+sudo apt-get install -y bladerf-fpga-hostedx40   # bladeRF x40
+sudo apt-get install -y bladerf-fpga-hostedxa4   # bladeRF xA4
+sudo apt-get install -y bladerf-fpga-hostedxa9   # bladeRF xA9
 ########## Verify ##########
 bladeRF-cli --help
 """,True,'Hardware'))
@@ -4063,6 +4069,9 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # """sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 pkg-config git wget  # no package: libtecla1-dev       
 # sudo apt-get install -y bladerf
 # sudo apt-get install -y bladerf-fpga-hostedx115
+# sudo apt-get install -y bladerf-fpga-hostedx40   # bladeRF x40
+# sudo apt-get install -y bladerf-fpga-hostedxa4   # bladeRF xA4
+# sudo apt-get install -y bladerf-fpga-hostedxa9   # bladeRF xA9
 # ########## Verify ##########
 # bladeRF-cli --help
 # """,True,'Hardware'))

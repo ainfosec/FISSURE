@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Iq Recorder Bladerf
+# Title: Iq Recorder Bladerf2
 # GNU Radio version: 3.8.1.0
 
 from gnuradio import blocks
@@ -19,10 +19,10 @@ from gnuradio import eng_notation
 import osmosdr
 import time
 
-class iq_recorder_bladerf(gr.top_block):
+class iq_recorder_bladerf2(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Iq Recorder Bladerf")
+        gr.top_block.__init__(self, "Iq Recorder Bladerf2")
 
         ##################################################
         # Variables
@@ -31,7 +31,7 @@ class iq_recorder_bladerf(gr.top_block):
         self.sample_rate = sample_rate = 1
         self.rx_gain = rx_gain = 25
         self.rx_frequency = rx_frequency = 2412
-        self.rx_channel = rx_channel = ""
+        self.rx_channel = rx_channel = "A:0"
         self.rx_antenna = rx_antenna = "TX/RX"
         self.filepath = filepath = ""
         self.file_length = file_length = 100000
@@ -120,7 +120,7 @@ class iq_recorder_bladerf(gr.top_block):
 
 
 
-def main(top_block_cls=iq_recorder_bladerf, options=None):
+def main(top_block_cls=iq_recorder_bladerf2, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):

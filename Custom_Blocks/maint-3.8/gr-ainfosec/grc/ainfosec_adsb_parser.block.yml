@@ -1,0 +1,22 @@
+id: ainfosec_adsb_parser
+label: adsb_parser
+category: '[ainfosec]'
+
+templates:
+  imports: import ainfosec
+  make: ainfosec.adsb_parser(${port})
+
+parameters:
+- id: port
+  label: Port
+  dtype: int
+  default: 55555
+
+inputs:
+- label: Decoded PDU
+  domain: message
+  dtype: message
+  vlen: 1
+  optional: 1
+
+file_format: 1

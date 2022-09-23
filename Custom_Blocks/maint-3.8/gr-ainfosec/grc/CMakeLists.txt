@@ -21,5 +21,6 @@ install(FILES
     ainfosec_adsb_encode.block.yml
     ainfosec_UDP_to_Wireshark.block.yml
     ainfosec_UDP_to_Wireshark_Async.block.yml
-    ainfosec_wideband_detector1.block.yml DESTINATION share/gnuradio/grc/blocks
+    ainfosec_wideband_detector1.block.yml
+    ainfosec_adsb_parser.block.yml DESTINATION share/gnuradio/grc/blocks
 )

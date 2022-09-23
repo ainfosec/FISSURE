@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Time Sink Bladerf
+# Title: Waterfall Bladerf2
 # GNU Radio version: 3.8.1.0
 
 from distutils.version import StrictVersion
@@ -25,7 +25,6 @@ from PyQt5.QtCore import QObject, pyqtSlot
 from gnuradio import qtgui
 from gnuradio.filter import firdes
 import sip
-from gnuradio import blocks
 from gnuradio import gr
 import sys
 import signal
@@ -37,12 +36,12 @@ import osmosdr
 import time
 from gnuradio import qtgui
 
-class time_sink_bladerf(gr.top_block, Qt.QWidget):
+class waterfall_bladerf2(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Time Sink Bladerf")
+        gr.top_block.__init__(self, "Waterfall Bladerf2")
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Time Sink Bladerf")
+        self.setWindowTitle("Waterfall Bladerf2")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -60,7 +59,7 @@ class time_sink_bladerf(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "time_sink_bladerf")
+        self.settings = Qt.QSettings("GNU Radio", "waterfall_bladerf2")
 
         try:
             if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -76,7 +75,6 @@ class time_sink_bladerf(gr.top_block, Qt.QWidget):
         self.sample_rate = sample_rate = 1e6
         self.rx_gain = rx_gain = 40
         self.rx_frequency = rx_frequency = 2412
-        self.decimation = decimation = 1
 
         ##################################################
         # Blocks
@@ -115,26 +113,6 @@ class time_sink_bladerf(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
-        # Create the options list
-        self._decimation_options = [1,10,100,1000]
-        # Create the labels list
-        self._decimation_labels = ["1","10","100","1000"]
-        # Create the combo box
-        self._decimation_tool_bar = Qt.QToolBar(self)
-        self._decimation_tool_bar.addWidget(Qt.QLabel('  Keep 1 in N' + ": "))
-        self._decimation_combo_box = Qt.QComboBox()
-        self._decimation_tool_bar.addWidget(self._decimation_combo_box)
-        for _label in self._decimation_labels: self._decimation_combo_box.addItem(_label)
-        self._decimation_callback = lambda i: Qt.QMetaObject.invokeMethod(self._decimation_combo_box, "setCurrentIndex", Qt.Q_ARG("int", self._decimation_options.index(i)))
-        self._decimation_callback(self.decimation)
-        self._decimation_combo_box.currentIndexChanged.connect(
-            lambda i: self.set_decimation(self._decimation_options[i]))
-        # Create the radio buttons
-        self.top_grid_layout.addWidget(self._decimation_tool_bar, 0, 1, 1, 1)
-        for r in range(0, 1):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(1, 2):
-            self.top_grid_layout.setColumnStretch(c, 1)
         self.rtlsdr_source_0_0 = osmosdr.source(
             args="numchan=" + str(1) + " " + 'bladerf=0'
         )
@@ -147,117 +125,53 @@ class time_sink_bladerf(gr.top_block, Qt.QWidget):
         self.rtlsdr_source_0_0.set_bb_gain(20, 0)
         self.rtlsdr_source_0_0.set_antenna('', 0)
         self.rtlsdr_source_0_0.set_bandwidth(0, 0)
-        self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
-            100000, #size
-            sample_rate/decimation, #samp_rate
-            "", #name
-            1 #number of inputs
-        )
-        self.qtgui_time_sink_x_0.set_update_time(0.1)
-        self.qtgui_time_sink_x_0.set_y_axis(-1, 1)
-
-        self.qtgui_time_sink_x_0.set_y_label('Amplitude', "")
-
-        self.qtgui_time_sink_x_0.enable_tags(True)
-        self.qtgui_time_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.005, 0, 0, "")
-        self.qtgui_time_sink_x_0.enable_autoscale(False)
-        self.qtgui_time_sink_x_0.enable_grid(True)
-        self.qtgui_time_sink_x_0.enable_axis_labels(True)
-        self.qtgui_time_sink_x_0.enable_control_panel(False)
-        self.qtgui_time_sink_x_0.enable_stem_plot(False)
-
-
-        labels = ['', '', '', '', '',
-            '', '', '', '', '']
-        widths = [1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1]
-        colors = ['blue', 'red', 'green', 'black', 'cyan',
-            'magenta', 'yellow', 'dark red', 'dark green', 'dark blue']
-        alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 1.0, 1.0]
-        styles = [1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1]
-        markers = [-1, -1, -1, -1, -1,
-            -1, -1, -1, -1, -1]
-
-
-        for i in range(2):
-            if len(labels[i]) == 0:
-                if (i % 2 == 0):
-                    self.qtgui_time_sink_x_0.set_line_label(i, "Re{{Data {0}}}".format(i/2))
-                else:
-                    self.qtgui_time_sink_x_0.set_line_label(i, "Im{{Data {0}}}".format(i/2))
-            else:
-                self.qtgui_time_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_time_sink_x_0.set_line_width(i, widths[i])
-            self.qtgui_time_sink_x_0.set_line_color(i, colors[i])
-            self.qtgui_time_sink_x_0.set_line_style(i, styles[i])
-            self.qtgui_time_sink_x_0.set_line_marker(i, markers[i])
-            self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
-
-        self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 3, 0, 10, 4)
-        for r in range(3, 13):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(0, 4):
-            self.top_grid_layout.setColumnStretch(c, 1)
-        self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
-            2048, #size
+        self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
+            1024, #size
             firdes.WIN_BLACKMAN_hARRIS, #wintype
             0, #fc
             sample_rate, #bw
             "", #name
-            1
+            1 #number of inputs
         )
-        self.qtgui_freq_sink_x_0.set_update_time(0.10)
-        self.qtgui_freq_sink_x_0.set_y_axis(-140, 10)
-        self.qtgui_freq_sink_x_0.set_y_label('Relative Gain', 'dB')
-        self.qtgui_freq_sink_x_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, 0.0, 0, "")
-        self.qtgui_freq_sink_x_0.enable_autoscale(False)
-        self.qtgui_freq_sink_x_0.enable_grid(False)
-        self.qtgui_freq_sink_x_0.set_fft_average(1.0)
-        self.qtgui_freq_sink_x_0.enable_axis_labels(True)
-        self.qtgui_freq_sink_x_0.enable_control_panel(False)
+        self.qtgui_waterfall_sink_x_0.set_update_time(0.10)
+        self.qtgui_waterfall_sink_x_0.enable_grid(False)
+        self.qtgui_waterfall_sink_x_0.enable_axis_labels(True)
 
 
 
         labels = ['', '', '', '', '',
-            '', '', '', '', '']
-        widths = [1, 1, 1, 1, 1,
-            1, 1, 1, 1, 1]
-        colors = ["blue", "red", "green", "black", "cyan",
-            "magenta", "yellow", "dark red", "dark green", "dark blue"]
+                  '', '', '', '', '']
+        colors = [0, 0, 0, 0, 0,
+                  0, 0, 0, 0, 0]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
-            1.0, 1.0, 1.0, 1.0, 1.0]
+                  1.0, 1.0, 1.0, 1.0, 1.0]
 
         for i in range(1):
             if len(labels[i]) == 0:
-                self.qtgui_freq_sink_x_0.set_line_label(i, "Data {0}".format(i))
+                self.qtgui_waterfall_sink_x_0.set_line_label(i, "Data {0}".format(i))
             else:
-                self.qtgui_freq_sink_x_0.set_line_label(i, labels[i])
-            self.qtgui_freq_sink_x_0.set_line_width(i, widths[i])
-            self.qtgui_freq_sink_x_0.set_line_color(i, colors[i])
-            self.qtgui_freq_sink_x_0.set_line_alpha(i, alphas[i])
+                self.qtgui_waterfall_sink_x_0.set_line_label(i, labels[i])
+            self.qtgui_waterfall_sink_x_0.set_color_map(i, colors[i])
+            self.qtgui_waterfall_sink_x_0.set_line_alpha(i, alphas[i])
 
-        self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_win, 14, 0, 10, 4)
-        for r in range(14, 24):
+        self.qtgui_waterfall_sink_x_0.set_intensity_range(-140, 10)
+
+        self._qtgui_waterfall_sink_x_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_0.pyqwidget(), Qt.QWidget)
+        self.top_grid_layout.addWidget(self._qtgui_waterfall_sink_x_0_win, 3, 0, 6, 4)
+        for r in range(3, 9):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, decimation)
 
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.blocks_keep_one_in_n_0, 0), (self.qtgui_freq_sink_x_0, 0))
-        self.connect((self.blocks_keep_one_in_n_0, 0), (self.qtgui_time_sink_x_0, 0))
-        self.connect((self.rtlsdr_source_0_0, 0), (self.blocks_keep_one_in_n_0, 0))
+        self.connect((self.rtlsdr_source_0_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "time_sink_bladerf")
+        self.settings = Qt.QSettings("GNU Radio", "waterfall_bladerf2")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
@@ -267,8 +181,7 @@ class time_sink_bladerf(gr.top_block, Qt.QWidget):
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self._sample_rate_callback(self.sample_rate)
-        self.qtgui_freq_sink_x_0.set_frequency_range(0, self.sample_rate)
-        self.qtgui_time_sink_x_0.set_samp_rate(self.sample_rate/self.decimation)
+        self.qtgui_waterfall_sink_x_0.set_frequency_range(0, self.sample_rate)
         self.rtlsdr_source_0_0.set_sample_rate(self.sample_rate)
 
     def get_rx_gain(self):
@@ -285,18 +198,9 @@ class time_sink_bladerf(gr.top_block, Qt.QWidget):
         self.rx_frequency = rx_frequency
         self.rtlsdr_source_0_0.set_center_freq(self.rx_frequency*1e6, 0)
 
-    def get_decimation(self):
-        return self.decimation
-
-    def set_decimation(self, decimation):
-        self.decimation = decimation
-        self._decimation_callback(self.decimation)
-        self.blocks_keep_one_in_n_0.set_n(self.decimation)
-        self.qtgui_time_sink_x_0.set_samp_rate(self.sample_rate/self.decimation)
 
 
-
-def main(top_block_cls=time_sink_bladerf, options=None):
+def main(top_block_cls=waterfall_bladerf2, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
