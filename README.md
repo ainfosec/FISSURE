@@ -100,15 +100,14 @@ Refer to the FISSURE Help menu for more details on usage.
 **Hardware**
 
 The following is a list of "supported" hardware with varying levels of integration:
-- USRP: X300 series, B210, B205mini
+- USRP: X3xx, B2xx, B20xmini, USRP2, N2xx
 - HackRF
 - RTL2832U
 - 802.11 Adapters
 - LimeSDR
-- bladeRF
+- bladeRF, bladeRF 2.0 micro
 - Open Sniffer
 - PlutoSDR
-
 
 ## Lessons
 
@@ -129,8 +128,9 @@ FISSURE comes with several helpful guides to become familiar with different tech
 
 - [ ] Add more hardware types, RF protocols, signal parameters, analysis tools
 - [ ] Support more operating systems
-- [ ] Create a signal conditioner, feature extractor, and signal classifier with selectable AI/ML techniques
 - [ ] Develop class material around FISSURE (RF Attacks, Wi-Fi, GNU Radio, PyQt, etc.)
+- [ ] Create a signal conditioner, feature extractor, and signal classifier with selectable AI/ML techniques
+- [ ] Implement recursive demodulation mechanisms for producing a bitstream from unknown signals
 - [ ] Transition the main FISSURE components to a generic sensor node deployment scheme
 
 ## Contributing

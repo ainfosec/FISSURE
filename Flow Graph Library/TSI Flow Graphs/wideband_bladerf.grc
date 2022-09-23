@@ -1,6 +1,7 @@
 options:
   parameters:
     author: ''
+    catch_exceptions: 'True'
     category: Custom
     cmake_opt: ''
     comment: ''
@@ -72,7 +73,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '10'
+    value: '20'
   states:
     bus_sink: false
     bus_source: false
@@ -111,7 +112,7 @@ blocks:
     gui_hint: ''
     label: rx_freq
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: 2400e6
     step: 1e6
@@ -141,7 +142,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"False"'
+    value: '"0"'
   states:
     bus_sink: false
     bus_source: false
@@ -168,7 +169,7 @@ blocks:
     gui_hint: ''
     label: Threshold
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: '-120'
     step: '1'
@@ -385,7 +386,7 @@ blocks:
     ant7: ''
     ant8: ''
     ant9: ''
-    args: bladerf=0
+    args: '"bladerf=" + str(serial)'
     bb_gain0: '20'
     bb_gain1: '20'
     bb_gain10: '20'
@@ -555,7 +556,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: gain
+    gain0: '10'
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -619,7 +620,7 @@ blocks:
     gain_mode7: 'False'
     gain_mode8: 'False'
     gain_mode9: 'False'
-    if_gain0: '20'
+    if_gain0: gain
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'

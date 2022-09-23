@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Iq Playback Single Bladerf
+# Title: Iq Playback Bladerf2
 # GNU Radio version: 3.10.1.1
 
 from gnuradio import blocks
@@ -24,10 +24,10 @@ import time
 
 
 
-class iq_playback_single_bladerf(gr.top_block):
+class iq_playback_bladerf2(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Iq Playback Single Bladerf", catch_exceptions=True)
+        gr.top_block.__init__(self, "Iq Playback Bladerf2", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -55,7 +55,7 @@ class iq_playback_single_bladerf(gr.top_block):
         self.osmosdr_sink_0.set_bb_gain(20, 0)
         self.osmosdr_sink_0.set_antenna('', 0)
         self.osmosdr_sink_0.set_bandwidth(0, 0)
-        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, filepath, False, 0, 0)
+        self.blocks_file_source_0 = blocks.file_source(gr.sizeof_gr_complex*1, filepath, True, 0, 0)
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
 
 
@@ -109,12 +109,12 @@ class iq_playback_single_bladerf(gr.top_block):
 
     def set_filepath(self, filepath):
         self.filepath = filepath
-        self.blocks_file_source_0.open(self.filepath, False)
+        self.blocks_file_source_0.open(self.filepath, True)
 
 
 
 
-def main(top_block_cls=iq_playback_single_bladerf, options=None):
+def main(top_block_cls=iq_playback_bladerf2, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):

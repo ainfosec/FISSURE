@@ -1,6 +1,49 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-09-23
+
+Adding support for bladeRF 2.0 micro and updating existing bladeRF content.
+ 
+### Added
+
+- bladeRF 2.0 micro support (Dashboard, Hardware Selection GUI, TSI Detector, Inspection flow graphs, IQ record/playback, Archive playback, adding attacks to library)
+- adsb_parser block in gr-ainfosec for Python2_maint-3.7, Python3_maint-3.8 branches
+- Added more bladeRF firmware support to the installer for: 40, A4, A9
+- Guess button functionality for original bladeRF, serial number passed to flow graphs
+- Added bladeRF 2.0 micro to hardware list in README
+   
+### Changed
+
+- Moved gain variables for osmocom source/sink blocks to IF gain location for bladeRF flow graphs
+- Installing bladeRF and gr-osmocom software from source for Python2_maint-3.7 branch to support bladeRF 2.0
+- Resized bladeRF probe button window size
+ 
+### Fixed
+
+- Added missing ".py" for USRP N2xx TSI wideband detector name
+- Resized hardware selection GUI for Python2_maint-3.7 branch
+- Added missing hardware types in combobox for adding new demodulation flow graphs to library
+- Changed bladeRF icon from a bladeRF 2.0 image
+
+## 2022-09-18
+
+USRP2 and USRP N2xx support was added but not tested against real devices. Please report any issues.
+ 
+### Added
+
+- USRP2, USRP N2xx support (Dashboard, Hardware Selection GUI, TSI Detector, Inspection flow graphs, IQ record/playback, Archive playback, adding attacks to library)
+- Added more USRP daughterboards for hardware selection
+   
+### Changed
+
+- Removed openHAB as a default option for DragonOS until further examination is completed
+- Listed new hardware in the README
+ 
+### Fixed
+
+- Added a missing package in the DragonOS install for Viking
+
 ## 2022-09-13
 
 The DragonOS Focal install has only a few more tools that need to be examined.

@@ -9,9 +9,9 @@ options:
     description: ''
     gen_cmake: 'On'
     gen_linking: dynamic
-    generate_options: no_gui
+    generate_options: qt_gui
     hier_block_src_path: '.:'
-    id: iq_recorder_bladerf
+    id: time_sink_bladerf2
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -19,7 +19,7 @@ options:
     realtime_scheduling: ''
     run: 'True'
     run_command: '{python} -u {filename}'
-    run_options: run
+    run_options: prompt
     sizing_mode: fixed
     thread_safe_setters: ''
     title: ''
@@ -33,160 +33,106 @@ options:
     state: enabled
 
 blocks:
-- name: file_length
-  id: variable
+- name: decimation
+  id: variable_qtgui_chooser
   parameters:
     comment: ''
-    value: '100000'
+    gui_hint: 0,1,1,1
+    label: '  Keep 1 in N'
+    label0: ''
+    label1: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '["1","10","100","1000"]'
+    num_opts: '0'
+    option0: '0'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[1,10,100,1000]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '1'
+    widget: combo_box
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [128, 172]
-    rotation: 0
-    state: enabled
-- name: filepath
-  id: variable
-  parameters:
-    comment: ''
-    value: '""'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [8, 100]
-    rotation: 0
-    state: enabled
-- name: lpf_cutoff
-  id: variable
-  parameters:
-    comment: ''
-    value: '200000'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [200, 388]
-    rotation: 0
-    state: disabled
-- name: lpf_transition_width
-  id: variable
-  parameters:
-    comment: ''
-    value: '50000'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [200, 452]
-    rotation: 0
-    state: disabled
-- name: rx_antenna
-  id: variable
-  parameters:
-    comment: ''
-    value: '""'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [8, 436]
-    rotation: 0
-    state: enabled
-- name: rx_channel
-  id: variable
-  parameters:
-    comment: ''
-    value: '""'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [8, 372]
+    coordinate: [200, 140]
     rotation: 0
     state: enabled
 - name: rx_frequency
-  id: variable
+  id: variable_qtgui_range
   parameters:
     comment: ''
+    gui_hint: 2,0,1,4
+    label: ' Freq. (MHz):'
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '50'
+    step: '.1'
+    stop: '3800'
     value: '2412'
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 164]
+    coordinate: [368, 140]
     rotation: 0
     state: enabled
 - name: rx_gain
-  id: variable
+  id: variable_qtgui_range
   parameters:
     comment: ''
-    value: '25'
+    gui_hint: 1,0,1,4
+    label: '              Gain:'
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '47'
+    value: '40'
+    widget: counter_slider
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 292]
+    coordinate: [368, 12]
     rotation: 0
     state: enabled
 - name: sample_rate
-  id: variable
+  id: variable_qtgui_chooser
   parameters:
     comment: ''
-    value: '1'
+    gui_hint: 0,0,1,1
+    label: Sample Rate
+    label0: ''
+    label1: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '["1 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]'
+    num_opts: '0'
+    option0: '0'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[1e6, 5e6, 10e6, 20e6]'
+    orient: Qt.QVBoxLayout
+    type: real
+    value: 1e6
+    widget: combo_box
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 228]
-    rotation: 0
-    state: enabled
-- name: serial
-  id: variable
-  parameters:
-    comment: ''
-    value: '"0"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [8, 500.0]
-    rotation: 0
-    state: enabled
-- name: blocks_file_sink_0
-  id: blocks_file_sink
-  parameters:
-    affinity: ''
-    alias: ''
-    append: 'False'
-    comment: ''
-    file: filepath
-    type: complex
-    unbuffered: 'False'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1088, 124]
-    rotation: 0
-    state: enabled
-- name: blocks_head_0
-  id: blocks_head
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    num_items: file_length
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [880, 140]
+    coordinate: [200, 12]
     rotation: 0
     state: enabled
 - name: blocks_keep_one_in_n_0
@@ -197,32 +143,95 @@ blocks:
     comment: ''
     maxoutbuf: '0'
     minoutbuf: '0'
-    n: '100'
+    n: decimation
     type: complex
     vlen: '1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [696, 276]
+    coordinate: [616, 400]
     rotation: 0
-    state: disabled
-- name: blocks_skiphead_0
-  id: blocks_skiphead
+    state: enabled
+- name: qtgui_freq_sink_x_0
+  id: qtgui_freq_sink_x
   parameters:
     affinity: ''
     alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    average: '1.0'
+    axislabels: 'True'
+    bw: sample_rate
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
     comment: ''
+    ctrlpanel: 'False'
+    fc: '0'
+    fftsize: '2048'
+    freqhalf: 'True'
+    grid: 'False'
+    gui_hint: 14,0,10,4
+    label: Relative Gain
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
     maxoutbuf: '0'
     minoutbuf: '0'
-    num_items: '200000'
+    name: '""'
+    nconnections: '1'
+    norm_window: 'False'
+    showports: 'True'
+    tr_chan: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_tag: '""'
     type: complex
-    vlen: '1'
+    units: dB
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    wintype: window.WIN_BLACKMAN_hARRIS
+    ymax: '10'
+    ymin: '-140'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [616, 140]
+    coordinate: [856, 380]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_0
@@ -240,7 +249,7 @@ blocks:
     alpha7: '1.0'
     alpha8: '1.0'
     alpha9: '1.0'
-    autoscale: 'True'
+    autoscale: 'False'
     axislabels: 'True'
     color1: blue
     color10: dark blue
@@ -255,8 +264,8 @@ blocks:
     comment: ''
     ctrlpanel: 'False'
     entags: 'True'
-    grid: 'False'
-    gui_hint: ''
+    grid: 'True'
+    gui_hint: 3,0,10,4
     label1: ''
     label10: ''
     label2: ''
@@ -280,8 +289,8 @@ blocks:
     marker9: '-1'
     name: '""'
     nconnections: '1'
-    size: '1024'
-    srate: sample_rate
+    size: '100000'
+    srate: sample_rate/decimation
     stemplot: 'False'
     style1: '1'
     style10: '1'
@@ -295,12 +304,12 @@ blocks:
     style9: '1'
     tr_chan: '0'
     tr_delay: '0'
-    tr_level: '0.0'
+    tr_level: '0.005'
     tr_mode: qtgui.TRIG_MODE_FREE
     tr_slope: qtgui.TRIG_SLOPE_POS
     tr_tag: '""'
     type: complex
-    update_time: '0.10'
+    update_time: '0.1'
     width1: '1'
     width10: '1'
     width2: '1'
@@ -319,106 +328,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [848, 340]
+    coordinate: [856, 292]
     rotation: 0
-    state: disabled
-- name: qtgui_time_sink_x_0_0
-  id: qtgui_time_sink_x
-  parameters:
-    affinity: ''
-    alias: ''
-    alpha1: '1.0'
-    alpha10: '1.0'
-    alpha2: '1.0'
-    alpha3: '1.0'
-    alpha4: '1.0'
-    alpha5: '1.0'
-    alpha6: '1.0'
-    alpha7: '1.0'
-    alpha8: '1.0'
-    alpha9: '1.0'
-    autoscale: 'True'
-    axislabels: 'True'
-    color1: blue
-    color10: dark blue
-    color2: red
-    color3: green
-    color4: black
-    color5: cyan
-    color6: magenta
-    color7: yellow
-    color8: dark red
-    color9: dark green
-    comment: ''
-    ctrlpanel: 'False'
-    entags: 'True'
-    grid: 'False'
-    gui_hint: ''
-    label1: ''
-    label10: ''
-    label2: ''
-    label3: ''
-    label4: ''
-    label5: ''
-    label6: ''
-    label7: ''
-    label8: ''
-    label9: ''
-    legend: 'True'
-    marker1: '-1'
-    marker10: '-1'
-    marker2: '-1'
-    marker3: '-1'
-    marker4: '-1'
-    marker5: '-1'
-    marker6: '-1'
-    marker7: '-1'
-    marker8: '-1'
-    marker9: '-1'
-    name: '""'
-    nconnections: '1'
-    size: file_length
-    srate: sample_rate
-    stemplot: 'False'
-    style1: '1'
-    style10: '1'
-    style2: '1'
-    style3: '1'
-    style4: '1'
-    style5: '1'
-    style6: '1'
-    style7: '1'
-    style8: '1'
-    style9: '1'
-    tr_chan: '0'
-    tr_delay: '0'
-    tr_level: '0.0'
-    tr_mode: qtgui.TRIG_MODE_FREE
-    tr_slope: qtgui.TRIG_SLOPE_POS
-    tr_tag: '""'
-    type: complex
-    update_time: '0.10'
-    width1: '1'
-    width10: '1'
-    width2: '1'
-    width3: '1'
-    width4: '1'
-    width5: '1'
-    width6: '1'
-    width7: '1'
-    width8: '1'
-    width9: '1'
-    ylabel: Amplitude
-    ymax: '1'
-    ymin: '-1'
-    yunit: '""'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [848, 260]
-    rotation: 0
-    state: disabled
+    state: enabled
 - name: rtlsdr_source_0_0
   id: rtlsdr_source
   parameters:
@@ -456,7 +368,7 @@ blocks:
     ant7: ''
     ant8: ''
     ant9: ''
-    args: '"bladerf=" + str(serial)'
+    args: bladerf=0
     bb_gain0: '20'
     bb_gain1: '20'
     bb_gain10: '20'
@@ -758,7 +670,7 @@ blocks:
     minoutbuf: '0'
     nchan: '1'
     num_mboards: '1'
-    sample_rate: float(sample_rate)*1e6
+    sample_rate: sample_rate
     sync: sync
     time_source0: ''
     time_source1: ''
@@ -773,15 +685,14 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [360, 68]
+    coordinate: [328, 332]
     rotation: 0
     state: enabled
 
 connections:
-- [blocks_head_0, '0', blocks_file_sink_0, '0']
-- [blocks_keep_one_in_n_0, '0', qtgui_time_sink_x_0_0, '0']
-- [blocks_skiphead_0, '0', blocks_head_0, '0']
-- [rtlsdr_source_0_0, '0', blocks_skiphead_0, '0']
+- [blocks_keep_one_in_n_0, '0', qtgui_freq_sink_x_0, '0']
+- [blocks_keep_one_in_n_0, '0', qtgui_time_sink_x_0, '0']
+- [rtlsdr_source_0_0, '0', blocks_keep_one_in_n_0, '0']
 
 metadata:
   file_format: 1

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Time Sink Bladerf
+# Title: Time Sink Bladerf2
 # GNU Radio version: 3.10.1.1
 
 from packaging.version import Version as StrictVersion
@@ -42,12 +42,12 @@ import time
 
 from gnuradio import qtgui
 
-class time_sink_bladerf(gr.top_block, Qt.QWidget):
+class time_sink_bladerf2(gr.top_block, Qt.QWidget):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Time Sink Bladerf", catch_exceptions=True)
+        gr.top_block.__init__(self, "Time Sink Bladerf2", catch_exceptions=True)
         Qt.QWidget.__init__(self)
-        self.setWindowTitle("Time Sink Bladerf")
+        self.setWindowTitle("Time Sink Bladerf2")
         qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
@@ -65,7 +65,7 @@ class time_sink_bladerf(gr.top_block, Qt.QWidget):
         self.top_grid_layout = Qt.QGridLayout()
         self.top_layout.addLayout(self.top_grid_layout)
 
-        self.settings = Qt.QSettings("GNU Radio", "time_sink_bladerf")
+        self.settings = Qt.QSettings("GNU Radio", "time_sink_bladerf2")
 
         try:
             if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -268,7 +268,7 @@ class time_sink_bladerf(gr.top_block, Qt.QWidget):
 
 
     def closeEvent(self, event):
-        self.settings = Qt.QSettings("GNU Radio", "time_sink_bladerf")
+        self.settings = Qt.QSettings("GNU Radio", "time_sink_bladerf2")
         self.settings.setValue("geometry", self.saveGeometry())
         self.stop()
         self.wait()
@@ -311,7 +311,7 @@ class time_sink_bladerf(gr.top_block, Qt.QWidget):
 
 
 
-def main(top_block_cls=time_sink_bladerf, options=None):
+def main(top_block_cls=time_sink_bladerf2, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')

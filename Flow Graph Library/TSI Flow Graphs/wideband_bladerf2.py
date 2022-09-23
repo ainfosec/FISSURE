@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Wideband Bladerf
+# Title: Wideband Bladerf2
 # GNU Radio version: 3.10.1.1
 
 from gnuradio import analog
@@ -27,10 +27,10 @@ import time
 
 
 
-class wideband_bladerf(gr.top_block):
+class wideband_bladerf2(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Wideband Bladerf", catch_exceptions=True)
+        gr.top_block.__init__(self, "Wideband Bladerf2", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -149,7 +149,7 @@ class wideband_bladerf(gr.top_block):
 
 
 
-def main(top_block_cls=wideband_bladerf, options=None):
+def main(top_block_cls=wideband_bladerf2, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
