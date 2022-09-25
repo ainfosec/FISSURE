@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-09-25
+
+Disabling IIO-Oscilloscope for Python2_maint-3.7 branch.
+   
+### Changed
+
+- Disabled IIO-Oscilloscope for Python2_maint-3.7 due to its failure to install
+
 ## 2022-09-23
 
 Adding support for bladeRF 2.0 micro and updating existing bladeRF content.
