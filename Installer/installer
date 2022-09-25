@@ -295,13 +295,13 @@ programs_ubuntu18_04.append(('PlutoSDR',
 #cmake ./
 #make
 #sudo make install
-cd ~/Installed_by_FISSURE
-git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
-cd iio-oscilloscope
-git checkout origin/master
-mkdir build && cd build
-cmake ../ && make
-sudo make install
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
+#cd iio-oscilloscope
+#git checkout origin/master
+#mkdir build && cd build
+#cmake ../ && make
+#sudo make install
 #cd ~/Installed_by_FISSURE  # Did not work
 #git clone https://github.com/analogdevicesinc/gr-iio.git
 #cd gr-iio
@@ -1838,13 +1838,13 @@ programs_ubuntu18_04_5.append(('PlutoSDR',
 #cmake ./
 #make
 #sudo make install
-cd ~/Installed_by_FISSURE
-git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
-cd iio-oscilloscope
-git checkout origin/master
-mkdir build && cd build
-cmake ../ && make
-sudo make install
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
+#cd iio-oscilloscope
+#git checkout origin/master
+#mkdir build && cd build
+#cmake ../ && make
+#sudo make install
 #cd ~/Installed_by_FISSURE  # Did not work
 #git clone https://github.com/analogdevicesinc/gr-iio.git
 #cd gr-iio
@@ -3384,13 +3384,13 @@ programs_ubuntu18_04_6.append(('PlutoSDR',
 #cmake ./
 #make
 #sudo make install
-cd ~/Installed_by_FISSURE
-git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
-cd iio-oscilloscope
-git checkout origin/master
-mkdir build && cd build
-cmake ../ && make
-sudo make install
+#cd ~/Installed_by_FISSURE
+#git clone https://github.com/analogdevicesinc/iio-oscilloscope.git  # IIO oscilloscope is optional
+#cd iio-oscilloscope
+#git checkout origin/master
+#mkdir build && cd build
+#cmake ../ && make
+#sudo make install
 #cd ~/Installed_by_FISSURE  # Did not work
 #git clone https://github.com/analogdevicesinc/gr-iio.git
 #cd gr-iio
