@@ -12063,13 +12063,21 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Find Wireshark
         out = subprocess.Popen(['which', 'wireshark'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-        stdout,stderr = out.communicate()
-        wireshark_cmd = str(stdout.replace('\n',''))
-        
+        try:
+            stdout, _ = out.communicate(timeout=15)
+        except TimeoutError as err:
+            print("Error communicating with Wireshark: {}".format(err))
+
+        wireshark_cmd = stdout.decode('UTF-8').strip()
+        if not wireshark_cmd:
+            # TODO: display on GUI
+            print("Error wireshark not found")
+            return
+       
         if len(get_interface) == 0 and len(wireshark_cmd) > 0:
-            p = subprocess.Popen([wireshark_cmd])
+            subprocess.Popen([wireshark_cmd])
         else:
-            p = subprocess.Popen([wireshark_cmd, '-k', '-i', get_interface])
+            subprocess.Popen([wireshark_cmd, '-k', '-i', get_interface])
         
     def _slotPD_SnifferGuessClicked(self):
         """ Guesses the wireless interface to use for Wireshark.
