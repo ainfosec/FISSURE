@@ -1,1 +1,0 @@
-/usr/bin/cc  -std=gnu90  -rdynamic CMakeFiles/hackrf_sweep.dir/hackrf_sweep.c.o  -o hackrf_sweep -Wl,-rpath,/home/user8/FISSURE/Tools/hackrf-2018.01.1/host/build/libhackrf/src: -lm -lfftw3f ../../libhackrf/src/libhackrf.so.0.5.0 -lusb-1.0 -lpthread 

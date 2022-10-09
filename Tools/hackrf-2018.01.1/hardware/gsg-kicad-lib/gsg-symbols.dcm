@@ -1,8 +1,0 @@
-EESchema-DOCLIB  Version 2.0
-#
-$CMP R-SHORTED
-D Resistor with PCB trace short
-K R DEV
-$ENDCMP
-#
-#End Doc Library

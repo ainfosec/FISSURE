@@ -87,7 +87,10 @@ ls ~/.local/bin/fissure
 
 # GNU Radio
 programs_ubuntu18_04.append(('GNU Radio',
-"""sudo apt-get install -y gnuradio
+"""sudo add-apt-repository -y ppa:mormj/gnuradio-releases-3.7
+sudo apt-get update
+sudo apt-get install -y gnuradio=3.7.13.5~gnuradio~bionic-4
+sudo apt-get install -y python-qwt5-qt4  # Needed for Filter Design Tool
 sudo rm -f /usr/share/mime/packages/gnuradio.xml
 sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml
 sudo update-mime-database -V /usr/share/mime/
@@ -205,10 +208,12 @@ rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
 programs_ubuntu18_04.append(('HackRF',
 """sudo apt-get install -y libusb-1.0-0-dev
 mkdir -p ~/Installed_by_FISSURE
-cp -R """ + fissure_directory + """/Tools/hackrf-2018.01.1/ ~/Installed_by_FISSURE/
-rm -Rf ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-mkdir ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-cd ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
+cd ~/Installed_by_FISSURE/
+wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+unzip hackrf-2022.09.1.zip
+rm hackrf-2022.09.1.zip
+mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
 cmake ..
 make
 sudo make install
@@ -216,7 +221,6 @@ sudo ldconfig
 sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
 sudo udevadm trigger --action=change
 #sudo apt-get install -y hackrf
-#pybombs install gr-osmosdr
 #sudo apt-get install gr-osmosdr  # Installing from source
 ########## Verify ##########
 hackrf_sweep --help
@@ -1630,7 +1634,10 @@ ls ~/.local/bin/fissure
 
 # GNU Radio
 programs_ubuntu18_04_5.append(('GNU Radio',
-"""sudo apt-get install -y gnuradio
+"""sudo add-apt-repository -y ppa:mormj/gnuradio-releases-3.7
+sudo apt-get update
+sudo apt-get install -y gnuradio=3.7.13.5~gnuradio~bionic-4
+sudo apt-get install -y python-qwt5-qt4  # Needed for Filter Design Tool
 sudo rm -f /usr/share/mime/packages/gnuradio.xml
 sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml
 sudo update-mime-database -V /usr/share/mime/
@@ -1748,10 +1755,12 @@ rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
 programs_ubuntu18_04_5.append(('HackRF',
 """sudo apt-get install -y libusb-1.0-0-dev
 mkdir -p ~/Installed_by_FISSURE
-cp -R """ + fissure_directory + """/Tools/hackrf-2018.01.1/ ~/Installed_by_FISSURE/
-rm -Rf ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-mkdir ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-cd ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
+cd ~/Installed_by_FISSURE/
+wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+unzip hackrf-2022.09.1.zip
+rm hackrf-2022.09.1.zip
+mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
 cmake ..
 make
 sudo make install
@@ -1759,7 +1768,6 @@ sudo ldconfig
 sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
 sudo udevadm trigger --action=change
 #sudo apt-get install -y hackrf
-#pybombs install gr-osmosdr
 #sudo apt-get install gr-osmosdr  # Installing from source
 ########## Verify ##########
 hackrf_sweep --help
@@ -3176,7 +3184,10 @@ ls ~/.local/bin/fissure
 
 # GNU Radio
 programs_ubuntu18_04_6.append(('GNU Radio',
-"""sudo apt-get install -y gnuradio
+"""sudo add-apt-repository -y ppa:mormj/gnuradio-releases-3.7
+sudo apt-get update
+sudo apt-get install -y gnuradio=3.7.13.5~gnuradio~bionic-4
+sudo apt-get install -y python-qwt5-qt4  # Needed for Filter Design Tool
 sudo rm -f /usr/share/mime/packages/gnuradio.xml
 sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml
 sudo update-mime-database -V /usr/share/mime/
@@ -3294,10 +3305,12 @@ rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
 programs_ubuntu18_04_6.append(('HackRF',
 """sudo apt-get install -y libusb-1.0-0-dev
 mkdir -p ~/Installed_by_FISSURE
-cp -R """ + fissure_directory + """/Tools/hackrf-2018.01.1/ ~/Installed_by_FISSURE/
-rm -Rf ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-mkdir ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-cd ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
+cd ~/Installed_by_FISSURE/
+wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+unzip hackrf-2022.09.1.zip
+rm hackrf-2022.09.1.zip
+mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
 cmake ..
 make
 sudo make install
@@ -3305,7 +3318,6 @@ sudo ldconfig
 sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
 sudo udevadm trigger --action=change
 #sudo apt-get install -y hackrf
-#pybombs install gr-osmosdr
 #sudo apt-get install gr-osmosdr  # Installing from source
 ########## Verify ##########
 hackrf_sweep --help

@@ -1,2 +1,0 @@
-/usr/bin/ar qc libhackrf.a  CMakeFiles/hackrf-static.dir/hackrf.c.o
-/usr/bin/ranlib libhackrf.a

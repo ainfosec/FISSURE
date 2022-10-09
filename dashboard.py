@@ -1180,6 +1180,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.pushButton_iq_resample_copy.clicked.connect(self._slotIQ_ResampleCopyClicked)
         self.pushButton_iq_normalize_original_select.clicked.connect(self._slotIQ_NormalizeOriginalSelectClicked)
         self.pushButton_iq_normalize_new_select.clicked.connect(self._slotIQ_NormalizeNewSelectClicked)
+        self.pushButton_iq_gqrx.clicked.connect(self._slotIQ_GqrxClicked)
         
         self.pushButton_archive_download_folder.clicked.connect(self._slotArchiveDownloadFolderClicked)
         self.pushButton_archive_download_refresh.clicked.connect(self._slotArchiveDownloadRefreshClicked)
@@ -1546,6 +1547,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.actionElectromagnetic_Radiation_Spectrum.triggered.connect(self._slotMenuElectromagneticRadiationSpectrumClicked)
         self.actionIIO_Oscilloscope.triggered.connect(self._slotMenuIIO_OscilloscopeClicked)
         self.actionDiscord.triggered.connect(self._slotMenuHelpDiscordClicked)
+        self.actionSDR_with_HackRF.triggered.connect(self._slotMenuLessonSDR_WithHackRF_Clicked)
+        self.actionGNU_Radio_Tutorials.triggered.connect(self._slotMenuLessonGNU_RadioTutorialsClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -12148,16 +12151,25 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Start Wireshark
         get_interface = str(self.textEdit_pd_sniffer_interface.toPlainText())
-        
+            
         # Find Wireshark
         out = subprocess.Popen(['which', 'wireshark'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
-        stdout,stderr = out.communicate()
-        wireshark_cmd = str(stdout.replace('\n',''))
         
+        try:
+            stdout, _ = out.communicate()
+        except:
+            print("Error communicating with Wireshark")
+
+        wireshark_cmd = stdout.decode('UTF-8').strip()
+        if not wireshark_cmd:
+            self.errorMessage("Wireshark not found!") 
+            print("Error: Wireshark not found")
+            return
+
         if len(get_interface) == 0 and len(wireshark_cmd) > 0:
-            p = subprocess.Popen([wireshark_cmd])
+            subprocess.Popen([wireshark_cmd])
         else:
-            p = subprocess.Popen([wireshark_cmd, '-k', '-i', get_interface])
+            subprocess.Popen([wireshark_cmd, '-k', '-i', get_interface])  
         
     def _slotPD_SnifferGuessClicked(self):
         """ Guesses the wireless interface to use for Wireshark.
@@ -12811,6 +12823,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.pushButton_top_tsi.setToolTip(self.dashboard_settings_dictionary['hardware_tsi'])
         else:
             self.pushButton_top_tsi.setToolTip('None')
+            
+        # Refresh Detector Advanced Settings
+        self._slotTSI_DetectorChanged()
                         
     def configurePD_Hardware(self):
         """ Configures PD after new hardware selection.
@@ -12936,8 +12951,26 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
             comboBox_antenna = QtGui.QComboBox(self)
             comboBox_antenna.addItem("TX/RX")
-            comboBox_antenna.addItem("RX2") 
-            self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
+            comboBox_antenna.addItem("RX1")
+            comboBox_antenna.addItem("RX2")
+            
+            # Select Antenna
+            get_daughterboard = self.dashboard_settings_dictionary['hardware_daughterboard_iq']
+            if "CBX-120" in get_daughterboard:
+                comboBox_antenna.setCurrentIndex(0)
+            elif "SBX-120" in get_daughterboard:
+                comboBox_antenna.setCurrentIndex(0)
+            elif "UBX-160" in get_daughterboard:
+                comboBox_antenna.setCurrentIndex(0)
+            elif "WBX-120" in get_daughterboard:
+                comboBox_antenna.setCurrentIndex(0)          
+            elif "TwinRX" in get_daughterboard:
+                comboBox_antenna.setCurrentIndex(1)
+            else:                
+                comboBox_antenna.setCurrentIndex(0)  
+                
+            self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
+              
             gain_item = QtGui.QTableWidgetItem("30")
             gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
             self.tableWidget_iq_record.setItem(0,4,gain_item)
@@ -13031,7 +13064,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self._slotIQ_InspectionHardwareChanged()
             self.groupBox_iq_record.setEnabled(True)
                  
-        elif self.dashboard_settings_dictionary['hardware_iq'] == "RTL2832U":  # To Do
+        elif self.dashboard_settings_dictionary['hardware_iq'] == "RTL2832U":
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/RTL2832U.png"))
             
             # IQ Record
@@ -16259,13 +16292,15 @@ class MainWindow(QtGui.QMainWindow, form_class):
         os.system(osCommandString+ " &")     
         
     def _slotMenuHam2monClicked(self):
-        """ Opens a maximized terminal with Ham2mon running. Refer to its readme for controls.
+        """ Opens a terminal with ham2mon command. Refer to its readme for controls.
         """
-        # Maximized Window
+        # Open a Terminal
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"  
         ham2mon_directory = os.path.expanduser("~/Installed_by_FISSURE/ham2mon/apps/")
         ham2mon_cmd = './ham2mon.py -a "uhd" -n 8 -d 0 -f 146E6 -r 4E6 -g 30 -s -60 -v 0 -t 10'
-        proc=subprocess.Popen('gnome-terminal --maximize --window --working-directory="' + ham2mon_directory + \
-            '" -- ' + ham2mon_cmd, cwd=ham2mon_directory, shell=True)         
+        #proc=subprocess.Popen('gnome-terminal --maximize --window --working-directory="' + ham2mon_directory + \
+        #    '" -- ' + ham2mon_cmd, cwd=ham2mon_directory, shell=True)
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + ham2mon_cmd + '"', cwd=ham2mon_directory, shell=True)      
 
     def _slotLibraryGalleryProtocolChanged(self):
         """ Updates the gallery listbox with images files for the selected protocol.
@@ -20095,8 +20130,23 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
             self.comboBox_tsi_detector_fg_antenna.clear()
             self.comboBox_tsi_detector_fg_antenna.addItem("TX/RX")
+            self.comboBox_tsi_detector_fg_antenna.addItem("RX1")
             self.comboBox_tsi_detector_fg_antenna.addItem("RX2")
-            self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)  
+            
+            # Select Antenna
+            get_daughterboard = self.dashboard_settings_dictionary['hardware_daughterboard_tsi']
+            if "CBX-120" in get_daughterboard:
+                self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
+            elif "SBX-120" in get_daughterboard:
+                self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
+            elif "UBX-160" in get_daughterboard:
+                self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
+            elif "WBX-120" in get_daughterboard:
+                self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)          
+            elif "TwinRX" in get_daughterboard:
+                self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(1)
+            else:                
+                self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0) 
             self.stackedWidget_tsi_detector.setCurrentIndex(0)          
             
         elif get_detector == 'wideband_b210.py':
@@ -21713,6 +21763,54 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Open a Browser 
         os.system("sensible-browser https://discord.gg/JZDs5sgxcG &") 
+        
+    def _slotMenuLessonSDR_WithHackRF_Clicked(self):
+        """ Opens a browser to the Great Scott Gadgets lessons page.
+        """
+        # Open a Browser 
+        os.system("sensible-browser https://greatscottgadgets.com/sdr/ &") 
+        
+    def _slotMenuLessonGNU_RadioTutorialsClicked(self):
+        """ Opens a browser to the GNU Radio tutorials page.
+        """
+        # Open a Browser 
+        os.system("sensible-browser https://wiki.gnuradio.org/index.php/Tutorials &") 
+        
+    def _slotIQ_GqrxClicked(self):
+        """ Opens an IQ file in Gqrx.
+        """
+        # Get IQ File
+        get_iq_file = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","")
+        
+        # Get Sample Rate and Frequency
+        get_sample_rate = str(self.textEdit_iq_sample_rate.toPlainText())
+        get_frequency = str(self.textEdit_iq_frequency.toPlainText())
+        try:
+            self.isFloat(float(get_sample_rate))
+            self.isFloat(float(get_frequency))
+            get_sample_rate = str(int(float(get_sample_rate)*1000000))
+            get_frequency = str(int(float(get_frequency)*1000000))
+        except:
+            self.errorMessage("Enter a valid sample rate and frequency.")
+            return
+                
+        # Modify Local Gqrx Config File
+        if (len(get_iq_file) > 0) and (len(get_sample_rate) > 0) and (len(get_frequency) > 0):
+            fin = open(os.path.dirname(os.path.realpath(__file__)) + "/Tools/Gqrx/template.conf", "rt")
+            fout = open(os.path.dirname(os.path.realpath(__file__)) + "/Tools/Gqrx/default.conf", "wt")
+            file_text = fin.read()
+            file_text = file_text.replace('<file>', get_iq_file)
+            file_text = file_text.replace('<rate>', get_sample_rate)
+            file_text = file_text.replace('<freq>', get_frequency)
+            fin.close()
+            fout.write(file_text)
+            fout.close()
+            
+            # Open Gqrx
+            proc = subprocess.Popen('gqrx -c "' + os.path.dirname(os.path.realpath(__file__)) + '/Tools/Gqrx/default.conf"', shell=True) 
+            
+        else:
+            self.errorMessage("Select a valid file, sample rate, and frequency.")
                 
 
 class HelpMenuDialog(QtGui.QDialog, form_class6):

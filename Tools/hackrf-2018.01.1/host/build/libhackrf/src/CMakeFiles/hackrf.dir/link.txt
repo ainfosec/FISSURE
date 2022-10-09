@@ -1,1 +1,0 @@
-/usr/bin/cc -fPIC  -std=gnu90  -shared -Wl,-soname,libhackrf.so.0 -o libhackrf.so.0.5.0 CMakeFiles/hackrf.dir/hackrf.c.o -lusb-1.0 -lpthread 

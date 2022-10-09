@@ -13937,7 +13937,7 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>15</x>
-              <y>686</y>
+              <y>675</y>
               <width>266</width>
               <height>22</height>
              </rect>
@@ -13974,94 +13974,13 @@ p, li { white-space: pre-wrap; }
              <string>File Information</string>
             </property>
            </widget>
-           <widget class="QScrollArea" name="scrollArea_2">
-            <property name="geometry">
-             <rect>
-              <x>15</x>
-              <y>705</y>
-              <width>266</width>
-              <height>105</height>
-             </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">QFrame#scrollArea_2 {
-	background-color: rgb(251, 251, 251);
-	border: 1px solid #17365D;
-	border-bottom-left-radius: 15px;
-	border-bottom-right-radius: 15px;
-   padding-left: 5px;
-   padding-right: 5px;
-   padding-bottom: 3px;
-}</string>
-            </property>
-            <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAsNeeded</enum>
-            </property>
-            <property name="widgetResizable">
-             <bool>true</bool>
-            </property>
-            <widget class="QWidget" name="scrollAreaWidgetContents">
-             <property name="geometry">
-              <rect>
-               <x>0</x>
-               <y>0</y>
-               <width>254</width>
-               <height>93</height>
-              </rect>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(251, 251, 251);</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout">
-              <property name="leftMargin">
-               <number>5</number>
-              </property>
-              <item>
-               <widget class="QLabel" name="label_iq_file_name">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>File:</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_iq_file_size">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Size: </string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_iq_samples">
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Samples:</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </widget>
            <widget class="QFrame" name="frame_6">
             <property name="geometry">
              <rect>
               <x>15</x>
               <y>300</y>
               <width>266</width>
-              <height>372</height>
+              <height>370</height>
              </rect>
             </property>
             <property name="styleSheet">
@@ -14473,6 +14392,19 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="text">
                 <string>Polar</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_gqrx">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>65</y>
+                 <width>112</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Gqrx</string>
                </property>
               </widget>
              </widget>
@@ -21320,12 +21252,164 @@ QTabBar::tab:!selected {
              <enum>Qt::Horizontal</enum>
             </property>
            </widget>
+           <widget class="QFrame" name="frame_5">
+            <property name="geometry">
+             <rect>
+              <x>15</x>
+              <y>695</y>
+              <width>266</width>
+              <height>135</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QFrame#frame_5 {
+	background-color: rgb(251, 251, 251);
+	border: 1px solid #17365D;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+}</string>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <widget class="QLabel" name="label_iq_file_name">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>5</y>
+               <width>240</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>File:</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_iq_file_size">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>25</y>
+               <width>226</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Size: </string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_iq_samples">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>45</y>
+               <width>240</width>
+               <height>16</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Samples:</string>
+             </property>
+            </widget>
+            <widget class="Line" name="line_6">
+             <property name="geometry">
+              <rect>
+               <x>1</x>
+               <y>65</y>
+               <width>264</width>
+               <height>3</height>
+              </rect>
+             </property>
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_iq_sample_rate">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>70</y>
+               <width>130</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Sample Rate (MSps):</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_iq_frequency">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>100</y>
+               <width>140</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Frequency (MHz):</string>
+             </property>
+            </widget>
+            <widget class="QTextEdit" name="textEdit_iq_sample_rate">
+             <property name="geometry">
+              <rect>
+               <x>150</x>
+               <y>70</y>
+               <width>100</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="tabChangesFocus">
+              <bool>true</bool>
+             </property>
+            </widget>
+            <widget class="QTextEdit" name="textEdit_iq_frequency">
+             <property name="geometry">
+              <rect>
+               <x>150</x>
+               <y>100</y>
+               <width>100</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="tabChangesFocus">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </widget>
            <zorder>frame_69</zorder>
            <zorder>frame_iq</zorder>
            <zorder>label_iq_folder</zorder>
            <zorder>frame_3</zorder>
            <zorder>label_10</zorder>
-           <zorder>scrollArea_2</zorder>
            <zorder>label_17</zorder>
            <zorder>frame_6</zorder>
            <zorder>label_28</zorder>
@@ -21347,6 +21431,7 @@ QTabBar::tab:!selected {
            <zorder>pushButton_iq_tab_ofdm</zorder>
            <zorder>pushButton_iq_tab_normalize</zorder>
            <zorder>line_3</zorder>
+           <zorder>frame_5</zorder>
           </widget>
           <widget class="QWidget" name="tab_archive">
            <attribute name="title">
@@ -27108,7 +27193,6 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionRoundup_of_SDRs"/>
      <addaction name="actionList_of_SDRs"/>
      <addaction name="actionAntenna_Comparison"/>
-     <addaction name="actionPySDR_org"/>
     </widget>
     <widget class="QMenu" name="menuGitHub">
      <property name="title">
@@ -27689,6 +27773,10 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionLesson_TPMS"/>
     <addaction name="actionLesson_Ham_Radio_Exams"/>
     <addaction name="actionLesson_WiFi_Tools"/>
+    <addaction name="separator"/>
+    <addaction name="actionPySDR_org"/>
+    <addaction name="actionSDR_with_HackRF"/>
+    <addaction name="actionGNU_Radio_Tutorials"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -28988,6 +29076,16 @@ p, li { white-space: pre-wrap; }
     <string>Discord</string>
    </property>
   </action>
+  <action name="actionSDR_with_HackRF">
+   <property name="text">
+    <string>Software Defined Radio with HackRF</string>
+   </property>
+  </action>
+  <action name="actionGNU_Radio_Tutorials">
+   <property name="text">
+    <string>GNU Radio Tutorials</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>scrollArea</tabstop>
@@ -29382,7 +29480,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>pushButton_iq_load_file</tabstop>
   <tabstop>pushButton_iq_delete</tabstop>
   <tabstop>pushButton_iq_rename</tabstop>
-  <tabstop>scrollArea_2</tabstop>
   <tabstop>pushButton_iq_plot_all</tabstop>
   <tabstop>pushButton_iq_plot_prev</tabstop>
   <tabstop>pushButton_iq_plot</tabstop>
