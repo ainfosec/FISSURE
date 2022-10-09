@@ -52,6 +52,7 @@ The following is a table of the major software tools that have been proven to wo
 | gr-zwave_poore | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | GraphicsMagick | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Grip | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| HackRF | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | ham2mon | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x: |
 | hcidump | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Hydra | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -92,6 +93,7 @@ The following is a table of the major software tools that have been proven to wo
 | Scapy | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | SdrGlut | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
 | SDRTrunk | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| SigDigger | :x: | :x: | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Spectrum Painter | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Spektrum | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | srsRAN/srsLTE | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -143,7 +145,7 @@ The following are the software versions that are included with the FISSURE insta
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
 | FoxtrotGPS | 1.2.1 | No | https://www.foxtrotgps.org/ |
 | Geany | 1.32 | No | https://www.geany.org/ |
-| GNU Radio | 3.7.11 | No | https://www.gnuradio.org/ |
+| GNU Radio | 3.7.13.5 | No | https://www.gnuradio.org/ |
 | Google Earth Pro | latest | No | https://www.google.com/earth/versions/ |
 | Gpredict | 2.0-4 | No | http://gpredict.oz9aec.net/ |
 | GQRX | 2.9 | No | https://gqrx.dk/ |
@@ -175,6 +177,7 @@ The following are the software versions that are included with the FISSURE insta
 | gr-zwave_poore | maint-3.7 | Yes | https://github.com/cpoore1/gr-zwave_poore |
 | GraphicsMagick | 1.3.28-2ubuntu0.1 | No | http://www.graphicsmagick.org/ |
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
+| HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
 | ham2mon | master | Yes | https://github.com/madengr/ham2mon |
 | hcidump | 5.48 | No | http://www.bluez.org/ |
 | Hydra | 8.6 | No | https://github.com/vanhauser-thc/thc-hydra |
@@ -252,7 +255,7 @@ The following are the software versions that are included with the FISSURE insta
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
 | FoxtrotGPS | 1.2.1 | No | https://www.foxtrotgps.org/ |
 | Geany | 1.32 | No | https://www.geany.org/ |
-| GNU Radio | 3.7.11 | No | https://www.gnuradio.org/ |
+| GNU Radio | 3.7.13.5 | No | https://www.gnuradio.org/ |
 | Google Earth Pro | latest | No | https://www.google.com/earth/versions/ |
 | Gpredict | 2.0-4 | No | http://gpredict.oz9aec.net/ |
 | GQRX | 2.9 | No | https://gqrx.dk/ |
@@ -284,6 +287,7 @@ The following are the software versions that are included with the FISSURE insta
 | gr-zwave_poore | maint-3.7 | Yes | https://github.com/cpoore1/gr-zwave_poore |
 | GraphicsMagick | 1.3.28-2ubuntu0.1 | No | http://www.graphicsmagick.org/ |
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
+| HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
 | ham2mon | master | Yes | https://github.com/madengr/ham2mon |
 | hcidump | 5.48 | No | http://www.bluez.org/ |
 | Hydra | 8.6 | No | https://github.com/vanhauser-thc/thc-hydra |
@@ -361,7 +365,7 @@ The following are the software versions that are included with the FISSURE insta
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
 | FoxtrotGPS | 1.2.1 | No | https://www.foxtrotgps.org/ |
 | Geany | 1.32 | No | https://www.geany.org/ |
-| GNU Radio | 3.7.11 | No | https://www.gnuradio.org/ |
+| GNU Radio | 3.7.13.5 | No | https://www.gnuradio.org/ |
 | Google Earth Pro | latest | No | https://www.google.com/earth/versions/ |
 | Gpredict | 2.0-4 | No | http://gpredict.oz9aec.net/ |
 | GQRX | 2.9 | No | https://gqrx.dk/ |
@@ -393,6 +397,7 @@ The following are the software versions that are included with the FISSURE insta
 | gr-zwave_poore | maint-3.7 | Yes | https://github.com/cpoore1/gr-zwave_poore |
 | GraphicsMagick | 1.3.28-2ubuntu0.1 | No | http://www.graphicsmagick.org/ |
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
+| HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
 | ham2mon | master | Yes | https://github.com/madengr/ham2mon |
 | hcidump | 5.48 | No | http://www.bluez.org/ |
 | Hydra | 8.6 | No | https://github.com/vanhauser-thc/thc-hydra |
@@ -471,7 +476,7 @@ The following are the software versions that are included with the FISSURE insta
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
 | FoxtrotGPS | 1.2.2 | No | https://www.foxtrotgps.org/ |
 | Geany | 1.36 | No | https://www.geany.org/ |
-| GNU Radio | 3.8.1.0 | No | https://www.gnuradio.org/ |
+| GNU Radio | 3.8.5.0 | No | https://www.gnuradio.org/ |
 | Google Earth Pro | latest | No | https://www.google.com/earth/versions/ |
 | Gpredict | 2.3-33-gca42d22-1 | No | http://gpredict.oz9aec.net/ |
 | GQRX | 2.12 | No | https://gqrx.dk/ |
@@ -503,7 +508,8 @@ The following are the software versions that are included with the FISSURE insta
 | gr-zwave_poore | maint-3.8 | Yes | https://github.com/cpoore1/gr-zwave_poore |
 | GraphicsMagick | 1.4+really1.3.35-1 | No | http://www.graphicsmagick.org/ |
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
-| ~~ham2mon~~ | - | Yes | https://github.com/madengr/ham2mon |
+| HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
+| ham2mon | master | Yes | https://github.com/ta6o/ham2mon |
 | hcidump | 5.53 | No | http://www.bluez.org/ |
 | Hydra | 9.0 | No | https://github.com/vanhauser-thc/thc-hydra |
 | IIO Oscilloscope | master | Yes | https://github.com/analogdevicesinc/iio-oscilloscope |
@@ -543,6 +549,7 @@ The following are the software versions that are included with the FISSURE insta
 | Scapy | 2.4.0 | No | https://scapy.net/ |
 | SdrGlut | master | Yes | https://github.com/righthalfplane/SdrGlut |
 | SDRTrunk | v0.5.0-alpha.6 | Yes | https://github.com/DSheirer/sdrtrunk |
+| SigDigger | master | Yes | https://github.com/BatchDrake/SigDigger |
 | Spectrum Painter | master | Yes | https://github.com/polygon/spectrum_painter |
 | Spektrum | 2.1.0 | Yes | https://github.com/pavels/spektrum |
 | srsRAN/srsLTE | master | Yes | https://www.srslte.com/ |
@@ -581,7 +588,7 @@ The following are the software versions that are included with the FISSURE insta
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
 | FoxtrotGPS | 1.2.2 | No | https://www.foxtrotgps.org/ |
 | Geany | 1.36 | No | https://www.geany.org/ |
-| GNU Radio | 3.8.1.0 | No | https://www.gnuradio.org/ |
+| GNU Radio | 3.8.5.0 | No | https://www.gnuradio.org/ |
 | Google Earth Pro | latest | No | https://www.google.com/earth/versions/ |
 | Gpredict | 2.3-33-gca42d22-1 | No | http://gpredict.oz9aec.net/ |
 | GQRX | 2.12 | No | https://gqrx.dk/ |
@@ -613,7 +620,8 @@ The following are the software versions that are included with the FISSURE insta
 | gr-zwave_poore | maint-3.8 | Yes | https://github.com/cpoore1/gr-zwave_poore |
 | GraphicsMagick | 1.4+really1.3.35-1 | No | http://www.graphicsmagick.org/ |
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
-| ~~ham2mon~~ | - | Yes | https://github.com/madengr/ham2mon |
+| HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
+| ham2mon | master | Yes | https://github.com/ta6o/ham2mon |
 | hcidump | 5.53 | No | http://www.bluez.org/ |
 | Hydra | 9.0 | No | https://github.com/vanhauser-thc/thc-hydra |
 | IIO Oscilloscope | master | Yes | https://github.com/analogdevicesinc/iio-oscilloscope |
@@ -653,6 +661,7 @@ The following are the software versions that are included with the FISSURE insta
 | Scapy | 2.4.0 | No | https://scapy.net/ |
 | SdrGlut | master | Yes | https://github.com/righthalfplane/SdrGlut |
 | SDRTrunk | v0.5.0-alpha.6 | Yes | https://github.com/DSheirer/sdrtrunk |
+| SigDigger | master | Yes | https://github.com/BatchDrake/SigDigger |
 | Spectrum Painter | master | Yes | https://github.com/polygon/spectrum_painter |
 | Spektrum | 2.1.0 | Yes | https://github.com/pavels/spektrum |
 | srsRAN/srsLTE | master | Yes | https://www.srslte.com/ |
@@ -691,7 +700,7 @@ The following are the software versions that are included with the FISSURE insta
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
 | FoxtrotGPS | 1.2.2+ | No | https://www.foxtrotgps.org/ |
 | Geany | 1.38 | No | https://www.geany.org/ |
-| GNU Radio | 3.10.1.1 | No | https://www.gnuradio.org/ |
+| GNU Radio | 3.10.4.0 | No | https://www.gnuradio.org/ |
 | Google Earth Pro | latest | No | https://www.google.com/earth/versions/ |
 | Gpredict | 2.3-72-gc596101-3 | No | http://gpredict.oz9aec.net/ |
 | GQRX | 2.15.8 | No | https://gqrx.dk/ |
@@ -723,7 +732,8 @@ The following are the software versions that are included with the FISSURE insta
 | gr-zwave_poore | maint-3.10 | Yes | https://github.com/cpoore1/gr-zwave_poore |
 | GraphicsMagick | 1.4+really1.3.38-1 | No | http://www.graphicsmagick.org/ |
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
-| ~~ham2mon~~ | - | Yes | https://github.com/madengr/ham2mon |
+| HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
+| ham2mon | maint-3.10 | Yes | https://github.com/bkerler/ham2mon |
 | hcidump | 5.64 | No | http://www.bluez.org/ |
 | Hydra | 9.2 | No | https://github.com/vanhauser-thc/thc-hydra |
 | IIO Oscilloscope | master | Yes | https://github.com/analogdevicesinc/iio-oscilloscope |
@@ -763,6 +773,7 @@ The following are the software versions that are included with the FISSURE insta
 | Scapy | 2.4.5 (Python2)/2.4.4 (Python3) | No | https://scapy.net/ |
 | ~~SdrGlut~~ | master | Yes | https://github.com/righthalfplane/SdrGlut |
 | SDRTrunk | v0.5.0-alpha.6 | Yes | https://github.com/DSheirer/sdrtrunk |
+| SigDigger | master | Yes | https://github.com/BatchDrake/SigDigger |
 | Spectrum Painter | master | Yes | https://github.com/polygon/spectrum_painter |
 | Spektrum | 2.1.0 | Yes | https://github.com/pavels/spektrum |
 | srsRAN/srsLTE | master | Yes | https://www.srslte.com/ |
@@ -784,10 +795,9 @@ The following are the software versions that are included with the FISSURE insta
 The following are a list of known software conflicts and incompatibilities within FISSURE:
 - Ubuntu 18.04
   - aircrack 8812au driver crashes computer on reboot, other drivers are dependent on kernel version
+  - Python2 branch avoids installation of programs that depend on PyQt5.
 - Ubuntu 20.04
   - Geany in 20.04 needs `[styling] line_height=0;2;` added to Tools>Configuration Files>filetypes.common to see underscores
-- Ubuntu 22.04
-  - GNU Radio version is 3.10 and FISSURE currently does nothing to account for it. The 3.8 OOT modules and flow graphs will not work.
 
 - Other
   - gr-gsm has to be installed twice for all blocks to be recognized

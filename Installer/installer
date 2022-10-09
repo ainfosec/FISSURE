@@ -96,7 +96,9 @@ ls ~/.local/bin/fissure
 
 # GNU Radio
 programs_ubuntu20_04.append(('GNU Radio',
-"""sudo apt-get install -y gnuradio
+"""sudo add-apt-repository -y ppa:mormj/gnuradio-releases-3.8
+sudo apt-get update
+sudo apt-get install -y gnuradio=3.8.5.0-0~gnuradio~focal-4
 #sudo rm -f /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
 #sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
 #sudo update-mime-database -V /usr/share/mime/  # Is this still needed for 20.04.1?
@@ -196,10 +198,12 @@ sudo sysctl -w net.core.wmem_max=24862979
 programs_ubuntu20_04.append(('HackRF',
 """sudo apt-get install -y libusb-1.0-0-dev
 mkdir -p ~/Installed_by_FISSURE
-cp -R """ + fissure_directory + """/Tools/hackrf-2018.01.1/ ~/Installed_by_FISSURE/
-rm -Rf ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-mkdir ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-cd ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
+cd ~/Installed_by_FISSURE/
+wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+unzip hackrf-2022.09.1.zip
+rm hackrf-2022.09.1.zip
+mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
 cmake ..
 make
 sudo make install
@@ -207,8 +211,7 @@ sudo ldconfig
 sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
 sudo udevadm trigger --action=change
 #sudo apt-get install -y hackrf
-#pybombs install gr-osmosdr
-#sudo apt-get install gr-osmosdr  # Not always found in the repositories
+#sudo apt-get install gr-osmosdr
 ########## Verify ##########
 hackrf_sweep --help
 """,True,'Hardware'))
@@ -1462,12 +1465,13 @@ git clone https://github.com/cmnybo/nrsc5-gui.git
 nrsc5 -v
 """,True,None))
 
-# # HAM2MON  # Doesn't work for 20.04
-# programs_ubuntu20_04.append(('HAM2MON',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/madengr/ham2mon.git
-# """,True,None))
+# HAM2MON
+programs_ubuntu20_04.append(('HAM2MON',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/ta6o/ham2mon
+cp -f """ + fissure_directory + """/Tools/ham2mon/cursesgui.py ~/Installed_by_FISSURE/ham2mon/apps/
+""",True,None))
 
 # Anki
 programs_ubuntu20_04.append(('Anki',
@@ -1551,6 +1555,47 @@ rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.s
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 """,True,None))
 
+# SigDigger
+programs_ubuntu20_04.append(('SigDigger',
+"""#sigutils
+sudo apt-get install -y libsndfile1-dev libfftw3-3
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/BatchDrake/sigutils.git
+cd sigutils/
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+#suscan
+sudo apt-get install -y libxml2-dev cmake build-essential  # SoapySDR
+cd ~/Installed_by_FISSURE
+git clone https://github.com/BatchDrake/suscan.git
+cd suscan
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+#SuWidgets
+cd ~/Installed_by_FISSURE
+git clone https://github.com/BatchDrake/SuWidgets
+cd SuWidgets
+qmake SuWidgetsLib.pro
+make
+sudo make install
+#SigDigger
+cd ~/Installed_by_FISSURE
+git clone https://github.com/BatchDrake/SigDigger
+cd SigDigger
+qmake SigDigger.pro
+make
+sudo make install
+########## Verify ##########
+ls /usr/local/bin/SigDigger
+""",True,None))
 
 
 ########################################################################
@@ -1631,7 +1676,9 @@ ls ~/.local/bin/fissure
 
 # GNU Radio
 programs_ubuntu20_04_4.append(('GNU Radio',
-"""sudo apt-get install -y gnuradio
+"""sudo add-apt-repository -y ppa:mormj/gnuradio-releases-3.8
+sudo apt-get update
+sudo apt-get install -y gnuradio=3.8.5.0-0~gnuradio~focal-4
 #sudo rm -f /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
 #sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
 #sudo update-mime-database -V /usr/share/mime/  # Is this still needed for 20.04.1?
@@ -1731,10 +1778,12 @@ sudo sysctl -w net.core.wmem_max=24862979
 programs_ubuntu20_04_4.append(('HackRF',
 """sudo apt-get install -y libusb-1.0-0-dev
 mkdir -p ~/Installed_by_FISSURE
-cp -R """ + fissure_directory + """/Tools/hackrf-2018.01.1/ ~/Installed_by_FISSURE/
-rm -Rf ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-mkdir ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-cd ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
+cd ~/Installed_by_FISSURE/
+wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+unzip hackrf-2022.09.1.zip
+rm hackrf-2022.09.1.zip
+mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
 cmake ..
 make
 sudo make install
@@ -1742,8 +1791,7 @@ sudo ldconfig
 sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
 sudo udevadm trigger --action=change
 #sudo apt-get install -y hackrf
-#pybombs install gr-osmosdr
-#sudo apt-get install gr-osmosdr  # Not always found in the repositories
+#sudo apt-get install gr-osmosdr
 ########## Verify ##########
 hackrf_sweep --help
 """,True,'Hardware'))
@@ -2997,12 +3045,13 @@ git clone https://github.com/cmnybo/nrsc5-gui.git
 nrsc5 -v
 """,True,None))
 
-# # HAM2MON  # Doesn't work for 20.04
-# programs_ubuntu20_04_4.append(('HAM2MON',
-# """mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE
-# git clone https://github.com/madengr/ham2mon.git
-# """,True,None))
+# HAM2MON
+programs_ubuntu20_04_4.append(('HAM2MON',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/ta6o/ham2mon
+cp -f """ + fissure_directory + """/Tools/ham2mon/cursesgui.py ~/Installed_by_FISSURE/ham2mon/apps/
+""",True,None))
 
 # Anki
 programs_ubuntu20_04_4.append(('Anki',
@@ -3084,6 +3133,48 @@ sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan
 rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+""",True,None))
+
+# SigDigger
+programs_ubuntu20_04_4.append(('SigDigger',
+"""#sigutils
+sudo apt-get install -y libsndfile1-dev libfftw3-3
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/BatchDrake/sigutils.git
+cd sigutils/
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+#suscan
+sudo apt-get install -y libxml2-dev cmake build-essential  # SoapySDR
+cd ~/Installed_by_FISSURE
+git clone https://github.com/BatchDrake/suscan.git
+cd suscan
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+#SuWidgets
+cd ~/Installed_by_FISSURE
+git clone https://github.com/BatchDrake/SuWidgets
+cd SuWidgets
+qmake SuWidgetsLib.pro
+make
+sudo make install
+#SigDigger
+cd ~/Installed_by_FISSURE
+git clone https://github.com/BatchDrake/SigDigger
+cd SigDigger
+qmake SigDigger.pro
+make
+sudo make install
+########## Verify ##########
+ls /usr/local/bin/SigDigger
 """,True,None))
 
 
@@ -4011,7 +4102,9 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 
 # # GNU Radio
 # programs_dragonOS_focal.append(('GNU Radio',
-# """sudo apt-get install -y gnuradio
+# """sudo add-apt-repository -y ppa:mormj/gnuradio-releases-3.8
+# sudo apt-get update
+# sudo apt-get install -y gnuradio=3.8.5.0-0~gnuradio~focal-4
 # #sudo rm -f /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
 # #sudo ln -s /usr/share/gnuradio/grc/freedesktop/gnuradio-grc.xml /usr/share/mime/packages/gnuradio.xml  # Is this still needed for 20.04.1?
 # #sudo update-mime-database -V /usr/share/mime/  # Is this still needed for 20.04.1?
@@ -4094,10 +4187,12 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # programs_dragonOS_focal.append(('HackRF',
 # """sudo apt-get install -y libusb-1.0-0-dev
 # mkdir -p ~/Installed_by_FISSURE
-# cp -R """ + fissure_directory + """/Tools/hackrf-2018.01.1/ ~/Installed_by_FISSURE/
-# rm -Rf ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-# mkdir ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
-# cd ~/Installed_by_FISSURE/hackrf-2018.01.1/host/build
+# cd ~/Installed_by_FISSURE/
+# wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+# unzip hackrf-2022.09.1.zip
+# rm hackrf-2022.09.1.zip
+# mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+# cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
 # cmake ..
 # make
 # sudo make install
@@ -4106,7 +4201,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # sudo udevadm trigger --action=change
 # #sudo apt-get install -y hackrf
 # #pybombs install gr-osmosdr
-# #sudo apt-get install gr-osmosdr  # Not always found in the repositories
+# #sudo apt-get install gr-osmosdr
 # ########## Verify ##########
 # hackrf_sweep --help
 # """,True,'Hardware'))
@@ -4603,18 +4698,61 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # ls /usr/local/bin/CellSearch
 # """,True,None))
 
-# # # HAM2MON  # Doesn't work for 20.04
-# # programs_dragonOS_focal.append(('HAM2MON',
-# # """mkdir -p ~/Installed_by_FISSURE
-# # cd ~/Installed_by_FISSURE
-# # git clone https://github.com/madengr/ham2mon.git
-# # """,True,None))
+# # HAM2MON
+# programs_dragonOS_focal.append(('HAM2MON',
+# """mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/ta6o/ham2mon
+# cp -f """ + fissure_directory + """/Tools/ham2mon/cursesgui.py ~/Installed_by_FISSURE/ham2mon/apps/
+# """,True,None))
 
 # # trackerjacker
 # programs_dragonOS_focal.append(('trackerjacker',
 # """sudo python3 -m pip install trackerjacker  # Downgrades Python3 Scapy from 2.4.5 to 2.4.0
 # ########## Verify ##########
 # sudo trackerjacker --help
+# """,True,None))
+
+# # SigDigger
+# programs_dragonOS_focal.append(('SigDigger',
+# """#sigutils
+# sudo apt-get install -y libsndfile1-dev libfftw3-3
+# mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/BatchDrake/sigutils.git
+# cd sigutils/
+# mkdir build
+# cd build
+# cmake ..
+# make
+# sudo make install
+# sudo ldconfig
+# #suscan
+# sudo apt-get install -y libxml2-dev cmake build-essential  # SoapySDR
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/BatchDrake/suscan.git
+# cd suscan
+# mkdir build
+# cd build
+# cmake ..
+# make
+# sudo make install
+# #SuWidgets
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/BatchDrake/SuWidgets
+# cd SuWidgets
+# qmake SuWidgetsLib.pro
+# make
+# sudo make install
+# #SigDigger
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/BatchDrake/SigDigger
+# cd SigDigger
+# qmake SigDigger.pro
+# make
+# sudo make install
+# ########## Verify ##########
+# ls /usr/local/bin/SigDigger
 # """,True,None))
 
 

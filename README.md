@@ -7,6 +7,13 @@ The framework and tools included with FISSURE are designed to detect the presenc
 
 The friendly Python codebase and user interface allows beginners to quickly learn about popular tools and techniques involving RF and reverse engineering. Educators in cybersecurity and engineering can take advantage of the built-in material or utilize the framework to demonstrate their own real-world applications. Developers and researchers can use FISSURE for their daily tasks or to expose their cutting-edge solutions to a wider audience. As awareness and usage of FISSURE grows in the community, so will the extent of its capabilities and the breadth of the technology it encompasses.
 
+**Additional Information**
+
+- [GRCon22 Slides](https://events.gnuradio.org/event/18/contributions/246/attachments/84/164/FISSURE_Poore_GRCon22.pdf)
+- [GRCon22 Paper](https://events.gnuradio.org/event/18/contributions/246/attachments/84/167/FISSURE_Paper_Poore_GRCon22.pdf)
+- [GRCon22 Video](https://youtu.be/ghLogJlaMNc?t=19980)
+- [AIS Page](https://www.ainfosec.com/technologies/fissure/)
+
 ## Getting Started
 
 **Supported**

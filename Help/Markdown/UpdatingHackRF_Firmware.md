@@ -1,10 +1,9 @@
 # Updating HackRF Firmware
 
-Firmware is included in the FISSURE repository. Firmware updates allow for more advanced features like *hackrf_sweep*.
+Firmware is included with each HackRF [release](https://github.com/greatscottgadgets/hackrf/releases). Firmware updates allow for more advanced features like *hackrf_sweep*.
 ```
-hackrf_spiflash -w ~/FISSURE/Tools/hackrf-2018.01.1/firmware-bin/hackrf_one_usb.bin
+hackrf_spiflash -w ~/Installed_by_FISSURE/hackrf-2022.09.1/firmware-bin/hackrf_one_usb.bin
 ```
-
 
 # Updating the CPLD
 
