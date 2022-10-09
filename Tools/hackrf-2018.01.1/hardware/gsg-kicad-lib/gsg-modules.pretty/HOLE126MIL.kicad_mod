@@ -1,9 +1,0 @@
-(module HOLE126MIL (layer F.Cu) (tedit 50997CD1)
-  (fp_text reference HOLE126MIL (at 0 0) (layer F.SilkS) hide
-    (effects (font (size 1.00076 1.00076) (thickness 0.2032)))
-  )
-  (fp_text value VAL** (at 0 0) (layer F.SilkS) hide
-    (effects (font (size 1.00076 1.00076) (thickness 0.2032)))
-  )
-  (pad "" thru_hole circle (at 0 0) (size 3.2004 3.2004) (drill 3.2004) (layers *.Cu *.Mask))
-)

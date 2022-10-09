@@ -1,6 +1,35 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-10-09
+
+Updating GNU Radio and HackRF versions. Integrating a few more links, tools, and fixes.
+ 
+### Added
+
+- Software Defined Radio with HackRF in Lessons menu
+- GNU Radio Tutorials in Lessons menu
+- Sample rate and frequency edit boxes for IQ data
+- Gqrx IQ data button for loading a file into Gqrx when sample rate and frequency is supplied
+- SigDigger to installer, menu, CREDITS.md, SoftwareAndConflicts for Python3 branches (Python2 branch avoids PyQt5 programs)
+- ham2mon for Python3 branches in installer, menu, CREDITS.md, SoftwareAndConflicts
+- Links in README to GRCon22 slides, paper, video and AIS page
+- HackRF to CREDITS.md and SoftwareAndConflicts
+   
+### Changed
+
+- Moved PySDR menu item to Lessons menu
+- Updated GNU Radio versions for each branch (3.7.11.0->3.7.13.5, 3.8.1.0->3.8.5.0, 3.10.1.1->3.10.4.0)
+- Updated SoftwareAndConflicts help page with GNU Radio versions
+- Removed old copy of HackRF release, downloading the latest as part of the install
+- Edited Updating HackRF Firmware instructions in the help menu
+ 
+### Fixed
+
+- Launch Wireshark button in the Sniffer tab did not work for Python3 branches
+- Added python-qwt5-qt4 to installer for enabling GNU Radio Filter Design Tool in Python2 branch
+- Added RX1 antenna option for X3xx devices with TwinRX daughterboards to: TSI Wideband Detector settings, IQ Record settings
+
 ## 2022-09-25
 
 Disabling IIO-Oscilloscope for Python2_maint-3.7 branch.

@@ -213,9 +213,15 @@ Project: https://github.com/joeyespo/grip
 Copyright 2014-2022 Joe Esposito  
 License (MIT): https://github.com/joeyespo/grip/blob/master/LICENSE
 
+**HackRF**  
+Project: https://github.com/greatscottgadgets/hackrf
+License (GPL-2.0): https://github.com/greatscottgadgets/hackrf/blob/master/COPYING
+
 **ham2mon**  
 Project: https://github.com/madengr/ham2mon  
 License (GPL-3.0): https://github.com/madengr/ham2mon/blob/master/LICENSE
+3.8 Fork: https://github.com/ta6o/ham2mon
+3.10 Fork: https://github.com/bkerler/ham2mon
 
 **hcidump**  
 Project: http://www.bluez.org/  
@@ -385,6 +391,10 @@ License (MIT): https://github.com/righthalfplane/SdrGlut/blob/master/LICENSE
 
 **SDRTrunk**  
 Project: https://github.com/DSheirer/sdrtrunk  
+License (GPL-3.0): https://github.com/BatchDrake/SigDigger/blob/master/LICENSE
+
+**SigDigger**  
+Project: https://github.com/BatchDrake/SigDigger 
 License (GPL-3.0): https://github.com/DSheirer/sdrtrunk/blob/master/LICENSE
 
 **Spectrum Painter**  
