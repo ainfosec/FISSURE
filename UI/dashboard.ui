@@ -27739,6 +27739,8 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionPySDR_org"/>
     <addaction name="actionLessonSDR_WithHackRF"/>
     <addaction name="actionGNU_Radio_Tutorials"/>
+    <addaction name="actionProgramming_SDRs_with_GNU_Radio"/>
+    <addaction name="actionLearn_SDR"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -29053,6 +29055,16 @@ p, li { white-space: pre-wrap; }
   <action name="actionham2mon">
    <property name="text">
     <string>ham2mon</string>
+   </property>
+  </action>
+  <action name="actionProgramming_SDRs_with_GNU_Radio">
+   <property name="text">
+    <string>Programming SDRs with GNU Radio</string>
+   </property>
+  </action>
+  <action name="actionLearn_SDR">
+   <property name="text">
+    <string>Learn SDR</string>
    </property>
   </action>
  </widget>

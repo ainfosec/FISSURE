@@ -1545,6 +1545,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionGNU_Radio_Tutorials.triggered.connect(self._slotMenuLessonGNU_RadioTutorialsClicked)
         self.actionSigDigger.triggered.connect(self._slotMenuSigDiggerClicked)
         self.actionham2mon.triggered.connect(self._slotMenuHam2monClicked)
+        self.actionProgramming_SDRs_with_GNU_Radio.triggered.connect(self._slotMenuLessonProgrammingSDRsClicked)
+        self.actionLearn_SDR.triggered.connect(self._slotMenuLessonLearnSDR_Clicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -21873,8 +21875,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         #proc = subprocess.Popen('gnome-terminal --maximize --window --working-directory="' + ham2mon_directory + \
         #    '" -- ' + ham2mon_cmd, cwd=ham2mon_directory, shell=True)
         proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + ham2mon_cmd + '"', cwd=ham2mon_directory, shell=True)    
+    
+    def _slotMenuLessonProgrammingSDRsClicked(self):
+        """ Opens the Bastian Bloessl tutorial from ACM WiSec2021 Conference.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://www.youtube.com/watch?v=WqAqPEXZs-Q&t=16870s &")  
+    
+    def _slotMenuLessonLearnSDR_Clicked(self):
+        """ Opens the Harvey Mudd College tutorials.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://gallicchio.github.io/learnSDR/ &")  
         
-
+        
 
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
     def __init__(self):

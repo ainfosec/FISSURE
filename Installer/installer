@@ -119,10 +119,6 @@ printf "\\n%s\\n" "export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> ~/
 printf "\\n%s\\n" "export PYTHONPATH=/usr/local/lib/python3/dist-packages:/usr/lib/python3/site-packages:$PYTHONPATH" >> ~/.profile  # For GRC without terminal
 printf "\\n%s\\n" "export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> ~/.profile  # For GRC without terminal
 . ~/.bashrc
-sudo apt-get install -y libzmq3-dev swig cmake
-sudo sh -c "/bin/echo -e '/usr/local/lib' >> /etc/ld.so.conf"
-sudo ldconfig
-
 sudo apt-get install -y libzmq3-dev
 sudo apt-get install -y swig
 sudo sh -c "/bin/echo -e '/usr/local/lib' >> /etc/ld.so.conf"
@@ -168,6 +164,38 @@ sudo apt-get install -y libboost-all-dev swig
 ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
+# gr-osmosdr
+programs_ubuntu20_04.append(('gr-osmosdr',
+"""sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config  # Needed for RTL SDRs, 'sudo apt-get install gr-osmosdr' needs mods to work with newer GNU Radio 3.8 versions but is still needed for gr-gsm
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone git://git.osmocom.org/rtl-sdr.git
+cd rtl-sdr
+mkdir build
+cd build
+cmake ../ -DINSTALL_UDEV_RULES=ON
+make
+sudo make install
+sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
+sudo ldconfig
+sudo rmmod dvb_usb_rtl28xxu
+echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+cd ~/Installed_by_FISSURE
+sudo apt-get install -y libusb-1.0-0-dev
+git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
+cd gr-osmosdr
+git checkout gr3.8
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+sudo apt-get install -y gr-osmosdr  # Temporary fix
+########## Verify ##########
+ls /usr/local/bin/osmocom_fft
+""",True,'Hardware'))
+
 # BladeRF
 programs_ubuntu20_04.append(('BladeRF',
 """sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 pkg-config git wget  # no package: libtecla1-dev       
@@ -210,8 +238,6 @@ sudo make install
 sudo ldconfig
 sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
 sudo udevadm trigger --action=change
-#sudo apt-get install -y hackrf
-#sudo apt-get install gr-osmosdr
 ########## Verify ##########
 hackrf_sweep --help
 """,True,'Hardware'))
@@ -468,7 +494,7 @@ python3 -c "import garage_door"
 programs_ubuntu20_04.append(('gr-gsm',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm/
 sudo rm -Rf build
-sudo apt-get install -y gr-osmosdr
+sudo apt-get install -y gr-osmosdr  # Causes errors when built from source
 mkdir build
 cd build
 cmake ..
@@ -1699,10 +1725,6 @@ printf "\\n%s\\n" "export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> ~/
 printf "\\n%s\\n" "export PYTHONPATH=/usr/local/lib/python3/dist-packages:/usr/lib/python3/site-packages:$PYTHONPATH" >> ~/.profile  # For GRC without terminal
 printf "\\n%s\\n" "export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> ~/.profile  # For GRC without terminal
 . ~/.bashrc
-sudo apt-get install -y libzmq3-dev swig cmake
-sudo sh -c "/bin/echo -e '/usr/local/lib' >> /etc/ld.so.conf"
-sudo ldconfig
-
 sudo apt-get install -y libzmq3-dev
 sudo apt-get install -y swig
 sudo sh -c "/bin/echo -e '/usr/local/lib' >> /etc/ld.so.conf"
@@ -1748,6 +1770,38 @@ sudo apt-get install -y libboost-all-dev swig
 ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
+# gr-osmosdr
+programs_ubuntu20_04_4.append(('gr-osmosdr',
+"""sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config  # Needed for RTL SDRs, 'sudo apt-get install gr-osmosdr' needs mods to work with newer GNU Radio 3.8 versions but is still needed for gr-gsm
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone git://git.osmocom.org/rtl-sdr.git
+cd rtl-sdr
+mkdir build
+cd build
+cmake ../ -DINSTALL_UDEV_RULES=ON
+make
+sudo make install
+sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
+sudo ldconfig
+sudo rmmod dvb_usb_rtl28xxu
+echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+cd ~/Installed_by_FISSURE
+sudo apt-get install -y libusb-1.0-0-dev
+git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
+cd gr-osmosdr
+git checkout gr3.8
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+sudo apt-get install -y gr-osmosdr  # Temporary fix
+########## Verify ##########
+ls /usr/local/bin/osmocom_fft
+""",True,'Hardware'))
+
 # BladeRF
 programs_ubuntu20_04_4.append(('BladeRF',
 """sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 pkg-config git wget  # no package: libtecla1-dev       
@@ -1790,8 +1844,6 @@ sudo make install
 sudo ldconfig
 sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
 sudo udevadm trigger --action=change
-#sudo apt-get install -y hackrf
-#sudo apt-get install gr-osmosdr
 ########## Verify ##########
 hackrf_sweep --help
 """,True,'Hardware'))
@@ -2046,9 +2098,9 @@ python3 -c "import garage_door"
 
 # gr-gsm
 programs_ubuntu20_04_4.append(('gr-gsm',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm/
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm/  # Requires gr-osmosdr
 sudo rm -Rf build
-sudo apt-get install -y gr-osmosdr
+sudo apt-get install -y gr-osmosdr  # Causes errors when built from source
 mkdir build
 cd build
 cmake ..
@@ -4125,10 +4177,6 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # printf "\\n%s\\n" "export PYTHONPATH=/usr/local/lib/python3/dist-packages:/usr/lib/python3/site-packages:$PYTHONPATH" >> ~/.profile  # For GRC without terminal
 # printf "\\n%s\\n" "export LD_LIBRARY_PATH=/usr/local/lib:$LD_LIBRARY_PATH" >> ~/.profile  # For GRC without terminal
 # . ~/.bashrc
-# sudo apt-get install -y libzmq3-dev swig cmake
-# sudo sh -c "/bin/echo -e '/usr/local/lib' >> /etc/ld.so.conf"
-# sudo ldconfig
-
 # sudo apt-get install -y libzmq3-dev
 # sudo apt-get install -y swig
 # sudo sh -c "/bin/echo -e '/usr/local/lib' >> /etc/ld.so.conf"
@@ -4155,6 +4203,38 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # sudo apt-get install -y libboost-all-dev swig
 # ########## Verify ##########
 # ls /usr/bin/LimeSuiteGUI
+# """,True,'Hardware'))
+
+# # gr-osmosdr
+# programs_dragonOS_focal.append(('gr-osmosdr',
+# """sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config  # Needed for RTL SDRs, 'sudo apt-get install gr-osmosdr' needs mods to work with newer GNU Radio 3.8 versions but is still needed for gr-gsm
+# mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone git://git.osmocom.org/rtl-sdr.git
+# cd rtl-sdr
+# mkdir build
+# cd build
+# cmake ../ -DINSTALL_UDEV_RULES=ON
+# make
+# sudo make install
+# sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
+# sudo ldconfig
+# sudo rmmod dvb_usb_rtl28xxu
+# echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+# cd ~/Installed_by_FISSURE
+# sudo apt-get install -y libusb-1.0-0-dev
+# git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
+# cd gr-osmosdr
+# git checkout gr3.8
+# mkdir build
+# cd build
+# cmake ..
+# make
+# sudo make install
+# sudo ldconfig
+# sudo apt-get install -y gr-osmosdr  # Temporary fix
+# ########## Verify ##########
+# ls /usr/local/bin/osmocom_fft
 # """,True,'Hardware'))
 
 # # BladeRF
@@ -4199,9 +4279,6 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # sudo ldconfig
 # sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
 # sudo udevadm trigger --action=change
-# #sudo apt-get install -y hackrf
-# #pybombs install gr-osmosdr
-# #sudo apt-get install gr-osmosdr
 # ########## Verify ##########
 # hackrf_sweep --help
 # """,True,'Hardware'))
@@ -4236,9 +4313,9 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 
 # # gr-gsm
 # programs_dragonOS_focal.append(('gr-gsm',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm/
+# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-gsm/ 
 # sudo rm -Rf build
-# sudo apt-get install -y gr-osmosdr
+# sudo apt-get install -y gr-osmosdr  # Causes errors when built from source
 # mkdir build
 # cd build
 # cmake ..

@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-10-24
+
+Adjusting install for RTL devices, adding links to lessons, and modifying README. Still need to replace RTL blocks with SoapySDR blocks in Python3_maint-3.10 branch flow graphs.
+ 
+### Added
+
+- Programming SDRs with GNU Radio link in Lessons
+- Learn SDR link in Lessons
+- Hack Chat Transcript link in README
+   
+### Changed
+
+- Created links to FISSURE lessons in README
+ 
+### Fixed
+
+- Added gr-osmosdr install from source for Python3 branches so RTL-SDR blocks work for newer GNU Radio versions, but kept `sudo apt-get install -y gr-osmosdr` to avoid errors for now
+- Added rtl-sdr install before gr-osmocom and rtl blacklist rules to get RTL devices working for the latest GNU Radio and gr-osmocom versions
+
 ## 2022-10-09
 
 Updating GNU Radio and HackRF versions. Integrating a few more links, tools, and fixes.
@@ -29,6 +48,8 @@ Updating GNU Radio and HackRF versions. Integrating a few more links, tools, and
 - Launch Wireshark button in the Sniffer tab did not work for Python3 branches
 - Added python-qwt5-qt4 to installer for enabling GNU Radio Filter Design Tool in Python2 branch
 - Added RX1 antenna option for X3xx devices with TwinRX daughterboards to: TSI Wideband Detector settings, IQ Record settings
+- Added pkg-config to HackRF install to fix cmake errors for Python2 branch
+- Removed duplicate code in GNU Radio install for Python3_maint-3.8 branch
 
 ## 2022-09-25
 

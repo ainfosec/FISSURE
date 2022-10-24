@@ -9,10 +9,11 @@ The friendly Python codebase and user interface allows beginners to quickly lear
 
 **Additional Information**
 
+- [AIS Page](https://www.ainfosec.com/technologies/fissure/)
 - [GRCon22 Slides](https://events.gnuradio.org/event/18/contributions/246/attachments/84/164/FISSURE_Poore_GRCon22.pdf)
 - [GRCon22 Paper](https://events.gnuradio.org/event/18/contributions/246/attachments/84/167/FISSURE_Paper_Poore_GRCon22.pdf)
 - [GRCon22 Video](https://youtu.be/ghLogJlaMNc?t=19980)
-- [AIS Page](https://www.ainfosec.com/technologies/fissure/)
+- [Hack Chat Transcript](https://hackaday.io/event/187076-rf-hacking-hack-chat/log/212136-hack-chat-transcript-part-1)
 
 ## Getting Started
 
@@ -119,17 +120,17 @@ The following is a list of "supported" hardware with varying levels of integrati
 ## Lessons
 
 FISSURE comes with several helpful guides to become familiar with different technologies and techniques. Many include steps for using various tools that are integrated into FISSURE.
-- Lesson1: OpenBTS
-- Lesson2: Lua Dissectors
-- Lesson3: Sound eXchange
-- Lesson4: ESP Boards
-- Lesson5: Radiosonde Tracking
-- Lesson6: RFID
-- Lesson7: Data Types
-- Lesson8: Custom GNU Radio Blocks
-- Lesson9: TPMS
-- Lesson10: Ham Radio Exams
-- Lesson11: Wi-Fi Tools
+- [Lesson1: OpenBTS](/Lessons/Markdown/Lesson1_OpenBTS.md)
+- [Lesson2: Lua Dissectors](/Lessons/Markdown/Lesson2_LuaDissectors.md)
+- [Lesson3: Sound eXchange](/Lessons/Markdown/Lesson3_Sound_eXchange.md)
+- [Lesson4: ESP Boards](/Lessons/Markdown/Lesson4_ESP_Boards.md)
+- [Lesson5: Radiosonde Tracking](/Lessons/Markdown/Lesson5_Radiosonde_Tracking.md)
+- [Lesson6: RFID](/Lessons/Markdown/Lesson6_RFID.md)
+- [Lesson7: Data Types](/Lessons/Markdown/Lesson7_Data_Types.md)
+- [Lesson8: Custom GNU Radio Blocks](/Lessons/Markdown/Lesson8_Custom_GNU_Radio_Blocks.md)
+- [Lesson9: TPMS](/Lessons/Markdown/Lesson9_TPMS.md)
+- [Lesson10: Ham Radio Exams](/Lessons/Markdown/Lesson10_Ham_Radio_Exams.md)
+- [Lesson11: Wi-Fi Tools](/Lessons/Markdown/Lesson11_WiFi_Tools.md)
 
 ## Roadmap
 
