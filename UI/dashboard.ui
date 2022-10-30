@@ -27691,6 +27691,12 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionMetasploit_Wordlists"/>
      <addaction name="actionOpenSSH_Username_Enumeration"/>
     </widget>
+    <widget class="QMenu" name="menuTPMS">
+     <property name="title">
+      <string>TPMS</string>
+     </property>
+     <addaction name="actiontpms_rx"/>
+    </widget>
     <addaction name="menu433_MHz"/>
     <addaction name="menu802_11_Tools_2"/>
     <addaction name="menuAIS"/>
@@ -27713,6 +27719,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="menuSatellite"/>
     <addaction name="menuSSH"/>
     <addaction name="menuSDR_Tools_2"/>
+    <addaction name="menuTPMS"/>
     <addaction name="menuTrunked_Radio"/>
     <addaction name="menuV2V"/>
     <addaction name="menuVideo"/>
@@ -29080,6 +29087,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionLearn_SDR">
    <property name="text">
     <string>Learn SDR</string>
+   </property>
+  </action>
+  <action name="actiontpms_rx">
+   <property name="text">
+    <string>tpms_rx</string>
    </property>
   </action>
  </widget>

@@ -304,7 +304,7 @@ sudo make install
 #cd ..
 #sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.iio"
+ls /usr/lib/python*/*/gnuradio/iio
 """,True,'Hardware'))
 
 # gr-acars-3.10ng
@@ -318,7 +318,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import acars"
+ls /usr/local/lib/python*/*/acars
 """,True,'Out-of-Tree Modules'))
 
 # gr-adsb
@@ -332,7 +332,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.adsb"
+ls /usr/local/lib/python*/*/gnuradio/adsb
 """,True,'Out-of-Tree Modules'))
 
 # gr-ainfosec
@@ -346,7 +346,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.ainfosec"
+ls /usr/local/lib/python*/*/gnuradio/ainfosec
 """,True,'Out-of-Tree Modules'))
 
 # gr-ais
@@ -360,7 +360,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.ais"
+ls /usr/local/lib/python*/*/gnuradio/ais
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth
@@ -399,7 +399,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.clapper_plus"
+ls /usr/local/lib/python*/*/gnuradio/clapper_plus
 """,True,'Out-of-Tree Modules'))
 
 # gr-dect2
@@ -413,7 +413,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.dect2"
+ls /usr/local/lib/python*/*/gnuradio/dect2
 """,True,'Out-of-Tree Modules'))
 
 # gr-foo
@@ -428,7 +428,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import foo"
+ls /usr/local/lib/python*/*/foo
 """,True,'Out-of-Tree Modules'))
 
 # gr-fuzzer
@@ -442,7 +442,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.fuzzer"
+ls /usr/local/lib/python*/*/gnuradio/fuzzer
 """,True,'Out-of-Tree Modules'))
 
 # gr-garage_door
@@ -456,7 +456,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.garage_door"
+ls /usr/local/lib/python*/*/gnuradio/garage_door
 """,True,'Out-of-Tree Modules'))
 
 # gr-gsm
@@ -475,7 +475,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.gsm"
+ls /usr/local/lib/python*/*/gnuradio/gsm
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-11
@@ -490,7 +490,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import ieee802_11"
+ls /usr/local/lib/python*/*/ieee802_11
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-15-4
@@ -507,7 +507,7 @@ sudo ldconfig
 grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
 grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
 ########## Verify ##########
-python3 -c "import ieee802_15_4"
+ls /usr/local/lib/python*/*/ieee802_15_4
 """,True,'Out-of-Tree Modules'))
 
 # gr-iridium
@@ -522,7 +522,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import iridium"
+ls /usr/local/lib/python*/*/iridium
 """,True,'Out-of-Tree Modules'))
 
 # gr-j2497
@@ -536,7 +536,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.j2497"
+ls /usr/local/lib/python*/*/gnuradio/j2497
 """,True,'Out-of-Tree Modules'))
 
 # gr-limesdr
@@ -550,7 +550,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.limesdr"
+ls /usr/local/lib/python*/*/gnuradio/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
@@ -566,7 +566,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import nrsc5"
+ls /usr/local/lib/python*/*/nrsc5
 """,True,'Out-of-Tree Modules'))
 
 # gr-paint
@@ -584,7 +584,7 @@ gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
 ########## Verify ##########
-python3 -c "import paint"
+ls /usr/local/lib/python*/*/gnuradio/paint
 """,True,'Out-of-Tree Modules'))
 
 # gr-rds
@@ -598,7 +598,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import rds"
+ls /usr/local/lib/python*/*/rds
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
@@ -613,7 +613,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.tpms"
+ls /usr/local/lib/python*/*/gnuradio/tpms
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms_poore
@@ -627,7 +627,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.tpms_poore"
+ls /usr/local/lib/python*/*/gnuradio/tpms_poore
 """,True,'Out-of-Tree Modules'))
 
 # gr-X10
@@ -641,7 +641,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.X10"
+ls /usr/local/lib/python*/*/gnuradio/X10
 """,True,'Out-of-Tree Modules'))
 
 # gr-zwave_poore
@@ -655,7 +655,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import gnuradio.zwave_poore"
+ls /usr/local/lib/python*/*/gnuradio/zwave_poore
 """,True,'Out-of-Tree Modules'))
 
 # QSpectrumAnalyzer

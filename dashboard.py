@@ -1547,6 +1547,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionham2mon.triggered.connect(self._slotMenuHam2monClicked)
         self.actionProgramming_SDRs_with_GNU_Radio.triggered.connect(self._slotMenuLessonProgrammingSDRsClicked)
         self.actionLearn_SDR.triggered.connect(self._slotMenuLessonLearnSDR_Clicked)
+        self.actiontpms_rx.triggered.connect(self._slotMenuTpmsRxClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -21884,6 +21885,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open a Browser 
         os.system("sensible-browser https://gallicchio.github.io/learnSDR/ &")
+        
+    def _slotMenuTpmsRxClicked(self):
+        """ Launches tpms_rx application for HackRF and RTL2832U.
+        """
+        # Launch tpms_rx
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        #tpms_command = "tpms_rx --source rtlsdr --if-rate 400000 --tuned-frequency 315000000"
+        tpms_command = "sudo tpms_rx --source hackrf --if-rate 400000 --tuned-frequency 315000000"      
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + tpms_command + '"', shell=True)
         
 
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
