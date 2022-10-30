@@ -169,7 +169,7 @@ programs_ubuntu20_04.append(('gr-osmosdr',
 """sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config  # Needed for RTL SDRs, 'sudo apt-get install gr-osmosdr' needs mods to work with newer GNU Radio 3.8 versions but is still needed for gr-gsm
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/rtl-sdr.git
+git clone https://gitea.osmocom.org/sdr/rtl-sdr.git
 cd rtl-sdr
 mkdir build
 cd build
@@ -336,7 +336,7 @@ sudo make install
 cd ..
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import iio"
+ls /usr/local/lib/python*/*/iio
 """,True,'Hardware'))
 
 # gr-acars
@@ -350,7 +350,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import acars"
+ls /usr/local/lib/python*/*/acars
 """,True,'Out-of-Tree Modules'))
 
 # gr-adsb
@@ -364,7 +364,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import adsb"
+ls /usr/local/lib/python*/*/adsb
 """,True,'Out-of-Tree Modules'))
 
 # gr-ainfosec
@@ -378,7 +378,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import ainfosec"
+ls /usr/local/lib/python*/*/ainfosec
 """,True,'Out-of-Tree Modules'))
 
 # gr-ais
@@ -392,7 +392,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import ais"
+ls /usr/local/lib/python*/*/ais
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth-maint-3.8
@@ -431,7 +431,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import clapper_plus"
+ls /usr/local/lib/python*/*/clapper_plus
 """,True,'Out-of-Tree Modules'))
 
 # gr-dect2
@@ -445,7 +445,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import dect2"
+ls /usr/local/lib/python*/*/dect2
 """,True,'Out-of-Tree Modules'))
 
 # gr-foo
@@ -459,7 +459,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import foo"
+ls /usr/local/lib/python*/*/foo
 """,True,'Out-of-Tree Modules'))
 
 # gr-fuzzer
@@ -473,7 +473,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import fuzzer"
+ls /usr/local/lib/python*/*/fuzzer
 """,True,'Out-of-Tree Modules'))
 
 # gr-garage_door
@@ -487,7 +487,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import garage_door"
+ls /usr/local/lib/python*/*/garage_door
 """,True,'Out-of-Tree Modules'))
 
 # gr-gsm
@@ -506,7 +506,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import grgsm"
+ls /usr/local/lib/python*/*/grgsm
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-11
@@ -520,7 +520,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import ieee802_11"
+ls /usr/local/lib/python*/*/ieee802_11
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-15-4
@@ -536,7 +536,7 @@ sudo ldconfig
 grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
 grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
 ########## Verify ##########
-python3 -c "import ieee802_15_4"
+ls /usr/local/lib/python*/*/ieee802_15_4
 """,True,'Out-of-Tree Modules'))
 
 # gr-iridium
@@ -550,7 +550,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import iridium"
+ls /usr/local/lib/python*/*/iridium
 """,True,'Out-of-Tree Modules'))
 
 # gr-j2497
@@ -564,7 +564,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import j2497"
+ls /usr/local/lib/python*/*/j2497
 """,True,'Out-of-Tree Modules'))
 
 # gr-limesdr
@@ -578,7 +578,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import limesdr"
+ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
@@ -593,7 +593,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import nrsc5"
+ls /usr/local/lib/python*/*/nrsc5
 """,True,'Out-of-Tree Modules'))
 
 # gr-paint
@@ -611,7 +611,7 @@ gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
 ########## Verify ##########
-python3 -c "import paint"
+ls /usr/local/lib/python*/*/paint
 """,True,'Out-of-Tree Modules'))
 
 # gr-rds
@@ -625,7 +625,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import rds"
+ls /usr/local/lib/python*/*/rds
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms_poore
@@ -639,7 +639,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import tpms_poore"
+ls /usr/local/lib/python*/*/tpms_poore
 """,True,'Out-of-Tree Modules'))
 
 # gr-X10
@@ -653,7 +653,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import X10"
+ls /usr/local/lib/python*/*/X10
 """,True,'Out-of-Tree Modules'))
 
 # gr-zwave_poore
@@ -667,7 +667,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import zwave_poore"
+ls /usr/local/lib/python*/*/zwave_poore
 """,True,'Out-of-Tree Modules'))
 
 # QSpectrumAnalyzer
@@ -1775,7 +1775,7 @@ programs_ubuntu20_04_4.append(('gr-osmosdr',
 """sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config  # Needed for RTL SDRs, 'sudo apt-get install gr-osmosdr' needs mods to work with newer GNU Radio 3.8 versions but is still needed for gr-gsm
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/rtl-sdr.git
+git clone https://gitea.osmocom.org/sdr/rtl-sdr.git
 cd rtl-sdr
 mkdir build
 cd build
@@ -1942,7 +1942,7 @@ sudo make install
 cd ..
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import iio"
+ls /usr/local/lib/python*/*/iio
 """,True,'Hardware'))
 
 # gr-acars
@@ -1956,7 +1956,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import acars"
+ls /usr/local/lib/python*/*/acars
 """,True,'Out-of-Tree Modules'))
 
 # gr-adsb
@@ -1970,7 +1970,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import adsb"
+ls /usr/local/lib/python*/*/adsb
 """,True,'Out-of-Tree Modules'))
 
 # gr-ainfosec
@@ -1984,7 +1984,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import ainfosec"
+ls /usr/local/lib/python*/*/ainfosec
 """,True,'Out-of-Tree Modules'))
 
 # gr-ais
@@ -1998,7 +1998,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import ais"
+ls /usr/local/lib/python*/*/ais
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth-maint-3.8
@@ -2037,7 +2037,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import clapper_plus"
+ls /usr/local/lib/python*/*/clapper_plus
 """,True,'Out-of-Tree Modules'))
 
 # gr-dect2
@@ -2051,7 +2051,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import dect2"
+ls /usr/local/lib/python*/*/dect2
 """,True,'Out-of-Tree Modules'))
 
 # gr-foo
@@ -2065,7 +2065,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import foo"
+ls /usr/local/lib/python*/*/foo
 """,True,'Out-of-Tree Modules'))
 
 # gr-fuzzer
@@ -2079,7 +2079,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import fuzzer"
+ls /usr/local/lib/python*/*/fuzzer
 """,True,'Out-of-Tree Modules'))
 
 # gr-garage_door
@@ -2093,7 +2093,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import garage_door"
+ls /usr/local/lib/python*/*/garage_door
 """,True,'Out-of-Tree Modules'))
 
 # gr-gsm
@@ -2112,7 +2112,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import grgsm"
+ls /usr/local/lib/python*/*/grgsm
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-11
@@ -2126,7 +2126,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import ieee802_11"
+ls /usr/local/lib/python*/*/ieee802_11
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-15-4
@@ -2142,7 +2142,7 @@ sudo ldconfig
 grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
 grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
 ########## Verify ##########
-python3 -c "import ieee802_15_4"
+ls /usr/local/lib/python*/*/ieee802_15_4
 """,True,'Out-of-Tree Modules'))
 
 # gr-iridium
@@ -2156,7 +2156,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import iridium"
+ls /usr/local/lib/python*/*/iridium
 """,True,'Out-of-Tree Modules'))
 
 # gr-j2497
@@ -2170,7 +2170,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import j2497"
+ls /usr/local/lib/python*/*/j2497
 """,True,'Out-of-Tree Modules'))
 
 # gr-limesdr
@@ -2184,7 +2184,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import limesdr"
+ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
@@ -2199,7 +2199,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import nrsc5"
+ls /usr/local/lib/python*/*/nrsc5
 """,True,'Out-of-Tree Modules'))
 
 # gr-paint
@@ -2217,7 +2217,7 @@ gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
 ########## Verify ##########
-python3 -c "import paint"
+ls /usr/local/lib/python*/*/paint
 """,True,'Out-of-Tree Modules'))
 
 # gr-rds
@@ -2231,7 +2231,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import rds"
+ls /usr/local/lib/python*/*/rds
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms_poore
@@ -2245,7 +2245,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import tpms_poore"
+ls /usr/local/lib/python*/*/tpms_poore
 """,True,'Out-of-Tree Modules'))
 
 # gr-X10
@@ -2259,7 +2259,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import X10"
+ls /usr/local/lib/python*/*/X10
 """,True,'Out-of-Tree Modules'))
 
 # gr-zwave_poore
@@ -2273,7 +2273,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import zwave_poore"
+ls /usr/local/lib/python*/*/zwave_poore
 """,True,'Out-of-Tree Modules'))
 
 # QSpectrumAnalyzer
@@ -3409,7 +3409,7 @@ sudo make install
 # cd ..
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import iio"
+ls /usr/local/lib/python*/*/iio
 """,True,'Hardware'))
 
 # gr-acars
@@ -3423,7 +3423,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import acars"
+ls /usr/local/lib/python*/*/acars
 """,True,'Out-of-Tree Modules'))
 
 # gr-adsb
@@ -3437,7 +3437,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import adsb"
+ls /usr/local/lib/python*/*/adsb
 """,True,'Out-of-Tree Modules'))
 
 # gr-ainfosec
@@ -3451,7 +3451,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import ainfosec"
+ls /usr/local/lib/python*/*/ainfosec
 """,True,'Out-of-Tree Modules'))
 
 # gr-ais
@@ -3465,7 +3465,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import ais"
+ls /usr/local/lib/python*/*/ais
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth-maint-3.8
@@ -3506,7 +3506,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import clapper_plus"
+ls /usr/local/lib/python*/*/clapper_plus
 """,True,'Out-of-Tree Modules'))
 
 # gr-fuzzer
@@ -3520,7 +3520,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import fuzzer"
+ls /usr/local/lib/python*/*/fuzzer
 """,True,'Out-of-Tree Modules'))
 
 # gr-garage_door
@@ -3534,7 +3534,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import garage_door"
+ls /usr/local/lib/python*/*/garage_door
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-15-4
@@ -3550,7 +3550,7 @@ make
 grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
 grcc """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
 ########## Verify ##########
-python3 -c "import ieee802_15_4"
+ls /usr/local/lib/python*/*/ieee802_15_4
 """,True,'Out-of-Tree Modules'))
 
 # gr-j2497
@@ -3564,7 +3564,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import j2497"
+ls /usr/local/lib/python*/*/j2497
 """,True,'Out-of-Tree Modules'))
 
 # gr-limesdr
@@ -3581,7 +3581,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import limesdr"
+ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms_poore
@@ -3595,7 +3595,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import tpms_poore"
+ls /usr/local/lib/python*/*/tpms_poore
 """,True,'Out-of-Tree Modules'))
 
 # gr-X10
@@ -3609,7 +3609,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import X10"
+ls /usr/local/lib/python*/*/X10
 """,True,'Out-of-Tree Modules'))
 
 # gr-zwave_poore
@@ -3623,7 +3623,7 @@ make
 sudo make install
 sudo ldconfig
 ########## Verify ##########
-python3 -c "import zwave_poore"
+ls /usr/local/lib/python*/*/zwave_poore
 """,True,'Out-of-Tree Modules'))
 
 # Dump1090
@@ -4210,7 +4210,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # """sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config  # Needed for RTL SDRs, 'sudo apt-get install gr-osmosdr' needs mods to work with newer GNU Radio 3.8 versions but is still needed for gr-gsm
 # mkdir -p ~/Installed_by_FISSURE
 # cd ~/Installed_by_FISSURE
-# git clone git://git.osmocom.org/rtl-sdr.git
+# git clone https://gitea.osmocom.org/sdr/rtl-sdr.git
 # cd rtl-sdr
 # mkdir build
 # cd build
@@ -4294,7 +4294,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # sudo make install
 # sudo ldconfig
 # ########## Verify ##########
-# python3 -c "import dect2"
+# ls /usr/local/lib/python*/*/dect2
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-foo
@@ -4308,7 +4308,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # sudo make install
 # sudo ldconfig
 # ########## Verify ##########
-# python3 -c "import foo"
+# ls /usr/local/lib/python*/*/foo
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-gsm
@@ -4327,7 +4327,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # sudo make install
 # sudo ldconfig
 # ########## Verify ##########
-# python3 -c "import grgsm"
+# ls /usr/local/lib/python*/*/grgsm
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-ieee802-11
@@ -4341,7 +4341,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # sudo make install
 # sudo ldconfig
 # ########## Verify ##########
-# python3 -c "import ieee802_11"
+# ls /usr/local/lib/python*/*/ieee802_11
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-iridium
@@ -4355,7 +4355,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # sudo make install
 # sudo ldconfig
 # ########## Verify ##########
-# python3 -c "import iridium"
+# ls /usr/local/lib/python*/*/iridium
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-nrsc5
@@ -4370,7 +4370,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # sudo make install
 # sudo ldconfig
 # ########## Verify ##########
-# python3 -c "import nrsc5"
+# ls /usr/local/lib/python*/*/nrsc5
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-paint
@@ -4388,7 +4388,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # chmod +x tgatoluma
 # cp tgatoluma ~/.local/bin/
 # ########## Verify ##########
-# python3 -c "import paint"
+# ls /usr/local/lib/python*/*/paint
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-rds
@@ -4402,7 +4402,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # sudo make install
 # sudo ldconfig
 # ########## Verify ##########
-# python3 -c "import rds"
+# ls /usr/local/lib/python*/*/rds
 # """,True,'Out-of-Tree Modules'))
 
 # # QSpectrumAnalyzer #Already installed

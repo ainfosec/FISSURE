@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-10-30
+
+Updating install to avoid potential errors.
+ 
+### Added
+
+- List widget, progress bar examples in Modifying Dashboard Help
+- tpms_rx to the Tools menu of Python3_maint-3.10 branch
+   
+### Changed
+
+- Updated About page with the latest credits
+ 
+### Fixed
+
+- Switched rtl-sdr.git address to https
+- Updated install verification method for OOT modules to check for folders. Previously showed failures following the first instance of installing GNU Radio due to the Python paths not getting sourced in a running Python program.
+
 ## 2022-10-24
 
 Adjusting install for RTL devices, adding links to lessons, and modifying README. Still need to replace RTL blocks with SoapySDR blocks in Python3_maint-3.10 branch flow graphs.
