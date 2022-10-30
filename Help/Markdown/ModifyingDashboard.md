@@ -27,6 +27,8 @@ Frequently used widgets:
 - Stacked Widget
 - Tree Widget
 - Group Box
+- Progress Bar
+- List Widget
 
 Drag widgets onto the Dashboard and modify their property values in the Property Editor. 
 
@@ -274,6 +276,23 @@ while iterator.value():
 # Group Box    
 self.groupBox_name.setVisible(False)
 self.groupBox_name.setEnabled(False)
+
+# Progress Bar
+self.progressBar_name.hide() 
+self.progressBar_name.show()      
+self.progressBar_name.setMaximum(100)
+self.progressBar_name.setValue(10)
+
+# List Widget
+self.listWidget_name.setCurrentRow(0)
+get_index = self.listWidget_name.currentRow()
+self.listWidget_name.count()
+get_text = str(self.listWidget_name.item(row).text())
+self.listWidget_name.addItem(preset_name)
+self.listWidget_name.addItems(modulation_list)
+for item in self.listWidget_name.selectedItems()
+self.listWidget_name.takeItem(self.listWidget_name.row(item))
+self.listWidget_name.clear()
 ```
 
 The `_connectSlots()` function in _dashboard.py_ is used to assign functions to widget actions. Group the signal/slot assignments for widgets by their type and the tab they reside in.
@@ -325,6 +344,11 @@ self.actionAll_Options.triggered.connect(self._slotMenuOptionsClicked)
 
 # Tab Widgets
 self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
+
+# List Widget
+self.listWidget_options.currentItemChanged.connect(self._slotOptionsListWidgetChanged)
+self.listWidget_library_browse_attacks3.itemClicked.connect(self._slotLibraryBrowseAttacksClicked)
+self.listWidget_pd_flow_graphs_recommended_fgs.itemDoubleClicked.connect(self._slotPD_DemodulationLoadSelectedClicked)  
 
 # Custom Signals 
 self.connect(self, self.signal_PD_Offline, self._slotPD_Offline)

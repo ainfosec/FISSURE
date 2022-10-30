@@ -3,8 +3,9 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Stereo FM receiver and RDS Decoder
-# Generated: Fri Nov 20 22:13:47 2020
+# GNU Radio version: 3.7.13.5
 ##################################################
+
 
 if __name__ == '__main__':
     import ctypes
@@ -67,7 +68,7 @@ class rds_rx(grc_wxgui.top_block_gui):
         	sizer=_volume_sizer,
         	value=self.volume,
         	callback=self.set_volume,
-        	label="Volume",
+        	label='Volume',
         	converter=forms.float_converter(),
         	proportion=0,
         )
@@ -99,7 +100,7 @@ class rds_rx(grc_wxgui.top_block_gui):
         	sizer=_gain_sizer,
         	value=self.gain,
         	callback=self.set_gain,
-        	label="RF Gain",
+        	label='RF Gain',
         	converter=forms.float_converter(),
         	proportion=0,
         )
@@ -122,7 +123,7 @@ class rds_rx(grc_wxgui.top_block_gui):
         	sizer=_freq_sizer,
         	value=self.freq,
         	callback=self.set_freq,
-        	label="Freq",
+        	label='Freq',
         	converter=forms.float_converter(),
         	proportion=0,
         )
@@ -150,12 +151,12 @@ class rds_rx(grc_wxgui.top_block_gui):
         	fft_rate=15,
         	average=False,
         	avg_alpha=None,
-        	title="Waterfall Plot",
+        	title='Waterfall Plot',
         )
         self.nb.GetPage(2).Add(self.wxgui_waterfallsink2_0.win)
         self.wxgui_scopesink2_1 = scopesink2.scope_sink_c(
         	self.nb.GetPage(6).GetWin(),
-        	title="Scope Plot",
+        	title='Scope Plot',
         	sample_rate=2375 * 4,
         	v_scale=0.4,
         	v_offset=0,
@@ -164,7 +165,7 @@ class rds_rx(grc_wxgui.top_block_gui):
         	xy_mode=True,
         	num_inputs=1,
         	trig_mode=wxgui.TRIG_MODE_AUTO,
-        	y_axis_label="Counts",
+        	y_axis_label='Counts',
         )
         self.nb.GetPage(6).Add(self.wxgui_scopesink2_1.win)
         self.wxgui_fftsink2_0_0_0_1_0_1 = fftsink2.fft_sink_c(
@@ -179,7 +180,7 @@ class rds_rx(grc_wxgui.top_block_gui):
         	fft_rate=15,
         	average=False,
         	avg_alpha=None,
-        	title="RDS",
+        	title='RDS',
         	peak_hold=False,
         )
         self.nb.GetPage(5).Add(self.wxgui_fftsink2_0_0_0_1_0_1.win)
@@ -195,7 +196,7 @@ class rds_rx(grc_wxgui.top_block_gui):
         	fft_rate=15,
         	average=False,
         	avg_alpha=None,
-        	title="L-R",
+        	title='L-R',
         	peak_hold=False,
         )
         self.nb.GetPage(4).Add(self.wxgui_fftsink2_0_0_0_1.win)
@@ -211,7 +212,7 @@ class rds_rx(grc_wxgui.top_block_gui):
         	fft_rate=15,
         	average=False,
         	avg_alpha=None,
-        	title="L+R",
+        	title='L+R',
         	peak_hold=False,
         )
         self.nb.GetPage(3).Add(self.wxgui_fftsink2_0_0_0.win)
@@ -227,7 +228,7 @@ class rds_rx(grc_wxgui.top_block_gui):
         	fft_rate=15,
         	average=True,
         	avg_alpha=0.8,
-        	title="FM Demod",
+        	title='FM Demod',
         	peak_hold=False,
         )
         self.nb.GetPage(1).Add(self.wxgui_fftsink2_0_0.win)
@@ -243,11 +244,11 @@ class rds_rx(grc_wxgui.top_block_gui):
         	fft_rate=15,
         	average=True,
         	avg_alpha=0.8,
-        	title="Baseband",
+        	title='Baseband',
         	peak_hold=False,
         )
         self.nb.GetPage(0).Add(self.wxgui_fftsink2_0.win)
-        self.rtlsdr_source_0_0 = osmosdr.source( args="numchan=" + str(1) + " " + "" )
+        self.rtlsdr_source_0_0 = osmosdr.source( args="numchan=" + str(1) + " " + '' )
         self.rtlsdr_source_0_0.set_sample_rate(samp_rate)
         self.rtlsdr_source_0_0.set_center_freq(freq_tune, 0)
         self.rtlsdr_source_0_0.set_freq_corr(0, 0)
@@ -257,9 +258,9 @@ class rds_rx(grc_wxgui.top_block_gui):
         self.rtlsdr_source_0_0.set_gain(14, 0)
         self.rtlsdr_source_0_0.set_if_gain(24, 0)
         self.rtlsdr_source_0_0.set_bb_gain(gain, 0)
-        self.rtlsdr_source_0_0.set_antenna("", 0)
+        self.rtlsdr_source_0_0.set_antenna('', 0)
         self.rtlsdr_source_0_0.set_bandwidth(0, 0)
-          
+
         self.root_raised_cosine_filter_0 = filter.fir_filter_ccf(2, firdes.root_raised_cosine(
         	1, 19000, 2375, .35, 100))
         self.pfb_arb_resampler_xxx_1 = pfb.arb_resampler_fff(
@@ -267,13 +268,13 @@ class rds_rx(grc_wxgui.top_block_gui):
                   taps=None,
         	  flt_size=32)
         self.pfb_arb_resampler_xxx_1.declare_sample_delay(0)
-        	
+
         self.pfb_arb_resampler_xxx_0 = pfb.arb_resampler_ccf(
         	  19000/250e3,
                   taps=None,
         	  flt_size=32)
         self.pfb_arb_resampler_xxx_0.declare_sample_delay(0)
-        	
+
         self.gr_rds_parser_0 = rds.parser(True, False, 0)
         self.gr_rds_panel_0 = rds.rdsPanel(freq, self.GetWin())
         self.Add(self.gr_rds_panel_0.panel)
@@ -301,7 +302,7 @@ class rds_rx(grc_wxgui.top_block_gui):
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_char*1, 2)
         self.blocks_complex_to_real_0 = blocks.complex_to_real(1)
         self.blocks_add_xx_0 = blocks.add_vff(1)
-        self.audio_sink_0 = audio.sink(48000, "", True)
+        self.audio_sink_0 = audio.sink(48000, '', True)
         self.analog_wfm_rcv_0 = analog.wfm_rcv(
         	quad_rate=samp_rate,
         	audio_decimation=8,
@@ -309,41 +310,43 @@ class rds_rx(grc_wxgui.top_block_gui):
         self.analog_fm_deemph_0_0_0 = analog.fm_deemph(fs=48000, tau=75e-6)
         self.analog_fm_deemph_0_0 = analog.fm_deemph(fs=48000, tau=75e-6)
 
+
+
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.gr_rds_decoder_0, 'out'), (self.gr_rds_parser_0, 'in'))    
-        self.msg_connect((self.gr_rds_parser_0, 'out'), (self.gr_rds_panel_0, 'in'))    
-        self.connect((self.analog_fm_deemph_0_0, 0), (self.blocks_multiply_const_vxx_0_0, 0))    
-        self.connect((self.analog_fm_deemph_0_0_0, 0), (self.blocks_multiply_const_vxx_0, 0))    
-        self.connect((self.analog_wfm_rcv_0, 0), (self.freq_xlating_fir_filter_xxx_1_0, 0))    
-        self.connect((self.analog_wfm_rcv_0, 0), (self.pfb_arb_resampler_xxx_1, 0))    
-        self.connect((self.analog_wfm_rcv_0, 0), (self.wxgui_fftsink2_0_0, 0))    
-        self.connect((self.analog_wfm_rcv_0, 0), (self.wxgui_waterfallsink2_0, 0))    
-        self.connect((self.blocks_add_xx_0, 0), (self.analog_fm_deemph_0_0_0, 0))    
-        self.connect((self.blocks_complex_to_real_0, 0), (self.blocks_add_xx_0, 1))    
-        self.connect((self.blocks_complex_to_real_0, 0), (self.blocks_sub_xx_0, 1))    
-        self.connect((self.blocks_complex_to_real_0, 0), (self.wxgui_fftsink2_0_0_0_1, 0))    
-        self.connect((self.blocks_keep_one_in_n_0, 0), (self.digital_diff_decoder_bb_0, 0))    
-        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.audio_sink_0, 0))    
-        self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.audio_sink_0, 1))    
-        self.connect((self.blocks_sub_xx_0, 0), (self.analog_fm_deemph_0_0, 0))    
-        self.connect((self.digital_diff_decoder_bb_0, 0), (self.gr_rds_decoder_0, 0))    
-        self.connect((self.digital_psk_demod_0, 0), (self.blocks_keep_one_in_n_0, 0))    
-        self.connect((self.fir_filter_xxx_1, 0), (self.blocks_add_xx_0, 0))    
-        self.connect((self.fir_filter_xxx_1, 0), (self.blocks_sub_xx_0, 0))    
-        self.connect((self.fir_filter_xxx_1, 0), (self.wxgui_fftsink2_0_0_0, 0))    
-        self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.analog_wfm_rcv_0, 0))    
-        self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.wxgui_fftsink2_0, 0))    
-        self.connect((self.freq_xlating_fir_filter_xxx_1_0, 0), (self.pfb_arb_resampler_xxx_0, 0))    
-        self.connect((self.freq_xlating_fir_filter_xxx_2, 0), (self.blocks_complex_to_real_0, 0))    
-        self.connect((self.pfb_arb_resampler_xxx_0, 0), (self.root_raised_cosine_filter_0, 0))    
-        self.connect((self.pfb_arb_resampler_xxx_0, 0), (self.wxgui_fftsink2_0_0_0_1_0_1, 0))    
-        self.connect((self.pfb_arb_resampler_xxx_1, 0), (self.fir_filter_xxx_1, 0))    
-        self.connect((self.pfb_arb_resampler_xxx_1, 0), (self.freq_xlating_fir_filter_xxx_2, 0))    
-        self.connect((self.root_raised_cosine_filter_0, 0), (self.digital_psk_demod_0, 0))    
-        self.connect((self.root_raised_cosine_filter_0, 0), (self.wxgui_scopesink2_1, 0))    
-        self.connect((self.rtlsdr_source_0_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))    
+        self.msg_connect((self.gr_rds_decoder_0, 'out'), (self.gr_rds_parser_0, 'in'))
+        self.msg_connect((self.gr_rds_parser_0, 'out'), (self.gr_rds_panel_0, 'in'))
+        self.connect((self.analog_fm_deemph_0_0, 0), (self.blocks_multiply_const_vxx_0_0, 0))
+        self.connect((self.analog_fm_deemph_0_0_0, 0), (self.blocks_multiply_const_vxx_0, 0))
+        self.connect((self.analog_wfm_rcv_0, 0), (self.freq_xlating_fir_filter_xxx_1_0, 0))
+        self.connect((self.analog_wfm_rcv_0, 0), (self.pfb_arb_resampler_xxx_1, 0))
+        self.connect((self.analog_wfm_rcv_0, 0), (self.wxgui_fftsink2_0_0, 0))
+        self.connect((self.analog_wfm_rcv_0, 0), (self.wxgui_waterfallsink2_0, 0))
+        self.connect((self.blocks_add_xx_0, 0), (self.analog_fm_deemph_0_0_0, 0))
+        self.connect((self.blocks_complex_to_real_0, 0), (self.blocks_add_xx_0, 1))
+        self.connect((self.blocks_complex_to_real_0, 0), (self.blocks_sub_xx_0, 1))
+        self.connect((self.blocks_complex_to_real_0, 0), (self.wxgui_fftsink2_0_0_0_1, 0))
+        self.connect((self.blocks_keep_one_in_n_0, 0), (self.digital_diff_decoder_bb_0, 0))
+        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.audio_sink_0, 0))
+        self.connect((self.blocks_multiply_const_vxx_0_0, 0), (self.audio_sink_0, 1))
+        self.connect((self.blocks_sub_xx_0, 0), (self.analog_fm_deemph_0_0, 0))
+        self.connect((self.digital_diff_decoder_bb_0, 0), (self.gr_rds_decoder_0, 0))
+        self.connect((self.digital_psk_demod_0, 0), (self.blocks_keep_one_in_n_0, 0))
+        self.connect((self.fir_filter_xxx_1, 0), (self.blocks_add_xx_0, 0))
+        self.connect((self.fir_filter_xxx_1, 0), (self.blocks_sub_xx_0, 0))
+        self.connect((self.fir_filter_xxx_1, 0), (self.wxgui_fftsink2_0_0_0, 0))
+        self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.analog_wfm_rcv_0, 0))
+        self.connect((self.freq_xlating_fir_filter_xxx_0, 0), (self.wxgui_fftsink2_0, 0))
+        self.connect((self.freq_xlating_fir_filter_xxx_1_0, 0), (self.pfb_arb_resampler_xxx_0, 0))
+        self.connect((self.freq_xlating_fir_filter_xxx_2, 0), (self.blocks_complex_to_real_0, 0))
+        self.connect((self.pfb_arb_resampler_xxx_0, 0), (self.root_raised_cosine_filter_0, 0))
+        self.connect((self.pfb_arb_resampler_xxx_0, 0), (self.wxgui_fftsink2_0_0_0_1_0_1, 0))
+        self.connect((self.pfb_arb_resampler_xxx_1, 0), (self.fir_filter_xxx_1, 0))
+        self.connect((self.pfb_arb_resampler_xxx_1, 0), (self.freq_xlating_fir_filter_xxx_2, 0))
+        self.connect((self.root_raised_cosine_filter_0, 0), (self.digital_psk_demod_0, 0))
+        self.connect((self.root_raised_cosine_filter_0, 0), (self.wxgui_scopesink2_1, 0))
+        self.connect((self.rtlsdr_source_0_0, 0), (self.freq_xlating_fir_filter_xxx_0, 0))
 
     def get_freq_offset(self):
         return self.freq_offset
@@ -358,9 +361,9 @@ class rds_rx(grc_wxgui.top_block_gui):
 
     def set_freq(self, freq):
         self.freq = freq
+        self.set_freq_tune(self.freq - self.freq_offset)
         self._freq_slider.set_value(self.freq)
         self._freq_text_box.set_value(self.freq)
-        self.set_freq_tune(self.freq - self.freq_offset)
         self.gr_rds_panel_0.set_frequency(self.freq);
 
     def get_volume(self):
@@ -370,17 +373,17 @@ class rds_rx(grc_wxgui.top_block_gui):
         self.volume = volume
         self._volume_slider.set_value(self.volume)
         self._volume_text_box.set_value(self.volume)
-        self.blocks_multiply_const_vxx_0.set_k((10**(1.*(self.volume)/10), ))
         self.blocks_multiply_const_vxx_0_0.set_k((10**(1.*(self.volume)/10), ))
+        self.blocks_multiply_const_vxx_0.set_k((10**(1.*(self.volume)/10), ))
 
     def get_samp_rate(self):
         return self.samp_rate
 
     def set_samp_rate(self, samp_rate):
         self.samp_rate = samp_rate
-        self.freq_xlating_fir_filter_xxx_0.set_taps((firdes.low_pass(1, self.samp_rate, 80000, 20000)))
-        self.rtlsdr_source_0_0.set_sample_rate(self.samp_rate)
         self.wxgui_fftsink2_0.set_sample_rate(self.samp_rate)
+        self.rtlsdr_source_0_0.set_sample_rate(self.samp_rate)
+        self.freq_xlating_fir_filter_xxx_0.set_taps((firdes.low_pass(1, self.samp_rate, 80000, 20000)))
 
     def get_gain(self):
         return self.gain
