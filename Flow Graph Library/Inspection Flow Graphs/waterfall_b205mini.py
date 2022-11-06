@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Waterfall B205Mini
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.5.0
 
 from distutils.version import StrictVersion
 
@@ -34,11 +34,12 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 from gnuradio.qtgui import Range, RangeWidget
+
 from gnuradio import qtgui
 
 class waterfall_b205mini(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, rx_usrp_channel="A:A", serial="False"):
         gr.top_block.__init__(self, "Waterfall B205Mini")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Waterfall B205Mini")
@@ -70,12 +71,16 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
             pass
 
         ##################################################
+        # Parameters
+        ##################################################
+        self.rx_usrp_channel = rx_usrp_channel
+        self.serial = serial
+
+        ##################################################
         # Variables
         ##################################################
-        self.serial = serial = "False"
         self.sample_rate = sample_rate = 1e6
         self.rx_usrp_gain = rx_usrp_gain = 60
-        self.rx_usrp_channel = rx_usrp_channel = "A:A"
         self.rx_usrp_antenna = rx_usrp_antenna = "TX/RX"
         self.rx_frequency = rx_frequency = 2412
 
@@ -83,9 +88,9 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         # Create the options list
-        self._sample_rate_options = [1e6, 5e6, 10e6, 20e6]
+        self._sample_rate_options = [1000000.0, 5000000.0, 10000000.0, 20000000.0]
         # Create the labels list
-        self._sample_rate_labels = ["1 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]
+        self._sample_rate_labels = ['1 MS/s', '5 MS/s', '10 MS/s', '20 MS/s']
         # Create the combo box
         self._sample_rate_tool_bar = Qt.QToolBar(self)
         self._sample_rate_tool_bar.addWidget(Qt.QLabel('Sample Rate' + ": "))
@@ -110,9 +115,9 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         # Create the options list
-        self._rx_usrp_antenna_options = ["TX/RX", "RX2"]
+        self._rx_usrp_antenna_options = ['TX/RX', 'RX2']
         # Create the labels list
-        self._rx_usrp_antenna_labels = ["TX/RX", "RX2"]
+        self._rx_usrp_antenna_labels = ['TX/RX', 'RX2']
         # Create the combo box
         self._rx_usrp_antenna_tool_bar = Qt.QToolBar(self)
         self._rx_usrp_antenna_tool_bar.addWidget(Qt.QLabel('        Antenna' + ": "))
@@ -189,16 +194,22 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setColumnStretch(c, 1)
 
 
-
         ##################################################
         # Connections
         ##################################################
         self.connect((self.uhd_usrp_source_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
 
+
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "waterfall_b205mini")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
+
+    def get_rx_usrp_channel(self):
+        return self.rx_usrp_channel
+
+    def set_rx_usrp_channel(self, rx_usrp_channel):
+        self.rx_usrp_channel = rx_usrp_channel
 
     def get_serial(self):
         return self.serial
@@ -222,12 +233,6 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
         self.rx_usrp_gain = rx_usrp_gain
         self.uhd_usrp_source_0.set_gain(self.rx_usrp_gain, 0)
 
-    def get_rx_usrp_channel(self):
-        return self.rx_usrp_channel
-
-    def set_rx_usrp_channel(self, rx_usrp_channel):
-        self.rx_usrp_channel = rx_usrp_channel
-
     def get_rx_usrp_antenna(self):
         return self.rx_usrp_antenna
 
@@ -245,15 +250,31 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
 
 
 
+
+def argument_parser():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--rx-usrp-channel", dest="rx_usrp_channel", type=str, default="A:A",
+        help="Set A:A [default=%(default)r]")
+    parser.add_argument(
+        "--serial", dest="serial", type=str, default="False",
+        help="Set False [default=%(default)r]")
+    return parser
+
+
 def main(top_block_cls=waterfall_b205mini, options=None):
+    if options is None:
+        options = argument_parser().parse_args()
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(rx_usrp_channel=options.rx_usrp_channel, serial=options.serial)
+
     tb.start()
+
     tb.show()
 
     def sig_handler(sig=None, frame=None):
@@ -269,9 +290,9 @@ def main(top_block_cls=waterfall_b205mini, options=None):
     def quitting():
         tb.stop()
         tb.wait()
+
     qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
-
 
 if __name__ == '__main__':
     main()

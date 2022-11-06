@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Waterfall Bladerf
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.5.0
 
 from distutils.version import StrictVersion
 
@@ -34,11 +34,12 @@ from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
 import osmosdr
 import time
+
 from gnuradio import qtgui
 
 class waterfall_bladerf(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, serial="0"):
         gr.top_block.__init__(self, "Waterfall Bladerf")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Waterfall Bladerf")
@@ -70,6 +71,11 @@ class waterfall_bladerf(gr.top_block, Qt.QWidget):
             pass
 
         ##################################################
+        # Parameters
+        ##################################################
+        self.serial = serial
+
+        ##################################################
         # Variables
         ##################################################
         self.sample_rate = sample_rate = 1e6
@@ -80,9 +86,9 @@ class waterfall_bladerf(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         # Create the options list
-        self._sample_rate_options = [1e6, 5e6, 10e6, 20e6]
+        self._sample_rate_options = [1000000.0, 5000000.0, 10000000.0, 20000000.0]
         # Create the labels list
-        self._sample_rate_labels = ["1 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]
+        self._sample_rate_labels = ['1 MS/s', '5 MS/s', '10 MS/s', '20 MS/s']
         # Create the combo box
         self._sample_rate_tool_bar = Qt.QToolBar(self)
         self._sample_rate_tool_bar.addWidget(Qt.QLabel('Sample Rate' + ": "))
@@ -113,18 +119,6 @@ class waterfall_bladerf(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.rtlsdr_source_0_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + 'bladerf=0'
-        )
-        self.rtlsdr_source_0_0.set_time_unknown_pps(osmosdr.time_spec_t())
-        self.rtlsdr_source_0_0.set_sample_rate(sample_rate)
-        self.rtlsdr_source_0_0.set_center_freq(rx_frequency*1e6, 0)
-        self.rtlsdr_source_0_0.set_freq_corr(0, 0)
-        self.rtlsdr_source_0_0.set_gain(10, 0)
-        self.rtlsdr_source_0_0.set_if_gain(rx_gain, 0)
-        self.rtlsdr_source_0_0.set_bb_gain(20, 0)
-        self.rtlsdr_source_0_0.set_antenna('', 0)
-        self.rtlsdr_source_0_0.set_bandwidth(0, 0)
         self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
             1024, #size
             firdes.WIN_BLACKMAN_hARRIS, #wintype
@@ -162,18 +156,36 @@ class waterfall_bladerf(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
-
+        self.osmosdr_source_0 = osmosdr.source(
+            args="numchan=" + str(1) + " " + "bladerf=" + str(serial)
+        )
+        self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
+        self.osmosdr_source_0.set_sample_rate(sample_rate)
+        self.osmosdr_source_0.set_center_freq(rx_frequency, 0)
+        self.osmosdr_source_0.set_freq_corr(0, 0)
+        self.osmosdr_source_0.set_gain(10, 0)
+        self.osmosdr_source_0.set_if_gain(rx_gain, 0)
+        self.osmosdr_source_0.set_bb_gain(20, 0)
+        self.osmosdr_source_0.set_antenna('', 0)
+        self.osmosdr_source_0.set_bandwidth(0, 0)
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.rtlsdr_source_0_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
+        self.connect((self.osmosdr_source_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
+
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "waterfall_bladerf")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_sample_rate(self):
         return self.sample_rate
@@ -181,34 +193,47 @@ class waterfall_bladerf(gr.top_block, Qt.QWidget):
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self._sample_rate_callback(self.sample_rate)
+        self.osmosdr_source_0.set_sample_rate(self.sample_rate)
         self.qtgui_waterfall_sink_x_0.set_frequency_range(0, self.sample_rate)
-        self.rtlsdr_source_0_0.set_sample_rate(self.sample_rate)
 
     def get_rx_gain(self):
         return self.rx_gain
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.rtlsdr_source_0_0.set_if_gain(self.rx_gain, 0)
+        self.osmosdr_source_0.set_if_gain(self.rx_gain, 0)
 
     def get_rx_frequency(self):
         return self.rx_frequency
 
     def set_rx_frequency(self, rx_frequency):
         self.rx_frequency = rx_frequency
-        self.rtlsdr_source_0_0.set_center_freq(self.rx_frequency*1e6, 0)
+        self.osmosdr_source_0.set_center_freq(self.rx_frequency, 0)
 
+
+
+
+def argument_parser():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--serial", dest="serial", type=str, default="0",
+        help="Set 0 [default=%(default)r]")
+    return parser
 
 
 def main(top_block_cls=waterfall_bladerf, options=None):
+    if options is None:
+        options = argument_parser().parse_args()
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(serial=options.serial)
+
     tb.start()
+
     tb.show()
 
     def sig_handler(sig=None, frame=None):
@@ -224,9 +249,9 @@ def main(top_block_cls=waterfall_bladerf, options=None):
     def quitting():
         tb.stop()
         tb.wait()
+
     qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
-
 
 if __name__ == '__main__':
     main()

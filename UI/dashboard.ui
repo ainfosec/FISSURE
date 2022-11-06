@@ -15683,141 +15683,6 @@ p, li { white-space: pre-wrap; }
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <widget class="QStackedWidget" name="stackedWidget_iq_inspection">
-               <property name="geometry">
-                <rect>
-                 <x>5</x>
-                 <y>5</y>
-                 <width>425</width>
-                 <height>160</height>
-                </rect>
-               </property>
-               <property name="currentIndex">
-                <number>0</number>
-               </property>
-               <widget class="QWidget" name="page_Computer"/>
-               <widget class="QWidget" name="page_USRP_X310"/>
-               <widget class="QWidget" name="page_USRP_B210">
-                <widget class="QPushButton" name="pushButton_iq_inspection_usrp_b210_gqrx">
-                 <property name="geometry">
-                  <rect>
-                   <x>5</x>
-                   <y>5</y>
-                   <width>150</width>
-                   <height>27</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>GQRX</string>
-                 </property>
-                </widget>
-               </widget>
-               <widget class="QWidget" name="page_HackRF">
-                <widget class="QPushButton" name="pushButton_iq_inspection_hackrf_gqrx">
-                 <property name="geometry">
-                  <rect>
-                   <x>5</x>
-                   <y>40</y>
-                   <width>150</width>
-                   <height>27</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>GQRX</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButton_iq_inspection_hackrf_qspectrumanalyzer">
-                 <property name="geometry">
-                  <rect>
-                   <x>5</x>
-                   <y>10</y>
-                   <width>150</width>
-                   <height>27</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>QSpectrumAnalyzer</string>
-                 </property>
-                </widget>
-               </widget>
-               <widget class="QWidget" name="page_RTL2832U">
-                <widget class="QPushButton" name="pushButton_iq_inspection_rtl2832u_qspectrumanalyzer">
-                 <property name="geometry">
-                  <rect>
-                   <x>5</x>
-                   <y>10</y>
-                   <width>150</width>
-                   <height>27</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>QSpectrumAnalyzer</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButton_iq_inspection_rtl2832u_gqrx">
-                 <property name="geometry">
-                  <rect>
-                   <x>5</x>
-                   <y>40</y>
-                   <width>150</width>
-                   <height>27</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>GQRX</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButton_iq_inspection_rtl2832u_rds_rx">
-                 <property name="geometry">
-                  <rect>
-                   <x>5</x>
-                   <y>70</y>
-                   <width>150</width>
-                   <height>27</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>rds_rx</string>
-                 </property>
-                </widget>
-               </widget>
-               <widget class="QWidget" name="page_80211x">
-                <widget class="QPushButton" name="pushButton_iq_inspection_80211_kismet">
-                 <property name="geometry">
-                  <rect>
-                   <x>5</x>
-                   <y>40</y>
-                   <width>150</width>
-                   <height>27</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>Kismet</string>
-                 </property>
-                </widget>
-                <widget class="QPushButton" name="pushButton_iq_inspection_80211_iwlist">
-                 <property name="geometry">
-                  <rect>
-                   <x>5</x>
-                   <y>10</y>
-                   <width>150</width>
-                   <height>27</height>
-                  </rect>
-                 </property>
-                 <property name="text">
-                  <string>iwlist scan</string>
-                 </property>
-                </widget>
-               </widget>
-               <widget class="QWidget" name="page_USRP_B205mini"/>
-               <widget class="QWidget" name="page_LimeSDR"/>
-               <widget class="QWidget" name="page_bladeRF"/>
-               <widget class="QWidget" name="page_Open_Sniffer"/>
-               <widget class="QWidget" name="page_PlutoSDR"/>
-               <widget class="QWidget" name="page_USRP2"/>
-               <widget class="QWidget" name="page_USRP_N2xx"/>
-               <widget class="QWidget" name="page_bladeRF2"/>
-              </widget>
              </widget>
              <widget class="QLabel" name="label_38">
               <property name="geometry">
@@ -15857,7 +15722,7 @@ p, li { white-space: pre-wrap; }
 }</string>
               </property>
               <property name="text">
-               <string>Inspection Flow Graphs</string>
+               <string>Inspection Flow Graphs - Live</string>
               </property>
               <property name="scaledContents">
                <bool>false</bool>
@@ -15932,6 +15797,9 @@ p, li { white-space: pre-wrap; }
                </property>
               </widget>
               <widget class="QTableWidget" name="tableWidget_iq_inspection_fg_values">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="geometry">
                 <rect>
                  <x>260</x>
@@ -16019,7 +15887,7 @@ p, li { white-space: pre-wrap; }
 }</string>
               </property>
               <property name="text">
-               <string>Inspection Tools</string>
+               <string>Inspection Flow Graphs - File</string>
               </property>
               <property name="scaledContents">
                <bool>false</bool>
@@ -27317,6 +27185,8 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionAntenna_test_tx"/>
     <addaction name="separator"/>
     <addaction name="actionNoise_source"/>
+    <addaction name="separator"/>
+    <addaction name="actionfrequency_translating"/>
    </widget>
    <widget class="QMenu" name="menuSDR_Tools">
     <property name="title">
@@ -27518,6 +27388,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionLicense_Search"/>
      <addaction name="actionEchoLink_Link_Status"/>
      <addaction name="actionSolarHam"/>
+     <addaction name="actionFldigi"/>
     </widget>
     <widget class="QMenu" name="menuV2V">
      <property name="title">
@@ -27691,6 +27562,24 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionMetasploit_Wordlists"/>
      <addaction name="actionOpenSSH_Username_Enumeration"/>
     </widget>
+    <widget class="QMenu" name="menuTelevision">
+     <property name="title">
+      <string>Television</string>
+     </property>
+     <addaction name="actionQSSTV"/>
+    </widget>
+    <widget class="QMenu" name="menuM17">
+     <property name="title">
+      <string>M17</string>
+     </property>
+     <addaction name="actionm17_demod"/>
+    </widget>
+    <widget class="QMenu" name="menuPOCSAG">
+     <property name="title">
+      <string>POCSAG</string>
+     </property>
+     <addaction name="actionmultimon_ng"/>
+    </widget>
     <addaction name="menu433_MHz"/>
     <addaction name="menu802_11_Tools_2"/>
     <addaction name="menuAIS"/>
@@ -27705,14 +27594,17 @@ p, li { white-space: pre-wrap; }
     <addaction name="menuHardware_2"/>
     <addaction name="menuHD_Radio"/>
     <addaction name="menuLTE"/>
+    <addaction name="menuM17"/>
     <addaction name="menuMapping"/>
     <addaction name="menuMode_S"/>
+    <addaction name="menuPOCSAG"/>
     <addaction name="menuPoint_to_Point"/>
     <addaction name="menuRadiosonde"/>
     <addaction name="menuRFID"/>
     <addaction name="menuSatellite"/>
     <addaction name="menuSSH"/>
     <addaction name="menuSDR_Tools_2"/>
+    <addaction name="menuTelevision"/>
     <addaction name="menuTrunked_Radio"/>
     <addaction name="menuV2V"/>
     <addaction name="menuVideo"/>
@@ -29067,6 +28959,31 @@ p, li { white-space: pre-wrap; }
     <string>Learn SDR</string>
    </property>
   </action>
+  <action name="actionQSSTV">
+   <property name="text">
+    <string>QSSTV</string>
+   </property>
+  </action>
+  <action name="actionm17_demod">
+   <property name="text">
+    <string>m17-demod</string>
+   </property>
+  </action>
+  <action name="actionmultimon_ng">
+   <property name="text">
+    <string>multimon-ng</string>
+   </property>
+  </action>
+  <action name="actionFldigi">
+   <property name="text">
+    <string>Fldigi</string>
+   </property>
+  </action>
+  <action name="actionfrequency_translating">
+   <property name="text">
+    <string>frequency_translating</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>scrollArea</tabstop>
@@ -29361,14 +29278,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>tableWidget_iq_inspection_fg_values</tabstop>
   <tabstop>pushButton_iq_inspection_fg_start</tabstop>
   <tabstop>checkBox_iq_inspection_rebuild</tabstop>
-  <tabstop>pushButton_iq_inspection_usrp_b210_gqrx</tabstop>
-  <tabstop>pushButton_iq_inspection_hackrf_qspectrumanalyzer</tabstop>
-  <tabstop>pushButton_iq_inspection_hackrf_gqrx</tabstop>
-  <tabstop>pushButton_iq_inspection_rtl2832u_qspectrumanalyzer</tabstop>
-  <tabstop>pushButton_iq_inspection_rtl2832u_gqrx</tabstop>
-  <tabstop>pushButton_iq_inspection_rtl2832u_rds_rx</tabstop>
-  <tabstop>pushButton_iq_inspection_80211_iwlist</tabstop>
-  <tabstop>pushButton_iq_inspection_80211_kismet</tabstop>
   <tabstop>pushButton_iq_dir1</tabstop>
   <tabstop>textEdit_iq_dir1</tabstop>
   <tabstop>pushButton_iq_dir2</tabstop>

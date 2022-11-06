@@ -45,6 +45,7 @@ blocks:
     label4: ''
     labels: '["1","10","100","1000"]'
     num_opts: '0'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -82,18 +83,6 @@ blocks:
     coordinate: [397, 23]
     rotation: 0
     state: enabled
-- name: ip_address
-  id: variable
-  parameters:
-    comment: ''
-    value: '"192.168.2.1"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [11, 94]
-    rotation: 0
-    state: enabled
 - name: rx_freq
   id: variable_qtgui_range
   parameters:
@@ -128,6 +117,7 @@ blocks:
     label4: ''
     labels: '["1 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]'
     num_opts: '0'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -203,6 +193,23 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [281, 430]
+    rotation: 0
+    state: true
+- name: ip_address
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ip_address
+    short_id: ''
+    type: str
+    value: '"192.168.2.1"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 76.0]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0

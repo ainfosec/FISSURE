@@ -1119,14 +1119,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_iq_resample.clicked.connect(self._slotIQ_ResampleClicked)
         self.pushButton_iq_inspection_fg_start.clicked.connect(self._slotIQ_InspectionFG_StartClicked)
         self.pushButton_iq_inspection_fg_load.clicked.connect(self._slotIQ_InspectionFlowGraphClicked)
-        self.pushButton_iq_inspection_hackrf_qspectrumanalyzer.clicked.connect(self._slotMenuQSpectrumAnalyzerClicked)
-        self.pushButton_iq_inspection_hackrf_gqrx.clicked.connect(self._slotMenuGQRX_Clicked)
-        self.pushButton_iq_inspection_rtl2832u_qspectrumanalyzer.clicked.connect(self._slotMenuQSpectrumAnalyzerClicked)
-        self.pushButton_iq_inspection_rtl2832u_gqrx.clicked.connect(self._slotMenuGQRX_Clicked)
-        self.pushButton_iq_inspection_80211_iwlist.clicked.connect(self._slotMenuIwlistScanClicked)
-        self.pushButton_iq_inspection_80211_kismet.clicked.connect(self._slotMenuKismetClicked) 
-        self.pushButton_iq_inspection_rtl2832u_rds_rx.clicked.connect(self._slotMenuRdsRx2Clicked)
-        self.pushButton_iq_inspection_usrp_b210_gqrx.clicked.connect(self._slotMenuGQRX_Clicked)
         self.pushButton_iq_folder.clicked.connect(self._slotIQ_FolderClicked)
         self.pushButton_iq_transfer_file_select.clicked.connect(self._slotIQ_TransferFileSelectClicked)
         self.pushButton_iq_transfer_file_save_as.clicked.connect(self._slotIQ_TransferFileSaveAsClicked)
@@ -1547,6 +1539,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionham2mon.triggered.connect(self._slotMenuHam2monClicked)
         self.actionProgramming_SDRs_with_GNU_Radio.triggered.connect(self._slotMenuLessonProgrammingSDRsClicked)
         self.actionLearn_SDR.triggered.connect(self._slotMenuLessonLearnSDR_Clicked)
+        self.actionQSSTV.triggered.connect(self._slotMenuQSSTV_Clicked)
+        self.actionm17_demod.triggered.connect(self._slotMenu_m17_demodClicked)
+        self.actionmultimon_ng.triggered.connect(self._slotMenuMultimon_ngClicked)
+        self.actionFldigi.triggered.connect(self._slotMenuFldigiClicked)
+        self.actionfrequency_translating.triggered.connect(self._slotMenuStandaloneFrequencyTranslatingClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -12365,37 +12362,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             for n in sorted(get_fgs,key=str.lower):
                 if n != "None":
                     self.listWidget_iq_inspection_flow_graphs.addItem(n)  
-            self.listWidget_iq_inspection_flow_graphs.setCurrentRow(0) 
-            
-            # Update Tools    
-            if get_hardware == "Computer":
-                self.stackedWidget_iq_inspection.setCurrentIndex(0)                
-            elif get_hardware == "USRP X310":
-                self.stackedWidget_iq_inspection.setCurrentIndex(1)
-            elif get_hardware == "USRP B210":
-                self.stackedWidget_iq_inspection.setCurrentIndex(2)
-            elif get_hardware == "HackRF":
-                self.stackedWidget_iq_inspection.setCurrentIndex(3)
-            elif get_hardware == "RTL2832U":
-                self.stackedWidget_iq_inspection.setCurrentIndex(4)
-            elif get_hardware == "802.11x Adapter":
-                self.stackedWidget_iq_inspection.setCurrentIndex(5)
-            elif get_hardware == "USRP B205mini":
-                self.stackedWidget_iq_inspection.setCurrentIndex(6)
-            elif get_hardware == "LimeSDR":
-                self.stackedWidget_iq_inspection.setCurrentIndex(7)  
-            elif get_hardware == "bladeRF":
-                self.stackedWidget_iq_inspection.setCurrentIndex(8)    
-            elif get_hardware == "Open Sniffer":
-                self.stackedWidget_iq_inspection.setCurrentIndex(9)                
-            elif get_hardware == "PlutoSDR":
-                self.stackedWidget_iq_inspection.setCurrentIndex(10)                
-            elif get_hardware == "USRP2":
-                self.stackedWidget_iq_inspection.setCurrentIndex(11)                
-            elif get_hardware == "USRP N2xx":
-                self.stackedWidget_iq_inspection.setCurrentIndex(12)                
-            elif get_hardware == "bladeRF 2.0":
-                self.stackedWidget_iq_inspection.setCurrentIndex(13)                
+            self.listWidget_iq_inspection_flow_graphs.setCurrentRow(0)
                 
             # Enable Frame
             self.frame_iq_inspection_fg.setEnabled(True)
@@ -12409,88 +12376,82 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_iq_inspection_fg_values.setRowCount(0)
                           
         # Get the Flow Graph Filepath
-        no_errors = True
         try:
             fname = str(self.listWidget_iq_inspection_flow_graphs.item(self.listWidget_iq_inspection_flow_graphs.currentRow()).text())        
             flow_graph_directory = os.path.dirname(os.path.abspath(__file__)) + "/Flow Graph Library/Inspection Flow Graphs/"
             fname_path = flow_graph_directory + fname
         except:
-            no_errors = False
+            return
             
-        if no_errors == True:
-            # Read Flow Graph Variables
-            f = open(fname_path,'r')
-            parsing = False
-            for line in f:
-                if line.startswith("        # Variables"):
-                    parsing = True
-                elif line.startswith("        # Blocks"):
-                    parsing = False
-                if parsing:
-                    # Strip Extra Text
-                    get_line = line.split('=',1)[-1]
-                    get_line = get_line.split('#',1)[0]
-                    get_line = get_line.lstrip()
+        # Read Flow Graph Variables
+        f = open(fname_path,'r')
+        parsing = False
+        for line in f:
+            if line.startswith("    def __init__(self,"):
+                parsing = True
+            elif line.startswith("        gr.top_block."):
+                parsing = False
+            if parsing:
+                # Strip Extra Text
+                fg_parameters = line[:-3].split(',')
+                parameter_names = []
+                parameter_values = []
+                for p in range(1,len(fg_parameters)):
+                    # Get Default Variable Name and Value
+                    parameter_name = fg_parameters[p].lstrip(' ').split('=')[0].replace('_','-')
+                    parameter_name_item = QtWidgets.QTableWidgetItem(parameter_name)
                     
-                    if get_line != "":       
-                        # Get Default Variable Name and Value
-                        variable_name = get_line.split(' = ')[0]
-                        variable_name_item = QtWidgets.QTableWidgetItem(variable_name)
-                        
-                        # Replace with Global Constants
-                        if variable_name == "ip_address":
-                            value_text = self.dashboard_settings_dictionary['hardware_ip_iq']
-                        elif variable_name == "serial":
-                            if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
-                                if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
-                                    value_text = self.dashboard_settings_dictionary['hardware_serial_iq']
-                                elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
-                                    value_text = self.dashboard_settings_dictionary['hardware_serial_iq']
-                                elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
-                                    value_text = self.dashboard_settings_dictionary['hardware_serial_iq']
-                                else:
-                                    value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']                               
+                    # Replace with Global Constants
+                    if parameter_name == "ip-address":
+                        parameter_value = self.dashboard_settings_dictionary['hardware_ip_iq']
+                    elif parameter_name == "serial":
+                        if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
+                            if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                                parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
+                            elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                                parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
+                            elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                                parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
                             else:
-                                if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
-                                    value_text = ""
-                                elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
-                                    value_text = "0"
-                                elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
-                                    value_text = "0"
-                                else:
-                                    value_text = "False"   
+                                parameter_value = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']                               
                         else:
-                            value_text = get_line.split(' = ')[1].rstrip('\n')
-                            value_text = value_text.replace('"','')
-                          
-                        # Fill in the "Current Values" Table
-                        variable_name_item.setFont(new_font)                                                                                                  
-                        value = QtWidgets.QTableWidgetItem(value_text)
-                        value.setFont(new_font)
-                        value.setFlags(variable_name_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                        self.tableWidget_iq_inspection_fg_values.setRowCount(self.tableWidget_iq_inspection_fg_values.rowCount()+1)
-                        self.tableWidget_iq_inspection_fg_values.setVerticalHeaderItem(self.tableWidget_iq_inspection_fg_values.rowCount()-1,variable_name_item)   
-                        self.tableWidget_iq_inspection_fg_values.setItem(self.tableWidget_iq_inspection_fg_values.rowCount()-1,0,value)                                     
-            
-            # Close the File
-            f.close()                 
-            
-            # Disable the Table
-            #self.tableWidget_iq_inspection_fg_values.setEnabled(False)
-            
-            # Rename the Column Header
-            header_name = get_line.split(' = ')[0]
-            header_name_item = QtWidgets.QTableWidgetItem(fname)
-            header_name_item.setFont(new_font)
-            self.tableWidget_iq_inspection_fg_values.setHorizontalHeaderItem(0,header_name_item)
-            
-            # Adjust Table
-            #self.tableWidget_iq_inspection_fg_values.verticalHeader().setFont(new_header_font)
-            #self.tableWidget_iq_inspection_fg_values.horizontalHeader().setFont(new_header_font)
-            self.tableWidget_iq_inspection_fg_values.resizeRowsToContents()
+                            if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                                parameter_value = ""
+                            elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                                parameter_value = "0"
+                            elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                                parameter_value = "0"
+                            else:
+                                parameter_value = "False"   
+                    else:
+                        parameter_value = fg_parameters[p].lstrip(' ').split('=')[1].replace('"','')
+                      
+                    # Fill in the "Current Values" Table
+                    parameter_value_item = QtWidgets.QTableWidgetItem(parameter_value)
+                    parameter_value_item.setFont(new_font)
+                    #parameter_value_item.setFlags(parameter_value_item.flags() & ~QtCore.Qt.ItemIsEditable)
+                    self.tableWidget_iq_inspection_fg_values.setRowCount(self.tableWidget_iq_inspection_fg_values.rowCount()+1)
+                    self.tableWidget_iq_inspection_fg_values.setVerticalHeaderItem(self.tableWidget_iq_inspection_fg_values.rowCount()-1,parameter_name_item)   
+                    self.tableWidget_iq_inspection_fg_values.setItem(self.tableWidget_iq_inspection_fg_values.rowCount()-1,0,parameter_value_item)                                     
+        
+        # Close the File
+        f.close()                 
+        
+        # Enable the Table
+        self.tableWidget_iq_inspection_fg_values.setEnabled(True)
+        
+        # Rename the Column Header
+        header_name_item = QtWidgets.QTableWidgetItem(fname)
+        header_name_item.setFont(new_font)
+        self.tableWidget_iq_inspection_fg_values.setHorizontalHeaderItem(0,header_name_item)
+        
+        # Adjust Table
+        #self.tableWidget_iq_inspection_fg_values.verticalHeader().setFont(new_header_font)
+        #self.tableWidget_iq_inspection_fg_values.horizontalHeader().setFont(new_header_font)
+        self.tableWidget_iq_inspection_fg_values.resizeRowsToContents()
         
     def _slotIQ_InspectionFG_StartClicked(self):
-        """ Starts the inspector flow graph.
+        """ Starts the inspection flow graph.
         """
         # Stop Flow Graph
         if self.pushButton_iq_inspection_fg_start.text() == "Stop":
@@ -12510,11 +12471,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Send Message(s) to the HIPRFISR for each Variable Name and Value
             variable_names = []
             variable_values = []
+            for get_row in range(0,self.tableWidget_iq_inspection_fg_values.rowCount()):             
+                # Save the Variable Name in the Row to a Dictionary
+                get_name = str(self.tableWidget_iq_inspection_fg_values.verticalHeaderItem(get_row).text())
+                variable_names.append(get_name)  
+                variable_values.append(str(self.tableWidget_iq_inspection_fg_values.item(get_row,0).text()))
             
-            no_errors = True
             try:
                 # Get the Flow Graph Filepath
-                fname = str(self.listWidget_iq_inspection_flow_graphs.item(self.listWidget_iq_inspection_flow_graphs.currentRow()).text())              
+                fname = str(self.tableWidget_iq_inspection_fg_values.horizontalHeaderItem(0).text())              
                 flow_graph_directory = os.path.dirname(os.path.abspath(__file__)) + "/Flow Graph Library/Inspection Flow Graphs/"
                 fname = flow_graph_directory + fname
                 
@@ -12522,25 +12487,23 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 if self.checkBox_iq_inspection_rebuild.isChecked():
                     #os.system('grcc "' + fname.replace('.py','.grc') + '" -d "' + str(flow_graph_directory) + '" &')
                     os.system('grcc "' + fname.replace('.py','.grc') + '" -d "' + str(flow_graph_directory) + '"')
-                    
             except:
-                no_errors = False
+                return
             
-            if no_errors == True:
-                # Send "Run Attack Flow Graph" Message to the HIPRFISR
-                get_file_type = "Flow Graph - GUI"
-                self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Inspection Flow Graph', Parameters = [fname, variable_names, variable_values, get_file_type]) 
-                    
-                # Toggle the Text       
-                self.pushButton_iq_inspection_fg_start.setText("Stop") 
-                #self.pushButton_attack_start_stop.setEnabled(False)
+            # Send "Run Attack Flow Graph" Message to the HIPRFISR
+            get_file_type = "Flow Graph - GUI"
+            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Inspection Flow Graph', Parameters = [fname, variable_names, variable_values, get_file_type]) 
                 
-                # Disable Attack Switching
-                self.listWidget_iq_inspection_flow_graphs.setEnabled(False)
-                self.pushButton_iq_inspection_fg_load.setEnabled(False) 
-                    
-                ## Update the Status Dialog
-                # ~ self.status_dialog.tableWidget_status_results.item(3,0).setText('Starting... ' + fname.split('/')[-1])
+            # Toggle the Text       
+            self.pushButton_iq_inspection_fg_start.setText("Stop") 
+            #self.pushButton_attack_start_stop.setEnabled(False)
+            
+            # Disable Attack Switching
+            self.listWidget_iq_inspection_flow_graphs.setEnabled(False)
+            self.pushButton_iq_inspection_fg_load.setEnabled(False) 
+                
+            ## Update the Status Dialog
+            # ~ self.status_dialog.tableWidget_status_results.item(3,0).setText('Starting... ' + fname.split('/')[-1])
           
     def _slotMenuDump1090_Clicked(self):
         """ Launches Dump1090 for RTL2832U devices.
@@ -21888,7 +21851,42 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Browser
         os.system("sensible-browser https://gallicchio.github.io/learnSDR/ &")  
         
+    def _slotMenuQSSTV_Clicked(self):
+        """ Opens QSSTV from the menu.
+        """
+        # Launch QSSTV
+        proc = subprocess.Popen("qsstv &", shell=True)
         
+    def _slotMenu_m17_demodClicked(self):
+        """ Opens a terminal with an example m17-demod command.
+        """
+        # Open a Terminal
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        m17_demod_cmd = 'nc -l -u -p 7355 | m17-demod -l -d | play -q -b 16 -r 8000 -c1 -t s16 -'
+        proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + m17_demod_cmd + '"', shell=True)     
+        
+    def _slotMenuMultimon_ngClicked(self):
+        """ Opens a terminal with an example multimon-ng command for POCSAG. Works with Narrow FM in Gqrx and UDP output.
+        """
+        # Open a Terminal
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        multimon_ng_cmd = 'nc -l -u -p 7355 | sox -t raw -esigned-integer -b 16 -r 48000 - -esigned-integer -b 16 -r 22050 -t raw - | multimon-ng -t raw -a POCSAG512 -a POCSAG1200 -a POCSAG2400 -f alpha -'
+        proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + multimon_ng_cmd + '"', shell=True)
+        
+    def _slotMenuFldigiClicked(self):
+        """ Opens Fldigi from the menu.
+        """
+        # Launch Fldigi
+        proc = subprocess.Popen("fldigi &", shell=True)
+        
+    def _slotMenuStandaloneFrequencyTranslatingClicked(self):
+        """ Opens the standalone flow graph in GNU Radio Companion.
+        """
+        # Open the Flow Graph in GNU Radio Companion
+        filepath = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/Standalone\ Flow\ Graphs/frequency_translating.grc"
+        osCommandString = "gnuradio-companion " + filepath
+        os.system(osCommandString+ " &")   
+               
 
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
     def __init__(self):

@@ -570,7 +570,7 @@ blocks:
     dc_offs_enb7: '""'
     dc_offs_enb8: '""'
     dc_offs_enb9: '""'
-    dev_addr: '"addr="+ip_address'
+    dev_addr: '"addr=" + ip_address'
     dev_args: '""'
     gain0: gain
     gain1: '0'
@@ -779,6 +779,7 @@ blocks:
     sd_spec6: ''
     sd_spec7: ''
     show_lo_controls: 'False'
+    start_time: '-1.0'
     stream_args: ''
     stream_chans: '[]'
     sync: sync

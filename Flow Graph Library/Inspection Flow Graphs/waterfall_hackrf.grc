@@ -87,6 +87,7 @@ blocks:
     label4: ''
     labels: '["1 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]'
     num_opts: '0'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -103,18 +104,6 @@ blocks:
     coordinate: [192, 12]
     rotation: 0
     state: enabled
-- name: serial
-  id: variable
-  parameters:
-    comment: ''
-    value: '"0"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [14, 81]
-    rotation: 0
-    state: true
 - name: osmosdr_source_0
   id: osmosdr_source
   parameters:
@@ -533,6 +522,23 @@ blocks:
     coordinate: [656, 492]
     rotation: 0
     state: enabled
+- name: serial
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: serial
+    short_id: ''
+    type: str
+    value: '"0"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 84.0]
+    rotation: 0
+    state: true
 
 connections:
 - [osmosdr_source_0, '0', qtgui_waterfall_sink_x_0, '0']

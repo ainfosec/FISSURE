@@ -1401,7 +1401,8 @@ foxtrotgps --help
 
 # multimon-ng
 programs_ubuntu20_04.append(('multimon-ng',
-"""mkdir -p ~/Installed_by_FISSURE
+"""sudo apt-get install -y libpulse-dev
+mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/EliasOenal/multimonNG.git
 cd multimonNG
@@ -1621,6 +1622,36 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/SigDigger
+""",True,None))
+
+# QSSTV
+programs_ubuntu20_04.append(('QSSTV',
+"""sudo apt-get install -y qsstv
+########## Verify ##########
+ls /usr/bin/qsstv
+""",True,None))
+
+# m17-cxx-demod
+programs_ubuntu20_04.append(('m17-cxx-demod',
+"""sudo apt-get install -y libcodec2-dev libboost-dev libgtest-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mobilinkd/m17-cxx-demod.git
+cd m17-cxx-demod/
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+ls /usr/local/bin/m17-demod
+""",True,None))
+
+# Fldigi
+programs_ubuntu20_04.append(('Fldigi',
+"""sudo apt-get install -y fldigi
+########## Verify ##########
+ls /usr/bin/fldigi
 """,True,None))
 
 
@@ -3007,7 +3038,8 @@ foxtrotgps --help
 
 # multimon-ng
 programs_ubuntu20_04_4.append(('multimon-ng',
-"""mkdir -p ~/Installed_by_FISSURE
+"""sudo apt-get install -y libpulse-dev
+mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/EliasOenal/multimonNG.git
 cd multimonNG
@@ -3227,6 +3259,36 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/SigDigger
+""",True,None))
+
+# QSSTV
+programs_ubuntu20_04_4.append(('QSSTV',
+"""sudo apt-get install -y qsstv
+########## Verify ##########
+ls /usr/bin/qsstv
+""",True,None))
+
+# m17-cxx-demod
+programs_ubuntu20_04_4.append(('m17-cxx-demod',
+"""sudo apt-get install -y libcodec2-dev libboost-dev libgtest-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mobilinkd/m17-cxx-demod.git
+cd m17-cxx-demod/
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+ls /usr/local/bin/m17-demod
+""",True,None))
+
+# Fldigi
+programs_ubuntu20_04_4.append(('Fldigi',
+"""sudo apt-get install -y fldigi
+########## Verify ##########
+ls /usr/bin/fldigi
 """,True,None))
 
 
@@ -4152,6 +4214,40 @@ rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.s
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 """,True,None))
 
+######## Not Tested Queue ######## 
+
+# # QSSTV
+# programs_dragonOS_focal.append(('QSSTV',
+# """sudo apt-get install -y qsstv
+# ########## Verify ##########
+# ls /usr/bin/qsstv
+# """,True,None))
+
+# # m17-cxx-demod
+# programs_dragonOS_focal.append(('m17-cxx-demod',
+# """sudo apt-get install -y libcodec2-dev libboost-dev libgtest-dev
+# mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/mobilinkd/m17-cxx-demod.git
+# cd m17-cxx-demod/
+# mkdir build
+# cd build
+# cmake ..
+# make
+# sudo make install
+# ########## Verify ##########
+# ls /usr/local/bin/m17-demod
+# """,True,None))
+
+# # Fldigi
+# programs_ubuntu20_04_4.append(('Fldigi',
+# """sudo apt-get install -y fldigi
+# ########## Verify ##########
+# ls /usr/bin/fldigi
+# """,True,None))
+
+######## Already Exists ######## 
+
 # # GNU Radio
 # programs_dragonOS_focal.append(('GNU Radio',
 # """sudo add-apt-repository -y ppa:mormj/gnuradio-releases-3.8
@@ -4746,7 +4842,8 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 
 # # multimon-ng #Already installed
 # programs_dragonOS_focal.append(('multimon-ng',
-# """mkdir -p ~/Installed_by_FISSURE
+# """sudo apt-get install -y libpulse-dev
+# mkdir -p ~/Installed_by_FISSURE
 # cd ~/Installed_by_FISSURE
 # git clone https://github.com/EliasOenal/multimonNG.git
 # cd multimonNG

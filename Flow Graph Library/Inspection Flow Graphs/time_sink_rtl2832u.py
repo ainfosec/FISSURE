@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Time Sink Rtl2832U
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.5.0
 
 from distutils.version import StrictVersion
 
@@ -35,6 +35,7 @@ from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
 import osmosdr
 import time
+
 from gnuradio import qtgui
 
 class time_sink_rtl2832u(gr.top_block, Qt.QWidget):
@@ -82,9 +83,9 @@ class time_sink_rtl2832u(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         # Create the options list
-        self._sample_rate_options = [0.5, 1e6, 2e6]
+        self._sample_rate_options = [0.5, 1000000.0, 2000000.0]
         # Create the labels list
-        self._sample_rate_labels = ["0.5 MS/s", "1 MS/s", "2 MS/s"]
+        self._sample_rate_labels = ['0.5 MS/s', '1 MS/s', '2 MS/s']
         # Create the combo box
         self._sample_rate_tool_bar = Qt.QToolBar(self)
         self._sample_rate_tool_bar.addWidget(Qt.QLabel('Sample Rate' + ": "))
@@ -116,9 +117,9 @@ class time_sink_rtl2832u(gr.top_block, Qt.QWidget):
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         # Create the options list
-        self._decimation_options = [1,10,100,1000]
+        self._decimation_options = [1, 10, 100, 1000]
         # Create the labels list
-        self._decimation_labels = ["1","10","100","1000"]
+        self._decimation_labels = ['1', '10', '100', '1000']
         # Create the combo box
         self._decimation_tool_bar = Qt.QToolBar(self)
         self._decimation_tool_bar.addWidget(Qt.QLabel('  Keep 1 in N' + ": "))
@@ -248,13 +249,13 @@ class time_sink_rtl2832u(gr.top_block, Qt.QWidget):
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, decimation)
 
 
-
         ##################################################
         # Connections
         ##################################################
         self.connect((self.blocks_keep_one_in_n_0, 0), (self.qtgui_freq_sink_x_0, 0))
         self.connect((self.blocks_keep_one_in_n_0, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.rtlsdr_source_0_0, 0), (self.blocks_keep_one_in_n_0, 0))
+
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "time_sink_rtl2832u")
@@ -296,6 +297,8 @@ class time_sink_rtl2832u(gr.top_block, Qt.QWidget):
 
 
 
+
+
 def main(top_block_cls=time_sink_rtl2832u, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -304,7 +307,9 @@ def main(top_block_cls=time_sink_rtl2832u, options=None):
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
+
     tb.start()
+
     tb.show()
 
     def sig_handler(sig=None, frame=None):
@@ -320,9 +325,9 @@ def main(top_block_cls=time_sink_rtl2832u, options=None):
     def quitting():
         tb.stop()
         tb.wait()
+
     qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
-
 
 if __name__ == '__main__':
     main()

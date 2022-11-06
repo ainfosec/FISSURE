@@ -611,9 +611,9 @@ class FGE_Executor():
             # Start it
             filepath = flow_graph_filename
             flow_graph_filename = flow_graph_filename.rsplit("/",1)[1]
-            arguments = ""
-            for n in variable_values:
-                arguments = arguments + n + " "
+            arguments = ""            
+            for n in range(0,len(variable_names)):
+                arguments = arguments + '--' + variable_names[n] + '="' + variable_values[n] + '" '
                 
             osCommandString = "python3 " + '"' + filepath + '" ' + arguments
             proc = subprocess.Popen(osCommandString + " &", shell=True)

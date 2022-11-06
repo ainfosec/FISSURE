@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Instantaneous Frequency Plutosdr
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.5.0
 
 from distutils.version import StrictVersion
 
@@ -35,11 +35,12 @@ from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
 import dect2
 import iio
+
 from gnuradio import qtgui
 
 class instantaneous_frequency_plutosdr(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, ip_address="192.168.2.1"):
         gr.top_block.__init__(self, "Instantaneous Frequency Plutosdr")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Instantaneous Frequency Plutosdr")
@@ -71,11 +72,15 @@ class instantaneous_frequency_plutosdr(gr.top_block, Qt.QWidget):
             pass
 
         ##################################################
+        # Parameters
+        ##################################################
+        self.ip_address = ip_address
+
+        ##################################################
         # Variables
         ##################################################
         self.sample_rate = sample_rate = 1e6
         self.rx_freq = rx_freq = 2412
-        self.ip_address = ip_address = "192.168.2.1"
         self.gain = gain = 64
         self.decimation = decimation = 1
 
@@ -83,9 +88,9 @@ class instantaneous_frequency_plutosdr(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         # Create the options list
-        self._sample_rate_options = [1e6, 5e6, 10e6, 20e6]
+        self._sample_rate_options = [1000000.0, 5000000.0, 10000000.0, 20000000.0]
         # Create the labels list
-        self._sample_rate_labels = ["1 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]
+        self._sample_rate_labels = ['1 MS/s', '5 MS/s', '10 MS/s', '20 MS/s']
         # Create the combo box
         self._sample_rate_tool_bar = Qt.QToolBar(self)
         self._sample_rate_tool_bar.addWidget(Qt.QLabel('Sample Rate' + ": "))
@@ -117,9 +122,9 @@ class instantaneous_frequency_plutosdr(gr.top_block, Qt.QWidget):
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         # Create the options list
-        self._decimation_options = [1,10,100,1000]
+        self._decimation_options = [1, 10, 100, 1000]
         # Create the labels list
-        self._decimation_labels = ["1","10","100","1000"]
+        self._decimation_labels = ['1', '10', '100', '1000']
         # Create the combo box
         self._decimation_tool_bar = Qt.QToolBar(self)
         self._decimation_tool_bar.addWidget(Qt.QLabel('  Keep 1 in N' + ": "))
@@ -192,7 +197,6 @@ class instantaneous_frequency_plutosdr(gr.top_block, Qt.QWidget):
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, decimation)
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -200,10 +204,17 @@ class instantaneous_frequency_plutosdr(gr.top_block, Qt.QWidget):
         self.connect((self.dect2_phase_diff_1, 0), (self.qtgui_time_sink_x_0, 0))
         self.connect((self.iio_pluto_source_0, 0), (self.blocks_keep_one_in_n_0, 0))
 
+
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "instantaneous_frequency_plutosdr")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
+
+    def get_ip_address(self):
+        return self.ip_address
+
+    def set_ip_address(self, ip_address):
+        self.ip_address = ip_address
 
     def get_sample_rate(self):
         return self.sample_rate
@@ -220,12 +231,6 @@ class instantaneous_frequency_plutosdr(gr.top_block, Qt.QWidget):
     def set_rx_freq(self, rx_freq):
         self.rx_freq = rx_freq
         self.iio_pluto_source_0.set_params(int(float(self.rx_freq)*1e6), int(self.sample_rate), 20000000, True, True, True, 'manual', self.gain, '', True)
-
-    def get_ip_address(self):
-        return self.ip_address
-
-    def set_ip_address(self, ip_address):
-        self.ip_address = ip_address
 
     def get_gain(self):
         return self.gain
@@ -245,15 +250,28 @@ class instantaneous_frequency_plutosdr(gr.top_block, Qt.QWidget):
 
 
 
+
+def argument_parser():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--ip-address", dest="ip_address", type=str, default="192.168.2.1",
+        help="Set 192.168.2.1 [default=%(default)r]")
+    return parser
+
+
 def main(top_block_cls=instantaneous_frequency_plutosdr, options=None):
+    if options is None:
+        options = argument_parser().parse_args()
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(ip_address=options.ip_address)
+
     tb.start()
+
     tb.show()
 
     def sig_handler(sig=None, frame=None):
@@ -269,9 +287,9 @@ def main(top_block_cls=instantaneous_frequency_plutosdr, options=None):
     def quitting():
         tb.stop()
         tb.wait()
+
     qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
-
 
 if __name__ == '__main__':
     main()

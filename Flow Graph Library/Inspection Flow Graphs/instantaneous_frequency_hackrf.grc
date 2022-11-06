@@ -45,6 +45,7 @@ blocks:
     label4: ''
     labels: '["1","10","100","1000"]'
     num_opts: '0'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -116,6 +117,7 @@ blocks:
     label4: ''
     labels: '["1 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]'
     num_opts: '0'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -132,18 +134,6 @@ blocks:
     coordinate: [232, 16]
     rotation: 0
     state: enabled
-- name: serial
-  id: variable
-  parameters:
-    comment: ''
-    value: '"0"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [8, 73]
-    rotation: 0
-    state: true
 - name: blocks_keep_one_in_n_0
   id: blocks_keep_one_in_n
   parameters:
@@ -631,6 +621,23 @@ blocks:
     coordinate: [792, 476]
     rotation: 0
     state: enabled
+- name: serial
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: serial
+    short_id: ''
+    type: str
+    value: '"0"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 76.0]
+    rotation: 0
+    state: true
 
 connections:
 - [blocks_keep_one_in_n_0, '0', dect2_phase_diff_0, '0']

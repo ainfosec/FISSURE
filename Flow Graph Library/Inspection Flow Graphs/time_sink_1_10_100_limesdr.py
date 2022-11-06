@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Time Sink 1 10 100 Limesdr
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.5.0
 
 from distutils.version import StrictVersion
 
@@ -34,6 +34,7 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio.qtgui import Range, RangeWidget
 import limesdr
+
 from gnuradio import qtgui
 
 class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
@@ -80,9 +81,9 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         # Create the options list
-        self._sample_rate_options = [1e6, 5e6, 10e6, 20e6]
+        self._sample_rate_options = [1000000.0, 5000000.0, 10000000.0, 20000000.0]
         # Create the labels list
-        self._sample_rate_labels = ["1 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]
+        self._sample_rate_labels = ['1 MS/s', '5 MS/s', '10 MS/s', '20 MS/s']
         # Create the combo box
         self._sample_rate_tool_bar = Qt.QToolBar(self)
         self._sample_rate_tool_bar.addWidget(Qt.QLabel('Sample Rate' + ": "))
@@ -299,7 +300,6 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, 10)
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -308,6 +308,7 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
         self.connect((self.limesdr_source_0, 0), (self.blocks_keep_one_in_n_0, 0))
         self.connect((self.limesdr_source_0, 0), (self.blocks_keep_one_in_n_0_0, 0))
         self.connect((self.limesdr_source_0, 0), (self.qtgui_time_sink_x_0, 0))
+
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "time_sink_1_10_100_limesdr")
@@ -340,6 +341,8 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
 
 
 
+
+
 def main(top_block_cls=time_sink_1_10_100_limesdr, options=None):
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
@@ -348,7 +351,9 @@ def main(top_block_cls=time_sink_1_10_100_limesdr, options=None):
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
+
     tb.start()
+
     tb.show()
 
     def sig_handler(sig=None, frame=None):
@@ -364,9 +369,9 @@ def main(top_block_cls=time_sink_1_10_100_limesdr, options=None):
     def quitting():
         tb.stop()
         tb.wait()
+
     qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
-
 
 if __name__ == '__main__':
     main()
