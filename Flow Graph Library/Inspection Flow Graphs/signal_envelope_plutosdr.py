@@ -43,7 +43,7 @@ from gnuradio import qtgui
 
 class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, ip_address="192.168.2.1"):
         gr.top_block.__init__(self, "Signal Envelope Plutosdr", catch_exceptions=True)
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Signal Envelope Plutosdr")
@@ -75,11 +75,15 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
             pass
 
         ##################################################
+        # Parameters
+        ##################################################
+        self.ip_address = ip_address
+
+        ##################################################
         # Variables
         ##################################################
         self.sample_rate = sample_rate = 1e6
         self.rx_freq = rx_freq = 2412
-        self.ip_address = ip_address = "192.168.2.1"
         self.gain = gain = 64
         self.decimation = decimation = 1
 
@@ -222,6 +226,12 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
 
         event.accept()
 
+    def get_ip_address(self):
+        return self.ip_address
+
+    def set_ip_address(self, ip_address):
+        self.ip_address = ip_address
+
     def get_sample_rate(self):
         return self.sample_rate
 
@@ -237,12 +247,6 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
     def set_rx_freq(self, rx_freq):
         self.rx_freq = rx_freq
         self.iio_pluto_source_0.set_frequency(int(float(self.rx_freq)*1e6))
-
-    def get_ip_address(self):
-        return self.ip_address
-
-    def set_ip_address(self, ip_address):
-        self.ip_address = ip_address
 
     def get_gain(self):
         return self.gain
@@ -262,15 +266,24 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
 
 
 
+def argument_parser():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--ip-address", dest="ip_address", type=str, default="192.168.2.1",
+        help="Set 192.168.2.1 [default=%(default)r]")
+    return parser
+
 
 def main(top_block_cls=signal_envelope_plutosdr, options=None):
+    if options is None:
+        options = argument_parser().parse_args()
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(ip_address=options.ip_address)
 
     tb.start()
 

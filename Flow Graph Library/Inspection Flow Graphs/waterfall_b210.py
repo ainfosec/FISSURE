@@ -43,7 +43,7 @@ from gnuradio import qtgui
 
 class waterfall_b210(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, rx_usrp_channel="A:A", serial="False"):
         gr.top_block.__init__(self, "Waterfall B210", catch_exceptions=True)
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Waterfall B210")
@@ -75,12 +75,16 @@ class waterfall_b210(gr.top_block, Qt.QWidget):
             pass
 
         ##################################################
+        # Parameters
+        ##################################################
+        self.rx_usrp_channel = rx_usrp_channel
+        self.serial = serial
+
+        ##################################################
         # Variables
         ##################################################
-        self.serial = serial = "False"
         self.sample_rate = sample_rate = 1e6
         self.rx_usrp_gain = rx_usrp_gain = 60
-        self.rx_usrp_channel = rx_usrp_channel = "A:A"
         self.rx_usrp_antenna = rx_usrp_antenna = "TX/RX"
         self.rx_frequency = rx_frequency = 2412
 
@@ -211,6 +215,12 @@ class waterfall_b210(gr.top_block, Qt.QWidget):
 
         event.accept()
 
+    def get_rx_usrp_channel(self):
+        return self.rx_usrp_channel
+
+    def set_rx_usrp_channel(self, rx_usrp_channel):
+        self.rx_usrp_channel = rx_usrp_channel
+
     def get_serial(self):
         return self.serial
 
@@ -233,12 +243,6 @@ class waterfall_b210(gr.top_block, Qt.QWidget):
         self.rx_usrp_gain = rx_usrp_gain
         self.uhd_usrp_source_0.set_gain(self.rx_usrp_gain, 0)
 
-    def get_rx_usrp_channel(self):
-        return self.rx_usrp_channel
-
-    def set_rx_usrp_channel(self, rx_usrp_channel):
-        self.rx_usrp_channel = rx_usrp_channel
-
     def get_rx_usrp_antenna(self):
         return self.rx_usrp_antenna
 
@@ -256,15 +260,27 @@ class waterfall_b210(gr.top_block, Qt.QWidget):
 
 
 
+def argument_parser():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--rx-usrp-channel", dest="rx_usrp_channel", type=str, default="A:A",
+        help="Set A:A [default=%(default)r]")
+    parser.add_argument(
+        "--serial", dest="serial", type=str, default="False",
+        help="Set False [default=%(default)r]")
+    return parser
+
 
 def main(top_block_cls=waterfall_b210, options=None):
+    if options is None:
+        options = argument_parser().parse_args()
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(rx_usrp_channel=options.rx_usrp_channel, serial=options.serial)
 
     tb.start()
 

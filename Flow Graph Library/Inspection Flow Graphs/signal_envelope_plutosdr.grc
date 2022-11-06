@@ -1,6 +1,7 @@
 options:
   parameters:
     author: ''
+    catch_exceptions: 'True'
     category: Custom
     cmake_opt: ''
     comment: ''
@@ -45,6 +46,7 @@ blocks:
     label4: ''
     labels: '["1","10","100","1000"]'
     num_opts: '0'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -68,7 +70,7 @@ blocks:
     gui_hint: 1,0,1,4
     label: '              Gain:'
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: '0'
     step: '1'
@@ -82,18 +84,6 @@ blocks:
     coordinate: [397, 23]
     rotation: 0
     state: enabled
-- name: ip_address
-  id: variable
-  parameters:
-    comment: ''
-    value: '"192.168.2.1"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [11, 94]
-    rotation: 0
-    state: enabled
 - name: rx_freq
   id: variable_qtgui_range
   parameters:
@@ -101,7 +91,7 @@ blocks:
     gui_hint: 2,0,1,4
     label: ' Freq. (MHz):'
     min_len: '200'
-    orient: Qt.Horizontal
+    orient: QtCore.Qt.Horizontal
     rangeType: float
     start: '325'
     step: '.1'
@@ -128,6 +118,7 @@ blocks:
     label4: ''
     labels: '["1 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]'
     num_opts: '0'
+    option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
@@ -183,26 +174,47 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    auto_filter: 'True'
     bandwidth: '20000000'
     bbdc: 'True'
     buffer_size: '32768'
     comment: ''
     filter: ''
+    filter_source: '''Auto'''
+    fpass: '0'
     frequency: int(float(rx_freq)*1e6)
+    fstop: '0'
     gain1: '''manual'''
+    len_tag_key: packet_len
     manual_gain1: gain
     maxoutbuf: '0'
     minoutbuf: '0'
     quadrature: 'True'
     rfdc: 'True'
     samplerate: int(sample_rate)
+    type: fc32
     uri: '"ip:" + str(ip_address)'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
     coordinate: [281, 430]
+    rotation: 0
+    state: true
+- name: ip_address
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ip_address
+    short_id: ''
+    type: str
+    value: '"192.168.2.1"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 76.0]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0

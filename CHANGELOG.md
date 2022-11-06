@@ -1,6 +1,31 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-11-06
+
+Adding tools to help with GRCon22 CTF challenges and changing how inspection flow graphs are called.
+ 
+### Added
+
+- QSSTV to install and menu
+- m17-cxx-demod to install and menu for Python3 branches
+- multimon-ng example command for POCSAG in Tools menu
+- Fldigi to installer and menu
+- Generic frequency translating standalone flow graph
+   
+### Changed
+
+- Inspection flow graphs show GNU Radio parameter blocks
+- Can edit values in inspection flow graph table
+- GRCon22 video link in README
+- Removed tools from IQ Data Inspection tab and added future space for running flow graphs on selected IQ files
+ 
+### Fixed
+
+- Inspection flow graphs loaded whatever was selected in the listbox instead of what was loaded in the table
+- Inspection flow graphs can have channel, serial, and IP address values updated before runtime
+- Added libpulse-dev to multimon-ng install
+
 ## 2022-10-30
 
 Updating install to avoid potential errors.

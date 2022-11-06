@@ -12,7 +12,7 @@ The friendly Python codebase and user interface allows beginners to quickly lear
 - [AIS Page](https://www.ainfosec.com/technologies/fissure/)
 - [GRCon22 Slides](https://events.gnuradio.org/event/18/contributions/246/attachments/84/164/FISSURE_Poore_GRCon22.pdf)
 - [GRCon22 Paper](https://events.gnuradio.org/event/18/contributions/246/attachments/84/167/FISSURE_Paper_Poore_GRCon22.pdf)
-- [GRCon22 Video](https://youtu.be/ghLogJlaMNc?t=19980)
+- [GRCon22 Video](https://www.youtube.com/watch?v=1f2umEKhJvE)
 - [Hack Chat Transcript](https://hackaday.io/event/187076-rf-hacking-hack-chat/log/212136-hack-chat-transcript-part-1)
 
 ## Getting Started

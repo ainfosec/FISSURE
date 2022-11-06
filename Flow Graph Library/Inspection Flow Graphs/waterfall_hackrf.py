@@ -43,7 +43,7 @@ from gnuradio import qtgui
 
 class waterfall_hackrf(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, serial="0"):
         gr.top_block.__init__(self, "Waterfall Hackrf", catch_exceptions=True)
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Waterfall Hackrf")
@@ -75,9 +75,13 @@ class waterfall_hackrf(gr.top_block, Qt.QWidget):
             pass
 
         ##################################################
+        # Parameters
+        ##################################################
+        self.serial = serial
+
+        ##################################################
         # Variables
         ##################################################
-        self.serial = serial = "0"
         self.sample_rate = sample_rate = 1e6
         self.rx_hackrf_gain = rx_hackrf_gain = 40
         self.rx_frequency = rx_frequency = 2412
@@ -220,15 +224,24 @@ class waterfall_hackrf(gr.top_block, Qt.QWidget):
 
 
 
+def argument_parser():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--serial", dest="serial", type=str, default="0",
+        help="Set 0 [default=%(default)r]")
+    return parser
+
 
 def main(top_block_cls=waterfall_hackrf, options=None):
+    if options is None:
+        options = argument_parser().parse_args()
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(serial=options.serial)
 
     tb.start()
 

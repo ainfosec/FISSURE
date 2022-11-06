@@ -45,7 +45,7 @@ from gnuradio import qtgui
 
 class instantaneous_frequency_bladerf2(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, serial="0"):
         gr.top_block.__init__(self, "Instantaneous Frequency Bladerf2", catch_exceptions=True)
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Instantaneous Frequency Bladerf2")
@@ -75,6 +75,11 @@ class instantaneous_frequency_bladerf2(gr.top_block, Qt.QWidget):
                 self.restoreGeometry(self.settings.value("geometry"))
         except:
             pass
+
+        ##################################################
+        # Parameters
+        ##################################################
+        self.serial = serial
 
         ##################################################
         # Variables
@@ -194,7 +199,7 @@ class instantaneous_frequency_bladerf2(gr.top_block, Qt.QWidget):
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + 'bladerf=0'
+            args="numchan=" + str(1) + " " + "bladerf=" + str(serial)
         )
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(sample_rate)
@@ -227,6 +232,12 @@ class instantaneous_frequency_bladerf2(gr.top_block, Qt.QWidget):
         self.wait()
 
         event.accept()
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_sample_rate(self):
         return self.sample_rate
@@ -262,15 +273,24 @@ class instantaneous_frequency_bladerf2(gr.top_block, Qt.QWidget):
 
 
 
+def argument_parser():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--serial", dest="serial", type=str, default="0",
+        help="Set 0 [default=%(default)r]")
+    return parser
+
 
 def main(top_block_cls=instantaneous_frequency_bladerf2, options=None):
+    if options is None:
+        options = argument_parser().parse_args()
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(serial=options.serial)
 
     tb.start()
 

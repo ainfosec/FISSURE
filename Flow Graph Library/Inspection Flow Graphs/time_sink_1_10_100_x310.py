@@ -44,7 +44,7 @@ from gnuradio import qtgui
 
 class time_sink_1_10_100_x310(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, ip_address="192.168.140.2", rx_usrp_channel="A:0"):
         gr.top_block.__init__(self, "Time Sink 1 10 100 X310", catch_exceptions=True)
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Time Sink 1 10 100 X310")
@@ -76,11 +76,16 @@ class time_sink_1_10_100_x310(gr.top_block, Qt.QWidget):
             pass
 
         ##################################################
+        # Parameters
+        ##################################################
+        self.ip_address = ip_address
+        self.rx_usrp_channel = rx_usrp_channel
+
+        ##################################################
         # Variables
         ##################################################
         self.sample_rate = sample_rate = 1e6
         self.rx_usrp_gain = rx_usrp_gain = 30
-        self.rx_usrp_channel = rx_usrp_channel = "A:0"
         self.rx_usrp_antenna = rx_usrp_antenna = "TX/RX"
         self.rx_frequency = rx_frequency = 2412
 
@@ -142,7 +147,7 @@ class time_sink_1_10_100_x310(gr.top_block, Qt.QWidget):
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         self.uhd_usrp_source_0_0 = uhd.usrp_source(
-            ",".join(('', "")),
+            ",".join(("addr=" + str(ip_address), "")),
             uhd.stream_args(
                 cpu_format="fc32",
                 args='',
@@ -343,6 +348,18 @@ class time_sink_1_10_100_x310(gr.top_block, Qt.QWidget):
 
         event.accept()
 
+    def get_ip_address(self):
+        return self.ip_address
+
+    def set_ip_address(self, ip_address):
+        self.ip_address = ip_address
+
+    def get_rx_usrp_channel(self):
+        return self.rx_usrp_channel
+
+    def set_rx_usrp_channel(self, rx_usrp_channel):
+        self.rx_usrp_channel = rx_usrp_channel
+
     def get_sample_rate(self):
         return self.sample_rate
 
@@ -361,12 +378,6 @@ class time_sink_1_10_100_x310(gr.top_block, Qt.QWidget):
         self.rx_usrp_gain = rx_usrp_gain
         self.uhd_usrp_source_0_0.set_gain(self.rx_usrp_gain, 0)
 
-    def get_rx_usrp_channel(self):
-        return self.rx_usrp_channel
-
-    def set_rx_usrp_channel(self, rx_usrp_channel):
-        self.rx_usrp_channel = rx_usrp_channel
-
     def get_rx_usrp_antenna(self):
         return self.rx_usrp_antenna
 
@@ -384,15 +395,27 @@ class time_sink_1_10_100_x310(gr.top_block, Qt.QWidget):
 
 
 
+def argument_parser():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--ip-address", dest="ip_address", type=str, default="192.168.140.2",
+        help="Set 192.168.140.2 [default=%(default)r]")
+    parser.add_argument(
+        "--rx-usrp-channel", dest="rx_usrp_channel", type=str, default="A:0",
+        help="Set A:0 [default=%(default)r]")
+    return parser
+
 
 def main(top_block_cls=time_sink_1_10_100_x310, options=None):
+    if options is None:
+        options = argument_parser().parse_args()
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(ip_address=options.ip_address, rx_usrp_channel=options.rx_usrp_channel)
 
     tb.start()
 

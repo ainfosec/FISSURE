@@ -43,7 +43,7 @@ from gnuradio import qtgui
 
 class waterfall_bladerf(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, serial="0"):
         gr.top_block.__init__(self, "Waterfall Bladerf", catch_exceptions=True)
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Waterfall Bladerf")
@@ -73,6 +73,11 @@ class waterfall_bladerf(gr.top_block, Qt.QWidget):
                 self.restoreGeometry(self.settings.value("geometry"))
         except:
             pass
+
+        ##################################################
+        # Parameters
+        ##################################################
+        self.serial = serial
 
         ##################################################
         # Variables
@@ -118,21 +123,6 @@ class waterfall_bladerf(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.rtlsdr_source_0_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + 'bladerf=0'
-        )
-        self.rtlsdr_source_0_0.set_time_unknown_pps(osmosdr.time_spec_t())
-        self.rtlsdr_source_0_0.set_sample_rate(sample_rate)
-        self.rtlsdr_source_0_0.set_center_freq(rx_frequency*1e6, 0)
-        self.rtlsdr_source_0_0.set_freq_corr(0, 0)
-        self.rtlsdr_source_0_0.set_dc_offset_mode(0, 0)
-        self.rtlsdr_source_0_0.set_iq_balance_mode(0, 0)
-        self.rtlsdr_source_0_0.set_gain_mode(False, 0)
-        self.rtlsdr_source_0_0.set_gain(10, 0)
-        self.rtlsdr_source_0_0.set_if_gain(rx_gain, 0)
-        self.rtlsdr_source_0_0.set_bb_gain(20, 0)
-        self.rtlsdr_source_0_0.set_antenna('', 0)
-        self.rtlsdr_source_0_0.set_bandwidth(0, 0)
         self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
@@ -172,12 +162,27 @@ class waterfall_bladerf(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
+        self.osmosdr_source_0 = osmosdr.source(
+            args="numchan=" + str(1) + " " + "bladerf=" + str(serial)
+        )
+        self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
+        self.osmosdr_source_0.set_sample_rate(sample_rate)
+        self.osmosdr_source_0.set_center_freq(rx_frequency*1e6, 0)
+        self.osmosdr_source_0.set_freq_corr(0, 0)
+        self.osmosdr_source_0.set_dc_offset_mode(0, 0)
+        self.osmosdr_source_0.set_iq_balance_mode(0, 0)
+        self.osmosdr_source_0.set_gain_mode(False, 0)
+        self.osmosdr_source_0.set_gain(10, 0)
+        self.osmosdr_source_0.set_if_gain(rx_gain, 0)
+        self.osmosdr_source_0.set_bb_gain(20, 0)
+        self.osmosdr_source_0.set_antenna('', 0)
+        self.osmosdr_source_0.set_bandwidth(0, 0)
 
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.rtlsdr_source_0_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
+        self.connect((self.osmosdr_source_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
 
 
     def closeEvent(self, event):
@@ -188,40 +193,55 @@ class waterfall_bladerf(gr.top_block, Qt.QWidget):
 
         event.accept()
 
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
+
     def get_sample_rate(self):
         return self.sample_rate
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self._sample_rate_callback(self.sample_rate)
+        self.osmosdr_source_0.set_sample_rate(self.sample_rate)
         self.qtgui_waterfall_sink_x_0.set_frequency_range(0, self.sample_rate)
-        self.rtlsdr_source_0_0.set_sample_rate(self.sample_rate)
 
     def get_rx_gain(self):
         return self.rx_gain
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.rtlsdr_source_0_0.set_if_gain(self.rx_gain, 0)
+        self.osmosdr_source_0.set_if_gain(self.rx_gain, 0)
 
     def get_rx_frequency(self):
         return self.rx_frequency
 
     def set_rx_frequency(self, rx_frequency):
         self.rx_frequency = rx_frequency
-        self.rtlsdr_source_0_0.set_center_freq(self.rx_frequency*1e6, 0)
+        self.osmosdr_source_0.set_center_freq(self.rx_frequency*1e6, 0)
 
 
+
+def argument_parser():
+    parser = ArgumentParser()
+    parser.add_argument(
+        "--serial", dest="serial", type=str, default="0",
+        help="Set 0 [default=%(default)r]")
+    return parser
 
 
 def main(top_block_cls=waterfall_bladerf, options=None):
+    if options is None:
+        options = argument_parser().parse_args()
 
     if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
         style = gr.prefs().get_string('qtgui', 'style', 'raster')
         Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(serial=options.serial)
 
     tb.start()
 

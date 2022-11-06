@@ -1320,7 +1320,8 @@ foxtrotgps --help
 
 # multimon-ng
 programs_ubuntu22_04.append(('multimon-ng',
-"""mkdir -p ~/Installed_by_FISSURE
+"""sudo apt-get install -y libpulse-dev
+mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/EliasOenal/multimonNG.git
 cd multimonNG
@@ -1543,7 +1544,35 @@ sudo make install
 ls /usr/local/bin/SigDigger
 """,True,None))
 
+# QSSTV
+programs_ubuntu22_04.append(('QSSTV',
+"""sudo apt-get install -y qsstv
+########## Verify ##########
+ls /usr/bin/qsstv
+""",True,None))
 
+# m17-cxx-demod
+programs_ubuntu22_04.append(('m17-cxx-demod',
+"""sudo apt-get install -y libcodec2-dev libboost-dev libgtest-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mobilinkd/m17-cxx-demod.git
+cd m17-cxx-demod/
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+ls /usr/local/bin/m17-demod
+""",True,None))
+
+# Fldigi
+programs_ubuntu22_04.append(('Fldigi',
+"""sudo apt-get install -y fldigi
+########## Verify ##########
+ls /usr/bin/fldigi
+""",True,None))
 
 ########################################################################
        
