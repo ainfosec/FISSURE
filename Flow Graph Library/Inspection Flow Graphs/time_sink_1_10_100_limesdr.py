@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Time Sink 1 10 100 Limesdr
-# Generated: Thu Sep 16 20:49:01 2021
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 from distutils.version import StrictVersion
@@ -59,11 +59,8 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "time_sink_1_10_100_limesdr")
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
         ##################################################
         # Variables
@@ -87,18 +84,24 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
         self._sample_rate_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_sample_rate(self._sample_rate_options[i]))
         self.top_grid_layout.addWidget(self._sample_rate_tool_bar, 0, 0, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_gain_range = Range(0, 70, 1, 50, 200)
         self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, '              Gain:', "counter_slider", float)
         self.top_grid_layout.addWidget(self._rx_gain_win, 1, 0, 1, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(1,2)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(1, 2):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_frequency_range = Range(50, 6000, .1, 2412, 200)
         self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, ' Freq. (MHz):', "counter_slider", float)
         self.top_grid_layout.addWidget(self._rx_frequency_win, 2, 0, 1, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(2,3)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(2, 3):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.qtgui_time_sink_x_0_1 = qtgui.time_sink_c(
         	100000, #size
         	sample_rate, #samp_rate
@@ -150,8 +153,10 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_1_win = sip.wrapinstance(self.qtgui_time_sink_x_0_1.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_1_win, 26, 0, 10, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(26,36)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(26, 36):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.qtgui_time_sink_x_0_0 = qtgui.time_sink_c(
         	100000, #size
         	sample_rate, #samp_rate
@@ -203,8 +208,10 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_win, 15, 0, 10, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(15,25)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(15, 25):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
         	100000, #size
         	sample_rate, #samp_rate
@@ -256,8 +263,10 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 3, 0, 10, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(3,13)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(3, 13):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.limesdr_source_0 = limesdr.source('', 0, '')
         self.limesdr_source_0.set_sample_rate(sample_rate)
         self.limesdr_source_0.set_center_freq(rx_frequency*1e6, 0)
@@ -268,6 +277,8 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
 
         self.blocks_keep_one_in_n_0_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, 100)
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, 10)
+
+
 
         ##################################################
         # Connections
@@ -310,9 +321,6 @@ class time_sink_1_10_100_limesdr(gr.top_block, Qt.QWidget):
 
 def main(top_block_cls=time_sink_1_10_100_limesdr, options=None):
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Instantaneous Frequency Hackrf
-# Generated: Sun Aug 21 14:45:08 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 from distutils.version import StrictVersion
@@ -39,7 +39,7 @@ from gnuradio import qtgui
 
 class instantaneous_frequency_hackrf(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, serial="0"):
         gr.top_block.__init__(self, "Instantaneous Frequency Hackrf")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Instantaneous Frequency Hackrf")
@@ -61,16 +61,17 @@ class instantaneous_frequency_hackrf(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "instantaneous_frequency_hackrf")
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
+
+        ##################################################
+        # Parameters
+        ##################################################
+        self.serial = serial
 
         ##################################################
         # Variables
         ##################################################
-        self.serial = serial = "0"
         self.sample_rate = sample_rate = 1e6
         self.rx_hackrf_gain = rx_hackrf_gain = 40
         self.rx_frequency = rx_frequency = 2412
@@ -91,18 +92,24 @@ class instantaneous_frequency_hackrf(gr.top_block, Qt.QWidget):
         self._sample_rate_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_sample_rate(self._sample_rate_options[i]))
         self.top_grid_layout.addWidget(self._sample_rate_tool_bar, 0, 0, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_hackrf_gain_range = Range(0, 47, 1, 40, 200)
         self._rx_hackrf_gain_win = RangeWidget(self._rx_hackrf_gain_range, self.set_rx_hackrf_gain, '              Gain:', "counter_slider", float)
         self.top_grid_layout.addWidget(self._rx_hackrf_gain_win, 1, 0, 1, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(1,2)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(1, 2):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_frequency_range = Range(50, 6000, .1, 2412, 200)
         self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, ' Freq. (MHz):', "counter_slider", float)
         self.top_grid_layout.addWidget(self._rx_frequency_win, 2, 0, 1, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(2,3)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(2, 3):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._decimation_options = [1,10,100,1000]
         self._decimation_labels = ["1","10","100","1000"]
         self._decimation_tool_bar = Qt.QToolBar(self)
@@ -115,8 +122,10 @@ class instantaneous_frequency_hackrf(gr.top_block, Qt.QWidget):
         self._decimation_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_decimation(self._decimation_options[i]))
         self.top_grid_layout.addWidget(self._decimation_tool_bar, 0, 1, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(1,2)]
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(1, 2):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
         	100000, #size
         	sample_rate/decimation, #samp_rate
@@ -165,8 +174,10 @@ class instantaneous_frequency_hackrf(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 3, 0, 20, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(3,23)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(3, 23):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + "hackrf=" + str(serial) )
         self.osmosdr_source_0.set_sample_rate(sample_rate)
         self.osmosdr_source_0.set_center_freq(rx_frequency*1e6, 0)
@@ -182,6 +193,8 @@ class instantaneous_frequency_hackrf(gr.top_block, Qt.QWidget):
 
         self.dect2_phase_diff_0 = dect2.phase_diff()
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, decimation)
+
+
 
         ##################################################
         # Connections
@@ -234,14 +247,21 @@ class instantaneous_frequency_hackrf(gr.top_block, Qt.QWidget):
         self.blocks_keep_one_in_n_0.set_n(self.decimation)
 
 
-def main(top_block_cls=instantaneous_frequency_hackrf, options=None):
+def argument_parser():
+    parser = OptionParser(usage="%prog: [options]", option_class=eng_option)
+    parser.add_option(
+        "", "--serial", dest="serial", type="string", default="0",
+        help="Set 0 [default=%default]")
+    return parser
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
+
+def main(top_block_cls=instantaneous_frequency_hackrf, options=None):
+    if options is None:
+        options, _ = argument_parser().parse_args()
+
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(serial=options.serial)
     tb.start()
     tb.show()
 

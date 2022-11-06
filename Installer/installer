@@ -1390,7 +1390,8 @@ foxtrotgps --help
 
 # multimon-ng
 programs_ubuntu18_04.append(('multimon-ng',
-"""mkdir -p ~/Installed_by_FISSURE
+"""sudo apt-get install -y libpulse-dev
+mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/EliasOenal/multimonNG.git
 cd multimonNG
@@ -1571,6 +1572,20 @@ sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan
 rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+""",True,None))
+
+# QSSTV
+programs_ubuntu18_04.append(('QSSTV',
+"""sudo apt-get install -y qsstv
+########## Verify ##########
+ls /usr/bin/qsstv
+""",True,None))
+
+# Fldigi
+programs_ubuntu18_04.append(('Fldigi',
+"""sudo apt-get install -y fldigi
+########## Verify ##########
+ls /usr/bin/fldigi
 """,True,None))
 
 
@@ -2951,7 +2966,8 @@ foxtrotgps --help
 
 # multimon-ng
 programs_ubuntu18_04_5.append(('multimon-ng',
-"""mkdir -p ~/Installed_by_FISSURE
+"""sudo apt-get install -y libpulse-dev
+mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/EliasOenal/multimonNG.git
 cd multimonNG
@@ -3134,6 +3150,21 @@ rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.s
 ########## Verify ##########
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 """,True,None))
+
+# QSSTV
+programs_ubuntu18_04_5.append(('QSSTV',
+"""sudo apt-get install -y qsstv
+########## Verify ##########
+ls /usr/bin/qsstv
+""",True,None))
+
+# Fldigi
+programs_ubuntu18_04_5.append(('Fldigi',
+"""sudo apt-get install -y fldigi
+########## Verify ##########
+ls /usr/bin/fldigi
+""",True,None))
+
 
 
 ########################################################################
@@ -4513,7 +4544,8 @@ foxtrotgps --help
 
 # multimon-ng
 programs_ubuntu18_04_6.append(('multimon-ng',
-"""mkdir -p ~/Installed_by_FISSURE
+"""sudo apt-get install -y libpulse-dev
+mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/EliasOenal/multimonNG.git
 cd multimonNG
@@ -4695,6 +4727,20 @@ sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan
 rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+""",True,None))
+
+# QSSTV
+programs_ubuntu18_04_6.append(('QSSTV',
+"""sudo apt-get install -y qsstv
+########## Verify ##########
+ls /usr/bin/qsstv
+""",True,None))
+
+# Fldigi
+programs_ubuntu18_04_6.append(('Fldigi',
+"""sudo apt-get install -y fldigi
+########## Verify ##########
+ls /usr/bin/fldigi
 """,True,None))
 
 

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Signal Envelope Plutosdr
-# Generated: Mon Sep  5 15:59:08 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 from distutils.version import StrictVersion
@@ -37,7 +37,7 @@ from gnuradio import qtgui
 
 class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, ip_address="192.168.2.1"):
         gr.top_block.__init__(self, "Signal Envelope Plutosdr")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Signal Envelope Plutosdr")
@@ -59,11 +59,13 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "signal_envelope_plutosdr")
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
+
+        ##################################################
+        # Parameters
+        ##################################################
+        self.ip_address = ip_address
 
         ##################################################
         # Variables
@@ -71,7 +73,6 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
         self.sample_rate = sample_rate = 1e6
         self.rx_gain = rx_gain = 64
         self.rx_frequency = rx_frequency = 2412
-        self.ip_address = ip_address = "192.168.2.1"
         self.decimation = decimation = 1
 
         ##################################################
@@ -89,18 +90,24 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
         self._sample_rate_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_sample_rate(self._sample_rate_options[i]))
         self.top_grid_layout.addWidget(self._sample_rate_tool_bar, 0, 0, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_gain_range = Range(0, 71, 1, 64, 200)
         self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, '              Gain:', "counter_slider", float)
         self.top_grid_layout.addWidget(self._rx_gain_win, 1, 0, 1, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(1,2)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(1, 2):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_frequency_range = Range(325, 3800, .1, 2412, 200)
         self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, ' Freq. (MHz):', "counter_slider", float)
         self.top_grid_layout.addWidget(self._rx_frequency_win, 2, 0, 1, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(2,3)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(2, 3):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._decimation_options = [1,10,100,1000]
         self._decimation_labels = ["1","10","100","1000"]
         self._decimation_tool_bar = Qt.QToolBar(self)
@@ -113,8 +120,10 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
         self._decimation_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_decimation(self._decimation_options[i]))
         self.top_grid_layout.addWidget(self._decimation_tool_bar, 0, 2, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(2,3)]
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(2, 3):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
         	100000, #size
         	sample_rate/decimation, #samp_rate
@@ -163,11 +172,15 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 3, 0, 20, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(3,23)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(3, 23):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.pluto_source_0 = iio.pluto_source("ip:" + str(ip_address), int(float(rx_frequency)*1e6), int(float(sample_rate)), 20000000, 0x8000, False, True, True, "manual", float(rx_gain), '', True)
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, decimation)
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
+
+
 
         ##################################################
         # Connections
@@ -180,6 +193,12 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
         self.settings = Qt.QSettings("GNU Radio", "signal_envelope_plutosdr")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
+
+    def get_ip_address(self):
+        return self.ip_address
+
+    def set_ip_address(self, ip_address):
+        self.ip_address = ip_address
 
     def get_sample_rate(self):
         return self.sample_rate
@@ -204,12 +223,6 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
         self.rx_frequency = rx_frequency
         self.pluto_source_0.set_params(int(float(self.rx_frequency)*1e6), int(float(self.sample_rate)), 20000000, False, True, True, "manual", float(self.rx_gain), '', True)
 
-    def get_ip_address(self):
-        return self.ip_address
-
-    def set_ip_address(self, ip_address):
-        self.ip_address = ip_address
-
     def get_decimation(self):
         return self.decimation
 
@@ -220,14 +233,21 @@ class signal_envelope_plutosdr(gr.top_block, Qt.QWidget):
         self.blocks_keep_one_in_n_0.set_n(self.decimation)
 
 
-def main(top_block_cls=signal_envelope_plutosdr, options=None):
+def argument_parser():
+    parser = OptionParser(usage="%prog: [options]", option_class=eng_option)
+    parser.add_option(
+        "", "--ip-address", dest="ip_address", type="string", default="192.168.2.1",
+        help="Set 192.168.2.1 [default=%default]")
+    return parser
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
+
+def main(top_block_cls=signal_envelope_plutosdr, options=None):
+    if options is None:
+        options, _ = argument_parser().parse_args()
+
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(ip_address=options.ip_address)
     tb.start()
     tb.show()
 

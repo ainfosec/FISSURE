@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Signal Envelope B210
-# Generated: Sat Jan  1 22:15:46 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 from distutils.version import StrictVersion
@@ -38,7 +38,7 @@ from gnuradio import qtgui
 
 class signal_envelope_b210(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, rx_usrp_channel="A:A", serial="False"):
         gr.top_block.__init__(self, "Signal Envelope B210")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Signal Envelope B210")
@@ -60,19 +60,20 @@ class signal_envelope_b210(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "signal_envelope_b210")
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
+
+        ##################################################
+        # Parameters
+        ##################################################
+        self.rx_usrp_channel = rx_usrp_channel
+        self.serial = serial
 
         ##################################################
         # Variables
         ##################################################
-        self.serial = serial = "False"
         self.sample_rate = sample_rate = 1e6
         self.rx_usrp_gain = rx_usrp_gain = 60
-        self.rx_usrp_channel = rx_usrp_channel = "A:A"
         self.rx_usrp_antenna = rx_usrp_antenna = "TX/RX"
         self.rx_frequency = rx_frequency = 2412
         self.decimation = decimation = 1
@@ -92,13 +93,17 @@ class signal_envelope_b210(gr.top_block, Qt.QWidget):
         self._sample_rate_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_sample_rate(self._sample_rate_options[i]))
         self.top_grid_layout.addWidget(self._sample_rate_tool_bar, 0, 0, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_usrp_gain_range = Range(0, 90, 1, 60, 200)
         self._rx_usrp_gain_win = RangeWidget(self._rx_usrp_gain_range, self.set_rx_usrp_gain, '              Gain:', "counter_slider", float)
         self.top_grid_layout.addWidget(self._rx_usrp_gain_win, 1, 0, 1, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(1,2)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(1, 2):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_usrp_antenna_options = ["TX/RX", "RX2"]
         self._rx_usrp_antenna_labels = ["TX/RX", "RX2"]
         self._rx_usrp_antenna_tool_bar = Qt.QToolBar(self)
@@ -111,13 +116,17 @@ class signal_envelope_b210(gr.top_block, Qt.QWidget):
         self._rx_usrp_antenna_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_rx_usrp_antenna(self._rx_usrp_antenna_options[i]))
         self.top_grid_layout.addWidget(self._rx_usrp_antenna_tool_bar, 0, 1, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(1,2)]
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(1, 2):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_frequency_range = Range(50, 6000, .1, 2412, 200)
         self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, ' Freq. (MHz):', "counter_slider", float)
         self.top_grid_layout.addWidget(self._rx_frequency_win, 2, 0, 1, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(2,3)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(2, 3):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._decimation_options = [1,10,100,1000]
         self._decimation_labels = ["1","10","100","1000"]
         self._decimation_tool_bar = Qt.QToolBar(self)
@@ -130,8 +139,10 @@ class signal_envelope_b210(gr.top_block, Qt.QWidget):
         self._decimation_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_decimation(self._decimation_options[i]))
         self.top_grid_layout.addWidget(self._decimation_tool_bar, 0, 2, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(2,3)]
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(2, 3):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.uhd_usrp_source_0 = uhd.usrp_source(
         	",".join((serial, "")),
         	uhd.stream_args(
@@ -144,6 +155,8 @@ class signal_envelope_b210(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_center_freq(rx_frequency*1e6, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset("", 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance("", 0)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
         	100000, #size
         	sample_rate/decimation, #samp_rate
@@ -192,10 +205,14 @@ class signal_envelope_b210(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 3, 0, 20, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(3,23)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(3, 23):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, decimation)
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
+
+
 
         ##################################################
         # Connections
@@ -208,6 +225,12 @@ class signal_envelope_b210(gr.top_block, Qt.QWidget):
         self.settings = Qt.QSettings("GNU Radio", "signal_envelope_b210")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
+
+    def get_rx_usrp_channel(self):
+        return self.rx_usrp_channel
+
+    def set_rx_usrp_channel(self, rx_usrp_channel):
+        self.rx_usrp_channel = rx_usrp_channel
 
     def get_serial(self):
         return self.serial
@@ -231,12 +254,6 @@ class signal_envelope_b210(gr.top_block, Qt.QWidget):
         self.rx_usrp_gain = rx_usrp_gain
         self.uhd_usrp_source_0.set_gain(self.rx_usrp_gain, 0)
 
-
-    def get_rx_usrp_channel(self):
-        return self.rx_usrp_channel
-
-    def set_rx_usrp_channel(self, rx_usrp_channel):
-        self.rx_usrp_channel = rx_usrp_channel
 
     def get_rx_usrp_antenna(self):
         return self.rx_usrp_antenna
@@ -263,14 +280,24 @@ class signal_envelope_b210(gr.top_block, Qt.QWidget):
         self.blocks_keep_one_in_n_0.set_n(self.decimation)
 
 
-def main(top_block_cls=signal_envelope_b210, options=None):
+def argument_parser():
+    parser = OptionParser(usage="%prog: [options]", option_class=eng_option)
+    parser.add_option(
+        "", "--rx-usrp-channel", dest="rx_usrp_channel", type="string", default="A:A",
+        help="Set A:A [default=%default]")
+    parser.add_option(
+        "", "--serial", dest="serial", type="string", default="False",
+        help="Set False [default=%default]")
+    return parser
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
+
+def main(top_block_cls=signal_envelope_b210, options=None):
+    if options is None:
+        options, _ = argument_parser().parse_args()
+
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(rx_usrp_channel=options.rx_usrp_channel, serial=options.serial)
     tb.start()
     tb.show()
 

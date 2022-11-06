@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Waterfall B205Mini
-# Generated: Sat Jan  1 22:17:08 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 from distutils.version import StrictVersion
@@ -37,7 +37,7 @@ from gnuradio import qtgui
 
 class waterfall_b205mini(gr.top_block, Qt.QWidget):
 
-    def __init__(self):
+    def __init__(self, rx_usrp_channel="A:A", serial="False"):
         gr.top_block.__init__(self, "Waterfall B205Mini")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Waterfall B205Mini")
@@ -59,19 +59,20 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "waterfall_b205mini")
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
+
+        ##################################################
+        # Parameters
+        ##################################################
+        self.rx_usrp_channel = rx_usrp_channel
+        self.serial = serial
 
         ##################################################
         # Variables
         ##################################################
-        self.serial = serial = "False"
         self.sample_rate = sample_rate = 1e6
         self.rx_usrp_gain = rx_usrp_gain = 60
-        self.rx_usrp_channel = rx_usrp_channel = "A:A"
         self.rx_usrp_antenna = rx_usrp_antenna = "TX/RX"
         self.rx_frequency = rx_frequency = 2412
 
@@ -90,13 +91,17 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
         self._sample_rate_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_sample_rate(self._sample_rate_options[i]))
         self.top_grid_layout.addWidget(self._sample_rate_tool_bar, 0, 0, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_usrp_gain_range = Range(0, 90, 1, 60, 200)
         self._rx_usrp_gain_win = RangeWidget(self._rx_usrp_gain_range, self.set_rx_usrp_gain, '              Gain:', "counter_slider", float)
         self.top_grid_layout.addWidget(self._rx_usrp_gain_win, 1, 0, 1, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(1,2)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(1, 2):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_usrp_antenna_options = ["TX/RX", "RX2"]
         self._rx_usrp_antenna_labels = ["TX/RX", "RX2"]
         self._rx_usrp_antenna_tool_bar = Qt.QToolBar(self)
@@ -109,13 +114,17 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
         self._rx_usrp_antenna_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_rx_usrp_antenna(self._rx_usrp_antenna_options[i]))
         self.top_grid_layout.addWidget(self._rx_usrp_antenna_tool_bar, 0, 1, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(1,2)]
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(1, 2):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_frequency_range = Range(50, 6000, 1, 2412, 200)
         self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, ' Freq. (MHz):', "counter_slider", float)
         self.top_grid_layout.addWidget(self._rx_frequency_win, 2, 0, 1, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(2,3)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(2, 3):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.uhd_usrp_source_0 = uhd.usrp_source(
         	",".join((serial, "")),
         	uhd.stream_args(
@@ -128,6 +137,8 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_center_freq(rx_frequency*1e6, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset("", 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance("", 0)
         self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
         	1024, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
@@ -164,8 +175,12 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
 
         self._qtgui_waterfall_sink_x_0_win = sip.wrapinstance(self.qtgui_waterfall_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_waterfall_sink_x_0_win, 3, 0, 6, 4)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(3,9)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,4)]
+        for r in range(3, 9):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
+
+
 
         ##################################################
         # Connections
@@ -176,6 +191,12 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
         self.settings = Qt.QSettings("GNU Radio", "waterfall_b205mini")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
+
+    def get_rx_usrp_channel(self):
+        return self.rx_usrp_channel
+
+    def set_rx_usrp_channel(self, rx_usrp_channel):
+        self.rx_usrp_channel = rx_usrp_channel
 
     def get_serial(self):
         return self.serial
@@ -200,12 +221,6 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_gain(self.rx_usrp_gain, 0)
 
 
-    def get_rx_usrp_channel(self):
-        return self.rx_usrp_channel
-
-    def set_rx_usrp_channel(self, rx_usrp_channel):
-        self.rx_usrp_channel = rx_usrp_channel
-
     def get_rx_usrp_antenna(self):
         return self.rx_usrp_antenna
 
@@ -222,14 +237,24 @@ class waterfall_b205mini(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_center_freq(self.rx_frequency*1e6, 0)
 
 
-def main(top_block_cls=waterfall_b205mini, options=None):
+def argument_parser():
+    parser = OptionParser(usage="%prog: [options]", option_class=eng_option)
+    parser.add_option(
+        "", "--rx-usrp-channel", dest="rx_usrp_channel", type="string", default="A:A",
+        help="Set A:A [default=%default]")
+    parser.add_option(
+        "", "--serial", dest="serial", type="string", default="False",
+        help="Set False [default=%default]")
+    return parser
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
+
+def main(top_block_cls=waterfall_b205mini, options=None):
+    if options is None:
+        options, _ = argument_parser().parse_args()
+
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls()
+    tb = top_block_cls(rx_usrp_channel=options.rx_usrp_channel, serial=options.serial)
     tb.start()
     tb.show()
 

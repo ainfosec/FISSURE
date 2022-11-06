@@ -101,6 +101,11 @@ License (AGPL-3.0): https://github.com/falkenber9/falcon/blob/master/LICENSE
 Project: https://osmocom.org/projects/osmo-fl2k/wiki  
 License (GPL v2.0): https://gitea.osmocom.org/sdr/osmo-fl2k/src/branch/master/COPYING
 
+**Fldigi**  
+Project: http://www.w1hkj.com/  
+Copyright (C) 2007-2010 Dave Freese, Stelios Bounanos, and others  
+License (GPL v3.0): https://github.com/w1hkj/fldigi/blob/master/COPYING
+
 **FoxtrotGPS**  
 Project: https://www.foxtrotgps.org/  
 License (GPL v2.0): https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
@@ -308,6 +313,10 @@ License (AGPL-3.0): https://github.com/JiaoXianjun/LTE-Cell-Scanner/blob/master/
 Project: https://github.com/mrlnc/LTE-ciphercheck  
 License (AGPL-3.0): https://github.com/mrlnc/LTE-ciphercheck/blob/rebase_20.04/LICENSE
 
+**m17-cxx-demod**  
+Project: https://github.com/mobilinkd/m17-cxx-demod  
+License (GPL-3.0): https://github.com/mobilinkd/m17-cxx-demod/blob/master/LICENSE
+
 **Metasploit**  
 Project: https://www.metasploit.com/  
 Copyright 2006-2020, Rapid7, Inc.  
@@ -370,6 +379,10 @@ License (BSD-3-Clause): https://github.com/semuconsulting/PyGPSClient/blob/maste
 **QSpectrumAnalyzer**  
 Project: https://github.com/xmikos/qspectrumanalyzer  
 License (GPL-3.0): https://github.com/xmikos/qspectrumanalyzer/blob/master/LICENSE
+
+**QSSTV**  
+Project: https://charlesreid1.com/wiki/Qsstv  
+License (CC BY-NC 4.0): https://creativecommons.org/licenses/by-nc/4.0/
 
 **QtDesigner**  
 Project: https://doc.qt.io/qt-5/qtdesigner-manual.html  

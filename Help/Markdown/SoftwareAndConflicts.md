@@ -18,6 +18,7 @@ The following is a table of the major software tools that have been proven to wo
 | ESP8266 Deauther v2 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | FALCON | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
 | fl2k | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Fldigi | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | FoxtrotGPS | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Geany | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | GNU Radio | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -66,6 +67,7 @@ The following is a table of the major software tools that have been proven to wo
 | libbtbb | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | LTE-Cell-Scanner | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | LTE-ciphercheck | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |
+| m17-cxx-demod | :x: | :x: | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Metasploit | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
 | minicom | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | minimodem | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -80,6 +82,7 @@ The following is a table of the major software tools that have been proven to wo
 | PuTTY | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | PyGPSClient | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | QSpectrumAnalyzer | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| QSSTV | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | QtDesigner | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | radiosonde_auto_rx | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | rehex | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -143,6 +146,7 @@ The following are the software versions that are included with the FISSURE insta
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
+| Fldigi | 4.0.1 | No | http://www.w1hkj.com/ |
 | FoxtrotGPS | 1.2.1 | No | https://www.foxtrotgps.org/ |
 | Geany | 1.32 | No | https://www.geany.org/ |
 | GNU Radio | 3.7.13.5 | No | https://www.gnuradio.org/ |
@@ -204,6 +208,7 @@ The following are the software versions that are included with the FISSURE insta
 | PuTTY | Release 0.70 | No | https://www.putty.org/ |
 | PyGPSClient | 1.3.5 | No | https://github.com/semuconsulting/PyGPSClient |
 | QSpectrumAnalyzer | 2.1.0 | No | https://github.com/xmikos/qspectrumanalyzer |
+| QSSTV | 9.2.6 | No | https://charlesreid1.com/wiki/Qsstv |
 | QtDesigner | 4.8.7 | No | https://doc.qt.io/qt-5/qtdesigner-manual.html |
 | radiosonde_auto_rx | master | yes | https://github.com/projecthorus/radiosonde_auto_rx |
 | rehex | master | Yes | https://github.com/solemnwarning/rehex |
@@ -253,6 +258,7 @@ The following are the software versions that are included with the FISSURE insta
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
+| Fldigi | 4.0.1 | No | http://www.w1hkj.com/ |
 | FoxtrotGPS | 1.2.1 | No | https://www.foxtrotgps.org/ |
 | Geany | 1.32 | No | https://www.geany.org/ |
 | GNU Radio | 3.7.13.5 | No | https://www.gnuradio.org/ |
@@ -314,6 +320,7 @@ The following are the software versions that are included with the FISSURE insta
 | PuTTY | Release 0.70 | No | https://www.putty.org/ |
 | PyGPSClient | 1.1.2 | No | https://github.com/semuconsulting/PyGPSClient |
 | QSpectrumAnalyzer | 2.1.0 | No | https://github.com/xmikos/qspectrumanalyzer |
+| QSSTV | 9.2.6 | No | https://charlesreid1.com/wiki/Qsstv |
 | QtDesigner | 4.8.7 | No | https://doc.qt.io/qt-5/qtdesigner-manual.html |
 | radiosonde_auto_rx | master | yes | https://github.com/projecthorus/radiosonde_auto_rx |
 | rehex | master | Yes | https://github.com/solemnwarning/rehex |
@@ -363,6 +370,7 @@ The following are the software versions that are included with the FISSURE insta
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
+| Fldigi | 4.0.1 | No | http://www.w1hkj.com/ |
 | FoxtrotGPS | 1.2.1 | No | https://www.foxtrotgps.org/ |
 | Geany | 1.32 | No | https://www.geany.org/ |
 | GNU Radio | 3.7.13.5 | No | https://www.gnuradio.org/ |
@@ -425,6 +433,7 @@ The following are the software versions that are included with the FISSURE insta
 | PuTTY | Release 0.70 | No | https://www.putty.org/ |
 | PyGPSClient | 1.3.5 | No | https://github.com/semuconsulting/PyGPSClient |
 | QSpectrumAnalyzer | 2.1.0 | No | https://github.com/xmikos/qspectrumanalyzer |
+| QSSTV | 9.2.6 | No | https://charlesreid1.com/wiki/Qsstv |
 | QtDesigner | 4.8.7 | No | https://doc.qt.io/qt-5/qtdesigner-manual.html |
 | radiosonde_auto_rx | master | yes | https://github.com/projecthorus/radiosonde_auto_rx |
 | rehex | master | Yes | https://github.com/solemnwarning/rehex |
@@ -474,6 +483,7 @@ The following are the software versions that are included with the FISSURE insta
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
+| Fldigi | 4.1.06 | No | http://www.w1hkj.com/ |
 | FoxtrotGPS | 1.2.2 | No | https://www.foxtrotgps.org/ |
 | Geany | 1.36 | No | https://www.geany.org/ |
 | GNU Radio | 3.8.5.0 | No | https://www.gnuradio.org/ |
@@ -522,6 +532,7 @@ The following are the software versions that are included with the FISSURE insta
 | libbtbb | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
 | LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
+| m17-cxx-demod | master | Yes | https://github.com/mobilinkd/m17-cxx-demod |
 | Metasploit | v6.1.44-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
@@ -536,6 +547,7 @@ The following are the software versions that are included with the FISSURE insta
 | PuTTY | 0.73 | No | https://www.putty.org/ |
 | PyGPSClient | 1.3.5 | No | https://github.com/semuconsulting/PyGPSClient |
 | QSpectrumAnalyzer | 2.1.0 | No | https://github.com/xmikos/qspectrumanalyzer |
+| QSSTV | 9.4.4 | No | https://charlesreid1.com/wiki/Qsstv |
 | QtDesigner | 5.12.8 | No | https://doc.qt.io/qt-5/qtdesigner-manual.html |
 | radiosonde_auto_rx | master | Yes | https://github.com/projecthorus/radiosonde_auto_rx |
 | rehex | master | Yes | https://github.com/solemnwarning/rehex |
@@ -586,6 +598,7 @@ The following are the software versions that are included with the FISSURE insta
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | FALCON | - | Yes | https://github.com/falkenber9/falcon | 
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
+| Fldigi | 4.1.06 | No | http://www.w1hkj.com/ |
 | FoxtrotGPS | 1.2.2 | No | https://www.foxtrotgps.org/ |
 | Geany | 1.36 | No | https://www.geany.org/ |
 | GNU Radio | 3.8.5.0 | No | https://www.gnuradio.org/ |
@@ -634,6 +647,7 @@ The following are the software versions that are included with the FISSURE insta
 | libbtbb | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
 | LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
+| m17-cxx-demod | master | Yes | https://github.com/mobilinkd/m17-cxx-demod |
 | Metasploit | v6.1.44-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
@@ -648,6 +662,7 @@ The following are the software versions that are included with the FISSURE insta
 | PuTTY | 0.73 | No | https://www.putty.org/ |
 | PyGPSClient | 1.3.5 | No | https://github.com/semuconsulting/PyGPSClient |
 | QSpectrumAnalyzer | 2.1.0 | No | https://github.com/xmikos/qspectrumanalyzer |
+| QSSTV | 9.4.4 | No | https://charlesreid1.com/wiki/Qsstv |
 | QtDesigner | 5.12.8 | No | https://doc.qt.io/qt-5/qtdesigner-manual.html |
 | radiosonde_auto_rx | master | Yes | https://github.com/projecthorus/radiosonde_auto_rx |
 | rehex | master | Yes | https://github.com/solemnwarning/rehex |
@@ -698,6 +713,7 @@ The following are the software versions that are included with the FISSURE insta
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
 | ~~FALCON~~ | - | Yes | https://github.com/falkenber9/falcon | 
 | fl2k | - | Yes | https://osmocom.org/projects/osmo-fl2k/wiki |
+| Fldigi | 4.1.20 | No | http://www.w1hkj.com/ |
 | FoxtrotGPS | 1.2.2+ | No | https://www.foxtrotgps.org/ |
 | Geany | 1.38 | No | https://www.geany.org/ |
 | GNU Radio | 3.10.4.0 | No | https://www.gnuradio.org/ |
@@ -746,6 +762,7 @@ The following are the software versions that are included with the FISSURE insta
 | ~~libbtbb~~ | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
 | LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
+| m17-cxx-demod | master | Yes | https://github.com/mobilinkd/m17-cxx-demod |
 | ~~Metasploit~~ | v6.1.44-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.8 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
@@ -760,6 +777,7 @@ The following are the software versions that are included with the FISSURE insta
 | PuTTY | 0.76 | No | https://www.putty.org/ |
 | PyGPSClient | 1.3.5 | No | https://github.com/semuconsulting/PyGPSClient |
 | QSpectrumAnalyzer | 2.1.0 | No | https://github.com/xmikos/qspectrumanalyzer |
+| QSSTV | 9.5.8 | No | https://charlesreid1.com/wiki/Qsstv |
 | QtDesigner | 5.15.3 | No | https://doc.qt.io/qt-5/qtdesigner-manual.html |
 | radiosonde_auto_rx | master | Yes | https://github.com/projecthorus/radiosonde_auto_rx |
 | rehex | master | Yes | https://github.com/solemnwarning/rehex |
@@ -804,4 +822,4 @@ The following are a list of known software conflicts and incompatibilities withi
   - UBX daughterboards require specific UHD versions
   - Don't name the TSI component "tsi.py", it messes with importing gr-TSI blocks
   - ZMQ header adds something similar to 0x0007020004 to TCP data in PUB sink (flags/payload_length/command_length/command). A `sub_listener.setsockopt_string(zmq.SUBSCRIBE,u'')` would need to drop the three bytes for the command length and command.
-  - The default variable values for flow graphs with GUIs cannot be changed with `loadedmod = __import__(flow_graph_filename)`. This means serial or IP address variables will not work for inspection flow graphs.
+  - The default variable values for flow graphs with GUIs cannot be changed with `loadedmod = __import__(flow_graph_filename)`. This means serial or IP address variables must be accessed with parameter blocks and flow graphs called by the python command (mostly for inspection flow graphs).
