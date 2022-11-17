@@ -207,7 +207,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1024, 321]
+    coordinate: [1128, 304.0]
     rotation: 0
     state: enabled
 - name: blocks_multiply_const_vxx_0
@@ -830,6 +830,7 @@ blocks:
     sd_spec6: ''
     sd_spec7: ''
     show_lo_controls: 'False'
+    start_time: '-1.0'
     stream_args: ''
     stream_chans: '[]'
     sync: sync

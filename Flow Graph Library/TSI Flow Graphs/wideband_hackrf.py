@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Wideband Hackrf
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.5.0
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -24,6 +24,7 @@ import ainfosec
 import osmosdr
 import time
 
+
 class wideband_hackrf(gr.top_block):
 
     def __init__(self):
@@ -37,7 +38,7 @@ class wideband_hackrf(gr.top_block):
         self.sample_rate = sample_rate = 20000000
         self.rx_freq = rx_freq = 1200e6
         self.ip_address = ip_address = "N/A"
-        self.gain = gain = 10
+        self.gain = gain = 20
         self.fft_size = fft_size = 512*1
         self.channel = channel = "N/A"
         self.antenna = antenna = "N/A"
@@ -46,14 +47,14 @@ class wideband_hackrf(gr.top_block):
         # Blocks
         ##################################################
         self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + "hackrf="+ serial
+            args="numchan=" + str(1) + " " + "hackrf="+ str(serial)
         )
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(sample_rate)
         self.osmosdr_source_0.set_center_freq(rx_freq, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
-        self.osmosdr_source_0.set_gain(gain, 0)
-        self.osmosdr_source_0.set_if_gain(20, 0)
+        self.osmosdr_source_0.set_gain(10, 0)
+        self.osmosdr_source_0.set_if_gain(gain, 0)
         self.osmosdr_source_0.set_bb_gain(20, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(0, 0)
@@ -67,7 +68,6 @@ class wideband_hackrf(gr.top_block):
         self.ainfosec_wideband_detector1_0 = ainfosec.wideband_detector1("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -79,6 +79,7 @@ class wideband_hackrf(gr.top_block):
         self.connect((self.dc_blocker_xx_0, 0), (self.analog_pwr_squelch_xx_0, 0))
         self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.dc_blocker_xx_0, 0))
+
 
     def get_threshold(self):
         return self.threshold
@@ -119,7 +120,7 @@ class wideband_hackrf(gr.top_block):
 
     def set_gain(self, gain):
         self.gain = gain
-        self.osmosdr_source_0.set_gain(self.gain, 0)
+        self.osmosdr_source_0.set_if_gain(self.gain, 0)
 
     def get_fft_size(self):
         return self.fft_size
@@ -142,18 +143,22 @@ class wideband_hackrf(gr.top_block):
 
 
 
+
+
 def main(top_block_cls=wideband_hackrf, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

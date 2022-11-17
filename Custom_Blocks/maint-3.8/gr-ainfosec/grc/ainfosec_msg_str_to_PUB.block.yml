@@ -1,0 +1,22 @@
+id: ainfosec_msg_str_to_PUB
+label: msg_str_to_PUB
+category: '[ainfosec]'
+
+templates:
+  imports: import ainfosec
+  make: ainfosec.msg_str_to_PUB(${address})
+  
+parameters:
+- id: address
+  label: Address
+  dtype: string
+
+inputs:
+- label: Message
+  domain: message
+  dtype: message
+  vlen: 1
+  optional: 1
+
+
+file_format: 1

@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Wideband Rtl2832U
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.5.0
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -22,6 +22,7 @@ from gnuradio import eng_notation
 import ainfosec
 import osmosdr
 import time
+
 
 class wideband_rtl2832u(gr.top_block):
 
@@ -51,8 +52,8 @@ class wideband_rtl2832u(gr.top_block):
         self.osmosdr_source_0.set_sample_rate(sample_rate)
         self.osmosdr_source_0.set_center_freq(rx_freq, 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
-        self.osmosdr_source_0.set_gain(gain, 0)
-        self.osmosdr_source_0.set_if_gain(20, 0)
+        self.osmosdr_source_0.set_gain(10, 0)
+        self.osmosdr_source_0.set_if_gain(gain, 0)
         self.osmosdr_source_0.set_bb_gain(20, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(0, 0)
@@ -65,7 +66,6 @@ class wideband_rtl2832u(gr.top_block):
         self.ainfosec_wideband_detector1_0 = ainfosec.wideband_detector1("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -76,6 +76,7 @@ class wideband_rtl2832u(gr.top_block):
         self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
         self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.analog_pwr_squelch_xx_0, 0))
+
 
     def get_threshold(self):
         return self.threshold
@@ -116,7 +117,7 @@ class wideband_rtl2832u(gr.top_block):
 
     def set_gain(self, gain):
         self.gain = gain
-        self.osmosdr_source_0.set_gain(self.gain, 0)
+        self.osmosdr_source_0.set_if_gain(self.gain, 0)
 
     def get_fft_size(self):
         return self.fft_size
@@ -139,18 +140,22 @@ class wideband_rtl2832u(gr.top_block):
 
 
 
+
+
 def main(top_block_cls=wideband_rtl2832u, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

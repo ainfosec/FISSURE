@@ -36,4 +36,5 @@ from .adsb_encode import adsb_encode
 from .UDP_to_Wireshark import UDP_to_Wireshark
 from .UDP_to_Wireshark_Async import UDP_to_Wireshark_Async
 from .adsb_parser import adsb_parser
+from .msg_str_to_PUB import msg_str_to_PUB
 #

@@ -216,7 +216,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [296, 184]
+    coordinate: [320, 180.0]
     rotation: 0
     state: enabled
 - name: blocks_complex_to_mag_squared_0
@@ -537,7 +537,7 @@ blocks:
     freq7: 100e6
     freq8: 100e6
     freq9: 100e6
-    gain0: gain
+    gain0: '10'
     gain1: '10'
     gain10: '10'
     gain11: '10'
@@ -601,7 +601,7 @@ blocks:
     gain_mode7: 'False'
     gain_mode8: 'False'
     gain_mode9: 'False'
-    if_gain0: '20'
+    if_gain0: gain
     if_gain1: '20'
     if_gain10: '20'
     if_gain11: '20'
@@ -684,7 +684,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [48, 124]
+    coordinate: [24, 124.0]
     rotation: 0
     state: enabled
 - name: qtgui_time_sink_x_0

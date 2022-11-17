@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: X10 Ook Usrpb210 Decode
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.5.0
 
 from gnuradio import blocks
 from gnuradio import digital
@@ -21,6 +21,7 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 import X10
+
 
 class X10_OOK_USRPB210_Decode(gr.top_block):
 
@@ -68,7 +69,6 @@ class X10_OOK_USRPB210_Decode(gr.top_block):
         self.X10_x10_decoder_0 = X10.x10_decoder()
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -82,6 +82,7 @@ class X10_OOK_USRPB210_Decode(gr.top_block):
         self.connect((self.digital_correlate_access_code_tag_xx_0, 0), (self.blocks_char_to_float_0, 0))
         self.connect((self.fir_filter_xxx_0_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
+
 
     def get_serial(self):
         return self.serial
@@ -131,18 +132,22 @@ class X10_OOK_USRPB210_Decode(gr.top_block):
 
 
 
+
+
 def main(top_block_cls=X10_OOK_USRPB210_Decode, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

@@ -60,7 +60,11 @@ Python2_maint-3.7            |  Python3_maint-3.8            |  Python3_maint-3.
 
 It is recommended to install FISSURE on a clean operating system to avoid existing conflicts. Select all the recommended checkboxes (Default button) to avoid errors while operating the various tools within FISSURE. There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. If an item contains a "Verify" section at the end, the installer will run the command that follows and highlight the checkbox item green or red depending on if any errors are produced by the command. Checked items without a "Verify" section will remain black following the installation.
 
-![install2](/Icons/README/install2.png)
+![install2](/Icons/README/install2.png) 
+
+The FISSURE installer is helpful for staging computers or installing select software programs of interest. The code can be quickly modified to allow for custom software installs.
+
+![install3](/Icons/README/install3.png)
 
 **Usage**
 

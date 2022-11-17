@@ -1,6 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-11-16
+
+Fixing GNU Radio 3.7.13.5 errors and adding new Detector tab.
+ 
+### Added
+
+- Integrated a modified GNU Radio tutorial example into a new Detector tab for Python2 and Python3_maint-3.8 branches
+- Another image showcasing the installer to the README
+- Created a block in gr-ainfosec to pass strings over ZMQ PUB without extra bytes
+   
+### Changed
+
+- Removed unused TSI GUI elements and code in dashboard.py and tsi_component.py
+- Adjusted variable default values in TSI flow graphs
+ 
+### Fixed
+
+- Set FE Corrections to True in UHD:USRP Source blocks for Python2 branch to suppress 3.7.13.5 errors
+- Replaced correlate acces code blocks with newer versions in Python2 branch to work with 3.7.13.5
+- Renamed TSI Sweep detector for USRP N2xx
+- TSI detector plot points colormap scaled to 1 (instead of 255) to map properly for Python3 branches
+
 ## 2022-11-06
 
 Adding tools to help with GRCon22 CTF challenges and changing how inspection flow graphs are called.

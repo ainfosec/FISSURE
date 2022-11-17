@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Wideband Usrp2
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.5.0
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -22,6 +22,7 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 import ainfosec
+
 
 class wideband_usrp2(gr.top_block):
 
@@ -39,7 +40,7 @@ class wideband_usrp2(gr.top_block):
         self.gain = gain = 30
         self.fft_size = fft_size = 512*1
         self.channel = channel = "A:0"
-        self.antenna = antenna = "TX/RX"
+        self.antenna = antenna = "J1"
 
         ##################################################
         # Blocks
@@ -67,7 +68,6 @@ class wideband_usrp2(gr.top_block):
         self.ainfosec_wideband_detector1_0 = ainfosec.wideband_detector1("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
 
 
-
         ##################################################
         # Connections
         ##################################################
@@ -78,6 +78,7 @@ class wideband_usrp2(gr.top_block):
         self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
         self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.analog_pwr_squelch_xx_0, 0))
+
 
     def get_threshold(self):
         return self.threshold
@@ -142,18 +143,22 @@ class wideband_usrp2(gr.top_block):
 
 
 
+
+
 def main(top_block_cls=wideband_usrp2, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:
