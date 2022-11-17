@@ -1753,8 +1753,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     
         self.matplotlib_widget.plotPoint(plot_x, 11, self.matplotlib_widget.computeColormapValue(signal[1]), 5, self.wideband_data)
         
-        # Add it to the Table  
-        print signal      
+        # Add it to the Table      
         self.tableWidget_tsi_wideband.setRowCount(self.tableWidget_tsi_wideband.rowCount()+1)
 
         # Frequency

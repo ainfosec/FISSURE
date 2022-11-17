@@ -34,7 +34,7 @@ class blk(gr.sync_block):  # other base classes are basic_block, decim_block, in
         for vecindx in range(len(input_items[0])):
             if len(np.nonzero(input_items[0][vecindx] > input_items[1][vecindx][0])[0])>0:
                 max_index = (input_items[0][vecindx]).argmax()
-                max_freq = str(round((max_index/int(self.fft_size))*float(self.sample_rate)/1e6 - (float(self.sample_rate)/2e6) + float(self.rx_freq_mhz),4)*1000000)
+                max_freq = str(round((max_index/float(int(self.fft_size)))*float(self.sample_rate)/1e6 - (float(self.sample_rate)/2e6) + float(self.rx_freq_mhz),4)*1000000)
                 max_power = str(int(input_items[0][vecindx][np.nonzero(input_items[0][vecindx] > input_items[1][0])].max()))
                 self.message_port_pub(pmt.intern('detected_signals'), pmt.intern('TSI:/Signal Found/' + max_freq + '/' + max_power + '/' + str(time.time())))
 

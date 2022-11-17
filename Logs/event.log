@@ -1,107 +1,843 @@
-11/16/2022 11:15:38 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
-11/16/2022 11:15:38 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-11/16/2022 11:15:38 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
-11/16/2022 11:15:38 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-11/16/2022 11:15:38 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
-11/16/2022 11:15:38 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-11/16/2022 11:15:38 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
-11/16/2022 11:15:38 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
-11/16/2022 11:15:38 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
-11/16/2022 11:15:38 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
-11/16/2022 11:15:38 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
-11/16/2022 11:15:38 PM - hiprfisr: End of HIPRFISR Initialization
-11/16/2022 11:15:38 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
-11/16/2022 11:15:38 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-11/16/2022 11:15:38 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
-11/16/2022 11:15:38 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-11/16/2022 11:15:38 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
-11/16/2022 11:15:38 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-11/16/2022 11:15:38 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
-11/16/2022 11:15:38 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-11/16/2022 11:15:38 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
-11/16/2022 11:15:38 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-11/16/2022 11:15:38 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
-11/16/2022 11:15:38 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-11/16/2022 11:15:38 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
-11/16/2022 11:15:38 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
-11/16/2022 11:15:38 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
-11/16/2022 11:15:38 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
-11/16/2022 11:15:38 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
-11/16/2022 11:15:38 PM - hiprfisr: Start of Main Event Loop
-11/16/2022 11:15:39 PM - tsi: Port Connected to tcp://localhost:5052
-11/16/2022 11:15:39 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-11/16/2022 11:15:39 PM - fge: Port Connected to tcp://127.0.0.1:5053
-11/16/2022 11:15:39 PM - tsi: Port Initialized to tcp://*:5059
-11/16/2022 11:15:39 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-11/16/2022 11:15:39 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-11/16/2022 11:15:39 PM - fge: Port Initialized to tcp://127.0.0.1:5061
-11/16/2022 11:15:39 PM - tsi: Port Connected to tcp://127.0.0.1:5055
-11/16/2022 11:15:39 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-11/16/2022 11:15:39 PM - tsi: Port Connected to tcp://127.0.0.1:5057
-11/16/2022 11:15:39 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-11/16/2022 11:15:39 PM - fge: Port Connected to tcp://127.0.0.1:5055
-11/16/2022 11:15:39 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-11/16/2022 11:15:39 PM - fge: Port Connected to tcp://127.0.0.1:5057
-11/16/2022 11:15:39 PM - pd: Port Connected to tcp://127.0.0.1:5054
-11/16/2022 11:15:39 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-11/16/2022 11:15:39 PM - pd: Port Initialized to tcp://127.0.0.1:5063
-11/16/2022 11:15:40 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-11/16/2022 11:15:40 PM - pd: Port Connected to tcp://127.0.0.1:5055
-11/16/2022 11:15:40 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-11/16/2022 11:15:40 PM - pd: Port Connected to tcp://127.0.0.1:5057
-11/16/2022 11:15:40 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
-11/16/2022 11:15:40 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
-11/16/2022 11:15:40 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
-11/16/2022 11:15:41 PM - dashboard: Received message: HIPRFISR: Connected TSI
-11/16/2022 11:15:41 PM - dashboard: Received message: HIPRFISR: Connected FGE
-11/16/2022 11:15:41 PM - dashboard: Received message: HIPRFISR: Connected PD
-11/16/2022 11:15:41 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
-11/16/2022 11:15:41 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
-11/16/2022 11:15:42 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
-11/16/2022 11:15:42 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
-11/16/2022 11:15:42 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
-11/16/2022 11:15:42 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
-11/16/2022 11:16:21 PM - dashboard: Sending message: Dashboard: Start TSI Detector ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N A', 'N A', '', 'False']]
-11/16/2022 11:16:21 PM - hiprfisr: Received message: Dashboard: Start TSI Detector ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N A', 'N A', '', 'False']]
-11/16/2022 11:16:21 PM - hiprfisr: Executing Callback: startTSI_Detector with parameters ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N/A', 'N/A', '', 'False']]
-11/16/2022 11:16:21 PM - hiprfisr: Sending message: HIPRFISR: Start TSI Detector ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N A', 'N A', '', 'False']]
-11/16/2022 11:16:21 PM - tsi: Received message: HIPRFISR: Start TSI Detector ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N A', 'N A', '', 'False']]
-11/16/2022 11:16:21 PM - tsi: Executing Callback: startTSI_Detector with parameters ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N/A', 'N/A', '', 'False']]
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.71
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.75
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.79
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.83
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.87
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.91
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.96
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658599.0
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658599.04
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658599.08
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658599.12
-11/16/2022 11:16:39 PM - dashboard: Received message: TSI: Signal Found 2402000000.0 -63 1668658599.16
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.71
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.75
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.79
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.83
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.87
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.91
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658598.96
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658599.0
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658599.04
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658599.08
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658599.12
-11/16/2022 11:16:39 PM - hiprfisr: Received message: TSI: Signal Found 2402000000.0 -63 1668658599.16
-11/16/2022 11:16:48 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-11/16/2022 11:16:48 PM - hiprfisr: Received message: Dashboard: Stop TSI Detector $Parameters
-11/16/2022 11:16:48 PM - hiprfisr: Executing Callback: stopTSI_Detector with parameters None
-11/16/2022 11:16:48 PM - hiprfisr: Sending message: HIPRFISR: Stop TSI Detector $Parameters
-11/16/2022 11:16:48 PM - tsi: Received message: HIPRFISR: Stop TSI Detector $Parameters
-11/16/2022 11:16:48 PM - tsi: Executing Callback: stopTSI_Detector with parameters None
-11/16/2022 11:17:00 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
-11/16/2022 11:17:00 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
-11/16/2022 11:17:01 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
-11/16/2022 11:17:01 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
-11/16/2022 11:17:01 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
-11/16/2022 11:17:01 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
-11/16/2022 11:17:03 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-11/16/2022 11:17:03 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters
+11/17/2022 11:33:30 AM - dashboard: Port Initialized to tcp://127.0.0.1:5051
+11/17/2022 11:33:30 AM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+11/17/2022 11:33:30 AM - dashboard: Port Initialized to tcp://127.0.0.1:5057
+11/17/2022 11:33:30 AM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+11/17/2022 11:33:30 AM - dashboard: Port Connected to tcp://127.0.0.1:5055
+11/17/2022 11:33:30 AM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+11/17/2022 11:33:30 AM - dashboard: Port Connected to tcp://127.0.0.1:5059
+11/17/2022 11:33:30 AM - dashboard: Port Connected to tcp://127.0.0.1:5060
+11/17/2022 11:33:30 AM - dashboard: Port Connected to tcp://127.0.0.1:5065
+11/17/2022 11:33:30 AM - dashboard: Port Connected to tcp://127.0.0.1:5061
+11/17/2022 11:33:30 AM - dashboard: Port Connected to tcp://127.0.0.1:5063
+11/17/2022 11:33:31 AM - hiprfisr: End of HIPRFISR Initialization
+11/17/2022 11:33:31 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
+11/17/2022 11:33:31 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+11/17/2022 11:33:31 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
+11/17/2022 11:33:31 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+11/17/2022 11:33:31 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
+11/17/2022 11:33:31 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+11/17/2022 11:33:31 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
+11/17/2022 11:33:31 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+11/17/2022 11:33:31 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
+11/17/2022 11:33:31 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+11/17/2022 11:33:31 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
+11/17/2022 11:33:31 AM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+11/17/2022 11:33:31 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
+11/17/2022 11:33:31 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
+11/17/2022 11:33:31 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
+11/17/2022 11:33:31 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
+11/17/2022 11:33:31 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
+11/17/2022 11:33:31 AM - hiprfisr: Start of Main Event Loop
+11/17/2022 11:33:32 AM - tsi: Port Connected to tcp://localhost:5052
+11/17/2022 11:33:32 AM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+11/17/2022 11:33:32 AM - fge: Port Connected to tcp://127.0.0.1:5053
+11/17/2022 11:33:32 AM - tsi: Port Initialized to tcp://*:5059
+11/17/2022 11:33:32 AM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+11/17/2022 11:33:32 AM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+11/17/2022 11:33:32 AM - tsi: Port Connected to tcp://127.0.0.1:5055
+11/17/2022 11:33:32 AM - fge: Port Initialized to tcp://127.0.0.1:5061
+11/17/2022 11:33:32 AM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+11/17/2022 11:33:32 AM - tsi: Port Connected to tcp://127.0.0.1:5057
+11/17/2022 11:33:32 AM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+11/17/2022 11:33:32 AM - fge: Port Connected to tcp://127.0.0.1:5055
+11/17/2022 11:33:32 AM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+11/17/2022 11:33:32 AM - fge: Port Connected to tcp://127.0.0.1:5057
+11/17/2022 11:33:32 AM - pd: Port Connected to tcp://127.0.0.1:5054
+11/17/2022 11:33:32 AM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+11/17/2022 11:33:32 AM - pd: Port Initialized to tcp://127.0.0.1:5063
+11/17/2022 11:33:32 AM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+11/17/2022 11:33:32 AM - pd: Port Connected to tcp://127.0.0.1:5055
+11/17/2022 11:33:32 AM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+11/17/2022 11:33:32 AM - pd: Port Connected to tcp://127.0.0.1:5057
+11/17/2022 11:33:33 AM - hiprfisr: Sending message: HIPRFISR: Connected TSI
+11/17/2022 11:33:33 AM - hiprfisr: Sending message: HIPRFISR: Connected FGE
+11/17/2022 11:33:33 AM - hiprfisr: Sending message: HIPRFISR: Connected PD
+11/17/2022 11:33:33 AM - dashboard: Received message: HIPRFISR: Connected TSI
+11/17/2022 11:33:33 AM - dashboard: Received message: HIPRFISR: Connected FGE
+11/17/2022 11:33:33 AM - dashboard: Received message: HIPRFISR: Connected PD
+11/17/2022 11:33:46 AM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
+11/17/2022 11:33:46 AM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
+11/17/2022 11:33:47 AM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
+11/17/2022 11:33:47 AM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
+11/17/2022 11:33:47 AM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
+11/17/2022 11:33:47 AM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
+11/17/2022 11:34:00 AM - dashboard: Sending message: Dashboard: Start TSI Detector ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N A', 'N A', '', 'False']]
+11/17/2022 11:34:01 AM - hiprfisr: Received message: Dashboard: Start TSI Detector ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N A', 'N A', '', 'False']]
+11/17/2022 11:34:01 AM - hiprfisr: Executing Callback: startTSI_Detector with parameters ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N/A', 'N/A', '', 'False']]
+11/17/2022 11:34:01 AM - hiprfisr: Sending message: HIPRFISR: Start TSI Detector ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N A', 'N A', '', 'False']]
+11/17/2022 11:34:01 AM - tsi: Received message: HIPRFISR: Start TSI Detector ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N A', 'N A', '', 'False']]
+11/17/2022 11:34:01 AM - tsi: Executing Callback: startTSI_Detector with parameters ['fixed_threshold_simulator.py', ['rx-freq-default', 'sample-rate-default', 'threshold-default', 'gain-default', 'channel-default', 'antenna-default', 'ip-address', 'serial'], ['2412', '20e6', '0', '2', 'N/A', 'N/A', '', 'False']]
+11/17/2022 11:34:05 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.01
+11/17/2022 11:34:05 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.06
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.01
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.06
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.1
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.14
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.18
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.22
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.26
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.3
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.34
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.38
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.41
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.46
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.49
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.54
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.58
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.62
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.66
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.69
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.74
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.77
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.81
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.85
+11/17/2022 11:34:05 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.89
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.1
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.14
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.18
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.22
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.26
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.3
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.34
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.38
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.41
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.46
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.49
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.54
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.58
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.62
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.66
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.69
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.74
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.77
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.81
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.85
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.89
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.93
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.98
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.02
+11/17/2022 11:34:06 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.06
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.93
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702845.98
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.02
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.06
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.1
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.15
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.19
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.23
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.27
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.31
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.35
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.39
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.43
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.47
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412100100.0 -62 1668702846.51
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412100100.0 -62 1668702846.55
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412100100.0 -62 1668702846.59
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412100100.0 -62 1668702846.63
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.67
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2411899900.0 -62 1668702846.71
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2411599600.0 -62 1668702846.75
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2410798800.0 -63 1668702846.79
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2410200700.0 -62 1668702846.83
+11/17/2022 11:34:06 AM - dashboard: Received message: TSI: Signal Found 2409900400.0 -62 1668702846.87
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.1
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.15
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.19
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.23
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.27
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.31
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.35
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.39
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.43
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.47
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412100100.0 -62 1668702846.51
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412100100.0 -62 1668702846.55
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412100100.0 -62 1668702846.59
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412100100.0 -62 1668702846.63
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2412000000.0 -62 1668702846.67
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2411899900.0 -62 1668702846.71
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2411599600.0 -62 1668702846.75
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2410798800.0 -63 1668702846.79
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2410200700.0 -62 1668702846.83
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2409900400.0 -62 1668702846.87
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2409600100.0 -62 1668702846.92
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2409099600.0 -62 1668702846.96
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2408499000.0 -63 1668702847.01
+11/17/2022 11:34:07 AM - hiprfisr: Received message: TSI: Signal Found 2407900900.0 -63 1668702847.06
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2409600100.0 -62 1668702846.92
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2409099600.0 -62 1668702846.96
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2408499000.0 -63 1668702847.01
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2407900900.0 -63 1668702847.06
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2407400400.0 -63 1668702847.1
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2407000000.0 -62 1668702847.14
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2406499500.0 -62 1668702847.18
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2406199200.0 -63 1668702847.22
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2405898900.0 -63 1668702847.27
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2405601100.0 -63 1668702847.3
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2405100600.0 -62 1668702847.35
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2404700200.0 -62 1668702847.39
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2404299800.0 -62 1668702847.43
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2403899400.0 -62 1668702847.47
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2403599100.0 -62 1668702847.51
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2403398900.0 -63 1668702847.55
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2403201200.0 -63 1668702847.6
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2403001000.0 -63 1668702847.64
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2402800800.0 -63 1668702847.68
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2402700700.0 -62 1668702847.72
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2402500500.0 -62 1668702847.76
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2402300300.0 -64 1668702847.8
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2402100100.0 -64 1668702847.84
+11/17/2022 11:34:07 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702847.89
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2407400400.0 -63 1668702847.1
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2407000000.0 -62 1668702847.14
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2406499500.0 -62 1668702847.18
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2406199200.0 -63 1668702847.22
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2405898900.0 -63 1668702847.27
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2405601100.0 -63 1668702847.3
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2405100600.0 -62 1668702847.35
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2404700200.0 -62 1668702847.39
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2404299800.0 -62 1668702847.43
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2403899400.0 -62 1668702847.47
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2403599100.0 -62 1668702847.51
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2403398900.0 -63 1668702847.55
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2403201200.0 -63 1668702847.6
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2403001000.0 -63 1668702847.64
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2402800800.0 -63 1668702847.68
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2402700700.0 -62 1668702847.72
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2402500500.0 -62 1668702847.76
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2402300300.0 -64 1668702847.8
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2402100100.0 -64 1668702847.84
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702847.89
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702847.93
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702847.97
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.02
+11/17/2022 11:34:08 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.07
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702847.93
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702847.97
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.02
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.07
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.11
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.15
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.19
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.23
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.27
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.31
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.34
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.38
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.42
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.46
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.5
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.54
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.58
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.62
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.66
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.7
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.74
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.78
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.82
+11/17/2022 11:34:08 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.85
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.11
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.15
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.19
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.23
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.27
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.31
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.34
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.38
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.42
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.46
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.5
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.54
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.58
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.62
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.66
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.7
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.74
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.78
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.82
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.85
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.9
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.94
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.99
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702849.04
+11/17/2022 11:34:09 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702849.09
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.9
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702848.94
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702848.99
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702849.04
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702849.09
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702849.13
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702849.17
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702849.21
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -66 1668702849.25
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2402002400.0 -65 1668702849.28
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2402400400.0 -62 1668702849.33
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2403101100.0 -63 1668702849.36
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2403799300.0 -62 1668702849.41
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2404800300.0 -62 1668702849.45
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2405300800.0 -62 1668702849.49
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2405898900.0 -63 1668702849.53
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2406499500.0 -62 1668702849.57
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2406899900.0 -62 1668702849.61
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2407200200.0 -62 1668702849.65
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2407600600.0 -62 1668702849.69
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2407800800.0 -63 1668702849.73
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2408101100.0 -63 1668702849.77
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2408599100.0 -63 1668702849.82
+11/17/2022 11:34:09 AM - dashboard: Received message: TSI: Signal Found 2408899400.0 -62 1668702849.86
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702849.13
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702849.17
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702849.21
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -66 1668702849.25
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2402002400.0 -65 1668702849.28
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2402400400.0 -62 1668702849.33
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2403101100.0 -63 1668702849.36
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2403799300.0 -62 1668702849.41
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2404800300.0 -62 1668702849.45
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2405300800.0 -62 1668702849.49
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2405898900.0 -63 1668702849.53
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2406499500.0 -62 1668702849.57
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2406899900.0 -62 1668702849.61
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2407200200.0 -62 1668702849.65
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2407600600.0 -62 1668702849.69
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2407800800.0 -63 1668702849.73
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2408101100.0 -63 1668702849.77
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2408599100.0 -63 1668702849.82
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2408899400.0 -62 1668702849.86
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2409399900.0 -62 1668702849.91
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2410300800.0 -63 1668702849.95
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2410898900.0 -63 1668702850.0
+11/17/2022 11:34:10 AM - hiprfisr: Received message: TSI: Signal Found 2412100100.0 -62 1668702850.05
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2409399900.0 -62 1668702849.91
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2410300800.0 -63 1668702849.95
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2410898900.0 -63 1668702850.0
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2412100100.0 -62 1668702850.05
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2413101100.0 -63 1668702850.1
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2413999500.0 -67 1668702850.14
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2414900400.0 -62 1668702850.19
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2415798800.0 -63 1668702850.23
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2416299300.0 -62 1668702850.27
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2416799800.0 -62 1668702850.31
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.36
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.4
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.44
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.48
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.52
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.56
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.6
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.64
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.68
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2417400400.0 -62 1668702850.72
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2418001000.0 -63 1668702850.76
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2418599100.0 -63 1668702850.8
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2418899400.0 -62 1668702850.84
+11/17/2022 11:34:10 AM - dashboard: Received message: TSI: Signal Found 2419299800.0 -62 1668702850.88
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2413101100.0 -63 1668702850.1
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2413999500.0 -67 1668702850.14
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2414900400.0 -62 1668702850.19
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2415798800.0 -63 1668702850.23
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2416299300.0 -62 1668702850.27
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2416799800.0 -62 1668702850.31
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.36
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.4
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.44
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.48
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.52
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.56
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.6
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.64
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2417100100.0 -62 1668702850.68
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2417400400.0 -62 1668702850.72
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2418001000.0 -63 1668702850.76
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2418599100.0 -63 1668702850.8
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2418899400.0 -62 1668702850.84
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2419299800.0 -62 1668702850.88
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2419399900.0 -62 1668702850.93
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2419399900.0 -62 1668702850.98
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.03
+11/17/2022 11:34:11 AM - hiprfisr: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.07
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419399900.0 -62 1668702850.93
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419399900.0 -62 1668702850.98
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.03
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.07
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.12
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.16
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.2
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.24
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.27
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.31
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419500000.0 -62 1668702851.35
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419500000.0 -62 1668702851.39
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419500000.0 -62 1668702851.43
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419500000.0 -62 1668702851.47
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419600100.0 -62 1668702851.51
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419700200.0 -62 1668702851.55
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2419800300.0 -62 1668702851.59
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2420000500.0 -62 1668702851.63
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2420100600.0 -62 1668702851.67
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2420300800.0 -62 1668702851.71
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2420300800.0 -62 1668702851.75
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2420501000.0 -63 1668702851.79
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2420601100.0 -63 1668702851.83
+11/17/2022 11:34:11 AM - dashboard: Received message: TSI: Signal Found 2420701200.0 -63 1668702851.87
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.12
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.16
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.2
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.24
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.27
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419399900.0 -62 1668702851.31
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419500000.0 -62 1668702851.35
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419500000.0 -62 1668702851.39
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419500000.0 -62 1668702851.43
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419500000.0 -62 1668702851.47
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419600100.0 -62 1668702851.51
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419700200.0 -62 1668702851.55
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2419800300.0 -62 1668702851.59
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420000500.0 -62 1668702851.63
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420100600.0 -62 1668702851.67
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420300800.0 -62 1668702851.71
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420300800.0 -62 1668702851.75
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420501000.0 -63 1668702851.79
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420601100.0 -63 1668702851.83
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420701200.0 -63 1668702851.87
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420898900.0 -63 1668702851.91
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420898900.0 -63 1668702851.96
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420999000.0 -63 1668702852.01
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420999000.0 -63 1668702852.05
+11/17/2022 11:34:12 AM - hiprfisr: Received message: TSI: Signal Found 2420999000.0 -63 1668702852.1
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2420898900.0 -63 1668702851.91
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2420898900.0 -63 1668702851.96
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2420999000.0 -63 1668702852.01
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2420999000.0 -63 1668702852.05
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2420999000.0 -63 1668702852.1
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421099100.0 -63 1668702852.15
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421099100.0 -62 1668702852.19
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421099100.0 -63 1668702852.23
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.26
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.31
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.35
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.39
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.43
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.47
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.51
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.55
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.59
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.63
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.67
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.71
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.76
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.79
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.83
+11/17/2022 11:34:12 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.87
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421099100.0 -63 1668702852.15
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421099100.0 -62 1668702852.19
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421099100.0 -63 1668702852.23
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.26
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.31
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.35
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.39
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.43
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.47
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.51
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.55
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.59
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.63
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.67
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.71
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.76
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.79
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.83
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702852.87
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.91
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.95
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.03
+11/17/2022 11:34:13 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.08
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.91
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702852.95
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.03
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.08
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.12
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.16
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.2
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.24
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.28
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.32
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.37
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.41
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.45
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.49
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.53
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.57
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.62
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.66
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.7
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.74
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.78
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.82
+11/17/2022 11:34:13 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.86
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.12
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.16
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.2
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.24
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.28
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.32
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.37
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.41
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.45
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.49
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.53
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.57
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.62
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.66
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.7
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.74
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.78
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.82
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702853.86
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.9
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.94
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.99
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.04
+11/17/2022 11:34:14 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.08
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.9
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.94
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702853.99
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.04
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.08
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.13
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.17
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.21
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.25
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.29
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.33
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.37
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.41
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.44
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.48
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.52
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.56
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.6
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.64
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.68
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.72
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.76
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.8
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.84
+11/17/2022 11:34:14 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.88
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.13
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.17
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.21
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.25
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.29
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.33
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.37
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.41
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.44
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.48
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.52
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.56
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.6
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.64
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.68
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.72
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.76
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.8
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.84
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.88
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.92
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.96
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.01
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.06
+11/17/2022 11:34:15 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.1
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702854.92
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702854.96
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.01
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.06
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.1
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.15
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.19
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.23
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.27
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.31
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.35
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.39
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.42
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.46
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.5
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.54
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.57
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.61
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.65
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.68
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.72
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.75
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.79
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.82
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.86
+11/17/2022 11:34:15 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.9
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.15
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.19
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.23
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.27
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.31
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.35
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.39
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.42
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.46
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.5
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.54
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.57
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.61
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.65
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.68
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.72
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.75
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.79
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702855.82
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.86
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.9
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.94
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.01
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.06
+11/17/2022 11:34:16 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.12
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702855.94
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.01
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.06
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.12
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.17
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.21
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.25
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.3
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.34
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.39
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.43
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.47
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.51
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.55
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.59
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.63
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.67
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.71
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.75
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.79
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.83
+11/17/2022 11:34:16 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.87
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.17
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.21
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.25
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.3
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.34
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.39
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.43
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.47
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.51
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.55
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.59
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.63
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.67
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.71
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.75
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.79
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.83
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.87
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.92
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.97
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.02
+11/17/2022 11:34:17 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.1
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702856.92
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702856.97
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.02
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.1
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.15
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.19
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.23
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.28
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.32
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.37
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.41
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.45
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.49
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.53
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.57
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.6
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.64
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.68
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.72
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.76
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.8
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.84
+11/17/2022 11:34:17 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.88
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.15
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.19
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.23
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.28
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.32
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.37
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.41
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.45
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.49
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.53
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.57
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.6
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.64
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.68
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.72
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.76
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.8
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.84
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702857.88
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.92
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.97
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.03
+11/17/2022 11:34:18 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.1
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.92
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702857.97
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.03
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.1
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.15
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.21
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.27
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.31
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.35
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.4
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.44
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.49
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.53
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.57
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.6
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.64
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.68
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.72
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.76
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.8
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.84
+11/17/2022 11:34:18 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.88
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.15
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.21
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.27
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.31
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.35
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.4
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.44
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.49
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.53
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.57
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.6
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.64
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.68
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.72
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.76
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702858.8
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.84
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.88
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.92
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.97
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.06
+11/17/2022 11:34:19 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.12
+11/17/2022 11:34:19 AM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.92
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702858.97
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.06
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.12
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.17
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.21
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.26
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.3
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.35
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.39
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.43
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.48
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.52
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.56
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.59
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.63
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.67
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.71
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.75
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.79
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.83
+11/17/2022 11:34:19 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.87
+11/17/2022 11:34:20 AM - hiprfisr: Received message: Dashboard: Stop TSI Detector $Parameters
+11/17/2022 11:34:20 AM - hiprfisr: Executing Callback: stopTSI_Detector with parameters None
+11/17/2022 11:34:20 AM - hiprfisr: Sending message: HIPRFISR: Stop TSI Detector $Parameters
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.17
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.21
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.26
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.3
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.35
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.39
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.43
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.48
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.52
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.56
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.59
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.63
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.67
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.71
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.75
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.79
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.83
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.87
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.91
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.96
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.0
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.05
+11/17/2022 11:34:20 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.1
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702859.91
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702859.96
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.0
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.05
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.1
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.14
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.18
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.23
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.27
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.32
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.36
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.4
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.45
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.49
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.53
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.57
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.61
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.65
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.69
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.73
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.77
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.8
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.84
+11/17/2022 11:34:20 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.88
+11/17/2022 11:34:21 AM - tsi: Received message: HIPRFISR: Stop TSI Detector $Parameters
+11/17/2022 11:34:21 AM - tsi: Executing Callback: stopTSI_Detector with parameters None
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.14
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.18
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.23
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.27
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.32
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.36
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.4
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.45
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.49
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.53
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.57
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.61
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.65
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.69
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.73
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.77
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.8
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.84
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702860.88
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.93
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.97
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702861.02
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702861.06
+11/17/2022 11:34:21 AM - hiprfisr: Received message: TSI: Signal Found 2421199200.0 -62 1668702861.1
+11/17/2022 11:34:21 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.93
+11/17/2022 11:34:21 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -63 1668702860.97
+11/17/2022 11:34:21 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702861.02
+11/17/2022 11:34:21 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702861.06
+11/17/2022 11:34:21 AM - dashboard: Received message: TSI: Signal Found 2421199200.0 -62 1668702861.1
+11/17/2022 11:34:22 AM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
+11/17/2022 11:34:22 AM - dashboard: Sending message: Dashboard: Stop PD $Parameters

@@ -3080,6 +3080,8 @@ p, li { white-space: pre-wrap; }
                  <string notr="true">QStackedWidget#stackedWidget_tsi_detector_fixed {
 	background-color: rgb(251, 251, 251);
 	border: 1px solid #17365D;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
 }
 
 #page_fixed_threshold {
