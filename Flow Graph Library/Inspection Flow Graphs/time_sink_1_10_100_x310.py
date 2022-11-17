@@ -138,8 +138,8 @@ class time_sink_1_10_100_x310(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0_0.set_center_freq(rx_frequency*1e6, 0)
         self.uhd_usrp_source_0_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0_0.set_antenna(rx_usrp_antenna, 0)
-        self.uhd_usrp_source_0_0.set_auto_dc_offset("", 0)
-        self.uhd_usrp_source_0_0.set_auto_iq_balance("", 0)
+        self.uhd_usrp_source_0_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0_0.set_auto_iq_balance(True, 0)
         self.qtgui_time_sink_x_0_1 = qtgui.time_sink_c(
         	100000, #size
         	sample_rate, #samp_rate

@@ -1083,11 +1083,11 @@
     </param>
     <param>
       <key>dc_offs_enb0</key>
-      <value>""</value>
+      <value>True</value>
     </param>
     <param>
       <key>iq_imbal_enb0</key>
-      <value>""</value>
+      <value>True</value>
     </param>
     <param>
       <key>norm_gain0</key>

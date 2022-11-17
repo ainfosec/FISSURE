@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<?grc format='1' created='3.7.11'?>
+<?grc format='1' created='3.7.13'?>
 <flow_graph>
   <timestamp>Thu Jun  4 22:49:22 2015</timestamp>
   <block>
@@ -73,12 +73,20 @@
       <value>True</value>
     </param>
     <param>
+      <key>sizing_mode</key>
+      <value>fixed</value>
+    </param>
+    <param>
       <key>thread_safe_setters</key>
       <value></value>
     </param>
     <param>
       <key>title</key>
       <value></value>
+    </param>
+    <param>
+      <key>placement</key>
+      <value>(0,0)</value>
     </param>
   </block>
   <block>
@@ -534,7 +542,7 @@
     </param>
   </block>
   <block>
-    <key>digital_correlate_access_code_tag_bb</key>
+    <key>digital_correlate_access_code_tag_xx</key>
     <param>
       <key>access_code</key>
       <value>1010000101000000</value>
@@ -557,7 +565,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(520, 302)</value>
+      <value>(520, 244)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -565,7 +573,11 @@
     </param>
     <param>
       <key>id</key>
-      <value>digital_correlate_access_code_tag_bb_0</value>
+      <value>digital_correlate_access_code_tag_xx_0</value>
+    </param>
+    <param>
+      <key>type</key>
+      <value>byte</value>
     </param>
     <param>
       <key>maxoutbuf</key>
@@ -2066,7 +2078,7 @@
   </connection>
   <connection>
     <source_block_id>blocks_float_to_uchar_0</source_block_id>
-    <sink_block_id>digital_correlate_access_code_tag_bb_0</sink_block_id>
+    <sink_block_id>digital_correlate_access_code_tag_xx_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
   </connection>
@@ -2089,7 +2101,7 @@
     <sink_key>0</sink_key>
   </connection>
   <connection>
-    <source_block_id>digital_correlate_access_code_tag_bb_0</source_block_id>
+    <source_block_id>digital_correlate_access_code_tag_xx_0</source_block_id>
     <sink_block_id>adsb_framer_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>

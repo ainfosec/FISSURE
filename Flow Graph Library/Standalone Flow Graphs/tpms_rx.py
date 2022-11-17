@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Tpms Rx
-# Generated: Thu Jul 14 16:02:49 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 from distutils.version import StrictVersion
@@ -63,11 +63,8 @@ class tpms_rx(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "tpms_rx")
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
         ##################################################
         # Variables
@@ -85,18 +82,24 @@ class tpms_rx(gr.top_block, Qt.QWidget):
         self._threshold_range = Range(0, 5, .01, 0.5, 200)
         self._threshold_win = RangeWidget(self._threshold_range, self.set_threshold, "threshold", "counter_slider", float)
         self.top_grid_layout.addWidget(self._threshold_win, 2, 0, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(2,3)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
+        for r in range(2, 3):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._gain_range = Range(0, 90, 1, 70, 200)
         self._gain_win = RangeWidget(self._gain_range, self.set_gain, "gain", "counter_slider", float)
         self.top_grid_layout.addWidget(self._gain_win, 1, 0, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(1,2)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
+        for r in range(1, 2):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self._freq_range = Range(314e6, 316e6, 1e4, 315e6, 200)
         self._freq_win = RangeWidget(self._freq_range, self.set_freq, "freq", "counter_slider", float)
         self.top_grid_layout.addWidget(self._freq_win, 0, 0, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(0,1)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
+        for r in range(0, 1):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.uhd_usrp_source_0 = uhd.usrp_source(
         	",".join(("", "")),
         	uhd.stream_args(
@@ -109,6 +112,8 @@ class tpms_rx(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_center_freq(freq, 0)
         self.uhd_usrp_source_0.set_gain(gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.tpms_poore_decoder_0 = tpms_poore.decoder()
         self.qtgui_time_sink_x_0_2 = qtgui.time_sink_f(
         	200000, #size
@@ -158,8 +163,10 @@ class tpms_rx(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_2_win = sip.wrapinstance(self.qtgui_time_sink_x_0_2.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_2_win, 4, 0, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(4,5)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
+        for r in range(4, 5):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.qtgui_time_sink_x_0_1 = qtgui.time_sink_f(
         	50000, #size
         	1, #samp_rate
@@ -208,8 +215,10 @@ class tpms_rx(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_1_win = sip.wrapinstance(self.qtgui_time_sink_x_0_1.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_1_win, 5, 0, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(5,6)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
+        for r in range(5, 6):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
         	200000, #size
         	1, #samp_rate
@@ -261,8 +270,10 @@ class tpms_rx(gr.top_block, Qt.QWidget):
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
         self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win, 3, 0, 1, 1)
-        [self.top_grid_layout.setRowStretch(r,1) for r in range(3,4)]
-        [self.top_grid_layout.setColumnStretch(c,1) for c in range(0,1)]
+        for r in range(3, 4):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 1):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.fir_filter_xxx_1_0 = filter.fir_filter_fff(1, (50*[0.02]))
         self.fir_filter_xxx_1_0.declare_sample_delay(0)
         self.fir_filter_xxx_0 = filter.fir_filter_fff(1, (4*[0.25]))
@@ -281,6 +292,8 @@ class tpms_rx(gr.top_block, Qt.QWidget):
         self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf(sample_rate/(2*math.pi*80000/8.0))
         self.analog_agc_xx_0 = analog.agc_cc(.05, 1.0, 0)
         self.analog_agc_xx_0.set_max_gain(20)
+
+
 
         ##################################################
         # Connections
@@ -355,9 +368,6 @@ class tpms_rx(gr.top_block, Qt.QWidget):
 
 def main(top_block_cls=tpms_rx, options=None):
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()

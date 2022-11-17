@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Zwave
-# Generated: Sun Aug  1 12:21:38 2021
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -163,6 +163,8 @@ class Zwave(grc_wxgui.top_block_gui):
         self.uhd_usrp_source_0.set_center_freq(freq_offset+rx_freq+200e3, 0)
         self.uhd_usrp_source_0.set_gain(gain, 0)
         self.uhd_usrp_source_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.low_pass_filter_0 = filter.fir_filter_fff(1, firdes.low_pass(
         	1, samp_rate, 40e3, 10e3, firdes.WIN_HAMMING, 6.76))
         self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(1, (taps), -200e3, samp_rate)
@@ -172,6 +174,8 @@ class Zwave(grc_wxgui.top_block_gui):
         self.analog_simple_squelch_cc_0 = analog.simple_squelch_cc(seuil, 1)
         self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf(2*(samp_rate)/(2*math.pi*20e3/8.0))
         self.Zwave_packet_sink_0 = Zwave.packet_sink()
+
+
 
         ##################################################
         # Connections

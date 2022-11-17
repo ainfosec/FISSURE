@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Wifi Default Usrpx310 Relay
-# Generated: Sun Dec  5 21:06:03 2021
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -48,6 +48,8 @@ class Wifi_Default_USRPX310_Relay(gr.top_block):
         self.uhd_usrp_source_0_0.set_center_freq(rx_frequency, 0)
         self.uhd_usrp_source_0_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0_0.set_auto_iq_balance(True, 0)
         self.uhd_usrp_sink_0_0 = uhd.usrp_sink(
         	",".join(("addr=" + ip_address, "")),
         	uhd.stream_args(
@@ -60,6 +62,8 @@ class Wifi_Default_USRPX310_Relay(gr.top_block):
         self.uhd_usrp_sink_0_0.set_center_freq(tx_frequency, 0)
         self.uhd_usrp_sink_0_0.set_gain(tx_usrp_gain, 0)
         self.uhd_usrp_sink_0_0.set_antenna('TX/RX', 0)
+
+
 
         ##################################################
         # Connections

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Capture
-# Generated: Sun Jan  9 14:46:12 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -16,6 +16,7 @@ from gnuradio import uhd
 from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from optparse import OptionParser
+import pmt
 import time
 
 
@@ -59,6 +60,8 @@ class FM_Radio_Capture(gr.top_block):
         self.uhd_usrp_source_0.set_center_freq(rx_frequency+frequency_offset, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
         	",".join(("addr=" + ip_address, "")),
         	uhd.stream_args(
@@ -85,6 +88,7 @@ class FM_Radio_Capture(gr.top_block):
         self.blocks_head_1 = blocks.head(gr.sizeof_float*1, (int(recording_length)+int(delay_length))*(int(repetitions)))
         self.blocks_head_0 = blocks.head(gr.sizeof_float*1, int(recording_length))
         self.blocks_file_source_0 = blocks.file_source(gr.sizeof_float*1, '', True)
+        self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_float*1, '', False)
         self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_delay_0 = blocks.delay(gr.sizeof_float*1, int(delay_length))
@@ -100,6 +104,8 @@ class FM_Radio_Capture(gr.top_block):
         	audio_decimation=10,
         )
         self.analog_sig_source_x_0 = analog.sig_source_c(sample_rate, analog.GR_COS_WAVE, frequency_offset, 1, 0)
+
+
 
         ##################################################
         # Connections

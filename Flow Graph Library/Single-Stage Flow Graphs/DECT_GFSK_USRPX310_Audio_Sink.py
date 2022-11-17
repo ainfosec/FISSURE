@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Dect Gfsk Usrpx310 Audio Sink
-# Generated: Sun Jan  9 14:24:08 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -58,6 +58,8 @@ class DECT_GFSK_USRPX310_Audio_Sink(gr.top_block):
         self.uhd_usrp_source_0.set_center_freq(rx_freq, 0)
         self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.uhd_usrp_source_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.rational_resampler_xxx_0 = filter.rational_resampler_fff(
                 interpolation=6,
                 decimation=1,
@@ -71,6 +73,8 @@ class DECT_GFSK_USRPX310_Audio_Sink(gr.top_block):
         self.dect2_packet_decoder_0 = dect2.packet_decoder()
         self.blocks_short_to_float_0 = blocks.short_to_float(1, 32768)
         self.audio_sink_0 = audio.sink(48000, '', True)
+
+
 
         ##################################################
         # Connections

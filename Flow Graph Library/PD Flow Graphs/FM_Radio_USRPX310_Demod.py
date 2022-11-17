@@ -4,7 +4,7 @@
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Usrpx310 Demod
 # Description: This flow graph demodulates a traditional FM radio signal and sends the audio data over a ZMQ PUB socket as "floats".
-# Generated: Sun Jan  9 14:38:59 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -54,6 +54,8 @@ class FM_Radio_USRPX310_Demod(gr.top_block):
         self.uhd_usrp_source_0_0.set_center_freq(frequency+frequency_offset, 0)
         self.uhd_usrp_source_0_0.set_gain(usrp_gain, 0)
         self.uhd_usrp_source_0_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0_0.set_auto_iq_balance(True, 0)
         self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
                 interpolation=12,
                 decimation=5,
@@ -69,6 +71,8 @@ class FM_Radio_USRPX310_Demod(gr.top_block):
         	audio_decimation=10,
         )
         self.analog_sig_source_x_0 = analog.sig_source_c(sample_rate, analog.GR_COS_WAVE, frequency_offset, 1, 0)
+
+
 
         ##################################################
         # Connections

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Dect Gfsk Usrpx310 File Sink Iq
-# Generated: Sun Jan  9 14:23:49 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -52,10 +52,14 @@ class DECT_GFSK_USRPX310_File_Sink_IQ(gr.top_block):
         self.uhd_usrp_source_0.set_center_freq(rx_frequency, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, 100000)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, filepath, False)
         self.blocks_file_sink_0.set_unbuffered(False)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(-42, 0.5, 100, True)
+
+
 
         ##################################################
         # Connections

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Mode S Ppm Usrpb210 Demod
-# Generated: Sun Jan  2 12:01:57 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -58,7 +58,9 @@ class Mode_S_PPM_USRPB210_Demod(gr.top_block):
         self.uhd_usrp_source_0.set_center_freq(freq, 0)
         self.uhd_usrp_source_0.set_gain(gain, 0)
         self.uhd_usrp_source_0.set_antenna(antenna, 0)
-        self.digital_correlate_access_code_tag_bb_0 = digital.correlate_access_code_tag_bb('1010000101000000', 0, 'adsb_preamble')
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
+        self.digital_correlate_access_code_tag_xx_0 = digital.correlate_access_code_tag_bb('1010000101000000', 0, 'adsb_preamble')
         self.blocks_threshold_ff_0 = blocks.threshold_ff(0.01, 0.01, 0)
         self.blocks_message_source_0 = blocks.message_source(gr.sizeof_char*1, blocks_message_source_0_msgq_in)
         self.blocks_float_to_uchar_0 = blocks.float_to_uchar()
@@ -68,15 +70,17 @@ class Mode_S_PPM_USRPB210_Demod(gr.top_block):
         self.adsb_framer_0 = adsb.framer(tx_msgq=adsb_framer_0_msgq_out)
         self.adsb_decoder_0 = adsb.decoder(rx_msgq=adsb_decoder_0_msgq_in,tx_msgq=adsb_decoder_0_msgq_out,output_type="csv",check_parity=True)
 
+
+
         ##################################################
         # Connections
         ##################################################
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.blocks_threshold_ff_0, 0))
-        self.connect((self.blocks_float_to_uchar_0, 0), (self.digital_correlate_access_code_tag_bb_0, 0))
+        self.connect((self.blocks_float_to_uchar_0, 0), (self.digital_correlate_access_code_tag_xx_0, 0))
         self.connect((self.blocks_message_source_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_message_source_0, 0), (self.zeromq_pub_sink_0_0, 0))
         self.connect((self.blocks_threshold_ff_0, 0), (self.blocks_float_to_uchar_0, 0))
-        self.connect((self.digital_correlate_access_code_tag_bb_0, 0), (self.adsb_framer_0, 0))
+        self.connect((self.digital_correlate_access_code_tag_xx_0, 0), (self.adsb_framer_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
 
     def get_zmq_port(self):

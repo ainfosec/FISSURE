@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Dect Gfsk Usrpx310 Wireshark
-# Generated: Sun Jan  9 14:23:37 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -68,6 +68,8 @@ class DECT_GFSK_USRPX310_Wireshark(grc_wxgui.top_block_gui):
         self.uhd_usrp_source_0.set_center_freq(rx_freq, 0)
         self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.rational_resampler = filter.rational_resampler_base_ccc(3, 2, (firdes.low_pass_2(1, 3*baseband_sampling_rate, dect_occupied_bandwidth/2, (dect_channel_bandwidth - dect_occupied_bandwidth)/2, 30)))
         self.fractional_resampler = filter.fractional_resampler_cc(0, (3.0*baseband_sampling_rate/2.0)/dect_symbol_rate/4.0)
         self.dect2_phase_diff_0 = dect2.phase_diff()
@@ -77,7 +79,9 @@ class DECT_GFSK_USRPX310_Wireshark(grc_wxgui.top_block_gui):
         self.blocks_stream_mux_0 = blocks.stream_mux(gr.sizeof_char*1, (11, 48))
         self.blocks_pack_k_bits_bb_0 = blocks.pack_k_bits_bb(8)
         self.blocks_keep_m_in_n_0 = blocks.keep_m_in_n(gr.sizeof_char, 384, 388, 0)
-        self.ainfosec_pcap_fifo_0 = ainfosec.pcap_fifo(50000)
+        self.ainfosec_UDP_to_Wireshark_0 = ainfosec.UDP_to_Wireshark(50000)
+
+
 
         ##################################################
         # Connections
@@ -85,7 +89,7 @@ class DECT_GFSK_USRPX310_Wireshark(grc_wxgui.top_block_gui):
         self.connect((self.blocks_keep_m_in_n_0, 0), (self.blocks_pack_k_bits_bb_0, 0))
         self.connect((self.blocks_pack_k_bits_bb_0, 0), (self.blocks_stream_mux_0, 1))
         self.connect((self.blocks_stream_mux_0, 0), (self.blocks_stream_to_tagged_stream_1, 0))
-        self.connect((self.blocks_stream_to_tagged_stream_1, 0), (self.ainfosec_pcap_fifo_0, 0))
+        self.connect((self.blocks_stream_to_tagged_stream_1, 0), (self.ainfosec_UDP_to_Wireshark_0, 0))
         self.connect((self.blocks_vector_source_x_0, 0), (self.blocks_stream_mux_0, 0))
         self.connect((self.dect2_packet_receiver_0, 0), (self.blocks_keep_m_in_n_0, 0))
         self.connect((self.dect2_phase_diff_0, 0), (self.dect2_packet_receiver_0, 0))

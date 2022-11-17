@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Dect Gfsk Usrpx310 File Sink
-# Generated: Sun Jan  9 14:23:59 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -54,6 +54,8 @@ class DECT_GFSK_USRPX310_File_Sink(gr.top_block):
         self.uhd_usrp_source_0.set_center_freq(rx_frequency, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna('rx_usrp_antenna', 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.digital_packet_headerparser_b_0 = digital.packet_headerparser_b(header_formatter.base())
         self.digital_header_payload_demux_0 = digital.header_payload_demux(
         	  388,
@@ -77,12 +79,14 @@ class DECT_GFSK_USRPX310_File_Sink(gr.top_block):
         	verbose=False,
         	log=False,
         )
-        self.digital_correlate_access_code_tag_bb_0 = digital.correlate_access_code_tag_bb('10101010101010101110100110001010', 0, "go")
+        self.digital_correlate_access_code_tag_xx_0 = digital.correlate_access_code_tag_bb('10101010101010101110100110001010', 0, "go")
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_char*1)
         self.blocks_null_sink_0 = blocks.null_sink(gr.sizeof_char*1)
         self.blocks_head_0_0 = blocks.head(gr.sizeof_char*1, recording_length)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, filepath, False)
         self.blocks_file_sink_0.set_unbuffered(False)
+
+
 
         ##################################################
         # Connections
@@ -90,8 +94,8 @@ class DECT_GFSK_USRPX310_File_Sink(gr.top_block):
         self.msg_connect((self.digital_packet_headerparser_b_0, 'header_data'), (self.digital_header_payload_demux_0, 'header_data'))
         self.connect((self.blocks_head_0_0, 0), (self.blocks_file_sink_0, 0))
         self.connect((self.blocks_null_source_0, 0), (self.digital_header_payload_demux_0, 1))
-        self.connect((self.digital_correlate_access_code_tag_bb_0, 0), (self.digital_header_payload_demux_0, 0))
-        self.connect((self.digital_gmsk_demod_0, 0), (self.digital_correlate_access_code_tag_bb_0, 0))
+        self.connect((self.digital_correlate_access_code_tag_xx_0, 0), (self.digital_header_payload_demux_0, 0))
+        self.connect((self.digital_gmsk_demod_0, 0), (self.digital_correlate_access_code_tag_xx_0, 0))
         self.connect((self.digital_header_payload_demux_0, 0), (self.blocks_head_0_0, 0))
         self.connect((self.digital_header_payload_demux_0, 1), (self.blocks_null_sink_0, 0))
         self.connect((self.digital_header_payload_demux_0, 0), (self.digital_packet_headerparser_b_0, 0))

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: J2497 Demod Method1
-# Generated: Thu Aug 20 11:52:20 2020
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 from distutils.version import StrictVersion
@@ -62,11 +62,8 @@ class j2497_demod_method1(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "j2497_demod_method1")
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
         ##################################################
         # Variables
@@ -90,6 +87,8 @@ class j2497_demod_method1(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_center_freq(126e6, 0)
         self.uhd_usrp_source_0.set_gain(40, 0)
         self.uhd_usrp_source_0.set_antenna('TX/RX', 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.qtgui_time_sink_x_0_0_0_3_0 = qtgui.time_sink_f(
         	samples, #size
         	1, #samp_rate
@@ -137,7 +136,7 @@ class j2497_demod_method1(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0_0_0_3_0.set_line_alpha(i, alphas[i])
 
         self._qtgui_time_sink_x_0_0_0_3_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0_0_3_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_time_sink_x_0_0_0_3_0_win)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_0_3_0_win)
         self.freq_xlating_fir_filter_xxx_0 = filter.freq_xlating_fir_filter_ccc(2, (firdes.complex_band_pass(1, 2e6, 50e3, 450e3, 1e3)), -1e6, samp_rate*2)
         self.fir_filter_xxx_1_0 = filter.fir_filter_fff(1, (20*[0.05]))
         self.fir_filter_xxx_1_0.declare_sample_delay(0)
@@ -154,6 +153,8 @@ class j2497_demod_method1(gr.top_block, Qt.QWidget):
         self.blocks_burst_tagger_1.set_false_tag('burst',False)
 
         self.J2497_J2497_decoder_corr_0 = J2497.J2497_decoder_corr(True,6972)
+
+
 
         ##################################################
         # Connections
@@ -202,9 +203,6 @@ class j2497_demod_method1(gr.top_block, Qt.QWidget):
 
 def main(top_block_cls=j2497_demod_method1, options=None):
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Antenna Test Rx
-# Generated: Wed Dec  1 22:41:47 2021
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 from distutils.version import StrictVersion
@@ -58,11 +58,8 @@ class antenna_test_rx(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "antenna_test_rx")
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
         ##################################################
         # Variables
@@ -84,7 +81,7 @@ class antenna_test_rx(gr.top_block, Qt.QWidget):
         self._freq_callback(self.freq)
         self._freq_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_freq(self._freq_options[i]))
-        self.top_layout.addWidget(self._freq_tool_bar)
+        self.top_grid_layout.addWidget(self._freq_tool_bar)
         self.uhd_usrp_source_0 = uhd.usrp_source(
         	",".join(("", "")),
         	uhd.stream_args(
@@ -96,6 +93,8 @@ class antenna_test_rx(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_center_freq(freq, 0)
         self.uhd_usrp_source_0.set_gain(70, 0)
         self.uhd_usrp_source_0.set_antenna('TX/RX', 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
         	2048, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
@@ -138,7 +137,9 @@ class antenna_test_rx(gr.top_block, Qt.QWidget):
             self.qtgui_freq_sink_x_0.set_line_alpha(i, alphas[i])
 
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
+        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_win)
+
+
 
         ##################################################
         # Connections
@@ -169,9 +170,6 @@ class antenna_test_rx(gr.top_block, Qt.QWidget):
 
 def main(top_block_cls=antenna_test_rx, options=None):
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()

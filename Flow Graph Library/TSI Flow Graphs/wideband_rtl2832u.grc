@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<?grc format='1' created='3.7.11'?>
+<?grc format='1' created='3.7.13'?>
 <flow_graph>
   <timestamp>Wed May  4 16:44:48 2016</timestamp>
   <block>
@@ -73,12 +73,20 @@
       <value>True</value>
     </param>
     <param>
+      <key>sizing_mode</key>
+      <value>fixed</value>
+    </param>
+    <param>
       <key>thread_safe_setters</key>
       <value></value>
     </param>
     <param>
       <key>title</key>
       <value></value>
+    </param>
+    <param>
+      <key>placement</key>
+      <value>(0,0)</value>
     </param>
   </block>
   <block>
@@ -186,7 +194,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>10</value>
+      <value>20</value>
     </param>
   </block>
   <block>
@@ -630,6 +638,10 @@
       <value>blocks_moving_average_xx_0</value>
     </param>
     <param>
+      <key>vlen</key>
+      <value>1</value>
+    </param>
+    <param>
       <key>length</key>
       <value>10</value>
     </param>
@@ -906,7 +918,7 @@
     </param>
     <param>
       <key>if_gain0</key>
-      <value>20</value>
+      <value>gain</value>
     </param>
     <param>
       <key>iq_balance_mode0</key>
@@ -914,7 +926,7 @@
     </param>
     <param>
       <key>gain0</key>
-      <value>gain</value>
+      <value>10</value>
     </param>
     <param>
       <key>ant10</key>

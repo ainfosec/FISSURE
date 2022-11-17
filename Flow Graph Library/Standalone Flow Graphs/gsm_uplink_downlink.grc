@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<?grc format='1' created='3.7.11'?>
+<?grc format='1' created='3.7.13'?>
 <flow_graph>
   <timestamp>Sat Dec 13 10:49:59 2014</timestamp>
   <block>
@@ -73,12 +73,20 @@
       <value>True</value>
     </param>
     <param>
+      <key>sizing_mode</key>
+      <value>fixed</value>
+    </param>
+    <param>
       <key>thread_safe_setters</key>
       <value></value>
     </param>
     <param>
       <key>title</key>
       <value>Adapted from gr-gsm Livemon</value>
+    </param>
+    <param>
+      <key>placement</key>
+      <value>(0,0)</value>
     </param>
   </block>
   <block>
@@ -368,6 +376,10 @@
       <value></value>
     </param>
     <param>
+      <key>hide</key>
+      <value>none</value>
+    </param>
+    <param>
       <key>type</key>
       <value>string</value>
     </param>
@@ -480,6 +492,10 @@
   </block>
   <block>
     <key>blocks_file_source</key>
+    <param>
+      <key>begin_tag</key>
+      <value>pmt.PMT_NIL</value>
+    </param>
     <param>
       <key>alias</key>
       <value></value>
@@ -1247,6 +1263,10 @@
       <value></value>
     </param>
     <param>
+      <key>hide</key>
+      <value>none</value>
+    </param>
+    <param>
       <key>type</key>
       <value>string</value>
     </param>
@@ -1288,6 +1308,10 @@
     <param>
       <key>short_id</key>
       <value></value>
+    </param>
+    <param>
+      <key>hide</key>
+      <value>none</value>
     </param>
     <param>
       <key>type</key>
@@ -1333,6 +1357,10 @@
       <value>f</value>
     </param>
     <param>
+      <key>hide</key>
+      <value>none</value>
+    </param>
+    <param>
       <key>type</key>
       <value>eng_float</value>
     </param>
@@ -1374,6 +1402,10 @@
     <param>
       <key>short_id</key>
       <value>g</value>
+    </param>
+    <param>
+      <key>hide</key>
+      <value>none</value>
     </param>
     <param>
       <key>type</key>
@@ -3330,6 +3362,10 @@
       <value></value>
     </param>
     <param>
+      <key>hide</key>
+      <value>none</value>
+    </param>
+    <param>
       <key>type</key>
       <value>intx</value>
     </param>
@@ -3371,6 +3407,10 @@
     <param>
       <key>short_id</key>
       <value>p</value>
+    </param>
+    <param>
+      <key>hide</key>
+      <value>none</value>
     </param>
     <param>
       <key>type</key>
@@ -5856,6 +5896,10 @@
       <value>s</value>
     </param>
     <param>
+      <key>hide</key>
+      <value>none</value>
+    </param>
+    <param>
       <key>type</key>
       <value>eng_float</value>
     </param>
@@ -5897,6 +5941,10 @@
     <param>
       <key>short_id</key>
       <value></value>
+    </param>
+    <param>
+      <key>hide</key>
+      <value>none</value>
     </param>
     <param>
       <key>type</key>
@@ -5942,6 +5990,10 @@
       <value>o</value>
     </param>
     <param>
+      <key>hide</key>
+      <value>none</value>
+    </param>
+    <param>
       <key>type</key>
       <value>eng_float</value>
     </param>
@@ -5970,11 +6022,11 @@
     </param>
     <param>
       <key>dc_offs_enb0</key>
-      <value>""</value>
+      <value>True</value>
     </param>
     <param>
       <key>iq_imbal_enb0</key>
-      <value>""</value>
+      <value>True</value>
     </param>
     <param>
       <key>norm_gain0</key>
@@ -7309,11 +7361,11 @@
     </param>
     <param>
       <key>dc_offs_enb0</key>
-      <value>""</value>
+      <value>True</value>
     </param>
     <param>
       <key>iq_imbal_enb0</key>
-      <value>""</value>
+      <value>True</value>
     </param>
     <param>
       <key>norm_gain0</key>
@@ -8648,11 +8700,11 @@
     </param>
     <param>
       <key>dc_offs_enb0</key>
-      <value>""</value>
+      <value>True</value>
     </param>
     <param>
       <key>iq_imbal_enb0</key>
-      <value>""</value>
+      <value>True</value>
     </param>
     <param>
       <key>norm_gain0</key>

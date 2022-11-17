@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Wideband Usrp2
-# Generated: Sun Sep 18 22:11:10 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -54,6 +54,8 @@ class wideband_usrp2(gr.top_block):
         self.uhd_usrp_source_0.set_center_freq(rx_freq, 0)
         self.uhd_usrp_source_0.set_gain(gain, 0)
         self.uhd_usrp_source_0.set_antenna(antenna, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.fft_vxx_0 = fft.fft_vcc(fft_size, True, (window.blackmanharris(fft_size)), True, 1)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fft_size)
@@ -61,6 +63,8 @@ class wideband_usrp2(gr.top_block):
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(-10, 1e-4, 0, True)
         self.ainfosec_wideband_detector_0 = ainfosec.wideband_detector("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
+
+
 
         ##################################################
         # Connections

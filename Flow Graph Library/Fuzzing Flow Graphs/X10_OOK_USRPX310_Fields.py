@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: X10 Ook Usrpx310 Fields
-# Generated: Thu Oct  7 21:11:15 2021
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -66,6 +66,8 @@ class X10_OOK_USRPX310_Fields(gr.top_block):
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vcc((0.9, ))
         self.X10_msg_gen_fuzzer_0 = X10.msg_gen_fuzzer(sample_rate,address_code,data_code,transmit_interval/2,transmit_interval)
+
+
 
         ##################################################
         # Connections

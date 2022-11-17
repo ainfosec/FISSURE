@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Acars Demo
-# Generated: Mon Dec 13 23:27:29 2021
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 from distutils.version import StrictVersion
@@ -64,11 +64,8 @@ class acars_demo(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "acars_demo")
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
         ##################################################
         # Variables
@@ -92,10 +89,10 @@ class acars_demo(gr.top_block, Qt.QWidget):
         self._rf_freq_callback(self.rf_freq)
         self._rf_freq_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_rf_freq(self._rf_freq_options[i]))
-        self.top_layout.addWidget(self._rf_freq_tool_bar)
+        self.top_grid_layout.addWidget(self._rf_freq_tool_bar)
         self._audio_gain_range = Range(0, 20000, 1, 3200, 200)
         self._audio_gain_win = RangeWidget(self._audio_gain_range, self.set_audio_gain, "audio_gain", "counter_slider", float)
-        self.top_layout.addWidget(self._audio_gain_win)
+        self.top_grid_layout.addWidget(self._audio_gain_win)
         self.uhd_usrp_source_0 = uhd.usrp_source(
         	",".join(("", "")),
         	uhd.stream_args(
@@ -107,6 +104,8 @@ class acars_demo(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_center_freq(rf_freq*1e6, 0)
         self.uhd_usrp_source_0.set_gain(75, 0)
         self.uhd_usrp_source_0.set_antenna('TX/RX', 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.qtgui_freq_sink_x_0 = qtgui.freq_sink_c(
         	1024, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype
@@ -149,12 +148,12 @@ class acars_demo(gr.top_block, Qt.QWidget):
             self.qtgui_freq_sink_x_0.set_line_alpha(i, alphas[i])
 
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
+        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_win)
         self.low_pass_filter_0_0 = filter.fir_filter_ccf(10, firdes.low_pass(
         	2, samp_rate*20*2, 150000, 150000, firdes.WIN_HAMMING, 6.76))
         self._ch0rfgain_range = Range(0, 39, 1, 35, 200)
         self._ch0rfgain_win = RangeWidget(self._ch0rfgain_range, self.set_ch0rfgain, "ch0rfgain", "counter_slider", float)
-        self.top_layout.addWidget(self._ch0rfgain_win)
+        self.top_grid_layout.addWidget(self._ch0rfgain_win)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((audio_gain, ))
         self.audio_sink_0 = audio.sink(samp_rate, '', True)
         self.analog_am_demod_cf_0 = analog.am_demod_cf(
@@ -164,6 +163,8 @@ class acars_demo(gr.top_block, Qt.QWidget):
         	audio_stop=8500,
         )
         self.acars_decodeur_0 = acars.acars(150,'/tmp/acars.log')
+
+
 
         ##################################################
         # Connections
@@ -214,9 +215,6 @@ class acars_demo(gr.top_block, Qt.QWidget):
 
 def main(top_block_cls=acars_demo, options=None):
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()

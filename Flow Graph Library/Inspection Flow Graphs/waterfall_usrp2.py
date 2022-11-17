@@ -137,8 +137,8 @@ class waterfall_usrp2(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0_0.set_center_freq(rx_frequency*1e6, 0)
         self.uhd_usrp_source_0_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0_0.set_antenna(rx_usrp_antenna, 0)
-        self.uhd_usrp_source_0_0.set_auto_dc_offset("", 0)
-        self.uhd_usrp_source_0_0.set_auto_iq_balance("", 0)
+        self.uhd_usrp_source_0_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0_0.set_auto_iq_balance(True, 0)
         self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
         	1024, #size
         	firdes.WIN_BLACKMAN_hARRIS, #wintype

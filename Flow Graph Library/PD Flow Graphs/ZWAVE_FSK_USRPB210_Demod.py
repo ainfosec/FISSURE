@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Zwave Fsk Usrpb210 Demod
-# Generated: Mon Feb 14 22:19:10 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -56,6 +56,8 @@ class ZWAVE_FSK_USRPB210_Demod(gr.top_block):
         self.uhd_usrp_source_0.set_center_freq(rx_usrp_frequency, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.fir_filter_xxx_1_0 = filter.fir_filter_fff(1, (20*[0.05]))
         self.fir_filter_xxx_1_0.declare_sample_delay(0)
         self.fir_filter_xxx_0 = filter.fir_filter_fff(1, (4*[0.25]))
@@ -73,6 +75,8 @@ class ZWAVE_FSK_USRPB210_Demod(gr.top_block):
         self.blocks_burst_tagger_1.set_false_tag('burst',False)
 
         self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf(sample_rate/(2*math.pi*80000/8.0))
+
+
 
         ##################################################
         # Connections

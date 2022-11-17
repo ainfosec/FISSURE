@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Adapted from gr-gsm Livemon
-# Generated: Wed Jun 29 14:09:58 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 from distutils.version import StrictVersion
@@ -62,11 +62,8 @@ class gsm_uplink_downlink(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "gsm_uplink_downlink")
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
         ##################################################
         # Parameters
@@ -95,10 +92,10 @@ class gsm_uplink_downlink(gr.top_block, Qt.QWidget):
         ##################################################
         self._fc_slider_uplink_range = Range(800e6, 1990e6, 2e5, 1850.2e6, 100)
         self._fc_slider_uplink_win = RangeWidget(self._fc_slider_uplink_range, self.set_fc_slider_uplink, 'Uplink Frequency', "counter_slider", float)
-        self.top_layout.addWidget(self._fc_slider_uplink_win)
+        self.top_grid_layout.addWidget(self._fc_slider_uplink_win)
         self._fc_slider_range = Range(800e6, 1990e6, 2e4, fc, 100)
         self._fc_slider_win = RangeWidget(self._fc_slider_range, self.set_fc_slider, 'Frequency', "counter_slider", float)
-        self.top_layout.addWidget(self._fc_slider_win)
+        self.top_grid_layout.addWidget(self._fc_slider_win)
         self.uhd_usrp_source_0_0_1 = uhd.usrp_source(
         	",".join(('', "")),
         	uhd.stream_args(
@@ -111,6 +108,8 @@ class gsm_uplink_downlink(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0_0_1.set_center_freq(fc_slider-shiftoff, 0)
         self.uhd_usrp_source_0_0_1.set_gain(60, 0)
         self.uhd_usrp_source_0_0_1.set_antenna('TX/RX', 0)
+        self.uhd_usrp_source_0_0_1.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0_0_1.set_auto_iq_balance(True, 0)
         self.qtgui_time_sink_x_0_0 = qtgui.time_sink_c(
         	2000000, #size
         	samp_rate, #samp_rate
@@ -161,7 +160,7 @@ class gsm_uplink_downlink(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0_0.set_line_alpha(i, alphas[i])
 
         self._qtgui_time_sink_x_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_time_sink_x_0_0_win)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_win)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
         	2000000, #size
         	samp_rate, #samp_rate
@@ -212,10 +211,10 @@ class gsm_uplink_downlink(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0.set_line_alpha(i, alphas[i])
 
         self._qtgui_time_sink_x_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_time_sink_x_0_win)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_win)
         self._ppm_slider_range = Range(-150, 150, 0.1, ppm, 100)
         self._ppm_slider_win = RangeWidget(self._ppm_slider_range, self.set_ppm_slider, 'PPM Offset', "counter", float)
-        self.top_layout.addWidget(self._ppm_slider_win)
+        self.top_grid_layout.addWidget(self._ppm_slider_win)
         self.gsm_uplink_downlink_splitter_0 = grgsm.uplink_downlink_splitter()
         self.gsm_sdcch8_demapper_0_0_3 = grgsm.gsm_sdcch8_demapper(
             timeslot_nr=5,
@@ -302,13 +301,15 @@ class gsm_uplink_downlink(gr.top_block, Qt.QWidget):
         )
         self._gain_slider_range = Range(0, 40, 0.5, gain, 100)
         self._gain_slider_win = RangeWidget(self._gain_slider_range, self.set_gain_slider, 'Gain', "counter", float)
-        self.top_layout.addWidget(self._gain_slider_win)
+        self.top_grid_layout.addWidget(self._gain_slider_win)
         self.blocks_socket_pdu_0_1 = blocks.socket_pdu("UDP_CLIENT", collector, collectorport, 1500, False)
         self.blocks_rotator_cc_0_0 = blocks.rotator_cc(-2*pi*shiftoff/samp_rate)
         self.blocks_rotator_cc_0 = blocks.rotator_cc(-2*pi*shiftoff/samp_rate)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
         self.blocks_keep_one_in_n_0_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, 10)
         self.blocks_keep_one_in_n_0 = blocks.keep_one_in_n(gr.sizeof_gr_complex*1, 10)
+
+
 
         ##################################################
         # Connections
@@ -535,9 +536,6 @@ def main(top_block_cls=gsm_uplink_downlink, options=None):
     if options is None:
         options, _ = argument_parser().parse_args()
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls(args=options.args, collector=options.collector, collectorport=options.collectorport, fc=options.fc, gain=options.gain, osr=options.osr, ppm=options.ppm, samp_rate=options.samp_rate, serverport=options.serverport, shiftoff=options.shiftoff)

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Dect Gfsk Usrpx310 Simple Replay
-# Generated: Sun Jan  9 14:24:47 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -53,6 +53,8 @@ class DECT_GFSK_USRPX310_Simple_Replay(gr.top_block):
         self.uhd_usrp_source_0.set_center_freq(rx_frequency, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
         	",".join(("addr=" + ip_address, "")),
         	uhd.stream_args(
@@ -66,6 +68,8 @@ class DECT_GFSK_USRPX310_Simple_Replay(gr.top_block):
         self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
         self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(squelch_value, 0.5, 100, True)
+
+
 
         ##################################################
         # Connections

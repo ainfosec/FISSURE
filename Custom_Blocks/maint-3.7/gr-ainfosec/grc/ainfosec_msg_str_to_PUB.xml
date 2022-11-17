@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<block>
+  <name>msg_str_to_PUB</name>
+  <key>ainfosec_msg_str_to_PUB</key>
+  <category>[ainfosec]</category>
+  <import>import ainfosec</import>
+  <make>ainfosec.msg_str_to_PUB($address)</make>
+
+  <param>
+    <name>Address</name>
+    <key>address</key>
+    <type>string</type>
+  </param>
+
+
+  <sink>
+    <name>Message</name>
+    <type>message</type>
+  </sink>
+
+</block>

@@ -38,7 +38,7 @@ from gnuradio import qtgui
 
 class time_sink_usrp_n2xx(gr.top_block, Qt.QWidget):
 
-    def __init__(self, rx_usrp_channel="A:0", ip_address="192.168.10.2"):
+    def __init__(self, ip_address="192.168.10.2", rx_usrp_channel="A:0"):
         gr.top_block.__init__(self, "Time Sink Usrp N2Xx")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Time Sink Usrp N2Xx")
@@ -66,8 +66,8 @@ class time_sink_usrp_n2xx(gr.top_block, Qt.QWidget):
         ##################################################
         # Parameters
         ##################################################
-        self.rx_usrp_channel = rx_usrp_channel
         self.ip_address = ip_address
+        self.rx_usrp_channel = rx_usrp_channel
 
         ##################################################
         # Variables
@@ -155,8 +155,8 @@ class time_sink_usrp_n2xx(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0_0.set_center_freq(rx_frequency*1e6, 0)
         self.uhd_usrp_source_0_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0_0.set_antenna(rx_usrp_antenna, 0)
-        self.uhd_usrp_source_0_0.set_auto_dc_offset("", 0)
-        self.uhd_usrp_source_0_0.set_auto_iq_balance("", 0)
+        self.uhd_usrp_source_0_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0_0.set_auto_iq_balance(True, 0)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
         	100000, #size
         	sample_rate/decimation, #samp_rate
@@ -275,17 +275,17 @@ class time_sink_usrp_n2xx(gr.top_block, Qt.QWidget):
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
-    def get_rx_usrp_channel(self):
-        return self.rx_usrp_channel
-
-    def set_rx_usrp_channel(self, rx_usrp_channel):
-        self.rx_usrp_channel = rx_usrp_channel
-
     def get_ip_address(self):
         return self.ip_address
 
     def set_ip_address(self, ip_address):
         self.ip_address = ip_address
+
+    def get_rx_usrp_channel(self):
+        return self.rx_usrp_channel
+
+    def set_rx_usrp_channel(self, rx_usrp_channel):
+        self.rx_usrp_channel = rx_usrp_channel
 
     def get_sample_rate(self):
         return self.sample_rate
@@ -333,11 +333,11 @@ class time_sink_usrp_n2xx(gr.top_block, Qt.QWidget):
 def argument_parser():
     parser = OptionParser(usage="%prog: [options]", option_class=eng_option)
     parser.add_option(
-        "", "--rx-usrp-channel", dest="rx_usrp_channel", type="string", default="A:0",
-        help="Set A:0 [default=%default]")
-    parser.add_option(
         "", "--ip-address", dest="ip_address", type="string", default="192.168.10.2",
         help="Set 192.168.10.2 [default=%default]")
+    parser.add_option(
+        "", "--rx-usrp-channel", dest="rx_usrp_channel", type="string", default="A:0",
+        help="Set A:0 [default=%default]")
     return parser
 
 
@@ -347,7 +347,7 @@ def main(top_block_cls=time_sink_usrp_n2xx, options=None):
 
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls(rx_usrp_channel=options.rx_usrp_channel, ip_address=options.ip_address)
+    tb = top_block_cls(ip_address=options.ip_address, rx_usrp_channel=options.rx_usrp_channel)
     tb.start()
     tb.show()
 

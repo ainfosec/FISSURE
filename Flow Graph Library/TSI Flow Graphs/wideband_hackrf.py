@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Wideband Hackrf
-# Generated: Sun Aug 21 14:53:17 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -35,7 +35,7 @@ class wideband_hackrf(gr.top_block):
         self.sample_rate = sample_rate = 20000000
         self.rx_freq = rx_freq = 1200e6
         self.ip_address = ip_address = "N/A"
-        self.gain = gain = 10
+        self.gain = gain = 20
         self.fft_size = fft_size = 512*1
         self.channel = channel = "N/A"
         self.antenna = antenna = "N/A"
@@ -50,8 +50,8 @@ class wideband_hackrf(gr.top_block):
         self.osmosdr_source_0.set_dc_offset_mode(2, 0)
         self.osmosdr_source_0.set_iq_balance_mode(1, 0)
         self.osmosdr_source_0.set_gain_mode(False, 0)
-        self.osmosdr_source_0.set_gain(gain, 0)
-        self.osmosdr_source_0.set_if_gain(20, 0)
+        self.osmosdr_source_0.set_gain(10, 0)
+        self.osmosdr_source_0.set_if_gain(gain, 0)
         self.osmosdr_source_0.set_bb_gain(20, 0)
         self.osmosdr_source_0.set_antenna('', 0)
         self.osmosdr_source_0.set_bandwidth(0, 0)
@@ -64,6 +64,8 @@ class wideband_hackrf(gr.top_block):
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
         self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(-70, 1e-4, 0, True)
         self.ainfosec_wideband_detector_0 = ainfosec.wideband_detector("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
+
+
 
         ##################################################
         # Connections
@@ -116,7 +118,7 @@ class wideband_hackrf(gr.top_block):
 
     def set_gain(self, gain):
         self.gain = gain
-        self.osmosdr_source_0.set_gain(self.gain, 0)
+        self.osmosdr_source_0.set_if_gain(self.gain, 0)
 
     def get_fft_size(self):
         return self.fft_size

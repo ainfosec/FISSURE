@@ -4,7 +4,7 @@
 # GNU Radio Python Flow Graph
 # Title: X10 Ook Usrpb210 Demod
 # Description: Decodes X10 signals and prints the output.
-# Generated: Sat Feb 12 22:27:03 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -55,9 +55,11 @@ class X10_OOK_USRPB210_Demod(gr.top_block):
         self.uhd_usrp_source_0.set_center_freq(rx_usrp_frequency, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.fir_filter_xxx_0_0 = filter.fir_filter_fff(1, ([0.125]*8))
         self.fir_filter_xxx_0_0.declare_sample_delay(0)
-        self.digital_correlate_access_code_tag_bb_0 = digital.correlate_access_code_tag_bb('111111111111111111111111111111111111111100000000000000000000', 0, 'Start')
+        self.digital_correlate_access_code_tag_xx_0 = digital.correlate_access_code_tag_bb('111111111111111111111111111111111111111100000000000000000000', 0, 'Start')
         self.blocks_threshold_ff_0_0 = blocks.threshold_ff(2, 2, 0)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((1000, ))
         self.blocks_message_debug_0 = blocks.message_debug()
@@ -67,6 +69,8 @@ class X10_OOK_USRPB210_Demod(gr.top_block):
         self.blocks_char_to_float_0 = blocks.char_to_float(1, 1)
         self.X10_x10_decoder_0 = X10.x10_decoder()
 
+
+
         ##################################################
         # Connections
         ##################################################
@@ -74,11 +78,11 @@ class X10_OOK_USRPB210_Demod(gr.top_block):
         self.msg_connect((self.X10_x10_decoder_0, 'bytes'), (self.zeromq_pub_msg_sink_0, 'in'))
         self.connect((self.blocks_char_to_float_0, 0), (self.X10_x10_decoder_0, 0))
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.fir_filter_xxx_0_0, 0))
-        self.connect((self.blocks_float_to_uchar_0, 0), (self.digital_correlate_access_code_tag_bb_0, 0))
+        self.connect((self.blocks_float_to_uchar_0, 0), (self.digital_correlate_access_code_tag_xx_0, 0))
         self.connect((self.blocks_keep_one_in_n_0_0, 0), (self.blocks_float_to_uchar_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_threshold_ff_0_0, 0))
         self.connect((self.blocks_threshold_ff_0_0, 0), (self.blocks_keep_one_in_n_0_0, 0))
-        self.connect((self.digital_correlate_access_code_tag_bb_0, 0), (self.blocks_char_to_float_0, 0))
+        self.connect((self.digital_correlate_access_code_tag_xx_0, 0), (self.blocks_char_to_float_0, 0))
         self.connect((self.fir_filter_xxx_0_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.uhd_usrp_source_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
 

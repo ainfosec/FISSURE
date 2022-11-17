@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Iq Recorder Usrp2
-# Generated: Sun Sep 18 22:18:54 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -49,10 +49,14 @@ class iq_recorder_usrp2(gr.top_block):
         self.uhd_usrp_source_0_0.set_center_freq(float(rx_frequency)*1e6, 0)
         self.uhd_usrp_source_0_0.set_gain(float(rx_gain), 0)
         self.uhd_usrp_source_0_0.set_antenna(rx_antenna, 0)
+        self.uhd_usrp_source_0_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0_0.set_auto_iq_balance(True, 0)
         self.blocks_skiphead_0 = blocks.skiphead(gr.sizeof_gr_complex*1, 200000)
         self.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, file_length)
         self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_gr_complex*1, filepath, False)
         self.blocks_file_sink_0.set_unbuffered(False)
+
+
 
         ##################################################
         # Connections

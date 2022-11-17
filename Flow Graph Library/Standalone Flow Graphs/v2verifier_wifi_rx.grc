@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<?grc format='1' created='3.7.14'?>
+<?grc format='1' created='3.7.13'?>
 <flow_graph>
   <timestamp>Fri Jul 18 10:38:16 2014</timestamp>
   <block>
@@ -2340,11 +2340,11 @@
     </param>
     <param>
       <key>dc_offs_enb0</key>
-      <value>False</value>
+      <value>True</value>
     </param>
     <param>
       <key>iq_imbal_enb0</key>
-      <value>False</value>
+      <value>True</value>
     </param>
     <param>
       <key>norm_gain0</key>

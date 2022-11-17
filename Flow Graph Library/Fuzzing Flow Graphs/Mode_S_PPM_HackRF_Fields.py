@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Mode S Ppm Hackrf Fields
-# Generated: Sun Aug 21 14:43:54 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -65,7 +65,7 @@ class Mode_S_PPM_HackRF_Fields(gr.top_block):
 
         self.fuzzer_packet_insert_0 = fuzzer.packet_insert((0, ), int(samp_rate*transmit_interval/8), 0)
         self.fuzzer_fuzzer_0_0 = fuzzer.fuzzer(fuzzing_seed,fuzzing_fields,fuzzing_type,fuzzing_min,fuzzing_max,fuzzing_data,fuzzing_interval,fuzzing_protocol,fuzzing_packet_type, library_filepath)
-        self.digital_correlate_access_code_tag_bb_0 = digital.correlate_access_code_tag_bb('1010000101000000', 0, 'adsb_preamble')
+        self.digital_correlate_access_code_tag_xx_0 = digital.correlate_access_code_tag_bb('1010000101000000', 0, 'adsb_preamble')
         self.blocks_unpack_k_bits_bb_0 = blocks.unpack_k_bits_bb(8)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_char*1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((.3, ))
@@ -77,6 +77,8 @@ class Mode_S_PPM_HackRF_Fields(gr.top_block):
         self.adsb_framer_0 = adsb.framer(tx_msgq=adsb_framer_0_msgq_out)
         self.adsb_decoder_0 = adsb.decoder(rx_msgq=adsb_decoder_0_msgq_in,tx_msgq=adsb_decoder_0_msgq_out,output_type="csv",check_parity=True)
 
+
+
         ##################################################
         # Connections
         ##################################################
@@ -87,8 +89,8 @@ class Mode_S_PPM_HackRF_Fields(gr.top_block):
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_float_to_complex_0, 0))
         self.connect((self.blocks_null_source_0, 0), (self.fuzzer_packet_insert_0, 0))
         self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.blocks_char_to_float_0, 0))
-        self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.digital_correlate_access_code_tag_bb_0, 0))
-        self.connect((self.digital_correlate_access_code_tag_bb_0, 0), (self.adsb_framer_0, 0))
+        self.connect((self.blocks_unpack_k_bits_bb_0, 0), (self.digital_correlate_access_code_tag_xx_0, 0))
+        self.connect((self.digital_correlate_access_code_tag_xx_0, 0), (self.adsb_framer_0, 0))
         self.connect((self.fuzzer_packet_insert_0, 0), (self.blocks_unpack_k_bits_bb_0, 0))
 
     def get_tx_freq(self):

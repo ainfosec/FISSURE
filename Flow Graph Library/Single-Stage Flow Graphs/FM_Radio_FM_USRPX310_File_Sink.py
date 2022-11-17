@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Fm Usrpx310 File Sink
-# Generated: Sun Jan  9 15:07:54 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -56,6 +56,8 @@ class FM_Radio_FM_USRPX310_File_Sink(gr.top_block):
         self.uhd_usrp_source_0.set_center_freq(rx_frequency+frequency_offset, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
                 interpolation=12,
                 decimation=5,
@@ -76,6 +78,8 @@ class FM_Radio_FM_USRPX310_File_Sink(gr.top_block):
         	audio_decimation=10,
         )
         self.analog_sig_source_x_0 = analog.sig_source_c(sample_rate, analog.GR_COS_WAVE, frequency_offset, 1, 0)
+
+
 
         ##################################################
         # Connections

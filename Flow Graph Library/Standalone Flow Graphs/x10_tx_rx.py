@@ -3,8 +3,10 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: X10 Tx Rx
-# Generated: Fri Nov  6 17:27:58 2020
+# GNU Radio version: 3.7.13.5
 ##################################################
+
+from distutils.version import StrictVersion
 
 if __name__ == '__main__':
     import ctypes
@@ -16,7 +18,8 @@ if __name__ == '__main__':
         except:
             print "Warning: failed to XInitThreads()"
 
-from PyQt4 import Qt
+from PyQt5 import Qt
+from PyQt5 import Qt, QtCore
 from gnuradio import blocks
 from gnuradio import digital
 from gnuradio import eng_notation
@@ -31,6 +34,7 @@ import X10
 import sip
 import sys
 import time
+from gnuradio import qtgui
 
 
 class x10_tx_rx(gr.top_block, Qt.QWidget):
@@ -39,6 +43,7 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
         gr.top_block.__init__(self, "X10 Tx Rx")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("X10 Tx Rx")
+        qtgui.util.check_set_qss()
         try:
             self.setWindowIcon(Qt.QIcon.fromTheme('gnuradio-grc'))
         except:
@@ -56,7 +61,8 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "x10_tx_rx")
-        self.restoreGeometry(self.settings.value("geometry").toByteArray())
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
+
 
         ##################################################
         # Variables
@@ -87,7 +93,9 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_samp_rate(sample_rate)
         self.uhd_usrp_source_0.set_center_freq(rx_usrp_frequency, 0)
         self.uhd_usrp_source_0.set_gain(50, 0)
-        self.uhd_usrp_source_0.set_antenna("RX2", 0)
+        self.uhd_usrp_source_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
         	",".join(("", "")),
         	uhd.stream_args(
@@ -108,20 +116,22 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
         )
         self.qtgui_time_sink_x_0_1.set_update_time(0.10)
         self.qtgui_time_sink_x_0_1.set_y_axis(-1, 1)
-        
-        self.qtgui_time_sink_x_0_1.set_y_label("Amplitude", "")
-        
+
+        self.qtgui_time_sink_x_0_1.set_y_label('Amplitude', "")
+
         self.qtgui_time_sink_x_0_1.enable_tags(-1, True)
         self.qtgui_time_sink_x_0_1.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
         self.qtgui_time_sink_x_0_1.enable_autoscale(False)
         self.qtgui_time_sink_x_0_1.enable_grid(False)
+        self.qtgui_time_sink_x_0_1.enable_axis_labels(True)
         self.qtgui_time_sink_x_0_1.enable_control_panel(False)
-        
+        self.qtgui_time_sink_x_0_1.enable_stem_plot(False)
+
         if not True:
           self.qtgui_time_sink_x_0_1.disable_legend()
-        
-        labels = ["", "", "", "", "",
-                  "", "", "", "", ""]
+
+        labels = ['', '', '', '', '',
+                  '', '', '', '', '']
         widths = [1, 1, 1, 1, 1,
                   1, 1, 1, 1, 1]
         colors = ["blue", "red", "green", "black", "cyan",
@@ -132,7 +142,7 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
                    -1, -1, -1, -1, -1]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
                   1.0, 1.0, 1.0, 1.0, 1.0]
-        
+
         for i in xrange(1):
             if len(labels[i]) == 0:
                 self.qtgui_time_sink_x_0_1.set_line_label(i, "Data {0}".format(i))
@@ -143,9 +153,9 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0_1.set_line_style(i, styles[i])
             self.qtgui_time_sink_x_0_1.set_line_marker(i, markers[i])
             self.qtgui_time_sink_x_0_1.set_line_alpha(i, alphas[i])
-        
+
         self._qtgui_time_sink_x_0_1_win = sip.wrapinstance(self.qtgui_time_sink_x_0_1.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_time_sink_x_0_1_win)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_1_win)
         self.qtgui_time_sink_x_0_0 = qtgui.time_sink_f(
         	10000, #size
         	1, #samp_rate
@@ -154,20 +164,22 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
         )
         self.qtgui_time_sink_x_0_0.set_update_time(0.10)
         self.qtgui_time_sink_x_0_0.set_y_axis(-1, 1)
-        
-        self.qtgui_time_sink_x_0_0.set_y_label("Amplitude", "")
-        
+
+        self.qtgui_time_sink_x_0_0.set_y_label('Amplitude', "")
+
         self.qtgui_time_sink_x_0_0.enable_tags(-1, True)
         self.qtgui_time_sink_x_0_0.set_trigger_mode(qtgui.TRIG_MODE_FREE, qtgui.TRIG_SLOPE_POS, 0.0, 0, 0, "")
         self.qtgui_time_sink_x_0_0.enable_autoscale(False)
         self.qtgui_time_sink_x_0_0.enable_grid(False)
+        self.qtgui_time_sink_x_0_0.enable_axis_labels(True)
         self.qtgui_time_sink_x_0_0.enable_control_panel(False)
-        
+        self.qtgui_time_sink_x_0_0.enable_stem_plot(False)
+
         if not True:
           self.qtgui_time_sink_x_0_0.disable_legend()
-        
-        labels = ["", "", "", "", "",
-                  "", "", "", "", ""]
+
+        labels = ['', '', '', '', '',
+                  '', '', '', '', '']
         widths = [1, 1, 1, 1, 1,
                   1, 1, 1, 1, 1]
         colors = ["blue", "red", "green", "black", "cyan",
@@ -178,7 +190,7 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
                    -1, -1, -1, -1, -1]
         alphas = [1.0, 1.0, 1.0, 1.0, 1.0,
                   1.0, 1.0, 1.0, 1.0, 1.0]
-        
+
         for i in xrange(1):
             if len(labels[i]) == 0:
                 self.qtgui_time_sink_x_0_0.set_line_label(i, "Data {0}".format(i))
@@ -189,12 +201,12 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
             self.qtgui_time_sink_x_0_0.set_line_style(i, styles[i])
             self.qtgui_time_sink_x_0_0.set_line_marker(i, markers[i])
             self.qtgui_time_sink_x_0_0.set_line_alpha(i, alphas[i])
-        
+
         self._qtgui_time_sink_x_0_0_win = sip.wrapinstance(self.qtgui_time_sink_x_0_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_time_sink_x_0_0_win)
+        self.top_grid_layout.addWidget(self._qtgui_time_sink_x_0_0_win)
         self.fir_filter_xxx_0 = filter.fir_filter_fff(1, ([0.125]*8))
         self.fir_filter_xxx_0.declare_sample_delay(0)
-        self.digital_correlate_access_code_tag_bb_0 = digital.correlate_access_code_tag_bb("111111111111111111111111111111111111111100000000000000000000", 0, "Start")
+        self.digital_correlate_access_code_tag_xx_0 = digital.correlate_access_code_tag_bb('111111111111111111111111111111111111111100000000000000000000', 0, 'Start')
         self.blocks_threshold_ff_0 = blocks.threshold_ff(.05, .05, 0)
         self.blocks_null_source_0 = blocks.null_source(gr.sizeof_gr_complex*1)
         self.blocks_multiply_const_vxx_1 = blocks.multiply_const_vff((1000, ))
@@ -207,30 +219,31 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
         self.X10_x10_decoder_0 = X10.x10_decoder()
         self.X10_message_generator_0 = X10.message_generator(sample_rate,address_code,data_code,press_duration,press_repetition_interval)
 
+
+
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.X10_x10_decoder_0, 'out'), (self.blocks_message_debug_0, 'print'))    
-        self.connect((self.X10_message_generator_0, 0), (self.blocks_multiply_const_vxx_0, 0))    
-        self.connect((self.blocks_char_to_float_0, 0), (self.X10_x10_decoder_0, 0))    
-        self.connect((self.blocks_char_to_float_0, 0), (self.qtgui_time_sink_x_0_0, 0))    
-        self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.fir_filter_xxx_0, 0))    
-        self.connect((self.blocks_float_to_uchar_0, 0), (self.digital_correlate_access_code_tag_bb_0, 0))    
-        self.connect((self.blocks_keep_one_in_n_0, 0), (self.blocks_float_to_uchar_0, 0))    
-        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.uhd_usrp_sink_0, 0))    
-        self.connect((self.blocks_multiply_const_vxx_1, 0), (self.blocks_threshold_ff_0, 0))    
-        self.connect((self.blocks_multiply_const_vxx_1, 0), (self.qtgui_time_sink_x_0_1, 0))    
-        self.connect((self.blocks_null_source_0, 0), (self.X10_message_generator_0, 0))    
-        self.connect((self.blocks_threshold_ff_0, 0), (self.blocks_keep_one_in_n_0, 0))    
-        self.connect((self.digital_correlate_access_code_tag_bb_0, 0), (self.blocks_char_to_float_0, 0))    
-        self.connect((self.fir_filter_xxx_0, 0), (self.blocks_multiply_const_vxx_1, 0))    
-        self.connect((self.uhd_usrp_source_0, 0), (self.blocks_complex_to_mag_squared_0, 0))    
+        self.msg_connect((self.X10_x10_decoder_0, 'out'), (self.blocks_message_debug_0, 'print'))
+        self.connect((self.X10_message_generator_0, 0), (self.blocks_multiply_const_vxx_0, 0))
+        self.connect((self.blocks_char_to_float_0, 0), (self.X10_x10_decoder_0, 0))
+        self.connect((self.blocks_char_to_float_0, 0), (self.qtgui_time_sink_x_0_0, 0))
+        self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.fir_filter_xxx_0, 0))
+        self.connect((self.blocks_float_to_uchar_0, 0), (self.digital_correlate_access_code_tag_xx_0, 0))
+        self.connect((self.blocks_keep_one_in_n_0, 0), (self.blocks_float_to_uchar_0, 0))
+        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.uhd_usrp_sink_0, 0))
+        self.connect((self.blocks_multiply_const_vxx_1, 0), (self.blocks_threshold_ff_0, 0))
+        self.connect((self.blocks_multiply_const_vxx_1, 0), (self.qtgui_time_sink_x_0_1, 0))
+        self.connect((self.blocks_null_source_0, 0), (self.X10_message_generator_0, 0))
+        self.connect((self.blocks_threshold_ff_0, 0), (self.blocks_keep_one_in_n_0, 0))
+        self.connect((self.digital_correlate_access_code_tag_xx_0, 0), (self.blocks_char_to_float_0, 0))
+        self.connect((self.fir_filter_xxx_0, 0), (self.blocks_multiply_const_vxx_1, 0))
+        self.connect((self.uhd_usrp_source_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
 
     def closeEvent(self, event):
         self.settings = Qt.QSettings("GNU Radio", "x10_tx_rx")
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
-
 
     def get_tx_usrp_gain(self):
         return self.tx_usrp_gain
@@ -238,7 +251,7 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
     def set_tx_usrp_gain(self, tx_usrp_gain):
         self.tx_usrp_gain = tx_usrp_gain
         self.uhd_usrp_sink_0.set_gain(self.tx_usrp_gain, 0)
-        	
+
 
     def get_tx_usrp_channel(self):
         return self.tx_usrp_channel
@@ -312,10 +325,6 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
 
 def main(top_block_cls=x10_tx_rx, options=None):
 
-    from distutils.version import StrictVersion
-    if StrictVersion(Qt.qVersion()) >= StrictVersion("4.5.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
@@ -325,7 +334,7 @@ def main(top_block_cls=x10_tx_rx, options=None):
     def quitting():
         tb.stop()
         tb.wait()
-    qapp.connect(qapp, Qt.SIGNAL("aboutToQuit()"), quitting)
+    qapp.aboutToQuit.connect(quitting)
     qapp.exec_()
 
 

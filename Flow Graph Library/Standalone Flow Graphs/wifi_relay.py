@@ -3,8 +3,9 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Wifi Relay
-# Generated: Tue Sep  8 16:57:43 2020
+# GNU Radio version: 3.7.13.5
 ##################################################
+
 
 from gnuradio import eng_notation
 from gnuradio import gr
@@ -34,7 +35,7 @@ class wifi_relay(gr.top_block):
         # Blocks
         ##################################################
         self.uhd_usrp_source_0_0 = uhd.usrp_source(
-        	",".join(("", "")),
+        	",".join(('', "")),
         	uhd.stream_args(
         		cpu_format="fc32",
         		channels=range(1),
@@ -44,7 +45,9 @@ class wifi_relay(gr.top_block):
         self.uhd_usrp_source_0_0.set_samp_rate(sample_rate)
         self.uhd_usrp_source_0_0.set_center_freq(rx_frequency, 0)
         self.uhd_usrp_source_0_0.set_gain(rx_usrp_gain, 0)
-        self.uhd_usrp_source_0_0.set_antenna("RX2", 0)
+        self.uhd_usrp_source_0_0.set_antenna('RX2', 0)
+        self.uhd_usrp_source_0_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0_0.set_auto_iq_balance(True, 0)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
         	",".join(("", "")),
         	uhd.stream_args(
@@ -56,12 +59,14 @@ class wifi_relay(gr.top_block):
         self.uhd_usrp_sink_0.set_samp_rate(sample_rate)
         self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
         self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
-        self.uhd_usrp_sink_0.set_antenna("TX/RX", 0)
+        self.uhd_usrp_sink_0.set_antenna('TX/RX', 0)
+
+
 
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.uhd_usrp_source_0_0, 0), (self.uhd_usrp_sink_0, 0))    
+        self.connect((self.uhd_usrp_source_0_0, 0), (self.uhd_usrp_sink_0, 0))
 
     def get_tx_usrp_gain(self):
         return self.tx_usrp_gain
@@ -69,7 +74,7 @@ class wifi_relay(gr.top_block):
     def set_tx_usrp_gain(self, tx_usrp_gain):
         self.tx_usrp_gain = tx_usrp_gain
         self.uhd_usrp_sink_0.set_gain(self.tx_usrp_gain, 0)
-        	
+
 
     def get_tx_frequency(self):
         return self.tx_frequency
@@ -83,8 +88,8 @@ class wifi_relay(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        self.uhd_usrp_sink_0.set_samp_rate(self.sample_rate)
         self.uhd_usrp_source_0_0.set_samp_rate(self.sample_rate)
+        self.uhd_usrp_sink_0.set_samp_rate(self.sample_rate)
 
     def get_rx_usrp_gain(self):
         return self.rx_usrp_gain
@@ -92,7 +97,7 @@ class wifi_relay(gr.top_block):
     def set_rx_usrp_gain(self, rx_usrp_gain):
         self.rx_usrp_gain = rx_usrp_gain
         self.uhd_usrp_source_0_0.set_gain(self.rx_usrp_gain, 0)
-        	
+
 
     def get_rx_usrp_channel(self):
         return self.rx_usrp_channel

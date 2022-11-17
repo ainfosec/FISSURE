@@ -38,7 +38,7 @@ from gnuradio import qtgui
 
 class time_sink_b205mini(gr.top_block, Qt.QWidget):
 
-    def __init__(self, serial="False", rx_usrp_channel="A:A"):
+    def __init__(self, rx_usrp_channel="A:A", serial="False"):
         gr.top_block.__init__(self, "Time Sink B205Mini")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Time Sink B205Mini")
@@ -66,8 +66,8 @@ class time_sink_b205mini(gr.top_block, Qt.QWidget):
         ##################################################
         # Parameters
         ##################################################
-        self.serial = serial
         self.rx_usrp_channel = rx_usrp_channel
+        self.serial = serial
 
         ##################################################
         # Variables
@@ -155,8 +155,8 @@ class time_sink_b205mini(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_center_freq(rx_frequency*1e6, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
-        self.uhd_usrp_source_0.set_auto_dc_offset("", 0)
-        self.uhd_usrp_source_0.set_auto_iq_balance("", 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_c(
         	100000, #size
         	sample_rate/decimation, #samp_rate
@@ -275,17 +275,17 @@ class time_sink_b205mini(gr.top_block, Qt.QWidget):
         self.settings.setValue("geometry", self.saveGeometry())
         event.accept()
 
-    def get_serial(self):
-        return self.serial
-
-    def set_serial(self, serial):
-        self.serial = serial
-
     def get_rx_usrp_channel(self):
         return self.rx_usrp_channel
 
     def set_rx_usrp_channel(self, rx_usrp_channel):
         self.rx_usrp_channel = rx_usrp_channel
+
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
 
     def get_sample_rate(self):
         return self.sample_rate
@@ -333,11 +333,11 @@ class time_sink_b205mini(gr.top_block, Qt.QWidget):
 def argument_parser():
     parser = OptionParser(usage="%prog: [options]", option_class=eng_option)
     parser.add_option(
-        "", "--serial", dest="serial", type="string", default="False",
-        help="Set False [default=%default]")
-    parser.add_option(
         "", "--rx-usrp-channel", dest="rx_usrp_channel", type="string", default="A:A",
         help="Set A:A [default=%default]")
+    parser.add_option(
+        "", "--serial", dest="serial", type="string", default="False",
+        help="Set False [default=%default]")
     return parser
 
 
@@ -347,7 +347,7 @@ def main(top_block_cls=time_sink_b205mini, options=None):
 
     qapp = Qt.QApplication(sys.argv)
 
-    tb = top_block_cls(serial=options.serial, rx_usrp_channel=options.rx_usrp_channel)
+    tb = top_block_cls(rx_usrp_channel=options.rx_usrp_channel, serial=options.serial)
     tb.start()
     tb.show()
 

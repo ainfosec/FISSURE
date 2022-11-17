@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Tpms Fsk Usrpb205Mini Receive
-# Generated: Thu Jun  9 13:53:49 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -53,6 +53,8 @@ class TPMS_FSK_USRPB205mini_Receive(gr.top_block):
         self.uhd_usrp_source_0.set_center_freq(rx_usrp_frequency, 0)
         self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.tpms_poore_decoder_0 = tpms_poore.decoder()
         self.fir_filter_xxx_1_0 = filter.fir_filter_fff(1, (50*[0.02]))
         self.fir_filter_xxx_1_0.declare_sample_delay(0)
@@ -72,6 +74,8 @@ class TPMS_FSK_USRPB205mini_Receive(gr.top_block):
         self.analog_quadrature_demod_cf_0 = analog.quadrature_demod_cf(sample_rate/(2*math.pi*80000/8.0))
         self.analog_agc_xx_0 = analog.agc_cc(.05, 1.0, 0)
         self.analog_agc_xx_0.set_max_gain(20)
+
+
 
         ##################################################
         # Connections

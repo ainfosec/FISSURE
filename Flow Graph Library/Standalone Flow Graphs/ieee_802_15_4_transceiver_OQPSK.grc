@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<?grc format='1' created='3.7.11'?>
+<?grc format='1' created='3.7.13'?>
 <flow_graph>
   <timestamp>Mon Dec 15 13:46:31 2014</timestamp>
   <block>
@@ -73,12 +73,20 @@
       <value>True</value>
     </param>
     <param>
+      <key>sizing_mode</key>
+      <value>fixed</value>
+    </param>
+    <param>
       <key>thread_safe_setters</key>
       <value></value>
     </param>
     <param>
       <key>title</key>
       <value>IEEE 802.15.4 Transceiver using OQPSK PHY</value>
+    </param>
+    <param>
+      <key>placement</key>
+      <value>(0,0)</value>
     </param>
   </block>
   <block>
@@ -1930,11 +1938,11 @@
     </param>
     <param>
       <key>dc_offs_enb0</key>
-      <value>""</value>
+      <value>True</value>
     </param>
     <param>
       <key>iq_imbal_enb0</key>
-      <value>""</value>
+      <value>True</value>
     </param>
     <param>
       <key>norm_gain0</key>

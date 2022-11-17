@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: IEEE 802.15.4 Transceiver using OQPSK PHY
-# Generated: Mon Jul 19 16:22:18 2021
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 from distutils.version import StrictVersion
@@ -66,11 +66,8 @@ class ieee_802_15_4_transceiver_OQPSK(gr.top_block, Qt.QWidget):
         self.top_layout.addLayout(self.top_grid_layout)
 
         self.settings = Qt.QSettings("GNU Radio", "ieee_802_15_4_transceiver_OQPSK")
+        self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
-        if StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-            self.restoreGeometry(self.settings.value("geometry").toByteArray())
-        else:
-            self.restoreGeometry(self.settings.value("geometry", type=QtCore.QByteArray))
 
         ##################################################
         # Variables
@@ -84,10 +81,10 @@ class ieee_802_15_4_transceiver_OQPSK(gr.top_block, Qt.QWidget):
         ##################################################
         self._tx_gain_range = Range(0, 1, 0.01, 0.75, 200)
         self._tx_gain_win = RangeWidget(self._tx_gain_range, self.set_tx_gain, "tx_gain", "counter_slider", float)
-        self.top_layout.addWidget(self._tx_gain_win)
+        self.top_grid_layout.addWidget(self._tx_gain_win)
         self._rx_gain_range = Range(0, 1, 0.01, 0.75, 200)
         self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, "rx_gain", "counter_slider", float)
-        self.top_layout.addWidget(self._rx_gain_win)
+        self.top_grid_layout.addWidget(self._rx_gain_win)
         self._freq_options = [1000000 * (2400 + 5 * (i - 10)) for i in range(11, 27)]
         self._freq_labels = [str(i) for i in range(11, 27)]
         self._freq_tool_bar = Qt.QToolBar(self)
@@ -99,7 +96,7 @@ class ieee_802_15_4_transceiver_OQPSK(gr.top_block, Qt.QWidget):
         self._freq_callback(self.freq)
         self._freq_combo_box.currentIndexChanged.connect(
         	lambda i: self.set_freq(self._freq_options[i]))
-        self.top_layout.addWidget(self._freq_tool_bar)
+        self.top_grid_layout.addWidget(self._freq_tool_bar)
         self.uhd_usrp_source_0 = uhd.usrp_source(
         	",".join(('', "")),
         	uhd.stream_args(
@@ -110,6 +107,8 @@ class ieee_802_15_4_transceiver_OQPSK(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_samp_rate(4000000)
         self.uhd_usrp_source_0.set_center_freq(freq, 0)
         self.uhd_usrp_source_0.set_normalized_gain(rx_gain, 0)
+        self.uhd_usrp_source_0.set_auto_dc_offset(True, 0)
+        self.uhd_usrp_source_0.set_auto_iq_balance(True, 0)
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
         	",".join(('', "")),
         	uhd.stream_args(
@@ -163,11 +162,13 @@ class ieee_802_15_4_transceiver_OQPSK(gr.top_block, Qt.QWidget):
             self.qtgui_freq_sink_x_0.set_line_alpha(i, alphas[i])
 
         self._qtgui_freq_sink_x_0_win = sip.wrapinstance(self.qtgui_freq_sink_x_0.pyqwidget(), Qt.QWidget)
-        self.top_layout.addWidget(self._qtgui_freq_sink_x_0_win)
+        self.top_grid_layout.addWidget(self._qtgui_freq_sink_x_0_win)
         self.ieee802_15_4_rime_stack_0 = ieee802_15_4.rime_stack(([129]), ([131]), ([132]), ([23,42]))
         self.ieee802_15_4_oqpsk_phy_0 = ieee802_15_4_oqpsk_phy()
         self.ieee802_15_4_mac_0 = ieee802_15_4.mac(True,0x8841,0,0x1aaa,0xffff,0x3344)
         self.blocks_message_strobe_0 = blocks.message_strobe(pmt.intern("Hello World!\n"), 1000)
+
+
 
         ##################################################
         # Connections
@@ -216,9 +217,6 @@ def main(top_block_cls=ieee_802_15_4_transceiver_OQPSK, options=None):
     if gr.enable_realtime_scheduling() != gr.RT_OK:
         print "Error: failed to enable real-time scheduling."
 
-    if StrictVersion("4.5.0") <= StrictVersion(Qt.qVersion()) < StrictVersion("5.0.0"):
-        style = gr.prefs().get_string('qtgui', 'style', 'raster')
-        Qt.QApplication.setGraphicsSystem(style)
     qapp = Qt.QApplication(sys.argv)
 
     tb = top_block_cls()
