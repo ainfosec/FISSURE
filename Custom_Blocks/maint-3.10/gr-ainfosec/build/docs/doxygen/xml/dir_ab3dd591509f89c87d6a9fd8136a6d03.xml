@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_ab3dd591509f89c87d6a9fd8136a6d03" kind="dir">
+    <compoundname>python</compoundname>
+    <innerdir refid="dir_317f09fa2f75030d0ce138402d73e58b">ainfosec</innerdir>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/build/python/"/>
+  </compounddef>
+</doxygen>

@@ -25,7 +25,7 @@ GR_PYTHON_INSTALL(
     adsb_encode.py
     UDP_to_Wireshark.py
     UDP_to_Wireshark_Async.py
-    DESTINATION ${GR_PYTHON_DIR}/gnuradio/ainfosec
+    msg_str_to_PUB.py DESTINATION ${GR_PYTHON_DIR}/gnuradio/ainfosec
 )
 
 ########################################################################

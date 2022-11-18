@@ -211,17 +211,30 @@ pygen_apps_9a6dd/fast:
 .PHONY : pygen_apps_9a6dd/fast
 
 #=============================================================================
-# Target rules for targets named pygen_python_ainfosec_d7a1f
+# Target rules for targets named doxygen_target
 
 # Build rule for target.
-pygen_python_ainfosec_d7a1f: cmake_check_build_system
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 pygen_python_ainfosec_d7a1f
-.PHONY : pygen_python_ainfosec_d7a1f
+doxygen_target: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 doxygen_target
+.PHONY : doxygen_target
 
 # fast build rule for target.
-pygen_python_ainfosec_d7a1f/fast:
-	$(MAKE) $(MAKESILENT) -f python/ainfosec/CMakeFiles/pygen_python_ainfosec_d7a1f.dir/build.make python/ainfosec/CMakeFiles/pygen_python_ainfosec_d7a1f.dir/build
-.PHONY : pygen_python_ainfosec_d7a1f/fast
+doxygen_target/fast:
+	$(MAKE) $(MAKESILENT) -f docs/doxygen/CMakeFiles/doxygen_target.dir/build.make docs/doxygen/CMakeFiles/doxygen_target.dir/build
+.PHONY : doxygen_target/fast
+
+#=============================================================================
+# Target rules for targets named pygen_python_ainfosec_c4328
+
+# Build rule for target.
+pygen_python_ainfosec_c4328: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 pygen_python_ainfosec_c4328
+.PHONY : pygen_python_ainfosec_c4328
+
+# fast build rule for target.
+pygen_python_ainfosec_c4328/fast:
+	$(MAKE) $(MAKESILENT) -f python/ainfosec/CMakeFiles/pygen_python_ainfosec_c4328.dir/build.make python/ainfosec/CMakeFiles/pygen_python_ainfosec_c4328.dir/build
+.PHONY : pygen_python_ainfosec_c4328/fast
 
 #=============================================================================
 # Target rules for targets named copy_module_for_tests
@@ -248,6 +261,19 @@ ainfosec_python: cmake_check_build_system
 ainfosec_python/fast:
 	$(MAKE) $(MAKESILENT) -f python/ainfosec/bindings/CMakeFiles/ainfosec_python.dir/build.make python/ainfosec/bindings/CMakeFiles/ainfosec_python.dir/build
 .PHONY : ainfosec_python/fast
+
+#=============================================================================
+# Target rules for targets named extracted_docstrings
+
+# Build rule for target.
+extracted_docstrings: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 extracted_docstrings
+.PHONY : extracted_docstrings
+
+# fast build rule for target.
+extracted_docstrings/fast:
+	$(MAKE) $(MAKESILENT) -f python/ainfosec/bindings/CMakeFiles/extracted_docstrings.dir/build.make python/ainfosec/bindings/CMakeFiles/extracted_docstrings.dir/build
+.PHONY : extracted_docstrings/fast
 
 #=============================================================================
 # Target rules for targets named ainfosec_docstrings
@@ -277,8 +303,10 @@ help:
 	@echo "... test"
 	@echo "... ainfosec_docstrings"
 	@echo "... copy_module_for_tests"
+	@echo "... doxygen_target"
+	@echo "... extracted_docstrings"
 	@echo "... pygen_apps_9a6dd"
-	@echo "... pygen_python_ainfosec_d7a1f"
+	@echo "... pygen_python_ainfosec_c4328"
 	@echo "... uninstall"
 	@echo "... ainfosec_python"
 	@echo "... gnuradio-ainfosec"

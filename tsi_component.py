@@ -7,7 +7,6 @@ import zmq
 import threading
 import sys
 import os
-sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + '/Flow Graph Library/IQ Flow Graphs')  
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + '/Flow Graph Library/TSI Flow Graphs')
 # from gnuradio import blocks 
 # from gnuradio import gr
@@ -18,6 +17,7 @@ import inspect,types
 import csv
 from fissureclass import fissure_listener
 from fissureclass import fissure_server
+import subprocess
 
     
 # Insert Any Argument While Executing to Run Locally
@@ -43,6 +43,7 @@ class TSI_Component:
         self.blacklist = []
         self.running_TSI_wideband = False
         self.configuration_update = False
+        self.detector_script_name = ""
         
         # Create the TSI ZMQ Sockets
         self.connect()
@@ -279,7 +280,7 @@ class TSI_Component:
         print("TSI: Starting TSI Detector...")
         
         # Make a New Wideband Thread
-        if detector in ["wideband_x310.py","wideband_b210.py","wideband_hackrf.py","wideband_b205mini.py","wideband_rtl2832u.py","wideband_limesdr.py","wideband_bladerf.py","wideband_plutosdr.py","wideband_usrp2.py","wideband_usrp_n2xx.py","wideband_bladerf2.py","Simulator","IQ File"]:
+        if len(detector) > 0:
             if detector == "wideband_x310.py":
                 flow_graph_filename = "wideband_x310.py"
             elif detector == "wideband_b210.py":
@@ -304,6 +305,36 @@ class TSI_Component:
                 flow_graph_filename = "wideband_bladerf2.py"
             elif detector == "IQ File":
                 flow_graph_filename = "iq_file.py"
+            elif "fixed_threshold" in detector:
+                if detector == "fixed_threshold_x310.py":
+                    flow_graph_filename = "fixed_threshold_x310.py"
+                elif detector == "fixed_threshold_b210.py":
+                    flow_graph_filename = "fixed_threshold_b210.py"  
+                elif detector == "fixed_threshold_hackrf.py":
+                    flow_graph_filename = "fixed_threshold_hackrf.py"
+                elif detector == "fixed_threshold_b205mini.py":
+                    flow_graph_filename = "fixed_threshold_b205mini.py"         
+                elif detector == "fixed_threshold_rtl2832u.py":
+                    flow_graph_filename = "fixed_threshold_rtl2832u.py"
+                elif detector == "fixed_threshold_limesdr.py":
+                    flow_graph_filename = "fixed_threshold_limesdr.py"
+                elif detector == "fixed_threshold_bladerf.py":
+                    flow_graph_filename = "fixed_threshold_bladerf.py"
+                elif detector == "fixed_threshold_plutosdr.py":
+                    flow_graph_filename = "fixed_threshold_plutosdr.py"
+                elif detector == "fixed_threshold_usrp2.py":
+                    flow_graph_filename = "fixed_threshold_usrp2.py"
+                elif detector == "fixed_threshold_usrp_n2xx.py":
+                    flow_graph_filename = "fixed_threshold_usrp_n2xx.py"
+                elif detector == "fixed_threshold_bladerf2.py":
+                    flow_graph_filename = "fixed_threshold_bladerf2.py"
+                elif detector == "fixed_threshold_simulator.py":
+                    flow_graph_filename = "fixed_threshold_simulator.py"
+                stop_event = threading.Event()
+                c_thread = threading.Thread(target=self.detectorFlowGraphGUI_Thread, args=(stop_event,flow_graph_filename,variable_names,variable_values))
+                c_thread.daemon = True
+                c_thread.start()
+                return
             
             # Simulator Detector Thread
             if detector == "Simulator":
@@ -316,7 +347,7 @@ class TSI_Component:
                 class_name = flow_graph_filename.replace(".py","")
                 stop_event = threading.Event()
                 c_thread = threading.Thread(target=self.runWidebandThread, args=(stop_event,class_name,variable_names,variable_values))
-                c_thread.start()  
+                c_thread.start() 
         
     def startWidebandThread(self):
         """ Begins TSI wideband sweeping
@@ -453,7 +484,6 @@ class TSI_Component:
             # Dwell on Frequency
             time.sleep(self.wideband_dwell[self.wideband_band])
         
-            
     def stopTSI_Detector(self):
         """ Pauses TSI processing of signals after receiving the command from the HIPRFISR
         """    
@@ -463,6 +493,8 @@ class TSI_Component:
         
         if self.running_TSI_simulator == True:            
             self.running_TSI_simulator = False
+        elif len(self.detector_script_name) > 0:
+            self.detectorFlowGraphStop('Flow Graph - GUI')
         else:        
             try:
                 # Stop Flow Graphs
@@ -472,110 +504,41 @@ class TSI_Component:
             except:
                 pass
             
-        
-                    
-        
-    # def startIQ_Recording(self, variable_names, variable_values):
-        # """ Runs the "iq_recorder" with the specified settings
-        # """ 
-        # # Make a new Thread
-        # flow_graph_filename = "iq_recorder.py"
-        # class_name = flow_graph_filename.replace(".py","")
-        # stop_event = threading.Event()
-        # c_thread = threading.Thread(target=self.runFlowGraphThread, args=(stop_event,class_name,variable_names,variable_values))
-        # c_thread.start()
+########################################################################
+    def detectorFlowGraphStop(self, parameter):
+        """ Stop the currently running detector flow graph.
+        """
+        # Only Supports Flow Graphs with GUIs
+        if (parameter == "Flow Graph - GUI") and (len(self.detector_script_name) > 0):
+            os.system("pkill -f " + '"' + self.detector_script_name +'"')
+            self.detector_script_name = ""
             
-
-    # def stopIQ_Recording(self, parameter):
-        # """ Stop the currently running flow graph.
-        # """
-        # self.flowtoexecIQ.stop()
-        # self.flowtoexecIQ.wait()       
-        # del self.flowtoexecIQ  # Free up the ports
-
+    def detectorFlowGraphGUI_Thread(self, stop_event, flow_graph_filename, variable_names, variable_values):
+        """ Runs the detector flow graph in the new thread.
+        """
+        try:                      
+            # Start it
+            filepath = os.path.dirname(os.path.realpath(__file__)) + '/Flow Graph Library/TSI Flow Graphs/' + flow_graph_filename
+            arguments = ""            
+            for n in range(0,len(variable_names)):
+                arguments = arguments + '--' + variable_names[n] + '="' + variable_values[n] + '" '
                 
-    # def runFlowGraphThread(self, stop_event, class_name, variable_names, variable_values):
-        # """ Runs the flow graph in the new thread.
-        # """        
-        # # Stop Any Running IQ Flow Graphs
-        # try:
-            # self.stopIQ_Recording(None)
-        # except:
-            # pass
-            
-        # # Load New Flow Graph
-        # loadedmod = __import__(class_name)  
-        # try:
-            # self.flowtoexecIQ = getattr(loadedmod,class_name)()
-            # special_variables = []
-            
-            # # # Adjust Specific Blocks Before Running
-            # # if class_name == "iq_recorder":
-                
-                # # # These Variables Need to be Inserted into Blocks First
-                # # special_variables = ["ip_address","rx_usrp_channel","file_length"]
-                        
-                # # # Get the Relevant Values for the New Blocks        
-                # # for v in range(0,len(variable_names)):
-                    # # if str(variable_names[v]) == "ip_address":      
-                        # # ip_address_value = variable_values[v].replace('"',"")               
-                    # # elif str(variable_names[v]) == "rx_usrp_channel":       
-                        # # rx_usrp_channel_value = variable_values[v].replace('"',"")  
-                    # # elif str(variable_names[v]) == "file_length":       
-                        # # file_length_value = int(variable_values[v].replace('"',""))                                 
-                                
-                # # # Redo Blocks       
-                # # self.flowtoexecIQ.disconnect((self.flowtoexecIQ.uhd_usrp_source_0_0, 0), (self.flowtoexecIQ.analog_pwr_squelch_xx_0, 0))  # UHD: USRP Source Block
-                # # self.flowtoexecIQ.uhd_usrp_source_0_0 = uhd.usrp_source(",".join(("addr=" + ip_address_value, "")),uhd.stream_args(cpu_format="fc32",channels=range(1),),)
-                # # self.flowtoexecIQ.uhd_usrp_source_0_0.set_subdev_spec(rx_usrp_channel_value, 0)      
-                # # self.flowtoexecIQ.connect((self.flowtoexecIQ.uhd_usrp_source_0_0, 0), (self.flowtoexecIQ.analog_pwr_squelch_xx_0, 0)) 
-                
-                # # self.flowtoexecIQ.disconnect((self.flowtoexecIQ.low_pass_filter_0, 0), (self.flowtoexecIQ.blocks_head_0, 0))  # Head Block
-                # # self.flowtoexecIQ.disconnect((self.flowtoexecIQ.blocks_head_0, 0), (self.flowtoexecIQ.blocks_file_sink_0, 0)) 
-                # # self.flowtoexecIQ.blocks_head_0 = blocks.head(gr.sizeof_gr_complex*1, file_length_value)
-                # # self.flowtoexecIQ.connect((self.flowtoexecIQ.low_pass_filter_0, 0), (self.flowtoexecIQ.blocks_head_0, 0)) 
-                # # self.flowtoexecIQ.connect((self.flowtoexecIQ.blocks_head_0, 0), (self.flowtoexecIQ.blocks_file_sink_0, 0))         
-            
-            # # Call the Variable Set Functions (Not Including the "special_variables")
-            # for v in range(0,len(variable_names)):
-                # if not any(x == str(variable_names[v]) for x in special_variables):  # Everything else      
-                    # formatted_name = "set_" + variable_names[v]
-                    # isNumber = self.isFloat(variable_values[v])  
-                    # if isNumber:
-                        # getattr(self.flowtoexecIQ,formatted_name)(float(variable_values[v]))
-                    # else:
-                        # getattr(self.flowtoexecIQ,formatted_name)(variable_values[v])                            
-            
-            # # Start it
-            # self.flowtoexecIQ.start()    
-            # self.flowGraphStartedIQ()  # Signals to other components
-            # self.flowtoexecIQ.wait() 
-            
-            # # Signal on the PUB that the IQ Flow Graph is Finished
-            # self.flowGraphFinishedIQ()   
-        
-        # # Error Loading Flow Graph              
-        # except Exception as e:
-            # self.flowGraphStartedIQ()
-            # self.flowGraphFinishedIQ()       
-            # self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Flow Graph Error', Parameters = e)  
-            # #raise e
-        
-            
-        
-    # def flowGraphFinishedIQ(self):
-        # """ Signals to the HIPRFISR/Dashboard that the IQ flow graph has finished running.
-        # """
-        # # Send Message
-        # self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Flow Graph Finished IQ', Parameters = []) 
+            osCommandString = "python3 " + '"' + filepath + '" ' + arguments
+            proc = subprocess.Popen(osCommandString + " &", shell=True)
+              
+            #self.flowGraphStarted("Inspection")  # Signals to other components 
+            self.detector_script_name = flow_graph_filename
+ 
+        # Error Loading Flow Graph              
+        except Exception as e:
+            print(str(e))
+            print("ERROR")
+            #self.flowGraphStarted("Inspection")
+            #self.flowGraphFinished("Inspection")     
+            # ~ self.fge_pub_server.sendmsg('Status', Identifier = 'FGE', MessageName = 'Flow Graph Error', Parameters = e)  # Custom error message if necessary
+            #~ #raise e
 
-
-    # def flowGraphStartedIQ(self):
-        # """ Signals to the HIPRFISR/Dashboard that the IQ flow graph has started running.
-        # """
-        # # Send Message
-        # self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Flow Graph Started IQ', Parameters = []) 
-                    
+########################################################################           
             
     def addRandomTSI_Message(self, random_number):
         """ Sends a random message over a connection for testing purposes

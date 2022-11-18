@@ -186,6 +186,20 @@ ainfosec_python/fast:
 .PHONY : ainfosec_python/fast
 
 # Convenience name for target.
+python/ainfosec/bindings/CMakeFiles/extracted_docstrings.dir/rule:
+	cd /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 python/ainfosec/bindings/CMakeFiles/extracted_docstrings.dir/rule
+.PHONY : python/ainfosec/bindings/CMakeFiles/extracted_docstrings.dir/rule
+
+# Convenience name for target.
+extracted_docstrings: python/ainfosec/bindings/CMakeFiles/extracted_docstrings.dir/rule
+.PHONY : extracted_docstrings
+
+# fast build rule for target.
+extracted_docstrings/fast:
+	cd /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/build && $(MAKE) $(MAKESILENT) -f python/ainfosec/bindings/CMakeFiles/extracted_docstrings.dir/build.make python/ainfosec/bindings/CMakeFiles/extracted_docstrings.dir/build
+.PHONY : extracted_docstrings/fast
+
+# Convenience name for target.
 python/ainfosec/bindings/CMakeFiles/ainfosec_docstrings.dir/rule:
 	cd /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/build && $(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 python/ainfosec/bindings/CMakeFiles/ainfosec_docstrings.dir/rule
 .PHONY : python/ainfosec/bindings/CMakeFiles/ainfosec_docstrings.dir/rule
@@ -261,6 +275,7 @@ help:
 	@echo "... rebuild_cache"
 	@echo "... test"
 	@echo "... ainfosec_docstrings"
+	@echo "... extracted_docstrings"
 	@echo "... ainfosec_python"
 	@echo "... python_bindings.o"
 	@echo "... python_bindings.i"

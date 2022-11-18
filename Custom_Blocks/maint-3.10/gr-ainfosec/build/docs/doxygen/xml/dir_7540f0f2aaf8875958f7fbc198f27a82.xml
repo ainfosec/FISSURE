@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.9.1" xml:lang="en-US">
+  <compounddef id="dir_7540f0f2aaf8875958f7fbc198f27a82" kind="dir">
+    <compoundname>ainfosec</compoundname>
+    <innerfile refid="api_8h">api.h</innerfile>
+    <innerfile refid="wideband__detector1_8h">wideband_detector1.h</innerfile>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <location file="/home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/include/gnuradio/ainfosec/"/>
+  </compounddef>
+</doxygen>

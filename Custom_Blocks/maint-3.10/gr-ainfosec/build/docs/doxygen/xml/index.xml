@@ -1,0 +1,123 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygenindex xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="index.xsd" version="1.9.1" xml:lang="en-US">
+  <compound refid="classgr_1_1ainfosec_1_1wideband__detector1" kind="class"><name>gr::ainfosec::wideband_detector1</name>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1_1a0c0f977e710cfc533f7af82523641543" kind="typedef"><name>sptr</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1_1a510cbcc4f2b27d7d4ceeb318a4e0f9f4" kind="function"><name>make</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1_1aa54e08f75fc4affb1a91ebe66bb12ec0" kind="function"><name>set_address</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1_1a67dd14dd5b85e6076341f6b000ccc8dd" kind="function"><name>set_rx_freq</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1_1a54abdf18d33b3990a94c361efd61db40" kind="function"><name>set_fft_size</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1_1acce9e4c71f603aa5f5f1aac5bfcfbf40" kind="function"><name>set_sample_rate</name></member>
+  </compound>
+  <compound refid="classgr_1_1ainfosec_1_1wideband__detector1__impl" kind="class"><name>gr::ainfosec::wideband_detector1_impl</name>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1a78913740a236d8cdb7eaf2513f7f93c6" kind="variable"><name>my_address</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1a8bde75d54f4fbbda71e22367d9ed70c8" kind="variable"><name>my_rx_freq</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1a60ac752f238e52009abc8dc0cdf2fbee" kind="variable"><name>my_fft_size</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1aad542712e7db68f3e0b2fe144bc10191" kind="variable"><name>my_sample_rate</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1a450640db4a8d38fd9f73552e1e15f442" kind="variable"><name>d_context</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1a0dd140b7199ab8062d2bb4bfa72a872d" kind="variable"><name>d_socket</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1af8a3178b9f753315d0cd6dc036be5e04" kind="variable"><name>counter</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1a40962a6bebb6a31b4d882b52543e40c3" kind="variable"><name>timer_value</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1a5444dbfc2f22a6aed6e9beca3398afaa" kind="variable"><name>max_power</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1a48241ad1dc319952bfb5e63bebf26757" kind="variable"><name>max_power_freq</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1a67dd4b3a36a4d9b2ca14704fc10f435e" kind="variable"><name>max_power_bin</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1aba70285241cdff669c5f236e0587fd74" kind="variable"><name>get_timestamp</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1ae72a7bd96dfced5aef42a678714e1146" kind="function"><name>wideband_detector1_impl</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1ac100cd5b512526fea3f465bf60f15c60" kind="function"><name>~wideband_detector1_impl</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1a77edcd97199ed7219f83223b1645f855" kind="function"><name>send</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1aeb225ab73532591b48f6b63e7bda84ec" kind="function"><name>set_address</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1aad324bc4bc2207a92b8e24dc152daafd" kind="function"><name>set_rx_freq</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1ada30c157b13f460ea153813a956615e3" kind="function"><name>set_fft_size</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1a2746c5ead59f0e91b2aa4bdb8e730cf3" kind="function"><name>set_sample_rate</name></member>
+    <member refid="classgr_1_1ainfosec_1_1wideband__detector1__impl_1ac42a7fe7bdf186ddfd592c9bc4ee7c08" kind="function"><name>work</name></member>
+  </compound>
+  <compound refid="namespacegr" kind="namespace"><name>gr</name>
+  </compound>
+  <compound refid="namespacegr_1_1ainfosec" kind="namespace"><name>gr::ainfosec</name>
+  </compound>
+  <compound refid="namespacestd" kind="namespace"><name>std</name>
+  </compound>
+  <compound refid="api_8h" kind="file"><name>api.h</name>
+    <member refid="api_8h_1a8f065bc983f90159a156614f7b65cd9c" kind="define"><name>AINFOSEC_API</name></member>
+  </compound>
+  <compound refid="group__defs_8dox" kind="file"><name>group_defs.dox</name>
+  </compound>
+  <compound refid="main__page_8dox" kind="file"><name>main_page.dox</name>
+  </compound>
+  <compound refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h" kind="file"><name>build/python/ainfosec/bindings/pydoc_macros.h</name>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1afa7cf06549cf7fd295f622ef6f376357" kind="define"><name>__EXPAND</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1a251b23a2efed48ff2ba2d6f449ed33a3" kind="define"><name>__COUNT</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1a2815f7ab197591ba9559415c694f9ce0" kind="define"><name>__VA_SIZE</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1afdd58e017733f2235c227ef8dd3b2de8" kind="define"><name>__CAT1</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1af08fe30f2a41cef10658f6a892d20543" kind="define"><name>__CAT2</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1a43c147206df4346db5e9d6445aab28ae" kind="define"><name>__DOC1</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1a53738db606593bc1554371d718695fed" kind="define"><name>__DOC2</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1a21baf08c04d32485764f227c32b5bf5d" kind="define"><name>__DOC3</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1a9463ba0ad86bcb4c59b5aecf8a37174c" kind="define"><name>__DOC4</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1a942579d548421ddb2906af7094e5789c" kind="define"><name>__DOC5</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1a31ea356761360e78d16525aa69d2dae6" kind="define"><name>__DOC6</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1a6f1e731f1c6d2893ff1bf98582a7de6e" kind="define"><name>__DOC7</name></member>
+    <member refid="build_2python_2ainfosec_2bindings_2pydoc__macros_8h_1a4e578031ec998eaeb933d5caa6a7d28a" kind="define"><name>DOC</name></member>
+  </compound>
+  <compound refid="docs_2doxygen_2pydoc__macros_8h" kind="file"><name>docs/doxygen/pydoc_macros.h</name>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1afa7cf06549cf7fd295f622ef6f376357" kind="define"><name>__EXPAND</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1a251b23a2efed48ff2ba2d6f449ed33a3" kind="define"><name>__COUNT</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1a2815f7ab197591ba9559415c694f9ce0" kind="define"><name>__VA_SIZE</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1afdd58e017733f2235c227ef8dd3b2de8" kind="define"><name>__CAT1</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1af08fe30f2a41cef10658f6a892d20543" kind="define"><name>__CAT2</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1a43c147206df4346db5e9d6445aab28ae" kind="define"><name>__DOC1</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1a53738db606593bc1554371d718695fed" kind="define"><name>__DOC2</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1a21baf08c04d32485764f227c32b5bf5d" kind="define"><name>__DOC3</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1a9463ba0ad86bcb4c59b5aecf8a37174c" kind="define"><name>__DOC4</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1a942579d548421ddb2906af7094e5789c" kind="define"><name>__DOC5</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1a31ea356761360e78d16525aa69d2dae6" kind="define"><name>__DOC6</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1a6f1e731f1c6d2893ff1bf98582a7de6e" kind="define"><name>__DOC7</name></member>
+    <member refid="docs_2doxygen_2pydoc__macros_8h_1a4e578031ec998eaeb933d5caa6a7d28a" kind="define"><name>DOC</name></member>
+  </compound>
+  <compound refid="wideband__detector1_8h" kind="file"><name>wideband_detector1.h</name>
+  </compound>
+  <compound refid="wideband__detector1__impl_8h" kind="file"><name>wideband_detector1_impl.h</name>
+  </compound>
+  <compound refid="wideband__detector1__pydoc__template_8h" kind="file"><name>wideband_detector1_pydoc_template.h</name>
+    <member refid="wideband__detector1__pydoc__template_8h_1a74021f021dcdfbb22891787b79c5529d" kind="define"><name>D</name></member>
+    <member refid="wideband__detector1__pydoc__template_8h_1ab2cb02343a826eb4926a9b80324c58b6" kind="variable"><name>__doc_gr_ainfosec_wideband_detector1</name></member>
+    <member refid="wideband__detector1__pydoc__template_8h_1aca15a3f21c2deb9fdab826ef5971ac85" kind="variable"><name>__doc_gr_ainfosec_wideband_detector1_wideband_detector1_0</name></member>
+    <member refid="wideband__detector1__pydoc__template_8h_1a249c1d297ff62f99de8ff91ba26ed8c4" kind="variable"><name>__doc_gr_ainfosec_wideband_detector1_wideband_detector1_1</name></member>
+    <member refid="wideband__detector1__pydoc__template_8h_1abd068a15e7a39f25175504fbfb12db05" kind="variable"><name>__doc_gr_ainfosec_wideband_detector1_make</name></member>
+    <member refid="wideband__detector1__pydoc__template_8h_1a2ef3af6093920ccd86376862c11262fe" kind="variable"><name>__doc_gr_ainfosec_wideband_detector1_set_address</name></member>
+    <member refid="wideband__detector1__pydoc__template_8h_1ab901389158a8f3d911466dae3ec7617b" kind="variable"><name>__doc_gr_ainfosec_wideband_detector1_set_rx_freq</name></member>
+    <member refid="wideband__detector1__pydoc__template_8h_1ab825f5ac6b06fc893b171e80a6ae276f" kind="variable"><name>__doc_gr_ainfosec_wideband_detector1_set_fft_size</name></member>
+    <member refid="wideband__detector1__pydoc__template_8h_1afa7e4caeec14a6830abc13f8b264dbc8" kind="variable"><name>__doc_gr_ainfosec_wideband_detector1_set_sample_rate</name></member>
+  </compound>
+  <compound refid="group__block" kind="group"><name>block</name>
+  </compound>
+  <compound refid="dir_7540f0f2aaf8875958f7fbc198f27a82" kind="dir"><name>ainfosec</name>
+  </compound>
+  <compound refid="dir_317f09fa2f75030d0ce138402d73e58b" kind="dir"><name>ainfosec</name>
+  </compound>
+  <compound refid="dir_e695e4dcae7487ba8a7d6b0f96afdcb7" kind="dir"><name>ainfosec</name>
+  </compound>
+  <compound refid="dir_dc6f85c4aebe66b9413e571dcbbd2091" kind="dir"><name>bindings</name>
+  </compound>
+  <compound refid="dir_1c74a20c94f40980834ab786335de8a2" kind="dir"><name>bindings</name>
+  </compound>
+  <compound refid="dir_49e56c817e5e54854c35e136979f97ca" kind="dir"><name>docs</name>
+  </compound>
+  <compound refid="dir_d938c7ed2b31899c58dc139eeca60941" kind="dir"><name>docstrings</name>
+  </compound>
+  <compound refid="dir_359d2bec989c9a8deeeb9aee335c1c76" kind="dir"><name>doxygen</name>
+  </compound>
+  <compound refid="dir_902d6fe55786be073ae6681293cdb979" kind="dir"><name>gnuradio</name>
+  </compound>
+  <compound refid="dir_d44c64559bbebec7f509842c48db8b23" kind="dir"><name>include</name>
+  </compound>
+  <compound refid="dir_97aefd0d527b934f1d99a682da8fe6a9" kind="dir"><name>lib</name>
+  </compound>
+  <compound refid="dir_f2cd86917185299abf5a1f0679072f3c" kind="dir"><name>other</name>
+  </compound>
+  <compound refid="dir_ab3dd591509f89c87d6a9fd8136a6d03" kind="dir"><name>python</name>
+  </compound>
+  <compound refid="dir_7837fde3ab9c1fb2fc5be7b717af8d79" kind="dir"><name>python</name>
+  </compound>
+  <compound refid="indexpage" kind="page"><name>index</name>
+  </compound>
+</doxygenindex>

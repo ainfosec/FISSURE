@@ -15,7 +15,19 @@
  */
 
 
-static const char* __doc_gr_ainfosec_wideband_detector1 = R"doc()doc";
+static const char* __doc_gr_ainfosec_wideband_detector1 = R"doc(<+description of block+>
+
+Constructor Specific Documentation:
+
+Return a shared_ptr to a new instance of ainfosec::wideband_detector1.
+
+To avoid accidental use of raw pointers, ainfosec::wideband_detector1's constructor is in a private implementation class. ainfosec::wideband_detector1::make is the public interface for creating new instances.
+
+Args:
+    address : 
+    rx_freq : 
+    fft_size : 
+    sample_rate : )doc";
 
 
 static const char* __doc_gr_ainfosec_wideband_detector1_wideband_detector1_0 =
@@ -26,7 +38,19 @@ static const char* __doc_gr_ainfosec_wideband_detector1_wideband_detector1_1 =
     R"doc()doc";
 
 
-static const char* __doc_gr_ainfosec_wideband_detector1_make = R"doc()doc";
+static const char* __doc_gr_ainfosec_wideband_detector1_make = R"doc(<+description of block+>
+
+Constructor Specific Documentation:
+
+Return a shared_ptr to a new instance of ainfosec::wideband_detector1.
+
+To avoid accidental use of raw pointers, ainfosec::wideband_detector1's constructor is in a private implementation class. ainfosec::wideband_detector1::make is the public interface for creating new instances.
+
+Args:
+    address : 
+    rx_freq : 
+    fft_size : 
+    sample_rate : )doc";
 
 
 static const char* __doc_gr_ainfosec_wideband_detector1_set_address = R"doc()doc";

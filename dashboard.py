@@ -135,21 +135,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.wideband_width = 1201
         self.wideband_height = 801
         self.wideband_data = np.ones((self.wideband_height,self.wideband_width,3))
-        self.matplotlib_widget = MyMplCanvas(self.tab_tsi_sweep, dpi=100, title='Detector History', ylim=400, width=self.wideband_width, height=self.wideband_height, border=[0.08,0.90,0.05,1,0,0], colorbar_fraction=0.038, xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'], ylabels=['0', '5', '10', '15', '20','25', '30', '35', '40', '45'])
+        self.matplotlib_widget = MyMplCanvas(self.tab_tsi_detector, dpi=100, title='Detector History', ylim=400, width=self.wideband_width, height=self.wideband_height, border=[0.08,0.90,0.05,1,0,0], colorbar_fraction=0.038, xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'], ylabels=['0', '5', '10', '15', '20','25', '30', '35', '40', '45'])
         self.matplotlib_widget.move(self.frame_tsi_detector.pos())
         self.matplotlib_widget.setGeometry(self.frame_tsi_detector.geometry())    
         self.matplotlib_widget.axes.cla()
         self.matplotlib_widget.axes.imshow(self.wideband_data, cmap='rainbow', clim=(-100,30), extent=[0,1201,801,0])
         self.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=self.wideband_height)
         self.matplotlib_widget.draw()
-
-        # Create Narrowband Matplotlib Widget
-        # self.narrowband_width = 2401
-        # self.narrowband_height = 401
-        # self.narrowband_data =  np.ones((self.narrowband_height,self.narrowband_width,3))
-        # self.nb_matplotlib_widget = MyMplCanvas(self.tab_classifier, dpi=100, title='Classifier History', ylim=400, width=self.narrowband_width, height=self.narrowband_height, border = [0.05,0.94,0,1.05,0,0], colorbar_fraction=0.01, xlabels=['0', '', '500', '','1000', '', '1500', '', '2000', '', '2500', '', '3000', '', '3500', '', '4000', '', '4500', '', '5000', '', '5500', '', '6000'])
-        # self.nb_matplotlib_widget.move(self.frame_tsi_classifier.pos())
-        # self.nb_matplotlib_widget.setGeometry(self.frame_tsi_classifier.geometry())  
         
         # Create IQ Data Matplotlib Widget
         self.iq_matplotlib_widget = MyIQ_MplCanvas(self.tab_iq_data, dpi=100, title='IQ Data', ylim=400)
@@ -333,11 +325,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Resize Table Columns for Wideband and Narrowband Tables
         self.tableWidget_tsi_wideband.resizeColumnsToContents()
-        self.tableWidget_tsi_narrowband.resizeColumnsToContents()
         
         # Put the Labels on Top of the Plots
         self.label_tsi_detector.raise_()
-        self.label_tsi_classifier.raise_()   
         
         # Hide Update Configuration Label
         self.label_tsi_update_configuration.setVisible(False) 
@@ -849,7 +839,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             self.signal_SOI_Chosen.emit(parsed['Parameters'])
                              
             # Plot and Draw Incoming Wideband Signals When Running Detector
-            if self.pushButton_tsi_detector_start.text() == "Stop":
+            if (self.pushButton_tsi_detector_start.text() == "Stop") or (self.pushButton_tsi_detector_fixed_start.text() == "Stop"):
                 self.matplotlib_widget.axes.cla()
                 self.matplotlib_widget.axes.imshow(self.wideband_data, cmap='rainbow', clim=(-100,30), extent=[0,1201,801,0]) 
                 if self.wideband_zoom == True:   
@@ -857,11 +847,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 else:
                     self.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=self.wideband_height)
                 self.matplotlib_widget.draw()
-
-            # # Plot and Draw Incoming Narrowband Signals
-            # self.nb_matplotlib_widget.axes.imshow(self.narrowband_data, cmap='rainbow', clim=(-100,30))                            
-            # self.nb_matplotlib_widget.configureAxes(title='Classifier History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (min)', xlabels=['0', '', '500', '','1000', '', '1500', '', '2000', '', '2500', '', '3000', '', '3500', '', '4000', '', '4500', '', '5000', '', '5500', '', '6000'],ylabels=['0', '5', '10', '15', '20'],ylim=self.narrowband_height)
-            # self.nb_matplotlib_widget.draw()   
             
             # Update Start/End Frequency Spin Boxes
             if self.tuning_matplotlib_widget.needs_update == True:
@@ -941,15 +926,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_library_remove_protocol.clicked.connect(self._slotLibraryRemoveProtocolClicked)     
               
         self.pushButton_tsi_clear_wideband_list.clicked.connect(self._slotTSI_ClearWidebandListClicked)
-        self.pushButton_tsi_clear_SOI_list.clicked.connect(self._slotTSI_ClearSOI_ListClicked)
         self.pushButton_tsi_add_band.clicked.connect(self._slotTSI_AddBandClicked)
         self.pushButton_tsi_remove_band.clicked.connect(self._slotTSI_RemoveBandClicked)
         self.pushButton_tsi_update.clicked.connect(self._slotTSI_UpdateTSI_Clicked)
         self.pushButton_tsi_save_preset.clicked.connect(self._slotTSI_SavePresetClicked)
         self.pushButton_tsi_delete_preset.clicked.connect(self._slotTSI_DeletePresetClicked)   
-        self.pushButton_tsi_ignore.clicked.connect(self._slotTSI_SOI_BlacklistClicked)
-        self.pushButton_tsi_soi_blacklist_remove.clicked.connect(self._slotTSI_SOI_BlacklistRemoveClicked)
-        self.pushButton_tsi_untarget.clicked.connect(self._slotTSI_SOI_UntargetClicked)
         self.pushButton_tsi_blacklist_add.clicked.connect(self._slotTSI_BlacklistAddClicked)
         self.pushButton_tsi_blacklist_remove.clicked.connect(self._slotTSI_BlacklistRemoveClicked)
         self.pushButton_tsi_detector_start.clicked.connect(self._slotTSI_DetectorStartClicked)
@@ -962,8 +943,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_tsi_detector_search.clicked.connect(self._slotTSI_DetectorSearchClicked)
         self.pushButton_tsi_detector_csv_file_browse.clicked.connect(self._slotTSI_DetectorCSV_FileBrowseClicked)
         self.pushButton_tsi_detector_csv_file_edit.clicked.connect(self._slotTSI_DetectorCSV_FileEditClicked)
+        self.pushButton_tsi_detector_fixed_start.clicked.connect(self._slotTSI_DetectorFixedStartClicked)
 
-        self.pushButton_pd_status_untarget.clicked.connect(self._slotTSI_SOI_UntargetClicked)
+        #self.pushButton_pd_status_untarget.clicked.connect(self._slotTSI_SOI_UntargetClicked)
         self.pushButton_pd_status_soi_new.clicked.connect(self._slotPD_StatusSOI_NewClicked)
         self.pushButton_pd_status_search_library.clicked.connect(self._slotPD_StatusSearchLibraryClicked)
         self.pushButton_pd_status_buffer_apply.clicked.connect(self._slotPD_StatusBufferApplyClicked)
@@ -981,7 +963,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_pd_flow_graphs_start_stop.clicked.connect(self._slotPD_DemodulationStartStopClicked)
         self.pushButton_pd_flow_graphs_apply_changes.clicked.connect(self._slotPD_DemodulationApplyChangesClicked)
         self.pushButton_pd_flow_graphs_restore_defaults.clicked.connect(self._slotPD_DemodulationRestoreDefaultsClicked)
-        self.pushButton_pd_flow_graphs_auto_select.clicked.connect(self._slotTSI_SOI_UntargetClicked)   
+        #self.pushButton_pd_flow_graphs_auto_select.clicked.connect(self._slotTSI_SOI_UntargetClicked)   
         self.pushButton_pd_flow_graphs_load_selected_all.clicked.connect(self._slotPD_DemodulationLoadSelectedAllClicked)                              
         self.pushButton_pd_bit_slicing_find_preambles.clicked.connect(self._slotPD_BitSlicingFindPreamblesClicked)
         self.pushButton_pd_bit_slicing_slice_by_preamble.clicked.connect(self._slotPD_BitSlicingSliceByPreambleClicked)
@@ -1225,7 +1207,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.comboBox_archive_download_folder.currentIndexChanged.connect(self._slotArchiveDownloadFoldersChanged)
         self.comboBox_pd_sniffer_protocols.currentIndexChanged.connect(self._slotPD_SnifferProtocolsChanged)
         self.comboBox_pd_sniffer_packet_type.currentIndexChanged.connect(self._slotPD_SnifferPacketTypeChanged)
-        self.comboBox_pd_sniffer_test_folders.currentIndexChanged.connect(self._slotPD_SnifferTestFoldersChanged)        
+        self.comboBox_pd_sniffer_test_folders.currentIndexChanged.connect(self._slotPD_SnifferTestFoldersChanged)
+        self.comboBox_tsi_detector_fixed.currentIndexChanged.connect(self._slotTSI_DetectorFixedChanged)     
         
         # Radio Buttons
         self.radioButton_library_search_binary.clicked.connect(self._slotLibrarySearchBinaryClicked)
@@ -1647,83 +1630,69 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         with open(os.path.dirname(os.path.realpath(__file__)) + "/Logs/temp.log") as mylogfile:
             temp_log_contents = mylogfile.read()
         self.textEdit_log.setPlainText(temp_log_contents)
-        self.textEdit_log.moveCursor(QtGui.QTextCursor.End)        
-        
-    def _slotTSI_TargetClicked(self):
-        """ The narrowband target radio button is clicked. The details box is updated.
-        """
-        # Get the Row
-        button = QtWidgets.qApp.focusWidget()
-        index = self.tableWidget_tsi_narrowband.indexAt(button.pos())
-        
-        # Check the Radio Button in Table
-        radio_button = self.tableWidget_tsi_narrowband.cellWidget(index.row(),index.column())
-        radio_button.setChecked(True)
-        
-        # Proceed
-        self.targetSelected(index.row())
+        self.textEdit_log.moveCursor(QtGui.QTextCursor.End)
         
     def targetSelected(self, row):
         """ SOI target was clicked by the user or selected by auto-select.
         """  
-        # Update the Text
-        self.textEdit_pd_status_target.setPlainText("Frequency (MHz): " + self.tableWidget_tsi_narrowband.item(row,1).text())        
-        self.textEdit_pd_status_target.append("Power (dB): " + self.tableWidget_tsi_narrowband.item(row,2).text())    
-        self.textEdit_pd_status_target.append("Modulation: " + self.tableWidget_tsi_narrowband.item(row,3).text())
-        self.textEdit_pd_status_target.append("Bandwidth (MHz): " + self.tableWidget_tsi_narrowband.item(row,4).text())
-        self.textEdit_pd_status_target.append("Continuous: " + self.tableWidget_tsi_narrowband.item(row,5).text())
-        self.textEdit_pd_status_target.append("Start Frequency (MHz): " + self.tableWidget_tsi_narrowband.item(row,6).text())
-        self.textEdit_pd_status_target.append("End Frequency (MHz): " + self.tableWidget_tsi_narrowband.item(row,7).text())
-        #self.textEdit_pd_status_target.append("Confidence: " + self.tableWidget_tsi_narrowband.item(row,9).text())
+        # # Update the Text
+        # self.textEdit_pd_status_target.setPlainText("Frequency (MHz): " + self.tableWidget_tsi_narrowband.item(row,1).text())        
+        # self.textEdit_pd_status_target.append("Power (dB): " + self.tableWidget_tsi_narrowband.item(row,2).text())    
+        # self.textEdit_pd_status_target.append("Modulation: " + self.tableWidget_tsi_narrowband.item(row,3).text())
+        # self.textEdit_pd_status_target.append("Bandwidth (MHz): " + self.tableWidget_tsi_narrowband.item(row,4).text())
+        # self.textEdit_pd_status_target.append("Continuous: " + self.tableWidget_tsi_narrowband.item(row,5).text())
+        # self.textEdit_pd_status_target.append("Start Frequency (MHz): " + self.tableWidget_tsi_narrowband.item(row,6).text())
+        # self.textEdit_pd_status_target.append("End Frequency (MHz): " + self.tableWidget_tsi_narrowband.item(row,7).text())
+        # #self.textEdit_pd_status_target.append("Confidence: " + self.tableWidget_tsi_narrowband.item(row,9).text())
         
-        # Assemble the Target SOI
-        frequency = str(self.tableWidget_tsi_narrowband.item(row,1).text())
-        modulation = str(self.tableWidget_tsi_narrowband.item(row,3).text())
-        bandwidth = str(self.tableWidget_tsi_narrowband.item(row,4).text())
-        continuous = str(self.tableWidget_tsi_narrowband.item(row,5).text())
-        start_frequency = str(self.tableWidget_tsi_narrowband.item(row,6).text())
-        end_frequency = str(self.tableWidget_tsi_narrowband.item(row,7).text())
-        notes = ""
-        self.target_soi = [frequency, modulation, bandwidth, continuous, start_frequency, end_frequency, notes]
+        # # Assemble the Target SOI
+        # frequency = str(self.tableWidget_tsi_narrowband.item(row,1).text())
+        # modulation = str(self.tableWidget_tsi_narrowband.item(row,3).text())
+        # bandwidth = str(self.tableWidget_tsi_narrowband.item(row,4).text())
+        # continuous = str(self.tableWidget_tsi_narrowband.item(row,5).text())
+        # start_frequency = str(self.tableWidget_tsi_narrowband.item(row,6).text())
+        # end_frequency = str(self.tableWidget_tsi_narrowband.item(row,7).text())
+        # notes = ""
+        # self.target_soi = [frequency, modulation, bandwidth, continuous, start_frequency, end_frequency, notes]
         
         #~ # Send Parameters to HIPRFISR so it can Look for a Flow Graph
         #~ if self.pushButton_pd_status_start.text() == "Stop":  
             #~ self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Set Target SOI', Parameters = self.target_soi)    
 
-        # Update the "Flow Graph Lookup" Tab
-        self.textEdit_pd_flow_graphs_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,1).text())          
-        self.textEdit_pd_flow_graphs_modulation.setPlainText(self.tableWidget_tsi_narrowband.item(row,3).text())
-        self.textEdit_pd_flow_graphs_bandwidth.setPlainText(self.tableWidget_tsi_narrowband.item(row,4).text())
+        # # Update the "Flow Graph Lookup" Tab
+        # self.textEdit_pd_flow_graphs_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,1).text())          
+        # self.textEdit_pd_flow_graphs_modulation.setPlainText(self.tableWidget_tsi_narrowband.item(row,3).text())
+        # self.textEdit_pd_flow_graphs_bandwidth.setPlainText(self.tableWidget_tsi_narrowband.item(row,4).text())
         
-        if str(self.tableWidget_tsi_narrowband.item(row,5).text()) == "True":
-            self.comboBox_pd_flow_graphs_continuous.setCurrentIndex(0)
-        else:
-            self.comboBox_pd_flow_graphs_continuous.setCurrentIndex(1)
+        # if str(self.tableWidget_tsi_narrowband.item(row,5).text()) == "True":
+            # self.comboBox_pd_flow_graphs_continuous.setCurrentIndex(0)
+        # else:
+            # self.comboBox_pd_flow_graphs_continuous.setCurrentIndex(1)
         
-        self.textEdit_pd_flow_graphs_start_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,6).text())
-        self.textEdit_pd_flow_graphs_end_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,7).text())  
+        # self.textEdit_pd_flow_graphs_start_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,6).text())
+        # self.textEdit_pd_flow_graphs_end_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,7).text())  
                     
         # Enable the Protocol Discovery "Untarget", "Blacklist SOI", "Search Library" Pushbuttons
         self.pushButton_pd_status_untarget.setEnabled(True)
         #self.pushButton_pd_status_blacklist_soi.setEnabled(True)
         self.pushButton_pd_status_search_library.setEnabled(True)
             
-        # Insert Message into the Status Window
-        get_text = time.strftime('%H:%M:%S', time.localtime()) + ": Targeted SOI: " + str(self.target_soi ) +  "\n"
-        self._slotPD_AddStatus(get_text)
+        # # Insert Message into the Status Window
+        # get_text = time.strftime('%H:%M:%S', time.localtime()) + ": Targeted SOI: " + str(self.target_soi ) +  "\n"
+        # self._slotPD_AddStatus(get_text)
         
-        # Update the PD "Add to Library" Tab
-        self.textEdit_library_pd_soi_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,1).text())          
-        self.textEdit_library_pd_soi_modulation.setPlainText(self.tableWidget_tsi_narrowband.item(row,3).text())
-        self.textEdit_library_pd_soi_bandwidth.setPlainText(self.tableWidget_tsi_narrowband.item(row,4).text())
+        # # Update the PD "Add to Library" Tab
+        # self.textEdit_library_pd_soi_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,1).text())          
+        # self.textEdit_library_pd_soi_modulation.setPlainText(self.tableWidget_tsi_narrowband.item(row,3).text())
+        # self.textEdit_library_pd_soi_bandwidth.setPlainText(self.tableWidget_tsi_narrowband.item(row,4).text())
         
-        if str(self.tableWidget_tsi_narrowband.item(row,5).text()) == True:
-            self.comboBox_library_pd_soi_continuous.setCurrentIndex(0)
-        else:
-            self.comboBox_library_pd_soi_continuous.setCurrentIndex(1)
+        # if str(self.tableWidget_tsi_narrowband.item(row,5).text()) == True:
+            # self.comboBox_library_pd_soi_continuous.setCurrentIndex(0)
+        # else:
+            # self.comboBox_library_pd_soi_continuous.setCurrentIndex(1)
         
-        self.textEdit_library_pd_soi_start_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,6).text())
-        self.textEdit_library_pd_soi_end_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,7).text())    
+        # self.textEdit_library_pd_soi_start_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,6).text())
+        # self.textEdit_library_pd_soi_end_frequency.setPlainText(self.tableWidget_tsi_narrowband.item(row,7).text())    
         
         # Auto-Load PD Flow Graphs is Enabled
         if self.checkBox_automation_auto_select_pd_flow_graphs.isChecked():
@@ -1809,103 +1778,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_tsi_wideband.resizeRowsToContents()
         self.tableWidget_tsi_wideband.horizontalHeader().setStretchLastSection(False)
         self.tableWidget_tsi_wideband.horizontalHeader().setStretchLastSection(True)
-        
-        # # Update New Detections Notification if on Classification Tab
-        # if self.tabWidget_tsi.currentIndex() == 1:
-            # self.new_detections += 1
-            # self.tabWidget_tsi.setTabText(0,"Detector (" + str(self.new_detections) + ")")
-        
-    # def _slotAddNarrowbandSignal(self, signal):
-        # """ Adds a narrowband signal to the plot and the list
-        # """
-        # # Check if it is Blacklisted
-        # blacklisted = False
-        # for row in range(0,self.listWidget_tsi_soi_blacklist.count()):
-            # # Compare Frequency and Modulation
-            # get_item = str(self.listWidget_tsi_soi_blacklist.item(row).text())
-            # get_freq = get_item.split(',',1)[0]
-            # get_mod = get_item.split(',',1)[1]
-            # if (get_freq == str(signal[0])) and (get_mod == str(signal[2])):
-                # blacklisted = True           
-            
-        # if blacklisted == False:
-            # # Plot a Point
-            # self.nb_matplotlib_widget.plotNarrowbandPoint(signal[0]/10, 11, self.nb_matplotlib_widget.computeColormapValue(signal[1]), 10, self.narrowband_data)
-            
-            # # Add it to the Table(s)
-            # self.tableWidget_tsi_narrowband.insertRow(0)  
-            
-            # # Frequency
-            # frequency_item = QtWidgets.QTableWidgetItem(str(signal[0]))
-            # frequency_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            # self.tableWidget_tsi_narrowband.setItem(0,1,frequency_item)    
-            
-            # # Power
-            # item = QtWidgets.QTableWidgetItem()
-            # item.setData(QtCore.Qt.EditRole, signal[1])
-            # item.setTextAlignment(QtCore.Qt.AlignCenter)
-            # self.tableWidget_tsi_narrowband.setItem(0,2,QtWidgets.QTableWidgetItem(item))  # Convert to int for sorting    
-            
-            # # Modulation        
-            # modulation_item = QtWidgets.QTableWidgetItem(signal[2])
-            # modulation_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            # self.tableWidget_tsi_narrowband.setItem(0,3,modulation_item)
-            
-            # # Bandwidth
-            # bandwidth_item = QtWidgets.QTableWidgetItem(str(signal[3]))
-            # bandwidth_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            # self.tableWidget_tsi_narrowband.setItem(0,4,bandwidth_item)
-                    
-            # # Continuous
-            # continuous_item = QtWidgets.QTableWidgetItem(signal[4])
-            # continuous_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            # self.tableWidget_tsi_narrowband.setItem(0,5,continuous_item)
-            
-            # # Start Frequency
-            # start_frequency_item = QtWidgets.QTableWidgetItem(str(signal[5]))
-            # start_frequency_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            # self.tableWidget_tsi_narrowband.setItem(0,6,start_frequency_item)
-            
-            # # End Frequency
-            # end_frequency_item = QtWidgets.QTableWidgetItem(str(signal[6]))
-            # end_frequency_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            # self.tableWidget_tsi_narrowband.setItem(0,7,end_frequency_item)        
-            
-            # # Timestamp
-            # get_time = time.strftime('%H:%M:%S', time.localtime(signal[7]))  # time format?
-            # timestamp_item = QtWidgets.QTableWidgetItem(get_time)
-            # timestamp_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            # self.tableWidget_tsi_narrowband.setItem(0,8,timestamp_item)        
-            
-            # # Confidence
-            # confidence_item = QtWidgets.QTableWidgetItem(str(round(float(signal[8]),2)))
-            # confidence_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            # self.tableWidget_tsi_narrowband.setItem(0,9,confidence_item)            
-            
-            # # Target Radio Button
-            # new_button = QtWidgets.QRadioButton("",self)
-            # new_button.setStyleSheet("margin-left:18%")  # doesn't center, could create a layout and put the radio button in the layout
-            
-            # if self.checkBox_automation_auto_select_sois.isChecked():  # Disable for everything but manual selection
-                # new_button.setEnabled(False)
-                
-            # self.tableWidget_tsi_narrowband.setCellWidget(0,0,new_button)
-            # new_button.clicked.connect(self._slotTSI_TargetClicked)
-            
-            # #~ # Sort by Power
-            # #~ self.tableWidget_tsi_narrowband.sortItems(2,order=QtCore.Qt.DescendingOrder)
-            
-            # # Resize Table Columns and Rows
-            # self.tableWidget_tsi_narrowband.resizeColumnsToContents()    
-            # self.tableWidget_tsi_narrowband.resizeRowsToContents()
-            # self.tableWidget_tsi_narrowband.horizontalHeader().setStretchLastSection(False)   
-            # self.tableWidget_tsi_narrowband.horizontalHeader().setStretchLastSection(True)   
-            
-            # # Update New Classifications Notification if on Detection Tab
-            # if self.tabWidget_tsi.currentIndex() == 0:
-                # self.new_classifications += 1
-                # self.tabWidget_tsi.setTabText(1,"Classifier (" + str(self.new_classifications) + ")")
-                
+                        
     def _slotTSI_ClearWidebandListClicked(self):
         """ Clears the Wideband list on the Dashboard and in the HIPRFISR
         """
@@ -1914,21 +1787,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_tsi_wideband.setRowCount(0)
         
         self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Clear Wideband List')    
-        
-    def _slotTSI_ClearSOI_ListClicked(self):
-        """ Clears the SOI list on the Dashboard and in the HIPRFISR
-        """
-        # Untarget SOI if Auto-Select PD Flow Graphs is Checked
-        if self.checkBox_automation_auto_select_pd_flow_graphs.isChecked():
-            self._slotTSI_SOI_UntargetClicked()
-            
-        # Clear Tables, Labels    
-        self.tableWidget_tsi_narrowband.clearContents()
-        self.tableWidget_tsi_narrowband.setRowCount(0)
-        self.textEdit_pd_status_target.clear()
-        
-        # Send Message to HIPRFISR
-        self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Clear SOI List')    
         
     def _slotTSI_SavePresetClicked(self):
         """ Creates a new preset from the table contents and adds it to the preset list
@@ -2245,27 +2103,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.label_soi_priority_row3.setVisible(True)
             self.pushButton_automation_soi_priority_add_level.setVisible(True)
             self.pushButton_automation_soi_priority_remove_level.setVisible(True)
-            self.pushButton_tsi_untarget.setText("Auto-Select")
             self.pushButton_pd_flow_graphs_auto_select.setVisible(True)
-                        
-            # Disable Target Radio Buttons in AMC Table
-            for rows in range(0,self.tableWidget_tsi_narrowband.rowCount()):
-                self.tableWidget_tsi_narrowband.cellWidget(rows,0).setEnabled(False)
                 
             # Send Messages to the HIPRFISR if the System is Running
             if self.pushButton_automation_system_start.text() == "Stop":
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Set Process SOIs', Parameters = [False,None,None,None])        
                 self.dashboard_settings_dictionary['SOI_trigger_mode'] = "2"
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'SOI Selection Mode', Parameters = int(self.dashboard_settings_dictionary['SOI_trigger_mode']))    
-
-                # Search for SOIs if None are Checked
-                checked = False
-                for x in range(0,self.tableWidget_tsi_narrowband.rowCount()):
-                    if self.tableWidget_tsi_narrowband.cellWidget(x,0).isChecked():
-                        checked = True
-                        break
-                if checked == False:
-                    self.autoSelectSOI()
             
         # Unchecked    
         else:
@@ -2277,12 +2121,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.label_soi_priority_row3.setVisible(False)
             self.pushButton_automation_soi_priority_add_level.setVisible(False)
             self.pushButton_automation_soi_priority_remove_level.setVisible(False)
-            self.pushButton_tsi_untarget.setText("Untarget")
             self.pushButton_pd_flow_graphs_auto_select.setVisible(False)    
-            
-            # Enable Target Radio Buttons in AMC Table
-            for rows in range(0,self.tableWidget_tsi_narrowband.rowCount()):
-                self.tableWidget_tsi_narrowband.cellWidget(rows,0).setEnabled(True)            
                 
             # Send Messages to the HIPRFISR if the System is Running
             if self.pushButton_automation_system_start.text() == "Stop":
@@ -2347,28 +2186,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         target_SOI = target_SOI.replace("'","")
         target_SOI = target_SOI.replace(" ","")
         target_SOI_label = ""
-        
-        # Search the Table
-        for row in range(0,self.tableWidget_tsi_narrowband.rowCount()):
-            # A Match is Found            
-            if target_SOI == self.tableWidget_tsi_narrowband.item(row,3).text() + "," + self.tableWidget_tsi_narrowband.item(row,1).text() + "," + self.tableWidget_tsi_narrowband.item(row,2).text():
-                target_SOI_label = "(" + self.tableWidget_tsi_narrowband.item(row,3).text() + "," + self.tableWidget_tsi_narrowband.item(row,1).text() + "," + self.tableWidget_tsi_narrowband.item(row,2).text() + ")"
-                get_radio_button = self.tableWidget_tsi_narrowband.cellWidget(row,0)
-                get_radio_button.setChecked(True)  # Check the radiobutton    
-                print("CALLING TARGET SELECTED")
-                self.targetSelected(row)
-                                
-                # Update the Text
-                self.textEdit_pd_status_target.setPlainText("Frequency (MHz): " + self.tableWidget_tsi_narrowband.item(row,1).text())        
-                self.textEdit_pd_status_target.append("Power (dB): " + self.tableWidget_tsi_narrowband.item(row,2).text())    
-                self.textEdit_pd_status_target.append("Modulation: " + self.tableWidget_tsi_narrowband.item(row,3).text())
-                self.textEdit_pd_status_target.append("Bandwidth (MHz): " + self.tableWidget_tsi_narrowband.item(row,4).text())
-                self.textEdit_pd_status_target.append("Continuous: " + self.tableWidget_tsi_narrowband.item(row,5).text())
-                self.textEdit_pd_status_target.append("Start Frequency (MHz): " + self.tableWidget_tsi_narrowband.item(row,6).text())
-                self.textEdit_pd_status_target.append("End Frequency (MHz): " + self.tableWidget_tsi_narrowband.item(row,7).text())
-                self.textEdit_pd_status_target.append("Confidence: " + self.tableWidget_tsi_narrowband.item(row,8).text())
-                
-                break
                 
     def _slotSetFullLibrary(self,full_lib_dict):
         """ Updates the Dashboard's protocol library and loads protocols into the packet crafter.
@@ -5254,6 +5071,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Stop Scanning
             if self.pushButton_tsi_detector_start.text() == "Stop":
                 self._slotTSI_DetectorStartClicked()
+            if self.pushButton_tsi_fixed_detector_start.text() == "Stop":
+                self._slotTSI_DetectorFixedStartClicked()
             
             # Stop HIPRFISR Processing of SOIs
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Set Process SOIs', Parameters = [False,None,None,None])  
@@ -5600,123 +5419,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         # Unload the Flow Graph
         self.unloadFlowGraph()
-                    
-        # # Select the Current SOI in the AMC SOI Table
-        # for x in range(0,self.tableWidget_tsi_narrowband.rowCount()):
-            # if self.tableWidget_tsi_narrowband.cellWidget(x,0).isChecked():
-                # self.tableWidget_tsi_narrowband.setCurrentCell(x,0)
-        
-        # # Blacklist Current SOI
-        # self._slotTSI_SOI_BlacklistClicked()               
                 
         # Disable the Pushbuttons
         self.pushButton_pd_status_blacklist_soi.setEnabled(False)
         self.pushButton_pd_status_untarget.setEnabled(False)
         self.pushButton_pd_status_search_library.setEnabled(False)
-            
-    def _slotTSI_SOI_BlacklistClicked(self):
-        """ Adds the Currently Selected SOI from the AMC SOI table to a blacklist. Any signals in the blacklist will not be added
-            to the AMC SOI table in the future.
-        """
-        if self.tableWidget_tsi_narrowband.rowCount() > 0:
-            
-            # Get the Selected SOI
-            row = self.tableWidget_tsi_narrowband.currentRow()
-            
-            # Valid Selection
-            if row >= 0:
-                target_SOI = self.tableWidget_tsi_narrowband.item(row,1).text() + "," + self.tableWidget_tsi_narrowband.item(row,3).text()  # Frequency, Modulation
-                
-                # Remove All Matching SOIs from the Table, Check if Radiobutton is Selected
-                reprocess_SOIs = False
-                for x in reversed(range(0,self.tableWidget_tsi_narrowband.rowCount())):
-                    if target_SOI == self.tableWidget_tsi_narrowband.item(x,1).text() + "," + self.tableWidget_tsi_narrowband.item(x,3).text(): 
-                        # Check if it is Targeted
-                        if self.tableWidget_tsi_narrowband.cellWidget(x,0).isChecked() == True:
-                            reprocess_SOIs = True
-                        # Remove the Row    
-                        self.tableWidget_tsi_narrowband.removeRow(x)
-                        
-                # Add it to the Blacklist
-                self.soi_blacklist.append(str(target_SOI))
-                
-                # Inform the HIPRFISR
-                self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Ignore SOIs', Parameters = [self.soi_blacklist])
-            
-                # Re-Process SOIs (if applicable)
-                if (reprocess_SOIs == True) and (self.checkBox_automation_auto_select_sois.isChecked() == True):       
-                    self.autoSelectSOI()
-                    
-                # Add it to the Blacklist List Widget
-                self.listWidget_tsi_soi_blacklist.addItem(str(target_SOI))
-                self.pushButton_tsi_soi_blacklist_remove.setEnabled(True)
-                
-                # Clear PD Status Current SOI Editbox
-                self.textEdit_pd_status_target.clear()
-                                
-    def _slotTSI_SOI_BlacklistRemoveClicked(self):
-        """ Removes the currently selected SOI from the Blacklist and makes it qualified for future processing.
-        """
-        # Get the Item
-        if self.listWidget_tsi_soi_blacklist.count() > 0:
-            get_row = self.listWidget_tsi_soi_blacklist.currentRow()
-            get_item = self.listWidget_tsi_soi_blacklist.item(get_row)
-                        
-            # Delete from SOI Blacklist Variable
-            for x in reversed(range(0,len(self.soi_blacklist))):
-                if self.soi_blacklist[x] == get_item.text():
-                    del self.soi_blacklist[x]
-                    
-            # Send Updated Blacklist to HIPRFISR
-            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Ignore SOIs', Parameters = [self.soi_blacklist])
-                        
-            # Delete from List Widget
-            self.listWidget_tsi_soi_blacklist.takeItem(get_row)
-            
-            # Disable the "Remove" Pushbutton 
-            if self.listWidget_tsi_soi_blacklist.count() == 0:
-                self.pushButton_tsi_soi_blacklist_remove.setEnabled(False)
-                
-    def _slotTSI_SOI_UntargetClicked(self):
-        """ This will untarget the currently targeted SOI and allow the reselection process to continue. This will autoselect an SOI if "Auto-Select SOIs" is checked.
-        """        
-        # Untarget
-        if self.pushButton_tsi_untarget.text() == "Untarget":     
-            # Clear SOI
-            self.target_soi = []
-                   
-            # Uncheck the Radiobutton
-            for x in range(0,self.tableWidget_tsi_narrowband.rowCount()):
-                if self.tableWidget_tsi_narrowband.cellWidget(x,0).isChecked():
-                    self.tableWidget_tsi_narrowband.cellWidget(x,0).setAutoExclusive(False)  # Need this to uncheck radiobutton
-                    self.tableWidget_tsi_narrowband.cellWidget(x,0).setChecked(False)
-                    self.tableWidget_tsi_narrowband.cellWidget(x,0).setAutoExclusive(True)
-                    
-            # Clear the "Targeted Signal Details" Edit Box
-            self.textEdit_pd_status_target.clear()
-            
-            # Disable the Pushbuttons
-            self.pushButton_pd_status_untarget.setEnabled(False)
-            #self.pushButton_pd_status_blacklist_soi.setEnabled(False)
-            self.pushButton_pd_status_search_library.setEnabled(False)
-                        
-            # Auto-Select SOIs is Checked
-            if self.checkBox_automation_auto_select_sois.isChecked():          
-                #Search for SOI Again
-                self.autoSelectSOI()
-                
-            # Auto-Select PD Flow Graphs is Checked 
-            if self.checkBox_automation_auto_select_pd_flow_graphs.isChecked():
-                # Stop Protocol Discovery
-                if self.pushButton_pd_status_start.text() == "Stop":         
-                    self._slotPD_StatusStartClicked()
-                
-        # Auto-Select
-        elif self.pushButton_tsi_untarget.text() == "Auto-Select":  
-            # Choose a New SOI
-            self.autoSelectSOI()
-            
-                
+                                                            
     def autoSelectSOI(self):
         """ This will search the AMC SOI List and choose the SOI based on the priorities.
         """      
@@ -5795,13 +5503,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         #~ self.label_current_flow_graph.setText("Flow Graph Not Loaded")
         #~ self.label_status_attack.setText("Flow Graph Not Loaded")        
         
-        # TSI
-        self._slotTSI_SOI_UntargetClicked()     
-        if self.listWidget_tsi_soi_blacklist.count() > 0:  # Remove Blacklisted Items
-            for x in reversed(range(0,self.listWidget_tsi_soi_blacklist.count())):
-                self.listWidget_tsi_soi_blacklist.setCurrentRow(x)
-                self._slotTSI_SOI_BlacklistRemoveClicked()      
-        self._slotTSI_ClearSOI_ListClicked()
+        # TSI     
         self._slotTSI_ClearWidebandListClicked()        
         
         # Protocol Discovery - Tab 1
@@ -10271,9 +9973,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Stop TSI Detector')
             self.status_dialog.tableWidget_status_results.item(1,0).setText("Not Running")
             self.label_tsi_detector.setText("Detector - Not Running")
-            self.label_tsi_classifier.setText("Classifier - Not Running")
             self.label_tsi_detector.raise_()
-            self.label_tsi_classifier.raise_()
         
             # Change the Button Text
             self.pushButton_tsi_detector_start.setText("Start")
@@ -12595,6 +12295,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         if self.dashboard_settings_dictionary['hardware_tsi'] == "Computer":
             self.comboBox_tsi_detector.setCurrentIndex(0)  
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(11)  
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png")) 
             
             # Tuning Widget Limits
@@ -12603,6 +12304,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP X310":
             self.comboBox_tsi_detector.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(0)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png")) 
             
             # Tuning Widget Limits
@@ -12624,6 +12326,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                    
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP B210":
             self.comboBox_tsi_detector.setCurrentIndex(1)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(1)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png")) 
             
             # Tuning Widget Limits
@@ -12631,7 +12334,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tuning_matplotlib_widget.freq_end_limit = 6000
                 
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "HackRF":
-            self.comboBox_tsi_detector.setCurrentIndex(2)            
+            self.comboBox_tsi_detector.setCurrentIndex(2)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(2)            
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/HackRF.png")) 
             
             # Tuning Widget Limits
@@ -12640,6 +12344,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "RTL2832U":
             self.comboBox_tsi_detector.setCurrentIndex(4)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(4)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/RTL2832U.png")) 
             
             # Tuning Widget Limits
@@ -12647,7 +12352,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tuning_matplotlib_widget.freq_end_limit = 1700
             
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "802.11x Adapter":
-            self.comboBox_tsi_detector.setCurrentIndex(0)  
+            self.comboBox_tsi_detector.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(0)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/802_11.png")) 
             
             # Tuning Widget Limits
@@ -12656,6 +12362,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP B205mini":
             self.comboBox_tsi_detector.setCurrentIndex(3)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(3)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B205mini.png")) 
             
             # Tuning Widget Limits
@@ -12664,6 +12371,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "LimeSDR":
             self.comboBox_tsi_detector.setCurrentIndex(5)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(5)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/LimeSDR.png")) 
             
             # Tuning Widget Limits
@@ -12672,6 +12380,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF":
             self.comboBox_tsi_detector.setCurrentIndex(6)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(6)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/BladeRF.png")) 
             
             # Tuning Widget Limits
@@ -12679,7 +12388,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tuning_matplotlib_widget.freq_end_limit = 3800
             
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "Open Sniffer":
-            self.comboBox_tsi_detector.setCurrentIndex(0)  
+            self.comboBox_tsi_detector.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(0)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/Open_Sniffer.png")) 
             
             # Tuning Widget Limits
@@ -12688,6 +12398,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                   
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "PlutoSDR":
             self.comboBox_tsi_detector.setCurrentIndex(7)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(7)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png")) 
             
             # Tuning Widget Limits
@@ -12696,6 +12407,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP2":
             self.comboBox_tsi_detector.setCurrentIndex(8)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(8)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png")) 
             
             # Tuning Widget Limits
@@ -12750,6 +12462,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP N2xx":
             self.comboBox_tsi_detector.setCurrentIndex(9)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(9)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png")) 
             
             # Tuning Widget Limits
@@ -12804,6 +12517,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF 2.0":
             self.comboBox_tsi_detector.setCurrentIndex(10)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(10)
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/bladeRF2.png")) 
             
             # Tuning Widget Limits
@@ -21895,7 +21609,406 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         osCommandString = "gnuradio-companion " + filepath
         os.system(osCommandString+ " &")       
         
+    def _slotTSI_DetectorFixedChanged(self):
+        """ Adjusts default settings for the current detector.
+        """
+        # Change Settings
+        get_detector = str(self.comboBox_tsi_detector_fixed.currentText())
+        if get_detector == 'fixed_threshold_x310.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(35)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(30)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:0")
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:0")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("TX/RX")
+            self.comboBox_tsi_detector_fixed_antenna.addItem("RX1")
+            self.comboBox_tsi_detector_fixed_antenna.addItem("RX2")
+            
+            # Select Antenna
+            get_daughterboard = self.dashboard_settings_dictionary['hardware_daughterboard_tsi']
+            if "CBX-120" in get_daughterboard:
+                self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
+            elif "SBX-120" in get_daughterboard:
+                self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
+            elif "UBX-160" in get_daughterboard:
+                self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
+            elif "WBX-120" in get_daughterboard:
+                self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)          
+            elif "TwinRX" in get_daughterboard:
+                self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(1)
+            else:                
+                self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)  
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)          
+            
+        elif get_detector == 'fixed_threshold_b210.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(80)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(60)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:A")
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:B")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("TX/RX")
+            self.comboBox_tsi_detector_fixed_antenna.addItem("RX2")
+            self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)   
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            
+        elif get_detector == 'fixed_threshold_hackrf.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(40)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(20)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)  
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0) 
+            
+        elif get_detector == 'fixed_threshold_b205mini.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(80)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(60)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:A")
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:B")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("TX/RX")
+            self.comboBox_tsi_detector_fixed_antenna.addItem("RX2")
+            self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            
+        elif get_detector == 'fixed_threshold_rtl2832u.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("102.4")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(50)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(20)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            
+        elif get_detector == 'fixed_threshold_limesdr.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)          
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(70)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(60)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("A")
+            self.comboBox_tsi_detector_fixed_channel.addItem("B")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("RX1")
+            self.comboBox_tsi_detector_fixed_antenna.addItem("RX2")
+            self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            
+        elif get_detector == 'fixed_threshold_bladerf.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(40)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(10)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            
+        elif get_detector == 'fixed_threshold_plutosdr.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(71)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(64)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            
+        elif get_detector == 'fixed_threshold_usrp2.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(35)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(30)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:0")
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:0") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:AB") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:BA") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:A") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:B") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:AB") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:BA") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:A") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:B")            
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("J1")
+            self.comboBox_tsi_detector_fixed_antenna.addItem("J2")
+            self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)  
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)  
+            
+        elif get_detector == 'fixed_threshold_usrp_n2xx.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(35)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(30)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:0")
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:0") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:AB") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:BA") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:A") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:B") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:AB") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:BA") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:A") 
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:B")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("J1")
+            self.comboBox_tsi_detector_fixed_antenna.addItem("J2")
+            self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)  
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)         
+            
+        elif get_detector == 'fixed_threshold_bladerf2.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(40)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(10)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            
+        elif get_detector == 'fixed_threshold_simulator.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(10)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(2)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
+            self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
+            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            
+    def _slotTSI_DetectorFixedStartClicked(self):
+        """ Starts a TSI detector set to a tuned frequency.
+        """
+        # Turn off TSI Detector
+        if self.pushButton_tsi_detector_fixed_start.text() == "Stop":
+            # Send the Message
+            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Stop TSI Detector')
+            self.status_dialog.tableWidget_status_results.item(1,0).setText("Not Running")
+            self.label_tsi_detector.setText("Detector - Not Running")
+            self.label_tsi_detector.raise_()
         
+            # Change the Button Text
+            self.pushButton_tsi_detector_fixed_start.setText("Start")
+                                                
+            # Enable the Advanced Options
+            self.frame_tsi_detector_fixed_settings1.setEnabled(True)
+            
+            # Enable Combobox
+            self.comboBox_tsi_detector_fixed.setEnabled(True)
+            
+        # Turn on TSI Detector
+        elif self.pushButton_tsi_detector_fixed_start.text() == "Start":
+            # Get Detector
+            get_detector = str(self.comboBox_tsi_detector_fixed.currentText())
+            
+            # No Hardware Selected
+            if len(self.dashboard_settings_dictionary['hardware_ip_tsi']) == 0 and len(self.dashboard_settings_dictionary['hardware_serial_tsi']) == 0 \
+                and ('x310' in get_detector) and ('b210' in get_detector):
+                
+                error_text = " Fill out the IP address or serial number by clicking the TSI hardware button."
+                
+                # Create a Dialog Window    
+                msgBox = MyMessageBox(my_text = error_text, height = 100, width = 510)
+                msgBox.exec_() 
+                return
+                
+            # Valid Hardware
+            else:
+                # Get Variable Names and Values
+                variable_names = ['rx-freq-default','sample-rate-default', 'threshold-default', 'gain-default','channel-default','antenna-default']
+                get_frequency = str(self.textEdit_tsi_detector_fixed_frequency.toPlainText())
+                get_sample_rate = str(self.comboBox_tsi_detector_fixed_sample_rate.currentText())
+                get_threshold = str(self.spinBox_tsi_detector_fixed_threshold.value())
+                get_gain = str(self.spinBox_tsi_detector_fixed_gain.value())
+                get_channel = str(self.comboBox_tsi_detector_fixed_channel.currentText())
+                get_antenna = str(self.comboBox_tsi_detector_fixed_antenna.currentText())
+                variable_values = [get_frequency, get_sample_rate, get_threshold, get_gain, get_channel, get_antenna]
+                
+                # Hardware IP Address
+                variable_names.append('ip-address')
+                variable_values.append(self.dashboard_settings_dictionary['hardware_ip_tsi'])
+                    
+                # Hardware Serial
+                if len(self.dashboard_settings_dictionary['hardware_serial_tsi']) > 0:
+                    if self.dashboard_settings_dictionary['hardware_tsi'] == "HackRF":
+                        get_serial = self.dashboard_settings_dictionary['hardware_serial_tsi']
+                    elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF":
+                        get_serial = self.dashboard_settings_dictionary['hardware_serial_tsi']
+                    elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF 2.0":
+                        get_serial = self.dashboard_settings_dictionary['hardware_serial_tsi']
+                    else:
+                        get_serial = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_tsi']                               
+                else:
+                    if self.dashboard_settings_dictionary['hardware_tsi'] == "HackRF":
+                        get_serial = ""  
+                    elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF":
+                        get_serial = "0"  
+                    elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF 2.0":
+                        get_serial = "0"                          
+                    else:
+                        get_serial = "False"  
+                variable_names.append('serial')
+                variable_values.append(get_serial)
+
+            # Disable Combobox
+            self.comboBox_tsi_detector_fixed.setEnabled(False)
+                       
+            # Send the Message
+            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Start TSI Detector', Parameters = [get_detector, variable_names, variable_values])
+            self.status_dialog.tableWidget_status_results.item(1,0).setText("Running TSI") 
+            self.label_tsi_detector.setText("Detector - Running")
+            self.label_tsi_detector.raise_()
+            
+            # Change the Button Text
+            self.pushButton_tsi_detector_fixed_start.setText("Stop")
+           
+            # Disable the Advanced Options
+            self.frame_tsi_detector_fixed_settings1.setEnabled(False)
+            
+            
+
 
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
     def __init__(self):
@@ -22857,7 +22970,7 @@ class MyMplCanvas(FigureCanvas):
         max_power = 40
         
         # Normalize to the Colorbar Limits
-        computed_power_level = 255*(power_level-min_power)/(max_power-min_power)        
+        computed_power_level = 1*(power_level-min_power)/(max_power-min_power)        
         
         # Look up the Value in the 256 Length Colormap Array
         colormap_value = cm.rainbow(computed_power_level)[0:3]

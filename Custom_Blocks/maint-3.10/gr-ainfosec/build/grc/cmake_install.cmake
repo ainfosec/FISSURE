@@ -48,6 +48,7 @@ if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT
     "/home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/grc/ainfosec_UDP_to_Wireshark.block.yml"
     "/home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/grc/ainfosec_UDP_to_Wireshark_Async.block.yml"
     "/home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/grc/ainfosec_wideband_detector1.block.yml"
+    "/home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/grc/ainfosec_msg_str_to_PUB.block.yml"
     )
 endif()
 

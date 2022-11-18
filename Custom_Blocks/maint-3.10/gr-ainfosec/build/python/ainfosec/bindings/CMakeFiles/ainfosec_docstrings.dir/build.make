@@ -69,8 +69,8 @@ include python/ainfosec/bindings/CMakeFiles/ainfosec_docstrings.dir/progress.mak
 python/ainfosec/bindings/CMakeFiles/ainfosec_docstrings: python/ainfosec/bindings/docstring_status
 
 python/ainfosec/bindings/docstring_status:
-	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Copying ainfosec docstring templates as pybind headers ..."
-	cd /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/build/python/ainfosec/bindings && /usr/bin/python3 /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/docs/doxygen/update_pydoc.py copy --bindings_dir /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/python/ainfosec/bindings/docstrings --output_dir /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/build/python/ainfosec/bindings
+	@$(CMAKE_COMMAND) -E cmake_echo_color --switch=$(COLOR) --blue --bold --progress-dir=/home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/build/CMakeFiles --progress-num=$(CMAKE_PROGRESS_1) "Adding docstrings into ainfosec pybind headers ..."
+	cd /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/build/python/ainfosec/bindings && /usr/bin/python3 /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/docs/doxygen/update_pydoc.py sub --json_path /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/build/python/ainfosec/bindings/extracted_docstrings.json --bindings_dir /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/python/ainfosec/bindings/docstrings --output_dir /home/user/FISSURE/Custom_Blocks/maint-3.10/gr-ainfosec/build/python/ainfosec/bindings --filter gr::ainfosec
 
 ainfosec_docstrings: python/ainfosec/bindings/CMakeFiles/ainfosec_docstrings
 ainfosec_docstrings: python/ainfosec/bindings/docstring_status
