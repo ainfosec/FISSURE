@@ -1574,6 +1574,13 @@ programs_ubuntu22_04.append(('Fldigi',
 ls /usr/bin/fldigi
 """,True,None))
 
+# pyFDA
+programs_ubuntu22_04.append(('pyFDA',
+"""sudo python3 -m pip install pyfda
+########## Verify ##########
+pyfdax -h
+""",True,None))
+
 ########################################################################
        
 
