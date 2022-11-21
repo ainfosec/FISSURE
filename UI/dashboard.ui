@@ -15547,9 +15547,9 @@ p, li { white-space: pre-wrap; }
              <widget class="QFrame" name="frame_45">
               <property name="geometry">
                <rect>
-                <x>770</x>
+                <x>615</x>
                 <y>25</y>
-                <width>435</width>
+                <width>595</width>
                 <height>180</height>
                </rect>
               </property>
@@ -15567,13 +15567,93 @@ p, li { white-space: pre-wrap; }
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
+              <widget class="QPushButton" name="pushButton_iq_inspection_fg_file_view">
+               <property name="geometry">
+                <rect>
+                 <x>25</x>
+                 <y>145</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>View</string>
+               </property>
+              </widget>
+              <widget class="QListWidget" name="listWidget_iq_inspection_fg_file">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>10</y>
+                 <width>240</width>
+                 <height>130</height>
+                </rect>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_inspection_fg_file_load">
+               <property name="geometry">
+                <rect>
+                 <x>135</x>
+                 <y>145</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Load</string>
+               </property>
+              </widget>
+              <widget class="QTableWidget" name="tableWidget_iq_inspection_fg_file_values">
+               <property name="geometry">
+                <rect>
+                 <x>260</x>
+                 <y>10</y>
+                 <width>325</width>
+                 <height>130</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <italic>false</italic>
+                </font>
+               </property>
+               <attribute name="horizontalHeaderStretchLastSection">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="verticalHeaderStretchLastSection">
+                <bool>false</bool>
+               </attribute>
+               <column>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+               </column>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_inspection_fg_file_start">
+               <property name="geometry">
+                <rect>
+                 <x>373</x>
+                 <y>145</y>
+                 <width>99</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Start</string>
+               </property>
+              </widget>
              </widget>
              <widget class="QLabel" name="label_38">
               <property name="geometry">
                <rect>
                 <x>10</x>
                 <y>5</y>
-                <width>750</width>
+                <width>595</width>
                 <height>20</height>
                </rect>
               </property>
@@ -15626,7 +15706,7 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>10</x>
                 <y>25</y>
-                <width>750</width>
+                <width>595</width>
                 <height>180</height>
                </rect>
               </property>
@@ -15647,10 +15727,10 @@ p, li { white-space: pre-wrap; }
               <widget class="QPushButton" name="pushButton_iq_inspection_fg_start">
                <property name="geometry">
                 <rect>
-                 <x>640</x>
-                 <y>10</y>
+                 <x>373</x>
+                 <y>145</y>
                  <width>99</width>
-                 <height>45</height>
+                 <height>27</height>
                 </rect>
                </property>
                <property name="text">
@@ -15660,7 +15740,7 @@ p, li { white-space: pre-wrap; }
               <widget class="QPushButton" name="pushButton_iq_inspection_fg_load">
                <property name="geometry">
                 <rect>
-                 <x>80</x>
+                 <x>135</x>
                  <y>145</y>
                  <width>100</width>
                  <height>27</height>
@@ -15685,8 +15765,8 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>260</x>
                  <y>10</y>
-                 <width>370</width>
-                 <height>160</height>
+                 <width>325</width>
+                 <height>130</height>
                 </rect>
                </property>
                <property name="font">
@@ -15711,31 +15791,26 @@ p, li { white-space: pre-wrap; }
                 </property>
                </column>
               </widget>
-              <widget class="QCheckBox" name="checkBox_iq_inspection_rebuild">
+              <widget class="QPushButton" name="pushButton_iq_inspection_fg_live_view">
                <property name="geometry">
                 <rect>
-                 <x>640</x>
-                 <y>60</y>
-                 <width>96</width>
-                 <height>22</height>
+                 <x>25</x>
+                 <y>145</y>
+                 <width>100</width>
+                 <height>27</height>
                 </rect>
                </property>
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
                <property name="text">
-                <string>Rebuild</string>
+                <string>View</string>
                </property>
               </widget>
              </widget>
              <widget class="QLabel" name="label_41">
               <property name="geometry">
                <rect>
-                <x>770</x>
+                <x>615</x>
                 <y>5</y>
-                <width>435</width>
+                <width>595</width>
                 <height>20</height>
                </rect>
               </property>
@@ -27158,6 +27233,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionTinyWow"/>
      <addaction name="actionOnline_Hex_Converter"/>
      <addaction name="actionBless"/>
+     <addaction name="actionTriq_org"/>
     </widget>
     <widget class="QMenu" name="menuBluetooth">
      <property name="title">
@@ -28859,6 +28935,11 @@ p, li { white-space: pre-wrap; }
     <string>frequency_translating</string>
    </property>
   </action>
+  <action name="actionTriq_org">
+   <property name="text">
+    <string>triq.org</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>scrollArea</tabstop>
@@ -29138,7 +29219,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>pushButton_iq_inspection_fg_load</tabstop>
   <tabstop>tableWidget_iq_inspection_fg_values</tabstop>
   <tabstop>pushButton_iq_inspection_fg_start</tabstop>
-  <tabstop>checkBox_iq_inspection_rebuild</tabstop>
   <tabstop>pushButton_iq_dir1</tabstop>
   <tabstop>textEdit_iq_dir1</tabstop>
   <tabstop>pushButton_iq_dir2</tabstop>

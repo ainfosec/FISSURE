@@ -338,6 +338,11 @@ Project: https://www.putty.org/
 Copyright 1997-2022 Simon Tatham  
 License (MIT): https://www.chiark.greenend.org.uk/~sgtatham/putty/licence.html
 
+**pyFDA**  
+Project: https://github.com/chipmuenk/pyfda  
+Copyright 2013-2021 pyFDA Development Team and others  
+License (MIT): https://github.com/chipmuenk/pyfda/blob/develop/LICENSE.md
+
 **PyGPSClient**  
 Project: https://github.com/semuconsulting/PyGPSClient  
 Copyright 2020, SEMU Consulting  

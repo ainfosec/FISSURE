@@ -80,6 +80,7 @@ The following is a table of the major software tools that have been proven to wo
 | openHAB | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
 | Proxmark3 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | PuTTY | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| pyFDA | :x: | :x: | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | PyGPSClient | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | QSpectrumAnalyzer | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | QSSTV | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -545,6 +546,7 @@ The following are the software versions that are included with the FISSURE insta
 | ~~openHAB~~ (fix) |  | No | https://www.openhab.org/ |
 | Proxmark3 | master | Yes | https://github.com/Proxmark/proxmark3 |
 | PuTTY | 0.73 | No | https://www.putty.org/ |
+| pyFDA | 0.7.1 | No | https://github.com/chipmuenk/pyfda |
 | PyGPSClient | 1.3.5 | No | https://github.com/semuconsulting/PyGPSClient |
 | QSpectrumAnalyzer | 2.1.0 | No | https://github.com/xmikos/qspectrumanalyzer |
 | QSSTV | 9.4.4 | No | https://charlesreid1.com/wiki/Qsstv |
@@ -660,6 +662,7 @@ The following are the software versions that are included with the FISSURE insta
 | ~~openHAB~~ (fix) |  | No | https://www.openhab.org/ |
 | Proxmark3 | master | Yes | https://github.com/Proxmark/proxmark3 |
 | PuTTY | 0.73 | No | https://www.putty.org/ |
+| pyFDA | 0.7.1 | No | https://github.com/chipmuenk/pyfda |
 | PyGPSClient | 1.3.5 | No | https://github.com/semuconsulting/PyGPSClient |
 | QSpectrumAnalyzer | 2.1.0 | No | https://github.com/xmikos/qspectrumanalyzer |
 | QSSTV | 9.4.4 | No | https://charlesreid1.com/wiki/Qsstv |
@@ -775,6 +778,7 @@ The following are the software versions that are included with the FISSURE insta
 | ~~openHAB~~ (fix) |  | No | https://www.openhab.org/ |
 | Proxmark3 | master | Yes | https://github.com/Proxmark/proxmark3 |
 | PuTTY | 0.76 | No | https://www.putty.org/ |
+| pyFDA | 0.7.1 | No | https://github.com/chipmuenk/pyfda |
 | PyGPSClient | 1.3.5 | No | https://github.com/semuconsulting/PyGPSClient |
 | QSpectrumAnalyzer | 2.1.0 | No | https://github.com/xmikos/qspectrumanalyzer |
 | QSSTV | 9.5.8 | No | https://charlesreid1.com/wiki/Qsstv |
