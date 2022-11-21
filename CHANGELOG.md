@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-11-20
+
+Adding Inspection file source flow graphs.
+ 
+### Added
+
+- IQ Inspection View buttons to open flow graphs in GNU Radio Companion
+- IQ Inspection File flow graphs and controls to start/stop inspection flow graphs with file sources
+- Link to triq.org in the menu
+- pyFDA menu item to Python3 branches
+   
+### Changed
+
+- Removed Rebuild checkbox in Inspection flow graphs
+ 
+### Fixed
+
+- gr-dect2 cmake installation error for Python3_maint-3.8
+
 ## 2022-11-16
 
 Fixing GNU Radio 3.7.13.5 errors and adding new Detector tab.

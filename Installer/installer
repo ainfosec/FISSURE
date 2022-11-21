@@ -439,6 +439,7 @@ programs_ubuntu20_04.append(('gr-dect2',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2/
 sudo rm -Rf build
 mkdir build
+sed -i 's/2.6/3.2/g' ./CMakeLists.txt
 cd build
 cmake ..
 make
@@ -1654,6 +1655,13 @@ programs_ubuntu20_04.append(('Fldigi',
 ls /usr/bin/fldigi
 """,True,None))
 
+# pyFDA
+programs_ubuntu20_04.append(('pyFDA',
+"""sudo python3 -m pip install pyfda
+########## Verify ##########
+pyfdax -h
+""",True,None))
+
 
 ########################################################################
 ############################ Ubuntu 20.04.4 ############################
@@ -2076,6 +2084,7 @@ programs_ubuntu20_04_4.append(('gr-dect2',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2/
 sudo rm -Rf build
 mkdir build
+sed -i 's/2.6/3.2/g' ./CMakeLists.txt
 cd build
 cmake ..
 make
@@ -3291,6 +3300,13 @@ programs_ubuntu20_04_4.append(('Fldigi',
 ls /usr/bin/fldigi
 """,True,None))
 
+# pyFDA
+programs_ubuntu20_04_4.append(('pyFDA',
+"""sudo python3 -m pip install pyfda
+########## Verify ##########
+pyfdax -h
+""",True,None))
+
 
 
 ########################################################################
@@ -4240,10 +4256,17 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # """,True,None))
 
 # # Fldigi
-# programs_ubuntu20_04_4.append(('Fldigi',
+# programs_dragonOS_focal.append(('Fldigi',
 # """sudo apt-get install -y fldigi
 # ########## Verify ##########
 # ls /usr/bin/fldigi
+# """,True,None))
+
+# # pyFDA
+# programs_dragonOS_focal.append(('pyFDA',
+# """sudo python3 -m pip install pyfda
+# ########## Verify ##########
+# pyfdax -h
 # """,True,None))
 
 ######## Already Exists ######## 
@@ -4384,6 +4407,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2/
 # sudo rm -Rf build
 # mkdir build
+# sed -i 's/2.6/3.2/g' ./CMakeLists.txt
 # cd build
 # cmake ..
 # make

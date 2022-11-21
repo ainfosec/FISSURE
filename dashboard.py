@@ -540,7 +540,14 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Settings Icon
         self.pushButton_iq_FunctionsSettings.setIcon(QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/settings.png"))
-
+        
+        # Load Inspection File Flow Graphs
+        get_inspection_file_fgs = []
+        get_inspection_file_fgs.extend(self.pd_library["Inspection Flow Graphs"]["File"])
+        for n in sorted(get_inspection_file_fgs,key=str.lower):
+            if n != "None":
+                self.listWidget_iq_inspection_fg_file.addItem(n)  
+        self.listWidget_iq_inspection_fg_file.setCurrentRow(0)
         
         ##### Archive #####   
         self.comboBox_archive_download_folder.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/Archive'))   
@@ -1100,7 +1107,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_iq_playback_record_rate.clicked.connect(self._slotIQ_PlaybackRecordRateClicked)
         self.pushButton_iq_resample.clicked.connect(self._slotIQ_ResampleClicked)
         self.pushButton_iq_inspection_fg_start.clicked.connect(self._slotIQ_InspectionFG_StartClicked)
+        self.pushButton_iq_inspection_fg_file_start.clicked.connect(self._slotIQ_InspectionFG_FileStartClicked)
         self.pushButton_iq_inspection_fg_load.clicked.connect(self._slotIQ_InspectionFlowGraphClicked)
+        self.pushButton_iq_inspection_fg_file_load.clicked.connect(self._slotIQ_InspectionFG_FileClicked)
+        self.pushButton_iq_inspection_fg_live_view.clicked.connect(self._slotIQ_InspectionFG_LiveViewClicked)
+        self.pushButton_iq_inspection_fg_file_view.clicked.connect(self._slotIQ_InspectionFG_FileViewClicked)        
         self.pushButton_iq_folder.clicked.connect(self._slotIQ_FolderClicked)
         self.pushButton_iq_transfer_file_select.clicked.connect(self._slotIQ_TransferFileSelectClicked)
         self.pushButton_iq_transfer_file_save_as.clicked.connect(self._slotIQ_TransferFileSaveAsClicked)
@@ -1254,6 +1265,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.listWidget_library_browse_attacks3.itemClicked.connect(self._slotLibraryBrowseAttacksClicked)
         self.listWidget_tsi_scan_presets.currentItemChanged.connect(self._slotTSI_ScanPresetItemChanged)
         self.listWidget_iq_inspection_flow_graphs.itemDoubleClicked.connect(self._slotIQ_InspectionFlowGraphClicked)
+        self.listWidget_iq_inspection_fg_file.itemDoubleClicked.connect(self._slotIQ_InspectionFG_FileClicked)
         self.listWidget_pd_flow_graphs_recommended_fgs.itemDoubleClicked.connect(self._slotPD_DemodulationLoadSelectedClicked)        
         self.listWidget_pd_flow_graphs_all_fgs.itemDoubleClicked.connect(self._slotPD_DemodulationLoadSelectedAllClicked)
         self.listWidget_iq_files.itemDoubleClicked.connect(self._slotIQ_LoadIQ_Data)
@@ -1527,6 +1539,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionmultimon_ng.triggered.connect(self._slotMenuMultimon_ngClicked)
         self.actionFldigi.triggered.connect(self._slotMenuFldigiClicked)
         self.actionfrequency_translating.triggered.connect(self._slotMenuStandaloneFrequencyTranslatingClicked)
+        self.actiontriq_org.triggered.connect(self._slotMenuTriqOrgClicked)
+        self.actionpyFDA.triggered.connect(self._slotMenuPyFDA_Clicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -5689,7 +5703,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         except:
             print("No File Selected.")
             return
-        get_file_path = str(self.label_iq_folder.text() + "/"+self.listWidget_iq_files.currentItem().text())
+        get_file_path = str(self.label_iq_folder.text() + "/" + self.listWidget_iq_files.currentItem().text())
         self.label_iq_file_size.setText("Size: " + str(round(float((os.path.getsize(get_file_path)))/1048576,2)) + " MB")  # File Size
         self.textEdit_iq_crop_original.setPlainText(get_file_path)
         self.textEdit_iq_crop_new.setPlainText(get_file_path.rpartition('.')[0] + '_cropped.' + get_file_path.rpartition('.')[2])
@@ -5748,7 +5762,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         # Reset Range Cursor Memory
         self.iq_plot_range_start = 0
-        self.iq_plot_range_end = 0
+        self.iq_plot_range_end = 0        
 
     def _slotIQ_Dir1_Clicked(self):
         """ Selects a source folder for transferring files
@@ -12157,7 +12171,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.pushButton_iq_inspection_fg_load.setEnabled(True)
 
         # Start Flow Graph
-        elif self.pushButton_iq_inspection_fg_start.text() == "Start":       
+        elif (self.pushButton_iq_inspection_fg_start.text() == "Start") and (self.pushButton_iq_inspection_fg_file_start.text() == "Start"):       
                                 
             # Send Message(s) to the HIPRFISR for each Variable Name and Value
             variable_names = []
@@ -12173,21 +12187,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 fname = str(self.tableWidget_iq_inspection_fg_values.horizontalHeaderItem(0).text())              
                 flow_graph_directory = os.path.dirname(os.path.abspath(__file__)) + "/Flow Graph Library/Inspection Flow Graphs/"
                 fname = flow_graph_directory + fname
-                
-                # Rebuild Flow Graph (New OS Sometimes Causes Errors)
-                if self.checkBox_iq_inspection_rebuild.isChecked():
-                    #os.system('grcc "' + fname.replace('.py','.grc') + '" -d "' + str(flow_graph_directory) + '" &')
-                    os.system('grcc "' + fname.replace('.py','.grc') + '" -d "' + str(flow_graph_directory) + '"')
             except:
                 return
             
-            # Send "Run Attack Flow Graph" Message to the HIPRFISR
+            # Send "Run Inspection Flow Graph" Message to the HIPRFISR
             get_file_type = "Flow Graph - GUI"
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Inspection Flow Graph', Parameters = [fname, variable_names, variable_values, get_file_type]) 
                 
             # Toggle the Text       
             self.pushButton_iq_inspection_fg_start.setText("Stop") 
-            #self.pushButton_attack_start_stop.setEnabled(False)
             
             # Disable Attack Switching
             self.listWidget_iq_inspection_flow_graphs.setEnabled(False)
@@ -21990,9 +21998,174 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
             self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
 
+    def _slotIQ_InspectionFG_LiveViewClicked(self):
+        """ Open the selected Inspection Live flow graph in GNU Radio Companion
+        """
+        # Get the Flow Graph Filepath
+        try:
+            fname = str(self.listWidget_iq_inspection_flow_graphs.item(self.listWidget_iq_inspection_flow_graphs.currentRow()).text())        
+            flow_graph_directory = os.path.dirname(os.path.abspath(__file__)) + "/Flow Graph Library/Inspection Flow Graphs/"
+            fname_path = flow_graph_directory + fname
+            fname_path = fname_path.replace('.py','.grc')
+        except:
+            return
             
+        # Open the Flow Graph in GNU Radio Companion
+        osCommandString = 'gnuradio-companion "' + fname_path + '"'
+        os.system(osCommandString+ " &")            
+
+    def _slotIQ_InspectionFG_FileViewClicked(self):
+        """ Open the selected Inspection File flow graph in GNU Radio Companion
+        """
+        # Get the Flow Graph Filepath
+        try:
+            fname = str(self.listWidget_iq_inspection_fg_file.item(self.listWidget_iq_inspection_fg_file.currentRow()).text())        
+            flow_graph_directory = os.path.dirname(os.path.abspath(__file__)) + "/Flow Graph Library/Inspection Flow Graphs/File/"
+            fname_path = flow_graph_directory + fname
+            fname_path = fname_path.replace('.py','.grc')
+        except:
+            return
+            
+        # Open the Flow Graph in GNU Radio Companion
+        osCommandString = 'gnuradio-companion "' + fname_path + '"'
+        os.system(osCommandString+ " &")
+        
+    def _slotIQ_InspectionFG_FileClicked(self):
+        """ Loads the selected Inspection File flow graph's default variables.
+        """
+        new_font = QtGui.QFont("Times",10)
+        
+        # Flow Graph - GUI (Inspection)   
+        self.tableWidget_iq_inspection_fg_file_values.setRowCount(0)
+                          
+        # Get the Flow Graph Filepath
+        try:
+            fname = str(self.listWidget_iq_inspection_fg_file.item(self.listWidget_iq_inspection_fg_file.currentRow()).text())        
+            flow_graph_directory = os.path.dirname(os.path.abspath(__file__)) + "/Flow Graph Library/Inspection Flow Graphs/File/"
+            fname_path = flow_graph_directory + fname
+        except:
+            return
+            
+        # Read Flow Graph Variables
+        f = open(fname_path,'r')
+        parsing = False
+        for line in f:
+            if line.startswith("    def __init__(self,"):
+                parsing = True
+            elif line.startswith("        gr.top_block."):
+                parsing = False
+            if parsing:
+                # Strip Extra Text
+                fg_parameters = line[:-3].split(',')
+                parameter_names = []
+                parameter_values = []
+                for p in range(1,len(fg_parameters)):
+                    # Get Default Variable Name and Value
+                    parameter_name = fg_parameters[p].lstrip(' ').split('=')[0].replace('_','-')
+                    parameter_name_item = QtWidgets.QTableWidgetItem(parameter_name)
+                    parameter_value = fg_parameters[p].lstrip(' ').split('=')[1].replace('"','')
+                    
+                    # Fill in Filepath from Loaded IQ File
+                    if parameter_name == "filepath":
+                        try:
+                            if len(str(self.listWidget_iq_files.currentItem().text())) > 0:
+                                parameter_value = str(self.label_iq_folder.text() + "/" + self.listWidget_iq_files.currentItem().text())
+                            else:
+                                parameter_value = ""
+                        except:
+                            parameter_value = ""
+                            
+                    elif (parameter_name == "sample-rate") or (parameter_name == "samp-rate"):
+                        if len(str(self.textEdit_iq_sample_rate.toPlainText())) > 0:
+                            parameter_value = str(self.textEdit_iq_sample_rate.toPlainText()) + "e6"
+                        else:
+                            parameter_value = "1e6"
+                      
+                    # Fill in the "Current Values" Table
+                    parameter_value_item = QtWidgets.QTableWidgetItem(parameter_value)
+                    parameter_value_item.setFont(new_font)
+                    self.tableWidget_iq_inspection_fg_file_values.setRowCount(self.tableWidget_iq_inspection_fg_file_values.rowCount()+1)
+                    self.tableWidget_iq_inspection_fg_file_values.setVerticalHeaderItem(self.tableWidget_iq_inspection_fg_file_values.rowCount()-1,parameter_name_item)   
+                    self.tableWidget_iq_inspection_fg_file_values.setItem(self.tableWidget_iq_inspection_fg_file_values.rowCount()-1,0,parameter_value_item)                                     
+        
+        # Close the File
+        f.close()                 
+        
+        # Enable the Table
+        self.tableWidget_iq_inspection_fg_file_values.setEnabled(True)
+        
+        # Rename the Column Header
+        header_name_item = QtWidgets.QTableWidgetItem(fname)
+        header_name_item.setFont(new_font)
+        self.tableWidget_iq_inspection_fg_file_values.setHorizontalHeaderItem(0,header_name_item)
+        
+        # Adjust Table
+        self.tableWidget_iq_inspection_fg_file_values.resizeRowsToContents()        
+        
+    def _slotIQ_InspectionFG_FileStartClicked(self):
+        """ Starts the Inspection File flow graph.
+        """
+        # Stop Flow Graph
+        if self.pushButton_iq_inspection_fg_file_start.text() == "Stop":
+            # Send Message
+            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Stop Inspection Flow Graph', Parameters = ['Flow Graph - GUI'])
+                        
+            # Toggle the Text
+            self.pushButton_iq_inspection_fg_file_start.setText("Start")  
+                        
+            # Enable Attack Switching
+            self.listWidget_iq_inspection_fg_file.setEnabled(True)
+            self.pushButton_iq_inspection_fg_file_load.setEnabled(True)
+
+        # Start Flow Graph
+        elif (self.pushButton_iq_inspection_fg_file_start.text() == "Start") and (self.pushButton_iq_inspection_fg_start.text() == "Start") and \
+            (len(str(self.tableWidget_iq_inspection_fg_file_values.horizontalHeaderItem(0).text())) > 0):       
+                                
+            # Send Message(s) to the HIPRFISR for each Variable Name and Value
+            variable_names = []
+            variable_values = []
+            for get_row in range(0,self.tableWidget_iq_inspection_fg_file_values.rowCount()):             
+                # Save the Variable Name in the Row to a Dictionary
+                get_name = str(self.tableWidget_iq_inspection_fg_file_values.verticalHeaderItem(get_row).text())
+                variable_names.append(get_name)  
+                variable_values.append(str(self.tableWidget_iq_inspection_fg_file_values.item(get_row,0).text()))
+            
+            try:
+                # Get the Flow Graph Filepath
+                fname = str(self.tableWidget_iq_inspection_fg_file_values.horizontalHeaderItem(0).text())              
+                flow_graph_directory = os.path.dirname(os.path.abspath(__file__)) + "/Flow Graph Library/Inspection Flow Graphs/File/"
+                fname = flow_graph_directory + fname
+            except:
+                return
+            
+            # Send "Run Inspection Flow Graph" Message to the HIPRFISR
+            get_file_type = "Flow Graph - GUI"
+            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Inspection Flow Graph', Parameters = [fname, variable_names, variable_values, get_file_type]) 
+                
+            # Toggle the Text       
+            self.pushButton_iq_inspection_fg_file_start.setText("Stop") 
+            
+            # Disable Attack Switching
+            self.listWidget_iq_inspection_fg_file.setEnabled(False)
+            self.pushButton_iq_inspection_fg_file_load.setEnabled(False) 
+                
+            ## Update the Status Dialog
+            # ~ self.status_dialog.tableWidget_status_results.item(3,0).setText('Starting... ' + fname.split('/')[-1])
+            
+    def _slotMenuTriqOrgClicked(self):
+        """ Opens triq.org in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://triq.org/ &")
+        
+    def _slotMenuPyFDA_Clicked(self):
+        """ Opens pyFDA from the menu.
+        """
+        # Launch pyFDA
+        proc = subprocess.Popen("pyfdax &", shell=True)
         
         
+               
 
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
     def __init__(self):
