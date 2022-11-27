@@ -10,6 +10,7 @@ form_class6 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + "/UI/
 form_class7 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + "/UI/status.ui")[0]
 form_class8 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + "/UI/chooser.ui")[0]
 form_class9 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + "/UI/new_soi.ui")[0]
+form_class10 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + "/UI/sigmf.ui")[0]
 import time
 import threading
 import matplotlib.pyplot as plt
@@ -59,6 +60,8 @@ from matplotlib import rc
 rc('font',family='DejaVu Sans') 
 import webbrowser
 import crcmod
+import json
+import datetime
 
 
     
@@ -504,6 +507,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         new_iq_combobox4.setCurrentIndex(0)   
         
         self.tableWidget_iq_record.resizeColumnsToContents()
+        self.tableWidget_iq_record.setColumnWidth(0,300)
         
         # Set up IQ Playback Table        
         new_iq_playback_combobox3 = QtGui.QComboBox(self)
@@ -552,6 +556,13 @@ class MainWindow(QtGui.QMainWindow, form_class):
             if n != "None":
                 self.listWidget_iq_inspection_fg_file.addItem(n)  
         self.listWidget_iq_inspection_fg_file.setCurrentRow(0)
+        
+        # SigMF Dictionary
+        global_dict = {'core:datatype':'cf32_le','core:version':'1.0.0'} 
+        captures_dict = {'core:sample_start':'0'}
+        self.sigmf_dict = {}
+        self.sigmf_dict["global"] = global_dict
+        self.sigmf_dict["captures"] = captures_dict
         
         
         ##### Archive #####   
@@ -1167,6 +1178,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.pushButton_iq_normalize_original_select.clicked.connect(self._slotIQ_NormalizeOriginalSelectClicked)
         self.pushButton_iq_normalize_new_select.clicked.connect(self._slotIQ_NormalizeNewSelectClicked)
         self.pushButton_iq_gqrx.clicked.connect(self._slotIQ_GqrxClicked)
+        self.pushButton_iq_inspectrum.clicked.connect(self._slotIQ_InspectrumClicked)
+        self.pushButton_iq_record_sigmf.clicked.connect(self._slotIQ_RecordSigMF_ConfigureClicked)
+        self.pushButton_iq_sigmf.clicked.connect(self._slotIQ_SigMF_Clicked)
         
         self.pushButton_archive_download_folder.clicked.connect(self._slotArchiveDownloadFolderClicked)
         self.pushButton_archive_download_refresh.clicked.connect(self._slotArchiveDownloadRefreshClicked)
@@ -1193,6 +1207,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.checkBox_attack_show_all.clicked.connect(self._slotAttackProtocols)
         self.checkBox_iq_append_null1.clicked.connect(self._slotIQ_AppendNull1Clicked)
         self.checkBox_iq_append_null2.clicked.connect(self._slotIQ_AppendNull2Clicked)
+        self.checkBox_iq_record_sigmf.clicked.connect(self._slotIQ_RecordSigMF_Clicked)
 
         # Combo Boxes       
         self.comboBox_tsi_detector.currentIndexChanged.connect(self._slotTSI_DetectorChanged)
@@ -1544,6 +1559,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.actionFldigi.triggered.connect(self._slotMenuFldigiClicked)
         self.actionFrequency_translating.triggered.connect(self._slotMenuStandaloneFrequencyTranslatingClicked)
         self.actionTriq_org.triggered.connect(self._slotMenuTriqOrgClicked)
+        self.actionMorse_Code_Translator.triggered.connect(self._slotMenuMorseCodeTranslatorClicked)
+        self.actionPSK_Reporter.triggered.connect(self._slotMenuPSK_ReporterClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -5765,6 +5782,17 @@ class MainWindow(QtGui.QMainWindow, form_class):
         # Reset Range Cursor Memory
         self.iq_plot_range_start = 0
         self.iq_plot_range_end = 0
+        
+        # SigMF Information
+        if ".sigmf-data" in get_file_path:
+            if os.path.isfile(get_file_path.replace('.sigmf-data','.sigmf-meta').replace('"','')):
+                f = open(get_file_path.replace('.sigmf-data','.sigmf-meta'))
+                metadata_file = json.load(f)
+                f.close()
+                if 'core:sample_rate' in metadata_file['global']:
+                    self.textEdit_iq_sample_rate.setPlainText(str(float(str(metadata_file['global']['core:sample_rate']))/1000000))
+                if 'core:frequency' in metadata_file['captures']:                
+                    self.textEdit_iq_frequency.setPlainText(str(float(str(metadata_file['captures']['core:frequency']))/1000000))
 
     def _slotIQ_Dir1_Clicked(self):
         """ Selects a source folder for transferring files
@@ -6128,6 +6156,11 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.pushButton_iq_record.setText("Stop")
                 self.pushButton_iq_record.setEnabled(False)
                 self.status_dialog.tableWidget_status_results.item(4,0).setText('Starting...')
+                
+                # Get Record Timestamp
+                if 'core:datetime' in self.sigmf_dict['captures']:
+                    iq_record_timestamp = datetime.datetime.utcnow().isoformat("T") + "Z"
+                    self.sigmf_dict['captures']['core:datetime'] = str(iq_record_timestamp)
             
             
     def _slotIQ_FlowGraphFinished(self):
@@ -6170,6 +6203,19 @@ class MainWindow(QtGui.QMainWindow, form_class):
             # Update the Counter
             if self.iq_file_counter != "abort":
                 self.iq_file_counter = self.iq_file_counter + 1
+                
+                # Write SigMF Metadata for Multiple Recordings
+                if self.checkBox_iq_record_sigmf.isChecked() == True:
+                    if 'core:sha512' in self.sigmf_dict['global']:
+                        proc = subprocess.Popen('sha512sum "' + str(self.textEdit_iq_record_dir.toPlainText()) + '/' + get_file + '" &', shell=True, stdout=subprocess.PIPE, )
+                        output = proc.communicate()[0].decode().split(" ")[0]
+                        self.sigmf_dict['global']['core:sha512'] = str(output)                    
+                    if 'core:dataset' in self.sigmf_dict['global']:
+                        self.sigmf_dict['global']['core:dataset'] = get_file
+                    if 'core:sample_rate' in self.sigmf_dict['global']:
+                        self.sigmf_dict['global']['core:sample_rate'] = float(str(self.tableWidget_iq_record.item(0,7).text()))*1000000
+                    metadata_filepath = str(self.textEdit_iq_record_dir.toPlainText()) + '/' + get_file.replace(".sigmf-data",".sigmf-meta")
+                    self.writeSigMF(metadata_filepath,self.sigmf_dict)  
             
                 # Update New File Name
                 get_file_name = self.iq_first_file_name
@@ -6194,7 +6240,20 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.pushButton_iq_record.setText("Record")
         else:
             self.iq_file_counter = 0
-            self.pushButton_iq_record.setText("Record") 
+            self.pushButton_iq_record.setText("Record")
+            
+            # Write SigMF Metadata for Single File
+            if self.checkBox_iq_record_sigmf.isChecked() == True:
+                if 'core:sha512' in self.sigmf_dict['global']:
+                    proc = subprocess.Popen('sha512sum "' + str(self.textEdit_iq_record_dir.toPlainText()) + '/' + get_file + '" &', shell=True, stdout=subprocess.PIPE, )
+                    output = proc.communicate()[0].decode().split(" ")[0]
+                    self.sigmf_dict['global']['core:sha512'] = str(output)    
+                if 'core:dataset' in self.sigmf_dict['global']:
+                    self.sigmf_dict['global']['core:dataset'] = get_file
+                if 'core:sample_rate' in self.sigmf_dict['global']:
+                    self.sigmf_dict['global']['core:sample_rate'] = float(str(self.tableWidget_iq_record.item(0,7).text()))*1000000
+                metadata_filepath = str(self.textEdit_iq_record_dir.toPlainText()) + '/' + get_file.replace(".sigmf-data",".sigmf-meta")
+                self.writeSigMF(metadata_filepath,self.sigmf_dict)
         
     def _slotIQ_FlowGraphPlaybackFinished(self):
         """ Called upon cancelling IQ playback. Changes the status and button text.
@@ -10262,7 +10321,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
             temp_names = []
             for fname in os.listdir(get_folder):
                 if os.path.isfile(get_folder+"/"+fname):
-                    temp_names.append(fname)
+                    if ".sigmf-meta" not in fname:
+                        temp_names.append(fname)
                   
             # Sort and Add to the Listbox
             temp_names = sorted(temp_names)
@@ -11367,18 +11427,23 @@ class MainWindow(QtGui.QMainWindow, form_class):
             output = str(proc.communicate()[0])
             widget_probing_label.setVisible(False)
             
-            if "CBX-120" in output:
+            if ("CBX-120" in output) and (self.guess_index != 0):
                 widget_daughterboard.setCurrentIndex(0)
-            elif "SBX-120" in output:
+                self.guess_index = 0
+            elif ("SBX-120" in output) and (self.guess_index != 1):
                 widget_daughterboard.setCurrentIndex(1)
-            elif "UBX-160" in output:
+                self.guess_index = 1
+            elif ("UBX-160" in output) and (self.guess_index != 2):
                 widget_daughterboard.setCurrentIndex(2)
-            elif "WBX-120" in output:
-                widget_daughterboard.setCurrentIndex(3)            
-            elif "TwinRX" in output:
-                widget_daughterboard.setCurrentIndex(4)            
+                self.guess_index = 2
+            elif ("WBX-120" in output) and (self.guess_index != 3):
+                widget_daughterboard.setCurrentIndex(3)
+                self.guess_index = 3
+            elif ("TwinRX" in output) and (self.guess_index != 4):
+                widget_daughterboard.setCurrentIndex(4)
+                self.guess_index = 4            
         except:
-            widget_probing_label.setVisible(False)
+            widget_probing_label.setVisible(False)                            
                             
     def findB210(self, widget_serial):      
         """ Parses the results of 'uhd_find_devices' and sets the B210 serial for an edit box.
@@ -12669,6 +12734,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setItem(0,4,gain_item)
             comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
             self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
@@ -12705,6 +12771,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setItem(0,4,gain_item)
             comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
             self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
@@ -12739,6 +12806,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setItem(0,4,gain_item)
             comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
             self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
@@ -12772,6 +12840,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setItem(0,4,gain_item)
             comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
             self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             self._slotIQ_InspectionHardwareChanged()
@@ -12802,6 +12871,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setItem(0,4,gain_item)
             comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
             self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
@@ -12838,6 +12908,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setItem(0,4,gain_item)
             comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
             self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
@@ -12875,6 +12946,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setItem(0,4,gain_item)
             comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
             self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
@@ -12915,6 +12987,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setItem(0,4,gain_item)
             comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
             self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
@@ -12958,6 +13031,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setItem(0,4,gain_item)
             comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
             self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
@@ -13011,6 +13085,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setItem(0,4,gain_item)
             comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
             self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
@@ -13057,6 +13132,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tableWidget_iq_record.setItem(0,4,gain_item)
             comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
             self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
@@ -13884,6 +13960,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
             
             # Delete
             os.system('rm "' + delete_filepath + '"')
+            if ".sigmf-data" in delete_filepath:
+                if os.path.isfile(delete_filepath.replace(".sigmf-data",".sigmf-meta")):
+                    os.system('rm "' + delete_filepath.replace(".sigmf-data",".sigmf-meta") + '"')
             
             # Refresh
             self._slotIQ_RefreshClicked()     
@@ -15971,7 +16050,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
             file_names = []
             for fname in os.listdir(get_dir):
                 if os.path.isfile(get_dir+"/"+fname):
-                    file_names.append(fname)
+                    if ".sigmf-meta" not in fname:
+                        file_names.append(fname)
             file_names = sorted(file_names)
             for n in file_names:
                 self.listWidget_iq_files.addItem(n)
@@ -21473,7 +21553,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens an IQ file in Gqrx.
         """
         # Get IQ File
-        get_iq_file = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","")
+        get_iq_file = str(self.label_iq_folder.text()) + "/" + str(self.label_iq_file_name.text()).replace("File:","").lstrip()
         
         # Get Sample Rate and Frequency
         get_sample_rate = str(self.textEdit_iq_sample_rate.toPlainText())
@@ -21488,7 +21568,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             return
                 
         # Modify Local Gqrx Config File
-        if (len(get_iq_file) > 0) and (len(get_sample_rate) > 0) and (len(get_frequency) > 0):
+        if (len(str(self.label_iq_file_name.text()).replace("File:","").lstrip()) > 0) and (len(get_sample_rate) > 0) and (len(get_frequency) > 0):
             fin = open(os.path.dirname(os.path.realpath(__file__)) + "/Tools/Gqrx/template.conf", "rt")
             fout = open(os.path.dirname(os.path.realpath(__file__)) + "/Tools/Gqrx/default.conf", "wt")
             file_text = fin.read()
@@ -22111,7 +22191,106 @@ class MainWindow(QtGui.QMainWindow, form_class):
         # Open a Browser
         os.system("sensible-browser https://triq.org/ &")            
             
+    def _slotIQ_InspectrumClicked(self):
+        """ Opens an IQ file in Inspectrum.
+        """
+        # Get IQ File
+        get_iq_file = str(self.label_iq_folder.text()) + "/" + str(self.label_iq_file_name.text()).replace("File:","").lstrip()
+
+        if len(str(self.label_iq_file_name.text()).replace("File:","").lstrip()) > 0:
             
+            # Get Sample Rate
+            get_sample_rate = str(self.textEdit_iq_sample_rate.toPlainText())
+            try:
+                self.isFloat(float(get_sample_rate))
+                get_sample_rate = str(int(float(get_sample_rate)*1000000))
+                proc = subprocess.Popen('inspectrum -r ' + get_sample_rate + ' "' + get_iq_file + '"', shell=True)
+            except:
+                proc = subprocess.Popen('inspectrum "' + get_iq_file + '"', shell=True)
+               
+        else:
+            self.errorMessage("Load an IQ file and try again.")
+            
+    def _slotMenuMorseCodeTranslatorClicked(self):
+        """ Opens morsecode.world in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://morsecode.world/international/translator.html &")
+        
+    def _slotIQ_RecordSigMF_Clicked(self):
+        """ Follows SigMF standard for recording IQ data when enabled.
+        """
+        # Enabled
+        get_filename = str(self.tableWidget_iq_record.item(0,0).text())
+        
+        if self.checkBox_iq_record_sigmf.isChecked() == True:
+            self.pushButton_iq_record_sigmf.setEnabled(True)
+            new_filename = get_filename.replace('.iq','.sigmf-data')
+            filename_item = QtGui.QTableWidgetItem(new_filename)
+            filename_item.setTextAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setItem(0,0,filename_item)   
+            
+        # Disabled
+        else:    
+            self.pushButton_iq_record_sigmf.setEnabled(False)
+            new_filename = get_filename.replace('.sigmf-data','.iq',)
+            filename_item = QtGui.QTableWidgetItem(new_filename)
+            filename_item.setTextAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setItem(0,0,filename_item)   
+
+    def _slotIQ_RecordSigMF_ConfigureClicked(self):
+        """ Opens a dialog for configuring SigMF metadata values.
+        """
+        # Copy Values from Table
+        try:
+            get_sample_rate = str(float(str(self.tableWidget_iq_record.item(0,7).text()))*1000000)
+        except:
+            get_sample_rate = None
+        try:
+            get_hw = self.dashboard_settings_dictionary['hardware_iq']
+        except:
+            get_hw = None
+        try:
+            get_dataset = str(self.tableWidget_iq_record.item(0,0).text())
+        except:
+            get_dataset = None
+        try:
+            get_frequency = str(float(str(self.tableWidget_iq_record.item(0,1).text()))*1000000)
+        except:
+            get_frequency = None
+
+        # Create Default Dictionary
+        dlg = SigMF_Dialog(sample_rate=get_sample_rate, hw=get_hw, dataset=get_dataset, frequency=get_frequency, settings_dictionary = self.sigmf_dict)
+        dlg.show()
+        dlg.exec_() 
+        
+        # OK Clicked
+        get_value = dlg.return_value
+        if len(get_value) > 0:       
+            self.sigmf_dict = dlg.settings_dictionary
+            
+    def writeSigMF(self, filepath, sigmf_dict):      
+        """ Writes a SigMF metadata file for a given data file.
+        """
+        with open(filepath,"w") as outfile:
+            json.dump(sigmf_dict, outfile, indent=4)
+            
+    def _slotIQ_SigMF_Clicked(self):
+        """ Opens the SigMF metadata file in a text editor.
+        """
+        # Open the File
+        get_iq_file = '"' + str(self.comboBox_iq_folders.currentText()) + "/" + str(self.listWidget_iq_files.currentItem().text()) + '"'
+        if ".sigmf-data" in get_iq_file:
+            get_meta_file = get_iq_file.replace('.sigmf-data','.sigmf-meta')
+            if os.path.isfile(get_meta_file.replace('"','')):
+                os.system("gedit " + get_meta_file + " &")
+                
+    def _slotMenuPSK_ReporterClicked(self):
+        """ Opens PSK Reporter in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://pskreporter.info/pskmap.html &")  
+        
             
 
 class HelpMenuDialog(QtGui.QDialog, form_class6):
@@ -23484,7 +23663,275 @@ class MyIQ_MplCanvas(FigureCanvas):
                             self.txt = None                                
                             
                         self.draw()
-                
+
+
+class SigMF_Dialog(QtGui.QDialog, form_class10):
+    def __init__(self, parent=None, sample_rate=None, hw=None, dataset=None, frequency=None, settings_dictionary=None):
+        """ First thing that executes.
+        """
+        QtGui.QDialog.__init__(self)
+        self.setupUi(self)
+        self.return_value = ""
+        
+        self.settings_dictionary = settings_dictionary
+            
+        # Prevent Resizing/Maximizing
+        self.setFixedSize(800, 600)         
+        
+        # Tooltips
+        self.checkBox_global_datatype.setToolTip("The SigMF Dataset format of the stored samples in the Dataset file.")
+        self.checkBox_global_sample_rate.setToolTip("The sample rate of the signal in samples per second.")
+        self.checkBox_global_version.setToolTip("The version of the SigMF specification used to create the Metadata file.")
+        self.checkBox_global_num_channels.setToolTip("Total number of interleaved channels in the Dataset file. If omitted, this defaults to one.")
+        self.checkBox_global_sha512.setToolTip("The SHA512 hash of the Dataset file associated with the SigMF file.")
+        self.checkBox_global_offset.setToolTip("The index number of the first sample in the Dataset. If not provided, this value defaults to zero. Typically used when a Recording is split over multiple files. All sample indices in SigMF are absolute, and so all other indices referenced in metadata for this recording SHOULD be greater than or equal to this value.")
+        self.checkBox_global_description.setToolTip("A text description of the SigMF Recording.")
+        self.checkBox_global_author.setToolTip('A text identifier for the author potentially including name, handle, email, and/or other ID like Amateur Call Sign. For example "Bruce Wayne bruce@waynetech.com" or "Bruce (K3X)".')
+        self.checkBox_global_meta_doi.setToolTip("The registered DOI (ISO 26324) for a Recording's Metadata file.")
+        self.checkBox_global_doi.setToolTip("The registered DOI (ISO 26324) for a Recording's Dataset file.")
+        self.checkBox_global_recorder.setToolTip("The name of the software used to make this SigMF Recording.")
+        self.checkBox_global_license.setToolTip("A URL for the license document under which the Recording is offered.")
+        self.checkBox_global_hw.setToolTip("A text description of the hardware used to make the Recording.")
+        self.checkBox_global_dataset.setToolTip("The full filename of the Dataset file this Metadata file describes.")
+        self.checkBox_global_trailing_bytes.setToolTip("The number of bytes to ignore at the end of a Non-Conforming Dataset file.")
+        self.checkBox_global_metadata_only.setToolTip("Indicates the Metadata file is intentionally distributed without the Dataset.")
+        self.checkBox_global_geolocation.setToolTip("The location of the Recording system.")
+        self.checkBox_global_extensions.setToolTip("A list of JSON Objects describing extensions used by this Recording.")
+        self.checkBox_global_collection.setToolTip("The base filename of a collection with which this Recording is associated.")
+        
+        self.checkBox_captures_sample_start.setToolTip("The sample index in the Dataset file at which this Segment takes effect.")
+        self.checkBox_captures_global_index.setToolTip("The index of the sample referenced by sample_start relative to an original sample stream.")
+        self.checkBox_captures_header_bytes.setToolTip("The number of bytes preceding a chunk of samples that are not sample data, used for NCDs.")
+        self.checkBox_captures_frequency.setToolTip("The center frequency of the signal in Hz.")
+        self.checkBox_captures_datetime.setToolTip("An ISO-8601 string indicating the timestamp of the sample index specified by sample_start.")
+        
+        # Remember Fields and Fill Known Fields
+        self.textEdit_global_sample_rate.setPlainText(sample_rate)
+        self.textEdit_global_hw.setPlainText(hw)
+        self.textEdit_global_dataset.setPlainText(dataset)
+        self.textEdit_captures_frequency.setPlainText(frequency)
+        if 'core:datatype' in settings_dictionary['global']:
+            pass
+            #self.checkBox_global_datatype.setChecked(True)
+        if 'core:sample_rate' in settings_dictionary['global']:
+            self.checkBox_global_sample_rate.setChecked(True)
+        if 'core:version' in settings_dictionary['global']:
+            pass
+            #self.checkBox_global_version.setChecked(True)
+        if 'core:num_channels' in settings_dictionary['global']:
+            self.checkBox_global_num_channels.setChecked(True)
+        if 'core:sha512' in settings_dictionary['global']:
+            #self.textEdit_global_sha512.setPlainText("<calculated>")
+            self.checkBox_global_sha512.setChecked(True)
+        if 'core:offset' in settings_dictionary['global']:
+            self.textEdit_global_offset.setPlainText(str(settings_dictionary['global']['core:offset']))
+            self.checkBox_global_offset.setChecked(True)
+        if 'core:description' in settings_dictionary['global']:
+            self.textEdit_global_description.setPlainText(settings_dictionary['global']['core:description'])
+            self.checkBox_global_description.setChecked(True)
+        if 'core:author' in settings_dictionary['global']:
+            self.textEdit_global_author.setPlainText(settings_dictionary['global']['core:author'])
+            self.checkBox_global_author.setChecked(True)
+        if 'core:meta_doi' in settings_dictionary['global']:
+            self.textEdit_global_meta_doi.setPlainText(settings_dictionary['global']['core:meta_doi'])
+            self.checkBox_global_meta_doi.setChecked(True)
+        if 'core:data_doi' in settings_dictionary['global']:
+            self.textEdit_global_data_doi.setPlainText(settings_dictionary['global']['core:data_doi'])
+            self.checkBox_global_doi.setChecked(True)
+        if 'core:recorder' in settings_dictionary['global']:
+            self.textEdit_global_recorder.setPlainText(settings_dictionary['global']['core:recorder'])
+            self.checkBox_global_recorder.setChecked(True)
+        if 'core:license' in settings_dictionary['global']:
+            if settings_dictionary['global']['core:license'] == "https://spdx.org/licenses/":
+                self.comboBox_global_license.setCurrentIndex(0)
+            elif settings_dictionary['global']['core:license'] == "https://spdx.org/licenses/MIT.html":
+                self.comboBox_global_license.setCurrentIndex(1)
+            self.checkBox_global_license.setChecked(True)
+        if 'core:hw' in settings_dictionary['global']:
+            self.checkBox_global_hw.setChecked(True)
+        if 'core:dataset' in settings_dictionary['global']:
+            self.checkBox_global_dataset.setChecked(True)
+        if 'core:trailing_bytes' in settings_dictionary['global']:
+            self.textEdit_global_trailing_bytes.setPlainText(str(settings_dictionary['global']['core:trailing_bytes']))
+            self.checkBox_global_trailing_bytes.setChecked(True)
+        if 'core:metadata_only' in settings_dictionary['global']:
+            if settings_dictionary['global']['core:metadata_only'] == True:
+                self.comboBox_global_metadata_only.setCurrentIndex(0)
+            else:
+                self.comboBox_global_metadata_only.setCurrentIndex(1)
+            self.checkBox_global_metadata_only.setChecked(True)
+        if 'core:geolocation' in settings_dictionary['global']:
+            self.textEdit_global_geolocation.setPlainText(",".join(str(x) for x in settings_dictionary['global']['core:geolocation']['coordinates']))
+            self.checkBox_global_geolocation.setChecked(True)
+        # if 'core:extensions' in settings_dictionary['global']:
+            # self.textEdit_global_extensions.setPlainText('[' + str(",".join(str(x) for x in settings_dictionary['global']['core:extensions']) + ']'))            
+            # self.checkBox_global_extensions.setChecked(True)
+        if 'core:collection' in settings_dictionary['global']:
+            self.textEdit_global_collection.setPlainText(settings_dictionary['global']['core:collection'])
+            self.checkBox_global_collection.setChecked(True)
+            
+        if 'core:sample_start' in settings_dictionary['captures']:
+            self.checkBox_captures_sample_start.setChecked(True)
+        if 'core:global_index' in settings_dictionary['captures']:
+            self.textEdit_captures_global_index.setPlainText(str(settings_dictionary['captures']['core:global_index']))
+            self.checkBox_captures_global_index.setChecked(True)
+        if 'core:header_bytes' in settings_dictionary['captures']:
+            self.textEdit_captures_header_bytes.setPlainText(str(settings_dictionary['captures']['core:header_bytes']))
+            self.checkBox_captures_header_bytes.setChecked(True)
+        if 'core:frequency' in settings_dictionary['captures']:
+            self.checkBox_captures_frequency.setChecked(True)
+        if 'core:datetime' in settings_dictionary['captures']:
+            self.checkBox_captures_datetime.setChecked(True)
+        
+        # Do SIGNAL/Slots Connections
+        self._connectSlots()
+        
+    def _connectSlots(self):
+        """ Contains the connect functions for all the signals and slots.
+        """
+        self.buttonBox.button(QtGui.QDialogButtonBox.Apply).clicked.connect(self._slotApplyClicked)
+        self.buttonBox.button(QtGui.QDialogButtonBox.Cancel).clicked.connect(self._slotCancelClicked)
+
+    def _slotApplyClicked(self):
+        """ The Apply button is clicked in the dialog.
+        """     
+        # Retrieve Values from Dialog
+        if self.checkBox_global_datatype.isChecked() == True:
+            self.settings_dictionary['global']['core:datatype'] = str(self.comboBox_global_datatype.currentText())
+        else:
+            if 'core:datatype' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:datatype']            
+        if self.checkBox_global_sample_rate.isChecked() == True:
+            self.settings_dictionary['global']['core:sample_rate'] = float(str(self.textEdit_global_sample_rate.toPlainText()))
+        else:
+            if 'core:sample_rate' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:sample_rate']            
+        if self.checkBox_global_version.isChecked() == True:
+            self.settings_dictionary['global']['core:version'] = str(self.comboBox_global_version.currentText())
+        else:
+            if 'core:version' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:version']             
+        if self.checkBox_global_num_channels.isChecked() == True:
+            self.settings_dictionary['global']['core:num_channels'] = int(self.comboBox_global_num_channels.currentText())
+        else:
+            if 'core:num_channels' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:num_channels']
+        if self.checkBox_global_sha512.isChecked() == True:
+            self.settings_dictionary['global']['core:sha512'] = str(self.textEdit_global_sha512.toPlainText())
+        else:
+            if 'core:sha512' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:sha512']            
+        if self.checkBox_global_offset.isChecked() == True:
+            self.settings_dictionary['global']['core:offset'] = int(self.textEdit_global_offset.toPlainText())
+        else:
+            if 'core:offset' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:offset']            
+        if self.checkBox_global_description.isChecked() == True:
+            self.settings_dictionary['global']['core:description'] = str(self.textEdit_global_description.toPlainText())
+        else:
+            if 'core:description' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:description']            
+        if self.checkBox_global_author.isChecked() == True:
+            self.settings_dictionary['global']['core:author'] = str(self.textEdit_global_author.toPlainText())
+        else:
+            if 'core:author' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:author']            
+        if self.checkBox_global_meta_doi.isChecked() == True:
+            self.settings_dictionary['global']['core:meta_doi'] = str(self.textEdit_global_meta_doi.toPlainText())
+        else:
+            if 'core:meta_doi' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:meta_doi']            
+        if self.checkBox_global_doi.isChecked() == True:
+            self.settings_dictionary['global']['core:data_doi'] = str(self.textEdit_global_data_doi.toPlainText())
+        else:
+            if 'core:data_doi' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:data_doi']            
+        if self.checkBox_global_recorder.isChecked() == True:
+            self.settings_dictionary['global']['core:recorder'] = str(self.textEdit_global_recorder.toPlainText())
+        else:
+            if 'core:recorder' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:recorder']            
+        if self.checkBox_global_license.isChecked() == True:
+            self.settings_dictionary['global']['core:license'] = str(self.comboBox_global_license.currentText())
+        else:
+            if 'core:license' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:license']            
+        if self.checkBox_global_hw.isChecked() == True:
+            self.settings_dictionary['global']['core:hw'] = str(self.textEdit_global_hw.toPlainText())
+        else:
+            if 'core:hw' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:hw']            
+        if self.checkBox_global_dataset.isChecked() == True:
+            self.settings_dictionary['global']['core:dataset'] = str(self.textEdit_global_dataset.toPlainText())
+        else:
+            if 'core:dataset' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:dataset']            
+        if self.checkBox_global_trailing_bytes.isChecked() == True:
+            self.settings_dictionary['global']['core:trailing_bytes'] = int(self.textEdit_global_trailing_bytes.toPlainText())
+        else:
+            if 'core:trailing_bytes' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:trailing_bytes']            
+        if self.checkBox_global_metadata_only.isChecked() == True:
+            if str(self.comboBox_global_metadata_only.currentText()) == "True":
+                self.settings_dictionary['global']['core:metadata_only'] = True
+            else:
+                self.settings_dictionary['global']['core:metadata_only'] = False
+        else:
+            if 'core:metadata_only' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:metadata_only']            
+        if self.checkBox_global_geolocation.isChecked() == True:
+            geo_dict = {}
+            geo_dict['type'] = "Point"
+            geo_dict['coordinates'] = [float(x) for x in str(self.textEdit_global_geolocation.toPlainText()).replace('[','').replace(']','').split(',')]
+            self.settings_dictionary['global']['core:geolocation'] = geo_dict
+        else:
+            if 'core:geolocation' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:geolocation']            
+        # if self.checkBox_global_extensions.isChecked() == True:
+            # self.settings_dictionary['global']['core:extensions'] = [str(x) for x in str(self.textEdit_global_extensions.toPlainText()).replace('[','').replace(']','').split(',')]
+        # else:
+            # if 'core:extensions' in self.settings_dictionary['global']:
+                # del self.settings_dictionary['global']['core:extensions']            
+        if self.checkBox_global_collection.isChecked() == True:
+            self.settings_dictionary['global']['core:collection'] = str(self.textEdit_global_collection.toPlainText())
+        else:
+            if 'core:collection' in self.settings_dictionary['global']:
+                del self.settings_dictionary['global']['core:collection']
+                     
+        if self.checkBox_captures_sample_start.isChecked() == True:
+            self.settings_dictionary['captures']['core:sample_start'] = int(self.textEdit_captures_sample_start.toPlainText())
+        else:
+            if 'core:sample_start' in self.settings_dictionary['captures']:
+                del self.settings_dictionary['captures']['core:sample_start']            
+        if self.checkBox_captures_global_index.isChecked() == True:
+            self.settings_dictionary['captures']['core:global_index'] = int(self.textEdit_captures_global_index.toPlainText())
+        else:
+            if 'core:global_index' in self.settings_dictionary['captures']:
+                del self.settings_dictionary['captures']['core:global_index']            
+        if self.checkBox_captures_header_bytes.isChecked() == True:
+            self.settings_dictionary['captures']['core:header_bytes'] = int(self.textEdit_captures_header_bytes.toPlainText())
+        else:
+            if 'core:header_bytes' in self.settings_dictionary['captures']:
+                del self.settings_dictionary['captures']['core:header_bytes']            
+        if self.checkBox_captures_frequency.isChecked() == True:
+            self.settings_dictionary['captures']['core:frequency'] = float(self.textEdit_captures_frequency.toPlainText())
+        else:
+            if 'core:frequency' in self.settings_dictionary['captures']:
+                del self.settings_dictionary['captures']['core:frequency']            
+        if self.checkBox_captures_datetime.isChecked() == True:
+            self.settings_dictionary['captures']['core:datetime'] = str(self.textEdit_captures_datetime.toPlainText())
+        else:
+            if 'core:datetime' in self.settings_dictionary['captures']:
+                del self.settings_dictionary['captures']['core:datetime']            
+        
+        # Return Something
+        self.return_value = "Ok"
+        self.close()
+        
+    def _slotCancelClicked(self):
+        """ Closes the dialog without saving changes.
+        """
+        self.close()
           
 
 class OptionsDialog(QtGui.QDialog, form_class3):

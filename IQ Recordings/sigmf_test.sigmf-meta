@@ -1,0 +1,36 @@
+{
+    "global": {
+        "core:datatype": "cf32_le",
+        "core:version": "1.0.0",
+        "core:sample_rate": 1000000.0,
+        "core:num_channels": 1,
+        "core:sha512": "b046783b3f6d0a593338ed4fbb6f8280ee8923c1f33e07fc30daba21f0da0fb7ea1e3c3f35c5d0c00e926cc9ee319870e44e322a76a7866ef88d47e8a6dc3638",
+        "core:offset": 0,
+        "core:description": "bvxcbxcv",
+        "core:author": "bcvb",
+        "core:meta_doi": "fdwefwewew3",
+        "core:data_doi": "32r3fffwe",
+        "core:recorder": "FISSURE",
+        "core:license": "https://spdx.org/licenses/MIT.html",
+        "core:hw": "USRP B210",
+        "core:dataset": "sigmf_test.sigmf-data",
+        "core:trailing_bytes": 0,
+        "core:metadata_only": false,
+        "core:geolocation": {
+            "type": "Point",
+            "coordinates": [
+                54.0,
+                53.456,
+                76.0
+            ]
+        },
+        "core:collection": "test"
+    },
+    "captures": {
+        "core:sample_start": 0,
+        "core:global_index": 34,
+        "core:header_bytes": 0,
+        "core:frequency": 311000000.0,
+        "core:datetime": "2022-11-27T16:45:00.501040Z"
+    }
+}
