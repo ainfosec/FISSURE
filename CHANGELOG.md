@@ -1,6 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-11-27
+
+SigMF recording and other functionality.
+ 
+### Added
+
+- Guess X310 daughterboards on multiple clicks within Hardware buttons
+- Inspectrum button in IQ Data tab
+- Morse Code Translator link in the Tools menu
+- SigMF configuration for recording IQ files
+- SigMF metadata file viewing
+- SigMF frequency and sample rate parsing on IQ file load
+- PSK Reporter link to Ham Radio Tools
+   
+### Changed
+
+- Resized IQ Record table
+ 
+### Fixed
+
+- Updated error handling for opening an IQ file with Gqrx
+
 ## 2022-11-20
 
 Adding Inspection file source flow graphs.

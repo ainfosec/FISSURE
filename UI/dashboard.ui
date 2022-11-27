@@ -14010,6 +14010,19 @@ p, li { white-space: pre-wrap; }
               <string>Terminal</string>
              </property>
             </widget>
+            <widget class="QPushButton" name="pushButton_iq_sigmf">
+             <property name="geometry">
+              <rect>
+               <x>170</x>
+               <y>335</y>
+               <width>81</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>SigMF</string>
+             </property>
+            </widget>
            </widget>
            <widget class="QLabel" name="label_28">
             <property name="geometry">
@@ -14232,6 +14245,19 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="text">
                 <string>Gqrx</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_inspectrum">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>95</y>
+                 <width>112</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Inspectrum</string>
                </property>
               </widget>
              </widget>
@@ -14743,7 +14769,7 @@ QTabBar::tab:!selected {
                  <rect>
                   <x>10</x>
                   <y>10</y>
-                  <width>971</width>
+                  <width>1175</width>
                   <height>71</height>
                  </rect>
                 </property>
@@ -15084,6 +15110,35 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="text">
                  <string>Not Recording</string>
+                </property>
+               </widget>
+               <widget class="QCheckBox" name="checkBox_iq_record_sigmf">
+                <property name="geometry">
+                 <rect>
+                  <x>35</x>
+                  <y>135</y>
+                  <width>75</width>
+                  <height>27</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>SigMF</string>
+                </property>
+               </widget>
+               <widget class="QPushButton" name="pushButton_iq_record_sigmf">
+                <property name="enabled">
+                 <bool>false</bool>
+                </property>
+                <property name="geometry">
+                 <rect>
+                  <x>110</x>
+                  <y>135</y>
+                  <width>98</width>
+                  <height>27</height>
+                 </rect>
+                </property>
+                <property name="text">
+                 <string>Configure</string>
                 </property>
                </widget>
               </widget>
@@ -27319,6 +27374,8 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionEchoLink_Link_Status"/>
      <addaction name="actionSolarHam"/>
      <addaction name="actionFldigi"/>
+     <addaction name="actionMorse_Code_Translator"/>
+     <addaction name="actionPSK_Reporter"/>
     </widget>
     <widget class="QMenu" name="menuV2V">
      <property name="title">
@@ -28929,6 +28986,16 @@ p, li { white-space: pre-wrap; }
   <action name="actionpyFDA">
    <property name="text">
     <string>pyFDA</string>
+   </property>
+  </action>
+  <action name="actionMorse_Code_Translator">
+   <property name="text">
+    <string>Morse Code Translator</string>
+   </property>
+  </action>
+  <action name="actionPSK_Reporter">
+   <property name="text">
+    <string>PSK Reporter</string>
    </property>
   </action>
  </widget>
