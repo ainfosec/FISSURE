@@ -27456,6 +27456,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionAPT3000"/>
      <addaction name="actionEsri_Satellite_Map"/>
      <addaction name="actionOpen_weather"/>
+     <addaction name="actionAmateur_Satellite_Database"/>
     </widget>
     <widget class="QMenu" name="menu433_MHz">
      <property name="title">
@@ -29015,6 +29016,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionPSK_Reporter">
    <property name="text">
     <string>PSK Reporter</string>
+   </property>
+  </action>
+  <action name="actionAmateur_Satellite_Database">
+   <property name="text">
+    <string>Amateur Satellite Database</string>
    </property>
   </action>
  </widget>

@@ -1044,6 +1044,7 @@ cp -f """ + fissure_directory + """/Tools/SdrGlut/firstFile.h ~/Installed_by_FIS
 cp -f """ + fissure_directory + """/Tools/SdrGlut/makefileUbunta ~/Installed_by_FISSURE/SdrGlut/makefileUbunta
 cd SdrGlut
 make -f makefileUbunta
+# cp /usr/local/lib/libliquid.a.1.5 /usr/local/lib/libliquid.a  # If seeing error with this file
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 """,True,None))
