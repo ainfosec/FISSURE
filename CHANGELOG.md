@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-11-28
+
+Correcting SigMF formatting issues.
+ 
+### Added
+
+- Comment with fix in SdrGlut install for potential libliquid.a errors in Python3_maint-3.10 branch
+- Link to Amateur Satellite Database in Tools menu
+   
+### Changed
+
+- Adjusted sigmf_test.sigmf-meta with "annotations" and "captures" corrections
+ 
+### Fixed
+
+- Adding empty "annotations" array/list to SigMF JSON
+- Putting "captures" dictionary values into an array/list in the SigMF JSON
+
 ## 2022-11-27
 
 SigMF recording and other functionality.
