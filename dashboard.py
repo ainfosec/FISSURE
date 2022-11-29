@@ -558,7 +558,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         captures_dict = {'core:sample_start':'0'}
         self.sigmf_dict = {}
         self.sigmf_dict["global"] = global_dict
-        self.sigmf_dict["captures"] = captures_dict
+        self.sigmf_dict["captures"] = [captures_dict]
+        self.sigmf_dict["annotations"] = []
         
         
         ##### Archive #####   
@@ -1559,6 +1560,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionpyFDA.triggered.connect(self._slotMenuPyFDA_Clicked)
         self.actionMorse_Code_Translator.triggered.connect(self._slotMenuMorseCodeTranslatorClicked)
         self.actionPSK_Reporter.triggered.connect(self._slotMenuPSK_ReporterClicked)
+        self.actionAmateur_Satellite_Database.triggered.connect(self._slotMenuAmateurSatelliteDatabaseClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -5790,8 +5792,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 f.close()
                 if 'core:sample_rate' in metadata_file['global']:
                     self.textEdit_iq_sample_rate.setPlainText(str(float(str(metadata_file['global']['core:sample_rate']))/1000000))
-                if 'core:frequency' in metadata_file['captures']:                
-                    self.textEdit_iq_frequency.setPlainText(str(float(str(metadata_file['captures']['core:frequency']))/1000000))
+                if 'core:frequency' in metadata_file['captures'][0]:                
+                    self.textEdit_iq_frequency.setPlainText(str(float(str(metadata_file['captures'][0]['core:frequency']))/1000000))
 
     def _slotIQ_Dir1_Clicked(self):
         """ Selects a source folder for transferring files
@@ -6157,9 +6159,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.status_dialog.tableWidget_status_results.item(4,0).setText('Starting...')
                 
                 # Get Record Timestamp
-                if 'core:datetime' in self.sigmf_dict['captures']:
+                if 'core:datetime' in self.sigmf_dict['captures'][0]:
                     iq_record_timestamp = datetime.datetime.utcnow().isoformat("T") + "Z"
-                    self.sigmf_dict['captures']['core:datetime'] = str(iq_record_timestamp)           
+                    self.sigmf_dict['captures'][0]['core:datetime'] = str(iq_record_timestamp)           
             
     def _slotIQ_FlowGraphFinished(self):
         """ Called upon cancelling IQ recording. Changes the status and button text.
@@ -22342,6 +22344,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open a Browser
         os.system("sensible-browser https://pskreporter.info/pskmap.html &")        
+                
+    def _slotMenuAmateurSatelliteDatabaseClicked(self):
+        """ Opens Amateur Satellite Database in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://amsat.org/amateur-satellite-index &")        
    
 
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
@@ -23814,17 +23822,17 @@ class SigMF_Dialog(QtWidgets.QDialog, form_class10):
             self.textEdit_global_collection.setPlainText(settings_dictionary['global']['core:collection'])
             self.checkBox_global_collection.setChecked(True)
             
-        if 'core:sample_start' in settings_dictionary['captures']:
+        if 'core:sample_start' in settings_dictionary['captures'][0]:
             self.checkBox_captures_sample_start.setChecked(True)
-        if 'core:global_index' in settings_dictionary['captures']:
-            self.textEdit_captures_global_index.setPlainText(str(settings_dictionary['captures']['core:global_index']))
+        if 'core:global_index' in settings_dictionary['captures'][0]:
+            self.textEdit_captures_global_index.setPlainText(str(settings_dictionary['captures'][0]['core:global_index']))
             self.checkBox_captures_global_index.setChecked(True)
-        if 'core:header_bytes' in settings_dictionary['captures']:
-            self.textEdit_captures_header_bytes.setPlainText(str(settings_dictionary['captures']['core:header_bytes']))
+        if 'core:header_bytes' in settings_dictionary['captures'][0]:
+            self.textEdit_captures_header_bytes.setPlainText(str(settings_dictionary['captures'][0]['core:header_bytes']))
             self.checkBox_captures_header_bytes.setChecked(True)
-        if 'core:frequency' in settings_dictionary['captures']:
+        if 'core:frequency' in settings_dictionary['captures'][0]:
             self.checkBox_captures_frequency.setChecked(True)
-        if 'core:datetime' in settings_dictionary['captures']:
+        if 'core:datetime' in settings_dictionary['captures'][0]:
             self.checkBox_captures_datetime.setChecked(True)
         
         # Do SIGNAL/Slots Connections
@@ -23943,30 +23951,30 @@ class SigMF_Dialog(QtWidgets.QDialog, form_class10):
                 del self.settings_dictionary['global']['core:collection']
                      
         if self.checkBox_captures_sample_start.isChecked() == True:
-            self.settings_dictionary['captures']['core:sample_start'] = int(self.textEdit_captures_sample_start.toPlainText())
+            self.settings_dictionary['captures'][0]['core:sample_start'] = int(self.textEdit_captures_sample_start.toPlainText())
         else:
-            if 'core:sample_start' in self.settings_dictionary['captures']:
-                del self.settings_dictionary['captures']['core:sample_start']            
+            if 'core:sample_start' in self.settings_dictionary['captures'][0]:
+                del self.settings_dictionary['captures'][0]['core:sample_start']            
         if self.checkBox_captures_global_index.isChecked() == True:
-            self.settings_dictionary['captures']['core:global_index'] = int(self.textEdit_captures_global_index.toPlainText())
+            self.settings_dictionary['captures'][0]['core:global_index'] = int(self.textEdit_captures_global_index.toPlainText())
         else:
-            if 'core:global_index' in self.settings_dictionary['captures']:
-                del self.settings_dictionary['captures']['core:global_index']            
+            if 'core:global_index' in self.settings_dictionary['captures'][0]:
+                del self.settings_dictionary['captures'][0]['core:global_index']            
         if self.checkBox_captures_header_bytes.isChecked() == True:
-            self.settings_dictionary['captures']['core:header_bytes'] = int(self.textEdit_captures_header_bytes.toPlainText())
+            self.settings_dictionary['captures'][0]['core:header_bytes'] = int(self.textEdit_captures_header_bytes.toPlainText())
         else:
-            if 'core:header_bytes' in self.settings_dictionary['captures']:
-                del self.settings_dictionary['captures']['core:header_bytes']            
+            if 'core:header_bytes' in self.settings_dictionary['captures'][0]:
+                del self.settings_dictionary['captures'][0]['core:header_bytes']            
         if self.checkBox_captures_frequency.isChecked() == True:
-            self.settings_dictionary['captures']['core:frequency'] = float(self.textEdit_captures_frequency.toPlainText())
+            self.settings_dictionary['captures'][0]['core:frequency'] = float(self.textEdit_captures_frequency.toPlainText())
         else:
-            if 'core:frequency' in self.settings_dictionary['captures']:
-                del self.settings_dictionary['captures']['core:frequency']            
+            if 'core:frequency' in self.settings_dictionary['captures'][0]:
+                del self.settings_dictionary['captures'][0]['core:frequency']            
         if self.checkBox_captures_datetime.isChecked() == True:
-            self.settings_dictionary['captures']['core:datetime'] = str(self.textEdit_captures_datetime.toPlainText())
+            self.settings_dictionary['captures'][0]['core:datetime'] = str(self.textEdit_captures_datetime.toPlainText())
         else:
-            if 'core:datetime' in self.settings_dictionary['captures']:
-                del self.settings_dictionary['captures']['core:datetime']            
+            if 'core:datetime' in self.settings_dictionary['captures'][0]:
+                del self.settings_dictionary['captures'][0]['core:datetime']            
         
         # Return Something
         self.return_value = "Ok"

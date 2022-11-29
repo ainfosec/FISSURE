@@ -26,11 +26,14 @@
         },
         "core:collection": "test"
     },
-    "captures": {
-        "core:sample_start": 0,
-        "core:global_index": 34,
-        "core:header_bytes": 0,
-        "core:frequency": 311000000.0,
-        "core:datetime": "2022-11-27T16:45:00.501040Z"
-    }
+    "captures": [
+        {
+            "core:sample_start": 0,
+            "core:global_index": 34,
+            "core:header_bytes": 0,
+            "core:frequency": 311000000.0,
+            "core:datetime": "2022-11-27T16:45:00.501040Z"
+        }
+    ],
+    "annotations": []
 }
