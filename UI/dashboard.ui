@@ -13567,7 +13567,7 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>303</x>
-              <y>285</y>
+              <y>280</y>
               <width>706</width>
               <height>521</height>
              </rect>
@@ -13606,9 +13606,9 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>1030</x>
-              <y>300</y>
-              <width>165</width>
-              <height>146</height>
+              <y>295</y>
+              <width>175</width>
+              <height>130</height>
              </rect>
             </property>
             <property name="styleSheet">
@@ -13628,8 +13628,8 @@ p, li { white-space: pre-wrap; }
             <widget class="QPushButton" name="pushButton_iq_plot_all">
              <property name="geometry">
               <rect>
-               <x>33</x>
-               <y>10</y>
+               <x>38</x>
+               <y>5</y>
                <width>98</width>
                <height>27</height>
               </rect>
@@ -13638,13 +13638,13 @@ p, li { white-space: pre-wrap; }
               <string>Plot All</string>
              </property>
             </widget>
-            <widget class="QLabel" name="label_16">
+            <widget class="QLabel" name="label_iq_start">
              <property name="geometry">
               <rect>
-               <x>3</x>
-               <y>80</y>
+               <x>5</x>
+               <y>67</y>
                <width>50</width>
-               <height>17</height>
+               <height>27</height>
               </rect>
              </property>
              <property name="font">
@@ -13662,9 +13662,9 @@ p, li { white-space: pre-wrap; }
             <widget class="QTextEdit" name="textEdit_iq_start">
              <property name="geometry">
               <rect>
-               <x>58</x>
-               <y>75</y>
-               <width>90</width>
+               <x>60</x>
+               <y>67</y>
+               <width>95</width>
                <height>27</height>
               </rect>
              </property>
@@ -13675,10 +13675,10 @@ p, li { white-space: pre-wrap; }
             <widget class="QLabel" name="label_iq_end">
              <property name="geometry">
               <rect>
-               <x>12</x>
-               <y>110</y>
-               <width>41</width>
-               <height>17</height>
+               <x>5</x>
+               <y>97</y>
+               <width>50</width>
+               <height>27</height>
               </rect>
              </property>
              <property name="font">
@@ -13696,9 +13696,9 @@ p, li { white-space: pre-wrap; }
             <widget class="QTextEdit" name="textEdit_iq_end">
              <property name="geometry">
               <rect>
-               <x>58</x>
-               <y>105</y>
-               <width>90</width>
+               <x>60</x>
+               <y>97</y>
+               <width>95</width>
                <height>27</height>
               </rect>
              </property>
@@ -13709,8 +13709,8 @@ p, li { white-space: pre-wrap; }
             <widget class="QPushButton" name="pushButton_iq_plot">
              <property name="geometry">
               <rect>
-               <x>33</x>
-               <y>40</y>
+               <x>38</x>
+               <y>35</y>
                <width>98</width>
                <height>27</height>
               </rect>
@@ -13722,8 +13722,8 @@ p, li { white-space: pre-wrap; }
             <widget class="QPushButton" name="pushButton_iq_plot_next">
              <property name="geometry">
               <rect>
-               <x>133</x>
-               <y>40</y>
+               <x>138</x>
+               <y>35</y>
                <width>25</width>
                <height>27</height>
               </rect>
@@ -13735,8 +13735,8 @@ p, li { white-space: pre-wrap; }
             <widget class="QPushButton" name="pushButton_iq_plot_prev">
              <property name="geometry">
               <rect>
-               <x>6</x>
-               <y>40</y>
+               <x>11</x>
+               <y>35</y>
                <width>25</width>
                <height>27</height>
               </rect>
@@ -13750,8 +13750,8 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>1030</x>
-              <y>280</y>
-              <width>165</width>
+              <y>275</y>
+              <width>175</width>
               <height>20</height>
              </rect>
             </property>
@@ -13791,7 +13791,7 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>15</x>
-              <y>675</y>
+              <y>670</y>
               <width>266</width>
               <height>22</height>
              </rect>
@@ -13832,7 +13832,7 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>15</x>
-              <y>300</y>
+              <y>295</y>
               <width>266</width>
               <height>370</height>
              </rect>
@@ -14055,7 +14055,7 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>15</x>
-              <y>280</y>
+              <y>275</y>
               <width>266</width>
               <height>20</height>
              </rect>
@@ -14105,9 +14105,9 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>1030</x>
-              <y>595</y>
-              <width>165</width>
-              <height>215</height>
+              <y>680</y>
+              <width>175</width>
+              <height>155</height>
              </rect>
             </property>
             <property name="styleSheet">
@@ -14127,10 +14127,10 @@ p, li { white-space: pre-wrap; }
             <widget class="QStackedWidget" name="stackedWidget_IQ_Functions">
              <property name="geometry">
               <rect>
-               <x>17</x>
-               <y>5</y>
+               <x>23</x>
+               <y>0</y>
                <width>146</width>
-               <height>190</height>
+               <height>130</height>
               </rect>
              </property>
              <property name="styleSheet">
@@ -14146,7 +14146,7 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>10</x>
-                 <y>155</y>
+                 <y>95</y>
                  <width>112</width>
                  <height>27</height>
                 </rect>
@@ -14160,20 +14160,20 @@ p, li { white-space: pre-wrap; }
                 <rect>
                  <x>10</x>
                  <y>5</y>
-                 <width>112</width>
+                 <width>54</width>
                  <height>27</height>
                 </rect>
                </property>
                <property name="text">
-                <string>Magnitude</string>
+                <string>Mag.</string>
                </property>
               </widget>
               <widget class="QPushButton" name="pushButton_iq_fft">
                <property name="geometry">
                 <rect>
-                 <x>10</x>
-                 <y>95</y>
-                 <width>112</width>
+                 <x>67</x>
+                 <y>35</y>
+                 <width>54</width>
                  <height>27</height>
                 </rect>
                </property>
@@ -14191,7 +14191,7 @@ p, li { white-space: pre-wrap; }
                 </rect>
                </property>
                <property name="text">
-                <string>IF1</string>
+                <string>IF</string>
                </property>
               </widget>
               <widget class="QPushButton" name="pushButton_iq_spectrogram">
@@ -14207,30 +14207,17 @@ p, li { white-space: pre-wrap; }
                 <string>Spectrogram</string>
                </property>
               </widget>
-              <widget class="QPushButton" name="pushButton_iq_if2">
+              <widget class="QPushButton" name="pushButton_iq_phase">
                <property name="geometry">
                 <rect>
-                 <x>68</x>
-                 <y>35</y>
+                 <x>67</x>
+                 <y>5</y>
                  <width>54</width>
                  <height>27</height>
                 </rect>
                </property>
                <property name="text">
-                <string>IF2</string>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="pushButton_iq_moving_average">
-               <property name="geometry">
-                <rect>
-                 <x>10</x>
-                 <y>125</y>
-                 <width>112</width>
-                 <height>27</height>
-                </rect>
-               </property>
-               <property name="text">
-                <string>Moving Avg.</string>
+                <string>Phase</string>
                </property>
               </widget>
              </widget>
@@ -14292,7 +14279,7 @@ p, li { white-space: pre-wrap; }
             <widget class="QPushButton" name="pushButton_iq_FunctionsSettings">
              <property name="geometry">
               <rect>
-               <x>142</x>
+               <x>150</x>
                <y>5</y>
                <width>18</width>
                <height>18</height>
@@ -14305,8 +14292,8 @@ p, li { white-space: pre-wrap; }
             <widget class="QPushButton" name="pushButton_iq_FunctionsLeft">
              <property name="geometry">
               <rect>
-               <x>40</x>
-               <y>190</y>
+               <x>45</x>
+               <y>130</y>
                <width>40</width>
                <height>20</height>
               </rect>
@@ -14318,8 +14305,8 @@ p, li { white-space: pre-wrap; }
             <widget class="QPushButton" name="pushButton_iq_FunctionsRight">
              <property name="geometry">
               <rect>
-               <x>85</x>
-               <y>190</y>
+               <x>90</x>
+               <y>130</y>
                <width>40</width>
                <height>20</height>
               </rect>
@@ -14333,8 +14320,8 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>1030</x>
-              <y>575</y>
-              <width>165</width>
+              <y>660</y>
+              <width>175</width>
               <height>20</height>
              </rect>
             </property>
@@ -14374,8 +14361,8 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>1030</x>
-              <y>460</y>
-              <width>165</width>
+              <y>430</y>
+              <width>175</width>
               <height>20</height>
              </rect>
             </property>
@@ -14415,9 +14402,9 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>1030</x>
-              <y>480</y>
-              <width>165</width>
-              <height>81</height>
+              <y>450</y>
+              <width>175</width>
+              <height>40</height>
              </rect>
             </property>
             <property name="styleSheet">
@@ -14437,9 +14424,9 @@ p, li { white-space: pre-wrap; }
             <widget class="QPushButton" name="pushButton_iq_cursor1">
              <property name="geometry">
               <rect>
-               <x>33</x>
-               <y>10</y>
-               <width>98</width>
+               <x>5</x>
+               <y>5</y>
+               <width>80</width>
                <height>27</height>
               </rect>
              </property>
@@ -14453,9 +14440,9 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="geometry">
               <rect>
-               <x>33</x>
-               <y>40</y>
-               <width>98</width>
+               <x>90</x>
+               <y>5</y>
+               <width>80</width>
                <height>27</height>
               </rect>
              </property>
@@ -14468,9 +14455,9 @@ p, li { white-space: pre-wrap; }
             <property name="geometry">
              <rect>
               <x>295</x>
-              <y>280</y>
+              <y>275</y>
               <width>721</width>
-              <height>530</height>
+              <height>560</height>
              </rect>
             </property>
             <property name="styleSheet">
@@ -14489,6 +14476,71 @@ p, li { white-space: pre-wrap; }
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
+            <widget class="QPushButton" name="pushButton_iq_moving_average">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>527</y>
+               <width>112</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Moving Avg.</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="pushButton_iq_absolute_value">
+             <property name="geometry">
+              <rect>
+               <x>125</x>
+               <y>527</y>
+               <width>112</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Abs. Val.</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="pushButton_iq_differential">
+             <property name="geometry">
+              <rect>
+               <x>240</x>
+               <y>527</y>
+               <width>112</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Differential</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="pushButton_iq_keep1in2">
+             <property name="geometry">
+              <rect>
+               <x>355</x>
+               <y>527</y>
+               <width>112</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Keep 1 in 2</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="pushButton_iq_unwrap">
+             <property name="geometry">
+              <rect>
+               <x>470</x>
+               <y>527</y>
+               <width>112</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Unwrap</string>
+             </property>
+            </widget>
            </widget>
            <widget class="QPushButton" name="pushButton_iq_tab_record">
             <property name="geometry">
@@ -21105,9 +21157,9 @@ QTabBar::tab:!selected {
             <property name="geometry">
              <rect>
               <x>15</x>
-              <y>695</y>
+              <y>690</y>
               <width>266</width>
-              <height>135</height>
+              <height>145</height>
              </rect>
             </property>
             <property name="styleSheet">
@@ -21182,7 +21234,7 @@ QTabBar::tab:!selected {
              <property name="geometry">
               <rect>
                <x>1</x>
-               <y>65</y>
+               <y>67</y>
                <width>264</width>
                <height>3</height>
               </rect>
@@ -21195,7 +21247,7 @@ QTabBar::tab:!selected {
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>70</y>
+               <y>76</y>
                <width>130</width>
                <height>27</height>
               </rect>
@@ -21208,13 +21260,16 @@ QTabBar::tab:!selected {
              <property name="text">
               <string>Sample Rate (MSps):</string>
              </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
             </widget>
             <widget class="QLabel" name="label_iq_frequency">
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>100</y>
-               <width>140</width>
+               <y>109</y>
+               <width>130</width>
                <height>27</height>
               </rect>
              </property>
@@ -21226,12 +21281,15 @@ QTabBar::tab:!selected {
              <property name="text">
               <string>Frequency (MHz):</string>
              </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
             </widget>
             <widget class="QTextEdit" name="textEdit_iq_sample_rate">
              <property name="geometry">
               <rect>
                <x>150</x>
-               <y>70</y>
+               <y>76</y>
                <width>100</width>
                <height>27</height>
               </rect>
@@ -21244,13 +21302,237 @@ QTabBar::tab:!selected {
              <property name="geometry">
               <rect>
                <x>150</x>
-               <y>100</y>
+               <y>109</y>
                <width>100</width>
                <height>27</height>
               </rect>
              </property>
              <property name="tabChangesFocus">
               <bool>true</bool>
+             </property>
+            </widget>
+           </widget>
+           <widget class="QLabel" name="label_202">
+            <property name="geometry">
+             <rect>
+              <x>1030</x>
+              <y>495</y>
+              <width>175</width>
+              <height>20</height>
+             </rect>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>22</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Ubuntu</family>
+              <pointsize>10</pointsize>
+              <weight>75</weight>
+              <italic>false</italic>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QLabel#label_202 {
+   qproperty-alignment: AlignCenter;
+	border: 1px solid #17365D;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
+	padding: 0px 0px;
+	color: rgb(255, 255, 255);
+	max-height: 20px;
+	font: bold 10pt &quot;Ubuntu&quot;;
+}</string>
+            </property>
+            <property name="text">
+             <string>Filter</string>
+            </property>
+           </widget>
+           <widget class="QFrame" name="frame_38">
+            <property name="geometry">
+             <rect>
+              <x>1030</x>
+              <y>515</y>
+              <width>175</width>
+              <height>140</height>
+             </rect>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QFrame#frame_38 {
+	background-color: rgb(251, 251, 251);
+	border: 1px solid #17365D;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+}</string>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::StyledPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Raised</enum>
+            </property>
+            <widget class="QComboBox" name="comboBox_iq_filter_type">
+             <property name="geometry">
+              <rect>
+               <x>38</x>
+               <y>5</y>
+               <width>98</width>
+               <height>25</height>
+              </rect>
+             </property>
+             <item>
+              <property name="text">
+               <string>lowpass</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>bandpass</string>
+              </property>
+             </item>
+            </widget>
+            <widget class="QTextEdit" name="textEdit_iq_filter_start">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>70</x>
+               <y>38</y>
+               <width>95</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="tabChangesFocus">
+              <bool>true</bool>
+             </property>
+             <property name="html">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;100000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_iq_filter_start">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>38</y>
+               <width>65</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Start (Hz):</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+            <widget class="QTextEdit" name="textEdit_iq_filter_end">
+             <property name="geometry">
+              <rect>
+               <x>70</x>
+               <y>68</y>
+               <width>95</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="tabChangesFocus">
+              <bool>true</bool>
+             </property>
+             <property name="html">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;200000&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_iq_filter_end">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>68</y>
+               <width>65</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>End (Hz):</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label_207">
+             <property name="geometry">
+              <rect>
+               <x>1040</x>
+               <y>470</y>
+               <width>175</width>
+               <height>20</height>
+              </rect>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>22</height>
+              </size>
+             </property>
+             <property name="font">
+              <font>
+               <family>Ubuntu</family>
+               <pointsize>10</pointsize>
+               <weight>75</weight>
+               <italic>false</italic>
+               <bold>true</bold>
+              </font>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QLabel#label_202 {
+   qproperty-alignment: AlignCenter;
+	border: 1px solid #17365D;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
+	padding: 0px 0px;
+	color: rgb(255, 255, 255);
+	max-height: 20px;
+	font: bold 10pt &quot;Ubuntu&quot;;
+}</string>
+             </property>
+             <property name="text">
+              <string>Filter</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="pushButton_iq_filter">
+             <property name="geometry">
+              <rect>
+               <x>38</x>
+               <y>105</y>
+               <width>98</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Filter</string>
              </property>
             </widget>
            </widget>
@@ -21281,6 +21563,8 @@ QTabBar::tab:!selected {
            <zorder>pushButton_iq_tab_normalize</zorder>
            <zorder>line_3</zorder>
            <zorder>frame_5</zorder>
+           <zorder>label_202</zorder>
+           <zorder>frame_38</zorder>
           </widget>
           <widget class="QWidget" name="tab_archive">
            <attribute name="title">
@@ -29394,7 +29678,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>pushButton_iq_get_range</tabstop>
   <tabstop>pushButton_iq_magnitude</tabstop>
   <tabstop>pushButton_iq_if</tabstop>
-  <tabstop>pushButton_iq_if2</tabstop>
   <tabstop>pushButton_iq_spectrogram</tabstop>
   <tabstop>pushButton_iq_fft</tabstop>
   <tabstop>pushButton_iq_moving_average</tabstop>
