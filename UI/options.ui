@@ -406,16 +406,6 @@
       </row>
       <row>
        <property name="text">
-        <string>fft_sample_rate</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
         <string>morse_code_amplitude_threshold</string>
        </property>
        <property name="font">

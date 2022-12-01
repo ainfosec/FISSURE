@@ -16,7 +16,6 @@ disabled_running_flow_graph_variables:
   - filepath
 
 fft_size: 4096
-fft_sample_rate: 1e6
 morse_code_amplitude_threshold: 0.5
 morse_code_error_tolerance: 0.05
 morse_code_same_letter_spacing: 1

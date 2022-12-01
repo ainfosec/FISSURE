@@ -1,6 +1,30 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-12-01
+
+Updating IQ Data functions, adding filtering.
+ 
+### Added
+
+- Absolute Value, Differential, Keep 1 in 2 buttons, Unwrap, and Phase buttons in IQ Data tab
+- Lowpass and bandpass filtering capabilities in IQ Data tab
+- Clicking Start label sets the text edit value to 1 in IQ Data tab Plot frame
+   
+### Changed
+
+- Removed IF2 button from IQ Data tab
+- Resized and moved buttons in IQ Data tab
+- Removed FFT sample rate from options dialog
+- IQ Data functions/buttons apply to data in the window instead of reloading the IQ file, must plot again to reset
+- Morse Code button is applied to data in the window
+- Updated iq.png in README
+ 
+### Fixed
+
+- Archive download not storing IQ files correctly for filepaths containing spaces
+- Instantaneous frequency calculation in IQ Data tab
+
 ## 2022-11-28
 
 Correcting SigMF formatting issues.

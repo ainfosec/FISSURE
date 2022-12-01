@@ -14,7 +14,6 @@ disabled_running_flow_graph_variables:
 - rx_usrp_antenna
 - filepath
 failure_multiple: 5
-fft_sample_rate: 1e6
 fft_size: 4096
 fge_hiprfisr_dealer_port: 5053
 fge_pub_port: 5061

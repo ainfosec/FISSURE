@@ -34,7 +34,7 @@ import matplotlib.patches as patches
 import subprocess
 import binascii
 from scipy import signal as signal2
-from scipy.signal import hilbert, lfilter, butter, filtfilt
+from scipy.signal import hilbert, lfilter, butter, filtfilt, sosfilt
 from scipy import fromfile, complex64
 import scipy.fftpack
 import shutil
@@ -154,7 +154,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Add a Toolbar
         self.mpl_toolbar = NavigationToolbar(self.iq_matplotlib_widget, self.tab_iq_data)
         #self.mpl_toolbar.setGeometry(QtCore.QRect(450, 815, 525, 25))  
-        self.mpl_toolbar.setGeometry(QtCore.QRect(375, 282, 525, 35))  
+        self.mpl_toolbar.setGeometry(QtCore.QRect(375, 277, 525, 35))  
            
         # Get Protocols
         protocols = getProtocols(self.pd_library)
@@ -1139,7 +1139,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_iq_timeslot_pad.clicked.connect(self._slotIQ_TimeslotPadClicked)       
         self.pushButton_iq_custom.clicked.connect(self._slotIQ_CustomClicked)
         self.pushButton_iq_rename.clicked.connect(self._slotIQ_RenameClicked)
-        self.pushButton_iq_if2.clicked.connect(self._slotIQ_IF2_Clicked)
         self.pushButton_iq_morse_code.clicked.connect(self._slotIQ_MorseCodeClicked)
         self.pushButton_iq_FunctionsSettings.clicked.connect(self._slotIQ_FunctionsSettingsClicked)
         self.pushButton_iq_FunctionsLeft.clicked.connect(self._slotIQ_FunctionsLeftClicked)
@@ -1180,6 +1179,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_iq_inspectrum.clicked.connect(self._slotIQ_InspectrumClicked)
         self.pushButton_iq_record_sigmf.clicked.connect(self._slotIQ_RecordSigMF_ConfigureClicked)
         self.pushButton_iq_sigmf.clicked.connect(self._slotIQ_SigMF_Clicked)
+        self.pushButton_iq_absolute_value.clicked.connect(self._slotIQ_AbsoluteValueClicked)
+        self.pushButton_iq_differential.clicked.connect(self._slotIQ_DifferentialClicked)
+        self.pushButton_iq_keep1in2.clicked.connect(self._slotIQ_Keep1in2_Clicked)
+        self.pushButton_iq_phase.clicked.connect(self._slotIQ_PhaseClicked)
+        self.pushButton_iq_unwrap.clicked.connect(self._slotIQ_UnwrapClicked)
+        self.pushButton_iq_filter.clicked.connect(self._slotIQ_FilterClicked)
         
         self.pushButton_archive_download_folder.clicked.connect(self._slotArchiveDownloadFolderClicked)
         self.pushButton_archive_download_refresh.clicked.connect(self._slotArchiveDownloadRefreshClicked)
@@ -1219,6 +1224,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.comboBox_library_pd_data_type.currentIndexChanged.connect(self._slotLibraryAddDataTypeChanged)   
         self.comboBox_iq_folders.currentIndexChanged.connect(self._slotIQ_FoldersChanged)
         self.comboBox_iq_normalize_min_max.currentIndexChanged.connect(self._slotIQ_NormalizeMinMaxChanged)
+        self.comboBox_iq_filter_type.currentIndexChanged.connect(self._slotIQ_FilterTypeChanged)
         self.comboBox_pd_demod_hardware.currentIndexChanged.connect(self._slotPD_DemodHardwareChanged)
         self.comboBox_pd_dissectors_protocol.currentIndexChanged.connect(self._slotPD_DissectorsProtocolChanged)
         self.comboBox_pd_dissectors_packet_type.currentIndexChanged.connect(self._slotPD_DissectorsPacketTypeChanged)        
@@ -1264,6 +1270,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Labels
         self.label_iq_end.mousePressEvent = self._slotIQ_EndLabelClicked
+        self.label_iq_start.mousePressEvent = self._slotIQ_StartLabelClicked
 
         # List Widgets
         self.listWidget_library_gallery.currentItemChanged.connect(self._slotLibraryGalleryImageChanged)
@@ -13559,247 +13566,133 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.iq_plot_range_start = 0
             self.iq_plot_range_end = 0
 
-  
-            
     def _slotIQ_PlotMagnitudeClicked(self):
-        """ Plots magnitude of loaded IQ data.
+        """ Plots magnitude of what is displayed in the plot window.
         """
-        # Get the Filepath
-        get_type = self.comboBox_iq_data_type.currentText()
-        try:
-            number_of_bytes = os.path.getsize(self.label_iq_folder.text() + "/"+self.listWidget_iq_files.currentItem().text())
-        except:
-            number_of_bytes = -1
+        # Get the Data from the Window
+        num_lines = self.iq_matplotlib_widget.axes.lines
+               
+        # Single Line: Not IQ
+        if len(num_lines) == 1:
+            y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
             
-        if number_of_bytes > 0:
+            # Calculate AM
+            AM = [math.sqrt(float(i)**2) for i in y_data]
             
-            # Get the Number of Samples
-            try:
-                start_sample = int(self.textEdit_iq_start.toPlainText())
-                end_sample = int(self.textEdit_iq_end.toPlainText())
-                num_samples = end_sample - start_sample + 1
-            except:
-                return
-            
-            # Do Nothing if Bad Range
-            if num_samples < 0:
-                return
-        
-            # Get the Size of Each Sample in Bytes   
-            complex_multiple = 1  
-            if get_type == "Complex Float 32":
-                complex_multiple = 2
-                sample_size = 4
-                num_samples = complex_multiple * num_samples               
-            elif get_type == "Float/Float 32":
-                sample_size = 4
-            elif get_type == "Short/Int 16":
-                sample_size = 2
-            elif get_type == "Int/Int 32":
-                sample_size = 4
-            elif get_type == "Byte/Int 8":
-                sample_size = 1
-            elif get_type == "Complex Int 16":
-                complex_multiple = 2
-                sample_size = 2
-                num_samples = complex_multiple * num_samples    
-            elif get_type == "Complex Int 8":
-                sample_size = 1
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples     
-            elif get_type == "Complex Float 64":
-                complex_multiple = 2
-                sample_size = 8
-                num_samples = complex_multiple * num_samples                                
-            elif get_type == "Complex Int 64":
-                complex_multiple = 2
-                sample_size = 8
-                num_samples = complex_multiple * num_samples                                
-                
-            # Check the Range
-            if (num_samples*sample_size > number_of_bytes) or (complex_multiple*end_sample*sample_size > number_of_bytes) or (start_sample < 1):
-                print("Out of range.")
-                return            
-            
-            # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
-            file = open(filepath,"rb")                          # Open the file
-            if "Complex" in get_type:
-                file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
-            else:
-                file.seek((start_sample-1) * sample_size)       # Point to the starting sample
-            plot_data = file.read(num_samples * sample_size)    # Read the right number of bytes
-            file.close()
-            
-            # Format the Data
-            if get_type == "Complex Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Float/Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Short/Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)
-            elif get_type == "Int/Int 32":
-                plot_data_formatted = struct.unpack(num_samples*'i', plot_data)
-            elif get_type == "Byte/Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)
-            elif get_type == "Complex Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)   
-            elif get_type == "Complex Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)                             
-            elif get_type == "Complex Float 64":
-                plot_data_formatted = struct.unpack(num_samples*'d', plot_data)                             
-            elif get_type == "Complex Int 64":
-                plot_data_formatted = struct.unpack(num_samples*'l', plot_data)                             
-                
-            # Get I/Q Data
-            if "Complex" in get_type:
-                
-                I_squared = [float(i)**2 for i in plot_data_formatted[::2]]
-                Q_squared = [float(q)**2 for q in plot_data_formatted[1::2]]
-
-                # Calculate AM
-                AM = [math.sqrt(I_squared[x] + Q_squared[x]) for x in range(len(I_squared))]
-                
-            else:
-                AM = [math.sqrt(i**2) for i in plot_data_formatted]
-                
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)  
-            self.iq_matplotlib_widget.axes.plot(range(1,len(AM)+1),AM,'b',linewidth=1)   
-            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None) 
-            
-            # Reset the Cursor and Draw
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(AM,'b',linewidth=1) 
+                  
+            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None)
             self.pushButton_iq_cursor1.setChecked(False)
-            self._slotIQ_Cursor1Clicked()  # Does the draw()
-            #self.iq_matplotlib_widget.draw()
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()            
+           
+        # Two Lines: IQ
+        elif len(num_lines) == 2:
+            I = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            Q = self.iq_matplotlib_widget.axes.lines[1].get_ydata()
             
-        else:
-            pass         
+            I_squared = [float(i)**2 for i in I]
+            Q_squared = [float(q)**2 for q in Q]
+
+            # Calculate AM
+            AM = [math.sqrt(I_squared[x] + Q_squared[x]) for x in range(len(I_squared))]
+                        
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(AM,'b',linewidth=1) 
+                  
+            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None)
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()
+
+        # Reset the Cursor and Draw
+        self.pushButton_iq_cursor1.setChecked(False)
+        self._slotIQ_Cursor1Clicked()  # Does the draw()
+        #self.iq_matplotlib_widget.draw()     
         
     def _slotIQ_PlotIF_Clicked(self):
-        """ Plots the instantaneous frequency of the loaded IQ data.
+        """ Plots the instantaneous frequency of what is displayed in the plot window.
         """
-        # Get the Filepath
-        get_type = self.comboBox_iq_data_type.currentText()
-        try:
-            number_of_bytes = os.path.getsize(self.label_iq_folder.text() + "/"+self.listWidget_iq_files.currentItem().text())
-        except:
-            number_of_bytes = -1
+        # Get the Data from the Window
+        num_lines = self.iq_matplotlib_widget.axes.lines
+               
+        # Single Line: Not IQ
+        if len(num_lines) == 1:
+            y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
             
-        if number_of_bytes > 0:
-            
-            # Get the Number of Samples
-            try:
-                start_sample = int(self.textEdit_iq_start.toPlainText())
-                end_sample = int(self.textEdit_iq_end.toPlainText())
-                num_samples = end_sample - start_sample + 1
-            except:
-                return
-            
-            # Do Nothing if Bad Range
-            if num_samples < 0:
-                return
-        
-            # Get the Size of Each Sample in Bytes  
-            complex_multiple = 1    
-            if get_type == "Complex Float 32":
-                complex_multiple = 2
-                sample_size = 4
-                num_samples = complex_multiple * num_samples               
-            elif get_type == "Float/Float 32":
-                sample_size = 4
-            elif get_type == "Short/Int 16":
-                sample_size = 2
-            elif get_type == "Int/Int 32":
-                sample_size = 4
-            elif get_type == "Byte/Int 8":
-                sample_size = 1
-            elif get_type == "Complex Int 16":
-                complex_multiple = 2
-                sample_size = 2
-                num_samples = complex_multiple * num_samples    
-            elif get_type == "Complex Int 8":
-                sample_size = 1
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                     
-            elif get_type == "Complex Float 64":
-                sample_size = 8
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                     
-            elif get_type == "Complex Int 64":
-                sample_size = 8
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                     
-                
-            # Check the Range
-            if (num_samples*sample_size > number_of_bytes) or (complex_multiple*end_sample*sample_size > number_of_bytes) or (start_sample < 1):
-                print("Out of range.")
-                return                        
-            
-            # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
-            file = open(filepath,"rb")                          # Open the file
-            if "Complex" in get_type:
-                file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
-            else:
-                file.seek((start_sample-1) * sample_size)       # Point to the starting sample
-            plot_data = file.read(num_samples * sample_size)    # Read the right number of bytes
-            file.close()
-            
-            # Format the Data
-            if get_type == "Complex Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Float/Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Short/Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)
-            elif get_type == "Int/Int 32":
-                plot_data_formatted = struct.unpack(num_samples*'i', plot_data)
-            elif get_type == "Byte/Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)
-            elif get_type == "Complex Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)  
-            elif get_type == "Complex Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)  
-            elif get_type == "Complex Float 64":
-                plot_data_formatted = struct.unpack(num_samples*'d', plot_data)  
-            elif get_type == "Complex Int 64":
-                plot_data_formatted = struct.unpack(num_samples*'l', plot_data)  
-                
-            # Get I/Q Data
-            if "Complex" in get_type:
-                
-                I = [float(i) for i in plot_data_formatted[::2]]
-                Q = [float(q) for q in plot_data_formatted[1::2]]
-                complex_data = [complex(I[x],Q[x]) for x in range(len(I))]
-
-                # Calculate I.F. Method 1       
-                instantaneous_frequency = np.diff(np.angle(complex_data))
-                #instantaneous_frequency = [((math.atan2(Q[x]*(180/math.pi), I[x]*(180/math.pi)))+2*math.pi)%(2*math.pi) for x in range(len(I))]
-                                
-                ## Calculate I.F. Method 2
-                #analytic_signal = hilbert(complex_data)
-                #amplitude_envelope = np.abs(analytic_signal)
-                #instantaneous_phase = np.unwrap(np.angle(analytic_signal))
-                #instantaneous_frequency = np.diff(instantaneous_phase) / (2.0*np.pi) * 1 #fs
-                                
-            else:
-                instantaneous_frequency = None
-                
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)            
-            self.iq_matplotlib_widget.axes.plot(range(1,len(instantaneous_frequency)+1),instantaneous_frequency,'b',linewidth=1)          
-            self.iq_matplotlib_widget.applyLabels("Instantaneous Frequency",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.angle(y_data),'b',linewidth=1)
             
-            # Reset the Cursor and Draw
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
             self.pushButton_iq_cursor1.setChecked(False)
-            self._slotIQ_Cursor1Clicked()  # Does the draw()
-            #self.iq_matplotlib_widget.draw()
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()            
+           
+        # Two Lines: IQ
+        elif len(num_lines) == 2:
+            I = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            Q = self.iq_matplotlib_widget.axes.lines[1].get_ydata()
+            complex_data = [complex(I[x],Q[x]) for x in range(len(I))]
             
-        else:
-            pass   
+            # Acquire Sample Rate and Frequency
+            try:
+                get_sample_rate = float(str(self.textEdit_iq_sample_rate.toPlainText()))
+            except:
+                get_sample_rate = ""                
+            try:
+                get_frequency = float(str(self.textEdit_iq_frequency.toPlainText()))
+            except:
+                get_frequency = ""
+            
+            # Calculate IF
+            if self.isFloat(get_sample_rate):
+                if self.isFloat(get_frequency):
+                    instantaneous_frequency = np.diff(np.unwrap(np.angle(complex_data)))/(2.0*np.pi)*get_sample_rate + get_frequency
+                else:
+                    instantaneous_frequency = np.diff(np.unwrap(np.angle(complex_data)))/(2.0*np.pi)*get_sample_rate
+            else:
+                instantaneous_frequency = np.diff(np.unwrap(np.angle(complex_data)))
+                        
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(instantaneous_frequency,'b',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("Instantaneous Frequency",'Samples','Frequency (Hz)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()
             
     def _slotIQ_AppendNull1Clicked(self):
         """ Toggles between using a file or null samples for appending two files.
@@ -15179,233 +15072,124 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 time.sleep(.1)   
                 
     def _slotIQ_SpectrogramClicked(self):
-        """ Plots a spectrogram of the loaded data.
+        """ Plots a spectrogram of the data in the plot window.
         """
-        # Get the Filepath
-        get_type = self.comboBox_iq_data_type.currentText()
-        try:
-            number_of_bytes = os.path.getsize(self.label_iq_folder.text() + "/"+self.listWidget_iq_files.currentItem().text())
-        except:
-            number_of_bytes = -1
+        # Get the Data from the Window
+        num_lines = self.iq_matplotlib_widget.axes.lines
+               
+        # Single Line: Not IQ
+        if len(num_lines) == 1:
+            y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
             
-        if number_of_bytes > 0:
-            
-            # Get the Number of Samples
-            try:
-                start_sample = int(self.textEdit_iq_start.toPlainText())
-                end_sample = int(self.textEdit_iq_end.toPlainText())
-                num_samples = end_sample - start_sample + 1
-            except:
-                return
-                            
-            # Do Nothing if Bad Range
-            if num_samples < 0:
-                return
-        
-            # Get the Size of Each Sample in Bytes    
-            complex_multiple = 1  
-            if get_type == "Complex Float 32":
-                complex_multiple = 2
-                sample_size = 4
-                num_samples = complex_multiple * num_samples               
-            elif get_type == "Float/Float 32":
-                sample_size = 4
-            elif get_type == "Short/Int 16":
-                sample_size = 2
-            elif get_type == "Int/Int 32":
-                sample_size = 4
-            elif get_type == "Byte/Int 8":
-                sample_size = 1
-            elif get_type == "Complex Int 16":
-                complex_multiple = 2
-                sample_size = 2
-                num_samples = complex_multiple * num_samples 
-            elif get_type == "Complex Int 8":
-                sample_size = 1
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                  
-            elif get_type == "Complex Float 64":
-                sample_size = 8
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                  
-            elif get_type == "Complex Int 64":
-                sample_size = 8
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                  
-                
-            # Check the Range
-            if (num_samples*sample_size > number_of_bytes) or (complex_multiple*end_sample*sample_size > number_of_bytes) or (start_sample < 1):
-                print("Out of range.")
-                return
-            
-            # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
-            file = open(filepath,"rb")                          # Open the file
-            if "Complex" in get_type:
-                file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
-            else:
-                file.seek((start_sample-1) * sample_size)       # Point to the starting sample
-            plot_data = file.read(num_samples * sample_size)    # Read the right number of bytes
-            file.close()
-            
-            # Format the Data
-            if get_type == "Complex Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Float/Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Short/Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)
-            elif get_type == "Int/Int 32":
-                plot_data_formatted = struct.unpack(num_samples*'i', plot_data)
-            elif get_type == "Byte/Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)
-            elif get_type == "Complex Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)                
-            elif get_type == "Complex Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)                
-            elif get_type == "Complex Float 64":
-                plot_data_formatted = struct.unpack(num_samples*'d', plot_data)                
-            elif get_type == "Complex Int 64":
-                plot_data_formatted = struct.unpack(num_samples*'l', plot_data)                
-                
-            # Get I/Q Data
-            if "Complex" in get_type:                
-                I = [float(i) for i in plot_data_formatted[::2]]
-                Q = [float(q) for q in plot_data_formatted[1::2]]
-                complex_data = [complex(I[x],Q[x]) for x in range(len(I))]                                                
-            else:
-                complex_data = plot_data_formatted
-                
-            # Plot Spectrogram
-            NFFT = 1024
+            # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)            
-            self.iq_matplotlib_widget.axes.specgram(complex_data, NFFT=NFFT, Fs=1, noverlap=900,zorder=2)
-            self.iq_matplotlib_widget.applyLabels("Spectrogram",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.configureAxes(polar=False)
 
-            # Reset the Cursor and Draw
-            self.pushButton_iq_cursor1.setChecked(False)
-            self._slotIQ_Cursor1Clicked()  # Does the draw()
-            #self.iq_matplotlib_widget.draw()
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                NFFT = 1024      
+                self.iq_matplotlib_widget.axes.specgram(y_data, NFFT=NFFT, Fs=1, noverlap=900,zorder=2)
             
-        else:
-            pass   
+            self.iq_matplotlib_widget.applyLabels("Spectrogram",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()           
+           
+        # Two Lines: IQ
+        elif len(num_lines) == 2:
+            I = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            Q = self.iq_matplotlib_widget.axes.lines[1].get_ydata()
+            complex_data = [complex(I[x],Q[x]) for x in range(len(I))]
+
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                NFFT = 1024      
+                self.iq_matplotlib_widget.axes.specgram(complex_data, NFFT=NFFT, Fs=1, noverlap=900,zorder=2)
+            
+            self.iq_matplotlib_widget.applyLabels("Spectrogram",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()  
         
     def _slotIQ_FFT_Clicked(self):
-        """ Plots an FFt of the loaded data.
+        """ Plots an FFT of what is displayed in the plot window.
         """
-        # Get the Filepath
-        get_type = self.comboBox_iq_data_type.currentText()
-        try:
-            number_of_bytes = os.path.getsize(self.label_iq_folder.text() + "/"+self.listWidget_iq_files.currentItem().text())
-        except:
-            number_of_bytes = -1
+        # Get the Data from the Window
+        num_lines = self.iq_matplotlib_widget.axes.lines
+               
+        # Single Line: Not IQ
+        if len(num_lines) == 1:
+            y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
             
-        if number_of_bytes > 0:
-            
-            # Get the Number of Samples
-            try:
-                start_sample = int(self.textEdit_iq_start.toPlainText())
-                end_sample = int(self.textEdit_iq_end.toPlainText())
-                num_samples = end_sample - start_sample + 1
-            except: 
-                return
-                        
-            # Do Nothing if Bad Range
-            if num_samples < 0:
-                return
-        
-            # Get the Size of Each Sample in Bytes     
-            complex_multiple = 1 
-            if get_type == "Complex Float 32":
-                complex_multiple = 2
-                sample_size = 4
-                num_samples = complex_multiple * num_samples               
-            elif get_type == "Float/Float 32":
-                sample_size = 4
-            elif get_type == "Short/Int 16":
-                sample_size = 2
-            elif get_type == "Int/Int 32":
-                sample_size = 4
-            elif get_type == "Byte/Int 8":
-                sample_size = 1
-            elif get_type == "Complex Int 16":
-                complex_multiple = 2
-                sample_size = 2
-                num_samples = complex_multiple * num_samples   
-            elif get_type == "Complex Float 64":
-                complex_multiple = 2
-                sample_size = 8
-                num_samples = complex_multiple * num_samples   
-            elif get_type == "Complex Int 64":
-                complex_multiple = 2
-                sample_size = 8
-                num_samples = complex_multiple * num_samples   
-                
-            # Check the Range
-            if (num_samples*sample_size > number_of_bytes) or (complex_multiple*end_sample*sample_size > number_of_bytes) or (start_sample < 1):
-                print("Out of range.")
-                return            
-            
-            # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
-            file = open(filepath,"rb")                          # Open the file
-            if "Complex" in get_type:
-                file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
-            else:
-                file.seek((start_sample-1) * sample_size)       # Point to the starting sample
-            plot_data = file.read(num_samples * sample_size)    # Read the right number of bytes
-            file.close()
-            
-            # Format the Data
-            if get_type == "Complex Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Float/Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Short/Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)
-            elif get_type == "Int/Int 32":
-                plot_data_formatted = struct.unpack(num_samples*'i', plot_data)
-            elif get_type == "Byte/Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)
-            elif get_type == "Complex Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)                
-            elif get_type == "Complex Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)                
-            elif get_type == "Complex Float 64":
-                plot_data_formatted = struct.unpack(num_samples*'d', plot_data)                
-            elif get_type == "Complex Int 64":
-                plot_data_formatted = struct.unpack(num_samples*'l', plot_data)                
-                
-            # Get I/Q Data
-            if "Complex" in get_type:                
-                I = [float(i) for i in plot_data_formatted[::2]]
-                Q = [float(q) for q in plot_data_formatted[1::2]]
-                complex_data = [complex(I[x],Q[x]) for x in range(len(I))]                                                
-            else:
-                complex_data = plot_data_formatted
-                
             # Do FFT
-            get_sample_rate = float(self.dashboard_settings_dictionary['fft_sample_rate'])
+            try:
+                get_sample_rate = float(str(self.textEdit_iq_sample_rate.toPlainText()))*1000000
+            except:
+                get_sample_rate = 1000000
+            get_fft_size = int(self.dashboard_settings_dictionary['fft_size'])
+            fft_data = np.log10(np.abs(np.fft.fftshift(np.fft.fft(y_data,get_fft_size,norm='ortho'))))
+            #fft_data = fft_data/max(fft_data)
+            freq = np.fft.fftshift(np.fft.fftfreq(len(fft_data),1/get_sample_rate))
+            #freq = np.fft.fftfreq(len(fft_data),1/get_sample_rate)
+                        
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(freq,fft_data,'b',linewidth=1,zorder=2)
+            
+            self.iq_matplotlib_widget.applyLabels("4096-point FFT",'Frequency (Hz)','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()           
+           
+        # Two Lines: IQ
+        elif len(num_lines) == 2:
+            I = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            Q = self.iq_matplotlib_widget.axes.lines[1].get_ydata()
+            complex_data = [complex(I[x],Q[x]) for x in range(len(I))]
+            
+            # Do FFT
+            try:
+                get_sample_rate = float(str(self.textEdit_iq_sample_rate.toPlainText()))*1000000
+            except:
+                get_sample_rate = 1000000
             get_fft_size = int(self.dashboard_settings_dictionary['fft_size'])
             fft_data = np.log10(np.abs(np.fft.fftshift(np.fft.fft(complex_data,get_fft_size,norm='ortho'))))
             #fft_data = fft_data/max(fft_data)
             freq = np.fft.fftshift(np.fft.fftfreq(len(fft_data),1/get_sample_rate))
             #freq = np.fft.fftfreq(len(fft_data),1/get_sample_rate)
-            
-            # Plot FFT
+                        
+            # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)            
-            self.iq_matplotlib_widget.axes.plot(freq,fft_data,'b',linewidth=1,zorder=2)
-            self.iq_matplotlib_widget.applyLabels("4096-point FFT",'Frequency (Hz)','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.configureAxes(polar=False)
 
-            # Reset the Cursor and Draw
-            self.pushButton_iq_cursor1.setChecked(False)
-            self._slotIQ_Cursor1Clicked()  # Does the draw()
-            #self.iq_matplotlib_widget.draw()
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(freq,fft_data,'b',linewidth=1,zorder=2)
             
-        else:
-            pass   
+            self.iq_matplotlib_widget.applyLabels("FFT",'Frequency (Hz)','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw() 
             
     def _slotPacketScapyShowClicked(self):
         """ Calls the Scapy function '.show()' on a loaded packet.
@@ -17236,135 +17020,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             for i in get_bin:
                 self.plainTextEdit_pd_bit_viewer_bits.appendPlainText(i)
                 
-    def _slotIQ_IF2_Clicked(self):
-        """ Removes a lot of the peaks found in IF1.
-        """
-        # Get the Filepath
-        get_type = self.comboBox_iq_data_type.currentText()
-        try:
-            number_of_bytes = os.path.getsize(self.label_iq_folder.text() + "/"+self.listWidget_iq_files.currentItem().text())
-        except:
-            number_of_bytes = -1
-            
-        if number_of_bytes > 0:
-            
-            # Get the Number of Samples
-            try:
-                start_sample = int(self.textEdit_iq_start.toPlainText())
-                end_sample = int(self.textEdit_iq_end.toPlainText())
-                num_samples = end_sample - start_sample + 1
-            except: 
-                return
-            
-            # Do Nothing if Bad Range
-            if num_samples < 0:
-                return
-        
-            # Get the Size of Each Sample in Bytes     
-            complex_multiple = 1 
-            if get_type == "Complex Float 32":
-                complex_multiple = 2
-                sample_size = 4
-                num_samples = complex_multiple * num_samples               
-            elif get_type == "Float/Float 32":
-                sample_size = 4
-            elif get_type == "Short/Int 16":
-                sample_size = 2
-            elif get_type == "Int/Int 32":
-                sample_size = 4
-            elif get_type == "Byte/Int 8":
-                sample_size = 1
-            elif get_type == "Complex Int 16":
-                complex_multiple = 2
-                sample_size = 2
-                num_samples = complex_multiple * num_samples   
-            elif get_type == "Complex Int 8":
-                sample_size = 1
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                        
-            elif get_type == "Complex Float 64":
-                sample_size = 8
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                        
-            elif get_type == "Complex Int 64":
-                sample_size = 8
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                        
-                
-            # Check the Range
-            if (num_samples*sample_size > number_of_bytes) or (complex_multiple*end_sample*sample_size > number_of_bytes) or (start_sample < 1):
-                print("Out of range.")
-                return            
-            
-            # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
-            file = open(filepath,"rb")                          # Open the file
-            if "Complex" in get_type:
-                file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
-            else:
-                file.seek((start_sample-1) * sample_size)       # Point to the starting sample
-            plot_data = file.read(num_samples * sample_size)    # Read the right number of bytes
-            file.close()
-            
-            # Format the Data
-            if get_type == "Complex Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Float/Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Short/Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)
-            elif get_type == "Int/Int 32":
-                plot_data_formatted = struct.unpack(num_samples*'i', plot_data)
-            elif get_type == "Byte/Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)
-            elif get_type == "Complex Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)                                
-            elif get_type == "Complex Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)                                
-            elif get_type == "Complex Float 64":
-                plot_data_formatted = struct.unpack(num_samples*'d', plot_data)                                
-            elif get_type == "Complex Int 64":
-                plot_data_formatted = struct.unpack(num_samples*'l', plot_data)                                
-                
-            # Get I/Q Data
-            if "Complex" in get_type:                
-                I = [float(i) for i in plot_data_formatted[::2]]
-                Q = [float(q) for q in plot_data_formatted[1::2]]
-                complex_data = [complex(I[x],Q[x]) for x in range(len(I))]
-
-                # # Butterworth Filter
-                # nyq = 0.5 * 5000000
-                # order = 10
-                # cutoff = 100000
-                # normal_cutoff = cutoff/nyq
-                # b, a = butter(order, normal_cutoff, btype='low', analog=False)
-                # y1 = filtfilt(b, a, complex_data)
-                
-                # Calculate I.F. Method 1       
-                y = np.diff(np.angle(complex_data))
-                #instantaneous_frequency = [((math.atan2(Q[x]*(180/math.pi), I[x]*(180/math.pi)))+2*math.pi)%(2*math.pi) for x in range(len(I))]
-               
-                for n in range(1,len(y)-1):
-                    if abs(y[n]-y[n-1]) > 0.1:
-                        if y[n-1] > y[n+1]:
-                            y[n] = y[n-1] - (y[n-1] - y[n+1])/2
-                        else:
-                            y[n] = y[n-1] + (y[n+1] - y[n-1])/2
-            else:
-                y = None
-                
-            # Plot
-            self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)            
-            self.iq_matplotlib_widget.axes.plot(range(1,len(y)+1),y,'b',linewidth=1)          
-            self.iq_matplotlib_widget.applyLabels("Filtered Signal",'Samples','Amplitude (LSB)',None,None) 
-
-            # Reset the Cursor and Draw
-            self.pushButton_iq_cursor1.setChecked(False)
-            self._slotIQ_Cursor1Clicked()  # Does the draw()
-            #self.iq_matplotlib_widget.draw()
-      
-                
     def _slotIQ_CustomClicked(self):
         """ Whatever you want. Experiment and see if it is worth it.
         """
@@ -17787,7 +17442,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_folder = str(self.comboBox_archive_download_folder.currentText())
             
             # Download        
-            os.system('wget -P ' + get_folder + '/' + ' https://fissure.ainfosec.com/' + get_file)
+            os.system('wget -P "' + get_folder + '/"' + ' https://fissure.ainfosec.com/' + get_file)
             self._slotArchiveDownloadRefreshClicked()
             
     def _slotArchiveReplayAddClicked(self):
@@ -18894,195 +18549,144 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotIQ_MorseCodeClicked(self):
         """ Auto-detects Morse Code from the magnitude of an IQ file and returns the text.
         """
-        # Get the Filepath
-        get_type = self.comboBox_iq_data_type.currentText()
-        try:
-            number_of_bytes = os.path.getsize(self.label_iq_folder.text() + "/"+self.listWidget_iq_files.currentItem().text())
-        except:
-            number_of_bytes = -1
+        # Get the Data from the Window
+        num_lines = self.iq_matplotlib_widget.axes.lines
+               
+        # Single Line: Not IQ
+        if len(num_lines) == 1:
+            y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
             
-        if number_of_bytes > 0:
+            # Calculate AM
+            AM = [math.sqrt(float(i)**2) for i in y_data]
             
-            # Get the Number of Samples
-            try:
-                start_sample = int(self.textEdit_iq_start.toPlainText())
-                end_sample = int(self.textEdit_iq_end.toPlainText())
-                num_samples = end_sample - start_sample + 1
-            except:
-                return
-            
-            # Do Nothing if Bad Range
-            if num_samples < 0:
-                return
-        
-            # Get the Size of Each Sample in Bytes   
-            complex_multiple = 1  
-            if get_type == "Complex Float 32":
-                complex_multiple = 2
-                sample_size = 4
-                num_samples = complex_multiple * num_samples               
-            elif get_type == "Float/Float 32":
-                sample_size = 4
-            elif get_type == "Short/Int 16":
-                sample_size = 2
-            elif get_type == "Int/Int 32":
-                sample_size = 4
-            elif get_type == "Byte/Int 8":
-                sample_size = 1
-            elif get_type == "Complex Int 16":
-                complex_multiple = 2
-                sample_size = 2
-                num_samples = complex_multiple * num_samples    
-            elif get_type == "Complex Int 8":
-                sample_size = 1
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                  
-            elif get_type == "Complex Float 64":
-                sample_size = 8
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                  
-            elif get_type == "Complex Int 64":
-                sample_size = 8
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                  
-                
-            # Check the Range
-            if (num_samples*sample_size > number_of_bytes) or (complex_multiple*end_sample*sample_size > number_of_bytes) or (start_sample < 1):
-                print("Out of range.")
-                return            
-            
-            # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
-            file = open(filepath,"rb")                          # Open the file
-            if "Complex" in get_type:
-                file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
-            else:
-                file.seek((start_sample-1) * sample_size)       # Point to the starting sample
-            plot_data = file.read(num_samples * sample_size)    # Read the right number of bytes
-            file.close()
-            
-            # Format the Data
-            if get_type == "Complex Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Float/Float 32":
-                plot_data_formatted = struct.unpack(num_samples*'f', plot_data)
-            elif get_type == "Short/Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)
-            elif get_type == "Int/Int 32":
-                plot_data_formatted = struct.unpack(num_samples*'i', plot_data)
-            elif get_type == "Byte/Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)
-            elif get_type == "Complex Int 16":
-                plot_data_formatted = struct.unpack(num_samples*'h', plot_data)                
-            elif get_type == "Complex Int 8":
-                plot_data_formatted = struct.unpack(num_samples*'b', plot_data)                
-            elif get_type == "Complex Float 64":
-                plot_data_formatted = struct.unpack(num_samples*'d', plot_data)                
-            elif get_type == "Complex Int 64":
-                plot_data_formatted = struct.unpack(num_samples*'l', plot_data)                
-                
-            # Get I/Q Data
-            if "Complex" in get_type:                
-                I_squared = [float(i)**2 for i in plot_data_formatted[::2]]
-                Q_squared = [float(q)**2 for q in plot_data_formatted[1::2]]
-
-                # Calculate AM
-                AM = [math.sqrt(I_squared[x] + Q_squared[x]) for x in range(len(I_squared))]
-                
-            else:
-                AM = [math.sqrt(i**2) for i in plot_data_formatted]
-                
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)  
-            self.iq_matplotlib_widget.axes.plot(AM,'b',linewidth=1)   
-            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.configureAxes(polar=False)
 
-            # Reset the Cursor and Draw
-            self.pushButton_iq_cursor1.setChecked(False)
-            self._slotIQ_Cursor1Clicked()  # Does the draw()
-            #self.iq_matplotlib_widget.draw()
-            
-            # Get the Magnitude Rising and Falling Edges
-            threshold = float(self.dashboard_settings_dictionary['morse_code_amplitude_threshold']) #0.5  # Adjust magnitude threshold accordingly
-            state = 0
-            edges = []
-            for n in range(0,len(AM)):
-                if (AM[n] > threshold) and (state == 0):
-                    edges.append(n)
-                    state = 1
-                elif (AM[n] < threshold) and (state == 1):
-                    edges.append(n)
-                    state = 0
-                    
-            # Find Dit/Dah Width
-            error_tolerance = float(self.dashboard_settings_dictionary['morse_code_error_tolerance'])  # 0.05
-            print("Edge Locations: " + str(edges))
-            if len(edges) > 5:  # Any number demonstrating consistency 
-                edge_diff = []
-                for n in range(1,len(edges)):
-                    edge_diff.append(edges[n] - edges[n-1])
-            
-                unique_widths = sorted(set(edge_diff))
-                print("Edge Widths: " + str(edge_diff))
-                print("Unique Widths: " + str(unique_widths))
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
                 
-                if len(unique_widths) > 1:
-                    dit = None
-                    for n in range(0,len(unique_widths)):
-                        temp_dit = unique_widths[n]
-                        for m in range(1,len(unique_widths)):
-                            if (temp_dit*3 > unique_widths[m]*(1-error_tolerance)) and (temp_dit*3 < unique_widths[m]*(1+error_tolerance)):  # +/- 5%
-                                dit = temp_dit
-                        if dit:
-                            break
+                self.iq_matplotlib_widget.axes.plot(AM,'b',linewidth=1) 
+                  
+            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None)
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()            
+           
+        # Two Lines: IQ
+        elif len(num_lines) == 2:
+            I = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            Q = self.iq_matplotlib_widget.axes.lines[1].get_ydata()
+            
+            I_squared = [float(i)**2 for i in I]
+            Q_squared = [float(q)**2 for q in Q]
+
+            # Calculate AM
+            AM = [math.sqrt(I_squared[x] + Q_squared[x]) for x in range(len(I_squared))]
+                        
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(AM,'b',linewidth=1) 
+                  
+            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None)
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()
+
+        # Reset the Cursor and Draw
+        self.pushButton_iq_cursor1.setChecked(False)
+        self._slotIQ_Cursor1Clicked()  # Does the draw()
+        #self.iq_matplotlib_widget.draw()
+            
+        # Get the Magnitude Rising and Falling Edges
+        threshold = float(self.dashboard_settings_dictionary['morse_code_amplitude_threshold']) #0.5  # Adjust magnitude threshold accordingly
+        state = 0
+        edges = []
+        for n in range(0,len(AM)):
+            if (AM[n] > threshold) and (state == 0):
+                edges.append(n)
+                state = 1
+            elif (AM[n] < threshold) and (state == 1):
+                edges.append(n)
+                state = 0
+                
+        # Find Dit/Dah Width
+        error_tolerance = float(self.dashboard_settings_dictionary['morse_code_error_tolerance'])  # 0.05
+        print("Edge Locations: " + str(edges))
+        if len(edges) > 5:  # Any number demonstrating consistency 
+            edge_diff = []
+            for n in range(1,len(edges)):
+                edge_diff.append(edges[n] - edges[n-1])
+        
+            unique_widths = sorted(set(edge_diff))
+            print("Edge Widths: " + str(edge_diff))
+            print("Unique Widths: " + str(unique_widths))
+            
+            if len(unique_widths) > 1:
+                dit = None
+                for n in range(0,len(unique_widths)):
+                    temp_dit = unique_widths[n]
+                    for m in range(1,len(unique_widths)):
+                        if (temp_dit*3 > unique_widths[m]*(1-error_tolerance)) and (temp_dit*3 < unique_widths[m]*(1+error_tolerance)):  # +/- 5%
+                            dit = temp_dit
+                    if dit:
+                        break
+                
+                # Spell Message
+                morse_code = ""
+                for n in range(1,len(edges)-1,2):
+                    # Note: People have a tendency to implement the space for the same letter, between letters, and words differently than the International Morse Code method. Adjust accordingly.
+                    same_letter_spacing = float(self.dashboard_settings_dictionary['morse_code_same_letter_spacing'])     #1 # 1 - I.M.C.
+                    between_letter_spacing = float(self.dashboard_settings_dictionary['morse_code_between_letter_spacing'])  #2 # 3 - I.M.C.
+                    between_word_spacing = float(self.dashboard_settings_dictionary['morse_code_between_word_spacing'])    #6 # 7 - I.M.C.
                     
-                    # Spell Message
-                    morse_code = ""
-                    for n in range(1,len(edges)-1,2):
-                        # Note: People have a tendency to implement the space for the same letter, between letters, and words differently than the International Morse Code method. Adjust accordingly.
-                        same_letter_spacing = float(self.dashboard_settings_dictionary['morse_code_same_letter_spacing'])     #1 # 1 - I.M.C.
-                        between_letter_spacing = float(self.dashboard_settings_dictionary['morse_code_between_letter_spacing'])  #2 # 3 - I.M.C.
-                        between_word_spacing = float(self.dashboard_settings_dictionary['morse_code_between_word_spacing'])    #6 # 7 - I.M.C.
-                        
-                        # '10'
-                        if (edges[n]-edges[n-1] > dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > same_letter_spacing* dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < same_letter_spacing*dit*(1+error_tolerance)):
-                            morse_code = morse_code + '.'
-                            
-                        # '1 [next letter]'
-                        elif (edges[n]-edges[n-1] > dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > between_letter_spacing*dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < between_letter_spacing*dit*(1+error_tolerance)):
-                            morse_code = morse_code + '. '
-                        
-                        # '1110'
-                        elif (edges[n]-edges[n-1] > 3*dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < 3*dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > same_letter_spacing*dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < same_letter_spacing*dit*(1+error_tolerance)):
-                            morse_code = morse_code + '-'
-                            
-                        # '111 [next letter]'
-                        elif (edges[n]-edges[n-1] > 3*dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < 3*dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > between_letter_spacing*dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < between_letter_spacing*dit*(1+error_tolerance)):
-                            morse_code = morse_code + '- '
-                            
-                        # '1 [next word]'
-                        elif (edges[n]-edges[n-1] > dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > between_word_spacing*dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < between_word_spacing*dit*(1+error_tolerance)):
-                            morse_code = morse_code + '.|'
-                            
-                        # '111 [next word]'
-                        elif (edges[n]-edges[n-1] > 3*dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < 3*dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > between_word_spacing*dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < between_word_spacing*dit*(1+error_tolerance)):
-                            morse_code = morse_code + '-|'
-                            
-                    # Last Dit/Dah
-                    if (edges[-1] - edges[-2] > dit*(1-error_tolerance)) and (edges[-1] - edges[-2] < dit*(1+error_tolerance)):
+                    # '10'
+                    if (edges[n]-edges[n-1] > dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > same_letter_spacing* dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < same_letter_spacing*dit*(1+error_tolerance)):
                         morse_code = morse_code + '.'
-                    else:
+                        
+                    # '1 [next letter]'
+                    elif (edges[n]-edges[n-1] > dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > between_letter_spacing*dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < between_letter_spacing*dit*(1+error_tolerance)):
+                        morse_code = morse_code + '. '
+                    
+                    # '1110'
+                    elif (edges[n]-edges[n-1] > 3*dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < 3*dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > same_letter_spacing*dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < same_letter_spacing*dit*(1+error_tolerance)):
                         morse_code = morse_code + '-'
-                              
-                    print("\n" + morse_code)
-                    
-                    # Convert to English
-                    get_text = self.morseToEnglish(morse_code)
-                    print(get_text + '\n')
-                    
-                    # Open a MessageBox
-                    self.errorMessage(get_text)
+                        
+                    # '111 [next letter]'
+                    elif (edges[n]-edges[n-1] > 3*dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < 3*dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > between_letter_spacing*dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < between_letter_spacing*dit*(1+error_tolerance)):
+                        morse_code = morse_code + '- '
+                        
+                    # '1 [next word]'
+                    elif (edges[n]-edges[n-1] > dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > between_word_spacing*dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < between_word_spacing*dit*(1+error_tolerance)):
+                        morse_code = morse_code + '.|'
+                        
+                    # '111 [next word]'
+                    elif (edges[n]-edges[n-1] > 3*dit*(1-error_tolerance)) and (edges[n]-edges[n-1] < 3*dit*(1+error_tolerance)) and (edges[n+1]-edges[n] > between_word_spacing*dit*(1-error_tolerance)) and (edges[n+1]-edges[n] < between_word_spacing*dit*(1+error_tolerance)):
+                        morse_code = morse_code + '-|'
+                        
+                # Last Dit/Dah
+                if (edges[-1] - edges[-2] > dit*(1-error_tolerance)) and (edges[-1] - edges[-2] < dit*(1+error_tolerance)):
+                    morse_code = morse_code + '.'
+                else:
+                    morse_code = morse_code + '-'
+                          
+                print("\n" + morse_code)
+                
+                # Convert to English
+                get_text = self.morseToEnglish(morse_code)
+                print(get_text + '\n')
+                
+                # Open a MessageBox
+                self.errorMessage(get_text)
                     
     def morseToEnglish(self, message):
         """ Converts dits and dahs to English.
@@ -19205,6 +18809,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Copy Other Label Value
         get_samples = str(self.label_iq_samples.text()).replace('Samples:','').replace(' ','')
         self.textEdit_iq_end.setPlainText(get_samples)
+        
+    def _slotIQ_StartLabelClicked(self, event):
+        """ Sets the value to 1 in the plot range start text edit.
+        """
+        # Reset to 1
+        self.textEdit_iq_start.setPlainText("1")
         
     def loadConfiguration(self):
         """ Loads a configuration YAML file with all the FISSURE user settings.
@@ -22371,6 +21981,340 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open a Browser
         os.system("sensible-browser https://amsat.org/amateur-satellite-index &")
+        
+    def _slotIQ_AbsoluteValueClicked(self):
+        """ Plots the absolute value of what is already displayed in the IQ Data plot window.
+        """
+        # Get the Data from the Window
+        num_lines = self.iq_matplotlib_widget.axes.lines
+               
+        # Single Line: Not IQ
+        if len(num_lines) == 1:
+            y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.abs(y_data),'b',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()            
+           
+        # Two Lines: IQ
+        elif len(num_lines) == 2:
+            I = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            Q = self.iq_matplotlib_widget.axes.lines[1].get_ydata()
+            complex_data = [complex(I[x],Q[x]) for x in range(len(I))]
+                        
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.abs(np.real(complex_data)),'b',linewidth=1)
+                self.iq_matplotlib_widget.axes.plot(np.abs(np.imag(complex_data)),'r',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()
+            
+    def _slotIQ_DifferentialClicked(self):
+        """ Plots the differential of what is already displayed in the IQ Data plot window.
+        """
+        # Get the Data from the Window
+        num_lines = self.iq_matplotlib_widget.axes.lines
+               
+        # Single Line: Not IQ
+        if len(num_lines) == 1:
+            y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.diff(y_data),'b',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()            
+           
+        # Two Lines: IQ
+        elif len(num_lines) == 2:
+            I = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            Q = self.iq_matplotlib_widget.axes.lines[1].get_ydata()
+            complex_data = [complex(I[x],Q[x]) for x in range(len(I))]
+                        
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.diff(np.real(complex_data)),'b',linewidth=1)
+                self.iq_matplotlib_widget.axes.plot(np.diff(np.imag(complex_data)),'r',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()
+            
+    def _slotIQ_Keep1in2_Clicked(self):
+        """ Plots 1 in 2 samples of what is already displayed in the IQ Data plot window.
+        """
+        # Get the Data from the Window
+        num_lines = self.iq_matplotlib_widget.axes.lines
+               
+        # Single Line: Not IQ
+        if len(num_lines) == 1:
+            y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(y_data[::2],'b',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()            
+           
+        # Two Lines: IQ
+        elif len(num_lines) == 2:
+            I = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            Q = self.iq_matplotlib_widget.axes.lines[1].get_ydata()
+            complex_data = [complex(I[x],Q[x]) for x in range(len(I))]
+                        
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.real(complex_data[::2]),'b',linewidth=1)
+                self.iq_matplotlib_widget.axes.plot(np.imag(complex_data[::2]),'r',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()    
+            
+    def _slotIQ_PhaseClicked(self):
+        """ Plots phase of loaded IQ data.
+        """
+        # Get the Data from the Window
+        num_lines = self.iq_matplotlib_widget.axes.lines
+               
+        # Single Line: Not IQ
+        if len(num_lines) == 1:
+            y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.angle(y_data),'b',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()            
+           
+        # Two Lines: IQ
+        elif len(num_lines) == 2:
+            I = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            Q = self.iq_matplotlib_widget.axes.lines[1].get_ydata()
+            complex_data = [complex(I[x],Q[x]) for x in range(len(I))]
+                        
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.angle(complex_data),'b',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw() 
+            
+    def _slotIQ_UnwrapClicked(self):
+        """ Plots the unwrapped version of what is already displayed in the IQ Data plot window.
+        """
+        # Get the Data from the Window
+        num_lines = self.iq_matplotlib_widget.axes.lines
+               
+        # Single Line: Not IQ
+        if len(num_lines) == 1:
+            y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.unwrap(y_data),'b',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()            
+           
+        # Two Lines: IQ
+        elif len(num_lines) == 2:
+            I = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            Q = self.iq_matplotlib_widget.axes.lines[1].get_ydata()
+            complex_data = [complex(I[x],Q[x]) for x in range(len(I))]
+                        
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.unwrap(np.real(complex_data)),'b',linewidth=1)
+                self.iq_matplotlib_widget.axes.plot(np.unwrap(np.imag(complex_data)),'r',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()
+            
+    def _slotIQ_FilterClicked(self):
+        """ Applies a bandpass filter to the data in the plot window.
+        """
+        # Get the Filter Values
+        try:
+            end_freq = float(str(self.textEdit_iq_filter_end.toPlainText()))
+            if str(self.comboBox_iq_filter_type.currentText()) == "bandpass":
+                start_freq = float(str(self.textEdit_iq_filter_start.toPlainText()))
+                if start_freq > end_freq:
+                    temp_freq = end_freq
+                    end_freq = start_freq
+                    start_freq = temp_freq            
+            sample_rate = float(str(self.textEdit_iq_sample_rate.toPlainText()))*1000000
+        except:
+            print("Invalid start frequency, end frequency, or sample rate.")
+            return
+        
+        # Get the Data from the Window
+        num_lines = self.iq_matplotlib_widget.axes.lines
+               
+        # Single Line: Not IQ
+        if len(num_lines) == 1:
+            y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.abs(y_data),'b',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()            
+           
+        # Two Lines: IQ
+        elif len(num_lines) == 2:
+            I = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            Q = self.iq_matplotlib_widget.axes.lines[1].get_ydata()
+            complex_data = [complex(I[x],Q[x]) for x in range(len(I))]
+
+            # Butterworth Lowpass Filter
+            if str(self.comboBox_iq_filter_type.currentText()) == "lowpass":
+                b, a = butter(5, end_freq/(sample_rate/2), 'lowpass')
+                y = filtfilt(b, a, complex_data)
+            
+            # Butterworth Bandpass Filter
+            elif str(self.comboBox_iq_filter_type.currentText()) == "bandpass":
+                #print(str(start_freq/(sample_rate/2)))
+                #print(str(end_freq/(sample_rate/2)))
+                #b, a = butter(5, [start_freq/(sample_rate/2), end_freq/(sample_rate/2)], 'bandpass', False, 'ba')
+                sos = butter(5, [start_freq, end_freq], 'bandpass', False, 'sos', sample_rate)
+                #y = lfilter(b, a, complex_data)
+                #y = filtfilt(b, a, complex_data)
+                y = sosfilt(sos, complex_data)
+                
+            else:
+                return
+                            
+            # Plot
+            self.iq_matplotlib_widget.clearPlot()
+            self.iq_matplotlib_widget.configureAxes(polar=False)
+
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
+                
+                self.iq_matplotlib_widget.axes.plot(np.real(y),'b',linewidth=1)
+                self.iq_matplotlib_widget.axes.plot(np.imag(y),'r',linewidth=1)
+            
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.pushButton_iq_cursor1.setChecked(False)
+            self._slotIQ_Cursor1Clicked() 
+            self.iq_matplotlib_widget.draw()
+            
+    def _slotIQ_FilterTypeChanged(self):
+        """ Enables/disables the filter start frequency edit box.
+        """
+        # Toggle the Edit Box
+        if str(self.comboBox_iq_filter_type.currentText()) == "lowpass":
+            self.textEdit_iq_filter_start.setEnabled(False)            
+        elif str(self.comboBox_iq_filter_type.currentText()) == "bandpass":
+            self.textEdit_iq_filter_start.setEnabled(True)
         
         
 
