@@ -15,8 +15,7 @@ disabled_running_flow_graph_variables:
   - rx_usrp_antenna
   - filepath
 
-fft_size: 4096
-fft_sample_rate: 1e6
+fft_size: 8192
 morse_code_amplitude_threshold: 0.5
 morse_code_error_tolerance: 0.05
 morse_code_same_letter_spacing: 1
