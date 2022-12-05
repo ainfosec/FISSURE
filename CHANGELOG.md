@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-12-04
+
+Program size estimates for install.
+ 
+### Added
+
+- The difference in hard drive space before and after the install is listed for programs. This was calculated from a single install with every box checked so pieces may be partially installed from previous checkboxes.
+- Rankings button in the installer to display the top 30 largest programs and estimate the total size for a full install.
+- 20.04.5 to the Python3_maint-3.8 installer. Performs the same install as 20.04.4 until differences are found.
+   
+### Changed
+
+- README and images to show Ubuntu 20.04.5 and file size estimates for installer
+ 
+### Fixed
+
+- gr-bluetooth installation errors for Python3_maint-3.8 branch
+- SdrGlut installation errors
+
 ## 2022-12-01
 
 Updating IQ Data functions, adding filtering.
