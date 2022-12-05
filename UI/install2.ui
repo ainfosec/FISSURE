@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>820</width>
+    <width>920</width>
     <height>600</height>
    </rect>
   </property>
@@ -16,7 +16,7 @@
   <widget class="QPushButton" name="pushButton_ok">
    <property name="geometry">
     <rect>
-     <x>415</x>
+     <x>465</x>
      <y>560</y>
      <width>90</width>
      <height>27</height>
@@ -29,7 +29,7 @@
   <widget class="QPushButton" name="pushButton_cancel">
    <property name="geometry">
     <rect>
-     <x>315</x>
+     <x>365</x>
      <y>560</y>
      <width>90</width>
      <height>27</height>
@@ -42,7 +42,7 @@
   <widget class="QPushButton" name="pushButton_default">
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>135</x>
      <y>490</y>
      <width>100</width>
      <height>27</height>
@@ -55,7 +55,7 @@
   <widget class="QPushButton" name="pushButton_deselect">
    <property name="geometry">
     <rect>
-     <x>30</x>
+     <x>25</x>
      <y>490</y>
      <width>100</width>
      <height>27</height>
@@ -68,7 +68,7 @@
   <widget class="QPlainTextEdit" name="plainTextEdit1">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>370</x>
      <y>42</y>
      <width>530</width>
      <height>443</height>
@@ -101,7 +101,7 @@
     <rect>
      <x>20</x>
      <y>20</y>
-     <width>230</width>
+     <width>330</width>
      <height>22</height>
     </rect>
    </property>
@@ -128,7 +128,7 @@
   <widget class="QLabel" name="label2">
    <property name="geometry">
     <rect>
-     <x>270</x>
+     <x>370</x>
      <y>20</y>
      <width>530</width>
      <height>22</height>
@@ -157,7 +157,7 @@
   <widget class="QProgressBar" name="progressBar1">
    <property name="geometry">
     <rect>
-     <x>185</x>
+     <x>235</x>
      <y>530</y>
      <width>450</width>
      <height>20</height>
@@ -181,7 +181,7 @@
     <rect>
      <x>20</x>
      <y>42</y>
-     <width>230</width>
+     <width>330</width>
      <height>443</height>
     </rect>
    </property>
@@ -227,6 +227,19 @@ QTreeWidget#treeWidget_software {
     </property>
    </column>
   </widget>
+  <widget class="QPushButton" name="pushButton_rankings">
+   <property name="geometry">
+    <rect>
+     <x>245</x>
+     <y>490</y>
+     <width>100</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Rankings</string>
+   </property>
+  </widget>
   <zorder>treeWidget_software</zorder>
   <zorder>pushButton_ok</zorder>
   <zorder>pushButton_cancel</zorder>
@@ -236,6 +249,7 @@ QTreeWidget#treeWidget_software {
   <zorder>label1</zorder>
   <zorder>label2</zorder>
   <zorder>progressBar1</zorder>
+  <zorder>pushButton_rankings</zorder>
  </widget>
  <resources/>
  <connections/>

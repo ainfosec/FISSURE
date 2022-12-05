@@ -28,6 +28,7 @@ Operating System            |  FISSURE Branch
 | Ubuntu 18.04.6 (x64) | Python2_maint-3.7 |
 | Ubuntu 20.04.1 (x64) | Python3_maint-3.8 |
 | Ubuntu 20.04.4 (x64) | Python3_maint-3.8 |
+| Ubuntu 20.04.5 (x64) | Python3_maint-3.8 |
 | KDE neon 5.25 (x64) | Python3_maint-3.8 |
 
 **In-Progress (beta)**
@@ -62,7 +63,7 @@ It is recommended to install FISSURE on a clean operating system to avoid existi
 
 ![install2](/Icons/README/install2.png) 
 
-The FISSURE installer is helpful for staging computers or installing select software programs of interest. The code can be quickly modified to allow for custom software installs.
+The FISSURE installer is helpful for staging computers or installing select software programs of interest. The code can be quickly modified to allow for custom software installs. The size estimates for the programs are before and after readings from a full install. The sizes for each program are not exact as some dependencies are installed in previously checked items. The sizes may also change over time as programs get updated.
 
 ![install3](/Icons/README/install3.png)
 
