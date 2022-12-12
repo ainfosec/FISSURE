@@ -44,7 +44,7 @@ from gnuradio import qtgui
 
 class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
 
-    def __init__(self, antenna_default='', channel_default='', gain_default='20', ip_address='', rx_freq_default='102.4', sample_rate_default='2e6', serial='', threshold_default='0'):
+    def __init__(self, antenna_default='', channel_default='', gain_default='20', ip_address='', rx_freq_default='102.4', sample_rate_default='2.56e6', serial='', threshold_default='0'):
         gr.top_block.__init__(self, "Fixed Threshold Rtl2832U")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Fixed Threshold Rtl2832U")
@@ -117,8 +117,8 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self._samp_rate_options = (1e6, 2e6, )
-        self._samp_rate_labels = ('1 MS/s', '2 MS/s', )
+        self._samp_rate_options = [0.25e6,1.024e6, 1.536e6, 1.792e6, 1.92e6, 2.048e6, 2.16e6, 2.56e6, 2.88e6, 3.2e6]
+        self._samp_rate_labels = ["0.25 MS/s", "1.024 MS/s", "1.536 MS/s", "1.792 MS/s", "1.92 MS/s", "2.048 MS/s", "2.16 MS/s", "2.56 MS/s", "2.88 MS/s", "3.2 MS/s"]
         self._samp_rate_tool_bar = Qt.QToolBar(self)
         self._samp_rate_tool_bar.addWidget(Qt.QLabel('Sample Rate'+": "))
         self._samp_rate_combo_box = Qt.QComboBox()
@@ -442,8 +442,8 @@ def argument_parser():
         "", "--rx-freq-default", dest="rx_freq_default", type="string", default='102.4',
         help="Set 102.4 [default=%default]")
     parser.add_option(
-        "", "--sample-rate-default", dest="sample_rate_default", type="string", default='2e6',
-        help="Set 2e6 [default=%default]")
+        "", "--sample-rate-default", dest="sample_rate_default", type="string", default='2.56e6',
+        help="Set 2.56e6 [default=%default]")
     parser.add_option(
         "", "--serial", dest="serial", type="string", default='',
         help="Set serial [default=%default]")

@@ -69,13 +69,13 @@ class instantaneous_frequency_rtl2832u(gr.top_block, Qt.QWidget):
         ##################################################
         self.sample_rate = sample_rate = 1e6
         self.rx_rtl_gain = rx_rtl_gain = 40
-        self.rx_frequency = rx_frequency = 915
+        self.rx_frequency = rx_frequency = 102.5
         self.decimation = decimation = 1
 
         ##################################################
         # Blocks
         ##################################################
-        self._sample_rate_options = [0.5, 1e6, 2e6]
+        self._sample_rate_options = [0.5e6, 1e6, 2e6]
         self._sample_rate_labels = ["0.5 MS/s", "1 MS/s", "2 MS/s"]
         self._sample_rate_tool_bar = Qt.QToolBar(self)
         self._sample_rate_tool_bar.addWidget(Qt.QLabel('Sample Rate'+": "))
@@ -98,7 +98,7 @@ class instantaneous_frequency_rtl2832u(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self._rx_frequency_range = Range(50, 6000, .1, 915, 200)
+        self._rx_frequency_range = Range(64, 1700, .1, 102.5, 200)
         self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, ' Freq. (MHz):', "counter_slider", float)
         self.top_grid_layout.addWidget(self._rx_frequency_win, 2, 0, 1, 4)
         for r in range(2, 3):

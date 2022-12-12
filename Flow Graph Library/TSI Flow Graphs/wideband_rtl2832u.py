@@ -31,7 +31,7 @@ class wideband_rtl2832u(gr.top_block):
         ##################################################
         self.threshold = threshold = -70
         self.serial = serial = "False"
-        self.sample_rate = sample_rate = 2000000
+        self.sample_rate = sample_rate = 2560000
         self.rx_freq = rx_freq = 1200e6
         self.ip_address = ip_address = "N/A"
         self.gain = gain = 20

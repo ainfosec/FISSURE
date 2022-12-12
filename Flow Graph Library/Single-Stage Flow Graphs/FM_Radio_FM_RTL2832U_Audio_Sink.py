@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Fm Rtl2832U Audio Sink
-# Generated: Sun Sep 19 17:18:45 2021
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -28,7 +28,7 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         ##################################################
         # Variables
         ##################################################
-        self.sample_rate = sample_rate = 2e6
+        self.sample_rate = sample_rate = 2.56e6
         self.rx_gain = rx_gain = 40
         self.notes = notes = "Plays FM radio audio."
         self.frequency_offset = frequency_offset = 0.3e6
@@ -38,12 +38,6 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
-                interpolation=12,
-                decimation=5,
-                taps=None,
-                fractional_bw=None,
-        )
         self.osmosdr_source_0 = osmosdr.source( args="numchan=" + str(1) + " " + '' )
         self.osmosdr_source_0.set_sample_rate(sample_rate)
         self.osmosdr_source_0.set_center_freq(frequency+frequency_offset, 0)
@@ -59,6 +53,7 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
 
         self.low_pass_filter_0 = filter.fir_filter_ccf(10, firdes.low_pass(
         	1, sample_rate, 75e3, 25e3, firdes.WIN_HAMMING, 6.76))
+        self.fractional_resampler_xx_0 = filter.fractional_resampler_cc(0, sample_rate/4800000)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((audio_gain, ))
         self.audio_sink_0 = audio.sink(48000, '', True)
@@ -68,6 +63,8 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         )
         self.analog_sig_source_x_0 = analog.sig_source_c(sample_rate, analog.GR_COS_WAVE, frequency_offset, 1, 0)
 
+
+
         ##################################################
         # Connections
         ##################################################
@@ -75,9 +72,9 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         self.connect((self.analog_wfm_rcv_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.audio_sink_0, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.low_pass_filter_0, 0))
-        self.connect((self.low_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
+        self.connect((self.fractional_resampler_xx_0, 0), (self.analog_wfm_rcv_0, 0))
+        self.connect((self.low_pass_filter_0, 0), (self.fractional_resampler_xx_0, 0))
         self.connect((self.osmosdr_source_0, 0), (self.blocks_multiply_xx_0, 0))
-        self.connect((self.rational_resampler_xxx_0, 0), (self.analog_wfm_rcv_0, 0))
 
     def get_sample_rate(self):
         return self.sample_rate
@@ -86,6 +83,7 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         self.sample_rate = sample_rate
         self.osmosdr_source_0.set_sample_rate(self.sample_rate)
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 75e3, 25e3, firdes.WIN_HAMMING, 6.76))
+        self.fractional_resampler_xx_0.set_resamp_ratio(self.sample_rate/4800000)
         self.analog_sig_source_x_0.set_sampling_freq(self.sample_rate)
 
     def get_rx_gain(self):

@@ -595,11 +595,11 @@
     </param>
     <param>
       <key>labels</key>
-      <value>[]</value>
+      <value>["0.25 MS/s", "1.024 MS/s", "1.536 MS/s", "1.792 MS/s", "1.92 MS/s", "2.048 MS/s", "2.16 MS/s", "2.56 MS/s", "2.88 MS/s", "3.2 MS/s"]</value>
     </param>
     <param>
       <key>num_opts</key>
-      <value>2</value>
+      <value>0</value>
     </param>
     <param>
       <key>option0</key>
@@ -623,7 +623,7 @@
     </param>
     <param>
       <key>options</key>
-      <value>[0, 1, 2]</value>
+      <value>[0.25e6,1.024e6, 1.536e6, 1.792e6, 1.92e6, 2.048e6, 2.16e6, 2.56e6, 2.88e6, 3.2e6]</value>
     </param>
     <param>
       <key>orient</key>
@@ -3580,7 +3580,7 @@ class blk(gr.sync_block):  # other base classes are basic_block, decim_block, in
     </param>
     <param>
       <key>value</key>
-      <value>2e6</value>
+      <value>2.56e6</value>
     </param>
   </block>
   <block>
