@@ -23,7 +23,7 @@ options:
     sizing_mode: fixed
     thread_safe_setters: ''
     title: ''
-    window_size: 1600, 2048
+    window_size: (1000,1000)
   states:
     bus_sink: false
     bus_source: false
@@ -37,12 +37,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 80e3
+    value: 75e3
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [968, 12]
+    coordinate: [888, 12.0]
     rotation: 0
     state: enabled
 - name: freq
@@ -54,19 +54,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1272, 13]
+    coordinate: [1192, 12.0]
     rotation: 0
     state: enabled
 - name: input_gain
   id: variable
   parameters:
     comment: ''
-    value: '0.3'
+    value: '0.26'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1040, 100]
+    coordinate: [1008, 84.0]
     rotation: 0
     state: enabled
 - name: outbuffer
@@ -78,31 +78,31 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1080, 12]
+    coordinate: [1000, 12.0]
     rotation: 0
     state: enabled
 - name: pilot_gain
   id: variable
   parameters:
     comment: ''
-    value: '0.3'
+    value: '0.1'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1144, 100]
+    coordinate: [1104, 84.0]
     rotation: 0
     state: enabled
 - name: rds_gain
   id: variable
   parameters:
     comment: ''
-    value: '0.3'
+    value: 2000 / fm_max_dev
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [952, 100]
+    coordinate: [888, 84.0]
     rotation: 0
     state: enabled
 - name: usrp_rate
@@ -114,7 +114,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1176, 12]
+    coordinate: [1096, 12.0]
     rotation: 0
     state: enabled
 - name: audio_source_0
@@ -127,105 +127,35 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     num_outputs: '2'
-    ok_to_block: 'True'
+    ok_to_block: 'False'
     samp_rate: '48000'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [56, 1096]
-    rotation: 90
-    state: enabled
-- name: blocks_multiply_const_vxx_0
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: input_gain
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [52, 776]
-    rotation: 90
-    state: enabled
-- name: blocks_multiply_const_vxx_0_0
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: rds_gain
-    maxoutbuf: outbuffer
-    minoutbuf: '0'
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1020, 424]
-    rotation: 270
-    state: enabled
-- name: blocks_multiply_const_vxx_0_0_1
-  id: blocks_multiply_const_vxx
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    const: pilot_gain
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [376, 492]
+    coordinate: [16, 768.0]
     rotation: 0
     state: enabled
-- name: blocks_multiply_const_vxx_0_1
-  id: blocks_multiply_const_vxx
+- name: digital_chunks_to_symbols_xx_0
+  id: digital_chunks_to_symbols_xx
   parameters:
     affinity: ''
     alias: ''
     comment: ''
-    const: input_gain
+    dimension: '1'
+    in_type: byte
     maxoutbuf: '0'
     minoutbuf: '0'
-    type: float
-    vlen: '1'
+    num_ports: '1'
+    out_type: float
+    symbol_table: '[-1, 1]'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [84, 920]
-    rotation: 90
-    state: enabled
-- name: blocks_repeat_0
-  id: blocks_repeat
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    interp: '160'
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    type: float
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [432, 364]
+    coordinate: [304, 352.0]
     rotation: 0
-    state: enabled
+    state: true
 - name: gr_add_xx_0
   id: blocks_add_xx
   parameters:
@@ -241,7 +171,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [440, 728]
+    coordinate: [440, 728.0]
     rotation: 0
     state: enabled
 - name: gr_add_xx_1
@@ -262,23 +192,6 @@ blocks:
     coordinate: [816, 800]
     rotation: 270
     state: enabled
-- name: gr_char_to_float_0
-  id: blocks_char_to_float
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: outbuffer
-    minoutbuf: '0'
-    scale: '1'
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [232, 364]
-    rotation: 0
-    state: enabled
 - name: gr_diff_encoder_bb_0
   id: digital_diff_encoder_bb
   parameters:
@@ -293,7 +206,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [472, 164.0]
+    coordinate: [472, 156.0]
     rotation: 0
     state: enabled
 - name: gr_frequency_modulator_fc_0
@@ -309,23 +222,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [720, 1036]
-    rotation: 180
-    state: enabled
-- name: gr_map_bb_0
-  id: digital_map_bb
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    map: '[-1,1]'
-    maxoutbuf: outbuffer
-    minoutbuf: '0'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [208, 308]
+    coordinate: [720, 1044.0]
     rotation: 180
     state: enabled
 - name: gr_map_bb_1
@@ -341,7 +238,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [528, 308]
+    coordinate: [520, 300.0]
     rotation: 180
     state: enabled
 - name: gr_multiply_xx_0
@@ -359,7 +256,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [896, 336]
+    coordinate: [904, 336.0]
     rotation: 0
     state: enabled
 - name: gr_multiply_xx_1
@@ -407,7 +304,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    amp: '1'
+    amp: rds_gain
     comment: ''
     freq: 57e3
     maxoutbuf: '0'
@@ -421,7 +318,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [704, 88]
+    coordinate: [688, 124.0]
     rotation: 0
     state: enabled
 - name: gr_sig_source_x_0_1
@@ -429,7 +326,7 @@ blocks:
   parameters:
     affinity: ''
     alias: ''
-    amp: '1'
+    amp: pilot_gain
     comment: ''
     freq: 19e3
     maxoutbuf: '0'
@@ -443,7 +340,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [192, 464]
+    coordinate: [192, 436.0]
     rotation: 0
     state: enabled
 - name: gr_sub_xx_0
@@ -461,7 +358,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [416, 872]
+    coordinate: [424, 872.0]
     rotation: 0
     state: enabled
 - name: gr_unpack_k_bits_bb_0
@@ -477,7 +374,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [328, 308]
+    coordinate: [304, 300.0]
     rotation: 180
     state: enabled
 - name: import_0
@@ -493,30 +390,6 @@ blocks:
     coordinate: [192, 12]
     rotation: 0
     state: enabled
-- name: low_pass_filter_0
-  id: low_pass_filter
-  parameters:
-    affinity: ''
-    alias: ''
-    beta: '6.76'
-    comment: ''
-    cutoff_freq: 2.5e3
-    decim: '1'
-    gain: '1'
-    interp: '1'
-    maxoutbuf: outbuffer
-    minoutbuf: '0'
-    samp_rate: usrp_rate
-    type: interp_fir_filter_fff
-    width: .5e3
-    win: window.WIN_HAMMING
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [680, 320]
-    rotation: 0
-    state: enabled
 - name: low_pass_filter_0_0
   id: low_pass_filter
   parameters:
@@ -526,7 +399,7 @@ blocks:
     comment: ''
     cutoff_freq: 15e3
     decim: '1'
-    gain: '1'
+    gain: input_gain
     interp: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -538,7 +411,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [552, 696]
+    coordinate: [552, 692.0]
     rotation: 0
     state: enabled
 - name: low_pass_filter_0_0_0
@@ -550,7 +423,7 @@ blocks:
     comment: ''
     cutoff_freq: 15e3
     decim: '1'
-    gain: '1'
+    gain: input_gain
     interp: '1'
     maxoutbuf: '0'
     minoutbuf: '0'
@@ -562,7 +435,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [552, 840]
+    coordinate: [552, 836.0]
     rotation: 0
     state: enabled
 - name: network_socket_pdu_0
@@ -582,9 +455,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [32, 92.0]
+    coordinate: [32, 140.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: osmosdr_sink_0
   id: osmosdr_sink
   parameters:
@@ -843,7 +716,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [248, 1128]
+    coordinate: [200, 1108.0]
     rotation: 180
     state: enabled
 - name: qtgui_freq_sink_x_0
@@ -879,7 +752,7 @@ blocks:
     ctrlpanel: 'False'
     fc: '0'
     fftsize: '1024'
-    freqhalf: 'True'
+    freqhalf: 'False'
     grid: 'False'
     gui_hint: ''
     label: Relative Gain
@@ -944,7 +817,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [192, 704]
+    coordinate: [208, 700.0]
     rotation: 0
     state: enabled
 - name: rational_resampler_xxx_0_0
@@ -964,7 +837,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [192, 816]
+    coordinate: [208, 804.0]
     rotation: 0
     state: enabled
 - name: rational_resampler_xxx_1
@@ -984,7 +857,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [520, 1016]
+    coordinate: [520, 1020.0]
     rotation: 180
     state: enabled
 - name: rds_encoder_0
@@ -1013,6 +886,29 @@ blocks:
     coordinate: [208, 84.0]
     rotation: 0
     state: true
+- name: root_raised_cosine_filter_0
+  id: root_raised_cosine_filter
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha: '1'
+    comment: ''
+    decim: '160'
+    gain: '111'
+    interp: '160'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    ntaps: 160*11
+    samp_rate: usrp_rate
+    sym_rate: '2375'
+    type: interp_fir_filter_fff
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [664, 324.0]
+    rotation: 0
+    state: enabled
 - name: uhd_usrp_sink
   id: uhd_usrp_sink
   parameters:
@@ -1287,34 +1183,27 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [224, 1012.0]
+    coordinate: [224, 1004.0]
     rotation: 180
     state: disabled
 
 connections:
-- [audio_source_0, '0', blocks_multiply_const_vxx_0, '0']
-- [audio_source_0, '1', blocks_multiply_const_vxx_0_1, '0']
-- [blocks_multiply_const_vxx_0, '0', rational_resampler_xxx_0, '0']
-- [blocks_multiply_const_vxx_0_0, '0', gr_add_xx_1, '0']
-- [blocks_multiply_const_vxx_0_0_1, '0', gr_add_xx_1, '1']
-- [blocks_multiply_const_vxx_0_1, '0', rational_resampler_xxx_0_0, '0']
-- [blocks_repeat_0, '0', low_pass_filter_0, '0']
+- [audio_source_0, '0', rational_resampler_xxx_0, '0']
+- [audio_source_0, '1', rational_resampler_xxx_0_0, '0']
+- [digital_chunks_to_symbols_xx_0, '0', root_raised_cosine_filter_0, '0']
 - [gr_add_xx_0, '0', low_pass_filter_0_0, '0']
 - [gr_add_xx_1, '0', gr_frequency_modulator_fc_0, '0']
 - [gr_add_xx_1, '0', qtgui_freq_sink_x_0, '0']
-- [gr_char_to_float_0, '0', blocks_repeat_0, '0']
 - [gr_diff_encoder_bb_0, '0', gr_map_bb_1, '0']
 - [gr_frequency_modulator_fc_0, '0', rational_resampler_xxx_1, '0']
-- [gr_map_bb_0, '0', gr_char_to_float_0, '0']
 - [gr_map_bb_1, '0', gr_unpack_k_bits_bb_0, '0']
-- [gr_multiply_xx_0, '0', blocks_multiply_const_vxx_0_0, '0']
+- [gr_multiply_xx_0, '0', gr_add_xx_1, '0']
 - [gr_multiply_xx_1, '0', gr_add_xx_1, '2']
 - [gr_sig_source_x_0, '0', gr_multiply_xx_1, '0']
 - [gr_sig_source_x_0_0, '0', gr_multiply_xx_0, '0']
-- [gr_sig_source_x_0_1, '0', blocks_multiply_const_vxx_0_0_1, '0']
+- [gr_sig_source_x_0_1, '0', gr_add_xx_1, '1']
 - [gr_sub_xx_0, '0', low_pass_filter_0_0_0, '0']
-- [gr_unpack_k_bits_bb_0, '0', gr_map_bb_0, '0']
-- [low_pass_filter_0, '0', gr_multiply_xx_0, '1']
+- [gr_unpack_k_bits_bb_0, '0', digital_chunks_to_symbols_xx_0, '0']
 - [low_pass_filter_0_0, '0', gr_add_xx_1, '3']
 - [low_pass_filter_0_0_0, '0', gr_multiply_xx_1, '1']
 - [network_socket_pdu_0, pdus, rds_encoder_0, rds in]
@@ -1325,6 +1214,8 @@ connections:
 - [rational_resampler_xxx_1, '0', osmosdr_sink_0, '0']
 - [rational_resampler_xxx_1, '0', uhd_usrp_sink, '0']
 - [rds_encoder_0, '0', gr_diff_encoder_bb_0, '0']
+- [root_raised_cosine_filter_0, '0', gr_multiply_xx_0, '1']
 
 metadata:
   file_format: 1
+  grc_version: 3.10.2.0

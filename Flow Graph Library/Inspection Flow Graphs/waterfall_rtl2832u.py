@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Waterfall Rtl2832U
-# GNU Radio version: 3.10.1.1
+# GNU Radio version: 3.10.4.0
 
 from packaging.version import Version as StrictVersion
 
@@ -32,10 +32,9 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio.qtgui import Range, RangeWidget
+from gnuradio import soapy
+from gnuradio.qtgui import Range, GrRangeWidget
 from PyQt5 import QtCore
-import osmosdr
-import time
 
 
 
@@ -77,17 +76,17 @@ class waterfall_rtl2832u(gr.top_block, Qt.QWidget):
         ##################################################
         # Variables
         ##################################################
-        self.sample_rate = sample_rate = 1e6
+        self.sample_rate = sample_rate = 2.048e6
         self.rx_rtl_gain = rx_rtl_gain = 40
-        self.rx_frequency = rx_frequency = 915
+        self.rx_frequency = rx_frequency = 102.5
 
         ##################################################
         # Blocks
         ##################################################
         # Create the options list
-        self._sample_rate_options = [0.5, 1000000.0, 2000000.0]
+        self._sample_rate_options = [250000.0, 1024000.0, 1536000.0, 1792000.0, 1920000.0, 2048000.0, 2160000.0, 2560000.0, 2880000.0, 3200000.0]
         # Create the labels list
-        self._sample_rate_labels = ['0.5 MS/s', '1 MS/s', '2 MS/s']
+        self._sample_rate_labels = ['0.25 MS/s', '1.024 MS/s', '1.536 MS/s', '1.792 MS/s', '1.92 MS/s', '2.048 MS/s', '2.16 MS/s', '2.56 MS/s', '2.88 MS/s', '3.2 MS/s']
         # Create the combo box
         self._sample_rate_tool_bar = Qt.QToolBar(self)
         self._sample_rate_tool_bar.addWidget(Qt.QLabel("Sample Rate" + ": "))
@@ -105,34 +104,34 @@ class waterfall_rtl2832u(gr.top_block, Qt.QWidget):
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_rtl_gain_range = Range(0, 47, 1, 40, 200)
-        self._rx_rtl_gain_win = RangeWidget(self._rx_rtl_gain_range, self.set_rx_rtl_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal)
+        self._rx_rtl_gain_win = GrRangeWidget(self._rx_rtl_gain_range, self.set_rx_rtl_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal, "value")
+
         self.top_grid_layout.addWidget(self._rx_rtl_gain_win, 1, 0, 1, 4)
         for r in range(1, 2):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self._rx_frequency_range = Range(50, 6000, .1, 915, 200)
-        self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, " Freq. (MHz):", "counter_slider", float, QtCore.Qt.Horizontal)
+        self._rx_frequency_range = Range(64, 1700, .1, 102.5, 200)
+        self._rx_frequency_win = GrRangeWidget(self._rx_frequency_range, self.set_rx_frequency, " Freq. (MHz):", "counter_slider", float, QtCore.Qt.Horizontal, "value")
+
         self.top_grid_layout.addWidget(self._rx_frequency_win, 2, 0, 1, 4)
         for r in range(2, 3):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.rtlsdr_source_0_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + ''
-        )
-        self.rtlsdr_source_0_0.set_time_unknown_pps(osmosdr.time_spec_t())
-        self.rtlsdr_source_0_0.set_sample_rate(sample_rate)
-        self.rtlsdr_source_0_0.set_center_freq(rx_frequency*1e6, 0)
-        self.rtlsdr_source_0_0.set_freq_corr(0, 0)
-        self.rtlsdr_source_0_0.set_dc_offset_mode(0, 0)
-        self.rtlsdr_source_0_0.set_iq_balance_mode(0, 0)
-        self.rtlsdr_source_0_0.set_gain_mode(False, 0)
-        self.rtlsdr_source_0_0.set_gain(14, 0)
-        self.rtlsdr_source_0_0.set_if_gain(24, 0)
-        self.rtlsdr_source_0_0.set_bb_gain(rx_rtl_gain, 0)
-        self.rtlsdr_source_0_0.set_antenna('', 0)
-        self.rtlsdr_source_0_0.set_bandwidth(0, 0)
+        self.soapy_rtlsdr_source_0 = None
+        dev = 'driver=rtlsdr'
+        stream_args = ''
+        tune_args = ['']
+        settings = ['']
+
+        self.soapy_rtlsdr_source_0 = soapy.source(dev, "fc32", 1, '',
+                                  stream_args, tune_args, settings)
+        self.soapy_rtlsdr_source_0.set_sample_rate(0, sample_rate)
+        self.soapy_rtlsdr_source_0.set_gain_mode(0, False)
+        self.soapy_rtlsdr_source_0.set_frequency(0, (rx_frequency*1e6))
+        self.soapy_rtlsdr_source_0.set_frequency_correction(0, 0)
+        self.soapy_rtlsdr_source_0.set_gain(0, 'TUNER', rx_rtl_gain)
         self.qtgui_waterfall_sink_x_0 = qtgui.waterfall_sink_c(
             1024, #size
             window.WIN_BLACKMAN_hARRIS, #wintype
@@ -177,7 +176,7 @@ class waterfall_rtl2832u(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.connect((self.rtlsdr_source_0_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
+        self.connect((self.soapy_rtlsdr_source_0, 0), (self.qtgui_waterfall_sink_x_0, 0))
 
 
     def closeEvent(self, event):
@@ -195,21 +194,21 @@ class waterfall_rtl2832u(gr.top_block, Qt.QWidget):
         self.sample_rate = sample_rate
         self._sample_rate_callback(self.sample_rate)
         self.qtgui_waterfall_sink_x_0.set_frequency_range(0, self.sample_rate)
-        self.rtlsdr_source_0_0.set_sample_rate(self.sample_rate)
+        self.soapy_rtlsdr_source_0.set_sample_rate(0, self.sample_rate)
 
     def get_rx_rtl_gain(self):
         return self.rx_rtl_gain
 
     def set_rx_rtl_gain(self, rx_rtl_gain):
         self.rx_rtl_gain = rx_rtl_gain
-        self.rtlsdr_source_0_0.set_bb_gain(self.rx_rtl_gain, 0)
+        self.soapy_rtlsdr_source_0.set_gain(0, 'TUNER', self.rx_rtl_gain)
 
     def get_rx_frequency(self):
         return self.rx_frequency
 
     def set_rx_frequency(self, rx_frequency):
         self.rx_frequency = rx_frequency
-        self.rtlsdr_source_0_0.set_center_freq(self.rx_frequency*1e6, 0)
+        self.soapy_rtlsdr_source_0.set_frequency(0, (self.rx_frequency*1e6))
 
 
 

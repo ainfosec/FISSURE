@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Fm Rtl2832U Audio Sink
-# GNU Radio version: 3.10.1.1
+# GNU Radio version: 3.10.4.0
 
 from gnuradio import analog
 from gnuradio import audio
@@ -20,8 +20,7 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-import osmosdr
-import time
+from gnuradio import soapy
 
 
 
@@ -34,7 +33,7 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         ##################################################
         # Variables
         ##################################################
-        self.sample_rate = sample_rate = 2e6
+        self.sample_rate = sample_rate = 2.56e6
         self.rx_gain = rx_gain = 40
         self.notes = notes = "Plays FM radio audio."
         self.frequency_offset = frequency_offset = 0.3e6
@@ -44,26 +43,20 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
-        self.rational_resampler_xxx_0 = filter.rational_resampler_ccc(
-                interpolation=12,
-                decimation=5,
-                taps=[],
-                fractional_bw=0)
-        self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + ''
-        )
-        self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
-        self.osmosdr_source_0.set_sample_rate(sample_rate)
-        self.osmosdr_source_0.set_center_freq(frequency+frequency_offset, 0)
-        self.osmosdr_source_0.set_freq_corr(0, 0)
-        self.osmosdr_source_0.set_dc_offset_mode(0, 0)
-        self.osmosdr_source_0.set_iq_balance_mode(0, 0)
-        self.osmosdr_source_0.set_gain_mode(False, 0)
-        self.osmosdr_source_0.set_gain(10, 0)
-        self.osmosdr_source_0.set_if_gain(20, 0)
-        self.osmosdr_source_0.set_bb_gain(rx_gain, 0)
-        self.osmosdr_source_0.set_antenna('', 0)
-        self.osmosdr_source_0.set_bandwidth(0, 0)
+        self.soapy_rtlsdr_source_0 = None
+        dev = 'driver=rtlsdr'
+        stream_args = ''
+        tune_args = ['']
+        settings = ['']
+
+        self.soapy_rtlsdr_source_0 = soapy.source(dev, "fc32", 1, '',
+                                  stream_args, tune_args, settings)
+        self.soapy_rtlsdr_source_0.set_sample_rate(0, float(sample_rate))
+        self.soapy_rtlsdr_source_0.set_gain_mode(0, False)
+        self.soapy_rtlsdr_source_0.set_frequency(0, (float(frequency)+float(frequency_offset)))
+        self.soapy_rtlsdr_source_0.set_frequency_correction(0, 0)
+        self.soapy_rtlsdr_source_0.set_gain(0, 'TUNER', float(rx_gain))
+        self.mmse_resampler_xx_0 = filter.mmse_resampler_cc(0, (sample_rate/4800000))
         self.low_pass_filter_0 = filter.fir_filter_ccf(
             10,
             firdes.low_pass(
@@ -90,9 +83,9 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         self.connect((self.analog_wfm_rcv_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.audio_sink_0, 0))
         self.connect((self.blocks_multiply_xx_0, 0), (self.low_pass_filter_0, 0))
-        self.connect((self.low_pass_filter_0, 0), (self.rational_resampler_xxx_0, 0))
-        self.connect((self.osmosdr_source_0, 0), (self.blocks_multiply_xx_0, 0))
-        self.connect((self.rational_resampler_xxx_0, 0), (self.analog_wfm_rcv_0, 0))
+        self.connect((self.low_pass_filter_0, 0), (self.mmse_resampler_xx_0, 0))
+        self.connect((self.mmse_resampler_xx_0, 0), (self.analog_wfm_rcv_0, 0))
+        self.connect((self.soapy_rtlsdr_source_0, 0), (self.blocks_multiply_xx_0, 0))
 
 
     def get_sample_rate(self):
@@ -102,14 +95,15 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
         self.sample_rate = sample_rate
         self.analog_sig_source_x_0.set_sampling_freq(self.sample_rate)
         self.low_pass_filter_0.set_taps(firdes.low_pass(1, self.sample_rate, 75e3, 25e3, window.WIN_HAMMING, 6.76))
-        self.osmosdr_source_0.set_sample_rate(self.sample_rate)
+        self.mmse_resampler_xx_0.set_resamp_ratio((self.sample_rate/4800000))
+        self.soapy_rtlsdr_source_0.set_sample_rate(0, float(self.sample_rate))
 
     def get_rx_gain(self):
         return self.rx_gain
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.osmosdr_source_0.set_bb_gain(self.rx_gain, 0)
+        self.soapy_rtlsdr_source_0.set_gain(0, 'TUNER', float(self.rx_gain))
 
     def get_notes(self):
         return self.notes
@@ -123,14 +117,14 @@ class FM_Radio_FM_RTL2832U_Audio_Sink(gr.top_block):
     def set_frequency_offset(self, frequency_offset):
         self.frequency_offset = frequency_offset
         self.analog_sig_source_x_0.set_frequency(self.frequency_offset)
-        self.osmosdr_source_0.set_center_freq(self.frequency+self.frequency_offset, 0)
+        self.soapy_rtlsdr_source_0.set_frequency(0, (float(self.frequency)+float(self.frequency_offset)))
 
     def get_frequency(self):
         return self.frequency
 
     def set_frequency(self, frequency):
         self.frequency = frequency
-        self.osmosdr_source_0.set_center_freq(self.frequency+self.frequency_offset, 0)
+        self.soapy_rtlsdr_source_0.set_frequency(0, (float(self.frequency)+float(self.frequency_offset)))
 
     def get_audio_gain(self):
         return self.audio_gain

@@ -7,7 +7,7 @@
 # GNU Radio Python Flow Graph
 # Title: Not titled yet
 # Author: user
-# GNU Radio version: 3.10.1.1
+# GNU Radio version: 3.10.4.0
 
 from packaging.version import Version as StrictVersion
 
@@ -35,14 +35,14 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
+from gnuradio import soapy
 from gnuradio.fft import logpwrfft
-from gnuradio.qtgui import Range, RangeWidget
+from gnuradio.qtgui import Range, GrRangeWidget
 from PyQt5 import QtCore
 import fixed_threshold_rtl2832u_epy_block_0 as epy_block_0  # embedded python block
 import numpy as np
-import osmosdr
-import time
 import random
+import time
 
 
 
@@ -50,7 +50,7 @@ from gnuradio import qtgui
 
 class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
 
-    def __init__(self, antenna_default='', channel_default='', gain_default='20', ip_address='', rx_freq_default='102.4', sample_rate_default='2e6', serial='', threshold_default='0'):
+    def __init__(self, antenna_default='', channel_default='', gain_default='20', ip_address='', rx_freq_default='102.4', sample_rate_default='2.56e6', serial='', threshold_default='0'):
         gr.top_block.__init__(self, "Not titled yet", catch_exceptions=True)
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Not titled yet")
@@ -116,23 +116,25 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
         # Blocks
         ##################################################
         self._up_line_adj_range = Range(1, 8191, 1, 8191, 200)
-        self._up_line_adj_win = RangeWidget(self._up_line_adj_range, self.set_up_line_adj, "'up_line_adj'", "counter_slider", int, QtCore.Qt.Horizontal)
+        self._up_line_adj_win = GrRangeWidget(self._up_line_adj_range, self.set_up_line_adj, "'up_line_adj'", "counter_slider", int, QtCore.Qt.Horizontal, "value")
+
         self.top_grid_layout.addWidget(self._up_line_adj_win, 5, 0, 1, 4)
         for r in range(5, 6):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._thresh_adj_range = Range(-120, 20, 1, float(threshold_default), 200)
-        self._thresh_adj_win = RangeWidget(self._thresh_adj_range, self.set_thresh_adj, "Thresh", "counter_slider", float, QtCore.Qt.Horizontal)
+        self._thresh_adj_win = GrRangeWidget(self._thresh_adj_range, self.set_thresh_adj, "Thresh", "counter_slider", float, QtCore.Qt.Horizontal, "value")
+
         self.top_grid_layout.addWidget(self._thresh_adj_win, 6, 0, 1, 4)
         for r in range(6, 7):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         # Create the options list
-        self._samp_rate_options = [1000000.0, 2000000.0]
+        self._samp_rate_options = [250000.0, 1024000.0, 1536000.0, 1792000.0, 1920000.0, 2048000.0, 2160000.0, 2560000.0, 2880000.0, 3200000.0]
         # Create the labels list
-        self._samp_rate_labels = ['1 MS/s', '2 MS/s']
+        self._samp_rate_labels = ['0.25 MS/s', '1.024 MS/s', '1.536 MS/s', '1.792 MS/s', '1.92 MS/s', '2.048 MS/s', '2.16 MS/s', '2.56 MS/s', '2.88 MS/s', '3.2 MS/s']
         # Create the combo box
         self._samp_rate_tool_bar = Qt.QToolBar(self)
         self._samp_rate_tool_bar.addWidget(Qt.QLabel("Sample Rate" + ": "))
@@ -150,26 +152,42 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_gain_range = Range(0, 50, 1, float(gain_default), 200)
-        self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal)
+        self._rx_gain_win = GrRangeWidget(self._rx_gain_range, self.set_rx_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal, "value")
+
         self.top_grid_layout.addWidget(self._rx_gain_win, 2, 0, 1, 4)
         for r in range(2, 3):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_freq_range = Range(50, 2200, .1, float(rx_freq_default), 200)
-        self._rx_freq_win = RangeWidget(self._rx_freq_range, self.set_rx_freq, " Freq. (MHz):", "counter_slider", float, QtCore.Qt.Horizontal)
+        self._rx_freq_win = GrRangeWidget(self._rx_freq_range, self.set_rx_freq, " Freq. (MHz):", "counter_slider", float, QtCore.Qt.Horizontal, "value")
+
         self.top_grid_layout.addWidget(self._rx_freq_win, 1, 0, 1, 4)
         for r in range(1, 2):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._low_line_adj_range = Range(1, 8191, 1, 1, 200)
-        self._low_line_adj_win = RangeWidget(self._low_line_adj_range, self.set_low_line_adj, "'low_line_adj'", "counter_slider", int, QtCore.Qt.Horizontal)
+        self._low_line_adj_win = GrRangeWidget(self._low_line_adj_range, self.set_low_line_adj, "'low_line_adj'", "counter_slider", int, QtCore.Qt.Horizontal, "value")
+
         self.top_grid_layout.addWidget(self._low_line_adj_win, 4, 0, 1, 4)
         for r in range(4, 5):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
+        self.soapy_rtlsdr_source_0 = None
+        dev = 'driver=rtlsdr'
+        stream_args = ''
+        tune_args = ['']
+        settings = ['']
+
+        self.soapy_rtlsdr_source_0 = soapy.source(dev, "fc32", 1, '',
+                                  stream_args, tune_args, settings)
+        self.soapy_rtlsdr_source_0.set_sample_rate(0, float(samp_rate))
+        self.soapy_rtlsdr_source_0.set_gain_mode(0, False)
+        self.soapy_rtlsdr_source_0.set_frequency(0, (float(rx_freq)*1e6))
+        self.soapy_rtlsdr_source_0.set_frequency_correction(0, 0)
+        self.soapy_rtlsdr_source_0.set_gain(0, 'TUNER', float(rx_gain))
         self.qtgui_vector_sink_f_0 = qtgui.vector_sink_f(
             fft_size,
             0,
@@ -181,12 +199,13 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
             None # parent
         )
         self.qtgui_vector_sink_f_0.set_update_time(0.10)
-        self.qtgui_vector_sink_f_0.set_y_axis(-140, 10)
+        self.qtgui_vector_sink_f_0.set_y_axis((-140), 10)
         self.qtgui_vector_sink_f_0.enable_autoscale(False)
         self.qtgui_vector_sink_f_0.enable_grid(False)
         self.qtgui_vector_sink_f_0.set_x_axis_units("")
         self.qtgui_vector_sink_f_0.set_y_axis_units("")
         self.qtgui_vector_sink_f_0.set_ref_level(0)
+
 
         labels = ['', '', '', '', '',
             '', '', '', '', '']
@@ -208,21 +227,6 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
 
         self._qtgui_vector_sink_f_0_win = sip.wrapinstance(self.qtgui_vector_sink_f_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_vector_sink_f_0_win)
-        self.osmosdr_source_0 = osmosdr.source(
-            args="numchan=" + str(1) + " " + ''
-        )
-        self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
-        self.osmosdr_source_0.set_sample_rate(samp_rate)
-        self.osmosdr_source_0.set_center_freq(rx_freq*1e6, 0)
-        self.osmosdr_source_0.set_freq_corr(0, 0)
-        self.osmosdr_source_0.set_dc_offset_mode(2, 0)
-        self.osmosdr_source_0.set_iq_balance_mode(1, 0)
-        self.osmosdr_source_0.set_gain_mode(False, 0)
-        self.osmosdr_source_0.set_gain(10, 0)
-        self.osmosdr_source_0.set_if_gain(rx_gain, 0)
-        self.osmosdr_source_0.set_bb_gain(20, 0)
-        self.osmosdr_source_0.set_antenna('', 0)
-        self.osmosdr_source_0.set_bandwidth(0, 0)
         self.logpwrfft_x_0 = logpwrfft.logpwrfft_c(
             sample_rate=samp_rate,
             fft_size=fft_size,
@@ -253,7 +257,7 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_vector_source_x_0_1, 0), (self.qtgui_vector_sink_f_0, 2))
         self.connect((self.logpwrfft_x_0, 0), (self.blocks_add_const_vxx_0, 0))
         self.connect((self.logpwrfft_x_0, 0), (self.qtgui_vector_sink_f_0, 0))
-        self.connect((self.osmosdr_source_0, 0), (self.logpwrfft_x_0, 0))
+        self.connect((self.soapy_rtlsdr_source_0, 0), (self.logpwrfft_x_0, 0))
 
 
     def closeEvent(self, event):
@@ -393,14 +397,14 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
         self._samp_rate_callback(self.samp_rate)
         self.epy_block_0.sample_rate = self.samp_rate
         self.logpwrfft_x_0.set_sample_rate(self.samp_rate)
-        self.osmosdr_source_0.set_sample_rate(self.samp_rate)
+        self.soapy_rtlsdr_source_0.set_sample_rate(0, float(self.samp_rate))
 
     def get_rx_gain(self):
         return self.rx_gain
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.osmosdr_source_0.set_if_gain(self.rx_gain, 0)
+        self.soapy_rtlsdr_source_0.set_gain(0, 'TUNER', float(self.rx_gain))
 
     def get_rx_freq(self):
         return self.rx_freq
@@ -408,7 +412,7 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
     def set_rx_freq(self, rx_freq):
         self.rx_freq = rx_freq
         self.epy_block_0.rx_freq_mhz = self.rx_freq
-        self.osmosdr_source_0.set_center_freq(self.rx_freq*1e6, 0)
+        self.soapy_rtlsdr_source_0.set_frequency(0, (float(self.rx_freq)*1e6))
 
     def get_low_bound_vec_top_half(self):
         return self.low_bound_vec_top_half
@@ -458,8 +462,8 @@ def argument_parser():
         "--rx-freq-default", dest="rx_freq_default", type=str, default='102.4',
         help="Set 102.4 [default=%(default)r]")
     parser.add_argument(
-        "--sample-rate-default", dest="sample_rate_default", type=str, default='2e6',
-        help="Set 2e6 [default=%(default)r]")
+        "--sample-rate-default", dest="sample_rate_default", type=str, default='2.56e6',
+        help="Set 2.56e6 [default=%(default)r]")
     parser.add_argument(
         "--serial", dest="serial", type=str, default='',
         help="Set serial [default=%(default)r]")
