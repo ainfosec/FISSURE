@@ -208,14 +208,16 @@ blocks:
     label2: ''
     label3: ''
     label4: ''
-    labels: '["1 MS/s", "2 MS/s"]'
+    labels: '["0.25 MS/s", "1.024 MS/s", "1.536 MS/s", "1.792 MS/s", "1.92 MS/s",
+      "2.048 MS/s", "2.16 MS/s", "2.56 MS/s", "2.88 MS/s", "3.2 MS/s"]'
     num_opts: '0'
     option0: '0'
     option1: '1'
     option2: '2'
     option3: '3'
     option4: '4'
-    options: '[1e6, 2e6]'
+    options: '[0.25e6,1.024e6, 1.536e6, 1.792e6, 1.92e6, 2.048e6, 2.16e6, 2.56e6,
+      2.88e6, 3.2e6]'
     orient: Qt.QVBoxLayout
     type: real
     value: float(sample_rate_default)
@@ -1234,7 +1236,7 @@ blocks:
     label: sample_rate_default
     short_id: ''
     type: str
-    value: 2e6
+    value: 2.56e6
   states:
     bus_sink: false
     bus_source: false

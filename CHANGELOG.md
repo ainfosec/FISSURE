@@ -1,6 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-12-12
+
+Adding RTLSDR Soapy blocks and hardware parameter limits.
+ 
+### Added
+
+- Gain and frequency spin boxes in IQ Record tab
+- Sample rate combo box in IQ Record tab for RTL2832U
+  
+### Changed
+
+- Python3_maint-3.10 RTL2832U flow graphs now use Soapy RTLSDR blocks and sample rates
+- RTL2832U TSI wideband detector sample rate defaults
+- RTL2832U "FM Radio - Audio Sink" attack adjusted for variable sample rate
+ 
+### Fixed
+
+- Addressed rgb/rgba warnings in dashboard.ui
+- RTL2832U Inspection flow graphs had an incorrect sample rate option for 0.5 MS/s
+- RTL2832U frequency ranges for Inspection flow graphs adjusted to 64-1700 MHz
+- Replaced Standalone flow graphs with latest examples from gr-rds for Python3_maint-3.10 branch
+
 ## 2022-12-04
 
 Program size estimates for install.

@@ -46,7 +46,7 @@ from gnuradio import qtgui
 
 class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
 
-    def __init__(self, antenna_default='', channel_default='', gain_default='20', ip_address='', rx_freq_default='102.4', sample_rate_default='2e6', serial='', threshold_default='0'):
+    def __init__(self, antenna_default='', channel_default='', gain_default='20', ip_address='', rx_freq_default='102.4', sample_rate_default='2.56e6', serial='', threshold_default='0'):
         gr.top_block.__init__(self, "Not titled yet")
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Not titled yet")
@@ -126,9 +126,9 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         # Create the options list
-        self._samp_rate_options = [1000000.0, 2000000.0]
+        self._samp_rate_options = [250000.0, 1024000.0, 1536000.0, 1792000.0, 1920000.0, 2048000.0, 2160000.0, 2560000.0, 2880000.0, 3200000.0]
         # Create the labels list
-        self._samp_rate_labels = ['1 MS/s', '2 MS/s']
+        self._samp_rate_labels = ['0.25 MS/s', '1.024 MS/s', '1.536 MS/s', '1.792 MS/s', '1.92 MS/s', '2.048 MS/s', '2.16 MS/s', '2.56 MS/s', '2.88 MS/s', '3.2 MS/s']
         # Create the combo box
         self._samp_rate_tool_bar = Qt.QToolBar(self)
         self._samp_rate_tool_bar.addWidget(Qt.QLabel('Sample Rate' + ": "))
@@ -448,8 +448,8 @@ def argument_parser():
         "--rx-freq-default", dest="rx_freq_default", type=str, default='102.4',
         help="Set 102.4 [default=%(default)r]")
     parser.add_argument(
-        "--sample-rate-default", dest="sample_rate_default", type=str, default='2e6',
-        help="Set 2e6 [default=%(default)r]")
+        "--sample-rate-default", dest="sample_rate_default", type=str, default='2.56e6',
+        help="Set 2.56e6 [default=%(default)r]")
     parser.add_argument(
         "--serial", dest="serial", type=str, default='',
         help="Set serial [default=%(default)r]")

@@ -192,7 +192,7 @@
            </property>
            <property name="styleSheet">
             <string notr="true">#pushButton_top_tsi{
-	color: rgb(0, 0, 0,);
+	color: rgb(0, 0, 0);
 	padding: 45px 0px 0px 92px;
 	background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));
 	border-style: outset;
@@ -266,7 +266,7 @@
            </property>
            <property name="styleSheet">
             <string notr="true">#pushButton_top_pd{
-	color: rgb(0, 0, 0,);
+	color: rgb(0, 0, 0);
 	padding: 45px 0px 0px 94px;
 	background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));
 	border-style: outset;
@@ -336,7 +336,7 @@
            </property>
            <property name="styleSheet">
             <string notr="true">#pushButton_top_attack{
-	color: rgb(0, 0, 0,);
+	color: rgb(0, 0, 0);
 	padding: 45px 0px 0px 65px;
 	background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));
 	border-style: outset;
@@ -406,7 +406,7 @@
            </property>
            <property name="styleSheet">
             <string notr="true">#pushButton_top_iq{
-	color: rgb(0, 0, 0,);
+	color: rgb(0, 0, 0);
 	padding: 45px 0px 0px 94px;
 	background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));
 	border-style: outset;
@@ -460,7 +460,7 @@
            </property>
            <property name="styleSheet">
             <string notr="true">#pushButton_top_archive{
-	color: rgb(0, 0, 0,);
+	color: rgb(0, 0, 0);
 	padding: 45px 0px 0px 60px;
 	background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));
 	border-style: outset;
@@ -15320,7 +15320,7 @@ p, li { white-space: pre-wrap; }
                  <rect>
                   <x>10</x>
                   <y>40</y>
-                  <width>600</width>
+                  <width>1175</width>
                   <height>71</height>
                  </rect>
                 </property>

@@ -6049,13 +6049,22 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 # Get the Values from the Table
                 try:
                     get_base_file_name = str(self.tableWidget_iq_record.item(0,0).text())
-                    get_frequency = str(self.tableWidget_iq_record.item(0,1).text())
+                    try:
+                        get_frequency = str(self.tableWidget_iq_record.cellWidget(0,1).value())
+                    except:
+                        get_frequency = str(self.tableWidget_iq_record.item(0,1).text())
                     get_channel = str(self.tableWidget_iq_record.cellWidget(0,2).currentText())
                     get_antenna = str(self.tableWidget_iq_record.cellWidget(0,3).currentText())
-                    get_gain = str(self.tableWidget_iq_record.item(0,4).text())
+                    try:
+                        get_gain = str(self.tableWidget_iq_record.cellWidget(0,4).value())
+                    except:
+                        get_gain = str(self.tableWidget_iq_record.item(0,4).text())
                     get_number_of_files = str(self.tableWidget_iq_record.item(0,5).text())
                     get_file_length = str(self.tableWidget_iq_record.item(0,6).text())
-                    get_sample_rate = str(self.tableWidget_iq_record.item(0,7).text())
+                    try:
+                        get_sample_rate = str(self.tableWidget_iq_record.cellWidget(0,7).currentText())
+                    except:
+                        get_sample_rate = str(self.tableWidget_iq_record.item(0,7).text())
                     get_data_type = str(self.tableWidget_iq_record.cellWidget(0,8).currentText())
                     get_file_interval = str(self.tableWidget_iq_record.item(0,9).text())
                     #get_power_squelch = str(self.tableWidget_iq_record.item(0,9).text())
@@ -12200,7 +12209,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
                                 parameter_value = "0"
                             else:
-                                parameter_value = "False"   
+                                parameter_value = "False"
                     else:
                         parameter_value = fg_parameters[p].lstrip(' ').split('=')[1].replace('"','')
                       
@@ -12721,9 +12730,14 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png"))
             
             # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(6000)
+            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
             comboBox_channel.addItem("A:0")
-            comboBox_channel.addItem("B:0") 
+            comboBox_channel.addItem("B:0")
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
             comboBox_antenna = QtWidgets.QComboBox(self)
             comboBox_antenna.addItem("TX/RX")
@@ -12747,16 +12761,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
                 
-            gain_item = QtWidgets.QTableWidgetItem("30")
-            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_record.setItem(0,4,gain_item)
-            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(34)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(30)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            self.tableWidget_iq_record.removeCellWidget(0,7)
             self.tableWidget_iq_record.resizeColumnsToContents()
             self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
+            playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_frequency.setMaximum(6000)
+            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
             comboBox_playback_channel.addItem("A:0")
             comboBox_playback_channel.addItem("B:0") 
@@ -12764,9 +12786,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_playback_antenna = QtWidgets.QComboBox(self)
             comboBox_playback_antenna.addItem("TX/RX")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
-            playback_gain_item = QtWidgets.QTableWidgetItem("30")
-            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_gain.setMaximum(34)
+            playback_spinbox_gain.setMinimum(0)
+            playback_spinbox_gain.setValue(30)
+            playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
             self.tableWidget_iq_playback.resizeColumnsToContents() 
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
@@ -12778,6 +12803,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png"))
             
             # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(6000)
+            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
             comboBox_channel.addItem("A:A")
             comboBox_channel.addItem("A:B") 
@@ -12786,16 +12816,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_antenna.addItem("TX/RX")
             comboBox_antenna.addItem("RX2") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
-            gain_item = QtWidgets.QTableWidgetItem("60")
-            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_record.setItem(0,4,gain_item)
-            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(90)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(70)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            self.tableWidget_iq_record.removeCellWidget(0,7)
             self.tableWidget_iq_record.resizeColumnsToContents()
             self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
+            playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_frequency.setMaximum(6000)
+            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
             comboBox_playback_channel.addItem("A:A")
             comboBox_playback_channel.addItem("A:B") 
@@ -12803,9 +12841,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_playback_antenna = QtWidgets.QComboBox(self)
             comboBox_playback_antenna.addItem("TX/RX")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
-            playback_gain_item = QtWidgets.QTableWidgetItem("60")
-            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_gain.setMaximum(90)
+            playback_spinbox_gain.setMinimum(0)
+            playback_spinbox_gain.setValue(70)
+            playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
             self.tableWidget_iq_playback.resizeColumnsToContents()
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)            
@@ -12817,31 +12858,47 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/HackRF.png"))   
             
             # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(6000)
+            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
             comboBox_channel.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
             comboBox_antenna = QtWidgets.QComboBox(self)
             comboBox_antenna.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
-            gain_item = QtWidgets.QTableWidgetItem("20")
-            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_record.setItem(0,4,gain_item)
-            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(47)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(40)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            self.tableWidget_iq_record.removeCellWidget(0,7)
             self.tableWidget_iq_record.resizeColumnsToContents()
             self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
+            playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_frequency.setMaximum(6000)
+            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
             comboBox_playback_channel.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
             comboBox_playback_antenna = QtWidgets.QComboBox(self)
             comboBox_playback_antenna.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
-            playback_gain_item = QtWidgets.QTableWidgetItem("20")
-            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_gain.setMaximum(47)
+            playback_spinbox_gain.setMinimum(0)
+            playback_spinbox_gain.setValue(40)
+            playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
             self.tableWidget_iq_playback.resizeColumnsToContents()
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)            
@@ -12853,16 +12910,39 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/RTL2832U.png"))
             
             # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(1700)
+            spinbox_frequency.setMinimum(64)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
             comboBox_channel.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
             comboBox_antenna = QtWidgets.QComboBox(self)
             comboBox_antenna.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
-            gain_item = QtWidgets.QTableWidgetItem("20")
-            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_record.setItem(0,4,gain_item)
-            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(47)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(40)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            comboBox_sample_rate = QtWidgets.QComboBox(self)
+            comboBox_sample_rate.addItem("0.25")
+            comboBox_sample_rate.addItem("1.024")
+            comboBox_sample_rate.addItem("1.536")
+            comboBox_sample_rate.addItem("1.792")
+            comboBox_sample_rate.addItem("1.92")
+            comboBox_sample_rate.addItem("2.048")
+            comboBox_sample_rate.addItem("2.16")
+            comboBox_sample_rate.addItem("2.56")
+            comboBox_sample_rate.addItem("2.88")
+            comboBox_sample_rate.addItem("3.2")
+            comboBox_sample_rate.setCurrentIndex(7)
+            comboBox_sample_rate.setEditable(True)
+            comboBox_sample_rate.lineEdit().setAlignment(QtCore.Qt.AlignCenter)
+            comboBox_sample_rate.lineEdit().setReadOnly(True)
+            self.tableWidget_iq_record.setCellWidget(0,7,comboBox_sample_rate)
             self.tableWidget_iq_record.resizeColumnsToContents()
             self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
@@ -12883,6 +12963,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self._slotIQ_InspectionHardwareChanged()
             
             # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(6000)
+            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
             comboBox_channel.addItem("A:A")
             comboBox_channel.addItem("A:B") 
@@ -12891,16 +12976,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_antenna.addItem("TX/RX")
             comboBox_antenna.addItem("RX2") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
-            gain_item = QtWidgets.QTableWidgetItem("60")
-            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_record.setItem(0,4,gain_item)
-            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(90)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(70)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            self.tableWidget_iq_record.removeCellWidget(0,7)
             self.tableWidget_iq_record.resizeColumnsToContents()
             self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
+            playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_frequency.setMaximum(6000)
+            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
             comboBox_playback_channel.addItem("A:A")
             comboBox_playback_channel.addItem("A:B") 
@@ -12908,9 +13001,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_playback_antenna = QtWidgets.QComboBox(self)
             comboBox_playback_antenna.addItem("TX/RX")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
-            playback_gain_item = QtWidgets.QTableWidgetItem("60")
-            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)       
+            playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_gain.setMaximum(90)
+            playback_spinbox_gain.setMinimum(0)
+            playback_spinbox_gain.setValue(70)
+            playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)     
             self.tableWidget_iq_playback.resizeColumnsToContents()  
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)            
@@ -12922,6 +13018,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self._slotIQ_InspectionHardwareChanged()
             
             # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(6000)
+            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
             comboBox_channel.addItem("A")
             comboBox_channel.addItem("B") 
@@ -12930,16 +13031,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_antenna.addItem("RX1")
             comboBox_antenna.addItem("RX2") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
-            gain_item = QtWidgets.QTableWidgetItem("55")
-            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_record.setItem(0,4,gain_item)
-            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(70)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(50)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            self.tableWidget_iq_record.removeCellWidget(0,7)
             self.tableWidget_iq_record.resizeColumnsToContents()
             self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
+            playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_frequency.setMaximum(6000)
+            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
             comboBox_playback_channel.addItem("A")
             comboBox_playback_channel.addItem("B") 
@@ -12948,9 +13057,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_playback_antenna.addItem("TX1")
             comboBox_playback_antenna.addItem("TX2")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
-            playback_gain_item = QtWidgets.QTableWidgetItem("55")
-            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_gain.setMaximum(70)
+            playback_spinbox_gain.setMinimum(0)
+            playback_spinbox_gain.setValue(50)
+            playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
             self.tableWidget_iq_playback.resizeColumnsToContents()
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)            
@@ -12962,6 +13074,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self._slotIQ_InspectionHardwareChanged()
             
             # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(3800)
+            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
             comboBox_channel.addItem("")
             comboBox_channel.addItem("") 
@@ -12970,16 +13087,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_antenna.addItem("")
             comboBox_antenna.addItem("") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
-            gain_item = QtWidgets.QTableWidgetItem("20")
-            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_record.setItem(0,4,gain_item)
-            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(47)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(40)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            self.tableWidget_iq_record.removeCellWidget(0,7)
             self.tableWidget_iq_record.resizeColumnsToContents()
             self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
+            playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_frequency.setMaximum(3800)
+            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
             comboBox_playback_channel.addItem("")
             comboBox_playback_channel.addItem("") 
@@ -12988,9 +13113,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_playback_antenna.addItem("")
             comboBox_playback_antenna.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
-            playback_gain_item = QtWidgets.QTableWidgetItem("20")
-            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_gain.setMaximum(47)
+            playback_spinbox_gain.setMinimum(0)
+            playback_spinbox_gain.setValue(40)
+            playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
             self.tableWidget_iq_playback.resizeColumnsToContents()
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)            
@@ -13007,31 +13135,47 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png"))   
             
             # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(3800)
+            spinbox_frequency.setMinimum(325)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
             comboBox_channel.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
             comboBox_antenna = QtWidgets.QComboBox(self)
             comboBox_antenna.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
-            gain_item = QtWidgets.QTableWidgetItem("64")
-            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_record.setItem(0,4,gain_item)
-            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(71)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(64)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            self.tableWidget_iq_record.removeCellWidget(0,7)
             self.tableWidget_iq_record.resizeColumnsToContents()
             self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
+            playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_frequency.setMaximum(3800)
+            playback_spinbox_frequency.setMinimum(325)
+            playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
             comboBox_playback_channel.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
             comboBox_playback_antenna = QtWidgets.QComboBox(self)
             comboBox_playback_antenna.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
-            playback_gain_item = QtWidgets.QTableWidgetItem("64")
-            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_gain.setMaximum(71)
+            playback_spinbox_gain.setMinimum(0)
+            playback_spinbox_gain.setValue(64)
+            playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
             self.tableWidget_iq_playback.resizeColumnsToContents()
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)            
@@ -13043,6 +13187,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png"))
             
             # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(6000)
+            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
             comboBox_channel.addItem("A:0")
             comboBox_channel.addItem("B:0") 
@@ -13059,16 +13208,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_antenna.addItem("J1")
             comboBox_antenna.addItem("J2") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
-            gain_item = QtWidgets.QTableWidgetItem("30")
-            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_record.setItem(0,4,gain_item)
-            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(34)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(30)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            self.tableWidget_iq_record.removeCellWidget(0,7)
             self.tableWidget_iq_record.resizeColumnsToContents()
             self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
+            playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_frequency.setMaximum(6000)
+            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
             comboBox_playback_channel.addItem("A:0")
             comboBox_playback_channel.addItem("B:0") 
@@ -13085,9 +13242,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_playback_antenna.addItem("J1")
             comboBox_playback_antenna.addItem("J2")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
-            playback_gain_item = QtWidgets.QTableWidgetItem("30")
-            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_gain.setMaximum(34)
+            playback_spinbox_gain.setMinimum(0)
+            playback_spinbox_gain.setValue(30)
+            playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
             self.tableWidget_iq_playback.resizeColumnsToContents() 
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
@@ -13099,6 +13259,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png"))
             
             # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(6000)
+            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
             comboBox_channel.addItem("A:0")
             comboBox_channel.addItem("B:0") 
@@ -13115,16 +13280,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_antenna.addItem("J1")
             comboBox_antenna.addItem("J2") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
-            gain_item = QtWidgets.QTableWidgetItem("30")
-            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_record.setItem(0,4,gain_item)
-            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(34)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(30)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            self.tableWidget_iq_record.removeCellWidget(0,7)
             self.tableWidget_iq_record.resizeColumnsToContents()
             self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
+            playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_frequency.setMaximum(6000)
+            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
             comboBox_playback_channel.addItem("A:0")
             comboBox_playback_channel.addItem("B:0") 
@@ -13141,9 +13314,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_playback_antenna.addItem("J1")
             comboBox_playback_antenna.addItem("J2")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
-            playback_gain_item = QtWidgets.QTableWidgetItem("30")
-            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_gain.setMaximum(34)
+            playback_spinbox_gain.setMinimum(0)
+            playback_spinbox_gain.setValue(30)
+            playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
             self.tableWidget_iq_playback.resizeColumnsToContents() 
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
@@ -13156,6 +13332,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self._slotIQ_InspectionHardwareChanged()
             
             # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(3800)
+            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
             comboBox_channel.addItem("")
             comboBox_channel.addItem("") 
@@ -13164,16 +13345,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_antenna.addItem("")
             comboBox_antenna.addItem("") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
-            gain_item = QtWidgets.QTableWidgetItem("20")
-            gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_record.setItem(0,4,gain_item)
-            comboBox_antenna = self.tableWidget_iq_record.cellWidget(0,3)
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(47)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(40)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            self.tableWidget_iq_record.removeCellWidget(0,7)
             self.tableWidget_iq_record.resizeColumnsToContents()
             self.tableWidget_iq_record.setColumnWidth(0,300)
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
             self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
             
             # IQ Playback
+            playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_frequency.setMaximum(3800)
+            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
             comboBox_playback_channel.addItem("")
             comboBox_playback_channel.addItem("") 
@@ -13182,9 +13371,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_playback_antenna.addItem("")
             comboBox_playback_antenna.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
-            playback_gain_item = QtWidgets.QTableWidgetItem("20")
-            playback_gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            self.tableWidget_iq_playback.setItem(0,3,playback_gain_item)
+            playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_gain.setMaximum(47)
+            playback_spinbox_gain.setMinimum(0)
+            playback_spinbox_gain.setValue(40)
+            playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
             self.tableWidget_iq_playback.resizeColumnsToContents()
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)            
@@ -16717,27 +16909,25 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Copies the frequency value from the Record tab table to the Playback tab table.
         """
         # Get Record Table Value
-        get_frequency = str(self.tableWidget_iq_record.item(0,1).text())
-        
-        # Make New Item
-        frequency_item = QtWidgets.QTableWidgetItem(get_frequency)
-        frequency_item.setTextAlignment(QtCore.Qt.AlignCenter)   
+        try:
+            get_frequency = float(self.tableWidget_iq_record.cellWidget(0,1).value())
+        except:
+            get_frequency = float(self.tableWidget_iq_record.item(0,1).text())
         
         # Copy to Playback Table
-        self.tableWidget_iq_playback.setItem(0,0,frequency_item)
+        self.tableWidget_iq_playback.cellWidget(0,0).setValue(get_frequency)
 
     def _slotIQ_PlaybackRecordGainClicked(self):
         """ Copies the gain value from the Record tab table to the Playback tab table.
         """
         # Get Record Table Value
-        get_gain = str(self.tableWidget_iq_record.item(0,4).text())
-        
-        # Make New Item
-        gain_item = QtWidgets.QTableWidgetItem(get_gain)
-        gain_item.setTextAlignment(QtCore.Qt.AlignCenter)   
+        try:
+            get_gain = float(self.tableWidget_iq_record.cellWidget(0,4).value())
+        except:
+            get_gain = float(self.tableWidget_iq_record.item(0,4).text())
         
         # Copy to Playback Table
-        self.tableWidget_iq_playback.setItem(0,3,gain_item)
+        self.tableWidget_iq_playback.cellWidget(0,3).setValue(get_gain)
 
     def _slotIQ_PlaybackRecordRateClicked(self):
         """ Copies the sampling rate value from the Record tab table to the Playback tab table.
@@ -19610,7 +19800,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.stackedWidget_tsi_detector.setCurrentIndex(0)
             
         elif get_detector == 'wideband_rtl2832u.py':
-            self.textEdit_tsi_detector_fg_sample_rate.setPlainText("2e6")
+            self.textEdit_tsi_detector_fg_sample_rate.setPlainText("2.56e6")
             self.spinBox_tsi_detector_fg_threshold.setValue(-70)
             self.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
             self.spinBox_tsi_detector_fg_gain.setMaximum(50)
@@ -21498,9 +21688,17 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("102.4")
             self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
-            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("0.25e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1.024e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1.536e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1.792e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1.92e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2.048e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2.16e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2.56e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2.88e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("3.2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(7)
             self.spinBox_tsi_detector_fixed_threshold.setValue(0)
             self.spinBox_tsi_detector_fixed_gain.setMaximum(50)
             self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
@@ -21772,7 +21970,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         else:
                             parameter_value = "1e6"
                       
-                    # Fill in the "Current Values" Table
+                    # Fill in the "Current Values" Table      
                     parameter_value_item = QtWidgets.QTableWidgetItem(parameter_value)
                     parameter_value_item.setFont(new_font)
                     self.tableWidget_iq_inspection_fg_file_values.setRowCount(self.tableWidget_iq_inspection_fg_file_values.rowCount()+1)
@@ -21906,20 +22104,35 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens a dialog for configuring SigMF metadata values.
         """
         # Copy Values from Table
+        # Sample Rate
         try:
-            get_sample_rate = str(float(str(self.tableWidget_iq_record.item(0,7).text()))*1000000)
+            get_widget = self.tableWidget_iq_record.cellWidget(0,7)
+            if get_widget == None:
+                get_sample_rate = str(float(str(self.tableWidget_iq_record.item(0,7).text()))*1000000)
+            else:
+                get_sample_rate = str(float(str(self.tableWidget_iq_record.cellWidget(0,7).currentText()))*1000000)
         except:
             get_sample_rate = None
+        
+        # Hardware
         try:
             get_hw = self.dashboard_settings_dictionary['hardware_iq']
         except:
             get_hw = None
+            
+        # File
         try:
             get_dataset = str(self.tableWidget_iq_record.item(0,0).text())
         except:
             get_dataset = None
+            
+        # Frequency
         try:
-            get_frequency = str(float(str(self.tableWidget_iq_record.item(0,1).text()))*1000000)
+            get_widget = self.tableWidget_iq_record.cellWidget(0,1)
+            if get_widget == None:
+                get_frequency = str(float(str(self.tableWidget_iq_record.item(0,1).text()))*1000000)
+            else:
+                get_frequency = str(float(str(self.tableWidget_iq_record.cellWidget(0,1).value()))*1000000)
         except:
             get_frequency = None
 
