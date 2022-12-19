@@ -1568,6 +1568,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionMorse_Code_Translator.triggered.connect(self._slotMenuMorseCodeTranslatorClicked)
         self.actionPSK_Reporter.triggered.connect(self._slotMenuPSK_ReporterClicked)
         self.actionAmateur_Satellite_Database.triggered.connect(self._slotMenuAmateurSatelliteDatabaseClicked)
+        self.actioncryptii.triggered.connect(self._slotMenuCryptiiClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -10636,12 +10637,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         # Get the Values
         get_width = str(self.comboBox_pd_crc_find_poly.currentText())
-        get_seed = str(self.textEdit_pd_crc_seed.toPlainText())
-        get_final_xor = str(self.textEdit_pd_crc_final_xor.toPlainText())
-        get_input1 = str(self.textEdit_pd_crc_input1.toPlainText())
-        get_input2 = str(self.textEdit_pd_crc_input2.toPlainText())
-        get_crc1 = str(self.textEdit_pd_crc_crc1.toPlainText())
-        get_crc2 = str(self.textEdit_pd_crc_crc2.toPlainText())
+        get_seed = str(self.textEdit_pd_crc_seed.toPlainText()).upper()
+        get_final_xor = str(self.textEdit_pd_crc_final_xor.toPlainText()).upper()
+        get_input1 = str(self.textEdit_pd_crc_input1.toPlainText()).upper()
+        get_input2 = str(self.textEdit_pd_crc_input2.toPlainText()).upper()
+        get_crc1 = str(self.textEdit_pd_crc_crc1.toPlainText()).upper()
+        get_crc2 = str(self.textEdit_pd_crc_crc2.toPlainText()).upper()
         get_reverse_input = self.checkBox_pd_crc_reverse_input.isChecked()
         get_reverse_output = self.checkBox_pd_crc_reverse_final_xor.isChecked()
         
@@ -10714,7 +10715,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 # acc = "%0.8X" % acc  
                         
             # Input 1 Match
+            print(p1)
+            print(acc)
+            print(get_crc1)
             if acc == get_crc1:
+                print("MATCH1")
                 acc = get_seed
                 for n in range(0,int(len(get_input2)/2)):
                     # Reverse Input
@@ -20084,7 +20089,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         spectrum_painter_directory = os.path.expanduser("~/Installed_by_FISSURE/spectrum_painter/")
-        converter_command = "convert -pointsize 30 -fill black label:hello hello.png && python3 -m spectrum_painter.img2iqstream hello.png --samplerate 8000000 --format hackrf > hello.raw"        
+        converter_command = "convert -pointsize 30 -fill black label:hello hello.png && convert -flip hello.png hello.png && python3 -m spectrum_painter.img2iqstream hello.png --samplerate 8000000 --format hackrf > hello.raw"        
         proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + converter_command + '"', cwd=spectrum_painter_directory, shell=True) 
 
     def _slotMenuModifyingDashboardClicked(self):
@@ -22507,6 +22512,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.textEdit_iq_filter_start.setEnabled(False)            
         elif str(self.comboBox_iq_filter_type.currentText()) == "bandpass":
             self.textEdit_iq_filter_start.setEnabled(True)
+            
+    def _slotMenuCryptiiClicked(self):
+        """ Opens cryptii.com in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://cryptii.com/ &")
             
             
             

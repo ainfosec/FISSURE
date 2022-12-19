@@ -1,6 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-12-19
+
+Fixing CRC reverse lookup.
+ 
+### Added
+
+- Added link to cryptii.com in the menu
+  
+### Changed
+
+- Adjusted gr-paint converter command to flip the image
+ 
+### Fixed
+
+- CRC reverse lookup now allows for lowercase hex characters
+- Repositioned IQ viewer toolbar in Python2_maint-3.7 branch
+
 ## 2022-12-12
 
 Adding RTLSDR Soapy blocks and hardware parameter limits.
