@@ -27497,6 +27497,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionOnline_Hex_Converter"/>
      <addaction name="actionBless"/>
      <addaction name="actiontriq_org"/>
+     <addaction name="actioncryptii"/>
     </widget>
     <widget class="QMenu" name="menuBluetooth">
      <property name="title">
@@ -29264,6 +29265,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionAmateur_Satellite_Database">
    <property name="text">
     <string>Amateur Satellite Database</string>
+   </property>
+  </action>
+  <action name="actioncryptii">
+   <property name="text">
+    <string>cryptii</string>
    </property>
   </action>
  </widget>
