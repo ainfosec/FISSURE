@@ -10715,11 +10715,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 # acc = "%0.8X" % acc  
                         
             # Input 1 Match
-            print(p1)
-            print(acc)
-            print(get_crc1)
             if acc == get_crc1:
-                print("MATCH1")
+                #print("MATCH1")
                 acc = get_seed
                 for n in range(0,int(len(get_input2)/2)):
                     # Reverse Input
@@ -12810,7 +12807,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # IQ Record
             spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
             spinbox_frequency.setMaximum(6000)
-            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setMinimum(70)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
@@ -12836,7 +12833,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # IQ Playback
             playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
             playback_spinbox_frequency.setMaximum(6000)
-            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setMinimum(70)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
@@ -12865,7 +12862,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # IQ Record
             spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
             spinbox_frequency.setMaximum(6000)
-            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setMinimum(1)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
@@ -12889,7 +12886,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # IQ Playback
             playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
             playback_spinbox_frequency.setMaximum(6000)
-            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setMinimum(1)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
@@ -12970,7 +12967,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # IQ Record
             spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
             spinbox_frequency.setMaximum(6000)
-            spinbox_frequency.setMinimum(50)
+            spinbox_frequency.setMinimum(70)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
             comboBox_channel = QtWidgets.QComboBox(self)
@@ -12996,7 +12993,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # IQ Playback
             playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
             playback_spinbox_frequency.setMaximum(6000)
-            playback_spinbox_frequency.setMinimum(50)
+            playback_spinbox_frequency.setMinimum(70)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
             comboBox_playback_channel = QtWidgets.QComboBox(self)            
@@ -15712,11 +15709,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         if self.pushButton_iq_playback.text() == "Play":
             try:
                 # Get the Values from the Table
-                get_frequency = str(self.tableWidget_iq_playback.item(0,0).text())
+                try:
+                    get_frequency = str(self.tableWidget_iq_playback.cellWidget(0,0).value())
+                except:
+                    get_frequency = str(self.tableWidget_iq_playback.item(0,0).text())        
                 get_channel = str(self.tableWidget_iq_playback.cellWidget(0,1).currentText())
                 get_antenna = str(self.tableWidget_iq_playback.cellWidget(0,2).currentText())
-                get_gain = str(self.tableWidget_iq_playback.item(0,3).text())
-                get_sample_rate = str(self.tableWidget_iq_playback.item(0,4).text()) 
+                try:
+                    get_gain = str(self.tableWidget_iq_playback.cellWidget(0,3).value())
+                except:
+                    get_gain = str(self.tableWidget_iq_playback.item(0,3).text())
+                try:
+                    get_sample_rate = str(self.tableWidget_iq_playback.cellWidget(0,4).currentText())
+                except:
+                    get_sample_rate = str(self.tableWidget_iq_playback.item(0,4).text())
                 get_data_type = str(self.tableWidget_iq_playback.cellWidget(0,5).currentText())   
                 get_repeat = str(self.tableWidget_iq_playback.cellWidget(0,6).currentText()) 
                 get_filepath = str(self.textEdit_iq_playback_filepath.toPlainText())

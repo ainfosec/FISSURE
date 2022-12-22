@@ -39,9 +39,10 @@ sudo python3 -m pip install --upgrade virtualenv
 sudo python3 -m pip install matplotlib
 sudo python3 -m pip install PyYAML==5.1
 sudo python3 -m pip install pyyaml
-wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-scipy/python-scipy_0.19.1-2ubuntu1_amd64.deb
-sudo apt-get install -y ./python-scipy_0.19.1-2ubuntu1_amd64.deb
-rm python-scipy_0.19.1-2ubuntu1_amd64.deb
+#wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-scipy/python-scipy_0.19.1-2ubuntu1_amd64.deb
+#sudo apt-get install -y ./python-scipy_0.19.1-2ubuntu1_amd64.deb
+#rm python-scipy_0.19.1-2ubuntu1_amd64.deb
+sudo python3 -m pip install scipy --upgrade
 sudo apt-get install -y gedit
 sudo apt-get install -y software-properties-common #python-software-properties # does Python3
 sudo add-apt-repository -y ppa:git-core/ppa
@@ -1686,9 +1687,10 @@ sudo python3 -m pip install --upgrade virtualenv
 sudo python3 -m pip install matplotlib
 sudo python3 -m pip install PyYAML==5.1
 sudo python3 -m pip install pyyaml
-wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-scipy/python-scipy_0.19.1-2ubuntu1_amd64.deb
-sudo apt-get install -y ./python-scipy_0.19.1-2ubuntu1_amd64.deb
-rm python-scipy_0.19.1-2ubuntu1_amd64.deb
+#wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-scipy/python-scipy_0.19.1-2ubuntu1_amd64.deb
+#sudo apt-get install -y ./python-scipy_0.19.1-2ubuntu1_amd64.deb
+#rm python-scipy_0.19.1-2ubuntu1_amd64.deb
+sudo python3 -m pip install scipy --upgrade
 sudo apt-get install -y gedit
 sudo apt-get install -y software-properties-common #python-software-properties # does Python3
 sudo add-apt-repository -y ppa:git-core/ppa
@@ -3334,9 +3336,10 @@ programs_dragonOS_focal.append(('Misc. Dependencies',
 #sudo python3 -m pip install matplotlib
 #sudo python3 -m pip install PyYAML==5.1
 #sudo python3 -m pip install pyyaml
-#wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-scipy/python-scipy_0.19.1-2ubuntu1_amd64.deb
-#sudo apt-get install -y ./python-scipy_0.19.1-2ubuntu1_amd64.deb
-#rm python-scipy_0.19.1-2ubuntu1_amd64.deb
+##wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-scipy/python-scipy_0.19.1-2ubuntu1_amd64.deb
+##sudo apt-get install -y ./python-scipy_0.19.1-2ubuntu1_amd64.deb
+##rm python-scipy_0.19.1-2ubuntu1_amd64.deb
+#sudo python3 -m pip install scipy --upgrade
 #sudo apt-get install -y gedit
 #sudo apt-get install -y software-properties-common #python-software-properties # does Python3
 #sudo add-apt-repository -y ppa:git-core/ppa
