@@ -1,6 +1,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-12-21
+
+Fixing IQ Playback tab.
+ 
+### Fixed
+
+- Playback tab no longer pulls the wrong values from the table cell widgets
+- Removed CRC reverse lookup print statements
+- Upgrading scipy during install to avoid import errors for Python3_maint-3.8 branch
+- Adjusted USRP B210/B205mini, HackRF frequency limits
+
 ## 2022-12-19
 
 Fixing CRC reverse lookup.
