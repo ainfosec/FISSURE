@@ -76,12 +76,12 @@
    </item>
    <item>
     <property name="text">
-     <string>USRP X310</string>
+     <string>USRP X3x0</string>
     </property>
    </item>
    <item>
     <property name="text">
-     <string>USRP B210</string>
+     <string>USRP B2x0</string>
     </property>
    </item>
    <item>
@@ -101,7 +101,7 @@
    </item>
    <item>
     <property name="text">
-     <string>USRP B205mini</string>
+     <string>USRP B20xmini</string>
     </property>
    </item>
    <item>

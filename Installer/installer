@@ -1665,6 +1665,19 @@ programs_ubuntu20_04.append(('pyFDA (11.7 MB)',
 pyfdax -h
 """,True,None))
 
+# Bootable USB
+programs_ubuntu20_04.append(('Bootable USB (107.4 MB)',
+"""sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 382003C2C8B7B4AB813E915B14E4942973C62A1B
+sudo add-apt-repository -y "deb http://ppa.launchpad.net/nemh/systemback/ubuntu xenial main"
+sudo apt update
+sudo apt install -y systemback
+sudo add-apt-repository -y ppa:mkusb/ppa
+sudo apt-get update
+sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
+########## Verify ##########
+ls /usr/bin/systemback && ls /usr/bin/guidus
+""",True,None))
+
 
 ########################################################################
 ############################ Ubuntu 20.04.4 ############################
@@ -3313,6 +3326,19 @@ programs_ubuntu20_04_4.append(('pyFDA (11.7 MB)',
 pyfdax -h
 """,True,None))
 
+# Bootable USB
+programs_ubuntu20_04_4.append(('Bootable USB (107.4 MB)',
+"""sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 382003C2C8B7B4AB813E915B14E4942973C62A1B
+sudo add-apt-repository -y "deb http://ppa.launchpad.net/nemh/systemback/ubuntu xenial main"
+sudo apt update
+sudo apt install -y systemback
+sudo add-apt-repository -y ppa:mkusb/ppa
+sudo apt-get update
+sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
+########## Verify ##########
+ls /usr/bin/systemback && ls /usr/bin/guidus
+""",True,None))
+
 
 
 ########################################################################
@@ -4275,6 +4301,19 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # """sudo python3 -m pip install pyfda
 # ########## Verify ##########
 # pyfdax -h
+# """,True,None))
+
+# # Bootable USB
+# programs_dragonOS_focal.append(('Bootable USB (107.4 MB)',
+# """sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 382003C2C8B7B4AB813E915B14E4942973C62A1B
+# sudo add-apt-repository -y "deb http://ppa.launchpad.net/nemh/systemback/ubuntu xenial main"
+# sudo apt update
+# sudo apt install -y systemback
+# sudo add-apt-repository -y ppa:mkusb/ppa
+# sudo apt-get update
+# sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
+# ########## Verify ##########
+# ls /usr/bin/systemback && ls /usr/bin/guidus
 # """,True,None))
 
 ######## Already Exists ######## 
