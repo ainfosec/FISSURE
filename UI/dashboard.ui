@@ -1587,12 +1587,12 @@ QTabBar::tab:!selected {
                 </property>
                 <item>
                  <property name="text">
-                  <string>wideband_x310.py</string>
+                  <string>wideband_x3x0.py</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>wideband_b210.py</string>
+                  <string>wideband_b2x0.py</string>
                  </property>
                 </item>
                 <item>
@@ -1602,7 +1602,7 @@ QTabBar::tab:!selected {
                 </item>
                 <item>
                  <property name="text">
-                  <string>wideband_b205mini.py</string>
+                  <string>wideband_b20xmini.py</string>
                  </property>
                 </item>
                 <item>
@@ -3517,16 +3517,16 @@ p, li { white-space: pre-wrap; }
                   </rect>
                  </property>
                  <property name="currentIndex">
-                  <number>11</number>
+                  <number>0</number>
                  </property>
                  <item>
                   <property name="text">
-                   <string>fixed_threshold_x310.py</string>
+                   <string>fixed_threshold_x3x0.py</string>
                   </property>
                  </item>
                  <item>
                   <property name="text">
-                   <string>fixed_threshold_b210.py</string>
+                   <string>fixed_threshold_b2x0.py</string>
                   </property>
                  </item>
                  <item>
@@ -3536,7 +3536,7 @@ p, li { white-space: pre-wrap; }
                  </item>
                  <item>
                   <property name="text">
-                   <string>fixed_threshold_b205mini.py</string>
+                   <string>fixed_threshold_b20xmini.py</string>
                   </property>
                  </item>
                  <item>
@@ -5993,12 +5993,12 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <item>
                  <property name="text">
-                  <string>USRP X310</string>
+                  <string>USRP X3x0</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>USRP B210</string>
+                  <string>USRP B2x0</string>
                  </property>
                 </item>
                 <item>
@@ -6018,7 +6018,7 @@ p, li { white-space: pre-wrap; }
                 </item>
                 <item>
                  <property name="text">
-                  <string>USRP B205mini</string>
+                  <string>USRP B20xmini</string>
                  </property>
                 </item>
                 <item>
@@ -13494,12 +13494,12 @@ p, li { white-space: pre-wrap; }
             </item>
             <item>
              <property name="text">
-              <string>USRP X310</string>
+              <string>USRP X3x0</string>
              </property>
             </item>
             <item>
              <property name="text">
-              <string>USRP B210</string>
+              <string>USRP B2x0</string>
              </property>
             </item>
             <item>
@@ -13519,7 +13519,7 @@ p, li { white-space: pre-wrap; }
             </item>
             <item>
              <property name="text">
-              <string>USRP B205mini</string>
+              <string>USRP B20xmini</string>
              </property>
             </item>
             <item>
@@ -25918,12 +25918,12 @@ Flow Graphs</string>
                 </property>
                 <item>
                  <property name="text">
-                  <string>USRP X310</string>
+                  <string>USRP X3x0</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>USRP B210</string>
+                  <string>USRP B2x0</string>
                  </property>
                 </item>
                 <item>
@@ -25943,7 +25943,7 @@ Flow Graphs</string>
                 </item>
                 <item>
                  <property name="text">
-                  <string>USRP B205mini</string>
+                  <string>USRP B20xmini</string>
                  </property>
                 </item>
                 <item>
@@ -26512,12 +26512,12 @@ p, li { white-space: pre-wrap; }
                 </item>
                 <item>
                  <property name="text">
-                  <string>USRP X310</string>
+                  <string>USRP X3x0</string>
                  </property>
                 </item>
                 <item>
                  <property name="text">
-                  <string>USRP B210</string>
+                  <string>USRP B2x0</string>
                  </property>
                 </item>
                 <item>
@@ -26537,7 +26537,7 @@ p, li { white-space: pre-wrap; }
                 </item>
                 <item>
                  <property name="text">
-                  <string>USRP B205mini</string>
+                  <string>USRP B20xmini</string>
                  </property>
                 </item>
                 <item>

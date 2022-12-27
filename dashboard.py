@@ -6100,18 +6100,18 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 # Get Flow Graph from Hardware
                 if self.dashboard_settings_dictionary['hardware_iq'] == "Computer":
                     fname = "iq_recorder"  # Should never be called                
-                elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP X310":
-                    fname = "iq_recorder_x310"
-                elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B210":
-                    fname = "iq_recorder_b210"
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP X3x0":
+                    fname = "iq_recorder_x3x0"
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B2x0":
+                    fname = "iq_recorder_b2x0"
                 elif self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
                     fname = "iq_recorder_hackrf"
                 elif self.dashboard_settings_dictionary['hardware_iq'] == "RTL2832U":
                     fname = "iq_recorder_rtl2832u"  # To Do
                 elif self.dashboard_settings_dictionary['hardware_iq'] == "802.11x Adapter":
                     fname = "iq_recorder"  # Should never be called
-                elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B205mini":
-                    fname = "iq_recorder_b210"
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B20xmini":
+                    fname = "iq_recorder_b2x0"
                 elif self.dashboard_settings_dictionary['hardware_iq'] == "LimeSDR":
                     fname = "iq_recorder_limesdr"
                 elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
@@ -10109,7 +10109,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             else:                
                 # No Hardware Selected
                 if len(self.dashboard_settings_dictionary['hardware_ip_tsi']) == 0 and len(self.dashboard_settings_dictionary['hardware_serial_tsi']) == 0 \
-                    and ('x310' in get_detector) and ('b210' in get_detector):
+                    and ('x3x0' in get_detector) and ('b2x0' in get_detector):
                     
                     error_text = " Fill out the IP address or serial number by clicking the TSI hardware button."
                     
@@ -11397,7 +11397,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.checkBox_library_attacks_grc_file.setEnabled(False)
             self.checkBox_library_attacks_grc_file.setChecked(False)
     
-    def findX310(self, widget_ip, widget_serial, widget_daughterboard, widget_probing_label):
+    def findX3x0(self, widget_ip, widget_serial, widget_daughterboard, widget_probing_label):
         """ Parses the results of 'uhd_find_devices' and sets the X310 IP and serial for two edit boxes.
         """
         # Get the Text
@@ -11461,8 +11461,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         except:
             widget_probing_label.setVisible(False)                            
                             
-    def findB210(self, widget_serial):      
-        """ Parses the results of 'uhd_find_devices' and sets the B210 serial for an edit box.
+    def findB2x0(self, widget_serial):      
+        """ Parses the results of 'uhd_find_devices' and sets the B2x0 serial for an edit box.
         """   
         # Get the Text
         proc = subprocess.Popen("uhd_find_devices &", shell=True, stdout=subprocess.PIPE, )
@@ -11484,17 +11484,17 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 device_dict.update({device_index:[]})
                 record_values = True
                 
-        # Find B210
+        # Find B2x0
         for n in range(0,len(device_dict)):
             for nn in device_dict[n]:
-                if 'B210' in nn: 
+                if ('B210' in nn) or ('B200' in nn): 
                     # Update Dashboard                      
                     for m in device_dict[n]:
                         if m[0] == 'serial':
                             widget_serial.setText(m[1]) 
                             widget_serial.setAlignment(QtCore.Qt.AlignCenter)
                             
-    def findB205mini(self, widget_serial):      
+    def findB20xmini(self, widget_serial):      
         """ Parses the results of 'uhd_find_devices' and sets the B205mini serial for an edit box.
         """   
         # Get the Text
@@ -11520,7 +11520,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         # Find B205i
         for n in range(0,len(device_dict)):
             for nn in device_dict[n]:
-                if 'B205i' in nn: 
+                if ('B205i' in nn) or ('B200i' in nn): 
                     # Update Dashboard                      
                     for m in device_dict[n]:
                         if m[0] == 'serial':
@@ -12370,7 +12370,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tuning_matplotlib_widget.freq_start_limit = 1
             self.tuning_matplotlib_widget.freq_end_limit = 6000        
             
-        elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP X310":
+        elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP X3x0":
             self.comboBox_tsi_detector.setCurrentIndex(0)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(0) 
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png")) 
@@ -12392,7 +12392,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.tuning_matplotlib_widget.freq_start_limit = 10
                 self.tuning_matplotlib_widget.freq_end_limit = 6000         
                    
-        elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP B210":
+        elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP B2x0":
             self.comboBox_tsi_detector.setCurrentIndex(1)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(1) 
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png")) 
@@ -12428,7 +12428,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.tuning_matplotlib_widget.freq_start_limit = 1
             self.tuning_matplotlib_widget.freq_end_limit = 6000
             
-        elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP B205mini":
+        elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP B20xmini":
             self.comboBox_tsi_detector.setCurrentIndex(3)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(3) 
             self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B205mini.png")) 
@@ -12608,10 +12608,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
         if self.dashboard_settings_dictionary['hardware_pd'] == "Computer":
             self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(0)        
-        elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP X310":
+        elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP X3x0":
             self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png"))
             self.comboBox_pd_demod_hardware.setCurrentIndex(0)
-        elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP B210":
+        elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP B2x0":
             self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png"))
             self.comboBox_pd_demod_hardware.setCurrentIndex(1)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "HackRF":
@@ -12623,7 +12623,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_pd'] == "802.11x Adapter":
             self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/802_11.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(4)
-        elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP B205mini":
+        elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP B20xmini":
             self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B205mini.png"))
             self.comboBox_pd_demod_hardware.setCurrentIndex(5)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "LimeSDR":
@@ -12660,10 +12660,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
         if self.dashboard_settings_dictionary['hardware_attack'] == "Computer":
             self.comboBox_attack_hardware.setCurrentIndex(0)
             self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png"))
-        elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP X310":
+        elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP X3x0":
             self.comboBox_attack_hardware.setCurrentIndex(1)
             self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png"))
-        elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP B210":
+        elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP B2x0":
             self.comboBox_attack_hardware.setCurrentIndex(2)
             self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png"))
         elif self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
@@ -12675,7 +12675,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_attack'] == "802.11x Adapter":
             self.comboBox_attack_hardware.setCurrentIndex(5)   
             self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/802_11.png")) 
-        elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP B205mini":
+        elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP B20xmini":
             self.comboBox_attack_hardware.setCurrentIndex(6)
             self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B205mini.png"))
         elif self.dashboard_settings_dictionary['hardware_attack'] == "LimeSDR":
@@ -12715,7 +12715,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.groupBox_iq_playback.setEnabled(False)
             self.groupBox_iq_record.setEnabled(False)        
         
-        elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP X310":
+        elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP X3x0":
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png"))
             
             # IQ Record
@@ -12786,7 +12786,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self._slotIQ_InspectionHardwareChanged()
             self.groupBox_iq_record.setEnabled(True)
             
-        elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B210":
+        elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B2x0":
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png"))
             
             # IQ Record
@@ -12940,7 +12940,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.groupBox_iq_playback.setEnabled(False)
             self.groupBox_iq_record.setEnabled(False)
             
-        elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B205mini":
+        elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B20xmini":
             self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B205mini.png"))
             self._slotIQ_InspectionHardwareChanged()
             
@@ -13367,9 +13367,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """        
         if self.dashboard_settings_dictionary['hardware_archive'] == "Computer":
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png"))
-        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X310":
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X3x0":
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png"))
-        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B210":
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B2x0":
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png"))
         elif self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/HackRF.png"))         
@@ -13377,7 +13377,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/RTL2832U.png"))
         elif self.dashboard_settings_dictionary['hardware_archive'] == "802.11x Adapter":
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/802_11.png")) 
-        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B205mini":
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B20xmini":
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B205mini.png"))
         elif self.dashboard_settings_dictionary['hardware_archive'] == "LimeSDR":
             self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/LimeSDR.png")) 
@@ -13400,13 +13400,13 @@ class MainWindow(QtGui.QMainWindow, form_class):
             get_combobox.clear()         
             if self.dashboard_settings_dictionary['hardware_archive'] == "Computer":
                 get_combobox.addItem("")               
-            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X310":
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X3x0":
                 get_combobox.addItem("A:0")
                 get_combobox.addItem("B:0")    
                 gain_item = QtGui.QTableWidgetItem("30")
                 gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 self.tableWidget_archive_replay.setItem(n,7,gain_item)
-            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B210":
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B2x0":
                 get_combobox.addItem("A:A")
                 get_combobox.addItem("A:B")
                 gain_item = QtGui.QTableWidgetItem("60")
@@ -13421,7 +13421,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 get_combobox.addItem("")
             elif self.dashboard_settings_dictionary['hardware_archive'] == "802.11x Adapter":
                 get_combobox.addItem("")
-            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B205mini":
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B20xmini":
                 get_combobox.addItem("A:A")
                 get_combobox.addItem("A:B")          
                 gain_item = QtGui.QTableWidgetItem("60")
@@ -15435,16 +15435,16 @@ class MainWindow(QtGui.QMainWindow, form_class):
             # Get Flow Graph from Hardware
             if self.dashboard_settings_dictionary['hardware_iq'] == "Computer":
                 fname = "iq_playback"  # Do not allow            
-            elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP X310":                
+            elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP X3x0":                
                 if get_repeat == "No":
-                    fname = "iq_playback_single_x310"
+                    fname = "iq_playback_single_x3x0"
                 else:
-                    fname = "iq_playback_x310"                 
-            elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B210":
+                    fname = "iq_playback_x3x0"                 
+            elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B2x0":
                 if get_repeat == "No":
-                    fname = "iq_playback_single_b210"
+                    fname = "iq_playback_single_b2x0"
                 else:
-                    fname = "iq_playback_b210"
+                    fname = "iq_playback_b2x0"
             elif self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
                 if get_repeat == "No":
                     fname = "iq_playback_single_hackrf"
@@ -15454,11 +15454,11 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 fname = "iq_playback"  # Do not allow
             elif self.dashboard_settings_dictionary['hardware_iq'] == "802.11x Adapter":
                 fname = "iq_playback"  # Do not allow
-            elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B205mini":
+            elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B20xmini":
                 if get_repeat == "No":
-                    fname = "iq_playback_single_b210"
+                    fname = "iq_playback_single_b2x0"
                 else:
-                    fname = "iq_playback_b210"    
+                    fname = "iq_playback_b2x0"    
             elif self.dashboard_settings_dictionary['hardware_iq'] == "LimeSDR":
                 if get_repeat == "No":
                     fname = "iq_playback_single_limesdr"
@@ -17434,10 +17434,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.tableWidget_archive_replay.setCellWidget(self.tableWidget_archive_replay.rowCount()-1,6,new_combobox1)
                 if self.dashboard_settings_dictionary['hardware_archive'] == "Computer":
                     new_combobox1.addItem("")                
-                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X310":
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X3x0":
                     new_combobox1.addItem("A:0")
                     new_combobox1.addItem("B:0")                    
-                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B210":
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B2x0":
                     new_combobox1.addItem("A:A")
                     new_combobox1.addItem("A:B")
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
@@ -17446,7 +17446,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     new_combobox1.addItem("")
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "802.11x Adapter":
                     new_combobox1.addItem("")
-                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B205mini":
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B20xmini":
                     new_combobox1.addItem("A:A")
                     new_combobox1.addItem("A:B")                    
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "LimeSDR":
@@ -17491,9 +17491,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 # Gain    
                 if self.dashboard_settings_dictionary['hardware_archive'] == "Computer":
                     gain_item = QtGui.QTableWidgetItem("")
-                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X310":
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X3x0":
                     gain_item = QtGui.QTableWidgetItem("30")
-                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B210":
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B2x0":
                     gain_item = QtGui.QTableWidgetItem("60")
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
                     gain_item = QtGui.QTableWidgetItem("20")
@@ -17501,7 +17501,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     gain_item = QtGui.QTableWidgetItem("")
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "802.11x Adapter":
                     gain_item = QtGui.QTableWidgetItem("")
-                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B205mini":     
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B20xmini":     
                     gain_item = QtGui.QTableWidgetItem("60")       
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "LimeSDR":
                     gain_item = QtGui.QTableWidgetItem("55")
@@ -17574,10 +17574,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.tableWidget_archive_replay.setCellWidget(self.tableWidget_archive_replay.rowCount()-1,6,new_combobox1)
         if self.dashboard_settings_dictionary['hardware_archive'] == "Computer":
             new_combobox1.addItem("")                
-        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X310":
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X3x0":
             new_combobox1.addItem("A:0")
             new_combobox1.addItem("B:0")                    
-        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B210":
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B2x0":
             new_combobox1.addItem("A:A")
             new_combobox1.addItem("A:B")
         elif self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
@@ -17586,7 +17586,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             new_combobox1.addItem("")
         elif self.dashboard_settings_dictionary['hardware_archive'] == "802.11x Adapter":
             new_combobox1.addItem("")
-        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B205mini":
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B20xmini":
             new_combobox1.addItem("A:A")
             new_combobox1.addItem("A:B")                    
         elif self.dashboard_settings_dictionary['hardware_archive'] == "LimeSDR":
@@ -17631,9 +17631,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
         # Gain    
         if self.dashboard_settings_dictionary['hardware_archive'] == "Computer":
             gain_item = QtGui.QTableWidgetItem("")
-        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X310":
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X3x0":
             gain_item = QtGui.QTableWidgetItem("30")
-        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B210":
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B2x0":
             gain_item = QtGui.QTableWidgetItem("60")
         elif self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
             gain_item = QtGui.QTableWidgetItem("20")
@@ -17641,7 +17641,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             gain_item = QtGui.QTableWidgetItem("")
         elif self.dashboard_settings_dictionary['hardware_archive'] == "802.11x Adapter":
             gain_item = QtGui.QTableWidgetItem("")
-        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B205mini":     
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B20xmini":     
             gain_item = QtGui.QTableWidgetItem("60")       
         elif self.dashboard_settings_dictionary['hardware_archive'] == "LimeSDR":
             gain_item = QtGui.QTableWidgetItem("55")
@@ -17855,18 +17855,18 @@ class MainWindow(QtGui.QMainWindow, form_class):
             flow_graph = ""
             if self.dashboard_settings_dictionary['hardware_archive'] == "Computer":
                 flow_graph = ""  # Error            
-            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X310":
-                flow_graph = "archive_replay_x310"
-            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B210":
-                flow_graph = "archive_replay_b210"
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X3x0":
+                flow_graph = "archive_replay_x3x0"
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B2x0":
+                flow_graph = "archive_replay_b2x0"
             elif self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
                 flow_graph = "archive_replay_hackrf"       
             elif self.dashboard_settings_dictionary['hardware_archive'] == "RTL2832U":
                 flow_graph = ""  # Error
             elif self.dashboard_settings_dictionary['hardware_archive'] == "802.11x Adapter":
                 flow_graph = ""  # Error
-            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B205mini":
-                flow_graph = "archive_replay_b210"
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B20xmini":
+                flow_graph = "archive_replay_b2x0"
             elif self.dashboard_settings_dictionary['hardware_archive'] == "LimeSDR":
                 flow_graph = "archive_replay_limesdr"
             elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF":
@@ -18220,7 +18220,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             if (get_frequency >= 1) and (get_frequency <= 6000):
                 return True  
                          
-        elif get_hardware == "USRP X310":            
+        elif get_hardware == "USRP X3x0":            
             # Frequency Limits
             if get_daughterboard == "CBX-120":
                 if (get_frequency >= 1200) and (get_frequency <= 6000):
@@ -18238,7 +18238,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 if (get_frequency >= 10) and (get_frequency <= 6000):
                     return True                       
                    
-        elif get_hardware == "USRP B210":
+        elif get_hardware == "USRP B2x0":
             # Frequency Limits
             if (get_frequency >= 70) and (get_frequency <= 6000):
                 return True        
@@ -18258,7 +18258,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             if (get_frequency >= 1) and (get_frequency <= 6000):
                 return True              
             
-        elif get_hardware == "USRP B205mini":
+        elif get_hardware == "USRP B20xmini":
             # Frequency Limits
             if (get_frequency >= 70) and (get_frequency <= 6000):
                 return True                         
@@ -19454,7 +19454,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Displays the advanced settings for the currently selected TSI detector.
         """
         # Switch to Advanced Settings
-        fg_detectors = ['wideband_x310.py','wideband_b210.py','wideband_hackrf.py','wideband_b205mini.py','wideband_rtl2832u.py','wideband_limesdr.py','wideband_bladerf.py','wideband_plutosdr.py','wideband_usrp2.py','wideband_usrp_n2xx.py','wideband_bladerf2.py']
+        fg_detectors = ['wideband_x3x0.py','wideband_b2x0.py','wideband_hackrf.py','wideband_b20xmini.py','wideband_rtl2832u.py','wideband_limesdr.py','wideband_bladerf.py','wideband_plutosdr.py','wideband_usrp2.py','wideband_usrp_n2xx.py','wideband_bladerf2.py']
         
         # Flow Graph Detectors
         if str(self.comboBox_tsi_detector.currentText()) in fg_detectors:
@@ -19471,7 +19471,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Change Settings
         get_detector = str(self.comboBox_tsi_detector.currentText())
-        if get_detector == 'wideband_x310.py':
+        if get_detector == 'wideband_x3x0.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
             self.spinBox_tsi_detector_fg_threshold.setValue(-70)
             self.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
@@ -19503,7 +19503,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0) 
             self.stackedWidget_tsi_detector.setCurrentIndex(0)          
             
-        elif get_detector == 'wideband_b210.py':
+        elif get_detector == 'wideband_b2x0.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
             self.spinBox_tsi_detector_fg_threshold.setValue(-70)
             self.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
@@ -19535,7 +19535,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)  
             self.stackedWidget_tsi_detector.setCurrentIndex(0) 
             
-        elif get_detector == 'wideband_b205mini.py':
+        elif get_detector == 'wideband_b20xmini.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
             self.spinBox_tsi_detector_fg_threshold.setValue(-70)
             self.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
@@ -19752,7 +19752,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.textEdit_tsi_detector_iq_file_file.setPlainText(fname)
                           
     def _slotMenuUHD_ImageLoaderClicked(self):
-        """ Opens a terminal and displays the uhd_image_loader command for the USRP X310.
+        """ Opens a terminal and displays the uhd_image_loader command for the USRP X3x0.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
@@ -21219,7 +21219,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Change Settings
         get_detector = str(self.comboBox_tsi_detector_fixed.currentText())
-        if get_detector == 'fixed_threshold_x310.py':
+        if get_detector == 'fixed_threshold_x3x0.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
             self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
@@ -21258,7 +21258,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)  
             self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)          
             
-        elif get_detector == 'fixed_threshold_b210.py':
+        elif get_detector == 'fixed_threshold_b2x0.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
             self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
@@ -21304,7 +21304,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)  
             self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0) 
             
-        elif get_detector == 'fixed_threshold_b205mini.py':
+        elif get_detector == 'fixed_threshold_b20xmini.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
             self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
@@ -21558,7 +21558,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             
             # No Hardware Selected
             if len(self.dashboard_settings_dictionary['hardware_ip_tsi']) == 0 and len(self.dashboard_settings_dictionary['hardware_serial_tsi']) == 0 \
-                and ('x310' in get_detector) and ('b210' in get_detector):
+                and ('x3x0' in get_detector) and ('b2x0' in get_detector):
                 
                 error_text = " Fill out the IP address or serial number by clicking the TSI hardware button."
                 
@@ -22683,9 +22683,9 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
 
         if hardware == "Computer":
             self.comboBox_hardware.setCurrentIndex(0)
-        elif hardware == "USRP X310":
+        elif hardware == "USRP X3x0":
             self.comboBox_hardware.setCurrentIndex(1)
-        elif hardware == "USRP B210":
+        elif hardware == "USRP B2x0":
             self.comboBox_hardware.setCurrentIndex(2)
         elif hardware == "HackRF":
             self.comboBox_hardware.setCurrentIndex(3)
@@ -22693,7 +22693,7 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             self.comboBox_hardware.setCurrentIndex(4)            
         elif hardware == "802.11x Adapter":
             self.comboBox_hardware.setCurrentIndex(5)
-        elif hardware == "USRP B205mini":
+        elif hardware == "USRP B20xmini":
             self.comboBox_hardware.setCurrentIndex(6)
         elif hardware == "LimeSDR":
             self.comboBox_hardware.setCurrentIndex(7)
@@ -22828,18 +22828,18 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
         """
         if str(self.comboBox_hardware.currentText()) == "Computer":
             pass        
-        elif str(self.comboBox_hardware.currentText()) == "USRP X310":       
-            self.parent.findX310(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label_probe)          
-        elif str(self.comboBox_hardware.currentText()) == "USRP B210":
-            self.parent.findB210(self.textEdit_serial)
+        elif str(self.comboBox_hardware.currentText()) == "USRP X3x0":       
+            self.parent.findX3x0(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label_probe)          
+        elif str(self.comboBox_hardware.currentText()) == "USRP B2x0":
+            self.parent.findB2x0(self.textEdit_serial)
         elif str(self.comboBox_hardware.currentText()) == "HackRF":
             self.parent.findHackRF(self.textEdit_serial)
         elif str(self.comboBox_hardware.currentText()) == "RTL2832U":
             pass
         elif str(self.comboBox_hardware.currentText()) == "802.11x Adapter":
             self.parent.find80211x(self.textEdit_interface)
-        elif str(self.comboBox_hardware.currentText()) == "USRP B205mini":
-            self.parent.findB205mini(self.textEdit_serial)   
+        elif str(self.comboBox_hardware.currentText()) == "USRP B20xmini":
+            self.parent.findB20xmini(self.textEdit_serial)   
         elif str(self.comboBox_hardware.currentText()) == "LimeSDR":
             self.parent.findLimeSDR(self.textEdit_serial)
         elif str(self.comboBox_hardware.currentText()) == "bladeRF":
@@ -22858,7 +22858,7 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
     def _slotProbeClicked(self):
         """ Opens a message box and copies the results of "uhd_usrp_probe xxx.xxx.xxx.xxx"
         """
-        if str(self.comboBox_hardware.currentText()) == "USRP X310":
+        if str(self.comboBox_hardware.currentText()) == "USRP X3x0":
             # Get IP Address
             get_ip = str(self.textEdit_ip.toPlainText())
             
@@ -22877,7 +22877,7 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             msgBox = MyMessageBox(my_text = output)
             msgBox.exec_()    
             
-        elif (str(self.comboBox_hardware.currentText()) == "USRP B210") or (str(self.comboBox_hardware.currentText()) == "USRP B205mini"):
+        elif (str(self.comboBox_hardware.currentText()) == "USRP B2x0") or (str(self.comboBox_hardware.currentText()) == "USRP B20xmini"):
             # Probe
             try:
                 self.label_probe.setVisible(True)
@@ -23022,14 +23022,14 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             self.pushButton_probe_usrp.setVisible(False)
             self.textEdit_interface.setVisible(False)
             self.comboBox_daughterboard.setVisible(False)        
-        elif str(self.comboBox_hardware.currentText()) == "USRP X310":
+        elif str(self.comboBox_hardware.currentText()) == "USRP X3x0":
             self.textEdit_ip.setVisible(True)
             self.textEdit_serial.setVisible(True)		
             self.pushButton_guess.setVisible(True)
             self.pushButton_probe_usrp.setVisible(True)
             self.textEdit_interface.setVisible(False)	
             self.comboBox_daughterboard.setVisible(True)
-        elif str(self.comboBox_hardware.currentText()) == "USRP B210":
+        elif str(self.comboBox_hardware.currentText()) == "USRP B2x0":
             self.textEdit_ip.setVisible(False)
             self.textEdit_serial.setVisible(True)
             self.pushButton_guess.setVisible(True)
@@ -23057,7 +23057,7 @@ class HardwareSelectDialog(QtGui.QDialog, form_class5):
             self.pushButton_probe_usrp.setVisible(False)
             self.textEdit_interface.setVisible(True)
             self.comboBox_daughterboard.setVisible(False)
-        elif str(self.comboBox_hardware.currentText()) == "USRP B205mini":
+        elif str(self.comboBox_hardware.currentText()) == "USRP B20xmini":
             self.textEdit_ip.setVisible(False)
             self.textEdit_serial.setVisible(True)
             self.pushButton_guess.setVisible(True)

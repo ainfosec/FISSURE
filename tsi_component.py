@@ -280,14 +280,14 @@ class TSI_Component:
         
         # Make a New Wideband Thread
         if len(detector) > 0:
-            if detector == "wideband_x310.py":
-                flow_graph_filename = "wideband_x310.py"
-            elif detector == "wideband_b210.py":
-                flow_graph_filename = "wideband_b210.py"  
+            if detector == "wideband_x3x0.py":
+                flow_graph_filename = "wideband_x3x0.py"
+            elif detector == "wideband_b2x0.py":
+                flow_graph_filename = "wideband_b2x0.py"  
             elif detector == "wideband_hackrf.py":
                 flow_graph_filename = "wideband_hackrf.py"
-            elif detector == "wideband_b205mini.py":
-                flow_graph_filename = "wideband_b205mini.py"         
+            elif detector == "wideband_b20xmini.py":
+                flow_graph_filename = "wideband_b20xmini.py"         
             elif detector == "wideband_rtl2832u.py":
                 flow_graph_filename = "wideband_rtl2832u.py"
             elif detector == "wideband_limesdr.py":
@@ -305,14 +305,14 @@ class TSI_Component:
             elif detector == "IQ File":
                 flow_graph_filename = "iq_file.py"
             elif "fixed_threshold" in detector:
-                if detector == "fixed_threshold_x310.py":
-                    flow_graph_filename = "fixed_threshold_x310.py"
-                elif detector == "fixed_threshold_b210.py":
-                    flow_graph_filename = "fixed_threshold_b210.py"  
+                if detector == "fixed_threshold_x3x0.py":
+                    flow_graph_filename = "fixed_threshold_x3x0.py"
+                elif detector == "fixed_threshold_b2x0.py":
+                    flow_graph_filename = "fixed_threshold_b2x0.py"  
                 elif detector == "fixed_threshold_hackrf.py":
                     flow_graph_filename = "fixed_threshold_hackrf.py"
-                elif detector == "fixed_threshold_b205mini.py":
-                    flow_graph_filename = "fixed_threshold_b205mini.py"         
+                elif detector == "fixed_threshold_b20xmini.py":
+                    flow_graph_filename = "fixed_threshold_b20xmini.py"         
                 elif detector == "fixed_threshold_rtl2832u.py":
                     flow_graph_filename = "fixed_threshold_rtl2832u.py"
                 elif detector == "fixed_threshold_limesdr.py":
