@@ -1,6 +1,27 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2022-12-27
+
+Additional support for USRP X300, B200, and B200mini.
+ 
+### Added
+
+- More support for X300, B200, B200mini
+- Bootable USB software to the installer (systemback, guidus) for Python3_maint-3.8 branch
+  
+### Changed
+
+- References to "USRP X310" to "USRP X3x0"
+- References to "USRP B210" to "USRP B2x0"
+- References to "USRP B205mini" to "USRP B20xmini"
+ 
+### Fixed
+
+- Hardware Guess button for USRP B200
+- Hardware Guess button for USRP B200mini
+- Fixed Detector Start button error on System stop for Python3_maint-3.10 branch
+
 ## 2022-12-21
 
 Fixing IQ Playback tab.
