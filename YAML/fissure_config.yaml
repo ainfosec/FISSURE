@@ -36,11 +36,11 @@ hardware_ip_pd: ''
 hardware_ip_tsi: ''
 hardware_iq: USRP B2x0
 hardware_pd: USRP B2x0
-hardware_serial_archive: 321E125
-hardware_serial_attack: 321E125
-hardware_serial_iq: 321E125
-hardware_serial_pd: 321E125
-hardware_serial_tsi: 321E125
+hardware_serial_archive: ''
+hardware_serial_attack: ''
+hardware_serial_iq: ''
+hardware_serial_pd: ''
+hardware_serial_tsi: ''
 hardware_tsi: USRP B2x0
 heartbeat_interval: 5
 hiprfisr_pub_port: 5055

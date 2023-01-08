@@ -63,7 +63,7 @@ The following is a table of the major software tools that have been proven to wo
 | IridiumLive |  :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | iridium-toolkit | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Kalibrate | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
-| Kismet | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
+| Kismet | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | libbtbb | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | LTE-Cell-Scanner | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | LTE-ciphercheck | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |
@@ -761,7 +761,7 @@ The following are the software versions that are included with the FISSURE insta
 | IridiumLive | v1.2 | Yes | https://github.com/microp11/iridiumlive |
 | iridium-toolkit | master | Yes | https://github.com/muccc/iridium-toolkit |
 | Kalibrate | v0.4.1-rtl | Yes | https://github.com/steve-m/kalibrate-rtl |
-| ~~Kismet~~ | Kismet 2016-07-R1 | No | https://www.kismetwireless.net/ |
+| Kismet | latest | No | https://www.kismetwireless.net/ |
 | ~~libbtbb~~ | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
 | LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |

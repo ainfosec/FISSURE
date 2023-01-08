@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
-<?grc format='1' created='3.7.11'?>
+<?grc format='1' created='3.7.13'?>
 <flow_graph>
   <timestamp>Mon Nov 15 17:40:21 2021</timestamp>
   <block>
@@ -73,12 +73,20 @@
       <value>True</value>
     </param>
     <param>
+      <key>sizing_mode</key>
+      <value>fixed</value>
+    </param>
+    <param>
       <key>thread_safe_setters</key>
       <value></value>
     </param>
     <param>
       <key>title</key>
       <value></value>
+    </param>
+    <param>
+      <key>placement</key>
+      <value>(0,0)</value>
     </param>
   </block>
   <block>
@@ -179,7 +187,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -196,6 +204,33 @@
     <param>
       <key>value</key>
       <value>144.95e6</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(800, 204)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>center_freq</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>915.2e6</value>
     </param>
   </block>
   <block>
@@ -877,6 +912,53 @@
     </param>
   </block>
   <block>
+    <key>blocks_message_strobe</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value>Have to wait for the first period to elapse</value>
+    </param>
+    <param>
+      <key>affinity</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(56, 188)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>blocks_message_strobe_0</value>
+    </param>
+    <param>
+      <key>maxoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>msg</key>
+      <value>pmt.intern(text)</value>
+    </param>
+    <param>
+      <key>minoutbuf</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>period</key>
+      <value>20000</value>
+    </param>
+  </block>
+  <block>
     <key>blocks_multiply_const_vxx</key>
     <param>
       <key>alias</key>
@@ -1251,7 +1333,7 @@ class mc_sync_block(gr.sync_block):
     </param>
     <param>
       <key>comment</key>
-      <value></value>
+      <value>3.7 errors with this block</value>
     </param>
     <param>
       <key>affinity</key>
@@ -1263,11 +1345,11 @@ class mc_sync_block(gr.sync_block):
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>0</value>
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(48, 116)</value>
+      <value>(48, 76)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -1354,6 +1436,37 @@ class mc_sync_block(gr.sync_block):
     </param>
   </block>
   <block>
+    <key>import</key>
+    <param>
+      <key>alias</key>
+      <value></value>
+    </param>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(1136, 64)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>import_0</value>
+    </param>
+    <param>
+      <key>import</key>
+      <value>import pmt</value>
+    </param>
+  </block>
+  <block>
     <key>qtgui_edit_box_msg</key>
     <param>
       <key>alias</key>
@@ -1373,7 +1486,7 @@ class mc_sync_block(gr.sync_block):
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(56, 260)</value>
+      <value>(24, 284)</value>
     </param>
     <param>
       <key>gui_hint</key>
@@ -3138,6 +3251,12 @@ class mc_sync_block(gr.sync_block):
     <sink_key>0</sink_key>
   </connection>
   <connection>
+    <source_block_id>blocks_message_strobe_0</source_block_id>
+    <sink_block_id>epy_block_0</sink_block_id>
+    <source_key>strobe</source_key>
+    <sink_key>msg_in</sink_key>
+  </connection>
+  <connection>
     <source_block_id>blocks_multiply_const_vxx_0</source_block_id>
     <sink_block_id>blocks_multiply_xx_0</sink_block_id>
     <source_key>0</source_key>
@@ -3160,12 +3279,6 @@ class mc_sync_block(gr.sync_block):
     <sink_block_id>root_raised_cosine_filter_0</sink_block_id>
     <source_key>0</source_key>
     <sink_key>0</sink_key>
-  </connection>
-  <connection>
-    <source_block_id>epy_block_0</source_block_id>
-    <sink_block_id>qtgui_edit_box_msg_0</sink_block_id>
-    <source_key>clear_input</source_key>
-    <sink_key>val</sink_key>
   </connection>
   <connection>
     <source_block_id>epy_block_0</source_block_id>

@@ -246,10 +246,10 @@ Attacks:
      - SQL Injection,2
      - Misuse of Resources,1
      - File,1
+     - FM Radio - From Wav File,2
      - DECT - From File,2
      - FM Radio - From File,2
      - SimpliciTI - From File,2
-     - FM Radio - From Wav File,2
      - From File Sequence,2
      - FM Radio - Simple Replay,2
 Inspection Flow Graphs:
@@ -257,6 +257,10 @@ Inspection Flow Graphs:
      - None
      Computer:
      - None
+     File:
+     - instantaneous_frequency.py
+     - signal_envelope.py
+     - waterfall.py
      HackRF:
      - instantaneous_frequency_hackrf.py
      - signal_envelope_hackrf.py
@@ -295,40 +299,36 @@ Inspection Flow Graphs:
      - time_sink_b2x0.py
      - time_sink_1_10_100_b2x0.py
      - waterfall_b2x0.py
-     USRP X3x0:
-     - instantaneous_frequency_x3x0.py
-     - signal_envelope_x3x0.py
-     - time_sink_x3x0.py
-     - time_sink_1_10_100_x3x0.py
-     - waterfall_x3x0.py
-     bladeRF:
-     - instantaneous_frequency_bladerf.py
-     - signal_envelope_bladerf.py
-     - time_sink_bladerf.py
-     - time_sink_1_10_100_bladerf.py
-     - waterfall_bladerf.py
-     USRP2:
-     - instantaneous_frequency_usrp2.py
-     - signal_envelope_usrp2.py
-     - time_sink_usrp2.py
-     - time_sink_1_10_100_usrp2.py
-     - waterfall_usrp2.py
      USRP N2xx:
      - instantaneous_frequency_usrp_n2xx.py
      - signal_envelope_usrp_n2xx.py
      - time_sink_usrp_n2xx.py
      - time_sink_1_10_100_usrp_n2xx.py
      - waterfall_usrp_n2xx.py
+     USRP X3x0:
+     - instantaneous_frequency_x3x0.py
+     - signal_envelope_x3x0.py
+     - time_sink_x3x0.py
+     - time_sink_1_10_100_x3x0.py
+     - waterfall_x3x0.py
+     USRP2:
+     - instantaneous_frequency_usrp2.py
+     - signal_envelope_usrp2.py
+     - time_sink_usrp2.py
+     - time_sink_1_10_100_usrp2.py
+     - waterfall_usrp2.py
+     bladeRF:
+     - instantaneous_frequency_bladerf.py
+     - signal_envelope_bladerf.py
+     - time_sink_bladerf.py
+     - time_sink_1_10_100_bladerf.py
+     - waterfall_bladerf.py
      bladeRF 2.0:
      - instantaneous_frequency_bladerf2.py
      - signal_envelope_bladerf2.py
      - time_sink_bladerf2.py
      - time_sink_1_10_100_bladerf2.py
      - waterfall_bladerf2.py
-     File:
-     - instantaneous_frequency.py
-     - signal_envelope.py
-     - waterfall.py
 Protocols:
      802.11x:
           Attacks:
@@ -3182,10 +3182,18 @@ Protocols:
                FM Radio - From Wav File:
                     FM:
                          Hardware:
+                              HackRF:
+                                   Flow Graph: FM_Radio_FM_HackRF_From_Wav_File.py
                               LimeSDR:
                                    Flow Graph: FM_Radio_FM_LimeSDR_From_Wav_File.py
+                              USRP B20xmini:
+                                   Flow Graph: FM_Radio_FM_USRPB205mini_From_Wav_File.py
+                              USRP B2x0:
+                                   Flow Graph: FM_Radio_FM_USRPB210_From_Wav_File.py
                               USRP X3x0:
                                    Flow Graph: FM_Radio_FM_USRPX310_From_Wav_File.py
+                              bladeRF 2.0:
+                                   Flow Graph: FM_Radio_FM_bladeRF2_From_Wav_File.py
                FM Radio - Gaussian:
                     FM:
                          Hardware:

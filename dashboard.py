@@ -1571,6 +1571,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.actionPSK_Reporter.triggered.connect(self._slotMenuPSK_ReporterClicked)
         self.actionAmateur_Satellite_Database.triggered.connect(self._slotMenuAmateurSatelliteDatabase)
         self.actionCryptii.triggered.connect(self._slotMenuCryptiiClicked)
+        self.actionLesson_Creating_Bootable_USBs.triggered.connect(self._slotMenuLessonCreatingBootableUSBsClicked)
+        self.actionInspection_Flow_Graphs.triggered.connect(self._slotMenuHelpInspectionFlowGraphsClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -22497,6 +22499,16 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Open a Browser
         os.system("sensible-browser https://cryptii.com/ &") 
+    
+    def _slotMenuLessonCreatingBootableUSBsClicked(self):
+        """ Opens the html file in a browser.
+        """
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson12_Creating_Bootable_USBs.html &") 
+        
+    def _slotMenuHelpInspectionFlowGraphsClicked(self):
+        """ Opens the html file in a browser.
+        """
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/InspectionFlowGraphs.html &") 
         
             
 

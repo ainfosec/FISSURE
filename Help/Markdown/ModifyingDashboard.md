@@ -11,6 +11,8 @@ This guide will provide examples on how to add GUI elements to the FISSURE Dashb
 
 Launch QtDesigner with the `designer` command and open the _FISSURE/UI/dashboard.ui_ file.
 
+![qtdesigner](./Images/qtdesigner.png)
+
 ### Creating New Widgets
 Frequently used widgets:
 - Push Button

@@ -3,7 +3,7 @@
 ##################################################
 # GNU Radio Python Flow Graph
 # Title: Morse Code Ook Usrpb210 Transmit
-# Generated: Sat Jan  1 21:47:52 2022
+# GNU Radio version: 3.7.13.5
 ##################################################
 
 
@@ -18,7 +18,6 @@ from gnuradio.eng_option import eng_option
 from gnuradio.filter import firdes
 from optparse import OptionParser
 import epy_block_0
-import foo
 import pmt
 import time
 
@@ -42,7 +41,7 @@ class Morse_Code_OOK_USRPB210_Transmit(gr.top_block):
         self.repeat = repeat = 4430
         self.notes = notes = "Generates Morse Code for one user-provided message and transmits the signal. The audio will stop when the message done transmitting."
         self.freq = freq = 800
-        self.center_freq = center_freq = 144.95e6
+        self.center_freq = center_freq = 915.2e6
         self.audio_rate = audio_rate = 48000
 
         ##################################################
@@ -65,20 +64,22 @@ class Morse_Code_OOK_USRPB210_Transmit(gr.top_block):
         self.root_raised_cosine_filter_0 = filter.fir_filter_fff(1, firdes.root_raised_cosine(
         	1, audio_rate, symbol_rate, 0.35, 200))
         self.fractional_resampler_xx_0 = filter.fractional_resampler_cc(0, sample_rate/audio_rate)
-        self.foo_periodic_msg_source_0 = foo.periodic_msg_source(pmt.intern(str(text)), 60000, 1, True, False)
         self.epy_block_0 = epy_block_0.mc_sync_block()
         self.blocks_uchar_to_float_0 = blocks.uchar_to_float()
         self.blocks_repeat_0 = blocks.repeat(gr.sizeof_char*1, repeat)
         self.blocks_multiply_xx_0 = blocks.multiply_vff(1)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_vff((volume, ))
+        self.blocks_message_strobe_0 = blocks.message_strobe(pmt.intern(text), 20000)
         self.blocks_float_to_complex_0 = blocks.float_to_complex(1)
         self.audio_sink_0 = audio.sink(48000, '', True)
         self.analog_sig_source_x_0 = analog.sig_source_f(audio_rate, analog.GR_COS_WAVE, freq, 0.5, 0)
 
+
+
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.foo_periodic_msg_source_0, 'out'), (self.epy_block_0, 'msg_in'))
+        self.msg_connect((self.blocks_message_strobe_0, 'strobe'), (self.epy_block_0, 'msg_in'))
         self.connect((self.analog_sig_source_x_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.blocks_float_to_complex_0, 0), (self.fractional_resampler_xx_0, 0))
         self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_multiply_xx_0, 1))
@@ -117,6 +118,7 @@ class Morse_Code_OOK_USRPB210_Transmit(gr.top_block):
 
     def set_text(self, text):
         self.text = text
+        self.blocks_message_strobe_0.set_msg(pmt.intern(self.text))
 
     def get_symbol_rate(self):
         return self.symbol_rate

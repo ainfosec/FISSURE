@@ -46,7 +46,7 @@
     </param>
     <param>
       <key>id</key>
-      <value>FM_Radio_FM_USRPX310_From_Wav_File</value>
+      <value>FM_Radio_FM_USRPB210_From_Wav_File</value>
     </param>
     <param>
       <key>max_nouts</key>
@@ -101,7 +101,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(128, 500)</value>
+      <value>(136, 500)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -124,7 +124,7 @@
     </param>
     <param>
       <key>_enabled</key>
-      <value>True</value>
+      <value>1</value>
     </param>
     <param>
       <key>_coordinate</key>
@@ -141,33 +141,6 @@
     <param>
       <key>value</key>
       <value>"/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/Attack Files/tone.wav"</value>
-    </param>
-  </block>
-  <block>
-    <key>variable</key>
-    <param>
-      <key>comment</key>
-      <value></value>
-    </param>
-    <param>
-      <key>_enabled</key>
-      <value>True</value>
-    </param>
-    <param>
-      <key>_coordinate</key>
-      <value>(16, 243)</value>
-    </param>
-    <param>
-      <key>_rotation</key>
-      <value>0</value>
-    </param>
-    <param>
-      <key>id</key>
-      <value>ip_address</value>
-    </param>
-    <param>
-      <key>value</key>
-      <value>"192.168.40.2"</value>
     </param>
   </block>
   <block>
@@ -248,7 +221,34 @@
     </param>
     <param>
       <key>value</key>
-      <value>2e6</value>
+      <value>1e6</value>
+    </param>
+  </block>
+  <block>
+    <key>variable</key>
+    <param>
+      <key>comment</key>
+      <value></value>
+    </param>
+    <param>
+      <key>_enabled</key>
+      <value>True</value>
+    </param>
+    <param>
+      <key>_coordinate</key>
+      <value>(16, 244)</value>
+    </param>
+    <param>
+      <key>_rotation</key>
+      <value>0</value>
+    </param>
+    <param>
+      <key>id</key>
+      <value>serial</value>
+    </param>
+    <param>
+      <key>value</key>
+      <value>"False"</value>
     </param>
   </block>
   <block>
@@ -275,7 +275,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>108e6</value>
+      <value>96.9e6</value>
     </param>
   </block>
   <block>
@@ -329,7 +329,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>"B:0"</value>
+      <value>"A:A"</value>
     </param>
   </block>
   <block>
@@ -356,7 +356,7 @@
     </param>
     <param>
       <key>value</key>
-      <value>0</value>
+      <value>70</value>
     </param>
   </block>
   <block>
@@ -442,7 +442,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(280, 139)</value>
+      <value>(280, 132)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -489,7 +489,7 @@
     </param>
     <param>
       <key>_coordinate</key>
-      <value>(528, 152)</value>
+      <value>(480, 144)</value>
     </param>
     <param>
       <key>_rotation</key>
@@ -513,7 +513,7 @@
     </param>
     <param>
       <key>resamp_ratio</key>
-      <value>48000/sample_rate</value>
+      <value>audio_rate/sample_rate</value>
     </param>
     <param>
       <key>type</key>
@@ -1180,7 +1180,7 @@
     </param>
     <param>
       <key>dev_addr</key>
-      <value>"addr=" + ip_address</value>
+      <value>serial</value>
     </param>
     <param>
       <key>dev_args</key>
