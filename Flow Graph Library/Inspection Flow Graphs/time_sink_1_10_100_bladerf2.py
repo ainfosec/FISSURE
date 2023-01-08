@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Time Sink 1 10 100 Bladerf2
-# GNU Radio version: 3.10.1.1
+# GNU Radio version: 3.10.4.0
 
 from packaging.version import Version as StrictVersion
 
@@ -33,7 +33,7 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio.qtgui import Range, RangeWidget
+from gnuradio.qtgui import Range, GrRangeWidget
 from PyQt5 import QtCore
 import osmosdr
 import time
@@ -111,14 +111,16 @@ class time_sink_1_10_100_bladerf2(gr.top_block, Qt.QWidget):
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_gain_range = Range(0, 47, 1, 40, 200)
-        self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal)
+        self._rx_gain_win = GrRangeWidget(self._rx_gain_range, self.set_rx_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal, "value")
+
         self.top_grid_layout.addWidget(self._rx_gain_win, 1, 0, 1, 4)
         for r in range(1, 2):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_frequency_range = Range(50, 3800, .1, 2412, 200)
-        self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, " Freq. (MHz):", "counter_slider", float, QtCore.Qt.Horizontal)
+        self._rx_frequency_win = GrRangeWidget(self._rx_frequency_range, self.set_rx_frequency, " Freq. (MHz):", "counter_slider", float, QtCore.Qt.Horizontal, "value")
+
         self.top_grid_layout.addWidget(self._rx_frequency_win, 2, 0, 1, 4)
         for r in range(2, 3):
             self.top_grid_layout.setRowStretch(r, 1)
@@ -294,7 +296,7 @@ class time_sink_1_10_100_bladerf2(gr.top_block, Qt.QWidget):
         )
         self.osmosdr_source_0.set_time_unknown_pps(osmosdr.time_spec_t())
         self.osmosdr_source_0.set_sample_rate(sample_rate)
-        self.osmosdr_source_0.set_center_freq(rx_frequency*1e6, 0)
+        self.osmosdr_source_0.set_center_freq((rx_frequency*1e6), 0)
         self.osmosdr_source_0.set_freq_corr(0, 0)
         self.osmosdr_source_0.set_dc_offset_mode(0, 0)
         self.osmosdr_source_0.set_iq_balance_mode(0, 0)
@@ -355,7 +357,7 @@ class time_sink_1_10_100_bladerf2(gr.top_block, Qt.QWidget):
 
     def set_rx_frequency(self, rx_frequency):
         self.rx_frequency = rx_frequency
-        self.osmosdr_source_0.set_center_freq(self.rx_frequency*1e6, 0)
+        self.osmosdr_source_0.set_center_freq((self.rx_frequency*1e6), 0)
 
 
 

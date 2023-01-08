@@ -71,7 +71,9 @@ blocks:
     label: ' Freq. (MHz):'
     min_len: '200'
     orient: QtCore.Qt.Horizontal
+    outputmsgname: value
     rangeType: float
+    showports: 'False'
     start: '50'
     step: '.1'
     stop: '6000'
@@ -92,7 +94,9 @@ blocks:
     label: '              Gain:'
     min_len: '200'
     orient: QtCore.Qt.Horizontal
+    outputmsgname: value
     rangeType: float
+    showports: 'False'
     start: '0'
     step: '1'
     stop: '47'
@@ -639,11 +643,36 @@ blocks:
     coordinate: [8, 76.0]
     rotation: 0
     state: true
+- name: soapy_hackrf_source_0
+  id: soapy_hackrf_source
+  parameters:
+    affinity: ''
+    alias: ''
+    amp: 'True'
+    bandwidth: '0'
+    center_freq: rx_frequency
+    comment: ''
+    dev_args: '"hackrf="+serial'
+    gain: rx_hackrf_gain
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samp_rate: sample_rate
+    type: fc32
+    vga: '60'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [232, 324.0]
+    rotation: 0
+    state: disabled
 
 connections:
 - [blocks_keep_one_in_n_0, '0', dect2_phase_diff_0, '0']
 - [dect2_phase_diff_0, '0', qtgui_time_sink_x_0, '0']
 - [osmosdr_source_0, '0', blocks_keep_one_in_n_0, '0']
+- [soapy_hackrf_source_0, '0', blocks_keep_one_in_n_0, '0']
 
 metadata:
   file_format: 1
+  grc_version: 3.10.4.0

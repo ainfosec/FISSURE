@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Fm Usrpx310 From Wav File
-# GNU Radio version: 3.10.1.1
+# GNU Radio version: 3.10.4.0
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -33,8 +33,8 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
         ##################################################
         # Variables
         ##################################################
-        self.tx_usrp_gain = tx_usrp_gain = 0
-        self.tx_usrp_channel = tx_usrp_channel = "B:0"
+        self.tx_usrp_gain = tx_usrp_gain = 32
+        self.tx_usrp_channel = tx_usrp_channel = "A:0"
         self.tx_usrp_antenna = tx_usrp_antenna = "TX/RX"
         self.tx_frequency = tx_frequency = 108e6
         self.sample_rate = sample_rate = 2e6
@@ -42,6 +42,7 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
         self.notes = notes = "Converts a .wav file to an FM signal."
         self.ip_address = ip_address = "192.168.40.2"
         self.filepath = filepath = "/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/Attack Files/tone.wav"
+        self.audio_rate = audio_rate = 48000
 
         ##################################################
         # Blocks
@@ -62,14 +63,14 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
         self.uhd_usrp_sink_0.set_center_freq(tx_frequency, 0)
         self.uhd_usrp_sink_0.set_antenna(tx_usrp_antenna, 0)
         self.uhd_usrp_sink_0.set_gain(tx_usrp_gain, 0)
-        self.mmse_resampler_xx_0 = filter.mmse_resampler_ff(0, 48000/sample_rate)
+        self.mmse_resampler_xx_0 = filter.mmse_resampler_ff(0, (audio_rate/sample_rate))
         self.blocks_wavfile_source_0 = blocks.wavfile_source(filepath, True)
         self.analog_wfm_tx_0 = analog.wfm_tx(
         	audio_rate=480000,
         	quad_rate=480000,
-        	tau=75e-6,
+        	tau=(75e-6),
         	max_dev=75e3,
-        	fh=-1.0,
+        	fh=(-1.0),
         )
 
 
@@ -113,7 +114,7 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        self.mmse_resampler_xx_0.set_resamp_ratio(48000/self.sample_rate)
+        self.mmse_resampler_xx_0.set_resamp_ratio((self.audio_rate/self.sample_rate))
         self.uhd_usrp_sink_0.set_samp_rate(self.sample_rate)
 
     def get_repeat(self):
@@ -139,6 +140,13 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
 
     def set_filepath(self, filepath):
         self.filepath = filepath
+
+    def get_audio_rate(self):
+        return self.audio_rate
+
+    def set_audio_rate(self, audio_rate):
+        self.audio_rate = audio_rate
+        self.mmse_resampler_xx_0.set_resamp_ratio((self.audio_rate/self.sample_rate))
 
 
 

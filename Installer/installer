@@ -702,10 +702,14 @@ programs_ubuntu22_04.append(('Grip (6.4 MB)',
 ls /usr/local/bin/grip
 """,True,None))
 
-# Kismet - FIX
+# Kismet
 programs_ubuntu22_04.append(('Kismet',
-"""#sudo apt-get install -y kismet  # add your computer's username to the group
-""",False,None))
+"""wget -O - https://www.kismetwireless.net/repos/kismet-release.gpg.key | sudo apt-key add -
+echo 'deb https://www.kismetwireless.net/repos/apt/release/jammy jammy main' | sudo tee /etc/apt/sources.list.d/kismet.list
+sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d  # Removes "sudo apt update" warnings
+sudo apt update
+sudo apt-get install -y kismet
+""",True,None))
 
 # UDP Replay
 programs_ubuntu22_04.append(('UDP Replay (704.5 kB)',
