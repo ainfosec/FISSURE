@@ -257,6 +257,10 @@ Inspection Flow Graphs:
      - None
      Computer:
      - None
+     File:
+     - instantaneous_frequency.py
+     - signal_envelope.py
+     - waterfall.py
      HackRF:
      - instantaneous_frequency_hackrf.py
      - signal_envelope_hackrf.py
@@ -283,30 +287,48 @@ Inspection Flow Graphs:
      - time_sink_rtl2832u.py
      - time_sink_1_10_100_rtl2832u.py
      - waterfall_rtl2832u.py
-     USRP B205mini:
-     - instantaneous_frequency_b205mini.py
-     - signal_envelope_b205mini.py
-     - time_sink_b205mini.py
-     - time_sink_1_10_100_b205mini.py
-     - waterfall_b205mini.py
-     USRP B210:
-     - instantaneous_frequency_b210.py
-     - signal_envelope_b210.py
-     - time_sink_b210.py
-     - time_sink_1_10_100_b210.py
-     - waterfall_b210.py
-     USRP X310:
-     - instantaneous_frequency_x310.py
-     - signal_envelope_x310.py
-     - time_sink_x310.py
-     - time_sink_1_10_100_x310.py
-     - waterfall_x310.py
+     USRP B20xmini:
+     - instantaneous_frequency_b20xmini.py
+     - signal_envelope_b20xmini.py
+     - time_sink_b20xmini.py
+     - time_sink_1_10_100_b20xmini.py
+     - waterfall_b20xmini.py
+     USRP B2x0:
+     - instantaneous_frequency_b2x0.py
+     - signal_envelope_b2x0.py
+     - time_sink_b2x0.py
+     - time_sink_1_10_100_b2x0.py
+     - waterfall_b2x0.py
+     USRP N2xx:
+     - instantaneous_frequency_usrp_n2xx.py
+     - signal_envelope_usrp_n2xx.py
+     - time_sink_usrp_n2xx.py
+     - time_sink_1_10_100_usrp_n2xx.py
+     - waterfall_usrp_n2xx.py
+     USRP X3x0:
+     - instantaneous_frequency_x3x0.py
+     - signal_envelope_x3x0.py
+     - time_sink_x3x0.py
+     - time_sink_1_10_100_x3x0.py
+     - waterfall_x3x0.py
+     USRP2:
+     - instantaneous_frequency_usrp2.py
+     - signal_envelope_usrp2.py
+     - time_sink_usrp2.py
+     - time_sink_1_10_100_usrp2.py
+     - waterfall_usrp2.py
      bladeRF:
      - instantaneous_frequency_bladerf.py
      - signal_envelope_bladerf.py
      - time_sink_bladerf.py
      - time_sink_1_10_100_bladerf.py
      - waterfall_bladerf.py
+     bladeRF 2.0:
+     - instantaneous_frequency_bladerf2.py
+     - signal_envelope_bladerf2.py
+     - time_sink_bladerf2.py
+     - time_sink_1_10_100_bladerf2.py
+     - waterfall_blader2f.py
 Protocols:
      802.11x:
           Attacks:
@@ -360,11 +382,11 @@ Protocols:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: Wifi_Default_LimeSDR_Relay.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: Wifi_Default_USRPB205mini_Relay.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: Wifi_Default_USRPB210_Relay.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: Wifi_Default_USRPX310_Relay.py
                802.11x - SYN Flood:
                     Default:
@@ -401,132 +423,132 @@ Protocols:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: wifi_tx_arp_poisoning.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: wifi_tx_arp_poisoning.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: wifi_tx_arp_poisoning.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: wifi_tx_arp_poisoning.py
                802.11x - wifi_tx Beacon:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: wifi_tx_beacon.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: wifi_tx_beacon.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: wifi_tx_beacon.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: wifi_tx_beacon.py
                802.11x - wifi_tx ICMP:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: wifi_tx_icmp.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: wifi_tx_icmp.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: wifi_tx_icmp.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: wifi_tx_icmp.py
                802.11x - wifi_tx LAND:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: wifi_tx_land.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: wifi_tx_land.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: wifi_tx_land.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: wifi_tx_land.py
                802.11x - wifi_tx SYN Flood:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: wifi_tx_syn_flood.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: wifi_tx_syn_flood.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: wifi_tx_syn_flood.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: wifi_tx_syn_flood.py
                802.11x - wifi_tx Smurf:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: wifi_tx_smurf.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: wifi_tx_smurf.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: wifi_tx_smurf.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: wifi_tx_smurf.py
                802.11x - wifi_tx UDP ARP Poisoning:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: wifi_tx_udp_arp_poisoning.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: wifi_tx_udp_arp_poisoning.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: wifi_tx_udp_arp_poisoning.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: wifi_tx_udp_arp_poisoning.py
                802.11x - wifi_tx UDP Crafter:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: wifi_tx_udp_crafter.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: wifi_tx_udp_crafter.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: wifi_tx_udp_crafter.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: wifi_tx_udp_crafter.py
                802.11x - wifi_tx UDP Crafter QoS:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: Wifi_Default_USRPB210_wifi_tx_UDP_Crafter_QoS.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: Wifi_Default_USRPB210_wifi_tx_UDP_Crafter_QoS.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: Wifi_Default_USRPB210_wifi_tx_UDP_Crafter_QoS.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: Wifi_Default_USRPB210_wifi_tx_UDP_Crafter_QoS.py
                802.11x - wifi_tx UDP File:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: wifi_tx_udp_file.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: wifi_tx_udp_file.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: wifi_tx_udp_file.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: wifi_tx_udp_file.py
                802.11x - wifi_tx UDP Mapper:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: wifi_tx_udp_mapper.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: wifi_tx_udp_mapper.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: wifi_tx_udp_mapper.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: wifi_tx_udp_mapper.py
                802.11x - wifi_tx UDP PCAP:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: wifi_tx_udp_pcap.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: wifi_tx_udp_pcap.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: wifi_tx_udp_pcap.py
-                              USRP X310:
+                              USRP X3x0:
                                    Python2 Script: wifi_tx_udp_pcap.py
           Modulation Types:
           - Default
@@ -1732,33 +1754,33 @@ Protocols:
                          Hardware:
                               HackRF:
                                    Python2 Script: Bluetooth_Classic_Default_HackRF_btrx.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: Bluetooth_Classic_Default_USRPB205mini_btrx.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: Bluetooth_Classic_Default_USRPB210_btrx.py
                     DQPSK:
                          Hardware:
                               HackRF:
                                    Python2 Script: Bluetooth_Classic_Default_HackRF_btrx.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: Bluetooth_Classic_Default_USRPB205mini_btrx.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: Bluetooth_Classic_Default_USRPB210_btrx.py
                     Default:
                          Hardware:
                               HackRF:
                                    Python2 Script: Bluetooth_Classic_Default_HackRF_btrx.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: Bluetooth_Classic_Default_USRPB205mini_btrx.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: Bluetooth_Classic_Default_USRPB210_btrx.py
                     GFSK:
                          Hardware:
                               HackRF:
                                    Python2 Script: Bluetooth_Classic_Default_HackRF_btrx.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: Bluetooth_Classic_Default_USRPB205mini_btrx.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: Bluetooth_Classic_Default_USRPB210_btrx.py
           Modulation Types:
           - Default
@@ -2405,18 +2427,18 @@ Protocols:
                          Hardware:
                               HackRF:
                                    Python2 Script: Bluetooth_Low_Energy_GFSK_HackRF_ble_dump.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: Bluetooth_Low_Energy_GFSK_USRPB205mini_ble_dump.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: Bluetooth_Low_Energy_GFSK_USRPB210_ble_dump.py
                Bluetooth Low Energy - btrx:
                     GFSK:
                          Hardware:
                               HackRF:
                                    Python2 Script: Bluetooth_Low_Energy_GFSK_HackRF_btrx.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: Bluetooth_Low_Energy_GFSK_USRPB205mini_btrx.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: Bluetooth_Low_Energy_GFSK_USRPB210_btrx.py
           Modulation Types:
           - GFSK
@@ -2740,9 +2762,9 @@ Protocols:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: Clapper_Plus_OOK_LimeSDR_Transmit.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: Clapper_Plus_OOK_USRPB210_Transmit.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: Clapper_Plus_OOK_USRPB210_Transmit.py
           Modulation Types:
           - OOK
@@ -2751,47 +2773,47 @@ Protocols:
                DECT - Audio Sink:
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: DECT_GFSK_USRPX310_Audio_Sink.py
                DECT - CW:
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: DECT_GFSK_USRPX310_CW.py
                DECT - File Sink:
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: DECT_GFSK_USRPX310_File_Sink.py
                DECT - File Sink IQ:
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: DECT_GFSK_USRPX310_File_Sink_IQ.py
                DECT - From File:
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: DECT_GFSK_USRPX310_From_File.py
                DECT - Gaussian:
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: DECT_GFSK_USRPX310_Gaussian.py
                DECT - Null Flow Graph:
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: DECT_GFSK_USRPX310_Null_Flow_Graph.py
                DECT - Simple Replay:
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: DECT_GFSK_USRPX310_Simple_Replay.py
                DECT - Wireshark:
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: DECT_GFSK_USRPX310_Wireshark.py
           Modulation Types:
           - GFSK
@@ -2937,18 +2959,18 @@ Protocols:
                          Hardware:
                               LimeSDR:
                                    Python2 Script: DSRC_Default_From_File.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python2 Script: DSRC_Default_From_File.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python2 Script: DSRC_Default_From_File.py
                DSRC - wifi_tx Generator:
                     Default:
                          Hardware:
                               LimeSDR:
                                    Python3 Script: DSRC_wifi_tx_generator.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Python3 Script: DSRC_wifi_tx_generator.py
-                              USRP B210:
+                              USRP B2x0:
                                    Python3 Script: DSRC_wifi_tx_generator.py
           Modulation Types:
           - Default
@@ -3134,52 +3156,58 @@ Protocols:
                                    Flow Graph: FM_Radio_FM_LimeSDR_Audio_Sink.py
                               RTL2832U:
                                    Flow Graph: FM_Radio_FM_RTL2832U_Audio_Sink.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: FM_Radio_FM_USRPX310_Audio_Sink.py
                FM Radio - CW:
                     FM:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: FM_Radio_FM_LimeSDR_CW.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: FM_Radio_FM_USRPX310_CW.py
                FM Radio - File Sink:
                     FM:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: FM_Radio_FM_LimeSDR_File_Sink.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: FM_Radio_FM_USRPX310_File_Sink.py
                FM Radio - From File:
                     FM:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: FM_Radio_FM_LimeSDR_From_File.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: FM_Radio_FM_USRPX310_From_File.py
                FM Radio - From Wav File:
                     FM:
                          Hardware:
+                              HackRF:
+                                   Flow Graph: FM_Radio_FM_HackRF_From_Wav_File.py
                               LimeSDR:
                                    Flow Graph: FM_Radio_FM_LimeSDR_From_Wav_File.py
-                              USRP X310:
+                              USRP B20xmini:
+                                   Flow Graph: FM_Radio_FM_USRPB205mini_From_Wav_File.py
+                              USRP B2x0:
+                                   Flow Graph: FM_Radio_FM_USRPB210_From_Wav_File.py
+                              USRP X3x0:
                                    Flow Graph: FM_Radio_FM_USRPX310_From_Wav_File.py
                FM Radio - Gaussian:
                     FM:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: FM_Radio_FM_LimeSDR_Gaussian.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: FM_Radio_FM_USRPX310_Gaussian.py
                FM Radio - Simple Replay:
                     FM:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: FM_Radio_FM_USRPX310_Simple_Replay.py
           Demodulation Flow Graphs:
                FM:
-                    USRP X310:
-                         FM_Radio_USRPX310_Demod.py:
+                    USRP X3x0:
+                         FM_Radio_USRPX3x0_Demod.py:
                          - Stream
           Modulation Types:
           - FM
@@ -3213,22 +3241,22 @@ Protocols:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: Garage_Door_OOK_LimeSDR_Cycle.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: Garage_Door_OOK_USRPB205mini_Cycle.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: Garage_Door_OOK_USRPB210_Cycle.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: Garage_Door_OOK_USRPX310_Cycle.py
                Garage Door - Transmit:
                     OOK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: Garage_Door_OOK_LimeSDR_Transmit.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: Garage_Door_OOK_USRPB205mini_Transmit.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: Garage_Door_OOK_USRPB210_Transmit.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: Garage_Door_OOK_USRPX310_Transmit.py
           Modulation Types:
           - OOK
@@ -3246,11 +3274,11 @@ Protocols:
                                    Flow Graph: Mode_S_PPM_HackRF_Fields.py
                               LimeSDR:
                                    Flow Graph: Mode_S_PPM_LimeSDR_Fields.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: Mode_S_PPM_USRPB205mini_Fields.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: Mode_S_PPM_USRPB210_Fields.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: Mode_S_PPM_USRPX310_Fields.py
                Mode S - File Sink:
                     PPM:
@@ -3261,22 +3289,22 @@ Protocols:
                                    Flow Graph: Mode_S_PPM_LimeSDR_File_Sink.py
                               RTL2832U:
                                    Flow Graph: Mode_S_PPM_RTL2832U_File_Sink.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: Mode_S_PPM_USRPB205mini_File_Sink.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: Mode_S_PPM_USRPB210_File_Sink.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: Mode_S_PPM_USRPX310_File_Sink.py
                Mode S - From File:
                     PPM:
                          Hardware:
                               HackRF:
                                    Flow Graph: Mode_S_PPM_HackRF_From_File.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: Mode_S_PPM_USRPB205mini_From_File.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: Mode_S_PPM_USRPB210_From_File.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: Mode_S_PPM_USRPX310_From_File.py
                Mode S - dump1090:
                     DPSK:
@@ -3296,11 +3324,11 @@ Protocols:
                                    Flow Graph: Mode_S_PPM_LimeSDR_stdout.py
                               RTL2832U:
                                    Flow Graph: Mode_S_PPM_RTL2832U_stdout.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: Mode_S_PPM_USRPB205mini_stdout.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: Mode_S_PPM_USRPB210_stdout.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: Mode_S_PPM_USRPX310_stdout.py
           Demodulation Flow Graphs:
                PPM:
@@ -3310,14 +3338,14 @@ Protocols:
                     RTL2832U:
                          Mode_S_PPM_RTL2832U_Demod.py:
                          - Stream
-                    USRP B205mini:
-                         Mode_S_PPM_USRPB205mini_Demod.py:
+                    USRP B20xmini:
+                         Mode_S_PPM_USRPB20xmini_Demod.py:
                          - Stream
-                    USRP B210:
-                         Mode_S_PPM_USRPB210_Demod.py:
+                    USRP B2x0:
+                         Mode_S_PPM_USRPB2x0_Demod.py:
                          - Stream
-                    USRP X310:
-                         Mode_S_PPM_USRPX310_Demod.py:
+                    USRP X3x0:
+                         Mode_S_PPM_USRPX3x0_Demod.py:
                          - Stream
           Modulation Types:
           - PPM
@@ -3708,16 +3736,16 @@ Protocols:
                Morse Code - File:
                     OOK:
                          Hardware:
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: Morse_Code_OOK_USRPB205mini_File.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: Morse_Code_OOK_USRPB210_File.py
                Morse Code - Transmit:
                     OOK:
                          Hardware:
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: Morse_Code_OOK_USRPB205mini_Transmit.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: Morse_Code_OOK_USRPB210_Transmit.py
           Modulation Types:
           - OOK
@@ -3729,11 +3757,11 @@ Protocols:
                          Hardware:
                               HackRF:
                                    Flow Graph: RDS_BPSK_HackRF_Fields.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: RDS_BPSK_USRPB205mini_Fields.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: RDS_BPSK_USRPB210_Fields.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: RDS_BPSK_USRPX310_Fields.py
                RDS - File Source:
                     BPSK:
@@ -3742,11 +3770,11 @@ Protocols:
                                    Flow Graph: RDS_BPSK_HackRF_File_Source.py
                               LimeSDR:
                                    Flow Graph: RDS_BPSK_LimeSDR_File_Source.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: RDS_BPSK_USRPB205mini_File_Source.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: RDS_BPSK_USRPB210_File_Source.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: RDS_BPSK_USRPX310_File_Source.py
           Modulation Types:
           - BPSK
@@ -3926,97 +3954,97 @@ Protocols:
                SimpliciTI - Access Point DoS:
                     FSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_FSK_USRPX310_Access_Point_DoS.py
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_GFSK_USRPX310_Access_Point_DoS.py
                     MSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_MSK_USRPX310_Access_Point_DoS.py
                SimpliciTI - Add Node:
                     FSK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: SimpliciTI_FSK_USRPX310_LimeSDR_Add_Node.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_FSK_USRPX310_Add_Node.py
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_GFSK_USRPX310_Add_Node.py
                     MSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_MSK_USRPX310_Add_Node.py
                SimpliciTI - CW:
                     FSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_FSK_USRPX310_CW.py
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_GFSK_USRPX310_CW.py
                     MSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_MSK_USRPX310_CW.py
                SimpliciTI - Fields:
                     FSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_FSK_USRPX310_Fields.py
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_GFSK_USRPX310_Fields.py
                     MSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_MSK_USRPX310_Fields.py
                SimpliciTI - From File:
                     FSK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: SimpliciTI_FSK_USRPX310_LimeSDR_From_File.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_FSK_USRPX310_From_File.py
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_GFSK_USRPX310_From_File.py
                     MSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_MSK_USRPX310_From_File.py
                SimpliciTI - Gaussian:
                     FSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_FSK_USRPX310_Gaussian.py
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_GFSK_USRPX310_Gaussian.py
                     MSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_MSK_USRPX310_Gaussian.py
                SimpliciTI - Unlink Node:
                     FSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_FSK_USRPX310_Unlink_Node.py
                     GFSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_GFSK_USRPX310_Unlink_Node.py
                     MSK:
                          Hardware:
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: SimpliciTI_MSK_USRPX310_Unlink_Node.py
           Modulation Types:
           - FSK
@@ -4437,25 +4465,25 @@ Protocols:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: TPMS_FSK_LimeSDR_Receive.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: TPMS_FSK_USRPB205mini_Receive.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: TPMS_FSK_USRPB210_Receive.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: TPMS_FSK_USRPX310_Receive.py
                TPMS - Transmit:
                     FSK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: TPMS_FSK_LimeSDR_Transmit.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: TPMS_FSK_USRPB205mini_Transmit.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: TPMS_FSK_USRPB210_Transmit.py
           Demodulation Flow Graphs:
                FSK:
-                    USRP B210:
-                         TPMS_FSK_USRPB210_Demod.py:
+                    USRP B2x0:
+                         TPMS_FSK_USRPB2x0_Demod.py:
                          - Message/PDU
           Modulation Types:
           - FSK
@@ -4544,50 +4572,50 @@ Protocols:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: X10_OOK_LimeSDR_Decode.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: X10_OOK_USRPB205mini_Decode.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: X10_OOK_USRPB210_Decode.py
                X10 - Fields:
                     OOK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: X10_OOK_LimeSDR_Fields.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: X10_OOK_USRPB205mini_Fields.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: X10_OOK_USRPB210_Fields.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: X10_OOK_USRPX310_Fields.py
                X10 - Off:
                     OOK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: X10_OOK_LimeSDR_X10_Off.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: X10_OOK_USRPB205mini_X10_Off.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: X10_OOK_USRPB210_X10_Off.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: X10_OOK_USRPX310_X10_Off.py
                X10 - On:
                     OOK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: X10_OOK_LimeSDR_X10_On.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: X10_OOK_USRPB205mini_X10_On.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: X10_OOK_USRPB210_X10_On.py
-                              USRP X310:
+                              USRP X3x0:
                                    Flow Graph: X10_OOK_USRPX310_X10_On.py
           Demodulation Flow Graphs:
                OOK:
-                    USRP B205mini:
-                         X10_OOK_USRPB205mini_Demod.py:
+                    USRP B20xmini:
+                         X10_OOK_USRPB20xmini_Demod.py:
                          - Message/PDU
-                    USRP B210:
-                         X10_OOK_USRPB210_Demod.py:
+                    USRP B2x0:
+                         X10_OOK_USRPB2x0_Demod.py:
                          - Message/PDU
           Modulation Types:
           - OOK
@@ -4645,59 +4673,61 @@ Protocols:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: ZWAVE_FSK_LimeSDR_ColorList.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: ZWAVE_FSK_USRPB205mini_ColorList.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: ZWAVE_FSK_USRPB210_ColorList.py
                ZWAVE - Off:
                     FSK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: ZWAVE_FSK_LimeSDR_Off.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: ZWAVE_FSK_USRPB205mini_Off.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: ZWAVE_FSK_USRPB210_Off.py
                ZWAVE - On:
                     FSK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: ZWAVE_FSK_LimeSDR_On.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: ZWAVE_FSK_USRPB205mini_On.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: ZWAVE_FSK_USRPB210_On.py
                ZWAVE - Random Colors:
                     FSK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: ZWAVE_FSK_LimeSDR_RandomColors.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: ZWAVE_FSK_USRPB205mini_RandomColors.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: ZWAVE_FSK_USRPB210_RandomColors.py
                ZWAVE - Receive:
                     FSK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: ZWAVE_FSK_LimeSDR_Receive.py
-                              USRP B205mini:
+                              USRP B20xmini:
                                    Flow Graph: ZWAVE_FSK_USRPB205mini_Receive.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: ZWAVE_FSK_USRPB210_Receive.py
                ZWAVE - Transmit:
                     FSK:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: ZWAVE_FSK_LimeSDR_Transmit.py
-                              USRP B205mini:
+                              PlutoSDR:
+                                   Flow Graph: ZWAVE_FSK_PlutoSDR_Transmit.py
+                              USRP B20xmini:
                                    Flow Graph: ZWAVE_FSK_USRPB205mini_Transmit.py
-                              USRP B210:
+                              USRP B2x0:
                                    Flow Graph: ZWAVE_FSK_USRPB210_Transmit.py
           Demodulation Flow Graphs:
                FSK:
-                    USRP B210:
-                         ZWAVE_FSK_USRPB210_Demod.py:
+                    USRP B2x0:
+                         ZWAVE_FSK_USRPB2x0_Demod.py:
                          - Message/PDU
           Modulation Types:
           - FSK

@@ -5,7 +5,7 @@
 # SPDX-License-Identifier: GPL-3.0
 #
 # GNU Radio Python Flow Graph
-# Title: Fm Radio Fm Usrpx310 From Wav File
+# Title: Fm Radio Fm Usrpb210 From Wav File
 # GNU Radio version: 3.8.5.0
 
 from gnuradio import analog
@@ -22,22 +22,22 @@ from gnuradio import uhd
 import time
 
 
-class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
+class FM_Radio_FM_USRPB210_From_Wav_File(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "Fm Radio Fm Usrpx310 From Wav File")
+        gr.top_block.__init__(self, "Fm Radio Fm Usrpb210 From Wav File")
 
         ##################################################
         # Variables
         ##################################################
-        self.tx_usrp_gain = tx_usrp_gain = 32
-        self.tx_usrp_channel = tx_usrp_channel = "A:0"
+        self.tx_usrp_gain = tx_usrp_gain = 70
+        self.tx_usrp_channel = tx_usrp_channel = "A:A"
         self.tx_usrp_antenna = tx_usrp_antenna = "TX/RX"
-        self.tx_frequency = tx_frequency = 108e6
-        self.sample_rate = sample_rate = 2e6
+        self.tx_frequency = tx_frequency = 96.9e6
+        self.serial = serial = "False"
+        self.sample_rate = sample_rate = 1e6
         self.repeat = repeat = "Yes"
         self.notes = notes = "Converts a .wav file to an FM signal."
-        self.ip_address = ip_address = "192.168.40.2"
         self.filepath = filepath = "/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/Attack Files/tone.wav"
         self.audio_rate = audio_rate = 48000
 
@@ -45,7 +45,7 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
         # Blocks
         ##################################################
         self.uhd_usrp_sink_0 = uhd.usrp_sink(
-            ",".join(("addr=" + ip_address, "")),
+            ",".join((serial, "")),
             uhd.stream_args(
                 cpu_format="fc32",
                 args='',
@@ -105,6 +105,12 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
         self.tx_frequency = tx_frequency
         self.uhd_usrp_sink_0.set_center_freq(self.tx_frequency, 0)
 
+    def get_serial(self):
+        return self.serial
+
+    def set_serial(self, serial):
+        self.serial = serial
+
     def get_sample_rate(self):
         return self.sample_rate
 
@@ -125,12 +131,6 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
     def set_notes(self, notes):
         self.notes = notes
 
-    def get_ip_address(self):
-        return self.ip_address
-
-    def set_ip_address(self, ip_address):
-        self.ip_address = ip_address
-
     def get_filepath(self):
         return self.filepath
 
@@ -148,7 +148,7 @@ class FM_Radio_FM_USRPX310_From_Wav_File(gr.top_block):
 
 
 
-def main(top_block_cls=FM_Radio_FM_USRPX310_From_Wav_File, options=None):
+def main(top_block_cls=FM_Radio_FM_USRPB210_From_Wav_File, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):

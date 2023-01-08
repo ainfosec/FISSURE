@@ -10,7 +10,7 @@ options:
     gen_linking: dynamic
     generate_options: no_gui
     hier_block_src_path: '.:'
-    id: FM_Radio_FM_USRPX310_From_Wav_File
+    id: FM_Radio_FM_USRPB205mini_From_Wav_File
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -57,18 +57,6 @@ blocks:
     coordinate: [16, 307]
     rotation: 0
     state: enabled
-- name: ip_address
-  id: variable
-  parameters:
-    comment: ''
-    value: '"192.168.40.2"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [16, 243]
-    rotation: 0
-    state: enabled
 - name: notes
   id: variable
   parameters:
@@ -97,7 +85,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: 2e6
+    value: 1e6
   states:
     bus_sink: false
     bus_source: false
@@ -105,11 +93,23 @@ blocks:
     coordinate: [16, 499]
     rotation: 0
     state: enabled
+- name: serial
+  id: variable
+  parameters:
+    comment: ''
+    value: '"False"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 243]
+    rotation: 0
+    state: enabled
 - name: tx_frequency
   id: variable
   parameters:
     comment: ''
-    value: 108e6
+    value: 96.9e6
   states:
     bus_sink: false
     bus_source: false
@@ -133,7 +133,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"A:0"'
+    value: '"A:A"'
   states:
     bus_sink: false
     bus_source: false
@@ -145,7 +145,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '32'
+    value: '70'
   states:
     bus_sink: false
     bus_source: false
@@ -320,7 +320,7 @@ blocks:
     clock_source6: ''
     clock_source7: ''
     comment: ''
-    dev_addr: '"addr=" + ip_address'
+    dev_addr: serial
     dev_args: '""'
     gain0: tx_usrp_gain
     gain1: '0'
@@ -483,7 +483,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1016, 108]
+    coordinate: [1088, 100.0]
     rotation: 0
     state: enabled
 

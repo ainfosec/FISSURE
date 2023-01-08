@@ -27234,6 +27234,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionAddingCustomOptions"/>
      <addaction name="actionHelpUploadingFlowGraphs"/>
      <addaction name="actionHelpUploadingPythonScripts"/>
+     <addaction name="actionInspection_Flow_Graphs"/>
     </widget>
     <widget class="QMenu" name="menuProtocol_Signal_References">
      <property name="title">
@@ -27866,6 +27867,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionLesson_TPMS"/>
     <addaction name="actionLesson_Ham_Radio_Exams"/>
     <addaction name="actionLesson_WiFi_Tools"/>
+    <addaction name="actionLesson_Creating_Bootable_USBs"/>
     <addaction name="separator"/>
     <addaction name="actionPySDR_org"/>
     <addaction name="actionLessonSDR_WithHackRF"/>
@@ -28097,12 +28099,12 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionHelpUploadingFlowGraphs">
    <property name="text">
-    <string>Uploading Flow Graphs</string>
+    <string>Attack Flow Graphs</string>
    </property>
   </action>
   <action name="actionHelpUploadingPythonScripts">
    <property name="text">
-    <string>Uploading Python Scripts</string>
+    <string>Attack Python Scripts</string>
    </property>
   </action>
   <action name="actionHelpCustomBlocks">
@@ -29251,6 +29253,16 @@ p, li { white-space: pre-wrap; }
   <action name="actioncryptii">
    <property name="text">
     <string>cryptii</string>
+   </property>
+  </action>
+  <action name="actionLesson_Creating_Bootable_USBs">
+   <property name="text">
+    <string>Lesson #12: Creating Bootable USBs</string>
+   </property>
+  </action>
+  <action name="actionInspection_Flow_Graphs">
+   <property name="text">
+    <string>Inspection Flow Graphs</string>
    </property>
   </action>
  </widget>

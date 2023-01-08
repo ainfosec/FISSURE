@@ -32,6 +32,18 @@ options:
     state: enabled
 
 blocks:
+- name: audio_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: '48000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [136, 492.0]
+    rotation: 0
+    state: true
 - name: filepath
   id: variable
   parameters:
@@ -197,7 +209,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     phase_shift: '0'
-    resamp_ratio: 48000/sample_rate
+    resamp_ratio: audio_rate/sample_rate
     type: float
   states:
     bus_sink: false

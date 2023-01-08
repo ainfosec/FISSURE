@@ -1,6 +1,36 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-01-08
+
+Creating bootable USBs, copying FM attacks, README updates
+ 
+### Added
+
+- Lesson12: Creating Bootable USBs
+- "From Wav File" attacks for USRP B2x0, B20xmini, HackRF, bladeRF 2.0
+- Logo to README
+- "Inspection Flow Graphs" Help menu item
+- Help Menu items in README
+- Videos section in README
+- "Interested In Working For AIS?" section in README
+  
+### Changed
+
+- Added audio rate variable to "FM Radio - From Wav File" attacks
+- Roadmap items in README
+- Renamed "Uploading Flow Graphs" and "Uploading Python Scripts" to "Attack Flow Graphs" and "Attack Python Scripts"
+- Updated "Attack Flow Graphs" and "Attack Python Scripts" Help Menu items
+- Updated "Built With" Help Menu item with Python3 code
+- Inserted QtDesigner image in "Modifying Dashboard" Help Menu item
+- Inserted QtDesigner image in "Adding Custom Options" Help Menu item
+- Moved Ubuntu 22.04 out of beta category in README
+- Updated "Software and Conflicts" for 22.04 Kismet
+ 
+### Fixed
+
+- Kismet installation for Python3_maint-3.10 branch
+
 ## 2022-12-27
 
 Additional support for USRP X300, B200, and B200mini.

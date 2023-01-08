@@ -1,4 +1,7 @@
 # FISSURE - The RF Framework 
+
+<img src="/Icons/README/logo.png"  width="820" height="90">
+
 **Frequency Independent SDR-based Signal Understanding and Reverse Engineering**
 
 FISSURE is an open-source RF and reverse engineering framework designed for all skill levels with hooks for signal detection and classification, protocol discovery, attack execution, IQ manipulation, vulnerability analysis, automation, and AI/ML. The framework was built to promote the rapid integration of software modules, radios, protocols, signal data, scripts, flow graphs, reference material, and third-party tools. FISSURE is a workflow enabler that keeps software in one location and allows teams to effortlessly get up to speed while sharing the same proven baseline configuration for specific Linux distributions.
@@ -30,6 +33,7 @@ Operating System            |  FISSURE Branch
 | Ubuntu 20.04.4 (x64) | Python3_maint-3.8 |
 | Ubuntu 20.04.5 (x64) | Python3_maint-3.8 |
 | KDE neon 5.25 (x64) | Python3_maint-3.8 |
+| Ubuntu 22.04 (x64) | Python3_maint-3.10 |
 
 **In-Progress (beta)**
 
@@ -38,7 +42,6 @@ These operating systems are still in beta status. They are under development and
 Operating System            |  FISSURE Branch
 :-------------------------:|:-------------------------:
 | DragonOS Focal (x86_64) | Python3_maint-3.8 |
-| Ubuntu 22.04 (x64) | Python3_maint-3.10 |
 
 Note: Certain software tools do not work for every OS. Refer to [Software And Conflicts](/Help/Markdown/SoftwareAndConflicts.md)
 
@@ -122,6 +125,26 @@ The following is a list of "supported" hardware with varying levels of integrati
 - Open Sniffer
 - PlutoSDR
 
+**Modifications**
+
+More documentation will be released in the future on how to work within the framework to integrate new components and implement message handling. Refer to these Help menu items to modify the Dashboard using PyQt and for how to add your own attacks, inspection/analysis flow graphs, and customized options.
+- [Modifying Dashboard](/Help/Markdown/ModifyingDashboard.md)
+- [Adding Custom Options](/Help/Markdown/AddingCustomOptions.md)
+- [Attack Flow Graphs](/Help/Markdown/UploadingFlowGraphs.md)
+- [Attack Python Scripts](/Help/Markdown/UploadingPythonScripts.md)
+- [Inspection Flow Graphs](/Help/Markdown/InspectionFlowGraphs.md)
+
+## Videos
+
+**More Coming Soon!**
+
+<table border="0px">
+  <tr>
+    <td><a href="https://www.youtube.com/watch?v=1f2umEKhJvE"><img src="/Icons/README/GRCon22_Video.png" align="center" width="250" height="140"><dt align="center"><small><i><b>GRCon22</b></i></small></dt>
+    </td>
+  </tr>
+</table>
+
 ## Lessons
 
 FISSURE comes with several helpful guides to become familiar with different technologies and techniques. Many include steps for using various tools that are integrated into FISSURE.
@@ -136,15 +159,67 @@ FISSURE comes with several helpful guides to become familiar with different tech
 - [Lesson9: TPMS](/Lessons/Markdown/Lesson9_TPMS.md)
 - [Lesson10: Ham Radio Exams](/Lessons/Markdown/Lesson10_Ham_Radio_Exams.md)
 - [Lesson11: Wi-Fi Tools](/Lessons/Markdown/Lesson11_WiFi_Tools.md)
+- [Lesson12: Creating Bootable USBs](/Lessons/Markdown/Lesson12_Creating_Bootable_USBs.md)
 
 ## Roadmap
 
-- [ ] Add more hardware types, RF protocols, signal parameters, analysis tools
-- [ ] Support more operating systems
-- [ ] Develop class material around FISSURE (RF Attacks, Wi-Fi, GNU Radio, PyQt, etc.)
-- [ ] Create a signal conditioner, feature extractor, and signal classifier with selectable AI/ML techniques
+### Phase I
+
+- [ ] Provide links to videos in the README and AIS website
+- [ ] Create new FISSURE logo
+- [ ] Update documentation to instruct users how to work within the framework
+- [ ] Provide base support for hardware already on the market
+- [ ] Identify the most desirable third-party tools within the community
+- [ ] Identify the most desirable operating systems within the community
+- [ ] Release a signal conditioner that allows users to select and add techniques for isolating and conditioning signals from large streams of IQ data
+- [ ] Release a feature extractor that allows users to select and add techniques for extracting features from isolated signals for use in protocol and emitter classification
+- [ ] Release a signal classifier that allows users to select and add AI/ML techniques. In addition, a decision tree with adjustable features and weights.
 - [ ] Implement recursive demodulation mechanisms for producing a bitstream from unknown signals
+- [ ] Increase the online signal archive, support download of selectable collections
+- [ ] Support the addition of both closed source and user-developed plugins
+- [ ] Improve the look for different resolutions and window sizes, dark mode
+- [ ] Group third-party programs in the installer by type
+- [ ] Resolve DragonOS conflicts
+
+### Phase II
+
 - [ ] Transition the main FISSURE components to a generic sensor node deployment scheme
+- [ ] Increase automation and information exchange between components
+- [ ] Transition the FISSURE library into a database
+- [ ] Support alternative FISSURE packaging options
+- [ ] Add automatic modulation classification (AMC) techniques to the feature extractor
+- [ ] Support user selection of binary data and pattern analysis techniques
+- [ ] Improve custom Wireshark dissectors to be protocol-based and not message-based
+- [ ] Produce confidence levels against bit sequences for protocols and messages already in the library
+- [ ] Insert vulnerability analysis and automation to attacks
+- [ ] Improve the mechanism for fuzzing
+- [ ] Improve measurement, analysis, and visualization in IQ Data tab: radar data, frequency deviation, SigMF annotations
+- [ ] Create archive playlists to simulate environments
+- [ ] Develop formal classes around FISSURE (RF Attacks, Wi-Fi, GNU Radio, PyQt, etc.)
+- [ ] Expand on other untouched areas for RF and cyber (tracking, direction finding, war driving, etc.)
+
+### Phase III
+
+- [ ] Improve operational performance
+- [ ] Expand to other platforms
+- [ ] Insert customization for different RF environments and applications
+- [ ] Offer professional training
+
+### Concurrent
+
+- [ ] Clean up code, remove bugs
+- [ ] Add new help material
+- [ ] Improve status messages, system feedback, and visualization for the user
+- [ ] Integrate new hardware types as they are released
+- [ ] Expand RF protocols in list and library
+- [ ] Expand signal parameters in library
+- [ ] Expand third-party analysis tools and reference material
+- [ ] Expand support for specific operating systems
+- [ ] Produce and modify lesson material
+- [ ] Test and distribute attacks across existing hardware types (where applicable)
+- [ ] Improve installer: clean up commands, add more checks, fix broken installations
+- [ ] Provide yearly capture-the-flag contests around FISSURE
+- [ ] Support new GNU Radio releases
 
 ## Contributing
 
@@ -196,3 +271,14 @@ We acknowledge and are grateful to these developers:
 ## Acknowledgments
 
 Special thanks to Dr. Samuel Mantravadi and Joseph Reith for their contributions to this project.
+
+## Interested In Working For AIS?
+Like working with signals and other reverse engineering realms in cybersecurity? Skip the challenge and go to the [front of the line](https://recruiting.ultipro.com/ASS1020AURI/JobBoard/f94fabce-76a2-4d69-9ce7-0b8a7a9f7c34/OpportunityDetail?opportunityId=736de69f-dec7-48ac-988b-d8e031f760b9). 
+
+For other opportunities, check out our [Can You Hack It?®](https://www.canyouhackit.com) challenge and test your skills! Submit your score to show us what you’ve got. AIS has a national footprint with offices and remote employees across the country. We offer competitive pay and outstanding benefits. Join a team that is not only committed to the future of cyberspace, but to our employee’s success as well.
+
+<p align="center">
+  <a href="https://www.ainfosec.com/">
+    <img src="/Icons/README/ais.png" alt="ais" height="100" />
+  </a>
+</p>

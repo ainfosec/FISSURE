@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Fm Radio Fm Limesdr From Wav File
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.5.0
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -19,6 +19,7 @@ from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 import limesdr
+
 
 class FM_Radio_FM_LimeSDR_From_Wav_File(gr.top_block):
 
@@ -35,11 +36,12 @@ class FM_Radio_FM_LimeSDR_From_Wav_File(gr.top_block):
         self.repeat = repeat = "Yes"
         self.notes = notes = "Converts a .wav file to an FM signal."
         self.filepath = filepath = ""
+        self.audio_rate = audio_rate = 48000
 
         ##################################################
         # Blocks
         ##################################################
-        self.mmse_resampler_xx_0 = filter.mmse_resampler_ff(0, 48000/sample_rate)
+        self.mmse_resampler_xx_0 = filter.mmse_resampler_ff(0, audio_rate/sample_rate)
         self.limesdr_sink_0 = limesdr.sink('', 0, '', '')
 
 
@@ -70,13 +72,13 @@ class FM_Radio_FM_LimeSDR_From_Wav_File(gr.top_block):
         )
 
 
-
         ##################################################
         # Connections
         ##################################################
         self.connect((self.analog_wfm_tx_0, 0), (self.limesdr_sink_0, 0))
         self.connect((self.blocks_wavfile_source_0, 0), (self.mmse_resampler_xx_0, 0))
         self.connect((self.mmse_resampler_xx_0, 0), (self.analog_wfm_tx_0, 0))
+
 
     def get_tx_gain(self):
         return self.tx_gain
@@ -104,7 +106,7 @@ class FM_Radio_FM_LimeSDR_From_Wav_File(gr.top_block):
 
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
-        self.mmse_resampler_xx_0.set_resamp_ratio(48000/self.sample_rate)
+        self.mmse_resampler_xx_0.set_resamp_ratio(self.audio_rate/self.sample_rate)
 
     def get_repeat(self):
         return self.repeat
@@ -124,6 +126,15 @@ class FM_Radio_FM_LimeSDR_From_Wav_File(gr.top_block):
     def set_filepath(self, filepath):
         self.filepath = filepath
 
+    def get_audio_rate(self):
+        return self.audio_rate
+
+    def set_audio_rate(self, audio_rate):
+        self.audio_rate = audio_rate
+        self.mmse_resampler_xx_0.set_resamp_ratio(self.audio_rate/self.sample_rate)
+
+
+
 
 
 def main(top_block_cls=FM_Radio_FM_LimeSDR_From_Wav_File, options=None):
@@ -132,12 +143,14 @@ def main(top_block_cls=FM_Radio_FM_LimeSDR_From_Wav_File, options=None):
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     try:
         input('Press Enter to quit: ')
     except EOFError:

@@ -1,7 +1,7 @@
-# Uploading Python Scripts
+# Attack Python Scripts
 
 ## Creating Python Scripts
-Non-GNU Radio attacks can be added to the FISSURE library by uploading specially configured Python (.py) files. A function is needed within the Python script to identify which variables will be modifiable in the FISSURE Dashboard (`getArguments()`). Those variables are used by the system as command line arguments during execution of the script.
+Non-GNU Radio attacks can be added to the FISSURE library by uploading specially configured Python (.py) files. A function is needed within the Python script to identify which variables can be modified in the FISSURE Dashboard (`getArguments()`). Those variables are used by the system as command line arguments during execution of the script. All FISSURE branches accept both Python2 and Python3 attack scripts.
 
 ### Scapy Example
 The following example uses Scapy to send multiple deauthentication frames from a wireless interface. Use the code as a reference for creating future Python scripts. 
@@ -58,5 +58,5 @@ if __name__ == "__main__":
     sendp(packet, iface=iface, inter=float(interval), loop=1)
 ```
 
-## Uploading the File
-The Python file can be uploaded to Dashboard in the Library>Attacks tab. The file type must be set to "Python Script" and the selected file must be a valid Python file.
+## Uploading Attack Files
+Python files can be uploaded to FISSURE within the _Library>>Add_ tab by choosing a protocol and selecting "Attack". The file type must be set to "Python2 Script" or "Python3 Script" and the file must have a valid .py extension. Attacks added to the library and named with a proper "Attack Template Name" will immediately show up in the Attack tree widget.
