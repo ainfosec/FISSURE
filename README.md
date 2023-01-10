@@ -275,7 +275,7 @@ Special thanks to Dr. Samuel Mantravadi and Joseph Reith for their contributions
 ## Interested In Working For AIS?
 Like working with signals and other reverse engineering realms in cybersecurity? Skip the challenge and go to the [front of the line](https://recruiting.ultipro.com/ASS1020AURI/JobBoard/f94fabce-76a2-4d69-9ce7-0b8a7a9f7c34/OpportunityDetail?opportunityId=736de69f-dec7-48ac-988b-d8e031f760b9). 
 
-For other opportunities, check out our [Can You Hack It?®](https://www.canyouhackit.com) challenge and test your skills! Submit your score to show us what you’ve got. AIS has a national footprint with offices and remote employees across the country. We offer competitive pay and outstanding benefits. Join a team that is not only committed to the future of cyberspace, but to our employee’s success as well.
+For other opportunities, check out our [Can You Hack It?®](https://www.canyouhackit.com) challenge and test your skills! Submit your score to show us what you’ve got. AIS has a national footprint with offices and remote employees across the U.S. We offer competitive pay and outstanding benefits. Join a team that is not only committed to the future of cyberspace, but to our employee’s success as well.
 
 <p align="center">
   <a href="https://www.ainfosec.com/">

@@ -1,6 +1,26 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-01-09
+
+Fixing GNU Radio and gr-osmosdr installation.
+ 
+### Added
+
+- gr-osmosdr to HackRF install for Python3-maint_3.10 branch
+  
+### Changed
+
+- Changed GNU Radio repository to ppa:gnuradio/gnuradio-releases for Python3-maint_3.10 branch
+- Changed GNU Radio version to 3.10.5.0-0~gnuradio~jammy-1 for Python3-maint_3.10 branch
+- Changed GNU Radio repository to ppa:gnuradio/gnuradio-releases-3.8 for Python3-maint_3.8 branch
+- Changed GNU Radio repository to ppa:gnuradio/gnuradio-releases-3.7 for Python2-maint_3.7 branch
+- Clarified "U.S." at the end of the README
+
+### Fixed
+
+- Osmocom blocks should work for HackRF flow graphs. Soapy HackRF block was producing a bad output.
+
 ## 2023-01-08
 
 Creating bootable USBs, copying FM attacks, README updates

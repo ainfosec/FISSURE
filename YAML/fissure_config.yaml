@@ -1,5 +1,5 @@
 SOI_quantity_limit: 5
-SOI_trigger_mode: '0'
+SOI_trigger_mode: 0
 SOI_trigger_time: 0
 SOI_trigger_timeout: 10
 buffer_size_interval: 2
