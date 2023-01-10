@@ -96,9 +96,9 @@ ls ~/.local/bin/fissure
 
 # GNU Radio
 programs_ubuntu22_04.append(('GNU Radio (1.3 GB)',
-"""sudo add-apt-repository -y ppa:mormj/gnuradio-releases-3.10
+"""sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases
 sudo apt-get update
-sudo apt-get install -y gnuradio=3.10.4.0-0~gnuradio~jammy-1
+sudo apt-get install -y gnuradio=3.10.5.0-0~gnuradio~jammy-1
 sudo apt-get install -y uhd-host
 
 # Configure GNU Radio
@@ -205,8 +205,17 @@ sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53
 sudo udevadm trigger --action=change
 #sudo apt-get install -y hackrf
 #sudo apt-get install gr-osmosdr
+cd ~/Installed_by_FISSURE
+git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
+cd gr-osmosdr
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
 ########## Verify ##########
-hackrf_sweep --help
+hackrf_sweep --help #&& ls /usr/local/bin/osmocom_fft
 """,True,'Hardware'))
 
 # 8812au Driver
