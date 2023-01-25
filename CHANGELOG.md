@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-01-25
+
+Adding Dire Wolf, gr-mixalot, systemback, guidus
+ 
+### Added
+
+- Dire Wolf to the installer
+- systemback and guidus to Python2 and Python3_maint-3.10 branches
+- gr-mixalot submodule and installation for all branches
+  
+### Changed
+
+- Moved Help HTML files to /Help/HTML to use the same relative path for images in Markdown and HTML files
+
+### Fixed
+
+- Help markdown files now show images when viewed on GitHub
+- Python3_maint-3.10 installer fixes: gr-paint, gr-air-modes, pyFDA, SdrGlut, monitor_rtl433
+
 ## 2023-01-09
 
 Fixing GNU Radio and gr-osmosdr installation.

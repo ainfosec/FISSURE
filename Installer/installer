@@ -562,6 +562,20 @@ sudo ldconfig
 ls /usr/local/lib/python*/*/gnuradio/limesdr
 """,True,'Out-of-Tree Modules'))
 
+# gr-mixalot
+programs_ubuntu22_04.append(('gr-mixalot',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-mixalot/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+ls /usr/local/lib/python*/*/gnuradio/mixalot
+""",True,'Out-of-Tree Modules'))
+
 # gr-nrsc5
 programs_ubuntu22_04.append(('gr-nrsc5 (53.8 MB)',
 """sudo apt-get install -y libsndfile1-dev
@@ -593,7 +607,7 @@ gcc tgatoluma.c -o tgatoluma
 chmod +x tgatoluma
 cp tgatoluma ~/.local/bin/
 ########## Verify ##########
-ls /usr/local/lib/python*/*/gnuradio/paint
+ls /usr/local/lib/python*/*/paint
 """,True,'Out-of-Tree Modules'))
 
 # gr-rds
@@ -1056,7 +1070,7 @@ git clone https://github.com/righthalfplane/SdrGlut.git
 cp -f """ + fissure_directory + """/Tools/SdrGlut/firstFile.h ~/Installed_by_FISSURE/SdrGlut/MainSource/
 cp -f """ + fissure_directory + """/Tools/SdrGlut/makefileUbunta ~/Installed_by_FISSURE/SdrGlut/makefileUbunta
 cd SdrGlut
-cp /usr/local/lib/libliquid.a.1.5 /usr/local/lib/libliquid.a  # Certain libliquid versions renamed this file
+sudo cp /usr/local/lib/libliquid.a.1.5 /usr/local/lib/libliquid.a  # Certain libliquid versions renamed this file
 make -f makefileUbunta
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
@@ -1232,7 +1246,7 @@ programs_ubuntu22_04.append(('monitor_rtl433 (868.3 kB)',
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mcbridejc/monitor_rtl433.git
 cd monitor_rtl433
-sudo python3 setup.py install
+sudo python3 -m pip install .
 sudo python3 -m pip install python-dateutil
 sudo python3 -m pip install flask_table
 ########## Verify ##########
@@ -1279,6 +1293,7 @@ ls /usr/bin/google-earth-pro
 # gr-air-modes
 programs_ubuntu22_04.append(('gr-air-modes (868.4 kB)',
 """sudo apt-get install -y gr-air-modes
+sudo sed -i 's/numpy.float)/numpy.float32)/g' /usr/lib/python3/dist-packages/air_modes/mlat.py  # Deprecated numpy type: np.float->np.float32 or np.float64
 ########## Verify ##########
 modes_rx --help
 """,True,None))
@@ -1590,10 +1605,42 @@ ls /usr/bin/fldigi
 
 # pyFDA
 programs_ubuntu22_04.append(('pyFDA (11.7 MB)',
-"""sudo python3 -m pip install pyfda
+"""sudo python3 -m pip install pyfda --use-pep517  # Has PEP issues with Python 3.10
 ########## Verify ##########
 pyfdax -h
 """,True,None))
+
+# Bootable USB
+programs_ubuntu22_04.append(('Bootable USB (107.4 MB)',
+"""sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 382003C2C8B7B4AB813E915B14E4942973C62A1B
+sudo add-apt-repository -y "deb http://ppa.launchpad.net/nemh/systemback/ubuntu xenial main"
+sudo apt update
+sudo apt install -y systemback
+sudo add-apt-repository -y ppa:mkusb/ppa
+sudo apt-get update
+sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
+########## Verify ##########
+ls /usr/bin/systemback && ls /usr/bin/guidus
+""",True,None))
+
+# Dire Wolf
+programs_ubuntu22_04.append(('Dire Wolf',
+"""sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://www.github.com/wb2osz/direwolf
+cd direwolf
+git checkout dev
+mkdir build && cd build
+cmake ..
+make -j4
+sudo make install
+make install-conf
+########## Verify ##########
+ls /usr/local/bin/direwolf
+""",True,None))
+
+
 
 ########################################################################
        

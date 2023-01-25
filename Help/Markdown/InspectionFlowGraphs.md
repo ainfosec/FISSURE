@@ -2,7 +2,7 @@
 
 Inspection flow graphs can be added to FISSURE to perform frequently used analysis on live streams from SDRs or directly on prerecorded data files. Flow graph Python files (.py) are called directly with Python2/3 and use the GNU Radio "parameter" block as arguments to the Python call. This enables variables found in blocks that do not utilize callbacks (like IP address or serial number) to be changed prior to runtime. The following are instructions for creating a new inspection flow graph within the _IQ Data>>Inspection_ tab.
 
-![inspection1](./Images/inspection1.png)
+![inspection1](../Images/inspection1.png)
 
 ## Location
 
