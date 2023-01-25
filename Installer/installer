@@ -584,6 +584,20 @@ sudo ldconfig
 ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
+# gr-mixalot
+programs_ubuntu20_04.append(('gr-mixalot',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-mixalot/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+ls /usr/local/lib/python*/*/mixalot
+""",True,'Out-of-Tree Modules'))
+
 # gr-nrsc5
 programs_ubuntu20_04.append(('gr-nrsc5 (48.3 MB)',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-nrsc5/
@@ -1678,6 +1692,24 @@ sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
 ls /usr/bin/systemback && ls /usr/bin/guidus
 """,True,None))
 
+# Dire Wolf
+programs_ubuntu20_04.append(('Dire Wolf',
+"""sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://www.github.com/wb2osz/direwolf
+cd direwolf
+git checkout dev
+mkdir build
+cd build
+cmake ..
+make -j4
+sudo make install
+make install-conf
+########## Verify ##########
+ls /usr/local/bin/direwolf
+""",True,None))
+
 
 ########################################################################
 ############################ Ubuntu 20.04.4 ############################
@@ -2243,6 +2275,20 @@ sudo make install
 sudo ldconfig
 ########## Verify ##########
 ls /usr/local/lib/python*/*/limesdr
+""",True,'Out-of-Tree Modules'))
+
+# gr-mixalot
+programs_ubuntu20_04_4.append(('gr-mixalot',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-mixalot/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+ls /usr/local/lib/python*/*/mixalot
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
@@ -3339,6 +3385,23 @@ sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
 ls /usr/bin/systemback && ls /usr/bin/guidus
 """,True,None))
 
+# Dire Wolf
+programs_ubuntu20_04_4.append(('Dire Wolf',
+"""sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://www.github.com/wb2osz/direwolf
+cd direwolf
+git checkout dev
+mkdir build
+cd build
+cmake ..
+make -j4
+sudo make install
+make install-conf
+########## Verify ##########
+ls /usr/local/bin/direwolf
+""",True,None))
 
 
 ########################################################################
@@ -4315,6 +4378,38 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # ########## Verify ##########
 # ls /usr/bin/systemback && ls /usr/bin/guidus
 # """,True,None))
+
+# # Dire Wolf
+# programs_dragonOS_focal.append(('Dire Wolf',
+# """sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
+# mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://www.github.com/wb2osz/direwolf
+# cd direwolf
+# git checkout dev
+# mkdir build
+# cd build
+# cmake ..
+# make -j4
+# sudo make install
+# make install-conf
+# ########## Verify ##########
+# ls /usr/local/bin/direwolf
+# """,True,None))
+
+# # gr-mixalot
+# programs_dragonOS_focal.append(('gr-mixalot',
+# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-mixalot/
+# sudo rm -Rf build
+# mkdir build
+# cd build
+# cmake ..
+# make
+# sudo make install
+# sudo ldconfig
+# ########## Verify ##########
+# ls /usr/local/lib/python*/*/mixalot
+# """,True,'Out-of-Tree Modules'))
 
 ######## Already Exists ######## 
 

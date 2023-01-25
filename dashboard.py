@@ -16871,47 +16871,47 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuHelpUploadingFlowGraphsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/UploadingFlowGraphs.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/UploadingFlowGraphs.html &")
         
     def _slotMenuHelpUploadingPythonScriptesClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/UploadingPythonScripts.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/UploadingPythonScripts.html &")
         
     def _slotMenuHelpNewUSRPX310_Clicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/NewUSRP_X310.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/NewUSRP_X310.html &")
         
     def _slotMenuHelpUpdatingHackRFClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/UpdatingHackRF_Firmware.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/UpdatingHackRF_Firmware.html &")
         
     def _slotMenuHelpLimeSDR_Clicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/LimeSDR_Notes.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/LimeSDR_Notes.html &")
         
     def _slotMenuHelpSupportedProtocolsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/SupportedProtocols.html &")                                                        
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/SupportedProtocols.html &")                                                        
         
     def _slotMenuHelpSoftwareAndConflictsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/SoftwareAndConflicts.html &")        
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/SoftwareAndConflicts.html &")        
         
     def _slotMenuHelpBuiltWithClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/BuiltWith.html &")   
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/BuiltWith.html &")   
         
     def _slotMenuHelpAboutClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/About.html &")             
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/About.html &")             
         
     def _slotMenuLessonOpenBTS_Clicked(self):
         """ Opens the html file in a browser.
@@ -19949,7 +19949,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuAddingCustomOptionsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/AddingCustomOptions.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/AddingCustomOptions.html &")
         
     def _slotPD_StatusSOI_NewClicked(self):
         """ Manually creates a new signal of interest.
@@ -20103,7 +20103,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuModifyingDashboardClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/ModifyingDashboard.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/ModifyingDashboard.html &")
     
     def _slotMenuNrsc5_Clicked(self):
         """ Opens the nrsc5 command (for rtl devices) in a terminal. Press 0,1,2,3 once running to switch programs.
@@ -22535,7 +22535,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuHelpInspectionFlowGraphsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/InspectionFlowGraphs.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/InspectionFlowGraphs.html &") 
             
             
             

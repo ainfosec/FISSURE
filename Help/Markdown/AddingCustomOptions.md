@@ -4,7 +4,7 @@
 
 Bring up the options dialog in Qt Designer using the `designer` command and then open the _FISSURE/UI/options.ui_ file. Click the arrows for the stacked widget (top right) to locate the table where the custom option will be inserted. Double-click on the table and add a new row with the name of the variable. Set the font size to match the other rows with the "Properties<<" button.
 
-![options](./Images/options.png)
+![options](../Images/options.png)
 
 ## default.yaml
 

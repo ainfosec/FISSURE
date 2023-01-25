@@ -24,7 +24,7 @@ The Dashboard populates certain flow graphs variable names like "ip_address" and
 To help specify that a string variable containing only numerical values is indeed a string and should not to be interpreted as a float, a new variable named "string_variables" can be added to the flow graph. Its value must be a list with the names of the variables to be considered as exceptions: ["variable_name"]
 
 For example:
-![string_variables](./Images/string_variables.png)
+![string_variables](../Images/string_variables.png)
 
 ## Uploading Attack Flow Graph
 Attack flow graphs can be added to FISSURE within the _Library>Add_ tab by selecting a protocol and choosing "Attack". Attacks will be visible within the Attack tree if the "Attack Template Name" is entered properly.
