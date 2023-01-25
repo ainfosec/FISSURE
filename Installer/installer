@@ -572,6 +572,20 @@ sudo ldconfig
 ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
+# gr-mixalot
+programs_ubuntu18_04.append(('gr-mixalot',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+ls /usr/local/lib/python*/*/mixalot
+""",True,'Out-of-Tree Modules'))
+
 # gr-nrsc5
 programs_ubuntu18_04.append(('gr-nrsc5 (39.1 MB)',
 """sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
@@ -1588,6 +1602,37 @@ programs_ubuntu18_04.append(('Fldigi (11.0 MB)',
 ls /usr/bin/fldigi
 """,True,None))
 
+# Bootable USB
+programs_ubuntu18_04.append(('Bootable USB (107.4 MB)',
+"""sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 382003C2C8B7B4AB813E915B14E4942973C62A1B
+sudo add-apt-repository -y "deb http://ppa.launchpad.net/nemh/systemback/ubuntu xenial main"
+sudo apt update
+sudo apt install -y systemback
+sudo add-apt-repository -y ppa:mkusb/ppa
+sudo apt-get update
+sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
+########## Verify ##########
+ls /usr/bin/systemback && ls /usr/bin/guidus
+""",True,None))
+
+# Dire Wolf
+programs_ubuntu18_04.append(('Dire Wolf',
+"""sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://www.github.com/wb2osz/direwolf
+cd direwolf
+git checkout dev
+mkdir build
+cd build
+cmake ..
+make -j4
+sudo make install
+make install-conf
+########## Verify ##########
+ls /usr/local/bin/direwolf
+""",True,None))
+
 
 
 ########################################################################
@@ -2143,6 +2188,20 @@ sudo make install
 sudo ldconfig
 ########## Verify ##########
 ls /usr/local/lib/python*/*/limesdr
+""",True,'Out-of-Tree Modules'))
+
+# gr-mixalot
+programs_ubuntu18_04_5.append(('gr-mixalot',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+ls /usr/local/lib/python*/*/mixalot
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
@@ -3165,6 +3224,37 @@ programs_ubuntu18_04_5.append(('Fldigi (11.0 MB)',
 ls /usr/bin/fldigi
 """,True,None))
 
+# Bootable USB
+programs_ubuntu18_04_5.append(('Bootable USB (107.4 MB)',
+"""sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 382003C2C8B7B4AB813E915B14E4942973C62A1B
+sudo add-apt-repository -y "deb http://ppa.launchpad.net/nemh/systemback/ubuntu xenial main"
+sudo apt update
+sudo apt install -y systemback
+sudo add-apt-repository -y ppa:mkusb/ppa
+sudo apt-get update
+sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
+########## Verify ##########
+ls /usr/bin/systemback && ls /usr/bin/guidus
+""",True,None))
+
+# Dire Wolf
+programs_ubuntu18_04_5.append(('Dire Wolf',
+"""sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://www.github.com/wb2osz/direwolf
+cd direwolf
+git checkout dev
+mkdir build
+cd build
+cmake ..
+make -j4
+sudo make install
+make install-conf
+########## Verify ##########
+ls /usr/local/bin/direwolf
+""",True,None))
+
 
 
 ########################################################################
@@ -3720,6 +3810,20 @@ sudo make install
 sudo ldconfig
 ########## Verify ##########
 ls /usr/local/lib/python*/*/limesdr
+""",True,'Out-of-Tree Modules'))
+
+# gr-mixalot
+programs_ubuntu18_04_6.append(('gr-mixalot',
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
+sudo rm -Rf build
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+########## Verify ##########
+ls /usr/local/lib/python*/*/mixalot
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
@@ -4741,6 +4845,37 @@ programs_ubuntu18_04_6.append(('Fldigi (11.0 MB)',
 """sudo apt-get install -y fldigi
 ########## Verify ##########
 ls /usr/bin/fldigi
+""",True,None))
+
+# Bootable USB
+programs_ubuntu18_04_6.append(('Bootable USB (107.4 MB)',
+"""sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 382003C2C8B7B4AB813E915B14E4942973C62A1B
+sudo add-apt-repository -y "deb http://ppa.launchpad.net/nemh/systemback/ubuntu xenial main"
+sudo apt update
+sudo apt install -y systemback
+sudo add-apt-repository -y ppa:mkusb/ppa
+sudo apt-get update
+sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
+########## Verify ##########
+ls /usr/bin/systemback && ls /usr/bin/guidus
+""",True,None))
+
+# Dire Wolf
+programs_ubuntu18_04_6.append(('Dire Wolf',
+"""sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://www.github.com/wb2osz/direwolf
+cd direwolf
+git checkout dev
+mkdir build
+cd build
+cmake ..
+make -j4
+sudo make install
+make install-conf
+########## Verify ##########
+ls /usr/local/bin/direwolf
 """,True,None))
 
 

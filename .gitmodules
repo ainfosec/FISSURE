@@ -62,3 +62,7 @@
 	path = Custom_Blocks/maint-3.7/gr-zwave_poore
 	url = https://github.com/cpoore1/gr-zwave_poore
 	branch = maint-3.7
+[submodule "Custom_Blocks/maint-3.7/gr-mixalot"]
+	path = Custom_Blocks/maint-3.7/gr-mixalot
+	url = https://github.com/unsynchronized/gr-mixalot
+	branch = maint-3.7
