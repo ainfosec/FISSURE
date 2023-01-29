@@ -35,7 +35,7 @@ The Amateur Extra class license conveys all available U.S. Amateur Radio operati
 
 ### Bands by License
 
-![band_chart](./Images/Band_Chart.jpg)
+![band_chart](../Images/Band_Chart.jpg)
 
 ## FRN
 

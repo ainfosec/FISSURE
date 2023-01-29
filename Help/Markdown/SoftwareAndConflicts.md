@@ -12,6 +12,7 @@ The following is a table of the major software tools that have been proven to wo
 | Bless | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | btscanner | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | CyberChef | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Dire Wolf | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Dump1090 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Enscribe | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | ESP32 Bluetooth Classic Sniffer | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -43,6 +44,7 @@ The following is a table of the major software tools that have been proven to wo
 | gr-iridium | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | gr-j2497 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | gr-limesdr | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| gr-mixalot | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | gr-nrsc5 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | gr-paint | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | gr-rds | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -55,8 +57,10 @@ The following is a table of the major software tools that have been proven to wo
 | Grip | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | HackRF | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | ham2mon | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x: |
+| HamClock | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | hcidump | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Hydra | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| ICE9 Bluetooth Sniffer | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | IIO Oscilloscope | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |
 | IMSI-Catcher 4G | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Inspectrum | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -68,9 +72,11 @@ The following is a table of the major software tools that have been proven to wo
 | LTE-Cell-Scanner | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | LTE-ciphercheck | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |
 | m17-cxx-demod | :x: | :x: | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Meld | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Metasploit | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
 | minicom | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | minimodem | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| mkusb/dus/guidus | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | monitor_rtl433 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | multimon-ng | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | NETATTACK2 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
@@ -101,11 +107,13 @@ The following is a table of the major software tools that have been proven to wo
 | Spectrum Painter | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Spektrum | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | srsRAN/srsLTE | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| systemback | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | trackerjacker | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | UDP Replay | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Universal Radio Hacker | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
 | V2Verifier | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Viking | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| WaveDrom | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Waving-Z | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Wifite | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Wireshark | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -141,7 +149,9 @@ The following are the software versions that are included with the FISSURE insta
 | Bless | 0.6.0 | No | hhttps://github.com/afrantzis/bless |
 | btscanner | 2.0 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
+| Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
 | Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| dump978 | master | Yes | https://github.com/mutability/dump978 | 
 | Enscribe | 0.1.0 | No | Jason Downer | 
 | ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
@@ -172,6 +182,7 @@ The following are the software versions that are included with the FISSURE insta
 | gr-iridium | ? | Yes | https://github.com/muccc/gr-iridium |
 | gr-j2497 | maint-3.7 | Yes | https://github.com/ainfosec/gr-j2497 |
 | gr-limesdr | master | Yes | https://github.com/myriadrf/gr-limesdr |
+| gr-mixalot | maint-3.7 | Yes | https://github.com/unsynchronized/gr-mixalot |
 | gr-nrsc5 | maint-3.7 | Yes | https://github.com/argilo/gr-nrsc5 |
 | gr-paint | maint-3.7 | Yes | https://github.com/drmpeg/gr-paint |
 | gr-rds | maint-3.7 | Yes | https://github.com/bastibl/gr-rds |
@@ -184,8 +195,10 @@ The following are the software versions that are included with the FISSURE insta
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
 | HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
 | ham2mon | master | Yes | https://github.com/madengr/ham2mon |
+| HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.48 | No | http://www.bluez.org/ |
 | Hydra | 8.6 | No | https://github.com/vanhauser-thc/thc-hydra |
+| ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IMSI-Catcher 4G | - | Yes | Joe Reith, AIS |
 | Inspectrum | 0.2-1 | No | https://github.com/miek/inspectrum |
 | IridiumLive | 1.2-35021 | Yes | https://github.com/microp11/iridiumlive |
@@ -195,9 +208,11 @@ The following are the software versions that are included with the FISSURE insta
 | libbtbb | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
 | LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
+| Meld | - | No | https://meldmerge.org/ |
 | Metasploit | v6.2.4-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
+| mkusb/dus/guidus | 22.1.2 | No | https://help.ubuntu.com/community/mkusb |
 | monitor_rtl433 | master | Yes | https://github.com/mcbridejc/monitor_rtl433 |
 | multimon-ng | master | Yes | https://github.com/EliasOenal/multimon-ng |
 | NETATTACK2 | master | Yes | https://github.com/chrizator/netattack2 |
@@ -226,11 +241,13 @@ The following are the software versions that are included with the FISSURE insta
 | Spectrum Painter | master | Yes | https://github.com/polygon/spectrum_painter |
 | Spektrum | 2.2.6 | Yes | https://github.com/pavels/spektrum |
 | srsRAN/srsLTE | 20.10.1 | Yes | https://www.srslte.com/ |
+| systemback | 1.8.402~ubuntu16.04.1 | No | https://github.com/BluewhaleRobot/systemback |
 | trackerjacker | 1.9.0 | Yes | https://github.com/calebmadrigal/trackerjacker |
 | UDP Replay | 1.0.0 | Yes | https://github.com/rigtorp/udpreplay | 
 | Universal Radio Hacker | 2.9.3 | No | https://github.com/jopohl/urh | 
 | V2Verifier | 1.1: 9e025e1 | Yes | https://github.com/twardokus/v2verifier |
 | Viking | 1.10 | Yes | https://sourceforge.net/projects/viking/ |
+| WaveDrom | Online Editor | - | https://github.com/wavedrom/wavedrom |
 | Waving-Z | master | Yes | https://github.com/baol/waving-z |
 | Wifite | master | Yes | https://github.com/derv82/wifite2 |
 | Wireshark | 3.6.5 | No | https://www.wireshark.org/ |
@@ -253,7 +270,9 @@ The following are the software versions that are included with the FISSURE insta
 | Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-6 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
+| Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
 | Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| dump978 | latest | Yes | https://github.com/mutability/dump978 | 
 | Enscribe | 0.1.0 | No | Jason Downer | 
 | ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
@@ -284,6 +303,7 @@ The following are the software versions that are included with the FISSURE insta
 | gr-iridium | ? | Yes | https://github.com/muccc/gr-iridium |
 | gr-j2497 | maint-3.7 | Yes | https://github.com/ainfosec/gr-j2497 |
 | gr-limesdr | master | Yes | https://github.com/myriadrf/gr-limesdr |
+| gr-mixalot | maint-3.7 | Yes | https://github.com/unsynchronized/gr-mixalot |
 | gr-nrsc5 | maint-3.7 | Yes | https://github.com/argilo/gr-nrsc5 |
 | gr-paint | maint-3.7 | Yes | https://github.com/drmpeg/gr-paint |
 | gr-rds | maint-3.7 | Yes | https://github.com/bastibl/gr-rds |
@@ -296,8 +316,10 @@ The following are the software versions that are included with the FISSURE insta
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
 | HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
 | ham2mon | master | Yes | https://github.com/madengr/ham2mon |
+| HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.48 | No | http://www.bluez.org/ |
 | Hydra | 8.6 | No | https://github.com/vanhauser-thc/thc-hydra |
+| ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IMSI-Catcher 4G | - | Yes | Joe Reith, AIS |
 | Inspectrum | 0.2-1 | No | https://github.com/miek/inspectrum |
 | IridiumLive | 1.2-35021 | Yes | https://github.com/microp11/iridiumlive |
@@ -307,9 +329,11 @@ The following are the software versions that are included with the FISSURE insta
 | libbtbb | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
 | LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
+| Meld | - | No | https://meldmerge.org/ |
 | Metasploit | v6.1.17-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
+| mkusb/dus/guidus | 22.1.2 | No | https://help.ubuntu.com/community/mkusb |
 | monitor_rtl433 | master | Yes | https://github.com/mcbridejc/monitor_rtl433 |
 | multimon-ng | master | Yes | https://github.com/EliasOenal/multimon-ng |
 | NETATTACK2 | master | Yes | https://github.com/chrizator/netattack2 |
@@ -338,11 +362,13 @@ The following are the software versions that are included with the FISSURE insta
 | Spectrum Painter | master | Yes | https://github.com/polygon/spectrum_painter |
 | Spektrum | 2.1.0 | Yes | https://github.com/pavels/spektrum |
 | srsRAN/srsLTE | 20.10.1 | Yes | https://www.srslte.com/ |
+| systemback | 1.8.402~ubuntu16.04.1 | No | https://github.com/BluewhaleRobot/systemback |
 | trackerjacker | 1.9.0 | Yes | https://github.com/calebmadrigal/trackerjacker |
 | UDP Replay | 1.0.0 | Yes | https://github.com/rigtorp/udpreplay | 
 | Universal Radio Hacker | 2.9.2 | No | https://github.com/jopohl/urh | 
 | V2Verifier | 1.1: 9e025e1 | Yes | https://github.com/twardokus/v2verifier |
 | Viking | 1.10 | Yes | https://sourceforge.net/projects/viking/ |
+| WaveDrom | Online Editor | - | https://github.com/wavedrom/wavedrom |
 | Waving-Z | master | Yes | https://github.com/baol/waving-z |
 | Wifite | master | Yes | https://github.com/derv82/wifite2 |
 | Wireshark | 3.6.5| No | https://www.wireshark.org/ |
@@ -365,7 +391,9 @@ The following are the software versions that are included with the FISSURE insta
 | Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-6 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
-| Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
+| Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 |
+| dump978 | latest | Yes | https://github.com/mutability/dump978 |
 | Enscribe | 0.1.0 | No | Jason Downer | 
 | ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
@@ -396,6 +424,7 @@ The following are the software versions that are included with the FISSURE insta
 | gr-iridium | ? | Yes | https://github.com/muccc/gr-iridium |
 | gr-j2497 | maint-3.7 | Yes | https://github.com/ainfosec/gr-j2497 |
 | gr-limesdr | master | Yes | https://github.com/myriadrf/gr-limesdr |
+| gr-mixalot | maint-3.7 | Yes | https://github.com/unsynchronized/gr-mixalot |
 | gr-nrsc5 | maint-3.7 | Yes | https://github.com/argilo/gr-nrsc5 |
 | gr-paint | maint-3.7 | Yes | https://github.com/drmpeg/gr-paint |
 | gr-rds | maint-3.7 | Yes | https://github.com/bastibl/gr-rds |
@@ -408,8 +437,10 @@ The following are the software versions that are included with the FISSURE insta
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
 | HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
 | ham2mon | master | Yes | https://github.com/madengr/ham2mon |
+| HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.48 | No | http://www.bluez.org/ |
 | Hydra | 8.6 | No | https://github.com/vanhauser-thc/thc-hydra |
+| ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IIO Oscilloscope | master | Yes | https://github.com/analogdevicesinc/iio-oscilloscope |
 | IMSI-Catcher 4G | - | Yes | Joe Reith, AIS |
 | Inspectrum | 0.2-1 | No | https://github.com/miek/inspectrum |
@@ -420,9 +451,11 @@ The following are the software versions that are included with the FISSURE insta
 | libbtbb | master | Yes | https://github.com/greatscottgadgets/libbtbb |
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
 | LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
+| Meld | 3.18.0 | No | https://meldmerge.org/ |
 | Metasploit | 6.2.10-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
+| mkusb/dus/guidus | 22.1.2 | No | https://help.ubuntu.com/community/mkusb |
 | monitor_rtl433 | master | Yes | https://github.com/mcbridejc/monitor_rtl433 |
 | multimon-ng | master | Yes | https://github.com/EliasOenal/multimon-ng |
 | NETATTACK2 | master | Yes | https://github.com/chrizator/netattack2 |
@@ -451,11 +484,13 @@ The following are the software versions that are included with the FISSURE insta
 | Spectrum Painter | master | Yes | https://github.com/polygon/spectrum_painter |
 | Spektrum | 2.1.0 | Yes | https://github.com/pavels/spektrum |
 | srsRAN/srsLTE | 20.10.1 | Yes | https://www.srslte.com/ |
+| systemback | 1.8.402~ubuntu16.04.1 | No | https://github.com/BluewhaleRobot/systemback |
 | trackerjacker | 1.9.0 | Yes | https://github.com/calebmadrigal/trackerjacker |
 | UDP Replay | 1.0.0 | Yes | https://github.com/rigtorp/udpreplay | 
 | Universal Radio Hacker | 2.9.3 | No | https://github.com/jopohl/urh | 
 | V2Verifier | 1.1: 9e025e1 | Yes | https://github.com/twardokus/v2verifier |
 | Viking | 1.10 | Yes | https://sourceforge.net/projects/viking/ |
+| WaveDrom | Online Editor | - | https://github.com/wavedrom/wavedrom |
 | Waving-Z | master | Yes | https://github.com/baol/waving-z |
 | Wifite | master | Yes | https://github.com/derv82/wifite2 |
 | Wireshark | 3.6.5 | No | https://www.wireshark.org/ |
@@ -478,7 +513,9 @@ The following are the software versions that are included with the FISSURE insta
 | Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-8 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
-| Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
+| Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 |
+| dump978 | latest | Yes | https://github.com/mutability/dump978 |
 | Enscribe | 0.1.0 | No | Jason Downer | 
 | ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
@@ -509,6 +546,7 @@ The following are the software versions that are included with the FISSURE insta
 | gr-iridium | maint-3.8 | Yes | https://github.com/muccc/gr-iridium |
 | gr-j2497 | maint-3.8 | Yes | https://github.com/ainfosec/gr-j2497 |
 | gr-limesdr | gr-3.8 | Yes | https://github.com/myriadrf/gr-limesdr |
+| gr-mixalot | maint-3.8 | Yes | https://github.com/unsynchronized/gr-mixalot |
 | gr-nrsc5 | maint-3.8 | Yes | https://github.com/argilo/gr-nrsc5 |
 | gr-paint | maint-3.8 | Yes | https://github.com/drmpeg/gr-paint |
 | gr-rds | maint-3.8 | Yes | https://github.com/bastibl/gr-rds |
@@ -521,8 +559,10 @@ The following are the software versions that are included with the FISSURE insta
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
 | HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
 | ham2mon | master | Yes | https://github.com/ta6o/ham2mon |
+| HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.53 | No | http://www.bluez.org/ |
 | Hydra | 9.0 | No | https://github.com/vanhauser-thc/thc-hydra |
+| ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IIO Oscilloscope | master | Yes | https://github.com/analogdevicesinc/iio-oscilloscope |
 | IMSI-Catcher 4G | - | Yes | Joe Reith, AIS |
 | Inspectrum | 0.2.2-1build1 | No | https://github.com/miek/inspectrum |
@@ -534,9 +574,11 @@ The following are the software versions that are included with the FISSURE insta
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
 | LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
 | m17-cxx-demod | master | Yes | https://github.com/mobilinkd/m17-cxx-demod |
+| Meld | - | No | https://meldmerge.org/ |
 | Metasploit | v6.1.44-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
+| mkusb/dus/guidus | 22.1.2 | No | https://help.ubuntu.com/community/mkusb |
 | monitor_rtl433 | master | Yes | https://github.com/mcbridejc/monitor_rtl433 |
 | multimon-ng | master | Yes | https://github.com/EliasOenal/multimon-ng |
 | NETATTACK2 | master | Yes | https://github.com/chrizator/netattack2 |
@@ -567,11 +609,13 @@ The following are the software versions that are included with the FISSURE insta
 | Spectrum Painter | master | Yes | https://github.com/polygon/spectrum_painter |
 | Spektrum | 2.1.0 | Yes | https://github.com/pavels/spektrum |
 | srsRAN/srsLTE | master | Yes | https://www.srslte.com/ |
+| systemback | 1.8.402~ubuntu16.04.1 | No | https://github.com/BluewhaleRobot/systemback |
 | trackerjacker | 1.9.0 | No | https://github.com/calebmadrigal/trackerjacker |
 | UDP Replay | master | Yes | https://github.com/rigtorp/udpreplay | 
 | Universal Radio Hacker | 2.9.3 | No | https://github.com/jopohl/urh | 
 | V2Verifier | master | Yes | https://github.com/twardokus/v2verifier |
 | Viking | 1.10 | Yes | https://sourceforge.net/projects/viking/ |
+| WaveDrom | Online Editor | - | https://github.com/wavedrom/wavedrom |
 | Waving-Z | master | Yes | https://github.com/baol/waving-z |
 | Wifite | master | Yes | https://github.com/derv82/wifite2 |
 | Wireshark | 3.6.5 | No | https://www.wireshark.org/ |
@@ -594,7 +638,9 @@ The following are the software versions that are included with the FISSURE insta
 | Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-8 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
-| Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
+| Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 |
+| dump978 | latest | Yes | https://github.com/mutability/dump978 |
 | Enscribe | 0.1.0 | No | Jason Downer | 
 | ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
@@ -625,6 +671,7 @@ The following are the software versions that are included with the FISSURE insta
 | gr-iridium | maint-3.8 | Yes | https://github.com/muccc/gr-iridium |
 | gr-j2497 | maint-3.8 | Yes | https://github.com/ainfosec/gr-j2497 |
 | gr-limesdr | gr-3.8 | Yes | https://github.com/myriadrf/gr-limesdr |
+| gr-mixalot | maint-3.8 | Yes | https://github.com/unsynchronized/gr-mixalot |
 | gr-nrsc5 | maint-3.8 | Yes | https://github.com/argilo/gr-nrsc5 |
 | gr-paint | maint-3.8 | Yes | https://github.com/drmpeg/gr-paint |
 | gr-rds | maint-3.8 | Yes | https://github.com/bastibl/gr-rds |
@@ -637,8 +684,10 @@ The following are the software versions that are included with the FISSURE insta
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
 | HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
 | ham2mon | master | Yes | https://github.com/ta6o/ham2mon |
+| HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.53 | No | http://www.bluez.org/ |
 | Hydra | 9.0 | No | https://github.com/vanhauser-thc/thc-hydra |
+| ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IIO Oscilloscope | master | Yes | https://github.com/analogdevicesinc/iio-oscilloscope |
 | IMSI-Catcher 4G | - | Yes | Joe Reith, AIS |
 | Inspectrum | 0.2.2-1build1 | No | https://github.com/miek/inspectrum |
@@ -650,9 +699,11 @@ The following are the software versions that are included with the FISSURE insta
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
 | LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
 | m17-cxx-demod | master | Yes | https://github.com/mobilinkd/m17-cxx-demod |
+| Meld | 3.20.2 | No | https://meldmerge.org/ |
 | Metasploit | v6.1.44-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.7.1 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
+| mkusb/dus/guidus | 22.1.2 | No | https://help.ubuntu.com/community/mkusb |
 | monitor_rtl433 | master | Yes | https://github.com/mcbridejc/monitor_rtl433 |
 | multimon-ng | master | Yes | https://github.com/EliasOenal/multimon-ng |
 | NETATTACK2 | master | Yes | https://github.com/chrizator/netattack2 |
@@ -683,11 +734,13 @@ The following are the software versions that are included with the FISSURE insta
 | Spectrum Painter | master | Yes | https://github.com/polygon/spectrum_painter |
 | Spektrum | 2.1.0 | Yes | https://github.com/pavels/spektrum |
 | srsRAN/srsLTE | master | Yes | https://www.srslte.com/ |
+| systemback | 1.8.402~ubuntu16.04.1 | No | https://github.com/BluewhaleRobot/systemback |
 | trackerjacker | 1.9.0 | No | https://github.com/calebmadrigal/trackerjacker |
 | UDP Replay | master | Yes | https://github.com/rigtorp/udpreplay | 
 | Universal Radio Hacker | 2.9.3 | No | https://github.com/jopohl/urh | 
 | V2Verifier | master | Yes | https://github.com/twardokus/v2verifier |
 | Viking | 1.10 | Yes | https://sourceforge.net/projects/viking/ |
+| WaveDrom | Online Editor | - | https://github.com/wavedrom/wavedrom |
 | Waving-Z | master | Yes | https://github.com/baol/waving-z |
 | Wifite | master | Yes | https://github.com/derv82/wifite2 |
 | Wireshark | 3.6.5 | No | https://www.wireshark.org/ |
@@ -710,7 +763,9 @@ The following are the software versions that are included with the FISSURE insta
 | Bless | 0.6.3 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-9 | No | https://salsa.debian.org/pkg-security-team/btscanner |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
-| Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 | 
+| Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
+| Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 |
+| dump978 | latest | Yes | https://github.com/mutability/dump978 |
 | Enscribe | 0.1.0 | No | Jason Downer | 
 | ESP32 Bluetooth Classic Sniffer | master | Yes | https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer |
 | ESP8266 Deauther v2 | v2 | Yes | https://github.com/SpacehuhnTech/esp8266_deauther |
@@ -741,6 +796,7 @@ The following are the software versions that are included with the FISSURE insta
 | gr-iridium | master | Yes | https://github.com/muccc/gr-iridium |
 | gr-j2497 | maint-3.10 | Yes | https://github.com/ainfosec/gr-j2497 |
 | ~~gr-limesdr~~ |  |  | https://github.com/myriadrf/gr-limesdr |
+| gr-mixalot | main | Yes | https://github.com/unsynchronized/gr-mixalot |
 | gr-nrsc5 | master | Yes | https://github.com/argilo/gr-nrsc5 |
 | gr-paint | master | Yes | https://github.com/drmpeg/gr-paint |
 | gr-rds | maint-3.10 | Yes | https://github.com/bastibl/gr-rds |
@@ -753,8 +809,10 @@ The following are the software versions that are included with the FISSURE insta
 | Grip | 4.6.1 | No | https://github.com/joeyespo/grip |
 | HackRF | 2022.09.1 | Yes | https://github.com/greatscottgadgets/hackrf/releases |
 | ham2mon | maint-3.10 | Yes | https://github.com/bkerler/ham2mon |
+| HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.64 | No | http://www.bluez.org/ |
 | Hydra | 9.2 | No | https://github.com/vanhauser-thc/thc-hydra |
+| ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IIO Oscilloscope | master | Yes | https://github.com/analogdevicesinc/iio-oscilloscope |
 | IMSI-Catcher 4G | - | Yes | Joe Reith, AIS |
 | Inspectrum | 0.2.3-2 | No | https://github.com/miek/inspectrum |
@@ -766,9 +824,11 @@ The following are the software versions that are included with the FISSURE insta
 | LTE-Cell-Scanner | master/1.1.0 | Yes | https://github.com/JiaoXianjun/LTE-Cell-Scanner |
 | LTE-ciphercheck | rebase_20.04 | Yes | https://github.com/mrlnc/LTE-ciphercheck |
 | m17-cxx-demod | master | Yes | https://github.com/mobilinkd/m17-cxx-demod |
+| Meld | 3.20.4 | No | https://meldmerge.org/ |
 | ~~Metasploit~~ | v6.1.44-dev- | Yes | https://www.metasploit.com/ |
 | minicom | 2.8 | No | https://salsa.debian.org/minicom-team/minicom |
 | minimodem | 0.24 | No | http://www.whence.com/minimodem/ |
+| mkusb/dus/guidus | 22.1.2 | No | https://help.ubuntu.com/community/mkusb |
 | monitor_rtl433 | master | Yes | https://github.com/mcbridejc/monitor_rtl433 |
 | multimon-ng | master | Yes | https://github.com/EliasOenal/multimon-ng |
 | ~~NETATTACK2~~ | master | Yes | https://github.com/chrizator/netattack2 |
@@ -799,11 +859,13 @@ The following are the software versions that are included with the FISSURE insta
 | Spectrum Painter | master | Yes | https://github.com/polygon/spectrum_painter |
 | Spektrum | 2.1.0 | Yes | https://github.com/pavels/spektrum |
 | srsRAN/srsLTE | master | Yes | https://www.srslte.com/ |
+| systemback | 1.8.402~ubuntu16.04.1 | No | https://github.com/BluewhaleRobot/systemback |
 | trackerjacker | 1.9.0 | No | https://github.com/calebmadrigal/trackerjacker |
 | UDP Replay | master | Yes | https://github.com/rigtorp/udpreplay | 
 | ~~Universal Radio Hacker~~ | 2.9.3 | No | https://github.com/jopohl/urh | 
 | V2Verifier | master | Yes | https://github.com/twardokus/v2verifier |
 | Viking | 1.10 | Yes | https://sourceforge.net/projects/viking/ |
+| WaveDrom | Online Editor | - | https://github.com/wavedrom/wavedrom |
 | Waving-Z | master | Yes | https://github.com/baol/waving-z |
 | Wifite | master | Yes | https://github.com/derv82/wifite2 |
 | Wireshark | 3.6.5 | No | https://www.wireshark.org/ |

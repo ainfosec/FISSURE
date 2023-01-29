@@ -114,7 +114,7 @@ sudo ldconfig
 
 Click the blue arrow to reload the blocks.
 
-![reload](./Images/reload.png)
+![reload](../Images/reload.png)
 
 **Making C++ Blocks**
 ```

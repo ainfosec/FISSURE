@@ -586,7 +586,8 @@ ls /usr/local/lib/python*/*/limesdr
 
 # gr-mixalot
 programs_ubuntu20_04.append(('gr-mixalot',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-mixalot/
+"""sudo apt-get install -y libitpp-dev
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-mixalot/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1317,11 +1318,11 @@ programs_ubuntu20_04.append(('monitor_rtl433 (25.6 MB)',
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mcbridejc/monitor_rtl433.git
 cd monitor_rtl433
-sudo python3 setup.py install
+sudo python3 -m pip install .
 sudo python3 -m pip install python-dateutil
 sudo python3 -m pip install flask_table
 ########## Verify ##########
-ls /usr/bin/monitor_rtl433
+ls /usr/local/bin/monitor_rtl433
 """,True,None))
 
 # scan-ssid
@@ -1364,6 +1365,7 @@ ls /usr/bin/google-earth-pro
 # gr-air-modes
 programs_ubuntu20_04.append(('gr-air-modes (1.2 MB)',
 """sudo apt-get install -y gr-air-modes
+sudo sed -i 's/numpy.float)/numpy.float32)/g' /usr/lib/python3/dist-packages/air_modes/mlat.py  # Deprecated numpy type: np.float->np.float32 or np.float64
 ########## Verify ##########
 modes_rx --help
 """,True,None))
@@ -1674,7 +1676,7 @@ ls /usr/bin/fldigi
 
 # pyFDA
 programs_ubuntu20_04.append(('pyFDA (11.7 MB)',
-"""sudo python3 -m pip install pyfda
+"""sudo python3 -m pip install pyfda --use-pep517
 ########## Verify ##########
 pyfdax -h
 """,True,None))
@@ -1708,6 +1710,62 @@ sudo make install
 make install-conf
 ########## Verify ##########
 ls /usr/local/bin/direwolf
+""",True,None))
+
+# Meld
+programs_ubuntu20_04.append(('Meld',
+"""sudo apt-get install -y meld
+########## Verify ##########
+ls /usr/bin/meld
+""",True,None))
+
+# nwdiag
+programs_ubuntu20_04.append(('nwdiag',
+"""sudo python3 -m pip install nwdiag
+########## Verify ##########
+packetdiag -h
+""",True,None))
+
+# HamClock
+programs_ubuntu20_04.append(('HamClock',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
+unzip -q ESPHamClock.zip
+rm ESPHamClock.zip
+cd ESPHamClock
+make install hamclock-1600x960
+sudo make install hamclock-1600x960
+########## Verify ##########
+ls /usr/local/bin/hamclock
+""",True,None))
+
+# ICE9 Bluetooth Sniffer
+programs_ubuntu20_04.append(('ICE9 Bluetooth Sniffer',
+"""sudo apt install -y libliquid-dev libbtbb-dev
+sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mikeryan/ice9-bluetooth-sniffer.git
+cd ice9-bluetooth-sniffer
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
+""",True,None))
+
+# dump978
+programs_ubuntu20_04.append(('dump978',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mutability/dump978.git
+cd dump978
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,None))
 
 
@@ -2279,7 +2337,8 @@ ls /usr/local/lib/python*/*/limesdr
 
 # gr-mixalot
 programs_ubuntu20_04_4.append(('gr-mixalot',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-mixalot/
+"""sudo apt-get install -y libitpp-dev
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-mixalot/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -3010,11 +3069,11 @@ programs_ubuntu20_04_4.append(('monitor_rtl433 (25.6 MB)',
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mcbridejc/monitor_rtl433.git
 cd monitor_rtl433
-sudo python3 setup.py install
+sudo python3 -m pip install .
 sudo python3 -m pip install python-dateutil
 sudo python3 -m pip install flask_table
 ########## Verify ##########
-ls /usr/bin/monitor_rtl433
+ls /usr/local/bin/monitor_rtl433
 """,True,None))
 
 # scan-ssid
@@ -3057,6 +3116,7 @@ ls /usr/bin/google-earth-pro
 # gr-air-modes
 programs_ubuntu20_04_4.append(('gr-air-modes (1.2 MB)',
 """sudo apt-get install -y gr-air-modes
+sudo sed -i 's/numpy.float)/numpy.float32)/g' /usr/lib/python3/dist-packages/air_modes/mlat.py  # Deprecated numpy type: np.float->np.float32 or np.float64
 ########## Verify ##########
 modes_rx --help
 """,True,None))
@@ -3367,7 +3427,7 @@ ls /usr/bin/fldigi
 
 # pyFDA
 programs_ubuntu20_04_4.append(('pyFDA (11.7 MB)',
-"""sudo python3 -m pip install pyfda
+"""sudo python3 -m pip install pyfda --use-pep517
 ########## Verify ##########
 pyfdax -h
 """,True,None))
@@ -3402,6 +3462,64 @@ make install-conf
 ########## Verify ##########
 ls /usr/local/bin/direwolf
 """,True,None))
+
+# Meld
+programs_ubuntu20_04_4.append(('Meld',
+"""sudo apt-get install -y meld
+########## Verify ##########
+ls /usr/bin/meld
+""",True,None))
+
+# nwdiag
+programs_ubuntu20_04_4.append(('nwdiag',
+"""sudo python3 -m pip install nwdiag
+########## Verify ##########
+packetdiag -h
+""",True,None))
+
+# HamClock
+programs_ubuntu20_04_4.append(('HamClock',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
+unzip -q ESPHamClock.zip
+rm ESPHamClock.zip
+cd ESPHamClock
+make install hamclock-1600x960
+sudo make install hamclock-1600x960
+########## Verify ##########
+ls /usr/local/bin/hamclock
+""",True,None))
+
+# ICE9 Bluetooth Sniffer
+programs_ubuntu20_04_4.append(('ICE9 Bluetooth Sniffer',
+"""sudo apt install -y libliquid-dev libbtbb-dev
+sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mikeryan/ice9-bluetooth-sniffer.git
+cd ice9-bluetooth-sniffer
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
+""",True,None))
+
+# dump978
+programs_ubuntu20_04_4.append(('dump978',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mutability/dump978.git
+cd dump978
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/dump978/dump978
+""",True,None))
+
+
 
 
 ########################################################################
@@ -4112,7 +4230,7 @@ programs_dragonOS_focal.append(('monitor_rtl433',
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mcbridejc/monitor_rtl433.git
 cd monitor_rtl433
-sudo python3 setup.py install
+sudo python3 setup.py install  # sudo python3 -m pip install .
 sudo python3 -m pip install python-dateutil
 sudo python3 -m pip install flask_table
 ########## Verify ##########
@@ -4361,7 +4479,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 
 # # pyFDA
 # programs_dragonOS_focal.append(('pyFDA',
-# """sudo python3 -m pip install pyfda
+# """sudo python3 -m pip install pyfda --use-pep517
 # ########## Verify ##########
 # pyfdax -h
 # """,True,None))
@@ -4399,7 +4517,8 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 
 # # gr-mixalot
 # programs_dragonOS_focal.append(('gr-mixalot',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-mixalot/
+# """sudo apt-get install -y libitpp-dev
+# cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-mixalot/
 # sudo rm -Rf build
 # mkdir build
 # cd build
@@ -4410,6 +4529,62 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/mixalot
 # """,True,'Out-of-Tree Modules'))
+
+# # Meld
+# programs_dragonOS_focal.append(('Meld',
+# """sudo apt-get install -y meld
+# ########## Verify ##########
+# ls /usr/bin/meld
+# """,True,None))
+
+# # nwdiag
+# programs_dragonOS_focal.append(('nwdiag',
+# """sudo python3 -m pip install nwdiag
+# ########## Verify ##########
+# packetdiag -h
+# """,True,None))
+
+# # HamClock
+# programs_dragonOS_focal.append(('HamClock',
+# """mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
+# unzip -q ESPHamClock.zip
+# rm ESPHamClock.zip
+# cd ESPHamClock
+# make install hamclock-1600x960
+# sudo make install hamclock-1600x960
+# ########## Verify ##########
+# ls /usr/local/bin/hamclock
+# """,True,None))
+
+# # ICE9 Bluetooth Sniffer
+# programs_dragonOS_focal.append(('ICE9 Bluetooth Sniffer',
+# """sudo apt install -y libliquid-dev libbtbb-dev
+# sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
+# mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/mikeryan/ice9-bluetooth-sniffer.git
+# cd ice9-bluetooth-sniffer
+# mkdir build
+# cd build
+# cmake ..
+# make
+# sudo make install
+# ########## Verify ##########
+# ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
+# """,True,None))
+
+# # dump978
+# programs_dragonOS_focal.append(('dump978',
+# """mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/mutability/dump978.git
+# cd dump978
+# make
+# ########## Verify ##########
+# ls ~/Installed_by_FISSURE/dump978/dump978
+# """,True,None))
 
 ######## Already Exists ######## 
 

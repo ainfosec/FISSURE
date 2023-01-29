@@ -1571,6 +1571,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actioncryptii.triggered.connect(self._slotMenuCryptiiClicked)
         self.actionLesson_Creating_Bootable_USBs.triggered.connect(self._slotMenuLessonCreatingBootableUSBsClicked)
         self.actionInspection_Flow_Graphs.triggered.connect(self._slotMenuHelpInspectionFlowGraphsClicked)
+        self.actionDire_Wolf.triggered.connect(self._slotMenuDireWolfClicked)
+        self.actionMeld.triggered.connect(self._slotMenuMeldClicked)
+        self.actionhfpropagation_com.triggered.connect(self._slotMenuHfpropagationClicked)
+        self.actionWaveDrom.triggered.connect(self._slotMenuWaveDromClicked)
+        self.actionPacket_Diagram.triggered.connect(self._slotMenuPacketDiagramClicked)
+        self.actionHamClock.triggered.connect(self._slotMenuHamClockTriggered)
+        self.actionICE9_Bluetooth_Scanner.triggered.connect(self._slotMenuICE9_BluetoothSnifferClicked)
+        self.actionpocsagtx.triggered.connect(self._slotMenuStandalone_pocsagtxClicked)
+        self.actiondump978.triggered.connect(self._slotMenu_dump978_Clicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -16916,7 +16925,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonOpenBTS_Clicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson1_OpenBTS.html &")    
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson1_OpenBTS.html &")    
                 
     def _slotIQ_PlaybackRecordFreqClicked(self):
         """ Copies the frequency value from the Record tab table to the Playback tab table.
@@ -19240,7 +19249,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonLuaDissectorsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson2_LuaDissectors.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson2_LuaDissectors.html &") 
 
     def _slotMenuMinimodemRxClicked(self):
         """ Opens a terminal and populates it with the minimodem --rx command.
@@ -19288,7 +19297,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonSound_eXchangeClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson3_Sound_eXchange.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson3_Sound_eXchange.html &") 
         
     def _slotMenuVLC_Clicked(self):
         """ Opens VLC.
@@ -19325,7 +19334,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuESP_BoardClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson4_ESP_Boards.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson4_ESP_Boards.html &") 
         
     def _slotMenuGoogleEarthProClicked(self):
         """ Opens Google Earth Pro.
@@ -19554,7 +19563,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonRadiosondeTrackingClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson5_Radiosonde_Tracking.html &")         
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson5_Radiosonde_Tracking.html &")         
 
     def _slotMenuBtrxClicked(self):
         """ Opens an example command for using btrx (gr-bluetooth).
@@ -19700,7 +19709,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonRFID_Clicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson6_RFID.html &")     
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson6_RFID.html &")     
         
     def _slotMenuStandaloneFM_RadioCaptureClicked(self):
         """ Opens the standalone flow graph in GNU Radio Companion.
@@ -21125,12 +21134,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonDataTypesClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson7_Data_Types.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson7_Data_Types.html &")
         
     def _slotMenuLessonCustomGNU_RadioBlocksClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson8_Custom_GNU_Radio_Blocks.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson8_Custom_GNU_Radio_Blocks.html &")
 
     def _slotMenuADSB_ExchangeClicked(self):
         """ Opens ADS-B Exchange in a browser.
@@ -21165,7 +21174,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonTPMS_Clicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson9_TPMS.html &")  
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson9_TPMS.html &")  
 
     def _slotMenuHowToFileClicked(self):
         """ Opens RadioQTH page on how to file for a call sign in a browser.
@@ -21252,7 +21261,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonHamRadioExamsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson10_Ham_Radio_Exams.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson10_Ham_Radio_Exams.html &") 
         
     def _slotMenu2019_2023_GeneralPoolClicked(self):
         """ Opens the 2019-2023 General Class Question Pool pdf.
@@ -21282,7 +21291,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonWiFiToolsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson11_WiFi_Tools.html &")         
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson11_WiFi_Tools.html &")         
         
     def _slotMenuHelpPySDR_orgClicked(self):
         """ Opens PySDR.org in a browser.
@@ -22530,16 +22539,83 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonCreatingBootableUSBsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Lesson12_Creating_Bootable_USBs.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson12_Creating_Bootable_USBs.html &") 
         
     def _slotMenuHelpInspectionFlowGraphsClicked(self):
         """ Opens the html file in a browser.
         """
         os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/InspectionFlowGraphs.html &") 
             
-            
-            
-
+    def _slotMenuDireWolfClicked(self):
+        """ Opens a terminal with an example Dire Wolf command.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        dire_wolf_command = "direwolf -r 48000 udp:7355  # GQRX: Narrow FM, UDP port 7355"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dire_wolf_command + '"', shell=True)
+        
+    def _slotMenuMeldClicked(self):
+        """ Launches Meld for diff'ing files and folders.
+        """
+        # Launch Meld
+        proc = subprocess.Popen("meld &", shell=True)
+        
+    def _slotMenuHfpropagationClicked(self):
+        """ Opens hfpropagation.com in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://hfpropagation.com/ &")
+        
+    def _slotMenuWaveDromClicked(self):
+        """ Opens WaveDrom editor in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://wavedrom.com/editor.html &")
+        
+    def _slotMenuPacketDiagramClicked(self):
+        """ Provides example command for packetdiag.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        sample_diagram = os.path.dirname(os.path.realpath(__file__)) + "/Tools/simple.diag"
+        packetdiag_command = "packetdiag " + sample_diagram + " -o ~/simple.png  # Edit /FISSURE/Tools/simple.diag"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + packetdiag_command + '"', shell=True)
+        
+    def _slotMenuHamClockTriggered(self):
+        """ Launches HamClock.
+        """
+        # Launch HamClock
+        proc = subprocess.Popen("hamclock &", shell=True)
+        
+    def _slotMenuICE9_BluetoothSnifferClicked(self):
+        """ Opens a terminal with an example command for using the ICE9 Bluetooth Sniffer for HackRF.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        ice9_directory = os.path.expanduser("~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/")
+        ice9_command = "./ice9-bluetooth -l -c 2427 -C 20 -w ~/ble.pcap"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + ice9_command + '"', cwd=ice9_directory, shell=True)
+        
+    def _slotMenuStandalone_pocsagtxClicked(self):
+        """ Opens the standalone flow graph in GNU Radio Companion.
+        """
+        # Open the Flow Graph in GNU Radio Companion
+        filepath = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/Standalone\ Flow\ Graphs/pocsagtx.grc"
+        osCommandString = "gnuradio-companion " + filepath
+        os.system(osCommandString+ " &")
+        
+    def _slotMenu_dump978_Clicked(self):
+        """ Opens a terminal with an example dump978 command.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        dump978_directory = os.path.expanduser("~/Installed_by_FISSURE/dump978/")
+        dump978_command = "rtl_sdr -f 978000000 -s 2083334 -g 48 - | ./dump978 | ./uat2text"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dump978_command + '"', cwd=dump978_directory, shell=True)
+        
+        
+                    
+                    
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
     def __init__(self):
         """ First thing that executes.

@@ -27392,6 +27392,12 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionGarage_Door_Transmit"/>
      <addaction name="actionGarage_Door_Cycle"/>
     </widget>
+    <widget class="QMenu" name="menuPOCSAG_2">
+     <property name="title">
+      <string>POCSAG</string>
+     </property>
+     <addaction name="actionpocsagtx"/>
+    </widget>
     <addaction name="menuStandalone802_11"/>
     <addaction name="menuStandaloneACARS"/>
     <addaction name="menuStandaloneClapper_Plus"/>
@@ -27402,6 +27408,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="menuStandaloneJ2497"/>
     <addaction name="menuStandaloneMorse_Code"/>
     <addaction name="menuStandalonePainting"/>
+    <addaction name="menuPOCSAG_2"/>
     <addaction name="menuStandaloneRDS"/>
     <addaction name="menuStandaloneTPMS"/>
     <addaction name="menuStandaloneX10"/>
@@ -27507,6 +27514,9 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionBless"/>
      <addaction name="actiontriq_org"/>
      <addaction name="actioncryptii"/>
+     <addaction name="actionMeld"/>
+     <addaction name="actionWaveDrom"/>
+     <addaction name="actionPacket_Diagram"/>
     </widget>
     <widget class="QMenu" name="menuBluetooth">
      <property name="title">
@@ -27532,6 +27542,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionL2ping"/>
      <addaction name="actionBtscanner"/>
      <addaction name="actionHcidump"/>
+     <addaction name="actionICE9_Bluetooth_Scanner"/>
     </widget>
     <widget class="QMenu" name="menuZ_Wave">
      <property name="title">
@@ -27576,6 +27587,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionDump1090"/>
      <addaction name="actionGr_air_modes"/>
      <addaction name="menuTrackers"/>
+     <addaction name="actiondump978"/>
     </widget>
     <widget class="QMenu" name="menuLTE">
      <property name="title">
@@ -27608,19 +27620,28 @@ p, li { white-space: pre-wrap; }
       <addaction name="actionRadioQTH_Available_Call_Signs"/>
       <addaction name="actionAE7Q_Available_Call_Signs"/>
      </widget>
-     <addaction name="actionham2mon"/>
-     <addaction name="actionWSJT_X"/>
-     <addaction name="actionWSPRnet_Map"/>
-     <addaction name="actionEvery_Time_Zone"/>
-     <addaction name="actionGoogle_Maps_APRS"/>
-     <addaction name="actionAPRS_multimon_ng"/>
+     <widget class="QMenu" name="menuAPRS">
+      <property name="title">
+       <string>APRS</string>
+      </property>
+      <addaction name="actionGoogle_Maps_APRS"/>
+      <addaction name="actionAPRS_multimon_ng"/>
+      <addaction name="actionDire_Wolf"/>
+     </widget>
+     <addaction name="menuAPRS"/>
      <addaction name="menuExam"/>
-     <addaction name="actionLicense_Search"/>
      <addaction name="actionEchoLink_Link_Status"/>
-     <addaction name="actionSolarHam"/>
+     <addaction name="actionEvery_Time_Zone"/>
      <addaction name="actionFldigi"/>
+     <addaction name="actionham2mon"/>
+     <addaction name="actionHamClock"/>
+     <addaction name="actionhfpropagation_com"/>
+     <addaction name="actionLicense_Search"/>
      <addaction name="actionMorse_Code_Translator"/>
      <addaction name="actionPSK_Reporter"/>
+     <addaction name="actionSolarHam"/>
+     <addaction name="actionWSJT_X"/>
+     <addaction name="actionWSPRnet_Map"/>
     </widget>
     <widget class="QMenu" name="menuV2V">
      <property name="title">
@@ -29263,6 +29284,51 @@ p, li { white-space: pre-wrap; }
   <action name="actionInspection_Flow_Graphs">
    <property name="text">
     <string>Inspection Flow Graphs</string>
+   </property>
+  </action>
+  <action name="actionDire_Wolf">
+   <property name="text">
+    <string>Dire Wolf</string>
+   </property>
+  </action>
+  <action name="actionMeld">
+   <property name="text">
+    <string>Meld</string>
+   </property>
+  </action>
+  <action name="actionhfpropagation_com">
+   <property name="text">
+    <string>hfpropagation.com</string>
+   </property>
+  </action>
+  <action name="actionWaveDrom">
+   <property name="text">
+    <string>WaveDrom</string>
+   </property>
+  </action>
+  <action name="actionPacket_Diagram">
+   <property name="text">
+    <string>Packet Diagram</string>
+   </property>
+  </action>
+  <action name="actionHamClock">
+   <property name="text">
+    <string>HamClock</string>
+   </property>
+  </action>
+  <action name="actionICE9_Bluetooth_Scanner">
+   <property name="text">
+    <string>ICE9 Bluetooth Scanner</string>
+   </property>
+  </action>
+  <action name="actionpocsagtx">
+   <property name="text">
+    <string>pocsagtx</string>
+   </property>
+  </action>
+  <action name="actiondump978">
+   <property name="text">
+    <string>dump978</string>
    </property>
   </action>
  </widget>

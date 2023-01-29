@@ -292,7 +292,7 @@ To add encryption keys in Wireshark for a WPA2 network follow these steps:
 6. Add the password and SSID as "password:SSID" in the "Key" field
 7. Click OK and capture a handshake (verify with "eapol" filter)
 
-![Key Examples](./Images/KeyExamples.png)
+![Key Examples](../Images/KeyExamples.png)
 
 <div id="packet_crafting"/>  
 
