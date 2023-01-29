@@ -574,7 +574,8 @@ ls /usr/local/lib/python*/*/limesdr
 
 # gr-mixalot
 programs_ubuntu18_04.append(('gr-mixalot',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
+"""sudo apt-get install -y libitpp-dev
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -1260,7 +1261,11 @@ programs_ubuntu18_04.append(('rtl_433 (23.0 MB)',
 """sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone https://github.com/merbanan/rtl_433.git
+wget https://github.com/merbanan/rtl_433/archive/refs/tags/22.11.zip
+unzip rtl_433-22.11.zip
+rm rtl_433-22.11.zip
+mv rtl_433-22.11/ rtl_433/
+#git clone https://github.com/merbanan/rtl_433.git
 cd rtl_433/
 mkdir build
 cd build
@@ -1281,6 +1286,7 @@ cd ~/Installed_by_FISSURE
 git clone https://www.github.com/threat9/routersploit
 cd routersploit
 python3 -m pip install setuptools
+sed -i 's/paramiko/#paramiko/g' requirements.txt
 python3 -m pip install -r requirements.txt
 python3 -m pip install bluepy
 ########## Verify ##########
@@ -1631,6 +1637,55 @@ sudo make install
 make install-conf
 ########## Verify ##########
 ls /usr/local/bin/direwolf
+""",True,None))
+
+# Meld
+programs_ubuntu18_04.append(('Meld',
+"""sudo apt-get -y install meld
+########## Verify ##########
+ls /usr/bin/meld
+""",True,None))
+
+# HamClock
+programs_ubuntu18_04.append(('HamClock',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
+unzip -q ESPHamClock.zip
+rm ESPHamClock.zip
+cd ESPHamClock
+make install hamclock-1600x960
+sudo make install hamclock-1600x960
+########## Verify ##########
+ls /usr/local/bin/hamclock
+""",True,None))
+
+# ICE9 Bluetooth Sniffer
+programs_ubuntu18_04.append(('ICE9 Bluetooth Sniffer',
+"""sudo apt install -y libliquid-dev libbtbb-dev
+sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mikeryan/ice9-bluetooth-sniffer.git
+cd ice9-bluetooth-sniffer
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
+""",True,None))
+
+# dump978
+programs_ubuntu18_04.append(('dump978',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mutability/dump978.git
+cd dump978
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,None))
 
 
@@ -2192,7 +2247,8 @@ ls /usr/local/lib/python*/*/limesdr
 
 # gr-mixalot
 programs_ubuntu18_04_5.append(('gr-mixalot',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
+"""sudo apt-get install -y libitpp-dev
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -2881,7 +2937,11 @@ programs_ubuntu18_04_5.append(('rtl_433 (23.0 MB)',
 """sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone https://github.com/merbanan/rtl_433.git
+wget https://github.com/merbanan/rtl_433/archive/refs/tags/22.11.zip
+unzip rtl_433-22.11.zip
+rm rtl_433-22.11.zip
+mv rtl_433-22.11/ rtl_433/
+#git clone https://github.com/merbanan/rtl_433.git
 cd rtl_433/
 mkdir build
 cd build
@@ -2902,6 +2962,7 @@ cd ~/Installed_by_FISSURE
 git clone https://www.github.com/threat9/routersploit
 cd routersploit
 python3 -m pip install setuptools
+sed -i 's/paramiko/#paramiko/g' requirements.txt
 python3 -m pip install -r requirements.txt
 python3 -m pip install bluepy
 ########## Verify ##########
@@ -3253,6 +3314,55 @@ sudo make install
 make install-conf
 ########## Verify ##########
 ls /usr/local/bin/direwolf
+""",True,None))
+
+# Meld
+programs_ubuntu18_04_5.append(('Meld',
+"""sudo apt-get -y install meld
+########## Verify ##########
+ls /usr/bin/meld
+""",True,None))
+
+# HamClock
+programs_ubuntu18_04_5.append(('HamClock',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
+unzip -q ESPHamClock.zip
+rm ESPHamClock.zip
+cd ESPHamClock
+make install hamclock-1600x960
+sudo make install hamclock-1600x960
+########## Verify ##########
+ls /usr/local/bin/hamclock
+""",True,None))
+
+# ICE9 Bluetooth Sniffer
+programs_ubuntu18_04_5.append(('ICE9 Bluetooth Sniffer',
+"""sudo apt install -y libliquid-dev libbtbb-dev
+sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mikeryan/ice9-bluetooth-sniffer.git
+cd ice9-bluetooth-sniffer
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
+""",True,None))
+
+# dump978
+programs_ubuntu18_04_5.append(('dump978',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mutability/dump978.git
+cd dump978
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,None))
 
 
@@ -3814,7 +3924,8 @@ ls /usr/local/lib/python*/*/limesdr
 
 # gr-mixalot
 programs_ubuntu18_04_6.append(('gr-mixalot',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
+"""sudo apt-get install -y libitpp-dev
+cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -4504,7 +4615,11 @@ programs_ubuntu18_04_6.append(('rtl_433 (23.0 MB)',
 """sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone https://github.com/merbanan/rtl_433.git
+wget https://github.com/merbanan/rtl_433/archive/refs/tags/22.11.zip
+unzip rtl_433-22.11.zip
+rm rtl_433-22.11.zip
+mv rtl_433-22.11/ rtl_433/
+#git clone https://github.com/merbanan/rtl_433.git
 cd rtl_433/
 mkdir build
 cd build
@@ -4525,6 +4640,7 @@ cd ~/Installed_by_FISSURE
 git clone https://www.github.com/threat9/routersploit
 cd routersploit
 python3 -m pip install setuptools
+sed -i 's/paramiko/#paramiko/g' requirements.txt
 python3 -m pip install -r requirements.txt
 python3 -m pip install bluepy
 ########## Verify ##########
@@ -4876,6 +4992,55 @@ sudo make install
 make install-conf
 ########## Verify ##########
 ls /usr/local/bin/direwolf
+""",True,None))
+
+# Meld
+programs_ubuntu18_04_6.append(('Meld',
+"""sudo apt-get -y install meld
+########## Verify ##########
+ls /usr/bin/meld
+""",True,None))
+
+# HamClock
+programs_ubuntu18_04_6.append(('HamClock',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
+unzip -q ESPHamClock.zip
+rm ESPHamClock.zip
+cd ESPHamClock
+make install hamclock-1600x960
+sudo make install hamclock-1600x960
+########## Verify ##########
+ls /usr/local/bin/hamclock
+""",True,None))
+
+# ICE9 Bluetooth Sniffer
+programs_ubuntu18_04_6.append(('ICE9 Bluetooth Sniffer',
+"""sudo apt install -y libliquid-dev libbtbb-dev
+sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mikeryan/ice9-bluetooth-sniffer.git
+cd ice9-bluetooth-sniffer
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+########## Verify ##########
+ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
+""",True,None))
+
+# dump978
+programs_ubuntu18_04_6.append(('dump978',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://github.com/mutability/dump978.git
+cd dump978
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,None))
 
 

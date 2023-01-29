@@ -22,9 +22,9 @@ To launch:
 
 Select "Live system create" and "Create new"
 
-![systemback1](./Images/Lesson12_systemback1.png)
+![systemback1](../Images/Lesson12_systemback1.png)
 
-![systemback2](./Images/Lesson12_systemback2.png)
+![systemback2](../Images/Lesson12_systemback2.png)
 
 <div id="guidus"/>   
 
@@ -40,9 +40,9 @@ The GUI version of mkusb can be launched with:
 
 Select "Install (make a boot device)" and follow the prompts to create either a "Live-only" or "Persistent live" USB. Refer to the mkusb link for background information about the specific methods. guidus can also be used to wipe and restore a USB after it is converted to a bootable drive. It is safer to install all necessary software prior to creating the bootable USB to ensure there is enough space and that everything gets installed to the right file system locations.
 
-![guidus1](./Images/Lesson12_guidus1.png)
+![guidus1](../Images/Lesson12_guidus1.png)
 
-![guidus2](./Images/Lesson12_guidus2.png)
+![guidus2](../Images/Lesson12_guidus2.png)
 
 <div id="bios"/>   
 

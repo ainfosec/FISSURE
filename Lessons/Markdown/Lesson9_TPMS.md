@@ -100,7 +100,7 @@ https://user-images.githubusercontent.com/12356089/126883222-476f65e1-6f48-4cbb-
 
 The receive flow graph tags the start and end of each message with the Burst Tagger block. The instantaneous frequency is used to produce the bitstream. The upper frequency is the '1' and the lower is the '0'.
 
-![message](./Images/message.png)
+![message](../Images/message.png)
 
 The decoder block isolates the data between the burst tags and works with it to detect the start of each message. My biggest problem in all of this was determining where the message data started. For this xnk was spot on in his README but jboone's "packet_check.py" code threw me off. The data was not aligned right unless the start was the last '01' in the '00111111001' access code. The data from there on out is all Manchester encoded. There will never be three 0's or three 1's in a row for all the chips. I took the bitstream, Manchester decoded it (01=0, 10=1), differentiated the bits, and parsed the fields.
 
