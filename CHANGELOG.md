@@ -1,6 +1,37 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-01-29
+
+New tools and reference material, moving Lessons, fixing installer.
+ 
+### Added
+
+- Meld to installer and Tools menu
+- Dire Wolf example in the Tools menu
+- hfpropagation.com in the Tools menu
+- WaveDrom editor in the Tools menu
+- nwdiag/packetdiag in the Installer and Tools menu for Python3 branches
+- Git submodule instructions to Built With menu item
+- HamClock to installer and Tools menu
+- ICE9 Bluetooth Sniffer to installer and Tools Menu
+- pocsagtx Standalone Flow Graph
+- dump978 to installer and Tools menu
+- TODO.md containing a list of potential ideas
+  
+### Changed
+
+- Repositioned Ham Radio tools in the Tools menu
+- Moved Lessons into HTML folder to preserve relative links to images
+- Updated About.md, Credits.md, SoftwareAndConflicts.md with the latest tools
+
+### Fixed
+
+- Python3\_maint-3.8 installer fixes: gr-air-modes, pyFDA, SdrGlut, monitor\_rtl433
+- Commented out paramiko from RouterSploit install in Python2_maint-3.7 branch
+- Reverting rtl\_433 to release 22.11 to avoid installer errors in Python2\_maint-3.7 branch
+- Adding libitpp-dev to gr-mixalot install
+
 ## 2023-01-25
 
 Adding Dire Wolf, gr-mixalot, systemback, guidus
@@ -18,7 +49,7 @@ Adding Dire Wolf, gr-mixalot, systemback, guidus
 ### Fixed
 
 - Help markdown files now show images when viewed on GitHub
-- Python3_maint-3.10 installer fixes: gr-paint, gr-air-modes, pyFDA, SdrGlut, monitor_rtl433
+- Python3\_maint-3.10 installer fixes: gr-paint, gr-air-modes, pyFDA, SdrGlut, monitor\_rtl433
 
 ## 2023-01-09
 

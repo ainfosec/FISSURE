@@ -43,9 +43,17 @@ Project: https://gchq.github.io/CyberChef/
 Crown Copyright 2016  
 License (Apache Licence, Version 2.0): https://github.com/gchq/CyberChef/blob/master/LICENSE
 
+**Dire Wolf**  
+Project: https://github.com/wb2osz/direwolf  
+License (GPL-2.0): https://github.com/wb2osz/direwolf/blob/master/LICENSE
+
 **Dump1090**  
 Project: https://github.com/antirez/dump1090  
 License (BSD three clause)
+
+**dump978**  
+Project: https://github.com/mutability/dump978  
+License (GPL v2.0): https://github.com/mutability/dump978/blob/master/LICENSE
 
 **Enscribe**  
 Project: Jason Downer  
@@ -172,6 +180,10 @@ Project: https://github.com/myriadrf/gr-limesdr
 Copyright 2018 Lime Microsystems  
 License (GPL v3.0): https://github.com/myriadrf/gr-limesdr/blob/master/LICENSE
 
+**gr-mixalot**  
+Project: https://github.com/unsynchronized/gr-mixalot  
+License (GPL v3.0): https://github.com/unsynchronized/gr-mixalot/blob/main/COPYING
+
 **gr-nrsc5**  
 Project: https://github.com/argilo/gr-nrsc5  
 License (GPL v3.0): https://github.com/argilo/gr-nrsc5/blob/master/COPYING
@@ -228,6 +240,10 @@ License (GPL-3.0): https://github.com/madengr/ham2mon/blob/master/LICENSE
 3.8 Fork: https://github.com/ta6o/ham2mon
 3.10 Fork: https://github.com/bkerler/ham2mon
 
+**HamClock**  
+Project: https://www.clearskyinstitute.com/ham/HamClock/  
+Copyright 2020-2022 Elwood Charles Downey
+
 **hcidump**  
 Project: http://www.bluez.org/  
 Copyright 2000-2016 BlueZ Project  
@@ -237,6 +253,10 @@ License (GPL): http://www.bluez.org/faq/common/
 Project: https://github.com/vanhauser-thc/thc-hydra  
 Copyright 2001-2022 by van Hauser / THC  
 License (AGPL): https://github.com/vanhauser-thc/thc-hydra/blob/master/LICENSE
+
+**ICE9 Bluetooth Sniffer**  
+Project: https://github.com/mikeryan/ice9-bluetooth-sniffer  
+License (GPL-3.0): https://github.com/mikeryan/ice9-bluetooth-sniffer/blob/master/LICENSE
 
 **IMSI-Catcher 4G**  
 Project: Joe Reith, AIS
@@ -284,6 +304,11 @@ License (AGPL-3.0): https://github.com/mrlnc/LTE-ciphercheck/blob/rebase_20.04/L
 Project: https://github.com/mobilinkd/m17-cxx-demod  
 License (GPL-3.0): https://github.com/mobilinkd/m17-cxx-demod/blob/master/LICENSE
 
+**Meld**  
+Project: https://meldmerge.org/  
+Copyright 2021 Kai Willadsen  
+License (GPL-2.0): https://www.gnu.org/licenses/old-licenses/gpl-2.0.html
+
 **Metasploit**  
 Project: https://www.metasploit.com/  
 Copyright 2006-2020, Rapid7, Inc.  
@@ -298,6 +323,10 @@ License (GPL v2.0): https://salsa.debian.org/minicom-team/minicom/-/blob/master/
 Project: http://www.whence.com/minimodem/  
 Copyright 2011-2020 by Kamal Mostafa  
 License (GPLv3+): https://www.gnu.org/licenses/gpl-3.0.html
+
+**mkusb/dus/guidus**  
+Project: https://help.ubuntu.com/community/mkusb  
+License (CC BY-SA 3.0): https://creativecommons.org/licenses/by-sa/3.0/
 
 **monitor_rtl433**  
 Project: https://github.com/mcbridejc/monitor_rtl433
@@ -314,6 +343,11 @@ License (MIT): https://github.com/chrizator/netattack2/blob/master/LICENSE
 **nrsc5**  
 Project: https://github.com/theori-io/nrsc5  
 License (GP: v3.0): https://github.com/theori-io/nrsc5/blob/master/LICENSE
+
+**nwdiag**  
+Project: https://github.com/blockdiag/nwdiag, http://blockdiag.com/en/index.html  
+Copyright 2011 Takeshi KOMIYA  
+License (Apache Licence, Version 2.0): https://github.com/blockdiag/nwdiag/blob/master/LICENSE
 
 **OpenBTS**  
 Project: http://openbts.org/  
@@ -429,6 +463,11 @@ License (BSD-3-Clause): https://github.com/pavels/spektrum/blob/master/LICENSE.m
 Project: https://www.srslte.com/  
 License (AGPL-3.0): https://github.com/srsran/srsRAN/blob/master/LICENSE
 
+**systemback**  
+Project: https://launchpad.net/systemback  
+License (GNU GPL v3)  
+Fork: https://github.com/BluewhaleRobot/systemback
+
 **trackerjacker**  
 Project: https://github.com/calebmadrigal/trackerjacker  
 Copyright 2016 Caleb Madrigal  
@@ -451,6 +490,11 @@ License (MIT): https://github.com/twardokus/v2verifier/blob/master/LICENSE
 **Viking**  
 Project: https://sourceforge.net/projects/viking/  
 License (GPL-2.0): https://github.com/viking-gps/viking/blob/master/COPYING
+
+**WaveDrom**  
+Project: https://wavedrom.com/, https://github.com/wavedrom/wavedrom  
+Copyright 2011-2023 Aliaksei Chapyzhenka  
+License (MIT): https://github.com/wavedrom/wavedrom/blob/trunk/LICENSE
 
 **Waving-Z**  
 Project: https://github.com/baol/waving-z

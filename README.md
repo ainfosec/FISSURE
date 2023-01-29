@@ -242,6 +242,8 @@ Contributions to improve FISSURE are crucial to expediting its development. Any 
 
 Creating [Issues](https://github.com/ainfosec/FISSURE/issues) to bring attention to bugs is also welcomed.
 
+Need more specific ideas? There are a lot of topics we have yet to investigate. Check out our running list of potential [to-do items](./TODO.md). Any help is appreciated. Pick an easy one and write that you contributed to FISSURE in your resume/CV.
+
 ## Collaborating
 
 Contact Assured Information Security, Inc. (AIS) Business Development to propose and formalize any FISSURE collaboration opportunities–whether that is through dedicating time towards integrating your software, having the talented people at AIS develop solutions for your technical challenges, or integrating FISSURE into other platforms/applications.  
