@@ -27517,6 +27517,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionMeld"/>
      <addaction name="actionWaveDrom"/>
      <addaction name="actionPacket_Diagram"/>
+     <addaction name="actionIQEngine"/>
     </widget>
     <widget class="QMenu" name="menuBluetooth">
      <property name="title">
@@ -27570,9 +27571,9 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionPySim_read"/>
      <addaction name="actionPySim_prog"/>
     </widget>
-    <widget class="QMenu" name="menuMode_S">
+    <widget class="QMenu" name="menuAircraft">
      <property name="title">
-      <string>Mode S</string>
+      <string>Aircraft</string>
      </property>
      <widget class="QMenu" name="menuTrackers">
       <property name="title">
@@ -27583,6 +27584,8 @@ p, li { white-space: pre-wrap; }
       <addaction name="actionFlightStats"/>
       <addaction name="actionPlane_Finder"/>
       <addaction name="actionADS_B_Exchange"/>
+      <addaction name="actionacars_adsbexchange"/>
+      <addaction name="actionAirframes"/>
      </widget>
      <addaction name="actionDump1090"/>
      <addaction name="actionGr_air_modes"/>
@@ -27709,6 +27712,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionProxmark3"/>
      <addaction name="actionProxmark3_Cheatsheet"/>
      <addaction name="actionZEPASSD"/>
+     <addaction name="actionrfidpics"/>
     </widget>
     <widget class="QMenu" name="menuSatellite">
      <property name="title">
@@ -27842,6 +27846,7 @@ p, li { white-space: pre-wrap; }
     </widget>
     <addaction name="menu433_MHz"/>
     <addaction name="menu802_11_Tools_2"/>
+    <addaction name="menuAircraft"/>
     <addaction name="menuAIS"/>
     <addaction name="menuAM_Radio"/>
     <addaction name="menuAudio"/>
@@ -27857,7 +27862,6 @@ p, li { white-space: pre-wrap; }
     <addaction name="menuLTE"/>
     <addaction name="menuM17"/>
     <addaction name="menuMapping"/>
-    <addaction name="menuMode_S"/>
     <addaction name="menuPOCSAG"/>
     <addaction name="menuPoint_to_Point"/>
     <addaction name="menuRadiosonde"/>
@@ -29329,6 +29333,26 @@ p, li { white-space: pre-wrap; }
   <action name="actiondump978">
    <property name="text">
     <string>dump978</string>
+   </property>
+  </action>
+  <action name="actionIQEngine">
+   <property name="text">
+    <string>IQEngine</string>
+   </property>
+  </action>
+  <action name="actionrfidpics">
+   <property name="text">
+    <string>rfidpics</string>
+   </property>
+  </action>
+  <action name="actionacars_adsbexchange">
+   <property name="text">
+    <string>acars.adsbexchange</string>
+   </property>
+  </action>
+  <action name="actionAirframes">
+   <property name="text">
+    <string>Airframes</string>
    </property>
   </action>
  </widget>

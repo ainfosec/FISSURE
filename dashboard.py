@@ -1580,6 +1580,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionICE9_Bluetooth_Scanner.triggered.connect(self._slotMenuICE9_BluetoothSnifferClicked)
         self.actionpocsagtx.triggered.connect(self._slotMenuStandalone_pocsagtxClicked)
         self.actiondump978.triggered.connect(self._slotMenu_dump978_Clicked)
+        self.actionIQEngine.triggered.connect(self._slotMenuIQEngineClicked)
+        self.actionrfidpics.triggered.connect(self._slotMenu_rfidpicsClicked)
+        self.actionacars_adsbexchange.triggered.connect(self._slotMenu_acars_adsbexchangeClicked)
+        self.actionAirframes.triggered.connect(self._slotMenuAirframesClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -22613,7 +22617,29 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         dump978_command = "rtl_sdr -f 978000000 -s 2083334 -g 48 - | ./dump978 | ./uat2text"   
         proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dump978_command + '"', cwd=dump978_directory, shell=True)
         
+    def _slotMenuIQEngineClicked(self):
+        """ Opens IQEngine in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://iqengine.org/ &")
         
+    def _slotMenu_rfidpicsClicked(self):
+        """ Opens rfidpics in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://doegox.github.io/rfidpics/ &")
+        
+    def _slotMenu_acars_adsbexchangeClicked(self):
+        """ Opens acars.adsbexchange in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://acars.adsbexchange.com/ &")
+        
+    def _slotMenuAirframesClicked(self):
+        """ Opens Airframes in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://app.airframes.io/flights &")
                     
                     
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):

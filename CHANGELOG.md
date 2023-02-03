@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-02-02
+
+Adding DragonOS FocalX (beta) to installer, more links to Tools menu
+ 
+### Added
+
+- Link to IQEngine in the Tools menu
+- Link to rfidpics in the Tools menu
+- Link to acars.adsbexchange.com in the Tools menu
+- Link to Airframes in the Tools menu
+- DragonOS FocalX to the installer for Python3\_maint-3.10 branch
+- Listed DragonOS FocalX with beta status in README
+- Created checks for DragonOS FocalX in the install script for all branches
+  
+### Changed
+
+- Renamed "Mode S" to "Aircraft" in the Tools menu
+
 ## 2023-01-29
 
 New tools and reference material, moving Lessons, fixing installer.
