@@ -4,13 +4,20 @@
 ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
 ubuntu18_04=$(lsb_release -d 2>&1 | grep "Ubuntu 18.04")
 ubuntu20_04=$(lsb_release -d 2>&1 | grep "Ubuntu 20.04")
-dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal")
+dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal$")
+dragonOS_focalx=$(lsb_release -d 2>&1 | grep "DragonOS FocalX")
 kde_neon=$(lsb_release -d 2>&1 | grep "KDE neon")
 
+# Ubuntu 22.04
 if [[ -n "$ubuntu22_04" ]]
 then
-    # Ubuntu 22.04
     echo "Ubuntu 22.04 detected"
+fi
+
+# DragonOS FocalX
+if [[ -n "$dragonOS_focalx" ]]
+then
+    echo "DragonOS FocalX detected"
 fi
 
 # Python3_maint-3.7, Ubuntu 18.04
@@ -22,8 +29,7 @@ fi
 
 # Python3_maint-3.8, Ubuntu 20.04, DragonOS Focal, KDE neon
 if [[ -n "$ubuntu20_04" ]] || [[ -n "$dragonOS_focal" ]] || [[ -n "$kde_neon" ]]
-then
-    
+then    
     echo "This branch is for Ubuntu 20.04 variants only. Switch to the Python3_maint-3.8 branch and try again!"
     exit
 fi

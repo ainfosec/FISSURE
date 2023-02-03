@@ -107,6 +107,22 @@
      <string>Ubuntu 22.04</string>
     </property>
    </widget>
+   <widget class="QRadioButton" name="radioButton_dragonos_focalx">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>30</y>
+      <width>185</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>DragonOS FocalX (beta)</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
