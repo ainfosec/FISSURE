@@ -42,6 +42,7 @@ These operating systems are still in beta status. They are under development and
 Operating System            |  FISSURE Branch
 :-------------------------:|:-------------------------:
 | DragonOS Focal (x86_64) | Python3_maint-3.8 |
+| DragonOS FocalX (x86_64) | Python3_maint-3.10 |
 
 Note: Certain software tools do not work for every OS. Refer to [Software And Conflicts](/Help/Markdown/SoftwareAndConflicts.md)
 
