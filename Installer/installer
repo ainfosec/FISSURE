@@ -76,7 +76,7 @@ else
 fi
 /bin/echo -e "python2 """ + fissure_directory + """/dashboard.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
-echo "[Desktop Entry]\nStartupWMClass=dashboard.py\nName=FISSURE\nTerminal=false\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
+echo "[Desktop Entry]\\nStartupWMClass=dashboard.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
 echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
@@ -1749,7 +1749,7 @@ else
 fi
 /bin/echo -e "python2 """ + fissure_directory + """/dashboard.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
-echo "[Desktop Entry]\nStartupWMClass=dashboard.py\nName=FISSURE\nTerminal=false\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
+echo "[Desktop Entry]\\nStartupWMClass=dashboard.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
 echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
@@ -3426,7 +3426,7 @@ else
 fi
 /bin/echo -e "python2 """ + fissure_directory + """/dashboard.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
-echo "[Desktop Entry]\nStartupWMClass=dashboard.py\nName=FISSURE\nTerminal=false\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
+echo "[Desktop Entry]\\nStartupWMClass=dashboard.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
 echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
