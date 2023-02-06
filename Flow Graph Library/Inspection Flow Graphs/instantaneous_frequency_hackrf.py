@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Instantaneous Frequency Hackrf
-# GNU Radio version: 3.10.4.0
+# GNU Radio version: 3.10.5.0
 
 from packaging.version import Version as StrictVersion
 
@@ -33,7 +33,7 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio.qtgui import Range, GrRangeWidget
+from gnuradio.qtgui import Range, RangeWidget
 from PyQt5 import QtCore
 import gnuradio.dect2 as dect2
 import osmosdr
@@ -113,16 +113,14 @@ class instantaneous_frequency_hackrf(gr.top_block, Qt.QWidget):
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_hackrf_gain_range = Range(0, 47, 1, 40, 200)
-        self._rx_hackrf_gain_win = GrRangeWidget(self._rx_hackrf_gain_range, self.set_rx_hackrf_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal, "value")
-
+        self._rx_hackrf_gain_win = RangeWidget(self._rx_hackrf_gain_range, self.set_rx_hackrf_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_grid_layout.addWidget(self._rx_hackrf_gain_win, 1, 0, 1, 4)
         for r in range(1, 2):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_frequency_range = Range(50, 6000, .1, 2412, 200)
-        self._rx_frequency_win = GrRangeWidget(self._rx_frequency_range, self.set_rx_frequency, " Freq. (MHz):", "counter_slider", float, QtCore.Qt.Horizontal, "value")
-
+        self._rx_frequency_win = RangeWidget(self._rx_frequency_range, self.set_rx_frequency, " Freq. (MHz):", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_grid_layout.addWidget(self._rx_frequency_win, 2, 0, 1, 4)
         for r in range(2, 3):
             self.top_grid_layout.setRowStretch(r, 1)

@@ -1,6 +1,26 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-02-06
+
+Updating DragonOS FocalX install and adding idea list.
+ 
+### Added
+
+- 2023 Project Idea List
+  
+### Changed
+
+- Installer image in README
+- Links to AIS job opportunity sites
+
+### Fixed
+
+- Added missing escape characters in fissure command install
+- Set DragonOS FocalX programs that do not install to be unchecked by default
+- Commented out lines in the installer for software that is already installed in DragonOS FocalX 
+- Regenerated "instantaneous_frequency_hackrf.py" to stop errors when running from Inspection Flow Graphs tab
+
 ## 2023-02-02
 
 Adding DragonOS FocalX (beta) to installer, more links to Tools menu

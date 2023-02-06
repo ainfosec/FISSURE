@@ -221,6 +221,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 - [ ] Improve installer: clean up commands, add more checks, fix broken installations
 - [ ] Provide yearly capture-the-flag contests around FISSURE
 - [ ] Support new GNU Radio releases
+- [ ] Update the project idea list every year
 
 ## Contributing
 
@@ -244,6 +245,8 @@ Contributions to improve FISSURE are crucial to expediting its development. Any 
 Creating [Issues](https://github.com/ainfosec/FISSURE/issues) to bring attention to bugs is also welcomed.
 
 Need more specific ideas? There are a lot of topics we have yet to investigate. Check out our running list of potential [to-do items](./TODO.md). Any help is appreciated. Pick an easy one and write that you contributed to FISSURE in your resume/CV.
+
+Are you a student or looking to learn more about RF and programming? Refer to the [2023 Project Idea List](./idea_list.md).
 
 ## Collaborating
 
@@ -276,9 +279,9 @@ We acknowledge and are grateful to these developers:
 Special thanks to Dr. Samuel Mantravadi and Joseph Reith for their contributions to this project.
 
 ## Interested In Working For AIS?
-Like working with signals and other reverse engineering realms in cybersecurity? Skip the challenge and go to the [front of the line](https://recruiting.ultipro.com/ASS1020AURI/JobBoard/f94fabce-76a2-4d69-9ce7-0b8a7a9f7c34/OpportunityDetail?opportunityId=736de69f-dec7-48ac-988b-d8e031f760b9). 
+Like working with signals and other reverse engineering realms in cybersecurity? Browse [current openings](https://recruiting.ultipro.com/ASS1020AURI/JobBoard/f94fabce-76a2-4d69-9ce7-0b8a7a9f7c34/?q=&o=postedDateDesc) or join our [talent community](https://www.ainfosec.com/careers/#talent-community) for future consideration. 
 
-For other opportunities, check out our [Can You Hack It?®](https://www.canyouhackit.com) challenge and test your skills! Submit your score to show us what you’ve got. AIS has a national footprint with offices and remote employees across the U.S. We offer competitive pay and outstanding benefits. Join a team that is not only committed to the future of cyberspace, but to our employee’s success as well.
+If you have other talents, check out our [Can You Hack It?®](https://www.canyouhackit.com) challenge and test your skills! Submit your score to show us what you’ve got. AIS has a national footprint with offices and remote employees across the U.S. We offer competitive pay and outstanding benefits. Join a team that is not only committed to the future of cyberspace, but to our employee’s success as well.
 
 <p align="center">
   <a href="https://www.ainfosec.com/">

@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Wideband Hackrf
-# GNU Radio version: 3.10.1.1
+# GNU Radio version: 3.10.5.0
 
 from gnuradio import analog
 from gnuradio import blocks
@@ -69,7 +69,7 @@ class wideband_hackrf(gr.top_block):
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_nlog10_ff_0 = blocks.nlog10_ff(10, 1, 0)
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
-        self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc(-70, 1e-4, 0, True)
+        self.analog_pwr_squelch_xx_0 = analog.pwr_squelch_cc((-70), (1e-4), 0, True)
         self.ainfosec_wideband_detector1_0 = ainfosec.wideband_detector1("tcp://127.0.0.1:5060",rx_freq,fft_size,sample_rate)
 
 
