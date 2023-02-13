@@ -27709,6 +27709,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionHfpropagation_com"/>
      <addaction name="actionLicense_Search"/>
      <addaction name="actionMorse_Code_Translator"/>
+     <addaction name="actionQSSTV"/>
      <addaction name="actionPSK_Reporter"/>
      <addaction name="actionSolarHam"/>
      <addaction name="actionWSJT_X"/>
@@ -27894,12 +27895,6 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionMetasploit_Wordlists"/>
      <addaction name="actionOpenSSH_Username_Enumeration"/>
     </widget>
-    <widget class="QMenu" name="menuTelevision">
-     <property name="title">
-      <string>Television</string>
-     </property>
-     <addaction name="actionQSSTV"/>
-    </widget>
     <widget class="QMenu" name="menuPOCSAG">
      <property name="title">
       <string>POCSAG</string>
@@ -27929,7 +27924,6 @@ p, li { white-space: pre-wrap; }
     <addaction name="menuSatellite"/>
     <addaction name="menuSDR_Tools_2"/>
     <addaction name="menuSSH"/>
-    <addaction name="menuTelevision"/>
     <addaction name="menuTPMS"/>
     <addaction name="menuTrunked_Radio"/>
     <addaction name="menuV2V"/>

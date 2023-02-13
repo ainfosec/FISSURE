@@ -15,7 +15,8 @@ form_class2 = uic.loadUiType(fissure_directory + "/UI/install2.ui")[0]
 
 # Program Format: ('name','command',checked/default, parent_category)
 
-larger_categories = ['Minimum Install','Hardware','Out-of-Tree Modules']
+larger_categories = ['Minimum Install','Hardware','Out-of-Tree Modules','433 MHz','802.11','Aircraft','AIS','Audio','Bluetooth','Data','Development',
+    'GPS','GSM','Ham Radio','HD Radio','LTE','Mapping','POCSAG','Radiosonde','RFID','Satellite','SDR','SSH','Trunked Radio','V2V','Video','Z-Wave']
 
 ########################################################################
 ############################# Ubuntu 18.04 #############################
@@ -117,6 +118,7 @@ gnuradio-companion --help
 programs_ubuntu18_04.append(('Scapy (30.0 MB)',
 """sudo python2 -m pip install scapy
 sudo python3 -m pip install scapy
+sudo python2 -m pip install -U cryptography
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
 """,True,'Minimum Install'))
@@ -345,14 +347,19 @@ ls /usr/local/lib/python*/*/acars
 
 # gr-adsb
 programs_ubuntu18_04.append(('gr-adsb (528.3 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/adsb
 """,True,'Out-of-Tree Modules'))
@@ -387,39 +394,49 @@ ls /usr/local/lib/python*/*/ais
 
 # gr-bluetooth
 programs_ubuntu18_04.append(('gr-bluetooth (10.6 MB)',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-rm -Rf libbtbb
-git clone https://github.com/greatscottgadgets/libbtbb -b master
-cd libbtbb
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/)" ]; 
+then
+  mkdir -p ~/Installed_by_FISSURE
+  cd ~/Installed_by_FISSURE
+  rm -Rf libbtbb
+  git clone https://github.com/greatscottgadgets/libbtbb -b master
+  cd libbtbb
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/bin/btrx
 """,True,'Out-of-Tree Modules'))
 
 # gr-clapper_plus
 programs_ubuntu18_04.append(('gr-clapper_plus (704.5 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/clapper_plus
 """,True,'Out-of-Tree Modules'))
@@ -440,14 +457,19 @@ ls /usr/local/lib/python*/*/dect2
 
 # gr-foo
 programs_ubuntu18_04.append(('gr-foo (9.1 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/foo
 """,True,'Out-of-Tree Modules'))
@@ -468,14 +490,19 @@ ls /usr/local/lib/python*/*/fuzzer
 
 # gr-garage_door
 programs_ubuntu18_04.append(('gr-garage_door (733.2 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/garage_door
 """,True,'Out-of-Tree Modules'))
@@ -501,31 +528,41 @@ ls /usr/local/lib/python*/*/grgsm
 
 # gr-ieee802-11
 programs_ubuntu18_04.append(('gr-ieee802-11 (14.4 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/examples/wifi_phy_hier.grc
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/examples/wifi_phy_hier.grc
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ieee802_11
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-15-4
 programs_ubuntu18_04.append(('gr-ieee802-15-4 (23.0 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+  grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ieee802_15_4
 """,True,'Out-of-Tree Modules'))
@@ -546,132 +583,177 @@ ls /usr/local/lib/python*/*/iridium
 
 # gr-j2497
 programs_ubuntu18_04.append(('gr-j2497 (909.3 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/J2497
 """,True,'Out-of-Tree Modules'))
 
 # gr-limesdr
 programs_ubuntu18_04.append(('gr-limesdr (4.3 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-mixalot
 programs_ubuntu18_04.append(('gr-mixalot',
-"""sudo apt-get install -y libitpp-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/)" ]; 
+then
+  sudo apt-get install -y libitpp-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/mixalot
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
 programs_ubuntu18_04.append(('gr-nrsc5 (39.1 MB)',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/)" ]; 
+then
+  sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/nrsc5
 """,True,'Out-of-Tree Modules'))
 
 # gr-paint
 programs_ubuntu18_04.append(('gr-paint (3.0 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
-gcc tgatoluma.c -o tgatoluma
-chmod +x tgatoluma
-cp tgatoluma ~/.local/bin/
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
+  gcc tgatoluma.c -o tgatoluma
+  chmod +x tgatoluma
+  cp tgatoluma ~/.local/bin/
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/paint
 """,True,'Out-of-Tree Modules'))
 
 # gr-rds
 programs_ubuntu18_04.append(('gr-rds (5.9 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/rds
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
 programs_ubuntu18_04.append(('gr-tpms (5.1 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/tpms
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms_poore
 programs_ubuntu18_04.append(('gr-tpms_poore (786.4 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/tpms_poore
 """,True,'Out-of-Tree Modules'))
 
 # gr-X10
 programs_ubuntu18_04.append(('gr-X10 (798.7 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/X10
 """,True,'Out-of-Tree Modules'))
@@ -692,14 +774,19 @@ ls /usr/local/lib/python*/*/Zwave
 
 # gr-zwave_poore
 programs_ubuntu18_04.append(('gr-zwave_poore (786.4 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/zwave_poore
 """,True,'Out-of-Tree Modules'))
@@ -717,14 +804,14 @@ export PATH
 sudo cp ~/.local/bin/qspectrumanalyzer /usr/local/bin/
 ########## Verify ##########
 ls ~/.local/bin/qspectrumanalyzer
-""",True,None))
+""",True,'SDR'))
 
 # GQRX
 programs_ubuntu18_04.append(('GQRX (18.7 MB)',
 """sudo apt-get install -y gqrx-sdr
 ########## Verify ##########
 ls /usr/bin/gqrx
-""",True,None))
+""",True,'SDR'))
 
 # Dump1090
 programs_ubuntu18_04.append(('Dump1090 (3.1 MB)',
@@ -736,28 +823,28 @@ cd ~/Installed_by_FISSURE/dump1090/
 make
 ########## Verify ##########
 ~/Installed_by_FISSURE/dump1090/dump1090 --help
-""",True,None))
+""",True,'Aircraft'))
 
 # QtDesigner
 programs_ubuntu18_04.append(('QtDesigner (2.6 MB)',
 """sudo apt-get install -y python-qt4 qt4-designer
 ########## Verify ##########
 ls /usr/bin/designer
-""",True,None))
+""",True,'Development'))
 
 # Grip
 programs_ubuntu18_04.append(('Grip (15.2 MB)',
 """python2 -m pip install grip
 ########## Verify ##########
 ls ~/.local/bin/grip
-""",True,None))
+""",True,'Development'))
 
 # Kismet
 programs_ubuntu18_04.append(('Kismet (6.0 MB)',
 """sudo apt-get install -y kismet
 ########## Verify ##########
 ls /usr/bin/kismet
-""",True,None))
+""",True,'802.11'))
 
 # UDP Replay
 programs_ubuntu18_04.append(('UDP Replay (725.0 kB)',
@@ -773,7 +860,7 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/udpreplay
-""",True,None))
+""",True,'802.11'))
 
 # V2Verifier
 programs_ubuntu18_04.append(('V2Verifier (7.5 MB)',
@@ -783,7 +870,7 @@ python3 -m pip install -U pyyaml
 #sudo apt install -y git cmake libuhd-dev uhd-host swig libgmp3-dev python3-pip python3-tk python3-pil 
 #python3-pil.imagetk gnuradio
 #Needs gr-foo and gr-ieee802-11
-""",True,None))
+""",True,'V2V'))
 
 # OpenBTS
 programs_ubuntu18_04.append(('OpenBTS (1.4 GB)',
@@ -841,7 +928,7 @@ cd pysim
 sudo python3 -m pip install -r requirements.txt
 sudo update-alternatives --remove-all gcc
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
-""",True,None))
+""",True,'GSM'))
 
 # srsRAN/srsLTE
 programs_ubuntu18_04.append(('srsRAN (837.2 MB)',
@@ -880,7 +967,7 @@ sudo apt-get install -y fortune cowsay lolcat  # IMSI-Catcher 4G
 # gnome-terminal --tab --title="srsENB" -- /bin/sh -c 'sudo srsenb; $SHELL'
 ########## Verify ##########
 srsenb --help
-""",True,None))
+""",True,'LTE'))
 
 # FALCON
 programs_ubuntu18_04.append(('FALCON (677.5 MB)',
@@ -898,7 +985,7 @@ sudo make install
 #make clean
 ########## Verify ##########
 ls /usr/bin/FalconGUI
-""",True,None))
+""",True,'LTE'))
 
 # LTE-ciphercheck
 programs_ubuntu18_04.append(('LTE-ciphercheck (151.9 MB)',
@@ -914,21 +1001,21 @@ make srsue
 sudo ldconfig
 cp ../srsue/ciphercheck.conf.example ../srsue/ciphercheck.conf
 cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue/ciphercheck.conf
-""",True,None))
+""",True,'LTE'))
 
 # Aircrack-ng
 programs_ubuntu18_04.append(('Aircrack-ng (19.1 MB)',
 """sudo apt-get install -y aircrack-ng
 ########## Verify ##########
 aircrack-ng --help
-""",True,None))
+""",True,'802.11'))
 
 # Geany
 programs_ubuntu18_04.append(('Geany (14.2 MB)',
 """sudo apt-get install -y geany
 ########## Verify ##########
 geany --help
-""",True,None))
+""",True,'Development'))
 
 # Arduino IDE
 programs_ubuntu18_04.append(('Arduino IDE (630.2 MB)',
@@ -941,21 +1028,21 @@ sudo ./install.sh
 cp -R """ + fissure_directory + """/Tools/Esp8266_listen_trigger/ ~/Installed_by_FISSURE/
 ########## Verify ##########
 arduino --version
-""",True,None))
+""",True,'Development'))
 
 # Minicom
 programs_ubuntu18_04.append(('Minicom (1.4 MB)',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
-""",True,None))
+""",True,'Hardware'))
 
 # PuTTY
 programs_ubuntu18_04.append(('PuTTY (4.2 MB)',
 """sudo apt-get install -y putty
 ########## Verify ##########
 putty --help
-""",True,None))
+""",True,'Hardware'))
 
 # openHAB
 programs_ubuntu18_04.append(('openHAB (212.2 MB)',
@@ -966,7 +1053,7 @@ sudo apt-get update
 sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
-""",True,None))
+""",True,'Z-Wave'))
 
 # rtl-zwave
 programs_ubuntu18_04.append(('rtl-zwave (102.4 kB)',
@@ -977,7 +1064,7 @@ cd ~/Installed_by_FISSURE/rtl-zwave-master
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
-""",True,None))
+""",True,'Z-Wave'))
 
 # waving-z
 programs_ubuntu18_04.append(('waving-z (2.2 MB)',
@@ -991,7 +1078,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/waving-z/build/wave-in
-""",True,None))
+""",True,'Z-Wave'))
 
 # baudline
 programs_ubuntu18_04.append(('baudline (2.2 MB)',
@@ -1002,7 +1089,7 @@ tar -xf baudline_1.08_linux_x86_64.tar.gz
 rm baudline_1.08_linux_x86_64.tar.gz
 ########## Verify ##########
 ~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
-""",True,None))
+""",True,'SDR'))
 
 # Universal Radio Hacker
 programs_ubuntu18_04.append(('Universal Radio Hacker (35.9 MB)',
@@ -1010,14 +1097,14 @@ programs_ubuntu18_04.append(('Universal Radio Hacker (35.9 MB)',
 sudo python3 -m pip install urh
 ########## Verify ##########
 urh --version
-""",True,None))
+""",True,'SDR'))
 
 # Inspectrum
 programs_ubuntu18_04.append(('Inspectrum (1.5 MB)',
 """sudo apt-get install -y inspectrum
 ########## Verify ##########
 inspectrum --help
-""",True,None))
+""",True,'SDR'))
 
 # OpenCPN
 programs_ubuntu18_04.append(('OpenCPN (121.7 MB)',
@@ -1027,7 +1114,7 @@ sudo apt-get update
 sudo apt-get install -y opencpn
 ########## Verify ##########
 ls /usr/bin/opencpn
-""",True,None))
+""",True,'AIS'))
 
 # Kalibrate
 programs_ubuntu18_04.append(('Kalibrate (1.7 MB)',
@@ -1038,7 +1125,7 @@ cd kalibrate-rtl
 ./bootstrap && CXXFLAGS='-W -Wall -O3' ./configure && make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/kalibrate-rtl/src/kal
-""",True,None))
+""",True,'GSM'))
 
 # retrogram-rtlsdr
 programs_ubuntu18_04.append(('retrogram-rtlsdr (1.7 MB)',
@@ -1049,7 +1136,7 @@ cd ~/Installed_by_FISSURE/retrogram-rtlsdr-master
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
-""",True,None))
+""",True,'SDR'))
 
 # RTLSDR-Airband
 programs_ubuntu18_04.append(('RTLSDR-Airband (9.7 MB)',
@@ -1065,7 +1152,7 @@ make
 sudo make install
 ########## Verify ##########
 rtl_airband -h
-""",True,None))
+""",True,'SDR'))
 
 # Spektrum
 programs_ubuntu18_04.append(('Spektrum (241.9 MB)',
@@ -1079,7 +1166,7 @@ tar -xf spektrum-linux64.tar.gz
 rm spektrum-linux64.tar.gz
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/spektrum/spektrum
-""",True,None))
+""",True,'SDR'))
 
 # SDRTrunk
 programs_ubuntu18_04.append(('SDRTrunk (106.9 MB)',
@@ -1099,23 +1186,64 @@ unzip -q sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 rm sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
-""",True,None))
+""",True,'Trunked Radio'))
 
-# Audio Tools
-programs_ubuntu18_04.append(('Audio Tools (180.2 MB)',
-"""sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
+# Audacity
+programs_ubuntu18_04.append(('Audacity',
+"""sudo apt-get install -y audacity
 ########## Verify ##########
-audacity --version && sox --version
-""",True,None))
+audacity --version
+""",True,'Audio'))
 
-# Video Tools
-programs_ubuntu18_04.append(('Video Tools (341.1 MB)',
+# Sound eXchange
+programs_ubuntu18_04.append(('Sound eXchange',
+"""sudo apt-get install -y sox
+########## Verify ##########
+sox --version
+""",True,'Audio'))
+
+# LAME
+programs_ubuntu18_04.append(('LAME',
+"""sudo apt-get install -y lame
+########## Verify ##########
+lame --version
+""",True,'Audio'))
+
+# mpv
+programs_ubuntu18_04.append(('mpv',
+"""sudo apt-get install -y mpv
+########## Verify ##########
+mpv --version
+""",True,'Audio'))
+
+# FFmpeg
+programs_ubuntu18_04.append(('FFmpeg',
+"""sudo apt-get install -y ffmpeg 
+########## Verify ##########
+ffmpeg --help
+""",True,'Audio'))
+
+# MPlayer
+programs_ubuntu18_04.append(('MPlayer',
+"""sudo apt-get install -y mplayer
+########## Verify ##########
+ls /usr/bin/mplayer
+""",True,'Audio'))
+
+# VLC
+programs_ubuntu18_04.append(('VLC',
 """sudo apt-get install -y snapd
 sudo snap install vlc
-sudo apt-get install -y simplescreenrecorder
+########## Verify ##########
+vlc --help
+""",True,'Video'))
+
+# Simple Screen Recorder
+programs_ubuntu18_04.append(('Simple Screen Recorder',
+"""sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
-""",True,None))
+""",True,'Video'))
 
 # radiosonde_auto_rx
 programs_ubuntu18_04.append(('radiosonde_auto_rx (53.2 MB)',
@@ -1129,7 +1257,7 @@ cp station.cfg.example station.cfg
 sudo python3 -m pip install -r requirements.txt
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
-""",True,None))
+""",True,'Radiosonde'))
 
 # SdrGlut
 programs_ubuntu18_04.append(('SdrGlut (305.0 MB)',
@@ -1142,7 +1270,7 @@ cd SdrGlut
 make -f makefileUbunta
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
-""",True,None))
+""",True,'SDR'))
 
 # rehex
 programs_ubuntu18_04.append(('rehex (544.5 MB)',
@@ -1155,7 +1283,7 @@ sudo cpan Template
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/rehex 
-""",True,None))
+""",True,'Data'))
 
 # ZEPASSD
 programs_ubuntu18_04.append(('ZEPASSD (9.2 MB)',
@@ -1167,7 +1295,7 @@ cd zepassd
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/zepassd/zepassd
-""",True,None))
+""",True,'RFID'))
 
 # iridium-toolkit
 programs_ubuntu18_04.append(('iridium-toolkit (3.1 MB)',
@@ -1182,7 +1310,7 @@ sudo make
 cp ir77_ambe_decode ~/Installed_by_FISSURE/iridium-toolkit/
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/osmo-ir77/codec/ir77_ambe_decode
-""",True,None))
+""",True,'Satellite'))
 
 # IridiumLive
 programs_ubuntu18_04.append(('IridiumLive (97.2 MB)',
@@ -1196,7 +1324,7 @@ cd linux-x64
 sudo chmod +x IridiumLive
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/linux-x64/IridiumLive
-""",True,None))
+""",True,'Satellite'))
 
 # NETATTACK2
 programs_ubuntu18_04.append(('NETATTACK2 (37.7 MB)',
@@ -1205,7 +1333,7 @@ sudo apt-get install -y python-scapy python-nmap python-nfqueue nmap
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/chrizator/netattack2.git
-""",True,None))
+""",True,'802.11'))
 
 # Wifite
 programs_ubuntu18_04.append(('Wifite (537.5 MB)',
@@ -1254,7 +1382,7 @@ sudo make install
 sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
 ########## Verify ##########
 ~/Installed_by_FISSURE/wifite2/Wifite.py --help
-""",True,None))
+""",True,'802.11'))
 
 # rtl_433
 programs_ubuntu18_04.append(('rtl_433 (23.0 MB)',
@@ -1262,8 +1390,8 @@ programs_ubuntu18_04.append(('rtl_433 (23.0 MB)',
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://github.com/merbanan/rtl_433/archive/refs/tags/22.11.zip
-unzip rtl_433-22.11.zip
-rm rtl_433-22.11.zip
+unzip 22.11.zip
+rm 22.11.zip
 mv rtl_433-22.11/ rtl_433/
 #git clone https://github.com/merbanan/rtl_433.git
 cd rtl_433/
@@ -1274,7 +1402,7 @@ make
 sudo make install
 ########## Verify ##########
 rtl_433 -help
-""",True,None))
+""",True,'433 MHz'))
 
 # RouterSploit
 programs_ubuntu18_04.append(('RouterSploit (485.4 MB)',
@@ -1291,7 +1419,7 @@ python3 -m pip install -r requirements.txt
 python3 -m pip install bluepy
 ########## Verify ##########
 ~/Installed_by_FISSURE/routersploit/rsf.py --help
-""",True,None))
+""",True,'802.11'))
 
 # Metasploit
 programs_ubuntu18_04.append(('Metasploit (1.1 GB)',
@@ -1302,7 +1430,7 @@ cd metasploit
 curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && chmod 755 msfinstall && ./msfinstall
 ########## Verify ##########
 ls /usr/bin/msfconsole
-""",True,None))
+""",True,'802.11'))
 
 # monitor_rtl433
 programs_ubuntu18_04.append(('monitor_rtl433 (33.2 MB)',
@@ -1313,7 +1441,7 @@ cd monitor_rtl433
 sudo python3 setup.py install
 ########## Verify ##########
 ls /usr/local/bin/monitor_rtl433
-""",True,None))
+""",True,'433 MHz'))
 
 # scan-ssid
 programs_ubuntu18_04.append(('scan-ssid (229.4 kB)',
@@ -1326,21 +1454,21 @@ sudo cp scan-ssid /usr/local/bin
 sudo chmod 755 /usr/local/bin/scan-ssid
 ########## Verify ##########
 scan-ssid --help
-""",True,None))
+""",True,'802.11'))
 
 # minimodem
 programs_ubuntu18_04.append(('minimodem (106.5 kB)',
 """sudo apt-get install -y minimodem
 ########## Verify ##########
 minimodem --version
-""",True,None))
+""",True,'Audio'))
 
 # WSJT-X
 programs_ubuntu18_04.append(('WSJT-X (4.1 MB)',
 """sudo apt-get install -y wsjtx
 ########## Verify ##########
 ls /usr/bin/wsjtx
-""",True,None))
+""",True,'Ham Radio'))
 
 # Google Earth Pro
 programs_ubuntu18_04.append(('Google Earth Pro (314.7 MB)',
@@ -1350,14 +1478,14 @@ wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_curre
 sudo dpkg -i google-earth-pro-stable_current_amd64.deb
 ########## Verify ##########
 ls /usr/bin/google-earth-pro
-""",True,None))
+""",True,'Mapping'))
 
 # gr-air-modes
 programs_ubuntu18_04.append(('gr-air-modes (938.0 kB)',
 """sudo apt-get install -y gr-air-modes
 ########## Verify ##########
 modes_rx --help
-""",True,None))
+""",True,'Aircraft'))
 
 # ESP8266 Deauther v2
 programs_ubuntu18_04.append(('ESP8266 Deauther v2 (6.2 MB)',
@@ -1366,7 +1494,7 @@ cd ~/Installed_by_FISSURE
 wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
 unzip -q v2.zip
 rm v2.zip
-""",True,None))
+""",True,'802.11'))
 
 # Viking
 programs_ubuntu18_04.append(('Viking (458.1 MB)',
@@ -1383,7 +1511,7 @@ make
 sudo make install
 ########## Verify ##########
 viking --help
-""",True,None))
+""",True,'Mapping'))
 
 # PyGPSClient
 programs_ubuntu18_04.append(('PyGPSClient (7.9 MB)',
@@ -1392,21 +1520,21 @@ sudo apt install -y tk-devel
 sudo python3 -m pip install --upgrade PyGPSClient
 ########## Verify ##########
 ls /usr/local/bin/pygpsclient
-""",True,None))
+""",True,'GPS'))
 
 # Gpredict
 programs_ubuntu18_04.append(('Gpredict (12.0 MB)',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
-""",True,None))
+""",True,'GPS'))
 
 # FoxtrotGPS
 programs_ubuntu18_04.append(('FoxtrotGPS (2.3 MB)',
 """sudo apt-get install -y foxtrotgps
 ########## Verify ##########
 foxtrotgps --help
-""",True,None))
+""",True,'GPS'))
 
 # multimon-ng
 programs_ubuntu18_04.append(('multimon-ng (8.3 MB)',
@@ -1422,14 +1550,14 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/multimon-ng
-""",True,None))
+""",True,'POCSAG'))
 
 # Xastir
 programs_ubuntu18_04.append(('Xastir (43.6 MB)',
 """sudo apt-get install -y xastir
 ########## Verify ##########
 sudo xastir -V
-""",True,None))
+""",True,'Ham Radio'))
 
 # LTE-Cell-Scanner
 programs_ubuntu18_04.append(('LTE-Cell-Scanner (129.4 MB)',
@@ -1445,28 +1573,28 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/CellSearch
-""",True,None))
+""",True,'LTE'))
 
 # btscanner
 programs_ubuntu18_04.append(('btscanner (913.4 kB)',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
-""",True,None))
+""",True,'Bluetooth'))
 
 # hcidump
 programs_ubuntu18_04.append(('hcidump (598.0 kB)',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
-""",True,None))
+""",True,'Bluetooth'))
 
 # GraphicsMagick
 programs_ubuntu18_04.append(('GraphicsMagick (4.9 MB)',
 """sudo apt-get install -y graphicsmagick-imagemagick-compat
 ########## Verify ##########
 gm -help
-""",True,None))
+""",True,'SDR'))
 
 # Spectrum Painter
 programs_ubuntu18_04.append(('Spectrum Painter (10.1 MB)',
@@ -1475,7 +1603,7 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/polygon/spectrum_painter.git
 #cd spectrum_painter/
 #python3 -m pip install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
-""",True,None))
+""",True,'SDR'))
 
 # nrsc5 and nrsc5-gui
 programs_ubuntu18_04.append(('nrsc5 (154.7 MB)',
@@ -1498,7 +1626,7 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/cmnybo/nrsc5-gui.git
 ########## Verify ##########
 nrsc5 -v
-""",True,None))
+""",True,'HD Radio'))
 
 # HAM2MON
 programs_ubuntu18_04.append(('HAM2MON (1.0 MB)',
@@ -1507,21 +1635,21 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/madengr/ham2mon.git
 ########## Verify ##########
 ~/Installed_by_FISSURE/ham2mon/apps/ham2mon.py --help
-""",True,None))
+""",True,'Ham Radio'))
 
 # Anki
 programs_ubuntu18_04.append(('Anki (279.7 MB)',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
-""",True,None))
+""",True,'Ham Radio'))
 
 # Bless
 programs_ubuntu18_04.append(('Bless (2.4 MB)',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
-""",True,None))
+""",True,'Data'))
 
 # trackerjacker
 programs_ubuntu18_04.append(('trackerjacker (15.4 MB)',
@@ -1532,7 +1660,7 @@ cd trackerjacker
 sudo python3 setup.py install
 ########## Verify ##########
 sudo trackerjacker --help
-""",True,None))
+""",True,'802.11'))
 
 # airgeddon
 programs_ubuntu18_04.append(('airgeddon (174.2 MB)',
@@ -1560,21 +1688,21 @@ git clone https://github.com/aircrack-ng/mdk4
 cd mdk4
 make
 sudo make install
-""",True,None))
+""",True,'802.11'))
 
 # Hydra
 programs_ubuntu18_04.append(('Hydra (10.6 MB)',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
-""",True,None))
+""",True,'SSH'))
 
 # Enscribe
 programs_ubuntu18_04.append(('Enscribe (98.2 kB)',
 """sudo apt-get install -y enscribe
 ########## Verify ##########
 ls /usr/bin/enscribe
-""",True,None))
+""",True,'Audio'))
 
 # ESP32 Bluetooth Classic Sniffer
 programs_ubuntu18_04.append(('ESP32 BT Classic Sniffer (400.4 MB)',
@@ -1592,21 +1720,21 @@ sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan
 rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
-""",True,None))
+""",True,'Bluetooth'))
 
 # QSSTV
 programs_ubuntu18_04.append(('QSSTV (3.4 MB)',
 """sudo apt-get install -y qsstv
 ########## Verify ##########
 ls /usr/bin/qsstv
-""",True,None))
+""",True,'Ham Radio'))
 
 # Fldigi
 programs_ubuntu18_04.append(('Fldigi (11.0 MB)',
 """sudo apt-get install -y fldigi
 ########## Verify ##########
 ls /usr/bin/fldigi
-""",True,None))
+""",True,'Ham Radio'))
 
 # Bootable USB
 programs_ubuntu18_04.append(('Bootable USB (107.4 MB)',
@@ -1619,7 +1747,7 @@ sudo apt-get update
 sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
 ########## Verify ##########
 ls /usr/bin/systemback && ls /usr/bin/guidus
-""",True,None))
+""",True,'Development'))
 
 # Dire Wolf
 programs_ubuntu18_04.append(('Dire Wolf',
@@ -1637,14 +1765,14 @@ sudo make install
 make install-conf
 ########## Verify ##########
 ls /usr/local/bin/direwolf
-""",True,None))
+""",True,'Ham Radio'))
 
 # Meld
 programs_ubuntu18_04.append(('Meld',
 """sudo apt-get -y install meld
 ########## Verify ##########
 ls /usr/bin/meld
-""",True,None))
+""",True,'Data'))
 
 # HamClock
 programs_ubuntu18_04.append(('HamClock',
@@ -1658,7 +1786,7 @@ make install hamclock-1600x960
 sudo make install hamclock-1600x960
 ########## Verify ##########
 ls /usr/local/bin/hamclock
-""",True,None))
+""",True,'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
 programs_ubuntu18_04.append(('ICE9 Bluetooth Sniffer',
@@ -1675,7 +1803,7 @@ make
 sudo make install
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
-""",True,None))
+""",True,'Bluetooth'))
 
 # dump978
 programs_ubuntu18_04.append(('dump978',
@@ -1686,7 +1814,7 @@ cd dump978
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/dump978/dump978
-""",True,None))
+""",True,'Aircraft'))
 
 
 
@@ -1790,6 +1918,7 @@ gnuradio-companion --help
 programs_ubuntu18_04_5.append(('Scapy (30.0 MB)',
 """sudo python2 -m pip install scapy
 sudo python3 -m pip install scapy
+sudo python2 -m pip install -U cryptography
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
 """,True,'Minimum Install'))
@@ -2018,14 +2147,19 @@ ls /usr/local/lib/python*/*/acars
 
 # gr-adsb
 programs_ubuntu18_04_5.append(('gr-adsb (528.3 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/adsb
 """,True,'Out-of-Tree Modules'))
@@ -2060,39 +2194,49 @@ ls /usr/local/lib/python*/*/ais
 
 # gr-bluetooth
 programs_ubuntu18_04_5.append(('gr-bluetooth (10.6 MB)',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-rm -Rf libbtbb
-git clone https://github.com/greatscottgadgets/libbtbb -b master
-cd libbtbb
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/)" ]; 
+then
+  mkdir -p ~/Installed_by_FISSURE
+  cd ~/Installed_by_FISSURE
+  rm -Rf libbtbb
+  git clone https://github.com/greatscottgadgets/libbtbb -b master
+  cd libbtbb
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/bin/btrx
 """,True,'Out-of-Tree Modules'))
 
 # gr-clapper_plus
 programs_ubuntu18_04_5.append(('gr-clapper_plus (704.5 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/clapper_plus
 """,True,'Out-of-Tree Modules'))
@@ -2113,14 +2257,19 @@ ls /usr/local/lib/python*/*/dect2
 
 # gr-foo
 programs_ubuntu18_04_5.append(('gr-foo (9.1 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/foo
 """,True,'Out-of-Tree Modules'))
@@ -2141,14 +2290,19 @@ ls /usr/local/lib/python*/*/fuzzer
 
 # gr-garage_door
 programs_ubuntu18_04_5.append(('gr-garage_door (733.2 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/garage_door
 """,True,'Out-of-Tree Modules'))
@@ -2174,31 +2328,41 @@ ls /usr/local/lib/python*/*/grgsm
 
 # gr-ieee802-11
 programs_ubuntu18_04_5.append(('gr-ieee802-11 (14.4 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/examples/wifi_phy_hier.grc
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/examples/wifi_phy_hier.grc
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ieee802_11
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-15-4
 programs_ubuntu18_04_5.append(('gr-ieee802-15-4 (23.0 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+  grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ieee802_15_4
 """,True,'Out-of-Tree Modules'))
@@ -2219,132 +2383,177 @@ ls /usr/local/lib/python*/*/iridium
 
 # gr-j2497
 programs_ubuntu18_04_5.append(('gr-j2497 (909.3 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/J2497
 """,True,'Out-of-Tree Modules'))
 
 # gr-limesdr
 programs_ubuntu18_04_5.append(('gr-limesdr (4.3 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-mixalot
 programs_ubuntu18_04_5.append(('gr-mixalot',
-"""sudo apt-get install -y libitpp-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/)" ]; 
+then
+  sudo apt-get install -y libitpp-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/mixalot
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
 programs_ubuntu18_04_5.append(('gr-nrsc5 (39.1 MB)',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/)" ]; 
+then
+  sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/nrsc5
 """,True,'Out-of-Tree Modules'))
 
 # gr-paint
 programs_ubuntu18_04_5.append(('gr-paint (3.0 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
-gcc tgatoluma.c -o tgatoluma
-chmod +x tgatoluma
-cp tgatoluma ~/.local/bin/
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
+  gcc tgatoluma.c -o tgatoluma
+  chmod +x tgatoluma
+  cp tgatoluma ~/.local/bin/
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/paint
 """,True,'Out-of-Tree Modules'))
 
 # gr-rds
 programs_ubuntu18_04_5.append(('gr-rds (5.9 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/rds
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
 programs_ubuntu18_04_5.append(('gr-tpms (5.1 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/tpms
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms_poore
 programs_ubuntu18_04_5.append(('gr-tpms_poore (786.4 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/tpms_poore
 """,True,'Out-of-Tree Modules'))
 
 # gr-X10
 programs_ubuntu18_04_5.append(('gr-X10 (798.7 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/X10
 """,True,'Out-of-Tree Modules'))
@@ -2365,14 +2574,19 @@ python2 -c "import Zwave"
 
 # gr-zwave_poore
 programs_ubuntu18_04_5.append(('gr-zwave_poore (786.4 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/zwave_poore
 """,True,'Out-of-Tree Modules'))
@@ -2390,14 +2604,14 @@ export PATH
 sudo cp ~/.local/bin/qspectrumanalyzer /usr/local/bin/
 ########## Verify ##########
 ls ~/.local/bin/qspectrumanalyzer
-""",True,None))
+""",True,'SDR'))
 
 # GQRX
 programs_ubuntu18_04_5.append(('GQRX (18.7 MB)',
 """sudo apt-get install -y gqrx-sdr
 ########## Verify ##########
 ls /usr/bin/gqrx
-""",True,None))
+""",True,'SDR'))
 
 # Dump1090
 programs_ubuntu18_04_5.append(('Dump1090 (3.1 MB)',
@@ -2409,28 +2623,28 @@ cd ~/Installed_by_FISSURE/dump1090/
 make
 ########## Verify ##########
 ~/Installed_by_FISSURE/dump1090/dump1090 --help
-""",True,None))
+""",True,'Aircraft'))
 
 # QtDesigner
 programs_ubuntu18_04_5.append(('QtDesigner (2.6 MB)',
 """sudo apt-get install -y python-qt4 qt4-designer
 ########## Verify ##########
 ls /usr/bin/designer
-""",True,None))
+""",True,'Development'))
 
 # Grip
 programs_ubuntu18_04_5.append(('Grip (15.2 MB)',
 """python2 -m pip install grip
 ########## Verify ##########
 ls ~/.local/bin/grip
-""",True,None))
+""",True,'Development'))
 
 # Kismet
 programs_ubuntu18_04_5.append(('Kismet (6.0 MB)',
 """sudo apt-get install -y kismet
 ########## Verify ##########
 ls /usr/bin/kismet
-""",True,None))
+""",True,'802.11'))
 
 # UDP Replay
 programs_ubuntu18_04_5.append(('UDP Replay (725.0 kB)',
@@ -2446,7 +2660,7 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/udpreplay
-""",True,None))
+""",True,'802.11'))
 
 # V2Verifier
 programs_ubuntu18_04_5.append(('V2Verifier (7.5 MB)',
@@ -2456,7 +2670,7 @@ python3 -m pip install -U pyyaml
 #sudo apt install -y git cmake libuhd-dev uhd-host swig libgmp3-dev python3-pip python3-tk python3-pil 
 #python3-pil.imagetk gnuradio
 #Needs gr-foo and gr-ieee802-11
-""",True,None))
+""",True,'V2V'))
 
 # OpenBTS
 programs_ubuntu18_04_5.append(('OpenBTS (1.4 GB)',
@@ -2517,7 +2731,7 @@ sudo python3 -m pip install -r requirements.txt
 sudo update-alternatives --remove-all gcc
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
 sudo uhd_images_downloader
-""",True,None))
+""",True,'GSM'))
 
 # srsRAN/srsLTE
 programs_ubuntu18_04_5.append(('srsRAN (837.2 MB)',
@@ -2555,7 +2769,7 @@ sudo apt-get install -y fortune cowsay lolcat  # IMSI-Catcher 4G
 # gnome-terminal --tab --title="srsENB" -- /bin/sh -c 'sudo srsenb; $SHELL'
 ########## Verify ##########
 srsenb --help
-""",True,None))
+""",True,'LTE'))
 
 # FALCON
 programs_ubuntu18_04_5.append(('FALCON (677.5 MB)',
@@ -2574,7 +2788,7 @@ sudo make install
 #make clean
 ########## Verify ##########
 ls /usr/bin/FalconGUI
-""",True,None))
+""",True,'LTE'))
 
 # LTE-ciphercheck
 programs_ubuntu18_04_5.append(('LTE-ciphercheck (151.9 MB)',
@@ -2590,21 +2804,21 @@ make srsue
 sudo ldconfig
 cp ../srsue/ciphercheck.conf.example ../srsue/ciphercheck.conf
 cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue/ciphercheck.conf
-""",True,None))
+""",True,'LTE'))
 
 # Aircrack-ng
 programs_ubuntu18_04_5.append(('Aircrack-ng (19.1 MB)',
 """sudo apt-get install -y aircrack-ng
 ########## Verify ##########
 aircrack-ng --help
-""",True,None))
+""",True,'802.11'))
 
 # Geany
 programs_ubuntu18_04_5.append(('Geany (14.2 MB)',
 """sudo apt-get install -y geany
 ########## Verify ##########
 geany --help
-""",True,None))
+""",True,'Development'))
 
 # Arduino IDE
 programs_ubuntu18_04_5.append(('Arduino IDE (630.2 MB)',
@@ -2617,21 +2831,21 @@ sudo ./install.sh
 cp -R """ + fissure_directory + """/Tools/Esp8266_listen_trigger/ ~/Installed_by_FISSURE/
 ########## Verify ##########
 arduino --version
-""",True,None))
+""",True,'Development'))
 
 # Minicom
 programs_ubuntu18_04_5.append(('Minicom (1.4 MB)',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
-""",True,None))
+""",True,'Hardware'))
 
 # PuTTY
 programs_ubuntu18_04_5.append(('PuTTY (4.2 MB)',
 """sudo apt-get install -y putty
 ########## Verify ##########
 putty --help
-""",True,None))
+""",True,'Hardware'))
 
 # openHAB
 programs_ubuntu18_04_5.append(('openHAB (212.2 MB)',
@@ -2642,7 +2856,7 @@ sudo apt-get update
 sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
-""",True,None))
+""",True,'Z-Wave'))
 
 # rtl-zwave
 programs_ubuntu18_04_5.append(('rtl-zwave (102.4 kB)',
@@ -2653,7 +2867,7 @@ cd ~/Installed_by_FISSURE/rtl-zwave-master
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
-""",True,None))
+""",True,'Z-Wave'))
 
 # waving-z
 programs_ubuntu18_04_5.append(('waving-z (2.2 MB)',
@@ -2667,7 +2881,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/waving-z/build/wave-in
-""",True,None))
+""",True,'Z-Wave'))
 
 # baudline
 programs_ubuntu18_04_5.append(('baudline (2.2 MB)',
@@ -2678,7 +2892,7 @@ tar -xf baudline_1.08_linux_x86_64.tar.gz
 rm baudline_1.08_linux_x86_64.tar.gz
 ########## Verify ##########
 ~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
-""",True,None))
+""",True,'SDR'))
 
 # Universal Radio Hacker
 programs_ubuntu18_04_5.append(('Universal Radio Hacker (35.9 MB)',
@@ -2686,14 +2900,14 @@ programs_ubuntu18_04_5.append(('Universal Radio Hacker (35.9 MB)',
 sudo python3 -m pip install urh
 ########## Verify ##########
 urh --version
-""",True,None))
+""",True,'SDR'))
 
 # Inspectrum
 programs_ubuntu18_04_5.append(('Inspectrum (1.5 MB)',
 """sudo apt-get install -y inspectrum
 ########## Verify ##########
 inspectrum --help
-""",True,None))
+""",True,'SDR'))
 
 # OpenCPN
 programs_ubuntu18_04_5.append(('OpenCPN (121.7 MB)',
@@ -2703,7 +2917,7 @@ sudo apt-get update
 sudo apt-get install -y opencpn
 ########## Verify ##########
 ls /usr/bin/opencpn
-""",True,None))
+""",True,'AIS'))
 
 # Kalibrate
 programs_ubuntu18_04_5.append(('Kalibrate (1.7 MB)',
@@ -2714,7 +2928,7 @@ cd kalibrate-rtl
 ./bootstrap && CXXFLAGS='-W -Wall -O3' ./configure && make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/kalibrate-rtl/src/kal
-""",True,None))
+""",True,'GSM'))
 
 # retrogram-rtlsdr
 programs_ubuntu18_04_5.append(('retrogram-rtlsdr (1.7 MB)',
@@ -2725,7 +2939,7 @@ cd ~/Installed_by_FISSURE/retrogram-rtlsdr-master
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
-""",True,None))
+""",True,'SDR'))
 
 # RTLSDR-Airband
 programs_ubuntu18_04_5.append(('RTLSDR-Airband (9.7 MB)',
@@ -2741,7 +2955,7 @@ make
 sudo make install
 ########## Verify ##########
 rtl_airband -h
-""",True,None))
+""",True,'SDR'))
 
 # Spektrum
 programs_ubuntu18_04_5.append(('Spektrum (241.9 MB)',
@@ -2755,7 +2969,7 @@ tar -xf spektrum-linux64.tar.gz
 rm spektrum-linux64.tar.gz
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/spektrum/spektrum
-""",True,None))
+""",True,'SDR'))
 
 # SDRTrunk
 programs_ubuntu18_04_5.append(('SDRTrunk (106.9 MB)',
@@ -2775,23 +2989,64 @@ unzip -q sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 rm sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
-""",True,None))
+""",True,'Trunked Radio'))
 
-# Audio Tools
-programs_ubuntu18_04_5.append(('Audio Tools (180.2 MB)',
-"""sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
+# Audacity
+programs_ubuntu18_04_5.append(('Audacity',
+"""sudo apt-get install -y audacity
 ########## Verify ##########
-audacity --version && sox --version
-""",True,None))
+audacity --version
+""",True,'Audio'))
 
-# Video Tools
-programs_ubuntu18_04_5.append(('Video Tools (341.1 MB)',
+# Sound eXchange
+programs_ubuntu18_04_5.append(('Sound eXchange',
+"""sudo apt-get install -y sox
+########## Verify ##########
+sox --version
+""",True,'Audio'))
+
+# LAME
+programs_ubuntu18_04_5.append(('LAME',
+"""sudo apt-get install -y lame
+########## Verify ##########
+lame --version
+""",True,'Audio'))
+
+# mpv
+programs_ubuntu18_04_5.append(('mpv',
+"""sudo apt-get install -y mpv
+########## Verify ##########
+mpv --version
+""",True,'Audio'))
+
+# FFmpeg
+programs_ubuntu18_04_5.append(('FFmpeg',
+"""sudo apt-get install -y ffmpeg 
+########## Verify ##########
+ffmpeg --help
+""",True,'Audio'))
+
+# MPlayer
+programs_ubuntu18_04_5.append(('MPlayer',
+"""sudo apt-get install -y mplayer
+########## Verify ##########
+ls /usr/bin/mplayer
+""",True,'Audio'))
+
+# VLC
+programs_ubuntu18_04_5.append(('VLC',
 """sudo apt-get install -y snapd
 sudo snap install vlc
-sudo apt-get install -y simplescreenrecorder
+########## Verify ##########
+vlc --help
+""",True,'Video'))
+
+# Simple Screen Recorder
+programs_ubuntu18_04_5.append(('Simple Screen Recorder',
+"""sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
-""",True,None))
+""",True,'Video'))
 
 # radiosonde_auto_rx
 programs_ubuntu18_04_5.append(('radiosonde_auto_rx (53.2 MB)',
@@ -2805,7 +3060,7 @@ cp station.cfg.example station.cfg
 sudo python3 -m pip install -r requirements.txt
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
-""",True,None))
+""",True,'Radiosonde'))
 
 # SdrGlut
 programs_ubuntu18_04_5.append(('SdrGlut (305.0 MB)',
@@ -2818,7 +3073,7 @@ cd SdrGlut
 make -f makefileUbunta
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
-""",True,None))
+""",True,'SDR'))
 
 # rehex
 programs_ubuntu18_04_5.append(('rehex (544.5 MB)',
@@ -2831,7 +3086,7 @@ sudo cpan Template
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/rehex 
-""",True,None))
+""",True,'Data'))
 
 # ZEPASSD
 programs_ubuntu18_04_5.append(('ZEPASSD (9.2 MB)',
@@ -2843,7 +3098,7 @@ cd zepassd
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/zepassd/zepassd
-""",True,None))
+""",True,'RFID'))
 
 # iridium-toolkit
 programs_ubuntu18_04_5.append(('iridium-toolkit (3.1 MB)',
@@ -2858,7 +3113,7 @@ sudo make
 cp ir77_ambe_decode ~/Installed_by_FISSURE/iridium-toolkit/
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/osmo-ir77/codec/ir77_ambe_decode
-""",True,None))
+""",True,'Satellite'))
 
 # IridiumLive
 programs_ubuntu18_04_5.append(('IridiumLive (97.2 MB)',
@@ -2872,7 +3127,7 @@ cd linux-x64
 sudo chmod +x IridiumLive
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/linux-x64/IridiumLive
-""",True,None))
+""",True,'Satellite'))
 
 # NETATTACK2
 programs_ubuntu18_04_5.append(('NETATTACK2 (37.7 MB)',
@@ -2881,7 +3136,7 @@ sudo apt-get install -y python-scapy python-nmap python-nfqueue nmap
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/chrizator/netattack2.git
-""",True,None))
+""",True,'802.11'))
 
 # Wifite
 programs_ubuntu18_04_5.append(('Wifite (537.5 MB)',
@@ -2930,7 +3185,7 @@ sudo make install
 sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
 ########## Verify ##########
 ~/Installed_by_FISSURE/wifite2/Wifite.py --help
-""",True,None))
+""",True,'802.11'))
 
 # rtl_433
 programs_ubuntu18_04_5.append(('rtl_433 (23.0 MB)',
@@ -2938,8 +3193,8 @@ programs_ubuntu18_04_5.append(('rtl_433 (23.0 MB)',
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://github.com/merbanan/rtl_433/archive/refs/tags/22.11.zip
-unzip rtl_433-22.11.zip
-rm rtl_433-22.11.zip
+unzip 22.11.zip
+rm 22.11.zip
 mv rtl_433-22.11/ rtl_433/
 #git clone https://github.com/merbanan/rtl_433.git
 cd rtl_433/
@@ -2950,7 +3205,7 @@ make
 sudo make install
 ########## Verify ##########
 rtl_433 -help
-""",True,None))
+""",True,'433 MHz'))
 
 # RouterSploit
 programs_ubuntu18_04_5.append(('RouterSploit (485.4 MB)',
@@ -2967,7 +3222,7 @@ python3 -m pip install -r requirements.txt
 python3 -m pip install bluepy
 ########## Verify ##########
 ~/Installed_by_FISSURE/routersploit/rsf.py --help
-""",True,None))
+""",True,'802.11'))
 
 # Metasploit
 programs_ubuntu18_04_5.append(('Metasploit (1.1 GB)',
@@ -2978,7 +3233,7 @@ cd metasploit
 curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && chmod 755 msfinstall && ./msfinstall
 ########## Verify ##########
 ls /usr/bin/msfconsole
-""",True,None))
+""",True,'802.11'))
 
 # monitor_rtl433
 programs_ubuntu18_04_5.append(('monitor_rtl433 (33.2 MB)',
@@ -2989,7 +3244,7 @@ cd monitor_rtl433
 sudo python3 setup.py install
 ########## Verify ##########
 ls /usr/local/bin/monitor_rtl433
-""",True,None))
+""",True,'433 MHz'))
 
 # scan-ssid
 programs_ubuntu18_04_5.append(('scan-ssid (229.4 kB)',
@@ -3002,21 +3257,21 @@ sudo cp scan-ssid /usr/local/bin
 sudo chmod 755 /usr/local/bin/scan-ssid
 ########## Verify ##########
 scan-ssid --help
-""",True,None))
+""",True,'802.11'))
 
 # minimodem
 programs_ubuntu18_04_5.append(('minimodem (106.5 kB)',
 """sudo apt-get install -y minimodem
 ########## Verify ##########
 minimodem --version
-""",True,None))
+""",True,'Audio'))
 
 # WSJT-X
 programs_ubuntu18_04_5.append(('WSJT-X (4.1 MB)',
 """sudo apt-get install -y wsjtx
 ########## Verify ##########
 ls /usr/bin/wsjtx
-""",True,None))
+""",True,'Ham Radio'))
 
 # Google Earth Pro
 programs_ubuntu18_04_5.append(('Google Earth Pro (314.7 MB)',
@@ -3026,14 +3281,14 @@ wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_curre
 sudo dpkg -i google-earth-pro-stable_current_amd64.deb
 ########## Verify ##########
 ls /usr/bin/google-earth-pro
-""",True,None))
+""",True,'Mapping'))
 
 # gr-air-modes
 programs_ubuntu18_04_5.append(('gr-air-modes (938.0 kB)',
 """sudo apt-get install -y gr-air-modes
 ########## Verify ##########
 modes_rx --help
-""",True,None))
+""",True,'Aircraft'))
 
 # ESP8266 Deauther v2
 programs_ubuntu18_04_5.append(('ESP8266 Deauther v2 (6.2 MB)',
@@ -3042,7 +3297,7 @@ cd ~/Installed_by_FISSURE
 wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
 unzip -q v2.zip
 rm v2.zip
-""",True,None))
+""",True,'802.11'))
 
 # Viking
 programs_ubuntu18_04_5.append(('Viking (458.1 MB)',
@@ -3059,7 +3314,7 @@ make
 sudo make install
 ########## Verify ##########
 viking --help
-""",True,None))
+""",True,'Mapping'))
 
 # PyGPSClient
 programs_ubuntu18_04_5.append(('PyGPSClient (7.9 MB)',
@@ -3068,21 +3323,21 @@ sudo apt install -y tk-devel
 sudo python3 -m pip install --upgrade PyGPSClient
 ########## Verify ##########
 ls /usr/local/bin/pygpsclient
-""",True,None))
+""",True,'GPS'))
 
 # Gpredict
 programs_ubuntu18_04_5.append(('Gpredict (12.0 MB)',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
-""",True,None))
+""",True,'GPS'))
 
 # FoxtrotGPS
 programs_ubuntu18_04_5.append(('FoxtrotGPS (2.3 MB)',
 """sudo apt-get install -y foxtrotgps
 ########## Verify ##########
 foxtrotgps --help
-""",True,None))
+""",True,'GPS'))
 
 # multimon-ng
 programs_ubuntu18_04_5.append(('multimon-ng (8.3 MB)',
@@ -3098,14 +3353,14 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/multimon-ng
-""",True,None))
+""",True,'POCSAG'))
 
 # Xastir
 programs_ubuntu18_04_5.append(('Xastir (43.6 MB)',
 """sudo apt-get install -y xastir
 ########## Verify ##########
 sudo xastir -V
-""",True,None))
+""",True,'Ham Radio'))
 
 # LTE-Cell-Scanner
 programs_ubuntu18_04_5.append(('LTE-Cell-Scanner (129.4 MB)',
@@ -3121,28 +3376,28 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/CellSearch
-""",True,None))
+""",True,'LTE'))
 
 # btscanner
 programs_ubuntu18_04_5.append(('btscanner (913.4 kB)',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
-""",True,None))
+""",True,'Bluetooth'))
 
 # hcidump
 programs_ubuntu18_04_5.append(('hcidump (598.0 kB)',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
-""",True,None))
+""",True,'Bluetooth'))
 
 # GraphicsMagick
 programs_ubuntu18_04_5.append(('GraphicsMagick (4.9 MB)',
 """sudo apt-get install -y graphicsmagick-imagemagick-compat
 ########## Verify ##########
 gm -help
-""",True,None))
+""",True,'SDR'))
 
 # Spectrum Painter
 programs_ubuntu18_04_5.append(('Spectrum Painter (10.1 MB)',
@@ -3152,7 +3407,7 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/polygon/spectrum_painter.git
 #cd spectrum_painter/
 #python3 -m pip install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
-""",True,None))
+""",True,'SDR'))
 
 # nrsc5 and nrsc5-gui
 programs_ubuntu18_04_5.append(('nrsc5 (154.7 MB)',
@@ -3175,7 +3430,7 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/cmnybo/nrsc5-gui.git
 ########## Verify ##########
 nrsc5 -v
-""",True,None))
+""",True,'HD Radio'))
 
 # HAM2MON
 programs_ubuntu18_04_5.append(('HAM2MON (1.0 MB)',
@@ -3184,21 +3439,21 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/madengr/ham2mon.git
 ########## Verify ##########
 ~/Installed_by_FISSURE/ham2mon/apps/ham2mon.py --help
-""",True,None))
+""",True,'Ham Radio'))
 
 # Anki
 programs_ubuntu18_04_5.append(('Anki (279.7 MB)',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
-""",True,None))
+""",True,'Ham Radio'))
 
 # Bless
 programs_ubuntu18_04_5.append(('Bless (2.4 MB)',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
-""",True,None))
+""",True,'Data'))
 
 # trackerjacker
 programs_ubuntu18_04_5.append(('trackerjacker (15.4 MB)',
@@ -3209,7 +3464,7 @@ cd trackerjacker
 sudo python3 setup.py install
 ########## Verify ##########
 sudo trackerjacker --help
-""",True,None))
+""",True,'802.11'))
 
 # airgeddon
 programs_ubuntu18_04_5.append(('airgeddon (174.2 MB)',
@@ -3237,21 +3492,21 @@ git clone https://github.com/aircrack-ng/mdk4
 cd mdk4
 make
 sudo make install
-""",True,None))
+""",True,'802.11'))
 
 # Hydra
 programs_ubuntu18_04_5.append(('Hydra (10.6 MB)',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
-""",True,None))
+""",True,'SSH'))
 
 # Enscribe
 programs_ubuntu18_04_5.append(('Enscribe (98.2 kB)',
 """sudo apt-get install -y enscribe
 ########## Verify ##########
 ls /usr/bin/enscribe
-""",True,None))
+""",True,'Audio'))
 
 # ESP32 Bluetooth Classic Sniffer
 programs_ubuntu18_04_5.append(('ESP32 BT Classic Sniffer (400.4 MB)',
@@ -3269,21 +3524,21 @@ sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan
 rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
-""",True,None))
+""",True,'Bluetooth'))
 
 # QSSTV
 programs_ubuntu18_04_5.append(('QSSTV (3.4 MB)',
 """sudo apt-get install -y qsstv
 ########## Verify ##########
 ls /usr/bin/qsstv
-""",True,None))
+""",True,'Ham Radio'))
 
 # Fldigi
 programs_ubuntu18_04_5.append(('Fldigi (11.0 MB)',
 """sudo apt-get install -y fldigi
 ########## Verify ##########
 ls /usr/bin/fldigi
-""",True,None))
+""",True,'Ham Radio'))
 
 # Bootable USB
 programs_ubuntu18_04_5.append(('Bootable USB (107.4 MB)',
@@ -3296,7 +3551,7 @@ sudo apt-get update
 sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
 ########## Verify ##########
 ls /usr/bin/systemback && ls /usr/bin/guidus
-""",True,None))
+""",True,'Development'))
 
 # Dire Wolf
 programs_ubuntu18_04_5.append(('Dire Wolf',
@@ -3314,14 +3569,14 @@ sudo make install
 make install-conf
 ########## Verify ##########
 ls /usr/local/bin/direwolf
-""",True,None))
+""",True,'Ham Radio'))
 
 # Meld
 programs_ubuntu18_04_5.append(('Meld',
 """sudo apt-get -y install meld
 ########## Verify ##########
 ls /usr/bin/meld
-""",True,None))
+""",True,'Data'))
 
 # HamClock
 programs_ubuntu18_04_5.append(('HamClock',
@@ -3335,7 +3590,7 @@ make install hamclock-1600x960
 sudo make install hamclock-1600x960
 ########## Verify ##########
 ls /usr/local/bin/hamclock
-""",True,None))
+""",True,'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
 programs_ubuntu18_04_5.append(('ICE9 Bluetooth Sniffer',
@@ -3352,7 +3607,7 @@ make
 sudo make install
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
-""",True,None))
+""",True,'Bluetooth'))
 
 # dump978
 programs_ubuntu18_04_5.append(('dump978',
@@ -3363,7 +3618,7 @@ cd dump978
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/dump978/dump978
-""",True,None))
+""",True,'Aircraft'))
 
 
 
@@ -3467,6 +3722,7 @@ gnuradio-companion --help
 programs_ubuntu18_04_6.append(('Scapy (30.0 MB)',
 """sudo python2 -m pip install scapy
 sudo python3 -m pip install scapy
+sudo python2 -m pip install -U cryptography
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
 """,True,'Minimum Install'))
@@ -3695,14 +3951,19 @@ ls /usr/local/lib/python*/*/acars
 
 # gr-adsb
 programs_ubuntu18_04_6.append(('gr-adsb (528.3 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-adsb/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/adsb
 """,True,'Out-of-Tree Modules'))
@@ -3737,39 +3998,49 @@ ls /usr/local/lib/python*/*/ais
 
 # gr-bluetooth
 programs_ubuntu18_04_6.append(('gr-bluetooth (10.6 MB)',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-rm -Rf libbtbb
-git clone https://github.com/greatscottgadgets/libbtbb -b master
-cd libbtbb
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/)" ]; 
+then
+  mkdir -p ~/Installed_by_FISSURE
+  cd ~/Installed_by_FISSURE
+  rm -Rf libbtbb
+  git clone https://github.com/greatscottgadgets/libbtbb -b master
+  cd libbtbb
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-bluetooth/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/bin/btrx
 """,True,'Out-of-Tree Modules'))
 
 # gr-clapper_plus
 programs_ubuntu18_04_6.append(('gr-clapper_plus (704.5 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-clapper_plus/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/clapper_plus
 """,True,'Out-of-Tree Modules'))
@@ -3790,14 +4061,19 @@ ls /usr/local/lib/python*/*/dect2
 
 # gr-foo
 programs_ubuntu18_04_6.append(('gr-foo (9.1 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-foo/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/foo
 """,True,'Out-of-Tree Modules'))
@@ -3818,14 +4094,19 @@ ls /usr/local/lib/python*/*/fuzzer
 
 # gr-garage_door
 programs_ubuntu18_04_6.append(('gr-garage_door (733.2 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-garage_door/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/garage_door
 """,True,'Out-of-Tree Modules'))
@@ -3851,31 +4132,41 @@ ls /usr/local/lib/python*/*/grgsm
 
 # gr-ieee802-11
 programs_ubuntu18_04_6.append(('gr-ieee802-11 (14.4 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/examples/wifi_phy_hier.grc
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-11/examples/wifi_phy_hier.grc
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ieee802_11
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-15-4
 programs_ubuntu18_04_6.append(('gr-ieee802-15-4 (23.0 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+  grcc """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ieee802_15_4
 """,True,'Out-of-Tree Modules'))
@@ -3896,132 +4187,177 @@ ls /usr/local/lib/python*/*/iridium
 
 # gr-j2497
 programs_ubuntu18_04_6.append(('gr-j2497 (909.3 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-j2497/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/J2497
 """,True,'Out-of-Tree Modules'))
 
 # gr-limesdr
 programs_ubuntu18_04_6.append(('gr-limesdr (4.3 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-limesdr/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-mixalot
 programs_ubuntu18_04_6.append(('gr-mixalot',
-"""sudo apt-get install -y libitpp-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/)" ]; 
+then
+  sudo apt-get install -y libitpp-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/mixalot
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
 programs_ubuntu18_04_6.append(('gr-nrsc5 (39.1 MB)',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/)" ]; 
+then
+  sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev liborc-0.4-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-nrsc5/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/nrsc5
 """,True,'Out-of-Tree Modules'))
 
 # gr-paint
 programs_ubuntu18_04_6.append(('gr-paint (3.0 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
-gcc tgatoluma.c -o tgatoluma
-chmod +x tgatoluma
-cp tgatoluma ~/.local/bin/
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-paint/
+  gcc tgatoluma.c -o tgatoluma
+  chmod +x tgatoluma
+  cp tgatoluma ~/.local/bin/
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/paint
 """,True,'Out-of-Tree Modules'))
 
 # gr-rds
 programs_ubuntu18_04_6.append(('gr-rds (5.9 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-rds/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/rds
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
 programs_ubuntu18_04_6.append(('gr-tpms (5.1 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/tpms
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms_poore
 programs_ubuntu18_04_6.append(('gr-tpms_poore (786.4 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-tpms_poore/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/tpms_poore
 """,True,'Out-of-Tree Modules'))
 
 # gr-X10
 programs_ubuntu18_04_6.append(('gr-X10 (798.7 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-X10/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/X10
 """,True,'Out-of-Tree Modules'))
@@ -4042,14 +4378,19 @@ python2 -c "import Zwave"
 
 # gr-zwave_poore
 programs_ubuntu18_04_6.append(('gr-zwave_poore (786.4 kB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-zwave_poore/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/zwave_poore
 """,True,'Out-of-Tree Modules'))
@@ -4067,14 +4408,14 @@ export PATH
 sudo cp ~/.local/bin/qspectrumanalyzer /usr/local/bin/
 ########## Verify ##########
 ls ~/.local/bin/qspectrumanalyzer
-""",True,None))
+""",True,'SDR'))
 
 # GQRX
 programs_ubuntu18_04_6.append(('GQRX (18.7 MB)',
 """sudo apt-get install -y gqrx-sdr
 ########## Verify ##########
 ls /usr/bin/gqrx
-""",True,None))
+""",True,'SDR'))
 
 # Dump1090
 programs_ubuntu18_04_6.append(('Dump1090 (3.1 MB)',
@@ -4086,28 +4427,28 @@ cd ~/Installed_by_FISSURE/dump1090/
 make
 ########## Verify ##########
 ~/Installed_by_FISSURE/dump1090/dump1090 --help
-""",True,None))
+""",True,'Aircraft'))
 
 # QtDesigner
 programs_ubuntu18_04_6.append(('QtDesigner (2.6 MB)',
 """sudo apt-get install -y python-qt4 qt4-designer
 ########## Verify ##########
 ls /usr/bin/designer
-""",True,None))
+""",True,'Development'))
 
 # Grip
 programs_ubuntu18_04_6.append(('Grip (15.2 MB)',
 """python2 -m pip install grip
 ########## Verify ##########
 ls ~/.local/bin/grip
-""",True,None))
+""",True,'Development'))
 
 # Kismet
 programs_ubuntu18_04_6.append(('Kismet (6.0 MB)',
 """sudo apt-get install -y kismet
 ########## Verify ##########
 ls /usr/bin/kismet
-""",True,None))
+""",True,'802.11'))
 
 # UDP Replay
 programs_ubuntu18_04_6.append(('UDP Replay (725.0 kB)',
@@ -4123,7 +4464,7 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/udpreplay
-""",True,None))
+""",True,'802.11'))
 
 # V2Verifier
 programs_ubuntu18_04_6.append(('V2Verifier (7.5 MB)',
@@ -4133,7 +4474,7 @@ python3 -m pip install -U pyyaml
 #sudo apt install -y git cmake libuhd-dev uhd-host swig libgmp3-dev python3-pip python3-tk python3-pil 
 #python3-pil.imagetk gnuradio
 #Needs gr-foo and gr-ieee802-11
-""",True,None))
+""",True,'V2V'))
 
 # OpenBTS
 programs_ubuntu18_04_6.append(('OpenBTS (1.4 GB)',
@@ -4194,7 +4535,7 @@ sudo python3 -m pip install -r requirements.txt
 sudo update-alternatives --remove-all gcc
 sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-7 60 --slave /usr/bin/g++ g++ /usr/bin/g++-7
 sudo uhd_images_downloader
-""",True,None))
+""",True,'GSM'))
 
 # srsRAN/srsLTE
 programs_ubuntu18_04_6.append(('srsRAN (837.2 MB)',
@@ -4232,7 +4573,7 @@ sudo apt-get install -y fortune cowsay lolcat  # IMSI-Catcher 4G
 # gnome-terminal --tab --title="srsENB" -- /bin/sh -c 'sudo srsenb; $SHELL'
 ########## Verify ##########
 srsenb --help
-""",True,None))
+""",True,'LTE'))
 
 # FALCON
 programs_ubuntu18_04_6.append(('FALCON (677.5 MB)',
@@ -4251,7 +4592,7 @@ sudo make install
 #make clean
 ########## Verify ##########
 ls /usr/bin/FalconGUI
-""",True,None))
+""",True,'LTE'))
 
 # LTE-ciphercheck
 programs_ubuntu18_04_6.append(('LTE-ciphercheck (151.9 MB)',
@@ -4267,21 +4608,21 @@ make srsue
 sudo ldconfig
 cp ../srsue/ciphercheck.conf.example ../srsue/ciphercheck.conf
 cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue/ciphercheck.conf
-""",True,None))
+""",True,'LTE'))
 
 # Aircrack-ng
 programs_ubuntu18_04_6.append(('Aircrack-ng (19.1 MB)',
 """sudo apt-get install -y aircrack-ng
 ########## Verify ##########
 aircrack-ng --help
-""",True,None))
+""",True,'802.11'))
 
 # Geany
 programs_ubuntu18_04_6.append(('Geany (14.2 MB)',
 """sudo apt-get install -y geany
 ########## Verify ##########
 geany --help
-""",True,None))
+""",True,'Development'))
 
 # Arduino IDE
 programs_ubuntu18_04_6.append(('Arduino IDE (630.2 MB)',
@@ -4294,21 +4635,21 @@ sudo ./install.sh
 cp -R """ + fissure_directory + """/Tools/Esp8266_listen_trigger/ ~/Installed_by_FISSURE/
 ########## Verify ##########
 arduino --version
-""",True,None))
+""",True,'Development'))
 
 # Minicom
 programs_ubuntu18_04_6.append(('Minicom (1.4 MB)',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
-""",True,None))
+""",True,'Hardware'))
 
 # PuTTY
 programs_ubuntu18_04_6.append(('PuTTY (4.2 MB)',
 """sudo apt-get install -y putty
 ########## Verify ##########
 putty --help
-""",True,None))
+""",True,'Hardware'))
 
 # openHAB
 programs_ubuntu18_04_6.append(('openHAB (212.2 MB)',
@@ -4319,7 +4660,7 @@ sudo apt-get update
 sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
-""",True,None))
+""",True,'Z-Wave'))
 
 # rtl-zwave
 programs_ubuntu18_04_6.append(('rtl-zwave (102.4 kB)',
@@ -4330,7 +4671,7 @@ cd ~/Installed_by_FISSURE/rtl-zwave-master
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
-""",True,None))
+""",True,'Z-Wave'))
 
 # waving-z
 programs_ubuntu18_04_6.append(('waving-z (2.2 MB)',
@@ -4344,7 +4685,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/waving-z/build/wave-in
-""",True,None))
+""",True,'Z-Wave'))
 
 # baudline
 programs_ubuntu18_04_6.append(('baudline (2.2 MB)',
@@ -4355,7 +4696,7 @@ tar -xf baudline_1.08_linux_x86_64.tar.gz
 rm baudline_1.08_linux_x86_64.tar.gz
 ########## Verify ##########
 ~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
-""",True,None))
+""",True,'SDR'))
 
 # Universal Radio Hacker
 programs_ubuntu18_04_6.append(('Universal Radio Hacker (35.9 MB)',
@@ -4363,14 +4704,14 @@ programs_ubuntu18_04_6.append(('Universal Radio Hacker (35.9 MB)',
 sudo python3 -m pip install urh
 ########## Verify ##########
 urh --version
-""",True,None))
+""",True,'SDR'))
 
 # Inspectrum
 programs_ubuntu18_04_6.append(('Inspectrum (1.5 MB)',
 """sudo apt-get install -y inspectrum
 ########## Verify ##########
 inspectrum --help
-""",True,None))
+""",True,'SDR'))
 
 # OpenCPN
 programs_ubuntu18_04_6.append(('OpenCPN (121.7 MB)',
@@ -4380,7 +4721,7 @@ sudo apt-get update
 sudo apt-get install -y opencpn
 ########## Verify ##########
 ls /usr/bin/opencpn
-""",True,None))
+""",True,'AIS'))
 
 # Kalibrate
 programs_ubuntu18_04_6.append(('Kalibrate (1.7 MB)',
@@ -4391,7 +4732,7 @@ cd kalibrate-rtl
 ./bootstrap && CXXFLAGS='-W -Wall -O3' ./configure && make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/kalibrate-rtl/src/kal
-""",True,None))
+""",True,'GSM'))
 
 # retrogram-rtlsdr
 programs_ubuntu18_04_6.append(('retrogram-rtlsdr (1.7 MB)',
@@ -4402,7 +4743,7 @@ cd ~/Installed_by_FISSURE/retrogram-rtlsdr-master
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
-""",True,None))
+""",True,'SDR'))
 
 # RTLSDR-Airband
 programs_ubuntu18_04_6.append(('RTLSDR-Airband (9.7 MB)',
@@ -4418,7 +4759,7 @@ make
 sudo make install
 ########## Verify ##########
 rtl_airband -h
-""",True,None))
+""",True,'SDR'))
 
 # Spektrum
 programs_ubuntu18_04_6.append(('Spektrum (241.9 MB)',
@@ -4432,7 +4773,7 @@ tar -xf spektrum-linux64.tar.gz
 rm spektrum-linux64.tar.gz
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/spektrum/spektrum
-""",True,None))
+""",True,'SDR'))
 
 # SDRTrunk
 programs_ubuntu18_04_6.append(('SDRTrunk (106.9 MB)',
@@ -4452,23 +4793,64 @@ unzip -q sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 rm sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
-""",True,None))
+""",True,'Trunked Radio'))
 
-# Audio Tools
-programs_ubuntu18_04_6.append(('Audio Tools (180.2 MB)',
-"""sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
+# Audacity
+programs_ubuntu18_04_6.append(('Audacity',
+"""sudo apt-get install -y audacity
 ########## Verify ##########
-audacity --version && sox --version
-""",True,None))
+audacity --version
+""",True,'Audio'))
 
-# Video Tools
-programs_ubuntu18_04_6.append(('Video Tools (341.1 MB)',
+# Sound eXchange
+programs_ubuntu18_04_6.append(('Sound eXchange',
+"""sudo apt-get install -y sox
+########## Verify ##########
+sox --version
+""",True,'Audio'))
+
+# LAME
+programs_ubuntu18_04_6.append(('LAME',
+"""sudo apt-get install -y lame
+########## Verify ##########
+lame --version
+""",True,'Audio'))
+
+# mpv
+programs_ubuntu18_04_6.append(('mpv',
+"""sudo apt-get install -y mpv
+########## Verify ##########
+mpv --version
+""",True,'Audio'))
+
+# FFmpeg
+programs_ubuntu18_04_6.append(('FFmpeg',
+"""sudo apt-get install -y ffmpeg 
+########## Verify ##########
+ffmpeg --help
+""",True,'Audio'))
+
+# MPlayer
+programs_ubuntu18_04_6.append(('MPlayer',
+"""sudo apt-get install -y mplayer
+########## Verify ##########
+ls /usr/bin/mplayer
+""",True,'Audio'))
+
+# VLC
+programs_ubuntu18_04_6.append(('VLC',
 """sudo apt-get install -y snapd
 sudo snap install vlc
-sudo apt-get install -y simplescreenrecorder
+########## Verify ##########
+vlc --help
+""",True,'Video'))
+
+# Simple Screen Recorder
+programs_ubuntu18_04_6.append(('Simple Screen Recorder',
+"""sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
-""",True,None))
+""",True,'Video'))
 
 # radiosonde_auto_rx
 programs_ubuntu18_04_6.append(('radiosonde_auto_rx (53.2 MB)',
@@ -4482,7 +4864,7 @@ cp station.cfg.example station.cfg
 sudo python3 -m pip install -r requirements.txt
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
-""",True,None))
+""",True,'Radiosonde'))
 
 # SdrGlut
 programs_ubuntu18_04_6.append(('SdrGlut (305.0 MB)',
@@ -4495,7 +4877,7 @@ cd SdrGlut
 make -f makefileUbunta
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
-""",True,None))
+""",True,'SDR'))
 
 # rehex
 programs_ubuntu18_04_6.append(('rehex (544.5 MB)',
@@ -4508,7 +4890,7 @@ sudo cpan Template
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/rehex 
-""",True,None))
+""",True,'Data'))
 
 # ZEPASSD
 programs_ubuntu18_04_6.append(('ZEPASSD (9.2 MB)',
@@ -4521,7 +4903,7 @@ cd zepassd
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/zepassd/zepassd
-""",True,None))
+""",True,'RFID'))
 
 # iridium-toolkit
 programs_ubuntu18_04_6.append(('iridium-toolkit (3.1 MB)',
@@ -4536,7 +4918,7 @@ sudo make
 cp ir77_ambe_decode ~/Installed_by_FISSURE/iridium-toolkit/
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/osmo-ir77/codec/ir77_ambe_decode
-""",True,None))
+""",True,'Satellite'))
 
 # IridiumLive
 programs_ubuntu18_04_6.append(('IridiumLive (97.2 MB)',
@@ -4550,7 +4932,7 @@ cd linux-x64
 sudo chmod +x IridiumLive
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/linux-x64/IridiumLive
-""",True,None))
+""",True,'Satellite'))
 
 # NETATTACK2
 programs_ubuntu18_04_6.append(('NETATTACK2 (37.7 MB)',
@@ -4559,7 +4941,7 @@ sudo apt-get install -y python-scapy python-nmap python-nfqueue nmap
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/chrizator/netattack2.git
-""",True,None))
+""",True,'802.11'))
 
 # Wifite
 programs_ubuntu18_04_6.append(('Wifite (537.5 MB)',
@@ -4608,7 +4990,7 @@ sudo make install
 sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
 ########## Verify ##########
 ~/Installed_by_FISSURE/wifite2/Wifite.py --help
-""",True,None))
+""",True,'802.11'))
 
 # rtl_433
 programs_ubuntu18_04_6.append(('rtl_433 (23.0 MB)',
@@ -4616,8 +4998,8 @@ programs_ubuntu18_04_6.append(('rtl_433 (23.0 MB)',
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://github.com/merbanan/rtl_433/archive/refs/tags/22.11.zip
-unzip rtl_433-22.11.zip
-rm rtl_433-22.11.zip
+unzip 22.11.zip
+rm 22.11.zip
 mv rtl_433-22.11/ rtl_433/
 #git clone https://github.com/merbanan/rtl_433.git
 cd rtl_433/
@@ -4628,7 +5010,7 @@ make
 sudo make install
 ########## Verify ##########
 rtl_433 -help
-""",True,None))
+""",True,'433 MHz'))
 
 # RouterSploit
 programs_ubuntu18_04_6.append(('RouterSploit (485.4 MB)',
@@ -4645,7 +5027,7 @@ python3 -m pip install -r requirements.txt
 python3 -m pip install bluepy
 ########## Verify ##########
 ~/Installed_by_FISSURE/routersploit/rsf.py --help
-""",True,None))
+""",True,'802.11'))
 
 # Metasploit
 programs_ubuntu18_04_6.append(('Metasploit (1.1 GB)',
@@ -4656,7 +5038,7 @@ cd metasploit
 curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && chmod 755 msfinstall && ./msfinstall
 ########## Verify ##########
 ls /usr/bin/msfconsole
-""",True,None))
+""",True,'802.11'))
 
 # monitor_rtl433
 programs_ubuntu18_04_6.append(('monitor_rtl433 (33.2 MB)',
@@ -4667,7 +5049,7 @@ cd monitor_rtl433
 sudo python3 setup.py install
 ########## Verify ##########
 ls /usr/local/bin/monitor_rtl433
-""",True,None))
+""",True,'433 MHz'))
 
 # scan-ssid
 programs_ubuntu18_04_6.append(('scan-ssid (229.4 kB)',
@@ -4680,21 +5062,21 @@ sudo cp scan-ssid /usr/local/bin
 sudo chmod 755 /usr/local/bin/scan-ssid
 ########## Verify ##########
 scan-ssid --help
-""",True,None))
+""",True,'802.11'))
 
 # minimodem
 programs_ubuntu18_04_6.append(('minimodem (106.5 kB)',
 """sudo apt-get install -y minimodem
 ########## Verify ##########
 minimodem --version
-""",True,None))
+""",True,'Audio'))
 
 # WSJT-X
 programs_ubuntu18_04_6.append(('WSJT-X (4.1 MB)',
 """sudo apt-get install -y wsjtx
 ########## Verify ##########
 ls /usr/bin/wsjtx
-""",True,None))
+""",True,'Ham Radio'))
 
 # Google Earth Pro
 programs_ubuntu18_04_6.append(('Google Earth Pro (314.7 MB)',
@@ -4704,14 +5086,14 @@ wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_curre
 sudo dpkg -i google-earth-pro-stable_current_amd64.deb
 ########## Verify ##########
 ls /usr/bin/google-earth-pro
-""",True,None))
+""",True,'Mapping'))
 
 # gr-air-modes
 programs_ubuntu18_04_6.append(('gr-air-modes (938.0 kB)',
 """sudo apt-get install -y gr-air-modes
 ########## Verify ##########
 modes_rx --help
-""",True,None))
+""",True,'Aircraft'))
 
 # ESP8266 Deauther v2
 programs_ubuntu18_04_6.append(('ESP8266 Deauther v2 (6.2 MB)',
@@ -4720,7 +5102,7 @@ cd ~/Installed_by_FISSURE
 wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
 unzip -q v2.zip
 rm v2.zip
-""",True,None))
+""",True,'802.11'))
 
 # Viking
 programs_ubuntu18_04_6.append(('Viking (458.1 MB)',
@@ -4737,7 +5119,7 @@ make
 sudo make install
 ########## Verify ##########
 viking --help
-""",True,None))
+""",True,'Mapping'))
 
 # PyGPSClient
 programs_ubuntu18_04_6.append(('PyGPSClient (7.9 MB)',
@@ -4746,21 +5128,21 @@ sudo apt install -y tk-devel
 sudo python3 -m pip install --upgrade PyGPSClient
 ########## Verify ##########
 ls /usr/local/bin/pygpsclient
-""",True,None))
+""",True,'GPS'))
 
 # Gpredict
 programs_ubuntu18_04_6.append(('Gpredict (12.0 MB)',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
-""",True,None))
+""",True,'GPS'))
 
 # FoxtrotGPS
 programs_ubuntu18_04_6.append(('FoxtrotGPS (2.3 MB)',
 """sudo apt-get install -y foxtrotgps
 ########## Verify ##########
 foxtrotgps --help
-""",True,None))
+""",True,'GPS'))
 
 # multimon-ng
 programs_ubuntu18_04_6.append(('multimon-ng (8.3 MB)',
@@ -4776,14 +5158,14 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/multimon-ng
-""",True,None))
+""",True,'POCSAG'))
 
 # Xastir
 programs_ubuntu18_04_6.append(('Xastir (43.6 MB)',
 """sudo apt-get install -y xastir
 ########## Verify ##########
 sudo xastir -V
-""",True,None))
+""",True,'Ham Radio'))
 
 # LTE-Cell-Scanner
 programs_ubuntu18_04_6.append(('LTE-Cell-Scanner (129.4 MB)',
@@ -4799,28 +5181,28 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/CellSearch
-""",True,None))
+""",True,'LTE'))
 
 # btscanner
 programs_ubuntu18_04_6.append(('btscanner (913.4 kB)',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
-""",True,None))
+""",True,'Bluetooth'))
 
 # hcidump
 programs_ubuntu18_04_6.append(('hcidump (598.0 kB)',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
-""",True,None))
+""",True,'Bluetooth'))
 
 # GraphicsMagick
 programs_ubuntu18_04_6.append(('GraphicsMagick (4.9 MB)',
 """sudo apt-get install -y graphicsmagick-imagemagick-compat
 ########## Verify ##########
 gm -help
-""",True,None))
+""",True,'SDR'))
 
 # Spectrum Painter
 programs_ubuntu18_04_6.append(('Spectrum Painter (10.1 MB)',
@@ -4830,7 +5212,7 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/polygon/spectrum_painter.git
 #cd spectrum_painter/
 #python3 -m pip install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
-""",True,None))
+""",True,'SDR'))
 
 # nrsc5 and nrsc5-gui
 programs_ubuntu18_04_6.append(('nrsc5 (154.7 MB)',
@@ -4853,7 +5235,7 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/cmnybo/nrsc5-gui.git
 ########## Verify ##########
 nrsc5 -v
-""",True,None))
+""",True,'HD Radio'))
 
 # HAM2MON
 programs_ubuntu18_04_6.append(('HAM2MON (1.0 MB)',
@@ -4862,21 +5244,21 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/madengr/ham2mon.git
 ########## Verify ##########
 ~/Installed_by_FISSURE/ham2mon/apps/ham2mon.py --help
-""",True,None))
+""",True,'Ham Radio'))
 
 # Anki
 programs_ubuntu18_04_6.append(('Anki (279.7 MB)',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
-""",True,None))
+""",True,'Ham Radio'))
 
 # Bless
 programs_ubuntu18_04_6.append(('Bless (2.4 MB)',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
-""",True,None))
+""",True,'Data'))
 
 # trackerjacker
 programs_ubuntu18_04_6.append(('trackerjacker (15.4 MB)',
@@ -4887,7 +5269,7 @@ cd trackerjacker
 sudo python3 setup.py install
 ########## Verify ##########
 sudo trackerjacker --help
-""",True,None))
+""",True,'802.11'))
 
 # airgeddon
 programs_ubuntu18_04_6.append(('airgeddon (174.2 MB)',
@@ -4915,21 +5297,21 @@ git clone https://github.com/aircrack-ng/mdk4
 cd mdk4
 make
 sudo make install
-""",True,None))
+""",True,'802.11'))
 
 # Hydra
 programs_ubuntu18_04_6.append(('Hydra (10.6 MB)',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
-""",True,None))
+""",True,'SSH'))
 
 # Enscribe
 programs_ubuntu18_04_6.append(('Enscribe (98.2 kB)',
 """sudo apt-get install -y enscribe
 ########## Verify ##########
 ls /usr/bin/enscribe
-""",True,None))
+""",True,'Audio'))
 
 # ESP32 Bluetooth Classic Sniffer
 programs_ubuntu18_04_6.append(('ESP32 BT Classic Sniffer (400.4 MB)',
@@ -4947,21 +5329,21 @@ sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan
 rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
-""",True,None))
+""",True,'Bluetooth'))
 
 # QSSTV
 programs_ubuntu18_04_6.append(('QSSTV (3.4 MB)',
 """sudo apt-get install -y qsstv
 ########## Verify ##########
 ls /usr/bin/qsstv
-""",True,None))
+""",True,'Ham Radio'))
 
 # Fldigi
 programs_ubuntu18_04_6.append(('Fldigi (11.0 MB)',
 """sudo apt-get install -y fldigi
 ########## Verify ##########
 ls /usr/bin/fldigi
-""",True,None))
+""",True,'Ham Radio'))
 
 # Bootable USB
 programs_ubuntu18_04_6.append(('Bootable USB (107.4 MB)',
@@ -4974,7 +5356,7 @@ sudo apt-get update
 sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
 ########## Verify ##########
 ls /usr/bin/systemback && ls /usr/bin/guidus
-""",True,None))
+""",True,'Development'))
 
 # Dire Wolf
 programs_ubuntu18_04_6.append(('Dire Wolf',
@@ -4992,14 +5374,14 @@ sudo make install
 make install-conf
 ########## Verify ##########
 ls /usr/local/bin/direwolf
-""",True,None))
+""",True,'Ham Radio'))
 
 # Meld
 programs_ubuntu18_04_6.append(('Meld',
 """sudo apt-get -y install meld
 ########## Verify ##########
 ls /usr/bin/meld
-""",True,None))
+""",True,'Data'))
 
 # HamClock
 programs_ubuntu18_04_6.append(('HamClock',
@@ -5013,7 +5395,7 @@ make install hamclock-1600x960
 sudo make install hamclock-1600x960
 ########## Verify ##########
 ls /usr/local/bin/hamclock
-""",True,None))
+""",True,'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
 programs_ubuntu18_04_6.append(('ICE9 Bluetooth Sniffer',
@@ -5030,7 +5412,7 @@ make
 sudo make install
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
-""",True,None))
+""",True,'Bluetooth'))
 
 # dump978
 programs_ubuntu18_04_6.append(('dump978',
@@ -5041,7 +5423,7 @@ cd dump978
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/dump978/dump978
-""",True,None))
+""",True,'Aircraft'))
 
 
 
@@ -5055,10 +5437,11 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         self.setupUi(self)
         
         # Prevent Resizing/Maximizing
-        self.setFixedSize(920, 600)     
+        self.setFixedSize(920, 630)     
 
         # Hide Progress Bar
-        self.progressBar1.hide()   
+        self.progressBar1.hide()
+        self.label_current_item.hide()  
         
         # Do SIGNAL/Slots Connections
         self._connectSlots()  
@@ -5111,6 +5494,8 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         self.pushButton_deselect.clicked.connect(self._slotDeselectClicked)
         self.pushButton_default.clicked.connect(self._slotDefaultClicked)
         self.pushButton_rankings.clicked.connect(self._slotRankingsClicked)
+        self.pushButton_expand_all.clicked.connect(self._slotExpandAllClicked)
+        self.pushButton_collapse_all.clicked.connect(self._slotCollapseAllClicked)
         
         # Tables
         self.treeWidget_software.clicked.connect(self._slotTableItemClicked)
@@ -5139,7 +5524,8 @@ class InstallDialog2(QtGui.QDialog, form_class2):
             iterator+=1   
             
         # Show Progress Bar
-        self.progressBar1.show()      
+        self.progressBar1.show()
+        self.label_current_item.show()     
         self.progressBar1.setMaximum(get_checked_items+1)
         QtGui.QApplication.processEvents()
         self.pushButton_ok.setEnabled(False)
@@ -5151,6 +5537,9 @@ class InstallDialog2(QtGui.QDialog, form_class2):
             for p in range(0,len(self.programs)):
                 if self.checked_items[n] == self.programs[p][0]:
                     self.loop = True
+                    
+                    # Update the Label
+                    self.label_current_item.setText(str(self.checked_items[n]))
             
                     # Split Install Commands and Verifier Commands
                     install_command = self.programs[p][1].split("########## Verify ##########")
@@ -5176,7 +5565,8 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         self.progressBar1.setValue(self.checked_index+1)
         print("\nInstall Complete")
         time.sleep(2)
-        self.progressBar1.hide()   
+        self.progressBar1.hide()
+        self.label_current_item.hide()
         self.pushButton_ok.setEnabled(True)
         #self.accept()
         
@@ -5290,8 +5680,19 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         msgBox.setStandardButtons(QtGui.QMessageBox.Ok)
         msgBox.setDefaultButton(QtGui.QMessageBox.Ok)
         ret = msgBox.exec_()
-            
         
+    def _slotExpandAllClicked(self):
+        """ Expands the tree widget.
+        """
+        # Expand
+        self.treeWidget_software.expandAll()
+            
+    def _slotCollapseAllClicked(self):
+        """ Collapses the tree widget.
+        """
+        # Collapse
+        self.treeWidget_software.collapseAll()
+            
 
 class MyThread(QtCore.QThread):
     def __init__(self, n, parent=None):
