@@ -2,9 +2,26 @@
 
 AIS has mentored projects in the Google Summer of Code program for several years by partnering with organizations that have championed open source software. This year we will apply to be our own mentor organization with the hopes of supporting FISSURE and some of our other open source projects for years to come. We will update this page and the README upon learning if we are accepted to the program. For now, only consider the ideas until the list of accepted mentoring organizations is published February 22, 2023. Whether we are accepted or not, please consider taking on these project ideas to become familiar with the technology and to gain experience with open source software.
 
-This list of project ideas are suggestions only. Contact the developers if you have additional ideas for yourself or others.
+---
+
+### How to Contact
+
+(After February 22, 2023)
+
+Email Chris Poore at poorec@ainfosec.com to discuss which project ideas are of interest. You may be asked to write a [typical GSoC proposal](https://google.github.io/gsocguides/student/writing-a-proposal.html) with the following elements prior to acceptance:
+- Name and Contact Information
+- Title
+- Synopsis
+- Benefits to Community
+- Deliverables
+- Related Work
+- Biographical Information
+
+---
 
 ### Project Idea List
+
+This list of project ideas are suggestions only. Contact the developers if you have additional ideas for yourself or others.
 
 1. [PyQt GUI Development](#pyqt_gui_development)
 2. [Capture-the-Flag Design](#ctf_design)

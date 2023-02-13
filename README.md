@@ -179,7 +179,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 - [ ] Increase the online signal archive, support download of selectable collections
 - [ ] Support the addition of both closed source and user-developed plugins
 - [ ] Improve the look for different resolutions and window sizes, dark mode
-- [ ] Group third-party programs in the installer by type
+- [x] Group third-party programs in the installer by type
 - [ ] Resolve DragonOS conflicts
 
 ### Phase II
