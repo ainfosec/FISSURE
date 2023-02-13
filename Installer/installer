@@ -16,8 +16,8 @@ form_class2 = uic.loadUiType(fissure_directory + "/UI/install2.ui")[0]
 
 # Program Format: ('name','command',checked/default, parent_category)
 
-larger_categories = ['Minimum Install','Hardware','Out-of-Tree Modules']
-
+larger_categories = ['Minimum Install','Hardware','Out-of-Tree Modules','433 MHz','802.11','Aircraft','AIS','Audio','Bluetooth','Data','Development','Filters',
+    'GPS','GSM','Ham Radio','HD Radio','LTE','M17','Mapping','POCSAG','Radiosonde','RFID','Satellite','SDR','SSH','Trunked Radio','V2V','Video','Z-Wave']
 
 ########################################################################
 ############################ Ubuntu 22.04 ##############################
@@ -332,14 +332,19 @@ ls /usr/local/lib/python*/*/acars
 
 # gr-adsb
 programs_ubuntu22_04.append(('gr-adsb (2.7 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-adsb/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-adsb/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-adsb/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/adsb
 """,True,'Out-of-Tree Modules'))
@@ -360,82 +365,107 @@ ls /usr/local/lib/python*/*/gnuradio/ainfosec
 
 # gr-ais
 programs_ubuntu22_04.append(('gr-ais (9.2 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/ais
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth
 programs_ubuntu22_04.append(('gr-bluetooth (34.7 MB)',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-rm -Rf libbtbb
-git clone https://github.com/greatscottgadgets/libbtbb -b master
-cd libbtbb
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-bluetooth/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-bluetooth/)" ]; 
+then
+  mkdir -p ~/Installed_by_FISSURE
+  cd ~/Installed_by_FISSURE
+  rm -Rf libbtbb
+  git clone https://github.com/greatscottgadgets/libbtbb -b master
+  cd libbtbb
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-bluetooth/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/bin/btrx
 """,True,'Out-of-Tree Modules'))
 
 # gr-clapper_plus
 programs_ubuntu22_04.append(('gr-clapper_plus (2.4 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-clapper_plus/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-clapper_plus/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-clapper_plus/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/clapper_plus
 """,True,'Out-of-Tree Modules'))
 
 # gr-dect2
 programs_ubuntu22_04.append(('gr-dect2 (11.9 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-dect2/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-dect2/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-dect2/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/dect2
 """,True,'Out-of-Tree Modules'))
 
 # gr-foo
 programs_ubuntu22_04.append(('gr-foo (37.6 MB)',
-"""sudo apt-get install -y libsndfile1-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-foo/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-foo/)" ]; 
+then
+  sudo apt-get install -y libsndfile1-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-foo/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/foo
 """,True,'Out-of-Tree Modules'))
@@ -456,228 +486,303 @@ ls /usr/local/lib/python*/*/gnuradio/fuzzer
 
 # gr-garage_door
 programs_ubuntu22_04.append(('gr-garage_door (2.4 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-garage_door/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-garage_door/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-garage_door/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/garage_door
 """,True,'Out-of-Tree Modules'))
 
 # gr-gsm
 programs_ubuntu22_04.append(('gr-gsm (154.8 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm/
-sudo rm -Rf build
-sudo apt-get install -y gr-osmosdr
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-# gr-gsm needs to be made twice for "import arfcn" block to work
-make 
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm/
+  sudo rm -Rf build
+  sudo apt-get install -y gr-osmosdr
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  # gr-gsm needs to be made twice for "import arfcn" block to work
+  make 
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/gsm
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-11
 programs_ubuntu22_04.append(('gr-ieee802-11 (37.8 MB)',
-"""sudo apt-get install -y libsndfile1-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-11/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-11/)" ]; 
+then
+  sudo apt-get install -y libsndfile1-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-11/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ieee802_11
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-15-4
 programs_ubuntu22_04.append(('gr-ieee802-15-4 (63.3 MB)',
-"""sudo apt-get install -y libsndfile1-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
-grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/)" ]; 
+then
+  sudo apt-get install -y libsndfile1-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+  grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ieee802_15_4
 """,True,'Out-of-Tree Modules'))
 
 # gr-iridium
 programs_ubuntu22_04.append(('gr-iridium (29.5 MB)',
-"""sudo apt-get install -y libsndfile1-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-iridium/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-iridium/)" ]; 
+then
+  sudo apt-get install -y libsndfile1-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-iridium/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/iridium
 """,True,'Out-of-Tree Modules'))
 
 # gr-j2497
 programs_ubuntu22_04.append(('gr-j2497 (2.6 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-j2497/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-j2497/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-j2497/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/j2497
 """,True,'Out-of-Tree Modules'))
 
 # gr-limesdr
 programs_ubuntu22_04.append(('gr-limesdr (12.0 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-limesdr/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-limesdr/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-limesdr/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-mixalot
 programs_ubuntu22_04.append(('gr-mixalot',
-"""sudo apt-get install -y libitpp-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-mixalot/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-mixalot/)" ]; 
+then
+  sudo apt-get install -y libitpp-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-mixalot/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/mixalot
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
 programs_ubuntu22_04.append(('gr-nrsc5 (53.8 MB)',
-"""sudo apt-get install -y libsndfile1-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-nrsc5/
-sudo rm -Rf build
-sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-nrsc5/)" ]; 
+then
+  sudo apt-get install -y libsndfile1-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-nrsc5/
+  sudo rm -Rf build
+  sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/nrsc5
 """,True,'Out-of-Tree Modules'))
 
 # gr-paint
 programs_ubuntu22_04.append(('gr-paint (9.0 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/
-gcc tgatoluma.c -o tgatoluma
-chmod +x tgatoluma
-cp tgatoluma ~/.local/bin/
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/
+  gcc tgatoluma.c -o tgatoluma
+  chmod +x tgatoluma
+  cp tgatoluma ~/.local/bin/
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/paint
 """,True,'Out-of-Tree Modules'))
 
 # gr-rds
 programs_ubuntu22_04.append(('gr-rds (20.5 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/rds
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
 programs_ubuntu22_04.append(('gr-tpms (11.8 MB)',
-"""sudo apt-get install -y libsndfile1-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms/)" ]; 
+then
+  sudo apt-get install -y libsndfile1-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/tpms
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms_poore
 programs_ubuntu22_04.append(('gr-tpms_poore (2.5 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms_poore/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms_poore/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/tpms_poore
 """,True,'Out-of-Tree Modules'))
 
 # gr-X10
 programs_ubuntu22_04.append(('gr-X10 (2.4 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-X10/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-X10/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-X10/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/X10
 """,True,'Out-of-Tree Modules'))
 
 # gr-zwave_poore
 programs_ubuntu22_04.append(('gr-zwave_poore (2.5 MB)',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-zwave_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-zwave_poore/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-zwave_poore/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/zwave_poore
 """,True,'Out-of-Tree Modules'))
@@ -691,14 +796,14 @@ sudo apt-get install -y soapysdr-module-rtlsdr soapysdr-module-airspy soapysdr-m
 python3 -m pip install --user qspectrumanalyzer  # log in again, run without sudo
 ########## Verify ##########
 ls ~/.local/bin/qspectrumanalyzer
-""",True,None))
+""",True,'SDR'))
 
 # GQRX
 programs_ubuntu22_04.append(('GQRX (7.0 MB)',
 """sudo apt-get install -y gqrx-sdr
 ########## Verify ##########
 ls /usr/bin/gqrx
-""",True,None))
+""",True,'SDR'))
 
 # Dump1090
 programs_ubuntu22_04.append(('Dump1090 (3.1 MB)',
@@ -710,21 +815,21 @@ cd ~/Installed_by_FISSURE/dump1090/
 make
 ########## Verify ##########
 ~/Installed_by_FISSURE/dump1090/dump1090 --help
-""",True,None))
+""",True,'Aircraft'))
 
 # QtDesigner
 programs_ubuntu22_04.append(('QtDesigner',
 """sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
 ########## Verify ##########
 ls /usr/bin/designer
-""",True,None))
+""",True,'Development'))
 
 # Grip
 programs_ubuntu22_04.append(('Grip (6.4 MB)',
 """sudo python3 -m pip install grip
 ########## Verify ##########
 ls /usr/local/bin/grip
-""",True,None))
+""",True,'Development'))
 
 # Kismet
 programs_ubuntu22_04.append(('Kismet',
@@ -733,7 +838,7 @@ echo 'deb https://www.kismetwireless.net/repos/apt/release/jammy jammy main' | s
 sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d  # Removes "sudo apt update" warnings
 sudo apt update
 sudo apt-get install -y kismet
-""",True,None))
+""",True,'802.11'))
 
 # UDP Replay
 programs_ubuntu22_04.append(('UDP Replay (704.5 kB)',
@@ -749,7 +854,7 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/udpreplay
-""",True,None))
+""",True,'802.11'))
 
 # V2Verifier
 programs_ubuntu22_04.append(('V2Verifier (3.6 MB)',
@@ -759,7 +864,7 @@ sudo python3 -m pip install -U pyyaml
 #sudo apt install -y git cmake libuhd-dev uhd-host swig libgmp3-dev python3-pip python3-tk python3-pil 
 #python3-pil.imagetk gnuradio
 #Needs gr-foo and gr-ieee802-11
-""",True,None))
+""",True,'V2V'))
 
 # srsRAN/srsLTE
 programs_ubuntu22_04.append(('srsRAN (795.5 MB)',
@@ -797,7 +902,7 @@ sudo apt-get install -y fortune cowsay lolcat  # IMSI-Catcher 4G
 # gnome-terminal --tab --title="srsENB" -- /bin/sh -c 'sudo srsenb; $SHELL'
 ########## Verify ##########
 srsenb --help
-""",True,None))
+""",True,'LTE'))
 
 # FALCON - FIX (needs older soapysdr version?)
 programs_ubuntu22_04.append(('FALCON',
@@ -816,7 +921,7 @@ sudo make install
 #make clean
 ########## Verify ##########
 ls /usr/bin/FalconGUI
-""",False,None))
+""",False,'LTE'))
 
 # LTE-ciphercheck - Fix
 programs_ubuntu22_04.append(('LTE-ciphercheck',
@@ -831,21 +936,21 @@ cmake ..
 make srsue
 sudo ldconfig
 cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue/ciphercheck.conf 
-""",False,None))
+""",False,'LTE'))
 
 # Aircrack-ng
 programs_ubuntu22_04.append(('Aircrack-ng (19.6 MB)',
 """sudo apt-get install -y aircrack-ng
 ########## Verify ##########
 aircrack-ng --help
-""",True,None))
+""",True,'802.11'))
 
 # Geany
 programs_ubuntu22_04.append(('Geany (16.4 MB)',
 """sudo apt-get install -y geany
 ########## Verify ##########
 geany --help
-""",True,None))
+""",True,'Development'))
 
 # Arduino IDE
 programs_ubuntu22_04.append(('Arduino IDE (630.3 MB)',
@@ -858,21 +963,21 @@ sudo ./install.sh
 cp -R """ + fissure_directory + """/Tools/Esp8266_listen_trigger/ ~/Installed_by_FISSURE/
 ########## Verify ##########
 arduino --version
-""",True,None))
+""",True,'Development'))
 
 # Minicom
 programs_ubuntu22_04.append(('Minicom (1.8 MB)',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
-""",True,None))
+""",True,'Hardware'))
 
 # PuTTY
 programs_ubuntu22_04.append(('PuTTY (5.9 MB)',
 """sudo apt-get install -y putty
 ########## Verify ##########
 putty --help
-""",True,None))
+""",True,'Hardware'))
 
 # openHAB - FIX
 programs_ubuntu22_04.append(('openHAB (596.8 MB)',
@@ -891,7 +996,7 @@ sudo apt-get update
 sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
-""",True,None))
+""",True,'Z-Wave'))
 
 # rtl-zwave
 programs_ubuntu22_04.append(('rtl-zwave (106.5 kB)',
@@ -902,7 +1007,7 @@ cd ~/Installed_by_FISSURE/rtl-zwave-master
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
-""",True,None))
+""",True,'Z-Wave'))
 
 # waving-z
 programs_ubuntu22_04.append(('waving-z (2.2 MB)',
@@ -916,7 +1021,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/waving-z/build/wave-in
-""",True,None))
+""",True,'Z-Wave'))
 
 # baudline
 programs_ubuntu22_04.append(('baudline (4.9 MB)',
@@ -927,7 +1032,7 @@ tar -xf baudline_1.08_linux_x86_64.tar.gz
 rm baudline_1.08_linux_x86_64.tar.gz
 ########## Verify ##########
 ~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
-""",True,None))
+""",True,'SDR'))
 
 # Universal Radio Hacker
 programs_ubuntu22_04.append(('Universal Radio Hacker (129.2 MB)',
@@ -935,14 +1040,14 @@ programs_ubuntu22_04.append(('Universal Radio Hacker (129.2 MB)',
 sudo python3 -m pip install urh
 ########## Verify ##########
 urh --version
-""",True,None))
+""",True,'SDR'))
 
 # Inspectrum
 programs_ubuntu22_04.append(('Inspectrum (1.8 MB)',
 """sudo apt-get install -y inspectrum
 ########## Verify ##########
 inspectrum --help
-""",True,None))
+""",True,'SDR'))
 
 # OpenCPN
 programs_ubuntu22_04.append(('OpenCPN (206.1 MB)',
@@ -952,7 +1057,7 @@ sudo apt-get update
 sudo apt-get install -y opencpn
 ########## Verify ##########
 ls /usr/bin/opencpn
-""",True,None))
+""",True,'AIS'))
 
 # Kalibrate
 programs_ubuntu22_04.append(('Kalibrate (2.1 MB)',
@@ -963,7 +1068,7 @@ cd kalibrate-rtl
 ./bootstrap && CXXFLAGS='-W -Wall -O3' ./configure && make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/kalibrate-rtl/src/kal
-""",True,None))
+""",True,'GSM'))
 
 # retrogram-rtlsdr
 programs_ubuntu22_04.append(('retrogram-rtlsdr (1.7 MB)',
@@ -974,7 +1079,7 @@ cd ~/Installed_by_FISSURE/retrogram-rtlsdr-master
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
-""",True,None))
+""",True,'SDR'))
 
 # RTLSDR-Airband
 programs_ubuntu22_04.append(('RTLSDR-Airband (7.0 MB)',
@@ -990,7 +1095,7 @@ make
 sudo make install
 ########## Verify ##########
 rtl_airband -h
-""",True,None))
+""",True,'SDR'))
 
 # Spektrum
 programs_ubuntu22_04.append(('Spektrum (241.9 MB)',
@@ -1003,7 +1108,7 @@ tar -xf spektrum-linux64.tar.gz
 rm spektrum-linux64.tar.gz
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/spektrum/spektrum
-""",True,None))
+""",True,'SDR'))
 
 # SDRTrunk
 programs_ubuntu22_04.append(('SDRTrunk (106.9 MB)',
@@ -1022,23 +1127,64 @@ unzip -q sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 rm sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
-""",True,None))
+""",True,'Trunked Radio'))
 
-# Audio Tools
-programs_ubuntu22_04.append(('Audio Tools (225.6 MB)',
-"""sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
+# Audacity
+programs_ubuntu22_04.append(('Audacity',
+"""sudo apt-get install -y audacity
 ########## Verify ##########
-audacity --version && sox --version
-""",True,None))
+audacity --version
+""",True,'Audio'))
 
-# Video Tools
-programs_ubuntu22_04.append(('Video Tools (400.6 MB)',
+# Sound eXchange
+programs_ubuntu22_04.append(('Sound eXchange',
+"""sudo apt-get install -y sox
+########## Verify ##########
+sox --version
+""",True,'Audio'))
+
+# LAME
+programs_ubuntu22_04.append(('LAME',
+"""sudo apt-get install -y lame
+########## Verify ##########
+lame --version
+""",True,'Audio'))
+
+# mpv
+programs_ubuntu22_04.append(('mpv',
+"""sudo apt-get install -y mpv
+########## Verify ##########
+mpv --version
+""",True,'Audio'))
+
+# FFmpeg
+programs_ubuntu22_04.append(('FFmpeg',
+"""sudo apt-get install -y ffmpeg 
+########## Verify ##########
+ffmpeg --help
+""",True,'Audio'))
+
+# MPlayer
+programs_ubuntu22_04.append(('MPlayer',
+"""sudo apt-get install -y mplayer
+########## Verify ##########
+ls /usr/bin/mplayer
+""",True,'Audio'))
+
+# VLC
+programs_ubuntu22_04.append(('VLC',
 """sudo apt-get install -y snapd
 sudo snap install vlc
-sudo apt-get install -y simplescreenrecorder
+########## Verify ##########
+vlc --help
+""",True,'Video'))
+
+# Simple Screen Recorder
+programs_ubuntu22_04.append(('Simple Screen Recorder',
+"""sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
-""",True,None))
+""",True,'Video'))
 
 # radiosonde_auto_rx
 programs_ubuntu22_04.append(('radiosonde_auto_rx (82.4 MB)',
@@ -1052,7 +1198,7 @@ cp station.cfg.example station.cfg
 sudo python3 -m pip install -r requirements.txt
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
-""",True,None))
+""",True,'Radiosonde'))
 
 # SdrGlut
 programs_ubuntu22_04.append(('SdrGlut (364.9 MB)',
@@ -1075,7 +1221,7 @@ sudo cp /usr/local/lib/libliquid.a.1.5 /usr/local/lib/libliquid.a  # Certain lib
 make -f makefileUbunta
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
-""",True,None))
+""",True,'SDR'))
 
 # rehex
 programs_ubuntu22_04.append(('rehex (194.9 MB)',
@@ -1089,7 +1235,7 @@ sudo cpan Template
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/rehex 
-""",True,None))
+""",True,'Data'))
 
 # ZEPASSD
 programs_ubuntu22_04.append(('ZEPASSD (11.6 MB)',
@@ -1102,7 +1248,7 @@ cd zepassd
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/zepassd/zepassd
-""",True,None))
+""",True,'RFID'))
 
 # iridium-toolkit
 programs_ubuntu22_04.append(('iridium-toolkit (3.1 MB)',
@@ -1117,7 +1263,7 @@ sudo make
 cp ir77_ambe_decode ~/Installed_by_FISSURE/iridium-toolkit/
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/osmo-ir77/codec/ir77_ambe_decode
-""",True,None))
+""",True,'Satellite'))
 
 # IridiumLive
 programs_ubuntu22_04.append(('IridiumLive (97.2 MB)',
@@ -1131,7 +1277,7 @@ cd linux-x64
 sudo chmod +x IridiumLive
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/linux-x64/IridiumLive
-""",True,None))
+""",True,'Satellite'))
 
 # NETATTACK2 - Fix
 programs_ubuntu22_04.append(('NETATTACK2',
@@ -1147,7 +1293,7 @@ wget http://archive.ubuntu.com/ubuntu/pool/universe/libn/libnetfilter-queue/libn
 sudo dpkg -i libnetfilter-queue1_1.0.2-2_amd64.deb
 wget http://archive.ubuntu.com/ubuntu/pool/universe/n/nfqueue-bindings/python-nfqueue_0.6-1build2_amd64.deb
 sudo dpkg -i python-nfqueue_0.6-1build2_amd64.deb 
-""",False,None))
+""",False,'802.11'))
 
 # Wifite
 programs_ubuntu22_04.append(('Wifite (796.8 MB)',
@@ -1196,7 +1342,7 @@ make
 sudo make install
 sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
 #sudo apt-get install -y tshark
-""",True,None))
+""",True,'802.11'))
 
 # rtl_433
 programs_ubuntu22_04.append(('rtl_433 (25.7 MB)',
@@ -1213,7 +1359,7 @@ make
 sudo make install
 ########## Verify ##########
 rtl_433 -help
-""",True,None))
+""",True,'433 MHz'))
 
 # RouterSploit
 programs_ubuntu22_04.append(('RouterSploit (369.3 MB)',
@@ -1228,7 +1374,7 @@ python3 -m pip install -r requirements.txt
 python3 -m pip install bluepy
 ########## Verify ##########
 ~/Installed_by_FISSURE/routersploit/rsf.py --help
-""",True,None))
+""",True,'802.11'))
 
 # Metasploit
 programs_ubuntu22_04.append(('Metasploit (1.1 GB)',
@@ -1239,7 +1385,7 @@ cd metasploit
 curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && chmod 755 msfinstall && ./msfinstall
 ########## Verify ##########
 ls /usr/bin/msfconsole
-""",True,None))
+""",True,'802.11'))
 
 # monitor_rtl433
 programs_ubuntu22_04.append(('monitor_rtl433 (868.3 kB)',
@@ -1252,7 +1398,7 @@ sudo python3 -m pip install python-dateutil
 sudo python3 -m pip install flask_table
 ########## Verify ##########
 ls /usr/local/bin/monitor_rtl433
-""",True,None))
+""",True,'433 MHz'))
 
 # scan-ssid
 programs_ubuntu22_04.append(('scan-ssid (233.5 kB)',
@@ -1265,21 +1411,21 @@ sudo cp scan-ssid /usr/local/bin
 sudo chmod 755 /usr/local/bin/scan-ssid  # can't be in monitor mode, managed only
 ########## Verify ##########
 scan-ssid --help
-""",True,None))
+""",True,'802.11'))
 
 # minimodem
 programs_ubuntu22_04.append(('minimodem (114.7 kB)',
 """sudo apt-get install -y minimodem
 ########## Verify ##########
 minimodem --version
-""",True,None))
+""",True,'Audio'))
 
 # WSJT-X
 programs_ubuntu22_04.append(('WSJT-X (35.2 MB)',
 """sudo apt-get install -y wsjtx
 ########## Verify ##########
 ls /usr/bin/wsjtx
-""",True,None))
+""",True,'Ham Radio'))
 
 # Google Earth Pro
 programs_ubuntu22_04.append(('Google Earth Pro (314.6 MB)',
@@ -1289,7 +1435,7 @@ wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_curre
 sudo dpkg -i google-earth-pro-stable_current_amd64.deb
 ########## Verify ##########
 ls /usr/bin/google-earth-pro
-""",True,None))
+""",True,'Mapping'))
 
 # gr-air-modes
 programs_ubuntu22_04.append(('gr-air-modes (868.4 kB)',
@@ -1297,7 +1443,7 @@ programs_ubuntu22_04.append(('gr-air-modes (868.4 kB)',
 sudo sed -i 's/numpy.float)/numpy.float32)/g' /usr/lib/python3/dist-packages/air_modes/mlat.py  # Deprecated numpy type: np.float->np.float32 or np.float64
 ########## Verify ##########
 modes_rx --help
-""",True,None))
+""",True,'Aircraft'))
 
 # ESP8266 Deauther v2
 programs_ubuntu22_04.append(('ESP8266 Deauther v2 (6.2 MB)',
@@ -1306,7 +1452,7 @@ cd ~/Installed_by_FISSURE
 wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
 unzip -q v2.zip
 rm v2.zip
-""",True,None))
+""",True,'802.11'))
 
 # Viking
 programs_ubuntu22_04.append(('Viking (531.5 MB)',
@@ -1324,7 +1470,7 @@ make
 sudo make install
 ########## Verify ##########
 viking --help
-""",True,None))
+""",True,'Mapping'))
 
 # PyGPSClient
 programs_ubuntu22_04.append(('PyGPSClient (3.5 MB)',
@@ -1332,21 +1478,21 @@ programs_ubuntu22_04.append(('PyGPSClient (3.5 MB)',
 sudo python3 -m pip install --upgrade PyGPSClient
 ########## Verify ##########
 ls /usr/local/bin/pygpsclient
-""",True,None))
+""",True,'GPS'))
 
 # Gpredict
 programs_ubuntu22_04.append(('Gpredict (15.8 MB)',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
-""",True,None))
+""",True,'GPS'))
 
 # FoxtrotGPS
 programs_ubuntu22_04.append(('FoxtrotGPS (2.5 MB)',
 """sudo apt-get install -y foxtrotgps
 ########## Verify ##########
 foxtrotgps --help
-""",True,None))
+""",True,'GPS'))
 
 # multimon-ng
 programs_ubuntu22_04.append(('multimon-ng (8.3 MB)',
@@ -1362,14 +1508,14 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/multimon-ng
-""",True,None))
+""",True,'POCSAG'))
 
 # Xastir
 programs_ubuntu22_04.append(('Xastir (51.5 MB)',
 """sudo apt-get install -y xastir  # should non-superusers be allowed? sure, why not.
 ########## Verify ##########
 sudo xastir -V
-""",True,None))
+""",True,'Ham Radio'))
 
 # LTE-Cell-Scanner
 programs_ubuntu22_04.append(('LTE-Cell-Scanner (168.1 MB)',
@@ -1385,28 +1531,28 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/CellSearch
-""",True,None))
+""",True,'LTE'))
 
 # btscanner
 programs_ubuntu22_04.append(('btscanner (1.1 MB)',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
-""",True,None))
+""",True,'Bluetooth'))
 
 # hcidump
 programs_ubuntu22_04.append(('hcidump (1.1 MB)',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
-""",True,None))
+""",True,'Bluetooth'))
 
 # GraphicsMagick
 programs_ubuntu22_04.append(('GraphicsMagick (6.0 MB)',
 """sudo apt-get install -y graphicsmagick-imagemagick-compat
 ########## Verify ##########
 gm -help
-""",True,None))
+""",True,'SDR'))
 
 # Spectrum Painter
 programs_ubuntu22_04.append(('Spectrum Painter (13.8 MB)',
@@ -1416,7 +1562,7 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/polygon/spectrum_painter.git
 #cd spectrum_painter/
 #pip3 install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
-""",True,None))
+""",True,'SDR'))
 
 # nrsc5 and nrsc5-gui
 programs_ubuntu22_04.append(('nrsc5 (116.2 MB)',
@@ -1439,7 +1585,7 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/cmnybo/nrsc5-gui.git
 ########## Verify ##########
 nrsc5 -v
-""",True,None))
+""",True,'HD Radio'))
 
 # HAM2MON
 programs_ubuntu22_04.append(('HAM2MON (901.1 kB)',
@@ -1447,21 +1593,21 @@ programs_ubuntu22_04.append(('HAM2MON (901.1 kB)',
 cd ~/Installed_by_FISSURE
 git clone https://github.com/bkerler/ham2mon.git
 cp -f """ + fissure_directory + """/Tools/ham2mon/cursesgui.py ~/Installed_by_FISSURE/ham2mon/apps/
-""",True,None))
+""",True,'Ham Radio'))
 
 # Anki
 programs_ubuntu22_04.append(('Anki (223.5 MB)',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
-""",True,None))
+""",True,'Ham Radio'))
 
 # Bless
 programs_ubuntu22_04.append(('Bless (59.3 MB)',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
-""",True,None))
+""",True,'Data'))
 
 # trackerjacker - Fix (needs newer scapy version, something else (netattack2?) resets it, some pieces don't work while running it)
 programs_ubuntu22_04.append(('trackerjacker',
@@ -1469,7 +1615,7 @@ programs_ubuntu22_04.append(('trackerjacker',
 sudo python3 -m pip install trackerjacker
 ########## Verify ##########
 sudo trackerjacker --help
-""",False,None))
+""",False,'802.11'))
 
 # airgeddon
 programs_ubuntu22_04.append(('airgeddon (183.2 MB)',
@@ -1498,21 +1644,21 @@ git clone https://github.com/aircrack-ng/mdk4
 cd mdk4
 make
 sudo make install
-""",True,None))
+""",True,'802.11'))
 
 # Hydra
 programs_ubuntu22_04.append(('Hydra (13.3 MB)',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
-""",True,None))
+""",True,'SSH'))
 
 # Enscribe
 programs_ubuntu22_04.append(('Enscribe (90.1 MB)',
 """sudo apt-get install -y enscribe
 ########## Verify ##########
 ls /usr/bin/enscribe
-""",True,None))
+""",True,'Audio'))
 
 # ESP32 Bluetooth Classic Sniffer
 programs_ubuntu22_04.append(('ESP32 BT Classic Sniffer (400.0 MB)',
@@ -1530,7 +1676,7 @@ sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan
 rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
-""",True,None))
+""",True,'Bluetooth'))
 
 # SigDigger
 programs_ubuntu22_04.append(('SigDigger (168.9 MB)',
@@ -1572,14 +1718,14 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/SigDigger
-""",True,None))
+""",True,'SDR'))
 
 # QSSTV
 programs_ubuntu22_04.append(('QSSTV (2.8 MB)',
 """sudo apt-get install -y qsstv
 ########## Verify ##########
 ls /usr/bin/qsstv
-""",True,None))
+""",True,'Ham Radio'))
 
 # m17-cxx-demod
 programs_ubuntu22_04.append(('m17-cxx-demod (21.8 MB)',
@@ -1595,21 +1741,21 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/m17-demod
-""",True,None))
+""",True,'M17'))
 
 # Fldigi
 programs_ubuntu22_04.append(('Fldigi (13.8 MB)',
 """sudo apt-get install -y fldigi
 ########## Verify ##########
 ls /usr/bin/fldigi
-""",True,None))
+""",True,'Ham Radio'))
 
 # pyFDA
 programs_ubuntu22_04.append(('pyFDA (11.7 MB)',
 """sudo python3 -m pip install pyfda --use-pep517  # Has PEP issues with Python 3.10
 ########## Verify ##########
 pyfdax -h
-""",True,None))
+""",True,'Filters'))
 
 # Bootable USB
 programs_ubuntu22_04.append(('Bootable USB (107.4 MB)',
@@ -1622,7 +1768,7 @@ sudo apt-get update
 sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
 ########## Verify ##########
 ls /usr/bin/systemback && ls /usr/bin/guidus
-""",True,None))
+""",True,'Development'))
 
 # Dire Wolf
 programs_ubuntu22_04.append(('Dire Wolf',
@@ -1639,21 +1785,21 @@ sudo make install
 make install-conf
 ########## Verify ##########
 ls /usr/local/bin/direwolf
-""",True,None))
+""",True,'Ham Radio'))
 
 # Meld
 programs_ubuntu22_04.append(('Meld',
 """sudo apt-get -y install meld
 ########## Verify ##########
 ls /usr/bin/meld
-""",True,None))
+""",True,'Data'))
 
 # nwdiag
 programs_ubuntu22_04.append(('nwdiag',
 """sudo python3 -m pip install nwdiag
 ########## Verify ##########
 packetdiag -h
-""",True,None))
+""",True,'Data'))
 
 # HamClock
 programs_ubuntu22_04.append(('HamClock',
@@ -1667,7 +1813,7 @@ make install hamclock-1600x960
 sudo make install hamclock-1600x960
 ########## Verify ##########
 ls /usr/local/bin/hamclock
-""",True,None))
+""",True,'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
 programs_ubuntu22_04.append(('ICE9 Bluetooth Sniffer',
@@ -1684,7 +1830,7 @@ make
 sudo make install
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
-""",True,None))
+""",True,'Bluetooth'))
 
 # dump978
 programs_ubuntu22_04.append(('dump978',
@@ -1695,7 +1841,7 @@ cd dump978
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/dump978/dump978
-""",True,None))
+""",True,'Aircraft'))
 
 
 ########################################################################
@@ -2011,14 +2157,19 @@ ls /usr/local/lib/python*/*/acars
 
 # gr-adsb
 programs_dragonOS_focalx.append(('gr-adsb',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-adsb/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-adsb/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-adsb/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/adsb
 """, True, 'Out-of-Tree Modules'))
@@ -2039,82 +2190,107 @@ ls /usr/local/lib/python*/*/gnuradio/ainfosec
 
 # gr-ais
 programs_dragonOS_focalx.append(('gr-ais',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/ais
 """, True, 'Out-of-Tree Modules'))
 
 # gr-bluetooth
 programs_dragonOS_focalx.append(('gr-bluetooth',
-"""mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-rm -Rf libbtbb
-git clone https://github.com/greatscottgadgets/libbtbb -b master
-cd libbtbb
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-bluetooth/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-bluetooth/)" ]; 
+then
+  mkdir -p ~/Installed_by_FISSURE
+  cd ~/Installed_by_FISSURE
+  rm -Rf libbtbb
+  git clone https://github.com/greatscottgadgets/libbtbb -b master
+  cd libbtbb
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-bluetooth/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/bin/btrx
 """, True, 'Out-of-Tree Modules'))
 
 # gr-clapper_plus
 programs_dragonOS_focalx.append(('gr-clapper_plus',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-clapper_plus/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-clapper_plus/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-clapper_plus/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/clapper_plus
 """, True, 'Out-of-Tree Modules'))
 
 # # gr-dect2
 # programs_dragonOS_focalx.append(('gr-dect2 (11.9 MB)',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-dect2/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
+# """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-dect2/)" ]; 
+# then
+  # cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-dect2/
+  # sudo rm -Rf build
+  # mkdir build
+  # cd build
+  # cmake ..
+  # make
+  # sudo make install
+  # sudo ldconfig
+# else
+  # echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+# fi
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/gnuradio/dect2
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-foo
 # programs_dragonOS_focalx.append(('gr-foo (37.6 MB)',
-# """sudo apt-get install -y libsndfile1-dev
-# cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-foo/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
+# """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-foo/)" ]; 
+# then
+  # sudo apt-get install -y libsndfile1-dev
+  # cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-foo/
+  # sudo rm -Rf build
+  # mkdir build
+  # cd build
+  # cmake ..
+  # make
+  # sudo make install
+  # sudo ldconfig
+# else
+  # echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+# fi
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/foo
 # """,True,'Out-of-Tree Modules'))
@@ -2135,228 +2311,303 @@ ls /usr/local/lib/python*/*/gnuradio/fuzzer
 
 # gr-garage_door
 programs_dragonOS_focalx.append(('gr-garage_door',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-garage_door/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-garage_door/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-garage_door/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/garage_door
 """, True, 'Out-of-Tree Modules'))
 
 # # gr-gsm
 # programs_dragonOS_focalx.append(('gr-gsm',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm/
-# sudo rm -Rf build
-# sudo apt-get install -y gr-osmosdr
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# # gr-gsm needs to be made twice for "import arfcn" block to work
-# make
-# sudo make install
-# sudo ldconfig
+# """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm/)" ]; 
+# then
+  # cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm/
+  # sudo rm -Rf build
+  # sudo apt-get install -y gr-osmosdr
+  # mkdir build
+  # cd build
+  # cmake ..
+  # make
+  # sudo make install
+  # sudo ldconfig
+  # # gr-gsm needs to be made twice for "import arfcn" block to work
+  # make 
+  # sudo make install
+  # sudo ldconfig
+# else
+  # echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+# fi
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/gnuradio/gsm
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-ieee802-11
 # programs_dragonOS_focalx.append(('gr-ieee802-11',
-# """sudo apt-get install -y libsndfile1-dev
-# cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-11/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
+# """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-11/)" ]; 
+# then
+  # sudo apt-get install -y libsndfile1-dev
+  # cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-11/
+  # sudo rm -Rf build
+  # mkdir build
+  # cd build
+  # cmake ..
+  # make
+  # sudo make install
+  # sudo ldconfig
+# else
+  # echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+# fi
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/ieee802_11
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-ieee802-15-4
 # programs_dragonOS_focalx.append(('gr-ieee802-15-4',
-# """sudo apt-get install -y libsndfile1-dev
-# cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
-# grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
+# """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/)" ]; 
+# then
+  # sudo apt-get install -y libsndfile1-dev
+  # cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/
+  # sudo rm -Rf build
+  # mkdir build
+  # cd build
+  # cmake ..
+  # make
+  # sudo make install
+  # sudo ldconfig
+  # grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_CSS_PHY.grc
+  # grcc """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/examples/ieee802_15_4_OQPSK_PHY.grc
+# else
+  # echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+# fi
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/ieee802_15_4
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-iridium
 # programs_dragonOS_focalx.append(('gr-iridium',
-# """sudo apt-get install -y libsndfile1-dev
-# cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-iridium/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
+# """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-iridium/)" ]; 
+# then
+  # sudo apt-get install -y libsndfile1-dev
+  # cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-iridium/
+  # sudo rm -Rf build
+  # mkdir build
+  # cd build
+  # cmake ..
+  # make
+  # sudo make install
+  # sudo ldconfig
+# else
+  # echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+# fi
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/iridium
 # """,True,'Out-of-Tree Modules'))
 
 # gr-j2497
 programs_dragonOS_focalx.append(('gr-j2497',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-j2497/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-j2497/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-j2497/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/j2497
 """, True, 'Out-of-Tree Modules'))
 
 # # gr-limesdr
 # programs_dragonOS_focalx.append(('gr-limesdr',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-limesdr/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
+# """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-limesdr/)" ]; 
+# then
+  # cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-limesdr/
+  # sudo rm -Rf build
+  # mkdir build
+  # cd build
+  # cmake ..
+  # make
+  # sudo make install
+  # sudo ldconfig
+# else
+  # echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+# fi
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/gnuradio/limesdr
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-mixalot
 # programs_dragonOS_focalx.append(('gr-mixalot',
-# """sudo apt-get install -y libitpp-dev
-# cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-mixalot/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
+# """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-mixalot/)" ]; 
+# then
+  # sudo apt-get install -y libitpp-dev
+  # cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-mixalot/
+  # sudo rm -Rf build
+  # mkdir build
+  # cd build
+  # cmake ..
+  # make
+  # sudo make install
+  # sudo ldconfig
+# else
+  # echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+# fi
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/gnuradio/mixalot
 # """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
 programs_dragonOS_focalx.append(('gr-nrsc5',
-"""sudo apt-get install -y libsndfile1-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-nrsc5/
-sudo rm -Rf build
-sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-nrsc5/)" ]; 
+then
+  sudo apt-get install -y libsndfile1-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-nrsc5/
+  sudo rm -Rf build
+  sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/nrsc5
 """, True, 'Out-of-Tree Modules'))
 
 # # gr-paint
 # programs_dragonOS_focalx.append(('gr-paint',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/
-# gcc tgatoluma.c -o tgatoluma
-# chmod +x tgatoluma
-# cp tgatoluma ~/.local/bin/
+# """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/)" ]; 
+# then
+  # cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/
+  # sudo rm -Rf build
+  # mkdir build
+  # cd build
+  # cmake ..
+  # make
+  # sudo make install
+  # sudo ldconfig
+  # cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/
+  # gcc tgatoluma.c -o tgatoluma
+  # chmod +x tgatoluma
+  # cp tgatoluma ~/.local/bin/
+# else
+  # echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+# fi
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/paint
 # """,True,'Out-of-Tree Modules'))
 
 # # gr-rds
 # programs_dragonOS_focalx.append(('gr-rds',
-# """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/
-# sudo rm -Rf build
-# mkdir build
-# cd build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
+# """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/)" ]; 
+# then
+  # cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/
+  # sudo rm -Rf build
+  # mkdir build
+  # cd build
+  # cmake ..
+  # make
+  # sudo make install
+  # sudo ldconfig
+# else
+  # echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+# fi
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/rds
 # """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
 programs_dragonOS_focalx.append(('gr-tpms',
-"""sudo apt-get install -y libsndfile1-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms/)" ]; 
+then
+  sudo apt-get install -y libsndfile1-dev
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/tpms
 """, True, 'Out-of-Tree Modules'))
 
 # gr-tpms_poore
 programs_dragonOS_focalx.append(('gr-tpms_poore',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms_poore/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms_poore/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/tpms_poore
 """, True, 'Out-of-Tree Modules'))
 
 # gr-X10
 programs_dragonOS_focalx.append(('gr-X10',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-X10/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-X10/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-X10/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/X10
 """, True, 'Out-of-Tree Modules'))
 
 # gr-zwave_poore
 programs_dragonOS_focalx.append(('gr-zwave_poore',
-"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-zwave_poore/
-sudo rm -Rf build
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-zwave_poore/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-zwave_poore/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/zwave_poore
 """, True, 'Out-of-Tree Modules'))
@@ -2389,21 +2640,21 @@ cd ~/Installed_by_FISSURE/dump1090/
 make
 ########## Verify ##########
 ~/Installed_by_FISSURE/dump1090/dump1090 --help
-""", True, None))
+""", True, 'Aircraft'))
 
 # QtDesigner
 programs_dragonOS_focalx.append(('QtDesigner',
 """sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
 ########## Verify ##########
 ls /usr/bin/designer
-""", True, None))
+""", True, 'Development'))
 
 # Grip
 programs_dragonOS_focalx.append(('Grip',
 """sudo python3 -m pip install grip
 ########## Verify ##########
 ls /usr/local/bin/grip
-""", True, None))
+""", True, 'Development'))
 
 # # Kismet
 # programs_dragonOS_focalx.append(('Kismet',
@@ -2428,7 +2679,7 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/udpreplay
-""", True, None))
+""", True, '802.11'))
 
 # V2Verifier
 programs_dragonOS_focalx.append(('V2Verifier',
@@ -2438,7 +2689,7 @@ sudo python3 -m pip install -U pyyaml
 #sudo apt install -y git cmake libuhd-dev uhd-host swig libgmp3-dev python3-pip python3-tk python3-pil 
 #python3-pil.imagetk gnuradio
 #Needs gr-foo and gr-ieee802-11
-""", True, None))
+""", True, 'V2V'))
 
 # srsRAN/srsLTE - FIX?
 programs_dragonOS_focalx.append(('srsRAN',
@@ -2476,7 +2727,7 @@ sudo apt-get install -y fortune cowsay lolcat  # IMSI-Catcher 4G
 # gnome-terminal --tab --title="srsENB" -- /bin/sh -c 'sudo srsenb; $SHELL'
 ########## Verify ##########
 srsenb --help
-""", False, None))
+""", False, 'LTE'))
 
 # # FALCON - FIX (needs older soapysdr version?)
 # programs_dragonOS_focalx.append(('FALCON',
@@ -2510,7 +2761,7 @@ cmake ..
 make srsue
 sudo ldconfig
 cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue/ciphercheck.conf 
-""", False, None))
+""", False, 'LTE'))
 
 # # Aircrack-ng
 # programs_dragonOS_focalx.append(('Aircrack-ng',
@@ -2524,7 +2775,7 @@ programs_dragonOS_focalx.append(('Geany',
 """sudo apt-get install -y geany
 ########## Verify ##########
 geany --help
-""", True, None))
+""", True, 'Development'))
 
 # Arduino IDE
 programs_dragonOS_focalx.append(('Arduino IDE',
@@ -2537,21 +2788,21 @@ sudo ./install.sh
 cp -R """ + fissure_directory + """/Tools/Esp8266_listen_trigger/ ~/Installed_by_FISSURE/
 ########## Verify ##########
 arduino --version
-""", True, None))
+""", True, 'Development'))
 
 # Minicom
 programs_dragonOS_focalx.append(('Minicom',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
-""", True, None))
+""", True, 'Hardware'))
 
 # PuTTY
 programs_dragonOS_focalx.append(('PuTTY',
 """sudo apt-get install -y putty
 ########## Verify ##########
 putty --help
-""", True, None))
+""", True, 'Hardware'))
 
 # openHAB - FIX
 programs_dragonOS_focalx.append(('openHAB',
@@ -2570,7 +2821,7 @@ sudo apt-get update
 sudo apt-get install -y openhab
 ########## Verify ##########
 ls /usr/bin/openhab-cli
-""", True, None))
+""", True, 'Z-Wave'))
 
 # rtl-zwave
 programs_dragonOS_focalx.append(('rtl-zwave',
@@ -2581,7 +2832,7 @@ cd ~/Installed_by_FISSURE/rtl-zwave-master
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
-""", True, None))
+""", True, 'Z-Wave'))
 
 # waving-z
 programs_dragonOS_focalx.append(('waving-z',
@@ -2595,7 +2846,7 @@ cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build .
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/waving-z/build/wave-in
-""", True, None))
+""", True, 'Z-Wave'))
 
 # baudline
 programs_dragonOS_focalx.append(('baudline',
@@ -2606,7 +2857,7 @@ tar -xf baudline_1.08_linux_x86_64.tar.gz
 rm baudline_1.08_linux_x86_64.tar.gz
 ########## Verify ##########
 ~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline --help
-""", True, None))
+""", True, 'SDR'))
 
 # # Universal Radio Hacker
 # programs_dragonOS_focalx.append(('Universal Radio Hacker',
@@ -2631,7 +2882,7 @@ sudo apt-get update
 sudo apt-get install -y opencpn
 ########## Verify ##########
 ls /usr/bin/opencpn
-""", True, None))
+""", True, 'AIS'))
 
 # # Kalibrate
 # programs_dragonOS_focalx.append(('Kalibrate',
@@ -2653,7 +2904,7 @@ cd ~/Installed_by_FISSURE/retrogram-rtlsdr-master
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
-""", True, None))
+""", True, 'SDR'))
 
 # RTLSDR-Airband
 programs_dragonOS_focalx.append(('RTLSDR-Airband',
@@ -2669,7 +2920,7 @@ make
 sudo make install
 ########## Verify ##########
 rtl_airband -h
-""", True, None))
+""", True, 'SDR'))
 
 # Spektrum
 programs_dragonOS_focalx.append(('Spektrum',
@@ -2682,7 +2933,7 @@ tar -xf spektrum-linux64.tar.gz
 rm spektrum-linux64.tar.gz
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/spektrum/spektrum
-""", True, None))
+""", True, 'SDR'))
 
 # # SDRTrunk
 # programs_dragonOS_focalx.append(('SDRTrunk',
@@ -2703,21 +2954,62 @@ ls ~/Installed_by_FISSURE/spektrum/spektrum
 # ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 # """,True,None))
 
-# Audio Tools
-programs_dragonOS_focalx.append(('Audio Tools',
-"""sudo apt-get install -y audacity sox lame mpv ffmpeg mplayer
+# Audacity
+programs_dragonOS_focalx.append(('Audacity',
+"""sudo apt-get install -y audacity
 ########## Verify ##########
-audacity --version && sox --version
-""", True, None))
+audacity --version
+""",True,'Audio'))
 
-# # Video Tools
-# programs_dragonOS_focalx.append(('Video Tools',
+# Sound eXchange
+programs_dragonOS_focalx.append(('Sound eXchange',
+"""sudo apt-get install -y sox
+########## Verify ##########
+sox --version
+""",True,'Audio'))
+
+# LAME
+programs_dragonOS_focalx.append(('LAME',
+"""sudo apt-get install -y lame
+########## Verify ##########
+lame --version
+""",True,'Audio'))
+
+# mpv
+programs_dragonOS_focalx.append(('mpv',
+"""sudo apt-get install -y mpv
+########## Verify ##########
+mpv --version
+""",True,'Audio'))
+
+# FFmpeg
+programs_dragonOS_focalx.append(('FFmpeg',
+"""sudo apt-get install -y ffmpeg 
+########## Verify ##########
+ffmpeg --help
+""",True,'Audio'))
+
+# MPlayer
+programs_dragonOS_focalx.append(('MPlayer',
+"""sudo apt-get install -y mplayer
+########## Verify ##########
+ls /usr/bin/mplayer
+""",True,'Audio'))
+
+# # VLC
+# programs_dragonOS_focalx.append(('VLC',
 # """sudo apt-get install -y snapd
 # sudo snap install vlc
-# sudo apt-get install -y simplescreenrecorder
+# ########## Verify ##########
+# vlc --help
+# """,True,'Video'))
+
+# # Simple Screen Recorder
+# programs_dragonOS_focalx.append(('Simple Screen Recorder',
+# """sudo apt-get install -y simplescreenrecorder
 # ########## Verify ##########
 # simplescreenrecorder --help
-# """,True,None))
+# """,True,'Video'))
 
 # radiosonde_auto_rx
 programs_dragonOS_focalx.append(('radiosonde_auto_rx',
@@ -2731,7 +3023,7 @@ cp station.cfg.example station.cfg
 sudo python3 -m pip install -r requirements.txt
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
-""", True, None))
+""", True, 'Radiosonde'))
 
 # SdrGlut
 programs_dragonOS_focalx.append(('SdrGlut',
@@ -2754,7 +3046,7 @@ sudo cp /usr/local/lib/libliquid.a.1.5 /usr/local/lib/libliquid.a  # Certain lib
 make -f makefileUbunta
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
-""", True, None))
+""", True, 'SDR'))
 
 # rehex
 programs_dragonOS_focalx.append(('rehex',
@@ -2768,7 +3060,7 @@ sudo cpan Template
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/rehex 
-""", True, None))
+""", True, 'Data'))
 
 # ZEPASSD
 programs_dragonOS_focalx.append(('ZEPASSD',
@@ -2781,7 +3073,7 @@ cd zepassd
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/zepassd/zepassd
-""", True, None))
+""", True, 'RFID'))
 
 # # iridium-toolkit
 # programs_dragonOS_focalx.append(('iridium-toolkit',
@@ -2826,7 +3118,7 @@ wget http://archive.ubuntu.com/ubuntu/pool/universe/libn/libnetfilter-queue/libn
 sudo dpkg -i libnetfilter-queue1_1.0.2-2_amd64.deb
 wget http://archive.ubuntu.com/ubuntu/pool/universe/n/nfqueue-bindings/python-nfqueue_0.6-1build2_amd64.deb
 sudo dpkg -i python-nfqueue_0.6-1build2_amd64.deb 
-""", False, None))
+""", False, '802.11'))
 
 # # Wifite
 # programs_dragonOS_focalx.append(('Wifite',
@@ -2907,7 +3199,7 @@ python3 -m pip install -r requirements.txt
 python3 -m pip install bluepy
 ########## Verify ##########
 ~/Installed_by_FISSURE/routersploit/rsf.py --help
-""", True, None))
+""", True, '802.11'))
 
 # Metasploit
 programs_dragonOS_focalx.append(('Metasploit',
@@ -2918,7 +3210,7 @@ cd metasploit
 curl https://raw.githubusercontent.com/rapid7/metasploit-omnibus/master/config/templates/metasploit-framework-wrappers/msfupdate.erb > msfinstall && chmod 755 msfinstall && ./msfinstall
 ########## Verify ##########
 ls /usr/bin/msfconsole
-""", True, None))
+""", True, '802.11'))
 
 # monitor_rtl433
 programs_dragonOS_focalx.append(('monitor_rtl433',
@@ -2931,7 +3223,7 @@ sudo python3 -m pip install python-dateutil
 sudo python3 -m pip install flask_table
 ########## Verify ##########
 ls /usr/local/bin/monitor_rtl433
-""", True, None))
+""", True, '433 MHz'))
 
 # scan-ssid
 programs_dragonOS_focalx.append(('scan-ssid',
@@ -2944,7 +3236,7 @@ sudo cp scan-ssid /usr/local/bin
 sudo chmod 755 /usr/local/bin/scan-ssid  # can't be in monitor mode, managed only
 ########## Verify ##########
 scan-ssid --help
-""", True, None))
+""", True, '802.11'))
 
 # # minimodem
 # programs_dragonOS_focalx.append(('minimodem',
@@ -2968,7 +3260,7 @@ wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_curre
 sudo dpkg -i google-earth-pro-stable_current_amd64.deb
 ########## Verify ##########
 ls /usr/bin/google-earth-pro
-""", True, None))
+""", True, 'Mapping'))
 
 # gr-air-modes
 programs_dragonOS_focalx.append(('gr-air-modes',
@@ -2976,7 +3268,7 @@ programs_dragonOS_focalx.append(('gr-air-modes',
 sudo sed -i 's/numpy.float)/numpy.float32)/g' /usr/lib/python3/dist-packages/air_modes/mlat.py  # Deprecated numpy type: np.float->np.float32 or np.float64
 ########## Verify ##########
 modes_rx --help
-""", True, None))
+""", True, 'Aircraft'))
 
 # ESP8266 Deauther v2
 programs_dragonOS_focalx.append(('ESP8266 Deauther v2',
@@ -2985,7 +3277,7 @@ cd ~/Installed_by_FISSURE
 wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
 unzip -q v2.zip
 rm v2.zip
-""", True, None))
+""", True, '802.11'))
 
 # Viking - FIX
 programs_dragonOS_focalx.append(('Viking',
@@ -3003,7 +3295,7 @@ make
 sudo make install
 ########## Verify ##########
 viking --help
-""", False, None))
+""", False, 'Mapping'))
 
 # PyGPSClient
 programs_dragonOS_focalx.append(('PyGPSClient',
@@ -3011,7 +3303,7 @@ programs_dragonOS_focalx.append(('PyGPSClient',
 sudo python3 -m pip install --upgrade PyGPSClient
 ########## Verify ##########
 ls /usr/local/bin/pygpsclient
-""", True, None))
+""", True, 'GPS'))
 
 # # Gpredict
 # programs_dragonOS_focalx.append(('Gpredict',
@@ -3025,7 +3317,7 @@ programs_dragonOS_focalx.append(('FoxtrotGPS',
 """sudo apt-get install -y foxtrotgps
 ########## Verify ##########
 foxtrotgps --help
-""", True, None))
+""", True, 'GPS'))
 
 # # multimon-ng
 # programs_dragonOS_focalx.append(('multimon-ng',
@@ -3048,7 +3340,7 @@ programs_dragonOS_focalx.append(('Xastir',
 """sudo apt-get install -y xastir  # should non-superusers be allowed? sure, why not.
 ########## Verify ##########
 sudo xastir -V
-""", True, None))
+""", True, 'Ham Radio'))
 
 # # LTE-Cell-Scanner
 # programs_dragonOS_focalx.append(('LTE-Cell-Scanner',
@@ -3071,21 +3363,21 @@ programs_dragonOS_focalx.append(('btscanner',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
-""", True, None))
+""", True, 'Bluetooth'))
 
 # hcidump
 programs_dragonOS_focalx.append(('hcidump',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
-""", True, None))
+""", True, 'Bluetooth'))
 
 # GraphicsMagick
 programs_dragonOS_focalx.append(('GraphicsMagick',
 """sudo apt-get install -y graphicsmagick-imagemagick-compat
 ########## Verify ##########
 gm -help
-""", True, None))
+""", True, 'SDR'))
 
 # Spectrum Painter
 programs_dragonOS_focalx.append(('Spectrum Painter',
@@ -3095,7 +3387,7 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/polygon/spectrum_painter.git
 #cd spectrum_painter/
 #pip3 install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
-""", True, None))
+""", True, 'SDR'))
 
 # nrsc5 and nrsc5-gui
 programs_dragonOS_focalx.append(('nrsc5',
@@ -3118,7 +3410,7 @@ cd ~/Installed_by_FISSURE
 git clone https://github.com/cmnybo/nrsc5-gui.git
 ########## Verify ##########
 nrsc5 -v
-""", True, None))
+""", True, 'HD Radio'))
 
 # HAM2MON
 programs_dragonOS_focalx.append(('HAM2MON',
@@ -3126,21 +3418,21 @@ programs_dragonOS_focalx.append(('HAM2MON',
 cd ~/Installed_by_FISSURE
 git clone https://github.com/bkerler/ham2mon.git
 cp -f """ + fissure_directory + """/Tools/ham2mon/cursesgui.py ~/Installed_by_FISSURE/ham2mon/apps/
-""", True, None))
+""", True, 'Ham Radio'))
 
 # Anki
 programs_dragonOS_focalx.append(('Anki',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
-""", True, None))
+""", True, 'Ham Radio'))
 
 # Bless
 programs_dragonOS_focalx.append(('Bless',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
-""", True, None))
+""", True, 'Data'))
 
 # trackerjacker - Fix (needs newer scapy version, something else (netattack2?) resets it, some pieces don't work while running it)
 programs_dragonOS_focalx.append(('trackerjacker',
@@ -3148,7 +3440,7 @@ programs_dragonOS_focalx.append(('trackerjacker',
 sudo python3 -m pip install trackerjacker
 ########## Verify ##########
 sudo trackerjacker --help
-""", False, None))
+""", False, '802.11'))
 
 # airgeddon
 programs_dragonOS_focalx.append(('airgeddon',
@@ -3177,21 +3469,21 @@ git clone https://github.com/aircrack-ng/mdk4
 cd mdk4
 make
 sudo make install
-""", True, None))
+""", True, '802.11'))
 
 # Hydra
 programs_dragonOS_focalx.append(('Hydra',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
-""", True, None))
+""", True, 'SSH'))
 
 # Enscribe
 programs_dragonOS_focalx.append(('Enscribe',
 """sudo apt-get install -y enscribe
 ########## Verify ##########
 ls /usr/bin/enscribe
-""", True, None))
+""", True, 'Audio'))
 
 # ESP32 Bluetooth Classic Sniffer
 programs_dragonOS_focalx.append(('ESP32 BT Classic Sniffer',
@@ -3209,7 +3501,7 @@ sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan
 rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
-""", True, None))
+""", True, 'Bluetooth'))
 
 # # SigDigger
 # programs_dragonOS_focalx.append(('SigDigger',
@@ -3288,7 +3580,7 @@ programs_dragonOS_focalx.append(('pyFDA',
 """sudo python3 -m pip install pyfda --use-pep517  # Has PEP issues with Python 3.10
 ########## Verify ##########
 pyfdax -h
-""", True, None))
+""", True, 'Filters'))
 
 # Bootable USB
 programs_dragonOS_focalx.append(('Bootable USB',
@@ -3301,7 +3593,7 @@ sudo apt-get update
 sudo apt-get install -y mkusb usb-pack-efi mkusb-plug guidus
 ########## Verify ##########
 ls /usr/bin/systemback && ls /usr/bin/guidus
-""", True, None))
+""", True, 'Development'))
 
 # # Dire Wolf
 # programs_dragonOS_focalx.append(('Dire Wolf',
@@ -3325,14 +3617,14 @@ programs_dragonOS_focalx.append(('Meld',
 """sudo apt-get -y install meld
 ########## Verify ##########
 ls /usr/bin/meld
-""", True, None))
+""", True, 'Data'))
 
 # nwdiag
 programs_dragonOS_focalx.append(('nwdiag',
 """sudo python3 -m pip install nwdiag
 ########## Verify ##########
 packetdiag -h
-""", True, None))
+""", True, 'Data'))
 
 # HamClock
 programs_dragonOS_focalx.append(('HamClock',
@@ -3346,7 +3638,7 @@ make install hamclock-1600x960
 sudo make install hamclock-1600x960
 ########## Verify ##########
 ls /usr/local/bin/hamclock
-""", True, None))
+""", True, 'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
 programs_dragonOS_focalx.append(('ICE9 Bluetooth Sniffer',
@@ -3363,7 +3655,7 @@ make
 sudo make install
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
-""", True, None))
+""", True, 'Bluetooth'))
 
 # dump978
 programs_dragonOS_focalx.append(('dump978',
@@ -3374,7 +3666,7 @@ cd dump978
 make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/dump978/dump978
-""", True, None))
+""", True, 'Aircraft'))
 
 
 
@@ -3392,10 +3684,11 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         self.setupUi(self)
         
         # Prevent Resizing/Maximizing
-        self.setFixedSize(920, 600)     
+        self.setFixedSize(920, 630)     
 
         # Hide Progress Bar
-        self.progressBar1.hide()   
+        self.progressBar1.hide()
+        self.label_current_item.hide()
         
         # Do SIGNAL/Slots Connections
         self._connectSlots()  
@@ -3448,6 +3741,8 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         self.pushButton_deselect.clicked.connect(self._slotDeselectClicked)
         self.pushButton_default.clicked.connect(self._slotDefaultClicked)
         self.pushButton_rankings.clicked.connect(self._slotRankingsClicked)
+        self.pushButton_expand_all.clicked.connect(self._slotExpandAllClicked)
+        self.pushButton_collapse_all.clicked.connect(self._slotCollapseAllClicked)
         
         # Tables
         self.treeWidget_software.clicked.connect(self._slotTableItemClicked)
@@ -3476,7 +3771,8 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
             iterator+=1   
             
         # Show Progress Bar
-        self.progressBar1.show()      
+        self.progressBar1.show()
+        self.label_current_item.show()
         self.progressBar1.setMaximum(get_checked_items+1)
         QtWidgets.QApplication.processEvents()
         self.pushButton_ok.setEnabled(False)
@@ -3489,6 +3785,9 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
                 if self.checked_items[n] == self.programs[p][0]:
                     self.loop = True
             
+                    # Update Label
+                    self.label_current_item.setText(str(self.checked_items[n]))
+                    
                     # Split Install Commands and Verifier Commands
                     install_command = self.programs[p][1].split("########## Verify ##########")
                     
@@ -3513,7 +3812,8 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         self.progressBar1.setValue(self.checked_index+1)
         print("\nInstall Complete")
         time.sleep(2)
-        self.progressBar1.hide()   
+        self.progressBar1.hide()
+        self.label_current_item.hide()
         self.pushButton_ok.setEnabled(True)
         #self.accept()
 
@@ -3628,6 +3928,18 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
         msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
         ret = msgBox.exec_()
+        
+    def _slotExpandAllClicked(self):
+        """ Expands the tree widget.
+        """
+        # Expand
+        self.treeWidget_software.expandAll()
+        
+    def _slotCollapseAllClicked(self):
+        """ Collapses the tree widget.
+        """
+        # Collapse
+        self.treeWidget_software.collapseAll()
 
         
         

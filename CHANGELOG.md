@@ -1,6 +1,27 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-02-13
+
+Installer categories and submodule checks.
+ 
+### Added
+
+- Expand All, Collapse All buttons in installer
+- Label for the current program being installed
+  
+### Changed
+
+- Installer now warns if git submodules have not been activated for out-of-tree modules
+- Installer software list grouped by categories
+- Split apart Video Tools and Audio Tools items in the installer
+- Moved QSSTV to Ham Radio menu
+- Updated contact instructions in idea list
+
+### Fixed
+
+- rtl_433 install for Python2_maint-3.7 branch
+
 ## 2023-02-06
 
 Updating DragonOS FocalX install and adding idea list.
