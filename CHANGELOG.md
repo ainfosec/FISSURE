@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-02-19
+
+CRC RevEng and development tools.
+ 
+### Added
+
+- htop to installer and Tools menu
+- OpenWebRX to installer and Tools menu for Python3 branches
+- guidus, Systemback, Arduino, Geany, QtDesigner, grip, TuneIn Explorer, WSPR Rocks! to Tools menu
+- Development and Weather categories to Tools menu
+- CRC RevEng to installer
+- CRC RevEng algorithms to Protocol Discovery (PD) CRC tab
+- Empty Direction Finding tab
+- CRC RevEng, htop, OpenWebRX to Credits, About, SoftwareAndConflicts
+  
+### Changed
+
+- Moved Open-weather link to Weather category in Tools menu
+
 ## 2023-02-13
 
 Installer categories and submodule checks.

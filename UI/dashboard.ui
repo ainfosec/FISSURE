@@ -4062,6 +4062,11 @@ p, li { white-space: pre-wrap; }
               </property>
              </widget>
             </widget>
+            <widget class="QWidget" name="tab_4">
+             <attribute name="title">
+              <string>Direction Finding</string>
+             </attribute>
+            </widget>
            </widget>
           </widget>
           <widget class="QWidget" name="tab_protocol">
@@ -10097,9 +10102,9 @@ p, li { white-space: pre-wrap; }
              <widget class="QFrame" name="frame_33">
               <property name="geometry">
                <rect>
-                <x>170</x>
+                <x>65</x>
                 <y>30</y>
-                <width>890</width>
+                <width>535</width>
                 <height>355</height>
                </rect>
               </property>
@@ -10117,385 +10122,372 @@ p, li { white-space: pre-wrap; }
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <widget class="QGroupBox" name="groupBox">
+              <widget class="QComboBox" name="comboBox_pd_crc_common_width">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
                <property name="geometry">
                 <rect>
-                 <x>-115</x>
-                 <y>-15</y>
-                 <width>1181</width>
-                 <height>367</height>
+                 <x>240</x>
+                 <y>5</y>
+                 <width>50</width>
+                 <height>27</height>
                 </rect>
                </property>
-               <property name="title">
-                <string/>
+               <property name="currentIndex">
+                <number>1</number>
                </property>
-               <widget class="QLabel" name="label_34">
-                <property name="geometry">
-                 <rect>
-                  <x>455</x>
-                  <y>55</y>
-                  <width>100</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
+               <item>
                 <property name="text">
-                 <string>Algorithm:</string>
+                 <string>8</string>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-               <widget class="QLabel" name="label_99">
-                <property name="geometry">
-                 <rect>
-                  <x>80</x>
-                  <y>225</y>
-                  <width>125</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
+               </item>
+               <item>
                 <property name="text">
-                 <string>Input (Hex):</string>
+                 <string>16</string>
                 </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-               <widget class="QCheckBox" name="checkBox_pd_crc_reverse_input_common">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="geometry">
-                 <rect>
-                  <x>455</x>
-                  <y>170</y>
-                  <width>210</width>
-                  <height>22</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
+               </item>
+               <item>
                 <property name="text">
-                 <string>Reverse Data Bytes (Input)</string>
+                 <string>32</string>
                 </property>
-               </widget>
-               <widget class="QLabel" name="label_61">
-                <property name="geometry">
-                 <rect>
-                  <x>510</x>
-                  <y>310</y>
-                  <width>100</width>
-                  <height>25</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                  <underline>true</underline>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>CRC (Hex)</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignCenter</set>
-                </property>
-               </widget>
-               <widget class="QCheckBox" name="checkBox_pd_crc_reverse_final_xor_common">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="geometry">
-                 <rect>
-                  <x>455</x>
-                  <y>190</y>
-                  <width>281</width>
-                  <height>22</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Reverse CRC Before Final XOR</string>
-                </property>
-               </widget>
-               <widget class="QPushButton" name="pushButton_pd_crc_calculate_common">
-                <property name="geometry">
-                 <rect>
-                  <x>510</x>
-                  <y>280</y>
-                  <width>100</width>
-                  <height>27</height>
-                 </rect>
-                </property>
-                <property name="text">
-                 <string>Calculate</string>
-                </property>
-               </widget>
-               <widget class="QTextEdit" name="textEdit_pd_crc_seed_common">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="geometry">
-                 <rect>
-                  <x>560</x>
-                  <y>110</y>
-                  <width>100</width>
-                  <height>27</height>
-                 </rect>
-                </property>
-                <property name="tabChangesFocus">
-                 <bool>true</bool>
-                </property>
-                <property name="html">
-                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+               </item>
+              </widget>
+              <widget class="QLabel" name="label_87">
+               <property name="geometry">
+                <rect>
+                 <x>65</x>
+                 <y>130</y>
+                 <width>170</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Final XOR Value (Hex):</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="comboBox_pd_crc_algorithm">
+               <property name="geometry">
+                <rect>
+                 <x>240</x>
+                 <y>35</y>
+                 <width>250</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="currentIndex">
+                <number>-1</number>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_pd_crc_calculate_common">
+               <property name="geometry">
+                <rect>
+                 <x>215</x>
+                 <y>265</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Calculate</string>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_pd_crc_final_xor_common">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>240</x>
+                 <y>125</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="tabChangesFocus">
+                <bool>true</bool>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;00&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-               </widget>
-               <widget class="QTextEdit" name="textEdit_pd_crc_final_xor_common">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="geometry">
-                 <rect>
-                  <x>560</x>
-                  <y>140</y>
-                  <width>100</width>
-                  <height>27</height>
-                 </rect>
-                </property>
-                <property name="tabChangesFocus">
-                 <bool>true</bool>
-                </property>
-                <property name="html">
-                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;00&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="label_60">
-                <property name="geometry">
-                 <rect>
-                  <x>455</x>
-                  <y>25</y>
-                  <width>100</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>CRC Width:</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-               <widget class="QTextEdit" name="textEdit_pd_crc_input_common">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="geometry">
-                 <rect>
-                  <x>210</x>
-                  <y>220</y>
-                  <width>780</width>
-                  <height>54</height>
-                 </rect>
-                </property>
-                <property name="tabChangesFocus">
-                 <bool>true</bool>
-                </property>
-                <property name="html">
-                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_60">
+               <property name="geometry">
+                <rect>
+                 <x>135</x>
+                 <y>10</y>
+                 <width>100</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>CRC Width:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_61">
+               <property name="geometry">
+                <rect>
+                 <x>215</x>
+                 <y>295</y>
+                 <width>100</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <underline>true</underline>
+                </font>
+               </property>
+               <property name="text">
+                <string>CRC (Hex)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_pd_crc_input_common">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>100</x>
+                 <y>205</y>
+                 <width>420</width>
+                 <height>54</height>
+                </rect>
+               </property>
+               <property name="tabChangesFocus">
+                <bool>true</bool>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;12345678&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-               </widget>
-               <widget class="QComboBox" name="comboBox_pd_crc_common_width">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="geometry">
-                 <rect>
-                  <x>560</x>
-                  <y>20</y>
-                  <width>50</width>
-                  <height>27</height>
-                 </rect>
-                </property>
-                <property name="currentIndex">
-                 <number>1</number>
-                </property>
-                <item>
-                 <property name="text">
-                  <string>8</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>16</string>
-                 </property>
-                </item>
-                <item>
-                 <property name="text">
-                  <string>32</string>
-                 </property>
-                </item>
-               </widget>
-               <widget class="QTextEdit" name="textEdit_pd_crc_polynomial_common">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="geometry">
-                 <rect>
-                  <x>560</x>
-                  <y>80</y>
-                  <width>100</width>
-                  <height>27</height>
-                 </rect>
-                </property>
-                <property name="tabChangesFocus">
-                 <bool>true</bool>
-                </property>
-                <property name="html">
-                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_pd_crc_reverse_input_common">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>135</x>
+                 <y>155</y>
+                 <width>210</width>
+                 <height>22</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Reverse Data Bytes (Input)</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_99">
+               <property name="geometry">
+                <rect>
+                 <x>-30</x>
+                 <y>210</y>
+                 <width>125</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Input (Hex):</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_pd_crc_seed_common">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>240</x>
+                 <y>95</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="tabChangesFocus">
+                <bool>true</bool>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;00&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-               </widget>
-               <widget class="QTextEdit" name="textEdit_pd_crc_crc_common">
-                <property name="enabled">
-                 <bool>true</bool>
-                </property>
-                <property name="geometry">
-                 <rect>
-                  <x>510</x>
-                  <y>335</y>
-                  <width>100</width>
-                  <height>27</height>
-                 </rect>
-                </property>
-                <property name="html">
-                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_pd_crc_reverse_final_xor_common">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>135</x>
+                 <y>175</y>
+                 <width>281</width>
+                 <height>22</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Reverse CRC Before Final XOR</string>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_pd_crc_polynomial_common">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>240</x>
+                 <y>65</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="tabChangesFocus">
+                <bool>true</bool>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;00&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_34">
+               <property name="geometry">
+                <rect>
+                 <x>135</x>
+                 <y>40</y>
+                 <width>100</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Algorithm:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_pd_crc_crc_common">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>215</x>
+                 <y>320</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
 &lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                </property>
-               </widget>
-               <widget class="QLabel" name="label_178">
-                <property name="geometry">
-                 <rect>
-                  <x>385</x>
-                  <y>85</y>
-                  <width>170</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Polynomial (Hex):</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-               <widget class="QLabel" name="label_130">
-                <property name="geometry">
-                 <rect>
-                  <x>385</x>
-                  <y>115</y>
-                  <width>170</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Seed/Initial Value (Hex):</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-               <widget class="QLabel" name="label_87">
-                <property name="geometry">
-                 <rect>
-                  <x>385</x>
-                  <y>145</y>
-                  <width>170</width>
-                  <height>17</height>
-                 </rect>
-                </property>
-                <property name="font">
-                 <font>
-                  <pointsize>10</pointsize>
-                 </font>
-                </property>
-                <property name="text">
-                 <string>Final XOR Value (Hex):</string>
-                </property>
-                <property name="alignment">
-                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-                </property>
-               </widget>
-               <widget class="QComboBox" name="comboBox_pd_crc_algorithm">
-                <property name="geometry">
-                 <rect>
-                  <x>560</x>
-                  <y>50</y>
-                  <width>250</width>
-                  <height>27</height>
-                 </rect>
-                </property>
-                <property name="currentIndex">
-                 <number>-1</number>
-                </property>
-               </widget>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_130">
+               <property name="geometry">
+                <rect>
+                 <x>65</x>
+                 <y>100</y>
+                 <width>170</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Seed/Initial Value (Hex):</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_178">
+               <property name="geometry">
+                <rect>
+                 <x>65</x>
+                 <y>70</y>
+                 <width>170</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Polynomial (Hex):</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
               </widget>
              </widget>
              <widget class="QLabel" name="label_212">
               <property name="geometry">
                <rect>
-                <x>170</x>
+                <x>65</x>
                 <y>10</y>
-                <width>890</width>
+                <width>535</width>
                 <height>20</height>
                </rect>
               </property>
@@ -11044,6 +11036,534 @@ p, li { white-space: pre-wrap; }
               <property name="margin">
                <number>0</number>
               </property>
+             </widget>
+             <widget class="QLabel" name="label_216">
+              <property name="geometry">
+               <rect>
+                <x>610</x>
+                <y>10</y>
+                <width>535</width>
+                <height>20</height>
+               </rect>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Ubuntu</family>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <italic>false</italic>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QLabel#label_216 {
+   qproperty-alignment: AlignCenter;
+	border: 1px solid #17365D;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
+	padding: 0px 0px;
+	color: rgb(255, 255, 255);
+	max-height: 20px;
+    font: bold 10pt &quot;Ubuntu&quot;;
+}</string>
+              </property>
+              <property name="text">
+               <string>CRC RevEng</string>
+              </property>
+              <property name="scaledContents">
+               <bool>false</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="margin">
+               <number>0</number>
+              </property>
+             </widget>
+             <widget class="QFrame" name="frame_39">
+              <property name="geometry">
+               <rect>
+                <x>610</x>
+                <y>30</y>
+                <width>535</width>
+                <height>355</height>
+               </rect>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QFrame#frame_39 {
+	background-color: rgb(251, 251, 251);
+	border: 1px solid #17365D;
+	border-bottom-left-radius: 15px;
+	border-bottom-right-radius: 15px;
+}</string>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <widget class="QComboBox" name="comboBox_pd_crc_reveng_width">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>240</x>
+                 <y>5</y>
+                 <width>50</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="currentIndex">
+                <number>1</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>3</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>4</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>5</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>6</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>7</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>8</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>10</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>11</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>12</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>13</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>14</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>15</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>16</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>17</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>21</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>24</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>30</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>31</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>32</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>40</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>64</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>82</string>
+                </property>
+               </item>
+              </widget>
+              <widget class="QLabel" name="label_88">
+               <property name="geometry">
+                <rect>
+                 <x>65</x>
+                 <y>130</y>
+                 <width>170</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Final XOR Value (Hex):</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="comboBox_pd_crc_reveng_algorithm">
+               <property name="geometry">
+                <rect>
+                 <x>240</x>
+                 <y>35</y>
+                 <width>250</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="currentIndex">
+                <number>-1</number>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_pd_crc_calculate_reveng">
+               <property name="geometry">
+                <rect>
+                 <x>215</x>
+                 <y>265</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Calculate</string>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_pd_crc_final_xor_reveng">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>240</x>
+                 <y>125</y>
+                 <width>200</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="tabChangesFocus">
+                <bool>true</bool>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;00&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_62">
+               <property name="geometry">
+                <rect>
+                 <x>135</x>
+                 <y>10</y>
+                 <width>100</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>CRC Width:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_72">
+               <property name="geometry">
+                <rect>
+                 <x>215</x>
+                 <y>295</y>
+                 <width>100</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <underline>true</underline>
+                </font>
+               </property>
+               <property name="text">
+                <string>CRC (Hex)</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_pd_crc_input_reveng">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>100</x>
+                 <y>205</y>
+                 <width>420</width>
+                 <height>54</height>
+                </rect>
+               </property>
+               <property name="tabChangesFocus">
+                <bool>true</bool>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;12345678&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_pd_crc_reverse_input_reveng">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>135</x>
+                 <y>155</y>
+                 <width>210</width>
+                 <height>22</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Reverse Data Bytes (Input)</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_104">
+               <property name="geometry">
+                <rect>
+                 <x>-30</x>
+                 <y>210</y>
+                 <width>125</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Input (Hex):</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_pd_crc_seed_reveng">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>240</x>
+                 <y>95</y>
+                 <width>200</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="tabChangesFocus">
+                <bool>true</bool>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;00&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_pd_crc_reverse_final_xor_reveng">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>135</x>
+                 <y>175</y>
+                 <width>281</width>
+                 <height>22</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Reverse CRC Before Final XOR</string>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_pd_crc_polynomial_reveng">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>240</x>
+                 <y>65</y>
+                 <width>200</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="tabChangesFocus">
+                <bool>true</bool>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;00&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_55">
+               <property name="geometry">
+                <rect>
+                 <x>135</x>
+                 <y>40</y>
+                 <width>100</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Algorithm:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_pd_crc_crc_reveng">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>155</x>
+                 <y>320</y>
+                 <width>220</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_208">
+               <property name="geometry">
+                <rect>
+                 <x>65</x>
+                 <y>100</y>
+                 <width>170</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Seed/Initial Value (Hex):</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label_209">
+               <property name="geometry">
+                <rect>
+                 <x>65</x>
+                 <y>70</y>
+                 <width>170</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Polynomial (Hex):</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
              </widget>
             </widget>
            </widget>
@@ -27714,6 +28234,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionSolarHam"/>
      <addaction name="actionWSJT_X"/>
      <addaction name="actionWSPRnet_Map"/>
+     <addaction name="actionWSPR_Rocks"/>
     </widget>
     <widget class="QMenu" name="menuTPMS">
      <property name="title">
@@ -27808,7 +28329,6 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionGpredict"/>
      <addaction name="actionAPT3000"/>
      <addaction name="actionEsri_Satellite_Map"/>
-     <addaction name="actionOpen_weather"/>
      <addaction name="actionAmateur_Satellite_Database"/>
     </widget>
     <widget class="QMenu" name="menu433_MHz">
@@ -27871,6 +28391,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionRadio_Station_Locator"/>
      <addaction name="menuRDS_2"/>
      <addaction name="actionRadio_Garden"/>
+     <addaction name="actionTuneIn_Explorer"/>
     </widget>
     <widget class="QMenu" name="menuHD_Radio">
      <property name="title">
@@ -27901,6 +28422,38 @@ p, li { white-space: pre-wrap; }
      </property>
      <addaction name="actionMultimon_ng"/>
     </widget>
+    <widget class="QMenu" name="menuWeather">
+     <property name="title">
+      <string>Weather</string>
+     </property>
+     <addaction name="actionWttr_in"/>
+     <addaction name="actionOpen_weather"/>
+    </widget>
+    <widget class="QMenu" name="menuDevelopment">
+     <property name="title">
+      <string>Development</string>
+     </property>
+     <widget class="QMenu" name="menuGeany">
+      <property name="title">
+       <string>Geany</string>
+      </property>
+      <addaction name="actionDashboard_py"/>
+     </widget>
+     <widget class="QMenu" name="menuQtDesigner">
+      <property name="title">
+       <string>QtDesigner</string>
+      </property>
+      <addaction name="actionDashboard_ui"/>
+      <addaction name="actionOptions_ui"/>
+     </widget>
+     <addaction name="actionArduino"/>
+     <addaction name="menuGeany"/>
+     <addaction name="actionHtop"/>
+     <addaction name="actionGrip"/>
+     <addaction name="actionGuidus"/>
+     <addaction name="menuQtDesigner"/>
+     <addaction name="actionSystemback"/>
+    </widget>
     <addaction name="menu433_MHz"/>
     <addaction name="menu802_11_Tools_2"/>
     <addaction name="menuAircraft"/>
@@ -27909,6 +28462,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="menuAudio"/>
     <addaction name="menuBluetooth"/>
     <addaction name="menuData"/>
+    <addaction name="menuDevelopment"/>
     <addaction name="menuFM_Radio"/>
     <addaction name="menuGPS"/>
     <addaction name="menuGSM"/>
@@ -27929,6 +28483,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="menuV2V"/>
     <addaction name="menuVideo"/>
     <addaction name="menuVHF"/>
+    <addaction name="menuWeather"/>
     <addaction name="menuZ_Wave"/>
     <addaction name="menuZigBee"/>
    </widget>
@@ -29391,6 +29946,66 @@ p, li { white-space: pre-wrap; }
   <action name="actionAirframes">
    <property name="text">
     <string>Airframes</string>
+   </property>
+  </action>
+  <action name="actionWttr_in">
+   <property name="text">
+    <string>wttr.in</string>
+   </property>
+  </action>
+  <action name="actionTuneIn_Explorer">
+   <property name="text">
+    <string>TuneIn Explorer</string>
+   </property>
+  </action>
+  <action name="actionWSPR_Rocks">
+   <property name="text">
+    <string>WSPR Rocks!</string>
+   </property>
+  </action>
+  <action name="actionArduino">
+   <property name="text">
+    <string>Arduino</string>
+   </property>
+  </action>
+  <action name="actionHtop">
+   <property name="text">
+    <string>htop</string>
+   </property>
+  </action>
+  <action name="actionGrip">
+   <property name="text">
+    <string>grip</string>
+   </property>
+  </action>
+  <action name="actionGuidus">
+   <property name="text">
+    <string>guidus</string>
+   </property>
+  </action>
+  <action name="actionSystemback">
+   <property name="text">
+    <string>Systemback</string>
+   </property>
+  </action>
+  <action name="actionDashboard_py">
+   <property name="text">
+    <string>dashboard.py</string>
+   </property>
+  </action>
+  <action name="actionDashboard_ui">
+   <property name="text">
+    <string>dashboard.ui</string>
+   </property>
+  </action>
+  <action name="actionOptions_ui">
+   <property name="text">
+    <string>options.ui</string>
+   </property>
+  </action>
+  <action name="actionOpenWebRX">
+   <property name="text">
+    <string>OpenWebRX</string>
    </property>
   </action>
  </widget>

@@ -1816,6 +1816,26 @@ make
 ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
 
+# htop
+programs_ubuntu18_04.append(('htop',
+"""sudo apt-get install -y htop
+########## Verify ##########
+ls /usr/bin/htop
+""",True,'Development'))
+
+# CRC RevEng
+programs_ubuntu18_04.append(('CRC RevEng',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget -T 20 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
+unzip download
+rm download
+cd reveng-3.0.5
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
+""",True,'Data'))
+
 
 
 ########################################################################
@@ -3619,6 +3639,26 @@ make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
+
+# htop
+programs_ubuntu18_04_5.append(('htop',
+"""sudo apt-get install -y htop
+########## Verify ##########
+ls /usr/bin/htop
+""",True,'Development'))
+
+# CRC RevEng
+programs_ubuntu18_04_5.append(('CRC RevEng',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget -T 20 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
+unzip download
+rm download
+cd reveng-3.0.5
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
+""",True,'Data'))
 
 
 
@@ -5424,6 +5464,26 @@ make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
+
+# htop
+programs_ubuntu18_04_6.append(('htop',
+"""sudo apt-get install -y htop
+########## Verify ##########
+ls /usr/bin/htop
+""",True,'Development'))
+
+# CRC RevEng
+programs_ubuntu18_04_6.append(('CRC RevEng',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget -T 20 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
+unzip download
+rm download
+cd reveng-3.0.5
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
+""",True,'Data'))
 
 
 
