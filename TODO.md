@@ -60,7 +60,6 @@ The following are lists of ideas for the integration of additional third-party t
 - ez-sniff
 - RFQuack, RFCat
 - HelicopterDemod, what is this?
-- LTE-ciphercheck
 - High Quality Spectrum Painting with gr-paint, neat
 - gr-reveng
 - anything in sdr-examples (argilo)?
@@ -74,7 +73,7 @@ The following are lists of ideas for the integration of additional third-party t
 - DUDE-Star, AMBE3000 based USB devices (ThumbDV, DVstick 30, DVSI, etc.)
 - CNN-rtlsdr
 - Ubuntu version of LocalRadio
-- OpenWebRX, digiham
+- digiham
 - qt-dab, seems like a mess
 - spectrumzoomer
 - Industrial-SMS github
@@ -85,7 +84,7 @@ The following are lists of ideas for the integration of additional third-party t
 - js8call
 - gps time synchronization for hams
 - csdr for DSP
-- are any of the Linux Morse Code programs good? morse, morse2ascii, morsegen, morse-simulator, morse-x
+- are any of the Linux Morse Code programs good? morse, morse2ascii, morsegen, morse-simulator, morse-x, ggmorse
 - gr-tempest
 - Data Radio Channel (DARC)
 - rad1o badge material
@@ -176,6 +175,11 @@ The following are lists of ideas for the integration of additional third-party t
 - direction finding scripts and GUIs, https://github.com/lmicro/hackrf-hunt
 - Noise Adder, File Cat'er in Archive tab, open/save tables and file lists
 - readsb
+- sigviewer
+- bluing
+- Heimdall-WiFi-Radar
+- btlejack
+- gr-smart_meters
 
 
 ## FISSURE Upgrade Ideas
@@ -219,7 +223,7 @@ The following are lists of ideas for the integration of additional third-party t
 - Fill out AntennaComparison spreadsheet. Record antenna results for different types, get models/pictures of antennas, put them on two USRPs a few feet apart and use the antenna test flow graphs, chart what they do every 100 MHz, take a picture of the setup
 - folder button for udp_replay attack. Is it ok they are different sizes? Should the smaller one be centered? Leave it alone?
 - Why is TSI crashing or showing XX in the statusbar every now and then? Dashboard needs a couple seconds to kill properly otherwise the ports/connections don't release in time?
-
+- Replace common CRCs with FISSURE library/known protocol CRCs make another tab for calculating and reverse lookup with CRC RevEng 
 
 ## Lesson Ideas
 

@@ -1,113 +1,65 @@
-02/05/2023 09:38:26 AM - dashboard: Port Initialized to tcp://127.0.0.1:5051
-02/05/2023 09:38:26 AM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
-02/05/2023 09:38:26 AM - dashboard: Port Initialized to tcp://127.0.0.1:5057
-02/05/2023 09:38:26 AM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
-02/05/2023 09:38:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5055
-02/05/2023 09:38:26 AM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
-02/05/2023 09:38:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5059
-02/05/2023 09:38:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5060
-02/05/2023 09:38:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5065
-02/05/2023 09:38:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5061
-02/05/2023 09:38:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5063
-02/05/2023 09:38:26 AM - hiprfisr: End of HIPRFISR Initialization
-02/05/2023 09:38:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
-02/05/2023 09:38:26 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-02/05/2023 09:38:26 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
-02/05/2023 09:38:26 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-02/05/2023 09:38:26 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
-02/05/2023 09:38:26 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-02/05/2023 09:38:26 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
-02/05/2023 09:38:26 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-02/05/2023 09:38:26 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
-02/05/2023 09:38:26 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-02/05/2023 09:38:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
-02/05/2023 09:38:26 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-02/05/2023 09:38:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
-02/05/2023 09:38:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
-02/05/2023 09:38:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
-02/05/2023 09:38:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
-02/05/2023 09:38:26 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
-02/05/2023 09:38:26 AM - hiprfisr: Start of Main Event Loop
-02/05/2023 09:38:27 AM - fge: Port Connected to tcp://127.0.0.1:5053
-02/05/2023 09:38:27 AM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-02/05/2023 09:38:27 AM - tsi: Port Connected to tcp://localhost:5052
-02/05/2023 09:38:27 AM - fge: Port Initialized to tcp://127.0.0.1:5061
-02/05/2023 09:38:27 AM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-02/05/2023 09:38:27 AM - tsi: Port Initialized to tcp://*:5059
-02/05/2023 09:38:27 AM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-02/05/2023 09:38:27 AM - fge: Port Connected to tcp://127.0.0.1:5055
-02/05/2023 09:38:27 AM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-02/05/2023 09:38:27 AM - tsi: Port Connected to tcp://127.0.0.1:5055
-02/05/2023 09:38:27 AM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-02/05/2023 09:38:27 AM - fge: Port Connected to tcp://127.0.0.1:5057
-02/05/2023 09:38:27 AM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-02/05/2023 09:38:27 AM - tsi: Port Connected to tcp://127.0.0.1:5057
-02/05/2023 09:38:27 AM - pd: Port Connected to tcp://127.0.0.1:5054
-02/05/2023 09:38:27 AM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
-02/05/2023 09:38:27 AM - pd: Port Initialized to tcp://127.0.0.1:5063
-02/05/2023 09:38:27 AM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
-02/05/2023 09:38:27 AM - pd: Port Connected to tcp://127.0.0.1:5055
-02/05/2023 09:38:27 AM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
-02/05/2023 09:38:27 AM - pd: Port Connected to tcp://127.0.0.1:5057
-02/05/2023 09:38:28 AM - hiprfisr: Sending message: HIPRFISR: Connected TSI
-02/05/2023 09:38:28 AM - hiprfisr: Sending message: HIPRFISR: Connected FGE
-02/05/2023 09:38:28 AM - hiprfisr: Sending message: HIPRFISR: Connected PD
-02/05/2023 09:38:29 AM - dashboard: Received message: HIPRFISR: Connected TSI
-02/05/2023 09:38:29 AM - dashboard: Received message: HIPRFISR: Connected FGE
-02/05/2023 09:38:29 AM - dashboard: Received message: HIPRFISR: Connected PD
-02/05/2023 09:38:29 AM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
-02/05/2023 09:38:29 AM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
-02/05/2023 09:38:30 AM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
-02/05/2023 09:38:30 AM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
-02/05/2023 09:38:30 AM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
-02/05/2023 09:38:30 AM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
-02/05/2023 09:38:41 AM - dashboard: Sending message: Dashboard: Run Inspection Flow Graph [' home laptop1 FISSURE Flow Graph Library Inspection Flow Graphs waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:42 AM - hiprfisr: Received message: Dashboard: Run Inspection Flow Graph [' home laptop1 FISSURE Flow Graph Library Inspection Flow Graphs waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:42 AM - hiprfisr: Executing Callback: inspectionFlowGraphStart with parameters ['/home/laptop1/FISSURE/Flow Graph Library/Inspection Flow Graphs/waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:42 AM - hiprfisr: Sending message: HIPRFISR: Run Inspection Flow Graph [' home laptop1 FISSURE Flow Graph Library Inspection Flow Graphs waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:42 AM - fge: Received message: HIPRFISR: Run Inspection Flow Graph [' home laptop1 FISSURE Flow Graph Library Inspection Flow Graphs waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:42 AM - fge: Executing Callback: inspectionFlowGraphStart with parameters ['/home/laptop1/FISSURE/Flow Graph Library/Inspection Flow Graphs/waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:42 AM - fge: Sending message: FGE: Flow Graph Started IQ Inspection []
-02/05/2023 09:38:43 AM - dashboard: Received message: FGE: Flow Graph Started IQ Inspection []
-02/05/2023 09:38:43 AM - hiprfisr: Received message: FGE: Flow Graph Started IQ Inspection []
-02/05/2023 09:38:47 AM - dashboard: Sending message: Dashboard: Stop Inspection Flow Graph ['Flow Graph - GUI']
-02/05/2023 09:38:47 AM - dashboard: Sending message: Dashboard: Run Inspection Flow Graph [' home laptop1 FISSURE Flow Graph Library Inspection Flow Graphs waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:48 AM - hiprfisr: Received message: Dashboard: Stop Inspection Flow Graph ['Flow Graph - GUI']
-02/05/2023 09:38:48 AM - hiprfisr: Executing Callback: inspectionFlowGraphStop with parameters ['Flow Graph - GUI']
-02/05/2023 09:38:48 AM - hiprfisr: Sending message: HIPRFISR: Stop Inspection Flow Graph ['Flow Graph - GUI']
-02/05/2023 09:38:48 AM - hiprfisr: Received message: Dashboard: Run Inspection Flow Graph [' home laptop1 FISSURE Flow Graph Library Inspection Flow Graphs waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:48 AM - hiprfisr: Executing Callback: inspectionFlowGraphStart with parameters ['/home/laptop1/FISSURE/Flow Graph Library/Inspection Flow Graphs/waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:48 AM - hiprfisr: Sending message: HIPRFISR: Run Inspection Flow Graph [' home laptop1 FISSURE Flow Graph Library Inspection Flow Graphs waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:48 AM - fge: Received message: HIPRFISR: Stop Inspection Flow Graph ['Flow Graph - GUI']
-02/05/2023 09:38:48 AM - fge: Executing Callback: inspectionFlowGraphStop with parameters ['Flow Graph - GUI']
-02/05/2023 09:38:48 AM - fge: Received message: HIPRFISR: Run Inspection Flow Graph [' home laptop1 FISSURE Flow Graph Library Inspection Flow Graphs waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:48 AM - fge: Executing Callback: inspectionFlowGraphStart with parameters ['/home/laptop1/FISSURE/Flow Graph Library/Inspection Flow Graphs/waterfall_hackrf.py', ['serial'], [''], 'Flow Graph - GUI']
-02/05/2023 09:38:48 AM - fge: Sending message: FGE: Flow Graph Started IQ Inspection []
-02/05/2023 09:38:49 AM - dashboard: Received message: FGE: Flow Graph Started IQ Inspection []
-02/05/2023 09:38:49 AM - hiprfisr: Received message: FGE: Flow Graph Started IQ Inspection []
-02/05/2023 09:38:53 AM - dashboard: Sending message: Dashboard: Stop Inspection Flow Graph ['Flow Graph - GUI']
-02/05/2023 09:38:54 AM - hiprfisr: Received message: Dashboard: Stop Inspection Flow Graph ['Flow Graph - GUI']
-02/05/2023 09:38:54 AM - hiprfisr: Executing Callback: inspectionFlowGraphStop with parameters ['Flow Graph - GUI']
-02/05/2023 09:38:54 AM - hiprfisr: Sending message: HIPRFISR: Stop Inspection Flow Graph ['Flow Graph - GUI']
-02/05/2023 09:38:54 AM - fge: Received message: HIPRFISR: Stop Inspection Flow Graph ['Flow Graph - GUI']
-02/05/2023 09:38:54 AM - fge: Executing Callback: inspectionFlowGraphStop with parameters ['Flow Graph - GUI']
-02/05/2023 09:47:54 AM - dashboard: Sending message: Dashboard: Run Attack Flow Graph [' home laptop1 FISSURE Flow Graph Library Single-Stage Flow Graphs Mode_S_PPM_HackRF_stdout.py', ['samp_rate', 'gain', 'freq', 'blocks_message_source_0_msgq_in', 'adsb_decoder_0_msgq_in'], ['2e6', '50', '1090e6', 'gr.msg_queue(2)', 'gr.msg_queue(2)'], 'Flow Graph']
-02/05/2023 09:47:54 AM - hiprfisr: Received message: Dashboard: Run Attack Flow Graph [' home laptop1 FISSURE Flow Graph Library Single-Stage Flow Graphs Mode_S_PPM_HackRF_stdout.py', ['samp_rate', 'gain', 'freq', 'blocks_message_source_0_msgq_in', 'adsb_decoder_0_msgq_in'], ['2e6', '50', '1090e6', 'gr.msg_queue(2)', 'gr.msg_queue(2)'], 'Flow Graph']
-02/05/2023 09:47:54 AM - hiprfisr: Executing Callback: attackFlowGraphStart with parameters ['/home/laptop1/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/Mode_S_PPM_HackRF_stdout.py', ['samp_rate', 'gain', 'freq', 'blocks_message_source_0_msgq_in', 'adsb_decoder_0_msgq_in'], ['2e6', '50', '1090e6', 'gr.msg_queue(2)', 'gr.msg_queue(2)'], 'Flow Graph']
-02/05/2023 09:47:54 AM - hiprfisr: Sending message: HIPRFISR: Run Attack Flow Graph [' home laptop1 FISSURE Flow Graph Library Single-Stage Flow Graphs Mode_S_PPM_HackRF_stdout.py', ['samp_rate', 'gain', 'freq', 'blocks_message_source_0_msgq_in', 'adsb_decoder_0_msgq_in'], ['2e6', '50', '1090e6', 'gr.msg_queue(2)', 'gr.msg_queue(2)'], 'Flow Graph']
-02/05/2023 09:47:54 AM - fge: Received message: HIPRFISR: Run Attack Flow Graph [' home laptop1 FISSURE Flow Graph Library Single-Stage Flow Graphs Mode_S_PPM_HackRF_stdout.py', ['samp_rate', 'gain', 'freq', 'blocks_message_source_0_msgq_in', 'adsb_decoder_0_msgq_in'], ['2e6', '50', '1090e6', 'gr.msg_queue(2)', 'gr.msg_queue(2)'], 'Flow Graph']
-02/05/2023 09:47:54 AM - fge: Executing Callback: attackFlowGraphStart with parameters ['/home/laptop1/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/Mode_S_PPM_HackRF_stdout.py', ['samp_rate', 'gain', 'freq', 'blocks_message_source_0_msgq_in', 'adsb_decoder_0_msgq_in'], ['2e6', '50', '1090e6', 'gr.msg_queue(2)', 'gr.msg_queue(2)'], 'Flow Graph']
-02/05/2023 09:47:54 AM - fge: Sending message: FGE: Flow Graph Started Attack
-02/05/2023 09:47:54 AM - fge: Sending message: FGE: Flow Graph Finished Attack
-02/05/2023 09:47:54 AM - fge: Sending message: FGE: Flow Graph Error No module named 'adsb'
-02/05/2023 09:47:54 AM - fge: Sending message: FGE: Multi-Stage Attack Finished 
-02/05/2023 09:47:54 AM - dashboard: Received message: FGE: Flow Graph Started Attack
-02/05/2023 09:47:54 AM - dashboard: Received message: FGE: Flow Graph Finished Attack
-02/05/2023 09:47:54 AM - dashboard: Received message: FGE: Flow Graph Error No module named 'adsb'
-02/05/2023 09:47:54 AM - dashboard: Received message: FGE: Multi-Stage Attack Finished 
-02/05/2023 09:47:55 AM - hiprfisr: Received message: FGE: Flow Graph Started Attack
-02/05/2023 09:47:55 AM - hiprfisr: Received message: FGE: Flow Graph Finished Attack
-02/05/2023 09:47:55 AM - hiprfisr: Received message: FGE: Flow Graph Error No module named 'adsb'
-02/05/2023 09:47:55 AM - hiprfisr: Received message: FGE: Multi-Stage Attack Finished 
-02/05/2023 09:48:12 AM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-02/05/2023 09:48:12 AM - dashboard: Sending message: Dashboard: Stop PD $Parameters
+02/19/2023 09:21:08 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
+02/19/2023 09:21:08 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
+02/19/2023 09:21:08 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
+02/19/2023 09:21:08 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
+02/19/2023 09:21:08 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
+02/19/2023 09:21:08 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
+02/19/2023 09:21:08 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
+02/19/2023 09:21:08 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
+02/19/2023 09:21:08 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
+02/19/2023 09:21:08 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
+02/19/2023 09:21:08 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
+02/19/2023 09:21:09 PM - hiprfisr: End of HIPRFISR Initialization
+02/19/2023 09:21:09 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
+02/19/2023 09:21:09 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+02/19/2023 09:21:09 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
+02/19/2023 09:21:09 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+02/19/2023 09:21:09 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
+02/19/2023 09:21:09 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+02/19/2023 09:21:09 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
+02/19/2023 09:21:09 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+02/19/2023 09:21:09 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
+02/19/2023 09:21:09 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+02/19/2023 09:21:09 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
+02/19/2023 09:21:09 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+02/19/2023 09:21:09 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
+02/19/2023 09:21:09 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
+02/19/2023 09:21:09 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
+02/19/2023 09:21:09 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
+02/19/2023 09:21:09 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
+02/19/2023 09:21:09 PM - hiprfisr: Start of Main Event Loop
+02/19/2023 09:21:09 PM - fge: Port Connected to tcp://127.0.0.1:5053
+02/19/2023 09:21:09 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+02/19/2023 09:21:09 PM - fge: Port Initialized to tcp://127.0.0.1:5061
+02/19/2023 09:21:09 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+02/19/2023 09:21:09 PM - fge: Port Connected to tcp://127.0.0.1:5055
+02/19/2023 09:21:09 PM - tsi: Port Connected to tcp://localhost:5052
+02/19/2023 09:21:09 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+02/19/2023 09:21:09 PM - fge: Port Connected to tcp://127.0.0.1:5057
+02/19/2023 09:21:09 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+02/19/2023 09:21:09 PM - tsi: Port Initialized to tcp://*:5059
+02/19/2023 09:21:09 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+02/19/2023 09:21:09 PM - tsi: Port Connected to tcp://127.0.0.1:5055
+02/19/2023 09:21:09 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+02/19/2023 09:21:09 PM - tsi: Port Connected to tcp://127.0.0.1:5057
+02/19/2023 09:21:10 PM - pd: Port Connected to tcp://127.0.0.1:5054
+02/19/2023 09:21:10 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
+02/19/2023 09:21:10 PM - pd: Port Initialized to tcp://127.0.0.1:5063
+02/19/2023 09:21:10 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
+02/19/2023 09:21:10 PM - pd: Port Connected to tcp://127.0.0.1:5055
+02/19/2023 09:21:10 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
+02/19/2023 09:21:10 PM - pd: Port Connected to tcp://127.0.0.1:5057
+02/19/2023 09:21:10 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
+02/19/2023 09:21:10 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
+02/19/2023 09:21:10 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
+02/19/2023 09:21:11 PM - dashboard: Received message: HIPRFISR: Connected TSI
+02/19/2023 09:21:11 PM - dashboard: Received message: HIPRFISR: Connected FGE
+02/19/2023 09:21:11 PM - dashboard: Received message: HIPRFISR: Connected PD
+02/19/2023 09:21:11 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
+02/19/2023 09:21:11 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
+02/19/2023 09:21:12 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
+02/19/2023 09:21:12 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
+02/19/2023 09:21:12 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
+02/19/2023 09:21:12 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
+02/19/2023 09:21:31 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
+02/19/2023 09:21:31 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters

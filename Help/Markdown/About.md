@@ -71,6 +71,11 @@ License (GPL-2.0): https://github.com/afrantzis/bless/blob/master/COPYING
 Project: https://salsa.debian.org/pkg-security-team/btscanner  
 License (GPL v2.0): https://salsa.debian.org/pkg-security-team/btscanner/-/blob/debian/master/COPYING
 
+**CRC RevEng**  
+Project: https://reveng.sourceforge.io/  
+Copyright 2022 Gegrory Cook  
+License (GPL): https://reveng.sourceforge.io/readme.htm
+
 **CyberChef**  
 Project: https://gchq.github.io/CyberChef/  
 Crown Copyright 2016  
@@ -282,6 +287,10 @@ Project: http://www.bluez.org/
 Copyright 2000-2016 BlueZ Project  
 License (GPL): http://www.bluez.org/faq/common/
 
+**htop**  
+Project: https://github.com/htop-dev/htop, https://htop.dev/    
+License (GPL-2.0): https://github.com/htop-dev/htop
+
 **Hydra**  
 Project: https://github.com/vanhauser-thc/thc-hydra  
 Copyright 2001-2022 by van Hauser / THC  
@@ -395,6 +404,10 @@ License (GPL v2.0): https://opencpn.org/wiki/dokuwiki/doku.php?id=opencpn:opencp
 Project: https://www.openhab.org/  
 Copyright 2022 by the openHAB Community and the openHAB Foundation e.V.  
 License (EPL-2.0): https://github.com/openhab/openhab-distro/blob/main/LICENSE
+
+**OpenWebRX**  
+Project: https://github.com/jketterl/openwebrx, https://www.openwebrx.de/  
+License (AGPL-3.0): https://github.com/jketterl/openwebrx/blob/develop/LICENSE.txt
 
 **Proxmark3**  
 Project: https://github.com/Proxmark/proxmark3  

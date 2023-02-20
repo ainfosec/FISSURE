@@ -1843,6 +1843,39 @@ make
 ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
 
+# htop
+programs_ubuntu22_04.append(('htop',
+"""sudo apt-get install -y htop
+########## Verify ##########
+ls /usr/bin/htop
+""",True,'Development'))
+
+# OpenWebRX
+programs_ubuntu22_04.append(('OpenWebRX',
+"""wget -O - https://repo.openwebrx.de/debian/key.gpg.txt | sudo apt-key add
+echo 'deb https://repo.openwebrx.de/ubuntu/ jammy main' | sudo tee /etc/apt/sources.list.d/openwebrx.list
+sudo apt-get update
+sudo apt-get install -y openwebrx
+sudo systemctl stop openwebrx
+sudo systemctl disable openwebrx  # Prevents starting on boot
+########## Verify ##########
+ls /usr/bin/openwebrx
+""",True,'SDR'))
+
+# CRC RevEng
+programs_ubuntu22_04.append(('CRC RevEng',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget -T 10 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
+unzip download
+rm download
+cd reveng-3.0.5
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
+""",True,'Data'))
+
+
 
 ########################################################################
 ########################## DragonOS FocalX #############################
@@ -3667,6 +3700,38 @@ make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/dump978/dump978
 """, True, 'Aircraft'))
+
+# htop - verify
+programs_dragonOS_focalx.append(('htop',
+"""sudo apt-get install -y htop
+########## Verify ##########
+ls /usr/bin/htop
+""",True,'Development'))
+
+# # OpenWebRX - verify
+# programs_dragonOS_focalx.append(('OpenWebRX',
+# """wget -O - https://repo.openwebrx.de/debian/key.gpg.txt | sudo apt-key add
+# echo 'deb https://repo.openwebrx.de/ubuntu/ jammy main' | sudo tee /etc/apt/sources.list.d/openwebrx.list
+# sudo apt-get update
+# sudo apt-get install -y openwebrx
+# sudo systemctl stop openwebrx
+# sudo systemctl disable openwebrx  # Prevents starting on boot
+# ########## Verify ##########
+# ls /usr/bin/openwebrx
+# """,True,'SDR'))
+
+# CRC RevEng - verify
+programs_dragonOS_focalx.append(('CRC RevEng',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget -T 20 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
+unzip download
+rm download
+cd reveng-3.0.5
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
+""",True,'Data'))
 
 
 
