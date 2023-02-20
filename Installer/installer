@@ -1905,6 +1905,38 @@ make
 ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
 
+# htop
+programs_ubuntu20_04.append(('htop',
+"""sudo apt-get install -y htop
+########## Verify ##########
+ls /usr/bin/htop
+""",True,'Development'))
+
+# OpenWebRX
+programs_ubuntu20_04.append(('OpenWebRX',
+"""wget -O - https://repo.openwebrx.de/debian/key.gpg.txt | sudo apt-key add
+echo 'deb https://repo.openwebrx.de/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/openwebrx.list
+sudo apt-get update
+sudo apt-get install -y openwebrx
+sudo systemctl stop openwebrx
+sudo systemctl disable openwebrx  # Prevents starting on boot
+########## Verify ##########
+ls /usr/bin/openwebrx
+""",True,'SDR'))
+
+# CRC RevEng
+programs_ubuntu20_04.append(('CRC RevEng',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
+unzip download
+rm download
+cd reveng-3.0.5
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
+""",True,'Data'))
+
 
 ########################################################################
 ############################ Ubuntu 20.04.4 ############################
@@ -3792,6 +3824,37 @@ make
 ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
 
+# htop
+programs_ubuntu20_04_4.append(('htop',
+"""sudo apt-get install -y htop
+########## Verify ##########
+ls /usr/bin/htop
+""",True,'Development'))
+
+# OpenWebRX
+programs_ubuntu20_04_4.append(('OpenWebRX',
+"""wget -O - https://repo.openwebrx.de/debian/key.gpg.txt | sudo apt-key add
+echo 'deb https://repo.openwebrx.de/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/openwebrx.list
+sudo apt-get update
+sudo apt-get install -y openwebrx
+sudo systemctl stop openwebrx
+sudo systemctl disable openwebrx  # Prevents starting on boot
+########## Verify ##########
+ls /usr/bin/openwebrx
+""",True,'SDR'))
+
+# CRC RevEng
+programs_ubuntu20_04_4.append(('CRC RevEng',
+"""mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget -T 20 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
+unzip download
+rm download
+cd reveng-3.0.5
+make
+########## Verify ##########
+ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
+""",True,'Data'))
 
 
 
@@ -4800,6 +4863,7 @@ rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.s
 ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 """,True,'Bluetooth'))
 
+
 ######## Not Tested Queue ######## 
 
 # # QSSTV
@@ -4945,6 +5009,38 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # ########## Verify ##########
 # ls ~/Installed_by_FISSURE/dump978/dump978
 # """,True,'Aircraft'))
+
+# # htop
+# programs_dragonOS_focal.append(('htop',
+# """sudo apt-get install -y htop
+# ########## Verify ##########
+# ls /usr/bin/htop
+# """,True,'Development'))
+
+# # OpenWebRX
+# programs_dragonOS_focal.append(('OpenWebRX',
+# """wget -O - https://repo.openwebrx.de/debian/key.gpg.txt | sudo apt-key add
+# echo 'deb https://repo.openwebrx.de/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/openwebrx.list
+# sudo apt-get update
+# sudo apt-get install -y openwebrx
+# sudo systemctl stop openwebrx
+# sudo systemctl disable openwebrx  # Prevents starting on boot
+# ########## Verify ##########
+# ls /usr/bin/openwebrx
+# """,True,'SDR'))
+
+# # CRC RevEng
+# programs_dragonOS_focal.append(('CRC RevEng',
+# """mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# wget https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
+# unzip download
+# rm download
+# cd reveng-3.0.5
+# make
+# ########## Verify ##########
+# ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
+# """,True,'Data'))
 
 ######## Already Exists ######## 
 

@@ -11,6 +11,7 @@ The following is a table of the major software tools that have been proven to wo
 | baudline | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Bless | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | btscanner | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| CRC RevEng | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | CyberChef | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Dire Wolf | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Dump1090 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -59,6 +60,7 @@ The following is a table of the major software tools that have been proven to wo
 | ham2mon | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x: |
 | HamClock | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | hcidump | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| htop | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Hydra | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | ICE9 Bluetooth Sniffer | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | IIO Oscilloscope | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |
@@ -84,6 +86,7 @@ The following is a table of the major software tools that have been proven to wo
 | OpenBTS | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: | :x: | :x: |
 | openCPN | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | openHAB | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: |
+| openWebRX | :x: | :x: | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Proxmark3 | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | PuTTY | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | pyFDA | :x: | :x: | :x: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -148,6 +151,7 @@ The following are the software versions that are included with the FISSURE insta
 | baudline | version 1.08 | No | https://www.baudline.com/ |
 | Bless | 0.6.0 | No | hhttps://github.com/afrantzis/bless |
 | btscanner | 2.0 | No | https://salsa.debian.org/pkg-security-team/btscanner |
+| CRC RevEng | 3.0.5 | Yes | https://reveng.sourceforge.io/ |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
 | Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 | 
@@ -197,6 +201,7 @@ The following are the software versions that are included with the FISSURE insta
 | ham2mon | master | Yes | https://github.com/madengr/ham2mon |
 | HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.48 | No | http://www.bluez.org/ |
+| htop | 2.1.0 | No | https://github.com/htop-dev/htop |
 | Hydra | 8.6 | No | https://github.com/vanhauser-thc/thc-hydra |
 | ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IMSI-Catcher 4G | - | Yes | Joe Reith, AIS |
@@ -269,6 +274,7 @@ The following are the software versions that are included with the FISSURE insta
 | baudline | version 1.08 | No | https://www.baudline.com/ |
 | Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-6 | No | https://salsa.debian.org/pkg-security-team/btscanner |
+| CRC RevEng | 3.0.5 | Yes | https://reveng.sourceforge.io/ |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
 | Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 | 
@@ -318,6 +324,7 @@ The following are the software versions that are included with the FISSURE insta
 | ham2mon | master | Yes | https://github.com/madengr/ham2mon |
 | HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.48 | No | http://www.bluez.org/ |
+| htop | 2.1.0 | No | https://github.com/htop-dev/htop |
 | Hydra | 8.6 | No | https://github.com/vanhauser-thc/thc-hydra |
 | ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IMSI-Catcher 4G | - | Yes | Joe Reith, AIS |
@@ -390,6 +397,7 @@ The following are the software versions that are included with the FISSURE insta
 | baudline | version 1.08 | No | https://www.baudline.com/ |
 | Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-6 | No | https://salsa.debian.org/pkg-security-team/btscanner |
+| CRC RevEng | 3.0.5 | Yes | https://reveng.sourceforge.io/ |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
 | Dump1090 | 1.10.3010.14 | Yes | https://github.com/antirez/dump1090 |
@@ -439,6 +447,7 @@ The following are the software versions that are included with the FISSURE insta
 | ham2mon | master | Yes | https://github.com/madengr/ham2mon |
 | HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.48 | No | http://www.bluez.org/ |
+| htop | 2.1.0 | No | https://github.com/htop-dev/htop |
 | Hydra | 8.6 | No | https://github.com/vanhauser-thc/thc-hydra |
 | ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IIO Oscilloscope | master | Yes | https://github.com/analogdevicesinc/iio-oscilloscope |
@@ -512,6 +521,7 @@ The following are the software versions that are included with the FISSURE insta
 | baudline | 1.08 | No | https://www.baudline.com/ |
 | Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-8 | No | https://salsa.debian.org/pkg-security-team/btscanner |
+| CRC RevEng | 3.0.5 | Yes | https://reveng.sourceforge.io/ |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 |
@@ -561,6 +571,7 @@ The following are the software versions that are included with the FISSURE insta
 | ham2mon | master | Yes | https://github.com/ta6o/ham2mon |
 | HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.53 | No | http://www.bluez.org/ |
+| htop | 2.2.0 | No | https://github.com/htop-dev/htop |
 | Hydra | 9.0 | No | https://github.com/vanhauser-thc/thc-hydra |
 | ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IIO Oscilloscope | master | Yes | https://github.com/analogdevicesinc/iio-oscilloscope |
@@ -586,6 +597,7 @@ The following are the software versions that are included with the FISSURE insta
 | ~~OpenBTS~~ |  |  | https://github.com/RangeNetworks/dev |
 | openCPN | 5.6.2 | No | https://opencpn.org/ |
 | ~~openHAB~~ (fix) |  | No | https://www.openhab.org/ |
+| OpenWebRX | v0.20.3 | No | https://github.com/jketterl/openwebrx |
 | Proxmark3 | master | Yes | https://github.com/Proxmark/proxmark3 |
 | PuTTY | 0.73 | No | https://www.putty.org/ |
 | pyFDA | 0.7.1 | No | https://github.com/chipmuenk/pyfda |
@@ -637,6 +649,7 @@ The following are the software versions that are included with the FISSURE insta
 | baudline | 1.08 | No | https://www.baudline.com/ |
 | Bless | 0.6.0 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-8 | No | https://salsa.debian.org/pkg-security-team/btscanner |
+| CRC RevEng | 3.0.5 | Yes | https://reveng.sourceforge.io/ |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 |
@@ -686,6 +699,7 @@ The following are the software versions that are included with the FISSURE insta
 | ham2mon | master | Yes | https://github.com/ta6o/ham2mon |
 | HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.53 | No | http://www.bluez.org/ |
+| htop | 2.2.0 | No | https://github.com/htop-dev/htop |
 | Hydra | 9.0 | No | https://github.com/vanhauser-thc/thc-hydra |
 | ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IIO Oscilloscope | master | Yes | https://github.com/analogdevicesinc/iio-oscilloscope |
@@ -711,6 +725,7 @@ The following are the software versions that are included with the FISSURE insta
 | ~~OpenBTS~~ |  |  | https://github.com/RangeNetworks/dev |
 | openCPN | 5.6.2 | No | https://opencpn.org/ |
 | ~~openHAB~~ (fix) |  | No | https://www.openhab.org/ |
+| OpenWebRX | v0.20.3 | No | https://github.com/jketterl/openwebrx |
 | Proxmark3 | master | Yes | https://github.com/Proxmark/proxmark3 |
 | PuTTY | 0.73 | No | https://www.putty.org/ |
 | pyFDA | 0.7.1 | No | https://github.com/chipmuenk/pyfda |
@@ -762,6 +777,7 @@ The following are the software versions that are included with the FISSURE insta
 | baudline | 1.08 | No | https://www.baudline.com/ |
 | Bless | 0.6.3 | No | https://github.com/afrantzis/bless |
 | btscanner | 2.1-9 | No | https://salsa.debian.org/pkg-security-team/btscanner |
+| CRC RevEng | 3.0.5 | Yes | https://reveng.sourceforge.io/ |
 | CyberChef | - | Yes | https://gchq.github.io/CyberChef/ |
 | Dire Wolf | dev | Yes | https://github.com/wb2osz/direwolf |
 | Dump1090 | 1.010.3010.14 | Yes | https://github.com/antirez/dump1090 |
@@ -811,6 +827,7 @@ The following are the software versions that are included with the FISSURE insta
 | ham2mon | maint-3.10 | Yes | https://github.com/bkerler/ham2mon |
 | HamClock | latest | Yes | https://www.clearskyinstitute.com/ham/HamClock/ |
 | hcidump | 5.64 | No | http://www.bluez.org/ |
+| htop | 3.0.5 | No | https://github.com/htop-dev/htop |
 | Hydra | 9.2 | No | https://github.com/vanhauser-thc/thc-hydra |
 | ICE9 Bluetooth Sniffer | master | Yes | https://github.com/mikeryan/ice9-bluetooth-sniffer |
 | IIO Oscilloscope | master | Yes | https://github.com/analogdevicesinc/iio-oscilloscope |
@@ -836,6 +853,7 @@ The following are the software versions that are included with the FISSURE insta
 | ~~OpenBTS~~ |  |  | https://github.com/RangeNetworks/dev |
 | openCPN | 5.6.2 | No | https://opencpn.org/ |
 | ~~openHAB~~ (fix) |  | No | https://www.openhab.org/ |
+| OpenWebRX | v1.2.1 | No | https://github.com/jketterl/openwebrx |
 | Proxmark3 | master | Yes | https://github.com/Proxmark/proxmark3 |
 | PuTTY | 0.76 | No | https://www.putty.org/ |
 | pyFDA | 0.7.1 | No | https://github.com/chipmuenk/pyfda |

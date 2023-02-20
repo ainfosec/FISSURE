@@ -451,6 +451,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.crc_algorithms16 = ['Custom','CRC16_CCIT_ZERO','CRC16_ARC','CRC16_AUG_CCITT (Z-Wave)','CRC16_BUYPASS','CRC16_CCITT_FALSE','CRC16_CDMA2000','CRC16_DDS_110','CRC16_DECT_R','CRC16_DECT_X','CRC16_DNP','CRC16_EN_13757','CRC16_GENIBUS','CRC16_MAXIM','CRC16_MCRF4XX','CRC16_RIELLO','CRC16_T10_DIF','CRC16_TELEDISK','CRC16_TMS37157','CRC16_USB','CRC16_A','CRC16_KERMIT','CRC16_MODBUS','CRC16_X_25','CRC16_XMODEM']
         self.crc_algorithms32 = ['Custom','CRC32','CRC32_BZIP2','CRC32_C','CRC32_D','CRC32_MPEG-2','CRC32_POSIX','CRC32-32Q','CRC32_JAMCRC','CRC32_XFER']
         self.comboBox_pd_crc_common_width.setCurrentIndex(0)
+        self.comboBox_pd_crc_reveng_width.setCurrentIndex(0)
 
         
         ##### Attack #####
@@ -1035,6 +1036,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_pd_sniffer_test_send.clicked.connect(self._slotPD_SnifferTestSendClicked)        
         self.pushButton_pd_crc_start.clicked.connect(self._slotPD_CRC_StartClicked)
         self.pushButton_pd_crc_calculate_common.clicked.connect(self._slotPD_CRC_CalculateClicked)
+        self.pushButton_pd_crc_calculate_reveng.clicked.connect(self._slotPD_CRC_RevEngCalculateClicked)
                         
         self.pushButton_attack_view_flow_graph.clicked.connect(self._slotAttackViewFlowGraph)
         self.pushButton_attack_start_stop.clicked.connect(self._slotAttackStartStopAttack)
@@ -1230,6 +1232,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.comboBox_pd_dissectors_packet_type.currentIndexChanged.connect(self._slotPD_DissectorsPacketTypeChanged)        
         self.comboBox_pd_crc_algorithm.currentIndexChanged.connect(self._slotPD_CRC_AlgorithmChanged)
         self.comboBox_pd_crc_common_width.currentIndexChanged.connect(self._slotPD_CRC_CommonWidthChanged)
+        self.comboBox_pd_crc_reveng_width.currentIndexChanged.connect(self._slotPD_CRC_RevEngWidthChanged)
+        self.comboBox_pd_crc_reveng_algorithm.currentIndexChanged.connect(self._slotPD_CRC_RevEngAlgorithmChanged)
         self.comboBox_pd_bit_viewer_protocols.currentIndexChanged.connect(self._slotPD_BitViewerProtocolsChanged)
         self.comboBox_pd_bit_viewer_subcategory.currentIndexChanged.connect(self._slotPD_BitViewerSubcategoryChanged)  
         self.comboBox_attack_protocols.currentIndexChanged.connect(self._slotAttackProtocols)
@@ -1584,6 +1588,18 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionrfidpics.triggered.connect(self._slotMenu_rfidpicsClicked)
         self.actionacars_adsbexchange.triggered.connect(self._slotMenu_acars_adsbexchangeClicked)
         self.actionAirframes.triggered.connect(self._slotMenuAirframesClicked)
+        self.actionhtop.triggered.connect(self._slotMenu_htopClicked)
+        self.actionWSPR_Rocks.triggered.connect(self._slotMenu_WSPR_RocksClicked)
+        self.actionwttr_in.triggered.connect(self._slotMenu_wttr_inClicked)
+        self.actiondashboard_py.triggered.connect(self._slotMenuGeanyDashboardPyClicked)
+        self.actiondashboard_ui.triggered.connect(self._slotMenuQtDesignerDashboardUiClicked)
+        self.actionoptions_ui.triggered.connect(self._slotMenuQtDesignerOptionsUiClicked)
+        self.actiongrip.triggered.connect(self._slotMenuGripClicked)
+        self.actionArduino.triggered.connect(self._slotMenuArduinoClicked)
+        self.actionguidus.triggered.connect(self._slotMenu_guidusClicked)
+        self.actionSystemback.triggered.connect(self._slotMenuSystembackClicked)
+        self.actionOpenWebRX.triggered.connect(self._slotMenuOpenWebRX_Clicked)
+        self.actionTuneIn_Explorer.triggered.connect(self._slotMenuTuneInExplorerClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -22640,7 +22656,870 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open a Browser
         os.system("sensible-browser https://app.airframes.io/flights &")
+        
+    def _slotMenu_htopClicked(self):
+        """ Launches htop in the tree view.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        htop_command = "htop -t"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + htop_command + '"', shell=True)
+        
+    def _slotMenu_WSPR_RocksClicked(self):
+        """ Opens WSPR Rocks! in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser http://wspr.rocks/ &")
+        
+    def _slotMenu_wttr_inClicked(self):
+        """ Opens a terminal with text for a curl to wttr.in.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        wttr_in_command = "curl wttr.in?3"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + wttr_in_command + '"', shell=True)
+        
+    def _slotMenuGeanyDashboardPyClicked(self):
+        """ Opens dashboard.py in Geany.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        fissure_directory = os.path.dirname(os.path.realpath(__file__))
+        dashboard_py_command = "geany dashboard.py"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dashboard_py_command + '"', cwd=fissure_directory, shell=True)        
+        
+    def _slotMenuQtDesignerDashboardUiClicked(self):
+        """ Opens dashboard.ui in QtDesigner.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        ui_directory = os.path.dirname(os.path.realpath(__file__)) + "/UI/"
+        dashboard_ui_command = "designer dashboard.ui"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dashboard_ui_command + '"', cwd=ui_directory, shell=True)        
+        
+    def _slotMenuQtDesignerOptionsUiClicked(self):
+        """ Opens options.ui in QtDesigner.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        ui_directory = os.path.dirname(os.path.realpath(__file__)) + "/UI/"
+        options_ui_command = "designer options.ui"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + options_ui_command + '"', cwd=ui_directory, shell=True)        
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dashboard_ui_command + '"', cwd=ui_directory, shell=True)        
+        
+    def _slotMenuGripClicked(self):
+        """ Provides an example grip command to convert Markdown to HTML.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        grip_directory = os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Markdown"
+        grip_command = "grip Lesson1_OpenBTS.md --export ../HTML/Lesson1_OpenBTS.html"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + grip_command + '"', cwd=grip_directory, shell=True)        
+        
+    def _slotMenuArduinoClicked(self):
+        """ Opens a terminal with the Arduino IDE command.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        arduino_command = "arduino"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + arduino_command + '"', shell=True)        
+        
+    def _slotMenu_guidusClicked(self):
+        """ Opens a terminal with the guidus command for editing USBs.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        guidus_command = "sudo guidus"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + guidus_command + '"', shell=True)        
+        
+    def _slotMenuSystembackClicked(self):
+        """ Opens a terminal with the Systemback command for creating system images.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        systemback_command = "sudo systemback"   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + systemback_command + '"', shell=True)
+        
+    def _slotMenuOpenWebRX_Clicked(self):
+        """ Starts the openwebrx service and opens a browser to localhost:8083.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        openwebrx_command = "sudo openwebrx"
+        os.system("sensible-browser http://127.0.0.1:8073 &")
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + openwebrx_command + '"', shell=True)
+        
+    def _slotMenuTuneInExplorerClicked(self):
+        """ Opens TuneIn Explorer in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://tunein.com/explorer/ &")
+        
+    def _slotPD_CRC_RevEngWidthChanged(self):
+        """ Changes the list of CRC RevEng CRC algorithms based on width.
+        """
+        # Get the CRC Width
+        new_algorithms = []
+        get_width = str(self.comboBox_pd_crc_reveng_width.currentText())
+        
+        # Switch the Algorithms
+        self.comboBox_pd_crc_reveng_algorithm.clear()
+        if get_width == "3":
+            new_algorithms = ['CRC-3/GSM','CRC-3/ROHC']
+        elif get_width == "4":
+            new_algorithms = ['CRC-4/G-704','CRC-4/INTERLAKEN']
+        elif get_width == "5":
+            new_algorithms = ['CRC-5/EPC-C1G2','CRC-5/G-704','CRC-5/USB']
+        elif get_width == "6":
+            new_algorithms = ['CRC-6/CDMA2000-A','CRC-6/CDMA2000-B','CRC-6/DARC','CRC-6/G-704','CRC-6/GSM']
+        elif get_width == "7":
+            new_algorithms = ['CRC-7/MMC','CRC-7/ROHC','CRC-7/UMTS']
+        elif get_width == "8":
+            new_algorithms = ['CRC-8/AUTOSAR','CRC-8/BLUETOOTH','CRC-8/CDMA2000','CRC-8/DARC','CRC-8/DVB-S2','CRC-8/GSM-A','CRC-8/GSM-B',
+                'CRC-8/HITAG','CRC-8/I-432-1','CRC-8/I-CODE','CRC-8/LTE','CRC-8/MAXIM-DOW','CRC-8/MIFARE-MAD','CRC-8/NRSC-5','CRC-8/OPENSAFETY',
+                'CRC-8/ROHC','CRC-8/SAE-J1850','CRC-8/SMBUS','CRC-8/TECH-3250','CRC-8/WCDMA']
+        elif get_width == "10":
+            new_algorithms = ['CRC-10/ATM','CRC-10/CDMA2000','CRC-10/GSM']
+        elif get_width == "11":
+            new_algorithms = ['CRC-11/FLEXRAY','CRC-11/UMTS']
+        elif get_width == "12":
+            new_algorithms = ['CRC-12/CDMA2000','CRC-12/DECT','CRC-12/GSM','CRC-12/UMTS']
+        elif get_width == "13":
+            new_algorithms = ['CRC-13/BBC']
+        elif get_width == "14":
+            new_algorithms = ['CRC-14/DARC','CRC-14/GSM']
+        elif get_width == "15":
+            new_algorithms = ['CRC-15/CAN','CRC-15/MPT1327']
+        elif get_width == "16":
+            new_algorithms = ['CRC-16/ARC','CRC-16/CDMA2000','CRC-16/CMS','CRC-16/DDS-110','CRC-16/DECT-R','CRC-16/DECT-X','CRC-16/DNP','CRC-16/EN-13757',
+                'CRC-16/GENIBUS','CRC-16/GSM','CRC-16/IBM-3740','CRC-16/IBM-SDLC','CRC-16/ISO-IEC-14443-3-A','CRC-16/KERMIT','CRC-16/LJ1200','CRC-16/M17',
+                'CRC-16/MAXIM-DOW','CRC-16/MCRF4XX','CRC-16/MODBUS','CRC-16/NRSC-5','CRC-16/OPENSAFETY-A','CRC-16/OPENSAFETY-B','CRC-16/PROFIBUS','CRC-16/RIELLO',
+                'CRC-16/SPI-FUJITSU','CRC-16/T10-DIF','CRC-16/TELEDISK','CRC-16/TMS37157','CRC-16/UMTS','CRC-16/USB','CRC-16/XMODEM']
+        elif get_width == "17":
+            new_algorithms = ['CRC-17/CAN-FD']
+        elif get_width == "21":
+            new_algorithms = ['CRC-21/CAN-FD']
+        elif get_width == "24":
+            new_algorithms = ['CRC-24/BLE','CRC-24/FLEXRAY-A','CRC-24/FLEXRAY-B','CRC-24/INTERLAKEN','CRC-24/LTE-A','CRC-24/LTE-B','CRC-24/OPENPGP','CRC-24/OS-9']
+        elif get_width == "30":
+            new_algorithms = ['CRC-30/CDMA']
+        elif get_width == "31":
+            new_algorithms = ['CRC-31/PHILIPS']
+        elif get_width == "32":
+            new_algorithms = ['CRC-32/AIXM','CRC-32/AUTOSAR','CRC-32/BASE91-D','CRC-32/BZIP2','CRC-32/CD-ROM-EDC','CRC-32/CKSUM','CRC-32/ISCSI','CRC-32/ISO-HDLC',
+                'CRC-32/JAMCRC','CRC-32/MEF','CRC-32/MPEG-2','CRC-32/XFER']
+        elif get_width == "40":
+            new_algorithms = ['CRC-40/GSM']
+        elif get_width == "64":
+            new_algorithms = ['CRC-64/ECMA-182','CRC-64/GO-ISO','CRC-64/MS','CRC-64/REDIS','CRC-64/WE','CRC-64/XZ']
+        elif get_width == "82":
+            new_algorithms = ['CRC-82/DARC']
+        else:
+            return            
+        self.comboBox_pd_crc_reveng_algorithm.addItems(new_algorithms)
+        
+    def _slotPD_CRC_RevEngAlgorithmChanged(self):
+        """ Updates the CRC RevEng widgets to the corresponding algorithm.
+        """
+        # Disable from a Custom Selection
+        self.textEdit_pd_crc_polynomial_reveng.setEnabled(False)
+        self.textEdit_pd_crc_seed_reveng.setEnabled(False)
+        self.textEdit_pd_crc_final_xor_reveng.setEnabled(False)
+        self.checkBox_pd_crc_reverse_input_reveng.setEnabled(False)
+        self.checkBox_pd_crc_reverse_final_xor_reveng.setEnabled(False)
+        self.textEdit_pd_crc_crc_reveng.setText("")
+            
+        # Switch on Algorithm
+        if self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-3/GSM":
+            self.textEdit_pd_crc_polynomial_reveng.setText("3")
+            self.textEdit_pd_crc_seed_reveng.setText("0")
+            self.textEdit_pd_crc_final_xor_reveng.setText("7")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)            
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-3/ROHC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("3")
+            self.textEdit_pd_crc_seed_reveng.setText("7")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-4/G-704":
+            self.textEdit_pd_crc_polynomial_reveng.setText("6")
+            self.textEdit_pd_crc_seed_reveng.setText("0")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-4/INTERLAKEN":
+            self.textEdit_pd_crc_polynomial_reveng.setText("3")
+            self.textEdit_pd_crc_seed_reveng.setText("F")
+            self.textEdit_pd_crc_final_xor_reveng.setText("F")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-5/EPC-C1G2":
+            self.textEdit_pd_crc_polynomial_reveng.setText("09")
+            self.textEdit_pd_crc_seed_reveng.setText("09")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-5/G-704":
+            self.textEdit_pd_crc_polynomial_reveng.setText("15")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-5/USB":
+            self.textEdit_pd_crc_polynomial_reveng.setText("05")
+            self.textEdit_pd_crc_seed_reveng.setText("1F")
+            self.textEdit_pd_crc_final_xor_reveng.setText("1F")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-6/CDMA2000-A":
+            self.textEdit_pd_crc_polynomial_reveng.setText("27")
+            self.textEdit_pd_crc_seed_reveng.setText("3F")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-6/CDMA2000-B":
+            self.textEdit_pd_crc_polynomial_reveng.setText("07")
+            self.textEdit_pd_crc_seed_reveng.setText("3F")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-6/DARC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("19")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-6/G-704":
+            self.textEdit_pd_crc_polynomial_reveng.setText("03")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-6/GSM":
+            self.textEdit_pd_crc_polynomial_reveng.setText("2F")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("3F")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-7/MMC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("09")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-7/ROHC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("4F")
+            self.textEdit_pd_crc_seed_reveng.setText("7F")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-7/UMTS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("45")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/AUTOSAR":
+            self.textEdit_pd_crc_polynomial_reveng.setText("2F")
+            self.textEdit_pd_crc_seed_reveng.setText("FF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/BLUETOOTH":
+            self.textEdit_pd_crc_polynomial_reveng.setText("A7")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/CDMA2000":
+            self.textEdit_pd_crc_polynomial_reveng.setText("9B")
+            self.textEdit_pd_crc_seed_reveng.setText("FF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/DARC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("39")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/DVB-S2":
+            self.textEdit_pd_crc_polynomial_reveng.setText("D5")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/GSM-A":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1D")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/GSM-B":
+            self.textEdit_pd_crc_polynomial_reveng.setText("49")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/HITAG":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1D")
+            self.textEdit_pd_crc_seed_reveng.setText("FF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/I-432-1":
+            self.textEdit_pd_crc_polynomial_reveng.setText("07")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("55")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/I-CODE":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1D")
+            self.textEdit_pd_crc_seed_reveng.setText("FD")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/LTE":
+            self.textEdit_pd_crc_polynomial_reveng.setText("9B")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/MAXIM-DOW":
+            self.textEdit_pd_crc_polynomial_reveng.setText("31")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/MIFARE-MAD":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1D")
+            self.textEdit_pd_crc_seed_reveng.setText("C7")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/NRSC-5":
+            self.textEdit_pd_crc_polynomial_reveng.setText("31")
+            self.textEdit_pd_crc_seed_reveng.setText("FF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/OPENSAFETY":
+            self.textEdit_pd_crc_polynomial_reveng.setText("2F")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/ROHC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("07")
+            self.textEdit_pd_crc_seed_reveng.setText("FF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/SAE-J1850":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1D")
+            self.textEdit_pd_crc_seed_reveng.setText("FF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/SMBUS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("07")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/TECH-3250":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1D")
+            self.textEdit_pd_crc_seed_reveng.setText("FF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-8/WCDMA":
+            self.textEdit_pd_crc_polynomial_reveng.setText("9B")
+            self.textEdit_pd_crc_seed_reveng.setText("00")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-10/ATM":
+            self.textEdit_pd_crc_polynomial_reveng.setText("233")
+            self.textEdit_pd_crc_seed_reveng.setText("000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-10/CDMA2000":
+            self.textEdit_pd_crc_polynomial_reveng.setText("3D9")
+            self.textEdit_pd_crc_seed_reveng.setText("3FF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-10/GSM":
+            self.textEdit_pd_crc_polynomial_reveng.setText("175")
+            self.textEdit_pd_crc_seed_reveng.setText("000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("3FF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-11/FLEXRAY":
+            self.textEdit_pd_crc_polynomial_reveng.setText("385")
+            self.textEdit_pd_crc_seed_reveng.setText("01A")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-11/UMTS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("307")
+            self.textEdit_pd_crc_seed_reveng.setText("000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-12/CDMA2000":
+            self.textEdit_pd_crc_polynomial_reveng.setText("F13")
+            self.textEdit_pd_crc_seed_reveng.setText("FFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-12/DECT":
+            self.textEdit_pd_crc_polynomial_reveng.setText("80F")
+            self.textEdit_pd_crc_seed_reveng.setText("000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-12/GSM":
+            self.textEdit_pd_crc_polynomial_reveng.setText("D31")
+            self.textEdit_pd_crc_seed_reveng.setText("000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-12/UMTS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("80F")
+            self.textEdit_pd_crc_seed_reveng.setText("000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-13/BBC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1CF5")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-14/DARC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("0805")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-14/GSM":
+            self.textEdit_pd_crc_polynomial_reveng.setText("202D")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("3FFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-15/CAN":
+            self.textEdit_pd_crc_polynomial_reveng.setText("4599")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-15/MPT1327":
+            self.textEdit_pd_crc_polynomial_reveng.setText("6815")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0001")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/ARC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("8005")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/CDMA2000":
+            self.textEdit_pd_crc_polynomial_reveng.setText("C867")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/CMS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("8005")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/DDS-110":
+            self.textEdit_pd_crc_polynomial_reveng.setText("8005")
+            self.textEdit_pd_crc_seed_reveng.setText("800D")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/DECT-R":
+            self.textEdit_pd_crc_polynomial_reveng.setText("0589")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0001")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/DECT-X":
+            self.textEdit_pd_crc_polynomial_reveng.setText("0589")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/DNP":
+            self.textEdit_pd_crc_polynomial_reveng.setText("3D65")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/EN-13757":
+            self.textEdit_pd_crc_polynomial_reveng.setText("3D65")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/GENIBUS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1021")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/GSM":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1021")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/IBM-3740":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1021")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/IBM-SDLC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1021")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/ISO-IEC-14443-3-A":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1021")
+            self.textEdit_pd_crc_seed_reveng.setText("C6C6")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/KERMIT":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1021")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/LJ1200":
+            self.textEdit_pd_crc_polynomial_reveng.setText("6F63")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/M17":
+            self.textEdit_pd_crc_polynomial_reveng.setText("5935")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/MAXIM-DOW":
+            self.textEdit_pd_crc_polynomial_reveng.setText("8005")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/MCRF4XX":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1021")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/MODBUS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("8005")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/NRSC-5":
+            self.textEdit_pd_crc_polynomial_reveng.setText("080B")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/OPENSAFETY-A":
+            self.textEdit_pd_crc_polynomial_reveng.setText("5935")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/OPENSAFETY-B":
+            self.textEdit_pd_crc_polynomial_reveng.setText("755B")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/PROFIBUS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1DCF")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/RIELLO":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1021")
+            self.textEdit_pd_crc_seed_reveng.setText("B2AA")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/SPI-FUJITSU":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1021")
+            self.textEdit_pd_crc_seed_reveng.setText("1D0F")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/T10-DIF":
+            self.textEdit_pd_crc_polynomial_reveng.setText("8BB7")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/TELEDISK":
+            self.textEdit_pd_crc_polynomial_reveng.setText("A097")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/TMS37157":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1021")
+            self.textEdit_pd_crc_seed_reveng.setText("89EC")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/UMTS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("8005")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/USB":
+            self.textEdit_pd_crc_polynomial_reveng.setText("8005")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-16/XMODEM":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1021")
+            self.textEdit_pd_crc_seed_reveng.setText("0000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-17/CAN-FD":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1685B")
+            self.textEdit_pd_crc_seed_reveng.setText("00000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-21/CAN-FD":
+            self.textEdit_pd_crc_polynomial_reveng.setText("102899")
+            self.textEdit_pd_crc_seed_reveng.setText("000000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-24/BLE":
+            self.textEdit_pd_crc_polynomial_reveng.setText("00065B")
+            self.textEdit_pd_crc_seed_reveng.setText("555555")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-24/FLEXRAY-A":
+            self.textEdit_pd_crc_polynomial_reveng.setText("5D6DCB")
+            self.textEdit_pd_crc_seed_reveng.setText("FEDCBA")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-24/FLEXRAY-B":
+            self.textEdit_pd_crc_polynomial_reveng.setText("5D6DCB")
+            self.textEdit_pd_crc_seed_reveng.setText("ABCDEF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-24/INTERLAKEN":
+            self.textEdit_pd_crc_polynomial_reveng.setText("328B63")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-24/LTE-A":
+            self.textEdit_pd_crc_polynomial_reveng.setText("864CFB")
+            self.textEdit_pd_crc_seed_reveng.setText("000000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-24/LTE-B":
+            self.textEdit_pd_crc_polynomial_reveng.setText("800063")
+            self.textEdit_pd_crc_seed_reveng.setText("000000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-24/OPENPGP":
+            self.textEdit_pd_crc_polynomial_reveng.setText("864CFB")
+            self.textEdit_pd_crc_seed_reveng.setText("B704CE")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-24/OS-9":
+            self.textEdit_pd_crc_polynomial_reveng.setText("800063")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-30/CDMA":
+            self.textEdit_pd_crc_polynomial_reveng.setText("2030B9C7")
+            self.textEdit_pd_crc_seed_reveng.setText("3FFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("3FFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-31/PHILIPS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("04C11DB7")
+            self.textEdit_pd_crc_seed_reveng.setText("7FFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("7FFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/AIXM":
+            self.textEdit_pd_crc_polynomial_reveng.setText("814141AB")
+            self.textEdit_pd_crc_seed_reveng.setText("00000000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/AUTOSAR":
+            self.textEdit_pd_crc_polynomial_reveng.setText("F4ACFB13")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/BASE91-D":
+            self.textEdit_pd_crc_polynomial_reveng.setText("A833982B")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/BZIP2":
+            self.textEdit_pd_crc_polynomial_reveng.setText("04C11DB7")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/CD-ROM-EDC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("8001801B")
+            self.textEdit_pd_crc_seed_reveng.setText("00000000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/CKSUM":
+            self.textEdit_pd_crc_polynomial_reveng.setText("04C11DB7")
+            self.textEdit_pd_crc_seed_reveng.setText("00000000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/ISCSI":
+            self.textEdit_pd_crc_polynomial_reveng.setText("1EDC6F41")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/ISO-HDLC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("04C11DB7")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/JAMCRC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("04C11DB7")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/MEF":
+            self.textEdit_pd_crc_polynomial_reveng.setText("741B8CD7")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/MPEG-2":
+            self.textEdit_pd_crc_polynomial_reveng.setText("04C11DB7")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-32/XFER":
+            self.textEdit_pd_crc_polynomial_reveng.setText("000000AF")
+            self.textEdit_pd_crc_seed_reveng.setText("00000000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("00000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-40/GSM":
+            self.textEdit_pd_crc_polynomial_reveng.setText("0004820009")
+            self.textEdit_pd_crc_seed_reveng.setText("0000000000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-64/ECMA-182":
+            self.textEdit_pd_crc_polynomial_reveng.setText("42F0E1EBA9EA3693")
+            self.textEdit_pd_crc_seed_reveng.setText("0000000000000000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000000000000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-64/GO-ISO":
+            self.textEdit_pd_crc_polynomial_reveng.setText("000000000000001B")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFFFFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFFFFFFFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-64/MS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("259C84CBA6426349")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFFFFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000000000000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-64/REDIS":
+            self.textEdit_pd_crc_polynomial_reveng.setText("AD93D23594C935A9")
+            self.textEdit_pd_crc_seed_reveng.setText("0000000000000000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("0000000000000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-64/WE":
+            self.textEdit_pd_crc_polynomial_reveng.setText("42F0E1EBA9EA3693")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFFFFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFFFFFFFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(False)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(False)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-64/XZ":
+            self.textEdit_pd_crc_polynomial_reveng.setText("42F0E1EBA9EA3693")
+            self.textEdit_pd_crc_seed_reveng.setText("FFFFFFFFFFFFFFFF")
+            self.textEdit_pd_crc_final_xor_reveng.setText("FFFFFFFFFFFFFFFF")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+        elif self.comboBox_pd_crc_reveng_algorithm.currentText() == "CRC-82/DARC":
+            self.textEdit_pd_crc_polynomial_reveng.setText("0308C0111011401440411")
+            self.textEdit_pd_crc_seed_reveng.setText("000000000000000000000")
+            self.textEdit_pd_crc_final_xor_reveng.setText("000000000000000000000")
+            self.checkBox_pd_crc_reverse_input_reveng.setChecked(True)
+            self.checkBox_pd_crc_reverse_final_xor_reveng.setChecked(True)
+            
+    def _slotPD_CRC_RevEngCalculateClicked(self):
+        """ Uses CRC RevEng to calculate the CRC for the selected algorithm.
+        """
+        # Get Input Parameters
+        get_algorithm = str(self.comboBox_pd_crc_reveng_algorithm.currentText())
+        get_input = str(self.textEdit_pd_crc_input_reveng.toPlainText())
+        
+        # Issue the Command
+        reveng_directory = os.path.expanduser("~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/")
+        proc = subprocess.Popen("./reveng -m " + get_algorithm + " -c " + get_input + " &", cwd=reveng_directory, shell=True, stdout=subprocess.PIPE, )
+        output = str(proc.communicate()[0].decode()).strip().upper()
                     
+        # Set the Output
+        self.textEdit_pd_crc_crc_reveng.setPlainText(output)
+        self.textEdit_pd_crc_crc_reveng.setAlignment(QtCore.Qt.AlignCenter)
+            
+            
                     
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
     def __init__(self):
