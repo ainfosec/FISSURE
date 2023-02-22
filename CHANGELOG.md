@@ -1,6 +1,20 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-02-22
+
+Links to FISSURE Videos.
+ 
+### Added
+
+- YouTube link to FISSURE Videos in Help menu
+- Video thumbnails and links in README
+- Comment about git submodule command in README
+  
+### Changed
+
+- idea_list.md content to reflect rejected GSoC status
+
 ## 2023-02-19
 
 CRC RevEng and development tools.
@@ -9,7 +23,7 @@ CRC RevEng and development tools.
 
 - htop to installer and Tools menu
 - OpenWebRX to installer and Tools menu for Python3 branches
-- guidus, Systemback, Arduino, Geany, QtDesigner, grip, TuneIn Explorer, WSPR Rocks! to Tools menu
+- guidus, Systemback, Arduino, Geany, QtDesigner, grip, TuneIn Explorer, WSPR Rocks!, wttr.in to Tools menu
 - Development and Weather categories to Tools menu
 - CRC RevEng to installer
 - CRC RevEng algorithms to Protocol Discovery (PD) CRC tab

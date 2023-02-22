@@ -1600,6 +1600,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionSystemback.triggered.connect(self._slotMenuSystembackClicked)
         self.actionOpenWebRX.triggered.connect(self._slotMenuOpenWebRX_Clicked)
         self.actionTuneIn_Explorer.triggered.connect(self._slotMenuTuneInExplorerClicked)
+        self.actionYouTube.triggered.connect(self._slotMenuYouTubeClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -23518,6 +23519,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Set the Output
         self.textEdit_pd_crc_crc_reveng.setPlainText(output)
         self.textEdit_pd_crc_crc_reveng.setAlignment(QtCore.Qt.AlignCenter)
+        
+    def _slotMenuYouTubeClicked(self):
+        """ Opens FISSURE Videos YouTube playlist in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://www.youtube.com/playlist?list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_ &")
             
             
                     

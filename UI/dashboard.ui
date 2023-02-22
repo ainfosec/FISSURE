@@ -27802,6 +27802,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionHelpBuiltWith"/>
     <addaction name="menuGitHub"/>
     <addaction name="actionDiscord"/>
+    <addaction name="actionYouTube"/>
     <addaction name="separator"/>
     <addaction name="actionHelpAbout"/>
    </widget>
@@ -29966,6 +29967,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionTuneIn_Explorer">
    <property name="text">
     <string>TuneIn Explorer</string>
+   </property>
+  </action>
+  <action name="actionYouTube">
+   <property name="text">
+    <string>YouTube</string>
    </property>
   </action>
  </widget>

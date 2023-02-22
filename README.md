@@ -55,7 +55,7 @@ git submodule update --init
 ./install
 ```
 
-This will install PyQt software dependencies required to launch the installation GUIs if they are not found. 
+This will install PyQt software dependencies required to launch the installation GUIs if they are not found. The git submodule command will download all missing GNU Radio out-of-tree modules from their repositories.
 
 Next, select the option that best matches your operating system (should be detected automatically if your OS matches an option).
 
@@ -137,13 +137,25 @@ More documentation will be released in the future on how to work within the fram
 
 ## Videos
 
-**More Coming Soon!**
+- [FISSURE Videos](https://www.youtube.com/playlist?list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_)
+- [AIS YouTube](https://www.youtube.com/@assuredinformationsecurity/featured)
 
 <table border="0px">
   <tr>
-    <td><a href="https://www.youtube.com/watch?v=1f2umEKhJvE"><img src="/Icons/README/GRCon22_Video.png" align="center" width="250" height="140"><dt align="center"><small><i><b>GRCon22</b></i></small></dt>
-    </td>
+    <td><a href="https://www.youtube.com/watch?v=PGIZHhLswXg&list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_"><img src="/Icons/README/youtube_install.png" align="center" width="250" height="140"><dt align="center"><small><i><b>Install</b></i></small></dt></td>
+    <td><a href="https://www.youtube.com/watch?v=k6JbpNsTazc&list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_"><img src="/Icons/README/youtube_tsi.png" align="center" width="250" height="140"><dt align="center"><small><i><b>Target Signal Identification</b></i></small></dt></td>
+    <td><a href="https://www.youtube.com/watch?v=aGhWxKWe6pI&list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_"><img src="/Icons/README/youtube_pd.png" align="center" width="250" height="140"><dt align="center"><small><i><b>Protocol Discovery</b></i></small></dt></td>
   </tr>
+  <tr>
+    <td><a href="https://www.youtube.com/watch?v=jeH0HtnMK10&list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_"><img src="/Icons/README/youtube_packet_crafter.png" align="center" width="250" height="140"><dt align="center"><small><i><b>Packet Crafter</b></i></small></dt></td>
+    <td><a href="https://www.youtube.com/watch?v=gKrClyGxLXY&list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_"><img src="/Icons/README/youtube_iq_data.png" align="center" width="250" height="140"><dt align="center"><small><i><b>IQ Data</b></i></small></dt></td>
+    <td><a href="https://www.youtube.com/watch?v=I8TU7boIi_U&list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_"><img src="/Icons/README/youtube_archive.png" align="center" width="250" height="140"><dt align="center"><small><i><b>Archive</b></i></small></dt></td>
+  </tr>
+  <tr>
+    <td><a href="https://www.youtube.com/watch?v=iJuMXupZkPY&list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_"><img src="/Icons/README/youtube_attack.png" align="center" width="250" height="140"><dt align="center"><small><i><b>Attack</b></i></small></dt></td>
+    <td><a href="https://www.youtube.com/watch?v=fK5h9FScwjc&list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_"><img src="/Icons/README/youtube_library.png" align="center" width="250" height="140"><dt align="center"><small><i><b>Library</b></i></small></dt></td>
+    <td><a href="https://www.youtube.com/watch?v=1f2umEKhJvE"><img src="/Icons/README/GRCon22_Video.png" align="center" width="250" height="140"><dt align="center"><small><i><b>GRCon22</b></i></small></dt></td>
+  </tr>      
 </table>
 
 ## Lessons
