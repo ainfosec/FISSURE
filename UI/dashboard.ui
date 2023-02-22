@@ -27867,6 +27867,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionHelpBuiltWith"/>
     <addaction name="menuGitHub"/>
     <addaction name="actionDiscord"/>
+    <addaction name="actionYouTube"/>
     <addaction name="separator"/>
     <addaction name="actionHelpAbout"/>
    </widget>
@@ -30006,6 +30007,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionOpenWebRX">
    <property name="text">
     <string>OpenWebRX</string>
+   </property>
+  </action>
+  <action name="actionYouTube">
+   <property name="text">
+    <string>YouTube</string>
    </property>
   </action>
  </widget>
