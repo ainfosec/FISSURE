@@ -1,11 +1,19 @@
 SOI_quantity_limit: 5
-SOI_trigger_mode: 0
+SOI_trigger_mode: '0'
 SOI_trigger_time: 0
 SOI_trigger_timeout: 10
 buffer_size_interval: 2
 clear_log_file_on_startup: true
 dashboard_hiprfisr_dealer_port: 5051
 dashboard_pub_port: 5057
+dataset_freq_shift_max: 10000
+dataset_freq_shift_min: 0
+dataset_noise_max: 0.1
+dataset_noise_min: 0
+dataset_phase_rot_max: 0.1
+dataset_phase_rot_min: 0
+dataset_scale_max: 1
+dataset_scale_min: 0.2
 disabled_running_flow_graph_variables:
 - ip_address
 - tx_usrp_channel

@@ -23,6 +23,15 @@ morse_code_between_letter_spacing: 3
 morse_code_between_word_spacing: 7
 moving_avg_points: 5
 
+dataset_noise_min: 0
+dataset_noise_max: 0.1
+dataset_phase_rot_min: 0
+dataset_phase_rot_max: 0.1
+dataset_scale_min: 0.2
+dataset_scale_max: 1
+dataset_freq_shift_min: 0
+dataset_freq_shift_max: 10000
+
 hardware_tsi: ''
 hardware_pd: ''
 hardware_attack: ''

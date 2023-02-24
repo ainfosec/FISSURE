@@ -54,6 +54,7 @@ import crcmod
 from PyQt5.QtCore import pyqtSignal
 import json
 import datetime
+import csv
 logging.getLogger('matplotlib').setLevel(logging.WARNING) 
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__)) + '/Flow Graph Library/Sniffer Flow Graphs')
@@ -568,7 +569,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self._slotArchiveDownloadFoldersChanged()
         self.populateArchive()
         self.label_archive_replay_status.setVisible(False)
-        self.tableWidget_archive_replay.setColumnHidden(9,True) 
+        self.tableWidget_archive_replay.setColumnHidden(9,True)
+        self.progressBar_archive_datasets.setVisible(False)
         
         
         ##### Log #####   
@@ -1197,7 +1199,17 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_archive_replay_up.clicked.connect(self._slotArchiveReplayUpClicked)
         self.pushButton_archive_replay_down.clicked.connect(self._slotArchiveReplayDownClicked)
         self.pushButton_archive_replay_start.clicked.connect(self._slotArchiveReplayStartClicked)
-        
+        self.pushButton_archive_datasets_add.clicked.connect(self._slotArchiveDatasetsAddClicked)
+        self.pushButton_archive_datasets_import.clicked.connect(self._slotArchiveDatasetsImportClicked)
+        self.pushButton_archive_datasets_options.clicked.connect(self._slotArchiveDatasetsOptionsClicked)
+        self.pushButton_archive_datasets_remove.clicked.connect(self._slotArchiveDatasetsRemoveClicked)
+        self.pushButton_archive_datasets_remove_all.clicked.connect(self._slotArchiveDatasetsRemoveAllClicked)
+        self.pushButton_archive_datasets_start.clicked.connect(self._slotArchiveDatasetsStartClicked)
+        self.pushButton_archive_datasets_export.clicked.connect(self._slotArchiveDatasetsExportClicked)
+        self.pushButton_archive_datasets_import_csv.clicked.connect(self._slotArchiveDatasetsImportCSV_Clicked)
+        self.pushButton_archive_datasets_view.clicked.connect(self._slotArchiveDatasetsViewClicked)
+        self.pushButton_archive_datasets_open_folder.clicked.connect(self._slotArchiveDatasetsOpenFolderClicked)
+
         self.pushButton_log_refresh.clicked.connect(self._slotLogRefreshClicked)
         self.pushButton_log_refresh_permit.clicked.connect(self._slotLogRefreshPermitClicked)
         self.pushButton_log_save_all.clicked.connect(self._slotLogSaveAllClicked) 
@@ -1270,6 +1282,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_attack_packet_editor.cellChanged.connect(self._slotPacketItemChanged)
         self.tableWidget_attack_fuzzing_data_field.cellChanged.connect(self._slotAttackFuzzingItemChanged)   
         self.tableWidget_pd_bit_viewer_hex.horizontalHeader().sectionClicked.connect(self._slotPD_BitViewerColumnClicked)  
+        self.tableWidget_archive_datasets.horizontalHeader().sectionClicked.connect(self._slotArchiveDatasetsColumnClicked)
         
         # Labels
         self.label_iq_end.mousePressEvent = self._slotIQ_EndLabelClicked
@@ -17504,6 +17517,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             file_names = sorted(file_names)
             for n in file_names:
                 self.listWidget_archive_download_files.addItem(n)
+        if self.listWidget_archive_download_files.count() > 0:
+            self.listWidget_archive_download_files.setCurrentRow(0)
                 
     def _slotArchiveDownloadRefreshClicked(self):
         """ Reloads the files in the current Archive folder
@@ -18236,6 +18251,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Add Only on Replay
         if self.tabWidget_archive.currentIndex() == 1:
             self._slotArchiveReplayAddClicked()
+            
+        # Add on Datasets
+        elif self.tabWidget_archive.currentIndex() == 2:
+            self._slotArchiveDatasetsAddClicked()
             
     def _slotMenuFileExitClicked(self):
         """ Exits FISSURE
@@ -23535,13 +23554,333 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.textEdit_pd_crc_crc_reveng.setPlainText(output)
         self.textEdit_pd_crc_crc_reveng.setAlignment(QtCore.Qt.AlignCenter)
         
-        
     def _slotMenuYouTubeClicked(self):
         """ Opens FISSURE Videos YouTube playlist in a browser.
         """
         # Open a Browser
         os.system("sensible-browser https://www.youtube.com/playlist?list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_ &")
         
+    def _slotArchiveDatasetsAddClicked(self,filepath=None):
+        """ Adds a selected archive file to the Datasets table.
+        """
+        # Get File
+        if (filepath == None) or (filepath == False) :
+            get_archive_file = str(self.listWidget_archive_download_files.currentItem().text())
+            get_archive_folder = str(self.comboBox_archive_download_folder.currentText()) + '/'
+        else:
+            get_archive_file = str(filepath).rsplit("/",1)[1]
+            get_archive_folder = str(filepath).rsplit("/",1)[0] + '/'     
+        
+        get_archives = [archive for archive in self.pd_library['Archive']]
+        
+        for n in range(0,len(get_archives)):
+            # Get File Info
+            get_file = str(get_archives[n])
+            if get_archive_file == get_file:
+                # Archive Lookup
+                get_sample_rate = str(self.pd_library['Archive'][get_archives[n]]['Sample Rate'])
+                get_tuned_frequency = str(self.pd_library['Archive'][get_archives[n]]['Tuned Frequency'])
+
+                # Set the Value in the Table
+                self.tableWidget_archive_datasets.setRowCount(self.tableWidget_archive_datasets.rowCount()+1)
+                folder_item = QtWidgets.QTableWidgetItem(get_archive_folder + get_archive_file)
+                folder_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,0,folder_item) 
+                sample_rate_item = QtWidgets.QTableWidgetItem(get_sample_rate)
+                sample_rate_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,1,sample_rate_item) 
+                tuned_frequency_item = QtWidgets.QTableWidgetItem(get_tuned_frequency)
+                tuned_frequency_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,2,tuned_frequency_item)
+                
+                # Generate Values in the Tables
+                noise_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_noise_min']),float(self.dashboard_settings_dictionary['dataset_noise_max']))
+                noise_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(noise_value))
+                noise_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                noise_item.setCheckState(QtCore.Qt.Unchecked)
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,3,noise_item)
+                phase_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_phase_rot_min']),float(self.dashboard_settings_dictionary['dataset_phase_rot_max']))
+                phase_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(phase_value))
+                phase_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                phase_item.setCheckState(QtCore.Qt.Unchecked)
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,4,phase_item)
+                scale_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_scale_min']),float(self.dashboard_settings_dictionary['dataset_scale_max']))
+                scale_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(scale_value))
+                scale_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                scale_item.setCheckState(QtCore.Qt.Unchecked)
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,5,scale_item)
+                freq_shift_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_freq_shift_min']),float(self.dashboard_settings_dictionary['dataset_freq_shift_max']))
+                freq_shift_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(freq_shift_value))
+                freq_shift_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                freq_shift_item.setCheckState(QtCore.Qt.Unchecked)
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,6,freq_shift_item)
+                sigmf_item = QtWidgets.QTableWidgetItem("" )
+                sigmf_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                sigmf_item.setFlags(sigmf_item.flags() & ~QtCore.Qt.ItemIsEditable)
+                sigmf_item.setFlags(sigmf_item.flags() & ~QtCore.Qt.ItemIsEnabled)
+                sigmf_item.setCheckState(QtCore.Qt.Unchecked)
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,7,sigmf_item)
+                                
+                # Resize the Table
+                self.tableWidget_archive_datasets.resizeColumnsToContents() 
+                self.tableWidget_archive_datasets.resizeRowsToContents()  
+                self.tableWidget_archive_datasets.horizontalHeader().setStretchLastSection(False) 
+                self.tableWidget_archive_datasets.horizontalHeader().setStretchLastSection(True) 
+                
+                # Enable PushButton
+                self.pushButton_archive_datasets_start.setEnabled(True) 
+                
+                return
+                
+        # Add File not Found in Archive
+        self.tableWidget_archive_datasets.setRowCount(self.tableWidget_archive_datasets.rowCount()+1)
+        folder_item = QtWidgets.QTableWidgetItem(get_archive_folder + get_archive_file)
+        folder_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,0,folder_item) 
+        sample_rate_item = QtWidgets.QTableWidgetItem("")
+        sample_rate_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,1,sample_rate_item)  
+        tuned_frequency_item = QtWidgets.QTableWidgetItem("")
+        tuned_frequency_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,2,tuned_frequency_item)  
+        
+        # Generate Values in the Tables
+        noise_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_noise_min']),float(self.dashboard_settings_dictionary['dataset_noise_max']))
+        noise_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(noise_value))
+        noise_item.setTextAlignment(QtCore.Qt.AlignCenter)
+        noise_item.setCheckState(QtCore.Qt.Unchecked)
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,3,noise_item)
+        phase_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_phase_rot_min']),float(self.dashboard_settings_dictionary['dataset_phase_rot_max']))
+        phase_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(phase_value))
+        phase_item.setTextAlignment(QtCore.Qt.AlignCenter)
+        phase_item.setCheckState(QtCore.Qt.Unchecked)
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,4,phase_item)
+        scale_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_scale_min']),float(self.dashboard_settings_dictionary['dataset_scale_max']))
+        scale_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(scale_value))
+        scale_item.setTextAlignment(QtCore.Qt.AlignCenter)
+        scale_item.setCheckState(QtCore.Qt.Unchecked)
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,5,scale_item)
+        freq_shift_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_freq_shift_min']),float(self.dashboard_settings_dictionary['dataset_freq_shift_max']))
+        freq_shift_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(freq_shift_value))
+        freq_shift_item.setTextAlignment(QtCore.Qt.AlignCenter)
+        freq_shift_item.setFlags(freq_shift_item.flags() & ~QtCore.Qt.ItemIsEnabled)
+        freq_shift_item.setCheckState(QtCore.Qt.Unchecked)
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,6,freq_shift_item)
+        sigmf_item = QtWidgets.QTableWidgetItem("" )
+        sigmf_item.setTextAlignment(QtCore.Qt.AlignCenter)
+        sigmf_item.setFlags(sigmf_item.flags() & ~QtCore.Qt.ItemIsEditable)
+        sigmf_item.setFlags(sigmf_item.flags() & ~QtCore.Qt.ItemIsEnabled)
+        sigmf_item.setCheckState(QtCore.Qt.Unchecked)
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,7,sigmf_item)
+                
+        # Resize the Table
+        self.tableWidget_archive_datasets.resizeColumnsToContents() 
+        self.tableWidget_archive_datasets.resizeRowsToContents()  
+        self.tableWidget_archive_datasets.horizontalHeader().setStretchLastSection(False) 
+        self.tableWidget_archive_datasets.horizontalHeader().setStretchLastSection(True) 
+        
+        # Enable PushButton
+        self.pushButton_archive_datasets_start.setEnabled(True) 
+        
+    def _slotArchiveDatasetsImportClicked(self):
+        """ Opens a file dialog to select IQ files for the Datasets table.
+        """
+        # Choose File
+        get_archive_folder = str(self.comboBox_archive_download_folder.currentText()) + '/'
+        fname = QtWidgets.QFileDialog.getOpenFileNames(None,"Select IQ File...", get_archive_folder, filter="All Files (*)")
+        if fname != "":
+            for n in fname[0]:
+                self._slotArchiveDatasetsAddClicked(filepath=n)
+        
+    def _slotArchiveDatasetsOptionsClicked(self):
+        """ Opens the Options dialog to change the settings for the Dataset Builder.
+        """
+        self._slotMenuOptionsClicked()
+        
+    def _slotArchiveDatasetsRemoveClicked(self):
+        """ Removes a row from the Archive Datasets table.
+        """                                                                      
+        # Remove from the TableWidget
+        get_current_row = self.tableWidget_archive_datasets.currentRow()
+        self.tableWidget_archive_datasets.removeRow(get_current_row)
+        if get_current_row == 0:
+            self.tableWidget_archive_datasets.setCurrentCell(0,0)
+        else:
+            self.tableWidget_archive_datasets.setCurrentCell(get_current_row-1,0)
+                
+        # Disable PushButtons
+        if self.tableWidget_archive_datasets.rowCount() < 1:
+            self.pushButton_archive_datasets_start.setEnabled(False) 
+        
+    def _slotArchiveDatasetsRemoveAllClicked(self):
+        """ Removes all the rows in the Dataset Builder table.
+        """
+        # Remove all Rows
+        for row in reversed(range(0,self.tableWidget_archive_datasets.rowCount())):
+            self.tableWidget_archive_datasets.removeRow(row)  
+                
+        # Disable PushButtons
+        self.pushButton_archive_datasets_start.setEnabled(False) 
+        
+    def _slotArchiveDatasetsStartClicked(self):
+        """ Inputs the checked values in the table into the Dataset Builder flow graph.
+        """
+        # Stop Generating Datasets
+        if self.pushButton_archive_datasets_start.text() == "Stop":
+            self.stop_operations = True
+            self.pushButton_archive_datasets_start.setText("Start")
+            self.progressBar_archive_datasets.setVisible(False)
+            
+        # Start Generating Datasets
+        elif self.pushButton_archive_datasets_start.text() == "Start":
+            self.pushButton_archive_datasets_start.setText("Stop")
+            self.progressBar_archive_datasets.setValue(1)
+            self.progressBar_archive_datasets.setVisible(True)
+            
+            # Run the Flow Graph
+            archive_flow_graph = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/Archive\ Flow\ Graphs/dataset_builder.py"
+            now = datetime.datetime.now()
+            now = now.strftime("%Y-%m-%d %H:%M:%S").replace(' ','_')
+            get_new_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Archive/Datasets/" + now
+            os.system("mkdir " + get_new_filepath)
+            self.stop_operations = False
+            for row in range(self.tableWidget_archive_datasets.rowCount()):
+                # Get Values
+                get_filepath = str(self.tableWidget_archive_datasets.item(row,0).text())
+                get_sample_rate = str(self.tableWidget_archive_datasets.item(row,1).text())
+                get_frequency = str(self.tableWidget_archive_datasets.item(row,2).text())
+                if int(self.tableWidget_archive_datasets.item(row,3).checkState()) == 2:
+                    get_noise = str(self.tableWidget_archive_datasets.item(row,3).text())
+                else:
+                    get_noise = "0"
+                if int(self.tableWidget_archive_datasets.item(row,4).checkState()) == 2:
+                    get_phase_rot = str(self.tableWidget_archive_datasets.item(row,4).text())
+                else:
+                    get_phase_rot = "0"
+                if int(self.tableWidget_archive_datasets.item(row,5).checkState()) == 2:
+                    get_scale = str(self.tableWidget_archive_datasets.item(row,5).text())
+                else:
+                    get_scale = "1"
+                if int(self.tableWidget_archive_datasets.item(row,6).checkState()) == 2:
+                    get_freq_shift = str(self.tableWidget_archive_datasets.item(row,6).text())
+                else:
+                    get_freq_shift = "0"
+                if int(self.tableWidget_archive_datasets.item(row,7).checkState()) == 2:
+                    get_sigmf = True
+                else:
+                    get_sigmf = False
+                                
+                self.loop = True
+                self.loadthread = OperationsThread("python3 " + archive_flow_graph + " --filepath '" + get_filepath \
+                    + "' --sample-rate " + get_sample_rate + " --frequency " + get_frequency + " --noise " + get_noise \
+                    + " --phase-rot " + get_phase_rot + " --scale " + get_scale + " --freq-shift " + get_freq_shift \
+                    + " --new-filepath " + get_new_filepath + "/" + now + "_" + str(row), get_new_filepath, self)                        
+                self.loadthread.finished.connect(self.on_finished)
+                self.loadthread.start()
+                while self.loop == True:
+                    QtWidgets.QApplication.processEvents()
+                    time.sleep(0.1)
+                    if self.stop_operations == True:
+                        break
+                self.progressBar_archive_datasets.setValue(1+int(float(row+1)/float(self.tableWidget_archive_datasets.rowCount())*99))
+                
+            self.progressBar_archive_datasets.setValue(100)
+            self.pushButton_archive_datasets_start.setText("Start")
+            time.sleep(1)
+            self.progressBar_archive_datasets.setVisible(False)
+
+                
+    @QtCore.pyqtSlot()
+    def on_finished(self):
+        """ Proceed to the operation.
+        """
+        self.loop = False
+        
+    def _slotArchiveDatasetsExportClicked(self):  
+        """ Exports the contents of the Datasets table to a CSV.
+        """
+        # Choose File Location
+        get_archive_folder = os.path.dirname(os.path.realpath(__file__)) + "/Archive/Datasets" 
+        path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save CSV', get_archive_folder, filter='CSV (*.csv)')
+        if len(path[0]) > 0:
+            columns = range(self.tableWidget_archive_datasets.columnCount())
+            with open(path[0], 'w') as csvfile:
+                writer = csv.writer(csvfile, dialect='excel', lineterminator='\n')
+                for row in range(self.tableWidget_archive_datasets.rowCount()):
+                    row_text = []
+                    for column in columns:
+                        try:
+                            get_text = str(self.tableWidget_archive_datasets.item(row, column).text())
+                            if column > 2:
+                                get_checked_state = str(self.tableWidget_archive_datasets.item(row, column).checkState())
+                                get_text = get_checked_state + ':' + get_text
+                        except:
+                            get_text = ""
+                        row_text.append(get_text)
+                    writer.writerow(row_text)
+                    
+    def _slotArchiveDatasetsImportCSV_Clicked(self):
+        """ Loads a .csv file into the Dataset Builder table.
+        """
+        # Choose File
+        get_archive_folder = os.path.dirname(os.path.realpath(__file__)) + "/Archive/Datasets" 
+        fname = QtWidgets.QFileDialog.getOpenFileNames(None,"Select CSV File...", get_archive_folder, filter="CSV (*.csv)")
+        if fname != "":
+            r = self.tableWidget_archive_datasets.rowCount()
+            for n in fname[0]:
+                with open(n, "r") as fileInput:
+                    for row in csv.reader(fileInput):
+                        self.tableWidget_archive_datasets.setRowCount(self.tableWidget_archive_datasets.rowCount() + 1)
+                        for c in range(0,len(row)):
+                            if c > 2:
+                                get_text = row[c].split(':',1)[1]
+                                get_checked_state = int(row[c].split(':',1)[0])
+                                new_item = QtWidgets.QTableWidgetItem(get_text)
+                                new_item.setCheckState(get_checked_state)
+                                if c > 6:
+                                    new_item.setFlags(new_item.flags() & ~QtCore.Qt.ItemIsEnabled)
+                            else:
+                                get_text = row[c]
+                                new_item = QtWidgets.QTableWidgetItem(get_text)
+                            new_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                            self.tableWidget_archive_datasets.setItem(r,c,new_item)
+                        r = r+1
+                        
+        # Resize the Table
+        self.tableWidget_archive_datasets.resizeColumnsToContents() 
+        self.tableWidget_archive_datasets.resizeRowsToContents()  
+        self.tableWidget_archive_datasets.horizontalHeader().setStretchLastSection(False) 
+        self.tableWidget_archive_datasets.horizontalHeader().setStretchLastSection(True) 
+        
+        # Enable PushButton
+        self.pushButton_archive_datasets_start.setEnabled(True)
+        
+    def _slotArchiveDatasetsColumnClicked(self,col):
+        """ Checks/unchecks all items in a column for the Dataset Builder table.
+        """
+        # Toggle the State
+        if col > 2:
+            get_check_state = self.tableWidget_archive_datasets.item(0,col).checkState()
+            for row in range(0,self.tableWidget_archive_datasets.rowCount()):
+                if get_check_state == 0:
+                    self.tableWidget_archive_datasets.item(row,col).setCheckState(2)
+                else:
+                    self.tableWidget_archive_datasets.item(row,col).setCheckState(0)
+                    
+    def _slotArchiveDatasetsViewClicked(self):
+        """ Opens the flow graph used to apply changes to the IQ files listed the Dataset Builder table.
+        """            
+        # Open the Flow Graph in GNU Radio Companion
+        flow_graph_filepath = os.path.dirname(os.path.abspath(__file__)) + "/Flow Graph Library/Archive Flow Graphs/dataset_builder.grc"
+        osCommandString = 'gnuradio-companion "' + flow_graph_filepath + '"'
+        os.system(osCommandString+ " &")
+        
+    def _slotArchiveDatasetsOpenFolderClicked(self):
+        """ Opens the folder where datasets gets stored by default.
+        """
+        # Open the Folder
+        folder_filepath = os.path.dirname(os.path.abspath(__file__)) + "/Archive/Datasets/"
+        os.system("nautilus '" + folder_filepath + "' &")
         
     
 
@@ -25298,6 +25637,21 @@ class OptionsDialog(QtWidgets.QDialog, form_class3):
         # Return Something
         self.return_value = "Ok"
         self.close()
+        
+
+class OperationsThread(QtCore.QThread):
+    def __init__(self, cmd, get_cwd, parent=None):
+        QtCore.QThread.__init__(self, parent)
+        self.cmd = cmd
+        self.get_cwd = get_cwd
+
+    def run(self):
+        try:
+            p1 = subprocess.Popen(self.cmd, shell=True, cwd=self.get_cwd) 
+            (output, err) = p1.communicate()
+            p1.wait()
+        except:
+            print("FAILURE")
                   
             
 def main(argv):

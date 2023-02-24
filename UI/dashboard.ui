@@ -22544,6 +22544,333 @@ p, li { white-space: pre-wrap; }
               </column>
              </widget>
             </widget>
+            <widget class="QWidget" name="tab_5">
+             <attribute name="title">
+              <string>Datasets</string>
+             </attribute>
+             <widget class="QLabel" name="label_209">
+              <property name="geometry">
+               <rect>
+                <x>5</x>
+                <y>10</y>
+                <width>890</width>
+                <height>20</height>
+               </rect>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>22</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Ubuntu</family>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <italic>false</italic>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true">QLabel#label_209 {
+   qproperty-alignment: AlignCenter;
+	border: 1px solid #17365D;
+	border-top-left-radius: 15px;
+	border-top-right-radius: 15px;
+	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
+	padding: 0px 0px;
+	color: rgb(255, 255, 255);
+	max-height: 20px;
+    font: bold 10pt &quot;Ubuntu&quot;;
+}</string>
+              </property>
+              <property name="text">
+               <string>Dataset Builder</string>
+              </property>
+              <property name="scaledContents">
+               <bool>false</bool>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="margin">
+               <number>0</number>
+              </property>
+             </widget>
+             <widget class="QTableWidget" name="tableWidget_archive_datasets">
+              <property name="geometry">
+               <rect>
+                <x>5</x>
+                <y>30</y>
+                <width>890</width>
+                <height>700</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="styleSheet">
+               <string notr="true"/>
+              </property>
+              <property name="selectionBehavior">
+               <enum>QAbstractItemView::SelectRows</enum>
+              </property>
+              <attribute name="horizontalHeaderDefaultSectionSize">
+               <number>100</number>
+              </attribute>
+              <attribute name="horizontalHeaderStretchLastSection">
+               <bool>true</bool>
+              </attribute>
+              <attribute name="verticalHeaderVisible">
+               <bool>false</bool>
+              </attribute>
+              <column>
+               <property name="text">
+                <string>Filepath</string>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Sample Rate</string>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Frequency</string>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Noise</string>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Phase Rot.</string>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Scale</string>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>Freq. Shift</string>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
+                <string>SigMF</string>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+              </column>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_add">
+              <property name="geometry">
+               <rect>
+                <x>15</x>
+                <y>735</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>&gt;&gt; Add ^^</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_import">
+              <property name="geometry">
+               <rect>
+                <x>120</x>
+                <y>735</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Import Files</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_import_csv">
+              <property name="geometry">
+               <rect>
+                <x>225</x>
+                <y>735</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Import CSV</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_export">
+              <property name="geometry">
+               <rect>
+                <x>330</x>
+                <y>735</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Export CSV</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_remove">
+              <property name="geometry">
+               <rect>
+                <x>435</x>
+                <y>735</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Remove</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_remove_all">
+              <property name="geometry">
+               <rect>
+                <x>540</x>
+                <y>735</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Remove All</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_view">
+              <property name="geometry">
+               <rect>
+                <x>645</x>
+                <y>735</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>View FG</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_open_folder">
+              <property name="geometry">
+               <rect>
+                <x>750</x>
+                <y>735</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Open Folder</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_options">
+              <property name="geometry">
+               <rect>
+                <x>15</x>
+                <y>765</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Options</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_start">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="geometry">
+               <rect>
+                <x>780</x>
+                <y>775</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Start</string>
+              </property>
+             </widget>
+             <widget class="QProgressBar" name="progressBar_archive_datasets">
+              <property name="geometry">
+               <rect>
+                <x>250</x>
+                <y>780</y>
+                <width>400</width>
+                <height>23</height>
+               </rect>
+              </property>
+              <property name="value">
+               <number>0</number>
+              </property>
+             </widget>
+            </widget>
            </widget>
            <widget class="QFrame" name="frame_13">
             <property name="geometry">
