@@ -1,6 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-02-24
+
+Dataset builder in Archive tab.
+ 
+### Added
+
+- Dataset tab in Archive tab for altering IQ files in a reproducible way
+- dataset_builder flow graph for creating altered IQ files
+
 ## 2023-02-22
 
 Links to FISSURE Videos.

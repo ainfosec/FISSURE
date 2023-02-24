@@ -498,6 +498,86 @@
       <attribute name="verticalHeaderStretchLastSection">
        <bool>false</bool>
       </attribute>
+      <row>
+       <property name="text">
+        <string>dataset_noise_min</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>dataset_noise_max</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>dataset_phase_rot_min</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>dataset_phase_rot_max</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>dataset_scale_min</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>dataset_scale_max</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>dataset_freq_shift_min</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>dataset_freq_shift_max</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
       <column>
        <property name="text">
         <string/>
