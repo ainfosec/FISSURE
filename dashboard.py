@@ -1201,6 +1201,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.pushButton_archive_replay_up.clicked.connect(self._slotArchiveReplayUpClicked)
         self.pushButton_archive_replay_down.clicked.connect(self._slotArchiveReplayDownClicked)
         self.pushButton_archive_replay_start.clicked.connect(self._slotArchiveReplayStartClicked)
+        self.pushButton_archive_replay_import_csv.clicked.connect(self._slotArchiveReplayImportCSV_Clicked)
+        self.pushButton_archive_replay_export_csv.clicked.connect(self._slotArchiveReplayExportCSV_Clicked)
+        self.pushButton_archive_replay_remove_all.clicked.connect(self._slotArchiveReplayRemoveAllClicked)
         self.pushButton_archive_datasets_add.clicked.connect(self._slotArchiveDatasetsAddClicked)
         self.pushButton_archive_datasets_import.clicked.connect(self._slotArchiveDatasetsImportClicked)
         self.pushButton_archive_datasets_options.clicked.connect(self._slotArchiveDatasetsOptionsClicked)
@@ -17255,7 +17258,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.listWidget_archive_download_files.addItem(n)
         if self.listWidget_archive_download_files.count() > 0:
             self.listWidget_archive_download_files.setCurrentRow(0)
-                
+
     def _slotArchiveDownloadRefreshClicked(self):
         """ Reloads the files in the current Archive folder
         """
@@ -17264,6 +17267,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
             get_folder = str(self.comboBox_archive_download_folder.currentText())
                 
             # Get the Files for the Listbox
+            try:
+                get_row = self.listWidget_archive_download_files.currentRow()
+            except:
+                get_row = -1
             self.listWidget_archive_download_files.clear()
             temp_names = []
             for fname in os.listdir(get_folder):
@@ -17276,9 +17283,13 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.listWidget_archive_download_files.addItem(n)
                     
             # Set the Listbox Selection
-            self.listWidget_archive_download_files.setCurrentRow(0)
+            if (get_row >= 0) and (get_row < self.listWidget_archive_download_files.count()-1):
+                self.listWidget_archive_download_files.setCurrentRow(get_row)
+            else:
+                self.listWidget_archive_download_files.setCurrentRow(self.listWidget_archive_download_files.count()-1)
         except:
             pass
+
             
     def _slotArchiveDownloadDeleteClicked(self):
         """ Deletes an IQ file from the Archive downloaded list.
@@ -17724,17 +17735,21 @@ class MainWindow(QtGui.QMainWindow, form_class):
         
         # Enable PushButton
         self.pushButton_archive_replay_start.setEnabled(True)                 
-                
+            
     def _slotArchiveReplayRemoveClicked(self):
         """ Removes a row from the Archive playlist table.
-        """                                                                      
+        """
         # Remove from the TableWidget
-        self.tableWidget_archive_replay.removeRow(self.tableWidget_archive_replay.currentRow())
-        self.tableWidget_archive_replay.setCurrentCell(self.tableWidget_archive_replay.rowCount()-1,0)
+        get_current_row = self.tableWidget_archive_replay.currentRow()
+        self.tableWidget_archive_replay.removeRow(get_current_row)
+        if get_current_row == 0:
+            self.tableWidget_archive_replay.setCurrentCell(0,0)
+        else:
+            self.tableWidget_archive_replay.setCurrentCell(get_current_row-1,0)
                 
         # Disable PushButtons
         if self.tableWidget_archive_replay.rowCount() < 1:
-            self.pushButton_archive_replay_start.setEnabled(False) 
+            self.pushButton_archive_replay_start.setEnabled(False)
             
     def _slotArchiveReplayUpClicked(self):
         """ Moves the selected row up in the Archive playlist table.
@@ -23762,7 +23777,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         if fname != "":
             r = self.tableWidget_archive_datasets.rowCount()
             for n in fname:
-                with open(n, "rb") as fileInput:
+                with open(n, "r") as fileInput:
                     for row in csv.reader(fileInput):
                         self.tableWidget_archive_datasets.setRowCount(self.tableWidget_archive_datasets.rowCount() + 1)
                         for c in range(0,len(row)):
@@ -23815,7 +23830,98 @@ class MainWindow(QtGui.QMainWindow, form_class):
         folder_filepath = os.path.dirname(os.path.abspath(__file__)) + "/Archive/Datasets/"
         os.system("nautilus '" + folder_filepath + "' &")
 
-
+    def _slotArchiveReplayImportCSV_Clicked(self):
+        """ Imports a CSV file to populate the playlist table.
+        """
+        # Choose File
+        get_archive_folder = os.path.dirname(os.path.realpath(__file__)) + "/Archive/Playlists" 
+        fname = QtGui.QFileDialog.getOpenFileNames(None,"Select CSV File...", get_archive_folder, filter="CSV (*.csv)")
+        if fname != "":
+            r = self.tableWidget_archive_replay.rowCount()
+            for n in fname:
+                csv_row = 0
+                with open(n, "r") as fileInput:
+                    for row in csv.reader(fileInput):
+                        if csv_row == 0:
+                            get_hardware = row[0]
+                            if get_hardware == "Computer":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "Computer"
+                            elif get_hardware == "USRP X3x0":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "USRP X3x0"
+                            elif get_hardware == "USRP B2x0":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "USRP B2x0"
+                            elif get_hardware == "HackRF":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "HackRF"
+                            elif get_hardware == "RTL2832U":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "RTL2832U"
+                            elif get_hardware == "802.11x Adapter":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "802.11x Adapter"
+                            elif get_hardware == "USRP B20xmini":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "USRP B20xmini"
+                            elif get_hardware == "LimeSDR":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "LimeSDR"
+                            elif get_hardware == "bladeRF":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "bladeRF"
+                            elif get_hardware == "Open Sniffer":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "Open Sniffer"
+                            elif get_hardware == "PlutoSDR":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "PlutoSDR"
+                            elif get_hardware == "USRP2":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "USRP2"
+                            elif get_hardware == "USRP N2xx":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "USRP N2xx"
+                            elif get_hardware == "bladeRF 2.0":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "bladeRF 2.0"
+                            self.configureArchiveHardware()
+                        else:
+                            self._slotArchiveReplayAddClicked()
+                            for c in range(0,len(row)):
+                                get_text = row[c]
+                                # Channel
+                                if c == 6:
+                                    self.tableWidget_archive_replay.cellWidget(r,c).setCurrentIndex(int(get_text))
+                                else:
+                                    self.tableWidget_archive_replay.item(r,c).setText(str(get_text))
+                            r = r + 1
+                        csv_row = csv_row + 1
+        
+            # Enable PushButton
+            self.pushButton_archive_replay_start.setEnabled(True)
+        
+    def _slotArchiveReplayExportCSV_Clicked(self):
+        """ Exports a CSV file from the playlist table.
+        """
+        # Choose File Location
+        get_archive_folder = os.path.dirname(os.path.realpath(__file__)) + "/Archive/Playlists" 
+        path = QtGui.QFileDialog.getSaveFileName(self, 'Save CSV', get_archive_folder, filter='CSV (*.csv)')
+        if len(path[0]) > 0:
+            columns = range(self.tableWidget_archive_replay.columnCount())
+            with open(path[0], 'w') as csvfile:
+                writer = csv.writer(csvfile, dialect='excel', lineterminator='\n')
+                writer.writerow([self.dashboard_settings_dictionary['hardware_archive']])
+                for row in range(self.tableWidget_archive_replay.rowCount()):
+                    row_text = []
+                    for column in columns:
+                        try:
+                            # Channel
+                            if column == 6:
+                                get_text = str(self.tableWidget_archive_replay.cellWidget(row,column).currentIndex())
+                            else:
+                                get_text = str(self.tableWidget_archive_replay.item(row,column).text())
+                        except:
+                            get_text = ""
+                        row_text.append(get_text)
+                    writer.writerow(row_text)
+                    
+    def _slotArchiveReplayRemoveAllClicked(self):
+        """ Clears the Archive playlist table.
+        """
+        # Remove all Rows
+        for row in reversed(range(0,self.tableWidget_archive_replay.rowCount())):
+            self.tableWidget_archive_replay.removeRow(row)  
+                
+        # Disable PushButtons
+        self.pushButton_archive_replay_start.setEnabled(False) 
 
         
 

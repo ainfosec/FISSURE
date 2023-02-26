@@ -22175,6 +22175,9 @@ p, li { white-space: pre-wrap; }
                 <pointsize>10</pointsize>
                </font>
               </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
+              </property>
               <property name="selectionBehavior">
                <enum>QAbstractItemView::SelectRows</enum>
               </property>
@@ -22367,8 +22370,8 @@ p, li { white-space: pre-wrap; }
              <widget class="QPushButton" name="pushButton_archive_replay_add">
               <property name="geometry">
                <rect>
-                <x>15</x>
-                <y>767</y>
+                <x>10</x>
+                <y>740</y>
                 <width>100</width>
                 <height>27</height>
                </rect>
@@ -22380,8 +22383,8 @@ p, li { white-space: pre-wrap; }
              <widget class="QPushButton" name="pushButton_archive_replay_remove">
               <property name="geometry">
                <rect>
-                <x>120</x>
-                <y>767</y>
+                <x>325</x>
+                <y>740</y>
                 <width>100</width>
                 <height>27</height>
                </rect>
@@ -22393,8 +22396,8 @@ p, li { white-space: pre-wrap; }
              <widget class="QPushButton" name="pushButton_archive_replay_up">
               <property name="geometry">
                <rect>
-                <x>280</x>
-                <y>767</y>
+                <x>535</x>
+                <y>740</y>
                 <width>100</width>
                 <height>27</height>
                </rect>
@@ -22406,8 +22409,8 @@ p, li { white-space: pre-wrap; }
              <widget class="QPushButton" name="pushButton_archive_replay_down">
               <property name="geometry">
                <rect>
-                <x>385</x>
-                <y>767</y>
+                <x>640</x>
+                <y>740</y>
                 <width>100</width>
                 <height>27</height>
                </rect>
@@ -22419,10 +22422,10 @@ p, li { white-space: pre-wrap; }
              <widget class="QCheckBox" name="checkBox_archive_replay_repeat">
               <property name="geometry">
                <rect>
-                <x>545</x>
-                <y>770</y>
+                <x>755</x>
+                <y>740</y>
                 <width>97</width>
-                <height>22</height>
+                <height>27</height>
                </rect>
               </property>
               <property name="font">
@@ -22440,8 +22443,8 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="geometry">
                <rect>
-                <x>685</x>
-                <y>767</y>
+                <x>780</x>
+                <y>775</y>
                 <width>100</width>
                 <height>27</height>
                </rect>
@@ -22453,8 +22456,8 @@ p, li { white-space: pre-wrap; }
              <widget class="QLabel" name="label_archive_replay_status">
               <property name="geometry">
                <rect>
-                <x>795</x>
-                <y>772</y>
+                <x>695</x>
+                <y>780</y>
                 <width>80</width>
                 <height>17</height>
                </rect>
@@ -22474,7 +22477,7 @@ p, li { white-space: pre-wrap; }
                 <x>5</x>
                 <y>30</y>
                 <width>890</width>
-                <height>720</height>
+                <height>700</height>
                </rect>
               </property>
               <property name="font">
@@ -22484,6 +22487,9 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="styleSheet">
                <string notr="true"/>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
               </property>
               <property name="selectionBehavior">
                <enum>QAbstractItemView::SelectRows</enum>
@@ -22616,6 +22622,45 @@ p, li { white-space: pre-wrap; }
                </property>
               </column>
              </widget>
+             <widget class="QPushButton" name="pushButton_archive_replay_import_csv">
+              <property name="geometry">
+               <rect>
+                <x>115</x>
+                <y>740</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Import CSV</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_replay_export_csv">
+              <property name="geometry">
+               <rect>
+                <x>220</x>
+                <y>740</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Export CSV</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_replay_remove_all">
+              <property name="geometry">
+               <rect>
+                <x>430</x>
+                <y>740</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="text">
+               <string>Remove All</string>
+              </property>
+             </widget>
             </widget>
             <widget class="QWidget" name="tab_5">
              <attribute name="title">
@@ -22713,6 +22758,9 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="styleSheet">
                <string notr="true"/>
+              </property>
+              <property name="selectionMode">
+               <enum>QAbstractItemView::SingleSelection</enum>
               </property>
               <property name="selectionBehavior">
                <enum>QAbstractItemView::SelectRows</enum>

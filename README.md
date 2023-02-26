@@ -15,8 +15,11 @@ The friendly Python codebase and user interface allows beginners to quickly lear
 - [AIS Page](https://www.ainfosec.com/technologies/fissure/)
 - [GRCon22 Slides](https://events.gnuradio.org/event/18/contributions/246/attachments/84/164/FISSURE_Poore_GRCon22.pdf)
 - [GRCon22 Paper](https://events.gnuradio.org/event/18/contributions/246/attachments/84/167/FISSURE_Paper_Poore_GRCon22.pdf)
-- [GRCon22 Video](https://www.youtube.com/watch?v=1f2umEKhJvE)
 - [Hack Chat Transcript](https://hackaday.io/event/187076-rf-hacking-hack-chat/log/212136-hack-chat-transcript-part-1)
+
+<p align="center">
+<img src="/Icons/README/rf_re.png" width="400" height="400">
+</p>
 
 ## Getting Started
 
@@ -65,11 +68,15 @@ Python2_maint-3.7            |  Python3_maint-3.8            |  Python3_maint-3.
 
 It is recommended to install FISSURE on a clean operating system to avoid existing conflicts. Select all the recommended checkboxes (Default button) to avoid errors while operating the various tools within FISSURE. There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. If an item contains a "Verify" section at the end, the installer will run the command that follows and highlight the checkbox item green or red depending on if any errors are produced by the command. Checked items without a "Verify" section will remain black following the installation.
 
-![install2](/Icons/README/install2.png) 
+<p align="center">
+<img src="/Icons/README/install2.png" width="692" height="479">
+</p>
 
 The FISSURE installer is helpful for staging computers or installing select software programs of interest. The code can be quickly modified to allow for custom software installs. The size estimates for the programs are before and after readings from a full install. The sizes for each program are not exact as some dependencies are installed in previously checked items. The sizes may also change over time as programs get updated.
 
-![install3](/Icons/README/install3.png)
+<p align="center">
+<img src="/Icons/README/install3.png" width="692" height="479">
+</p>
 
 **Usage**
 
@@ -90,7 +97,9 @@ Refer to the FISSURE Help menu for more details on usage.
 - Protocol Discovery (PD)
 - Flow Graph & Script Executor (FGE)
 
-![components](/Icons/README/components.png)
+<p align="center">
+<img src="/Icons/README/components.png" width="633" height="585">
+</p>
 
 **Capabilities**
 
@@ -103,7 +112,7 @@ Refer to the FISSURE Help menu for more details on usage.
   </tr>
     <td><img src="/Icons/README/attack.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Attacks</b></i></small></dt></td>
     <td><img src="/Icons/README/fuzzing.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Fuzzing</b></i></small></dt></td>
-    <td><img src="/Icons/README/archive.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Signal Playlists</b></i></small></dt></td>
+    <td><img src="/Icons/README/signal_playlists.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Signal Playlists</b></i></small></dt></td>
     <td><img src="/Icons/README/gallery.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Image Gallery</b></i></small></dt></td>
   </tr>
   <tr>
@@ -111,6 +120,11 @@ Refer to the FISSURE Help menu for more details on usage.
     <td><img src="/Icons/README/scapy.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Scapy Integration</b></i></small></dt></td>
     <td><img src="/Icons/README/crc_calculator.png" align="center" width="200" height="165"><dt align="center"><small><i><b>CRC Calculator</b></i></small></dt></td>
     <td><img src="/Icons/README/log.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Logging</b></i></small></dt></td>
+  </tr>  
+  <tr>
+    <td><img src="/Icons/README/dataset_builder.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Dataset Builder</b></i></small></dt></td>
+    <td><img src="/Icons/README/online_archive.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Online Archive</b></i></small></dt></td>
+    <td><img src="/Icons/README/third-party_tools.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Third-Party Tools</b></i></small></dt></td>
   </tr>  
 </table>
 
@@ -178,7 +192,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 
 ### Phase I
 
-- [ ] Provide links to videos in the README and AIS website
+- [x] Provide links to videos in the README and AIS website
 - [ ] Create new FISSURE logo
 - [ ] Update documentation to instruct users how to work within the framework
 - [ ] Provide base support for hardware already on the market

@@ -25,7 +25,7 @@ failure_multiple: 5
 fft_size: 4096
 fge_hiprfisr_dealer_port: 5053
 fge_pub_port: 5061
-hardware_archive: ''
+hardware_archive: USRP B2x0
 hardware_attack: ''
 hardware_daughterboard_archive: ''
 hardware_daughterboard_attack: ''

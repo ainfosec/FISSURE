@@ -1,6 +1,27 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-02-25
+
+Import/Export for Archive playlists, adding README images.
+ 
+### Added
+
+- Dataset Builder, Online Archive, Third-Party Tools images in README
+- RF Reverse Engineering diagram in README
+- Import/Export CSV buttons in Archive Replay tab
+- Remove All button in Archive Replay tab
+  
+### Changed
+
+- CRC Calculator image in README
+- Name of archive.png to signal_playlists.png in README
+
+### Fixed
+
+- Removing an Archive playlist row keeps the selection at the current row
+- Removing an Archive downloaded file keeps the selection at the current row
+
 ## 2023-02-24
 
 Dataset builder in Archive tab.
