@@ -1,6 +1,31 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-03-05
+
+Styling changes for Python3_maint-3.8 branch.
+ 
+### Added
+
+- Light, Dark, and Custom modes for GUI styling for Python3_maint-3.8 branch
+- View menu items for changing color modes for Python3_maint-3.8 branch
+- light.css, dark.css, and custom.css files for Python3_maint-3.8 branch
+- Color variables in options/default.yaml for Python3_maint-3.8 branch
+- Truth column to Archive Dataset Builder table
+- Dark Mode image to README
+  
+### Changed
+
+- Removed stylesheets assigned to individual items in .ui files and inserted all styling into .css files for Python3_maint-3.8 branch.
+- Stylesheet values for widgets in dashboard.py are pulled from options dialog for Python3_maint-3.8 branch
+- Widget object names are used to apply stylesheets for Python3_maint-3.8 branch
+- example.csv to match updated Dataset Builder table
+
+### Fixed
+
+- Several miscellaneous GUI adjustments for Python3_maint-3.8 branch
+- Checking disabled columns in Dataset Builder table no longer toggles checkboxes
+
 ## 2023-02-25
 
 Import/Export for Archive playlists, adding README images.

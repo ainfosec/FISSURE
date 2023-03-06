@@ -22689,6 +22689,16 @@ p, li { white-space: pre-wrap; }
               </column>
               <column>
                <property name="text">
+                <string>Truth</string>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+              </column>
+              <column>
+               <property name="text">
                 <string>Sample Rate</string>
                </property>
                <property name="font">
