@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>Dialog_new_soi</class>
+ <widget class="QDialog" name="Dialog_new_soi">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>New SOI</string>
   </property>
-  <widget class="QFrame" name="frame_1">
+  <widget class="QFrame" name="frame2_1">
    <property name="geometry">
     <rect>
      <x>5</x>
@@ -21,13 +21,6 @@
      <width>370</width>
      <height>290</height>
     </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QFrame#frame_1 {
-	background-color: rgb(251, 251, 251);
-	border: 1px solid #17365D;
-	border-radius: 15px;
-}</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
@@ -61,7 +54,7 @@
      <string>Cancel</string>
     </property>
    </widget>
-   <widget class="QLabel" name="label_149">
+   <widget class="QLabel" name="label2_149">
     <property name="geometry">
      <rect>
       <x>5</x>
@@ -82,7 +75,7 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_146">
+   <widget class="QLabel" name="label2_146">
     <property name="geometry">
      <rect>
       <x>5</x>
@@ -103,7 +96,7 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_147">
+   <widget class="QLabel" name="label2_147">
     <property name="geometry">
      <rect>
       <x>5</x>
@@ -160,7 +153,7 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_148">
+   <widget class="QLabel" name="label2_148">
     <property name="geometry">
      <rect>
       <x>5</x>
@@ -207,7 +200,7 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_145">
+   <widget class="QLabel" name="label2_145">
     <property name="geometry">
      <rect>
       <x>5</x>
@@ -254,7 +247,7 @@
      <bool>false</bool>
     </property>
    </widget>
-   <widget class="QLabel" name="label_142">
+   <widget class="QLabel" name="label2_142">
     <property name="geometry">
      <rect>
       <x>5</x>
@@ -275,7 +268,7 @@
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="label_150">
+   <widget class="QLabel" name="label2_150">
     <property name="geometry">
      <rect>
       <x>5</x>

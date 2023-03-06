@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Frame</class>
- <widget class="QFrame" name="Frame">
+ <class>frame6_status_ui</class>
+ <widget class="QFrame" name="frame6_status_ui">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -17,9 +17,7 @@
    <string/>
   </property>
   <property name="styleSheet">
-   <string notr="true">QFrame#Frame {
-	border: 1px solid #17365D;
-}</string>
+   <string notr="true"/>
   </property>
   <property name="frameShape">
    <enum>QFrame::NoFrame</enum>
@@ -39,124 +37,6 @@
      <height>180</height>
     </rect>
    </property>
-   <property name="palette">
-    <palette>
-     <active>
-      <colorrole role="Light">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>243</red>
-         <green>243</green>
-         <blue>243</blue>
-        </color>
-       </brush>
-      </colorrole>
-      <colorrole role="Base">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>243</red>
-         <green>243</green>
-         <blue>243</blue>
-        </color>
-       </brush>
-      </colorrole>
-      <colorrole role="HighlightedText">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>243</red>
-         <green>243</green>
-         <blue>243</blue>
-        </color>
-       </brush>
-      </colorrole>
-      <colorrole role="NoRole">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>243</red>
-         <green>243</green>
-         <blue>243</blue>
-        </color>
-       </brush>
-      </colorrole>
-     </active>
-     <inactive>
-      <colorrole role="Light">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>255</red>
-         <green>255</green>
-         <blue>255</blue>
-        </color>
-       </brush>
-      </colorrole>
-      <colorrole role="Base">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>255</red>
-         <green>255</green>
-         <blue>255</blue>
-        </color>
-       </brush>
-      </colorrole>
-      <colorrole role="HighlightedText">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>42</red>
-         <green>42</green>
-         <blue>42</blue>
-        </color>
-       </brush>
-      </colorrole>
-      <colorrole role="NoRole">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>0</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </brush>
-      </colorrole>
-     </inactive>
-     <disabled>
-      <colorrole role="Light">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>255</red>
-         <green>255</green>
-         <blue>255</blue>
-        </color>
-       </brush>
-      </colorrole>
-      <colorrole role="Base">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>255</red>
-         <green>255</green>
-         <blue>255</blue>
-        </color>
-       </brush>
-      </colorrole>
-      <colorrole role="HighlightedText">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>255</red>
-         <green>255</green>
-         <blue>255</blue>
-        </color>
-       </brush>
-      </colorrole>
-      <colorrole role="NoRole">
-       <brush brushstyle="SolidPattern">
-        <color alpha="255">
-         <red>0</red>
-         <green>0</green>
-         <blue>0</blue>
-        </color>
-       </brush>
-      </colorrole>
-     </disabled>
-    </palette>
-   </property>
    <property name="font">
     <font>
      <pointsize>10</pointsize>
@@ -167,6 +47,12 @@
    </property>
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
    </property>
    <property name="autoScroll">
     <bool>false</bool>
@@ -216,15 +102,6 @@
       <bold>false</bold>
      </font>
     </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
-    </property>
     <property name="flags">
      <set>ItemIsEnabled</set>
     </property>
@@ -239,15 +116,6 @@
       <weight>50</weight>
       <bold>false</bold>
      </font>
-    </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
     </property>
     <property name="flags">
      <set>ItemIsEnabled</set>
@@ -264,15 +132,6 @@
       <bold>false</bold>
      </font>
     </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
-    </property>
     <property name="flags">
      <set>ItemIsEnabled</set>
     </property>
@@ -287,15 +146,6 @@
       <weight>50</weight>
       <bold>false</bold>
      </font>
-    </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
     </property>
     <property name="flags">
      <set>ItemIsEnabled</set>
@@ -312,15 +162,6 @@
       <bold>false</bold>
      </font>
     </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
-    </property>
     <property name="flags">
      <set>ItemIsEnabled</set>
     </property>
@@ -333,15 +174,6 @@
      <font>
       <pointsize>10</pointsize>
      </font>
-    </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
     </property>
    </item>
   </widget>
@@ -359,26 +191,29 @@
      <pointsize>10</pointsize>
     </font>
    </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
    <property name="frameShape">
     <enum>QFrame::NoFrame</enum>
    </property>
    <property name="frameShadow">
     <enum>QFrame::Raised</enum>
    </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAlwaysOff</enum>
+   </property>
    <property name="autoScroll">
     <bool>false</bool>
+   </property>
+   <property name="editTriggers">
+    <set>QAbstractItemView::NoEditTriggers</set>
    </property>
    <property name="showDropIndicator" stdset="0">
     <bool>false</bool>
    </property>
    <property name="dragDropOverwriteMode">
     <bool>false</bool>
-   </property>
-   <property name="selectionBehavior">
-    <enum>QAbstractItemView::SelectItems</enum>
    </property>
    <property name="rowCount">
     <number>6</number>
@@ -414,16 +249,7 @@
      </font>
     </property>
     <property name="textAlignment">
-     <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-    </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
+     <set>AlignCenter</set>
     </property>
     <property name="flags">
      <set>ItemIsEnabled</set>
@@ -441,16 +267,7 @@
      </font>
     </property>
     <property name="textAlignment">
-     <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-    </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
+     <set>AlignCenter</set>
     </property>
     <property name="flags">
      <set>ItemIsEnabled</set>
@@ -468,16 +285,7 @@
      </font>
     </property>
     <property name="textAlignment">
-     <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-    </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
+     <set>AlignCenter</set>
     </property>
     <property name="flags">
      <set>ItemIsEnabled</set>
@@ -495,16 +303,7 @@
      </font>
     </property>
     <property name="textAlignment">
-     <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-    </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
+     <set>AlignCenter</set>
     </property>
     <property name="flags">
      <set>ItemIsEnabled</set>
@@ -522,16 +321,7 @@
      </font>
     </property>
     <property name="textAlignment">
-     <set>AlignHCenter|AlignVCenter|AlignCenter</set>
-    </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
+     <set>AlignCenter</set>
     </property>
     <property name="flags">
      <set>ItemIsEnabled</set>
@@ -549,16 +339,10 @@
      </font>
     </property>
     <property name="textAlignment">
-     <set>AlignHCenter|AlignVCenter|AlignCenter</set>
+     <set>AlignCenter</set>
     </property>
-    <property name="background">
-     <brush brushstyle="SolidPattern">
-      <color alpha="255">
-       <red>243</red>
-       <green>243</green>
-       <blue>243</blue>
-      </color>
-     </brush>
+    <property name="flags">
+     <set>ItemIsEnabled</set>
     </property>
    </item>
   </widget>

@@ -16,7 +16,7 @@
   <property name="windowTitle">
    <string>Hardware</string>
   </property>
-  <widget class="QLabel" name="label_108">
+  <widget class="QLabel" name="label2_108">
    <property name="geometry">
     <rect>
      <x>355</x>
@@ -159,7 +159,7 @@
     <string>Guess</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_158">
+  <widget class="QLabel" name="label2_158">
    <property name="geometry">
     <rect>
      <x>530</x>
@@ -181,7 +181,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_mode">
+  <widget class="QLabel" name="label2_mode">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -243,7 +243,7 @@ p, li { white-space: pre-wrap; }
 &lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_17">
+  <widget class="QLabel" name="label2_17">
    <property name="geometry">
     <rect>
      <x>215</x>
@@ -265,7 +265,7 @@ p, li { white-space: pre-wrap; }
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QFrame" name="frame_8">
+  <widget class="QFrame" name="frame6_8">
    <property name="geometry">
     <rect>
      <x>7</x>
@@ -275,7 +275,7 @@ p, li { white-space: pre-wrap; }
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true">background-color:rgba(235, 234, 233, 255)</string>
+    <string notr="true"/>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
@@ -284,7 +284,7 @@ p, li { white-space: pre-wrap; }
     <enum>QFrame::Raised</enum>
    </property>
   </widget>
-  <widget class="QLabel" name="label_141">
+  <widget class="QLabel" name="label2_141">
    <property name="geometry">
     <rect>
      <x>70</x>
@@ -489,7 +489,7 @@ p, li { white-space: pre-wrap; }
     </property>
    </item>
   </widget>
-  <widget class="QLabel" name="label_159">
+  <widget class="QLabel" name="label2_159">
    <property name="geometry">
     <rect>
      <x>695</x>
@@ -511,7 +511,7 @@ p, li { white-space: pre-wrap; }
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_probe">
+  <widget class="QLabel" name="label2_probe">
    <property name="geometry">
     <rect>
      <x>795</x>
@@ -532,24 +532,24 @@ p, li { white-space: pre-wrap; }
     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
    </property>
   </widget>
-  <zorder>frame_8</zorder>
-  <zorder>label_108</zorder>
+  <zorder>frame6_8</zorder>
+  <zorder>label2_108</zorder>
   <zorder>pushButton_probe_usrp</zorder>
   <zorder>comboBox_hardware</zorder>
   <zorder>pushButton_guess</zorder>
-  <zorder>label_158</zorder>
-  <zorder>label_mode</zorder>
+  <zorder>label2_158</zorder>
+  <zorder>label2_mode</zorder>
   <zorder>textEdit_serial</zorder>
   <zorder>textEdit_ip</zorder>
-  <zorder>label_17</zorder>
-  <zorder>label_141</zorder>
+  <zorder>label2_17</zorder>
+  <zorder>label2_141</zorder>
   <zorder>textEdit_interface</zorder>
   <zorder>pushButton_ok</zorder>
   <zorder>pushButton_cancel</zorder>
   <zorder>pushButton_apply_to_all</zorder>
   <zorder>comboBox_daughterboard</zorder>
-  <zorder>label_159</zorder>
-  <zorder>label_probe</zorder>
+  <zorder>label2_159</zorder>
+  <zorder>label2_probe</zorder>
  </widget>
  <resources/>
  <connections/>
