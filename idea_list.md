@@ -49,7 +49,7 @@ This list of project ideas are suggestions only. Contact the developers if you h
 **Skills Required:** Python, PyQt, CSS  
 **Expected Size:** 175h  
 **Level of Difficulty:** Medium  
-**Expected Outcome:** Dark mode support, resizing support, support for more screen resolutions, better status depictions, improved GUI elements for plotting and data visualization   
+**Expected Outcome:** ~~Dark mode support~~, resizing support, support for more screen resolutions, better status depictions, improved GUI elements for plotting and data visualization   
 
 **Description:**  
 The FISSURE Dashboard is written in PyQt4/5 and lacks many features that would improve user experience. Stylesheets are applied to individual elements in the .ui files. Updates are needed to change values programmatically to support new styling options like dark mode. Considerations have not been made thus far to account for resizing windows or running under different screen resolutions. Status messsages and alerts to the user need to be upgraded to increase usability and reduce conflicts between components sharing the same hardware. The matplotlib plots need to be improved upon to display data better for the TSI and IQ Data tabs.

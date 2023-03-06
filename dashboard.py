@@ -23530,6 +23530,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             get_file = str(get_archives[n])
             if get_archive_file == get_file:
                 # Archive Lookup
+                get_truth = str(self.pd_library['Archive'][get_archives[n]]['Protocol'])
                 get_sample_rate = str(self.pd_library['Archive'][get_archives[n]]['Sample Rate'])
                 get_tuned_frequency = str(self.pd_library['Archive'][get_archives[n]]['Tuned Frequency'])
 
@@ -23537,42 +23538,45 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.tableWidget_archive_datasets.setRowCount(self.tableWidget_archive_datasets.rowCount()+1)
                 folder_item = QtGui.QTableWidgetItem(get_archive_folder + get_archive_file)
                 folder_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,0,folder_item) 
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,0,folder_item)
+                truth_item = QtGui.QTableWidgetItem(get_truth)
+                truth_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,1,truth_item)
                 sample_rate_item = QtGui.QTableWidgetItem(get_sample_rate)
                 sample_rate_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,1,sample_rate_item) 
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,2,sample_rate_item) 
                 tuned_frequency_item = QtGui.QTableWidgetItem(get_tuned_frequency)
                 tuned_frequency_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,2,tuned_frequency_item)
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,3,tuned_frequency_item)
                 
                 # Generate Values in the Tables
                 noise_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_noise_min']),float(self.dashboard_settings_dictionary['dataset_noise_max']))
                 noise_item = QtGui.QTableWidgetItem("{:0.2f}".format(noise_value))
                 noise_item.setTextAlignment(QtCore.Qt.AlignCenter)
                 noise_item.setCheckState(QtCore.Qt.Unchecked)
-                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,3,noise_item)
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,4,noise_item)
                 phase_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_phase_rot_min']),float(self.dashboard_settings_dictionary['dataset_phase_rot_max']))
                 phase_item = QtGui.QTableWidgetItem("{:0.2f}".format(phase_value))
                 phase_item.setTextAlignment(QtCore.Qt.AlignCenter)
                 phase_item.setCheckState(QtCore.Qt.Unchecked)
-                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,4,phase_item)
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,5,phase_item)
                 scale_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_scale_min']),float(self.dashboard_settings_dictionary['dataset_scale_max']))
                 scale_item = QtGui.QTableWidgetItem("{:0.2f}".format(scale_value))
                 scale_item.setTextAlignment(QtCore.Qt.AlignCenter)
                 scale_item.setCheckState(QtCore.Qt.Unchecked)
-                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,5,scale_item)
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,6,scale_item)
                 freq_shift_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_freq_shift_min']),float(self.dashboard_settings_dictionary['dataset_freq_shift_max']))
                 freq_shift_item = QtGui.QTableWidgetItem("{:0.2f}".format(freq_shift_value))
                 freq_shift_item.setTextAlignment(QtCore.Qt.AlignCenter)
                 freq_shift_item.setFlags(freq_shift_item.flags() & ~QtCore.Qt.ItemIsEnabled)
                 freq_shift_item.setCheckState(QtCore.Qt.Unchecked)
-                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,6,freq_shift_item)
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,7,freq_shift_item)
                 sigmf_item = QtGui.QTableWidgetItem("" )
                 sigmf_item.setTextAlignment(QtCore.Qt.AlignCenter)
                 sigmf_item.setFlags(sigmf_item.flags() & ~QtCore.Qt.ItemIsEditable)
                 sigmf_item.setFlags(sigmf_item.flags() & ~QtCore.Qt.ItemIsEnabled)
                 sigmf_item.setCheckState(QtCore.Qt.Unchecked)
-                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,7,sigmf_item)
+                self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,8,sigmf_item)
                                 
                 # Resize the Table
                 self.tableWidget_archive_datasets.resizeColumnsToContents() 
@@ -23588,42 +23592,45 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.tableWidget_archive_datasets.setRowCount(self.tableWidget_archive_datasets.rowCount()+1)
         folder_item = QtGui.QTableWidgetItem(get_archive_folder + get_archive_file)
         folder_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,0,folder_item) 
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,0,folder_item)
+        truth_item = QtGui.QTableWidgetItem("")
+        truth_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,1,truth_item)
         sample_rate_item = QtGui.QTableWidgetItem("")
         sample_rate_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,1,sample_rate_item)  
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,2,sample_rate_item)  
         tuned_frequency_item = QtGui.QTableWidgetItem("")
         tuned_frequency_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,2,tuned_frequency_item)  
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,3,tuned_frequency_item)  
         
         # Generate Values in the Tables
         noise_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_noise_min']),float(self.dashboard_settings_dictionary['dataset_noise_max']))
         noise_item = QtGui.QTableWidgetItem("{:0.2f}".format(noise_value))
         noise_item.setTextAlignment(QtCore.Qt.AlignCenter)
         noise_item.setCheckState(QtCore.Qt.Unchecked)
-        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,3,noise_item)
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,4,noise_item)
         phase_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_phase_rot_min']),float(self.dashboard_settings_dictionary['dataset_phase_rot_max']))
         phase_item = QtGui.QTableWidgetItem("{:0.2f}".format(phase_value))
         phase_item.setTextAlignment(QtCore.Qt.AlignCenter)
         phase_item.setCheckState(QtCore.Qt.Unchecked)
-        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,4,phase_item)
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,5,phase_item)
         scale_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_scale_min']),float(self.dashboard_settings_dictionary['dataset_scale_max']))
         scale_item = QtGui.QTableWidgetItem("{:0.2f}".format(scale_value))
         scale_item.setTextAlignment(QtCore.Qt.AlignCenter)
         scale_item.setCheckState(QtCore.Qt.Unchecked)
-        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,5,scale_item)
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,6,scale_item)
         freq_shift_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_freq_shift_min']),float(self.dashboard_settings_dictionary['dataset_freq_shift_max']))
         freq_shift_item = QtGui.QTableWidgetItem("{:0.2f}".format(freq_shift_value))
         freq_shift_item.setTextAlignment(QtCore.Qt.AlignCenter)
         freq_shift_item.setFlags(freq_shift_item.flags() & ~QtCore.Qt.ItemIsEnabled)
         freq_shift_item.setCheckState(QtCore.Qt.Unchecked)
-        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,6,freq_shift_item)
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,7,freq_shift_item)
         sigmf_item = QtGui.QTableWidgetItem("" )
         sigmf_item.setTextAlignment(QtCore.Qt.AlignCenter)
         sigmf_item.setFlags(sigmf_item.flags() & ~QtCore.Qt.ItemIsEditable)
         sigmf_item.setFlags(sigmf_item.flags() & ~QtCore.Qt.ItemIsEnabled)
         sigmf_item.setCheckState(QtCore.Qt.Unchecked)
-        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,7,sigmf_item)
+        self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,8,sigmf_item)
                 
         # Resize the Table
         self.tableWidget_archive_datasets.resizeColumnsToContents() 
@@ -23697,25 +23704,25 @@ class MainWindow(QtGui.QMainWindow, form_class):
             for row in range(self.tableWidget_archive_datasets.rowCount()):
                 # Get Values
                 get_filepath = str(self.tableWidget_archive_datasets.item(row,0).text())
-                get_sample_rate = str(self.tableWidget_archive_datasets.item(row,1).text())
-                get_frequency = str(self.tableWidget_archive_datasets.item(row,2).text())
-                if int(self.tableWidget_archive_datasets.item(row,3).checkState()) == 2:
-                    get_noise = str(self.tableWidget_archive_datasets.item(row,3).text())
+                get_sample_rate = str(self.tableWidget_archive_datasets.item(row,2).text())
+                get_frequency = str(self.tableWidget_archive_datasets.item(row,3).text())
+                if int(self.tableWidget_archive_datasets.item(row,4).checkState()) == 2:
+                    get_noise = str(self.tableWidget_archive_datasets.item(row,4).text())
                 else:
                     get_noise = "0"
-                if int(self.tableWidget_archive_datasets.item(row,4).checkState()) == 2:
-                    get_phase_rot = str(self.tableWidget_archive_datasets.item(row,4).text())
+                if int(self.tableWidget_archive_datasets.item(row,5).checkState()) == 2:
+                    get_phase_rot = str(self.tableWidget_archive_datasets.item(row,5).text())
                 else:
                     get_phase_rot = "0"
-                if int(self.tableWidget_archive_datasets.item(row,5).checkState()) == 2:
-                    get_scale = str(self.tableWidget_archive_datasets.item(row,5).text())
+                if int(self.tableWidget_archive_datasets.item(row,6).checkState()) == 2:
+                    get_scale = str(self.tableWidget_archive_datasets.item(row,6).text())
                 else:
                     get_scale = "1"
-                if int(self.tableWidget_archive_datasets.item(row,6).checkState()) == 2:
-                    get_freq_shift = str(self.tableWidget_archive_datasets.item(row,6).text())
+                if int(self.tableWidget_archive_datasets.item(row,7).checkState()) == 2:
+                    get_freq_shift = str(self.tableWidget_archive_datasets.item(row,7).text())
                 else:
                     get_freq_shift = "0"
-                if int(self.tableWidget_archive_datasets.item(row,7).checkState()) == 2:
+                if int(self.tableWidget_archive_datasets.item(row,8).checkState()) == 2:
                     get_sigmf = True
                 else:
                     get_sigmf = False
@@ -23760,7 +23767,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     for column in columns:
                         try:
                             get_text = str(self.tableWidget_archive_datasets.item(row, column).text())
-                            if column > 2:
+                            if column > 3:
                                 get_checked_state = str(self.tableWidget_archive_datasets.item(row, column).checkState())
                                 get_text = get_checked_state + ':' + get_text
                         except:
@@ -23781,12 +23788,12 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     for row in csv.reader(fileInput):
                         self.tableWidget_archive_datasets.setRowCount(self.tableWidget_archive_datasets.rowCount() + 1)
                         for c in range(0,len(row)):
-                            if c > 2:
+                            if c > 3:
                                 get_text = row[c].split(':',1)[1]
                                 get_checked_state = int(row[c].split(':',1)[0])
                                 new_item = QtGui.QTableWidgetItem(get_text)
                                 new_item.setCheckState(get_checked_state)
-                                if c > 5:
+                                if c > 6:
                                     new_item.setFlags(new_item.flags() & ~QtCore.Qt.ItemIsEnabled)
                             else:
                                 get_text = row[c]
@@ -23807,7 +23814,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Checks/unchecks all items in a column for the Dataset Builder table.
         """
         # Toggle the State
-        if col > 2:
+        if col > 3:
             get_check_state = self.tableWidget_archive_datasets.item(0,col).checkState()
             for row in range(0,self.tableWidget_archive_datasets.rowCount()):
                 if get_check_state == 0:

@@ -125,6 +125,7 @@ Refer to the FISSURE Help menu for more details on usage.
     <td><img src="/Icons/README/dataset_builder.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Dataset Builder</b></i></small></dt></td>
     <td><img src="/Icons/README/online_archive.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Online Archive</b></i></small></dt></td>
     <td><img src="/Icons/README/third-party_tools.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Third-Party Tools</b></i></small></dt></td>
+    <td><img src="/Icons/README/dark_mode.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Dark and Custom Themes</b></i></small></dt></td>
   </tr>  
 </table>
 
