@@ -11,6 +11,7 @@ form_class7 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + "/UI/
 form_class8 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + "/UI/chooser.ui")[0]
 form_class9 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + "/UI/new_soi.ui")[0]
 form_class10 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + "/UI/sigmf.ui")[0]
+form_class11 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + "/UI/custom_color.ui")[0]
 import time
 import threading
 import matplotlib.pyplot as plt
@@ -131,34 +132,46 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.pd_library = yaml.load(yaml_library_file, yaml.FullLoader)     
             
         # Create Tuning Matplotlib Widget
-        self.tuning_matplotlib_widget = MyTuningMplCanvas(self.tab_tsi_sweep, dpi=100, title='Tuning', ylim=400)
+        self.tuning_matplotlib_widget = MyTuningMplCanvas(self.tab_tsi_sweep, dpi=100, title='Tuning', ylim=400, bg_color=self.dashboard_settings_dictionary['color2'], face_color=self.dashboard_settings_dictionary['color5'], text_color=self.dashboard_settings_dictionary['color4'])
         self.tuning_matplotlib_widget.move(self.frame_tsi_search_bands.pos())
         self.tuning_matplotlib_widget.setGeometry(self.frame_tsi_search_bands.geometry())  
 
         # Create Wideband Matplotlib Widget
         self.wideband_width = 1201
         self.wideband_height = 801
-        self.wideband_data = np.ones((self.wideband_height,self.wideband_width,3))
-        self.matplotlib_widget = MyMplCanvas(self.tab_tsi_detector, dpi=100, title='Detector History', ylim=400, width=self.wideband_width, height=self.wideband_height, border=[0.08,0.90,0.05,1,0,0], colorbar_fraction=0.038, xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'], ylabels=['0', '5', '10', '15', '20','25', '30', '35', '40', '45'])
+        rgb = tuple(int(self.dashboard_settings_dictionary['color2'].lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
+        background_color = (float(rgb[0])/255, float(rgb[1])/255, float(rgb[2])/255)
+        self.wideband_data = np.ones((self.wideband_height,self.wideband_width,3))*(background_color)
+        self.matplotlib_widget = MyMplCanvas(self.tab_tsi_detector, dpi=100, title='Detector History', ylim=400, width=self.wideband_width, height=self.wideband_height, border=[0.08,0.90,0.05,1,0,0], colorbar_fraction=0.038, xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'], ylabels=['0', '5', '10', '15', '20','25', '30', '35', '40', '45'],bg_color=self.dashboard_settings_dictionary['color1'], face_color=self.dashboard_settings_dictionary['color5'], text_color=self.dashboard_settings_dictionary['color4'])
         self.matplotlib_widget.move(self.frame_tsi_detector.pos())
         self.matplotlib_widget.setGeometry(self.frame_tsi_detector.geometry())    
         self.matplotlib_widget.axes.cla()
         self.matplotlib_widget.axes.imshow(self.wideband_data, cmap='rainbow', clim=(-100,30), extent=[0,1201,801,0])
-        self.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=self.wideband_height)
+        self.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=self.wideband_height,background_color=self.dashboard_settings_dictionary['color1'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
         self.matplotlib_widget.draw()
         
         # Create IQ Data Matplotlib Widget
-        self.iq_matplotlib_widget = MyIQ_MplCanvas(self.tab_iq_data, dpi=100, title='IQ Data', ylim=400)
+        self.iq_matplotlib_widget = MyIQ_MplCanvas(self.tab_iq_data, dpi=100, title='IQ Data', ylim=400, bg_color=self.dashboard_settings_dictionary['color2'], face_color=self.dashboard_settings_dictionary['color5'], text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.move(self.frame_iq.pos())
         self.iq_matplotlib_widget.setGeometry(self.frame_iq.geometry())    
 
         # Add a Toolbar
         self.mpl_toolbar = NavigationToolbar(self.iq_matplotlib_widget, self.tab_iq_data)
-        #self.mpl_toolbar.setGeometry(QtCore.QRect(450, 815, 525, 25))  
+        self.mpl_toolbar.setStyleSheet("color:"+self.dashboard_settings_dictionary['color4'])
         self.mpl_toolbar.setGeometry(QtCore.QRect(375, 277, 525, 35))  
            
         # Get Protocols
         protocols = getProtocols(self.pd_library)
+        
+        # Light/Dark Mode Style Sheets
+        if self.dashboard_settings_dictionary['color_mode'] == "Dark Mode":
+            self.actionLight_Mode.setChecked(True)
+            self.actionDark_Mode.setChecked(False)
+            self._slotMenuDarkModeClicked()
+        else:
+            self.actionLight_Mode.setChecked(True)
+            self.actionDark_Mode.setChecked(False)
+            self._slotMenuLightModeClicked()
         
         
         ##### Status Bar and Dialog #####
@@ -170,23 +183,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.setStatusBar(self.custom_statusbar)        
         
         #self.statusBar_label.setText("| Dashboard: OK | HIPRFISR: XX | TSI: XX | PD: XX | FGE: XX |")
-        self.statusbar_dashboard = QtWidgets.QLabel("Dashboard: OK")
-        self.statusbar_hiprfisr = QtWidgets.QPushButton("HIPRFISR: XX")
-        self.statusbar_hiprfisr.setStyleSheet("max-height:13px; max-width:90px")
+        self.statusbar_dashboard = QtWidgets.QLabel("Dashboard: OK",objectName='label4_status1')
+        self.statusbar_hiprfisr = QtWidgets.QPushButton("HIPRFISR: XX",objectName='pushButton_status2')
         self.statusbar_hiprfisr.setFlat(True)
-        self.statusbar_hiprfisr.setFont(QtGui.QFont("Ubuntu",10))   
-        self.statusbar_tsi = QtWidgets.QPushButton("TSI: XX")
-        self.statusbar_tsi.setStyleSheet("max-height:13px; max-width:50px")
+        self.statusbar_tsi = QtWidgets.QPushButton("TSI: XX",objectName='pushButton_status3')
         self.statusbar_tsi.setFlat(True)
-        self.statusbar_tsi.setFont(QtGui.QFont("Ubuntu",10))
-        self.statusbar_pd = QtWidgets.QPushButton("PD: XX")
-        self.statusbar_pd.setStyleSheet("max-height:13px; max-width:50px")
+        self.statusbar_pd = QtWidgets.QPushButton("PD: XX",objectName='pushButton_status4')
         self.statusbar_pd.setFlat(True)
-        self.statusbar_pd.setFont(QtGui.QFont("Ubuntu",10))
-        self.statusbar_fge = QtWidgets.QPushButton("FGE: XX")
-        self.statusbar_fge.setStyleSheet("max-height:13px; max-width:55px")
+        self.statusbar_fge = QtWidgets.QPushButton("FGE: XX",objectName='pushButton_status5')
         self.statusbar_fge.setFlat(True)
-        self.statusbar_fge.setFont(QtGui.QFont("Ubuntu",10))
         
         self.custom_statusbar.addWidget(VLine(parent=self))
         self.custom_statusbar.addWidget(self.statusbar_dashboard)        
@@ -246,7 +251,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.label_soi_priority_row2.setVisible(False)
         self.label_soi_priority_row3.setVisible(False)
         
-        new_combobox1 = QtWidgets.QComboBox(self)
+        new_combobox1 = QtWidgets.QComboBox(self, objectName='comboBox2_')
         self.tableWidget_automation_soi_list_priority.setCellWidget(0,0,new_combobox1)
         new_combobox1.addItem("Power")
         new_combobox1.addItem("Frequency")
@@ -255,7 +260,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         new_combobox1.currentIndexChanged.connect(self._slotSOI_PriorityCategoryChanged)
         new_combobox1.setCurrentIndex(0)
     
-        new_combobox2 = QtWidgets.QComboBox(self)
+        new_combobox2 = QtWidgets.QComboBox(self, objectName='comboBox2_')
         self.tableWidget_automation_soi_list_priority.setCellWidget(0,1,new_combobox2)
         new_combobox2.addItem("Highest")
         new_combobox2.addItem("Lowest")
@@ -299,7 +304,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_library_pd_packet.horizontalHeader().setSectionResizeMode(2,QtWidgets.QHeaderView.Stretch) 
                 
         # Hide the Searching Label
-        self.label_library_search_searching.setVisible(False)   
+        self.label2_library_search_searching.setVisible(False)   
         
         # Set up Add Attack Stacked Widget
         self.comboBox_library_attacks_subcategory.addItems(["Denial of Service","Jamming","Spoofing","Sniffing/Snooping","Probe Attacks","Installation of Malware","Misuse of Resources","File"])
@@ -328,13 +333,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_tsi_scan_options.horizontalHeader().setFixedHeight(20)
         
         # Resize Table Columns for Wideband and Narrowband Tables
-        self.tableWidget_tsi_wideband.resizeColumnsToContents()
+        self.tableWidget1_tsi_wideband.resizeColumnsToContents()
         
         # Put the Labels on Top of the Plots
-        self.label_tsi_detector.raise_()
+        self.label2_tsi_detector.raise_()
         
         # Hide Update Configuration Label
-        self.label_tsi_update_configuration.setVisible(False) 
+        self.label2_tsi_update_configuration.setVisible(False) 
         
         # Tab Width
         #self.tabWidget_tsi_configuration.setStyleSheet("QTabBar::tab { height: 30px; width: 130px;}")    
@@ -389,7 +394,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.frame_pd_dissectors_editor.setVisible(False)
         
         # Set the Number of Lines in PD Status Message Text Edit
-        self.textEdit_pd_status.document().setMaximumBlockCount(18)
+        self.textEdit2_pd_status.document().setMaximumBlockCount(18)
         
         # Resize Protocol Discovery Bit Slicing Preamble Stats Table
         self.tableWidget_pd_bit_slicing_preamble_stats.setColumnWidth(1,97)
@@ -406,10 +411,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         #~ self.tableWidget_pd_bit_slicing_candidate_preambles.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch) 
         
         # Set the PD Flow Graph Lookup Not Found Label
-        self.label_pd_flow_graphs_lookup_not_found.setText("")    
+        self.label2_pd_flow_graphs_lookup_not_found.setText("")    
         
         # Hide the Calculating Label
-        self.label_pd_bit_slicing_calculating.setVisible(False)    
+        self.label2_pd_bit_slicing_calculating.setVisible(False)    
                 
         # Load "All Flow Graphs" List Widget
         self._slotPD_DemodHardwareChanged()
@@ -428,7 +433,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.new_classifications = 0
         
         # Sniffer Port
-        self.label_pd_sniffer_zmq_port.setText(str(self.dashboard_settings_dictionary["pd_bits_port"]))
+        self.label2_pd_sniffer_zmq_port.setText(str(self.dashboard_settings_dictionary["pd_bits_port"]))
         
         # Load Sniffer Protocols
         self.comboBox_pd_sniffer_protocols.clear()
@@ -486,14 +491,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
 
         ##### IQ Data  #####
-        # Set up IQ Recording Table     
+        # Set up IQ Recording Table
+        self._slotIQ_TabClicked("pushButton1_iq_tab_record")
         self.iq_file_counter = 0   
         self.iq_first_file_name = ''
         self.label_iq_folder.setVisible(False)
         self.iq_plot_range_start = 0
         self.iq_plot_range_end = 0
         
-        new_iq_combobox4 = QtWidgets.QComboBox(self)
+        new_iq_combobox4 = QtWidgets.QComboBox(self, objectName='comboBox2_')
         self.tableWidget_iq_record.setCellWidget(0,8,new_iq_combobox4)
         new_iq_combobox4.addItem("Complex")
         #new_iq_combobox4.addItem("Float/Float 32")
@@ -506,8 +512,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_iq_record.resizeColumnsToContents()
         self.tableWidget_iq_record.setColumnWidth(0,300)
         
-        # Set up IQ Playback Table        
-        new_iq_playback_combobox3 = QtWidgets.QComboBox(self)
+        # Set up IQ Playback Table
+        new_iq_playback_combobox3 = QtWidgets.QComboBox(self, objectName='comboBox2_')
         self.tableWidget_iq_playback.setCellWidget(0,5,new_iq_playback_combobox3)
         new_iq_playback_combobox3.addItem("Complex")
         #new_iq_combobox4.addItem("Float/Float 32")
@@ -517,7 +523,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         new_iq_playback_combobox3.setSizeAdjustPolicy(0)
         new_iq_playback_combobox3.setCurrentIndex(0)   
         
-        new_iq_playback_combobox4 = QtWidgets.QComboBox(self)
+        new_iq_playback_combobox4 = QtWidgets.QComboBox(self, objectName='comboBox2_')
         self.tableWidget_iq_playback.setCellWidget(0,6,new_iq_playback_combobox4)
         new_iq_playback_combobox4.addItem("Yes")
         new_iq_playback_combobox4.addItem("No")
@@ -540,8 +546,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_iq_plot_next.setVisible(False)
         
         # Transfer Files
-        self.label_iq_transfer_folder_success.setVisible(False)
-        self.label_iq_transfer_file_success.setVisible(False)
+        self.label2_iq_transfer_folder_success.setVisible(False)
+        self.label2_iq_transfer_file_success.setVisible(False)
         
         # Settings Icon
         self.pushButton_iq_FunctionsSettings.setIcon(QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/settings.png"))
@@ -568,7 +574,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.comboBox_archive_download_folder.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/IQ Recordings'))   
         self._slotArchiveDownloadFoldersChanged()
         self.populateArchive()
-        self.label_archive_replay_status.setVisible(False)
+        self.label2_archive_replay_status.setVisible(False)
         self.tableWidget_archive_replay.setColumnHidden(9,True)
         self.progressBar_archive_datasets.setVisible(False)
         
@@ -867,7 +873,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 if self.wideband_zoom == True:   
                     self.matplotlib_widget.configureAxesZoom1(self.wideband_zoom_start, self.wideband_zoom_end, self.wideband_height)
                 else:
-                    self.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=self.wideband_height)
+                    self.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=self.wideband_height,background_color=self.dashboard_settings_dictionary['color1'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
                 self.matplotlib_widget.draw()
             
             # Update Start/End Frequency Spin Boxes
@@ -1154,18 +1160,18 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_iq_convert_new_select.clicked.connect(self._slotIQ_ConvertOriginalSelectClicked)
         self.pushButton_iq_convert_copy.clicked.connect(self._slotIQ_ConvertCopyClicked)
         self.pushButton_iq_terminal.clicked.connect(self._slotIQ_TerminalClicked)
-        self.pushButton_iq_tab_record.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_record"))
-        self.pushButton_iq_tab_playback.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_playback"))
-        self.pushButton_iq_tab_inspection.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_inspection"))
-        self.pushButton_iq_tab_crop.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_crop"))
-        self.pushButton_iq_tab_convert.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_convert"))
-        self.pushButton_iq_tab_append.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_append"))
-        self.pushButton_iq_tab_transfer.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_transfer"))
-        self.pushButton_iq_tab_timeslot.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_timeslot"))
-        self.pushButton_iq_tab_overlap.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_overlap"))
-        self.pushButton_iq_tab_resample.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_resample"))
-        self.pushButton_iq_tab_ofdm.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_ofdm"))
-        self.pushButton_iq_tab_normalize.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton_iq_tab_normalize"))
+        self.pushButton1_iq_tab_record.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_record"))
+        self.pushButton1_iq_tab_playback.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_playback"))
+        self.pushButton1_iq_tab_inspection.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_inspection"))
+        self.pushButton1_iq_tab_crop.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_crop"))
+        self.pushButton1_iq_tab_convert.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_convert"))
+        self.pushButton1_iq_tab_append.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_append"))
+        self.pushButton1_iq_tab_transfer.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_transfer"))
+        self.pushButton1_iq_tab_timeslot.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_timeslot"))
+        self.pushButton1_iq_tab_overlap.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_overlap"))
+        self.pushButton1_iq_tab_resample.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_resample"))
+        self.pushButton1_iq_tab_ofdm.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_ofdm"))
+        self.pushButton1_iq_tab_normalize.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_normalize"))
         self.pushButton_iq_polar.clicked.connect(self._slotIQ_PolarClicked)
         self.pushButton_iq_normalize_original_load.clicked.connect(self._slotIQ_NormalizeOriginalLoadClicked)
         self.pushButton_iq_normalize_new_load.clicked.connect(self._slotIQ_NormalizeNewLoadClicked)
@@ -1281,15 +1287,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_pd_bit_slicing_candidate_preambles.cellDoubleClicked.connect(self._slotPD_BitSlicingCandidateDoubleClicked)
         self.tableWidget_pd_bit_slicing_preamble_stats.cellDoubleClicked.connect(self._slotPD_BitSlicingAllPreamblesDoubleClicked)  
         self.tableWidget_pd_bit_slicing_packets.horizontalHeader().sectionClicked.connect(self._slotPD_BitSlicingColumnClicked)        
-        self.tableWidget_attack_flow_graph_current_values.cellChanged.connect(self._slotAttackCurrentValuesEdited)
-        self.tableWidget_attack_packet_editor.cellChanged.connect(self._slotPacketItemChanged)
+        self.tableWidget1_attack_flow_graph_current_values.cellChanged.connect(self._slotAttackCurrentValuesEdited)
+        self.tableWidget1_attack_packet_editor.cellChanged.connect(self._slotPacketItemChanged)
         self.tableWidget_attack_fuzzing_data_field.cellChanged.connect(self._slotAttackFuzzingItemChanged)   
         self.tableWidget_pd_bit_viewer_hex.horizontalHeader().sectionClicked.connect(self._slotPD_BitViewerColumnClicked)  
         self.tableWidget_archive_datasets.horizontalHeader().sectionClicked.connect(self._slotArchiveDatasetsColumnClicked)
         
         # Labels
-        self.label_iq_end.mousePressEvent = self._slotIQ_EndLabelClicked
-        self.label_iq_start.mousePressEvent = self._slotIQ_StartLabelClicked
+        self.label2_iq_end.mousePressEvent = self._slotIQ_EndLabelClicked
+        self.label2_iq_start.mousePressEvent = self._slotIQ_StartLabelClicked
 
         # List Widgets
         self.listWidget_library_gallery.currentItemChanged.connect(self._slotLibraryGalleryImageChanged)
@@ -1617,6 +1623,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionOpenWebRX.triggered.connect(self._slotMenuOpenWebRX_Clicked)
         self.actionTuneIn_Explorer.triggered.connect(self._slotMenuTuneInExplorerClicked)
         self.actionYouTube.triggered.connect(self._slotMenuYouTubeClicked)
+        self.actionLight_Mode.triggered.connect(self._slotMenuLightModeClicked)
+        self.actionDark_Mode.triggered.connect(self._slotMenuDarkModeClicked)
+        self.actionCustom_Mode.triggered.connect(self._slotMenuCustomModeClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -1687,8 +1696,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Display the Text
         with open(os.path.dirname(os.path.realpath(__file__)) + "/Logs/temp.log") as mylogfile:
             temp_log_contents = mylogfile.read()
-        self.textEdit_log.setPlainText(temp_log_contents)
-        self.textEdit_log.moveCursor(QtGui.QTextCursor.End)        
+        self.textEdit2_log.setPlainText(temp_log_contents)
+        self.textEdit2_log.moveCursor(QtGui.QTextCursor.End)        
         
     def _slotLogRefreshPermitClicked(self):
         """ Permit refresh is clicked in the Log tab
@@ -1718,8 +1727,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Display the Text
         with open(os.path.dirname(os.path.realpath(__file__)) + "/Logs/temp.log") as mylogfile:
             temp_log_contents = mylogfile.read()
-        self.textEdit_log.setPlainText(temp_log_contents)
-        self.textEdit_log.moveCursor(QtGui.QTextCursor.End)
+        self.textEdit2_log.setPlainText(temp_log_contents)
+        self.textEdit2_log.moveCursor(QtGui.QTextCursor.End)
         
     def targetSelected(self, row):
         """ SOI target was clicked by the user or selected by auto-select.
@@ -1841,39 +1850,39 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.matplotlib_widget.plotPoint(plot_x, 11, self.matplotlib_widget.computeColormapValue(signal[1]), 5, self.wideband_data)
         
         # Add it to the Table        
-        self.tableWidget_tsi_wideband.setRowCount(self.tableWidget_tsi_wideband.rowCount()+1)
+        self.tableWidget1_tsi_wideband.setRowCount(self.tableWidget1_tsi_wideband.rowCount()+1)
 
         # Frequency
         frequency_item = QtWidgets.QTableWidgetItem(str(signal[0]))
         frequency_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.tableWidget_tsi_wideband.setItem(self.tableWidget_tsi_wideband.rowCount()-1,0,frequency_item)        
+        self.tableWidget1_tsi_wideband.setItem(self.tableWidget1_tsi_wideband.rowCount()-1,0,frequency_item)        
         
         # Power
         power_item = QtWidgets.QTableWidgetItem(str(signal[1]))
         power_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.tableWidget_tsi_wideband.setItem(self.tableWidget_tsi_wideband.rowCount()-1,1,power_item)    
+        self.tableWidget1_tsi_wideband.setItem(self.tableWidget1_tsi_wideband.rowCount()-1,1,power_item)    
         
         # Time        
         get_time = time.strftime('%H:%M:%S', time.localtime(signal[2]))  # time format?
         time_item = QtWidgets.QTableWidgetItem(get_time)
         time_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.tableWidget_tsi_wideband.setItem(self.tableWidget_tsi_wideband.rowCount()-1,2,time_item)  # Will this cause sorting problems going from 12:59 to 1:00 or 23:59 to 0:00?
+        self.tableWidget1_tsi_wideband.setItem(self.tableWidget1_tsi_wideband.rowCount()-1,2,time_item)  # Will this cause sorting problems going from 12:59 to 1:00 or 23:59 to 0:00?
         
         # Sort by Time
-        self.tableWidget_tsi_wideband.sortItems(2,order=QtCore.Qt.DescendingOrder)    
+        self.tableWidget1_tsi_wideband.sortItems(2,order=QtCore.Qt.DescendingOrder)    
         
         # Resize Table Columns and Rows
-        self.tableWidget_tsi_wideband.resizeColumnsToContents()
-        self.tableWidget_tsi_wideband.resizeRowsToContents()
-        self.tableWidget_tsi_wideband.horizontalHeader().setStretchLastSection(False)
-        self.tableWidget_tsi_wideband.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget1_tsi_wideband.resizeColumnsToContents()
+        self.tableWidget1_tsi_wideband.resizeRowsToContents()
+        self.tableWidget1_tsi_wideband.horizontalHeader().setStretchLastSection(False)
+        self.tableWidget1_tsi_wideband.horizontalHeader().setStretchLastSection(True)
                         
     def _slotTSI_ClearWidebandListClicked(self):
         """ Clears the Wideband list on the Dashboard and in the HIPRFISR
         """
         
-        self.tableWidget_tsi_wideband.clearContents()
-        self.tableWidget_tsi_wideband.setRowCount(0)
+        self.tableWidget1_tsi_wideband.clearContents()
+        self.tableWidget1_tsi_wideband.setRowCount(0)
         
         self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Clear Wideband List')    
         
@@ -1970,7 +1979,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuOptionsClicked(self):
         """ Opens the Options dialog for the current tab.
         """        
-        dlg = OptionsDialog(opening_tab = self.tabWidget.tabText(self.tabWidget.currentIndex()), settings_dictionary = self.dashboard_settings_dictionary)
+        dlg = OptionsDialog(self,opening_tab = self.tabWidget.tabText(self.tabWidget.currentIndex()), settings_dictionary = self.dashboard_settings_dictionary)
         dlg.show()
         dlg.exec_() 
         
@@ -2044,13 +2053,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.status_dialog.tableWidget_status_results.item(2,0).setText("Loaded: " + str(fname.split('/')[-1]))
                 
                 # Update the Protocol Tab Labels
-                self.label_pd_status_loaded_flow_graph.setText(str(fname.split('/')[-1]))
-                self.label_pd_status_flow_graph_status.setText("Stopped")
+                self.label2_pd_status_loaded_flow_graph.setText(str(fname.split('/')[-1]))
+                self.label2_pd_status_flow_graph_status.setText("Stopped")
                 
                 # Update the Description and Variable Listings in "Flow Graph" tab
                 temp_flow_graph_variables = {}                
-                self.label_pd_flow_graphs_description.setText("")
-                self.label_pd_flow_graphs_default_variables.setText("")
+                self.label3_pd_flow_graphs_description.setText("")
+                self.label3_pd_flow_graphs_default_variables.setText("")
                 self.tableWidget_pd_flow_graphs_current_values.clearContents()
                 self.tableWidget_pd_flow_graphs_current_values.setRowCount(0)    
                 parsing = False
@@ -2074,7 +2083,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
                         # Fill in the "Loaded Flow Graph" Label    
                         if get_line != "":                        
-                            self.label_pd_flow_graphs_description.setText(self.label_pd_flow_graphs_description.text() + get_line)
+                            self.label3_pd_flow_graphs_description.setText(self.label3_pd_flow_graphs_description.text() + get_line)
                             
                     # Variables        
                     if line.startswith("        # Variables"):
@@ -2089,7 +2098,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
                         if get_line != "":                                                    
                             # Fill in the "Default Variables" Label
-                            self.label_pd_flow_graphs_default_variables.setText(self.label_pd_flow_graphs_default_variables.text() + get_line)
+                            self.label3_pd_flow_graphs_default_variables.setText(self.label3_pd_flow_graphs_default_variables.text() + get_line)
                             
                             # Fill in the "Current Values" Table
                             variable_name = get_line.split(' = ')[0]
@@ -2151,7 +2160,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.pushButton_pd_flow_graphs_restore_defaults.setEnabled(False)
                 
                 # Update Flow Graph Status Label
-                self.label_pd_flow_graphs_status.setText("Not Running")
+                self.label2_pd_flow_graphs_status.setText("Not Running")
                 
                 # Enable Protocol Discovery
                 self.pushButton_pd_status_start.setEnabled(True)
@@ -2183,7 +2192,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Checked
         if self.checkBox_automation_auto_select_sois.isChecked():    
             self.dashboard_settings_dictionary['process_SOIs'] = "True"
-            self.label_soi_list_priority.setVisible(True)
+            self.label2_soi_list_priority.setVisible(True)
             self.tableWidget_automation_soi_list_priority.setVisible(True)
             self.label_soi_priority_row1.setVisible(True)
             if self.tableWidget_automation_soi_list_priority.rowCount() > 1:
@@ -2203,7 +2212,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Unchecked    
         else:
             self.dashboard_settings_dictionary['process_SOIs'] = "False"
-            self.label_soi_list_priority.setVisible(False)
+            self.label2_soi_list_priority.setVisible(False)
             self.tableWidget_automation_soi_list_priority.setVisible(False)
             self.label_soi_priority_row1.setVisible(False)
             self.label_soi_priority_row2.setVisible(False)
@@ -2263,9 +2272,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Show/Hide the PD Flow Graph Lookup Not Found Label
         if len(modulation_list) == 0:
-            self.label_pd_flow_graphs_lookup_not_found.setText("Not Found!")
+            self.label2_pd_flow_graphs_lookup_not_found.setText("Not Found!")
         else:
-            self.label_pd_flow_graphs_lookup_not_found.setText("Found!")     
+            self.label2_pd_flow_graphs_lookup_not_found.setText("Found!")     
         
     def _slotSOI_Chosen(self, target_SOI):
         """ The HIPRFISR returned a SOI to target. This checks the radio button of the chosen SOI
@@ -2370,9 +2379,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Adds a new status message to the Protocol Discovery log after receiving information from the PD component.
         """
         # Add Status Message to PD Log
-        get_text = self.textEdit_pd_status.toPlainText()
+        get_text = self.textEdit2_pd_status.toPlainText()
         get_text = get_text + statusmessage  
-        self.textEdit_pd_status.setText(get_text)                           
+        self.textEdit2_pd_status.setText(get_text)                           
         
     def _slotPD_DemodulationLoadSelectedClicked(self):
         """ Loads the currently selected flow graph from the "Recommended Flow Graphs" list.
@@ -2438,13 +2447,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_hardware = self.dashboard_settings_dictionary['hardware_pd']
 
         # Clear Results Table
-        self.tableWidget_library_search_results.setRowCount(0)         
+        self.tableWidget1_library_search_results.setRowCount(0)         
         
         # Send Message
         self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Search Library for Flow Graphs', Parameters = [soi_data, get_hardware])
         
         # Change the Label
-        self.label_pd_flow_graphs_lookup_not_found.setText("Searching...")
+        self.label2_pd_flow_graphs_lookup_not_found.setText("Searching...")
 
             
     def _slotPD_DemodulationStartStopClicked(self):
@@ -2462,8 +2471,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.pushButton_pd_flow_graphs_restore_defaults.setEnabled(False)
             
             # Update Flow Graph Status Labels
-            self.label_pd_flow_graphs_status.setText("Stopped")
-            self.label_pd_status_flow_graph_status.setText("Stopped")
+            self.label2_pd_flow_graphs_status.setText("Stopped")
+            self.label2_pd_status_flow_graph_status.setText("Stopped")
         
             # Update the Status Dialog
             self.status_dialog.tableWidget_status_results.item(2,0).setText('Flow Graph Stopped')
@@ -2486,9 +2495,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 variable_values.append(str(self.tableWidget_pd_flow_graphs_current_values.item(get_row,0).text()))
     
             # Update Flow Graph Status Labels
-            self.label_pd_flow_graphs_status.setText("Starting...")
+            self.label2_pd_flow_graphs_status.setText("Starting...")
             self.pushButton_pd_flow_graphs_start_stop.setEnabled(False)  # Causes errors when stopped while loading
-            self.label_pd_status_flow_graph_status.setText("Starting...")
+            self.label2_pd_status_flow_graph_status.setText("Starting...")
                 
             # Send "Run PD Flow Graph" Message to the HIPRFISR
             fname = self.textEdit_pd_flow_graphs_filepath.toPlainText()
@@ -2631,9 +2640,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     self.tabWidget_attack_attack.setCurrentIndex(0)   
                                    
                     # Update the "Selected" Labels 
-                    self.label_selected_protocol.setText(self.comboBox_attack_protocols.currentText())                
-                    self.label_selected_modulation.setText(self.comboBox_attack_modulation.currentText())                
-                    self.label_selected_attack.setText(current_item.text(0))                    
+                    self.label2_selected_protocol.setText(self.comboBox_attack_protocols.currentText())                
+                    self.label2_selected_modulation.setText(self.comboBox_attack_modulation.currentText())                
+                    self.label1_selected_attack.setText(current_item.text(0))                    
                     
                     # Get Filename from the Library
                     get_hardware = str(self.comboBox_attack_hardware.currentText())
@@ -2641,7 +2650,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     fname = self.pd_library["Protocols"][str(self.comboBox_attack_protocols.currentText())]["Attacks"][str(current_item.text(0))][str(self.comboBox_attack_modulation.currentText())]["Hardware"][get_hardware][get_file_type]                   
                     
                     # Update File Type Label
-                    self.label_attack_single_stage_file_type.setText(get_file_type)
+                    self.label2_attack_single_stage_file_type.setText(get_file_type)
                     
                     # Enable the Pushbuttons
                     self.pushButton_attack_start_stop.setEnabled(True)
@@ -2665,8 +2674,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     
                     # Clear Tables/Labels
                     self.tableWidget_attack_multi_stage_attacks.setRowCount(0)
-                    self.label_selected_flow_graph.setText("")
-                    self.label_attack_fuzzing_selected_flow_graph.setText("")
+                    self.label2_selected_flow_graph.setText("")
+                    self.label2_attack_fuzzing_selected_flow_graph.setText("")
                     
                     # Remove Tabs
                     for n in reversed(range(0,self.tabWidget_attack_multi_stage.count())):
@@ -2699,7 +2708,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         self.tabWidget_attack_fuzzing.setCurrentIndex(0)
                                         
                         # Clear Tables/Labels
-                        self.label_attack_fuzzing_selected_flow_graph.setText("")    
+                        self.label2_attack_fuzzing_selected_flow_graph.setText("")    
                         self.textEdit_fuzzing_from_file.setPlainText("")
                         for rows in reversed(range(0,self.tableWidget_fuzzing_variables.rowCount())):
                             self.tableWidget_fuzzing_variables.removeRow(rows)
@@ -2707,18 +2716,18 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             self.tableWidget_attack_fuzzing_flow_graph_current_values.removeRow(rows)                
                             
                         # Update the "Selected" Labels 
-                        self.label_attack_fuzzing_selected_protocol.setText(self.comboBox_attack_protocols.currentText())
-                        self.label_attack_fuzzing_selected_modulation.setText(self.comboBox_attack_modulation.currentText())
-                        self.label_attack_fuzzing_selected_attack.setText(current_item.text(0))        
+                        self.label2_attack_fuzzing_selected_protocol.setText(self.comboBox_attack_protocols.currentText())
+                        self.label2_attack_fuzzing_selected_modulation.setText(self.comboBox_attack_modulation.currentText())
+                        self.label2_attack_fuzzing_selected_attack.setText(current_item.text(0))        
                         
                         # Switch to Variables Tab
                         self.stackedWidget_fuzzing.setCurrentIndex(1)    
                         
                         # Enable Labels/Tables/PushButtons
-                        self.label_fuzzing_variables_fg.setEnabled(True)
+                        self.label2_fuzzing_variables_fg.setEnabled(True)
                         self.textEdit_fuzzing_from_file.setEnabled(True)
                         self.pushButton_attack_fuzzing_select_file.setEnabled(True)
-                        self.label_fuzzing_update_period.setEnabled(True)
+                        self.label2_fuzzing_update_period.setEnabled(True)
                         self.textEdit_fuzzing_update_period.setEnabled(True)
                         self.tableWidget_fuzzing_variables.setEnabled(True)    
                         self.pushButton_attack_fuzzing_start.setEnabled(False)
@@ -2733,20 +2742,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
                         # Fuzzing Tab
                         self.tableWidget_attack_fuzzing_data_field.setEnabled(True)
-                        self.label_attack_fuzzing_subcategory.setEnabled(True)
+                        self.label2_attack_fuzzing_subcategory.setEnabled(True)
                         self.comboBox_attack_fuzzing_subcategory.setEnabled(True)        
                         self.pushButton_attack_fuzzing_restore_defaults.setEnabled(True)
                         self.pushButton_attack_fuzzing_all_binary.setEnabled(True)
                         self.pushButton_attack_fuzzing_all_hex.setEnabled(True)
-                        self.label_attack_fuzzing_seed.setEnabled(True)
+                        self.label2_attack_fuzzing_seed.setEnabled(True)
                         self.textEdit_attack_fuzzing_seed.setEnabled(True)
                         
                         self._slotAttackFuzzingSubcategory()
                         
                         # Update the "Selected" Labels 
-                        self.label_attack_fuzzing_selected_protocol.setText(self.comboBox_attack_protocols.currentText())
-                        self.label_attack_fuzzing_selected_modulation.setText(self.comboBox_attack_modulation.currentText())
-                        self.label_attack_fuzzing_selected_attack.setText(current_item.text(0))
+                        self.label2_attack_fuzzing_selected_protocol.setText(self.comboBox_attack_protocols.currentText())
+                        self.label2_attack_fuzzing_selected_modulation.setText(self.comboBox_attack_modulation.currentText())
+                        self.label2_attack_fuzzing_selected_attack.setText(current_item.text(0))
                         
                         # Get Filename from the Library
                         get_hardware = str(self.comboBox_attack_hardware.currentText())
@@ -2768,13 +2777,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Look for the Flow Graph
             directory = os.path.dirname(os.path.realpath(__file__)) + '/Flow Graph Library/Single-Stage Flow Graphs'  # Default Directory
             fname = QtWidgets.QFileDialog.getOpenFileName(None,"Select Attack Flow Graph...", directory, filter="Flow Graphs (*.py)")[0]
-            self.label_selected_protocol.setText("")
-            self.label_attack_fuzzing_selected_protocol.setText("")
-            self.label_selected_modulation.setText("")
-            self.label_attack_fuzzing_selected_modulation.setText("")
-            self.label_selected_attack.setText("")
-            self.label_attack_fuzzing_selected_attack.setText("")
-            self.label_selected_notes.setText("")
+            self.label2_selected_protocol.setText("")
+            self.label2_attack_fuzzing_selected_protocol.setText("")
+            self.label2_selected_modulation.setText("")
+            self.label2_attack_fuzzing_selected_modulation.setText("")
+            self.label1_selected_attack.setText("")
+            self.label2_attack_fuzzing_selected_attack.setText("")
+            self.label2_selected_notes.setText("")
             self.tabWidget_attack_attack.setCurrentIndex(0)
             file_dialog_used = True
             
@@ -2798,7 +2807,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     fname = flow_graph_directory + fname
                 
                 # Set Labels
-                self.label_attack_fuzzing_selected_flow_graph.setText(fname)  
+                self.label2_attack_fuzzing_selected_flow_graph.setText(fname)  
                  
                 # Read Flow Graph Variables
                 temp_flow_graph_variables = {}
@@ -2874,7 +2883,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 self.tableWidget_attack_fuzzing_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                                 
                                 # Create the PushButton
-                                new_pushbutton = QtWidgets.QPushButton(self.tableWidget_attack_fuzzing_flow_graph_current_values)
+                                new_pushbutton = QtWidgets.QPushButton(self.tableWidget_attack_fuzzing_flow_graph_current_values,objectName='pushButton_')
                                 new_pushbutton.setText("...")
                                 new_pushbutton.setFixedSize(34,23)
                                 self.tableWidget_attack_fuzzing_flow_graph_current_values.setCellWidget(self.tableWidget_attack_fuzzing_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
@@ -2905,7 +2914,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     fname = flow_graph_directory + fname
                 
                 # Set Labels
-                self.label_attack_fuzzing_selected_flow_graph.setText(fname)
+                self.label2_attack_fuzzing_selected_flow_graph.setText(fname)
                 
                 # Read Flow Graph Variables
                 temp_flow_graph_variables = {}
@@ -2988,7 +2997,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                     self.tableWidget_attack_fuzzing_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                                     
                                     # Create the PushButton
-                                    new_pushbutton = QtWidgets.QPushButton(self.tableWidget_attack_fuzzing_flow_graph_current_values)
+                                    new_pushbutton = QtWidgets.QPushButton(self.tableWidget_attack_fuzzing_flow_graph_current_values,objectName='pushButton_')
                                     new_pushbutton.setText("...")
                                     new_pushbutton.setFixedSize(34,23)
                                     self.tableWidget_attack_fuzzing_flow_graph_current_values.setCellWidget(self.tableWidget_attack_fuzzing_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
@@ -3021,20 +3030,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     fname = flow_graph_directory + fname
                 
                 # Set Labels
-                self.label_selected_flow_graph.setText(fname)
-                self.label_selected_notes.setText("")
+                self.label2_selected_flow_graph.setText(fname)
+                self.label2_selected_notes.setText("")
         
                 # Clear Table                
                 f = open(fname,'r')
-                self.tableWidget_attack_flow_graph_current_values.setColumnCount(1)
-                self.tableWidget_attack_flow_graph_current_values.setRowCount(0)    
-                self.tableWidget_attack_flow_graph_current_values.clearContents()
-                self.tableWidget_attack_flow_graph_current_values.resizeColumnsToContents()
-                self.tableWidget_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
-                self.tableWidget_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(True)
+                self.tableWidget1_attack_flow_graph_current_values.setColumnCount(1)
+                self.tableWidget1_attack_flow_graph_current_values.setRowCount(0)    
+                self.tableWidget1_attack_flow_graph_current_values.clearContents()
+                self.tableWidget1_attack_flow_graph_current_values.resizeColumnsToContents()
+                self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
+                self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(True)
                 
                 # Enable the Table
-                self.tableWidget_attack_flow_graph_current_values.setEnabled(True)    
+                self.tableWidget1_attack_flow_graph_current_values.setEnabled(True)    
     
                 # Flow Graph
                 if ftype == "Flow Graph":
@@ -3061,7 +3070,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                        
                                 # Ignore Notes in the Table
                                 if str(variable_name_item.text()).lower() == 'notes':
-                                    self.label_selected_notes.setText(value_text)
+                                    self.label2_selected_notes.setText(value_text)
                                 else:                                    
                                     # Replace with Global Constants
                                     if variable_name == "ip_address":
@@ -3088,9 +3097,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                                                                                    
                                     # Fill in the "Current Values" Table
                                     value = QtWidgets.QTableWidgetItem(value_text)
-                                    self.tableWidget_attack_flow_graph_current_values.setRowCount(self.tableWidget_attack_flow_graph_current_values.rowCount()+1)
-                                    self.tableWidget_attack_flow_graph_current_values.setVerticalHeaderItem(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,variable_name_item)   
-                                    self.tableWidget_attack_flow_graph_current_values.setItem(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,0,value)   
+                                    self.tableWidget1_attack_flow_graph_current_values.setRowCount(self.tableWidget1_attack_flow_graph_current_values.rowCount()+1)
+                                    self.tableWidget1_attack_flow_graph_current_values.setVerticalHeaderItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,variable_name_item)   
+                                    self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,value)   
 
                                     # Store Variables and Values to a Dictionary
                                     temp_flow_graph_variables[str(variable_name_item.text())] = str(value.text())
@@ -3098,22 +3107,22 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                     # Add a Filepath Button
                                     if 'filepath' in variable_name:
                                         # Add a New Column
-                                        self.tableWidget_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
-                                        self.tableWidget_attack_flow_graph_current_values.setColumnCount(2)
-                                        self.tableWidget_attack_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
+                                        self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
+                                        self.tableWidget1_attack_flow_graph_current_values.setColumnCount(2)
+                                        self.tableWidget1_attack_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                                         
                                         # Create the PushButton
-                                        new_pushbutton = QtWidgets.QPushButton(self.tableWidget_attack_flow_graph_current_values)
+                                        new_pushbutton = QtWidgets.QPushButton(self.tableWidget1_attack_flow_graph_current_values,objectName='pushButton_')
                                         new_pushbutton.setText("...")
                                         new_pushbutton.setFixedSize(34,23)
-                                        self.tableWidget_attack_flow_graph_current_values.setCellWidget(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
-                                        get_row_number = self.tableWidget_attack_flow_graph_current_values.rowCount()-1
-                                        get_default_directory = self.defaultAttackFilepathDirectory(str(self.label_selected_flow_graph.text()).rsplit('/')[-1],variable_name)
+                                        self.tableWidget1_attack_flow_graph_current_values.setCellWidget(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
+                                        get_row_number = self.tableWidget1_attack_flow_graph_current_values.rowCount()-1
+                                        get_default_directory = self.defaultAttackFilepathDirectory(str(self.label2_selected_flow_graph.text()).rsplit('/')[-1],variable_name)
                                         new_pushbutton.clicked.connect((lambda get_row_number,get_default_directory: lambda: self._slotSelectFilepath(-1, get_row = get_row_number, default_directory = get_default_directory))(get_row_number,get_default_directory))  # Pass constant value, not variable value
 
                                         # Adjust Table
-                                        self.tableWidget_attack_flow_graph_current_values.setColumnWidth(1,35) 
-                                        self.tableWidget_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch) 
+                                        self.tableWidget1_attack_flow_graph_current_values.setColumnWidth(1,35) 
+                                        self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch) 
                                     
                 # Flow Graph - GUI
                 elif ftype == "Flow Graph - GUI":
@@ -3140,7 +3149,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 
                                 # Ignore Notes in the Table
                                 if str(variable_name_item.text()).lower() == 'notes':
-                                    self.label_selected_notes.setText(value_text)
+                                    self.label2_selected_notes.setText(value_text)
                                 else:                                       
                                     # Replace with Global Constants
                                     if variable_name == "ip_address":
@@ -3167,9 +3176,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                                                                                    
                                     # Fill in the "Current Values" Table
                                     value = QtWidgets.QTableWidgetItem(value_text)
-                                    self.tableWidget_attack_flow_graph_current_values.setRowCount(self.tableWidget_attack_flow_graph_current_values.rowCount()+1)
-                                    self.tableWidget_attack_flow_graph_current_values.setVerticalHeaderItem(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,variable_name_item)   
-                                    self.tableWidget_attack_flow_graph_current_values.setItem(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,0,value)   
+                                    self.tableWidget1_attack_flow_graph_current_values.setRowCount(self.tableWidget1_attack_flow_graph_current_values.rowCount()+1)
+                                    self.tableWidget1_attack_flow_graph_current_values.setVerticalHeaderItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,variable_name_item)   
+                                    self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,value)   
 
                                     # Store Variables and Values to a Dictionary
                                     temp_flow_graph_variables[str(variable_name_item.text())] = str(value.text())
@@ -3177,25 +3186,25 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                     # Add a Filepath Button
                                     if 'filepath' in variable_name:
                                         # Add a New Column
-                                        self.tableWidget_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
-                                        self.tableWidget_attack_flow_graph_current_values.setColumnCount(2)
-                                        self.tableWidget_attack_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
+                                        self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
+                                        self.tableWidget1_attack_flow_graph_current_values.setColumnCount(2)
+                                        self.tableWidget1_attack_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                                         
                                         # Create the PushButton
-                                        new_pushbutton = QtWidgets.QPushButton(self.tableWidget_attack_flow_graph_current_values)
+                                        new_pushbutton = QtWidgets.QPushButton(self.tableWidget1_attack_flow_graph_current_values,objectName='pushButton_')
                                         new_pushbutton.setText("...")
                                         new_pushbutton.setFixedSize(34,23)
-                                        self.tableWidget_attack_flow_graph_current_values.setCellWidget(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
-                                        get_row_number = self.tableWidget_attack_flow_graph_current_values.rowCount()-1
-                                        get_default_directory = self.defaultAttackFilepathDirectory(str(self.label_selected_flow_graph.text()).rsplit('/')[-1],variable_name)
+                                        self.tableWidget1_attack_flow_graph_current_values.setCellWidget(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
+                                        get_row_number = self.tableWidget1_attack_flow_graph_current_values.rowCount()-1
+                                        get_default_directory = self.defaultAttackFilepathDirectory(str(self.label2_selected_flow_graph.text()).rsplit('/')[-1],variable_name)
                                         new_pushbutton.clicked.connect((lambda get_row_number,get_default_directory: lambda: self._slotSelectFilepath(-1, get_row = get_row_number, default_directory = get_default_directory))(get_row_number,get_default_directory))  # Pass constant value, not variable value
 
                                         # Adjust Table
-                                        self.tableWidget_attack_flow_graph_current_values.setColumnWidth(1,35) 
-                                        self.tableWidget_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch)                                    
+                                        self.tableWidget1_attack_flow_graph_current_values.setColumnWidth(1,35) 
+                                        self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch)                                    
                                     
                     # Disable the Table
-                    self.tableWidget_attack_flow_graph_current_values.setEnabled(False)
+                    self.tableWidget1_attack_flow_graph_current_values.setEnabled(False)
                                     
                 # Python Script
                 else:
@@ -3217,7 +3226,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     for n in range(0,len(get_vars)):                                    
                         # Ignore Notes in the Table
                         if str(get_vars[n]).lower() == 'notes':
-                            self.label_selected_notes.setText(str(get_vals[n]))
+                            self.label2_selected_notes.setText(str(get_vals[n]))
                         else:
                             # Replace with Global Constants
                             if get_vars[n] == "iface":
@@ -3226,9 +3235,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             # Fill in the "Current Values" Table
                             variable_name = QtWidgets.QTableWidgetItem(get_vars[n])
                             value = QtWidgets.QTableWidgetItem(str(get_vals[n]))
-                            self.tableWidget_attack_flow_graph_current_values.setRowCount(self.tableWidget_attack_flow_graph_current_values.rowCount()+1)
-                            self.tableWidget_attack_flow_graph_current_values.setVerticalHeaderItem(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,variable_name)   
-                            self.tableWidget_attack_flow_graph_current_values.setItem(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,0,value)   
+                            self.tableWidget1_attack_flow_graph_current_values.setRowCount(self.tableWidget1_attack_flow_graph_current_values.rowCount()+1)
+                            self.tableWidget1_attack_flow_graph_current_values.setVerticalHeaderItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,variable_name)   
+                            self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,value)   
 
                             # Store Variables and Values to a Dictionary
                             temp_flow_graph_variables[str(variable_name.text())] = str(value.text())
@@ -3236,52 +3245,52 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             # Add a Filepath Button
                             if 'filepath' in str(variable_name.text()):
                                 # Add a New Column
-                                if self.tableWidget_attack_flow_graph_current_values.columnCount() == 1:
-                                    self.tableWidget_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
-                                    self.tableWidget_attack_flow_graph_current_values.setColumnCount(2)
-                                    self.tableWidget_attack_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
+                                if self.tableWidget1_attack_flow_graph_current_values.columnCount() == 1:
+                                    self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
+                                    self.tableWidget1_attack_flow_graph_current_values.setColumnCount(2)
+                                    self.tableWidget1_attack_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                                 
                                 # Create the PushButton
-                                new_pushbutton = QtWidgets.QPushButton(self.tableWidget_attack_flow_graph_current_values)
+                                new_pushbutton = QtWidgets.QPushButton(self.tableWidget1_attack_flow_graph_current_values,objectName='pushButton_')
                                 new_pushbutton.setText("...")
                                 if 'iface' in get_vars:
                                     new_pushbutton.setFixedSize(64,23)
                                 else:
                                     new_pushbutton.setFixedSize(34,23)
-                                self.tableWidget_attack_flow_graph_current_values.setCellWidget(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
-                                get_row_number = self.tableWidget_attack_flow_graph_current_values.rowCount()-1
-                                get_default_directory = self.defaultAttackFilepathDirectory(str(self.label_selected_flow_graph.text()).rsplit('/')[-1],str(variable_name.text()))
+                                self.tableWidget1_attack_flow_graph_current_values.setCellWidget(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
+                                get_row_number = self.tableWidget1_attack_flow_graph_current_values.rowCount()-1
+                                get_default_directory = self.defaultAttackFilepathDirectory(str(self.label2_selected_flow_graph.text()).rsplit('/')[-1],str(variable_name.text()))
                                 new_pushbutton.clicked.connect((lambda get_row_number,get_default_directory: lambda: self._slotSelectFilepath(-1, get_row = get_row_number, default_directory = get_default_directory))(get_row_number,get_default_directory))  # Pass constant value, not variable value
 
                                 # Adjust Table
-                                if self.tableWidget_attack_flow_graph_current_values.columnWidth(1) > 65:  # check for iface/guess column width
-                                    self.tableWidget_attack_flow_graph_current_values.setColumnWidth(1,35) 
-                                self.tableWidget_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch)                                        
+                                if self.tableWidget1_attack_flow_graph_current_values.columnWidth(1) > 65:  # check for iface/guess column width
+                                    self.tableWidget1_attack_flow_graph_current_values.setColumnWidth(1,35) 
+                                self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch)                                        
                                 
                             # Add a Guess Interface Button
                             if str(variable_name.text()) == 'iface':
                                 # Add a New Column
-                                if self.tableWidget_attack_flow_graph_current_values.columnCount() == 1:
-                                    self.tableWidget_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
-                                    self.tableWidget_attack_flow_graph_current_values.setColumnCount(2)
-                                    self.tableWidget_attack_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
+                                if self.tableWidget1_attack_flow_graph_current_values.columnCount() == 1:
+                                    self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
+                                    self.tableWidget1_attack_flow_graph_current_values.setColumnCount(2)
+                                    self.tableWidget1_attack_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                                 
                                 # Create the PushButton
-                                new_pushbutton = QtWidgets.QPushButton(self.tableWidget_attack_flow_graph_current_values)
+                                new_pushbutton = QtWidgets.QPushButton(self.tableWidget1_attack_flow_graph_current_values,objectName='pushButton_')
                                 new_pushbutton.setText("Guess")
                                 new_pushbutton.setFixedSize(64,23)
-                                self.tableWidget_attack_flow_graph_current_values.setCellWidget(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
+                                self.tableWidget1_attack_flow_graph_current_values.setCellWidget(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
                                 new_pushbutton.clicked.connect(lambda: self._slotGuessInterfaceTableClicked(-1))
 
                                 # Adjust Table
-                                self.tableWidget_attack_flow_graph_current_values.setColumnWidth(1,65) 
-                                self.tableWidget_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch)     
+                                self.tableWidget1_attack_flow_graph_current_values.setColumnWidth(1,65) 
+                                self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch)     
 
                 # Close the File
                 f.close()  
                 
                 # Adjust Table
-                self.tableWidget_attack_flow_graph_current_values.resizeRowsToContents()
+                self.tableWidget1_attack_flow_graph_current_values.resizeRowsToContents()
                 
                 # Copy the Flow Graph Dictionary
                 self.attack_flow_graph_variables = temp_flow_graph_variables    
@@ -3293,7 +3302,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.pushButton_attack_restore_defaults.setEnabled(False)
                 
                 # Update Flow Graph Status Label
-                self.label_attack_flow_graph_status.setText("Stopped")
+                self.label2_attack_flow_graph_status.setText("Stopped")
             
             #~ except:
                 #~ pass
@@ -3303,12 +3312,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens the selected attack flow graph in GNU Radio Companion
         """    
         # File Type
-        get_file_type = str(self.label_attack_single_stage_file_type.text())
+        get_file_type = str(self.label2_attack_single_stage_file_type.text())
         
         # Flow Graph
         if get_file_type == "Flow Graph" or get_file_type == "Flow Graph - GUI": 
             # Get the Flow Graph Name
-            loaded_flow_graph = str(self.label_selected_flow_graph.text())
+            loaded_flow_graph = str(self.label2_selected_flow_graph.text())
             loaded_flow_graph = loaded_flow_graph.replace(" ","\ ")
             loaded_flow_graph = loaded_flow_graph.rpartition('.')[0] + ".grc"
             
@@ -3322,7 +3331,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Python Script
         else:
             # Get the File Name
-            loaded_flow_graph = str(self.label_selected_flow_graph.text())
+            loaded_flow_graph = str(self.label2_selected_flow_graph.text())
             loaded_flow_graph = loaded_flow_graph.replace(" ","\ ")
             
             # Open the Flow Graph in Gedit
@@ -3334,9 +3343,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Stop Flow Graph
         if self.pushButton_attack_start_stop.text() == "Stop Attack":
-            if str(self.label_attack_single_stage_file_type.text()) == "Flow Graph":
+            if str(self.label2_attack_single_stage_file_type.text()) == "Flow Graph":
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Stop Attack Flow Graph', Parameters = [''])
-            elif str(self.label_attack_single_stage_file_type.text()) == "Flow Graph - GUI":
+            elif str(self.label2_attack_single_stage_file_type.text()) == "Flow Graph - GUI":
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Stop Attack Flow Graph', Parameters = ['Flow Graph - GUI'])
             else:
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Stop Attack Flow Graph', Parameters = ['Python Script'])
@@ -3353,14 +3362,14 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_attack_hardware.setEnabled(True)  
             
             # Update Flow Graph Status Label
-            self.label_attack_flow_graph_status.setText("Stopped")      
+            self.label2_attack_flow_graph_status.setText("Stopped")      
             
             # Enabled All Values for Editing
-            for get_row in range(self.tableWidget_attack_flow_graph_current_values.rowCount()):   
-                get_value_item = self.tableWidget_attack_flow_graph_current_values.takeItem(get_row,0)
+            for get_row in range(self.tableWidget1_attack_flow_graph_current_values.rowCount()):   
+                get_value_item = self.tableWidget1_attack_flow_graph_current_values.takeItem(get_row,0)
                 get_value_item.setFlags(get_value_item.flags() | QtCore.Qt.ItemIsEditable)
                 get_value_item.setFlags(get_value_item.flags() | QtCore.Qt.ItemIsEnabled)
-                self.tableWidget_attack_flow_graph_current_values.setItem(get_row,0,get_value_item)
+                self.tableWidget1_attack_flow_graph_current_values.setItem(get_row,0,get_value_item)
 
         # Start Flow Graph
         elif self.pushButton_attack_start_stop.text() == "Start Attack":        
@@ -3368,32 +3377,32 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Send Message(s) to the HIPRFISR for each Variable Name and Value
             variable_names = []
             variable_values = []
-            for get_row in range(self.tableWidget_attack_flow_graph_current_values.rowCount()):             
+            for get_row in range(self.tableWidget1_attack_flow_graph_current_values.rowCount()):             
                 # Save the Variable Name in the Row to a Dictionary
-                get_name = str(self.tableWidget_attack_flow_graph_current_values.verticalHeaderItem(get_row).text())
+                get_name = str(self.tableWidget1_attack_flow_graph_current_values.verticalHeaderItem(get_row).text())
                 variable_names.append(get_name)  
                 
                 # Disable Values with Names Matching those Listed in "fissure_config.yaml"
                 if get_name in self.dashboard_settings_dictionary['disabled_running_flow_graph_variables']:
-                    get_value_item = self.tableWidget_attack_flow_graph_current_values.takeItem(get_row,0)
+                    get_value_item = self.tableWidget1_attack_flow_graph_current_values.takeItem(get_row,0)
                     get_value_item.setFlags(get_value_item.flags() & ~QtCore.Qt.ItemIsEnabled)
-                    self.tableWidget_attack_flow_graph_current_values.setItem(get_row,0,get_value_item)
+                    self.tableWidget1_attack_flow_graph_current_values.setItem(get_row,0,get_value_item)
 
                 # Save the Variable Value in the Row to a Dictionary   
                 if get_name == "filepath":
-                    if str(self.label_attack_single_stage_file_type.text()) == "Flow Graph" or str(self.label_attack_single_stage_file_type.text()) == "Flow Graph - GUI":
-                        variable_values.append('"' + '"' + str(self.tableWidget_attack_flow_graph_current_values.item(get_row,0).text()) + '"' + '"')  # Needs two sets of quotes                    
+                    if str(self.label2_attack_single_stage_file_type.text()) == "Flow Graph" or str(self.label2_attack_single_stage_file_type.text()) == "Flow Graph - GUI":
+                        variable_values.append('"' + '"' + str(self.tableWidget1_attack_flow_graph_current_values.item(get_row,0).text()) + '"' + '"')  # Needs two sets of quotes                    
                     else:
-                        variable_values.append('"' + str(self.tableWidget_attack_flow_graph_current_values.item(get_row,0).text()) + '"')  # Needs one set of quotes
+                        variable_values.append('"' + str(self.tableWidget1_attack_flow_graph_current_values.item(get_row,0).text()) + '"')  # Needs one set of quotes
                 else:
-                    variable_values.append(str(self.tableWidget_attack_flow_graph_current_values.item(get_row,0).text()))
+                    variable_values.append(str(self.tableWidget1_attack_flow_graph_current_values.item(get_row,0).text()))
             
             # Update Flow Graph Status Label
-            self.label_attack_flow_graph_status.setText("Starting...")
+            self.label2_attack_flow_graph_status.setText("Starting...")
             
             # Send "Run Attack Flow Graph" Message to the HIPRFISR
-            fname = self.label_selected_flow_graph.text()
-            get_file_type = str(self.label_attack_single_stage_file_type.text())
+            fname = self.label2_selected_flow_graph.text()
+            get_file_type = str(self.label2_attack_single_stage_file_type.text())
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Attack Flow Graph', Parameters = [str(fname), variable_names, variable_values, get_file_type]) 
                 
             # Toggle the Text       
@@ -3412,41 +3421,41 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.status_dialog.tableWidget_status_results.item(3,0).setText('Starting... ' + fname.split('/')[-1])
             
             # Update the Attack History Table       
-            attack_name = str(self.label_selected_attack.text())
-            protocol = str(self.label_selected_protocol.text())
+            attack_name = str(self.label1_selected_attack.text())
+            protocol = str(self.label2_selected_protocol.text())
             self.updateAttackHistory(attack_name, protocol, variable_names, variable_values)        
                 
     def updateAttackHistory(self, attack_name, protocol, variable_names, variable_values):
         """ Adds a new row to the "Attack History" table
         """
-        self.tableWidget_attack_attack_history.setRowCount(self.tableWidget_attack_attack_history.rowCount()+1)
+        self.tableWidget1_attack_attack_history.setRowCount(self.tableWidget1_attack_attack_history.rowCount()+1)
         
         # Notes 
         notes_item = QtWidgets.QTableWidgetItem("")
         notes_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.tableWidget_attack_attack_history.setItem(self.tableWidget_attack_attack_history.rowCount()-1,0,notes_item)    
+        self.tableWidget1_attack_attack_history.setItem(self.tableWidget1_attack_attack_history.rowCount()-1,0,notes_item)    
             
         # Attack Name
         #~ if self.tabWidget_attack_attack.currentIndex(1):
             #~ fname = (self.tableWidget_attack_multi_stage_attacks.item(self.tableWidget_attack_multi_stage_attacks.rowCount()-1,0).text() + "_" + self.tableWidget_attack_multi_stage_attacks.item(self.tableWidget_attack_multi_stage_attacks.rowCount()-1,1).text() + "_" + self.tableWidget_attack_multi_stage_attacks.item(self.tableWidget_attack_multi_stage_attacks.rowCount()-1,2).text() + ".py").replace(" ","_")
-            #~ attack_name_item = QtWidgets.QTableWidgetItem(str(self.label_selected_attack.text()))
+            #~ attack_name_item = QtWidgets.QTableWidgetItem(str(self.label1_selected_attack.text()))
         #~ else:    
-            #~ attack_name_item = QtWidgets.QTableWidgetItem(str(self.label_selected_attack.text()))
+            #~ attack_name_item = QtWidgets.QTableWidgetItem(str(self.label1_selected_attack.text()))
         attack_name_item = QtWidgets.QTableWidgetItem(attack_name)  
         attack_name_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.tableWidget_attack_attack_history.setItem(self.tableWidget_attack_attack_history.rowCount()-1,1,attack_name_item)      
+        self.tableWidget1_attack_attack_history.setItem(self.tableWidget1_attack_attack_history.rowCount()-1,1,attack_name_item)      
         
         # Protocol 
-        #~ protocol_item = QtWidgets.QTableWidgetItem(str(self.label_selected_protocol.text()))
+        #~ protocol_item = QtWidgets.QTableWidgetItem(str(self.label2_selected_protocol.text()))
         protocol_item = QtWidgets.QTableWidgetItem(protocol)
         protocol_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.tableWidget_attack_attack_history.setItem(self.tableWidget_attack_attack_history.rowCount()-1,2,protocol_item) 
+        self.tableWidget1_attack_attack_history.setItem(self.tableWidget1_attack_attack_history.rowCount()-1,2,protocol_item) 
         
         # Timestamp
         timestamp = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time())) 
         timestamp_item = QtWidgets.QTableWidgetItem(str(timestamp))
         timestamp_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.tableWidget_attack_attack_history.setItem(self.tableWidget_attack_attack_history.rowCount()-1,3,timestamp_item)    
+        self.tableWidget1_attack_attack_history.setItem(self.tableWidget1_attack_attack_history.rowCount()-1,3,timestamp_item)    
 
         # Values
         all_values_string = ""
@@ -3454,21 +3463,21 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             all_values_string = all_values_string + variable_names[k] + ": " + variable_values[k] + "; "
         all_values_string_item = QtWidgets.QTableWidgetItem(str(all_values_string))
         all_values_string_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        self.tableWidget_attack_attack_history.setItem(self.tableWidget_attack_attack_history.rowCount()-1,4,all_values_string_item)    
+        self.tableWidget1_attack_attack_history.setItem(self.tableWidget1_attack_attack_history.rowCount()-1,4,all_values_string_item)    
 
         # Resize Table Columns and Rows
-        self.tableWidget_attack_attack_history.resizeColumnsToContents()    
-        self.tableWidget_attack_attack_history.resizeRowsToContents()
-        self.tableWidget_attack_attack_history.horizontalHeader().setStretchLastSection(False)
-        self.tableWidget_attack_attack_history.horizontalHeader().setStretchLastSection(True)
+        self.tableWidget1_attack_attack_history.resizeColumnsToContents()    
+        self.tableWidget1_attack_attack_history.resizeRowsToContents()
+        self.tableWidget1_attack_attack_history.horizontalHeader().setStretchLastSection(False)
+        self.tableWidget1_attack_attack_history.horizontalHeader().setStretchLastSection(True)
         
         # Select First Item After it is Added (for scrolling)
-        if self.tableWidget_attack_attack_history.rowCount() == 1:
-            self.tableWidget_attack_attack_history.setCurrentItem(timestamp_item)
+        if self.tableWidget1_attack_attack_history.rowCount() == 1:
+            self.tableWidget1_attack_attack_history.setCurrentItem(timestamp_item)
         
         # Scroll to the Newest Item if Last Item is Selected
-        if self.tableWidget_attack_attack_history.currentRow() == self.tableWidget_attack_attack_history.rowCount()-2:
-            self.tableWidget_attack_attack_history.setCurrentItem(timestamp_item)         
+        if self.tableWidget1_attack_attack_history.currentRow() == self.tableWidget1_attack_attack_history.rowCount()-2:
+            self.tableWidget1_attack_attack_history.setCurrentItem(timestamp_item)         
             
     def populateAttackTreeWidget(self):
         """ This adds the complete list of attacks to the Attack TreeWidget.
@@ -3571,26 +3580,26 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         try:               
             # Clear Any Existing Attack Configurations
-            self.label_attack_fuzzing_selected_flow_graph.setText("")
+            self.label2_attack_fuzzing_selected_flow_graph.setText("")
             self.textEdit_fuzzing_from_file.setPlainText("")
             for row in reversed(range(0,self.tableWidget_fuzzing_variables.rowCount())):
                 self.tableWidget_fuzzing_variables.removeRow(row)
             for row in reversed(range(0,self.tableWidget_attack_fuzzing_data_field.rowCount())):
                 self.tableWidget_attack_fuzzing_data_field.removeRow(row)          
-            for row in reversed(range(0,self.tableWidget_attack_flow_graph_current_values.rowCount())):
-                self.tableWidget_attack_flow_graph_current_values.removeRow(row)        
-            self.label_selected_flow_graph.setText("")
-            self.label_selected_attack.setText("")
-            self.label_selected_modulation.setText("")  
-            self.label_selected_notes.setText("")
+            for row in reversed(range(0,self.tableWidget1_attack_flow_graph_current_values.rowCount())):
+                self.tableWidget1_attack_flow_graph_current_values.removeRow(row)        
+            self.label2_selected_flow_graph.setText("")
+            self.label1_selected_attack.setText("")
+            self.label2_selected_modulation.setText("")  
+            self.label2_selected_notes.setText("")
             
             # Disable Buttons
             self.pushButton_attack_view_flow_graph.setEnabled(False)
                             
             # Get the Protocol
             current_protocol = str(self.comboBox_attack_protocols.currentText())
-            self.label_attack_fuzzing_selected_protocol.setText(current_protocol)
-            self.label_selected_protocol.setText(current_protocol)
+            self.label2_attack_fuzzing_selected_protocol.setText(current_protocol)
+            self.label2_selected_protocol.setText(current_protocol)
             enabled_categories = [] 
             disabled_categories = []
             
@@ -3643,7 +3652,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
             # Binary/Hex ComboBoxes, Select CheckBoxes, Type ComboBoxes
             for n in range(0,self.tableWidget_attack_fuzzing_data_field.rowCount()):
-                new_combobox1 = QtWidgets.QComboBox(self)
+                new_combobox1 = QtWidgets.QComboBox(self,objectName='comboBox2_')
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,4,new_combobox1)
                 new_combobox1.addItem("Binary")
                 new_combobox1.addItem("Hex")
@@ -3659,7 +3668,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 #new_checkbox.stateChanged.connect(self._slotAttackFuzzingDataSelectCheckboxClicked)
                 
                 # ComboBoxes
-                new_combobox2 = QtWidgets.QComboBox(self)
+                new_combobox2 = QtWidgets.QComboBox(self,objectName='comboBox2_')
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,1,new_combobox2)
                 new_combobox2.addItem("Random")
                 new_combobox2.addItem("Sequential")             
@@ -3704,7 +3713,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotAttackCurrentValuesEdited(self):
         """ Enables the pushbuttons after the attack "Current Values" table has been edited
         """
-        get_file_type = str(self.label_attack_single_stage_file_type.text())
+        get_file_type = str(self.label2_attack_single_stage_file_type.text())
         
         # GUI Variables Cannot be Edited from the Dashboard
         if get_file_type != "Flow Graph - GUI":
@@ -3718,8 +3727,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Updates the attack "Current Values" table with the default variables in the flow graph python file
         """
         # Get Filepath and File Type
-        fname = self.label_selected_flow_graph.text()
-        get_file_type = str(self.label_attack_single_stage_file_type.text())
+        fname = self.label2_selected_flow_graph.text()
+        get_file_type = str(self.label2_attack_single_stage_file_type.text())
         
         # Flow Graph Defaults
         if get_file_type == "Flow Graph":
@@ -3727,8 +3736,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             if fname != "":             
                 # Update the Variable Listings in "Flow Graph" tab
                 f = open(fname,'r')
-                self.tableWidget_attack_flow_graph_current_values.clearContents()
-                self.tableWidget_attack_flow_graph_current_values.setRowCount(0)    
+                self.tableWidget1_attack_flow_graph_current_values.clearContents()
+                self.tableWidget1_attack_flow_graph_current_values.setRowCount(0)    
                 parsing = False
                 for line in f:
                     if line.startswith("        # Variables"):
@@ -3747,15 +3756,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             value_text = get_line.split(' = ')[1].rstrip('\n')
                             value_text = value_text.replace('"','')
                             value = QtWidgets.QTableWidgetItem(value_text)
-                            self.tableWidget_attack_flow_graph_current_values.setRowCount(self.tableWidget_attack_flow_graph_current_values.rowCount()+1)
-                            self.tableWidget_attack_flow_graph_current_values.setVerticalHeaderItem(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,variable_name)   
-                            self.tableWidget_attack_flow_graph_current_values.setItem(self.tableWidget_attack_flow_graph_current_values.rowCount()-1,0,value)   
+                            self.tableWidget1_attack_flow_graph_current_values.setRowCount(self.tableWidget1_attack_flow_graph_current_values.rowCount()+1)
+                            self.tableWidget1_attack_flow_graph_current_values.setVerticalHeaderItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,variable_name)   
+                            self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,value)   
                             
                 # Close the File
                 f.close() 
                             
                 # Adjust Table
-                self.tableWidget_attack_flow_graph_current_values.resizeRowsToContents()  
+                self.tableWidget1_attack_flow_graph_current_values.resizeRowsToContents()  
                 
                 # Disable the Pushbutton
                 self.pushButton_attack_restore_defaults.setEnabled(False)  
@@ -3771,11 +3780,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Applies any changes made in the attack "Flow Graph Current Values" table by calling the 'set' functions in the flow graph modules
         """     
         # Send Message(s) to the HIPRFISR for each Variable Name and Value
-        for get_row in range(self.tableWidget_attack_flow_graph_current_values.rowCount()):
+        for get_row in range(self.tableWidget1_attack_flow_graph_current_values.rowCount()):
             
             # Determine the Variable Name and Value in the Row
-            variable_name = self.tableWidget_attack_flow_graph_current_values.verticalHeaderItem(get_row).text()
-            value = self.tableWidget_attack_flow_graph_current_values.item(get_row,0).text()
+            variable_name = self.tableWidget1_attack_flow_graph_current_values.verticalHeaderItem(get_row).text()
+            value = self.tableWidget1_attack_flow_graph_current_values.item(get_row,0).text()
                     
             # Check and Send the "Set" Message if Value Changed
             if self.attack_flow_graph_variables[str(variable_name)] != str(value):
@@ -3786,8 +3795,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_pd_flow_graphs_apply_changes.setEnabled(False)
         
         # Update the "Attack History" Table
-        attack_name = str(self.label_selected_attack.text())
-        protocol = str(self.label_selected_protocol.text())
+        attack_name = str(self.label1_selected_attack.text())
+        protocol = str(self.label2_selected_protocol.text())
         self.updateAttackHistory(attack_name, protocol, list(self.attack_flow_graph_variables.keys()), list(self.attack_flow_graph_variables.values()))
         
     def _slotTSI_AddBandClicked(self):
@@ -3857,7 +3866,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             if self.pushButton_tsi_detector_start.text() == "Stop":
                 self.pushButton_tsi_update.setEnabled(True)
                 self.pushButton_tsi_update.setStyleSheet("border: 1px solid darkGray; border-radius: 6px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #ffff00, stop: 1 #d8d800); min-width: 80px;")
-                self.label_tsi_update_configuration.setVisible(True)
+                self.label2_tsi_update_configuration.setVisible(True)
         
     def _slotTSI_RemoveBandClicked(self):
         """ Removes the selected column from the Wideband SDR Configuration table and edits the plot
@@ -3892,7 +3901,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Update TSI Configuration Pushbutton Color 
             if self.pushButton_tsi_detector_start.text() == "Stop":
                 self.pushButton_tsi_update.setStyleSheet("border: 1px solid darkGray; border-radius: 6px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #ffff00, stop: 1 #d8d800); min-width: 80px;")
-                self.label_tsi_update_configuration.setVisible(True)    
+                self.label2_tsi_update_configuration.setVisible(True)    
         
     def _slotTSI_RefreshPlotClicked(self):
         """ Redraws the search band plot based on values from the table.
@@ -3902,7 +3911,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.wideband_zoom_end = 6000e6
         self._slotTSI_ClearDetectorPlotClicked()
         self.wideband_zoom = False
-        self.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=self.wideband_height)
+        self.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=self.wideband_height,background_color=self.dashboard_settings_dictionary['color1'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
         self.matplotlib_widget.draw()
         
         # Delete the Bands
@@ -3939,15 +3948,16 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
             self.tuning_matplotlib_widget.axes.text(x_pos/10 - x_offset,(self.tuning_matplotlib_widget.band_height*(len(self.tuning_matplotlib_widget.bands)+1)) - 5,band_number,fontsize=10)   
             #self.tuning_matplotlib_widget.axes.text(-10,(self.tuning_matplotlib_widget.band_height*(len(self.tuning_matplotlib_widget.bands)+1)) - 5,band_number,fontsize=10)   
-            
-        self.tuning_matplotlib_widget.configureAxes(title='Tuning',xlabel='Frequency (MHz)',ylabel='',ylabels='',ylim=400)
+
+        self.tuning_matplotlib_widget.configureAxes(title='Tuning',xlabel='Frequency (MHz)',ylabel='',ylabels='',ylim=400,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
+
         self.tuning_matplotlib_widget.draw()
         
     def _slotTSI_UpdateTSI_Clicked(self):
         """ Signals to HIPRFISR to update the TSI settings
         """
         # Hide Update Configuration Label
-        self.label_tsi_update_configuration.setVisible(False)
+        self.label2_tsi_update_configuration.setVisible(False)
         self.pushButton_tsi_update.setStyleSheet("")
         
         # Refresh the Plot
@@ -3985,7 +3995,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.comboBox_packet_subcategory.clear()
                 self.comboBox_packet_subcategory.addItems(packet_types)           
                 self.comboBox_packet_subcategory.setEnabled(True)   
-                self.tableWidget_attack_packet_editor.clearContents()
+                self.tableWidget1_attack_packet_editor.clearContents()
                 
                 self._slotPacketRestoreDefaultsClicked()         
                     
@@ -4012,7 +4022,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         current_subcategory_key = str(current_subcategory)
         
         # Clear the Table
-        self.tableWidget_attack_packet_editor.clearContents()
+        self.tableWidget1_attack_packet_editor.clearContents()
             
         # Load the Default Fields and Data        
         fields = getFields(self.pd_library,current_protocol_key,current_subcategory_key)
@@ -4027,12 +4037,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             default_length_item = QtWidgets.QTableWidgetItem(str(get_length))
             default_length_item.setTextAlignment(QtCore.Qt.AlignCenter)
             default_length_item.setFlags(default_length_item.flags() & ~QtCore.Qt.ItemIsEditable)
-            self.tableWidget_attack_packet_editor.setItem(n,2,length_item)
-            self.tableWidget_attack_packet_editor.setItem(n,3,default_length_item)
+            self.tableWidget1_attack_packet_editor.setItem(n,2,length_item)
+            self.tableWidget1_attack_packet_editor.setItem(n,3,default_length_item)
         
             # Create Table Comboboxes
-            new_combobox1 = QtWidgets.QComboBox(self)
-            self.tableWidget_attack_packet_editor.setCellWidget(n,0,new_combobox1)  
+            new_combobox1 = QtWidgets.QComboBox(self,objectName='comboBox2_')
+            self.tableWidget1_attack_packet_editor.setCellWidget(n,0,new_combobox1)  
                                
             # String
             if get_length == 0:
@@ -4053,20 +4063,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             new_combobox1.setSizeAdjustPolicy(0)
             new_combobox1.setFixedSize(75,24)
             new_combobox1.setCurrentIndex(0)
-            new_combobox1.currentIndexChanged.connect(lambda: self._slotPacketBinaryHex(self.tableWidget_attack_packet_editor))
+            new_combobox1.currentIndexChanged.connect(lambda: self._slotPacketBinaryHex(self.tableWidget1_attack_packet_editor))
             new_combobox1.setProperty("row", n)               
-            self.tableWidget_attack_packet_editor.setItem(n,1,QtWidgets.QTableWidgetItem(str(default_field_data[n])))
+            self.tableWidget1_attack_packet_editor.setItem(n,1,QtWidgets.QTableWidgetItem(str(default_field_data[n])))
                     
         # Calculate the Lengths
         current_length = 0
         default_length = 0
-        for n in range(0,self.tableWidget_attack_packet_editor.rowCount()):
-            current_length += int(self.tableWidget_attack_packet_editor.item(n,2).text())
-            default_length += int(self.tableWidget_attack_packet_editor.item(n,3).text())
+        for n in range(0,self.tableWidget1_attack_packet_editor.rowCount()):
+            current_length += int(self.tableWidget1_attack_packet_editor.item(n,2).text())
+            default_length += int(self.tableWidget1_attack_packet_editor.item(n,3).text())
         
         # Set the Length Labels
-        self.label_packet_current_length_total.setText(str(current_length))
-        self.label_packet_default_length_total.setText(str(default_length))            
+        self.label2_packet_current_length_total.setText(str(current_length))
+        self.label2_packet_default_length_total.setText(str(default_length))            
                 
             
     def _slotPacketSubcategory(self):
@@ -4078,58 +4088,58 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         try:
             # Fields          
-            self.tableWidget_attack_packet_editor.clearContents()   
+            self.tableWidget1_attack_packet_editor.clearContents()   
             fields = getFields(self.pd_library, current_protocol_key, current_subcategory)
-            self.tableWidget_attack_packet_editor.setRowCount(len(fields))            
-            self.tableWidget_attack_packet_editor.setVerticalHeaderLabels(fields)
+            self.tableWidget1_attack_packet_editor.setRowCount(len(fields))            
+            self.tableWidget1_attack_packet_editor.setVerticalHeaderLabels(fields)
             
             # Lengths
             for n in range(0,len(fields)):
                 get_length = self.pd_library["Protocols"][current_protocol_key]['Packet Types'][current_subcategory]['Fields'][fields[n]]['Length']        
                 length_item = QtWidgets.QTableWidgetItem(str(get_length))
                 length_item.setTextAlignment(QtCore.Qt.AlignCenter)
-                self.tableWidget_attack_packet_editor.setItem(n,3,length_item)
+                self.tableWidget1_attack_packet_editor.setItem(n,3,length_item)
             
         except KeyError:
             #No Fields Defined!
             #~ print("No Fields Defined!")
             fields = []
-            self.tableWidget_attack_packet_editor.setRowCount(1)            
-            self.tableWidget_attack_packet_editor.setVerticalHeaderLabels(['Custom'])             
+            self.tableWidget1_attack_packet_editor.setRowCount(1)            
+            self.tableWidget1_attack_packet_editor.setVerticalHeaderLabels(['Custom'])             
             get_length = 0       
             length_item = QtWidgets.QTableWidgetItem("")
             length_item.setTextAlignment(QtCore.Qt.AlignCenter)
             default_length_item = QtWidgets.QTableWidgetItem(str(get_length))
             default_length_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            self.tableWidget_attack_packet_editor.setItem(0,2,length_item)
-            self.tableWidget_attack_packet_editor.setItem(0,3,default_length_item)
+            self.tableWidget1_attack_packet_editor.setItem(0,2,length_item)
+            self.tableWidget1_attack_packet_editor.setItem(0,3,default_length_item)
                                             
         # Binary/Hex ComboBoxes
-        for n in range(0,self.tableWidget_attack_packet_editor.rowCount()):            
-            new_combobox1 = QtWidgets.QComboBox(self)            
+        for n in range(0,self.tableWidget1_attack_packet_editor.rowCount()):            
+            new_combobox1 = QtWidgets.QComboBox(self,objectName='comboBox2_')            
             new_combobox1.addItem("Binary")
             new_combobox1.addItem("Hex")
             new_combobox1.setSizeAdjustPolicy(0)
             new_combobox1.setFixedSize(75,24)
             new_combobox1.setCurrentIndex(1)
-            new_combobox1.currentIndexChanged.connect(lambda: self._slotPacketBinaryHex(self.tableWidget_attack_packet_editor))
+            new_combobox1.currentIndexChanged.connect(lambda: self._slotPacketBinaryHex(self.tableWidget1_attack_packet_editor))
             new_combobox1.setProperty("row", n)
-            self.tableWidget_attack_packet_editor.setCellWidget(n,0,new_combobox1)
+            self.tableWidget1_attack_packet_editor.setCellWidget(n,0,new_combobox1)
             
         # Calculate the Lengths
         default_length = 0
-        for n in range(0,self.tableWidget_attack_packet_editor.rowCount()):
-            default_length += int(self.tableWidget_attack_packet_editor.item(n,3).text())
+        for n in range(0,self.tableWidget1_attack_packet_editor.rowCount()):
+            default_length += int(self.tableWidget1_attack_packet_editor.item(n,3).text())
         
         # Set the Length Labels
-        self.label_packet_current_length_total.setText(str(""))
-        self.label_packet_default_length_total.setText(str(default_length))   
+        self.label2_packet_current_length_total.setText(str(""))
+        self.label2_packet_default_length_total.setText(str(default_length))   
         
         # Resize the Table
-        self.tableWidget_attack_packet_editor.setColumnWidth(0,75) 
-        self.tableWidget_attack_packet_editor.setColumnWidth(2,75) 
-        self.tableWidget_attack_packet_editor.setColumnWidth(3,75)
-        self.tableWidget_attack_packet_editor.horizontalHeader().setSectionResizeMode(1,QtWidgets.QHeaderView.Stretch) 
+        self.tableWidget1_attack_packet_editor.setColumnWidth(0,75) 
+        self.tableWidget1_attack_packet_editor.setColumnWidth(2,75) 
+        self.tableWidget1_attack_packet_editor.setColumnWidth(3,75)
+        self.tableWidget1_attack_packet_editor.horizontalHeader().setSectionResizeMode(1,QtWidgets.QHeaderView.Stretch) 
     
         # Restore Defaults
         if self.comboBox_packet_subcategory.count() > 0:
@@ -4183,16 +4193,16 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         try:
             # Convert Every Field to Binary, Assemble
             get_bin = ""
-            for n in range(0,self.tableWidget_attack_packet_editor.rowCount()):
+            for n in range(0,self.tableWidget1_attack_packet_editor.rowCount()):
                 # Binary or Hex
-                current_selection = self.tableWidget_attack_packet_editor.cellWidget(n,0).currentText()
+                current_selection = self.tableWidget1_attack_packet_editor.cellWidget(n,0).currentText()
             
                 # Contains Item
-                if self.tableWidget_attack_packet_editor.item(n,1) != None:
+                if self.tableWidget1_attack_packet_editor.item(n,1) != None:
                     # Not Empty
-                    if str(self.tableWidget_attack_packet_editor.item(n,1).text()) != "":
+                    if str(self.tableWidget1_attack_packet_editor.item(n,1).text()) != "":
                         # Get the Data      
-                        get_data = str(self.tableWidget_attack_packet_editor.item(n,1).text())
+                        get_data = str(self.tableWidget1_attack_packet_editor.item(n,1).text())
                     
                         if current_selection == "Binary":
                             bin_str = get_data.replace(' ', '')
@@ -4206,7 +4216,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     
             # Convert to Hex, Print
             hex_str = '%0*X' % ((len(get_bin) + 3) // 4, int(get_bin, 2))
-            self.textEdit_packet_assembled.setPlainText(hex_str)
+            self.textEdit1_packet_assembled.setPlainText(hex_str)
                     
         # Message Data Entered Incorrectly
         except ValueError as inst:
@@ -4236,7 +4246,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             file = open(fileName,"wb")
                 
             # Get the Data
-            get_data = str(self.textEdit_packet_constructed.toPlainText())
+            get_data = str(self.textEdit1_packet_constructed.toPlainText())
                         
             # Check if the Length is Even
             if len(get_data)%2 == 1:
@@ -4270,14 +4280,14 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 get_bin = ""
                 for n in range(2,7):
                     # Binary or Hex
-                    current_selection = self.tableWidget_attack_packet_editor.cellWidget(n,0).currentText()
+                    current_selection = self.tableWidget1_attack_packet_editor.cellWidget(n,0).currentText()
                 
                     # Contains Data
-                    if self.tableWidget_attack_packet_editor.item(n,1) != None:  # No Item Exists
-                        if self.tableWidget_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
+                    if self.tableWidget1_attack_packet_editor.item(n,1) != None:  # No Item Exists
+                        if self.tableWidget1_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
 
                             # Get the Data      
-                            get_data = str(self.tableWidget_attack_packet_editor.item(n,1).text())
+                            get_data = str(self.tableWidget1_attack_packet_editor.item(n,1).text())
                         
                             if current_selection == "Binary":
                                 bin_str = get_data.replace(' ', '')
@@ -4292,12 +4302,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         # Nothing Found in a Field
                         else:
                             get_bin = "MISSING DECT FIELD"
-                            self.tableWidget_attack_packet_editor.item(7,1).setText(get_bin)
+                            self.tableWidget1_attack_packet_editor.item(7,1).setText(get_bin)
                             break
                     else:
                         get_bin = "MISSING DECT FIELD"
                         new_item = QtWidgets.QTableWidgetItem("MISSING DECT FIELD")     
-                        self.tableWidget_attack_packet_editor.setItem(7,1,new_item)
+                        self.tableWidget1_attack_packet_editor.setItem(7,1,new_item)
                         break
                 
                 if get_bin != "MISSING DECT FIELD":
@@ -4327,29 +4337,29 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     bin_str_spaces = ' '.join([bin_str[i:i+4] for i in range(0, len(bin_str), 4)])  # groups bits into 4
                     
                     # Is Hex or Binary Selected for the CRC?
-                    current_selection = self.tableWidget_attack_packet_editor.cellWidget(7,0).currentText()
+                    current_selection = self.tableWidget1_attack_packet_editor.cellWidget(7,0).currentText()
                     if current_selection == "Binary":
-                        self.tableWidget_attack_packet_editor.item(7,1).setText(bin_str_spaces)
+                        self.tableWidget1_attack_packet_editor.item(7,1).setText(bin_str_spaces)
                                 
                     # Binary to Hex 
                     elif current_selection == "Hex":
                         bin_str = bin_str_spaces.replace(' ', '')
                         hex_str = '%0*X' % ((len(bin_str) + 3) // 4, int(bin_str, 2))
-                        self.tableWidget_attack_packet_editor.item(7,1).setText(hex_str)
+                        self.tableWidget1_attack_packet_editor.item(7,1).setText(hex_str)
                     
                     # B-Field CRC
                     if current_subcategory == "Basic Packet":
                         # Get B-Field Data
                         # Binary or Hex
                         get_bin = ""
-                        current_selection = self.tableWidget_attack_packet_editor.cellWidget(8,0).currentText()
+                        current_selection = self.tableWidget1_attack_packet_editor.cellWidget(8,0).currentText()
                     
                         # Contains Data
-                        if self.tableWidget_attack_packet_editor.item(8,1) != None:  # No Item Exists
-                            if self.tableWidget_attack_packet_editor.item(8,1).text() != "":  # No Text for the Item Exists
+                        if self.tableWidget1_attack_packet_editor.item(8,1) != None:  # No Item Exists
+                            if self.tableWidget1_attack_packet_editor.item(8,1).text() != "":  # No Text for the Item Exists
 
                                 # Get the Data      
-                                get_data = str(self.tableWidget_attack_packet_editor.item(8,1).text())
+                                get_data = str(self.tableWidget1_attack_packet_editor.item(8,1).text())
                             
                                 if current_selection == "Binary":
                                     bin_str = get_data.replace(' ', '')
@@ -4364,11 +4374,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             # Nothing Found in a Field
                             else:
                                 get_bin = "MISSING DECT B-FIELD"
-                                self.tableWidget_attack_packet_editor.item(9,1).setText(get_bin)
+                                self.tableWidget1_attack_packet_editor.item(9,1).setText(get_bin)
                         else:
                             get_bin = "MISSING DECT B-FIELD"
                             new_item = QtWidgets.QTableWidgetItem("MISSING DECT B-FIELD")       
-                            self.tableWidget_attack_packet_editor.setItem(9,1,new_item)
+                            self.tableWidget1_attack_packet_editor.setItem(9,1,new_item)
                         
                         # Do the Algorithm
                         b_dec = []
@@ -4416,33 +4426,33 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         bin_str_spaces = ' '.join([bin_str[i:i+4] for i in range(0, len(bin_str), 4)])  # groups bits into 4
                         
                         # Is Hex or Binary Selected for the CRC?
-                        current_selection = self.tableWidget_attack_packet_editor.cellWidget(9,0).currentText()
+                        current_selection = self.tableWidget1_attack_packet_editor.cellWidget(9,0).currentText()
                         if current_selection == "Binary":
-                            self.tableWidget_attack_packet_editor.item(9,1).setText(bin_str_spaces)
+                            self.tableWidget1_attack_packet_editor.item(9,1).setText(bin_str_spaces)
                                     
                         # Binary to Hex 
                         elif current_selection == "Hex":
                             bin_str = bin_str_spaces.replace(' ', '')
                             hex_str = '%0*X' % ((len(bin_str) + 3) // 4, int(bin_str, 2))
-                            self.tableWidget_attack_packet_editor.item(9,1).setText(hex_str)
+                            self.tableWidget1_attack_packet_editor.item(9,1).setText(hex_str)
                                                     
             # Mode S
             elif current_protocol == "Mode S":
                                 
                 # All Fields before the CRC Field (88 bits)
                 get_bin = ""
-                last_row = self.tableWidget_attack_packet_editor.rowCount()-1
+                last_row = self.tableWidget1_attack_packet_editor.rowCount()-1
                 
                 for n in range(0,last_row):
                     # Binary or Hex
-                    current_selection = self.tableWidget_attack_packet_editor.cellWidget(n,0).currentText()
+                    current_selection = self.tableWidget1_attack_packet_editor.cellWidget(n,0).currentText()
                 
                     # Contains Data
-                    if self.tableWidget_attack_packet_editor.item(n,1) != None:  # No Item Exists
-                        if self.tableWidget_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
+                    if self.tableWidget1_attack_packet_editor.item(n,1) != None:  # No Item Exists
+                        if self.tableWidget1_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
 
                             # Get the Data      
-                            get_data = str(self.tableWidget_attack_packet_editor.item(n,1).text())
+                            get_data = str(self.tableWidget1_attack_packet_editor.item(n,1).text())
                         
                             if current_selection == "Binary":
                                 bin_str = get_data.replace(' ', '')
@@ -4458,13 +4468,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         else:
                             #if n != 3:  # Ignore Empty MISC Field
                             get_bin = "MISSING MODE S FIELD"
-                            self.tableWidget_attack_packet_editor.item(10,1).setText(get_bin)
+                            self.tableWidget1_attack_packet_editor.item(10,1).setText(get_bin)
                             break
                     else:
                         #if n != 3:  # Ignore Empty MISC Field
                         get_bin = "MISSING MODE S FIELD"
                         new_item = QtWidgets.QTableWidgetItem("MISSING MODE S FIELD")       
-                        self.tableWidget_attack_packet_editor.setItem(10,1,new_item)
+                        self.tableWidget1_attack_packet_editor.setItem(10,1,new_item)
                         break
                 
                 if get_bin != "MISSING MODE S FIELD":                                   
@@ -4503,32 +4513,32 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     bin_str_spaces = ' '.join([bin_str[i:i+4] for i in range(0, len(bin_str), 4)])  # groups bits into 4
                     
                     # Is Hex or Binary Selected for the CRC?
-                    current_selection = self.tableWidget_attack_packet_editor.cellWidget(last_row,0).currentText()
+                    current_selection = self.tableWidget1_attack_packet_editor.cellWidget(last_row,0).currentText()
                     if current_selection == "Binary":
-                        self.tableWidget_attack_packet_editor.item(last_row,1).setText(bin_str_spaces)
+                        self.tableWidget1_attack_packet_editor.item(last_row,1).setText(bin_str_spaces)
                                 
                     # Binary to Hex 
                     elif current_selection == "Hex":
                         bin_str = bin_str_spaces.replace(' ', '')
                         hex_str = '%0*X' % ((len(bin_str) + 3) // 4, int(bin_str, 2))
-                        self.tableWidget_attack_packet_editor.item(last_row,1).setText(hex_str) 
+                        self.tableWidget1_attack_packet_editor.item(last_row,1).setText(hex_str) 
                 
             # SimpliciTI
             elif current_protocol == "SimpliciTI":          
                 # Length Field to End of Payload
                 get_bin = ""
-                last_row = self.tableWidget_attack_packet_editor.rowCount()-1
+                last_row = self.tableWidget1_attack_packet_editor.rowCount()-1
                 
                 for n in range(2,last_row):
                     # Binary or Hex
-                    current_selection = self.tableWidget_attack_packet_editor.cellWidget(n,0).currentText()
+                    current_selection = self.tableWidget1_attack_packet_editor.cellWidget(n,0).currentText()
                 
                     # Contains Data
-                    if self.tableWidget_attack_packet_editor.item(n,1) != None:  # No Item Exists
-                        if self.tableWidget_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
+                    if self.tableWidget1_attack_packet_editor.item(n,1) != None:  # No Item Exists
+                        if self.tableWidget1_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
 
                             # Get the Data      
-                            get_data = str(self.tableWidget_attack_packet_editor.item(n,1).text())
+                            get_data = str(self.tableWidget1_attack_packet_editor.item(n,1).text())
                         
                             if current_selection == "Binary":
                                 bin_str = get_data.replace(' ', '')
@@ -4544,13 +4554,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         else:
                             if n != 3:  # Ignore Empty MISC Field
                                 get_bin = "MISSING SIMPLICITI FIELD"
-                                self.tableWidget_attack_packet_editor.item(10,1).setText(get_bin)
+                                self.tableWidget1_attack_packet_editor.item(10,1).setText(get_bin)
                                 break
                     else:
                         if n != 3:  # Ignore Empty MISC Field
                             get_bin = "MISSING SIMPLICITI FIELD"
                             new_item = QtWidgets.QTableWidgetItem("MISSING SIMPLICITI FIELD")       
-                            self.tableWidget_attack_packet_editor.setItem(10,1,new_item)
+                            self.tableWidget1_attack_packet_editor.setItem(10,1,new_item)
                             break
                 
                 if get_bin != "MISSING SIMPLICITI FIELD":                       
@@ -4579,15 +4589,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     bin_str_spaces = ' '.join([bin_str[i:i+4] for i in range(0, len(bin_str), 4)])  # groups bits into 4
                     
                     # Is Hex or Binary Selected for the CRC?
-                    current_selection = self.tableWidget_attack_packet_editor.cellWidget(last_row,0).currentText()
+                    current_selection = self.tableWidget1_attack_packet_editor.cellWidget(last_row,0).currentText()
                     if current_selection == "Binary":
-                        self.tableWidget_attack_packet_editor.item(last_row,1).setText(bin_str_spaces)
+                        self.tableWidget1_attack_packet_editor.item(last_row,1).setText(bin_str_spaces)
                                 
                     # Binary to Hex 
                     elif current_selection == "Hex":
                         bin_str = bin_str_spaces.replace(' ', '')
                         hex_str = '%0*X' % ((len(bin_str) + 3) // 4, int(bin_str, 2))
-                        self.tableWidget_attack_packet_editor.item(last_row,1).setText(hex_str)   
+                        self.tableWidget1_attack_packet_editor.item(last_row,1).setText(hex_str)   
                         
             # RDS
             elif current_protocol == "RDS":
@@ -4605,14 +4615,14 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     get_bin = ""
                     for n in range(first_row[m],last_row[m]):
                         # Binary or Hex
-                        current_selection = self.tableWidget_attack_packet_editor.cellWidget(n,0).currentText()
+                        current_selection = self.tableWidget1_attack_packet_editor.cellWidget(n,0).currentText()
                     
                         # Contains Data
-                        if self.tableWidget_attack_packet_editor.item(n,1) != None:  # No Item Exists
-                            if self.tableWidget_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
+                        if self.tableWidget1_attack_packet_editor.item(n,1) != None:  # No Item Exists
+                            if self.tableWidget1_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
 
                                 # Get the Data      
-                                get_data = str(self.tableWidget_attack_packet_editor.item(n,1).text())
+                                get_data = str(self.tableWidget1_attack_packet_editor.item(n,1).text())
                             
                                 if current_selection == "Binary":
                                     bin_str = get_data.replace(' ', '')
@@ -4627,12 +4637,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             # Nothing Found in a Field
                             else:
                                 get_bin = "MISSING RDS FIELD"
-                                self.tableWidget_attack_packet_editor.item(last_row[m],1).setText(get_bin)
+                                self.tableWidget1_attack_packet_editor.item(last_row[m],1).setText(get_bin)
                                 break
                         else:
                             get_bin = "MISSING RDS FIELD"
                             new_item = QtWidgets.QTableWidgetItem("MISSING RDS FIELD")      
-                            self.tableWidget_attack_packet_editor.setItem(last_row[m],1,new_item)
+                            self.tableWidget1_attack_packet_editor.setItem(last_row[m],1,new_item)
                             break
                     
                     if get_bin != "MISSING RDS FIELD":                                   
@@ -4692,7 +4702,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         # Format it for the Table ("##########")
                         bin_str = str(crc_registers).strip('[]')
                         bin_str = bin_str.replace(', ','')
-                        self.tableWidget_attack_packet_editor.item(last_row[m],1).setText(bin_str)             
+                        self.tableWidget1_attack_packet_editor.item(last_row[m],1).setText(bin_str)             
                         
             # X10
             elif current_protocol == "X10":
@@ -4702,14 +4712,14 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     bin_str = ""
                     inv_bin_str = ""
                     # Binary or Hex
-                    current_selection = self.tableWidget_attack_packet_editor.cellWidget(n,0).currentText()
+                    current_selection = self.tableWidget1_attack_packet_editor.cellWidget(n,0).currentText()
                 
                     # Contains Data
-                    if self.tableWidget_attack_packet_editor.item(n,1) != None:  # No Item Exists
-                        if self.tableWidget_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
+                    if self.tableWidget1_attack_packet_editor.item(n,1) != None:  # No Item Exists
+                        if self.tableWidget1_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
 
                             # Get the Data      
-                            get_data = str(self.tableWidget_attack_packet_editor.item(n,1).text())
+                            get_data = str(self.tableWidget1_attack_packet_editor.item(n,1).text())
                         
                             if current_selection == "Binary":
                                 bin_str = get_data.replace(' ', '')
@@ -4723,29 +4733,29 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             if n == 0:
                                 if len(bin_str) != 8:
                                     bin_str = "MISSING ADDRESS CODE"
-                                    self.tableWidget_attack_packet_editor.item(1,1).setText(bin_str)
+                                    self.tableWidget1_attack_packet_editor.item(1,1).setText(bin_str)
                             elif n == 2:  
                                 if len(bin_str) != 8:
                                     bin_str = "MISSING DATA CODE"
-                                    self.tableWidget_attack_packet_editor.item(3,1).setText(bin_str)                          
+                                    self.tableWidget1_attack_packet_editor.item(3,1).setText(bin_str)                          
                         
                         # Nothing Found in a Field
                         else:
                             if n == 0:
                                 bin_str = "MISSING ADDRESS CODE"
-                                self.tableWidget_attack_packet_editor.item(1,1).setText(bin_str)
+                                self.tableWidget1_attack_packet_editor.item(1,1).setText(bin_str)
                             elif n == 2:
                                 bin_str = "MISSING DATA CODE"
-                                self.tableWidget_attack_packet_editor.item(3,1).setText(bin_str)                                
+                                self.tableWidget1_attack_packet_editor.item(3,1).setText(bin_str)                                
                             break
                     # Nothing Found in a Field
                     else:
                         if n == 0:
                             bin_str = "MISSING ADDRESS CODE"
-                            self.tableWidget_attack_packet_editor.item(1,1).setText(bin_str)
+                            self.tableWidget1_attack_packet_editor.item(1,1).setText(bin_str)
                         elif n == 2:
                             bin_str = "MISSING DATA CODE"
-                            self.tableWidget_attack_packet_editor.item(3,1).setText(bin_str)   
+                            self.tableWidget1_attack_packet_editor.item(3,1).setText(bin_str)   
                         break
                 
                     # Calculate Inverse
@@ -4765,28 +4775,28 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         inv_bin_str_spaces = ' '.join([inv_bin_str[i:i+4] for i in range(0, len(inv_bin_str), 4)])  # groups bits into 4
                         
                         # Is Hex or Binary Selected for the CRC?
-                        inv_current_selection = self.tableWidget_attack_packet_editor.cellWidget(n+1,0).currentText()
+                        inv_current_selection = self.tableWidget1_attack_packet_editor.cellWidget(n+1,0).currentText()
                         if inv_current_selection == "Binary":
-                            self.tableWidget_attack_packet_editor.item(n+1,1).setText(inv_bin_str_spaces)      
+                            self.tableWidget1_attack_packet_editor.item(n+1,1).setText(inv_bin_str_spaces)      
                         else:
-                            self.tableWidget_attack_packet_editor.item(n+1,1).setText(inv_hex_str)    
+                            self.tableWidget1_attack_packet_editor.item(n+1,1).setText(inv_hex_str)    
                             
             # TPMS
             elif current_protocol == "TPMS":
                 # All Fields before the CRC Field (58 bits)
                 get_bin = ""
-                last_row = self.tableWidget_attack_packet_editor.rowCount()-1
+                last_row = self.tableWidget1_attack_packet_editor.rowCount()-1
                 
                 for n in range(0,last_row):
                     # Binary or Hex
-                    current_selection = self.tableWidget_attack_packet_editor.cellWidget(n,0).currentText()
+                    current_selection = self.tableWidget1_attack_packet_editor.cellWidget(n,0).currentText()
                 
                     # Contains Data
-                    if self.tableWidget_attack_packet_editor.item(n,1) != None:  # No Item Exists
-                        if self.tableWidget_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
+                    if self.tableWidget1_attack_packet_editor.item(n,1) != None:  # No Item Exists
+                        if self.tableWidget1_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
 
                             # Get the Data      
-                            get_data = str(self.tableWidget_attack_packet_editor.item(n,1).text())
+                            get_data = str(self.tableWidget1_attack_packet_editor.item(n,1).text())
                         
                             if current_selection == "Binary":
                                 bin_str = get_data.replace(' ', '')
@@ -4801,12 +4811,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         # Nothing Found in a Field
                         else:
                             get_bin = "MISSING TPMS FIELD"
-                            self.tableWidget_attack_packet_editor.item(10,1).setText(get_bin)
+                            self.tableWidget1_attack_packet_editor.item(10,1).setText(get_bin)
                             break
                     else:
                         get_bin = "MISSING TPMS FIELD"
                         new_item = QtWidgets.QTableWidgetItem("MISSING TPMS FIELD")       
-                        self.tableWidget_attack_packet_editor.setItem(10,1,new_item)
+                        self.tableWidget1_attack_packet_editor.setItem(10,1,new_item)
                         break
                 
                 if get_bin != "MISSING TPMS FIELD":                                   
@@ -4853,32 +4863,32 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     bin_str_spaces = ' '.join([bin_str[i:i+4] for i in range(0, len(bin_str), 4)])  # groups bits into 4
                     
                     # Is Hex or Binary Selected for the CRC?
-                    current_selection = self.tableWidget_attack_packet_editor.cellWidget(last_row,0).currentText()
+                    current_selection = self.tableWidget1_attack_packet_editor.cellWidget(last_row,0).currentText()
                     if current_selection == "Binary":
-                        self.tableWidget_attack_packet_editor.item(last_row,1).setText(bin_str_spaces)
+                        self.tableWidget1_attack_packet_editor.item(last_row,1).setText(bin_str_spaces)
                                 
                     # Binary to Hex 
                     elif current_selection == "Hex":
                         bin_str = bin_str_spaces.replace(' ', '')
                         hex_str = '%0*X' % ((len(bin_str) + 3) // 4, int(bin_str, 2))
-                        self.tableWidget_attack_packet_editor.item(last_row,1).setText(hex_str)         
+                        self.tableWidget1_attack_packet_editor.item(last_row,1).setText(hex_str)         
                         
             # Z-Wave
             elif current_protocol == "ZWAVE":
                 # All Fields before the CRC Field 
                 get_bin = ""
-                last_row = self.tableWidget_attack_packet_editor.rowCount()-1
+                last_row = self.tableWidget1_attack_packet_editor.rowCount()-1
                 
                 for n in range(0,last_row):
                     # Binary or Hex
-                    current_selection = self.tableWidget_attack_packet_editor.cellWidget(n,0).currentText()
+                    current_selection = self.tableWidget1_attack_packet_editor.cellWidget(n,0).currentText()
                 
                     # Contains Data
-                    if self.tableWidget_attack_packet_editor.item(n,1) != None:  # No Item Exists
-                        if self.tableWidget_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
+                    if self.tableWidget1_attack_packet_editor.item(n,1) != None:  # No Item Exists
+                        if self.tableWidget1_attack_packet_editor.item(n,1).text() != "":  # No Text for the Item Exists
 
                             # Get the Data      
-                            get_data = str(self.tableWidget_attack_packet_editor.item(n,1).text())
+                            get_data = str(self.tableWidget1_attack_packet_editor.item(n,1).text())
                         
                             if current_selection == "Binary":
                                 bin_str = get_data.replace(' ', '')
@@ -4893,12 +4903,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         # Nothing Found in a Field
                         else:
                             get_bin = "MISSING ZWAVE FIELD"
-                            self.tableWidget_attack_packet_editor.item(last_row,1).setText(get_bin)
+                            self.tableWidget1_attack_packet_editor.item(last_row,1).setText(get_bin)
                             break
                     else:
                         get_bin = "MISSING ZWAVE FIELD"
                         new_item = QtWidgets.QTableWidgetItem("MISSING ZWAVE FIELD")       
-                        self.tableWidget_attack_packet_editor.setItem(last_row,1,new_item)
+                        self.tableWidget1_attack_packet_editor.setItem(last_row,1,new_item)
                         break
                 
                 if get_bin != "MISSING ZWAVE FIELD":     
@@ -4927,15 +4937,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     bin_str_spaces = ' '.join([bin_str[i:i+4] for i in range(0, len(bin_str), 4)])  # groups bits into 4
                     
                     # Is Hex or Binary Selected for the CRC?
-                    current_selection = self.tableWidget_attack_packet_editor.cellWidget(last_row,0).currentText()
+                    current_selection = self.tableWidget1_attack_packet_editor.cellWidget(last_row,0).currentText()
                     if current_selection == "Binary":
-                        self.tableWidget_attack_packet_editor.item(last_row,1).setText(bin_str_spaces)
+                        self.tableWidget1_attack_packet_editor.item(last_row,1).setText(bin_str_spaces)
                                 
                     # Binary to Hex 
                     elif current_selection == "Hex":
                         bin_str = bin_str_spaces.replace(' ', '')
                         hex_str = '%0*X' % ((len(bin_str) + 3) // 4, int(bin_str, 2))
-                        self.tableWidget_attack_packet_editor.item(last_row,1).setText(hex_str)                                      
+                        self.tableWidget1_attack_packet_editor.item(last_row,1).setText(hex_str)                                      
                         
         # Message Data Entered Incorrectly
         #except ValueError as inst:
@@ -4955,8 +4965,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.pushButton_pd_flow_graphs_apply_changes.setEnabled(False)
                 
                 # Update Flow Graph Status Labels
-                self.label_pd_flow_graphs_status.setText("Stopped")
-                self.label_pd_status_flow_graph_status.setText("Stopped")
+                self.label2_pd_flow_graphs_status.setText("Stopped")
+                self.label2_pd_status_flow_graph_status.setText("Stopped")
                 
                 # Update the Status Dialog
                 self.status_dialog.tableWidget_status_results.item(3,0).setText("Not Running")
@@ -4971,7 +4981,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.pushButton_attack_apply_changes.setEnabled(False)
                 
                 # Update Flow Graph Status Label
-                self.label_attack_flow_graph_status.setText("Stopped")    
+                self.label2_attack_flow_graph_status.setText("Stopped")    
                 
                 # Enable Attack Switching
                 self.comboBox_attack_protocols.setEnabled(True)
@@ -4979,11 +4989,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.comboBox_attack_hardware.setEnabled(True)   
                 
                 # Enabled All Values for Editing
-                for get_row in range(self.tableWidget_attack_flow_graph_current_values.rowCount()):   
-                    get_value_item = self.tableWidget_attack_flow_graph_current_values.takeItem(get_row,0)
+                for get_row in range(self.tableWidget1_attack_flow_graph_current_values.rowCount()):   
+                    get_value_item = self.tableWidget1_attack_flow_graph_current_values.takeItem(get_row,0)
                     get_value_item.setFlags(get_value_item.flags() | QtCore.Qt.ItemIsEditable)
                     get_value_item.setFlags(get_value_item.flags() | QtCore.Qt.ItemIsEnabled)
-                    self.tableWidget_attack_flow_graph_current_values.setItem(get_row,0,get_value_item)             
+                    self.tableWidget1_attack_flow_graph_current_values.setItem(get_row,0,get_value_item)             
             
             # Fuzzing   
             if self.pushButton_attack_fuzzing_start.text() == "Stop Attack":   
@@ -4994,7 +5004,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.pushButton_attack_fuzzing_apply_changes.setEnabled(False) #######
                 
                 # Update Flow Graph Status Label
-                self.label_attack_fuzzing_flow_graph_status.setText("Stopped") ######
+                self.label2_attack_fuzzing_flow_graph_status.setText("Stopped") ######
                 
                 # Enabled All Values for Editing
                 for get_row in range(self.tableWidget_attack_fuzzing_flow_graph_current_values.rowCount()):   
@@ -5013,9 +5023,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Perform Action
         if flow_graph_type == "PD":         
             # Update Flow Graph Status Labels
-            self.label_pd_flow_graphs_status.setText("Running... ")
+            self.label2_pd_flow_graphs_status.setText("Running... ")
             self.pushButton_pd_flow_graphs_start_stop.setEnabled(True)
-            self.label_pd_status_flow_graph_status.setText("Running... ")
+            self.label2_pd_status_flow_graph_status.setText("Running... ")
             
             # Update the Status Dialog
             self.status_dialog.tableWidget_status_results.item(2,0).setText('Running Flow Graph... ' + str(self.textEdit_pd_flow_graphs_filepath.toPlainText()).rsplit("/",1)[1])
@@ -5024,13 +5034,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Single-Stage
             if self.tabWidget_attack_attack.currentIndex() == 0:
                 # Update Flow Graph Status Label
-                self.label_attack_flow_graph_status.setText("Running...")
+                self.label2_attack_flow_graph_status.setText("Running...")
                 self.pushButton_attack_start_stop.setEnabled(True)
                 
             # Fuzzing
             elif self.tabWidget_attack_attack.currentIndex() == 2:
                 # Update Flow Graph Status Label
-                self.label_attack_fuzzing_flow_graph_status.setText("Running...")
+                self.label2_attack_fuzzing_flow_graph_status.setText("Running...")
                 self.pushButton_attack_fuzzing_start.setEnabled(True)
                 
             # Update the Status Dialog
@@ -5043,7 +5053,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Update the Pushbutton and Label
         self.pushButton_iq_record.setEnabled(True)
         get_number_of_files = str(self.tableWidget_iq_record.item(0,5).text())
-        self.label_iq_status_files.setText("Recording File " + str(self.iq_file_counter) + " of " + get_number_of_files)
+        self.label2_iq_status_files.setText("Recording File " + str(self.iq_file_counter) + " of " + get_number_of_files)
                     
         # Update the Status Dialog  
         self.status_dialog.tableWidget_status_results.item(4,0).setText('Running Flow Graph... ')
@@ -5054,7 +5064,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Update the Pushbutton and Label
         self.pushButton_iq_playback.setEnabled(True)
-        self.label_iq_playback_status.setText("Running...")
+        self.label2_iq_playback_status.setText("Running...")
                     
         # Update the Status Dialog
         self.status_dialog.tableWidget_status_results.item(4,0).setText('Running Flow Graph... ')    
@@ -5170,7 +5180,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Stop PD')
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Set Auto Start PD', Parameters = False)      
             self.status_dialog.tableWidget_status_results.item(2,0).setText("Not Running")
-            self.label_pd_status_pd.setText("Not Running")
+            self.label2_pd_status_pd.setText("Not Running")
             if self.pushButton_pd_status_start.text() == "Stop":
                 self._slotPD_StatusStartClicked()
             
@@ -5272,9 +5282,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tableWidget_automation_soi_list_priority.setRowCount(get_rows+1)
             
             # Create the ComboBoxes and Empty Item
-            new_combobox = QtWidgets.QComboBox(self)
+            new_combobox = QtWidgets.QComboBox(self,objectName='comboBox2_')
             self.tableWidget_automation_soi_list_priority.setCellWidget(get_rows,0,new_combobox)
-            new_combobox2 = QtWidgets.QComboBox(self)
+            new_combobox2 = QtWidgets.QComboBox(self,objectName='comboBox2_')
             self.tableWidget_automation_soi_list_priority.setCellWidget(get_rows,1,new_combobox2)
             empty_item1 = QtWidgets.QTableWidgetItem("")
             self.tableWidget_automation_soi_list_priority.setItem(get_rows,2,empty_item1)
@@ -5377,7 +5387,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ 
         # Change the Combobox
         last_row = self.tableWidget_automation_soi_list_priority.rowCount()-1
-        new_combobox = QtWidgets.QComboBox(self)
+        new_combobox = QtWidgets.QComboBox(self,objectName='comboBox2_')
         self.tableWidget_automation_soi_list_priority.setCellWidget(last_row,1,new_combobox)
             
         if self.tableWidget_automation_soi_list_priority.cellWidget(last_row,0).currentText() == "Power":
@@ -5400,29 +5410,29 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """         
         # Checked
         if self.checkBox_automation_auto_select_pd_flow_graphs.isChecked() == True:
-            self.label_pd_status_auto_select_pd_flow_graphs.setText("Yes")
+            self.label2_pd_status_auto_select_pd_flow_graphs.setText("Yes")
             
         # Unchecked
         elif self.checkBox_automation_auto_select_pd_flow_graphs.isChecked() == False:
-            self.label_pd_status_auto_select_pd_flow_graphs.setText("No")
+            self.label2_pd_status_auto_select_pd_flow_graphs.setText("No")
                 
     def _slotAutomationAutoStartPD_Clicked(self):
         """ This is called when the "Auto-Start PD" checkbox is clicked.
         """
         # Checked
         if self.checkBox_automation_auto_start_pd.isChecked() == True:
-            self.label_pd_status_auto_start_pd.setText("Yes")
+            self.label2_pd_status_auto_start_pd.setText("Yes")
             #~ self.pushButton_pd_status_start.setVisible(False)    
             
             # System is On
             if self.pushButton_automation_system_start.text() == "Stop":
                 # Start PD if Flow Graph is Already Loaded and PD is not Running
-                if (self.label_pd_status_flow_graph_status.text() != "") and (self.pushButton_pd_status_start.text() == "Start"):
+                if (self.label2_pd_status_flow_graph_status.text() != "") and (self.pushButton_pd_status_start.text() == "Start"):
                     self._slotPD_StatusStartClicked()
             
         # Unchecked 
         elif self.checkBox_automation_auto_start_pd.isChecked() == False:
-            self.label_pd_status_auto_start_pd.setText("No")  
+            self.label2_pd_status_auto_start_pd.setText("No")  
             #~ self.pushButton_pd_status_start.setVisible(True)
                 
     def _slotPD_StatusStartClicked(self):
@@ -5437,7 +5447,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Update the Labels     
             self.status_dialog.tableWidget_status_results.item(2,0).setText("Running")
-            self.label_pd_status_pd.setText("Running")
+            self.label2_pd_status_pd.setText("Running")
             
             # Enable the Tabs
             self.tabWidget_protocol.setTabEnabled(1,True)
@@ -5470,7 +5480,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Update the Labels         
             self.status_dialog.tableWidget_status_results.item(2,0).setText("Not Running")
-            self.label_pd_status_pd.setText("Not Running")
+            self.label2_pd_status_pd.setText("Not Running")
             
             # Disable the Tabs
             self.tabWidget_protocol.setTabEnabled(1,False)
@@ -5550,11 +5560,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.status_dialog.tableWidget_status_results.item(2,0).setText("Flow Graph Not Loaded")
         
         # Update the Protocol Tab Labels
-        self.label_pd_status_loaded_flow_graph.setText('')
-        self.label_pd_status_flow_graph_status.setText('')
+        self.label2_pd_status_loaded_flow_graph.setText('')
+        self.label2_pd_status_flow_graph_status.setText('')
         
         # Update the Variable Listings in "Flow Graph" tab
-        self.label_pd_flow_graphs_default_variables.setText("")
+        self.label3_pd_flow_graphs_default_variables.setText("")
         self.tableWidget_pd_flow_graphs_current_values.clearContents()
         self.tableWidget_pd_flow_graphs_current_values.setRowCount(0)   
                             
@@ -5571,7 +5581,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_pd_flow_graphs_restore_defaults.setEnabled(False)
         
         # Update Flow Graph Status Label
-        self.label_pd_flow_graphs_status.setText("Not Loaded")      
+        self.label2_pd_flow_graphs_status.setText("Not Loaded")      
         
     def _slotMenuUHD_FindDevicesClicked(self):
         """ Opens a message box and copies the results of "uhd_find_devices"
@@ -5598,16 +5608,16 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Protocol Discovery - Tab 1
         self._slotPD_DemodulationLookupClearClicked()
         self.listWidget_pd_flow_graphs_recommended_fgs.clear()
-        self.textEdit_pd_status.clear() 
+        self.textEdit2_pd_status.clear() 
         self.pushButton_pd_status_start.setEnabled(False)
-        self.label_pd_status_loaded_flow_graph.setText("")
-        self.label_pd_status_flow_graph_status.setText("")
+        self.label2_pd_status_loaded_flow_graph.setText("")
+        self.label2_pd_status_flow_graph_status.setText("")
         
         # Protocol Discovery - Flow Graph
         self.textEdit_pd_flow_graphs_filepath.setPlainText("")
-        self.label_pd_flow_graphs_status.setText("Not Loaded")
-        self.label_pd_flow_graphs_description.setText("")
-        self.label_pd_flow_graphs_default_variables.setText("")
+        self.label2_pd_flow_graphs_status.setText("Not Loaded")
+        self.label3_pd_flow_graphs_description.setText("")
+        self.label3_pd_flow_graphs_default_variables.setText("")
         self.tableWidget_pd_flow_graphs_current_values.setRowCount(0)
         self.pushButton_pd_flow_graphs_start_stop.setEnabled(False)
         self.pushButton_pd_flow_graphs_apply_changes.setEnabled(False)
@@ -5616,21 +5626,21 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Attack
         self.pushButton_attack_start_stop.setEnabled(False)
-        self.label_attack_flow_graph_status.setText("Not Loaded")
+        self.label2_attack_flow_graph_status.setText("Not Loaded")
         self.pushButton_attack_apply_changes.setEnabled(False)
         self.pushButton_attack_restore_defaults.setEnabled(False)
         self.pushButton_attack_view_flow_graph.setEnabled(False)
-        self.tableWidget_attack_flow_graph_current_values.setRowCount(0)
-        self.tableWidget_attack_attack_history.setRowCount(0)
-        self.label_selected_protocol.setText("")
-        self.label_attack_fuzzing_selected_protocol.setText("")
-        self.label_selected_attack.setText("")
-        self.label_attack_fuzzing_selected_attack.setText("")
-        self.label_selected_flow_graph.setText("")  
-        self.label_attack_fuzzing_selected_flow_graph.setText("")    
-        self.label_selected_modulation.setText("")
-        self.label_attack_fuzzing_selected_modulation.setText("")
-        self.label_selected_notes.setText("")
+        self.tableWidget1_attack_flow_graph_current_values.setRowCount(0)
+        self.tableWidget1_attack_attack_history.setRowCount(0)
+        self.label2_selected_protocol.setText("")
+        self.label2_attack_fuzzing_selected_protocol.setText("")
+        self.label1_selected_attack.setText("")
+        self.label2_attack_fuzzing_selected_attack.setText("")
+        self.label2_selected_flow_graph.setText("")  
+        self.label2_attack_fuzzing_selected_flow_graph.setText("")    
+        self.label2_selected_modulation.setText("")
+        self.label2_attack_fuzzing_selected_modulation.setText("")
+        self.label2_selected_notes.setText("")
         
     def _slotMenuHackrfInfoClicked(self):
         """ Opens a message box and copies the results of "hackrf_info"
@@ -5674,7 +5684,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 flow_graph_filepath = str(os.path.dirname(os.path.abspath(__file__)) + "/Flow Graph Library/Sniffer Flow Graphs/Sniffer_stream.py")
                 
                 variable_names = ['address','port']
-                get_pd_bits_port = str(self.label_pd_sniffer_zmq_port.text())
+                get_pd_bits_port = str(self.label2_pd_sniffer_zmq_port.text())
                 get_address = '127.0.0.1:' + get_pd_bits_port
                 get_port = str(self.textEdit_pd_sniffer_sub_udp_port.toPlainText())
                 variable_values = [get_address, get_port]
@@ -5713,7 +5723,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 flow_graph_filepath = str(os.path.dirname(os.path.abspath(__file__)) + "/Flow Graph Library/Sniffer Flow Graphs/Sniffer_tagged_stream.py")
                 
                 variable_names = ['address','port']
-                get_pd_bits_port = str(self.label_pd_sniffer_zmq_port.text())
+                get_pd_bits_port = str(self.label2_pd_sniffer_zmq_port.text())
                 get_address = '127.0.0.1:' + get_pd_bits_port
                 get_port = str(self.textEdit_pd_sniffer_sub_udp_port.toPlainText())
                 variable_values = [get_address, get_port]
@@ -5751,7 +5761,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 flow_graph_filepath = str(os.path.dirname(os.path.abspath(__file__)) + "/Flow Graph Library/Sniffer Flow Graphs/Sniffer_async.py")
                 
                 variable_names = ['address','port']
-                get_pd_bits_port = str(self.label_pd_sniffer_zmq_port.text())
+                get_pd_bits_port = str(self.label2_pd_sniffer_zmq_port.text())
                 get_address = '127.0.0.1:' + get_pd_bits_port
                 get_port = str(self.textEdit_pd_sniffer_sub_udp_port.toPlainText())
                 variable_values = [get_address, get_port]
@@ -5784,12 +5794,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Update the File Information
         try:
-            self.label_iq_file_name.setText("File: " + self.listWidget_iq_files.currentItem().text())  # File name
+            self.label2_iq_file_name.setText("File: " + self.listWidget_iq_files.currentItem().text())  # File name
         except:
             print("No File Selected.")
             return
         get_file_path = str(self.label_iq_folder.text() + "/"+self.listWidget_iq_files.currentItem().text())
-        self.label_iq_file_size.setText("Size: " + str(round(float((os.path.getsize(get_file_path)))/1048576,2)) + " MB")  # File Size
+        self.label2_iq_file_size.setText("Size: " + str(round(float((os.path.getsize(get_file_path)))/1048576,2)) + " MB")  # File Size
         self.textEdit_iq_crop_original.setPlainText(get_file_path)
         self.textEdit_iq_crop_new.setPlainText(get_file_path.rpartition('.')[0] + '_cropped.' + get_file_path.rpartition('.')[2])
         self.comboBox_iq_crop_data_type.setCurrentIndex(self.comboBox_iq_data_type.currentIndex())
@@ -5825,7 +5835,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.textEdit_iq_end.setPlainText("n/a")  
         
         # Sample Label    
-        self.label_iq_samples.setText("Samples: " + str(self.textEdit_iq_end.toPlainText()))
+        self.label2_iq_samples.setText("Samples: " + str(self.textEdit_iq_end.toPlainText()))
         
         # Playback
         self.textEdit_iq_playback_filepath.setPlainText(get_file_path)
@@ -5877,7 +5887,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             pass
             
         # Hide Success Label
-        self.label_iq_transfer_folder_success.setVisible(False)
+        self.label2_iq_transfer_folder_success.setVisible(False)
         
     def _slotIQ_Dir2_Clicked(self):
         """ Selects a destination folder for transferring files
@@ -5896,7 +5906,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             pass        
             
         # Hide Success Label
-        self.label_iq_transfer_folder_success.setVisible(False)
+        self.label2_iq_transfer_folder_success.setVisible(False)
             
     def _slotIQ_TransferClicked(self):
         """ Transfers files from the source folder to the destination folder
@@ -5905,7 +5915,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.copytree(str(self.textEdit_iq_dir1.toPlainText()), str(self.textEdit_iq_dir2.toPlainText()))
                     
             # Show Success Label
-            self.label_iq_transfer_folder_success.setVisible(True)
+            self.label2_iq_transfer_folder_success.setVisible(True)
             
         except OSError as e:
             pass
@@ -5988,7 +5998,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     return
                 
                 # Read the Data 
-                filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
+                filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
                 file = open(filepath,"rb")                          # Open the file
                 if "Complex" in get_type:
                     file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
@@ -6019,7 +6029,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 # Plot
                 self.iq_matplotlib_widget.clearPlot()
-                self.iq_matplotlib_widget.configureAxes(polar=False)
+                self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
                 if "Complex" in get_type:
                     # Ignore hold() Deprecation Warnings
                     with warnings.catch_warnings():
@@ -6034,7 +6044,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 else:
                     self.iq_matplotlib_widget.axes.plot(range(1,len(plot_data_formatted)+1),plot_data_formatted,'b',linewidth=1)
                 
-                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
                 self.pushButton_iq_cursor1.setChecked(False)
                 self._slotIQ_Cursor1Clicked() 
                 #self.iq_matplotlib_widget.draw()
@@ -6224,7 +6234,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run IQ Flow Graph', Parameters = [str(fname), variable_names, variable_values, get_file_type])
                 
                 # Change Status Label and Record Button Text
-                self.label_iq_status_files.setText("Starting...")
+                self.label2_iq_status_files.setText("Starting...")
                 self.pushButton_iq_record.setText("Stop")
                 self.pushButton_iq_record.setEnabled(False)
                 self.status_dialog.tableWidget_status_results.item(4,0).setText('Starting...')
@@ -6239,7 +6249,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Called upon cancelling IQ recording. Changes the status and button text.
         """
         # Change Status Label and Record Button Text
-        self.label_iq_status_files.setText("Not Recording")
+        self.label2_iq_status_files.setText("Not Recording")
         self.status_dialog.tableWidget_status_results.item(4,0).setText('Not Recording')
         
         # Refresh File List
@@ -6331,7 +6341,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Called upon cancelling IQ playback. Changes the status and button text.
         """
         # Change Status Label and Record Button Text
-        self.label_iq_playback_status.setText("Not Running")
+        self.label2_iq_playback_status.setText("Not Running")
         self.pushButton_iq_playback.setText("Play") 
         self.status_dialog.tableWidget_status_results.item(4,0).setText('Not Recording')     
         
@@ -6378,7 +6388,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Updates the Data Fields table with fields and values for the selected messsage type.
         """    
         # Get the Subcategory
-        current_protocol_key = str(self.label_attack_fuzzing_selected_protocol.text())        
+        current_protocol_key = str(self.label2_attack_fuzzing_selected_protocol.text())        
         current_subcategory = str(self.comboBox_attack_fuzzing_subcategory.currentText())    
         if current_subcategory != "None":   
             try:
@@ -6411,7 +6421,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                                 
             # Restore ComboBoxes and CheckBoxes
             for n in range(0,self.tableWidget_attack_fuzzing_data_field.rowCount()):            
-                new_combobox1 = QtWidgets.QComboBox(self)
+                new_combobox1 = QtWidgets.QComboBox(self,objectName='comboBox2_')
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,4,new_combobox1)
                 new_combobox1.addItem("Binary")
                 new_combobox1.addItem("Hex")
@@ -6428,7 +6438,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 #new_checkbox.stateChanged.connect(self._slotAttackFuzzingDataSelectCheckboxClicked)
                 
                 # ComboBoxes
-                new_combobox2 = QtWidgets.QComboBox(self)
+                new_combobox2 = QtWidgets.QComboBox(self,objectName='comboBox2_')
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,1,new_combobox2)
                 new_combobox2.addItem("Random")
                 new_combobox2.addItem("Sequential")
@@ -6443,8 +6453,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 default_length += int(self.tableWidget_attack_fuzzing_data_field.item(n,7).text())
             
             # Set the Length Labels
-            self.label_attack_fuzzing_current_length_total.setText(str(""))
-            self.label_attack_fuzzing_default_length_total.setText(str(default_length))  
+            self.label2_attack_fuzzing_current_length_total.setText(str(""))
+            self.label2_attack_fuzzing_default_length_total.setText(str(default_length))  
             
             # Resize the Table
             self.tableWidget_attack_fuzzing_data_field.setColumnWidth(0,54) 
@@ -6493,7 +6503,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tableWidget_attack_fuzzing_data_field.setItem(n,7,default_length_item)
 
             # Set Binary/Hex comboboxes
-            new_combobox1 = QtWidgets.QComboBox(self)
+            new_combobox1 = QtWidgets.QComboBox(self,objectName='comboBox2_')
             self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,4,new_combobox1)
             new_combobox1.addItem("Binary")
             new_combobox1.addItem("Hex")
@@ -6514,7 +6524,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             #new_checkbox.stateChanged.connect(self._slotAttackFuzzingDataSelectCheckboxClicked)
             
             # ComboBoxes
-            new_combobox2 = QtWidgets.QComboBox(self)
+            new_combobox2 = QtWidgets.QComboBox(self,objectName='comboBox2_')
             self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,1,new_combobox2)
             new_combobox2.addItem("Random")
             new_combobox2.addItem("Sequential")
@@ -6540,8 +6550,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             default_length += int(self.tableWidget_attack_fuzzing_data_field.item(n,7).text())
         
         # Set the Length Labels
-        self.label_attack_fuzzing_current_length_total.setText(str(current_length))
-        self.label_attack_fuzzing_default_length_total.setText(str(default_length)) 
+        self.label2_attack_fuzzing_current_length_total.setText(str(current_length))
+        self.label2_attack_fuzzing_default_length_total.setText(str(default_length)) 
         
         # Resize the Table
         self.tableWidget_attack_fuzzing_data_field.setColumnWidth(0,54) 
@@ -6626,7 +6636,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.pushButton_attack_fuzzing_apply_changes.setEnabled(False)
             
             # Update Flow Graph Status Label
-            self.label_attack_fuzzing_flow_graph_status.setText("Not Running") 
+            self.label2_attack_fuzzing_flow_graph_status.setText("Not Running") 
             
             # Enabled All Values for Editing
             for get_row in range(self.tableWidget_attack_fuzzing_flow_graph_current_values.rowCount()):   
@@ -6678,7 +6688,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 variable_values.append(hex_str)
                 variable_values.append(str(self.textEdit_attack_fuzzing_seed.toPlainText()))
                 variable_values.append(str(self.textEdit_attack_fuzzing_interval.toPlainText()))
-                variable_values.append(str(self.label_attack_fuzzing_selected_protocol.text()))
+                variable_values.append(str(self.label2_attack_fuzzing_selected_protocol.text()))
                 variable_values.append(str(self.comboBox_attack_fuzzing_subcategory.currentText()))                    
                 
             # Variables
@@ -6749,10 +6759,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.pushButton_attack_fuzzing_apply_changes.setEnabled(False) 
             
             # Update Flow Graph Status Label
-            self.label_attack_fuzzing_flow_graph_status.setText("Starting...")
+            self.label2_attack_fuzzing_flow_graph_status.setText("Starting...")
             
             # Send "Run Attack Flow Graph" Message to the HIPRFISR
-            fname = self.label_attack_fuzzing_selected_flow_graph.text()   
+            fname = self.label2_attack_fuzzing_selected_flow_graph.text()   
             get_file_type = "Flow Graph"      
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Attack Flow Graph', Parameters = [str(fname), variable_names, variable_values, get_file_type])     
    
@@ -6764,8 +6774,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Start Physical Fuzzing', Parameters = [fuzzing_variables, fuzzing_type, fuzzing_min, fuzzing_max, fuzzing_update_period, fuzzing_seed_step])     
 
             # Update the Attack History Table       
-            attack_name = str(self.label_attack_fuzzing_selected_attack.text())
-            protocol = str(self.label_attack_fuzzing_selected_protocol.text())
+            attack_name = str(self.label2_attack_fuzzing_selected_attack.text())
+            protocol = str(self.label2_attack_fuzzing_selected_protocol.text())
             self.updateAttackHistory(attack_name, protocol, variable_names, variable_values)        
     
         #~ # Message Data Entered Incorrectly
@@ -6862,8 +6872,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_attack_fuzzing_apply_changes.setEnabled(False)
         
         # Update the "Attack History" Table
-        attack_name = str(self.label_attack_fuzzing_selected_attack.text())
-        protocol = str(self.label_attack_fuzzing_selected_protocol.text())
+        attack_name = str(self.label2_attack_fuzzing_selected_attack.text())
+        protocol = str(self.label2_attack_fuzzing_selected_protocol.text())
         self.updateAttackHistory(attack_name, protocol, list(self.attack_flow_graph_variables.keys()), list(self.attack_flow_graph_variables.values()))
         
     def _slotPacketAllHexClicked(self):
@@ -6871,9 +6881,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ 
         try:
             # Change the Binary/Hex ComboBox
-            for row in range(self.tableWidget_attack_packet_editor.rowCount()):  
-                if self.tableWidget_attack_packet_editor.cellWidget(row,0).isEnabled() is True:           
-                    self.tableWidget_attack_packet_editor.cellWidget(row,0).setCurrentIndex(1)              
+            for row in range(self.tableWidget1_attack_packet_editor.rowCount()):  
+                if self.tableWidget1_attack_packet_editor.cellWidget(row,0).isEnabled() is True:           
+                    self.tableWidget1_attack_packet_editor.cellWidget(row,0).setCurrentIndex(1)              
                 
         # Message Data Entered Incorrectly
         except ValueError as inst:
@@ -6884,10 +6894,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ 
         try:
             # Change the Binary ComboBox
-            for row in range(self.tableWidget_attack_packet_editor.rowCount()):
-                get_length = int(self.tableWidget_attack_packet_editor.item(row,3).text())
+            for row in range(self.tableWidget1_attack_packet_editor.rowCount()):
+                get_length = int(self.tableWidget1_attack_packet_editor.item(row,3).text())
                 if get_length > 0:
-                    self.tableWidget_attack_packet_editor.cellWidget(row,0).setCurrentIndex(0)
+                    self.tableWidget1_attack_packet_editor.cellWidget(row,0).setCurrentIndex(0)
                 
         # Message Data Entered Incorrectly
         except ValueError as inst:
@@ -6945,7 +6955,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             hex_str = hex_str.decode("utf-8").upper()
             
             # Set the Assembled Text Box
-            self.textEdit_packet_constructed.setPlainText(hex_str)
+            self.textEdit1_packet_constructed.setPlainText(hex_str)
             
     def _slotAttackFuzzingSelectFileClicked(self):
         """ Loads a flow graph for fuzzing its variables.
@@ -7012,7 +7022,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 radio_button_group.addButton(new_button)    
                                 
                                 # Type Comboboxes
-                                new_fuzzing_combobox = QtWidgets.QComboBox(self)
+                                new_fuzzing_combobox = QtWidgets.QComboBox(self,objectName='comboBox2_')
                                 self.tableWidget_fuzzing_variables.setCellWidget(self.tableWidget_fuzzing_variables.rowCount()-1,1,new_fuzzing_combobox)
                                 new_fuzzing_combobox.addItem("Random")
                                 new_fuzzing_combobox.addItem("Sequential")
@@ -7093,9 +7103,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     new_file.write("#########################################################################\n")
                     new_file.write("########################## Attack History ###############################\n")
                     new_file.write("#########################################################################\n")
-                    for rows in range(0, self.tableWidget_attack_attack_history.rowCount()):
-                        for columns in range(0, self.tableWidget_attack_attack_history.columnCount()):                  
-                            new_file.write(self.tableWidget_attack_attack_history.item(rows, columns).text() + "\t")
+                    for rows in range(0, self.tableWidget1_attack_attack_history.rowCount()):
+                        for columns in range(0, self.tableWidget1_attack_attack_history.columnCount()):                  
+                            new_file.write(self.tableWidget1_attack_attack_history.item(rows, columns).text() + "\t")
                         new_file.write("\n")                
                 
                 # Write the Session Notes:
@@ -7103,7 +7113,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     new_file.write("#########################################################################\n")
                     new_file.write("########################## Session Notes ################################\n")
                     new_file.write("#########################################################################\n")
-                    new_file.write(self.textEdit_log_notes.toPlainText())
+                    new_file.write(self.textEdit1_log_notes.toPlainText())
                 
                 # Close the File
                 new_file.close()
@@ -7300,12 +7310,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                         self.table_list[n].setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                                     
                                     # Create the PushButton
-                                    new_pushbutton = QtWidgets.QPushButton(self.table_list[n])
+                                    new_pushbutton = QtWidgets.QPushButton(self.table_list[n],objectName='pushButton_')
                                     new_pushbutton.setText("...")
                                     new_pushbutton.setFixedSize(34,23)
                                     self.table_list[n].setCellWidget(self.table_list[n].rowCount()-1,1,new_pushbutton)
                                     get_row_number = self.table_list[n].rowCount()-1
-                                    get_default_directory = self.defaultAttackFilepathDirectory(str(self.label_selected_flow_graph.text()).rsplit('/')[-1],variable_name)
+                                    get_default_directory = self.defaultAttackFilepathDirectory(str(self.label2_selected_flow_graph.text()).rsplit('/')[-1],variable_name)
                                     new_pushbutton.clicked.connect((lambda get_row_number,get_default_directory: lambda: self._slotSelectFilepath(self.tabWidget_attack_multi_stage.currentIndex(), get_row = get_row_number, default_directory = get_default_directory))(get_row_number,get_default_directory))  # Pass constant value, not variable value
 
                                     # Adjust Table
@@ -7323,7 +7333,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                         self.table_list[n].setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                                     
                                     # Create the PushButton
-                                    new_pushbutton = QtWidgets.QPushButton(self.table_list[n])
+                                    new_pushbutton = QtWidgets.QPushButton(self.table_list[n],objectName='pushButton_')
                                     new_pushbutton.setText("Guess")
                                     new_pushbutton.setFixedSize(64,23)
                                     self.table_list[n].setCellWidget(self.table_list[n].rowCount()-1,1,new_pushbutton)
@@ -7373,7 +7383,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 self.table_list[n].setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                             
                             # Create the PushButton
-                            new_pushbutton = QtWidgets.QPushButton(self.table_list[n])
+                            new_pushbutton = QtWidgets.QPushButton(self.table_list[n],objectName='pushButton_')
                             new_pushbutton.setText("...")
                             if 'iface' in get_vars:
                                 new_pushbutton.setFixedSize(64,23)
@@ -7381,7 +7391,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 new_pushbutton.setFixedSize(34,23)
                             self.table_list[n].setCellWidget(self.table_list[n].rowCount()-1,1,new_pushbutton)
                             get_row_number = self.table_list[n].rowCount()-1
-                            get_default_directory = self.defaultAttackFilepathDirectory(str(self.label_selected_flow_graph.text()).rsplit('/')[-1],str(variable_name.text()))
+                            get_default_directory = self.defaultAttackFilepathDirectory(str(self.label2_selected_flow_graph.text()).rsplit('/')[-1],str(variable_name.text()))
                             new_pushbutton.clicked.connect((lambda get_row_number,get_default_directory: lambda: self._slotSelectFilepath(self.tabWidget_attack_multi_stage.currentIndex(), get_row = get_row_number, default_directory = get_default_directory))(get_row_number,get_default_directory))  # Pass constant value, not variable value
 
                             # Adjust Table
@@ -7399,7 +7409,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 self.table_list[n].setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                             
                             # Create the PushButton
-                            new_pushbutton = QtWidgets.QPushButton(self.table_list[n])
+                            new_pushbutton = QtWidgets.QPushButton(self.table_list[n],objectName='pushButton_')
                             new_pushbutton.setText("Guess")
                             new_pushbutton.setFixedSize(64,23)
                             self.table_list[n].setCellWidget(self.table_list[n].rowCount()-1,1,new_pushbutton)
@@ -7420,7 +7430,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.tabWidget_attack_multi_stage.addTab(new_tab,self.tableWidget_attack_multi_stage_attacks.item(n,0).text())        
                 
         # Update the Status Label       
-        self.label_attack_multi_stage_status.setText("Loaded") 
+        self.label2_attack_multi_stage_status.setText("Loaded") 
         
     def _slotAttackMultiStageUpClicked(self):
         """ Shifts the row up one position for tableWidget_attack_multi_stage_attacks. This changes the order in which the flow graphs are executed.
@@ -7513,7 +7523,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.pushButton_attack_multi_stage_start.setText("Start")      
             
             # Update the Status Label
-            self.label_attack_multi_stage_status.setText("Not Running")
+            self.label2_attack_multi_stage_status.setText("Not Running")
             
             # Update the Status Dialog
             self.status_dialog.tableWidget_status_results.item(3,0).setText("Not Running")
@@ -7567,7 +7577,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.pushButton_attack_multi_stage_start.setText("Stop") 
             
             # Update the Status Label
-            self.label_attack_multi_stage_status.setText("Running...")
+            self.label2_attack_multi_stage_status.setText("Running...")
             
             # Update the Status Dialog
             self.status_dialog.tableWidget_status_results.item(3,0).setText("Running Multi-Stage Attack...")
@@ -7581,7 +7591,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """     
         # Change the Pushbuttons and Labels
         self.pushButton_attack_multi_stage_start.setText("Start")  
-        self.label_attack_multi_stage_status.setText("Not Running")
+        self.label2_attack_multi_stage_status.setText("Not Running")
         
         # Update the Status Dialog
         self.status_dialog.tableWidget_status_results.item(3,0).setText("Not Running")
@@ -7664,7 +7674,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             self.table_list[n].setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                         
                         # Create the PushButton
-                        new_pushbutton = QtWidgets.QPushButton(self.table_list[n])
+                        new_pushbutton = QtWidgets.QPushButton(self.table_list[n],objectName='pushButton_')
                         new_pushbutton.setText("...")
                         if 'iface' in variable_names_list[n]:
                             new_pushbutton.setFixedSize(64,23)
@@ -7672,7 +7682,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             new_pushbutton.setFixedSize(34,23)
                         self.table_list[n].setCellWidget(self.table_list[n].rowCount()-1,1,new_pushbutton)
                         get_row_number = self.table_list[n].rowCount()-1
-                        get_default_directory = self.defaultAttackFilepathDirectory(str(self.label_selected_flow_graph.text()).rsplit('/')[-1],str(variable_name.text()))
+                        get_default_directory = self.defaultAttackFilepathDirectory(str(self.label2_selected_flow_graph.text()).rsplit('/')[-1],str(variable_name.text()))
                         new_pushbutton.clicked.connect((lambda get_row_number,get_default_directory: lambda: self._slotSelectFilepath(self.tabWidget_attack_multi_stage.currentIndex(), get_row = get_row_number, default_directory = get_default_directory))(get_row_number,get_default_directory))  # Pass constant value, not variable value
 
                         # Adjust Table
@@ -7690,7 +7700,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             self.table_list[n].setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
                         
                         # Create the PushButton
-                        new_pushbutton = QtWidgets.QPushButton(self.table_list[n])
+                        new_pushbutton = QtWidgets.QPushButton(self.table_list[n],objectName='pushButton_')
                         new_pushbutton.setText("Guess")
                         new_pushbutton.setFixedSize(64,23)
                         self.table_list[n].setCellWidget(self.table_list[n].rowCount()-1,1,new_pushbutton)
@@ -7717,8 +7727,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.pushButton_attack_multi_stage_save.setEnabled(True)
             self.tabWidget_attack_multi_stage.setEnabled(True)
             self.pushButton_attack_multi_stage_start.setEnabled(True)
-            self.label_attack_multi_stage_status.setEnabled(True)
-            self.label_attack_multi_stage_status.setText("Loaded")
+            self.label2_attack_multi_stage_status.setEnabled(True)
+            self.label2_attack_multi_stage_status.setText("Loaded")
     
         
     def _slotAttackMultiStageSaveClicked(self):
@@ -7786,7 +7796,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Appends the contents of the packet scratchpad (with the multiplier) to the assembled text edit box.
         """
         # Get the Assembled Packet Text
-        scratch_pad_text = str(self.textEdit_packet_assembled.toPlainText())
+        scratch_pad_text = str(self.textEdit1_packet_assembled.toPlainText())
         
         # Get the Text Multiplier
         try:
@@ -7801,11 +7811,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 repeated_message += scratch_pad_text
                 
             # Append to the Constructed Sequence
-            get_assembled_text = str(self.textEdit_packet_constructed.toPlainText())
+            get_assembled_text = str(self.textEdit1_packet_constructed.toPlainText())
             get_assembled_text += repeated_message
             
             # Update the Constructed Sequence
-            self.textEdit_packet_constructed.setText(get_assembled_text)
+            self.textEdit1_packet_constructed.setText(get_assembled_text)
         except:
             self.errorMessage("Enter a Valid Multiplier (Counting Number)")     
             
@@ -7818,7 +7828,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             current_modulation = str(self.comboBox_attack_modulation.currentText())
 
             # Set Label Text
-            self.label_attack_fuzzing_selected_modulation.setText(current_modulation)
+            self.label2_attack_fuzzing_selected_modulation.setText(current_modulation)
 
             # Modulation is Chosen
             if current_modulation != "":
@@ -7945,7 +7955,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         if table_index > -1:
             get_table = self.table_list[table_index]
         else:
-            get_table = self.tableWidget_attack_flow_graph_current_values
+            get_table = self.tableWidget1_attack_flow_graph_current_values
         
         # Look for a File
         fname = QtWidgets.QFileDialog.getSaveFileName(None,"Select File...", default_directory, filter="All Files (*)")[0]
@@ -7965,7 +7975,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         if table_index > -1:
             get_table = self.table_list[table_index]
         else:
-            get_table = self.tableWidget_attack_flow_graph_current_values
+            get_table = self.tableWidget1_attack_flow_graph_current_values
             
         # Find Row with "iface" 
         get_row = -1
@@ -8054,7 +8064,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Deletes the currently selected row from the attack history table.
         """
         # Remove the Current Row
-        self.tableWidget_attack_attack_history.removeRow(self.tableWidget_attack_attack_history.currentRow())
+        self.tableWidget1_attack_attack_history.removeRow(self.tableWidget1_attack_attack_history.currentRow())
         
     def _slotAttackMultiStageClearClicked(self):
         """ Clears the attack table.
@@ -8069,17 +8079,17 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Only Look at the Data Column
         if col == 1:
             # Ignore Item Changes by the System
-            if self.tableWidget_attack_packet_editor.cellWidget(self.tableWidget_attack_packet_editor.currentRow(),0) != None:  
+            if self.tableWidget1_attack_packet_editor.cellWidget(self.tableWidget1_attack_packet_editor.currentRow(),0) != None:  
                     
                 # Ignore Strings
-                if self.tableWidget_attack_packet_editor.cellWidget(self.tableWidget_attack_packet_editor.currentRow(),0).currentText() == "String":
+                if self.tableWidget1_attack_packet_editor.cellWidget(self.tableWidget1_attack_packet_editor.currentRow(),0).currentText() == "String":
                     pass
                 else:
                     # Get the Current Item
-                    current_item = self.tableWidget_attack_packet_editor.item(self.tableWidget_attack_packet_editor.currentRow(),1)
+                    current_item = self.tableWidget1_attack_packet_editor.item(self.tableWidget1_attack_packet_editor.currentRow(),1)
                     
                     # Binary or Hex
-                    if self.tableWidget_attack_packet_editor.cellWidget(self.tableWidget_attack_packet_editor.currentRow(),0).currentText() == "Binary":
+                    if self.tableWidget1_attack_packet_editor.cellWidget(self.tableWidget1_attack_packet_editor.currentRow(),0).currentText() == "Binary":
                         get_length_str = str(current_item.text()).replace(" ","")
                         get_length = len(get_length_str)
                     else:
@@ -8089,13 +8099,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     new_length_item = QtWidgets.QTableWidgetItem(str(get_length)) 
                     new_length_item.setTextAlignment(QtCore.Qt.AlignCenter)
                     new_length_item.setFlags(new_length_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                    self.tableWidget_attack_packet_editor.setItem(self.tableWidget_attack_packet_editor.currentRow(),2,new_length_item)
+                    self.tableWidget1_attack_packet_editor.setItem(self.tableWidget1_attack_packet_editor.currentRow(),2,new_length_item)
                     
                     # Calculate the Lengths
                     current_length_total = 0
-                    for n in range(0,self.tableWidget_attack_packet_editor.rowCount()):
-                        current_length_total += int(self.tableWidget_attack_packet_editor.item(n,2).text())
-                    self.label_packet_current_length_total.setText(str(current_length_total))
+                    for n in range(0,self.tableWidget1_attack_packet_editor.rowCount()):
+                        current_length_total += int(self.tableWidget1_attack_packet_editor.item(n,2).text())
+                    self.label2_packet_current_length_total.setText(str(current_length_total))
             
     def _slotAttackFuzzingItemChanged(self, row, col):
         """ This is called whenever an item in the fuzzing fields table is changed. It is used to update the current lengths of the fields.
@@ -8126,7 +8136,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 current_length_total = 0
                 for n in range(0,self.tableWidget_attack_fuzzing_data_field.rowCount()):
                     current_length_total += int(self.tableWidget_attack_fuzzing_data_field.item(n,6).text())
-                self.label_attack_fuzzing_current_length_total.setText(str(current_length_total))
+                self.label2_attack_fuzzing_current_length_total.setText(str(current_length_total))
         
     def _slotLibraryAddAttacksSelectClicked(self):
         """ This opens a file dialog to select a .py or .msa file as the source of the new attack template.
@@ -8168,20 +8178,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.comboBox_library_attacks_subcategory.clear()
         if self.comboBox_library_attacks_attack_type.currentText() == "Single-Stage":
             self.comboBox_library_attacks_subcategory.addItems(["Denial of Service","Jamming","Spoofing","Sniffing/Snooping","Probe Attacks","Installation of Malware","Misuse of Resources","File"])
-            self.label_library_attacks_new_name.setHidden(False)
-            self.label_library_attacks_new_name2.setHidden(False)
+            self.label2_library_attacks_new_name.setHidden(False)
+            self.label2_library_attacks_new_name2.setHidden(False)
             self.textEdit_library_attacks_new_name.setHidden(False)
-            self.label_library_attacks_file_select.setText(".py File:")
-            self.label_library_attacks_modulation.setHidden(False)
+            self.label2_library_attacks_file_select.setText(".py File:")
+            self.label2_library_attacks_modulation.setHidden(False)
             self.comboBox_library_attacks_modulation.setHidden(False)            
             
         # elif self.comboBox_library_attacks_attack_type.currentText() == "Multi-Stage":
             # self.comboBox_library_attacks_subcategory.addItems(["Multi-Stage"])
-            # self.label_library_attacks_new_name.setHidden(True)
-            # self.label_library_attacks_new_name2.setHidden(True)
+            # self.label2_library_attacks_new_name.setHidden(True)
+            # self.label2_library_attacks_new_name2.setHidden(True)
             # self.textEdit_library_attacks_new_name.setHidden(True)
-            # self.label_library_attacks_file_select.setText(".msa File:")
-            # self.label_library_attacks_modulation.setHidden(True)
+            # self.label2_library_attacks_file_select.setText(".msa File:")
+            # self.label2_library_attacks_modulation.setHidden(True)
             # self.comboBox_library_attacks_modulation.setHidden(True)
          
         # Reset State
@@ -8220,7 +8230,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_library_pd_packet.setItem(self.tableWidget_library_pd_packet.rowCount()-1,4,crc_range_item)   
         
         # Is CRC Combobox
-        new_combobox = QtWidgets.QComboBox(self)
+        new_combobox = QtWidgets.QComboBox(self,objectName='comboBox2_')
         new_combobox.addItem("True")
         new_combobox.addItem("False")        
         new_combobox.setCurrentIndex(1)
@@ -8356,7 +8366,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_pd_dissectors.setItem(self.tableWidget_pd_dissectors.rowCount()-1,1,table_item)
         
         # Type ComboBox
-        new_combobox = QtWidgets.QComboBox(self)
+        new_combobox = QtWidgets.QComboBox(self,objectName='comboBox2_')
         new_combobox.setSizeAdjustPolicy(0)
         new_combobox.addItem("ftypes.NONE")
         new_combobox.addItem("ftypes.BOOLEAN")
@@ -8397,7 +8407,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_pd_dissectors.setCellWidget(self.tableWidget_pd_dissectors.rowCount()-1,2,new_combobox)
         
         # Display ComboBox
-        new_combobox2 = QtWidgets.QComboBox(self)
+        new_combobox2 = QtWidgets.QComboBox(self,objectName='comboBox2_')
         new_combobox2.setSizeAdjustPolicy(0)
         new_combobox2.addItem("base.NONE")
         new_combobox2.addItem("base.DEC")
@@ -8692,7 +8702,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Find Preambles')
         
         # Show the Calculating Label
-        self.label_pd_bit_slicing_calculating.setVisible(True)
+        self.label2_pd_bit_slicing_calculating.setVisible(True)
         
     def _slotPD_BitSlicingPreamblesReturned(self, message):
         """ Stores the returned preambles to memory and loads them into the table.
@@ -8709,24 +8719,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.textEdit_pd_bit_slicing_recommended_preamble.setPlainText(recommended_preamble)
     
         # Enable Controls
-        self.label_pd_bit_slicing_window_size.setEnabled(True)
+        self.label2_pd_bit_slicing_window_size.setEnabled(True)
         self.doubleSpinBox_pd_bit_slicing_window_size.setEnabled(True)
         self.horizontalSlider_pd_bit_slicing_preamble_stats.setEnabled(True)
-        self.label_pd_bit_slicing_window_size_candidates.setEnabled(True)
+        self.label2_pd_bit_slicing_window_size_candidates.setEnabled(True)
         self.doubleSpinBox_pd_bit_slicing_window_size_candidates.setEnabled(True)
         self.horizontalSlider_pd_bit_slicing_preamble_stats_candidates.setEnabled(True)        
         self.pushButton_pd_bit_slicing_slice_by_preamble.setEnabled(True)
-        self.label_pd_bit_slicing_first_n.setEnabled(True)
-        self.label_pd_bit_slicing_estimated_length.setEnabled(True)
+        self.label2_pd_bit_slicing_first_n.setEnabled(True)
+        self.label2_pd_bit_slicing_estimated_length.setEnabled(True)
         self.spinBox_pd_bit_slicing_return_limit.setEnabled(True)
         self.spinBox_pd_bit_slicing_estimated_length.setEnabled(True)
         self.tableWidget_pd_bit_slicing_lengths.setEnabled(True)
         self.tableWidget_pd_bit_slicing_packets.setEnabled(True)
-        self.label_pd_bit_slicing_recommended_preamble.setEnabled(True)
+        self.label2_pd_bit_slicing_recommended_preamble.setEnabled(True)
         self.textEdit_pd_bit_slicing_recommended_preamble.setEnabled(True)
         
         # Hide the Calculating Label
-        self.label_pd_bit_slicing_calculating.setVisible(False)
+        self.label2_pd_bit_slicing_calculating.setVisible(False)
         
     def pdBitSlicingSortPreambleStatsTable(self, packet_length):
         """ This function adds the values to the Preamble Stats and sorts the values by occurrence.
@@ -8877,19 +8887,19 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 field_data.replace(' ','')
         
         # Clear Results Table
-        self.tableWidget_library_search_results.setRowCount(0) 
+        self.tableWidget1_library_search_results.setRowCount(0) 
         
         # Send Message
         self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Search Library', Parameters = [soi_data, field_data])
         
         # Show the Label
-        self.label_library_search_searching.setVisible(True)
+        self.label2_library_search_searching.setVisible(True)
         
     def _slotPD_BitSlicingLibraryLookupReturned(self, message):
         """ Updates the listbox of library packet types and protocols that match a preamble.
         """
         # Remove Existing Items
-        self.tableWidget_library_search_results.setRowCount(0) 
+        self.tableWidget1_library_search_results.setRowCount(0) 
         
         # Convert Message to List
         message_list = ast.literal_eval(message)
@@ -8897,70 +8907,70 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Set the Values in the Results Table       
         for n in message_list:
             for m in n:
-                self.tableWidget_library_search_results.setRowCount(self.tableWidget_library_search_results.rowCount()+1)
+                self.tableWidget1_library_search_results.setRowCount(self.tableWidget1_library_search_results.rowCount()+1)
                 
                 # Protocol
                 protocol_item = QtWidgets.QTableWidgetItem(str(n[m]['Protocol']))
                 protocol_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 protocol_item.setFlags(protocol_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,0,protocol_item)     
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,0,protocol_item)     
                 
                 # Subtype
                 subtype_item = QtWidgets.QTableWidgetItem(str(m))
                 subtype_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 subtype_item.setFlags(subtype_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,1,subtype_item)  
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,1,subtype_item)  
                 
                 # Center Frequency
                 center_freq_item = QtWidgets.QTableWidgetItem(str(n[m]['Frequency']))
                 center_freq_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 center_freq_item.setFlags(center_freq_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,2,center_freq_item)  
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,2,center_freq_item)  
                 
                 # Start Frequency            
                 start_freq_item = QtWidgets.QTableWidgetItem(str(n[m]['Start Frequency']))
                 start_freq_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 start_freq_item.setFlags(start_freq_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,3,start_freq_item)  
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,3,start_freq_item)  
                 
                 # End Frequency
                 end_freq_item = QtWidgets.QTableWidgetItem(str(n[m]['End Frequency']))
                 end_freq_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 end_freq_item.setFlags(end_freq_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,4,end_freq_item)  
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,4,end_freq_item)  
                 
                 # Bandwidth
                 bandwidth_item = QtWidgets.QTableWidgetItem(str(n[m]['Bandwidth']))
                 bandwidth_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 bandwidth_item.setFlags(bandwidth_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,5,bandwidth_item) 
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,5,bandwidth_item) 
                 
                 # Modulation
                 modulation_item = QtWidgets.QTableWidgetItem(str(n[m]['Modulation']))
                 modulation_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 modulation_item.setFlags(modulation_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,6,modulation_item) 
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,6,modulation_item) 
                 
                 # Continuous
                 continuous_item = QtWidgets.QTableWidgetItem(str(n[m]['Continuous']))
                 continuous_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 continuous_item.setFlags(continuous_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,7,continuous_item) 
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,7,continuous_item) 
                 
                 # Notes
                 notes_item = QtWidgets.QTableWidgetItem(str(n[m]['Notes']))
                 notes_item.setTextAlignment(QtCore.Qt.AlignLeft) 
                 notes_item.setFlags(notes_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,8,notes_item) 
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,8,notes_item) 
                         
         # Resize the Table
-        self.tableWidget_library_search_results.resizeColumnsToContents() 
-        self.tableWidget_library_search_results.resizeRowsToContents()  
-        #self.tableWidget_library_search_results.horizontalHeader().setStretchLastSection(False) 
-        #self.tableWidget_library_search_results.horizontalHeader().setStretchLastSection(True) 
+        self.tableWidget1_library_search_results.resizeColumnsToContents() 
+        self.tableWidget1_library_search_results.resizeRowsToContents()  
+        #self.tableWidget1_library_search_results.horizontalHeader().setStretchLastSection(False) 
+        #self.tableWidget1_library_search_results.horizontalHeader().setStretchLastSection(True) 
                       
         # Hide the Label
-        self.label_library_search_searching.setVisible(False)
+        self.label2_library_search_searching.setVisible(False)
                         
     def _slotPD_BitSlicingSpinboxWindowChanged(self):
         """ This adjusts the preamble stats to display the results for the selected window size.
@@ -9049,11 +9059,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.frame_pd_bit_slicing_manual_slicing.setEnabled(True)
         self.frame_pd_bit_slicing_automated_slicing.setEnabled(True)
         self.frame_pd_bit_slicing_library.setEnabled(True)
-        self.label_pd_bit_slicing_interval.setEnabled(True)
+        self.label2_pd_bit_slicing_interval.setEnabled(True)
         self.spinBox_pd_bit_slicing_interval.setEnabled(True)
         self.pushButton_pd_bit_slicing_slice.setEnabled(True)
         self.pushButton_pd_bit_slicing_reset.setEnabled(True)
-        self.label_pd_bit_slicing_split_interval.setEnabled(True)
+        self.label2_pd_bit_slicing_split_interval.setEnabled(True)
         self.spinBox_pd_bit_slicining_split_interval.setEnabled(True)
         self.pushButton_pd_bit_slicing_split_fields.setEnabled(True)
         self.pushButton_pd_bit_slicing_merge_fields.setEnabled(True)
@@ -9172,7 +9182,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_pd_bit_slicing_packets.horizontalHeader().setStretchLastSection(True)
         
         # Enable the Controls
-        self.label_pd_bit_slicing_field_delineations.setEnabled(True)
+        self.label2_pd_bit_slicing_field_delineations.setEnabled(True)
         self.tableWidget_pd_bit_slicing_field_delineations.setEnabled(True)
         self.pushButton_pd_bit_slicing_add_to_library.setEnabled(True)
         self.pushButton_pd_bit_slicing_refresh.setEnabled(True)
@@ -9296,7 +9306,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tableWidget_library_pd_packet.setItem(col,4,crc_range_item)  
                 
             # Is CRC
-            new_combobox = QtWidgets.QComboBox(self)
+            new_combobox = QtWidgets.QComboBox(self,objectName='comboBox2_')
             new_combobox.addItem("True")
             new_combobox.addItem("False")
             new_combobox.setCurrentIndex(1)
@@ -9326,12 +9336,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_protocol = str(self.comboBox_library_pd_protocol.currentText())
         if get_protocol != "":
             if get_protocol == "-- New Protocol --":
-                self.label_library_add.setText("Add New Protocol to Library")
-                self.stackedWidget_library_pd.setCurrentIndex(0)
-                self.label_library_pd_data_type.setVisible(False)
+                self.label1_library_add.setText("Add New Protocol to Library")
+                self.stackedWidget2_library_pd.setCurrentIndex(0)
+                self.label2_library_pd_data_type.setVisible(False)
                 self.comboBox_library_pd_data_type.setVisible(False)
             else:
-                self.label_library_pd_data_type.setVisible(True)
+                self.label2_library_pd_data_type.setVisible(True)
                 self.comboBox_library_pd_data_type.setVisible(True)
                 self._slotLibraryAddDataTypeChanged()
             
@@ -9349,7 +9359,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_demodulation_type = "" 
         
         # Protocol Name
-        if self.stackedWidget_library_pd.currentIndex() == 0:
+        if self.stackedWidget2_library_pd.currentIndex() == 0:
             protocol_name = str(self.textEdit_library_pd_new_protocol.toPlainText())
             protocols = getProtocols(self.pd_library)
             
@@ -9361,7 +9371,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             protocol_name = str(self.comboBox_library_pd_protocol.currentText())
             
         # Modulation Type
-        if self.stackedWidget_library_pd.currentIndex() == 1:
+        if self.stackedWidget2_library_pd.currentIndex() == 1:
             get_modulation = str(self.textEdit_library_pd_modulation_type.toPlainText())  
             modulation_types = getModulations(self.pd_library, protocol_name)
             
@@ -9371,7 +9381,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 return
                 
         # Packet Type
-        elif self.stackedWidget_library_pd.currentIndex() == 2:
+        elif self.stackedWidget2_library_pd.currentIndex() == 2:
             # Valid Packet Name
             new_packet_name = str(self.textEdit_library_pd_packet_name.toPlainText())
             packet_types = getPacketTypes(self.pd_library, protocol_name)
@@ -9405,7 +9415,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         get_packet_data[row].append(str(self.tableWidget_library_pd_packet.item(row,4).text()))
 
         # Signal of Interest
-        elif self.stackedWidget_library_pd.currentIndex() == 3:
+        elif self.stackedWidget2_library_pd.currentIndex() == 3:
             # Must Have Subtype/Label
             if len(str(self.textEdit_library_pd_soi_subtype.toPlainText()).replace(" ","")) == 0:
                 self.errorMessage("Requires Subtype/Label")
@@ -9426,11 +9436,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         get_soi_data[n] = "-1"
         
         # Statistics
-        elif self.stackedWidget_library_pd.currentIndex() == 4:
+        elif self.stackedWidget2_library_pd.currentIndex() == 4:
             pass
             
         # Demodulation Flow Graph
-        elif self.stackedWidget_library_pd.currentIndex() == 5:          
+        elif self.stackedWidget2_library_pd.currentIndex() == 5:          
             get_demodulation_fg = str(self.textEdit_library_pd_demodulation_fg.toPlainText())    
             get_demodulation_type = str(self.comboBox_library_pd_modulation_types.currentText())       
             get_demodulation_hardware = str(self.comboBox_library_pd_hardware.currentText())
@@ -9471,7 +9481,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 return
                 
         # Attack
-        elif self.stackedWidget_library_pd.currentIndex() == 6:    
+        elif self.stackedWidget2_library_pd.currentIndex() == 6:    
             # Get Tree Parent, Attack Name, Hardware
             get_tree_parent = str(self.comboBox_library_attacks_subcategory.currentText())
             get_attack_name = str(self.textEdit_library_attacks_name.toPlainText())
@@ -10048,7 +10058,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 # Change the Header Font Color to Black
                 header_item = QtWidgets.QTableWidgetItem(self.colnum_string(col+1))
                 header_item.setTextAlignment(QtCore.Qt.AlignCenter)
-                header_item.setForeground(QtGui.QColor(0,0,0))
+                header_item.setForeground(QtGui.QColor(self.dashboard_settings_dictionary['color4']))
                 self.tableWidget_pd_bit_slicing_packets.setHorizontalHeaderItem(col,header_item)      
                             
         # Resize the Table
@@ -10109,15 +10119,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Send the Message
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Stop TSI Detector')
             self.status_dialog.tableWidget_status_results.item(1,0).setText("Not Running")
-            self.label_tsi_detector.setText("Detector - Not Running")
-            self.label_tsi_detector.raise_()
+            self.label2_tsi_detector.setText("Detector - Not Running")
+            self.label2_tsi_detector.raise_()
         
             # Change the Button Text
             self.pushButton_tsi_detector_start.setText("Start")
                         
             # Update the Labels
-            self.label_tsi_current_band.setText("")
-            self.label_tsi_current_frequency.setText("")
+            self.label2_tsi_current_band.setText("")
+            self.label2_tsi_current_frequency.setText("")
             
             # Disable Update TSI Configuration Pushbutton
             self.pushButton_tsi_update.setEnabled(False)
@@ -10127,7 +10137,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector.setEnabled(True)
             
             # Hide Update Configuration Label
-            self.label_tsi_update_configuration.setVisible(False)
+            self.label2_tsi_update_configuration.setVisible(False)
             
             # Refresh Axes
             #self._slotTSI_RefreshPlotClicked()
@@ -10225,8 +10235,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Send the Message
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Start TSI Detector', Parameters = [get_detector, variable_names, variable_values])
             self.status_dialog.tableWidget_status_results.item(1,0).setText("Running TSI") 
-            self.label_tsi_detector.setText("Detector - Running")
-            self.label_tsi_detector.raise_()
+            self.label2_tsi_detector.setText("Detector - Running")
+            self.label2_tsi_detector.raise_()
             
             # Change the Button Text
             self.pushButton_tsi_detector_start.setText("Stop")
@@ -10238,9 +10248,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
             # Show Update Configuration Label
             if (str(self.comboBox_tsi_detector.currentText()) == "Simulator") or (str(self.comboBox_tsi_detector.currentText()) == "IQ File"):
-                self.label_tsi_update_configuration.setVisible(False)
+                self.label2_tsi_update_configuration.setVisible(False)
             else:
-                self.label_tsi_update_configuration.setVisible(True)
+                self.label2_tsi_update_configuration.setVisible(True)
             
             # Disable the Advanced Options
             self.frame_tsi_detector_settings1.setEnabled(False)
@@ -10251,12 +10261,14 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Clears the points on the detector plot.
         """
         # Clear the Narrowband Array
-        self.wideband_data =  np.ones((self.wideband_height,self.wideband_width,3))
+        rgb = tuple(int(self.dashboard_settings_dictionary['color2'].lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
+        background_color = (float(rgb[0])/255, float(rgb[1])/255, float(rgb[2])/255)
+        self.wideband_data = np.ones((self.wideband_height,self.wideband_width,3))*(background_color)
 
         # Plot and Draw Incoming Wideband Signals
         self.matplotlib_widget.axes.cla()
         self.matplotlib_widget.axes.imshow(self.wideband_data, cmap='rainbow', clim=(-100,30))                            
-        self.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=self.wideband_height)
+        self.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=self.wideband_height,background_color=self.dashboard_settings_dictionary['color1'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
         self.matplotlib_widget.draw()  
             
     def _slotPD_BitSlicingPlotEntropyClicked(self):
@@ -10367,8 +10379,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             center_freq = round(float(center_freq)/1e6,2)  # In MHz, two decimal places
             
             # Update the Labels
-            self.label_tsi_current_band.setText(str(band_id))
-            self.label_tsi_current_frequency.setText(str(center_freq) + " MHz")
+            self.label2_tsi_current_band.setText(str(band_id))
+            self.label2_tsi_current_frequency.setText(str(center_freq) + " MHz")
             
             # Change the Band Text in the Plot
             for col in range(0,len(self.tuning_matplotlib_widget.bands)):           
@@ -10458,7 +10470,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_automation_manual.setStyleSheet("border: 1px solid darkGray; border-radius: 6px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #ffb477, stop: 1 #db8d4e); min-width: 80px;")
         
         # Automation Settings
-        self.label_automation_automation_mode_description.setText("User confirms all phases and can edit parameters.")
+        self.label2_automation_automation_mode_description.setText("User confirms all phases and can edit parameters.")
                     
         self.checkBox_automation_auto_start_tsi.setChecked(False)
         self.checkBox_automation_auto_start_tsi.setEnabled(False)
@@ -10476,7 +10488,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self._slotAutomationAutoStartPD_Clicked()
                     
         # Targeting Settings
-        self.label_automation_target_protcol.setEnabled(True)
+        self.label2_automation_target_protcol.setEnabled(True)
         self.comboBox_automation_target_protocol.setEnabled(True)
         
         # System Status
@@ -10498,7 +10510,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_automation_discovery.setStyleSheet("border: 1px solid darkGray; border-radius: 6px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #ffb477, stop: 1 #db8d4e); min-width: 80px;")
             
         # Automation Settings
-        self.label_automation_automation_mode_description.setText("Mostly automated. System chooses which signals to target and process.")
+        self.label2_automation_automation_mode_description.setText("Mostly automated. System chooses which signals to target and process.")
 
         self.checkBox_automation_auto_start_tsi.setChecked(True)
         self.checkBox_automation_auto_start_tsi.setEnabled(False)
@@ -10510,8 +10522,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_automation_soi_list_priority.setEnabled(True)
         self.tableWidget_automation_soi_list_priority.setVisible(True)
         
-        self.label_soi_list_priority.setEnabled(True)
-        self.label_soi_list_priority.setVisible(True)
+        self.label2_soi_list_priority.setEnabled(True)
+        self.label2_soi_list_priority.setVisible(True)
                 
         self.checkBox_automation_auto_start_pd.setChecked(True)
         self.checkBox_automation_auto_start_pd.setEnabled(False)
@@ -10522,7 +10534,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self._slotAutomationAutoSelectPD_FlowGraphsClicked()
                     
         # Targeting Settings    
-        self.label_automation_target_protcol.setEnabled(False)
+        self.label2_automation_target_protcol.setEnabled(False)
         self.comboBox_automation_target_protocol.setEnabled(False)
         self.comboBox_automation_target_protocol.setCurrentIndex(0)
         self.tableWidget_automation_soi_list_priority.setColumnHidden(2,True)
@@ -10560,7 +10572,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_automation_target.setStyleSheet("border: 1px solid darkGray; border-radius: 6px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #ffb477, stop: 1 #db8d4e); min-width: 80px;")
         
         # Automation Settings
-        self.label_automation_automation_mode_description.setText("User-defined specifications. Only pursue targets fitting certain criteria.")
+        self.label2_automation_automation_mode_description.setText("User-defined specifications. Only pursue targets fitting certain criteria.")
 
         self.checkBox_automation_auto_start_tsi.setChecked(True)
         self.checkBox_automation_auto_start_tsi.setEnabled(False)
@@ -10572,8 +10584,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_automation_soi_list_priority.setEnabled(True)
         self.tableWidget_automation_soi_list_priority.setVisible(True)
         
-        self.label_soi_list_priority.setEnabled(True)
-        self.label_soi_list_priority.setVisible(True)
+        self.label2_soi_list_priority.setEnabled(True)
+        self.label2_soi_list_priority.setVisible(True)
         
         self.checkBox_automation_auto_select_pd_flow_graphs.setChecked(True)
         self.checkBox_automation_auto_select_pd_flow_graphs.setEnabled(False)
@@ -10584,7 +10596,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self._slotAutomationAutoStartPD_Clicked()
                                 
         # Targeting Settings
-        self.label_automation_target_protcol.setEnabled(True)
+        self.label2_automation_target_protcol.setEnabled(True)
         self.comboBox_automation_target_protocol.setEnabled(True)
         self.tableWidget_automation_soi_list_priority.setColumnHidden(2,False)
         self.tableWidget_automation_soi_list_priority.setRowHidden(1,False)
@@ -10617,7 +10629,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_automation_custom.setStyleSheet("border: 1px solid darkGray; border-radius: 6px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #ffb477, stop: 1 #db8d4e); min-width: 80px;")    
         
         # Automation Settings
-        self.label_automation_automation_mode_description.setText("User creates any combination of settings.")
+        self.label2_automation_automation_mode_description.setText("User creates any combination of settings.")
                                     
         self.checkBox_automation_auto_start_tsi.setEnabled(True)
         
@@ -10631,7 +10643,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self._slotAutomationAutoStartPD_Clicked()                
                     
         # Targeting Settings
-        self.label_automation_target_protcol.setEnabled(True)
+        self.label2_automation_target_protcol.setEnabled(True)
         self.comboBox_automation_target_protocol.setEnabled(True)
         self.tableWidget_automation_soi_list_priority.setColumnHidden(2,False)
         self.tableWidget_automation_soi_list_priority.setRowHidden(1,False)
@@ -12795,11 +12807,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_frequency.setMinimum(50)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-            comboBox_channel = QtWidgets.QComboBox(self)
+            comboBox_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_channel.addItem("A:0")
             comboBox_channel.addItem("B:0") 
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-            comboBox_antenna = QtWidgets.QComboBox(self)
+            comboBox_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_antenna.addItem("TX/RX")
             comboBox_antenna.addItem("RX1")
             comboBox_antenna.addItem("RX2") 
@@ -12838,11 +12850,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             playback_spinbox_frequency.setMinimum(50)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-            comboBox_playback_channel = QtWidgets.QComboBox(self)            
+            comboBox_playback_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')            
             comboBox_playback_channel.addItem("A:0")
             comboBox_playback_channel.addItem("B:0") 
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-            comboBox_playback_antenna = QtWidgets.QComboBox(self)
+            comboBox_playback_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_playback_antenna.addItem("TX/RX")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
             playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
@@ -12867,11 +12879,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_frequency.setMinimum(70)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-            comboBox_channel = QtWidgets.QComboBox(self)
+            comboBox_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_channel.addItem("A:A")
             comboBox_channel.addItem("A:B") 
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-            comboBox_antenna = QtWidgets.QComboBox(self)
+            comboBox_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_antenna.addItem("TX/RX")
             comboBox_antenna.addItem("RX2") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
@@ -12893,11 +12905,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             playback_spinbox_frequency.setMinimum(70)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-            comboBox_playback_channel = QtWidgets.QComboBox(self)            
+            comboBox_playback_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')            
             comboBox_playback_channel.addItem("A:A")
             comboBox_playback_channel.addItem("A:B") 
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-            comboBox_playback_antenna = QtWidgets.QComboBox(self)
+            comboBox_playback_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_playback_antenna.addItem("TX/RX")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
             playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
@@ -12922,10 +12934,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_frequency.setMinimum(1)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-            comboBox_channel = QtWidgets.QComboBox(self)
+            comboBox_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_channel.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-            comboBox_antenna = QtWidgets.QComboBox(self)
+            comboBox_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_antenna.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
             spinbox_gain = QtWidgets.QDoubleSpinBox(self)
@@ -12946,10 +12958,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             playback_spinbox_frequency.setMinimum(1)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-            comboBox_playback_channel = QtWidgets.QComboBox(self)            
+            comboBox_playback_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')            
             comboBox_playback_channel.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-            comboBox_playback_antenna = QtWidgets.QComboBox(self)
+            comboBox_playback_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_playback_antenna.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
             playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
@@ -12974,10 +12986,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_frequency.setMinimum(64)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-            comboBox_channel = QtWidgets.QComboBox(self)
+            comboBox_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_channel.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-            comboBox_antenna = QtWidgets.QComboBox(self)
+            comboBox_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_antenna.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
             spinbox_gain = QtWidgets.QDoubleSpinBox(self)
@@ -12986,7 +12998,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_gain.setValue(40)
             spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-            comboBox_sample_rate = QtWidgets.QComboBox(self)
+            comboBox_sample_rate = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_sample_rate.addItem("0.25")
             comboBox_sample_rate.addItem("1.024")
             comboBox_sample_rate.addItem("1.536")
@@ -13027,11 +13039,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_frequency.setMinimum(70)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-            comboBox_channel = QtWidgets.QComboBox(self)
+            comboBox_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_channel.addItem("A:A")
             comboBox_channel.addItem("A:B") 
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-            comboBox_antenna = QtWidgets.QComboBox(self)
+            comboBox_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_antenna.addItem("TX/RX")
             comboBox_antenna.addItem("RX2") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
@@ -13053,11 +13065,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             playback_spinbox_frequency.setMinimum(70)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-            comboBox_playback_channel = QtWidgets.QComboBox(self)            
+            comboBox_playback_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')            
             comboBox_playback_channel.addItem("A:A")
             comboBox_playback_channel.addItem("A:B") 
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-            comboBox_playback_antenna = QtWidgets.QComboBox(self)
+            comboBox_playback_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_playback_antenna.addItem("TX/RX")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
             playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
@@ -13082,11 +13094,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_frequency.setMinimum(50)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-            comboBox_channel = QtWidgets.QComboBox(self)
+            comboBox_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_channel.addItem("A")
             comboBox_channel.addItem("B") 
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-            comboBox_antenna = QtWidgets.QComboBox(self)
+            comboBox_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_antenna.addItem("RX1")
             comboBox_antenna.addItem("RX2") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
@@ -13108,11 +13120,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             playback_spinbox_frequency.setMinimum(50)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-            comboBox_playback_channel = QtWidgets.QComboBox(self)            
+            comboBox_playback_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')            
             comboBox_playback_channel.addItem("A")
             comboBox_playback_channel.addItem("B") 
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-            comboBox_playback_antenna = QtWidgets.QComboBox(self)
+            comboBox_playback_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_playback_antenna.addItem("TX1")
             comboBox_playback_antenna.addItem("TX2")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
@@ -13138,11 +13150,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_frequency.setMinimum(50)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-            comboBox_channel = QtWidgets.QComboBox(self)
+            comboBox_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_channel.addItem("")
             comboBox_channel.addItem("") 
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-            comboBox_antenna = QtWidgets.QComboBox(self)
+            comboBox_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_antenna.addItem("")
             comboBox_antenna.addItem("") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
@@ -13164,11 +13176,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             playback_spinbox_frequency.setMinimum(50)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-            comboBox_playback_channel = QtWidgets.QComboBox(self)            
+            comboBox_playback_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')            
             comboBox_playback_channel.addItem("")
             comboBox_playback_channel.addItem("") 
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-            comboBox_playback_antenna = QtWidgets.QComboBox(self)
+            comboBox_playback_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_playback_antenna.addItem("")
             comboBox_playback_antenna.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
@@ -13199,10 +13211,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_frequency.setMinimum(325)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-            comboBox_channel = QtWidgets.QComboBox(self)
+            comboBox_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_channel.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-            comboBox_antenna = QtWidgets.QComboBox(self)
+            comboBox_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_antenna.addItem("")
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
             spinbox_gain = QtWidgets.QDoubleSpinBox(self)
@@ -13223,10 +13235,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             playback_spinbox_frequency.setMinimum(325)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-            comboBox_playback_channel = QtWidgets.QComboBox(self)            
+            comboBox_playback_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')            
             comboBox_playback_channel.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-            comboBox_playback_antenna = QtWidgets.QComboBox(self)
+            comboBox_playback_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_playback_antenna.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
             playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
@@ -13251,7 +13263,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_frequency.setMinimum(50)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-            comboBox_channel = QtWidgets.QComboBox(self)
+            comboBox_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_channel.addItem("A:0")
             comboBox_channel.addItem("B:0") 
             comboBox_channel.addItem("A:AB") 
@@ -13263,7 +13275,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_channel.addItem("B:A") 
             comboBox_channel.addItem("B:B") 
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-            comboBox_antenna = QtWidgets.QComboBox(self)
+            comboBox_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_antenna.addItem("J1")
             comboBox_antenna.addItem("J2") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
@@ -13285,7 +13297,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             playback_spinbox_frequency.setMinimum(50)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-            comboBox_playback_channel = QtWidgets.QComboBox(self)            
+            comboBox_playback_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')            
             comboBox_playback_channel.addItem("A:0")
             comboBox_playback_channel.addItem("B:0") 
             comboBox_playback_channel.addItem("A:AB") 
@@ -13297,7 +13309,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_playback_channel.addItem("B:A") 
             comboBox_playback_channel.addItem("B:B")  
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-            comboBox_playback_antenna = QtWidgets.QComboBox(self)
+            comboBox_playback_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_playback_antenna.addItem("J1")
             comboBox_playback_antenna.addItem("J2")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
@@ -13323,7 +13335,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_frequency.setMinimum(50)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-            comboBox_channel = QtWidgets.QComboBox(self)
+            comboBox_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_channel.addItem("A:0")
             comboBox_channel.addItem("B:0") 
             comboBox_channel.addItem("A:AB") 
@@ -13335,7 +13347,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_channel.addItem("B:A") 
             comboBox_channel.addItem("B:B") 
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-            comboBox_antenna = QtWidgets.QComboBox(self)
+            comboBox_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_antenna.addItem("J1")
             comboBox_antenna.addItem("J2") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
@@ -13357,7 +13369,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             playback_spinbox_frequency.setMinimum(50)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-            comboBox_playback_channel = QtWidgets.QComboBox(self)            
+            comboBox_playback_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')            
             comboBox_playback_channel.addItem("A:0")
             comboBox_playback_channel.addItem("B:0") 
             comboBox_playback_channel.addItem("A:AB") 
@@ -13369,7 +13381,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             comboBox_playback_channel.addItem("B:A") 
             comboBox_playback_channel.addItem("B:B")             
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-            comboBox_playback_antenna = QtWidgets.QComboBox(self)
+            comboBox_playback_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_playback_antenna.addItem("J1")
             comboBox_playback_antenna.addItem("J2")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
@@ -13396,11 +13408,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             spinbox_frequency.setMinimum(50)
             spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-            comboBox_channel = QtWidgets.QComboBox(self)
+            comboBox_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_channel.addItem("")
             comboBox_channel.addItem("") 
             self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-            comboBox_antenna = QtWidgets.QComboBox(self)
+            comboBox_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_antenna.addItem("")
             comboBox_antenna.addItem("") 
             self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)      
@@ -13422,11 +13434,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             playback_spinbox_frequency.setMinimum(50)
             playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-            comboBox_playback_channel = QtWidgets.QComboBox(self)            
+            comboBox_playback_channel = QtWidgets.QComboBox(self,objectName='comboBox2_')            
             comboBox_playback_channel.addItem("")
             comboBox_playback_channel.addItem("") 
             self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-            comboBox_playback_antenna = QtWidgets.QComboBox(self)
+            comboBox_playback_antenna = QtWidgets.QComboBox(self,objectName='comboBox2_')
             comboBox_playback_antenna.addItem("")
             comboBox_playback_antenna.addItem("")
             self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
@@ -13444,9 +13456,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Enable Playback and Recording
         self.pushButton_iq_playback.setEnabled(True)
-        self.label_iq_playback_status.setEnabled(True)
+        self.label2_iq_playback_status.setEnabled(True)
         self.pushButton_iq_record.setEnabled(True)
-        self.label_iq_status_files.setEnabled(True)
+        self.label2_iq_status_files.setEnabled(True)
         self.pushButton_iq_playback_record_freq.setEnabled(True)
         self.pushButton_iq_playback_record_gain.setEnabled(True)
         self.pushButton_iq_playback_record_rate.setEnabled(True)
@@ -13585,7 +13597,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuHelpClicked(self):
         """ Opens a new window with help information following a menu click.
         """
-        help_dlg = HelpMenuDialog()
+        help_dlg = HelpMenuDialog(self)
         help_dlg.show()
         help_dlg.exec_() 
         
@@ -13669,7 +13681,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Get the Number of Samples
             start_sample = 1
-            num_samples = int(self.label_iq_samples.text().split(" ")[1])
+            num_samples = int(self.label2_iq_samples.text().split(" ")[1])
         
             # Get the Size of Each Sample in Bytes   
             complex_multiple = 1   
@@ -13704,7 +13716,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             
             # Read the Data 
             plot_data = b''
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
+            filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
             file = open(filepath,"rb")                          # Open the file
             try:
                 if "Complex" in get_type:
@@ -13769,7 +13781,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
             if "Complex" in get_type:
                 # Ignore hold() Deprecation Warnings
                 with warnings.catch_warnings():
@@ -13786,13 +13798,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
             # Axes Label
             if skip == 1:
-                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             elif skip == 10:
-                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/10','Amplitude (LSB)',None,None) 
+                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/10','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             elif skip == 100:
-                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/100','Amplitude (LSB)',None,None)                         
+                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/100','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])                         
             else:
-                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/1000','Amplitude (LSB)',None,None)                 
+                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/1000','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])                 
                 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked()  
@@ -13817,7 +13829,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -13826,7 +13838,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(AM,'b',linewidth=1) 
                   
-            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None)
+            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()            
@@ -13844,7 +13856,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -13853,7 +13865,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(AM,'b',linewidth=1) 
                   
-            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None)
+            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()
@@ -13875,7 +13887,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -13884,7 +13896,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(np.angle(y_data),'b',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()            
@@ -13916,7 +13928,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -13925,7 +13937,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(instantaneous_frequency,'b',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("Instantaneous Frequency",'Samples','Frequency (Hz)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("Instantaneous Frequency",'Samples','Frequency (Hz)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()
@@ -14209,12 +14221,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Save Plot Data into a Variable
         if len(self.iq_matplotlib_widget.axes.lines) > 0:
             self.overlap_data1 = self.iq_matplotlib_widget.axes.lines[0].get_ydata()     
-            self.label_iq_overlap_store1.setText("Stored")
+            self.label2_iq_overlap_store1.setText("Stored")
             get_samples = str(len(self.iq_matplotlib_widget.axes.lines[0].get_ydata()))
-            self.label_iq_overlap_samples1.setText(get_samples)
+            self.label2_iq_overlap_samples1.setText(get_samples)
             
         # Enable Plot if Two Sources are Stored    
-        if str(self.label_iq_overlap_samples1.text()) == "Stored" and str(self.label_iq_overlap_samples2.text()) == "Stored":
+        if str(self.label2_iq_overlap_samples1.text()) == "Stored" and str(self.label2_iq_overlap_samples2.text()) == "Stored":
             self.pushButton_iq_overlap_plot.setEnabled(True)
         
     def _slotIQ_OverlapStore2Clicked(self):
@@ -14223,12 +14235,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Save Plot Data into a Variable
         if len(self.iq_matplotlib_widget.axes.lines) > 0:
             self.overlap_data2 = self.iq_matplotlib_widget.axes.lines[0].get_ydata()     
-            self.label_iq_overlap_store2.setText("Stored")
+            self.label2_iq_overlap_store2.setText("Stored")
             get_samples = str(len(self.iq_matplotlib_widget.axes.lines[0].get_ydata()))
-            self.label_iq_overlap_samples2.setText(get_samples)
+            self.label2_iq_overlap_samples2.setText(get_samples)
             
         # Enable Plot if Two Sources are Stored    
-        if str(self.label_iq_overlap_store1.text()) == "Stored" and str(self.label_iq_overlap_store2.text()) == "Stored":
+        if str(self.label2_iq_overlap_store1.text()) == "Stored" and str(self.label2_iq_overlap_store2.text()) == "Stored":
             self.pushButton_iq_overlap_plot.setEnabled(True)
         
     def _slotIQ_OverlapPlotClicked(self):
@@ -14268,7 +14280,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             #self.iq_matplotlib_widget.axes.hold(True)  # FIX: To clear an axes you can manually use cla(), or to clear an entire figure use clf()
             self.iq_matplotlib_widget.axes.plot(overlap_data2_plot,'r',linewidth=1,zorder=2)
             #self.iq_matplotlib_widget.axes.hold(False)  # FIX: To clear an axes you can manually use cla(), or to clear an entire figure use clf()
-            self.iq_matplotlib_widget.applyLabels("Data Overlap",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("Data Overlap",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
 
             # Reset the Cursor and Draw
             self.pushButton_iq_cursor1.setChecked(False)
@@ -14288,7 +14300,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Get the Number of Samples
             start_sample = 1
-            num_samples = int(self.label_iq_samples.text().split(" ")[1])
+            num_samples = int(self.label2_iq_samples.text().split(" ")[1])
         
             # Get the Size of Each Sample in Bytes   
             if get_type == "Complex Float 32":   
@@ -14304,7 +14316,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             num_samples = 2 * num_samples               
             
             # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
+            filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
             file = open(filepath,"rb")                          # Open the file
             #if get_type == "Complex Float 32":
             file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
@@ -14396,7 +14408,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Get the Number of Samples
             start_sample = 1
-            num_samples = int(self.label_iq_samples.text().split(" ")[1])
+            num_samples = int(self.label2_iq_samples.text().split(" ")[1])
         
             # Get the Size of Each Sample in Bytes      
             if get_type == "Complex Float 32":   
@@ -14412,7 +14424,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             num_samples = 2 * num_samples               
             
             # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
+            filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
             file = open(filepath,"rb")                          # Open the file
             #if get_type == "Complex Float 32":
             file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
@@ -14501,9 +14513,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.axes.plot(mag_data,'b',linewidth=1,zorder=2) 
-            self.iq_matplotlib_widget.applyLabels("OFDM Subcarriers",'Subcarriers','Amplitude (LSB)',None,None)
+            self.iq_matplotlib_widget.applyLabels("OFDM Subcarriers",'Subcarriers','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked()  # Does the draw()
@@ -14565,7 +14577,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Get the Number of Samples
             start_sample = 1
-            num_samples = int(self.label_iq_samples.text().split(" ")[1])
+            num_samples = int(self.label2_iq_samples.text().split(" ")[1])
         
             # Get the Size of Each Sample in Bytes   
             if get_type == "Complex Float 32":   
@@ -14581,7 +14593,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             num_samples = 2 * num_samples               
             
             # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
+            filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
             file = open(filepath,"rb")                          # Open the file
             #if get_type == "Complex Float 32":
             file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
@@ -14670,9 +14682,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)            
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])            
             self.iq_matplotlib_widget.axes.plot(phase_data,'b',linewidth=1,zorder=2) 
-            self.iq_matplotlib_widget.applyLabels("OFDM Subcarriers",'Subcarriers','Amplitude (LSB)',None,None)
+            self.iq_matplotlib_widget.applyLabels("OFDM Subcarriers",'Subcarriers','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
 
             # Reset the Cursor and Draw
             self.pushButton_iq_cursor1.setChecked(False)
@@ -14697,7 +14709,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Get the Number of Samples
             start_sample = 1
-            num_samples = int(self.label_iq_samples.text().split(" ")[1])
+            num_samples = int(self.label2_iq_samples.text().split(" ")[1])
         
             # Get the Size of Each Sample in Bytes      
             if get_type == "Complex Float 32":
@@ -14713,7 +14725,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             num_samples = 2 * num_samples               
             
             # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
+            filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
             file = open(filepath,"rb")                          # Open the file
             #if get_type == "Complex Float 32":
             file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
@@ -14802,9 +14814,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=True)
+            self.iq_matplotlib_widget.configureAxes(polar=True,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.axes.plot(phase_data,mag_data,'bo',markersize=4)
-            self.iq_matplotlib_widget.applyLabels("OFDM Subcarriers",'Subcarriers','Amplitude (LSB)',None,None)
+            self.iq_matplotlib_widget.applyLabels("OFDM Subcarriers",'Subcarriers','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
 
             # Reset the Cursor and Draw
             self.pushButton_iq_cursor1.setChecked(False)
@@ -14844,7 +14856,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Get the Number of Samples
             start_sample = 1
-            num_samples = int(self.label_iq_samples.text().split(" ")[1])
+            num_samples = int(self.label2_iq_samples.text().split(" ")[1])
         
             # Get the Size of Each Sample in Bytes      
             if get_type == "Complex Float 32":
@@ -14860,7 +14872,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             num_samples = 2 * num_samples               
             
             # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
+            filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
             file = open(filepath,"rb")                          # Open the file
             #if get_type == "Complex Float 32":
             file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
@@ -14956,7 +14968,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.axes.plot(mag_data,'b',linewidth=1,zorder=2) 
             self.iq_matplotlib_widget.applyLabels("OFDM Subcarriers",'Subcarriers','Amplitude (LSB)',None,None)
 
@@ -14983,7 +14995,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Get the Number of Samples
             start_sample = 1
-            num_samples = int(self.label_iq_samples.text().split(" ")[1])
+            num_samples = int(self.label2_iq_samples.text().split(" ")[1])
         
             # Get the Size of Each Sample in Bytes      
             if get_type == "Complex Float 32":
@@ -14999,7 +15011,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             num_samples = 2 * num_samples               
             
             # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
+            filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
             file = open(filepath,"rb")                          # Open the file
             #if get_type == "Complex Float 32":
             file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
@@ -15095,9 +15107,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.axes.plot(phase_data,'b',linewidth=1,zorder=2) 
-            self.iq_matplotlib_widget.applyLabels("OFDM Subcarriers",'Subcarriers','Amplitude (LSB)',None,None)
+            self.iq_matplotlib_widget.applyLabels("OFDM Subcarriers",'Subcarriers','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
 
             # Reset the Cursor and Draw
             self.pushButton_iq_cursor1.setChecked(False)
@@ -15122,7 +15134,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Get the Number of Samples
             start_sample = 1
-            num_samples = int(self.label_iq_samples.text().split(" ")[1])
+            num_samples = int(self.label2_iq_samples.text().split(" ")[1])
         
             # Get the Size of Each Sample in Bytes      
             if get_type == "Complex Float 32":
@@ -15138,7 +15150,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             num_samples = 2 * num_samples               
             
             # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
+            filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
             file = open(filepath,"rb")                          # Open the file
             #if get_type == "Complex Float 32":
             file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
@@ -15234,9 +15246,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=True)
+            self.iq_matplotlib_widget.configureAxes(polar=True,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.axes.plot(phase_data,mag_data,'bo',markersize=4)
-            self.iq_matplotlib_widget.applyLabels("OFDM Subcarriers",'Subcarriers','Amplitude (LSB)',None,None)
+            self.iq_matplotlib_widget.applyLabels("OFDM Subcarriers",'Subcarriers','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
 
             # Reset the Cursor and Draw
             self.pushButton_iq_cursor1.setChecked(False)
@@ -15319,7 +15331,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -15329,7 +15341,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 NFFT = 1024      
                 self.iq_matplotlib_widget.axes.specgram(y_data, NFFT=NFFT, Fs=1, noverlap=900,zorder=2)
             
-            self.iq_matplotlib_widget.applyLabels("Spectrogram",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("Spectrogram",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()           
@@ -15342,7 +15354,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -15352,7 +15364,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 NFFT = 1024      
                 self.iq_matplotlib_widget.axes.specgram(complex_data, NFFT=NFFT, Fs=1, noverlap=900,zorder=2)
             
-            self.iq_matplotlib_widget.applyLabels("Spectrogram",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("Spectrogram",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()  
@@ -15380,7 +15392,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -15389,7 +15401,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(freq,fft_data,'b',linewidth=1,zorder=2)
             
-            self.iq_matplotlib_widget.applyLabels("4096-point FFT",'Frequency (Hz)','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("4096-point FFT",'Frequency (Hz)','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()           
@@ -15413,7 +15425,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -15422,7 +15434,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(freq,fft_data,'b',linewidth=1,zorder=2)
             
-            self.iq_matplotlib_widget.applyLabels("FFT",'Frequency (Hz)','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("FFT",'Frequency (Hz)','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw() 
@@ -15494,17 +15506,17 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Convert Rows to Binary
         get_bin = []
-        for n in range(0,self.tableWidget_attack_packet_editor.rowCount()):
+        for n in range(0,self.tableWidget1_attack_packet_editor.rowCount()):
             # Binary or Hex
             bin_str = ""
-            current_selection = self.tableWidget_attack_packet_editor.cellWidget(n,0).currentText()
+            current_selection = self.tableWidget1_attack_packet_editor.cellWidget(n,0).currentText()
         
             # Contains Item
-            if self.tableWidget_attack_packet_editor.item(n,1) != None:
+            if self.tableWidget1_attack_packet_editor.item(n,1) != None:
                 # Not Empty
-                if str(self.tableWidget_attack_packet_editor.item(n,1).text()) != "":
+                if str(self.tableWidget1_attack_packet_editor.item(n,1).text()) != "":
                     # Get the Data      
-                    get_data = str(self.tableWidget_attack_packet_editor.item(n,1).text())
+                    get_data = str(self.tableWidget1_attack_packet_editor.item(n,1).text())
                 
                     if current_selection == "Binary":
                         bin_str = get_data.replace(' ', '')
@@ -15577,11 +15589,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_flags = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[3]) + 3) // 4, int(get_bin[3], 2))))
             get_duration = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[4]) + 3) // 4, int(get_bin[4], 2))))
             get_fragment_sequence = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[5]) + 3) // 4, int(get_bin[5], 2))))
-            get_udp_source_ip = str(self.tableWidget_attack_packet_editor.item(6,1).text())
-            get_udp_dest_ip = str(self.tableWidget_attack_packet_editor.item(7,1).text())
-            get_udp_source_port = str(self.tableWidget_attack_packet_editor.item(8,1).text())
-            get_udp_dest_port = str(self.tableWidget_attack_packet_editor.item(9,1).text())
-            get_udp_data = str(self.tableWidget_attack_packet_editor.item(10,1).text())
+            get_udp_source_ip = str(self.tableWidget1_attack_packet_editor.item(6,1).text())
+            get_udp_dest_ip = str(self.tableWidget1_attack_packet_editor.item(7,1).text())
+            get_udp_source_port = str(self.tableWidget1_attack_packet_editor.item(8,1).text())
+            get_udp_dest_port = str(self.tableWidget1_attack_packet_editor.item(9,1).text())
+            get_udp_data = str(self.tableWidget1_attack_packet_editor.item(10,1).text())
             
             # Convert Hex to Hexstring Format ('00FF' --> '\x00\xFF')
             get_udp_data = bytes(get_udp_data, encoding='utf-8')
@@ -15605,11 +15617,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_flags = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[4]) + 3) // 4, int(get_bin[4], 2))))
             get_duration = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[5]) + 3) // 4, int(get_bin[5], 2))))
             get_fragment_sequence = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[6]) + 3) // 4, int(get_bin[6], 2))))
-            get_udp_source_ip = str(self.tableWidget_attack_packet_editor.item(7,1).text())
-            get_udp_dest_ip = str(self.tableWidget_attack_packet_editor.item(8,1).text())
-            get_udp_source_port = str(self.tableWidget_attack_packet_editor.item(9,1).text())
-            get_udp_dest_port = str(self.tableWidget_attack_packet_editor.item(10,1).text())
-            get_udp_data = str(self.tableWidget_attack_packet_editor.item(11,1).text())
+            get_udp_source_ip = str(self.tableWidget1_attack_packet_editor.item(7,1).text())
+            get_udp_dest_ip = str(self.tableWidget1_attack_packet_editor.item(8,1).text())
+            get_udp_source_port = str(self.tableWidget1_attack_packet_editor.item(9,1).text())
+            get_udp_dest_port = str(self.tableWidget1_attack_packet_editor.item(10,1).text())
+            get_udp_data = str(self.tableWidget1_attack_packet_editor.item(11,1).text())
             
             # Convert Hex to Hexstring Format ('00FF' --> '\x00\xFF')
             get_udp_data = bytes(get_udp_data, encoding='utf-8')
@@ -15635,15 +15647,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_duration = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[5]) + 3) // 4, int(get_bin[5], 2))))
             get_fragment_sequence = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[6]) + 3) // 4, int(get_bin[6], 2))))
             
-            get_hwtype = str(self.tableWidget_attack_packet_editor.item(7,1).text())
-            get_ptype = str(self.tableWidget_attack_packet_editor.item(8,1).text())
-            get_hwlen = str(self.tableWidget_attack_packet_editor.item(9,1).text())
-            get_plen = str(self.tableWidget_attack_packet_editor.item(10,1).text())
-            get_op = str(self.tableWidget_attack_packet_editor.item(11,1).text())
-            get_hwsrc = str(self.tableWidget_attack_packet_editor.item(12,1).text())
-            get_psrc = str(self.tableWidget_attack_packet_editor.item(13,1).text())
-            get_hwdst = str(self.tableWidget_attack_packet_editor.item(14,1).text())
-            get_pdst = str(self.tableWidget_attack_packet_editor.item(15,1).text())
+            get_hwtype = str(self.tableWidget1_attack_packet_editor.item(7,1).text())
+            get_ptype = str(self.tableWidget1_attack_packet_editor.item(8,1).text())
+            get_hwlen = str(self.tableWidget1_attack_packet_editor.item(9,1).text())
+            get_plen = str(self.tableWidget1_attack_packet_editor.item(10,1).text())
+            get_op = str(self.tableWidget1_attack_packet_editor.item(11,1).text())
+            get_hwsrc = str(self.tableWidget1_attack_packet_editor.item(12,1).text())
+            get_psrc = str(self.tableWidget1_attack_packet_editor.item(13,1).text())
+            get_hwdst = str(self.tableWidget1_attack_packet_editor.item(14,1).text())
+            get_pdst = str(self.tableWidget1_attack_packet_editor.item(15,1).text())
                         
             arp_bytes = ARP()
             arp_bytes[ARP].hwtype = int(get_hwtype) & 0xFF
@@ -15659,15 +15671,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.scapy_data = RadioTap()/get_type_subtype/get_flags/get_duration/get_addr3_mac/get_addr1_mac/get_addr2_mac/get_fragment_sequence/LLC()/SNAP()/arp_bytes
             
         elif "ARP Response - Ethernet" == get_type:
-            get_hwtype = str(self.tableWidget_attack_packet_editor.item(0,1).text())
-            get_ptype = str(self.tableWidget_attack_packet_editor.item(1,1).text())
-            get_hwlen = str(self.tableWidget_attack_packet_editor.item(2,1).text())
-            get_plen = str(self.tableWidget_attack_packet_editor.item(3,1).text())
-            get_op = str(self.tableWidget_attack_packet_editor.item(4,1).text())
-            get_hwsrc = str(self.tableWidget_attack_packet_editor.item(5,1).text())
-            get_psrc = str(self.tableWidget_attack_packet_editor.item(6,1).text())
-            get_hwdst = str(self.tableWidget_attack_packet_editor.item(7,1).text())
-            get_pdst = str(self.tableWidget_attack_packet_editor.item(8,1).text())
+            get_hwtype = str(self.tableWidget1_attack_packet_editor.item(0,1).text())
+            get_ptype = str(self.tableWidget1_attack_packet_editor.item(1,1).text())
+            get_hwlen = str(self.tableWidget1_attack_packet_editor.item(2,1).text())
+            get_plen = str(self.tableWidget1_attack_packet_editor.item(3,1).text())
+            get_op = str(self.tableWidget1_attack_packet_editor.item(4,1).text())
+            get_hwsrc = str(self.tableWidget1_attack_packet_editor.item(5,1).text())
+            get_psrc = str(self.tableWidget1_attack_packet_editor.item(6,1).text())
+            get_hwdst = str(self.tableWidget1_attack_packet_editor.item(7,1).text())
+            get_pdst = str(self.tableWidget1_attack_packet_editor.item(8,1).text())
             
             arp_bytes = ARP()
             arp_bytes[ARP].hwtype = int(get_hwtype) & 0xFF
@@ -15686,8 +15698,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_source_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[0]) + 3) // 4, int(get_bin[0], 2))))
             get_dest_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[1]) + 3) // 4, int(get_bin[1], 2))))
             get_bssid_mac = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[2]) + 3) // 4, int(get_bin[2], 2))))
-            get_source_ip = str(self.tableWidget_attack_packet_editor.item(3,1).text())
-            get_dest_ip = str(self.tableWidget_attack_packet_editor.item(4,1).text())
+            get_source_ip = str(self.tableWidget1_attack_packet_editor.item(3,1).text())
+            get_dest_ip = str(self.tableWidget1_attack_packet_editor.item(4,1).text())
             get_icmp_type = int(get_bin[3], 2)
             get_icmp_code = int(get_bin[4], 2)
             get_icmp_id = int(get_bin[5], 2)
@@ -15717,11 +15729,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_duration = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[5]) + 3) // 4, int(get_bin[5], 2))))
             get_fragment_sequence = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[6]) + 3) // 4, int(get_bin[6], 2))))
             get_qos_control = binascii.unhexlify(''.join('%0*X' % ((len(get_bin[7]) + 3) // 4, int(get_bin[7], 2))))
-            get_udp_source_ip = str(self.tableWidget_attack_packet_editor.item(8,1).text())
-            get_udp_dest_ip = str(self.tableWidget_attack_packet_editor.item(9,1).text())
-            get_udp_source_port = str(self.tableWidget_attack_packet_editor.item(10,1).text())
-            get_udp_dest_port = str(self.tableWidget_attack_packet_editor.item(11,1).text())
-            get_udp_data = str(self.tableWidget_attack_packet_editor.item(12,1).text())
+            get_udp_source_ip = str(self.tableWidget1_attack_packet_editor.item(8,1).text())
+            get_udp_dest_ip = str(self.tableWidget1_attack_packet_editor.item(9,1).text())
+            get_udp_source_port = str(self.tableWidget1_attack_packet_editor.item(10,1).text())
+            get_udp_dest_port = str(self.tableWidget1_attack_packet_editor.item(11,1).text())
+            get_udp_data = str(self.tableWidget1_attack_packet_editor.item(12,1).text())
             
             # Convert Hex to Hexstring Format ('00FF' --> '\x00\xFF')
             get_udp_data = bytes(get_udp_data, encoding='utf-8')
@@ -15741,15 +15753,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
 
         # Set Loaded Text
-        self.label_packet_scapy_loaded.setText(get_type)
+        self.label2_packet_scapy_loaded.setText(get_type)
         
         # Enable Controls
-        self.label_packet_scapy_view.setEnabled(True)
+        self.label2_packet_scapy_view.setEnabled(True)
         self.pushButton_packet_scapy_show.setEnabled(True)
         self.pushButton_packet_scapy_ls.setEnabled(True)
-        self.label_packet_scapy_interval.setEnabled(True)
+        self.label2_packet_scapy_interval.setEnabled(True)
         self.textEdit_packet_scapy_interval.setEnabled(True)
-        self.label_packet_scapy_interface.setEnabled(True)
+        self.label2_packet_scapy_interface.setEnabled(True)
         self.comboBox_packet_scapy_interface.setEnabled(True)
         self.pushButton_packet_scapy_refresh.setEnabled(True)
         self.checkBox_packet_scapy_loop.setEnabled(True)
@@ -15892,7 +15904,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run IQ Flow Graph', Parameters = [str(fname), variable_names, variable_values, get_file_type])
             
             # Change Status Label and Record Button Text
-            self.label_iq_playback_status.setText("Starting...")
+            self.label2_iq_playback_status.setText("Starting...")
             self.pushButton_iq_playback.setText("Stop")
             self.pushButton_iq_playback.setEnabled(False)
             self.status_dialog.tableWidget_status_results.item(4,0).setText('Starting...')
@@ -16331,7 +16343,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             pass  
             
         # Hide Success Label
-        self.label_iq_transfer_file_success.setVisible(False)            
+        self.label2_iq_transfer_file_success.setVisible(False)            
         
     def _slotIQ_TransferFileSaveAsClicked(self):
         """ Returns the destination filepath for an IQ file.
@@ -16351,7 +16363,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             pass  
             
         # Hide Success Label
-        self.label_iq_transfer_file_success.setVisible(False)
+        self.label2_iq_transfer_file_success.setVisible(False)
         
     def _slotIQ_TranferFileClicked(self):
         """ Copies the file from the source location to the destination location
@@ -16365,7 +16377,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             shutil.copy(get_file1, get_file2)
             
             # Show Success Label
-            self.label_iq_transfer_file_success.setVisible(True)
+            self.label2_iq_transfer_file_success.setVisible(True)
 
     def _slotIQ_CropSaveAsClicked(self):
         """ Returns the destination filepath for the new IQ file.
@@ -16390,7 +16402,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Get the Range
         get_start = int(self.textEdit_iq_start.toPlainText())
         get_end = int(self.textEdit_iq_end.toPlainText())
-        get_max = int(self.label_iq_samples.text().split(" ")[1])
+        get_max = int(self.label2_iq_samples.text().split(" ")[1])
         
         # Increment the Range
         if get_end < get_max:
@@ -16412,7 +16424,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Get the Range
         get_start = int(self.textEdit_iq_start.toPlainText())
         get_end = int(self.textEdit_iq_end.toPlainText())
-        get_max = int(self.label_iq_samples.text().split(" ")[1])
+        get_max = int(self.label2_iq_samples.text().split(" ")[1])
         
         # Decrement the Range
         if get_end > 1000000:
@@ -16619,7 +16631,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 get_header_text = str(self.tableWidget_pd_bit_viewer_hex.horizontalHeaderItem(col).text())
                 header_item = QtWidgets.QTableWidgetItem(get_header_text)
                 header_item.setTextAlignment(QtCore.Qt.AlignCenter)
-                header_item.setForeground(QtGui.QColor(0,0,0))
+                header_item.setForeground(QtGui.QColor(self.dashboard_settings_dictionary['color4']))
                 self.tableWidget_pd_bit_viewer_hex.setHorizontalHeaderItem(col,header_item)      
                             
         # Resize the Table
@@ -16753,7 +16765,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Converts hex data (0000) to \x00,\x00 in assembled text edit box.
         """
         # Get the Hex String
-        get_hex = str(self.textEdit_packet_assembled.toPlainText())
+        get_hex = str(self.textEdit1_packet_assembled.toPlainText())
         
         # Add the '\x,'
         if len(get_hex) > 0:
@@ -16761,13 +16773,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             for n in range(0,len(get_hex),2):
                 output_string = output_string + get_hex[n:n+2] + ',\\x'
                 
-            self.textEdit_packet_assembled.setPlainText(output_string[:-3])
+            self.textEdit1_packet_assembled.setPlainText(output_string[:-3])
             
     def _slotPacketCommaSeparatedClicked2(self):
         """ Converts hex data (0000) to 0x00,0x00 in assembled text edit box.
         """
         # Get the Hex String
-        get_hex = str(self.textEdit_packet_assembled.toPlainText())
+        get_hex = str(self.textEdit1_packet_assembled.toPlainText())
         
         # Add the '0x,'
         if len(get_hex) > 0:
@@ -16775,7 +16787,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             for n in range(0,len(get_hex),2):
                 output_string = output_string + get_hex[n:n+2] + ',0x'
                 
-            self.textEdit_packet_assembled.setPlainText(output_string[:-3])    
+            self.textEdit1_packet_assembled.setPlainText(output_string[:-3])    
             
     def _slotMenuBluetoothctlClicked(self):
         """ Opens a terminal with bluetoothctl running.
@@ -16788,7 +16800,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Converts hex data (0000) to \x00\x00 in assembled text edit box.
         """
         # Get the Hex String
-        get_hex = str(self.textEdit_packet_assembled.toPlainText())
+        get_hex = str(self.textEdit1_packet_assembled.toPlainText())
         
         # Add the '\x'
         if len(get_hex) > 0:
@@ -16796,7 +16808,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             for n in range(0,len(get_hex),2):
                 output_string = output_string + get_hex[n:n+2] + '\\x'
                 
-            self.textEdit_packet_assembled.setPlainText(output_string[:-2])   
+            self.textEdit1_packet_assembled.setPlainText(output_string[:-2])   
             
     def _slotMenuNoiseSourceClicked(self):
         """ Opens GRC with standalone flow graph.
@@ -17324,7 +17336,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 return            
             
             # Read the Data 
-            filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
+            filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
             file = open(filepath,"rb")                          # Open the file
             if "Complex" in get_type:
                 file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
@@ -17383,9 +17395,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)            
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])            
             self.iq_matplotlib_widget.axes.plot(range(1,len(y)+1),y,'b',linewidth=1)          
-            self.iq_matplotlib_widget.applyLabels("Filtered Signal",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("Filtered Signal",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
 
             # Reset the Cursor and Draw
             self.pushButton_iq_cursor1.setChecked(False)
@@ -17410,7 +17422,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # else:
                 # self.iq_matplotlib_widget.axes.plot(plot_data_formatted,'b',linewidth=1)
             
-            # self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            # self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             # self.pushButton_iq_cursor1.setChecked(False)
             # self._slotIQ_Cursor1Clicked() 
             # #self.iq_matplotlib_widget.draw()    
@@ -17750,7 +17762,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.tableWidget_archive_replay.setItem(self.tableWidget_archive_replay.rowCount()-1,5,format_item) 
                 
                 # Channel
-                new_combobox1 = QtWidgets.QComboBox(self)
+                new_combobox1 = QtWidgets.QComboBox(self,objectName='comboBox2_')
                 self.tableWidget_archive_replay.setCellWidget(self.tableWidget_archive_replay.rowCount()-1,6,new_combobox1)
                 if self.dashboard_settings_dictionary['hardware_archive'] == "Computer":
                     new_combobox1.addItem("")                
@@ -17891,7 +17903,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_archive_replay.setItem(self.tableWidget_archive_replay.rowCount()-1,5,format_item)   
         
         # Channel
-        new_combobox1 = QtWidgets.QComboBox(self)
+        new_combobox1 = QtWidgets.QComboBox(self,objectName='comboBox2_')
         self.tableWidget_archive_replay.setCellWidget(self.tableWidget_archive_replay.rowCount()-1,6,new_combobox1)
         if self.dashboard_settings_dictionary['hardware_archive'] == "Computer":
             new_combobox1.addItem("")                
@@ -18141,7 +18153,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.pushButton_archive_replay_start.setText("Start")      
             
             # Update the Status Label
-            self.label_archive_replay_status.setVisible(False)
+            self.label2_archive_replay_status.setVisible(False)
             
             # Update the Status Dialog
             # ~ self.status_dialog.tableWidget_status_results.item(3,0).setText("Not Running")
@@ -18240,7 +18252,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.pushButton_archive_replay_start.setText("Stop") 
                 
                 # Update the Status Label
-                self.label_archive_replay_status.setVisible(True)
+                self.label2_archive_replay_status.setVisible(True)
                 
                 # Update the Status Dialog
                 # ~ self.status_dialog.tableWidget_status_results.item(3,0).setText("Running Multi-Stage Attack...")
@@ -18255,7 +18267,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """     
         # Change the Pushbuttons and Labels
         self.pushButton_archive_replay_start.setText("Start")  
-        self.label_archive_replay_status.setVisible(False)
+        self.label2_archive_replay_status.setVisible(False)
         
         # Update the Status Dialog
         self.status_dialog.tableWidget_status_results.item(3,0).setText("Not Running")
@@ -18729,20 +18741,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Change Index
         get_type = str(self.comboBox_library_pd_data_type.currentText())
         if get_type == "Modulation Type":
-            self.label_library_add.setText("Add New Modulation Type to Library")
-            self.stackedWidget_library_pd.setCurrentIndex(1)            
+            self.label1_library_add.setText("Add New Modulation Type to Library")
+            self.stackedWidget2_library_pd.setCurrentIndex(1)            
         elif get_type == "Packet Type":
-            self.label_library_add.setText("Add New Packet Type to Library")
-            self.stackedWidget_library_pd.setCurrentIndex(2)
+            self.label1_library_add.setText("Add New Packet Type to Library")
+            self.stackedWidget2_library_pd.setCurrentIndex(2)
         elif get_type == "Signal of Interest":
-            self.label_library_add.setText("Add New Signal of Interest to Library")
-            self.stackedWidget_library_pd.setCurrentIndex(3)
+            self.label1_library_add.setText("Add New Signal of Interest to Library")
+            self.stackedWidget2_library_pd.setCurrentIndex(3)
         elif get_type == "Statistics":
-            self.label_library_add.setText("Add New Statistics to Library")
-            self.stackedWidget_library_pd.setCurrentIndex(4)
+            self.label1_library_add.setText("Add New Statistics to Library")
+            self.stackedWidget2_library_pd.setCurrentIndex(4)
         elif get_type == "Demodulation Flow Graph":
-            self.label_library_add.setText("Add New Demodulation Flow Graph to Library")
-            self.stackedWidget_library_pd.setCurrentIndex(5)
+            self.label1_library_add.setText("Add New Demodulation Flow Graph to Library")
+            self.stackedWidget2_library_pd.setCurrentIndex(5)
             
             # Populate Demodulation Flow Graph Modulation Types         
             get_protocol = str(self.comboBox_library_pd_protocol.currentText())
@@ -18753,8 +18765,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     
         elif get_type == "Attack":
             self._slotAttackImportProtocolChanged()
-            self.label_library_add.setText("Add New Attack to Library")
-            self.stackedWidget_library_pd.setCurrentIndex(6)
+            self.label1_library_add.setText("Add New Attack to Library")
+            self.stackedWidget2_library_pd.setCurrentIndex(6)
                         
     def _slotMenuRetrogramRtlSdrClicked(self):
         """ Opens a terminal with an example command for retrogram-rtlsdr which scans frequencies for RTL devices.
@@ -18822,7 +18834,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -18831,7 +18843,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(AM,'b',linewidth=1) 
                   
-            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None)
+            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()            
@@ -18849,7 +18861,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -18858,7 +18870,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(AM,'b',linewidth=1) 
                   
-            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None)
+            self.iq_matplotlib_widget.applyLabels("Magnitude",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()
@@ -19068,7 +19080,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Puts the maximum number of samples in the plot range end text edit.
         """
         # Copy Other Label Value
-        get_samples = str(self.label_iq_samples.text()).replace('Samples:','').replace(' ','')
+        get_samples = str(self.label2_iq_samples.text()).replace('Samples:','').replace(' ','')
         self.textEdit_iq_end.setPlainText(get_samples)
         
     def _slotIQ_StartLabelClicked(self, event):
@@ -19788,13 +19800,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Flow Graph Detectors
         if str(self.comboBox_tsi_detector.currentText()) in fg_detectors:
-            self.stackedWidget_tsi_detector.setCurrentIndex(1)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(1)
             
     def _slotTSI_Back1_Clicked(self):
         """ Goes back to the TSI search band settings.
         """
         # Go Back
-        self.stackedWidget_tsi_detector.setCurrentIndex(0)
+        self.stackedWidget1_tsi_detector.setCurrentIndex(0)
         
     def _slotTSI_DetectorChanged(self):
         """ Adjusts default settings for the current detector.
@@ -19831,7 +19843,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(1)
             else:                
                 self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)  
-            self.stackedWidget_tsi_detector.setCurrentIndex(0)          
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)          
             
         elif get_detector == 'wideband_b2x0.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
@@ -19848,7 +19860,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.addItem("TX/RX")
             self.comboBox_tsi_detector_fg_antenna.addItem("RX2")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)   
-            self.stackedWidget_tsi_detector.setCurrentIndex(0)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)
             
         elif get_detector == 'wideband_hackrf.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
@@ -19863,7 +19875,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.clear()
             self.comboBox_tsi_detector_fg_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)  
-            self.stackedWidget_tsi_detector.setCurrentIndex(0) 
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0) 
             
         elif get_detector == 'wideband_b20xmini.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
@@ -19880,7 +19892,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.addItem("TX/RX")
             self.comboBox_tsi_detector_fg_antenna.addItem("RX2")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-            self.stackedWidget_tsi_detector.setCurrentIndex(0)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)
             
         elif get_detector == 'wideband_rtl2832u.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("2.56e6")
@@ -19895,7 +19907,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.clear()
             self.comboBox_tsi_detector_fg_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0) 
-            self.stackedWidget_tsi_detector.setCurrentIndex(0)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)
             
         elif get_detector == 'wideband_limesdr.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
@@ -19912,7 +19924,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.addItem("RX1")
             self.comboBox_tsi_detector_fg_antenna.addItem("RX2")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0) 
-            self.stackedWidget_tsi_detector.setCurrentIndex(0)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)
             
         elif get_detector == 'wideband_bladerf.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
@@ -19927,7 +19939,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.clear()
             self.comboBox_tsi_detector_fg_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0) 
-            self.stackedWidget_tsi_detector.setCurrentIndex(0)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)
             
         elif get_detector == 'wideband_plutosdr.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
@@ -19942,7 +19954,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.clear()
             self.comboBox_tsi_detector_fg_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0) 
-            self.stackedWidget_tsi_detector.setCurrentIndex(0)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)
             
         elif get_detector == 'wideband_usrp2.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
@@ -19967,7 +19979,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.addItem("J1")
             self.comboBox_tsi_detector_fg_antenna.addItem("J2")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)  
-            self.stackedWidget_tsi_detector.setCurrentIndex(0)  
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)  
             
         elif get_detector == 'wideband_usrp_n2xx.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
@@ -19992,7 +20004,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.addItem("J1")
             self.comboBox_tsi_detector_fg_antenna.addItem("J2")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)  
-            self.stackedWidget_tsi_detector.setCurrentIndex(0)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)
         
         elif get_detector == 'wideband_bladerf2.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
@@ -20007,13 +20019,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.clear()
             self.comboBox_tsi_detector_fg_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0) 
-            self.stackedWidget_tsi_detector.setCurrentIndex(0)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)
             
         elif get_detector == 'Simulator':
-            self.stackedWidget_tsi_detector.setCurrentIndex(2)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(2)
             
         elif get_detector == 'IQ File':
-            self.stackedWidget_tsi_detector.setCurrentIndex(3)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(3)
             
     
     def _slotMenuAddingCustomOptionsClicked(self):
@@ -20116,7 +20128,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -20125,7 +20137,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(avg_data,'b',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()            
@@ -20144,7 +20156,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -20156,7 +20168,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.iq_matplotlib_widget.axes.plot(np.imag(avg_data),'r',linewidth=1)
                 #self.iq_matplotlib_widget.axes.hold(False)  # FIX: To clear an axes you can manually use cla(), or to clear an entire figure use clf()
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()
@@ -20563,55 +20575,77 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Simulates a QTabWidget and changes the IQ QStackedWidget index.
         """
         # Change the Index
-        if button_name == "pushButton_iq_tab_record":
-            self.stackedWidget_iq.setCurrentIndex(0)
-        elif button_name == "pushButton_iq_tab_playback":
-            self.stackedWidget_iq.setCurrentIndex(1)
-        elif button_name == "pushButton_iq_tab_inspection":
-            self.stackedWidget_iq.setCurrentIndex(2)
-        elif button_name == "pushButton_iq_tab_crop":
-            self.stackedWidget_iq.setCurrentIndex(3)
-        elif button_name == "pushButton_iq_tab_convert":
-            self.stackedWidget_iq.setCurrentIndex(4)
-        elif button_name == "pushButton_iq_tab_append":
-            self.stackedWidget_iq.setCurrentIndex(5)
-        elif button_name == "pushButton_iq_tab_transfer":
-            self.stackedWidget_iq.setCurrentIndex(6)
-        elif button_name == "pushButton_iq_tab_timeslot":
-            self.stackedWidget_iq.setCurrentIndex(7)
-        elif button_name == "pushButton_iq_tab_overlap":
-            self.stackedWidget_iq.setCurrentIndex(8)
-        elif button_name == "pushButton_iq_tab_resample":
-            self.stackedWidget_iq.setCurrentIndex(9)
-        elif button_name == "pushButton_iq_tab_ofdm":
-            self.stackedWidget_iq.setCurrentIndex(10)
-        elif button_name == "pushButton_iq_tab_normalize":
-            self.stackedWidget_iq.setCurrentIndex(11)
+        if button_name == "pushButton1_iq_tab_record":
+            self.stackedWidget3_iq.setCurrentIndex(0)
+        elif button_name == "pushButton1_iq_tab_playback":
+            self.stackedWidget3_iq.setCurrentIndex(1)
+        elif button_name == "pushButton1_iq_tab_inspection":
+            self.stackedWidget3_iq.setCurrentIndex(2)
+        elif button_name == "pushButton1_iq_tab_crop":
+            self.stackedWidget3_iq.setCurrentIndex(3)
+        elif button_name == "pushButton1_iq_tab_convert":
+            self.stackedWidget3_iq.setCurrentIndex(4)
+        elif button_name == "pushButton1_iq_tab_append":
+            self.stackedWidget3_iq.setCurrentIndex(5)
+        elif button_name == "pushButton1_iq_tab_transfer":
+            self.stackedWidget3_iq.setCurrentIndex(6)
+        elif button_name == "pushButton1_iq_tab_timeslot":
+            self.stackedWidget3_iq.setCurrentIndex(7)
+        elif button_name == "pushButton1_iq_tab_overlap":
+            self.stackedWidget3_iq.setCurrentIndex(8)
+        elif button_name == "pushButton1_iq_tab_resample":
+            self.stackedWidget3_iq.setCurrentIndex(9)
+        elif button_name == "pushButton1_iq_tab_ofdm":
+            self.stackedWidget3_iq.setCurrentIndex(10)
+        elif button_name == "pushButton1_iq_tab_normalize":
+            self.stackedWidget3_iq.setCurrentIndex(11)
         
         # Reset All Stylesheets                
-        button_list = ['pushButton_iq_tab_record','pushButton_iq_tab_playback','pushButton_iq_tab_inspection','pushButton_iq_tab_crop','pushButton_iq_tab_convert','pushButton_iq_tab_append','pushButton_iq_tab_transfer','pushButton_iq_tab_timeslot','pushButton_iq_tab_overlap','pushButton_iq_tab_overlap','pushButton_iq_tab_resample','pushButton_iq_tab_ofdm','pushButton_iq_tab_normalize']
+        button_list = ['pushButton1_iq_tab_record','pushButton1_iq_tab_playback','pushButton1_iq_tab_inspection','pushButton1_iq_tab_crop','pushButton1_iq_tab_convert','pushButton1_iq_tab_append','pushButton1_iq_tab_transfer','pushButton1_iq_tab_timeslot','pushButton1_iq_tab_overlap','pushButton1_iq_tab_resample','pushButton1_iq_tab_ofdm','pushButton1_iq_tab_normalize']
         for n in button_list:
-            exec("self." + n + """.setStyleSheet("QPushButton#""" + n + """ {"
-                                                "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);"
-                                                "color: rgb(255, 255, 255);"
-                                                "border: 1px solid #17365D;"
-                                                "border-top-left-radius: 15px;"
-                                                "border-top-right-radius: 15px;"
-                                                "width:107px;"
-                                                "margin-top: 6px;"
-                                                "height: 21px;}"
-                                                )""")
+            exec("self." + n + """.setStyleSheet("QPushButton#""" + n + """ {}")""")
+            # ~ exec("self." + n + """.setStyleSheet("QPushButton#""" + n + """ {"
+                                                # ~ "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);"
+                                                # ~ "color: rgb(255, 255, 255);"
+                                                # ~ "border: 1px solid #17365D;"
+                                                # ~ "border-top-left-radius: 15px;"
+                                                # ~ "border-top-right-radius: 15px;"
+                                                # ~ "width:107px;"
+                                                # ~ "margin-top: 6px;"
+                                                # ~ "height: 21px;}"
+                                                # ~ )""")
         
         # Change Selected Stylesheet
-        exec("self." + button_name + """.setStyleSheet("QPushButton#""" + button_name + """ {"
-                                                    "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);"
-                                                    "color:rgb(0, 220, 0);"
-                                                    "border: 1px solid #17365D;"
-                                                    "border-top-left-radius: 15px;"
-                                                    "border-top-right-radius: 15px;"
-                                                    "height:27px;"
-                                                    "margin-top: 3px;}"
-                                                    )""")                                                  
+        if self.dashboard_settings_dictionary['color_mode'] == "Light Mode":
+            exec("self." + button_name + """.setStyleSheet("QPushButton#""" + button_name + """ {"
+                                                        "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d, stop:0.85 """ + self.dashboard_settings_dictionary['color3'] + """, stop:1 """ + self.dashboard_settings_dictionary['color3'] + """);"
+                                                        "color:rgb(0, 220, 0);"
+                                                        "border: 1px solid """ + self.dashboard_settings_dictionary['color3'] + """;"
+                                                        "border-top-left-radius: 15px;"
+                                                        "border-top-right-radius: 15px;"
+                                                        "height:27px;"
+                                                        "margin-top: 3px;}"
+                                                        )""")        
+        elif self.dashboard_settings_dictionary['color_mode'] == "Dark Mode":
+            exec("self." + button_name + """.setStyleSheet("QPushButton#""" + button_name + """ {"
+                                                        "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 """ + self.dashboard_settings_dictionary['color3'] + """, stop:0.05 #888888, stop:0.15 """ + self.dashboard_settings_dictionary['color3'] + """, stop:0.85 """ + self.dashboard_settings_dictionary['color3'] + """, stop:1 """ + self.dashboard_settings_dictionary['color3'] + """);"
+                                                        "color:rgb(0, 220, 0);"
+                                                        "border: 1px solid """ + self.dashboard_settings_dictionary['color3'] + """;"
+                                                        "border-top-left-radius: 15px;"
+                                                        "border-top-right-radius: 15px;"
+                                                        "height:27px;"
+                                                        "margin-top: 3px;}"
+                                                        )""")
+        else:
+            exec("self." + button_name + """.setStyleSheet("QPushButton#""" + button_name + """ {"
+                                                        "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 """ + self.dashboard_settings_dictionary['color3'] + """, stop:0.05 #888888, stop:0.15 """ + self.dashboard_settings_dictionary['color3'] + """, stop:0.85 """ + self.dashboard_settings_dictionary['color3'] + """, stop:1 """ + self.dashboard_settings_dictionary['color3'] + """);"
+                                                        "color:rgb(0, 220, 0);"
+                                                        "border: 1px solid """ + self.dashboard_settings_dictionary['color3'] + """;"
+                                                        "border-top-left-radius: 15px;"
+                                                        "border-top-right-radius: 15px;"
+                                                        "height:27px;"
+                                                        "margin-top: 3px;}"
+                                                        )""")                                             
 
     def _slotIQ_PolarClicked(self):
         """ Plots file data as a polar plot.
@@ -20677,7 +20711,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     return
                 
                 # Read the Data 
-                filepath = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File: ","") 
+                filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
                 file = open(filepath,"rb")                          # Open the file
                 if "Complex" in get_type:
                     file.seek(2*(start_sample-1) * sample_size)     # Point to the starting sample
@@ -20713,9 +20747,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=True)
+            self.iq_matplotlib_widget.configureAxes(polar=True,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.axes.plot(2*np.pi*np.arange(0,complex_multiple,complex_multiple/float(len(plot_data_formatted))),plot_data_formatted,'bo',markersize=1)
-            self.iq_matplotlib_widget.applyLabels("Polar Plot",'','Amplitude (LSB)',None,None)
+            self.iq_matplotlib_widget.applyLabels("Polar Plot",'','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
             
             # Reset the Cursor and Draw
             self.pushButton_iq_cursor1.setChecked(False)
@@ -20726,16 +20760,16 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """    
         # Enable Widgets
         if self.comboBox_iq_normalize_min_max.currentIndex() == 5:
-            self.label_iq_normalize_min.setEnabled(True)
+            self.label2_iq_normalize_min.setEnabled(True)
             self.textEdit_iq_normalize_min.setEnabled(True)
-            self.label_iq_normalize_max.setEnabled(True)
+            self.label2_iq_normalize_max.setEnabled(True)
             self.textEdit_iq_normalize_max.setEnabled(True)            
         
         # Disable Widgets
         else:
-            self.label_iq_normalize_min.setEnabled(False)
+            self.label2_iq_normalize_min.setEnabled(False)
             self.textEdit_iq_normalize_min.setEnabled(False)
-            self.label_iq_normalize_max.setEnabled(False)
+            self.label2_iq_normalize_max.setEnabled(False)
             self.textEdit_iq_normalize_max.setEnabled(False)                 
     
     def _slotIQ_NormalizeOriginalLoadClicked(self):
@@ -21104,9 +21138,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Switches to the Search tab and copies the selected frequency.
         """
         # Copy the Value
-        get_row = self.tableWidget_tsi_wideband.currentRow()
+        get_row = self.tableWidget1_tsi_wideband.currentRow()
         if get_row >= 0:
-            get_freq = self.tableWidget_tsi_wideband.item(get_row,0).text()
+            get_freq = self.tableWidget1_tsi_wideband.item(get_row,0).text()
             self.textEdit_library_search_frequency.setPlainText(get_freq)
         
             # Format the Search
@@ -21467,7 +21501,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens an IQ file in Gqrx.
         """
         # Get IQ File
-        get_iq_file = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File:","").lstrip()
+        get_iq_file = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File:","").lstrip()
         
         # Get Sample Rate and Frequency
         get_sample_rate = str(self.textEdit_iq_sample_rate.toPlainText())
@@ -21482,7 +21516,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             return
                 
         # Modify Local Gqrx Config File
-        if (len(self.label_iq_file_name.text().replace("File:","").lstrip()) > 0) and (len(get_sample_rate) > 0) and (len(get_frequency) > 0):
+        if (len(self.label2_iq_file_name.text().replace("File:","").lstrip()) > 0) and (len(get_sample_rate) > 0) and (len(get_frequency) > 0):
             fin = open(os.path.dirname(os.path.realpath(__file__)) + "/Tools/Gqrx/template.conf", "rt")
             fout = open(os.path.dirname(os.path.realpath(__file__)) + "/Tools/Gqrx/default.conf", "wt")
             file_text = fin.read()
@@ -21615,7 +21649,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(1)
             else:                
                 self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)  
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)          
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)          
             
         elif get_detector == 'fixed_threshold_b2x0.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
@@ -21639,7 +21673,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.addItem("TX/RX")
             self.comboBox_tsi_detector_fixed_antenna.addItem("RX2")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)   
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
             
         elif get_detector == 'fixed_threshold_hackrf.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
@@ -21661,7 +21695,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.clear()
             self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)  
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0) 
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0) 
             
         elif get_detector == 'fixed_threshold_b20xmini.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
@@ -21685,7 +21719,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.addItem("TX/RX")
             self.comboBox_tsi_detector_fixed_antenna.addItem("RX2")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
             
         elif get_detector == 'fixed_threshold_rtl2832u.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("102.4")
@@ -21712,7 +21746,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.clear()
             self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
             
         elif get_detector == 'fixed_threshold_limesdr.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
@@ -21736,7 +21770,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.addItem("RX1")
             self.comboBox_tsi_detector_fixed_antenna.addItem("RX2")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
             
         elif get_detector == 'fixed_threshold_bladerf.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
@@ -21758,7 +21792,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.clear()
             self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
             
         elif get_detector == 'fixed_threshold_plutosdr.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
@@ -21780,7 +21814,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.clear()
             self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
             
         elif get_detector == 'fixed_threshold_usrp2.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
@@ -21812,7 +21846,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.addItem("J1")
             self.comboBox_tsi_detector_fixed_antenna.addItem("J2")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)  
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)  
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)  
             
         elif get_detector == 'fixed_threshold_usrp_n2xx.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
@@ -21844,7 +21878,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.addItem("J1")
             self.comboBox_tsi_detector_fixed_antenna.addItem("J2")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)  
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)         
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)         
             
         elif get_detector == 'fixed_threshold_bladerf2.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
@@ -21866,7 +21900,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.clear()
             self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
             
         elif get_detector == 'fixed_threshold_simulator.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
@@ -21888,7 +21922,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.clear()
             self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
-            self.stackedWidget_tsi_detector_fixed.setCurrentIndex(0)
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
             
     def _slotTSI_DetectorFixedStartClicked(self):
         """ Starts a TSI detector set to a tuned frequency.
@@ -21898,8 +21932,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Send the Message
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Stop TSI Detector')
             self.status_dialog.tableWidget_status_results.item(1,0).setText("Not Running")
-            self.label_tsi_detector.setText("Detector - Not Running")
-            self.label_tsi_detector.raise_()
+            self.label2_tsi_detector.setText("Detector - Not Running")
+            self.label2_tsi_detector.raise_()
         
             # Change the Button Text
             self.pushButton_tsi_detector_fixed_start.setText("Start")
@@ -21970,8 +22004,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Send the Message
             self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Start TSI Detector', Parameters = [get_detector, variable_names, variable_values])
             self.status_dialog.tableWidget_status_results.item(1,0).setText("Running TSI") 
-            self.label_tsi_detector.setText("Detector - Running")
-            self.label_tsi_detector.raise_()
+            self.label2_tsi_detector.setText("Detector - Running")
+            self.label2_tsi_detector.raise_()
             
             # Change the Button Text
             self.pushButton_tsi_detector_fixed_start.setText("Stop")
@@ -22149,9 +22183,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens an IQ file in Inspectrum.
         """
         # Get IQ File
-        get_iq_file = self.label_iq_folder.text() + "/" + self.label_iq_file_name.text().replace("File:","").lstrip()
+        get_iq_file = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File:","").lstrip()
 
-        if len(self.label_iq_file_name.text().replace("File:","").lstrip()) > 0:
+        if len(self.label2_iq_file_name.text().replace("File:","").lstrip()) > 0:
             
             # Get Sample Rate
             get_sample_rate = str(self.textEdit_iq_sample_rate.toPlainText())
@@ -22229,7 +22263,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_frequency = None
 
         # Create Default Dictionary
-        dlg = SigMF_Dialog(sample_rate=get_sample_rate, hw=get_hw, dataset=get_dataset, frequency=get_frequency, settings_dictionary = self.sigmf_dict)
+        dlg = SigMF_Dialog(self,sample_rate=get_sample_rate, hw=get_hw, dataset=get_dataset, frequency=get_frequency, settings_dictionary = self.sigmf_dict)
         dlg.show()
         dlg.exec_() 
         
@@ -22278,7 +22312,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22287,7 +22321,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(np.abs(y_data),'b',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()            
@@ -22300,7 +22334,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22310,7 +22344,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.iq_matplotlib_widget.axes.plot(np.abs(np.real(complex_data)),'b',linewidth=1)
                 self.iq_matplotlib_widget.axes.plot(np.abs(np.imag(complex_data)),'r',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()
@@ -22327,7 +22361,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22336,7 +22370,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(np.diff(y_data),'b',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()            
@@ -22349,7 +22383,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22359,7 +22393,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.iq_matplotlib_widget.axes.plot(np.diff(np.real(complex_data)),'b',linewidth=1)
                 self.iq_matplotlib_widget.axes.plot(np.diff(np.imag(complex_data)),'r',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()
@@ -22376,7 +22410,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22385,7 +22419,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(y_data[::2],'b',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()            
@@ -22398,7 +22432,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22408,7 +22442,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.iq_matplotlib_widget.axes.plot(np.real(complex_data[::2]),'b',linewidth=1)
                 self.iq_matplotlib_widget.axes.plot(np.imag(complex_data[::2]),'r',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()    
@@ -22425,7 +22459,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22434,7 +22468,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(np.angle(y_data),'b',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()            
@@ -22447,7 +22481,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22456,7 +22490,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(np.angle(complex_data),'b',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw() 
@@ -22473,7 +22507,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22482,7 +22516,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(np.unwrap(y_data),'b',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()            
@@ -22495,7 +22529,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22505,7 +22539,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.iq_matplotlib_widget.axes.plot(np.unwrap(np.real(complex_data)),'b',linewidth=1)
                 self.iq_matplotlib_widget.axes.plot(np.unwrap(np.imag(complex_data)),'r',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()
@@ -22536,7 +22570,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22545,7 +22579,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 self.iq_matplotlib_widget.axes.plot(np.abs(y_data),'b',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()            
@@ -22576,7 +22610,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                             
             # Plot
             self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False)
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
 
             # Ignore hold() Deprecation Warnings
             with warnings.catch_warnings():
@@ -22586,7 +22620,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.iq_matplotlib_widget.axes.plot(np.real(y),'b',linewidth=1)
                 self.iq_matplotlib_widget.axes.plot(np.imag(y),'r',linewidth=1)
             
-            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None) 
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()
@@ -23995,15 +24029,189 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tableWidget_archive_replay.removeRow(row)  
                 
         # Disable PushButtons
-        self.pushButton_archive_replay_start.setEnabled(False) 
+        self.pushButton_archive_replay_start.setEnabled(False)
+        
+    def _slotMenuLightModeClicked(self):
+        """ Loads the light.css style sheet.
+        """
+        self.actionLight_Mode.setChecked(True)
+        self.actionDark_Mode.setChecked(False)
+        self.actionCustom_Mode.setChecked(False)
+        self.dashboard_settings_dictionary['color1'] = "#F4F4F4"  #"rgb(244, 244, 244)"
+        self.dashboard_settings_dictionary['color2'] = "#FBFBFB"  #"rgb(251, 251, 251)"
+        self.dashboard_settings_dictionary['color3'] = "#17365D"
+        self.dashboard_settings_dictionary['color4'] = "#000000"
+        self.dashboard_settings_dictionary['color5'] = "#FFFFFF"
+        self.dashboard_settings_dictionary['color_mode'] = "Light Mode"
+        styleSheetStr = str(open(os.path.dirname(os.path.realpath(__file__)) + "/UI/Style_Sheets/light.css","r").read())
+        self.setStyleSheet(styleSheetStr)
+        
+        # Adjust Custom Widgets
+        if self.stackedWidget3_iq.currentIndex() == 0:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_record")
+        elif self.stackedWidget3_iq.currentIndex() == 1:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_playback")  
+        elif self.stackedWidget3_iq.currentIndex() == 2:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_inspection")  
+        elif self.stackedWidget3_iq.currentIndex() == 3:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_crop")  
+        elif self.stackedWidget3_iq.currentIndex() == 4:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_convert")  
+        elif self.stackedWidget3_iq.currentIndex() == 5:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_append")  
+        elif self.stackedWidget3_iq.currentIndex() == 6:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_transfer")  
+        elif self.stackedWidget3_iq.currentIndex() == 7:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_timeslot")  
+        elif self.stackedWidget3_iq.currentIndex() == 8:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_overlap")  
+        elif self.stackedWidget3_iq.currentIndex() == 9:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_resample")  
+        elif self.stackedWidget3_iq.currentIndex() == 10:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_ofdm")  
+        elif self.stackedWidget3_iq.currentIndex() == 11:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_normalize")
+        
+        self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
+        self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
+        self.iq_matplotlib_widget.draw()
+        self.mpl_toolbar.setStyleSheet("")
+
+        
+        self._slotTSI_RefreshPlotClicked()
+        
+    def _slotMenuDarkModeClicked(self):
+        """ Loads the dark.css style sheet.
+        """
+        self.actionLight_Mode.setChecked(False)
+        self.actionDark_Mode.setChecked(True)
+        self.actionCustom_Mode.setChecked(False)
+        self.dashboard_settings_dictionary['color1'] = "#121212"  # Background
+        self.dashboard_settings_dictionary['color2'] = "#292929"  # Frame Background
+        self.dashboard_settings_dictionary['color3'] = "#002D63"  #"#003C85"  # Label Background
+        self.dashboard_settings_dictionary['color4'] = "#CCCCCC"  # Font Color
+        self.dashboard_settings_dictionary['color5'] = "#444444"  # Text Edit Background
+        self.dashboard_settings_dictionary['color_mode'] = "Dark Mode"
+        get_css_text = str(open(os.path.dirname(os.path.realpath(__file__)) + "/UI/Style_Sheets/dark.css","r").read())
+        get_css_text = get_css_text.replace("@color1",self.dashboard_settings_dictionary['color1'])
+        get_css_text = get_css_text.replace("@color2",self.dashboard_settings_dictionary['color2'])
+        get_css_text = get_css_text.replace("@color3",self.dashboard_settings_dictionary['color3'])
+        get_css_text = get_css_text.replace("@color4",self.dashboard_settings_dictionary['color4'])
+        get_css_text = get_css_text.replace("@color5",self.dashboard_settings_dictionary['color5'])
+        get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/Icons")
+        self.setStyleSheet(get_css_text)
+        
+        # Adjust Custom Widgets
+        if self.stackedWidget3_iq.currentIndex() == 0:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_record")
+        elif self.stackedWidget3_iq.currentIndex() == 1:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_playback")  
+        elif self.stackedWidget3_iq.currentIndex() == 2:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_inspection")  
+        elif self.stackedWidget3_iq.currentIndex() == 3:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_crop")  
+        elif self.stackedWidget3_iq.currentIndex() == 4:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_convert")  
+        elif self.stackedWidget3_iq.currentIndex() == 5:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_append")  
+        elif self.stackedWidget3_iq.currentIndex() == 6:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_transfer")  
+        elif self.stackedWidget3_iq.currentIndex() == 7:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_timeslot")  
+        elif self.stackedWidget3_iq.currentIndex() == 8:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_overlap")  
+        elif self.stackedWidget3_iq.currentIndex() == 9:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_resample")  
+        elif self.stackedWidget3_iq.currentIndex() == 10:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_ofdm")  
+        elif self.stackedWidget3_iq.currentIndex() == 11:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_normalize")
+        
+        self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
+        self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
+        self.iq_matplotlib_widget.draw()
+        self.mpl_toolbar.setStyleSheet("color:"+self.dashboard_settings_dictionary['color4'])
+
+        
+        self._slotTSI_RefreshPlotClicked()
+        
+    def _slotMenuCustomModeClicked(self):
+        """ Loads a custom stylesheet from values in the options dialog.
+        """
+        # Open the Custom Color Dialog
+        custom_color_dlg = CustomColor(parent=self)
+        custom_color_dlg.show()
+        custom_color_dlg.exec_() 
+        
+        # Apply Clicked
+        get_value = custom_color_dlg.return_value
+        
+        if len(get_value) > 0:       
+            self.actionLight_Mode.setChecked(False)
+            self.actionDark_Mode.setChecked(False)
+            self.actionCustom_Mode.setChecked(True)
+            self.dashboard_settings_dictionary['color1'] = self.dashboard_settings_dictionary['custom_color1']  # Background
+            self.dashboard_settings_dictionary['color2'] = self.dashboard_settings_dictionary['custom_color2']  # Frame Background
+            self.dashboard_settings_dictionary['color3'] = self.dashboard_settings_dictionary['custom_color3']  #"#003C85"  # Label Background
+            self.dashboard_settings_dictionary['color4'] = self.dashboard_settings_dictionary['custom_color4']  # Font Color
+            self.dashboard_settings_dictionary['color5'] = self.dashboard_settings_dictionary['custom_color5']  # Text Edit Background
+            self.dashboard_settings_dictionary['color_mode'] = "Custom Mode"
+            get_css_text = str(open(os.path.dirname(os.path.realpath(__file__)) + "/UI/Style_Sheets/custom.css","r").read())
+            get_css_text = get_css_text.replace("@color1",self.dashboard_settings_dictionary['color1'])
+            get_css_text = get_css_text.replace("@color2",self.dashboard_settings_dictionary['color2'])
+            get_css_text = get_css_text.replace("@color3",self.dashboard_settings_dictionary['color3'])
+            get_css_text = get_css_text.replace("@color4",self.dashboard_settings_dictionary['color4'])
+            get_css_text = get_css_text.replace("@color5",self.dashboard_settings_dictionary['color5'])
+            get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/Icons")
+            self.setStyleSheet(get_css_text)
+            
+            # Adjust Custom Widgets
+            if self.stackedWidget3_iq.currentIndex() == 0:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_record")
+            elif self.stackedWidget3_iq.currentIndex() == 1:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_playback")  
+            elif self.stackedWidget3_iq.currentIndex() == 2:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_inspection")  
+            elif self.stackedWidget3_iq.currentIndex() == 3:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_crop")  
+            elif self.stackedWidget3_iq.currentIndex() == 4:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_convert")  
+            elif self.stackedWidget3_iq.currentIndex() == 5:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_append")  
+            elif self.stackedWidget3_iq.currentIndex() == 6:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_transfer")  
+            elif self.stackedWidget3_iq.currentIndex() == 7:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_timeslot")  
+            elif self.stackedWidget3_iq.currentIndex() == 8:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_overlap")  
+            elif self.stackedWidget3_iq.currentIndex() == 9:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_resample")  
+            elif self.stackedWidget3_iq.currentIndex() == 10:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_ofdm")  
+            elif self.stackedWidget3_iq.currentIndex() == 11:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_normalize")
+            
+            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
+            self.iq_matplotlib_widget.draw()
+            self.mpl_toolbar.setStyleSheet("color:"+self.dashboard_settings_dictionary['color4'])
+            
+            self._slotTSI_RefreshPlotClicked()
+            
+        # Cancel
+        else:
+            if self.dashboard_settings_dictionary['color_mode'] == "Custom Mode":
+                self.actionCustom_Mode.setChecked(True) 
+            else:
+                self.actionCustom_Mode.setChecked(False) 
         
     
 
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
-    def __init__(self):
+    def __init__(self,parent):
         """ First thing that executes.
         """
-        QtWidgets.QDialog.__init__(self)            
+        QtWidgets.QDialog.__init__(self,parent)            
         self.setupUi(self)       
             
         # Prevent Resizing/Maximizing
@@ -24040,12 +24248,8 @@ class StatusLabel(QtWidgets.QLabel):
     def __init__(self, parent):
         super(StatusLabel, self).__init__(parent)
         self.parent = parent
-        self.setAutoFillBackground(True)
-        p = self.palette()
-        p.setColor(self.backgroundRole(), QtGui.QColor(223, 230, 248))
-        self.setPalette(p)
         self.setMouseTracking(True)
-        self.setFont(QtGui.QFont("Ubuntu",10))
+        self.setObjectName('label2_')
 
     def enterEvent(self, event):
         self.parent.status_dialog.show()
@@ -24062,7 +24266,7 @@ class CustomStatusBar(QtWidgets.QStatusBar):
         #p.setColor(self.backgroundRole(), QtGui.QColor(223, 230, 248))
         #self.setPalette(p)
         self.setMouseTracking(True)
-        self.setFont(QtGui.QFont("Ubuntu",10))
+        #self.setFont(QtGui.QFont("Ubuntu",10))
 
     def enterEvent(self, event):
         self.parent.status_dialog.show()
@@ -24098,7 +24302,7 @@ class MiscChooser(QtWidgets.QDialog, form_class8):
         self.pushButton_cancel.clicked.connect(self._slotCancelClicked) 
         
         # Update Label Text
-        self.label_1.setText(label_text)
+        self.label1_1.setText(label_text)
         
         # Update Combobox Items
         self.comboBox_1.addItems(chooser_items)
@@ -24159,7 +24363,101 @@ class NewSOI(QtWidgets.QDialog, form_class9):
     def _slotCancelClicked(self):
         self.reject()        
         
-    
+
+class CustomColor(QtWidgets.QDialog, form_class11):
+    def __init__(self, parent):
+        """ Allows user to choose values for custom color themes.
+        """
+        QtWidgets.QDialog.__init__(self,parent)        
+        self.parent = parent        
+        self.setupUi(self)     
+        self.return_value = ""
+        
+        # Prevent Resizing/Maximizing
+        self.setFixedSize(390, 215)    
+        
+        # Connect Slots
+        self.pushButton_ok.clicked.connect(self._slotOK_Clicked)
+        self.pushButton_cancel.clicked.connect(self._slotCancelClicked) 
+        self.pushButton_color1.clicked.connect(self._slotColor1_Clicked)
+        self.pushButton_color2.clicked.connect(self._slotColor2_Clicked)
+        self.pushButton_color3.clicked.connect(self._slotColor3_Clicked)
+        self.pushButton_color4.clicked.connect(self._slotColor4_Clicked)
+        self.pushButton_color5.clicked.connect(self._slotColor5_Clicked)
+        
+        # Fill in Default Values
+        if len(self.parent.dashboard_settings_dictionary['custom_color1']) == 7:
+            self.textEdit_color1.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color1']))
+        if len(self.parent.dashboard_settings_dictionary['custom_color2']) == 7:
+            self.textEdit_color2.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color2']))
+        if len(self.parent.dashboard_settings_dictionary['custom_color3']) == 7:
+            self.textEdit_color3.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color3']))
+        if len(self.parent.dashboard_settings_dictionary['custom_color4']) == 7:
+            self.textEdit_color4.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color4']))
+        if len(self.parent.dashboard_settings_dictionary['custom_color5']) == 7:
+            self.textEdit_color5.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color5']))
+            
+    def _slotOK_Clicked(self):
+        self.return_value = "1"
+        
+        # Save the Colors
+        get_color1 = str(self.textEdit_color1.toPlainText())
+        get_color2 = str(self.textEdit_color2.toPlainText())
+        get_color3 = str(self.textEdit_color3.toPlainText())
+        get_color4 = str(self.textEdit_color4.toPlainText())
+        get_color5 = str(self.textEdit_color5.toPlainText())
+        if len(get_color1) == 7:  # "#123456/#RRGGBB"
+            self.parent.dashboard_settings_dictionary['custom_color1'] = get_color1
+        if len(get_color2) == 7:  # "#123456/#RRGGBB"
+            self.parent.dashboard_settings_dictionary['custom_color2'] = get_color2
+        if len(get_color3) == 7:  # "#123456/#RRGGBB"
+            self.parent.dashboard_settings_dictionary['custom_color3'] = get_color3
+        if len(get_color4) == 7:  # "#123456/#RRGGBB"
+            self.parent.dashboard_settings_dictionary['custom_color4'] = get_color4
+        if len(get_color5) == 7:  # "#123456/#RRGGBB"
+            self.parent.dashboard_settings_dictionary['custom_color5'] = get_color5
+            
+        self.close()
+               
+    def _slotCancelClicked(self):
+        self.reject()
+        
+    def _slotColor1_Clicked(self):
+        """ Opens the color selector for color1.
+        """
+        # Open the Selector
+        get_color = QtWidgets.QColorDialog.getColor()
+        self.textEdit_color1.setPlainText(str(get_color.name()).upper())
+                
+    def _slotColor2_Clicked(self):
+        """ Opens the color selector for color2.
+        """
+        # Open the Selector
+        get_color = QtWidgets.QColorDialog.getColor()
+        self.textEdit_color2.setPlainText(str(get_color.name()).upper())
+
+    def _slotColor3_Clicked(self):
+        """ Opens the color selector for color3.
+        """
+        # Open the Selector
+        get_color = QtWidgets.QColorDialog.getColor()
+        self.textEdit_color3.setPlainText(str(get_color.name()).upper())
+                
+    def _slotColor4_Clicked(self):
+        """ Opens the color selector for color4.
+        """
+        # Open the Selector
+        get_color = QtWidgets.QColorDialog.getColor()
+        self.textEdit_color4.setPlainText(str(get_color.name()).upper())
+        
+    def _slotColor5_Clicked(self):
+        """ Opens the color selector for color5.
+        """
+        # Open the Selector
+        get_color = QtWidgets.QColorDialog.getColor()
+        self.textEdit_color5.setPlainText(str(get_color.name()).upper())
+        
+        
 class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
     def __init__(self, parent, mode, hardware, ip, serial, interface, daughterboard):
         """ First thing that executes.
@@ -24176,8 +24474,8 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
         self._connectSlots()    
         
         # Update Display        
-        self.label_mode.setText(mode)
-        self.label_probe.setVisible(False)
+        self.label2_mode.setText(mode)
+        self.label2_probe.setVisible(False)
         self._slotHardwareChanged()
 
         if hardware == "Computer":
@@ -24275,7 +24573,7 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
     def _slotOK_Clicked(self):
         """ Save hardware select changes and closes the window.
         """
-        if "TSI" in self.label_mode.text():
+        if "TSI" in self.label2_mode.text():
             self.parent.dashboard_settings_dictionary['hardware_tsi'] = str(self.comboBox_hardware.currentText())
             self.parent.dashboard_settings_dictionary['hardware_ip_tsi'] = str(self.textEdit_ip.toPlainText())
             self.parent.dashboard_settings_dictionary['hardware_serial_tsi'] = str(self.textEdit_serial.toPlainText())
@@ -24283,7 +24581,7 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             self.parent.dashboard_settings_dictionary['hardware_daughterboard_tsi'] = str(self.comboBox_daughterboard.currentText())
             self.parent.configureTSI_Hardware()
         
-        elif "PD" in self.label_mode.text():
+        elif "PD" in self.label2_mode.text():
             self.parent.dashboard_settings_dictionary['hardware_pd'] = str(self.comboBox_hardware.currentText())
             self.parent.dashboard_settings_dictionary['hardware_ip_pd'] = str(self.textEdit_ip.toPlainText())
             self.parent.dashboard_settings_dictionary['hardware_serial_pd'] = str(self.textEdit_serial.toPlainText())
@@ -24291,7 +24589,7 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             self.parent.dashboard_settings_dictionary['hardware_daughterboard_pd'] = str(self.comboBox_daughterboard.currentText())
             self.parent.configurePD_Hardware()
             
-        elif "Attack" in self.label_mode.text():
+        elif "Attack" in self.label2_mode.text():
             self.parent.dashboard_settings_dictionary['hardware_attack'] = str(self.comboBox_hardware.currentText())
             self.parent.dashboard_settings_dictionary['hardware_ip_attack'] = str(self.textEdit_ip.toPlainText())
             self.parent.dashboard_settings_dictionary['hardware_serial_attack'] = str(self.textEdit_serial.toPlainText())
@@ -24299,7 +24597,7 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             self.parent.dashboard_settings_dictionary['hardware_daughterboard_attack'] = str(self.comboBox_daughterboard.currentText())
             self.parent.configureAttackHardware()
             
-        elif "IQ" in self.label_mode.text():
+        elif "IQ" in self.label2_mode.text():
             self.parent.dashboard_settings_dictionary['hardware_iq'] = str(self.comboBox_hardware.currentText())
             self.parent.dashboard_settings_dictionary['hardware_ip_iq'] = str(self.textEdit_ip.toPlainText())
             self.parent.dashboard_settings_dictionary['hardware_serial_iq'] = str(self.textEdit_serial.toPlainText())
@@ -24307,7 +24605,7 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             self.parent.dashboard_settings_dictionary['hardware_daughterboard_iq'] = str(self.comboBox_daughterboard.currentText())
             self.parent.configureIQ_Hardware()
             
-        elif "Archive" in self.label_mode.text():
+        elif "Archive" in self.label2_mode.text():
             self.parent.dashboard_settings_dictionary['hardware_archive'] = str(self.comboBox_hardware.currentText())
             self.parent.dashboard_settings_dictionary['hardware_ip_archive'] = str(self.textEdit_ip.toPlainText())
             self.parent.dashboard_settings_dictionary['hardware_serial_archive'] = str(self.textEdit_serial.toPlainText())
@@ -24328,7 +24626,7 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
         if str(self.comboBox_hardware.currentText()) == "Computer":
             pass        
         elif str(self.comboBox_hardware.currentText()) == "USRP X3x0":       
-            self.parent.findX3x0(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label_probe)          
+            self.parent.findX3x0(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label2_probe)          
         elif str(self.comboBox_hardware.currentText()) == "USRP B2x0":
             self.parent.findB2x0(self.textEdit_serial)
         elif str(self.comboBox_hardware.currentText()) == "HackRF":
@@ -24348,9 +24646,9 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
         elif str(self.comboBox_hardware.currentText()) == "PlutoSDR":
             self.parent.findPlutoSDR(self.textEdit_ip)    
         elif str(self.comboBox_hardware.currentText()) == "USRP2":
-            self.parent.findUSRP2(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label_probe)             
+            self.parent.findUSRP2(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label2_probe)             
         elif str(self.comboBox_hardware.currentText()) == "USRP N2xx":
-            self.parent.findUSRP_N2xx(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label_probe)
+            self.parent.findUSRP_N2xx(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label2_probe)
         elif str(self.comboBox_hardware.currentText()) == "bladeRF 2.0":
             self.parent.find_bladeRF2(self.textEdit_serial)
 
@@ -24363,13 +24661,13 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             
             # Probe
             try:
-                self.label_probe.setVisible(True)
+                self.label2_probe.setVisible(True)
                 QtWidgets.QApplication.processEvents()
                 proc = subprocess.Popen('uhd_usrp_probe --args="addr=' + get_ip + '" &', shell=True, stdout=subprocess.PIPE, )
                 output = proc.communicate()[0].decode()
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
             except:
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
                 output = "Error"            
                 
             # Create a Dialog Window    
@@ -24379,13 +24677,13 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
         elif (str(self.comboBox_hardware.currentText()) == "USRP B2x0") or (str(self.comboBox_hardware.currentText()) == "USRP B20xmini"):
             # Probe
             try:
-                self.label_probe.setVisible(True)
+                self.label2_probe.setVisible(True)
                 QtWidgets.QApplication.processEvents()
                 proc = subprocess.Popen('uhd_usrp_probe --args="type=b200" &', shell=True, stdout=subprocess.PIPE, )
                 output = proc.communicate()[0].decode()
-                self.label_probe.setVisible(False)               
+                self.label2_probe.setVisible(False)               
             except:
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
                 output = "Error"            
                 
             # Create a Dialog Window    
@@ -24395,13 +24693,13 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
         elif (str(self.comboBox_hardware.currentText()) == "bladeRF"):
             # Probe
             try:
-                self.label_probe.setVisible(True)
+                self.label2_probe.setVisible(True)
                 QtWidgets.QApplication.processEvents()
                 proc=subprocess.Popen('bladeRF-cli -p &', shell=True, stdout=subprocess.PIPE, )
                 output=proc.communicate()[0].decode()
-                self.label_probe.setVisible(False)               
+                self.label2_probe.setVisible(False)               
             except:
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
                 output = "Error"            
                 
             # Create a Dialog Window    
@@ -24411,13 +24709,13 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
         elif (str(self.comboBox_hardware.currentText()) == "LimeSDR"):
             # Probe
             try:
-                self.label_probe.setVisible(True)   
+                self.label2_probe.setVisible(True)   
                 QtWidgets.QApplication.processEvents()            
                 proc=subprocess.Popen('LimeUtil --find &', shell=True, stdout=subprocess.PIPE, )
                 output=proc.communicate()[0].decode()
-                self.label_probe.setVisible(False)                
+                self.label2_probe.setVisible(False)                
             except:
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
                 output = "Error"            
                 
             # Create a Dialog Window    
@@ -24427,13 +24725,13 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
         elif (str(self.comboBox_hardware.currentText()) == "HackRF"):
             # Probe
             try:
-                self.label_probe.setVisible(True)   
+                self.label2_probe.setVisible(True)   
                 QtWidgets.QApplication.processEvents()            
                 proc=subprocess.Popen('hackrf_info &', shell=True, stdout=subprocess.PIPE, )
                 output=proc.communicate()[0].decode()
-                self.label_probe.setVisible(False)                
+                self.label2_probe.setVisible(False)                
             except:
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
                 output = "Error"            
                 
             # Create a Dialog Window    
@@ -24443,13 +24741,13 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
         elif (str(self.comboBox_hardware.currentText()) == "PlutoSDR"):
             # Probe
             try:
-                self.label_probe.setVisible(True)   
+                self.label2_probe.setVisible(True)   
                 QtWidgets.QApplication.processEvents()            
                 proc=subprocess.Popen('iio_info -n pluto.local &', shell=True, stdout=subprocess.PIPE, )
                 output=proc.communicate()[0].decode()
-                self.label_probe.setVisible(False)                
+                self.label2_probe.setVisible(False)                
             except:
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
                 output = "Error"  
                 
         elif str(self.comboBox_hardware.currentText()) == "USRP2":
@@ -24458,13 +24756,13 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             
             # Probe
             try:
-                self.label_probe.setVisible(True)
+                self.label2_probe.setVisible(True)
                 QtWidgets.QApplication.processEvents()
                 proc = subprocess.Popen('uhd_usrp_probe --args="addr=' + get_ip + '" &', shell=True, stdout=subprocess.PIPE, )
                 output = proc.communicate()[0].decode()
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
             except:
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
                 output = "Error"            
             
         elif str(self.comboBox_hardware.currentText()) == "USRP N2xx":
@@ -24473,13 +24771,13 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             
             # Probe
             try:
-                self.label_probe.setVisible(True)
+                self.label2_probe.setVisible(True)
                 QtWidgets.QApplication.processEvents()
                 proc = subprocess.Popen('uhd_usrp_probe --args="addr=' + get_ip + '" &', shell=True, stdout=subprocess.PIPE, )
                 output = proc.communicate()[0].decode()
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
             except:
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
                 output = "Error"   
                 
             # Create a Dialog Window    
@@ -24489,13 +24787,13 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
         elif (str(self.comboBox_hardware.currentText()) == "bladeRF 2.0"):
             # Probe
             try:
-                self.label_probe.setVisible(True)
+                self.label2_probe.setVisible(True)
                 QtWidgets.QApplication.processEvents()
                 proc=subprocess.Popen('bladeRF-cli -p &', shell=True, stdout=subprocess.PIPE, )
                 output=proc.communicate()[0].decode()
-                self.label_probe.setVisible(False)               
+                self.label2_probe.setVisible(False)               
             except:
-                self.label_probe.setVisible(False)
+                self.label2_probe.setVisible(False)
                 output = "Error"            
                 
             # Create a Dialog Window    
@@ -24770,38 +25068,38 @@ class MyMessageBox(QtWidgets.QDialog):
                 
                 
 class MyMplCanvas(FigureCanvas):
-    def __init__(self, parent=None, dpi=100, title=None, ylim=None, width=401, height=401, border = [0.1,0.9,0.01,0.99,0,0], colorbar_fraction = 0.038, xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'], ylabels=['0', '5', '10', '15', '20']):
+    def __init__(self, parent=None, dpi=100, title=None, ylim=None, width=401, height=401, border = [0.1,0.9,0.01,0.99,0,0], colorbar_fraction = 0.038, xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'], ylabels=['0', '5', '10', '15', '20'], bg_color=None, face_color=None, text_color=None):
         """ Creates a plot with colorbar and places it in a figure canvas
         """
         self.plot_width = width
         self.plot_height = height
             
         # Background Color
-        background_color = (244.0/255, 244.0/255, 244.0/255, 1)  #QtGui.QColor(242,241,240)
+        rgb = tuple(int(face_color.lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
+        background_color = (float(rgb[0])/255, float(rgb[1])/255, float(rgb[2])/255)
             
         # Set up the Figure
-        fig = Figure(dpi=dpi, facecolor=background_color)
-        self.axes = fig.add_subplot(111)
+        self.fig = Figure(dpi=dpi)
+        self.axes = self.fig.add_subplot(111)
         
-        # ~ # Ignore hold() Deprecation Warnings
-        # ~ with warnings.catch_warnings():
-            # ~ warnings.simplefilter("ignore")
-            # ~ warnings.filterwarnings("ignore", module="matplotlib")
-            # ~ #self.axes.hold(False)  # FIX: To clear an axes you can manually use cla(), or to clear an entire figure use clf()
-             
-        fig.subplots_adjust(left=border[0],right=border[1],bottom=border[2],top=border[3],wspace=border[4],hspace=border[5])
+        self.fig.subplots_adjust(left=border[0],right=border[1],bottom=border[2],top=border[3],wspace=border[4],hspace=border[5])
         
         # Create the Data Arrays
-        temp_plot_data = np.ones((self.plot_height,self.plot_width,3))  # background color (1,1,1)   
+        temp_plot_data = np.ones((self.plot_height,self.plot_width,3))*background_color  # background color (1,1,1)   
         
         # Do the Plotting
-        img = self.axes.imshow(temp_plot_data, cmap='rainbow', clim=(-60,40))      
-        self.configureAxes(title,'Frequency (MHz)',xlabels,'Time Elapsed',ylabels,ylim)                
-        cbar = fig.colorbar(img, fraction=colorbar_fraction*ylim/500, pad=.04, label='Power (dB)')    
-        cbar.ax.tick_params(labelsize=11) 
+        img = self.axes.imshow(temp_plot_data, cmap='rainbow', clim=(-60,40))
+        self.cbar = self.fig.colorbar(img, fraction=colorbar_fraction*ylim/500, pad=.04)    
+        self.configureAxes(title,'Frequency (MHz)',xlabels,'Time Elapsed',ylabels,ylim,bg_color,face_color,text_color)
+            
+        # ~ # Do the Plotting
+        # ~ img = self.axes.imshow(temp_plot_data, cmap='rainbow', clim=(-60,40))      
+        # ~ self.configureAxes(title,'Frequency (MHz)',xlabels,'Time Elapsed',ylabels,ylim)                
+        # ~ cbar = fig.colorbar(img, fraction=colorbar_fraction*ylim/500, pad=.04, label='Power (dB)')    
+        # ~ cbar.ax.tick_params(labelsize=11) 
                 
         # Other
-        FigureCanvas.__init__(self, fig)
+        FigureCanvas.__init__(self, self.fig)
         self.setParent(parent)
         FigureCanvas.setSizePolicy(self, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Expanding)
         FigureCanvas.updateGeometry(self)
@@ -24915,18 +25213,13 @@ class MyMplCanvas(FigureCanvas):
         # narrowband_data[int(y)-point_size:int(y)+point_size, 4*int(x)-point_size:4*int(x)+point_size] = color
 
         
-    def configureAxes(self, title, xlabel, xlabels, ylabel, ylabels, ylim):
+    def configureAxes(self, title, xlabel, xlabels, ylabel, ylabels, ylim, background_color, face_color, text_color):
         """ Configures the axes, needs to be called for every plot because hold(False) will redo the axes setup
-        """     
+        """  
         try:
             # Define the Size       
             self.axes.axis([0, self.plot_width, self.plot_height, 0])
-                    
-            # Set the Labels, Gridlines
-            #axis_font = {'fontname':'Bitstream Vera Sans', 'size':'12'} 
-            #axis_font = {'fontname':'DejaVu Sans', 'size':'11'}         
-            #axis_font = {'size':'11'}
-                 
+                                     
             self.axes.set_xlabel(xlabel)
                        
             start, end = self.axes.get_xlim()
@@ -24945,10 +25238,50 @@ class MyMplCanvas(FigureCanvas):
             self.axes.yaxis.grid('on')  
             
             for item in ([self.axes.title, self.axes.xaxis.label, self.axes.yaxis.label] + self.axes.get_xticklabels() + self.axes.get_yticklabels()):
-                item.set_fontsize(9)  
+                item.set_fontsize(9)
+                item.set_color(text_color)
                 
+            self.fig.set_facecolor(background_color)
+            self.cbar.ax.tick_params(labelsize=11, color=text_color)
+            plt.setp(plt.getp(self.cbar.ax.axes, 'yticklabels'), color=text_color)
+            self.cbar.set_label(label='Power (dB)',color=text_color)
+            self.axes.tick_params(axis='x', colors=text_color)
+            self.axes.tick_params(axis='y', colors=text_color)
+                            
         except:
             pass
+            
+        # ~ try:
+            # ~ # Define the Size       
+            # ~ self.axes.axis([0, self.plot_width, self.plot_height, 0])
+                    
+            # ~ # Set the Labels, Gridlines
+            # ~ #axis_font = {'fontname':'Bitstream Vera Sans', 'size':'12'} 
+            # ~ #axis_font = {'fontname':'DejaVu Sans', 'size':'11'}         
+            # ~ #axis_font = {'size':'11'}
+                 
+            # ~ self.axes.set_xlabel(xlabel)
+                       
+            # ~ start, end = self.axes.get_xlim()
+            # ~ self.axes.set_xticks(np.arange(start,end,100))
+
+            # ~ self.axes.set_xticklabels(xlabels[0:len(np.arange(start,end,100))])
+            # ~ self.axes.xaxis.grid('on')  
+            
+            # ~ self.axes.set_ylim([ylim, 0])
+            # ~ self.axes.set_ylabel(ylabel)
+            
+            # ~ start, end = self.axes.get_ylim()
+            # ~ self.axes.set_yticks(np.arange(end,start,100))
+
+            # ~ self.axes.set_yticklabels(ylabels[0:len(np.arange(end,start,100))])
+            # ~ self.axes.yaxis.grid('on')  
+            
+            # ~ for item in ([self.axes.title, self.axes.xaxis.label, self.axes.yaxis.label] + self.axes.get_xticklabels() + self.axes.get_yticklabels()):
+                # ~ item.set_fontsize(9)  
+                
+        # ~ except:
+            # ~ pass
         
     def computeColormapValue(self, power_level):
         """ Takes the power level in dBm, normalizes it to the colorbar limits, and then looks up the corresponding
@@ -24968,18 +25301,14 @@ class MyMplCanvas(FigureCanvas):
         
             
 class MyTuningMplCanvas(FigureCanvas):
-    def __init__(self, parent=None, dpi=100, title=None, ylim=None):
+    def __init__(self, parent=None, dpi=100, title=None, ylim=None, bg_color=None, face_color=None, text_color=None):
         """ Class for creating the tuning graphic
         """
         self.plot_width = 601
         self.plot_height = 401
 
-        # Background Color
-        #background_color = (242.0/255, 241.0/255, 240.0/255, 1)  #QtGui.QColor(242,241,240)
-        background_color = (251.0/255, 251.0/255, 251.0/255, 1)
-            
         # Set up the Figure
-        fig = Figure(dpi=dpi, facecolor=background_color)
+        fig = Figure(dpi=dpi)
         self.fig = fig
         
         self.axes = fig.add_axes([0.03, 0.25, 0.94, 0.8])        
@@ -24989,20 +25318,14 @@ class MyTuningMplCanvas(FigureCanvas):
         #self.axes.spines['bottom'].set_visible(False)
         self.axes.spines['left'].set_visible(False)
         
-        # ~ # Ignore hold() Deprecation Warnings
-        # ~ with warnings.catch_warnings():
-            # ~ warnings.simplefilter("ignore")
-            # ~ warnings.filterwarnings("ignore", module="matplotlib")
-            # ~ #self.axes.hold(False)  # FIX: To clear an axes you can manually use cla(), or to clear an entire figure use clf()
-        
         # Remove the Colors
         #fig.frameon = False
         #for item in [fig, self.axes]:  
             #item.patch.set_visible(False)  # Makes it white instead of transparent in newer version
         
         # Configure Axes
-        self.configureAxes(title=title,xlabel='Frequency (MHz)',ylabel='',ylabels='',ylim=ylim)             
-        
+        self.configureAxes(title=title,xlabel='Frequency (MHz)',ylabel='',ylabels='',ylim=ylim,background_color=bg_color,face_color=face_color,text_color=text_color)             
+
         # Other
         FigureCanvas.__init__(self, fig) 
         self.setParent(parent)
@@ -25128,8 +25451,8 @@ class MyTuningMplCanvas(FigureCanvas):
             # Draw New Text
             self.axes.text(text_x,500,freq_text,fontsize=11,bbox=dict(facecolor='red', alpha=0.5))
             self.draw()
-        
-    def configureAxes(self, title, xlabel, ylabel, ylabels, ylim):
+
+    def configureAxes(self, title, xlabel, ylabel, ylabels, ylim,background_color,face_color,text_color):
         """ Configures the axes, needs to be called for every plot because hold(False) will redo the axes setup
         """     
         # Define the Size       
@@ -25171,7 +25494,57 @@ class MyTuningMplCanvas(FigureCanvas):
         
         # Font Size
         for item in ([self.axes.title, self.axes.xaxis.label, self.axes.yaxis.label] + self.axes.get_xticklabels() + self.axes.get_yticklabels()):
-            item.set_fontsize(9)   
+            item.set_fontsize(9)
+            item.set_color(text_color)
+            
+        self.axes.set_facecolor(face_color)
+        self.fig.set_facecolor(background_color)
+        self.axes.tick_params(axis='x', colors=text_color)
+        self.axes.tick_params(axis='y', colors=text_color)
+        
+    # ~ def configureAxes(self, title, xlabel, ylabel, ylabels, ylim):
+        # ~ """ Configures the axes, needs to be called for every plot because hold(False) will redo the axes setup
+        # ~ """     
+        # ~ # Define the Size       
+        # ~ self.axes.axis([0, self.plot_width, self.plot_height, 0])
+                
+        # ~ # xlim
+        # ~ self.axes.set_xlim([0, 601])
+        
+        # ~ # xtick Locations
+        # ~ xspan = 6000
+        # ~ steps = 6
+        # ~ xstep = float(xspan)/steps
+        # ~ xticks = []
+        # ~ for n in range(0,steps):
+            # ~ xticks.append(int(n*(xstep/10)))
+        # ~ xticks.append(600)
+        # ~ self.axes.set_xticks(xticks) 
+        
+        # ~ # xtick Labels
+        # ~ xlabels = ['0', '1000', '2000', '3000', '4000', '5000', '6000'] 
+        # ~ self.axes.set_xticklabels(xlabels)
+                
+        # ~ # xaxis Label
+        # ~ self.axes.set_xlabel(xlabel)
+       
+        # ~ # Title
+        # ~ self.axes.set_title(title)
+      
+        # ~ # Grid        
+        # ~ self.axes.xaxis.grid('on') 
+        # ~ self.axes.set_axisbelow(True) 
+        
+        # ~ # Y Values        
+        # ~ self.axes.set_ylim([ylim, 0])
+        # ~ self.axes.set_ylabel(ylabel)
+        # ~ self.axes.set_yticks([x*100 for x in (range(0,len(ylabels)))], minor=False)
+        # ~ self.axes.set_yticklabels(ylabels)
+        # ~ self.axes.yaxis.grid('on')  
+        
+        # ~ # Font Size
+        # ~ for item in ([self.axes.title, self.axes.xaxis.label, self.axes.yaxis.label] + self.axes.get_xticklabels() + self.axes.get_yticklabels()):
+            # ~ item.set_fontsize(9)   
 
     def configureAxesZoom(self, xmin, xmax):
         """ Configures the axes, needs to be called for every plot because hold(False) will redo the axes setup
@@ -25210,23 +25583,17 @@ class MyTuningMplCanvas(FigureCanvas):
         
 
 class MyIQ_MplCanvas(FigureCanvas):
-    def __init__(self, parent=None, dpi=100, title=None, ylim=None):
+    def __init__(self, parent=None, dpi=100, title=None, ylim=None, bg_color=None, face_color=None, text_color=None):
         """ Creates a plot for IQ data and places it in a figure canvas
         """
-        # Background Color
-        # ~ background_color = (242.0/255, 241.0/255, 240.0/255, 1)  #QtGui.QColor(242,241,240)
-        background_color = (251.0/255, 251.0/255, 251.0/255, 1)
-        # ~ border_color = (25.0/255, 54.0/255, 93.0/255, 1)
-            
         # Set up the Figure
-        # ~ self.fig = Figure(dpi=dpi, facecolor=background_color, linewidth=1, edgecolor=border_color)
-        self.fig = Figure(dpi=dpi, facecolor=background_color)
+        self.fig = Figure(dpi=dpi)
         self.fig.subplots_adjust(left=0.1,right=0.95,bottom=0.1,top=0.94,wspace=0,hspace=0)
         
         # Do the Plotting
         self.polar_used = False
-        self.configureAxes(polar=False)
-        self.applyLabels(title,'Samples','Amplitude (LSB)',None,None)    
+        self.configureAxes(False,bg_color,face_color,text_color)
+        self.applyLabels(title,'Samples','Amplitude (LSB)',None,None,text_color)    
         
         # Other
         FigureCanvas.__init__(self, self.fig)
@@ -25241,9 +25608,10 @@ class MyIQ_MplCanvas(FigureCanvas):
         self.fill_rect = None
         self.click = 1
         self.txt = None  #self.axes.text(0.0, 0.0, '', transform=self.axes.transAxes)
-        cid = self.fig.canvas.mpl_connect('button_press_event', self.onclick)  
+        self.text_color = text_color
+        cid = self.fig.canvas.mpl_connect('button_press_event', self.onclick)   
         
-    def applyLabels(self, title, xlabel, ylabel, ylabels, ylim):
+    def applyLabels(self, title, xlabel, ylabel, ylabels, ylim, text_color):
         """ Configures the axes, needs to be called for every plot because hold(False) will redo the axes setup
         """ 
         try:
@@ -25253,16 +25621,16 @@ class MyIQ_MplCanvas(FigureCanvas):
             # Set the Labels, Gridlines
             #self.axes.set_title(title)
             
-            self.axes.set_xlabel(xlabel)
+            self.axes.set_xlabel(xlabel,color=text_color)
             self.axes.xaxis.grid('on')  
             
-            self.axes.set_ylabel(ylabel)
+            self.axes.set_ylabel(ylabel,color=text_color)
             self.axes.yaxis.grid('on')  
             
         except:
             pass
             
-    def configureAxes(self,polar):
+    def configureAxes(self,polar,background_color,face_color,text_color):
         """ Configures the axes after a polar/projection change. Must be done before plot. Gridlines and labels after plot.
         """
         # Plot Type
@@ -25274,15 +25642,15 @@ class MyIQ_MplCanvas(FigureCanvas):
             self.axes = self.fig.add_subplot(111,polar=False)
             self.polar_used = False
 
-        # ~ # Ignore hold() Deprecation Warnings
-        # ~ with warnings.catch_warnings():
-            # ~ warnings.simplefilter("ignore")
-            # ~ warnings.filterwarnings("ignore", module="matplotlib")
-            # ~ #self.axes.hold(False)  # FIX: To clear an axes you can manually use cla(), or to clear an entire figure use clf()
-                
         for item in ([self.axes.title, self.axes.xaxis.label, self.axes.yaxis.label] + self.axes.get_xticklabels() + self.axes.get_yticklabels()):
-            item.set_fontsize(9)  
-        
+            item.set_fontsize(9)
+            item.set_color(text_color)
+            
+        self.axes.set_facecolor(face_color)
+        self.fig.set_facecolor(background_color)
+        self.axes.tick_params(axis='x', colors=text_color)
+        self.axes.tick_params(axis='y', colors=text_color)
+        self.text_color = text_color
             
     def clearPlot(self):
         """ Clears the plot data.
@@ -25327,20 +25695,20 @@ class MyIQ_MplCanvas(FigureCanvas):
                         if self.fill_rect != None:
                             self.fill_rect.remove()
                             self.fill_rect = None
-                        self.cursor1 = self.axes.axvline(color='k',linewidth=1)
+                        self.cursor1 = self.axes.axvline(color=self.text_color,linewidth=1)
                         self.cursor1.set_xdata(x)
                         if self.txt != None:
                             self.txt.remove()
                             self.txt = None
                         self.click = 2
                     elif self.click == 2:
-                        self.cursor2 = self.axes.axvline(color='k',linewidth=1)
+                        self.cursor2 = self.axes.axvline(color=self.text_color,linewidth=1)
                         self.cursor2.set_xdata(x)
                         x_diff = math.floor(abs(self.cursor2.get_xdata()-self.cursor1.get_xdata()))
                         self.fill_rect = self.axes.add_patch(patches.Rectangle((math.floor(self.cursor1.get_xdata()),self.axes.get_ybound()[0]),x_diff,self.axes.get_ybound()[1]-self.axes.get_ybound()[0],facecolor="yellow",alpha=0.85))
                         self.click = 1
                         if self.txt == None:
-                            self.txt = self.axes.text(0.01, 0.01, str(int(x_diff)), transform=self.axes.transAxes)
+                            self.txt = self.axes.text(0.01, 0.01, str(int(x_diff)), transform=self.axes.transAxes, color=self.text_color)
                     self.draw()
                 
                 # Right Click
@@ -25373,7 +25741,7 @@ class SigMF_Dialog(QtWidgets.QDialog, form_class10):
     def __init__(self, parent=None, sample_rate=None, hw=None, dataset=None, frequency=None, settings_dictionary=None):
         """ First thing that executes.
         """
-        QtWidgets.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self,parent)
         self.setupUi(self)
         self.return_value = ""
         
@@ -25493,8 +25861,8 @@ class SigMF_Dialog(QtWidgets.QDialog, form_class10):
     def _connectSlots(self):
         """ Contains the connect functions for all the signals and slots.
         """
-        self.buttonBox.button(QtWidgets.QDialogButtonBox.Apply).clicked.connect(self._slotApplyClicked)
-        self.buttonBox.button(QtWidgets.QDialogButtonBox.Cancel).clicked.connect(self._slotCancelClicked)
+        self.pushButton_apply.clicked.connect(self._slotApplyClicked)
+        self.pushButton_cancel.clicked.connect(self._slotCancelClicked)
 
     def _slotApplyClicked(self):
         """ The Apply button is clicked in the dialog.
@@ -25642,7 +26010,7 @@ class OptionsDialog(QtWidgets.QDialog, form_class3):
     def __init__(self, parent=None, opening_tab = "Automation", settings_dictionary=None):
         """ First thing that executes.
         """
-        QtWidgets.QDialog.__init__(self)
+        QtWidgets.QDialog.__init__(self, parent)
         self.setupUi(self)
         self.return_value = ""
         
@@ -25696,7 +26064,8 @@ class OptionsDialog(QtWidgets.QDialog, form_class3):
     def _connectSlots(self):
         """ Contains the connect functions for all the signals and slots.
         """
-        self.buttonBox.button(QtWidgets.QDialogButtonBox.Apply).clicked.connect(self._slotOptionsApplyClicked)
+        self.pushButton_apply.clicked.connect(self._slotOptionsApplyClicked)
+        self.pushButton_cancel.clicked.connect(self._slotOptionsCancelClicked)
         self.listWidget_options.currentItemChanged.connect(self._slotOptionsListWidgetChanged)
         
     def _slotOptionsListWidgetChanged(self):
@@ -25751,6 +26120,11 @@ class OptionsDialog(QtWidgets.QDialog, form_class3):
         
         # Return Something
         self.return_value = "Ok"
+        self.close()
+        
+    def _slotOptionsCancelClicked(self):
+        """ The Cancel button is clicked in the options dialog.
+        """
         self.close()
         
 

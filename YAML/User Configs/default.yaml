@@ -73,3 +73,15 @@ fge_pub_port: 5061
 pd_pub_port: 5063
 pd_bits_port: 5066
 clear_log_file_on_startup: True
+custom_color1: '#121212'
+custom_color2: '#292929'
+custom_color3: '#2D6300'
+custom_color4: '#CCCCCC'
+custom_color5: '#444444'
+color1: '#F4F4F4'
+color2: '#FBFBFB'
+color3: '#17365D'
+color4: '#000000'
+color5: '#FFFFFF'
+color_mode: 'Light Mode'
+

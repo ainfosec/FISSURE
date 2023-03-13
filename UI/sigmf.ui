@@ -13,7 +13,7 @@
   <property name="windowTitle">
    <string>SigMF Configuration</string>
   </property>
-  <widget class="QFrame" name="frame_63">
+  <widget class="QFrame" name="frame1_63">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -21,16 +21,6 @@
      <width>780</width>
      <height>340</height>
     </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QFrame#frame_63 {
-	background-color: rgb(251, 251, 251);
-	border: 1px solid #17365D;
-	border-bottom-left-radius: 15px;
-	border-bottom-right-radius: 15px;
-	
-
-}</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
@@ -670,7 +660,7 @@ p, li { white-space: pre-wrap; }
     </property>
    </widget>
   </widget>
-  <widget class="QLabel" name="label_293">
+  <widget class="QLabel" name="label1_293">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -682,7 +672,7 @@ p, li { white-space: pre-wrap; }
    <property name="maximumSize">
     <size>
      <width>16777215</width>
-     <height>22</height>
+     <height>16777215</height>
     </size>
    </property>
    <property name="font">
@@ -697,40 +687,11 @@ p, li { white-space: pre-wrap; }
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel#label_293 {
-   qproperty-alignment: AlignCenter;
-	border: 1px solid #17365D;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
-	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
-	padding: 0px 0px;
-	color: rgb(255, 255, 255);
-	max-height: 20px;
-	font: bold 10pt &quot;Ubuntu&quot;;
-}</string>
-   </property>
    <property name="text">
     <string>Global</string>
    </property>
   </widget>
-  <widget class="QDialogButtonBox" name="buttonBox">
-   <property name="geometry">
-    <rect>
-     <x>140</x>
-     <y>560</y>
-     <width>341</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="orientation">
-    <enum>Qt::Horizontal</enum>
-   </property>
-   <property name="standardButtons">
-    <set>QDialogButtonBox::Apply|QDialogButtonBox::Cancel</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_20">
+  <widget class="QLabel" name="label2_20">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -751,7 +712,7 @@ p, li { white-space: pre-wrap; }
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label_294">
+  <widget class="QLabel" name="label1_294">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -763,7 +724,7 @@ p, li { white-space: pre-wrap; }
    <property name="maximumSize">
     <size>
      <width>16777215</width>
-     <height>22</height>
+     <height>16777215</height>
     </size>
    </property>
    <property name="font">
@@ -778,24 +739,11 @@ p, li { white-space: pre-wrap; }
    <property name="autoFillBackground">
     <bool>false</bool>
    </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel#label_294 {
-   qproperty-alignment: AlignCenter;
-	border: 1px solid #17365D;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
-	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
-	padding: 0px 0px;
-	color: rgb(255, 255, 255);
-	max-height: 20px;
-	font: bold 10pt &quot;Ubuntu&quot;;
-}</string>
-   </property>
    <property name="text">
     <string>Captures</string>
    </property>
   </widget>
-  <widget class="QFrame" name="frame_64">
+  <widget class="QFrame" name="frame1_64">
    <property name="geometry">
     <rect>
      <x>10</x>
@@ -803,16 +751,6 @@ p, li { white-space: pre-wrap; }
      <width>780</width>
      <height>130</height>
     </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QFrame#frame_64 {
-	background-color: rgb(251, 251, 251);
-	border: 1px solid #17365D;
-	border-bottom-left-radius: 15px;
-	border-bottom-right-radius: 15px;
-	
-
-}</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
@@ -1025,6 +963,32 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&amp;lt;calculated&amp;gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
     </property>
    </widget>
+  </widget>
+  <widget class="QPushButton" name="pushButton_apply">
+   <property name="geometry">
+    <rect>
+     <x>305</x>
+     <y>563</y>
+     <width>89</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Apply</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_cancel">
+   <property name="geometry">
+    <rect>
+     <x>400</x>
+     <y>563</y>
+     <width>89</width>
+     <height>25</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Cancel</string>
+   </property>
   </widget>
  </widget>
  <resources/>
