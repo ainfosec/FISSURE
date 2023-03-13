@@ -444,7 +444,7 @@
            <enum>QTabWidget::Rounded</enum>
           </property>
           <property name="currentIndex">
-           <number>3</number>
+           <number>0</number>
           </property>
           <property name="iconSize">
            <size>
@@ -1464,7 +1464,7 @@
                  <enum>QFrame::StyledPanel</enum>
                 </property>
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="page_9">
                  <widget class="QPushButton" name="pushButton_tsi_delete_preset">
@@ -2833,7 +2833,7 @@ p, li { white-space: pre-wrap; }
                  </rect>
                 </property>
                 <property name="currentIndex">
-                 <number>1</number>
+                 <number>0</number>
                 </property>
                 <widget class="QWidget" name="page_fixed_threshold">
                  <widget class="QFrame" name="frame_tsi_detector_fixed_settings1">
@@ -2851,7 +2851,7 @@ p, li { white-space: pre-wrap; }
                   <property name="frameShadow">
                    <enum>QFrame::Raised</enum>
                   </property>
-                  <widget class="QLabel" name="label_273">
+                  <widget class="QLabel" name="label2_273">
                    <property name="geometry">
                     <rect>
                      <x>0</x>
@@ -2942,7 +2942,7 @@ p, li { white-space: pre-wrap; }
                     </property>
                    </item>
                   </widget>
-                  <widget class="QLabel" name="label_275">
+                  <widget class="QLabel" name="label2_275">
                    <property name="geometry">
                     <rect>
                      <x>0</x>
@@ -2963,7 +2963,7 @@ p, li { white-space: pre-wrap; }
                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                    </property>
                   </widget>
-                  <widget class="QLabel" name="label_276">
+                  <widget class="QLabel" name="label2_276">
                    <property name="geometry">
                     <rect>
                      <x>0</x>
@@ -2984,7 +2984,7 @@ p, li { white-space: pre-wrap; }
                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                    </property>
                   </widget>
-                  <widget class="QLabel" name="label_277">
+                  <widget class="QLabel" name="label2_277">
                    <property name="geometry">
                     <rect>
                      <x>0</x>
@@ -3032,7 +3032,7 @@ p, li { white-space: pre-wrap; }
                     <number>0</number>
                    </property>
                   </widget>
-                  <widget class="QLabel" name="label_278">
+                  <widget class="QLabel" name="label2_278">
                    <property name="geometry">
                     <rect>
                      <x>0</x>
@@ -3053,7 +3053,7 @@ p, li { white-space: pre-wrap; }
                     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                    </property>
                   </widget>
-                  <widget class="QLabel" name="label_279">
+                  <widget class="QLabel" name="label2_279">
                    <property name="geometry">
                     <rect>
                      <x>0</x>
@@ -3759,7 +3759,7 @@ p, li { white-space: pre-wrap; }
              </font>
             </property>
             <property name="currentIndex">
-             <number>0</number>
+             <number>6</number>
             </property>
             <widget class="QWidget" name="tab_pd_status">
              <property name="styleSheet">
@@ -4066,6 +4066,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -4076,8 +4081,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;100&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;100&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
                <widget class="QTextEdit" name="textEdit_pd_status_buffer_size">
@@ -4089,6 +4094,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -4099,8 +4109,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;262144&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;262144&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
                <widget class="QPushButton" name="pushButton_pd_status_buffer_clear">
@@ -4271,6 +4281,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -4281,8 +4296,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;172.16.15.37&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;172.16.15.37&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
                <widget class="QPushButton" name="pushButton_pd_status_add_pub">
@@ -4322,6 +4337,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -4332,8 +4352,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;5066&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;5066&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
               </widget>
@@ -4816,6 +4836,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -4826,11 +4851,11 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;0&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
-               <widget class="QLabel" name="label_23">
+               <widget class="QLabel" name="label2_23">
                 <property name="geometry">
                  <rect>
                   <x>365</x>
@@ -4876,6 +4901,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -4886,8 +4916,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;0&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
                <widget class="QFrame" name="frame5_15">
@@ -4906,7 +4936,7 @@ p, li { white-space: pre-wrap; }
                  <enum>QFrame::Raised</enum>
                 </property>
                </widget>
-               <widget class="QLabel" name="label_64">
+               <widget class="QLabel" name="label2_64">
                 <property name="geometry">
                  <rect>
                   <x>365</x>
@@ -4973,6 +5003,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -4998,7 +5033,7 @@ p, li { white-space: pre-wrap; }
                  <string>Search</string>
                 </property>
                </widget>
-               <widget class="QLabel" name="label_pd_flow_graphs_lookup_not_found">
+               <widget class="QLabel" name="label2_pd_flow_graphs_lookup_not_found">
                 <property name="geometry">
                  <rect>
                   <x>462</x>
@@ -5027,6 +5062,11 @@ p, li { white-space: pre-wrap; }
                   <width>140</width>
                   <height>27</height>
                  </rect>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
                 </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
@@ -5074,7 +5114,7 @@ p, li { white-space: pre-wrap; }
                  <string>Start Frequency (MHz): </string>
                 </property>
                </widget>
-               <widget class="QLabel" name="label_126">
+               <widget class="QLabel" name="label2_126">
                 <property name="geometry">
                  <rect>
                   <x>365</x>
@@ -5098,6 +5138,11 @@ p, li { white-space: pre-wrap; }
                   <width>140</width>
                   <height>27</height>
                  </rect>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
                 </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
@@ -5147,6 +5192,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="currentIndex">
                  <number>1</number>
                 </property>
@@ -5170,6 +5220,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -5180,8 +5235,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;0&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
                <widget class="QFrame" name="frame5_19">
@@ -5211,7 +5266,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="font">
                  <font>
-                  <family>Times New Roman</family>
+                  <pointsize>11</pointsize>
                  </font>
                 </property>
                </widget>
@@ -5268,7 +5323,7 @@ p, li { white-space: pre-wrap; }
                  <enum>QFrame::Raised</enum>
                 </property>
                </widget>
-               <widget class="QLabel" name="label_65">
+               <widget class="QLabel" name="label2_65">
                 <property name="geometry">
                  <rect>
                   <x>365</x>
@@ -5314,6 +5369,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -5324,8 +5384,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;0&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
                <widget class="QTextEdit" name="textEdit_pd_flow_graphs_frequency">
@@ -5337,6 +5397,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -5347,8 +5412,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
                <widget class="QPushButton" name="pushButton_pd_flow_graphs_auto_select">
@@ -5399,6 +5464,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -5415,25 +5485,25 @@ p, li { white-space: pre-wrap; }
                <zorder>pushButton_pd_flow_graphs_load_selected</zorder>
                <zorder>checkBox_pd_flow_graphs_modulation</zorder>
                <zorder>textEdit_pd_flow_graphs_start_frequency_margin</zorder>
-               <zorder>label_23</zorder>
+               <zorder>label2_23</zorder>
                <zorder>checkBox_pd_flow_graphs_continuous</zorder>
                <zorder>textEdit_pd_flow_graphs_bandwidth_margin</zorder>
-               <zorder>label_64</zorder>
+               <zorder>label2_64</zorder>
                <zorder>pushButton_pd_flow_graphs_current_soi</zorder>
                <zorder>checkBox_pd_flow_graphs_frequency</zorder>
                <zorder>textEdit_pd_flow_graphs_bandwidth</zorder>
                <zorder>pushButton_pd_flow_graphs_lookup</zorder>
-               <zorder>label_pd_flow_graphs_lookup_not_found</zorder>
+               <zorder>label2_pd_flow_graphs_lookup_not_found</zorder>
                <zorder>textEdit_pd_flow_graphs_end_frequency</zorder>
                <zorder>pushButton_pd_flow_graphs_lookup_clear</zorder>
                <zorder>checkBox_pd_flow_graphs_start_frequency</zorder>
-               <zorder>label_126</zorder>
+               <zorder>label2_126</zorder>
                <zorder>textEdit_pd_flow_graphs_start_frequency</zorder>
                <zorder>comboBox_pd_flow_graphs_continuous</zorder>
                <zorder>textEdit_pd_flow_graphs_frequency_margin</zorder>
                <zorder>listWidget_pd_flow_graphs_recommended_fgs</zorder>
                <zorder>checkBox_pd_flow_graphs_bandwidth</zorder>
-               <zorder>label_65</zorder>
+               <zorder>label2_65</zorder>
                <zorder>checkBox_pd_flow_graphs_end_frequency</zorder>
                <zorder>textEdit_pd_flow_graphs_end_frequency_margin</zorder>
                <zorder>textEdit_pd_flow_graphs_frequency</zorder>
@@ -5507,7 +5577,7 @@ p, li { white-space: pre-wrap; }
                 </property>
                 <property name="font">
                  <font>
-                  <family>Times New Roman</family>
+                  <pointsize>11</pointsize>
                  </font>
                 </property>
                </widget>
@@ -5856,6 +5926,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -6022,7 +6097,7 @@ QTabBar::tab:!selected {
                <enum>QTabWidget::Rounded</enum>
               </property>
               <property name="currentIndex">
-               <number>1</number>
+               <number>0</number>
               </property>
               <widget class="QWidget" name="tab_13">
                <attribute name="title">
@@ -6388,6 +6463,11 @@ QTabBar::tab:!selected {
                  <height>27</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
                <property name="minimum">
                 <number>1</number>
                </property>
@@ -6407,6 +6487,11 @@ QTabBar::tab:!selected {
                  <height>27</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
                <property name="minimum">
                 <number>1</number>
                </property>
@@ -6425,6 +6510,11 @@ QTabBar::tab:!selected {
                  <width>150</width>
                  <height>27</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
                <property name="minimum">
                 <number>1</number>
@@ -6504,6 +6594,11 @@ QTabBar::tab:!selected {
                  <height>27</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
                <property name="minimum">
                 <number>1</number>
                </property>
@@ -6566,6 +6661,11 @@ QTabBar::tab:!selected {
                  <width>266</width>
                  <height>23</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
                <property name="minimum">
                 <number>0</number>
@@ -6778,6 +6878,11 @@ QTabBar::tab:!selected {
                  <height>27</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
                <property name="tabChangesFocus">
                 <bool>true</bool>
                </property>
@@ -6788,8 +6893,8 @@ QTabBar::tab:!selected {
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
               <widget class="QLabel" name="label2_pd_bit_slicing_field_delineations">
@@ -7554,7 +7659,7 @@ p, li { white-space: pre-wrap; }
                   <x>560</x>
                   <y>0</y>
                   <width>1</width>
-                  <height>73</height>
+                  <height>75</height>
                  </rect>
                 </property>
                 <property name="orientation">
@@ -7656,7 +7761,7 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>360</y>
-                <width>1216</width>
+                <width>1220</width>
                 <height>2</height>
                </rect>
               </property>
@@ -7708,7 +7813,7 @@ p, li { white-space: pre-wrap; }
               <property name="geometry">
                <rect>
                 <x>10</x>
-                <y>365</y>
+                <y>370</y>
                 <width>1190</width>
                 <height>20</height>
                </rect>
@@ -7730,7 +7835,7 @@ p, li { white-space: pre-wrap; }
               <property name="geometry">
                <rect>
                 <x>10</x>
-                <y>385</y>
+                <y>390</y>
                 <width>1190</width>
                 <height>415</height>
                </rect>
@@ -7989,6 +8094,11 @@ p, li { white-space: pre-wrap; }
                  <height>245</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
                <property name="horizontalScrollBarPolicy">
                 <enum>Qt::ScrollBarAlwaysOff</enum>
                </property>
@@ -8126,6 +8236,11 @@ p, li { white-space: pre-wrap; }
                  <height>245</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
                <property name="verticalScrollBarPolicy">
                 <enum>Qt::ScrollBarAsNeeded</enum>
                </property>
@@ -8203,6 +8318,11 @@ p, li { white-space: pre-wrap; }
                  <width>200</width>
                  <height>300</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
                <property name="verticalScrollBarPolicy">
                 <enum>Qt::ScrollBarAsNeeded</enum>
@@ -8923,9 +9043,9 @@ p, li { white-space: pre-wrap; }
              <widget class="Line" name="line_17">
               <property name="geometry">
                <rect>
-                <x>529</x>
+                <x>530</x>
                 <y>165</y>
-                <width>685</width>
+                <width>690</width>
                 <height>2</height>
                </rect>
               </property>
@@ -9519,6 +9639,11 @@ p, li { white-space: pre-wrap; }
                  <height>27</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
                <property name="verticalScrollBarPolicy">
                 <enum>Qt::ScrollBarAlwaysOff</enum>
                </property>
@@ -9529,8 +9654,8 @@ p, li { white-space: pre-wrap; }
                 <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;55555&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p align=&quot;center&quot; style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;55555&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
               <widget class="QComboBox" name="comboBox_pd_sniffer_netcat">
@@ -9583,6 +9708,11 @@ p, li { white-space: pre-wrap; }
                  <height>27</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
               </widget>
               <widget class="QListWidget" name="listWidget_pd_sniffer_test_files">
                <property name="geometry">
@@ -9592,6 +9722,11 @@ p, li { white-space: pre-wrap; }
                  <width>490</width>
                  <height>260</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
                <property name="horizontalScrollBarPolicy">
                 <enum>Qt::ScrollBarAlwaysOn</enum>
@@ -12388,7 +12523,7 @@ p, li { white-space: pre-wrap; }
                   <property name="frameShadow">
                    <enum>QFrame::Raised</enum>
                   </property>
-                  <widget class="QLabel" name="label_attack_fuzzing_default_length_total">
+                  <widget class="QLabel" name="label2_attack_fuzzing_default_length_total">
                    <property name="geometry">
                     <rect>
                      <x>805</x>
@@ -12421,6 +12556,11 @@ p, li { white-space: pre-wrap; }
                      <height>27</height>
                     </rect>
                    </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>11</pointsize>
+                    </font>
+                   </property>
                    <property name="text">
                     <string>Restore Defaults</string>
                    </property>
@@ -12436,6 +12576,11 @@ p, li { white-space: pre-wrap; }
                      <width>75</width>
                      <height>27</height>
                     </rect>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>11</pointsize>
+                    </font>
                    </property>
                    <property name="text">
                     <string>All Binary</string>
@@ -12473,6 +12618,11 @@ p, li { white-space: pre-wrap; }
                      <width>75</width>
                      <height>27</height>
                     </rect>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>11</pointsize>
+                    </font>
                    </property>
                    <property name="text">
                     <string>All Hex</string>
@@ -12514,6 +12664,11 @@ p, li { white-space: pre-wrap; }
                      <height>27</height>
                     </rect>
                    </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>11</pointsize>
+                    </font>
+                   </property>
                    <property name="tabChangesFocus">
                     <bool>true</bool>
                    </property>
@@ -12521,8 +12676,8 @@ p, li { white-space: pre-wrap; }
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;0&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;0&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                   <widget class="QComboBox" name="comboBox_attack_fuzzing_subcategory">
@@ -12536,6 +12691,11 @@ p, li { white-space: pre-wrap; }
                      <width>291</width>
                      <height>27</height>
                     </rect>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>11</pointsize>
+                    </font>
                    </property>
                    <property name="currentIndex">
                     <number>-1</number>
@@ -12553,6 +12713,11 @@ p, li { white-space: pre-wrap; }
                      <height>27</height>
                     </rect>
                    </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>11</pointsize>
+                    </font>
+                   </property>
                    <property name="tabChangesFocus">
                     <bool>true</bool>
                    </property>
@@ -12563,8 +12728,8 @@ p, li { white-space: pre-wrap; }
                     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;span style=&quot; font-size:11pt;&quot;&gt;1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                    </property>
                   </widget>
                   <widget class="QLabel" name="label2_attack_fuzzing_subcategory">
@@ -12922,6 +13087,11 @@ p, li { white-space: pre-wrap; }
                      <width>676</width>
                      <height>46</height>
                     </rect>
+                   </property>
+                   <property name="font">
+                    <font>
+                     <pointsize>11</pointsize>
+                    </font>
                    </property>
                   </widget>
                   <widget class="QLabel" name="label2_fuzzing_variables_fg">
@@ -13916,6 +14086,11 @@ p, li { white-space: pre-wrap; }
                <width>241</width>
                <height>236</height>
               </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+              </font>
              </property>
              <property name="horizontalScrollBarPolicy">
               <enum>Qt::ScrollBarAlwaysOn</enum>
@@ -21876,6 +22051,11 @@ p, li { white-space: pre-wrap; }
                <height>725</height>
               </rect>
              </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
              <property name="horizontalScrollBarPolicy">
               <enum>Qt::ScrollBarAlwaysOn</enum>
              </property>
@@ -22684,8 +22864,6 @@ p, li { white-space: pre-wrap; }
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
                 </font>
                </property>
                <property name="text">
@@ -22728,8 +22906,6 @@ p, li { white-space: pre-wrap; }
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
                 </font>
                </property>
                <property name="text">
@@ -22794,8 +22970,6 @@ p, li { white-space: pre-wrap; }
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
                 </font>
                </property>
                <property name="text">
@@ -22817,8 +22991,6 @@ p, li { white-space: pre-wrap; }
                <property name="font">
                 <font>
                  <pointsize>10</pointsize>
-                 <weight>75</weight>
-                 <bold>true</bold>
                 </font>
                </property>
                <property name="text">
@@ -23434,7 +23606,7 @@ p, li { white-space: pre-wrap; }
                 <string>Search Library</string>
                </property>
               </widget>
-              <widget class="QLabel" name="label_library_search_searching">
+              <widget class="QLabel" name="label2_library_search_searching">
                <property name="geometry">
                 <rect>
                  <x>670</x>
@@ -23850,7 +24022,7 @@ p, li { white-space: pre-wrap; }
                 <enum>QFrame::Raised</enum>
                </property>
               </widget>
-              <widget class="QLabel" name="label_21">
+              <widget class="QLabel" name="label2_21">
                <property name="geometry">
                 <rect>
                  <x>364</x>
@@ -23984,7 +24156,7 @@ p, li { white-space: pre-wrap; }
                 <enum>QFrame::Raised</enum>
                </property>
               </widget>
-              <widget class="QLabel" name="label_20">
+              <widget class="QLabel" name="label2_20">
                <property name="geometry">
                 <rect>
                  <x>364</x>
@@ -24042,7 +24214,7 @@ p, li { white-space: pre-wrap; }
                 <string>End Frequency (MHz): </string>
                </property>
               </widget>
-              <widget class="QLabel" name="label_19">
+              <widget class="QLabel" name="label2_19">
                <property name="geometry">
                 <rect>
                  <x>364</x>
@@ -24058,7 +24230,7 @@ p, li { white-space: pre-wrap; }
                 <set>Qt::AlignCenter</set>
                </property>
               </widget>
-              <widget class="QLabel" name="label_22">
+              <widget class="QLabel" name="label2_22">
                <property name="geometry">
                 <rect>
                  <x>364</x>
@@ -24176,7 +24348,7 @@ p, li { white-space: pre-wrap; }
               <zorder>frame5_21</zorder>
               <zorder>frame5_26</zorder>
               <zorder>pushButton_library_search_search_library</zorder>
-              <zorder>label_library_search_searching</zorder>
+              <zorder>label2_library_search_searching</zorder>
               <zorder>line_9</zorder>
               <zorder>line_48</zorder>
               <zorder>radioButton_library_search_hex</zorder>
@@ -24193,15 +24365,15 @@ p, li { white-space: pre-wrap; }
               <zorder>textEdit_library_search_end_frequency_margin</zorder>
               <zorder>textEdit_library_search_start_frequency_margin</zorder>
               <zorder>checkBox_library_search_start_frequency</zorder>
-              <zorder>label_21</zorder>
+              <zorder>label2_21</zorder>
               <zorder>comboBox_library_search_continuous</zorder>
               <zorder>checkBox_library_search_frequency</zorder>
               <zorder>textEdit_library_search_modulation</zorder>
-              <zorder>label_20</zorder>
+              <zorder>label2_20</zorder>
               <zorder>textEdit_library_search_frequency</zorder>
               <zorder>checkBox_library_search_end_frequency</zorder>
-              <zorder>label_19</zorder>
-              <zorder>label_22</zorder>
+              <zorder>label2_19</zorder>
+              <zorder>label2_22</zorder>
               <zorder>textEdit_library_search_bandwidth_margin</zorder>
               <zorder>textEdit_library_search_start_frequency</zorder>
               <zorder>textEdit_library_search_frequency_margin</zorder>
@@ -24236,7 +24408,7 @@ p, li { white-space: pre-wrap; }
                <string>Search Results</string>
               </property>
              </widget>
-             <widget class="QTableWidget" name="tableWidget_library_search_results">
+             <widget class="QTableWidget" name="tableWidget1_library_search_results">
               <property name="enabled">
                <bool>true</bool>
               </property>
@@ -24252,15 +24424,6 @@ p, li { white-space: pre-wrap; }
                <font>
                 <pointsize>10</pointsize>
                </font>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">QTableWidget#tableWidget_library_search_results {
-	border: 1px solid #17365D;
-}
-
-#tableWidget_library_search_results &gt; QHeaderView {
-	font-size: 10pt;
-}</string>
               </property>
               <property name="horizontalScrollBarPolicy">
                <enum>Qt::ScrollBarAlwaysOn</enum>
@@ -24443,6 +24606,11 @@ p, li { white-space: pre-wrap; }
                  <height>110</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
               </widget>
               <widget class="QLabel" name="label2_185">
                <property name="geometry">
@@ -24478,6 +24646,11 @@ p, li { white-space: pre-wrap; }
                  <height>110</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
               </widget>
               <widget class="QListWidget" name="listWidget_library_browse_attacks">
                <property name="geometry">
@@ -24487,6 +24660,11 @@ p, li { white-space: pre-wrap; }
                  <width>255</width>
                  <height>110</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
               </widget>
               <widget class="QPushButton" name="pushButton_library_attacks_remove">
@@ -24500,6 +24678,11 @@ p, li { white-space: pre-wrap; }
                  <width>99</width>
                  <height>27</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
                <property name="text">
                 <string>Remove</string>
@@ -24551,6 +24734,11 @@ p, li { white-space: pre-wrap; }
                  <height>110</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
               </widget>
               <widget class="QLabel" name="label2_186">
                <property name="geometry">
@@ -24588,6 +24776,11 @@ Types</string>
                  <height>27</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
                <property name="text">
                 <string>Remove</string>
                </property>
@@ -24617,6 +24810,11 @@ Types</string>
                  <height>110</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
                <property name="autoFillBackground">
                 <bool>false</bool>
                </property>
@@ -24635,6 +24833,11 @@ Types</string>
                  <width>99</width>
                  <height>27</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
                <property name="text">
                 <string>Remove</string>
@@ -24672,6 +24875,11 @@ Types</string>
                  <height>110</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
               </widget>
               <widget class="QListWidget" name="listWidget_library_browse_packet_types">
                <property name="geometry">
@@ -24681,6 +24889,11 @@ Types</string>
                  <width>280</width>
                  <height>110</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
               </widget>
               <zorder>textEdit_library_browse_packet_types</zorder>
@@ -24712,6 +24925,11 @@ Types</string>
                  <width>260</width>
                  <height>150</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
                <property name="autoFillBackground">
                 <bool>false</bool>
@@ -24752,6 +24970,11 @@ Types</string>
                  <height>150</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
               </widget>
               <widget class="QPushButton" name="pushButton_library_browse_remove_soi">
                <property name="enabled">
@@ -24764,6 +24987,11 @@ Types</string>
                  <width>99</width>
                  <height>27</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
                <property name="text">
                 <string>Remove</string>
@@ -24794,6 +25022,11 @@ Types</string>
                  <height>110</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
               </widget>
               <widget class="QListWidget" name="listWidget_library_browse_demod_fgs_modulation">
                <property name="geometry">
@@ -24803,6 +25036,11 @@ Types</string>
                  <width>280</width>
                  <height>110</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
               </widget>
               <widget class="QLabel" name="label2_188">
@@ -24838,6 +25076,11 @@ Flow Graphs</string>
                  <height>110</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
               </widget>
               <widget class="QPushButton" name="pushButton_library_browse_remove_demod_fg">
                <property name="enabled">
@@ -24850,6 +25093,11 @@ Flow Graphs</string>
                  <width>99</width>
                  <height>27</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
                <property name="text">
                 <string>Remove</string>
@@ -24880,6 +25128,11 @@ Flow Graphs</string>
                  <height>105</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
               </widget>
               <widget class="QLabel" name="label2_190">
                <property name="geometry">
@@ -24887,7 +25140,7 @@ Flow Graphs</string>
                  <x>15</x>
                  <y>5</y>
                  <width>120</width>
-                 <height>100</height>
+                 <height>105</height>
                 </rect>
                </property>
                <property name="font">
@@ -24912,6 +25165,11 @@ Flow Graphs</string>
                  <width>280</width>
                  <height>105</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
                </property>
               </widget>
              </widget>
@@ -25980,6 +26238,11 @@ Flow Graphs</string>
                   <height>22</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>Stream</string>
                 </property>
@@ -25996,6 +26259,11 @@ Flow Graphs</string>
                   <height>22</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="text">
                  <string>Tagged Stream</string>
                 </property>
@@ -26008,6 +26276,11 @@ Flow Graphs</string>
                   <width>150</width>
                   <height>22</height>
                  </rect>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
                 </property>
                 <property name="text">
                  <string>Message/PDU</string>
@@ -26533,7 +26806,7 @@ p, li { white-space: pre-wrap; }
            <attribute name="title">
             <string>Log</string>
            </attribute>
-           <widget class="QTextEdit" name="textEdit1_log">
+           <widget class="QTextEdit" name="textEdit2_log">
             <property name="geometry">
              <rect>
               <x>30</x>
@@ -26557,6 +26830,11 @@ p, li { white-space: pre-wrap; }
               <width>1000</width>
               <height>160</height>
              </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
             </property>
             <property name="tabChangesFocus">
              <bool>false</bool>
@@ -29851,7 +30129,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>radioButton_library_search_binary</tabstop>
   <tabstop>radioButton_library_search_hex</tabstop>
   <tabstop>pushButton_library_search_search_library</tabstop>
-  <tabstop>tableWidget_library_search_results</tabstop>
+  <tabstop>tableWidget1_library_search_results</tabstop>
   <tabstop>comboBox_library_browse_protocol</tabstop>
   <tabstop>pushButton_library_remove_protocol</tabstop>
   <tabstop>checkBox_library_attacks_remove_flow_graphs</tabstop>
@@ -29910,7 +30188,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>textEdit_library_attacks_name</tabstop>
   <tabstop>textEdit_library_attacks_new_name</tabstop>
   <tabstop>radioButton_library_add_demodulation_fg_msg_pdu</tabstop>
-  <tabstop>textEdit1_log</tabstop>
+  <tabstop>textEdit2_log</tabstop>
   <tabstop>checkBox_log_heartbeats</tabstop>
   <tabstop>checkBox_log_tsi</tabstop>
   <tabstop>checkBox_log_fge</tabstop>

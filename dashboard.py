@@ -157,6 +157,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         # Add a Toolbar
         self.mpl_toolbar = NavigationToolbar(self.iq_matplotlib_widget, self.tab_iq_data)
+        self.mpl_toolbar.setStyleSheet("color:" + self.dashboard_settings_dictionary['color4'])
         #self.mpl_toolbar.setGeometry(QtCore.QRect(450, 815, 525, 25))  
         self.mpl_toolbar.setGeometry(QtCore.QRect(375, 277, 525, 35))  
            
@@ -312,7 +313,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_library_pd_packet.horizontalHeader().setSectionResizeMode(2,QtWidgets.QHeaderView.Stretch) 
                 
         # Hide the Searching Label
-        self.label_library_search_searching.setVisible(False)   
+        self.label2_library_search_searching.setVisible(False)   
         
         # Set up Add Attack Stacked Widget
         self.comboBox_library_attacks_subcategory.addItems(["Denial of Service","Jamming","Spoofing","Sniffing/Snooping","Probe Attacks","Installation of Malware","Misuse of Resources","File"])
@@ -419,7 +420,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         #~ self.tableWidget_pd_bit_slicing_candidate_preambles.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch) 
         
         # Set the PD Flow Graph Lookup Not Found Label
-        self.label_pd_flow_graphs_lookup_not_found.setText("")    
+        self.label2_pd_flow_graphs_lookup_not_found.setText("")    
         
         # Hide the Calculating Label
         self.label2_pd_bit_slicing_calculating.setVisible(False)    
@@ -1709,8 +1710,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Display the Text
         with open(os.path.dirname(os.path.realpath(__file__)) + "/Logs/temp.log") as mylogfile:
             temp_log_contents = mylogfile.read()
-        self.textEdit1_log.setPlainText(temp_log_contents)
-        self.textEdit1_log.moveCursor(QtGui.QTextCursor.End)        
+        self.textEdit2_log.setPlainText(temp_log_contents)
+        self.textEdit2_log.moveCursor(QtGui.QTextCursor.End)        
         
     def _slotLogRefreshPermitClicked(self):
         """ Permit refresh is clicked in the Log tab
@@ -1740,8 +1741,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Display the Text
         with open(os.path.dirname(os.path.realpath(__file__)) + "/Logs/temp.log") as mylogfile:
             temp_log_contents = mylogfile.read()
-        self.textEdit1_log.setPlainText(temp_log_contents)
-        self.textEdit1_log.moveCursor(QtGui.QTextCursor.End)        
+        self.textEdit2_log.setPlainText(temp_log_contents)
+        self.textEdit2_log.moveCursor(QtGui.QTextCursor.End)        
         
     def targetSelected(self, row):
         """ SOI target was clicked by the user or selected by auto-select.
@@ -2276,9 +2277,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Show/Hide the PD Flow Graph Lookup Not Found Label
         if len(modulation_list) == 0:
-            self.label_pd_flow_graphs_lookup_not_found.setText("Not Found!")
+            self.label2_pd_flow_graphs_lookup_not_found.setText("Not Found!")
         else:
-            self.label_pd_flow_graphs_lookup_not_found.setText("Found!")     
+            self.label2_pd_flow_graphs_lookup_not_found.setText("Found!")     
         
     def _slotSOI_Chosen(self, target_SOI):
         """ The HIPRFISR returned a SOI to target. This checks the radio button of the chosen SOI
@@ -2451,13 +2452,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_hardware = self.dashboard_settings_dictionary['hardware_pd']
 
         # Clear Results Table
-        self.tableWidget_library_search_results.setRowCount(0)         
+        self.tableWidget1_library_search_results.setRowCount(0)         
         
         # Send Message
         self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Search Library for Flow Graphs', Parameters = [soi_data, get_hardware])
         
         # Change the Label
-        self.label_pd_flow_graphs_lookup_not_found.setText("Searching...")
+        self.label2_pd_flow_graphs_lookup_not_found.setText("Searching...")
 
             
     def _slotPD_DemodulationStartStopClicked(self):
@@ -6459,7 +6460,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Set the Length Labels
             self.label2_attack_fuzzing_current_length_total.setText(str(""))
-            self.label_attack_fuzzing_default_length_total.setText(str(default_length))  
+            self.label2_attack_fuzzing_default_length_total.setText(str(default_length))  
             
             # Resize the Table
             self.tableWidget_attack_fuzzing_data_field.setColumnWidth(0,54) 
@@ -6558,7 +6559,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Set the Length Labels
         self.label2_attack_fuzzing_current_length_total.setText(str(current_length))
-        self.label_attack_fuzzing_default_length_total.setText(str(default_length)) 
+        self.label2_attack_fuzzing_default_length_total.setText(str(default_length)) 
         
         # Resize the Table
         self.tableWidget_attack_fuzzing_data_field.setColumnWidth(0,54) 
@@ -8894,19 +8895,19 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 field_data.replace(' ','')
         
         # Clear Results Table
-        self.tableWidget_library_search_results.setRowCount(0) 
+        self.tableWidget1_library_search_results.setRowCount(0) 
         
         # Send Message
         self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Search Library', Parameters = [soi_data, field_data])
         
         # Show the Label
-        self.label_library_search_searching.setVisible(True)
+        self.label2_library_search_searching.setVisible(True)
         
     def _slotPD_BitSlicingLibraryLookupReturned(self, message):
         """ Updates the listbox of library packet types and protocols that match a preamble.
         """
         # Remove Existing Items
-        self.tableWidget_library_search_results.setRowCount(0) 
+        self.tableWidget1_library_search_results.setRowCount(0) 
         
         # Convert Message to List
         message_list = ast.literal_eval(message)
@@ -8914,70 +8915,70 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Set the Values in the Results Table       
         for n in message_list:
             for m in n:
-                self.tableWidget_library_search_results.setRowCount(self.tableWidget_library_search_results.rowCount()+1)
+                self.tableWidget1_library_search_results.setRowCount(self.tableWidget1_library_search_results.rowCount()+1)
                 
                 # Protocol
                 protocol_item = QtWidgets.QTableWidgetItem(str(n[m]['Protocol']))
                 protocol_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 protocol_item.setFlags(protocol_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,0,protocol_item)     
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,0,protocol_item)     
                 
                 # Subtype
                 subtype_item = QtWidgets.QTableWidgetItem(str(m))
                 subtype_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 subtype_item.setFlags(subtype_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,1,subtype_item)  
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,1,subtype_item)  
                 
                 # Center Frequency
                 center_freq_item = QtWidgets.QTableWidgetItem(str(n[m]['Frequency']))
                 center_freq_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 center_freq_item.setFlags(center_freq_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,2,center_freq_item)  
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,2,center_freq_item)  
                 
                 # Start Frequency            
                 start_freq_item = QtWidgets.QTableWidgetItem(str(n[m]['Start Frequency']))
                 start_freq_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 start_freq_item.setFlags(start_freq_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,3,start_freq_item)  
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,3,start_freq_item)  
                 
                 # End Frequency
                 end_freq_item = QtWidgets.QTableWidgetItem(str(n[m]['End Frequency']))
                 end_freq_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 end_freq_item.setFlags(end_freq_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,4,end_freq_item)  
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,4,end_freq_item)  
                 
                 # Bandwidth
                 bandwidth_item = QtWidgets.QTableWidgetItem(str(n[m]['Bandwidth']))
                 bandwidth_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 bandwidth_item.setFlags(bandwidth_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,5,bandwidth_item) 
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,5,bandwidth_item) 
                 
                 # Modulation
                 modulation_item = QtWidgets.QTableWidgetItem(str(n[m]['Modulation']))
                 modulation_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 modulation_item.setFlags(modulation_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,6,modulation_item) 
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,6,modulation_item) 
                 
                 # Continuous
                 continuous_item = QtWidgets.QTableWidgetItem(str(n[m]['Continuous']))
                 continuous_item.setTextAlignment(QtCore.Qt.AlignCenter) 
                 continuous_item.setFlags(continuous_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,7,continuous_item) 
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,7,continuous_item) 
                 
                 # Notes
                 notes_item = QtWidgets.QTableWidgetItem(str(n[m]['Notes']))
                 notes_item.setTextAlignment(QtCore.Qt.AlignLeft) 
                 notes_item.setFlags(notes_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                self.tableWidget_library_search_results.setItem(self.tableWidget_library_search_results.rowCount()-1,8,notes_item) 
+                self.tableWidget1_library_search_results.setItem(self.tableWidget1_library_search_results.rowCount()-1,8,notes_item) 
                         
         # Resize the Table
-        self.tableWidget_library_search_results.resizeColumnsToContents() 
-        self.tableWidget_library_search_results.resizeRowsToContents()  
-        #self.tableWidget_library_search_results.horizontalHeader().setStretchLastSection(False) 
-        #self.tableWidget_library_search_results.horizontalHeader().setStretchLastSection(True) 
+        self.tableWidget1_library_search_results.resizeColumnsToContents() 
+        self.tableWidget1_library_search_results.resizeRowsToContents()  
+        #self.tableWidget1_library_search_results.horizontalHeader().setStretchLastSection(False) 
+        #self.tableWidget1_library_search_results.horizontalHeader().setStretchLastSection(True) 
                       
         # Hide the Label
-        self.label_library_search_searching.setVisible(False)
+        self.label2_library_search_searching.setVisible(False)
                         
     def _slotPD_BitSlicingSpinboxWindowChanged(self):
         """ This adjusts the preamble stats to display the results for the selected window size.
@@ -10065,7 +10066,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 # Change the Header Font Color to Black
                 header_item = QtWidgets.QTableWidgetItem(self.colnum_string(col+1))
                 header_item.setTextAlignment(QtCore.Qt.AlignCenter)
-                header_item.setForeground(QtGui.QColor(0,0,0))
+                header_item.setForeground(QtGui.QColor(self.dashboard_settings_dictionary['color4']))
                 self.tableWidget_pd_bit_slicing_packets.setHorizontalHeaderItem(col,header_item)      
                             
         # Resize the Table
@@ -24074,6 +24075,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.draw()
+        self.mpl_toolbar.setStyleSheet("")
         
         self._slotTSI_RefreshPlotClicked()
         
@@ -24127,6 +24129,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.draw()
+        self.mpl_toolbar.setStyleSheet("color:" + self.dashboard_settings_dictionary['color4'])
         
         self._slotTSI_RefreshPlotClicked()
         
@@ -24189,6 +24192,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.draw()
+            self.mpl_toolbar.setStyleSheet("color:" + self.dashboard_settings_dictionary['color4'])
             
             self._slotTSI_RefreshPlotClicked()
             
@@ -24433,7 +24437,6 @@ class CustomColor(QtWidgets.QDialog, form_class11):
         get_color = QtWidgets.QColorDialog.getColor()
         self.textEdit_color2.setPlainText(str(get_color.name()).upper())
 
-                
     def _slotColor3_Clicked(self):
         """ Opens the color selector for color3.
         """
@@ -25544,6 +25547,7 @@ class MyIQ_MplCanvas(FigureCanvas):
         self.fill_rect = None
         self.click = 1
         self.txt = None  #self.axes.text(0.0, 0.0, '', transform=self.axes.transAxes)
+        self.text_color = text_color
         cid = self.fig.canvas.mpl_connect('button_press_event', self.onclick)  
         
     def applyLabels(self, title, xlabel, ylabel, ylabels, ylim, text_color):
@@ -25591,6 +25595,7 @@ class MyIQ_MplCanvas(FigureCanvas):
         self.fig.set_facecolor(background_color)
         self.axes.tick_params(axis='x', colors=text_color)
         self.axes.tick_params(axis='y', colors=text_color)
+        self.text_color = text_color
             
     def clearPlot(self):
         """ Clears the plot data.
@@ -25635,20 +25640,20 @@ class MyIQ_MplCanvas(FigureCanvas):
                         if self.fill_rect != None:
                             self.fill_rect.remove()
                             self.fill_rect = None
-                        self.cursor1 = self.axes.axvline(color='k',linewidth=1)
+                        self.cursor1 = self.axes.axvline(color=self.text_color,linewidth=1)
                         self.cursor1.set_xdata(x)
                         if self.txt != None:
                             self.txt.remove()
                             self.txt = None
                         self.click = 2
                     elif self.click == 2:
-                        self.cursor2 = self.axes.axvline(color='k',linewidth=1)
+                        self.cursor2 = self.axes.axvline(color=self.text_color,linewidth=1)
                         self.cursor2.set_xdata(x)
                         x_diff = math.floor(abs(self.cursor2.get_xdata()-self.cursor1.get_xdata()))
                         self.fill_rect = self.axes.add_patch(patches.Rectangle((math.floor(self.cursor1.get_xdata()),self.axes.get_ybound()[0]),x_diff,self.axes.get_ybound()[1]-self.axes.get_ybound()[0],facecolor="yellow",alpha=0.85))
                         self.click = 1
                         if self.txt == None:
-                            self.txt = self.axes.text(0.01, 0.01, str(int(x_diff)), transform=self.axes.transAxes)
+                            self.txt = self.axes.text(0.01, 0.01, str(int(x_diff)), transform=self.axes.transAxes, color=self.text_color)
                     self.draw()
                 
                 # Right Click

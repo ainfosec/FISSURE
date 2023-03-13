@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-03-13
+
+Styling changes for Python3_maint-3.10 branch.
+ 
+### Added
+
+- Light, Dark, and Custom modes for GUI styling for Python3_maint-3.10 branch
+
+### Fixed
+
+- Correcting PyQt widgets that were not updating colors for different styles for Python3_maint-3.8 branch
+- Default widget styles updated to match light mode theme for Python3_maint-3.8 branch
+
 ## 2023-03-05
 
 Styling changes for Python3_maint-3.8 branch.

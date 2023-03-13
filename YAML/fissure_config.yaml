@@ -1,15 +1,15 @@
 SOI_quantity_limit: 5
-SOI_trigger_mode: 0
+SOI_trigger_mode: '0'
 SOI_trigger_time: 0
 SOI_trigger_timeout: 10
 buffer_size_interval: 2
 clear_log_file_on_startup: true
-color1: '#F4F4F4'
-color2: '#FBFBFB'
-color3: '#17365D'
-color4: '#000000'
-color5: '#FFFFFF'
-color_mode: Light Mode
+color1: '#121212'
+color2: '#292929'
+color3: '#002D63'
+color4: '#CCCCCC'
+color5: '#444444'
+color_mode: Dark Mode
 custom_color1: '#121212'
 custom_color2: '#292929'
 custom_color3: '#2D6300'

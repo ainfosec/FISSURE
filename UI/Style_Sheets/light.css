@@ -117,6 +117,7 @@ QTextEdit[objectName^="textEdit2_"]{
 QTableWidget[objectName^="tableWidget1_"]{border: 1px solid #17365D;}
 #tableWidget1_attack_flow_graph_current_values > QHeaderView {font-size: 10pt;}
 #tableWidget1_attack_packet_editor > QHeaderView {font-size: 10pt;}
+#treeWidget_attack_attacks > QHeaderView {font-size: 10pt;}
 
 QLabel[objectName^="label1_"]{
 	qproperty-alignment: AlignCenter;

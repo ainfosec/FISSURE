@@ -172,6 +172,7 @@ QProgressBar:disabled{
 	background-color: @color5;
     color: @color1;
 }
+QRadioButton{color: @color4;}
 QRadioButton:disabled{
 	color: @color1;
 	background-color: rgba(0,0,0,0);
@@ -290,7 +291,7 @@ QTextEdit[objectName^="textEdit1_"]{
 QTextEdit[objectName^="textEdit2_"]{
 	border: 1px solid @color3;
 	background-color: @color2;
-    color: @color2;
+    color: @color4;
 	font: 10pt "Ubuntu";
 }
 
@@ -299,6 +300,7 @@ QTextEdit[objectName^="textEdit2_"]{
 QTableWidget[objectName^="tableWidget1_"]{border: 1px solid @color3;}
 #tableWidget1_attack_flow_graph_current_values > QHeaderView {font-size: 10pt;}
 #tableWidget1_attack_packet_editor > QHeaderView {font-size: 10pt;}
+#treeWidget_attack_attacks > QHeaderView {font-size: 10pt;}
 
 QLabel[objectName^="label1_"]{
 	qproperty-alignment: AlignCenter;
