@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-03-19
+
+Styling changes for Python2_maint-3.7 branch.
+ 
+### Added
+
+- Gpick to the Tools menu and installer for Python2_maint-3.7 and Python3_maint-3.8 branches
+- wl-color-picker to the Tools menu and installer for Python3_maint-3.10 branch
+- complextoreal.com to the Lessons menu
+  
+### Changed
+
+- Small GUI style adjustments 
+
+### Fixed
+
+- Wideband detector plot background matches style when plotting points
+
 ## 2023-03-13
 
 Styling changes for Python3_maint-3.10 branch.

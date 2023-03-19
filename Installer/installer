@@ -1937,6 +1937,13 @@ make
 ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
+# Gpick
+programs_ubuntu20_04.append(('Gpick',
+"""sudo apt-get install -y gpick
+########## Verify ##########
+ls /usr/bin/gpick
+""",True,'Development'))
+
 
 ########################################################################
 ############################ Ubuntu 20.04.4 ############################
@@ -3856,6 +3863,12 @@ make
 ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
+# Gpick
+programs_ubuntu20_04_4.append(('Gpick',
+"""sudo apt-get install -y gpick
+########## Verify ##########
+ls /usr/bin/gpick
+""",True,'Development'))
 
 
 ########################################################################
@@ -5041,6 +5054,13 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # ########## Verify ##########
 # ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 # """,True,'Data'))
+
+# # Gpick
+# programs_dragonOS_focal.append(('Gpick',
+# """sudo apt-get install -y gpick
+# ########## Verify ##########
+# ls /usr/bin/gpick
+# """,True,'Development'))
 
 ######## Already Exists ######## 
 

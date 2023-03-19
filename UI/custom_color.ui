@@ -295,7 +295,7 @@ p, li { white-space: pre-wrap; }
       <x>330</x>
       <y>10</y>
       <width>40</width>
-      <height>25</height>
+      <height>27</height>
      </rect>
     </property>
     <property name="text">
@@ -308,7 +308,7 @@ p, li { white-space: pre-wrap; }
       <x>330</x>
       <y>40</y>
       <width>40</width>
-      <height>25</height>
+      <height>27</height>
      </rect>
     </property>
     <property name="text">
@@ -321,7 +321,7 @@ p, li { white-space: pre-wrap; }
       <x>330</x>
       <y>70</y>
       <width>40</width>
-      <height>25</height>
+      <height>27</height>
      </rect>
     </property>
     <property name="text">
@@ -334,7 +334,7 @@ p, li { white-space: pre-wrap; }
       <x>330</x>
       <y>100</y>
       <width>40</width>
-      <height>25</height>
+      <height>27</height>
      </rect>
     </property>
     <property name="text">
@@ -347,7 +347,7 @@ p, li { white-space: pre-wrap; }
       <x>330</x>
       <y>130</y>
       <width>40</width>
-      <height>25</height>
+      <height>27</height>
      </rect>
     </property>
     <property name="text">

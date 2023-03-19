@@ -402,6 +402,7 @@ QMenuBar#menubar::item:selected {
 
 QFrame[objectName^="line_"]{background: @color3;}
 QFrame[objectName^="line2_"]{background: @color1;}
+QFrame#line_iq{border: 1px solid @color3;}
 
 QTabWidget#tabWidget2_2::pane{
     background-color: @color2;

@@ -123,9 +123,6 @@
      <number>0</number>
     </property>
     <widget class="QWidget" name="page">
-     <property name="styleSheet">
-      <string notr="true"/>
-     </property>
      <widget class="QLabel" name="label2_124">
       <property name="geometry">
        <rect>

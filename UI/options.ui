@@ -108,10 +108,7 @@
     </rect>
    </property>
    <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
+    <enum>QFrame::NoFrame</enum>
    </property>
    <widget class="QStackedWidget" name="stackedWidget_options">
     <property name="geometry">
@@ -139,6 +136,9 @@
        <font>
         <pointsize>10</pointsize>
        </font>
+      </property>
+      <property name="lineWidth">
+       <number>1</number>
       </property>
       <attribute name="horizontalHeaderVisible">
        <bool>false</bool>

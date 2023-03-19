@@ -105,6 +105,11 @@ Project: https://www.google.com/earth/versions/
 Copyright 2022 Google LLC  
 License (zlib)
 
+**Gpick**  
+Project: https://github.com/thezbyg/gpick  
+Copyright 2009-2016, Albertas Vyšniauskas  
+License (BSD-3-Clause): https://github.com/thezbyg/gpick/blob/master/LICENSE.txt
+
 **Gpredict**  
 Project: http://gpredict.oz9aec.net/  
 License (GPL-2.0): https://github.com/csete/gpredict/blob/master/COPYING
@@ -236,13 +241,13 @@ Copyright 2014-2022 Joe Esposito
 License (MIT): https://github.com/joeyespo/grip/blob/master/LICENSE
 
 **HackRF**  
-Project: https://github.com/greatscottgadgets/hackrf
+Project: https://github.com/greatscottgadgets/hackrf  
 License (GPL-2.0): https://github.com/greatscottgadgets/hackrf/blob/master/COPYING
 
 **ham2mon**  
 Project: https://github.com/madengr/ham2mon  
-License (GPL-3.0): https://github.com/madengr/ham2mon/blob/master/LICENSE
-3.8 Fork: https://github.com/ta6o/ham2mon
+License (GPL-3.0): https://github.com/madengr/ham2mon/blob/master/LICENSE  
+3.8 Fork: https://github.com/ta6o/ham2mon  
 3.10 Fork: https://github.com/bkerler/ham2mon
 
 **HamClock**  
@@ -520,9 +525,14 @@ License (GPL-2.0): https://github.com/derv82/wifite2/blob/master/LICENSE
 Project: https://www.wireshark.org/  
 License (GPL-2.0): https://gitlab.com/wireshark/wireshark/-/blob/master/COPYING
 
+**wl-color-picker**  
+Project: https://github.com/jgmdev/wl-color-picker  
+Copyright 2021 Jefferson González  
+License (MIT): https://github.com/jgmdev/wl-color-picker/blob/main/LICENSE
+
 **WSJT-X**  
 Project: https://physics.princeton.edu/pulsar/k1jt/wsjtx.html  
-Copyright 2001-2022  by Joe Taylor, K1JT  
+Copyright 2001-2022 by Joe Taylor, K1JT  
 License (GPL v3.0): https://physics.princeton.edu/pulsar/k1jt/wsjtx.html
 
 **Xastir**  

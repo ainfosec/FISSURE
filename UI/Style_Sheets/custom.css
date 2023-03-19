@@ -46,6 +46,7 @@ QTabBar::tab:!selected {
 	color: @color4;
 }
 QPushButton[objectName^="pushButton_"]{
+	color: #000000;
 	border: 1px solid #111111;
 	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #aaaaaa, stop: 1 #666666);
 }
@@ -401,6 +402,7 @@ QMenuBar#menubar::item:selected {
 
 QFrame[objectName^="line_"]{background: @color3;}
 QFrame[objectName^="line2_"]{background: @color1;}
+QFrame#line_iq{border: 1px solid @color3;}
 
 QTabWidget#tabWidget2_2::pane{
     background-color: @color2;
