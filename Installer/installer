@@ -1875,6 +1875,16 @@ make
 ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
+# wl-color-picker
+programs_ubuntu22_04.append(('wl-color-picker',
+"""sudo apt-get install -y slurp grim wl-clipboard
+cd ~/Installed_by_FISSURE
+git clone https://github.com/jgmdev/wl-color-picker.git
+########## Verify ##########
+ls ~/Installed_by_FISSURE/wl-color-picker/wl-color-picker.sh
+""",True,'Development'))
+
+
 
 
 ########################################################################
@@ -3732,6 +3742,15 @@ make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
+
+# wl-color-picker - verify
+programs_dragonOS_focalx.append(('wl-color-picker',
+"""sudo apt-get install -y slurp grim wl-clipboard
+cd ~/Installed_by_FISSURE
+git clone https://github.com/jgmdev/wl-color-picker.git
+########## Verify ##########
+ls ~/Installed_by_FISSURE/wl-color-picker/wl-color-picker.sh
+""",True,'Development'))
 
 
 

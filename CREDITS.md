@@ -38,6 +38,11 @@ License (GPL-2.0): https://github.com/afrantzis/bless/blob/master/COPYING
 Project: https://salsa.debian.org/pkg-security-team/btscanner  
 License (GPL v2.0): https://salsa.debian.org/pkg-security-team/btscanner/-/blob/debian/master/COPYING
 
+**CRC RevEng**  
+Project: https://reveng.sourceforge.io/  
+Copyright 2022 Gegrory Cook  
+License (GPL): https://reveng.sourceforge.io/readme.htm
+
 **CyberChef**  
 Project: https://gchq.github.io/CyberChef/  
 Crown Copyright 2016  
@@ -99,6 +104,11 @@ License (GPL v3.0): https://github.com/gnuradio/gnuradio/blob/main/COPYING
 Project: https://www.google.com/earth/versions/  
 Copyright 2022 Google LLC  
 License (zlib)
+
+**Gpick**  
+Project: https://github.com/thezbyg/gpick  
+Copyright 2009-2016, Albertas Vyšniauskas  
+License (BSD-3-Clause): https://github.com/thezbyg/gpick/blob/master/LICENSE.txt
 
 **Gpredict**  
 Project: http://gpredict.oz9aec.net/  
@@ -231,13 +241,13 @@ Copyright 2014-2022 Joe Esposito
 License (MIT): https://github.com/joeyespo/grip/blob/master/LICENSE
 
 **HackRF**  
-Project: https://github.com/greatscottgadgets/hackrf
+Project: https://github.com/greatscottgadgets/hackrf  
 License (GPL-2.0): https://github.com/greatscottgadgets/hackrf/blob/master/COPYING
 
 **ham2mon**  
 Project: https://github.com/madengr/ham2mon  
-License (GPL-3.0): https://github.com/madengr/ham2mon/blob/master/LICENSE
-3.8 Fork: https://github.com/ta6o/ham2mon
+License (GPL-3.0): https://github.com/madengr/ham2mon/blob/master/LICENSE  
+3.8 Fork: https://github.com/ta6o/ham2mon  
 3.10 Fork: https://github.com/bkerler/ham2mon
 
 **HamClock**  
@@ -248,6 +258,10 @@ Copyright 2020-2022 Elwood Charles Downey
 Project: http://www.bluez.org/  
 Copyright 2000-2016 BlueZ Project  
 License (GPL): http://www.bluez.org/faq/common/
+
+**htop**  
+Project: https://github.com/htop-dev/htop, https://htop.dev/    
+License (GPL-2.0): https://github.com/htop-dev/htop
 
 **Hydra**  
 Project: https://github.com/vanhauser-thc/thc-hydra  
@@ -362,6 +376,10 @@ License (GPL v2.0): https://opencpn.org/wiki/dokuwiki/doku.php?id=opencpn:opencp
 Project: https://www.openhab.org/  
 Copyright 2022 by the openHAB Community and the openHAB Foundation e.V.  
 License (EPL-2.0): https://github.com/openhab/openhab-distro/blob/main/LICENSE
+
+**OpenWebRX**  
+Project: https://github.com/jketterl/openwebrx, https://www.openwebrx.de/  
+License (AGPL-3.0): https://github.com/jketterl/openwebrx/blob/develop/LICENSE.txt
 
 **Proxmark3**  
 Project: https://github.com/Proxmark/proxmark3  
@@ -507,9 +525,14 @@ License (GPL-2.0): https://github.com/derv82/wifite2/blob/master/LICENSE
 Project: https://www.wireshark.org/  
 License (GPL-2.0): https://gitlab.com/wireshark/wireshark/-/blob/master/COPYING
 
+**wl-color-picker**  
+Project: https://github.com/jgmdev/wl-color-picker  
+Copyright 2021 Jefferson González  
+License (MIT): https://github.com/jgmdev/wl-color-picker/blob/main/LICENSE
+
 **WSJT-X**  
 Project: https://physics.princeton.edu/pulsar/k1jt/wsjtx.html  
-Copyright 2001-2022  by Joe Taylor, K1JT  
+Copyright 2001-2022 by Joe Taylor, K1JT  
 License (GPL v3.0): https://physics.princeton.edu/pulsar/k1jt/wsjtx.html
 
 **Xastir**  

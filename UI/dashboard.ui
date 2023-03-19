@@ -5696,8 +5696,8 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>0</x>
                 <y>365</y>
-                <width>1216</width>
-                <height>3</height>
+                <width>1220</width>
+                <height>2</height>
                </rect>
               </property>
               <property name="orientation">
@@ -6092,9 +6092,9 @@ p, li { white-space: pre-wrap; }
               <property name="geometry">
                <rect>
                 <x>415</x>
-                <y>10</y>
+                <y>7</y>
                 <width>776</width>
-                <height>255</height>
+                <height>258</height>
                </rect>
               </property>
               <property name="font">
@@ -6468,7 +6468,7 @@ QTabBar::tab:!selected {
                 <x>10</x>
                 <y>30</y>
                 <width>395</width>
-                <height>230</height>
+                <height>235</height>
                </rect>
               </property>
               <property name="frameShape">
@@ -6481,7 +6481,7 @@ QTabBar::tab:!selected {
                <property name="geometry">
                 <rect>
                  <x>255</x>
-                 <y>195</y>
+                 <y>200</y>
                  <width>126</width>
                  <height>17</height>
                 </rect>
@@ -6578,7 +6578,7 @@ QTabBar::tab:!selected {
                <property name="geometry">
                 <rect>
                  <x>130</x>
-                 <y>190</y>
+                 <y>195</y>
                  <width>126</width>
                  <height>27</height>
                 </rect>
@@ -13544,7 +13544,7 @@ p, li { white-space: pre-wrap; }
                 <x>0</x>
                 <y>80</y>
                 <width>911</width>
-                <height>3</height>
+                <height>2</height>
                </rect>
               </property>
               <property name="orientation">
@@ -20384,7 +20384,7 @@ p, li { white-space: pre-wrap; }
              <string>Normalize</string>
             </property>
            </widget>
-           <widget class="Line" name="line_3">
+           <widget class="Line" name="line_iq">
             <property name="geometry">
              <rect>
               <x>0</x>
@@ -20392,12 +20392,6 @@ p, li { white-space: pre-wrap; }
               <width>1220</width>
               <height>1</height>
              </rect>
-            </property>
-            <property name="styleSheet">
-             <string notr="true">Line#line_3{
-	border: 1px solid #17365D;
-
-}</string>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Plain</enum>
@@ -20484,7 +20478,7 @@ p, li { white-space: pre-wrap; }
                <x>1</x>
                <y>67</y>
                <width>264</width>
-               <height>3</height>
+               <height>2</height>
               </rect>
              </property>
              <property name="orientation">
@@ -20775,7 +20769,7 @@ p, li { white-space: pre-wrap; }
            <zorder>pushButton1_iq_tab_resample</zorder>
            <zorder>pushButton1_iq_tab_ofdm</zorder>
            <zorder>pushButton1_iq_tab_normalize</zorder>
-           <zorder>line_3</zorder>
+           <zorder>line_iq</zorder>
            <zorder>frame1_5</zorder>
            <zorder>label1_202</zorder>
            <zorder>frame1_38</zorder>
@@ -22530,7 +22524,7 @@ p, li { white-space: pre-wrap; }
                 <x>0</x>
                 <y>10</y>
                 <width>1220</width>
-                <height>3</height>
+                <height>2</height>
                </rect>
               </property>
               <property name="orientation">
@@ -22976,9 +22970,9 @@ p, li { white-space: pre-wrap; }
            <widget class="QTabWidget" name="tabWidget_library">
             <property name="geometry">
              <rect>
-              <x>0</x>
+              <x>-2</x>
               <y>0</y>
-              <width>1220</width>
+              <width>1225</width>
               <height>865</height>
              </rect>
             </property>
@@ -24412,7 +24406,7 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>-5</x>
                 <y>60</y>
-                <width>1222</width>
+                <width>1225</width>
                 <height>121</height>
                </rect>
               </property>
@@ -24546,7 +24540,7 @@ p, li { white-space: pre-wrap; }
                <rect>
                 <x>-5</x>
                 <y>180</y>
-                <width>1222</width>
+                <width>1225</width>
                 <height>121</height>
                </rect>
               </property>
@@ -24625,7 +24619,7 @@ Types</string>
                <rect>
                 <x>-5</x>
                 <y>300</y>
-                <width>1222</width>
+                <width>1225</width>
                 <height>121</height>
                </rect>
               </property>
@@ -24746,7 +24740,7 @@ Types</string>
                <rect>
                 <x>-5</x>
                 <y>420</y>
-                <width>1222</width>
+                <width>1225</width>
                 <height>121</height>
                </rect>
               </property>
@@ -24857,7 +24851,7 @@ Flow Graphs</string>
                <rect>
                 <x>-5</x>
                 <y>540</y>
-                <width>1222</width>
+                <width>1225</width>
                 <height>160</height>
                </rect>
               </property>
@@ -24957,7 +24951,7 @@ Flow Graphs</string>
                <rect>
                 <x>-5</x>
                 <y>699</y>
-                <width>1222</width>
+                <width>1225</width>
                 <height>120</height>
                </rect>
               </property>
@@ -27963,11 +27957,12 @@ p, li { white-space: pre-wrap; }
      </widget>
      <addaction name="actionArduino"/>
      <addaction name="menuGeany"/>
-     <addaction name="actionhtop"/>
      <addaction name="actiongrip"/>
      <addaction name="actionguidus"/>
+     <addaction name="actionhtop"/>
      <addaction name="menuQtDesigner"/>
      <addaction name="actionSystemback"/>
+     <addaction name="actionwl_color_picker"/>
     </widget>
     <addaction name="menu433_MHz"/>
     <addaction name="menu802_11_Tools_2"/>
@@ -28026,6 +28021,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionGNU_Radio_Tutorials"/>
     <addaction name="actionProgramming_SDRs_with_GNU_Radio"/>
     <addaction name="actionLearn_SDR"/>
+    <addaction name="actioncomplextoreal_com"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -29589,6 +29585,21 @@ p, li { white-space: pre-wrap; }
    </property>
    <property name="text">
     <string>Custom Mode</string>
+   </property>
+  </action>
+  <action name="actionGpick">
+   <property name="text">
+    <string>Gpick</string>
+   </property>
+  </action>
+  <action name="actionwl_color_picker">
+   <property name="text">
+    <string>wl-color-picker</string>
+   </property>
+  </action>
+  <action name="actioncomplextoreal_com">
+   <property name="text">
+    <string>complextoreal.com</string>
    </property>
   </action>
  </widget>

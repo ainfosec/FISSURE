@@ -165,12 +165,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Light/Dark Mode Style Sheets
         if self.dashboard_settings_dictionary['color_mode'] == "Dark Mode":
-            self.actionLight_Mode.setChecked(True)
-            self.actionDark_Mode.setChecked(False)
             self._slotMenuDarkModeClicked()
         else:
-            self.actionLight_Mode.setChecked(True)
-            self.actionDark_Mode.setChecked(False)
             self._slotMenuLightModeClicked()
         
         
@@ -725,9 +721,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Shift Wideband Rows Down
             if (total_time % wideband_time_interval == 0) and (total_time != 0):
+                # Wideband Detector Background Color
+                rgb = tuple(int(self.dashboard_settings_dictionary['color2'].lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
+                background_color = (float(rgb[0])/255, float(rgb[1])/255, float(rgb[2])/255)
+        
                 shift = 20            
                 self.wideband_data[shift:self.wideband_height-1 , 0:self.wideband_width-1] = self.wideband_data[0:self.wideband_height-1-shift, 0:self.wideband_width-1]
-                self.wideband_data[0:shift, 0:self.wideband_width-1] = (1,1,1)
+                self.wideband_data[0:shift, 0:self.wideband_width-1] = background_color
             
             # # Shift Narrowband Rows Down
             # if (total_time % narrowband_time_interval == 0) and (total_time != 0):
@@ -1626,6 +1626,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionLight_Mode.triggered.connect(self._slotMenuLightModeClicked)
         self.actionDark_Mode.triggered.connect(self._slotMenuDarkModeClicked)
         self.actionCustom_Mode.triggered.connect(self._slotMenuCustomModeClicked)
+        self.actionwl_color_picker.triggered.connect(self._slotMenuWlColorPickerClicked)
+        self.actioncomplextoreal_com.triggered.connect(self._slotMenuLessonComplexToRealClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -24203,7 +24205,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             if self.dashboard_settings_dictionary['color_mode'] == "Custom Mode":
                 self.actionCustom_Mode.setChecked(True) 
             else:
-                self.actionCustom_Mode.setChecked(False) 
+                self.actionCustom_Mode.setChecked(False)
+                
+    def _slotMenuWlColorPickerClicked(self):
+        """ Launches wl-color-picker.
+        """
+        # Launch wl-color-picker
+        wl_color_picker_dir = os.path.expanduser("~/Installed_by_FISSURE/wl-color-picker/")
+        proc = subprocess.Popen("./wl-color-picker.sh &", shell=True, cwd=wl_color_picker_dir)
+        
+    def _slotMenuLessonComplexToRealClicked(self):
+        """ Opens complextoreal.com tutorials on digital communications engineering in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser http://complextoreal.com/tutorials/ &")
         
     
 

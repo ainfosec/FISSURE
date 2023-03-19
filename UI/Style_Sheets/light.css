@@ -206,3 +206,5 @@ QTableWidget#tableWidget_status_headers{
 QTableWidget#tableWidget_status_results{
 	background-color: rgb(244, 244, 244);
 }
+
+QFrame#line_iq{border: 1px solid #17365D;}

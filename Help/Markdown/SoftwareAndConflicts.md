@@ -26,6 +26,7 @@ The following is a table of the major software tools that have been proven to wo
 | GNU Radio | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Google Earth Pro | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Gpredict | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| Gpick | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :x: |
 | GQRX | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | gr-acars | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | gr-adsb | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :question: | :question: | :question: |
@@ -120,6 +121,7 @@ The following is a table of the major software tools that have been proven to wo
 | Waving-Z | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Wifite | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Wireshark | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
+| wl-color-picker | :question: | :question: | :question: | :question: | :question: | :heavy_check_mark: |
 | WSJT-X | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | Xastir | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | ZEPASSD | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
@@ -166,6 +168,7 @@ The following are the software versions that are included with the FISSURE insta
 | Geany | 1.32 | No | https://www.geany.org/ |
 | GNU Radio | 3.7.13.5 | No | https://www.gnuradio.org/ |
 | Google Earth Pro | latest | No | https://www.google.com/earth/versions/ |
+| Gpick | 0.2.5 | No | https://github.com/thezbyg/gpick |
 | Gpredict | 2.0-4 | No | http://gpredict.oz9aec.net/ |
 | GQRX | 2.9 | No | https://gqrx.dk/ |
 | gr-acars | 3.7.5 | Yes | https://sourceforge.net/projects/gr-acars/ |
@@ -289,6 +292,7 @@ The following are the software versions that are included with the FISSURE insta
 | Geany | 1.32 | No | https://www.geany.org/ |
 | GNU Radio | 3.7.13.5 | No | https://www.gnuradio.org/ |
 | Google Earth Pro | latest | No | https://www.google.com/earth/versions/ |
+| Gpick | 0.2.5 | No | https://github.com/thezbyg/gpick |
 | Gpredict | 2.0-4 | No | http://gpredict.oz9aec.net/ |
 | GQRX | 2.9 | No | https://gqrx.dk/ |
 | gr-acars | 3.7.5 | Yes | https://sourceforge.net/projects/gr-acars/ |
@@ -412,6 +416,7 @@ The following are the software versions that are included with the FISSURE insta
 | Geany | 1.32 | No | https://www.geany.org/ |
 | GNU Radio | 3.7.13.5 | No | https://www.gnuradio.org/ |
 | Google Earth Pro | latest | No | https://www.google.com/earth/versions/ |
+| Gpick | 0.2.5 | No | https://github.com/thezbyg/gpick |
 | Gpredict | 2.0-4 | No | http://gpredict.oz9aec.net/ |
 | GQRX | 2.9 | No | https://gqrx.dk/ |
 | gr-acars | 3.7.5 | Yes | https://sourceforge.net/projects/gr-acars/ |
@@ -536,6 +541,7 @@ The following are the software versions that are included with the FISSURE insta
 | Geany | 1.36 | No | https://www.geany.org/ |
 | GNU Radio | 3.8.5.0 | No | https://www.gnuradio.org/ |
 | Google Earth Pro | latest | No | https://www.google.com/earth/versions/ |
+| Gpick | 0.2.6rc1 | No | https://github.com/thezbyg/gpick |
 | Gpredict | 2.3-33-gca42d22-1 | No | http://gpredict.oz9aec.net/ |
 | GQRX | 2.12 | No | https://gqrx.dk/ |
 | gr-acars | 3.8 | Yes | https://sourceforge.net/projects/gr-acars/ |
@@ -664,6 +670,7 @@ The following are the software versions that are included with the FISSURE insta
 | Geany | 1.36 | No | https://www.geany.org/ |
 | GNU Radio | 3.8.5.0 | No | https://www.gnuradio.org/ |
 | Google Earth Pro | latest | No | https://www.google.com/earth/versions/ |
+| Gpick | 0.2.6rc1 | No | https://github.com/thezbyg/gpick |
 | Gpredict | 2.3-33-gca42d22-1 | No | http://gpredict.oz9aec.net/ |
 | GQRX | 2.12 | No | https://gqrx.dk/ |
 | gr-acars | 3.8 | Yes | https://sourceforge.net/projects/gr-acars/ |
@@ -887,6 +894,7 @@ The following are the software versions that are included with the FISSURE insta
 | Waving-Z | master | Yes | https://github.com/baol/waving-z |
 | Wifite | master | Yes | https://github.com/derv82/wifite2 |
 | Wireshark | 3.6.5 | No | https://www.wireshark.org/ |
+| wl-color-picker | master | Yes | https://github.com/jgmdev/wl-color-picker |
 | WSJT-X | 2.5.4 | No | https://physics.princeton.edu/pulsar/k1jt/wsjtx.html |
 | Xastir | 2.1.6-4 | No | https://github.com/Xastir/Xastir |
 | ZEPASSD | master | Yes | https://github.com/pvachon/zepassd |
@@ -900,6 +908,8 @@ The following are a list of known software conflicts and incompatibilities withi
   - Python2 branch avoids installation of programs that depend on PyQt5.
 - Ubuntu 20.04
   - Geany in 20.04 needs `[styling] line_height=0;2;` added to Tools>Configuration Files>filetypes.common to see underscores
+- Ubuntu 22.04
+  - Gpick does not work on Wayland, using wl-color-picker as a substitute
 
 - Other
   - gr-gsm has to be installed twice for all blocks to be recognized
