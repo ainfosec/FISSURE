@@ -1836,6 +1836,13 @@ make
 ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
+# Gpick
+programs_ubuntu18_04.append(('Gpick',
+"""sudo apt-get install -y gpick
+########## Verify ##########
+ls /usr/bin/gpick
+""",True,'Development'))
+
 
 
 ########################################################################
@@ -3659,6 +3666,13 @@ make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
+
+# Gpick
+programs_ubuntu18_04_5.append(('Gpick',
+"""sudo apt-get install -y gpick
+########## Verify ##########
+ls /usr/bin/gpick
+""",True,'Development'))
 
 
 
@@ -5484,6 +5498,13 @@ make
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
+
+# Gpick
+programs_ubuntu18_04_6.append(('Gpick',
+"""sudo apt-get install -y gpick
+########## Verify ##########
+ls /usr/bin/gpick
+""",True,'Development'))
 
 
 
