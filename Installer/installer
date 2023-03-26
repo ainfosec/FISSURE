@@ -25,7 +25,7 @@ larger_categories = ['Minimum Install','Hardware','Out-of-Tree Modules','433 MHz
 programs_ubuntu18_04 = []
 
 # Misc. Dependencies
-programs_ubuntu18_04.append(('Misc. Dependencies (670.7 MB)',
+programs_ubuntu18_04.append(('Misc. Dependencies (676.9 MB)',
 """sudo apt-get -y update
 sudo apt-get -y install cmake
 sudo apt-get install -y python-setuptools python-dev build-essential
@@ -87,7 +87,7 @@ ls ~/.local/bin/fissure
 """,True,'Minimum Install'))
 
 # GNU Radio
-programs_ubuntu18_04.append(('GNU Radio (858.1 MB)',
+programs_ubuntu18_04.append(('GNU Radio (858.3 MB)',
 """sudo add-apt-repository -y ppa:mormj/gnuradio-releases-3.7
 sudo apt-get update
 sudo apt-get install -y gnuradio=3.7.13.5~gnuradio~bionic-4
@@ -115,7 +115,7 @@ gnuradio-companion --help
 """,True,'Minimum Install'))
 
 # Scapy
-programs_ubuntu18_04.append(('Scapy (30.0 MB)',
+programs_ubuntu18_04.append(('Scapy (38.0 MB)',
 """sudo python2 -m pip install scapy
 sudo python3 -m pip install scapy
 sudo python2 -m pip install -U cryptography
@@ -124,7 +124,7 @@ python2 -c "import scapy" && python3 -c "import scapy"
 """,True,'Minimum Install'))
 
 # Wireshark
-programs_ubuntu18_04.append(('Wireshark (40.8 MB)',
+programs_ubuntu18_04.append(('Wireshark (49.3 MB)',
 """sudo add-apt-repository --y ppa:wireshark-dev/stable  # Gets installed with Misc. Dependencies (tshark), ESP32 Bluetooth Classic Sniffer
 sudo apt-get update
 sudo apt install -y wireshark wireshark-dev
@@ -182,7 +182,7 @@ ls /usr/local/bin/osmocom_fft
 """,True,'Hardware'))
 
 # BladeRF
-programs_ubuntu18_04.append(('BladeRF (595.5 MB)',
+programs_ubuntu18_04.append(('BladeRF (621.1 MB)',
 """sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget	# bladeRF 2.0 requires gr-osmosdr from source			
 #sudo apt-get install -y bladerf  # 2016 - probe doesn't work for bladeRF 2.0 micro
 mkdir -p ~/Installed_by_FISSURE
@@ -265,7 +265,7 @@ sudo python3 setup.py install
 """,True,'Hardware'))
 
 # fl2k
-programs_ubuntu18_04.append(('fl2k (10.1 MB)',
+programs_ubuntu18_04.append(('fl2k (16.8 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.osmocom.org/osmo-fl2k.git
@@ -620,7 +620,7 @@ ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-mixalot
-programs_ubuntu18_04.append(('gr-mixalot',
+programs_ubuntu18_04.append(('gr-mixalot (10.0 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/)" ]; 
 then
   sudo apt-get install -y libitpp-dev
@@ -1031,7 +1031,7 @@ arduino --version
 """,True,'Development'))
 
 # Minicom
-programs_ubuntu18_04.append(('Minicom (1.4 MB)',
+programs_ubuntu18_04.append(('Minicom (1.6 MB)',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
@@ -1045,7 +1045,7 @@ putty --help
 """,True,'Hardware'))
 
 # openHAB
-programs_ubuntu18_04.append(('openHAB (212.2 MB)',
+programs_ubuntu18_04.append(('openHAB (223.6 MB)',
 """wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
@@ -1081,7 +1081,7 @@ ls ~/Installed_by_FISSURE/waving-z/build/wave-in
 """,True,'Z-Wave'))
 
 # baudline
-programs_ubuntu18_04.append(('baudline (2.2 MB)',
+programs_ubuntu18_04.append(('baudline (4.9 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -P ~/Installed_by_FISSURE/ https://www.baudline.com/baudline_1.08_linux_x86_64.tar.gz
@@ -1189,28 +1189,28 @@ ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 """,True,'Trunked Radio'))
 
 # Audacity
-programs_ubuntu18_04.append(('Audacity',
+programs_ubuntu18_04.append(('Audacity (110.1 MB)',
 """sudo apt-get install -y audacity
 ########## Verify ##########
 audacity --version
 """,True,'Audio'))
 
 # Sound eXchange
-programs_ubuntu18_04.append(('Sound eXchange',
+programs_ubuntu18_04.append(('Sound eXchange (2.1 MB)',
 """sudo apt-get install -y sox
 ########## Verify ##########
 sox --version
 """,True,'Audio'))
 
 # LAME
-programs_ubuntu18_04.append(('LAME',
+programs_ubuntu18_04.append(('LAME (180.2 kB)',
 """sudo apt-get install -y lame
 ########## Verify ##########
 lame --version
 """,True,'Audio'))
 
 # mpv
-programs_ubuntu18_04.append(('mpv',
+programs_ubuntu18_04.append(('mpv (146.5 MB)',
 """sudo apt-get install -y mpv
 ########## Verify ##########
 mpv --version
@@ -1224,14 +1224,14 @@ ffmpeg --help
 """,True,'Audio'))
 
 # MPlayer
-programs_ubuntu18_04.append(('MPlayer',
+programs_ubuntu18_04.append(('MPlayer (14.5 MB)',
 """sudo apt-get install -y mplayer
 ########## Verify ##########
 ls /usr/bin/mplayer
 """,True,'Audio'))
 
 # VLC
-programs_ubuntu18_04.append(('VLC',
+programs_ubuntu18_04.append(('VLC (343.3 MB)',
 """sudo apt-get install -y snapd
 sudo snap install vlc
 ########## Verify ##########
@@ -1239,14 +1239,14 @@ vlc --help
 """,True,'Video'))
 
 # Simple Screen Recorder
-programs_ubuntu18_04.append(('Simple Screen Recorder',
+programs_ubuntu18_04.append(('Simple Screen Recorder (4.5 MB)',
 """sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
 """,True,'Video'))
 
 # radiosonde_auto_rx
-programs_ubuntu18_04.append(('radiosonde_auto_rx (53.2 MB)',
+programs_ubuntu18_04.append(('radiosonde_auto_rx (55.4 MB)',
 """sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip python3-flask sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1273,7 +1273,7 @@ ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 """,True,'SDR'))
 
 # rehex
-programs_ubuntu18_04.append(('rehex (544.5 MB)',
+programs_ubuntu18_04.append(('rehex (550.1 MB)',
 """sudo apt-get install -y build-essential git libwxgtk3.0-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev gtk2.0 libgtk2.0-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1336,7 +1336,7 @@ git clone https://github.com/chrizator/netattack2.git
 """,True,'802.11'))
 
 # Wifite
-programs_ubuntu18_04.append(('Wifite (537.5 MB)',
+programs_ubuntu18_04.append(('Wifite (549.0 MB)',
 """# python, iwconfig, ifconfig, Aircrack-ng, tshark, reaver, bully, coWPAtty, pyrit, hashcat, hcxdumptool, hcxpcaptool
 sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger
 sudo python2 -m pip install psycopg2-binary scapy
@@ -1405,7 +1405,7 @@ rtl_433 -help
 """,True,'433 MHz'))
 
 # RouterSploit
-programs_ubuntu18_04.append(('RouterSploit (485.4 MB)',
+programs_ubuntu18_04.append(('RouterSploit (516.2 MB)',
 """#sudo add-apt-repository universe
 sudo apt-get install -y python3-pip libglib2.0-dev rustc
 sudo python3 -m pip install setuptools-rust
@@ -1481,7 +1481,7 @@ ls /usr/bin/google-earth-pro
 """,True,'Mapping'))
 
 # gr-air-modes
-programs_ubuntu18_04.append(('gr-air-modes (938.0 kB)',
+programs_ubuntu18_04.append(('gr-air-modes (1.4 MB)',
 """sudo apt-get install -y gr-air-modes
 ########## Verify ##########
 modes_rx --help
@@ -1514,7 +1514,7 @@ viking --help
 """,True,'Mapping'))
 
 # PyGPSClient
-programs_ubuntu18_04.append(('PyGPSClient (7.9 MB)',
+programs_ubuntu18_04.append(('PyGPSClient (10.7 MB)',
 """sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk libjpeg-dev zlib1g-dev
 sudo apt install -y tk-devel
 sudo python3 -m pip install --upgrade PyGPSClient
@@ -1523,7 +1523,7 @@ ls /usr/local/bin/pygpsclient
 """,True,'GPS'))
 
 # Gpredict
-programs_ubuntu18_04.append(('Gpredict (12.0 MB)',
+programs_ubuntu18_04.append(('Gpredict (12.5 MB)',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
@@ -1537,7 +1537,7 @@ foxtrotgps --help
 """,True,'GPS'))
 
 # multimon-ng
-programs_ubuntu18_04.append(('multimon-ng (8.3 MB)',
+programs_ubuntu18_04.append(('multimon-ng (9.0 MB)',
 """sudo apt-get install -y libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1553,14 +1553,14 @@ ls /usr/local/bin/multimon-ng
 """,True,'POCSAG'))
 
 # Xastir
-programs_ubuntu18_04.append(('Xastir (43.6 MB)',
+programs_ubuntu18_04.append(('Xastir (120.9 MB)',
 """sudo apt-get install -y xastir
 ########## Verify ##########
 sudo xastir -V
 """,True,'Ham Radio'))
 
 # LTE-Cell-Scanner
-programs_ubuntu18_04.append(('LTE-Cell-Scanner (129.4 MB)',
+programs_ubuntu18_04.append(('LTE-Cell-Scanner (137.8 MB)',
 """sudo apt-get install -y cmake libncurses5-dev liblapack-dev libblas-dev libboost-thread-dev libboost-system-dev libitpp-dev librtlsdr-dev libfftw3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1576,14 +1576,14 @@ ls /usr/local/bin/CellSearch
 """,True,'LTE'))
 
 # btscanner
-programs_ubuntu18_04.append(('btscanner (913.4 kB)',
+programs_ubuntu18_04.append(('btscanner (921.6 kB)',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
 """,True,'Bluetooth'))
 
 # hcidump
-programs_ubuntu18_04.append(('hcidump (598.0 kB)',
+programs_ubuntu18_04.append(('hcidump (602.1 kB)',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
@@ -1638,14 +1638,14 @@ git clone https://github.com/madengr/ham2mon.git
 """,True,'Ham Radio'))
 
 # Anki
-programs_ubuntu18_04.append(('Anki (279.7 MB)',
+programs_ubuntu18_04.append(('Anki (318.2 MB)',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
 """,True,'Ham Radio'))
 
 # Bless
-programs_ubuntu18_04.append(('Bless (2.4 MB)',
+programs_ubuntu18_04.append(('Bless (7.7 MB)',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
@@ -1663,7 +1663,7 @@ sudo trackerjacker --help
 """,True,'802.11'))
 
 # airgeddon
-programs_ubuntu18_04.append(('airgeddon (174.2 MB)',
+programs_ubuntu18_04.append(('airgeddon (212.2 MB)',
 """sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only libxcrypt-dev john libnl-3-dev libnl-genl-3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1750,7 +1750,7 @@ ls /usr/bin/systemback && ls /usr/bin/guidus
 """,True,'Development'))
 
 # Dire Wolf
-programs_ubuntu18_04.append(('Dire Wolf',
+programs_ubuntu18_04.append(('Dire Wolf (204.9 MB)',
 """sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1768,14 +1768,14 @@ ls /usr/local/bin/direwolf
 """,True,'Ham Radio'))
 
 # Meld
-programs_ubuntu18_04.append(('Meld',
+programs_ubuntu18_04.append(('Meld (4.8 MB)',
 """sudo apt-get -y install meld
 ########## Verify ##########
 ls /usr/bin/meld
 """,True,'Data'))
 
 # HamClock
-programs_ubuntu18_04.append(('HamClock',
+programs_ubuntu18_04.append(('HamClock (42.4 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
@@ -1789,8 +1789,8 @@ ls /usr/local/bin/hamclock
 """,True,'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
-programs_ubuntu18_04.append(('ICE9 Bluetooth Sniffer',
-"""sudo apt install -y libliquid-dev libbtbb-dev
+programs_ubuntu18_04.append(('ICE9 Bluetooth Sniffer (4.7 MB)',
+"""sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
 sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1806,7 +1806,7 @@ ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
 """,True,'Bluetooth'))
 
 # dump978
-programs_ubuntu18_04.append(('dump978',
+programs_ubuntu18_04.append(('dump978 (1.6 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mutability/dump978.git
@@ -1817,14 +1817,14 @@ ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
 
 # htop
-programs_ubuntu18_04.append(('htop',
+programs_ubuntu18_04.append(('htop (319.5 kB)',
 """sudo apt-get install -y htop
 ########## Verify ##########
 ls /usr/bin/htop
 """,True,'Development'))
 
 # CRC RevEng
-programs_ubuntu18_04.append(('CRC RevEng',
+programs_ubuntu18_04.append(('CRC RevEng (905.2 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -T 20 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
@@ -1837,7 +1837,7 @@ ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
 # Gpick
-programs_ubuntu18_04.append(('Gpick',
+programs_ubuntu18_04.append(('Gpick (1.5 MB)',
 """sudo apt-get install -y gpick
 ########## Verify ##########
 ls /usr/bin/gpick
@@ -1852,7 +1852,7 @@ ls /usr/bin/gpick
 programs_ubuntu18_04_5 = []
 
 # Misc. Dependencies
-programs_ubuntu18_04_5.append(('Misc. Dependencies (670.7 MB)',
+programs_ubuntu18_04_5.append(('Misc. Dependencies (676.9 MB)',
 """sudo apt-get -y update
 sudo apt-get -y install cmake
 sudo apt-get install -y python-setuptools python-dev build-essential
@@ -1914,7 +1914,7 @@ ls ~/.local/bin/fissure
 """,True,'Minimum Install'))
 
 # GNU Radio
-programs_ubuntu18_04_5.append(('GNU Radio (858.1 MB)',
+programs_ubuntu18_04_5.append(('GNU Radio (858.3 MB)',
 """sudo add-apt-repository -y ppa:mormj/gnuradio-releases-3.7
 sudo apt-get update
 sudo apt-get install -y gnuradio=3.7.13.5~gnuradio~bionic-4
@@ -1942,7 +1942,7 @@ gnuradio-companion --help
 """,True,'Minimum Install'))
 
 # Scapy
-programs_ubuntu18_04_5.append(('Scapy (30.0 MB)',
+programs_ubuntu18_04_5.append(('Scapy (38.0 MB)',
 """sudo python2 -m pip install scapy
 sudo python3 -m pip install scapy
 sudo python2 -m pip install -U cryptography
@@ -1951,7 +1951,7 @@ python2 -c "import scapy" && python3 -c "import scapy"
 """,True,'Minimum Install'))
 
 # Wireshark
-programs_ubuntu18_04_5.append(('Wireshark (40.8 MB)',
+programs_ubuntu18_04_5.append(('Wireshark (49.3 MB)',
 """sudo add-apt-repository --y ppa:wireshark-dev/stable  # Gets installed with Misc. Dependencies (tshark), ESP32 Bluetooth Classic Sniffer
 sudo apt-get update
 sudo apt install -y wireshark wireshark-dev
@@ -2009,7 +2009,7 @@ ls /usr/local/bin/osmocom_fft
 """,True,'Hardware'))
 
 # BladeRF
-programs_ubuntu18_04_5.append(('BladeRF (595.5 MB)',
+programs_ubuntu18_04_5.append(('BladeRF (621.1 MB)',
 """sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget  # bladeRF 2.0 requires gr-osmosdr from source		
 #sudo apt-get install -y bladerf  # 2016 - probe doesn't work for bladeRF 2.0 micro
 mkdir -p ~/Installed_by_FISSURE
@@ -2092,7 +2092,7 @@ sudo python3 setup.py install
 """,True,'Hardware'))
 
 # fl2k
-programs_ubuntu18_04_5.append(('fl2k (10.1 MB)',
+programs_ubuntu18_04_5.append(('fl2k (16.8 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.osmocom.org/osmo-fl2k.git
@@ -2447,7 +2447,7 @@ ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-mixalot
-programs_ubuntu18_04_5.append(('gr-mixalot',
+programs_ubuntu18_04_5.append(('gr-mixalot (10.0 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/)" ]; 
 then
   sudo apt-get install -y libitpp-dev
@@ -2861,7 +2861,7 @@ arduino --version
 """,True,'Development'))
 
 # Minicom
-programs_ubuntu18_04_5.append(('Minicom (1.4 MB)',
+programs_ubuntu18_04_5.append(('Minicom (1.6 MB)',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
@@ -2875,7 +2875,7 @@ putty --help
 """,True,'Hardware'))
 
 # openHAB
-programs_ubuntu18_04_5.append(('openHAB (212.2 MB)',
+programs_ubuntu18_04_5.append(('openHAB (223.6 MB)',
 """wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
@@ -2911,7 +2911,7 @@ ls ~/Installed_by_FISSURE/waving-z/build/wave-in
 """,True,'Z-Wave'))
 
 # baudline
-programs_ubuntu18_04_5.append(('baudline (2.2 MB)',
+programs_ubuntu18_04_5.append(('baudline (4.9 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -P ~/Installed_by_FISSURE/ https://www.baudline.com/baudline_1.08_linux_x86_64.tar.gz
@@ -3019,28 +3019,28 @@ ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 """,True,'Trunked Radio'))
 
 # Audacity
-programs_ubuntu18_04_5.append(('Audacity',
+programs_ubuntu18_04_5.append(('Audacity (110.1 MB)',
 """sudo apt-get install -y audacity
 ########## Verify ##########
 audacity --version
 """,True,'Audio'))
 
 # Sound eXchange
-programs_ubuntu18_04_5.append(('Sound eXchange',
+programs_ubuntu18_04_5.append(('Sound eXchange (2.1 MB)',
 """sudo apt-get install -y sox
 ########## Verify ##########
 sox --version
 """,True,'Audio'))
 
 # LAME
-programs_ubuntu18_04_5.append(('LAME',
+programs_ubuntu18_04_5.append(('LAME (180.2 kB)',
 """sudo apt-get install -y lame
 ########## Verify ##########
 lame --version
 """,True,'Audio'))
 
 # mpv
-programs_ubuntu18_04_5.append(('mpv',
+programs_ubuntu18_04_5.append(('mpv (146.5 MB)',
 """sudo apt-get install -y mpv
 ########## Verify ##########
 mpv --version
@@ -3054,14 +3054,14 @@ ffmpeg --help
 """,True,'Audio'))
 
 # MPlayer
-programs_ubuntu18_04_5.append(('MPlayer',
+programs_ubuntu18_04_5.append(('MPlayer (14.5 MB)',
 """sudo apt-get install -y mplayer
 ########## Verify ##########
 ls /usr/bin/mplayer
 """,True,'Audio'))
 
 # VLC
-programs_ubuntu18_04_5.append(('VLC',
+programs_ubuntu18_04_5.append(('VLC (343.3 MB)',
 """sudo apt-get install -y snapd
 sudo snap install vlc
 ########## Verify ##########
@@ -3069,14 +3069,14 @@ vlc --help
 """,True,'Video'))
 
 # Simple Screen Recorder
-programs_ubuntu18_04_5.append(('Simple Screen Recorder',
+programs_ubuntu18_04_5.append(('Simple Screen Recorder (4.5 MB)',
 """sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
 """,True,'Video'))
 
 # radiosonde_auto_rx
-programs_ubuntu18_04_5.append(('radiosonde_auto_rx (53.2 MB)',
+programs_ubuntu18_04_5.append(('radiosonde_auto_rx (55.4 MB)',
 """sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip python3-flask sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3103,7 +3103,7 @@ ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 """,True,'SDR'))
 
 # rehex
-programs_ubuntu18_04_5.append(('rehex (544.5 MB)',
+programs_ubuntu18_04_5.append(('rehex (550.1 MB)',
 """sudo apt-get install -y build-essential git libwxgtk3.0-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev gtk2.0 libgtk2.0-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3166,7 +3166,7 @@ git clone https://github.com/chrizator/netattack2.git
 """,True,'802.11'))
 
 # Wifite
-programs_ubuntu18_04_5.append(('Wifite (537.5 MB)',
+programs_ubuntu18_04_5.append(('Wifite (549.0 MB)',
 """# python, iwconfig, ifconfig, Aircrack-ng, tshark, reaver, bully, coWPAtty, pyrit, hashcat, hcxdumptool, hcxpcaptool
 sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger
 sudo python2 -m pip install psycopg2-binary scapy
@@ -3235,7 +3235,7 @@ rtl_433 -help
 """,True,'433 MHz'))
 
 # RouterSploit
-programs_ubuntu18_04_5.append(('RouterSploit (485.4 MB)',
+programs_ubuntu18_04_5.append(('RouterSploit (516.2 MB)',
 """#sudo add-apt-repository universe
 sudo apt-get install -y python3-pip libglib2.0-dev rustc
 sudo python3 -m pip install setuptools-rust
@@ -3311,7 +3311,7 @@ ls /usr/bin/google-earth-pro
 """,True,'Mapping'))
 
 # gr-air-modes
-programs_ubuntu18_04_5.append(('gr-air-modes (938.0 kB)',
+programs_ubuntu18_04_5.append(('gr-air-modes (1.4 MB)',
 """sudo apt-get install -y gr-air-modes
 ########## Verify ##########
 modes_rx --help
@@ -3344,7 +3344,7 @@ viking --help
 """,True,'Mapping'))
 
 # PyGPSClient
-programs_ubuntu18_04_5.append(('PyGPSClient (7.9 MB)',
+programs_ubuntu18_04_5.append(('PyGPSClient (10.7 MB)',
 """sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk libjpeg-dev zlib1g-dev
 sudo apt install -y tk-devel
 sudo python3 -m pip install --upgrade PyGPSClient
@@ -3353,7 +3353,7 @@ ls /usr/local/bin/pygpsclient
 """,True,'GPS'))
 
 # Gpredict
-programs_ubuntu18_04_5.append(('Gpredict (12.0 MB)',
+programs_ubuntu18_04_5.append(('Gpredict (12.5 MB)',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
@@ -3367,7 +3367,7 @@ foxtrotgps --help
 """,True,'GPS'))
 
 # multimon-ng
-programs_ubuntu18_04_5.append(('multimon-ng (8.3 MB)',
+programs_ubuntu18_04_5.append(('multimon-ng (9.0 MB)',
 """sudo apt-get install -y libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3383,14 +3383,14 @@ ls /usr/local/bin/multimon-ng
 """,True,'POCSAG'))
 
 # Xastir
-programs_ubuntu18_04_5.append(('Xastir (43.6 MB)',
+programs_ubuntu18_04_5.append(('Xastir (120.9 MB)',
 """sudo apt-get install -y xastir
 ########## Verify ##########
 sudo xastir -V
 """,True,'Ham Radio'))
 
 # LTE-Cell-Scanner
-programs_ubuntu18_04_5.append(('LTE-Cell-Scanner (129.4 MB)',
+programs_ubuntu18_04_5.append(('LTE-Cell-Scanner (137.8 MB)',
 """sudo apt-get install -y cmake libncurses5-dev liblapack-dev libblas-dev libboost-thread-dev libboost-system-dev libitpp-dev librtlsdr-dev libfftw3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3406,14 +3406,14 @@ ls /usr/local/bin/CellSearch
 """,True,'LTE'))
 
 # btscanner
-programs_ubuntu18_04_5.append(('btscanner (913.4 kB)',
+programs_ubuntu18_04_5.append(('btscanner (921.6 kB)',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
 """,True,'Bluetooth'))
 
 # hcidump
-programs_ubuntu18_04_5.append(('hcidump (598.0 kB)',
+programs_ubuntu18_04_5.append(('hcidump (602.1 kB)',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
@@ -3469,14 +3469,14 @@ git clone https://github.com/madengr/ham2mon.git
 """,True,'Ham Radio'))
 
 # Anki
-programs_ubuntu18_04_5.append(('Anki (279.7 MB)',
+programs_ubuntu18_04_5.append(('Anki (318.2 MB)',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
 """,True,'Ham Radio'))
 
 # Bless
-programs_ubuntu18_04_5.append(('Bless (2.4 MB)',
+programs_ubuntu18_04_5.append(('Bless (7.7 MB)',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
@@ -3494,7 +3494,7 @@ sudo trackerjacker --help
 """,True,'802.11'))
 
 # airgeddon
-programs_ubuntu18_04_5.append(('airgeddon (174.2 MB)',
+programs_ubuntu18_04_5.append(('airgeddon (212.2 MB)',
 """sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only libxcrypt-dev john libnl-3-dev libnl-genl-3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3581,7 +3581,7 @@ ls /usr/bin/systemback && ls /usr/bin/guidus
 """,True,'Development'))
 
 # Dire Wolf
-programs_ubuntu18_04_5.append(('Dire Wolf',
+programs_ubuntu18_04_5.append(('Dire Wolf (204.9 MB)',
 """sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3599,14 +3599,14 @@ ls /usr/local/bin/direwolf
 """,True,'Ham Radio'))
 
 # Meld
-programs_ubuntu18_04_5.append(('Meld',
+programs_ubuntu18_04_5.append(('Meld (4.8 MB)',
 """sudo apt-get -y install meld
 ########## Verify ##########
 ls /usr/bin/meld
 """,True,'Data'))
 
 # HamClock
-programs_ubuntu18_04_5.append(('HamClock',
+programs_ubuntu18_04_5.append(('HamClock (42.4 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
@@ -3620,8 +3620,8 @@ ls /usr/local/bin/hamclock
 """,True,'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
-programs_ubuntu18_04_5.append(('ICE9 Bluetooth Sniffer',
-"""sudo apt install -y libliquid-dev libbtbb-dev
+programs_ubuntu18_04_5.append(('ICE9 Bluetooth Sniffer (4.7 MB)',
+"""sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
 sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3637,7 +3637,7 @@ ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
 """,True,'Bluetooth'))
 
 # dump978
-programs_ubuntu18_04_5.append(('dump978',
+programs_ubuntu18_04_5.append(('dump978 (1.6 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mutability/dump978.git
@@ -3648,14 +3648,14 @@ ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
 
 # htop
-programs_ubuntu18_04_5.append(('htop',
+programs_ubuntu18_04_5.append(('htop (319.5 kB)',
 """sudo apt-get install -y htop
 ########## Verify ##########
 ls /usr/bin/htop
 """,True,'Development'))
 
 # CRC RevEng
-programs_ubuntu18_04_5.append(('CRC RevEng',
+programs_ubuntu18_04_5.append(('CRC RevEng (905.2 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -T 20 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
@@ -3668,7 +3668,7 @@ ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
 # Gpick
-programs_ubuntu18_04_5.append(('Gpick',
+programs_ubuntu18_04_5.append(('Gpick (1.5 MB)',
 """sudo apt-get install -y gpick
 ########## Verify ##########
 ls /usr/bin/gpick
@@ -3683,7 +3683,7 @@ ls /usr/bin/gpick
 programs_ubuntu18_04_6 = []
 
 # Misc. Dependencies
-programs_ubuntu18_04_6.append(('Misc. Dependencies (670.7 MB)',
+programs_ubuntu18_04_6.append(('Misc. Dependencies (676.9 MB)',
 """sudo apt-get -y update
 sudo apt-get -y install cmake
 sudo apt-get install -y python-setuptools python-dev build-essential
@@ -3745,7 +3745,7 @@ ls ~/.local/bin/fissure
 """,True,'Minimum Install'))
 
 # GNU Radio
-programs_ubuntu18_04_6.append(('GNU Radio (858.1 MB)',
+programs_ubuntu18_04_6.append(('GNU Radio (858.3 MB)',
 """sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases-3.7
 sudo apt-get update
 sudo apt-get install -y gnuradio=3.7.13.5~gnuradio~bionic-4
@@ -3773,7 +3773,7 @@ gnuradio-companion --help
 """,True,'Minimum Install'))
 
 # Scapy
-programs_ubuntu18_04_6.append(('Scapy (30.0 MB)',
+programs_ubuntu18_04_6.append(('Scapy (38.0 MB)',
 """sudo python2 -m pip install scapy
 sudo python3 -m pip install scapy
 sudo python2 -m pip install -U cryptography
@@ -3782,7 +3782,7 @@ python2 -c "import scapy" && python3 -c "import scapy"
 """,True,'Minimum Install'))
 
 # Wireshark
-programs_ubuntu18_04_6.append(('Wireshark (40.8 MB)',
+programs_ubuntu18_04_6.append(('Wireshark (49.3 MB)',
 """sudo add-apt-repository --y ppa:wireshark-dev/stable  # Gets installed with Misc. Dependencies (tshark), ESP32 Bluetooth Classic Sniffer
 sudo apt-get update
 sudo apt install -y wireshark wireshark-dev
@@ -3840,7 +3840,7 @@ ls /usr/local/bin/osmocom_fft
 """,True,'Hardware'))
 
 # BladeRF
-programs_ubuntu18_04_6.append(('BladeRF (595.5 MB)',
+programs_ubuntu18_04_6.append(('BladeRF (621.1 MB)',
 """sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 libtecla1-dev pkg-config git wget	# bladeRF 2.0 requires gr-osmosdr from source			
 #sudo apt-get install -y bladerf  # 2016 - probe doesn't work for bladeRF 2.0 micro
 mkdir -p ~/Installed_by_FISSURE
@@ -3923,7 +3923,7 @@ sudo python3 setup.py install
 """,True,'Hardware'))
 
 # fl2k
-programs_ubuntu18_04_6.append(('fl2k (10.1 MB)',
+programs_ubuntu18_04_6.append(('fl2k (16.8 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.osmocom.org/osmo-fl2k.git
@@ -4278,7 +4278,7 @@ ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-mixalot
-programs_ubuntu18_04_6.append(('gr-mixalot',
+programs_ubuntu18_04_6.append(('gr-mixalot (10.0 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.7/gr-mixalot/)" ]; 
 then
   sudo apt-get install -y libitpp-dev
@@ -4692,7 +4692,7 @@ arduino --version
 """,True,'Development'))
 
 # Minicom
-programs_ubuntu18_04_6.append(('Minicom (1.4 MB)',
+programs_ubuntu18_04_6.append(('Minicom (1.6 MB)',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
@@ -4706,7 +4706,7 @@ putty --help
 """,True,'Hardware'))
 
 # openHAB
-programs_ubuntu18_04_6.append(('openHAB (212.2 MB)',
+programs_ubuntu18_04_6.append(('openHAB (223.6 MB)',
 """wget -qO - 'https://openhab.jfrog.io/artifactory/api/gpg/key/public' | sudo apt-key add -
 sudo apt-get install -y apt-transport-https
 echo 'deb https://openhab.jfrog.io/artifactory/openhab-linuxpkg stable main' | sudo tee /etc/apt/sources.list.d/openhab.list
@@ -4742,7 +4742,7 @@ ls ~/Installed_by_FISSURE/waving-z/build/wave-in
 """,True,'Z-Wave'))
 
 # baudline
-programs_ubuntu18_04_6.append(('baudline (2.2 MB)',
+programs_ubuntu18_04_6.append(('baudline (4.9 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -P ~/Installed_by_FISSURE/ https://www.baudline.com/baudline_1.08_linux_x86_64.tar.gz
@@ -4850,28 +4850,28 @@ ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 """,True,'Trunked Radio'))
 
 # Audacity
-programs_ubuntu18_04_6.append(('Audacity',
+programs_ubuntu18_04_6.append(('Audacity (110.1 MB)',
 """sudo apt-get install -y audacity
 ########## Verify ##########
 audacity --version
 """,True,'Audio'))
 
 # Sound eXchange
-programs_ubuntu18_04_6.append(('Sound eXchange',
+programs_ubuntu18_04_6.append(('Sound eXchange (2.1 MB)',
 """sudo apt-get install -y sox
 ########## Verify ##########
 sox --version
 """,True,'Audio'))
 
 # LAME
-programs_ubuntu18_04_6.append(('LAME',
+programs_ubuntu18_04_6.append(('LAME (180.2 kB)',
 """sudo apt-get install -y lame
 ########## Verify ##########
 lame --version
 """,True,'Audio'))
 
 # mpv
-programs_ubuntu18_04_6.append(('mpv',
+programs_ubuntu18_04_6.append(('mpv (146.5 MB)',
 """sudo apt-get install -y mpv
 ########## Verify ##########
 mpv --version
@@ -4885,14 +4885,14 @@ ffmpeg --help
 """,True,'Audio'))
 
 # MPlayer
-programs_ubuntu18_04_6.append(('MPlayer',
+programs_ubuntu18_04_6.append(('MPlayer (14.5 MB)',
 """sudo apt-get install -y mplayer
 ########## Verify ##########
 ls /usr/bin/mplayer
 """,True,'Audio'))
 
 # VLC
-programs_ubuntu18_04_6.append(('VLC',
+programs_ubuntu18_04_6.append(('VLC (343.3 MB)',
 """sudo apt-get install -y snapd
 sudo snap install vlc
 ########## Verify ##########
@@ -4900,14 +4900,14 @@ vlc --help
 """,True,'Video'))
 
 # Simple Screen Recorder
-programs_ubuntu18_04_6.append(('Simple Screen Recorder',
+programs_ubuntu18_04_6.append(('Simple Screen Recorder (4.5 MB)',
 """sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
 """,True,'Video'))
 
 # radiosonde_auto_rx
-programs_ubuntu18_04_6.append(('radiosonde_auto_rx (53.2 MB)',
+programs_ubuntu18_04_6.append(('radiosonde_auto_rx (55.4 MB)',
 """sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip python3-flask sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -4934,7 +4934,7 @@ ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 """,True,'SDR'))
 
 # rehex
-programs_ubuntu18_04_6.append(('rehex (544.5 MB)',
+programs_ubuntu18_04_6.append(('rehex (550.1 MB)',
 """sudo apt-get install -y build-essential git libwxgtk3.0-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev gtk2.0 libgtk2.0-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -4998,7 +4998,7 @@ git clone https://github.com/chrizator/netattack2.git
 """,True,'802.11'))
 
 # Wifite
-programs_ubuntu18_04_6.append(('Wifite (537.5 MB)',
+programs_ubuntu18_04_6.append(('Wifite (549.0 MB)',
 """# python, iwconfig, ifconfig, Aircrack-ng, tshark, reaver, bully, coWPAtty, pyrit, hashcat, hcxdumptool, hcxpcaptool
 sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger
 sudo python2 -m pip install psycopg2-binary scapy
@@ -5067,7 +5067,7 @@ rtl_433 -help
 """,True,'433 MHz'))
 
 # RouterSploit
-programs_ubuntu18_04_6.append(('RouterSploit (485.4 MB)',
+programs_ubuntu18_04_6.append(('RouterSploit (516.2 MB)',
 """#sudo add-apt-repository universe
 sudo apt-get install -y python3-pip libglib2.0-dev rustc
 sudo python3 -m pip install setuptools-rust
@@ -5143,7 +5143,7 @@ ls /usr/bin/google-earth-pro
 """,True,'Mapping'))
 
 # gr-air-modes
-programs_ubuntu18_04_6.append(('gr-air-modes (938.0 kB)',
+programs_ubuntu18_04_6.append(('gr-air-modes (1.4 MB)',
 """sudo apt-get install -y gr-air-modes
 ########## Verify ##########
 modes_rx --help
@@ -5176,7 +5176,7 @@ viking --help
 """,True,'Mapping'))
 
 # PyGPSClient
-programs_ubuntu18_04_6.append(('PyGPSClient (7.9 MB)',
+programs_ubuntu18_04_6.append(('PyGPSClient (10.7 MB)',
 """sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk libjpeg-dev zlib1g-dev
 sudo apt install -y tk-devel
 sudo python3 -m pip install --upgrade PyGPSClient
@@ -5185,7 +5185,7 @@ ls /usr/local/bin/pygpsclient
 """,True,'GPS'))
 
 # Gpredict
-programs_ubuntu18_04_6.append(('Gpredict (12.0 MB)',
+programs_ubuntu18_04_6.append(('Gpredict (12.5 MB)',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
@@ -5199,7 +5199,7 @@ foxtrotgps --help
 """,True,'GPS'))
 
 # multimon-ng
-programs_ubuntu18_04_6.append(('multimon-ng (8.3 MB)',
+programs_ubuntu18_04_6.append(('multimon-ng (9.0 MB)',
 """sudo apt-get install -y libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -5215,14 +5215,14 @@ ls /usr/local/bin/multimon-ng
 """,True,'POCSAG'))
 
 # Xastir
-programs_ubuntu18_04_6.append(('Xastir (43.6 MB)',
+programs_ubuntu18_04_6.append(('Xastir (120.9 MB)',
 """sudo apt-get install -y xastir
 ########## Verify ##########
 sudo xastir -V
 """,True,'Ham Radio'))
 
 # LTE-Cell-Scanner
-programs_ubuntu18_04_6.append(('LTE-Cell-Scanner (129.4 MB)',
+programs_ubuntu18_04_6.append(('LTE-Cell-Scanner (137.8 MB)',
 """sudo apt-get install -y cmake libncurses5-dev liblapack-dev libblas-dev libboost-thread-dev libboost-system-dev libitpp-dev librtlsdr-dev libfftw3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -5238,14 +5238,14 @@ ls /usr/local/bin/CellSearch
 """,True,'LTE'))
 
 # btscanner
-programs_ubuntu18_04_6.append(('btscanner (913.4 kB)',
+programs_ubuntu18_04_6.append(('btscanner (921.6 kB)',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
 """,True,'Bluetooth'))
 
 # hcidump
-programs_ubuntu18_04_6.append(('hcidump (598.0 kB)',
+programs_ubuntu18_04_6.append(('hcidump (602.1 kB)',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
@@ -5301,14 +5301,14 @@ git clone https://github.com/madengr/ham2mon.git
 """,True,'Ham Radio'))
 
 # Anki
-programs_ubuntu18_04_6.append(('Anki (279.7 MB)',
+programs_ubuntu18_04_6.append(('Anki (318.2 MB)',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
 """,True,'Ham Radio'))
 
 # Bless
-programs_ubuntu18_04_6.append(('Bless (2.4 MB)',
+programs_ubuntu18_04_6.append(('Bless (7.7 MB)',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
@@ -5326,7 +5326,7 @@ sudo trackerjacker --help
 """,True,'802.11'))
 
 # airgeddon
-programs_ubuntu18_04_6.append(('airgeddon (174.2 MB)',
+programs_ubuntu18_04_6.append(('airgeddon (212.2 MB)',
 """sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only libxcrypt-dev john libnl-3-dev libnl-genl-3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -5413,7 +5413,7 @@ ls /usr/bin/systemback && ls /usr/bin/guidus
 """,True,'Development'))
 
 # Dire Wolf
-programs_ubuntu18_04_6.append(('Dire Wolf',
+programs_ubuntu18_04_6.append(('Dire Wolf (204.9 MB)',
 """sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -5431,14 +5431,14 @@ ls /usr/local/bin/direwolf
 """,True,'Ham Radio'))
 
 # Meld
-programs_ubuntu18_04_6.append(('Meld',
+programs_ubuntu18_04_6.append(('Meld (4.8 MB)',
 """sudo apt-get -y install meld
 ########## Verify ##########
 ls /usr/bin/meld
 """,True,'Data'))
 
 # HamClock
-programs_ubuntu18_04_6.append(('HamClock',
+programs_ubuntu18_04_6.append(('HamClock (42.4 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
@@ -5452,8 +5452,8 @@ ls /usr/local/bin/hamclock
 """,True,'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
-programs_ubuntu18_04_6.append(('ICE9 Bluetooth Sniffer',
-"""sudo apt install -y libliquid-dev libbtbb-dev
+programs_ubuntu18_04_6.append(('ICE9 Bluetooth Sniffer (4.7 MB)',
+"""sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
 sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -5469,7 +5469,7 @@ ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
 """,True,'Bluetooth'))
 
 # dump978
-programs_ubuntu18_04_6.append(('dump978',
+programs_ubuntu18_04_6.append(('dump978 (1.6 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mutability/dump978.git
@@ -5480,14 +5480,14 @@ ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
 
 # htop
-programs_ubuntu18_04_6.append(('htop',
+programs_ubuntu18_04_6.append(('htop (319.5 kB)',
 """sudo apt-get install -y htop
 ########## Verify ##########
 ls /usr/bin/htop
 """,True,'Development'))
 
 # CRC RevEng
-programs_ubuntu18_04_6.append(('CRC RevEng',
+programs_ubuntu18_04_6.append(('CRC RevEng (905.2 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -T 20 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
@@ -5500,7 +5500,7 @@ ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
 # Gpick
-programs_ubuntu18_04_6.append(('Gpick',
+programs_ubuntu18_04_6.append(('Gpick (1.5 MB)',
 """sudo apt-get install -y gpick
 ########## Verify ##########
 ls /usr/bin/gpick

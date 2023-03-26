@@ -1,118 +1,125 @@
 Archive:
-     ASR9_2822_85_2GSps.iq:
-          Date: 2022/03/12
-          Format: Complex Float 32
-          Modulation: CW
-          Notes: Pulses are two different frequencies
-          Protocol: Radar
-          Sample Rate: 2e9
-          Samples: 5000
-          Size: 40 kB
-          Tuned Frequency: 2822.85e6
-     ASR9_Log_Video_2822_85_1MSps.iq:
-          Date: 2022/03/12
-          Format: Int 8
-          Modulation: Log Video
-          Notes: One revolution
-          Protocol: Radar
-          Sample Rate: 1e6
-          Samples: 7371000
-          Size: 4364.1 kB
-          Tuned Frequency: 2822.85e6
-     ClapperPlus_434_1MSPs.iq:
-          Date: 2022/03/14
-          Format: Complex Float 32
-          Modulation: OOK
-          Notes: Five bursts
-          Protocol: Clapper Plus
-          Sample Rate: 1e6
-          Samples: 200000
-          Size: 1600 kB
-          Tuned Frequency: 434e6
-     GarageDoor_310_1MSPs.iq:
-          Date: 2022/03/14
-          Format: Complex Float 32
-          Modulation: OOK
-          Notes: Five bursts
-          Protocol: Garage Door
-          Sample Rate: 1e6
-          Samples: 195000
-          Size: 1560 kB
-          Tuned Frequency: 310e6
-     TPMS_Good_315_1MSps.iq:
-          Date: 2022/02/05
-          Format: Complex Float 32
-          Modulation: FSK
-          Notes: PMV-107J
-          Protocol: TPMS
-          Sample Rate: 1e6
-          Samples: 60000
-          Size: 480 kB
-          Tuned Frequency: 315e6
-     TPMS_Low_315_1MSps.iq:
-          Date: 2022/02/05
-          Format: Complex Float 32
-          Modulation: FSK
-          Notes: PMV-107J
-          Protocol: TPMS
-          Sample Rate: 1e6
-          Samples: 40000
-          Size: 320 kB
-          Tuned Frequency: 315e6
-     X10_311_1MSPs.iq:
-          Date: 2022/03/14
-          Format: Complex Float 32
-          Modulation: OOK
-          Notes: Five bursts
-          Protocol: X10
-          Sample Rate: 1e6
-          Samples: 440000
-          Size: 3520 kB
-          Tuned Frequency: 311e6
-     ZWAVE_Green_916_1MSps.iq:
-          Date: 2021/09/15
-          Format: Complex Float 32
-          Modulation: GFSK
-          Notes: Signal to turn Monoprice Z-Wave Plus RGB Smart Bulb green (Home ID
-               0xfa1c0b48 and Node ID 0x02)
-          Protocol: Z-Wave
-          Sample Rate: 1e6
-          Samples: 7000
-          Size: 56 kB
-          Tuned Frequency: 916e6
-     ZWAVE_Off_916_1MSps.iq:
-          Date: 2022/08/07
-          Format: Complex Float 32
-          Modulation: GFSK
-          Notes: Signal to turn off Monoprice Z-Wave Plus RGB Smart Bulb (Home ID
-               0xfa1c0b48 and Node ID 0x02)
-          Protocol: Z-Wave
-          Sample Rate: 1e6
-          Samples: 10000
-          Size: 80 kB
-          Tuned Frequency: 916e6
-     ZWAVE_On_916_1MSps.iq:
-          Date: 2022/08/07
-          Format: Complex Float 32
-          Modulation: GFSK
-          Notes: Signal to turn on Monoprice Z-Wave Plus RGB Smart Bulb (Home ID 0xfa1c0b48
-               and Node ID 0x02)
-          Protocol: Z-Wave
-          Sample Rate: 1e6
-          Samples: 10000
-          Size: 80 kB
-          Tuned Frequency: 916e6
-     ZWAVE_Red_916_1MSps.iq:
-          Date: 2021/09/15
-          Format: Complex Float 32
-          Modulation: GFSK
-          Notes: Signal to turn Monoprice Z-Wave Plus RGB Smart Bulb red (Home ID
-               0xfa1c0b48 and Node ID 0x02)
-          Protocol: Z-Wave
-          Sample Rate: 1e6
-          Samples: 8000
-          Size: 64 kB
-          Tuned Frequency: 916e6
+     File:
+          ASR9_2822_85_2GSps.iq:
+               Date: 2022/03/12
+               Format: Complex Float 32
+               Modulation: CW
+               Notes: Pulses are two different frequencies
+               Protocol: Radar
+               Sample Rate: 2e9
+               Samples: 5000
+               Size: 40 kB
+               Tuned Frequency: 2822.85e6
+          ASR9_Log_Video_2822_85_1MSps.iq:
+               Date: 2022/03/12
+               Format: Int 8
+               Modulation: Log Video
+               Notes: One revolution
+               Protocol: Radar
+               Sample Rate: 1e6
+               Samples: 7371000
+               Size: 4364.1 kB
+               Tuned Frequency: 2822.85e6
+          ClapperPlus_434_1MSPs.iq:
+               Date: 2022/03/14
+               Format: Complex Float 32
+               Modulation: OOK
+               Notes: Five bursts
+               Protocol: Clapper Plus
+               Sample Rate: 1e6
+               Samples: 200000
+               Size: 1600 kB
+               Tuned Frequency: 434e6
+          GarageDoor_310_1MSPs.iq:
+               Date: 2022/03/14
+               Format: Complex Float 32
+               Modulation: OOK
+               Notes: Five bursts
+               Protocol: Garage Door
+               Sample Rate: 1e6
+               Samples: 195000
+               Size: 1560 kB
+               Tuned Frequency: 310e6
+          TPMS_Good_315_1MSps.iq:
+               Date: 2022/02/05
+               Format: Complex Float 32
+               Modulation: FSK
+               Notes: PMV-107J
+               Protocol: TPMS
+               Sample Rate: 1e6
+               Samples: 60000
+               Size: 480 kB
+               Tuned Frequency: 315e6
+          TPMS_Low_315_1MSps.iq:
+               Date: 2022/02/05
+               Format: Complex Float 32
+               Modulation: FSK
+               Notes: PMV-107J
+               Protocol: TPMS
+               Sample Rate: 1e6
+               Samples: 40000
+               Size: 320 kB
+               Tuned Frequency: 315e6
+          X10_311_1MSPs.iq:
+               Date: 2022/03/14
+               Format: Complex Float 32
+               Modulation: OOK
+               Notes: Five bursts
+               Protocol: X10
+               Sample Rate: 1e6
+               Samples: 440000
+               Size: 3520 kB
+               Tuned Frequency: 311e6
+          ZWAVE_Green_916_1MSps.iq:
+               Date: 2021/09/15
+               Format: Complex Float 32
+               Modulation: GFSK
+               Notes: Signal to turn Monoprice Z-Wave Plus RGB Smart Bulb green (Home ID
+                    0xfa1c0b48 and Node ID 0x02)
+               Protocol: Z-Wave
+               Sample Rate: 1e6
+               Samples: 7000
+               Size: 56 kB
+               Tuned Frequency: 916e6
+          ZWAVE_Off_916_1MSps.iq:
+               Date: 2022/08/07
+               Format: Complex Float 32
+               Modulation: GFSK
+               Notes: Signal to turn off Monoprice Z-Wave Plus RGB Smart Bulb (Home ID
+                    0xfa1c0b48 and Node ID 0x02)
+               Protocol: Z-Wave
+               Sample Rate: 1e6
+               Samples: 10000
+               Size: 80 kB
+               Tuned Frequency: 916e6
+          ZWAVE_On_916_1MSps.iq:
+               Date: 2022/08/07
+               Format: Complex Float 32
+               Modulation: GFSK
+               Notes: Signal to turn on Monoprice Z-Wave Plus RGB Smart Bulb (Home ID 0xfa1c0b48
+                    and Node ID 0x02)
+               Protocol: Z-Wave
+               Sample Rate: 1e6
+               Samples: 10000
+               Size: 80 kB
+               Tuned Frequency: 916e6
+          ZWAVE_Red_916_1MSps.iq:
+               Date: 2021/09/15
+               Format: Complex Float 32
+               Modulation: GFSK
+               Notes: Signal to turn Monoprice Z-Wave Plus RGB Smart Bulb red (Home ID
+                    0xfa1c0b48 and Node ID 0x02)
+               Protocol: Z-Wave
+               Sample Rate: 1e6
+               Samples: 8000
+               Size: 64 kB
+               Tuned Frequency: 916e6
+     Collection:
+          ZWAVE_Red_916_1MSps.iq:
+               Size: 64 kB
+               Files: 1
+               Format: Complex Float 32
+               Notes: Placeholder until collections are uploaded.
 Attack Categories:
 - Single-Stage
 - Multi-Stage
