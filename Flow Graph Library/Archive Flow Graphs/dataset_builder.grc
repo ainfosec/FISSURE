@@ -50,7 +50,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [64, 332.0]
+    coordinate: [680, 292.0]
     rotation: 0
     state: true
 - name: blocks_add_xx_0
@@ -68,7 +68,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [392, 224.0]
+    coordinate: [912, 240.0]
     rotation: 0
     state: true
 - name: blocks_file_sink_0
@@ -86,7 +86,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1176, 236.0]
+    coordinate: [1328, 236.0]
     rotation: 0
     state: true
 - name: blocks_file_source_0
@@ -125,7 +125,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [936, 244.0]
+    coordinate: [456, 228.0]
     rotation: 0
     state: true
 - name: blocks_multiply_const_vxx_0
@@ -143,7 +143,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [736, 252.0]
+    coordinate: [680, 236.0]
     rotation: 0
     state: true
 - name: blocks_rotator_cc_0
@@ -160,7 +160,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [536, 240.0]
+    coordinate: [264, 224.0]
     rotation: 0
     state: true
 - name: filepath
@@ -302,11 +302,11 @@ blocks:
 
 connections:
 - [analog_fastnoise_source_x_0, '0', blocks_add_xx_0, '1']
-- [blocks_add_xx_0, '0', blocks_rotator_cc_0, '0']
-- [blocks_file_source_0, '0', blocks_add_xx_0, '0']
-- [blocks_freqshift_cc_0, '0', blocks_file_sink_0, '0']
-- [blocks_multiply_const_vxx_0, '0', blocks_freqshift_cc_0, '0']
-- [blocks_rotator_cc_0, '0', blocks_multiply_const_vxx_0, '0']
+- [blocks_add_xx_0, '0', blocks_file_sink_0, '0']
+- [blocks_file_source_0, '0', blocks_rotator_cc_0, '0']
+- [blocks_freqshift_cc_0, '0', blocks_multiply_const_vxx_0, '0']
+- [blocks_multiply_const_vxx_0, '0', blocks_add_xx_0, '0']
+- [blocks_rotator_cc_0, '0', blocks_freqshift_cc_0, '0']
 
 metadata:
   file_format: 1
