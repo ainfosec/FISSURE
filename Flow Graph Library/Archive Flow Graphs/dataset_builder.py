@@ -55,9 +55,9 @@ class dataset_builder(gr.top_block):
         # Connections
         ##################################################
         self.connect((self.analog_fastnoise_source_x_0, 0), (self.blocks_add_xx_0, 1))
-        self.connect((self.blocks_add_xx_0, 0), (self.blocks_rotator_cc_0, 0))
-        self.connect((self.blocks_file_source_0, 0), (self.blocks_add_xx_0, 0))
-        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.blocks_add_xx_0, 0), (self.blocks_file_sink_0, 0))
+        self.connect((self.blocks_file_source_0, 0), (self.blocks_rotator_cc_0, 0))
+        self.connect((self.blocks_multiply_const_vxx_0, 0), (self.blocks_add_xx_0, 0))
         self.connect((self.blocks_rotator_cc_0, 0), (self.blocks_multiply_const_vxx_0, 0))
 
 

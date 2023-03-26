@@ -1211,6 +1211,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_archive_download_delete.clicked.connect(self._slotArchiveDownloadDeleteClicked)
         self.pushButton_archive_download_plot.clicked.connect(self._slotArchiveDownloadPlotClicked)
         self.pushButton_archive_download.clicked.connect(self._slotArchiveDownloadClicked)
+        self.pushButton_archive_download_collection.clicked.connect(self._slotArchiveDownloadCollectionClicked)
         self.pushButton_archive_replay_add.clicked.connect(self._slotArchiveReplayAddClicked)
         self.pushButton_archive_replay_remove.clicked.connect(self._slotArchiveReplayRemoveClicked)
         self.pushButton_archive_replay_up.clicked.connect(self._slotArchiveReplayUpClicked)
@@ -17624,25 +17625,25 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tabWidget.setCurrentIndex(4)
         
     def populateArchive(self):
-        """ Populates the Archive table from library.yaml.
+        """ Populates the Archive tables from library.yaml.
         """
-        # Populate the Table
-        get_archives = [archive for archive in sorted(self.pd_library['Archive'])]
+        # Populate the File Table
+        get_archives = [archive for archive in sorted(self.pd_library['Archive']['File'])]
         notes_width = 150
         new_font = QtGui.QFont("Times",10)
         
         for n in range(0,len(get_archives)):
             # Get File Info
             get_file = str(get_archives[n])
-            get_protocol = str(self.pd_library['Archive'][get_archives[n]]['Protocol'])
-            get_date = str(self.pd_library['Archive'][get_archives[n]]['Date'])
-            get_format = str(self.pd_library['Archive'][get_archives[n]]['Format'])
-            get_sample_rate = str(self.pd_library['Archive'][get_archives[n]]['Sample Rate'])
-            get_tuned_frequency = str(self.pd_library['Archive'][get_archives[n]]['Tuned Frequency'])
-            get_samples = str(self.pd_library['Archive'][get_archives[n]]['Samples'])
-            get_size = str(self.pd_library['Archive'][get_archives[n]]['Size'])
-            get_modulation = str(self.pd_library['Archive'][get_archives[n]]['Modulation'])
-            get_notes = str(self.pd_library['Archive'][get_archives[n]]['Notes'])
+            get_protocol = str(self.pd_library['Archive']['File'][get_archives[n]]['Protocol'])
+            get_date = str(self.pd_library['Archive']['File'][get_archives[n]]['Date'])
+            get_format = str(self.pd_library['Archive']['File'][get_archives[n]]['Format'])
+            get_sample_rate = str(self.pd_library['Archive']['File'][get_archives[n]]['Sample Rate'])
+            get_tuned_frequency = str(self.pd_library['Archive']['File'][get_archives[n]]['Tuned Frequency'])
+            get_samples = str(self.pd_library['Archive']['File'][get_archives[n]]['Samples'])
+            get_size = str(self.pd_library['Archive']['File'][get_archives[n]]['Size'])
+            get_modulation = str(self.pd_library['Archive']['File'][get_archives[n]]['Modulation'])
+            get_notes = str(self.pd_library['Archive']['File'][get_archives[n]]['Notes'])
             
             # Find Maximum Note Width
             if len(get_notes)*10 > notes_width:
@@ -17661,34 +17662,34 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tableWidget_archive_download.setItem(self.tableWidget_archive_download.rowCount()-1,0,protocol_item) 
             date_item = QtWidgets.QTableWidgetItem(get_date)
             date_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            date_item.setFlags(protocol_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            date_item.setFlags(date_item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.tableWidget_archive_download.setItem(self.tableWidget_archive_download.rowCount()-1,1,date_item) 
             format_item = QtWidgets.QTableWidgetItem(get_format)
             format_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            format_item.setFlags(protocol_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            format_item.setFlags(format_item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.tableWidget_archive_download.setItem(self.tableWidget_archive_download.rowCount()-1,2,format_item) 
             sample_rate_item = QtWidgets.QTableWidgetItem(get_sample_rate)
             sample_rate_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            sample_rate_item.setFlags(protocol_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            sample_rate_item.setFlags(sample_rate_item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.tableWidget_archive_download.setItem(self.tableWidget_archive_download.rowCount()-1,3,sample_rate_item) 
             tuned_frequency_item = QtWidgets.QTableWidgetItem(get_tuned_frequency)
             tuned_frequency_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            tuned_frequency_item.setFlags(protocol_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            tuned_frequency_item.setFlags(tuned_frequency_item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.tableWidget_archive_download.setItem(self.tableWidget_archive_download.rowCount()-1,4,tuned_frequency_item) 
             samples_item = QtWidgets.QTableWidgetItem(get_samples)
             samples_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            samples_item.setFlags(protocol_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            samples_item.setFlags(samples_item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.tableWidget_archive_download.setItem(self.tableWidget_archive_download.rowCount()-1,5,samples_item) 
             size_item = QtWidgets.QTableWidgetItem(get_size)
             size_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            size_item.setFlags(protocol_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            size_item.setFlags(size_item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.tableWidget_archive_download.setItem(self.tableWidget_archive_download.rowCount()-1,6,size_item) 
             modulation_item = QtWidgets.QTableWidgetItem(get_modulation)
             modulation_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            modulation_item.setFlags(protocol_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            modulation_item.setFlags(modulation_item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.tableWidget_archive_download.setItem(self.tableWidget_archive_download.rowCount()-1,7,modulation_item)                                                                         
             notes_item = QtWidgets.QTableWidgetItem(get_notes)
-            notes_item.setFlags(protocol_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            notes_item.setFlags(notes_item.flags() & ~QtCore.Qt.ItemIsEditable)
             self.tableWidget_archive_download.setItem(self.tableWidget_archive_download.rowCount()-1,8,notes_item) 
             
         # Resize the Table
@@ -17698,7 +17699,56 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_archive_download.resizeRowsToContents() 
         #self.tableWidget_archive_download.horizontalHeader().setSectionResizeMode(8,QtWidgets.QHeaderView.Stretch) 
         #self.tableWidget_archive_download.horizontalHeader().setStretchLastSection(False) 
-        #self.tableWidget_archive_download.horizontalHeader().setStretchLastSection(True) 
+        #self.tableWidget_archive_download.horizontalHeader().setStretchLastSection(True)
+        
+        # Populate the Collection Table
+        get_archives = [archive for archive in sorted(self.pd_library['Archive']['Collection'])]
+        notes_width = 150
+        new_font = QtGui.QFont("Times",10)
+        
+        for n in range(0,len(get_archives)):
+            # Get File Info
+            get_file = str(get_archives[n])
+            get_size = str(self.pd_library['Archive']['Collection'][get_archives[n]]['Size'])
+            get_file_count = str(self.pd_library['Archive']['Collection'][get_archives[n]]['Files'])
+            get_format = str(self.pd_library['Archive']['Collection'][get_archives[n]]['Format'])
+            get_notes = str(self.pd_library['Archive']['Collection'][get_archives[n]]['Notes'])
+            
+            # Find Maximum Note Width
+            if len(get_notes)*10 > notes_width:
+                notes_width = len(get_notes)*10
+                        
+            # Insert a Row
+            self.tableWidget_archive_download_collection.setRowCount(self.tableWidget_archive_download_collection.rowCount()+1)
+            
+            # Populate the Table
+            file_item = QtWidgets.QTableWidgetItem(get_file)
+            file_item.setFont(new_font)
+            self.tableWidget_archive_download_collection.setVerticalHeaderItem(self.tableWidget_archive_download_collection.rowCount()-1,file_item)
+            
+            size_item = QtWidgets.QTableWidgetItem(get_size)
+            size_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+            size_item.setFlags(size_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            self.tableWidget_archive_download_collection.setItem(self.tableWidget_archive_download_collection.rowCount()-1,0,size_item) 
+            
+            file_count_item = QtWidgets.QTableWidgetItem(get_file_count)
+            file_count_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+            file_count_item.setFlags(file_count_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            self.tableWidget_archive_download_collection.setItem(self.tableWidget_archive_download_collection.rowCount()-1,1,file_count_item) 
+            
+            format_item = QtWidgets.QTableWidgetItem(get_format)
+            format_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+            format_item.setFlags(format_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            self.tableWidget_archive_download_collection.setItem(self.tableWidget_archive_download_collection.rowCount()-1,2,format_item) 
+            
+            notes_item = QtWidgets.QTableWidgetItem(get_notes)
+            notes_item.setFlags(notes_item.flags() & ~QtCore.Qt.ItemIsEditable)
+            self.tableWidget_archive_download_collection.setItem(self.tableWidget_archive_download_collection.rowCount()-1,3,notes_item) 
+            
+        # Resize the Table
+        self.tableWidget_archive_download_collection.resizeColumnsToContents() 
+        self.tableWidget_archive_download_collection.setColumnWidth(8, notes_width)
+        self.tableWidget_archive_download_collection.resizeRowsToContents() 
         
     def _slotArchiveDownloadClicked(self):
         """ Downloads the selected file from the internet.
@@ -17723,22 +17773,22 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_archive_file = str(self.listWidget_archive_download_files.currentItem().text())
         get_archive_folder = str(self.comboBox_archive_download_folder.currentText()) + '/'
         
-        get_archives = [archive for archive in self.pd_library['Archive']]
+        get_archives = [archive for archive in self.pd_library['Archive']['File']]
         
         for n in range(0,len(get_archives)):
             # Get File Info
             get_file = str(get_archives[n])
             if get_archive_file == get_file:
                 # Archive Lookup
-                get_protocol = str(self.pd_library['Archive'][get_archives[n]]['Protocol'])
-                #get_date = str(self.pd_library['Archive'][get_archives[n]]['Date'])
-                get_format = str(self.pd_library['Archive'][get_archives[n]]['Format'])
-                get_sample_rate = str(self.pd_library['Archive'][get_archives[n]]['Sample Rate'])
-                get_tuned_frequency = str(self.pd_library['Archive'][get_archives[n]]['Tuned Frequency'])
-                #get_samples = str(self.pd_library['Archive'][get_archives[n]]['Samples'])
-                #get_size = str(self.pd_library['Archive'][get_archives[n]]['Size'])
-                get_modulation = str(self.pd_library['Archive'][get_archives[n]]['Modulation'])
-                #get_notes = str(self.pd_library['Archive'][get_archives[n]]['Notes'])
+                get_protocol = str(self.pd_library['Archive']['File'][get_archives[n]]['Protocol'])
+                #get_date = str(self.pd_library['Archive']['File'][get_archives[n]]['Date'])
+                get_format = str(self.pd_library['Archive']['File'][get_archives[n]]['Format'])
+                get_sample_rate = str(self.pd_library['Archive']['File'][get_archives[n]]['Sample Rate'])
+                get_tuned_frequency = str(self.pd_library['Archive']['File'][get_archives[n]]['Tuned Frequency'])
+                #get_samples = str(self.pd_library['Archive']['File'][get_archives[n]]['Samples'])
+                #get_size = str(self.pd_library['Archive']['File'][get_archives[n]]['Size'])
+                get_modulation = str(self.pd_library['Archive']['File'][get_archives[n]]['Modulation'])
+                #get_notes = str(self.pd_library['Archive']['File'][get_archives[n]]['Notes'])
                 
                 # Set the Value in the Table
                 self.tableWidget_archive_replay.setRowCount(self.tableWidget_archive_replay.rowCount()+1)
@@ -23617,16 +23667,16 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_archive_file = str(filepath).rsplit("/",1)[1]
             get_archive_folder = str(filepath).rsplit("/",1)[0] + '/'     
         
-        get_archives = [archive for archive in self.pd_library['Archive']]
+        get_archives = [archive for archive in self.pd_library['Archive']['File']]
         
         for n in range(0,len(get_archives)):
             # Get File Info
             get_file = str(get_archives[n])
             if get_archive_file == get_file:
                 # Archive Lookup
-                get_truth = str(self.pd_library['Archive'][get_archives[n]]['Protocol'])
-                get_sample_rate = str(self.pd_library['Archive'][get_archives[n]]['Sample Rate'])
-                get_tuned_frequency = str(self.pd_library['Archive'][get_archives[n]]['Tuned Frequency'])
+                get_truth = str(self.pd_library['Archive']['File'][get_archives[n]]['Protocol'])
+                get_sample_rate = str(self.pd_library['Archive']['File'][get_archives[n]]['Sample Rate'])
+                get_tuned_frequency = str(self.pd_library['Archive']['File'][get_archives[n]]['Tuned Frequency'])
 
                 # Set the Value in the Table
                 self.tableWidget_archive_datasets.setRowCount(self.tableWidget_archive_datasets.rowCount()+1)
@@ -24213,6 +24263,22 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Browser
         os.system("sensible-browser http://complextoreal.com/tutorials/ &")
         
+    def _slotArchiveDownloadCollectionClicked(self):
+        """ Downloads a collection of IQ files and unzips them.
+        """
+        # Find Selected Row
+        get_row = self.tableWidget_archive_download_collection.currentRow()
+        if get_row >= 0:
+            # Get File
+            get_file = str(self.tableWidget_archive_download_collection.verticalHeaderItem(get_row).text())
+            
+            # Get Folder 
+            get_folder = str(self.comboBox_archive_download_folder.currentText())
+            
+            # Download and Unzip
+            os.system('wget -P "' + get_folder + '/"' + ' https://fissure.ainfosec.com/' + get_file)
+            #os.system('unzip "' + get_folder + '/' + get_file + '" && rm "' + get_folder + '/' + get_file + '"')
+            self._slotArchiveDownloadRefreshClicked()        
         
                     
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):

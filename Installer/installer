@@ -1879,7 +1879,7 @@ ls /usr/local/bin/hamclock
 
 # ICE9 Bluetooth Sniffer
 programs_ubuntu20_04.append(('ICE9 Bluetooth Sniffer',
-"""sudo apt install -y libliquid-dev libbtbb-dev
+"""sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
 sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3805,7 +3805,7 @@ ls /usr/local/bin/hamclock
 
 # ICE9 Bluetooth Sniffer
 programs_ubuntu20_04_4.append(('ICE9 Bluetooth Sniffer',
-"""sudo apt install -y libliquid-dev libbtbb-dev
+"""sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
 sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -4997,7 +4997,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 
 # # ICE9 Bluetooth Sniffer
 # programs_dragonOS_focal.append(('ICE9 Bluetooth Sniffer',
-# """sudo apt install -y libliquid-dev libbtbb-dev
+# """sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
 # sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
 # mkdir -p ~/Installed_by_FISSURE
 # cd ~/Installed_by_FISSURE

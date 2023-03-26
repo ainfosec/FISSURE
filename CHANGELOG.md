@@ -1,6 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-03-26
+
+Preparing for Archive collections.
+ 
+### Added
+
+- File and Collection tabs for Archive Download
+  
+### Changed
+
+- Updated Python2_maint-3.7 software sizes for the installer
+- Moved noise source after scaling for dataset builder flow graph
+
+### Fixed
+
+- Added libuhd-dev to ICE9 Bluetooth Sniffer install
+
 ## 2023-03-19
 
 Styling changes for Python2_maint-3.7 branch.
