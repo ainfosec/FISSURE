@@ -130,7 +130,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>105</y>
+      <y>130</y>
       <width>180</width>
       <height>25</height>
      </rect>
@@ -146,7 +146,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>80</y>
+      <y>105</y>
       <width>180</width>
       <height>25</height>
      </rect>
@@ -169,6 +169,22 @@
     </property>
     <property name="text">
      <string>Ubuntu 20.04.5</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_ubuntu20_04_6">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>150</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Ubuntu 20.04.6</string>
     </property>
    </widget>
   </widget>

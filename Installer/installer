@@ -130,7 +130,7 @@ gnuradio-companion --help
 """,True,'Minimum Install'))
 
 # Scapy
-programs_ubuntu20_04.append(('Scapy (28.7 MB)',
+programs_ubuntu20_04.append(('Scapy (33.1 MB)',
 """sudo python3 -m pip install scapy
 sudo python2 -m pip install scapy
 #sudo apt-get install -y scapy
@@ -139,7 +139,7 @@ python2 -c "import scapy" && python3 -c "import scapy"
 """,True,'Minimum Install'))
 
 # Wireshark
-programs_ubuntu20_04.append(('Wireshark (49.1 MB)',
+programs_ubuntu20_04.append(('Wireshark (49.4 MB)',
 """sudo add-apt-repository --y ppa:wireshark-dev/stable  # Gets installed with Misc. Dependencies (tshark), ESP32 Bluetooth Classic Sniffer
 sudo apt-get update
 sudo apt install -y wireshark wireshark-dev
@@ -189,17 +189,17 @@ cd gr-osmosdr
 git checkout gr3.8
 mkdir build
 cd build
-cmake ..
-make
-sudo make install
+#cmake ..
+#make
+#sudo make install
 sudo ldconfig
 sudo apt-get install -y gr-osmosdr  # Temporary fix
 ########## Verify ##########
-ls /usr/local/bin/osmocom_fft
+ls /usr/bin/osmocom_fft
 """,True,'Hardware'))
 
 # BladeRF
-programs_ubuntu20_04.append(('BladeRF (17.9 MB)',
+programs_ubuntu20_04.append(('BladeRF (20.5 MB)',
 """sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 pkg-config git wget  # no package: libtecla1-dev       
 sudo apt-get install -y bladerf
 sudo apt-get install -y bladerf-fpga-hostedx115  # bladeRF x115
@@ -275,7 +275,7 @@ sudo apt-get install -y mlocate
 """,True,'Hardware'))
 
 # fl2k
-programs_ubuntu20_04.append(('fl2k',
+programs_ubuntu20_04.append(('fl2k (2.0 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.osmocom.org/osmo-fl2k.git
@@ -375,7 +375,7 @@ ls /usr/local/lib/python*/*/adsb
 """,True,'Out-of-Tree Modules'))
 
 # gr-ainfosec
-programs_ubuntu20_04.append(('gr-ainfosec (6.4 MB)',
+programs_ubuntu20_04.append(('gr-ainfosec (6.5 MB)',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ainfosec/
 sudo rm -Rf build
 mkdir build
@@ -408,7 +408,7 @@ ls /usr/local/lib/python*/*/ais
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth-maint-3.8
-programs_ubuntu20_04.append(('gr-bluetooth-maint-3.8 (4.4 MB)',
+programs_ubuntu20_04.append(('gr-bluetooth-maint-3.8 (13.3 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 sudo rm -Rf libbtbb
@@ -453,7 +453,7 @@ ls /usr/local/lib/python*/*/clapper_plus
 """,True,'Out-of-Tree Modules'))
 
 # gr-dect2
-programs_ubuntu20_04.append(('gr-dect2 (9.3 MB)',
+programs_ubuntu20_04.append(('gr-dect2 (9.4 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2/
@@ -646,7 +646,7 @@ ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-mixalot
-programs_ubuntu20_04.append(('gr-mixalot',
+programs_ubuntu20_04.append(('gr-mixalot (20.1 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-mixalot/)" ]; 
 then
   sudo apt-get install -y libitpp-dev
@@ -709,7 +709,7 @@ ls /usr/local/lib/python*/*/paint
 """,True,'Out-of-Tree Modules'))
 
 # gr-rds
-programs_ubuntu20_04.append(('gr-rds (7.4 MB)',
+programs_ubuntu20_04.append(('gr-rds (15.9 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds/
@@ -963,7 +963,7 @@ srsenb --help
 """,True,'LTE'))
 
 # FALCON
-programs_ubuntu20_04.append(('FALCON (699.6 MB)',
+programs_ubuntu20_04.append(('FALCON (985.6 MB)',
 """sudo apt-get install -y build-essential git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev  # For srsLTE
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1004,7 +1004,7 @@ aircrack-ng --help
 """,True,'802.11'))
 
 # Geany
-programs_ubuntu20_04.append(('Geany',
+programs_ubuntu20_04.append(('Geany (15.1 MB)',
 """sudo apt-get install -y geany  # needs [styling] line_height=0;2; added to Tools>Configuration Files>filetypes.common to see underscores
 ########## Verify ##########
 geany --help
@@ -1031,14 +1031,14 @@ ls /usr/bin/minicom
 """,True,'Hardware'))
 
 # PuTTY
-programs_ubuntu20_04.append(('PuTTY (5.0 MB)',
+programs_ubuntu20_04.append(('PuTTY (5.2 MB)',
 """sudo apt-get install -y putty
 ########## Verify ##########
 putty --help
 """,True,'Hardware'))
 
 # openHAB
-programs_ubuntu20_04.append(('openHAB (596.9 MB)',
+programs_ubuntu20_04.append(('openHAB (608.6 MB)',
 """sudo apt-get -yq install gnupg curl
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
 cd ~/Downloads
@@ -1156,7 +1156,7 @@ rtl_airband -h
 """,True,'SDR'))
 
 # Spektrum
-programs_ubuntu20_04.append(('Spektrum (241.9 MB)',
+programs_ubuntu20_04.append(('Spektrum (260.0 MB)',
 """echo 'blacklist dvb_usb_rtl28xxu' | sudo tee /etc/modprobe.d/rtl-sdr.conf  # Restart computer to use RTL device
 echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", GROUP="adm", MODE="0666"' | sudo tee /etc/udev/rules.d/20.rtlsdr.rules
 mkdir -p ~/Installed_by_FISSURE
@@ -1188,28 +1188,28 @@ ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 """,True,'Trunked Radio'))
 
 # Audacity
-programs_ubuntu20_04.append(('Audacity',
+programs_ubuntu20_04.append(('Audacity (38.6 MB)',
 """sudo apt-get install -y audacity
 ########## Verify ##########
 audacity --version
 """,True,'Audio'))
 
 # Sound eXchange
-programs_ubuntu20_04.append(('Sound eXchange',
+programs_ubuntu20_04.append(('Sound eXchange (2.2 MB)',
 """sudo apt-get install -y sox
 ########## Verify ##########
 sox --version
 """,True,'Audio'))
 
 # LAME
-programs_ubuntu20_04.append(('LAME',
+programs_ubuntu20_04.append(('LAME (200.7 kB)',
 """sudo apt-get install -y lame
 ########## Verify ##########
 lame --version
 """,True,'Audio'))
 
 # mpv
-programs_ubuntu20_04.append(('mpv',
+programs_ubuntu20_04.append(('mpv (73.7 MB)',
 """sudo apt-get install -y mpv
 ########## Verify ##########
 mpv --version
@@ -1223,14 +1223,14 @@ ffmpeg --help
 """,True,'Audio'))
 
 # MPlayer
-programs_ubuntu20_04.append(('MPlayer',
+programs_ubuntu20_04.append(('MPlayer (14.7 MB)',
 """sudo apt-get install -y mplayer
 ########## Verify ##########
 ls /usr/bin/mplayer
 """,True,'Audio'))
 
 # VLC
-programs_ubuntu20_04.append(('VLC',
+programs_ubuntu20_04.append(('VLC (402.2 MB)',
 """sudo apt-get install -y snapd
 sudo snap install vlc
 ########## Verify ##########
@@ -1238,7 +1238,7 @@ vlc --help
 """,True,'Video'))
 
 # Simple Screen Recorder
-programs_ubuntu20_04.append(('Simple Screen Recorder',
+programs_ubuntu20_04.append(('Simple Screen Recorder (6.0 MB)',
 """sudo apt-add-repository -y ppa:maarten-baert/simplescreenrecorder
 sudo apt-get update
 sudo apt-get install -y simplescreenrecorder
@@ -1248,7 +1248,7 @@ simplescreenrecorder --help
 
 # radiosonde_auto_rx
 programs_ubuntu20_04.append(('radiosonde_auto_rx (53.2 MB)',
-"""sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip python3-flask sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5
+"""sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5  # python3-flask: causes pip errors with python3-openssl
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/projecthorus/radiosonde_auto_rx.git
@@ -1311,7 +1311,7 @@ ls ~/Installed_by_FISSURE/zepassd/zepassd
 """,True,'RFID'))
 
 # iridium-toolkit
-programs_ubuntu20_04.append(('iridium-toolkit (3.1 MB)',
+programs_ubuntu20_04.append(('iridium-toolkit (3.3 MB)',
 """#Python (2.7), NumPy (scipy), crcmod
 sudo apt-get install -y mplayer
 mkdir -p ~/Installed_by_FISSURE
@@ -1340,7 +1340,7 @@ ls ~/Installed_by_FISSURE/linux-x64/IridiumLive
 """,True,'Satellite'))
 
 # NETATTACK2
-programs_ubuntu20_04.append(('NETATTACK2 (872.4 kB)',
+programs_ubuntu20_04.append(('NETATTACK2 (884.8 kB)',
 """#sudo pip install netifaces  # fix for python2
 #sudo apt-get install -y python-scapy python-nmap python-nfqueue nmap  # this needs to be fixed, can it still run with python2?
 sudo python2 -m pip install netifaces
@@ -1356,7 +1356,7 @@ sudo dpkg -i python-nfqueue_0.6-1build2_amd64.deb
 """,True,'802.11'))
 
 # Wifite
-programs_ubuntu20_04.append(('Wifite (536.6 MB)',
+programs_ubuntu20_04.append(('Wifite (546.6 MB)',
 """# python, iwconfig, ifconfig, Aircrack-ng, tshark, reaver, bully, coWPAtty, pyrit, hashcat, hcxdumptool, hcxpcaptool
 sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger
 sudo python3 -m pip install psycopg2-binary scapy
@@ -1407,7 +1407,7 @@ sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
 """,True,'802.11'))
 
 # rtl_433
-programs_ubuntu20_04.append(('rtl_433 (25.6 MB)',
+programs_ubuntu20_04.append(('rtl_433 (27.5 MB)',
 """#sudo apt-get install -y rtl-433
 sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
 mkdir -p ~/Installed_by_FISSURE
@@ -1424,7 +1424,7 @@ rtl_433 -help
 """,True,'433 MHz'))
 
 # RouterSploit
-programs_ubuntu20_04.append(('RouterSploit (486.4 MB)',
+programs_ubuntu20_04.append(('RouterSploit (494.3 MB)',
 """sudo apt-get install -y python3-pip libglib2.0-dev rustc
 sudo python3 -m pip install setuptools-rust
 mkdir -p ~/Installed_by_FISSURE
@@ -1439,7 +1439,7 @@ python3 -m pip install bluepy
 """,True,'802.11'))
 
 # Metasploit
-programs_ubuntu20_04.append(('Metasploit (1.1 GB)',
+programs_ubuntu20_04.append(('Metasploit (1.2 GB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 mkdir metasploit
@@ -1450,7 +1450,7 @@ ls /usr/bin/msfconsole
 """,True,'802.11'))
 
 # monitor_rtl433
-programs_ubuntu20_04.append(('monitor_rtl433 (25.6 MB)',
+programs_ubuntu20_04.append(('monitor_rtl433 (52.2 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mcbridejc/monitor_rtl433.git
@@ -1535,7 +1535,7 @@ viking --help
 """,True,'Mapping'))
 
 # PyGPSClient
-programs_ubuntu20_04.append(('PyGPSClient (19.6 MB)',
+programs_ubuntu20_04.append(('PyGPSClient (42.5 MB)',
 """sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk
 sudo python3 -m pip install --upgrade PyGPSClient
 ########## Verify ##########
@@ -1543,7 +1543,7 @@ ls /usr/local/bin/pygpsclient
 """,True,'GPS'))
 
 # Gpredict
-programs_ubuntu20_04.append(('Gpredict (12.0 MB)',
+programs_ubuntu20_04.append(('Gpredict (12.7 MB)',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
@@ -1557,7 +1557,7 @@ foxtrotgps --help
 """,True,'GPS'))
 
 # multimon-ng
-programs_ubuntu20_04.append(('multimon-ng (8.6 MB)',
+programs_ubuntu20_04.append(('multimon-ng (9.2 MB)',
 """sudo apt-get install -y libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1573,14 +1573,14 @@ ls /usr/local/bin/multimon-ng
 """,True,'POCSAG'))
 
 # Xastir
-programs_ubuntu20_04.append(('Xastir (51.3 MB)',
+programs_ubuntu20_04.append(('Xastir (87.4 MB)',
 """sudo apt-get install -y xastir  # should non-superusers be allowed? sure, why not.
 ########## Verify ##########
 sudo xastir -V
 """,True,'Ham Radio'))
 
 # LTE-Cell-Scanner
-programs_ubuntu20_04.append(('LTE-Cell-Scanner (171.7 MB)',
+programs_ubuntu20_04.append(('LTE-Cell-Scanner (195.9 MB)',
 """sudo apt-get install -y cmake libncurses5-dev liblapack-dev libblas-dev libboost-thread-dev libboost-system-dev libitpp-dev librtlsdr-dev libfftw3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1679,7 +1679,7 @@ sudo trackerjacker --help
 """,True,'802.11'))
 
 # airgeddon
-programs_ubuntu20_04.append(('airgeddon (205.7 MB)',
+programs_ubuntu20_04.append(('airgeddon (247.0 MB)',
 """sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only john
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1723,24 +1723,29 @@ ls /usr/bin/enscribe
 
 # ESP32 Bluetooth Classic Sniffer
 programs_ubuntu20_04.append(('ESP32 BT Classic Sniffer (400.7 MB)',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5, 4.0.3
 cd ~/Installed_by_FISSURE
 git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
 cd esp32_bluetooth_classic_sniffer
-rm ./dissectors/config.h
+#rm ./dissectors/config.h  # Produces errors if missing
+sed -i 's/VERSION "3.4.0"/VERSION "4.0.3"/g' ./dissectors/config.h
+sed -i 's/VERSION_MAJOR 3/VERSION_MAJOR 4/g' ./dissectors/config.h
+sed -i 's/VERSION_MINOR 4/VERSION_MINOR 0/g' ./dissectors/config.h
+sed -i 's/VERSION_MICRO 0/VERSION_MICRO 3/g' ./dissectors/config.h
+sed -i 's/PLUGIN_PATH_ID "3.4"/PLUGIN_PATH_ID "4.0"/g' ./dissectors/config.h
 sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
 sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
-sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sed -i 's/3.4/4.0/g' ./dissectors/build.sh
 sudo ./requirements.sh
 ./build.sh
-sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
-rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/4.0/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
-ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/h4bcm.so
 """,True,'Bluetooth'))
 
 # SigDigger
-programs_ubuntu20_04.append(('SigDigger (173.7 MB)',
+programs_ubuntu20_04.append(('SigDigger (174.0 MB)',
 """#sigutils
 sudo apt-get install -y libsndfile1-dev libfftw3-3
 mkdir -p ~/Installed_by_FISSURE
@@ -1805,7 +1810,7 @@ ls /usr/local/bin/m17-demod
 """,True,'M17'))
 
 # Fldigi
-programs_ubuntu20_04.append(('Fldigi (12.8 MB)',
+programs_ubuntu20_04.append(('Fldigi (14.0 MB)',
 """sudo apt-get install -y fldigi
 ########## Verify ##########
 ls /usr/bin/fldigi
@@ -1819,7 +1824,7 @@ pyfdax -h
 """,True,'Filters'))
 
 # Bootable USB
-programs_ubuntu20_04.append(('Bootable USB (107.4 MB)',
+programs_ubuntu20_04.append(('Bootable USB (113.2 MB)',
 """sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 382003C2C8B7B4AB813E915B14E4942973C62A1B
 sudo add-apt-repository -y "deb http://ppa.launchpad.net/nemh/systemback/ubuntu xenial main"
 sudo apt update
@@ -1832,7 +1837,7 @@ ls /usr/bin/systemback && ls /usr/bin/guidus
 """,True,'Development'))
 
 # Dire Wolf
-programs_ubuntu20_04.append(('Dire Wolf',
+programs_ubuntu20_04.append(('Dire Wolf (207.9 MB)',
 """sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1850,21 +1855,21 @@ ls /usr/local/bin/direwolf
 """,True,'Ham Radio'))
 
 # Meld
-programs_ubuntu20_04.append(('Meld',
+programs_ubuntu20_04.append(('Meld (8.9 MB)',
 """sudo apt-get install -y meld
 ########## Verify ##########
 ls /usr/bin/meld
 """,True,'Data'))
 
 # nwdiag
-programs_ubuntu20_04.append(('nwdiag',
+programs_ubuntu20_04.append(('nwdiag (30.3 MB)',
 """sudo python3 -m pip install nwdiag
 ########## Verify ##########
 packetdiag -h
 """,True,'Data'))
 
 # HamClock
-programs_ubuntu20_04.append(('HamClock',
+programs_ubuntu20_04.append(('HamClock (52.7 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
@@ -1878,7 +1883,7 @@ ls /usr/local/bin/hamclock
 """,True,'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
-programs_ubuntu20_04.append(('ICE9 Bluetooth Sniffer',
+programs_ubuntu20_04.append(('ICE9 Bluetooth Sniffer (10.1 MB)',
 """sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
 sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
 mkdir -p ~/Installed_by_FISSURE
@@ -1895,7 +1900,7 @@ ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
 """,True,'Bluetooth'))
 
 # dump978
-programs_ubuntu20_04.append(('dump978',
+programs_ubuntu20_04.append(('dump978 (1.8 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mutability/dump978.git
@@ -1906,14 +1911,14 @@ ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
 
 # htop
-programs_ubuntu20_04.append(('htop',
+programs_ubuntu20_04.append(('htop (307.2 kB)',
 """sudo apt-get install -y htop
 ########## Verify ##########
 ls /usr/bin/htop
 """,True,'Development'))
 
 # OpenWebRX
-programs_ubuntu20_04.append(('OpenWebRX',
+programs_ubuntu20_04.append(('OpenWebRX (9.5 MB)',
 """wget -O - https://repo.openwebrx.de/debian/key.gpg.txt | sudo apt-key add
 echo 'deb https://repo.openwebrx.de/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/openwebrx.list
 sudo apt-get update
@@ -1925,7 +1930,7 @@ ls /usr/bin/openwebrx
 """,True,'SDR'))
 
 # CRC RevEng
-programs_ubuntu20_04.append(('CRC RevEng',
+programs_ubuntu20_04.append(('CRC RevEng (909.4 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
@@ -1938,7 +1943,7 @@ ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
 # Gpick
-programs_ubuntu20_04.append(('Gpick',
+programs_ubuntu20_04.append(('Gpick (6.2 MB)',
 """sudo apt-get install -y gpick
 ########## Verify ##########
 ls /usr/bin/gpick
@@ -2056,7 +2061,7 @@ gnuradio-companion --help
 """,True,'Minimum Install'))
 
 # Scapy
-programs_ubuntu20_04_4.append(('Scapy (28.7 MB)',
+programs_ubuntu20_04_4.append(('Scapy (33.1 MB)',
 """sudo python3 -m pip install scapy
 sudo python2 -m pip install scapy
 #sudo apt-get install -y scapy
@@ -2065,7 +2070,7 @@ python2 -c "import scapy" && python3 -c "import scapy"
 """,True,'Minimum Install'))
 
 # Wireshark
-programs_ubuntu20_04_4.append(('Wireshark (49.1 MB)',
+programs_ubuntu20_04_4.append(('Wireshark (49.4 MB)',
 """sudo add-apt-repository --y ppa:wireshark-dev/stable  # Gets installed with Misc. Dependencies (tshark), ESP32 Bluetooth Classic Sniffer
 sudo apt-get update
 sudo apt install -y wireshark wireshark-dev
@@ -2115,17 +2120,17 @@ cd gr-osmosdr
 git checkout gr3.8
 mkdir build
 cd build
-cmake ..
-make
-sudo make install
+#cmake ..
+#make
+#sudo make install
 sudo ldconfig
 sudo apt-get install -y gr-osmosdr  # Temporary fix
 ########## Verify ##########
-ls /usr/local/bin/osmocom_fft
+ls /usr/bin/osmocom_fft
 """,True,'Hardware'))
 
 # BladeRF
-programs_ubuntu20_04_4.append(('BladeRF (17.9 MB)',
+programs_ubuntu20_04_4.append(('BladeRF (20.5 MB)',
 """sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 pkg-config git wget  # no package: libtecla1-dev       
 sudo apt-get install -y bladerf
 sudo apt-get install -y bladerf-fpga-hostedx115  # bladeRF x115
@@ -2201,7 +2206,7 @@ sudo apt-get install -y mlocate
 """,True,'Hardware'))
 
 # fl2k
-programs_ubuntu20_04_4.append(('fl2k',
+programs_ubuntu20_04_4.append(('fl2k (2.0 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.osmocom.org/osmo-fl2k.git
@@ -2301,7 +2306,7 @@ ls /usr/local/lib/python*/*/adsb
 """,True,'Out-of-Tree Modules'))
 
 # gr-ainfosec
-programs_ubuntu20_04_4.append(('gr-ainfosec (6.4 MB)',
+programs_ubuntu20_04_4.append(('gr-ainfosec (6.5 MB)',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-ainfosec/
 sudo rm -Rf build
 mkdir build
@@ -2334,7 +2339,7 @@ ls /usr/local/lib/python*/*/ais
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth-maint-3.8
-programs_ubuntu20_04_4.append(('gr-bluetooth-maint-3.8 (4.4 MB)',
+programs_ubuntu20_04_4.append(('gr-bluetooth-maint-3.8 (13.3 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 sudo rm -Rf libbtbb
@@ -2379,7 +2384,7 @@ ls /usr/local/lib/python*/*/clapper_plus
 """,True,'Out-of-Tree Modules'))
 
 # gr-dect2
-programs_ubuntu20_04_4.append(('gr-dect2 (9.3 MB)',
+programs_ubuntu20_04_4.append(('gr-dect2 (9.4 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-dect2/
@@ -2572,7 +2577,7 @@ ls /usr/local/lib/python*/*/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-mixalot
-programs_ubuntu20_04_4.append(('gr-mixalot',
+programs_ubuntu20_04_4.append(('gr-mixalot (20.1 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-mixalot/)" ]; 
 then
   sudo apt-get install -y libitpp-dev
@@ -2635,7 +2640,7 @@ ls /usr/local/lib/python*/*/paint
 """,True,'Out-of-Tree Modules'))
 
 # gr-rds
-programs_ubuntu20_04_4.append(('gr-rds (7.4 MB)',
+programs_ubuntu20_04_4.append(('gr-rds (15.9 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-rds/
@@ -2889,7 +2894,7 @@ srsenb --help
 """,True,'LTE'))
 
 # FALCON
-programs_ubuntu20_04_4.append(('FALCON (699.6 MB)',
+programs_ubuntu20_04_4.append(('FALCON (985.6 MB)',
 """sudo apt-get install -y build-essential git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev  # For srsLTE
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -2930,7 +2935,7 @@ aircrack-ng --help
 """,True,'802.11'))
 
 # Geany
-programs_ubuntu20_04_4.append(('Geany',
+programs_ubuntu20_04_4.append(('Geany (15.1 MB)',
 """sudo apt-get install -y geany  # needs [styling] line_height=0;2; added to Tools>Configuration Files>filetypes.common to see underscores
 ########## Verify ##########
 geany --help
@@ -2957,14 +2962,14 @@ ls /usr/bin/minicom
 """,True,'Hardware'))
 
 # PuTTY
-programs_ubuntu20_04_4.append(('PuTTY (5.0 MB)',
+programs_ubuntu20_04_4.append(('PuTTY (5.2 MB)',
 """sudo apt-get install -y putty
 ########## Verify ##########
 putty --help
 """,True,'Hardware'))
 
 # openHAB
-programs_ubuntu20_04_4.append(('openHAB (596.9 MB)',
+programs_ubuntu20_04_4.append(('openHAB (608.6 MB)',
 """sudo apt-get -yq install gnupg curl
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
 cd ~/Downloads
@@ -3082,7 +3087,7 @@ rtl_airband -h
 """,True,'SDR'))
 
 # Spektrum
-programs_ubuntu20_04_4.append(('Spektrum (241.9 MB)',
+programs_ubuntu20_04_4.append(('Spektrum (260.0 MB)',
 """echo 'blacklist dvb_usb_rtl28xxu' | sudo tee /etc/modprobe.d/rtl-sdr.conf  # Restart computer to use RTL device
 echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", GROUP="adm", MODE="0666"' | sudo tee /etc/udev/rules.d/20.rtlsdr.rules
 mkdir -p ~/Installed_by_FISSURE
@@ -3114,28 +3119,28 @@ ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 """,True,'Trunked Radio'))
 
 # Audacity
-programs_ubuntu20_04_4.append(('Audacity',
+programs_ubuntu20_04_4.append(('Audacity (38.6 MB)',
 """sudo apt-get install -y audacity
 ########## Verify ##########
 audacity --version
 """,True,'Audio'))
 
 # Sound eXchange
-programs_ubuntu20_04_4.append(('Sound eXchange',
+programs_ubuntu20_04_4.append(('Sound eXchange (2.2 MB)',
 """sudo apt-get install -y sox
 ########## Verify ##########
 sox --version
 """,True,'Audio'))
 
 # LAME
-programs_ubuntu20_04_4.append(('LAME',
+programs_ubuntu20_04_4.append(('LAME (200.7 kB)',
 """sudo apt-get install -y lame
 ########## Verify ##########
 lame --version
 """,True,'Audio'))
 
 # mpv
-programs_ubuntu20_04_4.append(('mpv',
+programs_ubuntu20_04_4.append(('mpv (73.7 MB)',
 """sudo apt-get install -y mpv
 ########## Verify ##########
 mpv --version
@@ -3149,14 +3154,14 @@ ffmpeg --help
 """,True,'Audio'))
 
 # MPlayer
-programs_ubuntu20_04_4.append(('MPlayer',
+programs_ubuntu20_04_4.append(('MPlayer (14.7 MB)',
 """sudo apt-get install -y mplayer
 ########## Verify ##########
 ls /usr/bin/mplayer
 """,True,'Audio'))
 
 # VLC
-programs_ubuntu20_04_4.append(('VLC',
+programs_ubuntu20_04_4.append(('VLC (402.2 MB)',
 """sudo apt-get install -y snapd
 sudo snap install vlc
 ########## Verify ##########
@@ -3164,7 +3169,7 @@ vlc --help
 """,True,'Video'))
 
 # Simple Screen Recorder
-programs_ubuntu20_04_4.append(('Simple Screen Recorder',
+programs_ubuntu20_04_4.append(('Simple Screen Recorder (6.0 MB)',
 """sudo apt-add-repository -y ppa:maarten-baert/simplescreenrecorder
 sudo apt-get update
 sudo apt-get install -y simplescreenrecorder
@@ -3174,7 +3179,7 @@ simplescreenrecorder --help
 
 # radiosonde_auto_rx
 programs_ubuntu20_04_4.append(('radiosonde_auto_rx (53.2 MB)',
-"""sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip python3-flask sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5
+"""sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5  # python3-flask: causes pip errors with python3-openssl
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/projecthorus/radiosonde_auto_rx.git
@@ -3237,7 +3242,7 @@ ls ~/Installed_by_FISSURE/zepassd/zepassd
 """,True,'RFID'))
 
 # iridium-toolkit
-programs_ubuntu20_04_4.append(('iridium-toolkit (3.1 MB)',
+programs_ubuntu20_04_4.append(('iridium-toolkit (3.3 MB)',
 """#Python (2.7), NumPy (scipy), crcmod
 sudo apt-get install -y mplayer
 mkdir -p ~/Installed_by_FISSURE
@@ -3266,7 +3271,7 @@ ls ~/Installed_by_FISSURE/linux-x64/IridiumLive
 """,True,'Satellite'))
 
 # NETATTACK2
-programs_ubuntu20_04_4.append(('NETATTACK2 (872.4 kB)',
+programs_ubuntu20_04_4.append(('NETATTACK2 (884.8 kB)',
 """#sudo pip install netifaces  # fix for python2
 #sudo apt-get install -y python-scapy python-nmap python-nfqueue nmap  # this needs to be fixed, can it still run with python2?
 sudo python2 -m pip install netifaces
@@ -3282,7 +3287,7 @@ sudo dpkg -i python-nfqueue_0.6-1build2_amd64.deb
 """,True,'802.11'))
 
 # Wifite
-programs_ubuntu20_04_4.append(('Wifite (536.6 MB)',
+programs_ubuntu20_04_4.append(('Wifite (546.6 MB)',
 """# python, iwconfig, ifconfig, Aircrack-ng, tshark, reaver, bully, coWPAtty, pyrit, hashcat, hcxdumptool, hcxpcaptool
 sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger
 sudo python3 -m pip install psycopg2-binary scapy
@@ -3333,7 +3338,7 @@ sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
 """,True,'802.11'))
 
 # rtl_433
-programs_ubuntu20_04_4.append(('rtl_433 (25.6 MB)',
+programs_ubuntu20_04_4.append(('rtl_433 (27.5 MB)',
 """#sudo apt-get install -y rtl-433
 sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
 mkdir -p ~/Installed_by_FISSURE
@@ -3350,7 +3355,7 @@ rtl_433 -help
 """,True,'433 MHz'))
 
 # RouterSploit
-programs_ubuntu20_04_4.append(('RouterSploit (486.4 MB)',
+programs_ubuntu20_04_4.append(('RouterSploit (494.3 MB)',
 """sudo apt-get install -y python3-pip libglib2.0-dev rustc
 sudo python3 -m pip install setuptools-rust
 mkdir -p ~/Installed_by_FISSURE
@@ -3365,7 +3370,7 @@ python3 -m pip install bluepy
 """,True,'802.11'))
 
 # Metasploit
-programs_ubuntu20_04_4.append(('Metasploit (1.1 GB)',
+programs_ubuntu20_04_4.append(('Metasploit (1.2 GB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 mkdir metasploit
@@ -3376,7 +3381,7 @@ ls /usr/bin/msfconsole
 """,True,'802.11'))
 
 # monitor_rtl433
-programs_ubuntu20_04_4.append(('monitor_rtl433 (25.6 MB)',
+programs_ubuntu20_04_4.append(('monitor_rtl433 (52.2 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mcbridejc/monitor_rtl433.git
@@ -3461,7 +3466,7 @@ viking --help
 """,True,'Mapping'))
 
 # PyGPSClient
-programs_ubuntu20_04_4.append(('PyGPSClient (19.6 MB)',
+programs_ubuntu20_04_4.append(('PyGPSClient (42.5 MB)',
 """sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk
 sudo python3 -m pip install --upgrade PyGPSClient
 ########## Verify ##########
@@ -3469,7 +3474,7 @@ ls /usr/local/bin/pygpsclient
 """,True,'GPS'))
 
 # Gpredict
-programs_ubuntu20_04_4.append(('Gpredict (12.0 MB)',
+programs_ubuntu20_04_4.append(('Gpredict (12.7 MB)',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
@@ -3483,7 +3488,7 @@ foxtrotgps --help
 """,True,'GPS'))
 
 # multimon-ng
-programs_ubuntu20_04_4.append(('multimon-ng (8.6 MB)',
+programs_ubuntu20_04_4.append(('multimon-ng (9.2 MB)',
 """sudo apt-get install -y libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3499,14 +3504,14 @@ ls /usr/local/bin/multimon-ng
 """,True,'POCSAG'))
 
 # Xastir
-programs_ubuntu20_04_4.append(('Xastir (51.3 MB)',
+programs_ubuntu20_04_4.append(('Xastir (87.4 MB)',
 """sudo apt-get install -y xastir  # should non-superusers be allowed? sure, why not.
 ########## Verify ##########
 sudo xastir -V
 """,True,'Ham Radio'))
 
 # LTE-Cell-Scanner
-programs_ubuntu20_04_4.append(('LTE-Cell-Scanner (171.7 MB)',
+programs_ubuntu20_04_4.append(('LTE-Cell-Scanner (195.9 MB)',
 """sudo apt-get install -y cmake libncurses5-dev liblapack-dev libblas-dev libboost-thread-dev libboost-system-dev libitpp-dev librtlsdr-dev libfftw3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3605,7 +3610,7 @@ sudo trackerjacker --help
 """,True,'802.11'))
 
 # airgeddon
-programs_ubuntu20_04_4.append(('airgeddon (205.7 MB)',
+programs_ubuntu20_04_4.append(('airgeddon (247.0 MB)',
 """sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only john
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3649,24 +3654,29 @@ ls /usr/bin/enscribe
 
 # ESP32 Bluetooth Classic Sniffer
 programs_ubuntu20_04_4.append(('ESP32 BT Classic Sniffer (400.7 MB)',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5, 4.0.3
 cd ~/Installed_by_FISSURE
 git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
 cd esp32_bluetooth_classic_sniffer
-rm ./dissectors/config.h
+#rm ./dissectors/config.h  # Produces errors if missing
+sed -i 's/VERSION "3.4.0"/VERSION "4.0.3"/g' ./dissectors/config.h
+sed -i 's/VERSION_MAJOR 3/VERSION_MAJOR 4/g' ./dissectors/config.h
+sed -i 's/VERSION_MINOR 4/VERSION_MINOR 0/g' ./dissectors/config.h
+sed -i 's/VERSION_MICRO 0/VERSION_MICRO 3/g' ./dissectors/config.h
+sed -i 's/PLUGIN_PATH_ID "3.4"/PLUGIN_PATH_ID "4.0"/g' ./dissectors/config.h
 sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
 sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
-sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sed -i 's/3.4/4.0/g' ./dissectors/build.sh
 sudo ./requirements.sh
 ./build.sh
-sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
-rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/4.0/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
-ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/h4bcm.so
 """,True,'Bluetooth'))
 
 # SigDigger
-programs_ubuntu20_04_4.append(('SigDigger (173.7 MB)',
+programs_ubuntu20_04_4.append(('SigDigger (174.0 MB)',
 """#sigutils
 sudo apt-get install -y libsndfile1-dev libfftw3-3
 mkdir -p ~/Installed_by_FISSURE
@@ -3731,7 +3741,7 @@ ls /usr/local/bin/m17-demod
 """,True,'M17'))
 
 # Fldigi
-programs_ubuntu20_04_4.append(('Fldigi (12.8 MB)',
+programs_ubuntu20_04_4.append(('Fldigi (14.0 MB)',
 """sudo apt-get install -y fldigi
 ########## Verify ##########
 ls /usr/bin/fldigi
@@ -3745,7 +3755,7 @@ pyfdax -h
 """,True,'Filters'))
 
 # Bootable USB
-programs_ubuntu20_04_4.append(('Bootable USB (107.4 MB)',
+programs_ubuntu20_04_4.append(('Bootable USB (113.2 MB)',
 """sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 382003C2C8B7B4AB813E915B14E4942973C62A1B
 sudo add-apt-repository -y "deb http://ppa.launchpad.net/nemh/systemback/ubuntu xenial main"
 sudo apt update
@@ -3758,7 +3768,7 @@ ls /usr/bin/systemback && ls /usr/bin/guidus
 """,True,'Development'))
 
 # Dire Wolf
-programs_ubuntu20_04_4.append(('Dire Wolf',
+programs_ubuntu20_04_4.append(('Dire Wolf (207.9 MB)',
 """sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3776,21 +3786,21 @@ ls /usr/local/bin/direwolf
 """,True,'Ham Radio'))
 
 # Meld
-programs_ubuntu20_04_4.append(('Meld',
+programs_ubuntu20_04_4.append(('Meld (8.9 MB)',
 """sudo apt-get install -y meld
 ########## Verify ##########
 ls /usr/bin/meld
 """,True,'Data'))
 
 # nwdiag
-programs_ubuntu20_04_4.append(('nwdiag',
+programs_ubuntu20_04_4.append(('nwdiag (30.3 MB)',
 """sudo python3 -m pip install nwdiag
 ########## Verify ##########
 packetdiag -h
 """,True,'Data'))
 
 # HamClock
-programs_ubuntu20_04_4.append(('HamClock',
+programs_ubuntu20_04_4.append(('HamClock (52.7 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
@@ -3804,7 +3814,7 @@ ls /usr/local/bin/hamclock
 """,True,'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
-programs_ubuntu20_04_4.append(('ICE9 Bluetooth Sniffer',
+programs_ubuntu20_04_4.append(('ICE9 Bluetooth Sniffer (10.1 MB)',
 """sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
 sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
 mkdir -p ~/Installed_by_FISSURE
@@ -3821,7 +3831,7 @@ ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
 """,True,'Bluetooth'))
 
 # dump978
-programs_ubuntu20_04_4.append(('dump978',
+programs_ubuntu20_04_4.append(('dump978 (1.8 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mutability/dump978.git
@@ -3832,14 +3842,14 @@ ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
 
 # htop
-programs_ubuntu20_04_4.append(('htop',
+programs_ubuntu20_04_4.append(('htop (302.2 kB)',
 """sudo apt-get install -y htop
 ########## Verify ##########
 ls /usr/bin/htop
 """,True,'Development'))
 
 # OpenWebRX
-programs_ubuntu20_04_4.append(('OpenWebRX',
+programs_ubuntu20_04_4.append(('OpenWebRX (9.5 MB)',
 """wget -O - https://repo.openwebrx.de/debian/key.gpg.txt | sudo apt-key add
 echo 'deb https://repo.openwebrx.de/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/openwebrx.list
 sudo apt-get update
@@ -3851,7 +3861,7 @@ ls /usr/bin/openwebrx
 """,True,'SDR'))
 
 # CRC RevEng
-programs_ubuntu20_04_4.append(('CRC RevEng',
+programs_ubuntu20_04_4.append(('CRC RevEng (909.4 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -T 20 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
@@ -3864,7 +3874,7 @@ ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
 # Gpick
-programs_ubuntu20_04_4.append(('Gpick',
+programs_ubuntu20_04_4.append(('Gpick (6.2 MB)',
 """sudo apt-get install -y gpick
 ########## Verify ##########
 ls /usr/bin/gpick
@@ -4860,20 +4870,25 @@ ls /usr/bin/enscribe
 
 # ESP32 Bluetooth Classic Sniffer
 programs_dragonOS_focal.append(('ESP32 BT Classic Sniffer',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5, 4.0.3
 cd ~/Installed_by_FISSURE
 git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
 cd esp32_bluetooth_classic_sniffer
-rm ./dissectors/config.h
+#rm ./dissectors/config.h  # Produces errors if missing
+sed -i 's/VERSION "3.4.0"/VERSION "4.0.3"/g' ./dissectors/config.h
+sed -i 's/VERSION_MAJOR 3/VERSION_MAJOR 4/g' ./dissectors/config.h
+sed -i 's/VERSION_MINOR 4/VERSION_MINOR 0/g' ./dissectors/config.h
+sed -i 's/VERSION_MICRO 0/VERSION_MICRO 3/g' ./dissectors/config.h
+sed -i 's/PLUGIN_PATH_ID "3.4"/PLUGIN_PATH_ID "4.0"/g' ./dissectors/config.h
 sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
 sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
-sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sed -i 's/3.4/4.0/g' ./dissectors/build.sh
 sudo ./requirements.sh
 ./build.sh
-sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
-rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/4.0/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
-ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/h4bcm.so
 """,True,'Bluetooth'))
 
 
@@ -5140,13 +5155,13 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 # git checkout gr3.8
 # mkdir build
 # cd build
-# cmake ..
-# make
-# sudo make install
+# #cmake ..
+# #make
+# #sudo make install
 # sudo ldconfig
 # sudo apt-get install -y gr-osmosdr  # Temporary fix
 # ########## Verify ##########
-# ls /usr/local/bin/osmocom_fft
+# ls /usr/bin/osmocom_fft
 # """,True,'Hardware'))
 
 # # BladeRF
@@ -5546,7 +5561,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
 
 # # radiosonde_auto_rx
 # programs_dragonOS_focal.append(('radiosonde_auto_rx',
-# """sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip python3-flask sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5
+# """sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5  # python3-flask: causes pip errors with python3-openssl
 # mkdir -p ~/Installed_by_FISSURE
 # cd ~/Installed_by_FISSURE
 # git clone https://github.com/projecthorus/radiosonde_auto_rx.git
@@ -6098,6 +6113,8 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
             self.radioButton_ubuntu20_04_4.setChecked(True)            
         elif "Ubuntu 20.04.5" in stdout:
             self.radioButton_ubuntu20_04_5.setChecked(True)            
+        elif "Ubuntu 20.04.6" in stdout:
+            self.radioButton_ubuntu20_04_6.setChecked(True)            
         elif "DragonOS Focal" in stdout:
             self.radioButton_dragonOS_focal.setChecked(True)
         elif "KDE neon" in stdout:
@@ -6123,6 +6140,8 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
             self.get_os = "Ubuntu 20.04.4"            
         elif self.radioButton_ubuntu20_04_5.isChecked():
             self.get_os = "Ubuntu 20.04.5"            
+        elif self.radioButton_ubuntu20_04_6.isChecked():
+            self.get_os = "Ubuntu 20.04.6"            
         elif self.radioButton_dragonOS_focal.isChecked():
             self.get_os = "DragonOS Focal"
         elif self.radioButton_kde_neon_5_25.isChecked():
@@ -6152,6 +6171,8 @@ def main(argv):
         elif install_dlg1.get_os == "Ubuntu 20.04.4":
             install_dlg2 = InstallDialog2(programs_ubuntu20_04_4)            
         elif install_dlg1.get_os == "Ubuntu 20.04.5":
+            install_dlg2 = InstallDialog2(programs_ubuntu20_04_4)            
+        elif install_dlg1.get_os == "Ubuntu 20.04.6":
             install_dlg2 = InstallDialog2(programs_ubuntu20_04_4)            
         elif install_dlg1.get_os == "DragonOS Focal":
             install_dlg2 = InstallDialog2(programs_dragonOS_focal)
