@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-03-29
+
+Updating software sizes and fixing Python3_maint-3.8 installation.
+ 
+### Added
+
+- 20.04.6 to the installer and README (same steps as 20.04.4)
+  
+### Changed
+
+- Updated Python3_maint-3.8 software sizes for the installer
+- Commented out gr-osmosdr from source in the installer for Python3_maint-3.8 branch and changed verify command
+
+### Fixed
+
+- ESP32 BT Classic Sniffer install for Python3_maint-3.8 branch (Wireshark version is now 4.0.3)
+- radiosonde_auto_rx dependency python3-flask influenced pip through python3-openssl and is now commented out (fixes: sudo apt-get remove python3-openssl or delete /usr/lib/python3/dist-packages/OpenSSL)
+- QSpectrumAnalyzer and Universal Radio Hacker install for Python3_maint-3.8 branch as a result of pip being corrupted by python3-flask/python3-openssl (see previous line)
+
 ## 2023-03-26
 
 Preparing for Archive collections.
