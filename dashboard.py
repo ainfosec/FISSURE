@@ -1629,6 +1629,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionCustom_Mode.triggered.connect(self._slotMenuCustomModeClicked)
         self.actionwl_color_picker.triggered.connect(self._slotMenuWlColorPickerClicked)
         self.actioncomplextoreal_com.triggered.connect(self._slotMenuLessonComplexToRealClicked)
+        self.actionSolve_Crypto_with_Force.triggered.connect(self._slotMenuSolveCryptoWithForceClicked)
+        self.actionCrackStation.triggered.connect(self._slotMenuCrackStationClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -24285,7 +24287,19 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Download and Unzip
             os.system('wget -P "' + get_folder + '/"' + ' https://fissure.ainfosec.com/' + get_file)
             #os.system('unzip "' + get_folder + '/' + get_file + '" && rm "' + get_folder + '/' + get_file + '"')
-            self._slotArchiveDownloadRefreshClicked()  
+            self._slotArchiveDownloadRefreshClicked()
+            
+    def _slotMenuSolveCryptoWithForceClicked(self):
+        """ Opens scwf.dima.ninja in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://scwf.dima.ninja/ &")
+        
+    def _slotMenuCrackStationClicked(self):
+        """ Opens crackstation.net in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://crackstation.net/ &")
         
     
 

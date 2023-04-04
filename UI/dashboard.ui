@@ -27686,6 +27686,8 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionWaveDrom"/>
      <addaction name="actionPacket_Diagram"/>
      <addaction name="actionIQEngine"/>
+     <addaction name="actionSolve_Crypto_with_Force"/>
+     <addaction name="actionCrackStation"/>
     </widget>
     <widget class="QMenu" name="menuBluetooth">
      <property name="title">
@@ -29683,6 +29685,16 @@ p, li { white-space: pre-wrap; }
   <action name="actioncomplextoreal_com">
    <property name="text">
     <string>complextoreal.com</string>
+   </property>
+  </action>
+  <action name="actionSolve_Crypto_with_Force">
+   <property name="text">
+    <string>Solve Crypto with Force</string>
+   </property>
+  </action>
+  <action name="actionCrackStation">
+   <property name="text">
+    <string>CrackStation</string>
    </property>
   </action>
  </widget>

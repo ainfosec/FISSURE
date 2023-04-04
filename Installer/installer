@@ -98,7 +98,7 @@ ls ~/.local/bin/fissure
 programs_ubuntu22_04.append(('GNU Radio (1.3 GB)',
 """sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases
 sudo apt-get update
-sudo apt-get install -y gnuradio=3.10.5.0-0~gnuradio~jammy-1
+sudo apt-get install -y gnuradio=3.10.5.1-0~gnuradio~jammy-2  # Check for changes here: https://launchpad.net/~gnuradio/+archive/ubuntu/gnuradio-releases
 sudo apt-get install -y uhd-host
 
 # Configure GNU Radio
@@ -125,7 +125,7 @@ gnuradio-companion --help
 """,True,"Minimum Install"))
 
 # Scapy
-programs_ubuntu22_04.append(('Scapy (78.9 MB)',
+programs_ubuntu22_04.append(('Scapy (80.1 MB)',
 """sudo apt-get install -y python3-scapy
 #sudo python3 -m pip install scapy  # Causes errors
 sudo python2 -m pip install scapy
@@ -134,7 +134,7 @@ python2 -c "import scapy" && python3 -c "import scapy"
 """,True,"Minimum Install"))
 
 # Wireshark
-programs_ubuntu22_04.append(('Wireshark (49.7 MB)',
+programs_ubuntu22_04.append(('Wireshark (49.9 MB)',
 """sudo add-apt-repository --y ppa:wireshark-dev/stable  # Gets installed with Misc. Dependencies (tshark), ESP32 Bluetooth Classic Sniffer
 sudo apt-get update
 sudo apt install -y wireshark wireshark-dev  # Yes
@@ -151,7 +151,7 @@ wireshark --help
 """,True,"Minimum Install"))
 
 # LimeSDR
-programs_ubuntu22_04.append(('LimeSDR (288.6 MB)',
+programs_ubuntu22_04.append(('LimeSDR (288.7 MB)',
 """#sudo add-apt-repository -y ppa:myriadrf/drivers  # doesn't work
 #sudo apt-get update
 sudo apt-get install -y limesuite liblimesuite-dev limesuite-udev  # No limesuite-images on 22.04
@@ -188,7 +188,7 @@ sudo sysctl -w net.core.wmem_max=24862979
 """,True,'Hardware'))
 
 # HackRF
-programs_ubuntu22_04.append(('HackRF (52.9 MB)',
+programs_ubuntu22_04.append(('HackRF (75.8 MB)',
 """sudo apt-get install -y libusb-1.0-0-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE/
@@ -219,7 +219,7 @@ hackrf_sweep --help #&& ls /usr/local/bin/osmocom_fft
 """,True,'Hardware'))
 
 # 8812au Driver
-programs_ubuntu22_04.append(('8812au Driver (810.2 MB)',
+programs_ubuntu22_04.append(('8812au Driver (810.8 MB)',
 """# Still Broken, Needs Replacement Driver
 sudo apt-get -y install dkms
 mkdir -p ~/Installed_by_FISSURE
@@ -230,7 +230,7 @@ sudo make dkms_install
 """,True,'Hardware'))
 
 # Zigbee Sniffer
-programs_ubuntu22_04.append(('Zigbee Sniffer (9.4 MB)',
+programs_ubuntu22_04.append(('Zigbee Sniffer (10.1 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
 cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
@@ -253,7 +253,7 @@ sudo apt-get install -y mlocate
 programs_ubuntu22_04.append(('fl2k',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/osmo-fl2k.git
+git clone https://gitea.osmocom.org/sdr/osmo-fl2k.git  # gets redirected: https://git.osmocom.org/osmo-fl2k.git
 cd osmo-fl2k
 mkdir build
 cd build 
@@ -350,7 +350,7 @@ ls /usr/local/lib/python*/*/gnuradio/adsb
 """,True,'Out-of-Tree Modules'))
 
 # gr-ainfosec
-programs_ubuntu22_04.append(('gr-ainfosec (2.0 MB)',
+programs_ubuntu22_04.append(('gr-ainfosec (7.6 MB)',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ainfosec/
 sudo rm -Rf build
 mkdir build
@@ -471,7 +471,7 @@ ls /usr/local/lib/python*/*/foo
 """,True,'Out-of-Tree Modules'))
 
 # gr-fuzzer
-programs_ubuntu22_04.append(('gr-fuzzer (3.1 MB)',
+programs_ubuntu22_04.append(('gr-fuzzer (7.4 MB)',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-fuzzer/
 sudo rm -Rf build
 mkdir build
@@ -504,7 +504,7 @@ ls /usr/local/lib/python*/*/gnuradio/garage_door
 """,True,'Out-of-Tree Modules'))
 
 # gr-gsm
-programs_ubuntu22_04.append(('gr-gsm (154.8 MB)',
+programs_ubuntu22_04.append(('gr-gsm (156.8 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm/
@@ -528,7 +528,7 @@ ls /usr/local/lib/python*/*/gnuradio/gsm
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-11
-programs_ubuntu22_04.append(('gr-ieee802-11 (37.8 MB)',
+programs_ubuntu22_04.append(('gr-ieee802-11 (37.9 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-11/)" ]; 
 then
   sudo apt-get install -y libsndfile1-dev
@@ -628,7 +628,7 @@ ls /usr/local/lib/python*/*/gnuradio/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-mixalot
-programs_ubuntu22_04.append(('gr-mixalot',
+programs_ubuntu22_04.append(('gr-mixalot (19.1 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-mixalot/)" ]; 
 then
   sudo apt-get install -y libitpp-dev
@@ -788,7 +788,7 @@ ls /usr/local/lib/python*/*/gnuradio/zwave_poore
 """,True,'Out-of-Tree Modules'))
 
 # QSpectrumAnalyzer
-programs_ubuntu22_04.append(('QSpectrumAnalyzer (1.7 MB)',
+programs_ubuntu22_04.append(('QSpectrumAnalyzer (9.6 MB)',
 """#sudo add-apt-repository -y ppa:myriadrf/drivers
 #sudo apt-get -y update
 sudo apt-get install -y python3-pip python3-pyqt5 python3-numpy python3-scipy python3-soapysdr  # No package: soapysdr
@@ -806,7 +806,7 @@ ls /usr/bin/gqrx
 """,True,'SDR'))
 
 # Dump1090
-programs_ubuntu22_04.append(('Dump1090 (3.1 MB)',
+programs_ubuntu22_04.append(('Dump1090 (3.4 MB)',
 """sudo apt-get install -y libusb-1.0-0-dev
 sudo apt-get install -y librtlsdr-dev
 mkdir -p ~/Installed_by_FISSURE
@@ -832,7 +832,7 @@ ls /usr/local/bin/grip
 """,True,'Development'))
 
 # Kismet
-programs_ubuntu22_04.append(('Kismet',
+programs_ubuntu22_04.append(('Kismet (106.4 MB)',
 """wget -O - https://www.kismetwireless.net/repos/kismet-release.gpg.key | sudo apt-key add -
 echo 'deb https://www.kismetwireless.net/repos/apt/release/jammy jammy main' | sudo tee /etc/apt/sources.list.d/kismet.list
 sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d  # Removes "sudo apt update" warnings
@@ -841,7 +841,7 @@ sudo apt-get install -y kismet
 """,True,'802.11'))
 
 # UDP Replay
-programs_ubuntu22_04.append(('UDP Replay (704.5 kB)',
+programs_ubuntu22_04.append(('UDP Replay (1.1 MB)',
 """sudo apt-get install -y libpcap-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -857,7 +857,7 @@ ls /usr/local/bin/udpreplay
 """,True,'802.11'))
 
 # V2Verifier
-programs_ubuntu22_04.append(('V2Verifier (3.6 MB)',
+programs_ubuntu22_04.append(('V2Verifier (3.8 MB)',
 """sudo apt-get install -y libgmp3-dev python3-tk python3-pil.imagetk
 sudo python3 -m pip install fastecdsa
 sudo python3 -m pip install -U pyyaml
@@ -939,7 +939,7 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 """,False,'LTE'))
 
 # Aircrack-ng
-programs_ubuntu22_04.append(('Aircrack-ng (19.6 MB)',
+programs_ubuntu22_04.append(('Aircrack-ng (20.4 MB)',
 """sudo apt-get install -y aircrack-ng
 ########## Verify ##########
 aircrack-ng --help
@@ -966,21 +966,21 @@ arduino --version
 """,True,'Development'))
 
 # Minicom
-programs_ubuntu22_04.append(('Minicom (1.8 MB)',
+programs_ubuntu22_04.append(('Minicom (2.1 MB)',
 """sudo apt-get install -y minicom
 ########## Verify ##########
 ls /usr/bin/minicom
 """,True,'Hardware'))
 
 # PuTTY
-programs_ubuntu22_04.append(('PuTTY (5.9 MB)',
+programs_ubuntu22_04.append(('PuTTY (6.4 MB)',
 """sudo apt-get install -y putty
 ########## Verify ##########
 putty --help
 """,True,'Hardware'))
 
 # openHAB - FIX
-programs_ubuntu22_04.append(('openHAB (596.8 MB)',
+programs_ubuntu22_04.append(('openHAB (616.9 MB)',
 """sudo apt-get -yq install gnupg curl
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
 cd ~/Downloads
@@ -1010,7 +1010,7 @@ ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
 """,True,'Z-Wave'))
 
 # waving-z
-programs_ubuntu22_04.append(('waving-z (2.2 MB)',
+programs_ubuntu22_04.append(('waving-z (2.3 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE/
 git clone https://github.com/baol/waving-z.git
@@ -1050,7 +1050,7 @@ inspectrum --help
 """,True,'SDR'))
 
 # OpenCPN
-programs_ubuntu22_04.append(('OpenCPN (206.1 MB)',
+programs_ubuntu22_04.append(('OpenCPN (209.3 MB)',
 """sudo add-apt-repository -y ppa:opencpn/opencpn
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C865EB40  # FIX
 sudo apt-get update
@@ -1130,49 +1130,49 @@ ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 """,True,'Trunked Radio'))
 
 # Audacity
-programs_ubuntu22_04.append(('Audacity',
+programs_ubuntu22_04.append(('Audacity (38.8 MB)',
 """sudo apt-get install -y audacity
 ########## Verify ##########
 audacity --version
 """,True,'Audio'))
 
 # Sound eXchange
-programs_ubuntu22_04.append(('Sound eXchange',
+programs_ubuntu22_04.append(('Sound eXchange (2.3 MB)',
 """sudo apt-get install -y sox
 ########## Verify ##########
 sox --version
 """,True,'Audio'))
 
 # LAME
-programs_ubuntu22_04.append(('LAME',
+programs_ubuntu22_04.append(('LAME (286.8 kB)',
 """sudo apt-get install -y lame
 ########## Verify ##########
 lame --version
 """,True,'Audio'))
 
 # mpv
-programs_ubuntu22_04.append(('mpv',
+programs_ubuntu22_04.append(('mpv (174.7 MB)',
 """sudo apt-get install -y mpv
 ########## Verify ##########
 mpv --version
 """,True,'Audio'))
 
 # FFmpeg
-programs_ubuntu22_04.append(('FFmpeg',
+programs_ubuntu22_04.append(('FFmpeg (114.7 kB)',
 """sudo apt-get install -y ffmpeg 
 ########## Verify ##########
 ffmpeg --help
 """,True,'Audio'))
 
 # MPlayer
-programs_ubuntu22_04.append(('MPlayer',
+programs_ubuntu22_04.append(('MPlayer (10.4 MB)',
 """sudo apt-get install -y mplayer
 ########## Verify ##########
 ls /usr/bin/mplayer
 """,True,'Audio'))
 
 # VLC
-programs_ubuntu22_04.append(('VLC',
+programs_ubuntu22_04.append(('VLC (402.1 MB)',
 """sudo apt-get install -y snapd
 sudo snap install vlc
 ########## Verify ##########
@@ -1180,7 +1180,7 @@ vlc --help
 """,True,'Video'))
 
 # Simple Screen Recorder
-programs_ubuntu22_04.append(('Simple Screen Recorder',
+programs_ubuntu22_04.append(('Simple Screen Recorder (5.6 MB)',
 """sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
@@ -1224,7 +1224,7 @@ ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 """,True,'SDR'))
 
 # rehex
-programs_ubuntu22_04.append(('rehex (194.9 MB)',
+programs_ubuntu22_04.append(('rehex (197.1 MB)',
 """sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1251,7 +1251,7 @@ ls ~/Installed_by_FISSURE/zepassd/zepassd
 """,True,'RFID'))
 
 # iridium-toolkit
-programs_ubuntu22_04.append(('iridium-toolkit (3.1 MB)',
+programs_ubuntu22_04.append(('iridium-toolkit (3.3 MB)',
 """#Python (2.7), NumPy (scipy), crcmod
 sudo apt-get install -y mplayer
 mkdir -p ~/Installed_by_FISSURE
@@ -1296,7 +1296,7 @@ sudo dpkg -i python-nfqueue_0.6-1build2_amd64.deb
 """,False,'802.11'))
 
 # Wifite
-programs_ubuntu22_04.append(('Wifite (796.8 MB)',
+programs_ubuntu22_04.append(('Wifite (797.5 MB)',
 """# python, iwconfig, ifconfig, Aircrack-ng, tshark, reaver, bully, coWPAtty, pyrit, hashcat, hcxdumptool, hcxpcaptool
 sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger python-is-python3
 sudo python3 -m pip install psycopg2-binary #scapy (python3 scapy with pip causes errors)
@@ -1345,7 +1345,7 @@ sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
 """,True,'802.11'))
 
 # rtl_433
-programs_ubuntu22_04.append(('rtl_433 (25.7 MB)',
+programs_ubuntu22_04.append(('rtl_433 (27.8 MB)',
 """#sudo apt-get install -y rtl-433
 sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
 mkdir -p ~/Installed_by_FISSURE
@@ -1388,7 +1388,7 @@ ls /usr/bin/msfconsole
 """,True,'802.11'))
 
 # monitor_rtl433
-programs_ubuntu22_04.append(('monitor_rtl433 (868.3 kB)',
+programs_ubuntu22_04.append(('monitor_rtl433 (54.6 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mcbridejc/monitor_rtl433.git
@@ -1401,7 +1401,7 @@ ls /usr/local/bin/monitor_rtl433
 """,True,'433 MHz'))
 
 # scan-ssid
-programs_ubuntu22_04.append(('scan-ssid (233.5 kB)',
+programs_ubuntu22_04.append(('scan-ssid (585.8 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y iw
@@ -1414,7 +1414,7 @@ scan-ssid --help
 """,True,'802.11'))
 
 # minimodem
-programs_ubuntu22_04.append(('minimodem (114.7 kB)',
+programs_ubuntu22_04.append(('minimodem (217.1 kB)',
 """sudo apt-get install -y minimodem
 ########## Verify ##########
 minimodem --version
@@ -1438,7 +1438,7 @@ ls /usr/bin/google-earth-pro
 """,True,'Mapping'))
 
 # gr-air-modes
-programs_ubuntu22_04.append(('gr-air-modes (868.4 kB)',
+programs_ubuntu22_04.append(('gr-air-modes (1.3 MB)',
 """sudo apt-get install -y gr-air-modes
 sudo sed -i 's/numpy.float)/numpy.float32)/g' /usr/lib/python3/dist-packages/air_modes/mlat.py  # Deprecated numpy type: np.float->np.float32 or np.float64
 ########## Verify ##########
@@ -1446,7 +1446,7 @@ modes_rx --help
 """,True,'Aircraft'))
 
 # ESP8266 Deauther v2
-programs_ubuntu22_04.append(('ESP8266 Deauther v2 (6.2 MB)',
+programs_ubuntu22_04.append(('ESP8266 Deauther v2 (6.6 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
@@ -1473,7 +1473,7 @@ viking --help
 """,True,'Mapping'))
 
 # PyGPSClient
-programs_ubuntu22_04.append(('PyGPSClient (3.5 MB)',
+programs_ubuntu22_04.append(('PyGPSClient (27.3 MB)',
 """sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk
 sudo python3 -m pip install --upgrade PyGPSClient
 ########## Verify ##########
@@ -1481,21 +1481,21 @@ ls /usr/local/bin/pygpsclient
 """,True,'GPS'))
 
 # Gpredict
-programs_ubuntu22_04.append(('Gpredict (15.8 MB)',
+programs_ubuntu22_04.append(('Gpredict (17.6 MB)',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
 """,True,'GPS'))
 
 # FoxtrotGPS
-programs_ubuntu22_04.append(('FoxtrotGPS (2.5 MB)',
+programs_ubuntu22_04.append(('FoxtrotGPS (2.8 MB)',
 """sudo apt-get install -y foxtrotgps
 ########## Verify ##########
 foxtrotgps --help
 """,True,'GPS'))
 
 # multimon-ng
-programs_ubuntu22_04.append(('multimon-ng (8.3 MB)',
+programs_ubuntu22_04.append(('multimon-ng (13.6 MB)',
 """sudo apt-get install -y libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1511,7 +1511,7 @@ ls /usr/local/bin/multimon-ng
 """,True,'POCSAG'))
 
 # Xastir
-programs_ubuntu22_04.append(('Xastir (51.5 MB)',
+programs_ubuntu22_04.append(('Xastir (53.3 MB)',
 """sudo apt-get install -y xastir  # should non-superusers be allowed? sure, why not.
 ########## Verify ##########
 sudo xastir -V
@@ -1534,7 +1534,7 @@ ls /usr/local/bin/CellSearch
 """,True,'LTE'))
 
 # btscanner
-programs_ubuntu22_04.append(('btscanner (1.1 MB)',
+programs_ubuntu22_04.append(('btscanner (1.3 MB)',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
@@ -1603,7 +1603,7 @@ anki -h
 """,True,'Ham Radio'))
 
 # Bless
-programs_ubuntu22_04.append(('Bless (59.3 MB)',
+programs_ubuntu22_04.append(('Bless (60.0 MB)',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
@@ -1618,7 +1618,7 @@ sudo trackerjacker --help
 """,False,'802.11'))
 
 # airgeddon
-programs_ubuntu22_04.append(('airgeddon (183.2 MB)',
+programs_ubuntu22_04.append(('airgeddon (222.1 MB)',
 """sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only john
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1662,24 +1662,29 @@ ls /usr/bin/enscribe
 
 # ESP32 Bluetooth Classic Sniffer
 programs_ubuntu22_04.append(('ESP32 BT Classic Sniffer (400.0 MB)',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5, 4.0.3
 cd ~/Installed_by_FISSURE
 git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
 cd esp32_bluetooth_classic_sniffer
-rm ./dissectors/config.h
+#rm ./dissectors/config.h  # Produces errors if missing
+sed -i 's/VERSION "3.4.0"/VERSION "4.0.3"/g' ./dissectors/config.h
+sed -i 's/VERSION_MAJOR 3/VERSION_MAJOR 4/g' ./dissectors/config.h
+sed -i 's/VERSION_MINOR 4/VERSION_MINOR 0/g' ./dissectors/config.h
+sed -i 's/VERSION_MICRO 0/VERSION_MICRO 3/g' ./dissectors/config.h
+sed -i 's/PLUGIN_PATH_ID "3.4"/PLUGIN_PATH_ID "4.0"/g' ./dissectors/config.h
 sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
 sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
-sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sed -i 's/3.4/4.0/g' ./dissectors/build.sh
 sudo ./requirements.sh
 ./build.sh
-sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
-rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/4.0/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
-ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/h4bcm.so
 """,True,'Bluetooth'))
 
 # SigDigger
-programs_ubuntu22_04.append(('SigDigger (168.9 MB)',
+programs_ubuntu22_04.append(('SigDigger (169.3 MB)',
 """#sigutils
 sudo apt-get install -y libsndfile1-dev libfftw3-3
 mkdir -p ~/Installed_by_FISSURE
@@ -1744,7 +1749,7 @@ ls /usr/local/bin/m17-demod
 """,True,'M17'))
 
 # Fldigi
-programs_ubuntu22_04.append(('Fldigi (13.8 MB)',
+programs_ubuntu22_04.append(('Fldigi (15.1 MB)',
 """sudo apt-get install -y fldigi
 ########## Verify ##########
 ls /usr/bin/fldigi
@@ -1771,7 +1776,7 @@ ls /usr/bin/systemback && ls /usr/bin/guidus
 """,True,'Development'))
 
 # Dire Wolf
-programs_ubuntu22_04.append(('Dire Wolf',
+programs_ubuntu22_04.append(('Dire Wolf (207.8 MB)',
 """sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -1788,21 +1793,21 @@ ls /usr/local/bin/direwolf
 """,True,'Ham Radio'))
 
 # Meld
-programs_ubuntu22_04.append(('Meld',
+programs_ubuntu22_04.append(('Meld (9.4 MB)',
 """sudo apt-get -y install meld
 ########## Verify ##########
 ls /usr/bin/meld
 """,True,'Data'))
 
 # nwdiag
-programs_ubuntu22_04.append(('nwdiag',
+programs_ubuntu22_04.append(('nwdiag (30.3 MB)',
 """sudo python3 -m pip install nwdiag
 ########## Verify ##########
 packetdiag -h
 """,True,'Data'))
 
 # HamClock
-programs_ubuntu22_04.append(('HamClock',
+programs_ubuntu22_04.append(('HamClock (41.2 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
@@ -1816,7 +1821,7 @@ ls /usr/local/bin/hamclock
 """,True,'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
-programs_ubuntu22_04.append(('ICE9 Bluetooth Sniffer',
+programs_ubuntu22_04.append(('ICE9 Bluetooth Sniffer (10.4 MB)',
 """sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
 sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
 mkdir -p ~/Installed_by_FISSURE
@@ -1833,7 +1838,7 @@ ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
 """,True,'Bluetooth'))
 
 # dump978
-programs_ubuntu22_04.append(('dump978',
+programs_ubuntu22_04.append(('dump978 (2.0 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mutability/dump978.git
@@ -1844,14 +1849,14 @@ ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
 
 # htop
-programs_ubuntu22_04.append(('htop',
+programs_ubuntu22_04.append(('htop (782.4 kB)',
 """sudo apt-get install -y htop
 ########## Verify ##########
 ls /usr/bin/htop
 """,True,'Development'))
 
 # OpenWebRX
-programs_ubuntu22_04.append(('OpenWebRX',
+programs_ubuntu22_04.append(('OpenWebRX (50.4 MB)',
 """wget -O - https://repo.openwebrx.de/debian/key.gpg.txt | sudo apt-key add
 echo 'deb https://repo.openwebrx.de/ubuntu/ jammy main' | sudo tee /etc/apt/sources.list.d/openwebrx.list
 sudo apt-get update
@@ -1863,7 +1868,7 @@ ls /usr/bin/openwebrx
 """,True,'SDR'))
 
 # CRC RevEng
-programs_ubuntu22_04.append(('CRC RevEng',
+programs_ubuntu22_04.append(('CRC RevEng (905.3 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -T 10 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
@@ -1876,7 +1881,7 @@ ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
 # wl-color-picker
-programs_ubuntu22_04.append(('wl-color-picker',
+programs_ubuntu22_04.append(('wl-color-picker (643.1 kB)',
 """sudo apt-get install -y slurp grim wl-clipboard
 cd ~/Installed_by_FISSURE
 git clone https://github.com/jgmdev/wl-color-picker.git
@@ -1966,7 +1971,7 @@ ls ~/.local/bin/fissure
 # programs_dragonOS_focalx.append(('GNU Radio',
 # """sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases
 # sudo apt-get update
-# sudo apt-get install -y gnuradio=3.10.5.0-0~gnuradio~jammy-1
+# sudo apt-get install -y gnuradio=3.10.5.1-0~gnuradio~jammy-2
 # sudo apt-get install -y uhd-host
 
 # # Configure GNU Radio
@@ -2121,7 +2126,7 @@ sudo apt-get install -y mlocate
 # programs_dragonOS_focalx.append(('fl2k',
 # """mkdir -p ~/Installed_by_FISSURE
 # cd ~/Installed_by_FISSURE
-# git clone git://git.osmocom.org/osmo-fl2k.git
+# git clone gitea.osmocom.org/sdr/osmo-fl2k.git
 # cd osmo-fl2k
 # mkdir build
 # cd build
@@ -3530,20 +3535,25 @@ ls /usr/bin/enscribe
 
 # ESP32 Bluetooth Classic Sniffer
 programs_dragonOS_focalx.append(('ESP32 BT Classic Sniffer',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5, 4.0.3
 cd ~/Installed_by_FISSURE
 git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
 cd esp32_bluetooth_classic_sniffer
-rm ./dissectors/config.h
+#rm ./dissectors/config.h  # Produces errors if missing
+sed -i 's/VERSION "3.4.0"/VERSION "4.0.3"/g' ./dissectors/config.h
+sed -i 's/VERSION_MAJOR 3/VERSION_MAJOR 4/g' ./dissectors/config.h
+sed -i 's/VERSION_MINOR 4/VERSION_MINOR 0/g' ./dissectors/config.h
+sed -i 's/VERSION_MICRO 0/VERSION_MICRO 3/g' ./dissectors/config.h
+sed -i 's/PLUGIN_PATH_ID "3.4"/PLUGIN_PATH_ID "4.0"/g' ./dissectors/config.h
 sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
 sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
-sed -i 's/3.4/3.6/g' ./dissectors/build.sh
+sed -i 's/3.4/4.0/g' ./dissectors/build.sh
 sudo ./requirements.sh
 ./build.sh
-sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/  # Placing it where "sudo Wireshark" dissectors are located
-rm ~/.local/lib/wireshark/plugins/3.6/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/4.0/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
-ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/3.6/epan/h4bcm.so
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/h4bcm.so
 """, True, 'Bluetooth'))
 
 # # SigDigger
