@@ -268,7 +268,7 @@ sudo python3 setup.py install
 programs_ubuntu18_04.append(('fl2k (16.8 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/osmo-fl2k.git
+git clone https://gitea.osmocom.org/sdr/osmo-fl2k.git
 cd osmo-fl2k
 mkdir build
 cd build 
@@ -2095,7 +2095,7 @@ sudo python3 setup.py install
 programs_ubuntu18_04_5.append(('fl2k (16.8 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/osmo-fl2k.git
+git clone https://gitea.osmocom.org/sdr/osmo-fl2k.git
 cd osmo-fl2k
 mkdir build
 cd build 
@@ -3926,7 +3926,7 @@ sudo python3 setup.py install
 programs_ubuntu18_04_6.append(('fl2k (16.8 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/osmo-fl2k.git
+git clone https://gitea.osmocom.org/sdr/osmo-fl2k.git
 cd osmo-fl2k
 mkdir build
 cd build 
