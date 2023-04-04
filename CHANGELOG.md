@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-04-03
+
+Updating software sizes and fixing Python3_maint-3.10 installation.
+ 
+### Added
+
+- Solve Crypto with Force/scwf.dima.ninja to Tools Menu
+- CrackStation.net to Tools Menu
+  
+### Changed
+
+- Updated Python3_maint-3.10 software sizes for the installer
+
+### Fixed
+
+- Location of osmo-fl2k.git for fl2k install
+- GNU Radio version that gets installed for Python3_maint-3.10 branch
+- ESP32 BT Classic Sniffer install for Python3_maint-3.8 branch (Wireshark version is now 4.0.3)
+
 ## 2023-03-29
 
 Updating software sizes and fixing Python3_maint-3.8 installation.

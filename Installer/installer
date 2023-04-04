@@ -278,7 +278,7 @@ sudo apt-get install -y mlocate
 programs_ubuntu20_04.append(('fl2k (2.0 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/osmo-fl2k.git
+git clone https://gitea.osmocom.org/sdr/osmo-fl2k.git/
 cd osmo-fl2k
 mkdir build
 cd build 
@@ -2209,7 +2209,7 @@ sudo apt-get install -y mlocate
 programs_ubuntu20_04_4.append(('fl2k (2.0 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/osmo-fl2k.git
+git clone https://gitea.osmocom.org/sdr/osmo-fl2k.git/
 cd osmo-fl2k
 mkdir build
 cd build 
@@ -4000,7 +4000,7 @@ sudo apt-get install -y mlocate
 programs_dragonOS_focal.append(('fl2k',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone git://git.osmocom.org/osmo-fl2k.git
+git clone https://gitea.osmocom.org/sdr/osmo-fl2k.git/
 cd osmo-fl2k
 mkdir build
 cd build 
