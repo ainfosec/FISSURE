@@ -7,6 +7,7 @@ dragonOS_focalx=$(lsb_release -d 2>&1 | grep "DragonOS FocalX")
 kde_neon=$(lsb_release -d 2>&1 | grep "KDE neon")
 ubuntu18_04=$(lsb_release -d 2>&1 | grep "Ubuntu 18.04")
 ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
+kali23_1=$(lsb_release -d 2>&1 | grep "Kali")
 
 # Ubuntu 20.04
 if [[ -n "$ubuntu20_04" ]]
@@ -38,7 +39,7 @@ then
 fi
 
 # Python-maint_3.10, Ubuntu 22.04
-if [[ -n "$ubuntu22_04" ]] || [[ -n "$dragonOS_focalx" ]]
+if [[ -n "$ubuntu22_04" ]] || [[ -n "$dragonOS_focalx" ]] || [[ -n "$kali23_1" ]]
 then
     echo "This branch is for Ubuntu 22.04 variants only. Switch to the Python3_maint-3.10 branch and try again!"
     exit

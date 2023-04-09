@@ -27472,6 +27472,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionLight_Mode"/>
     <addaction name="actionDark_Mode"/>
     <addaction name="actionCustom_Mode"/>
+    <addaction name="actionRandom"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
@@ -29767,6 +29768,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionCrackStation">
    <property name="text">
     <string>CrackStation</string>
+   </property>
+  </action>
+  <action name="actionRandom">
+   <property name="text">
+    <string>Random</string>
    </property>
   </action>
  </widget>
