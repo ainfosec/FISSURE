@@ -212,6 +212,12 @@ QMenu:selected{
     background-color:@color3;
 }
 
+/* Border for Combobox button, removes button icon
+QComboBox::drop-down:button {
+    background-color: transparent;
+}*/
+
+
 
 /*Specific*/
 QPushButton[objectName^="pushButton1_"]{
@@ -359,13 +365,11 @@ QPushButton#pushButton_status5{
 }
 
 QStackedWidget[objectName^="stackedWidget1_"]{
-	/*background-color: rgb(251, 251, 251);*/
 	background-color: @color2;
 	border: 1px solid @color3;
 	border-radius: 15px;
 }
 QStackedWidget[objectName^="stackedWidget2_"]{
-	/*background-color: rgb(251, 251, 251);*/
 	background-color: @color2;
 	border: 1px solid @color3;
 	border-bottom-left-radius: 15px;
@@ -402,6 +406,7 @@ QMenuBar#menubar::item:selected {
 
 QFrame[objectName^="line_"]{background: @color3;}
 QFrame[objectName^="line2_"]{background: @color1;}
+QFrame[objectName^="line3_"]{background: @color3;}
 QFrame#line_iq{border: 1px solid @color3;}
 
 QTabWidget#tabWidget2_2::pane{
@@ -455,8 +460,20 @@ QDialog#Dialog_chooser{background-color: @color1;}
 QDialog#Dialog_new_soi{background-color: @color1;}
 QDialog#SigMF_Window{background-color: @color1;}
 QDialog#Dialog_custom_color{background-color: @color1;}
+QDialog#Dialog_install{background-color: @color1;}
+QDialog#Dialog_install2{background-color: @color1;}
 
 
+/*
+QTreeWidget::branch:open:has-children:!has-siblings,
+QTreeWidget::branch:open:has-children:has-siblings  {
+    border-image: none;
+    image: url(@icon_path/light-tree-open.png);  /* Replace with dark mode icon *
 
-
+QTreeWidget::branch:has-children:!has-siblings:closed,
+QTreeWidget::branch:closed:has-children:has-siblings {
+    border-image: none;
+    image: url(@icon_path/light-tree-closed.png);
+}
+*/
 

@@ -1,6 +1,7 @@
 #!/bin/bash
 
 # Check Operating System
+kali23_1=$(lsb_release -d 2>&1 | grep "Kali")
 ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
 ubuntu18_04=$(lsb_release -d 2>&1 | grep "Ubuntu 18.04")
 ubuntu20_04=$(lsb_release -d 2>&1 | grep "Ubuntu 20.04")
@@ -12,6 +13,12 @@ kde_neon=$(lsb_release -d 2>&1 | grep "KDE neon")
 if [[ -n "$ubuntu22_04" ]]
 then
     echo "Ubuntu 22.04 detected"
+fi
+
+# Kali 23.1
+if [[ -n "$kali23_1" ]]
+then
+    echo "Kali detected"
 fi
 
 # DragonOS FocalX
@@ -47,8 +54,8 @@ then
         
         # Yes/Everything Else
         * )            
-            # Ubuntu 22.04
-            if [[ -n "$ubuntu22_04" ]]
+            # Ubuntu 22.04, Kali 23.1
+            if [[ -n "$ubuntu22_04" ]] || [[ -n "$kali23_1" ]]
             then
                 sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools python3-pyqt5
             fi

@@ -1,6 +1,30 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-04-08
+
+GUI styling fixes for Python3_maint-3.10 branch.
+ 
+### Added
+
+- Kali 23.1 install option for Python3_maint-3.10 branch (still in beta, needs additional adjustments)
+- Random color scheme in menu
+- Icons for light color scheme
+  
+### Changed
+
+- Clicking Sample Rate and Frequency column header in dataset builder table applies first row value to all rows
+- Kali 23.1 added to the README
+
+### Fixed
+
+- Frequency shift is no longer disabled in Archive dataset builder table for non-archive IQ files in Python3_maint-3.10 branch
+- Applying stylesheets to Installer GUIs
+- Inserting some of the missing elements in light mode style sheet
+- Improved error handling for empty dataset builder values when start is clicked
+- Clicking cancel on Custom Mode color picker keeps previous value instead of #000000
+- get_xdata() error handling in dashboard.py to support more matplotlib versions
+
 ## 2023-04-03
 
 Updating software sizes and fixing Python3_maint-3.10 installation.

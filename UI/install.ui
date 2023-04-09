@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>Dialog_install</class>
+ <widget class="QDialog" name="Dialog_install">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -25,6 +25,9 @@
    <property name="text">
     <string>OK</string>
    </property>
+   <property name="default">
+    <bool>true</bool>
+   </property>
   </widget>
   <widget class="QPushButton" name="pushButton_cancel">
    <property name="geometry">
@@ -39,7 +42,7 @@
     <string>Cancel</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label1">
+  <widget class="QLabel" name="label1_1">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -48,19 +51,6 @@
      <height>22</height>
     </rect>
    </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel#label1 {
-   qproperty-alignment: AlignCenter;
-	border: 1px solid #17365D;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
-	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
-	padding: 0px 0px;
-	color: rgb(255, 255, 255);
-	max-height: 20px;
-	font: bold 10pt &quot;Ubuntu&quot;;
-}</string>
-   </property>
    <property name="text">
     <string>Operating System</string>
    </property>
@@ -68,7 +58,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QFrame" name="frame1">
+  <widget class="QFrame" name="frame1_1">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -76,14 +66,6 @@
      <width>200</width>
      <height>163</height>
     </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QFrame#frame1 {
-	background-color: rgb(251, 251, 251);
-	border: 1px solid #17365D;
-	border-bottom-left-radius: 15px;
-	border-bottom-right-radius: 15px;
-}</string>
    </property>
    <property name="frameShape">
     <enum>QFrame::StyledPanel</enum>
@@ -123,6 +105,25 @@
      <string>DragonOS FocalX (beta)</string>
     </property>
    </widget>
+   <widget class="QRadioButton" name="radioButton_kali_2023_1">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>55</y>
+      <width>185</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Kali 2023.1 (beta)</string>
+    </property>
+   </widget>
+   <zorder>radioButton_ubuntu22_04</zorder>
+   <zorder>radioButton_kali_2023_1</zorder>
+   <zorder>radioButton_dragonos_focalx</zorder>
   </widget>
  </widget>
  <resources/>

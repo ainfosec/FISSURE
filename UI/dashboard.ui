@@ -1252,7 +1252,7 @@
               <rect>
                <x>385</x>
                <y>1</y>
-               <width>3</width>
+               <width>2</width>
                <height>288</height>
               </rect>
              </property>
@@ -3515,6 +3515,12 @@ p, li { white-space: pre-wrap; }
                  <height>27</height>
                 </rect>
                </property>
+               <property name="verticalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
                <property name="tabChangesFocus">
                 <bool>true</bool>
                </property>
@@ -3527,6 +3533,12 @@ p, li { white-space: pre-wrap; }
                  <width>115</width>
                  <height>27</height>
                 </rect>
+               </property>
+               <property name="verticalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOff</enum>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOff</enum>
                </property>
                <property name="tabChangesFocus">
                 <bool>true</bool>
@@ -9152,7 +9164,7 @@ p, li { white-space: pre-wrap; }
              <attribute name="title">
               <string>Sniffer</string>
              </attribute>
-             <widget class="Line" name="line_17">
+             <widget class="Line" name="line3_17">
               <property name="geometry">
                <rect>
                 <x>530</x>
@@ -14117,19 +14129,6 @@ p, li { white-space: pre-wrap; }
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
-            <widget class="QTextEdit" name="textEdit_iq_start">
-             <property name="geometry">
-              <rect>
-               <x>60</x>
-               <y>67</y>
-               <width>95</width>
-               <height>27</height>
-              </rect>
-             </property>
-             <property name="tabChangesFocus">
-              <bool>true</bool>
-             </property>
-            </widget>
             <widget class="QLabel" name="label2_iq_end">
              <property name="geometry">
               <rect>
@@ -14150,19 +14149,6 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="alignment">
               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-             </property>
-            </widget>
-            <widget class="QTextEdit" name="textEdit_iq_end">
-             <property name="geometry">
-              <rect>
-               <x>60</x>
-               <y>97</y>
-               <width>95</width>
-               <height>27</height>
-              </rect>
-             </property>
-             <property name="tabChangesFocus">
-              <bool>true</bool>
              </property>
             </widget>
             <widget class="QPushButton" name="pushButton_iq_plot">
@@ -14220,6 +14206,46 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="text">
               <string>&lt;</string>
+             </property>
+            </widget>
+            <widget class="QTextEdit" name="textEdit_iq_end">
+             <property name="geometry">
+              <rect>
+               <x>60</x>
+               <y>97</y>
+               <width>95</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="tabChangesFocus">
+              <bool>true</bool>
+             </property>
+             <property name="html">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+            <widget class="QTextEdit" name="textEdit_iq_start">
+             <property name="geometry">
+              <rect>
+               <x>60</x>
+               <y>67</y>
+               <width>95</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="tabChangesFocus">
+              <bool>true</bool>
+             </property>
+             <property name="html">
+              <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </widget>
@@ -23096,9 +23122,6 @@ p, li { white-space: pre-wrap; }
                  <height>710</height>
                 </rect>
                </property>
-               <property name="styleSheet">
-                <string notr="true"/>
-               </property>
                <property name="expandsOnDoubleClick">
                 <bool>true</bool>
                </property>
@@ -27371,6 +27394,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionLight_Mode"/>
     <addaction name="actionDark_Mode"/>
     <addaction name="actionCustom_Mode"/>
+    <addaction name="actionRandom"/>
    </widget>
    <widget class="QMenu" name="menuOptions">
     <property name="title">
@@ -29697,6 +29721,11 @@ p, li { white-space: pre-wrap; }
     <string>CrackStation</string>
    </property>
   </action>
+  <action name="actionRandom">
+   <property name="text">
+    <string>Random</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>scrollArea</tabstop>
@@ -30072,8 +30101,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>pushButton_iq_plot_prev</tabstop>
   <tabstop>pushButton_iq_plot</tabstop>
   <tabstop>pushButton_iq_plot_next</tabstop>
-  <tabstop>textEdit_iq_start</tabstop>
-  <tabstop>textEdit_iq_end</tabstop>
   <tabstop>pushButton_iq_cursor1</tabstop>
   <tabstop>pushButton_iq_get_range</tabstop>
   <tabstop>pushButton_iq_magnitude</tabstop>

@@ -1626,11 +1626,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionYouTube.triggered.connect(self._slotMenuYouTubeClicked)
         self.actionLight_Mode.triggered.connect(self._slotMenuLightModeClicked)
         self.actionDark_Mode.triggered.connect(self._slotMenuDarkModeClicked)
-        self.actionCustom_Mode.triggered.connect(self._slotMenuCustomModeClicked)
+        self.actionCustom_Mode.triggered.connect(lambda: self._slotMenuCustomModeClicked(random_clicked=False))
         self.actionwl_color_picker.triggered.connect(self._slotMenuWlColorPickerClicked)
         self.actioncomplextoreal_com.triggered.connect(self._slotMenuLessonComplexToRealClicked)
         self.actionSolve_Crypto_with_Force.triggered.connect(self._slotMenuSolveCryptoWithForceClicked)
         self.actionCrackStation.triggered.connect(self._slotMenuCrackStationClicked)
+        self.actionRandom.triggered.connect(lambda: self._slotMenuCustomModeClicked(random_clicked=True))
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -14213,8 +14214,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 get_scale = 1            
             
             # Get Cursor Locations
-            get_start = str(get_scale * int(math.floor(self.iq_matplotlib_widget.cursor1.get_xdata())))
-            get_end = str(get_scale * int(math.floor(self.iq_matplotlib_widget.cursor2.get_xdata())))
+            try:
+                get_start = str(get_scale * int(math.floor(self.iq_matplotlib_widget.cursor1.get_xdata())))
+                get_end = str(get_scale * int(math.floor(self.iq_matplotlib_widget.cursor2.get_xdata())))
+            except:
+                get_start = str(get_scale * int(math.floor(self.iq_matplotlib_widget.cursor1.get_xdata()[0])))
+                get_end = str(get_scale * int(math.floor(self.iq_matplotlib_widget.cursor2.get_xdata()[0])))
             
             # Update Text Edit Boxes
             self.textEdit_iq_start.setPlainText(str(int(get_start) + self.iq_plot_range_start))
@@ -23773,7 +23778,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         freq_shift_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_freq_shift_min']),float(self.dashboard_settings_dictionary['dataset_freq_shift_max']))
         freq_shift_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(freq_shift_value))
         freq_shift_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        freq_shift_item.setFlags(freq_shift_item.flags() & ~QtCore.Qt.ItemIsEnabled)
         freq_shift_item.setCheckState(QtCore.Qt.Unchecked)
         self.tableWidget_archive_datasets.setItem(self.tableWidget_archive_datasets.rowCount()-1,7,freq_shift_item)
         sigmf_item = QtWidgets.QTableWidgetItem("" )
@@ -23858,7 +23862,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 # Get Values
                 get_filepath = str(self.tableWidget_archive_datasets.item(row,0).text())
                 get_sample_rate = str(self.tableWidget_archive_datasets.item(row,2).text())
+                if len(get_sample_rate) == 0:
+                    self.errorMessage("Error: Missing sample rate value in table.")
+                    self.pushButton_archive_datasets_start.setText("Start")
+                    self.progressBar_archive_datasets.setValue(0)
+                    self.progressBar_archive_datasets.setVisible(False)
+                    return
                 get_frequency = str(self.tableWidget_archive_datasets.item(row,3).text())
+                if len(get_frequency) == 0:
+                    get_frequency = "1000000000"
                 if int(self.tableWidget_archive_datasets.item(row,3).checkState()) == 2:
                     get_noise = str(self.tableWidget_archive_datasets.item(row,4).text())
                 else:
@@ -23976,6 +23988,22 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     self.tableWidget_archive_datasets.item(row,col).setCheckState(2)
                 else:
                     self.tableWidget_archive_datasets.item(row,col).setCheckState(0)
+                    
+        # Apply the Same Sample Rate
+        if col == 2:
+            get_sample_rate = str(self.tableWidget_archive_datasets.item(0,col).text())
+            for row in range(0,self.tableWidget_archive_datasets.rowCount()):
+                sample_rate_item = QtWidgets.QTableWidgetItem(get_sample_rate)
+                sample_rate_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_datasets.setItem(row,2,sample_rate_item)  
+                    
+        # Apply the Same Frequency
+        if col == 3:
+            get_frequency = str(self.tableWidget_archive_datasets.item(0,col).text())
+            for row in range(0,self.tableWidget_archive_datasets.rowCount()):
+                frequency_item = QtWidgets.QTableWidgetItem(get_frequency)
+                frequency_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_datasets.setItem(row,3,frequency_item)  
                     
     def _slotArchiveDatasetsViewClicked(self):
         """ Opens the flow graph used to apply changes to the IQ files listed the Dataset Builder table.
@@ -24097,8 +24125,14 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.dashboard_settings_dictionary['color4'] = "#000000"
         self.dashboard_settings_dictionary['color5'] = "#FFFFFF"
         self.dashboard_settings_dictionary['color_mode'] = "Light Mode"
-        styleSheetStr = str(open(os.path.dirname(os.path.realpath(__file__)) + "/UI/Style_Sheets/light.css","r").read())
-        self.setStyleSheet(styleSheetStr)
+        get_css_text = str(open(os.path.dirname(os.path.realpath(__file__)) + "/UI/Style_Sheets/light.css","r").read())
+        get_css_text = get_css_text.replace("@color1",self.dashboard_settings_dictionary['color1'])
+        get_css_text = get_css_text.replace("@color2",self.dashboard_settings_dictionary['color2'])
+        get_css_text = get_css_text.replace("@color3",self.dashboard_settings_dictionary['color3'])
+        get_css_text = get_css_text.replace("@color4",self.dashboard_settings_dictionary['color4'])
+        get_css_text = get_css_text.replace("@color5",self.dashboard_settings_dictionary['color5'])
+        get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/Icons")
+        self.setStyleSheet(get_css_text)
         
         # Adjust Custom Widgets
         if self.stackedWidget3_iq.currentIndex() == 0:
@@ -24129,7 +24163,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.draw()
-        self.mpl_toolbar.setStyleSheet("")
+        self.mpl_toolbar.setStyleSheet("color:" + self.dashboard_settings_dictionary['color4'])
 
         
         self._slotTSI_RefreshPlotClicked()
@@ -24184,21 +24218,33 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.draw()
-        self.mpl_toolbar.setStyleSheet("color:"+self.dashboard_settings_dictionary['color4'])
+        self.mpl_toolbar.setStyleSheet("color:" + self.dashboard_settings_dictionary['color4'])
 
         
         self._slotTSI_RefreshPlotClicked()
         
-    def _slotMenuCustomModeClicked(self):
+    def _slotMenuCustomModeClicked(self, random_clicked=False):
         """ Loads a custom stylesheet from values in the options dialog.
         """
-        # Open the Custom Color Dialog
-        custom_color_dlg = CustomColor(parent=self)
-        custom_color_dlg.show()
-        custom_color_dlg.exec_() 
-        
-        # Apply Clicked
-        get_value = custom_color_dlg.return_value
+        # Random Clicked in Menu
+        if random_clicked == True:
+            r = lambda: random.randint(0,255)
+            self.dashboard_settings_dictionary['custom_color1'] = '#%02X%02X%02X' % (r(),r(),r())
+            self.dashboard_settings_dictionary['custom_color2'] = '#%02X%02X%02X' % (r(),r(),r())
+            self.dashboard_settings_dictionary['custom_color3'] = '#%02X%02X%02X' % (r(),r(),r())
+            self.dashboard_settings_dictionary['custom_color4'] = '#%02X%02X%02X' % (r(),r(),r())
+            self.dashboard_settings_dictionary['custom_color5'] = '#%02X%02X%02X' % (r(),r(),r())
+            get_value = 'pass'
+            
+        # Custom Mode Clicked
+        else:            
+            # Open the Custom Color Dialog
+            custom_color_dlg = CustomColor(parent=self)
+            custom_color_dlg.show()
+            custom_color_dlg.exec_() 
+            
+            # Apply Clicked
+            get_value = custom_color_dlg.return_value
         
         if len(get_value) > 0:       
             self.actionLight_Mode.setChecked(False)
@@ -24248,7 +24294,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.draw()
-            self.mpl_toolbar.setStyleSheet("color:"+self.dashboard_settings_dictionary['color4'])
+            self.mpl_toolbar.setStyleSheet("color:" + self.dashboard_settings_dictionary['color4'])
             
             self._slotTSI_RefreshPlotClicked()
             
@@ -24523,35 +24569,40 @@ class CustomColor(QtWidgets.QDialog, form_class11):
         """
         # Open the Selector
         get_color = QtWidgets.QColorDialog.getColor()
-        self.textEdit_color1.setPlainText(str(get_color.name()).upper())
+        if get_color.isValid():
+            self.textEdit_color1.setPlainText(str(get_color.name()).upper())
                 
     def _slotColor2_Clicked(self):
         """ Opens the color selector for color2.
         """
         # Open the Selector
         get_color = QtWidgets.QColorDialog.getColor()
-        self.textEdit_color2.setPlainText(str(get_color.name()).upper())
+        if get_color.isValid():
+            self.textEdit_color2.setPlainText(str(get_color.name()).upper())
 
     def _slotColor3_Clicked(self):
         """ Opens the color selector for color3.
         """
         # Open the Selector
         get_color = QtWidgets.QColorDialog.getColor()
-        self.textEdit_color3.setPlainText(str(get_color.name()).upper())
+        if get_color.isValid():
+            self.textEdit_color3.setPlainText(str(get_color.name()).upper())
                 
     def _slotColor4_Clicked(self):
         """ Opens the color selector for color4.
         """
         # Open the Selector
         get_color = QtWidgets.QColorDialog.getColor()
-        self.textEdit_color4.setPlainText(str(get_color.name()).upper())
+        if get_color.isValid():
+            self.textEdit_color4.setPlainText(str(get_color.name()).upper())
         
     def _slotColor5_Clicked(self):
         """ Opens the color selector for color5.
         """
         # Open the Selector
         get_color = QtWidgets.QColorDialog.getColor()
-        self.textEdit_color5.setPlainText(str(get_color.name()).upper())
+        if get_color.isValid():
+            self.textEdit_color5.setPlainText(str(get_color.name()).upper())
         
         
 class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
@@ -25800,8 +25851,12 @@ class MyIQ_MplCanvas(FigureCanvas):
                     elif self.click == 2:
                         self.cursor2 = self.axes.axvline(color=self.text_color,linewidth=1)
                         self.cursor2.set_xdata(x)
-                        x_diff = math.floor(abs(self.cursor2.get_xdata()-self.cursor1.get_xdata()))
-                        self.fill_rect = self.axes.add_patch(patches.Rectangle((math.floor(self.cursor1.get_xdata()),self.axes.get_ybound()[0]),x_diff,self.axes.get_ybound()[1]-self.axes.get_ybound()[0],facecolor="yellow",alpha=0.85))
+                        try:
+                            x_diff = math.floor(abs(self.cursor2.get_xdata()-self.cursor1.get_xdata()))
+                            self.fill_rect = self.axes.add_patch(patches.Rectangle((math.floor(self.cursor1.get_xdata()),self.axes.get_ybound()[0]),x_diff,self.axes.get_ybound()[1]-self.axes.get_ybound()[0],facecolor="yellow",alpha=0.85))
+                        except:
+                            x_diff = math.floor(abs(self.cursor2.get_xdata()[0]-self.cursor1.get_xdata()[0]))
+                            self.fill_rect = self.axes.add_patch(patches.Rectangle((math.floor(self.cursor1.get_xdata()[0]),self.axes.get_ybound()[0]),x_diff,self.axes.get_ybound()[1]-self.axes.get_ybound()[0],facecolor="yellow",alpha=0.85))
                         self.click = 1
                         if self.txt == None:
                             self.txt = self.axes.text(0.01, 0.01, str(int(x_diff)), transform=self.axes.transAxes, color=self.text_color)
