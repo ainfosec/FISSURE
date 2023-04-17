@@ -1,6 +1,30 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-04-17
+
+Installer fixes and GUI style changes.
+ 
+### Added
+
+- Matplotlib toolbar icons
+  
+### Changed
+
+- Manually setting icons for matplotlib toolbar to avoid color inversion
+- Changing where the installer checks for DragonOS FocalX version (/etc/os-dragonos)
+
+### Fixed
+
+- Adding missing packages for Kali install: eog, Python2 cryptography, Python2 setuptools, xxd
+- Removed freeglut3 for Kali install
+- Downloading Anki from source for Kali
+- Font color set to black for current program label in the installer
+- Background color for inspection flow graph frame in Python3_maint-3.10 branch
+- Removed wl-color-picker from DragonOS FocalX install and added Gpick
+- Changing QTextEdit borders to avoid undesired scrollbars
+- QComboBox padding-left adjusted in style sheets
+
 ## 2023-04-08
 
 GUI styling fixes for Python3_maint-3.10 branch.
