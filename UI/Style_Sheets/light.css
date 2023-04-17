@@ -201,8 +201,14 @@ QMenuBar#menubar::item:selected {
 */
 }
 
-QComboBox[objectName|="comboBox2_"]{font: 10pt "Ubuntu";}
-QComboBox[objectName|="comboBox2_"]:disabled{font: 10pt "Ubuntu";}
+QComboBox[objectName|="comboBox2_"]{
+    padding-left: 4px;
+    font: 10pt "Ubuntu";
+}
+QComboBox[objectName|="comboBox2_"]:disabled{
+    padding-left: 4px;
+    font: 10pt "Ubuntu";
+}
 
 QTableWidget#tableWidget_status_headers{
 	background-color: rgb(244, 244, 244);

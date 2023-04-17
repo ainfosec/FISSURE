@@ -4,7 +4,8 @@
 ubuntu18_04=$(lsb_release -d 2>&1 | grep "Ubuntu 18.04")
 ubuntu20_04=$(lsb_release -d 2>&1 | grep "Ubuntu 20.04")
 dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal$")
-dragonOS_focalx=$(lsb_release -d 2>&1 | grep "DragonOS FocalX")
+#dragonOS_focalx=$(lsb_release -d 2>&1 | grep "DragonOS FocalX")  # May print old version after upgrade to FocalX
+dragonOS_focalx=$(cat /etc/os-dragonos 2>&1 | grep "DragonOS FocalX")
 kde_neon=$(lsb_release -d 2>&1 | grep "KDE neon")
 ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
 kali23_1=$(lsb_release -d 2>&1 | grep "Kali")

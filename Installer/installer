@@ -5522,7 +5522,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
 
         # Hide Progress Bar
         self.progressBar1.hide()
-        self.label_current_item.hide()  
+        self.label2_current_item.hide()  
         
         # Do SIGNAL/Slots Connections
         self._connectSlots()  
@@ -5606,7 +5606,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
             
         # Show Progress Bar
         self.progressBar1.show()
-        self.label_current_item.show()     
+        self.label2_current_item.show()     
         self.progressBar1.setMaximum(get_checked_items+1)
         QtGui.QApplication.processEvents()
         self.pushButton_ok.setEnabled(False)
@@ -5620,7 +5620,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
                     self.loop = True
                     
                     # Update the Label
-                    self.label_current_item.setText(str(self.checked_items[n]))
+                    self.label2_current_item.setText(str(self.checked_items[n]))
             
                     # Split Install Commands and Verifier Commands
                     install_command = self.programs[p][1].split("########## Verify ##########")
@@ -5647,7 +5647,7 @@ class InstallDialog2(QtGui.QDialog, form_class2):
         print("\nInstall Complete")
         time.sleep(2)
         self.progressBar1.hide()
-        self.label_current_item.hide()
+        self.label2_current_item.hide()
         self.pushButton_ok.setEnabled(True)
         #self.accept()
         

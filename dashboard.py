@@ -160,7 +160,20 @@ class MainWindow(QtGui.QMainWindow, form_class):
         # Add a Toolbar
         self.mpl_toolbar = NavigationToolbar(self.iq_matplotlib_widget, self.tab_iq_data)
         self.mpl_toolbar.setStyleSheet("color:" + self.dashboard_settings_dictionary['color4'])
-        self.mpl_toolbar.setGeometry(QtCore.QRect(375, 277, 525, 35))  
+        self.mpl_toolbar.setGeometry(QtCore.QRect(375, 277, 525, 35))
+        icons_buttons = {
+            "Home": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/home.png"),
+            "Pan": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/move.png"),
+            "Zoom": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/zoom_to_rect.png"),
+            "Back": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/back.png"),
+            "Forward": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/forward.png"),
+            "Subplots": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/subplots.png"),
+            "Customize": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/qt4_editor_options.png"),
+            "Save": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/filesave.png"),
+        }
+        for action in self.mpl_toolbar.actions():
+            if action.text() in icons_buttons:
+                action.setIcon(icons_buttons.get(action.text(), QtGui.QIcon())) 
                      
         # Get Protocols
         protocols = getProtocols(self.pd_library)
@@ -25047,16 +25060,27 @@ class MyPlotWindow(QtGui.QDialog):
         okButton.setGeometry(QtCore.QRect(300,650,100,30))
         okButton.setText("OK")
         
-        
         # Create Matplotlib Widget
         entropy_mpl_widget = EntropyMplCanvas(self)
         #~ entropy_mpl_widget.move(0,0)
         entropy_mpl_widget.setGeometry(50,0,600,600) 
-
         
         # Add a Toolbar
         mpl_toolbar = NavigationToolbar(entropy_mpl_widget, self)
-        mpl_toolbar.setGeometry(QtCore.QRect(175, 600, 525, 35)) 
+        mpl_toolbar.setGeometry(QtCore.QRect(175, 600, 525, 35))
+        icons_buttons = {
+            "Home": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/home.png"),
+            "Pan": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/move.png"),
+            "Zoom": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/zoom_to_rect.png"),
+            "Back": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/back.png"),
+            "Forward": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/forward.png"),
+            "Subplots": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/subplots.png"),
+            "Customize": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/qt4_editor_options.png"),
+            "Save": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/filesave.png"),
+        }
+        for action in mpl_toolbar.actions():
+            if action.text() in icons_buttons:
+                action.setIcon(icons_buttons.get(action.text(), QtGui.QIcon()))
         
         # Plot the Data
         entropy_mpl_widget.axes.plot(range(0,len(entropy_data)), entropy_data, label='pre (default)', marker='.')
@@ -25609,7 +25633,6 @@ class MyIQ_MplCanvas(FigureCanvas):
         self.axes.tick_params(axis='y', colors=text_color)
         self.text_color = text_color 
         
-            
     def clearPlot(self):
         """ Clears the plot data.
         """
