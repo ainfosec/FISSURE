@@ -218,7 +218,7 @@
     <string>Collapse All</string>
    </property>
   </widget>
-  <widget class="QLabel" name="label_current_item">
+  <widget class="QLabel" name="label2_current_item">
    <property name="geometry">
     <rect>
      <x>260</x>
@@ -246,7 +246,7 @@
   <zorder>pushButton_rankings</zorder>
   <zorder>pushButton_expand_all</zorder>
   <zorder>pushButton_collapse_all</zorder>
-  <zorder>label_current_item</zorder>
+  <zorder>label2_current_item</zorder>
  </widget>
  <resources/>
  <connections/>

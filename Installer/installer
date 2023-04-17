@@ -3721,7 +3721,7 @@ make
 ls ~/Installed_by_FISSURE/dump978/dump978
 """, True, 'Aircraft'))
 
-# htop - verify
+# htop
 programs_dragonOS_focalx.append(('htop',
 """sudo apt-get install -y htop
 ########## Verify ##########
@@ -3740,7 +3740,7 @@ ls /usr/bin/htop
 # ls /usr/bin/openwebrx
 # """,True,'SDR'))
 
-# CRC RevEng - verify
+# CRC RevEng
 programs_dragonOS_focalx.append(('CRC RevEng',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -3753,13 +3753,20 @@ make
 ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
-# wl-color-picker - verify
-programs_dragonOS_focalx.append(('wl-color-picker',
-"""sudo apt-get install -y slurp grim wl-clipboard
-cd ~/Installed_by_FISSURE
-git clone https://github.com/jgmdev/wl-color-picker.git
+# # wl-color-picker  # Requires Wayland, Gpick works in its place
+# programs_dragonOS_focalx.append(('wl-color-picker',
+# """sudo apt-get install -y slurp grim wl-clipboard
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/jgmdev/wl-color-picker.git
+# ########## Verify ##########
+# ls ~/Installed_by_FISSURE/wl-color-picker/wl-color-picker.sh
+# """,True,'Development'))
+
+# Gpick
+programs_dragonOS_focalx.append(('Gpick',
+"""sudo apt-get install -y gpick
 ########## Verify ##########
-ls ~/Installed_by_FISSURE/wl-color-picker/wl-color-picker.sh
+ls /usr/bin/gpick
 """,True,'Development'))
 
 
@@ -3816,6 +3823,8 @@ sudo apt-get install -y gpsd-clients python3-gi-cairo
 sudo python3 -m pip install pandas
 sudo apt-get install -y dsniff
 sudo apt-get install -y ncurses-term
+sudo apt-get install -y eog
+sudo python2 -m pip install cryptography
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -3872,6 +3881,7 @@ gnuradio-companion --help
 # Scapy
 programs_kali2023_1.append(('Scapy',
 """sudo apt-get install -y python3-scapy
+sudo python2 -m pip install setuptools
 #sudo python3 -m pip install scapy  # Causes errors
 sudo python2 -m pip install scapy  # Doesn't work on Kali
 ########## Verify ##########
@@ -4947,7 +4957,7 @@ ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
 
 # SdrGlut
 programs_kali2023_1.append(('SdrGlut',
-"""sudo apt-get install -y librtaudio-dev libsoapysdr-dev libopenal-dev libliquid-dev freeglut3 freeglut3-dev libalut0 libalut-dev libsndfile1-dev 
+"""sudo apt-get install -y librtaudio-dev libsoapysdr-dev libopenal-dev libliquid-dev freeglut3-dev libalut0 libalut-dev libsndfile1-dev  # Missing: freeglut3
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/jgaeddert/liquid-dsp.git
@@ -5208,6 +5218,7 @@ sudo apt install -y gtk-doc-tools docbook-xsl yelp-tools libpng-dev libgtk-3-dev
 sudo apt-get install -y libcurl4-gnutls-dev libglib2.0-dev-bin
 sudo apt-get install -y libsqlite3-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev
 sudo apt-get install -y autopoint libnova-dev
+sudo apt-get install -y xxd
 cd viking
 ./autogen.sh
 ./configure
@@ -5342,7 +5353,14 @@ cp -f """ + fissure_directory + """/Tools/ham2mon/cursesgui.py ~/Installed_by_FI
 
 # Anki
 programs_kali2023_1.append(('Anki',
-"""sudo apt-get install -y anki
+"""#sudo apt-get install -y anki  # No package found
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://github.com/ankitects/anki/releases/download/2.1.61/anki-2.1.61-linux-qt6.tar.zst
+tar -xf anki-2.1.61-linux-qt6.tar.zst
+rm anki-2.1.61-linux-qt6.tar.zst
+cd anki-2.1.61-linux-qt6
+sudo ./install.sh
 ########## Verify ##########
 anki -h
 """,True,'Ham Radio'))
@@ -5443,7 +5461,7 @@ make
 sudo make install
 sudo ldconfig
 #suscan
-sudo apt-get install -y libxml2-dev cmake build-essential  # SoapySDR
+sudo apt-get install -y libxml2-dev cmake build-essential  # Needs SoapySDR
 cd ~/Installed_by_FISSURE
 git clone https://github.com/BatchDrake/suscan.git
 cd suscan
@@ -5608,9 +5626,10 @@ sudo apt-get update
 sudo apt-get install -y openwebrx
 sudo systemctl stop openwebrx
 sudo systemctl disable openwebrx  # Prevents starting on boot
+# python3-csdr Depends: python3 (< 3.11)
 ########## Verify ##########
 ls /usr/bin/openwebrx
-""",True,'SDR'))
+""",False,'SDR'))
 
 # CRC RevEng
 programs_kali2023_1.append(('CRC RevEng',
@@ -5654,7 +5673,7 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
 
         # Hide Progress Bar
         self.progressBar1.hide()
-        self.label_current_item.hide()
+        self.label2_current_item.hide()
         
         # Set Style Sheet
         color1 = "#F4F4F4"
@@ -5760,7 +5779,7 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
             
         # Show Progress Bar
         self.progressBar1.show()
-        self.label_current_item.show()
+        self.label2_current_item.show()
         self.progressBar1.setMaximum(get_checked_items+1)
         QtWidgets.QApplication.processEvents()
         self.pushButton_ok.setEnabled(False)
@@ -5774,7 +5793,7 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
                     self.loop = True
             
                     # Update Label
-                    self.label_current_item.setText(str(self.checked_items[n]))
+                    self.label2_current_item.setText(str(self.checked_items[n]))
                     
                     # Split Install Commands and Verifier Commands
                     install_command = self.programs[p][1].split("########## Verify ##########")
@@ -5801,7 +5820,7 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         print("\nInstall Complete")
         time.sleep(2)
         self.progressBar1.hide()
-        self.label_current_item.hide()
+        self.label2_current_item.hide()
         self.pushButton_ok.setEnabled(True)
         #self.accept()
 

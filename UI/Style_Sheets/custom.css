@@ -412,27 +412,33 @@ QTabWidget#tabWidget2_2::pane{
 }
 
 QComboBox[objectName^="comboBox_"]{
+    padding-left: 4px;
 	border: 1px solid #111111;
 	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #aaaaaa, stop: 1 #666666);
 }
 QComboBox[objectName^="comboBox_"]:disabled{
+    padding-left: 4px;
 	color: #999999;
 	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #dddddd, stop: 1 #999999);
 }
 QComboBox[objectName^="comboBox_"]:hover{
+    padding-left: 4px;
 	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #afafaf, stop: 1 #6f6f6f);
 }
 QComboBox[objectName^="comboBox2_"]{
+    padding-left: 4px;
 	border: 1px solid #111111;
 	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #aaaaaa, stop: 1 #666666);
     font: 10pt "Ubuntu";
 }
 QComboBox[objectName^="comboBox2_"]:disabled{
+    padding-left: 4px;
 	color: #999999;
 	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #dddddd, stop: 1 #999999);
     font: 10pt "Ubuntu";
 }
 QComboBox[objectName^="comboBox2_"]:hover{
+    padding-left: 4px;
 	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #afafaf, stop: 1 #6f6f6f);
 }
 

@@ -115,18 +115,26 @@ QCheckBox[objectName^="checkBox_"]::indicator:disabled:unchecked {
     image: url(@icon_path/light-unchecked-disabled.png);    
 }
 QTextEdit{
+    border: 1px solid lightgray;
+    border-radius: 0px;
 	background-color: @color5;
     color: @color4;
 }
 QTextEdit:disabled{
+    border: 1px solid lightgray;
+    border-radius: 0px;
 	background-color: @color5;
     color: #C0C0C0;
 }
 QPlainTextEdit{
+    border: 1px solid lightgray;
+    border-radius: 0px;
 	background-color: @color5;
     color: @color4;
 }
 QPlainTextEdit:disabled{
+    border: 1px solid lightgray;
+    border-radius: 0px;
 	background-color: @color5;
     color: #C0C0C0;
 }
@@ -409,6 +417,7 @@ QMenuBar#menubar::item:selected {
 
 /*Change Combobox Colors*/
 QComboBox[objectName^="comboBox_"]{
+    padding-left: 4px;
     border: 1px solid #ABABAB;
     border-radius: 2px;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #EFEFEF);
@@ -425,18 +434,21 @@ QComboBox::drop-down:button {
     background-color: transparent;
 }
 QComboBox[objectName^="comboBox_"]:disabled{
+    padding-left: 4px;
     border: 1px solid #C4C4C4;
     border-radius: 2px;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #EFEFEF);
 	color: #C0C0C0;
 }
 QComboBox[objectName^="comboBox_"]:hover{
+    padding-left: 4px;
     border: 1px solid #ABABAB;
     border-radius: 2px;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #F8F8F8);
 	color: black;
 }
 QComboBox[objectName^="comboBox2_"]{
+    padding-left: 4px;
     border: 1px solid #ABABAB;
     border-radius: 2px;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #EFEFEF);
@@ -446,12 +458,14 @@ QComboBox[objectName^="comboBox2_"]{
     selection-color: white;
 }
 QComboBox[objectName^="comboBox2_"]:disabled{
+    padding-left: 4px;
     border: 1px solid #C4C4C4;
     border-radius: 2px;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #EFEFEF);
 	color: #C0C0C0;
 }
 QComboBox[objectName^="comboBox2_"]:hover{
+    padding-left: 4px;
     border: 1px solid #ABABAB;
     border-radius: 2px;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #F8F8F8);
