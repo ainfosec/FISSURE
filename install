@@ -2,6 +2,7 @@
 
 # Check Operating System
 ubuntu20_04=$(lsb_release -d 2>&1 | grep "Ubuntu 20.04")
+parrot_os=$(lsb_release -d 2>&1 | grep "Parrot OS")
 dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal$")
 #dragonOS_focalx=$(lsb_release -d 2>&1 | grep "DragonOS FocalX")  # May print old version after upgrade to FocalX
 dragonOS_focalx=$(cat /etc/os-dragonos 2>&1 | grep "DragonOS FocalX")
@@ -9,11 +10,18 @@ kde_neon=$(lsb_release -d 2>&1 | grep "KDE neon")
 ubuntu18_04=$(lsb_release -d 2>&1 | grep "Ubuntu 18.04")
 ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
 kali23_1=$(lsb_release -d 2>&1 | grep "Kali")
+backbox=$(cat /etc/issue -d 2>&1 | grep "BackBox")
 
 # Ubuntu 20.04
 if [[ -n "$ubuntu20_04" ]]
 then
     echo "Ubuntu 20.04 detected"
+fi
+
+# Parrot OS
+if [[ -n "$parrot_os" ]]
+then
+    echo "Parrot OS detected"
 fi
 
 # DragonOS Focal
@@ -40,7 +48,7 @@ then
 fi
 
 # Python-maint_3.10, Ubuntu 22.04
-if [[ -n "$ubuntu22_04" ]] || [[ -n "$dragonOS_focalx" ]] || [[ -n "$kali23_1" ]]
+if [[ -n "$ubuntu22_04" ]] || [[ -n "$dragonOS_focalx" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]]
 then
     echo "This branch is for Ubuntu 22.04 variants only. Switch to the Python3_maint-3.10 branch and try again!"
     exit
@@ -61,6 +69,13 @@ then
             # Ubuntu 20.04
             if [[ -n "$ubuntu20_04" ]]
             then
+                sudo apt-get install -y build-essential qtcreator qt5-default python3-pyqt5
+            fi
+            
+            # Parrot OS
+            if [[ -n "$parrot_os" ]]
+            then
+                sudo apt-get install -y libvulkan-dev=1.3.224.0-1~bpo11+1
                 sudo apt-get install -y build-essential qtcreator qt5-default python3-pyqt5
             fi
             

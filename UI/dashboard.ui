@@ -14847,7 +14847,7 @@ p, li { white-space: pre-wrap; }
              </rect>
             </property>
             <property name="currentIndex">
-             <number>7</number>
+             <number>0</number>
             </property>
             <widget class="QWidget" name="Record">
              <widget class="QFrame" name="frame_iq_record">

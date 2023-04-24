@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-04-24
+
+Adding support for Parrot OS and BackBox.
+ 
+### Added
+
+- Parrot OS, BackBox to installer as beta
+- Kali software sizes
+- Adding fonts-ubuntu to Kali install
+  
+### Changed
+
+- README install icons and tables
+- Unchecking RTLSDR-Airband in Kali install
+
+### Fixed
+
+- Installing VLC with apt-get for Kali
+
 ## 2023-04-17
 
 Installer fixes and GUI style changes.

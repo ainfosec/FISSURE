@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>240</width>
-    <height>245</height>
+    <height>270</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>120</x>
-     <y>210</y>
+     <y>235</y>
      <width>90</width>
      <height>27</height>
     </rect>
@@ -30,7 +30,7 @@
    <property name="geometry">
     <rect>
      <x>25</x>
-     <y>210</y>
+     <y>235</y>
      <width>90</width>
      <height>27</height>
     </rect>
@@ -74,7 +74,7 @@
      <x>20</x>
      <y>42</y>
      <width>200</width>
-     <height>163</height>
+     <height>188</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -185,6 +185,22 @@
     </property>
     <property name="text">
      <string>Ubuntu 20.04.6</string>
+    </property>
+   </widget>
+   <widget class="QRadioButton" name="radioButton_parrot_os_5_2">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>155</y>
+      <width>180</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Parrot OS 5.2 (beta)</string>
     </property>
    </widget>
   </widget>
