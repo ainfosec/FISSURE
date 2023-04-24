@@ -3,12 +3,14 @@
 # Check Operating System
 ubuntu18_04=$(lsb_release -d 2>&1 | grep "Ubuntu 18.04")
 ubuntu20_04=$(lsb_release -d 2>&1 | grep "Ubuntu 20.04")
+parrot_os=$(lsb_release -d 2>&1 | grep "Parrot OS")
 dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal$")
 #dragonOS_focalx=$(lsb_release -d 2>&1 | grep "DragonOS FocalX")  # May print old version after upgrade to FocalX
 dragonOS_focalx=$(cat /etc/os-dragonos 2>&1 | grep "DragonOS FocalX")
 kde_neon=$(lsb_release -d 2>&1 | grep "KDE neon")
 ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
 kali23_1=$(lsb_release -d 2>&1 | grep "Kali")
+backbox=$(cat /etc/issue -d 2>&1 | grep "BackBox")
 
 if [[ -n "$ubuntu18_04" ]]
 then
@@ -16,7 +18,7 @@ then
 fi
 
 # Python3_maint-3.8, Ubuntu 20.04, DragonOS Focal, KDE neon
-if [[ -n "$ubuntu20_04" ]] || [[ -n "$dragonOS_focal" ]] || [[ -n "$kde_neon" ]]
+if [[ -n "$ubuntu20_04" ]] || [[ -n "$dragonOS_focal" ]] || [[ -n "$kde_neon" ]] || [[ -n "$parrot_os" ]]
 then
     echo "Ubuntu 20.04 variant detected"
     echo "This branch is for Ubuntu 18.04 variants only. Switch to the Python3_maint-3.8 branch and try again!"
@@ -24,7 +26,7 @@ then
 fi
 
 # Python3_maint-3.10, Ubuntu 22.04
-if [[ -n "$ubuntu22_04" ]] || [[ -n "$dragonOS_focalx" ]] || [[ -n "$kali23_1" ]]
+if [[ -n "$ubuntu22_04" ]] || [[ -n "$dragonOS_focalx" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]]
 then
     echo "Ubuntu 22.04 variant detected"
     echo "This branch is for Ubuntu 18.04 variants only. Switch to the Python3_maint-3.10 branch and try again!"

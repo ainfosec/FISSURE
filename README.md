@@ -46,8 +46,10 @@ These operating systems are still in beta status. They are under development and
 Operating System            |  FISSURE Branch
 :-------------------------:|:-------------------------:
 | DragonOS Focal (x86_64) | Python3_maint-3.8 |
+| Parrot OS 5.2 (amd64) | Python3_maint-3.8 |
 | DragonOS FocalX (x86_64) | Python3_maint-3.10 |
 | Kali 23.1 (x64) | Python3_maint-3.10 |
+| BackBox Linux 8 (amd64) | Python3_maint-3.10 |
 
 Note: Certain software tools do not work for every OS. Refer to [Software And Conflicts](/Help/Markdown/SoftwareAndConflicts.md)
 
