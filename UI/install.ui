@@ -121,9 +121,26 @@
      <string>Kali 2023.1 (beta)</string>
     </property>
    </widget>
+   <widget class="QRadioButton" name="radioButton_backbox_linux_8">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>80</y>
+      <width>185</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>BackBox Linux 8 ( beta)</string>
+    </property>
+   </widget>
    <zorder>radioButton_ubuntu22_04</zorder>
    <zorder>radioButton_kali_2023_1</zorder>
    <zorder>radioButton_dragonos_focalx</zorder>
+   <zorder>radioButton_backbox_linux_8</zorder>
   </widget>
  </widget>
  <resources/>

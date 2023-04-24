@@ -3437,6 +3437,7 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="font">
                 <font>
+                 <family>Ubuntu</family>
                  <pointsize>11</pointsize>
                 </font>
                </property>
@@ -3515,6 +3516,11 @@ p, li { white-space: pre-wrap; }
                  <height>27</height>
                 </rect>
                </property>
+               <property name="font">
+                <font>
+                 <family>Ubuntu</family>
+                </font>
+               </property>
                <property name="verticalScrollBarPolicy">
                 <enum>Qt::ScrollBarAlwaysOff</enum>
                </property>
@@ -3533,6 +3539,11 @@ p, li { white-space: pre-wrap; }
                  <width>115</width>
                  <height>27</height>
                 </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <family>Ubuntu</family>
+                </font>
                </property>
                <property name="verticalScrollBarPolicy">
                 <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -14219,6 +14230,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="font">
               <font>
+               <family>Ubuntu</family>
                <pointsize>11</pointsize>
                <strikeout>false</strikeout>
               </font>
@@ -14245,6 +14257,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="font">
               <font>
+               <family>Ubuntu</family>
                <pointsize>11</pointsize>
                <strikeout>false</strikeout>
               </font>
@@ -20578,6 +20591,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="font">
               <font>
+               <family>Ubuntu</family>
                <pointsize>11</pointsize>
                <strikeout>false</strikeout>
               </font>
@@ -20597,6 +20611,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="font">
               <font>
+               <family>Ubuntu</family>
                <pointsize>11</pointsize>
                <strikeout>false</strikeout>
               </font>
@@ -20690,6 +20705,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="font">
               <font>
+               <family>Ubuntu</family>
                <pointsize>11</pointsize>
                <strikeout>false</strikeout>
               </font>
@@ -20716,6 +20732,7 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="font">
               <font>
+               <family>Ubuntu</family>
                <pointsize>11</pointsize>
                <strikeout>false</strikeout>
               </font>
