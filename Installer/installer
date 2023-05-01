@@ -1843,6 +1843,13 @@ programs_ubuntu18_04.append(('Gpick (1.5 MB)',
 ls /usr/bin/gpick
 """,True,'Development'))
 
+# GHex
+programs_ubuntu18_04.append(('GHex',
+"""sudo apt-get install -y ghex
+########## Verify ##########
+ls /usr/bin/ghex
+""",True,'Data'))
+
 
 
 ########################################################################
@@ -3673,6 +3680,13 @@ programs_ubuntu18_04_5.append(('Gpick (1.5 MB)',
 ########## Verify ##########
 ls /usr/bin/gpick
 """,True,'Development'))
+
+# GHex
+programs_ubuntu18_04_5.append(('GHex',
+"""sudo apt-get install -y ghex
+########## Verify ##########
+ls /usr/bin/ghex
+""",True,'Data'))
 
 
 
@@ -5505,6 +5519,13 @@ programs_ubuntu18_04_6.append(('Gpick (1.5 MB)',
 ########## Verify ##########
 ls /usr/bin/gpick
 """,True,'Development'))
+
+# GHex
+programs_ubuntu18_04_6.append(('GHex',
+"""sudo apt-get install -y ghex
+########## Verify ##########
+ls /usr/bin/ghex
+""",True,'Data'))
 
 
 

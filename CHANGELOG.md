@@ -1,6 +1,31 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-05-01
+
+Updating style sheets.
+ 
+### Added
+
+- GHex to the installer and menu
+- ComboBox dark icon
+- Ubuntu font installation to the install script
+  
+### Changed
+
+- README with a sentence describing the minimal install items
+- Setting font to Ubuntu for style sheets
+- Removing default text for QTextEdits in .ui files/Qt Designer so style sheet font takes effect, setting values in init()
+- Style sheets to match Python3_maint-3.10 branch style sheets
+
+### Fixed
+
+- Typo in Install UI and README image
+- Adding transparent background to light-down-arrow icons for Python3_maint-3.10 branch
+- Inserted missing custom color options in Options dialog for Python2_maint-3.7 and Python3_maint-3.8 branches
+- IQ viewer button errors for Python2_maint-3.7 branch
+- Changed blank sample rate value for FFT to a float from an int
+
 ## 2023-04-24
 
 Adding support for Parrot OS and BackBox.

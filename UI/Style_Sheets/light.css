@@ -1,4 +1,217 @@
 /*Global*/
+
+QCheckBox{
+    font-family: "Ubuntu";
+}
+QCheckBox[objectName|="checkBox_"]{
+    background-color: rgba(0,0,0,0);
+    color: @color4;
+}
+QCheckBox[objectName|="checkBox_"]:disabled{
+    color: #C0C0C0;
+}
+QCheckBox[objectName|="checkBox_"]::indicator:unchecked {
+    image: url(@icon_path/light-unchecked.png);
+}
+QCheckBox[objectName|="checkBox_"]::indicator:checked {
+    image: url(@icon_path/light-checked.png);
+}
+QCheckBox[objectName|="checkBox_"]::indicator:disabled:checked {
+    image: url(@icon_path/light-checked-disabled.png);
+}
+QCheckBox[objectName|="checkBox_"]::indicator:disabled:unchecked {
+    image: url(@icon_path/light-unchecked-disabled.png);    
+}
+QComboBox{
+    font-family: "Ubuntu";
+}
+QComboBox::drop-down {
+    border: none;
+}
+QComboBox::down-arrow {
+    image: url(@icon_path/light-down-arrow.png);
+    background-color: transparent;
+}
+QComboBox::down-arrow:disabled {
+    image: url(@icon_path/light-down-arrow-disabled.png);
+    background-color: transparent;
+}
+QDoubleSpinBox{
+	background-color: @color5;
+    color: @color4;
+    font-family: "Ubuntu";
+    border: 1px solid lightgray;
+}
+QDoubleSpinBox:disabled{
+	background-color: @color5;
+    color: #C0C0C0;
+    border: 1px solid lightgray;
+}
+QDoubleSpinBox::up-button {
+     subcontrol-origin: border;
+     subcontrol-position: top right;
+}
+QDoubleSpinBox::down-button {
+     subcontrol-origin: border;
+     subcontrol-position: bottom right;
+}
+QHeaderView{
+    font-family: "Ubuntu";
+}
+QLabel{
+    font-family: "Ubuntu";
+}
+QListWidget{
+	background-color: @color5;
+    color: @color4;
+    font-family: "Ubuntu";
+    border: 1px solid @color1;
+}
+QListWidget:disabled{
+	background-color: @color5;
+    color: #C0C0C0;
+    border: 1px solid @color1;
+}
+QMenu{
+    color:@color4;
+    background-color:@color2;
+    font-family: "Ubuntu";
+}
+QMenu::item{
+    background-color:transparent;
+}
+QMenu::item:selected{
+    color:@color5;
+    background-color:#308CC6;
+}
+QMenu:selected{
+    color:@color5;
+    background-color:#308CC6;
+}
+QPlainTextEdit{
+    border: 1px solid lightgray;
+    border-radius: 0px;
+	background-color: @color5;
+    color: @color4;
+    font-family: "Ubuntu";
+}
+QPlainTextEdit:disabled{
+    border: 1px solid lightgray;
+    border-radius: 0px;
+	background-color: #EFEFEF;
+    color: #C0C0C0;
+    font-family: "Ubuntu";
+}
+QProgressBar{
+	background-color: @color5;
+    color: @color4;
+    font-family: "Ubuntu";
+}
+/*QProgressBar::chunk{
+    border-radius: 3px;
+    background: QLinearGradient(X1:0, y1:0.966136, x2:0, y2:0, stop:0.609721 @color1, stop:0.691923 @color3);
+    background-color: @color1;
+    border: .px solid black;
+}*/
+QProgressBar:disabled{
+	background-color: @color5;
+    color: #C0C0C0;
+}
+QPushButton{
+    font-family: "Ubuntu";
+}
+QPushButton[objectName|="pushButton_"]{
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #EFEFEF);
+	color: black;
+    font-family: "Ubuntu";
+}
+QPushButton[objectName|="pushButton_"]:disabled{
+    border: 1px solid #C4C4C4;
+    border-radius: 2px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #EFEFEF);
+	color: #C0C0C0;
+}
+QPushButton[objectName|="pushButton_"]:hover{
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #F8F8F8);
+	color: black;
+}
+/*
+QPushButton[objectName|="pushButton_"]:pressed{
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #666666, stop: 1 #666666);
+}*/
+QPushButton:default {
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #F8F9FA, stop: 1 #DFE6EB);
+	border: 1px solid #26709E;
+}
+QPushButton:focus:pressed {
+    background-color: #C9D1D7;
+	border: 1px solid #26709E;
+}
+QRadioButton{
+    font-family: "Ubuntu";
+    color: @color4;
+}
+QRadioButton:disabled{
+	color: #C0C0C0;
+}
+QRadioButton::indicator:unchecked {
+    image: url(@icon_path/light-radio.png);
+    padding-left: -1;
+}
+QRadioButton::indicator:checked {
+    image: url(@icon_path/light-radio-checked.png);
+    padding-left: -1;
+}
+QSpinBox{
+	background-color: @color5;
+    color: @color4;
+    font-family: "Ubuntu";
+    border: 1px solid lightgray;
+}
+QSpinBox:disabled{
+	background-color: @color5;
+    color: #C0C0C0;
+    border: 1px solid lightgray;
+}
+QSpinBox::up-button {
+     subcontrol-origin: border;
+     subcontrol-position: top right;
+}
+QSpinBox::down-button {
+     subcontrol-origin: border;
+     subcontrol-position: bottom right;
+}
+QStatusBar{
+    /*background-color: @color2;*/
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, x3: 0, y3: 1, stop: 0 @color1, stop: 0.1 @color2, stop: 1 @color1);
+    color: @color4;
+}
+QTableWidget{
+	background-color: @color5;
+    color: @color4;
+    border: 1px solid #B8B8B8;
+    font-family: "Ubuntu";
+}
+QTableWidget > QHeaderView{
+	background-color: @color2;
+    color: @color4;
+}
+QTableWidget > QHeaderView:disabled{
+	background-color: @color2;
+    color: #C0C0C0;
+}
+QTableWidget > QTableCornerButton{
+	background-color: @color2;
+    color: @color4;
+}
+QTableWidget:disabled{
+	background-color: #EFEFEF;
+    color: #C0C0C0;
+}
 #tabWidget > QTabBar::tab {
 	width: 132px; 
 	height:27px;
@@ -35,9 +248,44 @@ QTabBar::tab:!selected {
 	height: 18px;
 	color: rgb(255, 255, 255);
 }
-QTreeWidget{
-    font-size: 10pt;
+
+QTextEdit{
+    border: 1px solid lightgray;
+    border-radius: 0px;
+	background-color: @color5;
+    color: @color4;
+    font-family: "Ubuntu";
 }
+QTextEdit:disabled{
+    border: 1px solid lightgray;
+    border-radius: 0px;
+	background-color: #EFEFEF;
+    color: #C0C0C0;
+    font-family: "Ubuntu";
+}
+QTreeWidget{
+    background-color: @color5;
+    color: @color4;
+    font-size: 10pt;
+    font-family: "Ubuntu";
+    border: 1px solid lightgray;
+}
+QTreeWidget > QHeaderView{
+    background-color: @color2;
+    color: @color4;
+}
+QTreeWidget::branch:open:has-children:!has-siblings,
+QTreeWidget::branch:open:has-children:has-siblings  {
+    border-image: none;
+    image: url(@icon_path/light-tree-open.png);
+}
+QTreeWidget::branch:has-children:!has-siblings:closed,
+QTreeWidget::branch:closed:has-children:has-siblings {
+    border-image: none;
+    image: url(@icon_path/light-tree-closed.png);
+}
+
+
 
 
 /*Specific*/
@@ -70,7 +318,12 @@ QPushButton[objectName|="pushButton_top"]{
 	border-color:  #17365D;
 }
 QPushButton[objectName|="pushButton_top"]:hover{
-	background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(170, 170, 170,50));
+    color: @color4;
+    background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(170, 170, 170,50));
+    border-style: outset;
+    border-width: 2px;
+    border-radius: 10px;
+    border-color: @color3;
 }
 QPushButton[objectName|="pushButton_top"]:pressed{
 	background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));
