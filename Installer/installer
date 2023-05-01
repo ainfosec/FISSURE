@@ -1889,6 +1889,13 @@ git clone https://github.com/jgmdev/wl-color-picker.git
 ls ~/Installed_by_FISSURE/wl-color-picker/wl-color-picker.sh
 """,True,'Development'))
 
+# GHex
+programs_ubuntu22_04.append(('GHex',
+"""sudo apt-get install -y ghex
+########## Verify ##########
+ls /usr/bin/ghex
+""",True,'Data'))
+
 
 
 
@@ -3768,6 +3775,13 @@ programs_dragonOS_focalx.append(('Gpick',
 ########## Verify ##########
 ls /usr/bin/gpick
 """,True,'Development'))
+
+# GHex - verify
+programs_dragonOS_focalx.append(('GHex',
+"""sudo apt-get install -y ghex
+########## Verify ##########
+ls /usr/bin/ghex
+""",True,'Data'))
 
 
 
@@ -5652,6 +5666,13 @@ git clone https://github.com/jgmdev/wl-color-picker.git
 ls ~/Installed_by_FISSURE/wl-color-picker/wl-color-picker.sh
 """,True,'Development'))
 
+# GHex
+programs_kali2023_1.append(('GHex',
+"""sudo apt-get install -y ghex
+########## Verify ##########
+ls /usr/bin/ghex
+""",True,'Data'))
+
 
 
 ########################################################################
@@ -7523,6 +7544,13 @@ git clone https://github.com/jgmdev/wl-color-picker.git
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/wl-color-picker/wl-color-picker.sh
 """,True,'Development'))
+
+# GHex
+programs_backbox_linux_8.append(('GHex',
+"""sudo apt-get install -y ghex
+########## Verify ##########
+ls /usr/bin/ghex
+""",True,'Data'))
 
 
 

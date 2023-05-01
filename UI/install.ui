@@ -134,7 +134,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>BackBox Linux 8 ( beta)</string>
+     <string>BackBox Linux 8 (beta)</string>
     </property>
    </widget>
    <zorder>radioButton_ubuntu22_04</zorder>
