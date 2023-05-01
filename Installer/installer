@@ -1949,6 +1949,13 @@ programs_ubuntu20_04.append(('Gpick (6.2 MB)',
 ls /usr/bin/gpick
 """,True,'Development'))
 
+# GHex
+programs_ubuntu20_04.append(('GHex',
+"""sudo apt-get install -y ghex
+########## Verify ##########
+ls /usr/bin/ghex
+""",True,'Data'))
+
 
 ########################################################################
 ############################ Ubuntu 20.04.4 ############################
@@ -3880,6 +3887,13 @@ programs_ubuntu20_04_4.append(('Gpick (6.2 MB)',
 ls /usr/bin/gpick
 """,True,'Development'))
 
+# GHex
+programs_ubuntu20_04_4.append(('GHex',
+"""sudo apt-get install -y ghex
+########## Verify ##########
+ls /usr/bin/ghex
+""",True,'Data'))
+
 
 ########################################################################
 ############################ DragonOS Focal ############################
@@ -5076,6 +5090,13 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/h4bcm.so
 # ########## Verify ##########
 # ls /usr/bin/gpick
 # """,True,'Development'))
+
+# # GHex
+# programs_dragonOS_focal.append(('GHex',
+# """sudo apt-get install -y ghex
+# ########## Verify ##########
+# ls /usr/bin/ghex
+# """,True,'Data'))
 
 ######## Already Exists ######## 
 
@@ -7731,6 +7752,15 @@ programs_parrot_os_5_2.append(('Gpick (6.2 MB)',
 ########## Verify ##########
 ls /usr/bin/gpick
 """,True,'Development'))
+
+# GHex
+programs_parrot_os_5_2.append(('GHex',
+"""sudo apt-get install -y ghex
+########## Verify ##########
+ls /usr/bin/ghex
+""",True,'Data'))
+
+
 
 ########################################################################
        

@@ -182,7 +182,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         else:
             self._slotMenuLightModeClicked()
         
-        
         ##### Status Bar and Dialog #####
         self.status_dialog = StatusDialog(parent=self)
         self.status_dialog.move(20,795)
@@ -295,7 +294,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Load Image in Automation Tab
         self.label_diagram.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/logo.png")) 
                 
-        ##### Library #####             
+        ##### Library #####
+        self.textEdit_library_search_frequency_margin.setPlainText("0")
+        self.textEdit_library_search_start_frequency_margin.setPlainText("0")
+        self.textEdit_library_search_end_frequency_margin.setPlainText("0")
+        self.textEdit_library_search_bandwidth_margin.setPlainText("0")
+                 
         # Load Protocols into Gallery ComboBox
         protocols_with_images = []
         for p in protocols:                        
@@ -335,6 +339,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
                 
         ##### TSI #####
+        self.textEdit_tsi_detector_iq_file_frequency.setPlainText("2400e6")
+        self.textEdit_tsi_detector_iq_file_sample_rate.setPlainText("20e6")
+        self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+        
         self.target_soi = []
         
         # Create Preset Dictionary
@@ -380,7 +388,18 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Default Detector Simulator File
         self.textEdit_tsi_detector_csv_file.setPlainText(os.path.dirname(os.path.realpath(__file__)) +"/Tools/TSI_Detector_Sim_Data/tsi_simulator.csv")
         
-        ##### Protocol Discovery #####
+        ##### Protocol Discovery #####        
+        self.textEdit_pd_status_min_buffer_size.setPlainText("100")
+        self.textEdit_pd_status_buffer_size.setPlainText("262144")
+        self.textEdit_pd_status_ip_address.setPlainText("172.16.15.37")
+        self.textEdit_pd_status_port.setPlainText("5066")
+        self.textEdit_pd_flow_graphs_frequency_margin.setPlainText("0")
+        self.textEdit_pd_flow_graphs_bandwidth_margin.setPlainText("0")
+        self.textEdit_pd_flow_graphs_start_frequency_margin.setPlainText("0")
+        self.textEdit_pd_flow_graphs_end_frequency_margin.setPlainText("0")
+        self.textEdit_pd_sniffer_netcat_ip.setPlainText("127.0.0.1")
+        self.textEdit_pd_sniffer_netcat_port.setPlainText("55555")
+        
         # Create Tooltip
         self.tabWidget.setTabToolTip(2,"Protocol Discovery")
         
@@ -475,9 +494,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.crc_algorithms32 = ['Custom','CRC32','CRC32_BZIP2','CRC32_C','CRC32_D','CRC32_MPEG-2','CRC32_POSIX','CRC32-32Q','CRC32_JAMCRC','CRC32_XFER']
         self.comboBox_pd_crc_common_width.setCurrentIndex(0)
         self.comboBox_pd_crc_reveng_width.setCurrentIndex(0)
-
+        self.textEdit_pd_crc_polynomial_common.setPlainText("00")
+        self.textEdit_pd_crc_seed_common.setPlainText("00")
+        self.textEdit_pd_crc_final_xor_common.setPlainText("00")
+        self.textEdit_pd_crc_input_common.setPlainText("12345678")
+        self.textEdit_pd_crc_input_reveng.setPlainText("12345678")
+        self.textEdit_pd_crc_seed.setPlainText("0000")
+        self.textEdit_pd_crc_final_xor.setPlainText("0000")
+        self.textEdit_pd_crc_input1.setPlainText("FFFFFFFF")
+        self.textEdit_pd_crc_input2.setPlainText("AAAAAAAA")
+        self.textEdit_pd_crc_crc1.setPlainText("99CF")
+        self.textEdit_pd_crc_crc2.setPlainText("1E95")
+        self._slotPD_CRC_RevEngAlgorithmChanged()
         
         ##### Attack #####
+        self.textEdit_attack_fuzzing_seed.setPlainText("0")
+        self.textEdit_attack_fuzzing_interval.setPlainText("1")
+        self.textEdit_fuzzing_update_period.setPlainText("1")
+        
         # Load Protocols into Combobox
         self.comboBox_attack_protocols.clear()
         protocols_with_attacks = []
@@ -502,6 +536,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         
         ##### Packet Crafter #####
+        self.textEdit_packet_scapy_interval.setPlainText(".1")
+        self.textEdit_packet_number_of_messages.setPlainText("1")
+        
         # Load Protocols into Combobox
         self.comboBox_packet_protocols.clear()
         self.comboBox_packet_protocols.addItems(sorted(protocols_with_packet_types))
@@ -509,6 +546,29 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
 
         ##### IQ Data  #####
+        self.textEdit_iq_timeslot_sample_rate.setPlainText("20")
+        self.textEdit_iq_timeslot_period.setPlainText(".005")
+        self.textEdit_iq_timeslot_copies.setPlainText("10")
+        self.textEdit_iq_filter_start.setPlainText("100000")
+        self.textEdit_iq_filter_end.setPlainText("200000")
+        
+        self.textEdit_iq_ofdm_sample_rate.setPlainText("20")
+        self.textEdit_iq_ofdm_resample_rate.setPlainText("11.2")
+        self.textEdit_iq_ofdm_trigger_level.setPlainText("0.5")
+        self.textEdit_iq_ofdm_fft_size.setPlainText("1024")
+        self.textEdit_iq_ofdm_cp_length.setPlainText("64")
+        self.textEdit_iq_ofdm_phase_adjustment1.setPlainText("0")
+        self.textEdit_iq_ofdm_phase_adjustment_cycle_start.setPlainText("-200")
+        self.textEdit_iq_ofdm_phase_adjustment_cycle.setPlainText("0")
+        self.textEdit_iq_ofdm_phase_adjustment_cycle_end.setPlainText("200")
+        self.textEdit_iq_ofdm_subcarrier_start.setPlainText("75")
+        self.textEdit_iq_ofdm_subcarrier_skip.setPlainText("3")
+        self.textEdit_iq_ofdm_subcarrier_end.setPlainText("511")
+        self.textEdit_iq_ofdm_phase_adjustment2.setPlainText("0")
+        self.textEdit_iq_ofdm_phase_adjustment_cycle_start2.setPlainText("-200")
+        self.textEdit_iq_ofdm_phase_adjustment_cycle2.setPlainText("0")
+        self.textEdit_iq_ofdm_phase_adjustment_cycle_end2.setPlainText("200")
+        
         # Set up IQ Recording Table
         self._slotIQ_TabClicked("pushButton1_iq_tab_record")
         self.iq_file_counter = 0   
@@ -1654,6 +1714,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionSolve_Crypto_with_Force.triggered.connect(self._slotMenuSolveCryptoWithForceClicked)
         self.actionCrackStation.triggered.connect(self._slotMenuCrackStationClicked)
         self.actionRandom.triggered.connect(lambda: self._slotMenuCustomModeClicked(random_clicked=True))
+        self.actionGHex.triggered.connect(self._slotMenuGHexClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -15408,7 +15469,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             try:
                 get_sample_rate = float(str(self.textEdit_iq_sample_rate.toPlainText()))*1000000
             except:
-                get_sample_rate = 1000000
+                get_sample_rate = 1000000.0
             get_fft_size = int(self.dashboard_settings_dictionary['fft_size'])
             fft_data = np.log10(np.abs(np.fft.fftshift(np.fft.fft(y_data,get_fft_size,norm='ortho'))))
             #fft_data = fft_data/max(fft_data)
@@ -15441,7 +15502,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             try:
                 get_sample_rate = float(str(self.textEdit_iq_sample_rate.toPlainText()))*1000000
             except:
-                get_sample_rate = 1000000
+                get_sample_rate = 1000000.0
             get_fft_size = int(self.dashboard_settings_dictionary['fft_size'])
             fft_data = np.log10(np.abs(np.fft.fftshift(np.fft.fft(complex_data,get_fft_size,norm='ortho'))))
             #fft_data = fft_data/max(fft_data)
@@ -21769,7 +21830,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_detector = str(self.comboBox_tsi_detector_fixed.currentText())
         if get_detector == 'fixed_threshold_x3x0.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -21808,7 +21868,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif get_detector == 'fixed_threshold_b2x0.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -21832,7 +21891,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif get_detector == 'fixed_threshold_hackrf.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -21854,7 +21912,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif get_detector == 'fixed_threshold_b20xmini.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -21878,7 +21935,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif get_detector == 'fixed_threshold_rtl2832u.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("102.4")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("0.25e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("1.024e6")
@@ -21905,7 +21961,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif get_detector == 'fixed_threshold_limesdr.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -21929,7 +21984,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif get_detector == 'fixed_threshold_bladerf.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -21951,7 +22005,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif get_detector == 'fixed_threshold_plutosdr.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -21973,7 +22026,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif get_detector == 'fixed_threshold_usrp2.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -22005,7 +22057,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif get_detector == 'fixed_threshold_usrp_n2xx.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -22037,7 +22088,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif get_detector == 'fixed_threshold_bladerf2.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -22059,7 +22109,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
         elif get_detector == 'fixed_threshold_simulator.py':
             self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-            self.textEdit_tsi_detector_fixed_frequency.setAlignment(QtCore.Qt.AlignCenter)
             self.comboBox_tsi_detector_fixed_sample_rate.clear()
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
             self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -24353,7 +24402,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Browser
         os.system("sensible-browser https://crackstation.net/ &")
         
-        
+    def _slotMenuGHexClicked(self):
+        """ Opens the GHex editor.
+        """
+        # Issue the Command
+        proc = subprocess.Popen("ghex", shell=True)   
         
                     
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):

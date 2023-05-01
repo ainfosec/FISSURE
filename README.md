@@ -70,7 +70,9 @@ Python2_maint-3.7            |  Python3_maint-3.8            |  Python3_maint-3.
 :-------------------------:|:-------------------------:|:-------------------------:
 ![install1b](/Icons/README/install1b.png)  |  ![install1a](/Icons/README/install1a.png)  |  ![install1c](/Icons/README/install1c.png)
 
-It is recommended to install FISSURE on a clean operating system to avoid existing conflicts. Select all the recommended checkboxes (Default button) to avoid errors while operating the various tools within FISSURE. There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. If an item contains a "Verify" section at the end, the installer will run the command that follows and highlight the checkbox item green or red depending on if any errors are produced by the command. Checked items without a "Verify" section will remain black following the installation.
+It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. The items listed under the "Minimum Install" category are what is required to launch the FISSURE Dashboard without errors. Select all the recommended checkboxes (Default button) to avoid additonal errors while operating the various tools within FISSURE. There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. 
+
+If an item contains a "Verify" section at the end, the installer will run the command that follows and highlight the checkbox item green or red depending on if any errors are produced by the command. Checked items without a "Verify" section will remain black following the installation.
 
 <p align="center">
 <img src="/Icons/README/install2.png" width="692" height="479">

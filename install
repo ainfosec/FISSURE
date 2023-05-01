@@ -77,12 +77,14 @@ then
             then
                 sudo apt-get install -y libvulkan-dev=1.3.224.0-1~bpo11+1
                 sudo apt-get install -y build-essential qtcreator qt5-default python3-pyqt5
+                sudo apt-get install -y fonts-ubuntu
             fi
             
             # DragonOS Focal
             if [[ -n "$dragonOS_focal" ]]
             then
                 sudo apt-get install -y build-essential qtcreator qt5-default python3-pyqt5
+                sudo apt-get install -y fonts-ubuntu
             fi
             
             # KDE Neon
@@ -93,6 +95,7 @@ then
                 then
                     # KDE neon 5.25
                     sudo apt-get install -y build-essential qtcreator qt5-default python3-pyqt5
+                    sudo apt-get install -y fonts-ubuntu
                 fi                            
             fi
         ;;
