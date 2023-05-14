@@ -534,6 +534,27 @@ QComboBox[objectName^="comboBox2_"]:hover{
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #F8F8F8);
     color: black;
 }
+QComboBox[objectName^="comboBox3_"]{
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #EFEFEF);
+    color: black;
+    selection-background-color: #308CC6;
+    selection-color: white;
+    text-align: right;
+}
+QComboBox[objectName^="comboBox3_"]:disabled{
+    border: 1px solid #C4C4C4;
+    border-radius: 2px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #EFEFEF);
+    color: #C0C0C0;
+}
+QComboBox[objectName^="comboBox3_"]:hover{
+    border: 1px solid #ABABAB;
+    border-radius: 2px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #F8F8F8);
+    color: black;
+}
 
 
 
@@ -547,7 +568,7 @@ QTableWidget#tableWidget_status_results{
 }
 
 
-QFrame[objectName^="line_"]{background: @color3;min-width:1px;max-width: 1px; border:none;}
+QFrame[objectName^="line1_"]{background: @color3;min-width:1px;max-width: 1px; border:none;}
 QFrame[objectName^="line2_"]{background: @color1;}
 QFrame[objectName^="line3_"]{background: @color3;max-height: 1px; border:none;}
 QFrame#line_iq{border: 1px solid @color3;}

@@ -1247,7 +1247,7 @@
               <bool>false</bool>
              </property>
             </widget>
-            <widget class="Line" name="line_14">
+            <widget class="Line" name="line1_14">
              <property name="geometry">
               <rect>
                <x>385</x>
@@ -5714,7 +5714,7 @@ p, li { white-space: pre-wrap; }
                </widget>
               </widget>
              </widget>
-             <widget class="Line" name="line_13">
+             <widget class="Line" name="line3_13">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -6098,7 +6098,7 @@ p, li { white-space: pre-wrap; }
              <attribute name="title">
               <string>Bit Slicing</string>
              </attribute>
-             <widget class="Line" name="line_15">
+             <widget class="Line" name="line3_15">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -7850,7 +7850,7 @@ p, li { white-space: pre-wrap; }
                <bool>true</bool>
               </property>
              </widget>
-             <widget class="Line" name="line_49">
+             <widget class="Line" name="line3_49">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -9188,7 +9188,7 @@ p, li { white-space: pre-wrap; }
                <enum>Qt::Horizontal</enum>
               </property>
              </widget>
-             <widget class="Line" name="line_43">
+             <widget class="Line" name="line1_43">
               <property name="geometry">
                <rect>
                 <x>530</x>
@@ -9247,7 +9247,7 @@ p, li { white-space: pre-wrap; }
                <string>802.11x Traffic</string>
               </property>
              </widget>
-             <widget class="Line" name="line_44">
+             <widget class="Line" name="line1_44">
               <property name="geometry">
                <rect>
                 <x>910</x>
@@ -13561,7 +13561,7 @@ p, li { white-space: pre-wrap; }
                <set>Qt::AlignCenter</set>
               </property>
              </widget>
-             <widget class="Line" name="line_11">
+             <widget class="Line" name="line3_11">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -14528,7 +14528,7 @@ p, li { white-space: pre-wrap; }
               <string>Choose</string>
              </property>
             </widget>
-            <widget class="QComboBox" name="comboBox_iq_folders">
+            <widget class="QComboBox" name="comboBox3_iq_folders">
              <property name="geometry">
               <rect>
                <x>95</x>
@@ -15553,7 +15553,7 @@ p, li { white-space: pre-wrap; }
                 <property name="geometry">
                  <rect>
                   <x>550</x>
-                  <y>123</y>
+                  <y>125</y>
                   <width>98</width>
                   <height>45</height>
                  </rect>
@@ -15602,7 +15602,7 @@ p, li { white-space: pre-wrap; }
                 <property name="geometry">
                  <rect>
                   <x>675</x>
-                  <y>138</y>
+                  <y>140</y>
                   <width>200</width>
                   <height>17</height>
                  </rect>
@@ -15711,7 +15711,7 @@ p, li { white-space: pre-wrap; }
                 <property name="geometry">
                  <rect>
                   <x>660</x>
-                  <y>138</y>
+                  <y>140</y>
                   <width>116</width>
                   <height>17</height>
                  </rect>
@@ -16020,7 +16020,7 @@ p, li { white-space: pre-wrap; }
                 <property name="geometry">
                  <rect>
                   <x>550</x>
-                  <y>123</y>
+                  <y>125</y>
                   <width>98</width>
                   <height>45</height>
                  </rect>
@@ -16447,7 +16447,7 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>550</x>
-                 <y>123</y>
+                 <y>125</y>
                  <width>98</width>
                  <height>45</height>
                 </rect>
@@ -16716,7 +16716,7 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>550</x>
-                 <y>123</y>
+                 <y>125</y>
                  <width>98</width>
                  <height>45</height>
                 </rect>
@@ -16997,7 +16997,7 @@ p, li { white-space: pre-wrap; }
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <widget class="Line" name="line_2">
+              <widget class="Line" name="line1_2">
                <property name="geometry">
                 <rect>
                  <x>990</x>
@@ -17078,7 +17078,7 @@ p, li { white-space: pre-wrap; }
 &lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
-              <widget class="Line" name="line_7">
+              <widget class="Line" name="line3_7">
                <property name="geometry">
                 <rect>
                  <x>1</x>
@@ -17176,8 +17176,8 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>550</x>
-                 <y>128</y>
-                 <width>99</width>
+                 <y>130</y>
+                 <width>98</width>
                  <height>40</height>
                 </rect>
                </property>
@@ -17261,7 +17261,7 @@ p, li { white-space: pre-wrap; }
                 <bool>true</bool>
                </property>
               </widget>
-              <widget class="Line" name="line_8">
+              <widget class="Line" name="line3_8">
                <property name="geometry">
                 <rect>
                  <x>1</x>
@@ -17313,7 +17313,7 @@ p, li { white-space: pre-wrap; }
                 <string>Select</string>
                </property>
               </widget>
-              <widget class="Line" name="line_5">
+              <widget class="Line" name="line3_5">
                <property name="geometry">
                 <rect>
                  <x>1</x>
@@ -17786,8 +17786,8 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>550</x>
-                 <y>123</y>
-                 <width>99</width>
+                 <y>125</y>
+                 <width>98</width>
                  <height>45</height>
                 </rect>
                </property>
@@ -18106,8 +18106,8 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>550</x>
-                 <y>123</y>
-                 <width>99</width>
+                 <y>125</y>
+                 <width>98</width>
                  <height>45</height>
                 </rect>
                </property>
@@ -18136,7 +18136,7 @@ p, li { white-space: pre-wrap; }
                 <set>Qt::AlignCenter</set>
                </property>
               </widget>
-              <widget class="Line" name="line_45">
+              <widget class="Line" name="line3_45">
                <property name="geometry">
                 <rect>
                  <x>1</x>
@@ -18149,7 +18149,7 @@ p, li { white-space: pre-wrap; }
                 <enum>Qt::Horizontal</enum>
                </property>
               </widget>
-              <widget class="Line" name="line_46">
+              <widget class="Line" name="line3_46">
                <property name="geometry">
                 <rect>
                  <x>1</x>
@@ -18462,7 +18462,7 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>550</x>
-                 <y>123</y>
+                 <y>125</y>
                  <width>98</width>
                  <height>45</height>
                 </rect>
@@ -19806,7 +19806,7 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>550</x>
-                 <y>123</y>
+                 <y>125</y>
                  <width>98</width>
                  <height>45</height>
                 </rect>
@@ -20194,6 +20194,365 @@ p, li { white-space: pre-wrap; }
               </property>
              </widget>
             </widget>
+            <widget class="QWidget" name="Clip">
+             <widget class="QLabel" name="label1_272">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>5</y>
+                <width>1195</width>
+                <height>20</height>
+               </rect>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Ubuntu</family>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <italic>false</italic>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Clip</string>
+              </property>
+             </widget>
+             <widget class="QFrame" name="frame1_74">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>25</y>
+                <width>1195</width>
+                <height>180</height>
+               </rect>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <widget class="QPushButton" name="pushButton_iq_clip_load">
+               <property name="geometry">
+                <rect>
+                 <x>820</x>
+                 <y>35</y>
+                 <width>65</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Load</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_clip">
+               <property name="geometry">
+                <rect>
+                 <x>550</x>
+                 <y>140</y>
+                 <width>98</width>
+                 <height>30</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Clip</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_271">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>10</y>
+                 <width>110</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Input Files:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_iq_clip_output">
+               <property name="geometry">
+                <rect>
+                 <x>115</x>
+                 <y>105</y>
+                 <width>700</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="tabChangesFocus">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_iq_clip_output">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>110</y>
+                 <width>110</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Output Directory:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_273">
+               <property name="geometry">
+                <rect>
+                 <x>885</x>
+                 <y>20</y>
+                 <width>150</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Amplitude Threshold:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_clip_remove">
+               <property name="geometry">
+                <rect>
+                 <x>820</x>
+                 <y>65</y>
+                 <width>65</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Remove</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_274">
+               <property name="geometry">
+                <rect>
+                 <x>945</x>
+                 <y>65</y>
+                 <width>70</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Data Type:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="comboBox_iq_clip_data_type">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>1020</x>
+                 <y>60</y>
+                 <width>157</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Complex Float 32</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Float/Float 32</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Short/Int 16</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Int/Int 32</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Byte/Int 8</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Complex Float 64</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Complex Int 64</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Complex Int 16</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Complex Int 8</string>
+                </property>
+               </item>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_clip_select">
+               <property name="geometry">
+                <rect>
+                 <x>820</x>
+                 <y>5</y>
+                 <width>65</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Select</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_clip_choose">
+               <property name="geometry">
+                <rect>
+                 <x>820</x>
+                 <y>105</y>
+                 <width>65</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Choose</string>
+               </property>
+              </widget>
+              <widget class="QListWidget" name="listWidget_iq_clip_input">
+               <property name="geometry">
+                <rect>
+                 <x>115</x>
+                 <y>5</y>
+                 <width>700</width>
+                 <height>90</height>
+                </rect>
+               </property>
+              </widget>
+              <widget class="QTextEdit" name="textEdit_iq_clip_amplitude">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>1040</x>
+                 <y>15</y>
+                 <width>70</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="tabChangesFocus">
+                <bool>true</bool>
+               </property>
+               <property name="html">
+                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_iq_clip_before">
+               <property name="geometry">
+                <rect>
+                 <x>1115</x>
+                 <y>5</y>
+                 <width>75</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Before</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_iq_clip_after">
+               <property name="geometry">
+                <rect>
+                 <x>1115</x>
+                 <y>30</y>
+                 <width>75</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>After</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_iq_clip_overwrite">
+               <property name="geometry">
+                <rect>
+                 <x>895</x>
+                 <y>105</y>
+                 <width>90</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Overwrite</string>
+               </property>
+              </widget>
+             </widget>
+            </widget>
            </widget>
            <widget class="QPushButton" name="pushButton1_iq_tab_inspection">
             <property name="geometry">
@@ -20523,7 +20882,7 @@ p, li { white-space: pre-wrap; }
               <string>Samples:</string>
              </property>
             </widget>
-            <widget class="Line" name="line_6">
+            <widget class="Line" name="line3_6">
              <property name="geometry">
               <rect>
                <x>1</x>
@@ -20812,6 +21171,30 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </widget>
+           <widget class="QPushButton" name="pushButton1_iq_tab_clip">
+            <property name="geometry">
+             <rect>
+              <x>110</x>
+              <y>26</y>
+              <width>109</width>
+              <height>27</height>
+             </rect>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>10</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
+            <property name="text">
+             <string>Clip</string>
+            </property>
+           </widget>
            <zorder>frame2_69</zorder>
            <zorder>frame_iq</zorder>
            <zorder>label_iq_folder</zorder>
@@ -20841,6 +21224,7 @@ p, li { white-space: pre-wrap; }
            <zorder>label1_202</zorder>
            <zorder>frame1_38</zorder>
            <zorder>label1_112</zorder>
+           <zorder>pushButton1_iq_tab_clip</zorder>
           </widget>
           <widget class="QWidget" name="tab_archive">
            <attribute name="title">
@@ -22020,7 +22404,7 @@ p, li { white-space: pre-wrap; }
               <string>Folder</string>
              </property>
             </widget>
-            <widget class="QComboBox" name="comboBox_archive_download_folder">
+            <widget class="QComboBox" name="comboBox3_archive_download_folder">
              <property name="geometry">
               <rect>
                <x>95</x>
@@ -22028,6 +22412,12 @@ p, li { white-space: pre-wrap; }
                <width>196</width>
                <height>27</height>
               </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+               <strikeout>false</strikeout>
+              </font>
              </property>
              <property name="layoutDirection">
               <enum>Qt::RightToLeft</enum>
@@ -22668,7 +23058,7 @@ p, li { white-space: pre-wrap; }
              </widget>
             </widget>
             <widget class="QWidget" name="page_2">
-             <widget class="Line" name="line_47">
+             <widget class="Line" name="line3_47">
               <property name="geometry">
                <rect>
                 <x>0</x>
@@ -23563,7 +23953,7 @@ p, li { white-space: pre-wrap; }
                 <string>Searching...</string>
                </property>
               </widget>
-              <widget class="Line" name="line_9">
+              <widget class="Line" name="line3_9">
                <property name="geometry">
                 <rect>
                  <x>1</x>
@@ -23576,7 +23966,7 @@ p, li { white-space: pre-wrap; }
                 <enum>Qt::Horizontal</enum>
                </property>
               </widget>
-              <widget class="Line" name="line_48">
+              <widget class="Line" name="line1_48">
                <property name="geometry">
                 <rect>
                  <x>450</x>
@@ -24306,8 +24696,8 @@ p, li { white-space: pre-wrap; }
               <zorder>frame5_26</zorder>
               <zorder>pushButton_library_search_search_library</zorder>
               <zorder>label2_library_search_searching</zorder>
-              <zorder>line_9</zorder>
-              <zorder>line_48</zorder>
+              <zorder>line3_9</zorder>
+              <zorder>line1_48</zorder>
               <zorder>radioButton_library_search_hex</zorder>
               <zorder>checkBox_library_search_field_value</zorder>
               <zorder>textEdit_library_search_field_value</zorder>
@@ -27270,7 +27660,7 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </widget>
-           <widget class="Line" name="line_4">
+           <widget class="Line" name="line3_4">
             <property name="geometry">
              <rect>
               <x>0</x>
@@ -30138,7 +30528,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>textEdit_iq_ofdm_phase_adjustment_cycle_end2</tabstop>
   <tabstop>comboBox_iq_data_type</tabstop>
   <tabstop>pushButton_iq_folder</tabstop>
-  <tabstop>comboBox_iq_folders</tabstop>
+  <tabstop>comboBox3_iq_folders</tabstop>
   <tabstop>listWidget_iq_files</tabstop>
   <tabstop>pushButton_iq_refresh</tabstop>
   <tabstop>pushButton_iq_load_file</tabstop>
@@ -30161,7 +30551,7 @@ p, li { white-space: pre-wrap; }
   <tabstop>pushButton_iq_FunctionsSettings</tabstop>
   <tabstop>pushButton_iq_morse_code</tabstop>
   <tabstop>pushButton_archive_download_folder</tabstop>
-  <tabstop>comboBox_archive_download_folder</tabstop>
+  <tabstop>comboBox3_archive_download_folder</tabstop>
   <tabstop>listWidget_archive_download_files</tabstop>
   <tabstop>pushButton_archive_download_refresh</tabstop>
   <tabstop>pushButton_archive_download_plot</tabstop>

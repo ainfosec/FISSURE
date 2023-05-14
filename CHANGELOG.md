@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-05-14
+
+Compile flow graphs option and Clip tab.
+ 
+### Added
+
+- Installer option to compile FISSURE flow graphs with grcc
+- IQ Clip button to remove samples from an IQ file before and after a signal
+  
+### Changed
+
+- Moved gr-ainfosec from Out-of-Tree Modules to Minimum Install category
+
+### Fixed
+
+- Styles for line widgets and list widgets
+- Right align for certain comboboxes in Python3 branches
+
 ## 2023-05-01
 
 Updating style sheets.
