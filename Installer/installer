@@ -15,7 +15,7 @@ form_class2 = uic.loadUiType(fissure_directory + "/UI/install2.ui")[0]
 
 # Program Format: ('name','command',checked/default, parent_category)
 
-larger_categories = ['Minimum Install','Hardware','Out-of-Tree Modules','433 MHz','802.11','Aircraft','AIS','Audio','Bluetooth','Data','Development',
+larger_categories = ['Minimum Install','Hardware','Out-of-Tree Modules','Compile Flow Graphs','433 MHz','802.11','Aircraft','AIS','Audio','Bluetooth','Data','Development',
     'GPS','GSM','Ham Radio','HD Radio','LTE','Mapping','POCSAG','Radiosonde','RFID','Satellite','SDR','SSH','Trunked Radio','V2V','Video','Z-Wave']
 
 ########################################################################
@@ -376,7 +376,7 @@ sudo make install
 sudo ldconfig
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ainfosec
-""",True,'Out-of-Tree Modules'))
+""",True,'Minimum Install'))
 
 # gr-ais
 programs_ubuntu18_04.append(('gr-ais (5.1 MB)',
@@ -1850,10 +1850,64 @@ programs_ubuntu18_04.append(('GHex',
 ls /usr/bin/ghex
 """,True,'Data'))
 
+# Archive Flow Graphs
+programs_ubuntu18_04.append(('Archive Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Archive\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Fuzzing Flow Graphs
+programs_ubuntu18_04.append(('Fuzzing Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Fuzzing\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Inspection Flow Graphs
+programs_ubuntu18_04.append(('Inspection Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Inspection\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# IQ Flow Graphs
+programs_ubuntu18_04.append(('IQ Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/IQ\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# PD Flow Graphs
+programs_ubuntu18_04.append(('PD Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/PD\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Single-Stage Flow Graphs
+programs_ubuntu18_04.append(('Single-Stage Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Single-Stage\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Sniffer Flow Graphs
+programs_ubuntu18_04.append(('Sniffer Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Sniffer\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Standalone Flow Graphs
+programs_ubuntu18_04.append(('Standalone Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Standalone\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# TSI Flow Graphs
+programs_ubuntu18_04.append(('TSI Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/TSI\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
 
 
 ########################################################################
-############################# Ubuntu 18.04.5 #############################
+############################# Ubuntu 18.04.5 ###########################
 ########################################################################
 
 programs_ubuntu18_04_5 = []
@@ -2210,7 +2264,7 @@ sudo make install
 sudo ldconfig
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ainfosec
-""",True,'Out-of-Tree Modules'))
+""",True,'Minimum Install'))
 
 # gr-ais
 programs_ubuntu18_04_5.append(('gr-ais (5.1 MB)',
@@ -3688,6 +3742,60 @@ programs_ubuntu18_04_5.append(('GHex',
 ls /usr/bin/ghex
 """,True,'Data'))
 
+# Archive Flow Graphs
+programs_ubuntu18_04_5.append(('Archive Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Archive\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Fuzzing Flow Graphs
+programs_ubuntu18_04_5.append(('Fuzzing Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Fuzzing\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Inspection Flow Graphs
+programs_ubuntu18_04_5.append(('Inspection Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Inspection\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# IQ Flow Graphs
+programs_ubuntu18_04_5.append(('IQ Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/IQ\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# PD Flow Graphs
+programs_ubuntu18_04_5.append(('PD Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/PD\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Single-Stage Flow Graphs
+programs_ubuntu18_04_5.append(('Single-Stage Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Single-Stage\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Sniffer Flow Graphs
+programs_ubuntu18_04_5.append(('Sniffer Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Sniffer\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Standalone Flow Graphs
+programs_ubuntu18_04_5.append(('Standalone Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Standalone\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# TSI Flow Graphs
+programs_ubuntu18_04_5.append(('TSI Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/TSI\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
 
 
 ########################################################################
@@ -4048,7 +4156,7 @@ sudo make install
 sudo ldconfig
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ainfosec
-""",True,'Out-of-Tree Modules'))
+""",True,'Minimum Install'))
 
 # gr-ais
 programs_ubuntu18_04_6.append(('gr-ais (5.1 MB)',
@@ -5526,6 +5634,60 @@ programs_ubuntu18_04_6.append(('GHex',
 ########## Verify ##########
 ls /usr/bin/ghex
 """,True,'Data'))
+
+# Archive Flow Graphs
+programs_ubuntu18_04_6.append(('Archive Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Archive\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Fuzzing Flow Graphs
+programs_ubuntu18_04_6.append(('Fuzzing Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Fuzzing\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Inspection Flow Graphs
+programs_ubuntu18_04_6.append(('Inspection Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Inspection\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# IQ Flow Graphs
+programs_ubuntu18_04_6.append(('IQ Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/IQ\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# PD Flow Graphs
+programs_ubuntu18_04_6.append(('PD Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/PD\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Single-Stage Flow Graphs
+programs_ubuntu18_04_6.append(('Single-Stage Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Single-Stage\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Sniffer Flow Graphs
+programs_ubuntu18_04_6.append(('Sniffer Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Sniffer\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# Standalone Flow Graphs
+programs_ubuntu18_04_6.append(('Standalone Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/Standalone\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
+
+# TSI Flow Graphs
+programs_ubuntu18_04_6.append(('TSI Flow Graphs',
+"""cd """ + fissure_directory + """/Flow\ Graph\ Library/TSI\ Flow\ Graphs/
+find . -name '*.grc' -exec grcc {} \;
+""",True,'Compile Flow Graphs'))
 
 
 

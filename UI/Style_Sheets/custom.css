@@ -490,8 +490,9 @@ QMenuBar#menubar::item:focus:pressed {background:transparent;}
 QMenuBar#menubar::item{background: transparent;}
 
 
-QFrame[objectName|="line_"]{background: @color3;}
+QFrame[objectName|="line1_"]{background: @color3;}
 QFrame[objectName|="line2_"]{background: @color1;}
+QFrame[objectName|="line3_"]{background: @color3;}
 QFrame#line_iq{border: 1px solid @color3;}
 
 
@@ -550,6 +551,34 @@ QComboBox[objectName|="comboBox2_"]::item:selected{
     border: 1px solid transparent;  /* needs border to move indicator */
 }
 QComboBox[objectName|="comboBox2_"]::indicator{
+    background-color:transparent;
+    selection-background-color:transparent;
+    color:transparent;
+    selection-color:transparent;
+}
+QComboBox[objectName|="comboBox3_"] {
+    color: #000000;
+	border: 1px solid @color2;
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #aaaaaa, stop: 1 #666666);
+    padding: 1px 1px 1px 5px;  /* padding needed for color to work */
+    text-align: right;
+}
+QComboBox[objectName|="comboBox3_"]::item {
+    color: @color4;
+}
+QComboBox[objectName|="comboBox3_"]:disabled{
+	color: #999999;
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #dddddd, stop: 1 #999999);
+}
+QComboBox[objectName|="comboBox3_"]:hover{
+	background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #afafaf, stop: 1 #6f6f6f);
+}
+QComboBox[objectName|="comboBox3_"]::item:selected{
+	background-color: #F6724F;
+	color: #FFFFFF;
+    border: 1px solid transparent;  /* needs border to move indicator */
+}
+QComboBox[objectName|="comboBox3_"]::indicator{
     background-color:transparent;
     selection-background-color:transparent;
     color:transparent;

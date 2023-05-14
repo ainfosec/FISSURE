@@ -561,6 +561,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.textEdit_iq_ofdm_phase_adjustment_cycle2.setPlainText("0")
         self.textEdit_iq_ofdm_phase_adjustment_cycle_end2.setPlainText("200")
         
+        self.textEdit_iq_clip_amplitude.setPlainText(".001")
+        self.textEdit_iq_clip_output.setPlainText(str(os.path.dirname(os.path.realpath(__file__)) + '/IQ Recordings'))
+        
         # Set up IQ Recording Table     
         self.iq_file_counter = 0   
         self.iq_first_file_name = ''
@@ -606,9 +609,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
         
         # Load the Files in the Listbox            
         self.textEdit_iq_record_dir.setPlainText(str(os.path.dirname(os.path.realpath(__file__)) + '/IQ Recordings'))
-        self.comboBox_iq_folders.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/IQ Recordings'))    
-        self.comboBox_iq_folders.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/Archive'))  
-        self.comboBox_iq_folders.setCurrentIndex(0)
+        self.comboBox3_iq_folders.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/IQ Recordings'))    
+        self.comboBox3_iq_folders.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/Archive'))  
+        self.comboBox3_iq_folders.setCurrentIndex(0)
         
         # Hide Range Buttons
         self.pushButton_iq_plot_prev.setVisible(False)
@@ -639,8 +642,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         
         
         ##### Archive #####   
-        self.comboBox_archive_download_folder.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/Archive'))   
-        self.comboBox_archive_download_folder.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/IQ Recordings'))   
+        self.comboBox3_archive_download_folder.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/Archive'))   
+        self.comboBox3_archive_download_folder.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/IQ Recordings'))   
         self._slotArchiveDownloadFoldersChanged()
         self.populateArchive()
         self.label2_archive_replay_status.setVisible(False)
@@ -1246,6 +1249,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.pushButton1_iq_tab_resample.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_resample"))
         self.pushButton1_iq_tab_ofdm.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_ofdm"))
         self.pushButton1_iq_tab_normalize.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_normalize"))
+        self.pushButton1_iq_tab_clip.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_clip"))
         self.pushButton_iq_polar.clicked.connect(self._slotIQ_PolarClicked)
         self.pushButton_iq_normalize_original_load.clicked.connect(self._slotIQ_NormalizeOriginalLoadClicked)
         self.pushButton_iq_normalize_new_load.clicked.connect(self._slotIQ_NormalizeNewLoadClicked)
@@ -1268,6 +1272,11 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.pushButton_iq_phase.clicked.connect(self._slotIQ_PhaseClicked)
         self.pushButton_iq_unwrap.clicked.connect(self._slotIQ_UnwrapClicked)
         self.pushButton_iq_filter.clicked.connect(self._slotIQ_FilterClicked)
+        self.pushButton_iq_clip.clicked.connect(self._slotIQ_ClipClicked)
+        self.pushButton_iq_clip_select.clicked.connect(self._slotIQ_ClipSelectClicked)
+        self.pushButton_iq_clip_load.clicked.connect(self._slotIQ_ClipLoadClicked)
+        self.pushButton_iq_clip_remove.clicked.connect(self._slotIQ_ClipRemoveClicked)
+        self.pushButton_iq_clip_choose.clicked.connect(self._slotIQ_ClipChooseClicked)
         
         self.pushButton_archive_download_folder.clicked.connect(self._slotArchiveDownloadFolderClicked)
         self.pushButton_archive_download_refresh.clicked.connect(self._slotArchiveDownloadRefreshClicked)
@@ -1309,6 +1318,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.checkBox_iq_append_null1.clicked.connect(self._slotIQ_AppendNull1Clicked)
         self.checkBox_iq_append_null2.clicked.connect(self._slotIQ_AppendNull2Clicked)
         self.checkBox_iq_record_sigmf.clicked.connect(self._slotIQ_RecordSigMF_Clicked)
+        self.checkBox_iq_clip_overwrite.clicked.connect(self._slotIQ_ClipOverwriteClicked)
 
         # Combo Boxes       
         self.comboBox_tsi_detector.currentIndexChanged.connect(self._slotTSI_DetectorChanged)
@@ -1319,7 +1329,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.comboBox_library_attacks_attack_type.currentIndexChanged.connect(self._slotAttackImportAttackTypeChanged)
         self.comboBox_library_attacks_file_type.currentIndexChanged.connect(self._slotAttackImportFileTypeChanged)    
         self.comboBox_library_pd_data_type.currentIndexChanged.connect(self._slotLibraryAddDataTypeChanged)   
-        self.comboBox_iq_folders.currentIndexChanged.connect(self._slotIQ_FoldersChanged)
+        self.comboBox3_iq_folders.currentIndexChanged.connect(self._slotIQ_FoldersChanged)
         self.comboBox_iq_normalize_min_max.currentIndexChanged.connect(self._slotIQ_NormalizeMinMaxChanged)
         self.comboBox_iq_filter_type.currentIndexChanged.connect(self._slotIQ_FilterTypeChanged)
         self.comboBox_pd_demod_hardware.currentIndexChanged.connect(self._slotPD_DemodHardwareChanged)
@@ -1337,7 +1347,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.comboBox_attack_hardware.currentIndexChanged.connect(self.slotAttackHardwareChanged)
         self.comboBox_packet_protocols.currentIndexChanged.connect(self._slotPacketProtocols)
         self.comboBox_packet_subcategory.currentIndexChanged.connect(self._slotPacketSubcategory)  
-        self.comboBox_archive_download_folder.currentIndexChanged.connect(self._slotArchiveDownloadFoldersChanged)
+        self.comboBox3_archive_download_folder.currentIndexChanged.connect(self._slotArchiveDownloadFoldersChanged)
         self.comboBox_pd_sniffer_protocols.currentIndexChanged.connect(self._slotPD_SnifferProtocolsChanged)
         self.comboBox_pd_sniffer_packet_type.currentIndexChanged.connect(self._slotPD_SnifferPacketTypeChanged)
         self.comboBox_pd_sniffer_test_folders.currentIndexChanged.connect(self._slotPD_SnifferTestFoldersChanged)
@@ -6154,14 +6164,14 @@ class MainWindow(QtGui.QMainWindow, form_class):
             if len(get_dir) > 0:
                 
                 # Load Directory and File
-                folder_index = self.comboBox_iq_folders.findText(get_dir)
+                folder_index = self.comboBox3_iq_folders.findText(get_dir)
                 if folder_index < 0:
                     # New Directory
-                    self.comboBox_iq_folders.addItem(get_dir)      
-                    self.comboBox_iq_folders.setCurrentIndex(self.comboBox_iq_folders.count()-1)
+                    self.comboBox3_iq_folders.addItem(get_dir)      
+                    self.comboBox3_iq_folders.setCurrentIndex(self.comboBox3_iq_folders.count()-1)
                 else:
                     # Directory Exists
-                    self.comboBox_iq_folders.setCurrentIndex(folder_index)
+                    self.comboBox3_iq_folders.setCurrentIndex(folder_index)
                 
         except:
             pass
@@ -6329,14 +6339,14 @@ class MainWindow(QtGui.QMainWindow, form_class):
         if len(get_dir) > 0 and len(get_file) > 0:
         
             # Load Directory and File
-            folder_index = self.comboBox_iq_folders.findText(get_dir)
+            folder_index = self.comboBox3_iq_folders.findText(get_dir)
             if folder_index < 0:
                 # New Directory
-                self.comboBox_iq_folders.addItem(get_dir)      
-                self.comboBox_iq_folders.setCurrentIndex(self.comboBox_iq_folders.count()-1)
+                self.comboBox3_iq_folders.addItem(get_dir)      
+                self.comboBox3_iq_folders.setCurrentIndex(self.comboBox3_iq_folders.count()-1)
             else:
                 # Directory Exists
-                self.comboBox_iq_folders.setCurrentIndex(folder_index)
+                self.comboBox3_iq_folders.setCurrentIndex(folder_index)
                 
             # Load File
             file_item = self.listWidget_iq_files.findItems(get_file,QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive)
@@ -15909,27 +15919,27 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Chooses a new folder containing IQ recordings to view in the listbox.
         """
         # Choose Folder
-        get_pwd = str(self.comboBox_iq_folders.currentText())
+        get_pwd = str(self.comboBox3_iq_folders.currentText())
         get_dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory",get_pwd))
         
         # Add Directory to the Combobox       
         if len(get_dir) > 0:   
                 
             # Load Directory and File
-            folder_index = self.comboBox_iq_folders.findText(get_dir)
+            folder_index = self.comboBox3_iq_folders.findText(get_dir)
             if folder_index < 0:
                 # New Directory
-                self.comboBox_iq_folders.addItem(get_dir)      
-                self.comboBox_iq_folders.setCurrentIndex(self.comboBox_iq_folders.count()-1)
+                self.comboBox3_iq_folders.addItem(get_dir)      
+                self.comboBox3_iq_folders.setCurrentIndex(self.comboBox3_iq_folders.count()-1)
             else:
                 # Directory Exists
-                self.comboBox_iq_folders.setCurrentIndex(folder_index)
+                self.comboBox3_iq_folders.setCurrentIndex(folder_index)
             
     def _slotIQ_FoldersChanged(self):
         """ Changes the IQ Files in the listbox.
         """
         # Load the Files in the Listbox
-        get_dir = str(self.comboBox_iq_folders.currentText())
+        get_dir = str(self.comboBox3_iq_folders.currentText())
         if get_dir != "":
             # if get_dir == "./IQ Recordings":
                 # get_dir = os.path.dirname(os.path.realpath(__file__)) + get_dir[1:]
@@ -17333,14 +17343,14 @@ class MainWindow(QtGui.QMainWindow, form_class):
         
         # Add Directory to the Combobox       
         if len(get_dir) > 0:            
-            self.comboBox_archive_download_folder.addItem(get_dir)      
-            self.comboBox_archive_download_folder.setCurrentIndex(self.comboBox_archive_download_folder.count()-1)
+            self.comboBox3_archive_download_folder.addItem(get_dir)      
+            self.comboBox3_archive_download_folder.setCurrentIndex(self.comboBox3_archive_download_folder.count()-1)
             
     def _slotArchiveDownloadFoldersChanged(self):
         """ Changes the IQ Files in the Archive downloaded listbox.
         """
         # Load the Files in the Listbox
-        get_dir = str(self.comboBox_archive_download_folder.currentText())
+        get_dir = str(self.comboBox3_archive_download_folder.currentText())
         if get_dir != "":
             self.listWidget_archive_download_files.clear()
             file_names = []
@@ -17358,7 +17368,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         try:
             # Get the Folder Location
-            get_folder = str(self.comboBox_archive_download_folder.currentText())
+            get_folder = str(self.comboBox3_archive_download_folder.currentText())
                 
             # Get the Files for the Listbox
             try:
@@ -17390,7 +17400,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Get Highlighted File from Listbox
         get_file = str(self.listWidget_archive_download_files.currentItem().text())
-        get_folder = str(self.comboBox_archive_download_folder.currentText())
+        get_folder = str(self.comboBox3_archive_download_folder.currentText())
         delete_filepath = get_folder + '/' + get_file
         
         # Delete
@@ -17404,22 +17414,22 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Get the Folder and File
         get_file = str(self.listWidget_archive_download_files.currentItem().text())
-        get_folder = str(self.comboBox_archive_download_folder.currentText())
+        get_folder = str(self.comboBox3_archive_download_folder.currentText())
         
         # Set the Files and Directories in the IQ Tab
         if get_folder == str(os.path.dirname(os.path.realpath(__file__)) + '/Archive'): 
-                self.comboBox_iq_folders.setCurrentIndex(1)
+                self.comboBox3_iq_folders.setCurrentIndex(1)
         else:
             # Determine if the Directory is Present Already
             match_found = False
-            for n in range(0,self.comboBox_iq_folders.count()):
-                if get_folder == self.comboBox_iq_folders.itemText(n):
-                    self.comboBox_iq_folders.setCurrentIndex(n)
+            for n in range(0,self.comboBox3_iq_folders.count()):
+                if get_folder == self.comboBox3_iq_folders.itemText(n):
+                    self.comboBox3_iq_folders.setCurrentIndex(n)
                     match_found = True
                     break
             if match_found == False:
-                self.comboBox_iq_folders.addItem(get_folder)      
-                self.comboBox_iq_folders.setCurrentIndex(self.comboBox_iq_folders.count()-1)
+                self.comboBox3_iq_folders.addItem(get_folder)      
+                self.comboBox3_iq_folders.setCurrentIndex(self.comboBox3_iq_folders.count()-1)
 
         for n in range(0,self.listWidget_iq_files.count()):
             if get_file == self.listWidget_iq_files.item(n).text():
@@ -17570,7 +17580,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             get_file = str(self.tableWidget_archive_download.verticalHeaderItem(get_row).text())
             
             # Get Folder 
-            get_folder = str(self.comboBox_archive_download_folder.currentText())
+            get_folder = str(self.comboBox3_archive_download_folder.currentText())
             
             # Download        
             os.system('wget -P "' + get_folder + '/"' + ' https://fissure.ainfosec.com/' + get_file)
@@ -17581,7 +17591,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Get File
         get_archive_file = str(self.listWidget_archive_download_files.currentItem().text())
-        get_archive_folder = str(self.comboBox_archive_download_folder.currentText()) + '/'
+        get_archive_folder = str(self.comboBox3_archive_download_folder.currentText()) + '/'
         
         get_archives = [archive for archive in self.pd_library['Archive']['File'].iterkeys()]
         
@@ -20432,7 +20442,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens a terminal to the current IQ folder.
         """
         # Open the Terminal
-        get_dir = str(self.comboBox_iq_folders.currentText())
+        get_dir = str(self.comboBox3_iq_folders.currentText())
         proc=subprocess.Popen('gnome-terminal', cwd=get_dir, shell=True)
 
     def _slotIQ_TabClicked(self, button_name):
@@ -20463,9 +20473,11 @@ class MainWindow(QtGui.QMainWindow, form_class):
             self.stackedWidget3_iq.setCurrentIndex(10)
         elif button_name == "pushButton1_iq_tab_normalize":
             self.stackedWidget3_iq.setCurrentIndex(11)
+        elif button_name == "pushButton1_iq_tab_clip":
+            self.stackedWidget3_iq.setCurrentIndex(12)
         
         # Reset All Stylesheets                
-        button_list = ['pushButton1_iq_tab_record','pushButton1_iq_tab_playback','pushButton1_iq_tab_inspection','pushButton1_iq_tab_crop','pushButton1_iq_tab_convert','pushButton1_iq_tab_append','pushButton1_iq_tab_transfer','pushButton1_iq_tab_timeslot','pushButton1_iq_tab_overlap','pushButton1_iq_tab_resample','pushButton1_iq_tab_ofdm','pushButton1_iq_tab_normalize']
+        button_list = ['pushButton1_iq_tab_record','pushButton1_iq_tab_playback','pushButton1_iq_tab_inspection','pushButton1_iq_tab_crop','pushButton1_iq_tab_convert','pushButton1_iq_tab_append','pushButton1_iq_tab_transfer','pushButton1_iq_tab_timeslot','pushButton1_iq_tab_overlap','pushButton1_iq_tab_resample','pushButton1_iq_tab_ofdm','pushButton1_iq_tab_normalize','pushButton1_iq_tab_clip']
         for n in button_list:
             exec("self." + n + """.setStyleSheet("QPushButton#""" + n + """ {}")""")
         
@@ -22101,7 +22113,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens the SigMF metadata file in a text editor.
         """
         # Open the File
-        get_iq_file = '"' + str(self.comboBox_iq_folders.currentText()) + "/" + str(self.listWidget_iq_files.currentItem().text()) + '"'
+        get_iq_file = '"' + str(self.comboBox3_iq_folders.currentText()) + "/" + str(self.listWidget_iq_files.currentItem().text()) + '"'
         if ".sigmf-data" in get_iq_file:
             get_meta_file = get_iq_file.replace('.sigmf-data','.sigmf-meta')
             if os.path.isfile(get_meta_file.replace('"','')):
@@ -23673,7 +23685,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         # Get File
         if (filepath == None) or (filepath == False) :
             get_archive_file = str(self.listWidget_archive_download_files.currentItem().text())
-            get_archive_folder = str(self.comboBox_archive_download_folder.currentText()) + '/'
+            get_archive_folder = str(self.comboBox3_archive_download_folder.currentText()) + '/'
         else:
             get_archive_file = str(filepath).rsplit("/",1)[1]
             get_archive_folder = str(filepath).rsplit("/",1)[0] + '/'     
@@ -23799,7 +23811,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens a file dialog to select IQ files for the Datasets table.
         """
         # Choose File
-        get_archive_folder = str(self.comboBox_archive_download_folder.currentText()) + '/'
+        get_archive_folder = str(self.comboBox3_archive_download_folder.currentText()) + '/'
         fname = QtGui.QFileDialog.getOpenFileNames(None,"Select IQ File...", get_archive_folder, filter="All Files (*)")
         if fname != "":
             for n in fname:
@@ -24321,7 +24333,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
             get_file = str(self.tableWidget_archive_download_collection.verticalHeaderItem(get_row).text())
             
             # Get Folder 
-            get_folder = str(self.comboBox_archive_download_folder.currentText())
+            get_folder = str(self.comboBox3_archive_download_folder.currentText())
             
             # Download and Unzip
             os.system('wget -P "' + get_folder + '/"' + ' https://fissure.ainfosec.com/' + get_file)
@@ -24344,7 +24356,180 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens the GHex editor.
         """
         # Issue the Command
-        proc = subprocess.Popen("ghex", shell=True) 
+        proc = subprocess.Popen("ghex", shell=True)
+        
+    def _slotIQ_ClipClicked(self):
+        """ Removes samples before and after a signal in IQ files.
+        """
+        # Get Inputs
+        get_overwrite = self.checkBox_iq_clip_overwrite.isChecked()
+        get_before = self.checkBox_iq_clip_before.isChecked()
+        get_after = self.checkBox_iq_clip_after.isChecked()
+        get_data_type = str(self.comboBox_iq_clip_data_type.currentText())
+        get_threshold = self.textEdit_iq_clip_amplitude.toPlainText()
+        get_output_directory = str(self.textEdit_iq_clip_output.toPlainText())
+
+        if (get_overwrite == False) and (len(get_output_directory) == 0):
+            print("Select output directory")
+            return
+            
+        if len(get_threshold) == 0:
+            print("Enter amplitude threshold")
+            return
+        
+        if self.listWidget_iq_clip_input.count() == 0:
+            print("Select IQ files to be clipped")
+            return
+                     
+        # Load the Data
+        for n in range(0,self.listWidget_iq_clip_input.count()):
+            fname = str(self.listWidget_iq_clip_input.item(n).text())
+            
+            if get_overwrite == True:
+                new_file = fname                   
+            else:
+                new_file = get_output_directory + '/' + fname.split('/')[-1].split('.')[0] + "_clipped." + fname.split('/')[-1].split('.')[1]
+                            
+            if os.path.isfile(fname):
+                # Read the Data
+                print("Clipping: " + fname)
+                file = open(fname,"rb")                    
+                plot_data = file.read() 
+                file.close()
+                
+                # Complex Float 64
+                if (get_data_type == "Complex Float 64"):                
+                    # Clip and Write
+                    number_of_bytes = os.path.getsize(fname)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'d', plot_data)                
+                    np_data = np.asarray(plot_data_formatted, dtype=np.float64)
+                      
+                # Complex Float 32
+                elif (get_data_type == "Complex Float 32") or (get_data_type == "Float/Float 32"):                
+                    # Clip and Write
+                    number_of_bytes = os.path.getsize(fname)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'f', plot_data)                
+                    np_data = np.asarray(plot_data_formatted, dtype=np.float32)         
+                
+                # Complex Int 16
+                elif (get_data_type == "Complex Int 16") or (get_data_type == "Short/Int 16"):               
+                    # Clip and Write
+                    number_of_bytes = os.path.getsize(fname)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/2)*'h', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int16)
+                
+                # Complex Int 64
+                elif (get_data_type == "Complex Int 64"):               
+                    # Clip and Write
+                    number_of_bytes = os.path.getsize(fname)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'l', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int64)
+                    
+                # Int/Int 32
+                elif (get_data_type == "Int/Int 32"):               
+                    # Clip and Write
+                    number_of_bytes = os.path.getsize(fname)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'h', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int32)
+                    
+                # Complex Int 8
+                elif (get_data_type == "Complex Int 8") or (get_data_type == "Byte/Int 8"):               
+                    # Clip and Write
+                    number_of_bytes = os.path.getsize(fname)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes)*'b', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int8)
+                
+                # Unknown
+                else:
+                    print("Unknown Data Type")
+                    return
+                
+                # Clip and Save
+                clip_left = 0
+                clip_right = len(np_data)
+                if get_before == True:
+                    for n in range(0, len(np_data)):
+                        if abs(np_data[n]) > float(get_threshold): 
+                            clip_left = n
+                            break
+                if get_after == True:
+                    for n in reversed(range(0, len(np_data))):
+                        if abs(np_data[n]) > float(get_threshold): 
+                            clip_right = n
+                            break                                
+                np_data = np_data[clip_left:clip_right]
+                np_data.tofile(new_file)
+
+        self._slotIQ_RefreshClicked()
+        print("Complete")
+        
+    def _slotIQ_ClipOverwriteClicked(self):
+        """ Disables/enables output directory widgets.
+        """
+        # Disable
+        if self.checkBox_iq_clip_overwrite.isChecked():
+            self.label2_iq_clip_output.setEnabled(False)
+            self.textEdit_iq_clip_output.setEnabled(False)
+            self.pushButton_iq_clip_choose.setEnabled(False)
+        
+        # Enable
+        else:
+            self.label2_iq_clip_output.setEnabled(True)
+            self.textEdit_iq_clip_output.setEnabled(True)
+            self.pushButton_iq_clip_choose.setEnabled(True)
+            
+    def _slotIQ_ClipSelectClicked(self):
+        """ Selects an IQ file from the Data Viewer and adds it to the listwidget.
+        """
+        try:
+            # Get Highlighted File from Listbox
+            get_file = str(self.listWidget_iq_files.currentItem().text())
+            get_folder = str(self.label_iq_folder.text())
+            self.listWidget_iq_clip_input.addItem(get_folder + '/' + get_file) 
+            
+        except:
+            pass    
+            
+    def _slotIQ_ClipLoadClicked(self):
+        """ Load multiple IQ files into the listwidget.
+        """
+        # Choose Files
+        get_iq_folder = str(self.comboBox3_iq_folders.currentText()) + '/'
+        fname = QtGui.QFileDialog.getOpenFileNames(None,"Select IQ Files...", get_iq_folder, filter="All Files (*)")
+        if fname != "":
+            print str(fname)
+            for n in fname:
+                self.listWidget_iq_clip_input.addItem(n)
+            
+    def _slotIQ_ClipRemoveClicked(self):
+        """ Removes a file from the list widget.
+        """
+        # Remove
+        if self.listWidget_iq_clip_input.count() > 0:
+            get_index = int(self.listWidget_iq_clip_input.currentRow())
+            for item in self.listWidget_iq_clip_input.selectedItems():
+                self.listWidget_iq_clip_input.takeItem(self.listWidget_iq_clip_input.row(item))
+                
+            # Refresh  
+            if get_index == self.listWidget_iq_clip_input.count():
+                get_index = get_index -1
+            self.listWidget_iq_clip_input.setCurrentRow(get_index)
+            
+    def _slotIQ_ClipChooseClicked(self):
+        """ Choose an output directory to store new clipped IQ files.
+        """            
+        # Select a Directory
+        dialog = QtGui.QFileDialog(self)
+        dialog.setFileMode(QtGui.QFileDialog.Directory)
+        dialog.setOption(QtGui.QFileDialog.ShowDirsOnly, True)
+
+        if dialog.exec_():
+            for d in dialog.selectedFiles():
+                folder = d
+        try:
+            self.textEdit_iq_clip_output.setText(folder)
+        except:
+            pass 
                 
 
 class HelpMenuDialog(QtGui.QDialog, form_class6):
