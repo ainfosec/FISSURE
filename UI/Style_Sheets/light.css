@@ -458,6 +458,10 @@ QComboBox[objectName^="comboBox2_"]:disabled{
     padding-left: 4px;
     font-size: 10pt;
 }
+QComboBox[objectName^="comboBox3_"]{
+    text-align: right;
+}
+
 
 QTableWidget#tableWidget_status_headers{
     background-color: rgb(244, 244, 244);
@@ -466,4 +470,7 @@ QTableWidget#tableWidget_status_results{
     background-color: rgb(244, 244, 244);
 }
 
+QFrame[objectName^="line1_"]{background: @color3;min-width:1px;max-width: 1px; border:none;}
+QFrame[objectName^="line2_"]{background: @color1;}
+QFrame[objectName^="line3_"]{background: @color3;max-height: 1px; border:none;}
 QFrame#line_iq{border: 1px solid #17365D;}

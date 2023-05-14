@@ -472,8 +472,9 @@ QMenuBar#menubar::item:selected {
 }
 
 
-QFrame[objectName^="line_"]{background: @color3;}
+QFrame[objectName^="line1_"]{background: @color3;}
 QFrame[objectName^="line2_"]{background: @color1;}
+QFrame[objectName^="line3_"]{background: @color3;}
 QFrame#line_iq{border: 1px solid @color3;}
 
 QTabWidget#tabWidget2_2::pane{
@@ -510,6 +511,18 @@ QComboBox[objectName^="comboBox2_"]:disabled{
 }
 QComboBox[objectName^="comboBox2_"]:hover{
     padding-left: 4px;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #afafaf, stop: 1 #6f6f6f);
+}
+QComboBox[objectName^="comboBox3_"]{
+    border: 1px solid #111111;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #aaaaaa, stop: 1 #666666);
+    text-align: right;
+}
+QComboBox[objectName^="comboBox3_"]:disabled{
+    color: #999999;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #dddddd, stop: 1 #999999);
+}
+QComboBox[objectName^="comboBox3_"]:hover{
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #afafaf, stop: 1 #6f6f6f);
 }
 

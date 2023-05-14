@@ -6,7 +6,7 @@
 #
 # GNU Radio Python Flow Graph
 # Title: Archive Replay Usrp2
-# GNU Radio version: 3.8.1.0
+# GNU Radio version: 3.8.5.0
 
 from gnuradio import blocks
 import pmt
@@ -19,6 +19,7 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import uhd
 import time
+
 
 class archive_replay_usrp2(gr.top_block):
 
@@ -57,11 +58,11 @@ class archive_replay_usrp2(gr.top_block):
         self.blocks_file_source_0.set_begin_tag(pmt.PMT_NIL)
 
 
-
         ##################################################
         # Connections
         ##################################################
         self.connect((self.blocks_file_source_0, 0), (self.uhd_usrp_sink_0, 0))
+
 
     def get_tx_gain(self):
         return self.tx_gain
@@ -105,18 +106,22 @@ class archive_replay_usrp2(gr.top_block):
 
 
 
+
+
 def main(top_block_cls=archive_replay_usrp2, options=None):
     tb = top_block_cls()
 
     def sig_handler(sig=None, frame=None):
         tb.stop()
         tb.wait()
+
         sys.exit(0)
 
     signal.signal(signal.SIGINT, sig_handler)
     signal.signal(signal.SIGTERM, sig_handler)
 
     tb.start()
+
     tb.wait()
 
 
