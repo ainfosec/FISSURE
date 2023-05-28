@@ -1,6 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-05-28
+
+Append tab upgrade, qFlipper, renamed Clip tab, more Archive Dataset Builder buttons.
+ 
+### Added
+
+- Flipper Zero qFlipper in menu and installer for Python3 branches
+- Regenerate button for Archive Dataset Builder table to update checkbox values
+- Copy button for Archive Dataset Builder to avoid importing the same files over and over
+  
+### Changed
+
+- Renamed clip tab to strip (to align with Python strip command)
+- Clear "x" button for clip tab list widget
+- Import multiple files for Append tab
+- Remove multiple files for Archive Dataset Builder table
+
+### Fixed
+
+- Error handling for plotting unloaded IQ files in Plot All and Morse Code buttons
+- Clip/Strip tab not changing color when changing style sheets
+
 ## 2023-05-14
 
 Compile flow graphs option and Clip tab.

@@ -316,6 +316,16 @@ sudo make install
 ls /usr/lib/python*/*/gnuradio/iio
 """,True,'Hardware'))
 
+# qFlipper
+programs_ubuntu22_04.append(('qFlipper',
+"""mkdir -p ~/Installed_by_FISSURE/qFlipper
+cd ~/Installed_by_FISSURE/qFlipper
+wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.one/builds/qFlipper/dev/
+chmod +x qFlipper*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
+""",True,'Hardware'))
+
 # gr-acars-3.10ng
 programs_ubuntu22_04.append(('gr-acars-3.10ng (7.1 MB)',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-acars-3.10ng/
@@ -2248,6 +2258,16 @@ ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
 # ########## Verify ##########
 # ls /usr/lib/python*/*/gnuradio/iio
 # """,True,'Hardware'))
+
+# qFlipper
+programs_dragonOS_focalx.append(('qFlipper',
+"""mkdir -p ~/Installed_by_FISSURE/qFlipper
+cd ~/Installed_by_FISSURE/qFlipper
+wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.one/builds/qFlipper/dev/
+chmod +x qFlipper*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
+""",True,'Hardware'))
 
 # gr-acars-3.10ng
 programs_dragonOS_focalx.append(('gr-acars-3.10ng',
@@ -4192,6 +4212,16 @@ sudo make install
 ls /usr/lib/python*/*/gnuradio/iio
 """,True,'Hardware'))
 
+# qFlipper
+programs_kali2023_1.append(('qFlipper',
+"""mkdir -p ~/Installed_by_FISSURE/qFlipper
+cd ~/Installed_by_FISSURE/qFlipper
+wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.one/builds/qFlipper/dev/
+chmod +x qFlipper*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
+""",True,'Hardware'))
+
 # gr-acars-3.10ng
 programs_kali2023_1.append(('gr-acars-3.10ng (8.3 MB)',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-acars-3.10ng/
@@ -6131,6 +6161,16 @@ sudo make install
 #sudo ldconfig
 ########## Verify ##########
 ls /usr/lib/python*/*/gnuradio/iio
+""",True,'Hardware'))
+
+# qFlipper
+programs_backbox_linux_8.append(('qFlipper',
+"""mkdir -p ~/Installed_by_FISSURE/qFlipper
+cd ~/Installed_by_FISSURE/qFlipper
+wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.one/builds/qFlipper/dev/
+chmod +x qFlipper*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
 """,True,'Hardware'))
 
 # gr-acars-3.10ng
