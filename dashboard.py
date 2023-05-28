@@ -569,8 +569,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.textEdit_iq_ofdm_phase_adjustment_cycle2.setPlainText("0")
         self.textEdit_iq_ofdm_phase_adjustment_cycle_end2.setPlainText("200")
         
-        self.textEdit_iq_clip_amplitude.setPlainText(".001")
-        self.textEdit_iq_clip_output.setPlainText(str(os.path.dirname(os.path.realpath(__file__)) + '/IQ Recordings'))
+        self.textEdit_iq_strip_amplitude.setPlainText(".001")
+        self.textEdit_iq_strip_output.setPlainText(str(os.path.dirname(os.path.realpath(__file__)) + '/IQ Recordings'))
         
         # Set up IQ Recording Table
         self._slotIQ_TabClicked("pushButton1_iq_tab_record")
@@ -1183,10 +1183,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_iq_if.clicked.connect(self._slotIQ_PlotIF_Clicked)
         self.pushButton_iq_append_select1.clicked.connect(self._slotIQ_AppendSelect1Clicked)
         self.pushButton_iq_append_select2.clicked.connect(self._slotIQ_AppendSelect2Clicked)
-        self.pushButton_iq_append_select3.clicked.connect(self._slotIQ_AppendSelect3Clicked)
         self.pushButton_iq_append_load1.clicked.connect(self._slotIQ_AppendLoad1Clicked)
         self.pushButton_iq_append_load2.clicked.connect(self._slotIQ_AppendLoad2Clicked)
-        self.pushButton_iq_append_load3.clicked.connect(self._slotIQ_AppendLoad3Clicked)
         self.pushButton_iq_append_append.clicked.connect(self._slotIQ_AppendAppendClicked)
         self.pushButton_iq_delete.clicked.connect(self._slotIQ_DeleteClicked)
         self.pushButton_iq_cursor1.clicked.connect(self._slotIQ_Cursor1Clicked)
@@ -1258,7 +1256,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton1_iq_tab_resample.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_resample"))
         self.pushButton1_iq_tab_ofdm.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_ofdm"))
         self.pushButton1_iq_tab_normalize.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_normalize"))
-        self.pushButton1_iq_tab_clip.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_clip"))
+        self.pushButton1_iq_tab_strip.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_strip"))
         self.pushButton_iq_polar.clicked.connect(self._slotIQ_PolarClicked)
         self.pushButton_iq_normalize_original_load.clicked.connect(self._slotIQ_NormalizeOriginalLoadClicked)
         self.pushButton_iq_normalize_new_load.clicked.connect(self._slotIQ_NormalizeNewLoadClicked)
@@ -1281,11 +1279,17 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_iq_phase.clicked.connect(self._slotIQ_PhaseClicked)
         self.pushButton_iq_unwrap.clicked.connect(self._slotIQ_UnwrapClicked)
         self.pushButton_iq_filter.clicked.connect(self._slotIQ_FilterClicked)
-        self.pushButton_iq_clip.clicked.connect(self._slotIQ_ClipClicked)
-        self.pushButton_iq_clip_select.clicked.connect(self._slotIQ_ClipSelectClicked)
-        self.pushButton_iq_clip_load.clicked.connect(self._slotIQ_ClipLoadClicked)
-        self.pushButton_iq_clip_remove.clicked.connect(self._slotIQ_ClipRemoveClicked)
-        self.pushButton_iq_clip_choose.clicked.connect(self._slotIQ_ClipChooseClicked)
+        self.pushButton_iq_strip.clicked.connect(self._slotIQ_StripClicked)
+        self.pushButton_iq_strip_select.clicked.connect(self._slotIQ_StripSelectClicked)
+        self.pushButton_iq_strip_load.clicked.connect(self._slotIQ_StripLoadClicked)
+        self.pushButton_iq_strip_remove.clicked.connect(self._slotIQ_StripRemoveClicked)
+        self.pushButton_iq_strip_choose.clicked.connect(self._slotIQ_StripChooseClicked)
+        self.pushButton_iq_strip_clear.clicked.connect(self._slotIQ_StripClearClicked)
+        self.pushButton_iq_append_clear.clicked.connect(self._slotIQ_AppendClearClicked)
+        self.pushButton_iq_append_remove.clicked.connect(self._slotIQ_AppendRemoveClicked)
+        self.pushButton_iq_append_up.clicked.connect(self._slotIQ_AppendUpClicked)
+        self.pushButton_iq_append_down.clicked.connect(self._slotIQ_AppendDownClicked)
+        self.pushButton_iq_append_copy.clicked.connect(self._slotIQ_AppendCopyClicked)
         
         self.pushButton_archive_download_folder.clicked.connect(self._slotArchiveDownloadFolderClicked)
         self.pushButton_archive_download_refresh.clicked.connect(self._slotArchiveDownloadRefreshClicked)
@@ -1311,6 +1315,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_archive_datasets_import_csv.clicked.connect(self._slotArchiveDatasetsImportCSV_Clicked)
         self.pushButton_archive_datasets_view.clicked.connect(self._slotArchiveDatasetsViewClicked)
         self.pushButton_archive_datasets_open_folder.clicked.connect(self._slotArchiveDatasetsOpenFolderClicked)
+        self.pushButton_archive_datasets_regenerate.clicked.connect(self._slotArchiveDatasetsRegenerateClicked)
+        self.pushButton_archive_datasets_copy.clicked.connect(self._slotArchiveDatasetsCopyClicked)
         
         self.pushButton_log_refresh.clicked.connect(self._slotLogRefreshClicked)
         self.pushButton_log_refresh_permit.clicked.connect(self._slotLogRefreshPermitClicked)
@@ -1324,10 +1330,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.checkBox_automation_auto_select_pd_flow_graphs.clicked.connect(self._slotAutomationAutoSelectPD_FlowGraphsClicked)        
         self.checkBox_pd_bit_slicing_colors.clicked.connect(self._slotPD_BitSlicingDetectFieldsClicked)
         self.checkBox_attack_show_all.clicked.connect(self._slotAttackProtocols)
-        self.checkBox_iq_append_null1.clicked.connect(self._slotIQ_AppendNull1Clicked)
-        self.checkBox_iq_append_null2.clicked.connect(self._slotIQ_AppendNull2Clicked)
         self.checkBox_iq_record_sigmf.clicked.connect(self._slotIQ_RecordSigMF_Clicked)
-        self.checkBox_iq_clip_overwrite.clicked.connect(self._slotIQ_ClipOverwriteClicked)
+        self.checkBox_iq_strip_overwrite.clicked.connect(self._slotIQ_StripOverwriteClicked)
 
         # Combo Boxes       
         self.comboBox_tsi_detector.currentIndexChanged.connect(self._slotTSI_DetectorChanged)
@@ -1386,6 +1390,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_attack_fuzzing_data_field.cellChanged.connect(self._slotAttackFuzzingItemChanged)   
         self.tableWidget_pd_bit_viewer_hex.horizontalHeader().sectionClicked.connect(self._slotPD_BitViewerColumnClicked)
         self.tableWidget_archive_datasets.horizontalHeader().sectionClicked.connect(self._slotArchiveDatasetsColumnClicked)
+        self.tableWidget_iq_append.horizontalHeader().sectionClicked.connect(self._slotIQ_AppendColumnClicked)
         
         # Labels
         self.label2_iq_end.mousePressEvent = self._slotIQ_EndLabelClicked
@@ -1725,6 +1730,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionCrackStation.triggered.connect(self._slotMenuCrackStationClicked)
         self.actionRandom.triggered.connect(lambda: self._slotMenuCustomModeClicked(random_clicked=True))
         self.actionGHex.triggered.connect(self._slotMenuGHexClicked)
+        self.actionqFlipper.triggered.connect(self._slotMenu_qFlipperClicked)
         
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -13756,6 +13762,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotIQ_PlotAllClicked(self):
         """ Plots all samples of an IQ file.
         """
+        # File Loaded
+        if len(self.label2_iq_file_name.text().split('File:')[-1]) == 0:
+            self.errorMessage("Load an IQ file before plotting by double-clicking the filename or clicking the Load File button.")
+            return
+    
         # Get the Filepath
         get_type = self.comboBox_iq_data_type.currentText()
         try:
@@ -13765,146 +13776,145 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # File with Zero Bytes
         if number_of_bytes <= 0:
-            print("File is empty")
+            self.errorMessage("File is empty. Load a valid IQ file before plotting.")
+            return
 
-        # Skip Bytes if File is Too Large        
-        else:
-            
-            # Get the Number of Samples
-            start_sample = 1
-            num_samples = int(self.label2_iq_samples.text().split(" ")[1])
-        
-            # Get the Size of Each Sample in Bytes   
-            complex_multiple = 1   
-            if get_type == "Complex Float 32":
-                sample_size = 4
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples               
-            elif get_type == "Float/Float 32":
-                sample_size = 4
-            elif get_type == "Short/Int 16":
-                sample_size = 2
-            elif get_type == "Int/Int 32":
-                sample_size = 4
-            elif get_type == "Byte/Int 8":
-                sample_size = 1
-            elif get_type == "Complex Int 16":
-                sample_size = 2
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples                  
-            elif get_type == "Complex Int 8":
-                sample_size = 1
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples   
-            elif get_type == "Complex Float 64":
-                sample_size = 8
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples 
-            elif get_type == "Complex Int 64":
-                sample_size = 8
-                complex_multiple = 2
-                num_samples = complex_multiple * num_samples 
-                            
-            # Read the Data 
-            plot_data = b''
-            filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
-            file = open(filepath,"rb")                          
-            # Open the file
-            try:
-                if "Complex" in get_type:
-                    starting_byte = 2*(start_sample-1) * sample_size
-                else:
-                    starting_byte = (start_sample-1) * sample_size
-                  
-                # No Skip
-                if number_of_bytes <= 400000:                   
-                    skip = 1
-                    file.seek(starting_byte)
-                    plot_data = file.read(num_samples * sample_size)    # Read the right number of bytes
-                    
-                # Skip
-                else:
-                    # Every 10th Sample
-                    if number_of_bytes > 400000 and number_of_bytes <= 4000000:
-                        skip = 10
+        # Skip Bytes if File is Too Large                   
+        # Get the Number of Samples
+        start_sample = 1
+        num_samples = int(self.label2_iq_samples.text().split(" ")[1])
+    
+        # Get the Size of Each Sample in Bytes   
+        complex_multiple = 1   
+        if get_type == "Complex Float 32":
+            sample_size = 4
+            complex_multiple = 2
+            num_samples = complex_multiple * num_samples               
+        elif get_type == "Float/Float 32":
+            sample_size = 4
+        elif get_type == "Short/Int 16":
+            sample_size = 2
+        elif get_type == "Int/Int 32":
+            sample_size = 4
+        elif get_type == "Byte/Int 8":
+            sample_size = 1
+        elif get_type == "Complex Int 16":
+            sample_size = 2
+            complex_multiple = 2
+            num_samples = complex_multiple * num_samples                  
+        elif get_type == "Complex Int 8":
+            sample_size = 1
+            complex_multiple = 2
+            num_samples = complex_multiple * num_samples   
+        elif get_type == "Complex Float 64":
+            sample_size = 8
+            complex_multiple = 2
+            num_samples = complex_multiple * num_samples 
+        elif get_type == "Complex Int 64":
+            sample_size = 8
+            complex_multiple = 2
+            num_samples = complex_multiple * num_samples 
                         
-                    # Every 100th Sample
-                    elif number_of_bytes > 4000000 and number_of_bytes <= 40000000:
-                        skip = 100
-                        
-                    # Skip 1000
-                    else:
-                        skip = 1000
-                    
-                    # Read
-                    for n in range(starting_byte,number_of_bytes,(sample_size*skip*complex_multiple)):
-                        file.seek(n)
-                        plot_data = plot_data + file.read(sample_size)
-                        if "Complex" in get_type:
-                            plot_data = plot_data + file.read(sample_size)
-
-            except:
-                # Close the File
-                file.close() 
-            
-            # Close the File
-            file.close()         
-                             
-            # Format the Data
-            if get_type == "Complex Float 32":
-                #plot_data_formatted = struct.unpack(num_samples/skip*'f', plot_data)
-                plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'f', plot_data)
-            elif get_type == "Float/Float 32":
-                plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'f', plot_data)
-            elif get_type == "Short/Int 16":
-                plot_data_formatted = struct.unpack(int(len(plot_data)/2)*'h', plot_data)
-            elif get_type == "Int/Int 32":
-                plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'i', plot_data)
-            elif get_type == "Byte/Int 8":
-                plot_data_formatted = struct.unpack(int(len(plot_data)/1)*'b', plot_data)
-            elif get_type == "Complex Int 16":
-                plot_data_formatted = struct.unpack(int(len(plot_data)/2)*'h', plot_data)
-            elif get_type == "Complex Int 8":
-                plot_data_formatted = struct.unpack(int(len(plot_data)/1)*'b', plot_data)
-            elif get_type == "Complex Float 64":
-                plot_data_formatted = struct.unpack(int(len(plot_data)/8)*'d', plot_data)
-            elif get_type == "Complex Int 64":
-                plot_data_formatted = struct.unpack(int(len(plot_data)/8)*'l', plot_data)
-            
-            # Plot
-            self.iq_matplotlib_widget.clearPlot()
-            self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
+        # Read the Data 
+        plot_data = b''
+        filepath = self.label_iq_folder.text() + "/" + self.label2_iq_file_name.text().replace("File: ","") 
+        file = open(filepath,"rb")                          
+        # Open the file
+        try:
             if "Complex" in get_type:
-                # Ignore hold() Deprecation Warnings
-                with warnings.catch_warnings():
-                    warnings.simplefilter("ignore")
-                    warnings.filterwarnings("ignore", module="matplotlib")
+                starting_byte = 2*(start_sample-1) * sample_size
+            else:
+                starting_byte = (start_sample-1) * sample_size
+              
+            # No Skip
+            if number_of_bytes <= 400000:                   
+                skip = 1
+                file.seek(starting_byte)
+                plot_data = file.read(num_samples * sample_size)    # Read the right number of bytes
+                
+            # Skip
+            else:
+                # Every 10th Sample
+                if number_of_bytes > 400000 and number_of_bytes <= 4000000:
+                    skip = 10
                     
-                    # Plot
-                    self.iq_matplotlib_widget.axes.plot(range(1,len(plot_data_formatted[::2])+1),plot_data_formatted[::2],'b',linewidth=1,zorder=2)
-                    #self.iq_matplotlib_widget.axes.hold(True)  # FIX: To clear an axes you can manually use cla(), or to clear an entire figure use clf()
-                    self.iq_matplotlib_widget.axes.plot(range(1,len(plot_data_formatted[::2])+1),plot_data_formatted[1::2],'r',linewidth=1,zorder=2)
-                    # self.iq_matplotlib_widget.axes.hold(False)  # FIX: To clear an axes you can manually use cla(), or to clear an entire figure use clf()
-            else:
-                self.iq_matplotlib_widget.axes.plot(range(1,len(plot_data_formatted)+1),plot_data_formatted,'b',linewidth=1,zorder=2)
+                # Every 100th Sample
+                elif number_of_bytes > 4000000 and number_of_bytes <= 40000000:
+                    skip = 100
+                    
+                # Skip 1000
+                else:
+                    skip = 1000
                 
-            # Axes Label
-            if skip == 1:
-                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
-            elif skip == 10:
-                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/10','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
-            elif skip == 100:
-                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/100','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
-            else:
-                self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/1000','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
+                # Read
+                for n in range(starting_byte,number_of_bytes,(sample_size*skip*complex_multiple)):
+                    file.seek(n)
+                    plot_data = plot_data + file.read(sample_size)
+                    if "Complex" in get_type:
+                        plot_data = plot_data + file.read(sample_size)
+
+        except:
+            # Close the File
+            file.close() 
+        
+        # Close the File
+        file.close()         
+                         
+        # Format the Data
+        if get_type == "Complex Float 32":
+            #plot_data_formatted = struct.unpack(num_samples/skip*'f', plot_data)
+            plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'f', plot_data)
+        elif get_type == "Float/Float 32":
+            plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'f', plot_data)
+        elif get_type == "Short/Int 16":
+            plot_data_formatted = struct.unpack(int(len(plot_data)/2)*'h', plot_data)
+        elif get_type == "Int/Int 32":
+            plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'i', plot_data)
+        elif get_type == "Byte/Int 8":
+            plot_data_formatted = struct.unpack(int(len(plot_data)/1)*'b', plot_data)
+        elif get_type == "Complex Int 16":
+            plot_data_formatted = struct.unpack(int(len(plot_data)/2)*'h', plot_data)
+        elif get_type == "Complex Int 8":
+            plot_data_formatted = struct.unpack(int(len(plot_data)/1)*'b', plot_data)
+        elif get_type == "Complex Float 64":
+            plot_data_formatted = struct.unpack(int(len(plot_data)/8)*'d', plot_data)
+        elif get_type == "Complex Int 64":
+            plot_data_formatted = struct.unpack(int(len(plot_data)/8)*'l', plot_data)
+        
+        # Plot
+        self.iq_matplotlib_widget.clearPlot()
+        self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
+        if "Complex" in get_type:
+            # Ignore hold() Deprecation Warnings
+            with warnings.catch_warnings():
+                warnings.simplefilter("ignore")
+                warnings.filterwarnings("ignore", module="matplotlib")
                 
-            self.pushButton_iq_cursor1.setChecked(False)
-            self._slotIQ_Cursor1Clicked()  
-            #self.iq_matplotlib_widget.draw()
+                # Plot
+                self.iq_matplotlib_widget.axes.plot(range(1,len(plot_data_formatted[::2])+1),plot_data_formatted[::2],'b',linewidth=1,zorder=2)
+                #self.iq_matplotlib_widget.axes.hold(True)  # FIX: To clear an axes you can manually use cla(), or to clear an entire figure use clf()
+                self.iq_matplotlib_widget.axes.plot(range(1,len(plot_data_formatted[::2])+1),plot_data_formatted[1::2],'r',linewidth=1,zorder=2)
+                # self.iq_matplotlib_widget.axes.hold(False)  # FIX: To clear an axes you can manually use cla(), or to clear an entire figure use clf()
+        else:
+            self.iq_matplotlib_widget.axes.plot(range(1,len(plot_data_formatted)+1),plot_data_formatted,'b',linewidth=1,zorder=2)
             
-            # Reset Range Cursor Memory
-            self.iq_plot_range_start = 0
-            self.iq_plot_range_end = 0  
+        # Axes Label
+        if skip == 1:
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
+        elif skip == 10:
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/10','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4']) 
+        elif skip == 100:
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/100','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
+        else:
+            self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples/1000','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
+            
+        self.pushButton_iq_cursor1.setChecked(False)
+        self._slotIQ_Cursor1Clicked()  
+        #self.iq_matplotlib_widget.draw()
+        
+        # Reset Range Cursor Memory
+        self.iq_plot_range_start = 0
+        self.iq_plot_range_end = 0  
             
     def _slotIQ_PlotMagnitudeClicked(self):
         """ Plots magnitude of what is displayed in the plot window.
@@ -14033,41 +14043,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()
-            
-    def _slotIQ_AppendNull1Clicked(self):
-        """ Toggles between using a file or null samples for appending two files.
-        """
-        # Checked
-        if self.checkBox_iq_append_null1.isChecked():
-            self.textEdit_iq_append_file1.setEnabled(False)
-            self.pushButton_iq_append_select1.setEnabled(False)
-            self.pushButton_iq_append_load1.setEnabled(False)
-            self.textEdit_iq_append_null1.setEnabled(True)
-        
-        # Unchecked
-        else:
-            self.textEdit_iq_append_file1.setEnabled(True)
-            self.pushButton_iq_append_select1.setEnabled(True)
-            self.pushButton_iq_append_load1.setEnabled(True)
-            self.textEdit_iq_append_null1.setEnabled(False)
-        
-    def _slotIQ_AppendNull2Clicked(self):
-        """ Toggles between using a file or null samples for appending two files.
-        """
-        # Checked
-        if self.checkBox_iq_append_null2.isChecked():
-            self.textEdit_iq_append_file2.setEnabled(False)
-            self.pushButton_iq_append_select2.setEnabled(False)
-            self.pushButton_iq_append_load2.setEnabled(False)
-            self.textEdit_iq_append_null2.setEnabled(True)
-        
-        # Unchecked
-        else:
-            self.textEdit_iq_append_file2.setEnabled(True)
-            self.pushButton_iq_append_select2.setEnabled(True)
-            self.pushButton_iq_append_load2.setEnabled(True)  
-            self.textEdit_iq_append_null2.setEnabled(False) 
-            
+                                
     def _slotIQ_AppendSelect1Clicked(self):
         """ Copies the filepath of the selected IQ file for appending.
         """
@@ -14075,22 +14051,26 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Get Highlighted File from Listbox
             get_file = str(self.listWidget_iq_files.currentItem().text())
             get_folder = str(self.label_iq_folder.text())
-            self.textEdit_iq_append_file1.setPlainText(get_folder + '/' + get_file)    
-        except:
-            pass
-
-    def _slotIQ_AppendSelect2Clicked(self):
-        """ Copies the filepath of the selected IQ file for appending.
-        """
-        try:
-            # Get Highlighted File from Listbox
-            get_file = str(self.listWidget_iq_files.currentItem().text())
-            get_folder = str(self.label_iq_folder.text())
-            self.textEdit_iq_append_file2.setPlainText(get_folder + '/' + get_file)  
+            table_item1 = QtWidgets.QTableWidgetItem("0")
+            table_item1.setTextAlignment(QtCore.Qt.AlignCenter)
+            table_item2 = QtWidgets.QTableWidgetItem(get_folder + '/' + get_file)
+            table_item3 = QtWidgets.QTableWidgetItem("0")
+            table_item3.setTextAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_append.setRowCount(self.tableWidget_iq_append.rowCount()+1)
+            self.tableWidget_iq_append.setItem(self.tableWidget_iq_append.rowCount()-1,0,table_item1)
+            self.tableWidget_iq_append.setItem(self.tableWidget_iq_append.rowCount()-1,1,table_item2)
+            self.tableWidget_iq_append.setItem(self.tableWidget_iq_append.rowCount()-1,2,table_item3)
+            
+            # Resize the Table
+            self.tableWidget_iq_append.resizeColumnsToContents() 
+            self.tableWidget_iq_append.resizeRowsToContents()  
+            self.tableWidget_iq_append.horizontalHeader().setStretchLastSection(False) 
+            self.tableWidget_iq_append.horizontalHeader().setStretchLastSection(True) 
+            
         except:
             pass
         
-    def _slotIQ_AppendSelect3Clicked(self):
+    def _slotIQ_AppendSelect2Clicked(self):
         """ Copies the filepath of the selected IQ file for appending.
         """ 
         # Get Highlighted File from Listbox
@@ -14101,38 +14081,28 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotIQ_AppendLoad1Clicked(self):
         """ Opens a dialog to select an IQ file for appending.
         """
-        # Select a Directory
-        dialog = QtWidgets.QFileDialog(self)
-        directory = os.path.dirname(os.path.realpath(__file__)) + "/IQ Recordings/"  # Default Directory
-        dialog.setDirectory(directory)
-        dialog.setNameFilters(['IQ/Misc. (*.iq *.dat)','IQ Recordings (*.iq)','Misc. (*.dat)'])
-
-        if dialog.exec_():
-            for d in dialog.selectedFiles():
-                folder = d
-        try:           
-            self.textEdit_iq_append_file1.setPlainText(folder)
-        except:
-            pass  
+        # Choose Files
+        get_iq_folder = str(self.comboBox3_iq_folders.currentText()) + '/'
+        fname = QtWidgets.QFileDialog.getOpenFileNames(None,"Select IQ Files...", get_iq_folder, filter="All Files (*)")
+        if fname != "":
+            for n in fname[0]:
+                table_item1 = QtWidgets.QTableWidgetItem("0")
+                table_item1.setTextAlignment(QtCore.Qt.AlignCenter)
+                table_item2 = QtWidgets.QTableWidgetItem(n)
+                table_item3 = QtWidgets.QTableWidgetItem("0")
+                table_item3.setTextAlignment(QtCore.Qt.AlignCenter)
+                self.tableWidget_iq_append.setRowCount(self.tableWidget_iq_append.rowCount()+1)
+                self.tableWidget_iq_append.setItem(self.tableWidget_iq_append.rowCount()-1,0,table_item1)
+                self.tableWidget_iq_append.setItem(self.tableWidget_iq_append.rowCount()-1,1,table_item2)
+                self.tableWidget_iq_append.setItem(self.tableWidget_iq_append.rowCount()-1,2,table_item3)
+            
+            # Resize the Table
+            self.tableWidget_iq_append.resizeColumnsToContents() 
+            self.tableWidget_iq_append.resizeRowsToContents()  
+            self.tableWidget_iq_append.horizontalHeader().setStretchLastSection(False) 
+            self.tableWidget_iq_append.horizontalHeader().setStretchLastSection(True)
         
     def _slotIQ_AppendLoad2Clicked(self):
-        """ Opens a dialog to select an IQ file for appending.
-        """
-        # Select a Directory
-        dialog = QtWidgets.QFileDialog(self)
-        directory = os.path.dirname(os.path.realpath(__file__)) + "/IQ Recordings/"  # Default Directory
-        dialog.setDirectory(directory)
-        dialog.setNameFilters(['IQ/Misc. (*.iq *.dat)','IQ Recordings (*.iq)','Misc. (*.dat)'])
-
-        if dialog.exec_():
-            for d in dialog.selectedFiles():
-                folder = d
-        try:           
-            self.textEdit_iq_append_file2.setPlainText(folder)                        
-        except:
-            pass          
-        
-    def _slotIQ_AppendLoad3Clicked(self):
         """ Opens a dialog to select an IQ file for appending.
         """
         # Select a Directory
@@ -14150,91 +14120,66 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             pass        
             
     def _slotIQ_AppendAppendClicked(self):
-        """ Concatenates two files together with cat. Prepends/Appends with 0's if null is checked.
+        """ Concatenates two files together with cat. Prepends/Appends with 0's if samples are entered.
         """
-        # Get Files
-        get_file1 = str(self.textEdit_iq_append_file1.toPlainText())
-        get_file2 = str(self.textEdit_iq_append_file2.toPlainText())
-        
-        # Output File
-        get_output_file = str(self.textEdit_iq_append_output.toPlainText())
-            
-        # Null Checked
-        if self.checkBox_iq_append_null1.isChecked() or self.checkBox_iq_append_null2.isChecked():
-            # Sample Type
+        if self.tableWidget_iq_append.rowCount() > 0:
+            get_output_file = str(self.textEdit_iq_append_output.toPlainText())
             get_type = self.comboBox_iq_append_data_type.currentText()
-            
-            # File 1
-            if self.checkBox_iq_append_null1.isChecked():
-                get_samples1 = str(self.textEdit_iq_append_null1.toPlainText())
-                
-                # Convert Samples to Bytes
-                if get_type == "Complex Float 32":
-                    num_bytes1 = str(8 * int(get_samples1))      
-                elif get_type == "Float/Float 32":
-                    num_bytes1 = str(4 * int(get_samples1))
-                elif get_type == "Short/Int 16":
-                    num_bytes1 = str(2* int(get_samples1))
-                elif get_type == "Int/Int 32":
-                    num_bytes1 = str(4 * int(get_samples1))
-                elif get_type == "Byte/Int 8":
-                    num_bytes1 = str(1 * int(get_samples1))
-                elif get_type == "Complex Int 16":
-                    num_bytes1 = str(4 * int(get_samples1))                      
-                elif get_type == "Complex Int 8":
-                    num_bytes1 = str(2 * int(get_samples1))     
-                elif get_type == "Complex Float 64":
-                    num_bytes1 = str(16 * int(get_samples1))                                       
-                elif get_type == "Complex Int 64":
-                    num_bytes1 = str(16 * int(get_samples1))                                       
-            
-            # File 2
-            if self.checkBox_iq_append_null2.isChecked():
-                get_samples2 = str(self.textEdit_iq_append_null2.toPlainText())
-                
-                # Convert Samples to Bytes
-                if get_type == "Complex Float 32":
-                    num_bytes2 = str(8 * int(get_samples2))      
-                elif get_type == "Float/Float 32":
-                    num_bytes2 = str(4 * int(get_samples2))
-                elif get_type == "Short/Int 16":
-                    num_bytes2 = str(2* int(get_samples2))
-                elif get_type == "Int/Int 32":
-                    num_bytes2 = str(4 * int(get_samples2))
-                elif get_type == "Byte/Int 8":
-                    num_bytes2 = str(1 * int(get_samples2))
-                elif get_type == "Complex Int 16":
-                    num_bytes2 = str(4 * int(get_samples2))                     
-                elif get_type == "Complex Int 8":
-                    num_bytes2 = str(2 * int(get_samples2))                     
-                elif get_type == "Complex Float 64":
-                    num_bytes2 = str(16 * int(get_samples2))                     
-                elif get_type == "Complex Int 64":
-                    num_bytes2 = str(16 * int(get_samples2))                     
+            if len(get_output_file) > 0:
+                for n in range(0,self.tableWidget_iq_append.rowCount()):
+                    get_prepend = str(self.tableWidget_iq_append.item(n,0).text())
+                    get_file = str(self.tableWidget_iq_append.item(n,1).text())
+                    get_append = str(self.tableWidget_iq_append.item(n,2).text())
                     
-            # Null and File
-            if self.checkBox_iq_append_null1.isChecked() and not self.checkBox_iq_append_null2.isChecked():
-                os.system('dd if=/dev/zero of="' + get_output_file + '.new" bs=1 count=' + num_bytes1)
-                os.system('dd if="' + get_file2 + '" of="' + get_output_file + '.new" bs=' + num_bytes1 + ' seek=1')
-                os.system('mv "' + get_output_file + '.new" "' + get_output_file + '"') 
-            
-            # File and Null
-            elif not self.checkBox_iq_append_null1.isChecked() and self.checkBox_iq_append_null2.isChecked():
-                os.system('cp "' + get_file1 + '" "' + get_output_file + '.new"')
-                os.system('dd if=/dev/zero bs=1 count=' + num_bytes2 + ' >> "' + get_output_file + '.new"')
-                os.system('mv "' + get_output_file + '.new" "' + get_output_file + '"') 
-            
-            # Null and Null
-            elif self.checkBox_iq_append_null1.isChecked() and self.checkBox_iq_append_null2.isChecked():
-                os.system('dd if=/dev/zero of="' + get_output_file + '" bs=1 count=' + str(int(num_bytes1)+int(num_bytes2)))            
-                        
-        # Two Files
-        else:               
-            # Cat Files
-            os.system('cat "' + get_file1 + '" "' + get_file2 + '" > "' + get_output_file + '"')
-            
-        # Refresh
-        self._slotIQ_RefreshClicked()
+                    if get_type == "Complex Float 32":
+                        num_bytes1 = str(8 * int(get_prepend))      
+                        num_bytes2 = str(8 * int(get_append))      
+                    elif get_type == "Float/Float 32":
+                        num_bytes1 = str(4 * int(get_prepend))
+                        num_bytes2 = str(4 * int(get_append))
+                    elif get_type == "Short/Int 16":
+                        num_bytes1 = str(2* int(get_prepend))
+                        num_bytes2 = str(2* int(get_append))
+                    elif get_type == "Int/Int 32":
+                        num_bytes1 = str(4 * int(get_prepend))
+                        num_bytes2 = str(4 * int(get_append))
+                    elif get_type == "Byte/Int 8":
+                        num_bytes1 = str(1 * int(get_prepend))
+                        num_bytes2 = str(1 * int(get_append))
+                    elif get_type == "Complex Int 16":
+                        num_bytes1 = str(4 * int(get_prepend))                      
+                        num_bytes2 = str(4 * int(get_append))                      
+                    elif get_type == "Complex Int 8":
+                        num_bytes1 = str(2 * int(get_prepend))     
+                        num_bytes2 = str(2 * int(get_append))     
+                    elif get_type == "Complex Float 64":
+                        num_bytes1 = str(16 * int(get_prepend))                                       
+                        num_bytes2 = str(16 * int(get_append))                                       
+                    elif get_type == "Complex Int 64":
+                        num_bytes1 = str(16 * int(get_prepend))         
+                        num_bytes2 = str(16 * int(get_append))         
+                    
+                    # Copy File
+                    os.system('touch "' + get_output_file + '"')
+                    os.system('touch "' + get_output_file + '.new1"')
+                    os.system('touch "' + get_output_file + '.new3"')
+                    os.system('cp "' + get_file + '" "' + get_output_file + '.new2"')
+
+                    # Create Zeros
+                    os.system('dd if=/dev/zero of="' + get_output_file + '.new1" bs=1 count=' + num_bytes1)                
+                    os.system('dd if=/dev/zero of="' + get_output_file + '.new3" bs=1 count=' + num_bytes2)
+
+                    # Combine Files
+                    if n == 0:
+                        os.system('cat "' + get_output_file + '.new1" "' + get_output_file + '.new2" "' + get_output_file + '.new3"' + ' > "' + get_output_file + '"')
+                    else:
+                        os.system('cat "' + get_output_file + '.new1" "' + get_output_file + '.new2" "' + get_output_file + '.new3"' + ' >> "' + get_output_file + '"')
+                    
+                    # Remove Temporary Files
+                    os.system('rm "' + get_output_file + '.new1" "' + get_output_file + '.new2" "' + get_output_file + '.new3"')
+                
+                # Refresh
+                self._slotIQ_RefreshClicked()
         
     def _slotIQ_DeleteClicked(self):
         """ Deletes an IQ file from the list.
@@ -18968,12 +18913,19 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotIQ_MorseCodeClicked(self):
         """ Auto-detects Morse Code from the magnitude of an IQ file and returns the text.
         """
+        # File Loaded
+        if len(self.label2_iq_file_name.text().split('File:')[-1]) == 0:
+            self.errorMessage("Load an IQ file by double-clicking the filename or clicking the Load File button, then plot the signal.")
+            return
+            
         # Get the Data from the Window
         num_lines = self.iq_matplotlib_widget.axes.lines
-               
+                       
         # Single Line: Not IQ
         if len(num_lines) == 1:
             y_data = self.iq_matplotlib_widget.axes.lines[0].get_ydata()
+            
+            print(len(y_data))
             
             # Calculate AM
             AM = [math.sqrt(float(i)**2) for i in y_data]
@@ -19020,6 +18972,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.pushButton_iq_cursor1.setChecked(False)
             self._slotIQ_Cursor1Clicked() 
             self.iq_matplotlib_widget.draw()
+            
+        # Invalid Signal
+        else:
+            self.errorMessage("Plot a valid Morse Code signal.")
+            return
 
         # Reset the Cursor and Draw
         self.pushButton_iq_cursor1.setChecked(False)
@@ -20745,11 +20702,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.stackedWidget3_iq.setCurrentIndex(10)
         elif button_name == "pushButton1_iq_tab_normalize":
             self.stackedWidget3_iq.setCurrentIndex(11)
-        elif button_name == "pushButton1_iq_tab_clip":
+        elif button_name == "pushButton1_iq_tab_strip":
             self.stackedWidget3_iq.setCurrentIndex(12)
         
         # Reset All Stylesheets                
-        button_list = ['pushButton1_iq_tab_record','pushButton1_iq_tab_playback','pushButton1_iq_tab_inspection','pushButton1_iq_tab_crop','pushButton1_iq_tab_convert','pushButton1_iq_tab_append','pushButton1_iq_tab_transfer','pushButton1_iq_tab_timeslot','pushButton1_iq_tab_overlap','pushButton1_iq_tab_resample','pushButton1_iq_tab_ofdm','pushButton1_iq_tab_normalize','pushButton1_iq_tab_clip']
+        button_list = ['pushButton1_iq_tab_record','pushButton1_iq_tab_playback','pushButton1_iq_tab_inspection','pushButton1_iq_tab_crop','pushButton1_iq_tab_convert','pushButton1_iq_tab_append','pushButton1_iq_tab_transfer','pushButton1_iq_tab_timeslot','pushButton1_iq_tab_overlap','pushButton1_iq_tab_resample','pushButton1_iq_tab_ofdm','pushButton1_iq_tab_normalize','pushButton1_iq_tab_strip']
         for n in button_list:
             exec("self." + n + """.setStyleSheet("QPushButton#""" + n + """ {}")""")
             # ~ exec("self." + n + """.setStyleSheet("QPushButton#""" + n + """ {"
@@ -23883,14 +23840,28 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
     def _slotArchiveDatasetsRemoveClicked(self):
         """ Removes a row from the Archive Datasets table.
-        """                                                                      
-        # Remove from the TableWidget
-        get_current_row = self.tableWidget_archive_datasets.currentRow()
-        self.tableWidget_archive_datasets.removeRow(get_current_row)
-        if get_current_row == 0:
-            self.tableWidget_archive_datasets.setCurrentCell(0,0)
-        else:
-            self.tableWidget_archive_datasets.setCurrentCell(get_current_row-1,0)
+        """
+        # Remove Rows
+        if self.tableWidget_archive_datasets.rowCount() > 0:            
+            # Find Selected Rows Manually (selectedRanges() not working for programmatic selection?)
+            first = -1
+            last = -1
+            for n in range(0,self.tableWidget_archive_datasets.rowCount()):
+                item = self.tableWidget_archive_datasets.item(n,0)
+                if item:
+                    if item.isSelected():
+                        if first == -1:
+                            first = n
+                        last = n
+            
+            for n in reversed(range(first,last+1)):
+                self.tableWidget_archive_datasets.removeRow(n)
+            
+            # Highlight New Row
+            if self.tableWidget_archive_datasets.rowCount() > first:
+                self.tableWidget_archive_datasets.selectRow(first)
+            else:
+                self.tableWidget_archive_datasets.selectRow(self.tableWidget_archive_datasets.rowCount()-1)
                 
         # Disable PushButtons
         if self.tableWidget_archive_datasets.rowCount() < 1:
@@ -24229,6 +24200,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self._slotIQ_TabClicked("pushButton1_iq_tab_ofdm")  
         elif self.stackedWidget3_iq.currentIndex() == 11:
             self._slotIQ_TabClicked("pushButton1_iq_tab_normalize")
+        elif self.stackedWidget3_iq.currentIndex() == 12:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_strip")
         
         self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
@@ -24283,6 +24256,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self._slotIQ_TabClicked("pushButton1_iq_tab_ofdm")  
         elif self.stackedWidget3_iq.currentIndex() == 11:
             self._slotIQ_TabClicked("pushButton1_iq_tab_normalize")
+        elif self.stackedWidget3_iq.currentIndex() == 12:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_strip")
         
         self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
@@ -24358,6 +24333,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self._slotIQ_TabClicked("pushButton1_iq_tab_ofdm")  
             elif self.stackedWidget3_iq.currentIndex() == 11:
                 self._slotIQ_TabClicked("pushButton1_iq_tab_normalize")
+            elif self.stackedWidget3_iq.currentIndex() == 12:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_strip")
             
             self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
@@ -24420,16 +24397,16 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         proc = subprocess.Popen("ghex", shell=True)
         
-    def _slotIQ_ClipClicked(self):
+    def _slotIQ_StripClicked(self):
         """ Removes samples before and after a signal in IQ files.
         """
         # Get Inputs
-        get_overwrite = self.checkBox_iq_clip_overwrite.isChecked()
-        get_before = self.checkBox_iq_clip_before.isChecked()
-        get_after = self.checkBox_iq_clip_after.isChecked()
-        get_data_type = str(self.comboBox_iq_clip_data_type.currentText())
-        get_threshold = self.textEdit_iq_clip_amplitude.toPlainText()
-        get_output_directory = str(self.textEdit_iq_clip_output.toPlainText())
+        get_overwrite = self.checkBox_iq_strip_overwrite.isChecked()
+        get_before = self.checkBox_iq_strip_before.isChecked()
+        get_after = self.checkBox_iq_strip_after.isChecked()
+        get_data_type = str(self.comboBox_iq_strip_data_type.currentText())
+        get_threshold = self.textEdit_iq_strip_amplitude.toPlainText()
+        get_output_directory = str(self.textEdit_iq_strip_output.toPlainText())
 
         if (get_overwrite == False) and (len(get_output_directory) == 0):
             print("Select output directory")
@@ -24439,64 +24416,64 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             print("Enter amplitude threshold")
             return
         
-        if self.listWidget_iq_clip_input.count() == 0:
-            print("Select IQ files to be clipped")
+        if self.listWidget_iq_strip_input.count() == 0:
+            print("Select IQ files to be stripped")
             return
                      
         # Load the Data
-        for n in range(0,self.listWidget_iq_clip_input.count()):
-            fname = str(self.listWidget_iq_clip_input.item(n).text())
+        for n in range(0,self.listWidget_iq_strip_input.count()):
+            fname = str(self.listWidget_iq_strip_input.item(n).text())
             
             if get_overwrite == True:
                 new_file = fname                   
             else:
-                new_file = get_output_directory + '/' + fname.split('/')[-1].split('.')[0] + "_clipped." + fname.split('/')[-1].split('.')[1]
+                new_file = get_output_directory + '/' + fname.split('/')[-1].split('.')[0] + "_stripped." + fname.split('/')[-1].split('.')[1]
                             
             if os.path.isfile(fname):
                 # Read the Data
-                print("Clipping: " + fname)
+                print("Stripping: " + fname)
                 file = open(fname,"rb")                    
                 plot_data = file.read() 
                 file.close()
                 
                 # Complex Float 64
                 if (get_data_type == "Complex Float 64"):                
-                    # Clip and Write
+                    # Strip and Write
                     number_of_bytes = os.path.getsize(fname)
                     plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'d', plot_data)                
                     np_data = np.asarray(plot_data_formatted, dtype=np.float64)
                       
                 # Complex Float 32
                 elif (get_data_type == "Complex Float 32") or (get_data_type == "Float/Float 32"):                
-                    # Clip and Write
+                    # Strip and Write
                     number_of_bytes = os.path.getsize(fname)
                     plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'f', plot_data)                
                     np_data = np.asarray(plot_data_formatted, dtype=np.float32)         
                 
                 # Complex Int 16
                 elif (get_data_type == "Complex Int 16") or (get_data_type == "Short/Int 16"):               
-                    # Clip and Write
+                    # Strip and Write
                     number_of_bytes = os.path.getsize(fname)
                     plot_data_formatted = struct.unpack(int(number_of_bytes/2)*'h', plot_data)
                     np_data = np.array(plot_data_formatted, dtype=np.int16)
                 
                 # Complex Int 64
                 elif (get_data_type == "Complex Int 64"):               
-                    # Clip and Write
+                    # Strip and Write
                     number_of_bytes = os.path.getsize(fname)
                     plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'l', plot_data)
                     np_data = np.array(plot_data_formatted, dtype=np.int64)
                     
                 # Int/Int 32
                 elif (get_data_type == "Int/Int 32"):               
-                    # Clip and Write
+                    # Strip and Write
                     number_of_bytes = os.path.getsize(fname)
                     plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'h', plot_data)
                     np_data = np.array(plot_data_formatted, dtype=np.int32)
                     
                 # Complex Int 8
                 elif (get_data_type == "Complex Int 8") or (get_data_type == "Byte/Int 8"):               
-                    # Clip and Write
+                    # Strip and Write
                     number_of_bytes = os.path.getsize(fname)
                     plot_data_formatted = struct.unpack(int(number_of_bytes)*'b', plot_data)
                     np_data = np.array(plot_data_formatted, dtype=np.int8)
@@ -24506,53 +24483,53 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     print("Unknown Data Type")
                     return
                 
-                # Clip and Save
-                clip_left = 0
-                clip_right = len(np_data)
+                # Strip and Save
+                strip_left = 0
+                strip_right = len(np_data)
                 if get_before == True:
                     for n in range(0, len(np_data)):
                         if abs(np_data[n]) > float(get_threshold): 
-                            clip_left = n
+                            strip_left = n
                             break
                 if get_after == True:
                     for n in reversed(range(0, len(np_data))):
                         if abs(np_data[n]) > float(get_threshold): 
-                            clip_right = n
+                            strip_right = n
                             break                                
-                np_data = np_data[clip_left:clip_right]
+                np_data = np_data[strip_left:strip_right]
                 np_data.tofile(new_file)
 
         self._slotIQ_RefreshClicked()
         print("Complete")
         
-    def _slotIQ_ClipOverwriteClicked(self):
+    def _slotIQ_StripOverwriteClicked(self):
         """ Disables/enables output directory widgets.
         """
         # Disable
-        if self.checkBox_iq_clip_overwrite.isChecked():
-            self.label2_iq_clip_output.setEnabled(False)
-            self.textEdit_iq_clip_output.setEnabled(False)
-            self.pushButton_iq_clip_choose.setEnabled(False)
+        if self.checkBox_iq_strip_overwrite.isChecked():
+            self.label2_iq_strip_output.setEnabled(False)
+            self.textEdit_iq_strip_output.setEnabled(False)
+            self.pushButton_iq_strip_choose.setEnabled(False)
         
         # Enable
         else:
-            self.label2_iq_clip_output.setEnabled(True)
-            self.textEdit_iq_clip_output.setEnabled(True)
-            self.pushButton_iq_clip_choose.setEnabled(True)
+            self.label2_iq_strip_output.setEnabled(True)
+            self.textEdit_iq_strip_output.setEnabled(True)
+            self.pushButton_iq_strip_choose.setEnabled(True)
             
-    def _slotIQ_ClipSelectClicked(self):
+    def _slotIQ_StripSelectClicked(self):
         """ Selects an IQ file from the Data Viewer and adds it to the listwidget.
         """
         try:
             # Get Highlighted File from Listbox
             get_file = str(self.listWidget_iq_files.currentItem().text())
             get_folder = str(self.label_iq_folder.text())
-            self.listWidget_iq_clip_input.addItem(get_folder + '/' + get_file) 
+            self.listWidget_iq_strip_input.addItem(get_folder + '/' + get_file) 
             
         except:
             pass    
             
-    def _slotIQ_ClipLoadClicked(self):
+    def _slotIQ_StripLoadClicked(self):
         """ Load multiple IQ files into the listwidget.
         """
         # Choose Files
@@ -24560,24 +24537,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         fname = QtWidgets.QFileDialog.getOpenFileNames(None,"Select IQ Files...", get_iq_folder, filter="All Files (*)")
         if fname != "":
             for n in fname[0]:
-                self.listWidget_iq_clip_input.addItem(n)
+                self.listWidget_iq_strip_input.addItem(n)
             
-    def _slotIQ_ClipRemoveClicked(self):
+    def _slotIQ_StripRemoveClicked(self):
         """ Removes a file from the list widget.
         """
         # Remove
-        if self.listWidget_iq_clip_input.count() > 0:
-            get_index = int(self.listWidget_iq_clip_input.currentRow())
-            for item in self.listWidget_iq_clip_input.selectedItems():
-                self.listWidget_iq_clip_input.takeItem(self.listWidget_iq_clip_input.row(item))
+        if self.listWidget_iq_strip_input.count() > 0:
+            get_index = int(self.listWidget_iq_strip_input.currentRow())
+            for item in self.listWidget_iq_strip_input.selectedItems():
+                self.listWidget_iq_strip_input.takeItem(self.listWidget_iq_strip_input.row(item))
                 
             # Refresh  
-            if get_index == self.listWidget_iq_clip_input.count():
+            if get_index == self.listWidget_iq_strip_input.count():
                 get_index = get_index -1
-            self.listWidget_iq_clip_input.setCurrentRow(get_index)
+            self.listWidget_iq_strip_input.setCurrentRow(get_index)
             
-    def _slotIQ_ClipChooseClicked(self):
-        """ Choose an output directory to store new clipped IQ files.
+    def _slotIQ_StripChooseClicked(self):
+        """ Choose an output directory to store new stripped IQ files.
         """            
         # Select a Directory
         dialog = QtWidgets.QFileDialog(self)
@@ -24588,11 +24565,323 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             for d in dialog.selectedFiles():
                 folder = d
         try:
-            self.textEdit_iq_clip_output.setText(folder)
+            self.textEdit_iq_strip_output.setText(folder)
         except:
-            pass        
+            pass
             
+    def _slotIQ_StripClearClicked(self):
+        """ Clears the Strip tab list widget.
+        """
+        # Clear the List Widget
+        self.listWidget_iq_strip_input.clear()
+        
+    def _slotIQ_AppendClearClicked(self):
+        """ Clears the Append tab table.
+        """
+        # Remove Rows
+        self.tableWidget_iq_append.setRowCount(0)
+        
+    def _slotIQ_AppendRemoveClicked(self):
+        """ Removes the selected rows from the Append tab table.
+        """
+        # Remove Rows
+        if self.tableWidget_iq_append.rowCount() > 0:            
+            # Find Selected Rows Manually (selectedRanges() not working for programmatic selection?)
+            first = -1
+            last = -1
+            for n in range(0,self.tableWidget_iq_append.rowCount()):
+                for m in range(0,3):
+                    item = self.tableWidget_iq_append.item(n,m)
+                    if item:
+                        if item.isSelected():
+                            if first == -1:
+                                first = n
+                                last = n
+                                break
+                            last = n
+                            break
             
+            for n in reversed(range(first,last+1)):
+                self.tableWidget_iq_append.removeRow(n)
+            
+            # Highlight New Row
+            if self.tableWidget_iq_append.rowCount() > first:
+                self.tableWidget_iq_append.selectRow(first)
+            else:
+                self.tableWidget_iq_append.selectRow(self.tableWidget_iq_append.rowCount()-1)
+            
+            # Resize the Table
+            self.tableWidget_iq_append.resizeColumnsToContents() 
+            self.tableWidget_iq_append.resizeRowsToContents()  
+            self.tableWidget_iq_append.horizontalHeader().setStretchLastSection(False)
+            self.tableWidget_iq_append.horizontalHeader().setStretchLastSection(True)
+            
+    def _slotIQ_AppendUpClicked(self):
+        """ Moves a row up in the Append tab table.
+        """
+        if self.tableWidget_iq_append.rowCount() > 1:
+            # Find Selected Rows Manually (selectedRanges() not working for programmatic selection?)
+            first = -1
+            last = -1
+            for n in range(0,self.tableWidget_iq_append.rowCount()):
+                for m in range(0,3):
+                    item = self.tableWidget_iq_append.item(n,m)
+                    if item:
+                        if item.isSelected():
+                            if first == -1:
+                                first = n
+                                last = n
+                                break
+                            last = n
+                            break
+            
+            if first > 0:
+                # Take the Row Above
+                above_item0 = self.tableWidget_iq_append.takeItem(first-1,0)
+                above_item1 = self.tableWidget_iq_append.takeItem(first-1,1)
+                above_item2 = self.tableWidget_iq_append.takeItem(first-1,2)
+                
+                for n in range(first,last+1):
+                    # Take the Selected Row
+                    current_item0 = self.tableWidget_iq_append.takeItem(n,0)
+                    current_item1 = self.tableWidget_iq_append.takeItem(n,1)
+                    current_item2 = self.tableWidget_iq_append.takeItem(n,2)
+                    
+                    # Move it Up
+                    self.tableWidget_iq_append.setItem(n-1,0,current_item0)
+                    self.tableWidget_iq_append.setItem(n-1,1,current_item1)
+                    self.tableWidget_iq_append.setItem(n-1,2,current_item2)
+                    
+                # Move the Row above Selection Down
+                self.tableWidget_iq_append.setItem(last,0,above_item0)
+                self.tableWidget_iq_append.setItem(last,1,above_item1)
+                self.tableWidget_iq_append.setItem(last,2,above_item2)
+                
+                # Keep the Selection
+                self.tableWidget_iq_append.clearSelection()
+                for n in range(first-1,last):
+                    for m in range(0,3):
+                        item = self.tableWidget_iq_append.item(n,m)
+                        if item:
+                            item.setSelected(True)
+        
+    def _slotIQ_AppendDownClicked(self):
+        """ Moves a row down in the Append tab table.
+        """
+        if self.tableWidget_iq_append.rowCount() > 1:
+            # Find Selected Rows Manually (selectedRanges() not working for programmatic selection?)
+            first = -1
+            last = -1
+            for n in range(0,self.tableWidget_iq_append.rowCount()):
+                for m in range(0,3):
+                    item = self.tableWidget_iq_append.item(n,m)
+                    if item:
+                        if item.isSelected():
+                            if first == -1:
+                                first = n
+                                last = n
+                                break
+                            last = n
+                            break
+            
+            if last < self.tableWidget_iq_append.rowCount()-1:
+                # Take the Row Below
+                above_item0 = self.tableWidget_iq_append.takeItem(last+1,0)
+                above_item1 = self.tableWidget_iq_append.takeItem(last+1,1)
+                above_item2 = self.tableWidget_iq_append.takeItem(last+1,2)
+                
+                for n in reversed(range(first,last+1)):
+                    # Take the Selected Row
+                    current_item0 = self.tableWidget_iq_append.takeItem(n,0)
+                    current_item1 = self.tableWidget_iq_append.takeItem(n,1)
+                    current_item2 = self.tableWidget_iq_append.takeItem(n,2)
+                    
+                    # Move it Down
+                    self.tableWidget_iq_append.setItem(n+1,0,current_item0)
+                    self.tableWidget_iq_append.setItem(n+1,1,current_item1)
+                    self.tableWidget_iq_append.setItem(n+1,2,current_item2)
+                    
+                # Move the Row below Selection Up
+                self.tableWidget_iq_append.setItem(first,0,above_item0)
+                self.tableWidget_iq_append.setItem(first,1,above_item1)
+                self.tableWidget_iq_append.setItem(first,2,above_item2)
+                
+                # Keep the Selection
+                self.tableWidget_iq_append.clearSelection()
+                for n in range(first+1,last+2):
+                    for m in range(0,3):
+                        item = self.tableWidget_iq_append.item(n,m)
+                        if item:
+                            item.setSelected(True)
+                            
+    def _slotIQ_AppendColumnClicked(self,col):
+        """ Copies the first row padding amounts to the remaining rows.
+        """                    
+        # Padding Before/After
+        if (col == 0) or (col == 2):
+            get_padding = str(self.tableWidget_iq_append.item(0,col).text())
+            for row in range(0,self.tableWidget_iq_append.rowCount()):
+                padding_item = QtWidgets.QTableWidgetItem(get_padding)
+                padding_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_iq_append.setItem(row,col,padding_item)
+                
+    def _slotIQ_AppendCopyClicked(self):
+        """ Duplicates rows in the Append table.
+        """
+        if self.tableWidget_iq_append.rowCount() > 0:
+            # Find Selected Rows Manually (selectedRanges() not working for programmatic selection?)
+            first = -1
+            last = -1
+            for n in range(0,self.tableWidget_iq_append.rowCount()):
+                for m in range(0,3):
+                    item = self.tableWidget_iq_append.item(n,m)
+                    if item:
+                        if item.isSelected():
+                            if first == -1:
+                                first = n
+                                last = n
+                                break
+                            last = n
+                            break
+                            
+            # Insert Rows
+            for n in reversed(range(first,last+1)):
+                self.tableWidget_iq_append.insertRow(last+1)
+                for m in range(0,3):
+                    new_item = QtWidgets.QTableWidgetItem(str(self.tableWidget_iq_append.item(n,m).text()))
+                    if (m == 0) or (m == 2):
+                        new_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                    self.tableWidget_iq_append.setItem(last+1,m,new_item)
+                    
+            # Keep the Selection
+            self.tableWidget_iq_append.clearSelection()
+            for n in range(first,last+1):
+                for m in range(0,3):
+                    item = self.tableWidget_iq_append.item(n,m)
+                    if item:
+                        item.setSelected(True)
+            
+            # Resize the Table
+            self.tableWidget_iq_append.resizeColumnsToContents() 
+            self.tableWidget_iq_append.resizeRowsToContents()  
+            self.tableWidget_iq_append.horizontalHeader().setStretchLastSection(False)
+            self.tableWidget_iq_append.horizontalHeader().setStretchLastSection(True)
+            
+    def _slotMenu_qFlipperClicked(self):
+        """ Opens a terminal with the command to run qFlipper.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        qFlipper_command = "sudo ./qFlipper*"
+        qFlipper_dir = os.path.expanduser("~/Installed_by_FISSURE/qFlipper/")   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + qFlipper_command + '"', cwd=qFlipper_dir, shell=True)
+        
+    def _slotArchiveDatasetsRegenerateClicked(self):
+        """ Regenerates the checkbox values in the Dataset Builder table.
+        """
+        # Generate Values in the Tables
+        for row in range(0,self.tableWidget_archive_datasets.rowCount()):
+            noise_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_noise_min']),float(self.dashboard_settings_dictionary['dataset_noise_max']))
+            self.tableWidget_archive_datasets.item(row,4).setText("{:0.2f}".format(noise_value))
+            phase_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_phase_rot_min']),float(self.dashboard_settings_dictionary['dataset_phase_rot_max']))
+            self.tableWidget_archive_datasets.item(row,5).setText("{:0.2f}".format(phase_value))
+            scale_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_scale_min']),float(self.dashboard_settings_dictionary['dataset_scale_max']))
+            self.tableWidget_archive_datasets.item(row,6).setText("{:0.2f}".format(scale_value))
+            freq_shift_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_freq_shift_min']),float(self.dashboard_settings_dictionary['dataset_freq_shift_max']))
+            self.tableWidget_archive_datasets.item(row,7).setText("{:0.2f}".format(freq_shift_value))
+            
+    def _slotArchiveDatasetsCopyClicked(self):
+        """ Copies selected rows in the Dataset Builder table and generates new checkbox values.
+        """
+        if self.tableWidget_archive_datasets.rowCount() > 0:
+            # Find Selected Rows Manually (selectedRanges() not working for programmatic selection?)
+            first = -1
+            last = -1
+            for n in range(0,self.tableWidget_archive_datasets.rowCount()):
+                item = self.tableWidget_archive_datasets.item(n,0)
+                if item:
+                    if item.isSelected():
+                        if first == -1:
+                            first = n
+                        last = n
+                            
+            # Insert Rows
+            for n in reversed(range(first,last+1)):
+                self.tableWidget_archive_datasets.insertRow(last+1)
+                    
+                # Set the Value in the Table
+                folder_item = QtWidgets.QTableWidgetItem(str(self.tableWidget_archive_datasets.item(n,0).text()))
+                folder_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_datasets.setItem(last+1,0,folder_item) 
+                truth_item = QtWidgets.QTableWidgetItem(str(self.tableWidget_archive_datasets.item(n,1).text()))
+                truth_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                self.tableWidget_archive_datasets.setItem(last+1,1,truth_item)
+                sample_rate_item = QtWidgets.QTableWidgetItem(str(self.tableWidget_archive_datasets.item(n,2).text()))
+                sample_rate_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_datasets.setItem(last+1,2,sample_rate_item) 
+                tuned_frequency_item = QtWidgets.QTableWidgetItem(str(self.tableWidget_archive_datasets.item(n,3).text()))
+                tuned_frequency_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_datasets.setItem(last+1,3,tuned_frequency_item)
+                
+                # Generate Values in the Tables
+                noise_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_noise_min']),float(self.dashboard_settings_dictionary['dataset_noise_max']))
+                noise_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(noise_value))
+                noise_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                if self.tableWidget_archive_datasets.item(n,4).checkState() == 0:
+                    noise_item.setCheckState(0)
+                else:
+                    noise_item.setCheckState(2)
+                self.tableWidget_archive_datasets.setItem(last+1,4,noise_item)
+                phase_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_phase_rot_min']),float(self.dashboard_settings_dictionary['dataset_phase_rot_max']))
+                phase_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(phase_value))
+                phase_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                if self.tableWidget_archive_datasets.item(n,5).checkState() == 0:
+                    phase_item.setCheckState(0)
+                else:
+                    phase_item.setCheckState(2)
+                self.tableWidget_archive_datasets.setItem(last+1,5,phase_item)
+                scale_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_scale_min']),float(self.dashboard_settings_dictionary['dataset_scale_max']))
+                scale_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(scale_value))
+                scale_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                if self.tableWidget_archive_datasets.item(n,6).checkState() == 0:
+                    scale_item.setCheckState(0)
+                else:
+                    scale_item.setCheckState(2)
+                self.tableWidget_archive_datasets.setItem(last+1,6,scale_item)
+                freq_shift_value = random.uniform(float(self.dashboard_settings_dictionary['dataset_freq_shift_min']),float(self.dashboard_settings_dictionary['dataset_freq_shift_max']))
+                freq_shift_item = QtWidgets.QTableWidgetItem("{:0.2f}".format(freq_shift_value))
+                freq_shift_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                freq_shift_item.setFlags(freq_shift_item.flags() & ~QtCore.Qt.ItemIsEnabled)
+                if self.tableWidget_archive_datasets.item(n,7).checkState() == 0:
+                    freq_shift_item.setCheckState(0)
+                else:
+                    freq_shift_item.setCheckState(2)
+                self.tableWidget_archive_datasets.setItem(last+1,7,freq_shift_item)
+                sigmf_item = QtWidgets.QTableWidgetItem("")
+                sigmf_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                sigmf_item.setFlags(sigmf_item.flags() & ~QtCore.Qt.ItemIsEditable)
+                sigmf_item.setFlags(sigmf_item.flags() & ~QtCore.Qt.ItemIsEnabled)
+                if self.tableWidget_archive_datasets.item(n,8).checkState() == 0:
+                    sigmf_item.setCheckState(0)
+                else:
+                    sigmf_item.setCheckState(2)
+                self.tableWidget_archive_datasets.setItem(last+1,8,sigmf_item)
+                    
+            # Keep the Selection
+            self.tableWidget_archive_datasets.clearSelection()
+            for n in range(first,last+1):
+                for m in range(0,self.tableWidget_archive_datasets.columnCount()):
+                    item = self.tableWidget_archive_datasets.item(n,m)
+                    if item:
+                        item.setSelected(True)
+                    
+            # Resize the Table
+            self.tableWidget_archive_datasets.resizeColumnsToContents() 
+            self.tableWidget_archive_datasets.resizeRowsToContents()  
+            self.tableWidget_archive_datasets.horizontalHeader().setStretchLastSection(False) 
+            self.tableWidget_archive_datasets.horizontalHeader().setStretchLastSection(True) 
+        
+
                     
 class HelpMenuDialog(QtWidgets.QDialog, form_class6):
     def __init__(self,parent):

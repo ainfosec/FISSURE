@@ -4,17 +4,17 @@ SOI_trigger_time: 0
 SOI_trigger_timeout: 10
 buffer_size_interval: 2
 clear_log_file_on_startup: true
-color1: '#ADA7A6'
-color2: '#DCF609'
-color3: '#229F89'
-color4: '#10FE51'
-color5: '#55F538'
-color_mode: Custom Mode
-custom_color1: '#ADA7A6'
-custom_color2: '#DCF609'
-custom_color3: '#229F89'
-custom_color4: '#10FE51'
-custom_color5: '#55F538'
+color1: '#F4F4F4'
+color2: '#FBFBFB'
+color3: '#17365D'
+color4: '#000000'
+color5: '#FFFFFF'
+color_mode: Light Mode
+custom_color1: '#121212'
+custom_color2: '#292929'
+custom_color3: '#2D6300'
+custom_color4: '#CCCCCC'
+custom_color5: '#444444'
 dashboard_hiprfisr_dealer_port: 5051
 dashboard_pub_port: 5057
 dataset_freq_shift_max: 0

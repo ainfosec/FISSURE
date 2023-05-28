@@ -341,6 +341,16 @@ sudo ldconfig
 ls /usr/local/lib/python*/*/iio
 """,True,'Hardware'))
 
+# qFlipper
+programs_ubuntu20_04.append(('qFlipper',
+"""mkdir -p ~/Installed_by_FISSURE/qFlipper
+cd ~/Installed_by_FISSURE/qFlipper
+wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.one/builds/qFlipper/dev/
+chmod +x qFlipper*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
+""",True,'Hardware'))
+
 # gr-acars
 programs_ubuntu20_04.append(('gr-acars (6.1 MB)',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-acars/
@@ -2334,6 +2344,16 @@ sudo ldconfig
 ls /usr/local/lib/python*/*/iio
 """,True,'Hardware'))
 
+# qFlipper
+programs_ubuntu20_04_4.append(('qFlipper',
+"""mkdir -p ~/Installed_by_FISSURE/qFlipper
+cd ~/Installed_by_FISSURE/qFlipper
+wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.one/builds/qFlipper/dev/
+chmod +x qFlipper*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
+""",True,'Hardware'))
+
 # gr-acars
 programs_ubuntu20_04_4.append(('gr-acars (6.1 MB)',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/gr-acars/
@@ -4185,6 +4205,16 @@ sudo make install
 sudo ldconfig
 ########## Verify ##########
 ls /usr/local/lib/python*/*/iio
+""",True,'Hardware'))
+
+# qFlipper
+programs_dragonOS_focal.append(('qFlipper',
+"""mkdir -p ~/Installed_by_FISSURE/qFlipper
+cd ~/Installed_by_FISSURE/qFlipper
+wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.one/builds/qFlipper/dev/
+chmod +x qFlipper*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
 """,True,'Hardware'))
 
 # gr-acars
@@ -6309,6 +6339,16 @@ cd ..
 sudo ldconfig
 ########## Verify ##########
 ls /usr/local/lib/python*/*/iio
+""",True,'Hardware'))
+
+# qFlipper
+programs_parrot_os_5_2.append(('qFlipper',
+"""mkdir -p ~/Installed_by_FISSURE/qFlipper
+cd ~/Installed_by_FISSURE/qFlipper
+wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.one/builds/qFlipper/dev/
+chmod +x qFlipper*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
 """,True,'Hardware'))
 
 # gr-acars
