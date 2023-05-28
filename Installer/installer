@@ -1097,7 +1097,7 @@ programs_ubuntu18_04.append(('Universal Radio Hacker (35.9 MB)',
 sudo python3 -m pip install urh
 ########## Verify ##########
 urh --version
-""",True,'SDR'))
+""",False,'SDR'))
 
 # Inspectrum
 programs_ubuntu18_04.append(('Inspectrum (1.5 MB)',
@@ -1114,7 +1114,7 @@ sudo apt-get update
 sudo apt-get install -y opencpn
 ########## Verify ##########
 ls /usr/bin/opencpn
-""",True,'AIS'))
+""",False,'AIS'))
 
 # Kalibrate
 programs_ubuntu18_04.append(('Kalibrate (1.7 MB)',
@@ -1660,7 +1660,7 @@ cd trackerjacker
 sudo python3 setup.py install
 ########## Verify ##########
 sudo trackerjacker --help
-""",True,'802.11'))
+""",False,'802.11'))
 
 # airgeddon
 programs_ubuntu18_04.append(('airgeddon (212.2 MB)',
@@ -2988,7 +2988,7 @@ programs_ubuntu18_04_5.append(('Universal Radio Hacker (35.9 MB)',
 sudo python3 -m pip install urh
 ########## Verify ##########
 urh --version
-""",True,'SDR'))
+""",False,'SDR'))
 
 # Inspectrum
 programs_ubuntu18_04_5.append(('Inspectrum (1.5 MB)',
@@ -3005,7 +3005,7 @@ sudo apt-get update
 sudo apt-get install -y opencpn
 ########## Verify ##########
 ls /usr/bin/opencpn
-""",True,'AIS'))
+""",False,'AIS'))
 
 # Kalibrate
 programs_ubuntu18_04_5.append(('Kalibrate (1.7 MB)',
@@ -3552,7 +3552,7 @@ cd trackerjacker
 sudo python3 setup.py install
 ########## Verify ##########
 sudo trackerjacker --help
-""",True,'802.11'))
+""",False,'802.11'))
 
 # airgeddon
 programs_ubuntu18_04_5.append(('airgeddon (212.2 MB)',
@@ -4880,7 +4880,7 @@ programs_ubuntu18_04_6.append(('Universal Radio Hacker (35.9 MB)',
 sudo python3 -m pip install urh
 ########## Verify ##########
 urh --version
-""",True,'SDR'))
+""",False,'SDR'))
 
 # Inspectrum
 programs_ubuntu18_04_6.append(('Inspectrum (1.5 MB)',
@@ -4897,7 +4897,7 @@ sudo apt-get update
 sudo apt-get install -y opencpn
 ########## Verify ##########
 ls /usr/bin/opencpn
-""",True,'AIS'))
+""",False,'AIS'))
 
 # Kalibrate
 programs_ubuntu18_04_6.append(('Kalibrate (1.7 MB)',
@@ -5445,7 +5445,7 @@ cd trackerjacker
 sudo python3 setup.py install
 ########## Verify ##########
 sudo trackerjacker --help
-""",True,'802.11'))
+""",False,'802.11'))
 
 # airgeddon
 programs_ubuntu18_04_6.append(('airgeddon (212.2 MB)',

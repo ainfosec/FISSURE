@@ -16564,35 +16564,6 @@ p, li { white-space: pre-wrap; }
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <widget class="Line" name="line1_2">
-               <property name="geometry">
-                <rect>
-                 <x>990</x>
-                 <y>1</y>
-                 <width>2</width>
-                 <height>122</height>
-                </rect>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-              </widget>
-              <widget class="QTextEdit" name="textEdit_iq_append_file1">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="geometry">
-                <rect>
-                 <x>90</x>
-                 <y>10</y>
-                 <width>716</width>
-                 <height>27</height>
-                </rect>
-               </property>
-               <property name="tabChangesFocus">
-                <bool>true</bool>
-               </property>
-              </widget>
               <widget class="QTextEdit" name="textEdit_iq_append_output">
                <property name="enabled">
                 <bool>true</bool>
@@ -16600,74 +16571,20 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>90</x>
-                 <y>90</y>
-                 <width>716</width>
+                 <y>140</y>
+                 <width>715</width>
                  <height>27</height>
                 </rect>
                </property>
                <property name="tabChangesFocus">
                 <bool>true</bool>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="pushButton_iq_append_load3">
-               <property name="geometry">
-                <rect>
-                 <x>890</x>
-                 <y>90</y>
-                 <width>75</width>
-                 <height>27</height>
-                </rect>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>11</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Load</string>
-               </property>
-              </widget>
-              <widget class="QTextEdit" name="textEdit_iq_append_null1">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="geometry">
-                <rect>
-                 <x>1015</x>
-                 <y>10</y>
-                 <width>100</width>
-                 <height>27</height>
-                </rect>
-               </property>
-               <property name="tabChangesFocus">
-                <bool>true</bool>
-               </property>
-               <property name="html">
-                <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-              </widget>
-              <widget class="Line" name="line3_7">
-               <property name="geometry">
-                <rect>
-                 <x>1</x>
-                 <y>82</y>
-                 <width>1193</width>
-                 <height>2</height>
-                </rect>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
                </property>
               </widget>
               <widget class="QPushButton" name="pushButton_iq_append_load2">
                <property name="geometry">
                 <rect>
                  <x>890</x>
-                 <y>50</y>
+                 <y>140</y>
                  <width>75</width>
                  <height>27</height>
                 </rect>
@@ -16681,44 +16598,10 @@ p, li { white-space: pre-wrap; }
                 <string>Load</string>
                </property>
               </widget>
-              <widget class="QTextEdit" name="textEdit_iq_append_null2">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="geometry">
-                <rect>
-                 <x>1015</x>
-                 <y>50</y>
-                 <width>100</width>
-                 <height>27</height>
-                </rect>
-               </property>
-               <property name="tabChangesFocus">
-                <bool>true</bool>
-               </property>
-              </widget>
-              <widget class="QCheckBox" name="checkBox_iq_append_null1">
-               <property name="geometry">
-                <rect>
-                 <x>1120</x>
-                 <y>10</y>
-                 <width>70</width>
-                 <height>27</height>
-                </rect>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Null</string>
-               </property>
-              </widget>
               <widget class="QPushButton" name="pushButton_iq_append_load1">
                <property name="geometry">
                 <rect>
-                 <x>890</x>
+                 <x>995</x>
                  <y>10</y>
                  <width>75</width>
                  <height>27</height>
@@ -16748,7 +16631,7 @@ p, li { white-space: pre-wrap; }
                 </font>
                </property>
                <property name="text">
-                <string>File 1:</string>
+                <string>Input Files:</string>
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -16757,8 +16640,8 @@ p, li { white-space: pre-wrap; }
               <widget class="QPushButton" name="pushButton_iq_append_append">
                <property name="geometry">
                 <rect>
-                 <x>550</x>
-                 <y>128</y>
+                 <x>1080</x>
+                 <y>125</y>
                  <width>99</width>
                  <height>40</height>
                 </rect>
@@ -16776,7 +16659,7 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>-5</x>
-                 <y>95</y>
+                 <y>145</y>
                  <width>90</width>
                  <height>17</height>
                 </rect>
@@ -16793,96 +16676,10 @@ p, li { white-space: pre-wrap; }
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
-              <widget class="QLabel" name="label2_114">
-               <property name="geometry">
-                <rect>
-                 <x>-5</x>
-                 <y>55</y>
-                 <width>90</width>
-                 <height>17</height>
-                </rect>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>File 2:</string>
-               </property>
-               <property name="alignment">
-                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-               </property>
-              </widget>
-              <widget class="QCheckBox" name="checkBox_iq_append_null2">
-               <property name="geometry">
-                <rect>
-                 <x>1120</x>
-                 <y>50</y>
-                 <width>70</width>
-                 <height>27</height>
-                </rect>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>10</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Null</string>
-               </property>
-              </widget>
-              <widget class="QTextEdit" name="textEdit_iq_append_file2">
-               <property name="enabled">
-                <bool>true</bool>
-               </property>
-               <property name="geometry">
-                <rect>
-                 <x>90</x>
-                 <y>50</y>
-                 <width>716</width>
-                 <height>27</height>
-                </rect>
-               </property>
-               <property name="tabChangesFocus">
-                <bool>true</bool>
-               </property>
-              </widget>
-              <widget class="Line" name="line3_8">
-               <property name="geometry">
-                <rect>
-                 <x>1</x>
-                 <y>122</y>
-                 <width>1193</width>
-                 <height>2</height>
-                </rect>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-              <widget class="QPushButton" name="pushButton_iq_append_select2">
-               <property name="geometry">
-                <rect>
-                 <x>810</x>
-                 <y>50</y>
-                 <width>75</width>
-                 <height>27</height>
-                </rect>
-               </property>
-               <property name="font">
-                <font>
-                 <pointsize>11</pointsize>
-                </font>
-               </property>
-               <property name="text">
-                <string>Select</string>
-               </property>
-              </widget>
               <widget class="QPushButton" name="pushButton_iq_append_select1">
                <property name="geometry">
                 <rect>
-                 <x>810</x>
+                 <x>915</x>
                  <y>10</y>
                  <width>75</width>
                  <height>27</height>
@@ -16897,11 +16694,11 @@ p, li { white-space: pre-wrap; }
                 <string>Select</string>
                </property>
               </widget>
-              <widget class="QPushButton" name="pushButton_iq_append_select3">
+              <widget class="QPushButton" name="pushButton_iq_append_select2">
                <property name="geometry">
                 <rect>
                  <x>810</x>
-                 <y>90</y>
+                 <y>140</y>
                  <width>75</width>
                  <height>27</height>
                 </rect>
@@ -16915,19 +16712,6 @@ p, li { white-space: pre-wrap; }
                 <string>Select</string>
                </property>
               </widget>
-              <widget class="Line" name="line3_5">
-               <property name="geometry">
-                <rect>
-                 <x>1</x>
-                 <y>42</y>
-                 <width>1193</width>
-                 <height>2</height>
-                </rect>
-               </property>
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
               <widget class="QComboBox" name="comboBox_iq_append_data_type">
                <property name="enabled">
                 <bool>true</bool>
@@ -16935,7 +16719,7 @@ p, li { white-space: pre-wrap; }
                <property name="geometry">
                 <rect>
                  <x>1015</x>
-                 <y>90</y>
+                 <y>80</y>
                  <width>157</width>
                  <height>27</height>
                 </rect>
@@ -16993,6 +16777,138 @@ p, li { white-space: pre-wrap; }
                  <string>Complex Int 8</string>
                 </property>
                </item>
+              </widget>
+              <widget class="QTableWidget" name="tableWidget_iq_append">
+               <property name="geometry">
+                <rect>
+                 <x>90</x>
+                 <y>10</y>
+                 <width>800</width>
+                 <height>120</height>
+                </rect>
+               </property>
+               <attribute name="horizontalHeaderMinimumSectionSize">
+                <number>120</number>
+               </attribute>
+               <attribute name="horizontalHeaderStretchLastSection">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="verticalHeaderVisible">
+                <bool>false</bool>
+               </attribute>
+               <column>
+                <property name="text">
+                 <string>Padding Before</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>File</string>
+                </property>
+               </column>
+               <column>
+                <property name="text">
+                 <string>Padding After</string>
+                </property>
+               </column>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_append_clear">
+               <property name="geometry">
+                <rect>
+                 <x>895</x>
+                 <y>10</y>
+                 <width>16</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>x</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_append_remove">
+               <property name="geometry">
+                <rect>
+                 <x>915</x>
+                 <y>40</y>
+                 <width>75</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Remove</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_append_copy">
+               <property name="geometry">
+                <rect>
+                 <x>995</x>
+                 <y>40</y>
+                 <width>75</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Copy</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_append_up">
+               <property name="geometry">
+                <rect>
+                 <x>915</x>
+                 <y>70</y>
+                 <width>75</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Up</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_append_down">
+               <property name="geometry">
+                <rect>
+                 <x>915</x>
+                 <y>100</y>
+                 <width>75</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>11</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Down</string>
+               </property>
               </widget>
              </widget>
              <widget class="QLabel" name="label1_229">
@@ -20016,7 +19932,7 @@ p, li { white-space: pre-wrap; }
               </property>
              </widget>
             </widget>
-            <widget class="QWidget" name="Clip">
+            <widget class="QWidget" name="Strip">
              <widget class="QFrame" name="frame1_74">
               <property name="geometry">
                <rect>
@@ -20032,7 +19948,7 @@ p, li { white-space: pre-wrap; }
               <property name="frameShadow">
                <enum>QFrame::Raised</enum>
               </property>
-              <widget class="QPushButton" name="pushButton_iq_clip">
+              <widget class="QPushButton" name="pushButton_iq_strip">
                <property name="geometry">
                 <rect>
                  <x>550</x>
@@ -20047,7 +19963,7 @@ p, li { white-space: pre-wrap; }
                 </font>
                </property>
                <property name="text">
-                <string>Clip</string>
+                <string>Strip</string>
                </property>
               </widget>
               <widget class="QLabel" name="label2_271">
@@ -20071,7 +19987,7 @@ p, li { white-space: pre-wrap; }
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
-              <widget class="QTextEdit" name="textEdit_iq_clip_amplitude">
+              <widget class="QTextEdit" name="textEdit_iq_strip_amplitude">
                <property name="enabled">
                 <bool>true</bool>
                </property>
@@ -20087,12 +20003,12 @@ p, li { white-space: pre-wrap; }
                 <bool>true</bool>
                </property>
               </widget>
-              <widget class="QTextEdit" name="textEdit_iq_clip_output">
+              <widget class="QTextEdit" name="textEdit_iq_strip_output">
                <property name="geometry">
                 <rect>
                  <x>115</x>
                  <y>105</y>
-                 <width>700</width>
+                 <width>690</width>
                  <height>27</height>
                 </rect>
                </property>
@@ -20100,7 +20016,7 @@ p, li { white-space: pre-wrap; }
                 <bool>true</bool>
                </property>
               </widget>
-              <widget class="QLabel" name="label2_iq_clip_output">
+              <widget class="QLabel" name="label2_iq_strip_output">
                <property name="geometry">
                 <rect>
                  <x>0</x>
@@ -20121,10 +20037,10 @@ p, li { white-space: pre-wrap; }
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
-              <widget class="QPushButton" name="pushButton_iq_clip_load">
+              <widget class="QPushButton" name="pushButton_iq_strip_load">
                <property name="geometry">
                 <rect>
-                 <x>820</x>
+                 <x>825</x>
                  <y>35</y>
                  <width>65</width>
                  <height>27</height>
@@ -20160,10 +20076,10 @@ p, li { white-space: pre-wrap; }
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
-              <widget class="QPushButton" name="pushButton_iq_clip_remove">
+              <widget class="QPushButton" name="pushButton_iq_strip_remove">
                <property name="geometry">
                 <rect>
-                 <x>820</x>
+                 <x>825</x>
                  <y>65</y>
                  <width>65</width>
                  <height>27</height>
@@ -20199,7 +20115,7 @@ p, li { white-space: pre-wrap; }
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
-              <widget class="QComboBox" name="comboBox_iq_clip_data_type">
+              <widget class="QComboBox" name="comboBox_iq_strip_data_type">
                <property name="enabled">
                 <bool>true</bool>
                </property>
@@ -20262,10 +20178,10 @@ p, li { white-space: pre-wrap; }
                 </property>
                </item>
               </widget>
-              <widget class="QPushButton" name="pushButton_iq_clip_select">
+              <widget class="QPushButton" name="pushButton_iq_strip_select">
                <property name="geometry">
                 <rect>
-                 <x>820</x>
+                 <x>825</x>
                  <y>5</y>
                  <width>65</width>
                  <height>27</height>
@@ -20280,10 +20196,10 @@ p, li { white-space: pre-wrap; }
                 <string>Select</string>
                </property>
               </widget>
-              <widget class="QPushButton" name="pushButton_iq_clip_choose">
+              <widget class="QPushButton" name="pushButton_iq_strip_choose">
                <property name="geometry">
                 <rect>
-                 <x>820</x>
+                 <x>810</x>
                  <y>105</y>
                  <width>65</width>
                  <height>27</height>
@@ -20298,12 +20214,12 @@ p, li { white-space: pre-wrap; }
                 <string>Choose</string>
                </property>
               </widget>
-              <widget class="QListWidget" name="listWidget_iq_clip_input">
+              <widget class="QListWidget" name="listWidget_iq_strip_input">
                <property name="geometry">
                 <rect>
                  <x>115</x>
                  <y>5</y>
-                 <width>700</width>
+                 <width>690</width>
                  <height>90</height>
                 </rect>
                </property>
@@ -20313,7 +20229,7 @@ p, li { white-space: pre-wrap; }
                 </font>
                </property>
               </widget>
-              <widget class="QCheckBox" name="checkBox_iq_clip_before">
+              <widget class="QCheckBox" name="checkBox_iq_strip_before">
                <property name="geometry">
                 <rect>
                  <x>1115</x>
@@ -20334,7 +20250,7 @@ p, li { white-space: pre-wrap; }
                 <bool>true</bool>
                </property>
               </widget>
-              <widget class="QCheckBox" name="checkBox_iq_clip_after">
+              <widget class="QCheckBox" name="checkBox_iq_strip_after">
                <property name="geometry">
                 <rect>
                  <x>1115</x>
@@ -20355,10 +20271,10 @@ p, li { white-space: pre-wrap; }
                 <bool>true</bool>
                </property>
               </widget>
-              <widget class="QCheckBox" name="checkBox_iq_clip_overwrite">
+              <widget class="QCheckBox" name="checkBox_iq_strip_overwrite">
                <property name="geometry">
                 <rect>
-                 <x>895</x>
+                 <x>885</x>
                  <y>105</y>
                  <width>90</width>
                  <height>27</height>
@@ -20371,6 +20287,32 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="text">
                 <string>Overwrite</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_iq_strip_clear">
+               <property name="geometry">
+                <rect>
+                 <x>806</x>
+                 <y>5</y>
+                 <width>16</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>12</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>x</string>
                </property>
               </widget>
              </widget>
@@ -20399,7 +20341,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>Clip</string>
+               <string>Strip</string>
               </property>
              </widget>
             </widget>
@@ -21014,7 +20956,7 @@ p, li { white-space: pre-wrap; }
              </property>
             </widget>
            </widget>
-           <widget class="QPushButton" name="pushButton1_iq_tab_clip">
+           <widget class="QPushButton" name="pushButton1_iq_tab_strip">
             <property name="geometry">
              <rect>
               <x>110</x>
@@ -21034,7 +20976,7 @@ p, li { white-space: pre-wrap; }
              <enum>Qt::NoFocus</enum>
             </property>
             <property name="text">
-             <string>Clip</string>
+             <string>Strip</string>
             </property>
            </widget>
            <zorder>frame2_69</zorder>
@@ -21066,7 +21008,7 @@ p, li { white-space: pre-wrap; }
            <zorder>frame1_5</zorder>
            <zorder>label1_202</zorder>
            <zorder>frame1_38</zorder>
-           <zorder>pushButton1_iq_tab_clip</zorder>
+           <zorder>pushButton1_iq_tab_strip</zorder>
           </widget>
           <widget class="QWidget" name="tab_archive">
            <attribute name="title">
@@ -21786,8 +21728,8 @@ p, li { white-space: pre-wrap; }
              <widget class="QProgressBar" name="progressBar_archive_datasets">
               <property name="geometry">
                <rect>
-                <x>250</x>
-                <y>780</y>
+                <x>375</x>
+                <y>777</y>
                 <width>400</width>
                 <height>23</height>
                </rect>
@@ -21829,7 +21771,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="selectionMode">
-               <enum>QAbstractItemView::SingleSelection</enum>
+               <enum>QAbstractItemView::ExtendedSelection</enum>
               </property>
               <property name="selectionBehavior">
                <enum>QAbstractItemView::SelectRows</enum>
@@ -22107,6 +22049,42 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="text">
                <string>View FG</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_regenerate">
+              <property name="geometry">
+               <rect>
+                <x>120</x>
+                <y>765</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Regenerate</string>
+              </property>
+             </widget>
+             <widget class="QPushButton" name="pushButton_archive_datasets_copy">
+              <property name="geometry">
+               <rect>
+                <x>225</x>
+                <y>765</y>
+                <width>100</width>
+                <height>27</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Copy</string>
               </property>
              </widget>
             </widget>
@@ -29849,19 +29827,11 @@ p, li { white-space: pre-wrap; }
   <tabstop>textEdit_iq_crop_end</tabstop>
   <tabstop>comboBox_iq_crop_data_type</tabstop>
   <tabstop>pushButton_iq_crop</tabstop>
-  <tabstop>textEdit_iq_append_file1</tabstop>
   <tabstop>pushButton_iq_append_select1</tabstop>
   <tabstop>pushButton_iq_append_load1</tabstop>
-  <tabstop>textEdit_iq_append_null1</tabstop>
-  <tabstop>checkBox_iq_append_null1</tabstop>
-  <tabstop>textEdit_iq_append_file2</tabstop>
+  <tabstop>textEdit_iq_append_output</tabstop>
   <tabstop>pushButton_iq_append_select2</tabstop>
   <tabstop>pushButton_iq_append_load2</tabstop>
-  <tabstop>textEdit_iq_append_null2</tabstop>
-  <tabstop>checkBox_iq_append_null2</tabstop>
-  <tabstop>textEdit_iq_append_output</tabstop>
-  <tabstop>pushButton_iq_append_select3</tabstop>
-  <tabstop>pushButton_iq_append_load3</tabstop>
   <tabstop>pushButton_iq_append_append</tabstop>
   <tabstop>textEdit_iq_timeslot_input</tabstop>
   <tabstop>pushButton_iq_timeslot_select1</tabstop>
