@@ -22062,6 +22062,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 # Get Variable Names and Values
                 variable_names = ['rx-freq-default','sample-rate-default', 'threshold-default', 'gain-default','channel-default','antenna-default']
                 get_frequency = str(self.textEdit_tsi_detector_fixed_frequency.toPlainText())
+                # A tab, and potentialliy other whitespace will cause this value to fail to
+                # convert to float as it is escaped before being sent on leading to a full string
+                get_frequency.strip()
                 get_sample_rate = str(self.comboBox_tsi_detector_fixed_sample_rate.currentText())
                 get_threshold = str(self.spinBox_tsi_detector_fixed_threshold.value())
                 get_gain = str(self.spinBox_tsi_detector_fixed_gain.value())
