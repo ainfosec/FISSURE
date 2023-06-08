@@ -782,7 +782,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             """Handles all signals recieved by closing the program gracefully
             """
             print("Caught signal, gracefully closing")
-            self.closeEvent()
+            # Close the program like the X was clicked
+            self.closeEvent(QtGui.QCloseEvent)
 
         # Register the signal handler for a few signals that we might recieve from the command line
         signal.signal(signal.SIGINT, signal_handler)
