@@ -146,8 +146,14 @@ class Hiprfisr():
         #logging.basicConfig(filename='event.log',level=logging.DEBUG, format='%(asctime)s : %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p', filemode='w') 
         with open(os.path.dirname(os.path.realpath(__file__)) + "/YAML/logging.yaml", 'rt') as f:
             config = yaml.load(f.read(), yaml.FullLoader)
+            # Since only a filename is specified in the config file,
+            # Add our current directory to the filename to guarantee it's location
             config["handlers"]["file"]["filename"] = os.path.dirname(os.path.realpath(__file__)) + "/" + config["handlers"]["file"]["filename"]
         
+        # Check if directory of the logging file specified exists, and if it doesn't, create it
+        if not os.path.exists(os.path.dirname(config["handlers"]["file"]["filename"])):
+            os.makedirs(os.path.dirname(config["handlers"]["file"]["filename"]))
+
         logging.config.dictConfig(config)
         self.logger = logging.getLogger('hiprfisr')  
         
