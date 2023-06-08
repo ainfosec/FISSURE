@@ -5792,6 +5792,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 get_pd_bits_port = str(self.label2_pd_sniffer_zmq_port.text())
                 get_address = '127.0.0.1:' + get_pd_bits_port
                 get_port = str(self.textEdit_pd_sniffer_sub_udp_port.toPlainText())
+
                 variable_values = [get_address, get_port]
                 
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Sniffer Flow Graph', Parameters = [flow_graph_filepath, variable_names, variable_values])
@@ -10259,8 +10260,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             if get_detector == "IQ File":                
                 # Get Variable Names and Values
                 variable_names = ['rx_freq','sample_rate', 'threshold', 'fft_size','filepath']
-                get_sample_rate = str(self.textEdit_tsi_detector_iq_file_sample_rate.toPlainText())
+                # Strip the whitespace to prevent an escaping issue on the frequency and sample rate
+                # TODO: Try convert to a float here, and give an error if it can't be converted,
+                #   before gnu_radio throws an error that isn't caught.
                 get_frequency = str(self.textEdit_tsi_detector_iq_file_frequency.toPlainText())
+                get_frequency = get_frequency.strip()
+                get_sample_rate = str(self.textEdit_tsi_detector_iq_file_sample_rate.toPlainText())
+                get_sample_rate = get_sample_rate.strip()
                 get_threshold = str(self.spinBox_tsi_detector_iq_file_threshold.value())
                 get_fft_size = str(self.comboBox_tsi_detector_iq_file_fft_size.currentText())
                 get_filepath = str(self.textEdit_tsi_detector_iq_file_file.toPlainText())
@@ -18432,6 +18438,24 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_tcp_udp = str(self.comboBox_pd_sniffer_netcat.currentText())
         get_ip = str(self.textEdit_pd_sniffer_netcat_ip.toPlainText())
         get_port = str(self.textEdit_pd_sniffer_netcat_port.toPlainText())
+
+        try:
+            # This will verify that the given value is a number, and a valid port number
+            # It does this by raising a ValueError if the value is not a number
+            if int(get_port) < 1 or int(get_port) > 65535:
+                # Or, if the value is not in the range of valid ports
+                raise ValueError
+        # If the value is not a number, or not in the range of valid ports
+        except ValueError:
+            # Create a new error box and display it to the user
+            error_box = QtWidgets.QMessageBox()
+            error_box.setIcon(QtWidgets.QMessageBox.Critical)
+            error_box.setText("Invalid Port Number")
+            error_box.setWindowTitle("Error")
+            error_box.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            error_box.exec_()
+            # And then return
+            return
         
         # Issue the Command
         if get_tcp_udp == "TCP":
@@ -18577,7 +18601,25 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Get the Values
         get_file_path = str(self.comboBox_pd_sniffer_test_folders.currentText()) + "/" + str(self.listWidget_pd_sniffer_test_files.currentItem().text())
         get_port = str(self.textEdit_pd_sniffer_test_port.toPlainText())
-        
+
+        try:
+            # This will verify that the given value is a number, and a valid port number
+            # It does this by raising a ValueError if the value is not a number
+            if int(get_port) < 1 or int(get_port) > 65535:
+                # Or, if the value is not in the range of valid ports
+                raise ValueError
+        # If the value is not a number, or not in the range of valid ports
+        except ValueError:
+            # Create a new error box and display it to the user
+            error_box = QtWidgets.QMessageBox()
+            error_box.setIcon(QtWidgets.QMessageBox.Critical)
+            error_box.setText("Invalid Port Number")
+            error_box.setWindowTitle("Error")
+            error_box.setStandardButtons(QtWidgets.QMessageBox.Ok)
+            error_box.exec_()
+            # And then return
+            return
+
         # Issue the Command
         command_text = 'cat "' + get_file_path + '" | nc -u 127.0.0.1 ' + get_port
         proc = subprocess.Popen(command_text, shell=True)
@@ -22075,7 +22117,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 variable_names = ['rx-freq-default','sample-rate-default', 'threshold-default', 'gain-default','channel-default','antenna-default']
                 get_frequency = str(self.textEdit_tsi_detector_fixed_frequency.toPlainText())
                 # A tab, and potentialliy other whitespace will cause this value to fail to
-                # convert to float as it is escaped before being sent on leading to a full string
+                # convert to float as it is escaped before being sent to gnu_radio which throws an error
+                # TODO: Check that this can be converted to a float before sending it to gnu_radio
+                #   and show a GUI warning, since the gnu_radio error isn't caught
                 get_frequency.strip()
                 get_sample_rate = str(self.comboBox_tsi_detector_fixed_sample_rate.currentText())
                 get_threshold = str(self.spinBox_tsi_detector_fixed_threshold.value())
