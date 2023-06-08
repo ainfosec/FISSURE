@@ -5750,7 +5750,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuHackrfInfoClicked(self):
         """ Opens a message box and copies the results of "hackrf_info"
         """
-        # Get the Text
+        # Check if HackRF Tooling is installed
+        if shutil.which('hackrf_info') is None:
+            # Display Error Message if it is not installed
+            self.errorMessage('HackRF tooling may not be installed on this system. hackrf_info not found.')
+            return
+        # Get the Texts
         proc=subprocess.Popen('hackrf_info &', shell=True, stdout=subprocess.PIPE, )
         output=proc.communicate()[0].decode()
             
@@ -11770,7 +11775,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
     def findHackRF(self, widget_serial):      
         """ Parses the results of 'hackrf_info' and sets the HackRF serial for an edit box.
-        """   
+        """
+        # Check for HackRF Tooling
+        if shutil.which('hackrf_info') is None:
+            # Display Error Message if it is not installed
+            self.errorMessage('HackRF tooling may not be installed on this system. hackrf_info not found.')
+            return
         # Get the Text
         proc = subprocess.Popen("hackrf_info &", shell=True, stdout=subprocess.PIPE, )
         output = proc.communicate()[0].decode()
@@ -12018,7 +12028,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
     def find_bladeRF2(self, widget_serial):      
         """ Parses the results of 'bladeRF-cli -p' and copies the serial number for the bladeRF into an edit box.
-        """   
+        """
+        if shutil.which('bladeRF-cli') is None:
+            self.errorMessage('bladeRF-cli not found. Please install bladeRF-cli and try again.')
+            return
         # Get the Text
         proc=subprocess.Popen('bladeRF-cli -p &', shell=True, stdout=subprocess.PIPE, )
         output = proc.communicate()[0].decode()
@@ -12244,14 +12257,18 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuQSpectrumAnalyzerClicked(self):
         """ Opens QSpectrumAnalyzer for viewing RF signals.
         """
-        # Run QSpectrumAnalyzer
-        proc=subprocess.Popen("qspectrumanalyzer &", shell=True)
+        # Run QSpectrumAnalyzer if it exists
+        if shutil.which('qspectrumanalyzer') is None:
+            self.errorMessage('QSpectrumAnalyzer not found! Please install QSpectrumAnalyzer, and try again.')
+        proc=subprocess.Popen('qspectrumanalyzer &', shell=True)
         
     def _slotMenuGQRX_Clicked(self):
         """ Opens GQRX for viewing RF signals.
         """
-        # Run GQRX
-        proc=subprocess.Popen("gqrx &", shell=True) 
+        # Run GQRX if it exists
+        if shutil.which('gqrx') is None:
+            self.errorMessage('GQRX not found! Please install GQRX, and try again.')
+        proc=subprocess.Popen('gqrx &', shell=True) 
         
     def _slotPD_DemodHardwareChanged(self):
         """ Updates the list of demodulation flow graphs.
@@ -17112,13 +17129,16 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_directory = os.path.dirname(os.path.realpath(__file__)) + "/Crafted Packets/Attack Recordings"
 
         return get_directory
-            
+
     def _slotMenuFALCON_Clicked(self):
         """ Opens FALCON for LTE monitoring.
         """
+        if shutil.which('FalconGUI') is None:
+            self.errorMessage('FalconGUI is not installed. Please install it and try again.')        
+            return    
         # Run FALCON
-        proc=subprocess.Popen("FalconGUI &", shell=True) 
-        
+        proc=subprocess.Popen('FalconGUI &', shell=True) 
+
     def _slotMenuCyberChefClicked(self):
         """ Opens CyberChef in a browser
         """
@@ -21679,7 +21699,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             fout.close()
             
             # Open Gqrx
-            proc = subprocess.Popen('gqrx -c "' + os.path.dirname(os.path.realpath(__file__)) + '/Tools/Gqrx/default.conf"', shell=True) 
+            if shutil.which('gqrx') is None:
+                self.errorMessage('GQRX is not installed. Please install GQRX and try again')
+            else:
+                proc = subprocess.Popen('gqrx -c "' + os.path.dirname(os.path.realpath(__file__)) + '/Tools/Gqrx/default.conf"', shell=True) 
             
         else:
             self.errorMessage("Select a valid file, sample rate, and frequency.")
