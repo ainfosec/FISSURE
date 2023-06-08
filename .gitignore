@@ -1,2 +1,12 @@
 *.pyc
 routersploit.log
+
+# MacOS specific files
+.DS_Store
+
+# Vscode specific files
+.vscode
+
+# Some currently unused env files, but often contains secrets, so better be safe than sorry
+.env
+env.py
