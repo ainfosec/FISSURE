@@ -777,6 +777,17 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.dashboard_heartbeat_time = current_time
         self.dashboard_pub_server.sendmsg('Heartbeats', Identifier = 'Dashboard', MessageName='Heartbeat', Time=current_time)   
         
+        # A super basic signal handler to let the program quit gracefully from a command line
+        def signal_handler(*args):
+            """Handles all signals recieved by closing the program gracefully
+            """
+            print("Caught signal, gracefully closing")
+            self.closeEvent()
+
+        # Register the signal handler for a few signals that we might recieve from the command line
+        signal.signal(signal.SIGINT, signal_handler)
+        signal.signal(signal.SIGTERM, signal_handler)
+        signal.signal(signal.SIGQUIT, signal_handler)        
 
     def _myEventListener(self, stop_event):
         """ Loop for updating plots and information
