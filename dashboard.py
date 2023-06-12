@@ -160,14 +160,14 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.mpl_toolbar.setStyleSheet("color:" + self.dashboard_settings_dictionary['color4'])
         self.mpl_toolbar.setGeometry(QtCore.QRect(375, 277, 525, 35))
         icons_buttons = {
-            "Home": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/home.png"),
-            "Pan": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/move.png"),
-            "Zoom": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/zoom_to_rect.png"),
-            "Back": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/back.png"),
-            "Forward": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/forward.png"),
-            "Subplots": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/subplots.png"),
-            "Customize": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/qt4_editor_options.png"),
-            "Save": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/filesave.png"),
+            "Home": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/home.png"),
+            "Pan": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/move.png"),
+            "Zoom": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/zoom_to_rect.png"),
+            "Back": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/back.png"),
+            "Forward": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/forward.png"),
+            "Subplots": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/subplots.png"),
+            "Customize": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/qt4_editor_options.png"),
+            "Save": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/filesave.png"),
         }
         for action in self.mpl_toolbar.actions():
             if action.text() in icons_buttons:
@@ -227,11 +227,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.statusbar_hiprfisr.clicked.connect(self._slotStatusbarHIPRFISR_Clicked)
                 
         ##### Top Ribbon #####
-        self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png")) 
-        self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png")) 
-        self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png")) 
-        self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png")) 
-        self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png"))         
+        self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/computer.png")) 
+        self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/computer.png")) 
+        self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/computer.png")) 
+        self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/computer.png")) 
+        self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/computer.png"))         
                 
         self.guess_index = 0
              
@@ -292,7 +292,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.tableWidget_automation_soi_list_priority.resizeRowsToContents()    
         
         # Load Image in Automation Tab
-        self.label_diagram.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/logo.png")) 
+        self.label_diagram.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/logo.png")) 
                 
         ##### Library #####
         self.textEdit_library_search_frequency_margin.setPlainText("0")
@@ -375,9 +375,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.wideband_zoom_end = 6000e6
         
         # Under Construction Labels
-        self.label_under_construction1.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/under_construction.png"))
-        self.label_under_construction2.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/under_construction.png"))
-        self.label_under_construction3.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/under_construction.png"))
+        self.label_under_construction1.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/under_construction.png"))
+        self.label_under_construction2.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/under_construction.png"))
+        self.label_under_construction3.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/under_construction.png"))
         
         # Create Tooltip
         self.tabWidget.setTabToolTip(1,"Target Signal Identification")
@@ -632,7 +632,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.label2_iq_transfer_file_success.setVisible(False)
         
         # Settings Icon
-        self.pushButton_iq_FunctionsSettings.setIcon(QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/settings.png"))
+        self.pushButton_iq_FunctionsSettings.setIcon(QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/settings.png"))
         
         # Load Inspection File Flow Graphs
         get_inspection_file_fgs = []
@@ -5780,10 +5780,17 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 
                 variable_names = ['address','port']
                 get_pd_bits_port = str(self.label2_pd_sniffer_zmq_port.text())
+                
                 get_address = '127.0.0.1:' + get_pd_bits_port
                 get_port = str(self.textEdit_pd_sniffer_sub_udp_port.toPlainText())
                 variable_values = [get_address, get_port]
                 
+                # Check the Values
+                if not (get_port.isdigit() and 1 <= int(get_port) <= 65535):
+                    self.errorMessage("Enter a valid port (1-65535).")
+                    return
+                
+                # Send the Message
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Sniffer Flow Graph', Parameters = [flow_graph_filepath, variable_names, variable_values])
                 
                 # Disable the Buttons
@@ -5823,6 +5830,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 get_port = str(self.textEdit_pd_sniffer_sub_udp_port.toPlainText())
                 variable_values = [get_address, get_port]
                 
+                # Check the Values
+                if not (get_port.isdigit() and 1 <= int(get_port) <= 65535):
+                    self.errorMessage("Enter a valid port (1-65535).")
+                    return
+                
+                # Send the Message                
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Sniffer Flow Graph', Parameters = [flow_graph_filepath, variable_names, variable_values])
                 
                 # Disable the Buttons
@@ -5861,6 +5874,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 get_port = str(self.textEdit_pd_sniffer_sub_udp_port.toPlainText())
                 variable_values = [get_address, get_port]
                 
+                # Check the Values
+                if not (get_port.isdigit() and 1 <= int(get_port) <= 65535):
+                    self.errorMessage("Enter a valid port (1-65535).")
+                    return
+                
+                # Send the Message                
                 self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Sniffer Flow Graph', Parameters = [flow_graph_filepath, variable_names, variable_values])
                 
                 # Disable the Buttons
@@ -6289,7 +6308,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP N2xx":
                     fname = "iq_recorder_usrp_n2xx"    
                 elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
-                    fname = "iq_recorder_bladerf2"    
+                    fname = "iq_recorder_bladerf2"
+                elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP X410":
+                    fname = "iq_recorder_usrp_x410"
                     
                 # LimeSDR Channel
                 if self.dashboard_settings_dictionary['hardware_iq'] == "LimeSDR":
@@ -10281,7 +10302,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             else:                
                 # No Hardware Selected
                 if len(self.dashboard_settings_dictionary['hardware_ip_tsi']) == 0 and len(self.dashboard_settings_dictionary['hardware_serial_tsi']) == 0 \
-                    and ('x3x0' in get_detector) and ('b2x0' in get_detector):
+                    and (('x3x0' in get_detector) or ('b2x0' in get_detector) or ('x410' in get_detector)):
                     
                     error_text = " Fill out the IP address or serial number by clicking the TSI hardware button."
                     
@@ -10353,8 +10374,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # Disable the Advanced Options
             self.frame_tsi_detector_settings1.setEnabled(False)
-            
-
         
     def _slotTSI_ClearDetectorPlotClicked(self):
         """ Clears the points on the detector plot.
@@ -11640,7 +11659,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 widget_daughterboard.setCurrentIndex(4)
                 self.guess_index = 4            
         except:
-            widget_probing_label.setVisible(False)                                      
+            widget_probing_label.setVisible(False)
                             
     def findB2x0(self, widget_serial):      
         """ Parses the results of 'uhd_find_devices' and sets the B210 serial for an edit box.
@@ -12043,7 +12062,58 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 widget_serial.setAlignment(QtCore.Qt.AlignCenter)     
         except:
             widget_serial.setText("") 
-            widget_serial.setAlignment(QtCore.Qt.AlignCenter)                                  
+            widget_serial.setAlignment(QtCore.Qt.AlignCenter)
+            
+    def findX410(self, widget_ip, widget_serial, widget_daughterboard, widget_probing_label):
+        """ Parses the results of 'uhd_find_devices' and sets the X410 IP and serial for two edit boxes.
+        """
+        # Get the Text
+        proc = subprocess.Popen("uhd_find_devices &", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
+        
+        # Get the Variables and Values
+        device_index = -1
+        device_dict = {}
+        record_values = False
+        for line in output.splitlines():
+            if len(line.strip()) == 0:
+                record_values = False
+            if record_values == True:
+                get_var = line.split(':')[0].strip(' ')
+                get_val = line.split(':')[1].strip(' ')
+                device_dict[device_index].append((get_var,get_val))
+            if "Device Address" in line:                    
+                device_index = device_index + 1
+                device_dict.update({device_index:[]})
+                record_values = True
+                
+        # Find X410
+        for n in range(0,len(device_dict)):
+            for nn in device_dict[n]:
+                if 'X410' in nn: 
+                    # Update Dashboard                      
+                    for m in device_dict[n]:
+                        if m[0] == 'addr':
+                            widget_ip.setText(m[1])
+                            widget_ip.setAlignment(QtCore.Qt.AlignCenter)
+                        if m[0] == 'serial':
+                            widget_serial.setText(m[1]) 
+                            widget_serial.setAlignment(QtCore.Qt.AlignCenter) 
+                          
+        # Find Daughterboard
+        try:
+            # Probe
+            get_ip = str(widget_ip.toPlainText())
+            widget_probing_label.setVisible(True)
+            QtWidgets.QApplication.processEvents()
+            proc = subprocess.Popen('uhd_usrp_probe --args="addr=' + get_ip + '" &', shell=True, stdout=subprocess.PIPE, )
+            output = str(proc.communicate()[0].decode())
+            widget_probing_label.setVisible(False)
+            
+            if "ZBX" in output:
+                widget_daughterboard.setCurrentIndex(21)
+        except:
+            widget_probing_label.setVisible(False)
                 
     def _slotLibraryBrowseRemoveDemodFG_Clicked(self):
         """ Removes selected demodulation flow graph from the library.
@@ -12543,7 +12613,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         if self.dashboard_settings_dictionary['hardware_tsi'] == "Computer":
             self.comboBox_tsi_detector.setCurrentIndex(0)  
             self.comboBox_tsi_detector_fixed.setCurrentIndex(11)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/computer.png")) 
             
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 1
@@ -12552,7 +12622,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP X3x0":
             self.comboBox_tsi_detector.setCurrentIndex(0)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(0)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X310.png")) 
             
             # Tuning Widget Limits
             if self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "CBX-120":
@@ -12574,7 +12644,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP B2x0":
             self.comboBox_tsi_detector.setCurrentIndex(1)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(1)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_B210.png")) 
             
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 70
@@ -12583,7 +12653,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "HackRF":
             self.comboBox_tsi_detector.setCurrentIndex(2)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(2)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/HackRF.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/HackRF.png")) 
             
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 1
@@ -12592,7 +12662,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "RTL2832U":
             self.comboBox_tsi_detector.setCurrentIndex(4)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(4)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/RTL2832U.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/RTL2832U.png")) 
             
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 64
@@ -12601,7 +12671,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "802.11x Adapter":
             self.comboBox_tsi_detector.setCurrentIndex(0)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(0)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/802_11.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/802_11.png")) 
             
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 1
@@ -12610,7 +12680,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP B20xmini":
             self.comboBox_tsi_detector.setCurrentIndex(3)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(3)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B205mini.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_B205mini.png")) 
             
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 70
@@ -12619,7 +12689,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "LimeSDR":
             self.comboBox_tsi_detector.setCurrentIndex(5)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(5)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/LimeSDR.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/LimeSDR.png")) 
             
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 1
@@ -12628,7 +12698,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF":
             self.comboBox_tsi_detector.setCurrentIndex(6)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(6)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/BladeRF.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/BladeRF.png")) 
             
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 280
@@ -12637,7 +12707,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "Open Sniffer":
             self.comboBox_tsi_detector.setCurrentIndex(0)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(0)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/Open_Sniffer.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/Open_Sniffer.png")) 
             
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 1
@@ -12646,7 +12716,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "PlutoSDR":
             self.comboBox_tsi_detector.setCurrentIndex(7)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(7)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/PlutoSDR.png")) 
             
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 325
@@ -12655,7 +12725,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP2":
             self.comboBox_tsi_detector.setCurrentIndex(8)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(8)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP2.png")) 
             
             # Tuning Widget Limits
             if self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "XCVR2450":
@@ -12710,7 +12780,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP N2xx":
             self.comboBox_tsi_detector.setCurrentIndex(9)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(9)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_N2xx.png")) 
             
             # Tuning Widget Limits
             if self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "XCVR2450":
@@ -12765,11 +12835,21 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_tsi'] == "bladeRF 2.0":
             self.comboBox_tsi_detector.setCurrentIndex(10)
             self.comboBox_tsi_detector_fixed.setCurrentIndex(10)
-            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/bladeRF2.png")) 
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/bladeRF2.png")) 
             
             # Tuning Widget Limits
             self.tuning_matplotlib_widget.freq_start_limit = 47
-            self.tuning_matplotlib_widget.freq_end_limit = 6000                                           
+            self.tuning_matplotlib_widget.freq_end_limit = 6000
+            
+        elif self.dashboard_settings_dictionary['hardware_tsi'] == "USRP X410":
+            self.comboBox_tsi_detector.setCurrentIndex(11)
+            self.comboBox_tsi_detector_fixed.setCurrentIndex(11)
+            self.label_top_tsi_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X410.png")) 
+            
+            # Tuning Widget Limits
+            if self.dashboard_settings_dictionary['hardware_daughterboard_tsi'] == "ZBX":
+                self.tuning_matplotlib_widget.freq_start_limit = 1
+                self.tuning_matplotlib_widget.freq_end_limit = 7200     
             
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_tsi']) > 0:
@@ -12785,47 +12865,50 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         self.textEdit_pd_sniffer_interface.setPlainText(self.dashboard_settings_dictionary['hardware_interface_pd']) 
         if self.dashboard_settings_dictionary['hardware_pd'] == "Computer":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png")) 
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/computer.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(0)        
         elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP X3x0":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png"))
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X310.png"))
             self.comboBox_pd_demod_hardware.setCurrentIndex(0)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP B2x0":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png"))
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_B210.png"))
             self.comboBox_pd_demod_hardware.setCurrentIndex(1)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "HackRF":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/HackRF.png"))         
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/HackRF.png"))         
             self.comboBox_pd_demod_hardware.setCurrentIndex(2)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "RTL2832U":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/RTL2832U.png"))
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/RTL2832U.png"))
             self.comboBox_pd_demod_hardware.setCurrentIndex(3)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "802.11x Adapter":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/802_11.png")) 
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/802_11.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(4)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP B20xmini":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B205mini.png"))
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_B205mini.png"))
             self.comboBox_pd_demod_hardware.setCurrentIndex(5)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "LimeSDR":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/LimeSDR.png")) 
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/LimeSDR.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(6)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "bladeRF":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/BladeRF.png")) 
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/BladeRF.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(7)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "Open Sniffer":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/Open_Sniffer.png")) 
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/Open_Sniffer.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(8)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "PlutoSDR":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png")) 
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/PlutoSDR.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(9)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP2":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png")) 
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP2.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(10)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP N2xx":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png")) 
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_N2xx.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(11)
         elif self.dashboard_settings_dictionary['hardware_pd'] == "bladeRF 2.0":
-            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/bladeRF2.png")) 
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/bladeRF2.png")) 
             self.comboBox_pd_demod_hardware.setCurrentIndex(12)
+        elif self.dashboard_settings_dictionary['hardware_pd'] == "USRP X410":
+            self.label_top_pd_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X410.png")) 
+            self.comboBox_pd_demod_hardware.setCurrentIndex(13)
             
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_pd']) > 0:
@@ -12838,46 +12921,49 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         if self.dashboard_settings_dictionary['hardware_attack'] == "Computer":
             self.comboBox_attack_hardware.setCurrentIndex(0)
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png"))
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/computer.png"))
         elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP X3x0":
             self.comboBox_attack_hardware.setCurrentIndex(1)
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png"))
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X310.png"))
         elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP B2x0":
             self.comboBox_attack_hardware.setCurrentIndex(2)
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png"))
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_B210.png"))
         elif self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
             self.comboBox_attack_hardware.setCurrentIndex(3)   
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/HackRF.png"))         
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/HackRF.png"))         
         elif self.dashboard_settings_dictionary['hardware_attack'] == "RTL2832U":
             self.comboBox_attack_hardware.setCurrentIndex(4)
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/RTL2832U.png"))
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/RTL2832U.png"))
         elif self.dashboard_settings_dictionary['hardware_attack'] == "802.11x Adapter":
             self.comboBox_attack_hardware.setCurrentIndex(5)   
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/802_11.png")) 
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/802_11.png")) 
         elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP B20xmini":
             self.comboBox_attack_hardware.setCurrentIndex(6)
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B205mini.png"))
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_B205mini.png"))
         elif self.dashboard_settings_dictionary['hardware_attack'] == "LimeSDR":
             self.comboBox_attack_hardware.setCurrentIndex(7)  
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/LimeSDR.png")) 
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/LimeSDR.png")) 
         elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
             self.comboBox_attack_hardware.setCurrentIndex(8)  
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/BladeRF.png"))    
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/BladeRF.png"))    
         elif self.dashboard_settings_dictionary['hardware_attack'] == "Open Sniffer":
             self.comboBox_attack_hardware.setCurrentIndex(9)  
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/Open_Sniffer.png"))    
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/Open_Sniffer.png"))    
         elif self.dashboard_settings_dictionary['hardware_attack'] == "PlutoSDR":
             self.comboBox_attack_hardware.setCurrentIndex(10)  
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png"))    
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/PlutoSDR.png"))    
         elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP2":
             self.comboBox_attack_hardware.setCurrentIndex(11)  
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png"))    
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP2.png"))    
         elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP N2xx":
             self.comboBox_attack_hardware.setCurrentIndex(12)  
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png"))    
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_N2xx.png"))    
         elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
             self.comboBox_attack_hardware.setCurrentIndex(13)  
-            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/bladeRF2.png"))    
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/bladeRF2.png"))    
+        elif self.dashboard_settings_dictionary['hardware_attack'] == "USRP X410":
+            self.comboBox_attack_hardware.setCurrentIndex(14)
+            self.label_top_attack_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X410.png"))
             
         # Hardware Button Tooltip
         if len(self.dashboard_settings_dictionary['hardware_attack']) > 0:
@@ -12889,13 +12975,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Configures IQ after new hardware selection.
         """
         if self.dashboard_settings_dictionary['hardware_iq'] == "Computer":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png")) 
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/computer.png")) 
             self._slotIQ_InspectionHardwareChanged()
             self.frame_iq_playback.setEnabled(False)
             self.frame_iq_record.setEnabled(False)      
         
         elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP X3x0":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png"))
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X310.png"))
             
             # IQ Record
             spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
@@ -12968,7 +13054,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.frame_iq_record.setEnabled(True)
             
         elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B2x0":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png"))
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_B210.png"))
             
             # IQ Record
             spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
@@ -13023,7 +13109,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.frame_iq_record.setEnabled(True)
                             
         elif self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/HackRF.png"))   
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/HackRF.png"))   
             
             # IQ Record
             spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
@@ -13075,7 +13161,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.frame_iq_record.setEnabled(True)
                  
         elif self.dashboard_settings_dictionary['hardware_iq'] == "RTL2832U":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/RTL2832U.png"))
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/RTL2832U.png"))
             
             # IQ Record
             spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
@@ -13121,13 +13207,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.frame_iq_record.setEnabled(True)
             
         elif self.dashboard_settings_dictionary['hardware_iq'] == "802.11x Adapter":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/802_11.png")) 
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/802_11.png")) 
             self._slotIQ_InspectionHardwareChanged()
             self.frame_iq_playback.setEnabled(False)
             self.frame_iq_record.setEnabled(False)
             
         elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP B20xmini":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B205mini.png"))
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_B205mini.png"))
             self._slotIQ_InspectionHardwareChanged()
             
             # IQ Record
@@ -13182,7 +13268,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.frame_iq_record.setEnabled(True)    
                       
         elif self.dashboard_settings_dictionary['hardware_iq'] == "LimeSDR":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/LimeSDR.png")) 
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/LimeSDR.png")) 
             self._slotIQ_InspectionHardwareChanged()
             
             # IQ Record
@@ -13238,7 +13324,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.frame_iq_record.setEnabled(True)
             
         elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/BladeRF.png"))
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/BladeRF.png"))
             self._slotIQ_InspectionHardwareChanged()
             
             # IQ Record
@@ -13294,13 +13380,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.frame_iq_record.setEnabled(True)
             
         elif self.dashboard_settings_dictionary['hardware_iq'] == "Open Sniffer":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/Open_Sniffer.png")) 
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/Open_Sniffer.png")) 
             self._slotIQ_InspectionHardwareChanged()
             self.frame_iq_playback.setEnabled(False)
             self.frame_iq_record.setEnabled(False)            
         
         elif self.dashboard_settings_dictionary['hardware_iq'] == "PlutoSDR":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png"))   
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/PlutoSDR.png"))   
             
             # IQ Record
             spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
@@ -13352,7 +13438,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.frame_iq_record.setEnabled(True)        
             
         elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP2":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png"))
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP2.png"))
             
             # IQ Record
             spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
@@ -13424,7 +13510,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.frame_iq_record.setEnabled(True)
             
         elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP N2xx":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png"))
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_N2xx.png"))
             
             # IQ Record
             spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
@@ -13496,7 +13582,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.frame_iq_record.setEnabled(True)       
             
         elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
-            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/bladeRF2.png"))
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/bladeRF2.png"))
             self._slotIQ_InspectionHardwareChanged()
             
             # IQ Record
@@ -13549,7 +13635,70 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
             self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)            
             
-            self.frame_iq_record.setEnabled(True)                             
+            self.frame_iq_record.setEnabled(True)
+            
+        elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP X410":
+            self.label_top_iq_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X410.png"))
+            
+            # IQ Record
+            spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            spinbox_frequency.setMaximum(7200)
+            spinbox_frequency.setMinimum(1)
+            spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
+            comboBox_channel = QtWidgets.QComboBox(self, objectName='comboBox2_')
+            comboBox_channel.addItem("A:0")
+            comboBox_channel.addItem("B:0")
+            self.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
+            comboBox_antenna = QtWidgets.QComboBox(self, objectName='comboBox2_')
+            comboBox_antenna.addItem("TX/RX")
+            comboBox_antenna.addItem("RX1")
+            comboBox_antenna.addItem("RX2") 
+                        
+            # Select Antenna
+            get_daughterboard = self.dashboard_settings_dictionary['hardware_daughterboard_iq']
+            if "ZBX" in get_daughterboard:
+                comboBox_antenna.setCurrentIndex(0)
+                
+            self.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
+                
+            spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            spinbox_gain.setMaximum(60)
+            spinbox_gain.setMinimum(0)
+            spinbox_gain.setValue(50)
+            spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+            self.tableWidget_iq_record.removeCellWidget(0,7)
+            self.tableWidget_iq_record.resizeColumnsToContents()
+            self.tableWidget_iq_record.setColumnWidth(0,300)
+            self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
+            self.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
+            
+            # IQ Playback
+            playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_frequency.setMaximum(1)
+            playback_spinbox_frequency.setMinimum(7200)
+            playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
+            comboBox_playback_channel = QtWidgets.QComboBox(self, objectName='comboBox2_')            
+            comboBox_playback_channel.addItem("A:0")
+            comboBox_playback_channel.addItem("B:0") 
+            self.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
+            comboBox_playback_antenna = QtWidgets.QComboBox(self, objectName='comboBox2_')
+            comboBox_playback_antenna.addItem("TX/RX")
+            self.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)             
+            playback_spinbox_gain = QtWidgets.QDoubleSpinBox(self)
+            playback_spinbox_gain.setMaximum(60)
+            playback_spinbox_gain.setMinimum(0)
+            playback_spinbox_gain.setValue(50)
+            playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+            self.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
+            self.tableWidget_iq_playback.resizeColumnsToContents() 
+            self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
+            self.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
+            
+            self._slotIQ_InspectionHardwareChanged()
+            self.frame_iq_record.setEnabled(True)
         
         # Enable Playback and Recording
         self.pushButton_iq_playback.setEnabled(True)
@@ -13570,33 +13719,35 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Configures Archive after new hardware selection.
         """        
         if self.dashboard_settings_dictionary['hardware_archive'] == "Computer":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/computer.png"))
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/computer.png"))
         elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X3x0":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_X310.png"))
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X310.png"))
         elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B2x0":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B210.png"))
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_B210.png"))
         elif self.dashboard_settings_dictionary['hardware_archive'] == "HackRF":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/HackRF.png"))         
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/HackRF.png"))         
         elif self.dashboard_settings_dictionary['hardware_archive'] == "RTL2832U":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/RTL2832U.png"))
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/RTL2832U.png"))
         elif self.dashboard_settings_dictionary['hardware_archive'] == "802.11x Adapter":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/802_11.png")) 
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/802_11.png")) 
         elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP B20xmini":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_B205mini.png"))
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_B205mini.png"))
         elif self.dashboard_settings_dictionary['hardware_archive'] == "LimeSDR":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/LimeSDR.png")) 
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/LimeSDR.png")) 
         elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/BladeRF.png"))    
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/BladeRF.png"))    
         elif self.dashboard_settings_dictionary['hardware_archive'] == "Open Sniffer":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/Open_Sniffer.png"))    
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/Open_Sniffer.png"))    
         elif self.dashboard_settings_dictionary['hardware_archive'] == "PlutoSDR":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/PlutoSDR.png"))    
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/PlutoSDR.png"))    
         elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP2":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP2.png"))    
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP2.png"))    
         elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/USRP_N2xx.png"))    
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_N2xx.png"))    
         elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":
-            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Icons/bladeRF2.png"))    
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/bladeRF2.png"))    
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X410":
+            self.label_top_archive_picture.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X410.png"))
             
         # Adjust Existing Channel ComboBoxes and Gain in Replay Tab
         for n in range(0, self.tableWidget_archive_replay.rowCount()):
@@ -13681,7 +13832,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 get_combobox.addItem("")      
                 gain_item = QtWidgets.QTableWidgetItem("20")
                 gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-                self.tableWidget_archive_replay.setItem(n,7,gain_item)                                                        
+                self.tableWidget_archive_replay.setItem(n,7,gain_item)
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X410":
+                get_combobox.addItem("A:0")
+                get_combobox.addItem("B:0")    
+                gain_item = QtWidgets.QTableWidgetItem("50")
+                gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
+                self.tableWidget_archive_replay.setItem(n,7,gain_item)           
             else:
                 get_combobox.addItem("")
                 
@@ -13737,12 +13894,26 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         else:
             self.errorMessage("Cannot crop " + get_data_type + ".")
             return
-
+        
         # Calculate Number of Samples
         num_samples = str(int(get_end)-int(get_start))
-                
-        # Save File         
-        os.system('dd if="'+ get_file_path_original + '" of="' + get_file_path + '" bs=' + bs + " skip=" + get_start + " count=" + num_samples)
+        
+        # Exclude Samples in Range
+        if self.checkBox_iq_crop_exclude.isChecked() == True:
+            # Copy Before and After
+            os.system('dd if="'+ get_file_path_original + '" of="' + get_file_path + '.tmp1" bs=' + bs + ' count=' + get_start)
+            os.system('dd if="'+ get_file_path_original + '" of="' + get_file_path + '.tmp2" bs=' + bs + ' skip=' + get_end)
+            
+            # Join Temporary Files
+            os.system('cat "' + get_file_path + '.tmp1" "' + get_file_path + '.tmp2" > "' + get_file_path + '"')
+
+            # Remove Temporary Files
+            os.system('rm "' + get_file_path + '.tmp1" "' + get_file_path + '.tmp2"')
+
+        # Copy Samples in Range
+        else:
+            # Save File         
+            os.system('dd if="'+ get_file_path_original + '" of="' + get_file_path + '" bs=' + bs + ' skip=' + get_start + ' count=' + num_samples)
         
         # Refresh Listbox
         self._slotIQ_RefreshClicked()
@@ -15907,6 +16078,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     fname = "iq_playback_single_bladerf2"
                 else:
                     fname = "iq_playback_bladerf2"
+            elif self.dashboard_settings_dictionary['hardware_iq'] == "USRP X410":
+                if get_repeat == "No":
+                    fname = "iq_playback_single_x410"
+                else:
+                    fname = "iq_playback_x410"
             
             # LimeSDR Channel
             if self.dashboard_settings_dictionary['hardware_iq'] == "LimeSDR":
@@ -16192,7 +16368,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Updates the gallery listbox with images files for the selected protocol.
         """
         # Update the Listbox
-        folder = os.path.dirname(os.path.realpath(__file__)) + "/Gallery/"               
+        folder = os.path.dirname(os.path.realpath(__file__)) + "/docs/Gallery/"               
         self.listWidget_library_gallery.clear()
         get_protocol = str(self.comboBox_library_gallery_protocol.currentText())
         get_protocol = get_protocol.replace(" ","_")
@@ -16205,7 +16381,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Returns the names of Gallery images for a protocol.
         """
         # Check for Images
-        folder = os.path.dirname(os.path.realpath(__file__)) + "/Gallery/"               
+        folder = os.path.dirname(os.path.realpath(__file__)) + "/docs/Gallery/"               
         protocol = protocol.replace(" ","_")
         protocol_len = len(protocol)
         get_file_names = []
@@ -16221,7 +16397,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         try:
             # Display Image
             get_image_name = str(self.listWidget_library_gallery.currentItem().text())
-            get_image = QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/Gallery/" + get_image_name)
+            get_image = QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Gallery/" + get_image_name)
             get_width = get_image.width()
             get_height = get_image.height()
             label_width = 860
@@ -16266,7 +16442,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Get the File
         get_image_name = str(self.listWidget_library_gallery.currentItem().text())
-        image_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Gallery/" + get_image_name
+        image_filepath = os.path.dirname(os.path.realpath(__file__)) + "/docs/Gallery/" + get_image_name
             
         # Opens the File with EOG
         osCommandString = "eog " + image_filepath
@@ -16978,52 +17154,52 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuHelpUploadingFlowGraphsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/UploadingFlowGraphs.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/UploadingFlowGraphs.html &")
         
     def _slotMenuHelpUploadingPythonScriptesClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/UploadingPythonScripts.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/UploadingPythonScripts.html &")
         
     def _slotMenuHelpNewUSRPX310_Clicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/NewUSRP_X310.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/NewUSRP_X310.html &")
         
     def _slotMenuHelpUpdatingHackRFClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/UpdatingHackRF_Firmware.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/UpdatingHackRF_Firmware.html &")
         
     def _slotMenuHelpLimeSDR_Clicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/LimeSDR_Notes.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/LimeSDR_Notes.html &")
         
     def _slotMenuHelpSupportedProtocolsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/SupportedProtocols.html &")                                                        
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/SupportedProtocols.html &")                                                        
         
     def _slotMenuHelpSoftwareAndConflictsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/SoftwareAndConflicts.html &")        
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/SoftwareAndConflicts.html &")        
         
     def _slotMenuHelpBuiltWithClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/BuiltWith.html &")   
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/BuiltWith.html &")   
         
     def _slotMenuHelpAboutClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/About.html &")             
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/About.html &")             
         
     def _slotMenuLessonOpenBTS_Clicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson1_OpenBTS.html &")    
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson1_OpenBTS.html &")    
                 
     def _slotIQ_PlaybackRecordFreqClicked(self):
         """ Copies the frequency value from the Record tab table to the Playback tab table.
@@ -17905,6 +18081,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     new_combobox1.addItem("B:B")
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":      
                     new_combobox1.addItem("")
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X410":
+                    new_combobox1.addItem("A:0")
+                    new_combobox1.addItem("B:0")    
                 else:
                     new_combobox1.addItem("")
                 new_combobox1.setFixedSize(67,24) 
@@ -17940,6 +18119,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     gain_item = QtWidgets.QTableWidgetItem("30")
                 elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":         
                     gain_item = QtWidgets.QTableWidgetItem("20")
+                elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X410":
+                    gain_item = QtWidgets.QTableWidgetItem("50")
                 else:
                     gain_item = QtWidgets.QTableWidgetItem("") 
                 gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
@@ -18046,6 +18227,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             new_combobox1.addItem("B:B")    
         elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":
             new_combobox1.addItem("")
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X410":
+            new_combobox1.addItem("A:0")
+            new_combobox1.addItem("B:0")
         else:
             new_combobox1.addItem("")
         new_combobox1.setFixedSize(67,24) 
@@ -18080,7 +18264,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
             gain_item = QtWidgets.QTableWidgetItem("30")
         elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":         
-            gain_item = QtWidgets.QTableWidgetItem("20")                                                         
+            gain_item = QtWidgets.QTableWidgetItem("20")
+        elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X410":
+            gain_item = QtWidgets.QTableWidgetItem("50")
         else:
             gain_item = QtWidgets.QTableWidgetItem("") 
         gain_item.setTextAlignment(QtCore.Qt.AlignCenter) 
@@ -18309,7 +18495,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP N2xx":
                 flow_graph = "archive_replay_usrp_n2xx"       
             elif self.dashboard_settings_dictionary['hardware_archive'] == "bladeRF 2.0":
-                flow_graph = "archive_replay_bladerf2"                                         
+                flow_graph = "archive_replay_bladerf2"
+            elif self.dashboard_settings_dictionary['hardware_archive'] == "USRP X410":
+                flow_graph = "archive_replay_usrp_x410"
                             
             # Send "Start Archive Playlist" Message to the HIPRFISR    
             if len(flow_graph) > 0:
@@ -18427,6 +18615,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_ip = str(self.textEdit_pd_sniffer_netcat_ip.toPlainText())
         get_port = str(self.textEdit_pd_sniffer_netcat_port.toPlainText())
         
+        # Check the Values
+        if not (get_port.isdigit() and 1 <= int(get_port) <= 65535):
+            self.errorMessage("Enter a valid port (1-65535).")
+            return
+        
         # Issue the Command
         if get_tcp_udp == "TCP":
             command_text = 'gnome-terminal -- nc -l ' + get_ip + ' ' + get_port + ' &'
@@ -18487,7 +18680,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens the Protocols_and_More.xlsx spreadsheet.
         """
         # Issue the Command
-        spreadsheet_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Help/Protocols_and_More.xlsx"
+        spreadsheet_filepath = os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/Protocols_and_More.xlsx"
         command_text = 'libreoffice ' + spreadsheet_filepath + ' &'
         proc = subprocess.Popen(command_text, shell=True)    
         
@@ -18571,6 +18764,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Get the Values
         get_file_path = str(self.comboBox_pd_sniffer_test_folders.currentText()) + "/" + str(self.listWidget_pd_sniffer_test_files.currentItem().text())
         get_port = str(self.textEdit_pd_sniffer_test_port.toPlainText())
+        
+        # Check the Values
+        if not (get_port.isdigit() and 1 <= int(get_port) <= 65535):
+            self.errorMessage("Enter a valid port (1-65535).")
+            return
         
         # Issue the Command
         command_text = 'cat "' + get_file_path + '" | nc -u 127.0.0.1 ' + get_port
@@ -18821,7 +19019,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif get_hardware == "bladeRF 2.0":
             # Frequency Limits
             if (get_frequency >= 47) and (get_frequency <= 6000):
-                return True  
+                return True
+                
+        elif get_hardware == "USRP X410":            
+            # Frequency Limits
+            if get_daughterboard == "ZBX":
+                if (get_frequency >= 1) and (get_frequency <= 7200):
+                    return True
         
         # Not in Bounds
         return False
@@ -19425,7 +19629,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonLuaDissectorsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson2_LuaDissectors.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson2_LuaDissectors.html &") 
 
     def _slotMenuMinimodemRxClicked(self):
         """ Opens a terminal and populates it with the minimodem --rx command.
@@ -19473,7 +19677,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonSound_eXchangeClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson3_Sound_eXchange.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson3_Sound_eXchange.html &") 
         
     def _slotMenuVLC_Clicked(self):
         """ Opens VLC.
@@ -19510,7 +19714,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuESP_BoardClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson4_ESP_Boards.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson4_ESP_Boards.html &") 
         
     def _slotMenuGoogleEarthProClicked(self):
         """ Opens Google Earth Pro.
@@ -19739,7 +19943,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonRadiosondeTrackingClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson5_Radiosonde_Tracking.html &")         
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson5_Radiosonde_Tracking.html &")         
 
     def _slotMenuBtrxClicked(self):
         """ Opens an example command for using btrx (gr-bluetooth).
@@ -19885,7 +20089,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonRFID_Clicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson6_RFID.html &")     
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson6_RFID.html &")     
         
     def _slotMenuStandaloneFM_RadioCaptureClicked(self):
         """ Opens the standalone flow graph in GNU Radio Companion.
@@ -19899,7 +20103,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Displays the advanced settings for the currently selected TSI detector.
         """
         # Switch to Advanced Settings
-        fg_detectors = ['wideband_x3x0.py','wideband_b2x0.py','wideband_hackrf.py','wideband_b20xmini.py','wideband_rtl2832u.py','wideband_limesdr.py','wideband_bladerf.py','wideband_plutosdr.py','wideband_usrp2.py','wideband_usrp_n2xx.py','wideband_bladerf2.py']
+        fg_detectors = ['wideband_x3x0.py','wideband_b2x0.py','wideband_hackrf.py','wideband_b20xmini.py','wideband_rtl2832u.py','wideband_limesdr.py','wideband_bladerf.py','wideband_plutosdr.py','wideband_usrp2.py','wideband_usrp_n2xx.py','wideband_bladerf2.py','wideband_usrp_x410.py']
         
         # Flow Graph Detectors
         if str(self.comboBox_tsi_detector.currentText()) in fg_detectors:
@@ -19946,8 +20150,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(1)
             else:                
                 self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)  
-            self.stackedWidget1_tsi_detector.setCurrentIndex(0)          
-            
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)
+
         elif get_detector == 'wideband_b2x0.py':
             self.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
             self.spinBox_tsi_detector_fg_threshold.setValue(-70)
@@ -20124,6 +20328,28 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0) 
             self.stackedWidget1_tsi_detector.setCurrentIndex(0)
             
+        elif get_detector == 'wideband_usrp_x410.py':
+            self.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
+            self.spinBox_tsi_detector_fg_threshold.setValue(-70)
+            self.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
+            self.spinBox_tsi_detector_fg_gain.setMaximum(60)
+            self.spinBox_tsi_detector_fg_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fg_gain.setValue(50)
+            self.comboBox_tsi_detector_fg_channel.clear()
+            self.comboBox_tsi_detector_fg_channel.addItem("A:0")
+            self.comboBox_tsi_detector_fg_channel.addItem("B:0")
+            self.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fg_antenna.clear()
+            self.comboBox_tsi_detector_fg_antenna.addItem("TX/RX")
+            self.comboBox_tsi_detector_fg_antenna.addItem("RX1")
+            self.comboBox_tsi_detector_fg_antenna.addItem("RX2")
+            
+            # Select Antenna
+            get_daughterboard = self.dashboard_settings_dictionary['hardware_daughterboard_tsi']
+            if "ZBX" in get_daughterboard:
+                self.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
+            self.stackedWidget1_tsi_detector.setCurrentIndex(0)
+            
         elif get_detector == 'Simulator':
             self.stackedWidget1_tsi_detector.setCurrentIndex(2)
             
@@ -20134,7 +20360,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuAddingCustomOptionsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/AddingCustomOptions.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/AddingCustomOptions.html &")
         
     def _slotPD_StatusSOI_NewClicked(self):
         """ Manually creates a new signal of interest.
@@ -20181,7 +20407,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens a CSV with RF protocols sorted by frequency.
         """
         # Issue the Command
-        csv_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Help/protocols_by_frequency.csv"
+        csv_filepath = os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/protocols_by_frequency.csv"
         command_text = 'libreoffice ' + csv_filepath + ' &'
         proc = subprocess.Popen(command_text, shell=True) 
         
@@ -20288,7 +20514,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuModifyingDashboardClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/ModifyingDashboard.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/ModifyingDashboard.html &")
     
     def _slotMenuNrsc5_Clicked(self):
         """ Opens the nrsc5 command (for rtl devices) in a terminal. Press 0,1,2,3 once running to switch programs.
@@ -20310,7 +20536,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens the AntennaComparison spreadsheet.
         """
         # Issue the Command
-        spreadsheet_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Help/AntennaComparison.ods"
+        spreadsheet_filepath = os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/AntennaComparison.ods"
         command_text = 'libreoffice ' + spreadsheet_filepath + ' &'
         proc = subprocess.Popen(command_text, shell=True)         
         
@@ -21334,12 +21560,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonDataTypesClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson7_Data_Types.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson7_Data_Types.html &")
         
     def _slotMenuLessonCustomGNU_RadioBlocksClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson8_Custom_GNU_Radio_Blocks.html &")
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson8_Custom_GNU_Radio_Blocks.html &")
 
     def _slotMenuADSB_ExchangeClicked(self):
         """ Opens ADS-B Exchange in a browser.
@@ -21374,7 +21600,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonTPMS_Clicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson9_TPMS.html &")  
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson9_TPMS.html &")  
 
     def _slotMenuHowToFileClicked(self):
         """ Opens RadioQTH page on how to file for a call sign in a browser.
@@ -21461,7 +21687,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonHamRadioExamsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson10_Ham_Radio_Exams.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson10_Ham_Radio_Exams.html &") 
         
     def _slotMenu2019_2023_GeneralPoolClicked(self):
         """ Opens the 2019-2023 General Class Question Pool pdf.
@@ -21491,7 +21717,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonWiFiToolsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson11_WiFi_Tools.html &")         
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson11_WiFi_Tools.html &")         
         
     def _slotMenuHelpPySDR_orgClicked(self):
         """ Opens PySDR.org in a browser.
@@ -21730,7 +21956,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             
             # No Hardware Selected
             if len(self.dashboard_settings_dictionary['hardware_ip_tsi']) == 0 and len(self.dashboard_settings_dictionary['hardware_serial_tsi']) == 0 \
-                and ('x3x0' in get_detector) and ('b2x0' in get_detector):
+                and (('x3x0' in get_detector) or ('b2x0' in get_detector) or ('x410' in get_detector)):
                 
                 error_text = " Fill out the IP address or serial number by clicking the TSI hardware button."
                 
@@ -22074,6 +22300,42 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.comboBox_tsi_detector_fixed_antenna.clear()
             self.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
             self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0) 
+            self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
+            
+        if get_detector == 'fixed_threshold_usrp_x410.py':
+            self.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+            self.comboBox_tsi_detector_fixed_sample_rate.clear()
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("500e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("400e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("300e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("200e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("100e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("50e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+            self.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(6)
+            self.spinBox_tsi_detector_fixed_threshold.setValue(0)
+            self.spinBox_tsi_detector_fixed_gain.setMaximum(60)
+            self.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+            self.spinBox_tsi_detector_fixed_gain.setValue(50)
+            self.comboBox_tsi_detector_fixed_channel.clear()
+            self.comboBox_tsi_detector_fixed_channel.addItem("A:0")
+            self.comboBox_tsi_detector_fixed_channel.addItem("B:0")
+            self.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
+            self.comboBox_tsi_detector_fixed_antenna.clear()
+            self.comboBox_tsi_detector_fixed_antenna.addItem("TX/RX")
+            self.comboBox_tsi_detector_fixed_antenna.addItem("RX1")
+            self.comboBox_tsi_detector_fixed_antenna.addItem("RX2")
+            
+            # Select Antenna
+            get_daughterboard = self.dashboard_settings_dictionary['hardware_daughterboard_tsi']
+            if "ZBX" in get_daughterboard:
+                self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
+            else:                
+                self.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)  
             self.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
             
         elif get_detector == 'fixed_threshold_simulator.py':
@@ -22727,12 +22989,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuLessonCreatingBootableUSBsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Lessons/HTML/Lesson12_Creating_Bootable_USBs.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson12_Creating_Bootable_USBs.html &") 
         
     def _slotMenuHelpInspectionFlowGraphsClicked(self):
         """ Opens the html file in a browser.
         """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/Help/HTML/InspectionFlowGraphs.html &") 
+        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/InspectionFlowGraphs.html &") 
             
     def _slotMenuDireWolfClicked(self):
         """ Opens a terminal with an example Dire Wolf command.
@@ -22880,7 +23142,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        grip_directory = os.path.dirname(os.path.realpath(__file__)) + "/Lessons/Markdown"
+        grip_directory = os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/Markdown"
         grip_command = "grip Lesson1_OpenBTS.md --export ../HTML/Lesson1_OpenBTS.html"   
         proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + grip_command + '"', cwd=grip_directory, shell=True)        
         
@@ -24103,6 +24365,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 self.dashboard_settings_dictionary['hardware_archive'] = "USRP N2xx"
                             elif get_hardware == "bladeRF 2.0":
                                 self.dashboard_settings_dictionary['hardware_archive'] = "bladeRF 2.0"
+                            elif get_hardware == "USRP X410":
+                                self.dashboard_settings_dictionary['hardware_archive'] = "USRP X410"
                             self.configureArchiveHardware()
                         else:
                             self._slotArchiveReplayAddClicked()
@@ -24172,7 +24436,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_css_text = get_css_text.replace("@color3",self.dashboard_settings_dictionary['color3'])
         get_css_text = get_css_text.replace("@color4",self.dashboard_settings_dictionary['color4'])
         get_css_text = get_css_text.replace("@color5",self.dashboard_settings_dictionary['color5'])
-        get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/Icons")
+        get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons")
         self.setStyleSheet(get_css_text)
         
         # Adjust Custom Widgets
@@ -24228,7 +24492,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_css_text = get_css_text.replace("@color3",self.dashboard_settings_dictionary['color3'])
         get_css_text = get_css_text.replace("@color4",self.dashboard_settings_dictionary['color4'])
         get_css_text = get_css_text.replace("@color5",self.dashboard_settings_dictionary['color5'])
-        get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/Icons")
+        get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons")
         self.setStyleSheet(get_css_text)
         
         # Adjust Custom Widgets
@@ -24305,7 +24569,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_css_text = get_css_text.replace("@color3",self.dashboard_settings_dictionary['color3'])
             get_css_text = get_css_text.replace("@color4",self.dashboard_settings_dictionary['color4'])
             get_css_text = get_css_text.replace("@color5",self.dashboard_settings_dictionary['color5'])
-            get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/Icons")
+            get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons")
             self.setStyleSheet(get_css_text)
             
             # Adjust Custom Widgets
@@ -25192,6 +25456,8 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             self.comboBox_hardware.setCurrentIndex(12)
         elif hardware == "bladeRF 2.0":
             self.comboBox_hardware.setCurrentIndex(13)
+        elif hardware == "USRP X410":
+            self.comboBox_hardware.setCurrentIndex(14)
         
         self.textEdit_ip.setPlainText(ip)
         self.textEdit_ip.setAlignment(QtCore.Qt.AlignCenter)
@@ -25242,6 +25508,8 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             self.comboBox_daughterboard.setCurrentIndex(19) 
         elif "RFX2400" in daughterboard:
             self.comboBox_daughterboard.setCurrentIndex(20) 
+        elif "ZBX" in daughterboard:
+            self.comboBox_daughterboard.setCurrentIndex(21) 
                             
     
     def _connectSlots(self):
@@ -25338,6 +25606,8 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             self.parent.findUSRP_N2xx(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label2_probe)
         elif str(self.comboBox_hardware.currentText()) == "bladeRF 2.0":
             self.parent.find_bladeRF2(self.textEdit_serial)
+        elif str(self.comboBox_hardware.currentText()) == "USRP X410":
+            self.parent.findX410(self.textEdit_ip, self.textEdit_serial, self.comboBox_daughterboard, self.label2_probe)   
 
     def _slotProbeClicked(self):
         """ Opens a message box and copies the results of "uhd_usrp_probe xxx.xxx.xxx.xxx"
@@ -25484,11 +25754,30 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
                 self.label2_probe.setVisible(False)               
             except:
                 self.label2_probe.setVisible(False)
-                output = "Error"            
+                output = "Error"      
                 
             # Create a Dialog Window    
             msgBox = MyMessageBox(my_text = output, height = 140, width = 400)
-            msgBox.exec_()                      
+            msgBox.exec_()
+            
+        elif str(self.comboBox_hardware.currentText()) == "USRP X410":
+            # Get IP Address
+            get_ip = str(self.textEdit_ip.toPlainText())
+            
+            # Probe
+            try:
+                self.label2_probe.setVisible(True)
+                QtWidgets.QApplication.processEvents()
+                proc = subprocess.Popen('uhd_usrp_probe --args="addr=' + get_ip + '" &', shell=True, stdout=subprocess.PIPE, )
+                output = proc.communicate()[0].decode()
+                self.label2_probe.setVisible(False)
+            except:
+                self.label2_probe.setVisible(False)
+                output = "Error"            
+                
+            # Create a Dialog Window    
+            msgBox = MyMessageBox(my_text = output)
+            msgBox.exec_()   
                         
     def _slotHardwareChanged(self):
         """ Updates display options for selected hardware.
@@ -25600,6 +25889,13 @@ class HardwareSelectDialog(QtWidgets.QDialog, form_class5):
             self.pushButton_probe_usrp.setVisible(True)
             self.textEdit_interface.setVisible(False)   
             self.comboBox_daughterboard.setVisible(False)
+        elif str(self.comboBox_hardware.currentText()) == "USRP X410":
+            self.textEdit_ip.setVisible(True)
+            self.textEdit_serial.setVisible(True)		
+            self.pushButton_guess.setVisible(True)
+            self.pushButton_probe_usrp.setVisible(True)
+            self.textEdit_interface.setVisible(False)	
+            self.comboBox_daughterboard.setVisible(True)
             
     def _slotApplyToAllClicked(self):
         """ Save the current radio settings to all components.
@@ -25672,14 +25968,14 @@ class MyPlotWindow(QtWidgets.QDialog):
         mpl_toolbar = NavigationToolbar(entropy_mpl_widget, self)
         mpl_toolbar.setGeometry(QtCore.QRect(175, 600, 525, 35))
         icons_buttons = {
-            "Home": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/home.png"),
-            "Pan": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/move.png"),
-            "Zoom": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/zoom_to_rect.png"),
-            "Back": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/back.png"),
-            "Forward": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/forward.png"),
-            "Subplots": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/subplots.png"),
-            "Customize": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/qt4_editor_options.png"),
-            "Save": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/Icons/filesave.png"),
+            "Home": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/home.png"),
+            "Pan": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/move.png"),
+            "Zoom": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/zoom_to_rect.png"),
+            "Back": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/back.png"),
+            "Forward": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/forward.png"),
+            "Subplots": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/subplots.png"),
+            "Customize": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/qt4_editor_options.png"),
+            "Save": QtGui.QIcon(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/filesave.png"),
         }
         for action in mpl_toolbar.actions():
             if action.text() in icons_buttons:

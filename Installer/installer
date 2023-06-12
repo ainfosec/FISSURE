@@ -89,7 +89,7 @@ fi
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=dashboard.py\\nName=FISSURE\\nTerminal=false\\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
-echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
+echo "Icon=""" + fissure_directory + """/docs/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
 . ~/.bashrc
 ########## Verify ##########
@@ -184,7 +184,8 @@ sudo rmmod dvb_usb_rtl28xxu
 echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y libusb-1.0-0-dev
-git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
+#git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git  # Produces errors with GNU Radio 3.8.5.0
+git clone https://github.com/vladisslav2011/gr-osmosdr.git
 cd gr-osmosdr
 git checkout gr3.8
 mkdir build
@@ -2092,7 +2093,7 @@ fi
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=dashboard.py\\nName=FISSURE\\nTerminal=false\\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
-echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
+echo "Icon=""" + fissure_directory + """/docs/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
 . ~/.bashrc
 ########## Verify ##########
@@ -2187,7 +2188,8 @@ sudo rmmod dvb_usb_rtl28xxu
 echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y libusb-1.0-0-dev
-git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
+#git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git  # Produces errors with GNU Radio 3.8.5.0
+git clone https://github.com/vladisslav2011/gr-osmosdr.git
 cd gr-osmosdr
 git checkout gr3.8
 mkdir build
@@ -4086,7 +4088,7 @@ sudo ln -s /usr/src/falcon/build/src/gui/gui /usr/bin/FalconGUI
 programs_dragonOS_focal.append(('fissure Command',
 """echo "[Desktop Entry]\\nStartupWMClass=dashboard\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=""" + fissure_directory + """/dashboard.py" >> """ + fissure_directory + """/Installer/fissure.desktop
-echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
+echo "Icon=""" + fissure_directory + """/docs/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
 ########## Verify ##########
 ls /usr/share/applications/fissure.desktop
@@ -5365,7 +5367,8 @@ find . -name '*.grc' -exec grcc {} \;
 # echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
 # cd ~/Installed_by_FISSURE
 # sudo apt-get install -y libusb-1.0-0-dev
-# git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
+# #git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git  # Produces errors with GNU Radio 3.8.5.0
+# git clone https://github.com/vladisslav2011/gr-osmosdr.git
 # cd gr-osmosdr
 # git checkout gr3.8
 # mkdir build
@@ -6089,7 +6092,7 @@ fi
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=dashboard.py\\nName=FISSURE\\nTerminal=false\\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
-echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
+echo "Icon=""" + fissure_directory + """/docs/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
 . ~/.bashrc
 ########## Verify ##########
@@ -6184,7 +6187,8 @@ sudo rmmod dvb_usb_rtl28xxu
 echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y libusb-1.0-0-dev
-git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
+#git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git  # Produces errors with GNU Radio 3.8.5.0
+git clone https://github.com/vladisslav2011/gr-osmosdr.git
 cd gr-osmosdr
 git checkout gr3.8
 mkdir build
@@ -8036,7 +8040,22 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
 
         # Hide Progress Bar
         self.progressBar1.hide()   
-        self.label2_current_item.hide()   
+        self.label2_current_item.hide()
+        
+        # Set Style Sheet
+        color1 = "#F4F4F4"
+        color2 = "#FBFBFB"
+        color3 = "#17365D"
+        color4 = "#000000"
+        color5 = "#FFFFFF"
+        get_css_text = str(open('/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/UI/Style_Sheets/light.css","r").read())
+        get_css_text = get_css_text.replace("@color1",color1)
+        get_css_text = get_css_text.replace("@color2",color2)
+        get_css_text = get_css_text.replace("@color3",color3)
+        get_css_text = get_css_text.replace("@color4",color4)
+        get_css_text = get_css_text.replace("@color5",color5)
+        get_css_text = get_css_text.replace("@icon_path",'/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/docs/Icons")
+        self.setStyleSheet(get_css_text) 
         
         # Do SIGNAL/Slots Connections
         self._connectSlots()  
@@ -8209,7 +8228,7 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         # Search Programs
         for p in range(0,len(self.programs)):
             if current_item == self.programs[p][0]:
-                self.plainTextEdit1.setPlainText(self.programs[p][1])
+                self.plainTextEdit_commands.setPlainText(self.programs[p][1])
                 break
         
     def _slotDeselectClicked(self):
@@ -8314,7 +8333,22 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
         self.setupUi(self)
         
         # Prevent Resizing/Maximizing
-        self.setFixedSize(240, 270)         
+        self.setFixedSize(240, 270)
+        
+        # Set Style Sheet
+        color1 = "#F4F4F4"
+        color2 = "#FBFBFB"
+        color3 = "#17365D"
+        color4 = "#000000"
+        color5 = "#FFFFFF"
+        get_css_text = str(open('/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/UI/Style_Sheets/light.css","r").read())
+        get_css_text = get_css_text.replace("@color1",color1)
+        get_css_text = get_css_text.replace("@color2",color2)
+        get_css_text = get_css_text.replace("@color3",color3)
+        get_css_text = get_css_text.replace("@color4",color4)
+        get_css_text = get_css_text.replace("@color5",color5)
+        get_css_text = get_css_text.replace("@icon_path",'/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/docs/Icons")
+        self.setStyleSheet(get_css_text)  
         
         # Do SIGNAL/Slots Connections
         self._connectSlots()  

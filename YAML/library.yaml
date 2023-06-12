@@ -336,6 +336,12 @@ Inspection Flow Graphs:
      - time_sink_bladerf2.py
      - time_sink_1_10_100_bladerf2.py
      - waterfall_blader2f.py
+     USRP X410:
+     - instantaneous_frequency_usrp_x410.py
+     - signal_envelope_usrp_x410.py
+     - time_sink_usrp_x410.py
+     - time_sink_1_10_100_usrp_x410.py
+     - waterfall_usrp_x410.py
 Protocols:
      802.11x:
           Attacks:

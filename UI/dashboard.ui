@@ -1439,6 +1439,11 @@
                 </item>
                 <item>
                  <property name="text">
+                  <string>wideband_usrp_x410.py</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
                   <string>Simulator</string>
                  </property>
                 </item>
@@ -3264,6 +3269,11 @@ p, li { white-space: pre-wrap; }
                  <item>
                   <property name="text">
                    <string>fixed_threshold_bladerf2.py</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>fixed_threshold_usrp_x410.py</string>
                   </property>
                  </item>
                  <item>
@@ -5642,6 +5652,11 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <property name="text">
                   <string>bladeRF 2.0</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>USRP X410</string>
                  </property>
                 </item>
                </widget>
@@ -13790,6 +13805,11 @@ p, li { white-space: pre-wrap; }
               <string>bladeRF 2.0</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>USRP X410</string>
+             </property>
+            </item>
            </widget>
           </widget>
           <widget class="QWidget" name="tab_iq_data">
@@ -16308,6 +16328,27 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_iq_crop_exclude">
+               <property name="geometry">
+                <rect>
+                 <x>250</x>
+                 <y>87</y>
+                 <width>75</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Exclude</string>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
                </property>
               </widget>
              </widget>
@@ -23978,7 +24019,7 @@ p, li { white-space: pre-wrap; }
                 <x>10</x>
                 <y>545</y>
                 <width>301</width>
-                <height>41</height>
+                <height>60</height>
                </rect>
               </property>
               <property name="font">
@@ -23988,7 +24029,8 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="text">
                <string>To Add Image: 
-&quot;&lt;Protocol_Name&gt;_&lt;Description&gt;&quot; in ./Gallery</string>
+&quot;&lt;Protocol_Name&gt;_&lt;Description&gt;&quot; in 
+./docs/Gallery/ folder</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -25022,6 +25064,11 @@ p, li { white-space: pre-wrap; }
                 <height>27</height>
                </rect>
               </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+               </font>
+              </property>
              </widget>
              <widget class="QPushButton" name="pushButton_library_remove_protocol">
               <property name="enabled">
@@ -25034,6 +25081,11 @@ p, li { white-space: pre-wrap; }
                 <width>99</width>
                 <height>27</height>
                </rect>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+               </font>
               </property>
               <property name="text">
                <string>Remove</string>
@@ -26568,6 +26620,11 @@ Flow Graphs</string>
                   <string>bladeRF 2.0</string>
                  </property>
                 </item>
+                <item>
+                 <property name="text">
+                  <string>USRP X410</string>
+                 </property>
+                </item>
                </widget>
                <widget class="QComboBox" name="comboBox_library_pd_modulation_types">
                 <property name="geometry">
@@ -27230,6 +27287,11 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <property name="text">
                   <string>bladeRF 2.0</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>USRP X410</string>
                  </property>
                 </item>
                </widget>

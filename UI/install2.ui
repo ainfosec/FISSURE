@@ -65,7 +65,7 @@
     <string>Deselect All</string>
    </property>
   </widget>
-  <widget class="QPlainTextEdit" name="plainTextEdit1">
+  <widget class="QPlainTextEdit" name="plainTextEdit_commands">
    <property name="geometry">
     <rect>
      <x>370</x>
@@ -80,12 +80,6 @@
      <italic>false</italic>
     </font>
    </property>
-   <property name="styleSheet">
-    <string notr="true">QPlainTextEdit#plainTextEdit1 {
-	border: 1px solid #17365D;
-	background-color: rgb(251, 251, 251);
-}</string>
-   </property>
    <property name="horizontalScrollBarPolicy">
     <enum>Qt::ScrollBarAsNeeded</enum>
    </property>
@@ -96,7 +90,7 @@
     <bool>true</bool>
    </property>
   </widget>
-  <widget class="QLabel" name="label1">
+  <widget class="QLabel" name="label1_1">
    <property name="geometry">
     <rect>
      <x>20</x>
@@ -105,19 +99,6 @@
      <height>22</height>
     </rect>
    </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel#label1 {
-   qproperty-alignment: AlignCenter;
-	border: 1px solid #17365D;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
-	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
-	padding: 0px 0px;
-	color: rgb(255, 255, 255);
-	max-height: 20px;
-	font: bold 10pt &quot;Ubuntu&quot;;
-}</string>
-   </property>
    <property name="text">
     <string>Software</string>
    </property>
@@ -125,7 +106,7 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="label2">
+  <widget class="QLabel" name="label1_2">
    <property name="geometry">
     <rect>
      <x>370</x>
@@ -133,19 +114,6 @@
      <width>530</width>
      <height>22</height>
     </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel#label2 {
-   qproperty-alignment: AlignCenter;
-	border: 1px solid #17365D;
-	border-top-left-radius: 15px;
-	border-top-right-radius: 15px;
-	background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
-	padding: 0px 0px;
-	color: rgb(255, 255, 255);
-	max-height: 20px;
-	font: bold 10pt &quot;Ubuntu&quot;;
-}</string>
    </property>
    <property name="text">
     <string>Commands</string>
@@ -189,25 +157,6 @@
     <font>
      <pointsize>9</pointsize>
     </font>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QTreeWidget::item{
-	height: 30px;
-	border:1px; 
-	border-style: solid;
-	border-left-style:none;
-	border-right-style:none;
-	border-top-style:none;
-	border-color:lightgray;    
-	
-	/*background-color: rgb(204, 0, 0);*/
-	/*background-color: rgb(115, 210, 22);*/
-}
-
-QTreeWidget#treeWidget_software { 
-	border: 1px solid #17365D;
-	background-color: rgb(251, 251, 251);
-}</string>
    </property>
    <property name="alternatingRowColors">
     <bool>false</bool>
@@ -287,9 +236,9 @@ QTreeWidget#treeWidget_software {
   <zorder>pushButton_cancel</zorder>
   <zorder>pushButton_default</zorder>
   <zorder>pushButton_deselect</zorder>
-  <zorder>plainTextEdit1</zorder>
-  <zorder>label1</zorder>
-  <zorder>label2</zorder>
+  <zorder>plainTextEdit_commands</zorder>
+  <zorder>label1_1</zorder>
+  <zorder>label1_2</zorder>
   <zorder>progressBar1</zorder>
   <zorder>pushButton_rankings</zorder>
   <zorder>pushButton_expand_all</zorder>
