@@ -87,7 +87,7 @@ fi
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=dashboard.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
-echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
+echo "Icon=""" + fissure_directory + """/docs/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
 . ~/.bashrc
 ########## Verify ##########
@@ -2030,7 +2030,7 @@ fi
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=dashboard.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
-echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
+echo "Icon=""" + fissure_directory + """/docs/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
 . ~/.bashrc
 ########## Verify ##########
@@ -3982,7 +3982,7 @@ fi
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=dashboard.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
-echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
+echo "Icon=""" + fissure_directory + """/docs/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
 . ~/.zshrc
 ########## Verify ##########
@@ -5934,7 +5934,7 @@ fi
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=dashboard.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
-echo "Icon=""" + fissure_directory + """/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
+echo "Icon=""" + fissure_directory + """/docs/Icons/logo_f.png" >> """ + fissure_directory + """/Installer/fissure.desktop
 sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/applications/
 . ~/.bashrc
 ########## Verify ##########
@@ -7839,7 +7839,7 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         get_css_text = get_css_text.replace("@color3",color3)
         get_css_text = get_css_text.replace("@color4",color4)
         get_css_text = get_css_text.replace("@color5",color5)
-        get_css_text = get_css_text.replace("@icon_path",'/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/Icons")
+        get_css_text = get_css_text.replace("@icon_path",'/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/docs/Icons")
         self.setStyleSheet(get_css_text) 
         
         # Do SIGNAL/Slots Connections
@@ -8139,7 +8139,7 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
         get_css_text = get_css_text.replace("@color3",color3)
         get_css_text = get_css_text.replace("@color4",color4)
         get_css_text = get_css_text.replace("@color5",color5)
-        get_css_text = get_css_text.replace("@icon_path",'/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/Icons")
+        get_css_text = get_css_text.replace("@icon_path",'/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/docs/Icons")
         self.setStyleSheet(get_css_text)           
         
         # Do SIGNAL/Slots Connections

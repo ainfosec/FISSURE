@@ -1,6 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-06-12
+
+Initial X410 support, gr-osmosdr fix, crop exclude, relocating files into docs folder.
+ 
+### Added
+
+- Initial USRP X410 support (not tested yet, need examples)
+- Exclude checkbox in Crop tab for removing the samples within a range
+- Suggested .gitignore file extensions
+  
+### Changed
+
+- Moved Gallery, Help, Icons, and Lessons folders to docs folder
+- Applying style sheets for Python3_maint-3.8 and Python2_maint-3.7 installer dialogs
+
+### Fixed
+
+- Corrected the check for no IP address in TSI Detector tabs
+- Minor GUI styling inconsistencies
+- Replaced gr-osmosdr with a fork for Python3_maint-3.8 branch to fix osmocom and RTL GNU Radio blocks
+- Inserting port value checks
+
 ## 2023-05-28
 
 Append tab upgrade, qFlipper, renamed Clip tab, more Archive Dataset Builder buttons.

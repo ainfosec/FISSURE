@@ -1454,6 +1454,11 @@
                 </item>
                 <item>
                  <property name="text">
+                  <string>wideband_usrp_x410.py</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
                   <string>Simulator</string>
                  </property>
                 </item>
@@ -2930,6 +2935,11 @@ p, li { white-space: pre-wrap; }
                  <item>
                   <property name="text">
                    <string>fixed_threshold_bladerf2.py</string>
+                  </property>
+                 </item>
+                 <item>
+                  <property name="text">
+                   <string>fixed_threshold_usrp_x410.py</string>
                   </property>
                  </item>
                  <item>
@@ -5709,6 +5719,11 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <property name="text">
                   <string>bladeRF 2.0</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>USRP X410</string>
                  </property>
                 </item>
                </widget>
@@ -14043,6 +14058,11 @@ p, li { white-space: pre-wrap; }
               <string>bladeRF 2.0</string>
              </property>
             </item>
+            <item>
+             <property name="text">
+              <string>USRP X410</string>
+             </property>
+            </item>
            </widget>
           </widget>
           <widget class="QWidget" name="tab_iq_data">
@@ -16590,6 +16610,27 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="alignment">
                 <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_iq_crop_exclude">
+               <property name="geometry">
+                <rect>
+                 <x>250</x>
+                 <y>87</y>
+                 <width>75</width>
+                 <height>25</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Exclude</string>
+               </property>
+               <property name="checked">
+                <bool>false</bool>
                </property>
               </widget>
              </widget>
@@ -23821,7 +23862,7 @@ p, li { white-space: pre-wrap; }
                 <x>10</x>
                 <y>545</y>
                 <width>301</width>
-                <height>41</height>
+                <height>60</height>
                </rect>
               </property>
               <property name="font">
@@ -23832,7 +23873,8 @@ p, li { white-space: pre-wrap; }
               </property>
               <property name="text">
                <string>To Add Image: 
-&quot;&lt;Protocol_Name&gt;_&lt;Description&gt;&quot; in ./Gallery</string>
+&quot;&lt;Protocol_Name&gt;_&lt;Description&gt;&quot; in 
+./docs/Gallery/ folder</string>
               </property>
               <property name="alignment">
                <set>Qt::AlignCenter</set>
@@ -24889,6 +24931,12 @@ p, li { white-space: pre-wrap; }
                 <width>200</width>
                 <height>27</height>
                </rect>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>11</pointsize>
+                <strikeout>false</strikeout>
+               </font>
               </property>
              </widget>
              <widget class="QPushButton" name="pushButton_library_remove_protocol">
@@ -26504,6 +26552,11 @@ Flow Graphs</string>
                   <string>bladeRF 2.0</string>
                  </property>
                 </item>
+                <item>
+                 <property name="text">
+                  <string>USRP X410</string>
+                 </property>
+                </item>
                </widget>
                <widget class="QComboBox" name="comboBox_library_pd_modulation_types">
                 <property name="geometry">
@@ -26765,6 +26818,12 @@ Flow Graphs</string>
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
                </widget>
                <widget class="QPushButton" name="pushButton_library_attacks_file">
                 <property name="geometry">
@@ -26793,6 +26852,12 @@ Flow Graphs</string>
                   <width>200</width>
                   <height>27</height>
                  </rect>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                  <strikeout>false</strikeout>
+                 </font>
                 </property>
                 <item>
                  <property name="text">
@@ -26868,6 +26933,12 @@ Flow Graphs</string>
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
                 <item>
                  <property name="text">
                   <string>Single-Stage</string>
@@ -26883,6 +26954,12 @@ Flow Graphs</string>
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -26890,8 +26967,8 @@ Flow Graphs</string>
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
                <widget class="QLabel" name="label_library_attacks_filepath">
@@ -27010,6 +27087,12 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
                </widget>
                <widget class="QLabel" name="label2_library_attacks_attack_tree_parent">
                 <property name="geometry">
@@ -27064,6 +27147,12 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                  <strikeout>false</strikeout>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -27071,8 +27160,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
                <widget class="QComboBox" name="comboBox_library_attacks_hardware">
@@ -27083,6 +27172,12 @@ p, li { white-space: pre-wrap; }
                   <width>200</width>
                   <height>27</height>
                  </rect>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                  <strikeout>false</strikeout>
+                 </font>
                 </property>
                 <item>
                  <property name="text">
@@ -27152,6 +27247,11 @@ p, li { white-space: pre-wrap; }
                 <item>
                  <property name="text">
                   <string>bladeRF 2.0</string>
+                 </property>
+                </item>
+                <item>
+                 <property name="text">
+                  <string>USRP X410</string>
                  </property>
                 </item>
                </widget>
