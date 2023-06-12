@@ -139,6 +139,11 @@
      <string>bladeRF 2.0</string>
     </property>
    </item>
+   <item>
+    <property name="text">
+     <string>USRP X410</string>
+    </property>
+   </item>
   </widget>
   <widget class="QPushButton" name="pushButton_guess">
    <property name="enabled">
@@ -483,6 +488,11 @@ p, li { white-space: pre-wrap; }
    <item>
     <property name="text">
      <string>RFX2400</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>ZBX</string>
     </property>
    </item>
   </widget>

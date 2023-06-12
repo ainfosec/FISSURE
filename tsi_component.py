@@ -302,6 +302,8 @@ class TSI_Component:
                 flow_graph_filename = "wideband_usrp_n2xx.py"
             elif detector == "wideband_bladerf2.py":
                 flow_graph_filename = "wideband_bladerf2.py"
+            elif detector == "wideband_usrp_x410.py":
+                flow_graph_filename = "wideband_usrp_x410.py"
             elif detector == "IQ File":
                 flow_graph_filename = "iq_file.py"
             elif "fixed_threshold" in detector:
@@ -327,6 +329,8 @@ class TSI_Component:
                     flow_graph_filename = "fixed_threshold_usrp_n2xx.py"
                 elif detector == "fixed_threshold_bladerf2.py":
                     flow_graph_filename = "fixed_threshold_bladerf2.py"
+                elif detector == "fixed_threshold_usrp_x410.py":
+                    flow_graph_filename = "fixed_threshold_usrp_x410.py"
                 elif detector == "fixed_threshold_simulator.py":
                     flow_graph_filename = "fixed_threshold_simulator.py"
                 stop_event = threading.Event()

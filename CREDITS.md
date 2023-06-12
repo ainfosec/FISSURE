@@ -1,6 +1,6 @@
 # Credits
 
-FISSURE installs and accesses many open source components. You can find links to the projects along with license information below. Also see [Software And Conflicts](/Help/Markdown/SoftwareAndConflicts.md).
+FISSURE installs and accesses many open source components. You can find links to the projects along with license information below. Also see [Software And Conflicts](/docs/Help/Markdown/SoftwareAndConflicts.md).
 
 We are grateful to all developers for their contributions to open source. Please contact Chris Poore (poorec@ainfosec.com) if you would like your software removed from FISSURE or used differently.
 

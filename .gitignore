@@ -1,2 +1,15 @@
+# Common FISSURE Files
 *.pyc
 routersploit.log
+
+
+
+# MacOS Files
+.DS_Store
+
+# VS Code Files
+.vscode
+
+# Other 
+.env  # Some currently unused env files, but often contains secrets, so better be safe than sorry
+env.py
