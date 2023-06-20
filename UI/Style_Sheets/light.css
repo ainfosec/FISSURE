@@ -1,6 +1,7 @@
 /*Global*/
 QCheckBox{
     font-family: "Ubuntu";
+    font-size: 10pt;
 }
 QCheckBox[objectName^="checkBox_"]{
     background-color: rgba(0,0,0,0);
@@ -59,6 +60,17 @@ QHeaderView{
 }
 QLabel{
     font-family: "Ubuntu";
+}
+QListView{
+    background-color: @color5;
+    color: @color4;
+    font-family: "Ubuntu";
+    border: 1px solid lightgray;
+}
+QListView:disabled{
+    background-color: @color5;
+    color: #C0C0C0;
+    border: 1px solid lightgray;
 }
 QListWidget{
     background-color: @color5;
@@ -261,6 +273,31 @@ QTextEdit:disabled{
     background-color: #EFEFEF;
     color: #C0C0C0;
     font-family: "Ubuntu";
+}
+QTreeView{
+    background-color: @color5;
+    color: @color4;
+    font-size: 10pt;
+    font-family: "Ubuntu";
+    border: 1px solid lightgray;
+}
+QTreeView > QHeaderView::section{
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #EFEFEF);
+    color: @color4;
+    font-size: 10pt;
+    border: 1px solid #D4D4D4;
+    padding: 0px;
+    padding-left:4px;    
+}
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings  {
+    border-image: none;
+    image: url(@icon_path/light-tree-open.png);
+}
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings {
+    border-image: none;
+    image: url(@icon_path/light-tree-closed.png);
 }
 QTreeWidget{
     background-color: @color5;
@@ -615,3 +652,11 @@ QWidget#HardwareSelect{
     background-color: @color1;
 }
 
+QTreeView#treeWidget_attack_attacks > QHeaderView::section{
+    color: @color5;
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
+    font: bold 10pt "Ubuntu";
+    border: none;
+    padding: 2px;
+    padding-left: 4px;
+}

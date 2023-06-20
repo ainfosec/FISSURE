@@ -116,6 +116,7 @@ Refer to the FISSURE Help menu for more details on usage.
     <td><img src="/docs/Icons/README/library.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Signal Lookup</b></i></small></dt></td>
     <td><img src="/docs/Icons/README/pd.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Pattern Recognition</b></i></small></dt></td>
   </tr>
+  <tr>
     <td><img src="/docs/Icons/README/attack.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Attacks</b></i></small></dt></td>
     <td><img src="/docs/Icons/README/fuzzing.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Fuzzing</b></i></small></dt></td>
     <td><img src="/docs/Icons/README/signal_playlists.png" align="center" width="200" height="165"><dt align="center"><small><i><b>Signal Playlists</b></i></small></dt></td>
@@ -209,7 +210,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 - [ ] Release a feature extractor that allows users to select and add techniques for extracting features from isolated signals for use in protocol and emitter classification
 - [ ] Release a signal classifier that allows users to select and add AI/ML techniques. In addition, a decision tree with adjustable features and weights.
 - [ ] Implement recursive demodulation mechanisms for producing a bitstream from unknown signals
-- [ ] Increase the online signal archive, support download of selectable collections
+- [x] Increase the online signal archive, support download of selectable collections
 - [ ] Support the addition of both closed source and user-developed plugins
 - [ ] Improve the look for different resolutions and window sizes, dark mode
 - [x] Group third-party programs in the installer by type

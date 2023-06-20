@@ -13,6 +13,7 @@ QCheckBox[objectName^="checkBox_"]{
     background-color: rgba(0,0,0,0);
     color: @color4;
     font-family: "Ubuntu";
+    font-size: 10pt;
 }
 QCheckBox[objectName^="checkBox_"]:disabled{
     color: @color1;
@@ -68,6 +69,17 @@ QHeaderView{
 }
 QLabel{
     font-family: "Ubuntu";
+}
+QListView{
+    background-color: @color5;
+    color: @color4;
+    font-family: "Ubuntu";
+    border: 1px solid @color1;
+}
+QListView:disabled{
+    background-color: @color5;
+    color: @color1;
+    border: 1px solid @color1;
 }
 QListWidget{
     background-color: @color5;
@@ -267,6 +279,39 @@ QTextEdit:disabled{
     color: @color1;
     font-family: "Ubuntu";
     border: 1px solid @color1;
+}
+QTreeView{
+    background-color: @color5;
+    color: @color4;
+    font-size: 10pt;
+    font-family: "Ubuntu";
+    border: 1px solid @color1;
+}
+QTreeView > QHeaderView::section{
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, x3: 0, y3: 1, stop: 0 #343434, stop: 0.9 #303030, stop: 1 #2F2F2F);
+    color: @color4;
+    font-size: 10pt;
+    border: 1px solid @color2;
+    padding: 0px;
+    padding-left:4px;    
+}
+QTreeView::item:selected{  /*different*/
+    background-color: #308CC6;
+    color: #FFFFFF;
+}
+QTreeView::branch:selected{  /*different*/
+    background-color: #308CC6;
+    color: #FFFFFF;
+}
+QTreeView::branch:open:has-children:!has-siblings,
+QTreeView::branch:open:has-children:has-siblings  {
+    border-image: none;
+    image: url(@icon_path/light-tree-open.png);
+}
+QTreeView::branch:has-children:!has-siblings:closed,
+QTreeView::branch:closed:has-children:has-siblings {
+    border-image: none;
+    image: url(@icon_path/light-tree-closed.png);
 }
 QTreeWidget{
     background-color: @color5;
@@ -545,6 +590,14 @@ QDialog#Dialog_custom_color{background-color: @color1;}
 QDialog#Dialog_install{background-color: @color1;}
 QDialog#Dialog_install2{background-color: @color1;}
 
+QTreeView#treeWidget_attack_attacks > QHeaderView::section{
+    color: @color4;
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 @color3, stop:0.05 #888888, stop:0.15 @color3,   stop:0.85 @color3, stop:1 @color3);
+    font: bold 10pt "Ubuntu";
+    border: none;
+    padding: 2px;
+    padding-left: 4px;
+}
 
 /*
 QTreeWidget::branch:open:has-children:!has-siblings,
