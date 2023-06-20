@@ -654,7 +654,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         ##### Archive #####   
         self.comboBox3_archive_download_folder.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/Archive'))   
         self.comboBox3_archive_download_folder.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/IQ Recordings'))   
-        self._slotArchiveDownloadFoldersChanged()
+        self._slotArchiveDownloadRefreshClicked()
         self.populateArchive()
         self.label2_archive_replay_status.setVisible(False)
         self.tableWidget_archive_replay.setColumnHidden(9,True)
@@ -1317,6 +1317,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_archive_datasets_open_folder.clicked.connect(self._slotArchiveDatasetsOpenFolderClicked)
         self.pushButton_archive_datasets_regenerate.clicked.connect(self._slotArchiveDatasetsRegenerateClicked)
         self.pushButton_archive_datasets_copy.clicked.connect(self._slotArchiveDatasetsCopyClicked)
+        self.pushButton_archive_download_collection_collapse_all.clicked.connect(self._slotArchiveDownloadCollectionCollapseAllClicked)
+        self.pushButton_archive_new_folder.clicked.connect(self._slotArchiveNewFolderClicked)
+        self.pushButton_archive_folder.clicked.connect(self._slotArchiveFolderClicked)
         
         self.pushButton_log_refresh.clicked.connect(self._slotLogRefreshClicked)
         self.pushButton_log_refresh_permit.clicked.connect(self._slotLogRefreshPermitClicked)
@@ -1360,11 +1363,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.comboBox_attack_hardware.currentIndexChanged.connect(self.slotAttackHardwareChanged)
         self.comboBox_packet_protocols.currentIndexChanged.connect(self._slotPacketProtocols)
         self.comboBox_packet_subcategory.currentIndexChanged.connect(self._slotPacketSubcategory)  
-        self.comboBox3_archive_download_folder.currentIndexChanged.connect(self._slotArchiveDownloadFoldersChanged)
+        self.comboBox3_archive_download_folder.currentIndexChanged.connect(self._slotArchiveDownloadFolderChanged)
         self.comboBox_pd_sniffer_protocols.currentIndexChanged.connect(self._slotPD_SnifferProtocolsChanged)
         self.comboBox_pd_sniffer_packet_type.currentIndexChanged.connect(self._slotPD_SnifferPacketTypeChanged)
         self.comboBox_pd_sniffer_test_folders.currentIndexChanged.connect(self._slotPD_SnifferTestFoldersChanged)
         self.comboBox_tsi_detector_fixed.currentIndexChanged.connect(self._slotTSI_DetectorFixedChanged)
+        self.comboBox_archive_extension.currentIndexChanged.connect(self._slotArchiveExtensionChanged)
         
         # Radio Buttons
         self.radioButton_library_search_binary.clicked.connect(self._slotLibrarySearchBinaryClicked)
@@ -1395,6 +1399,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Labels
         self.label2_iq_end.mousePressEvent = self._slotIQ_EndLabelClicked
         self.label2_iq_start.mousePressEvent = self._slotIQ_StartLabelClicked
+        
+        # List Views
+        self.listView_archive.mouseDoubleClickEvent = self._slotArchiveListViewDoubleClicked
 
         # List Widgets
         self.listWidget_library_gallery.currentItemChanged.connect(self._slotLibraryGalleryImageChanged)
@@ -1417,12 +1424,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.listWidget_pd_flow_graphs_recommended_fgs.itemDoubleClicked.connect(self._slotPD_DemodulationLoadSelectedClicked)        
         self.listWidget_pd_flow_graphs_all_fgs.itemDoubleClicked.connect(self._slotPD_DemodulationLoadSelectedAllClicked)
         self.listWidget_iq_files.itemDoubleClicked.connect(self._slotIQ_LoadIQ_Data)
-        self.listWidget_archive_download_files.itemDoubleClicked.connect(self._slotArchiveListWidgetDoubleClicked)
         
         # Text Edits
         self.textEdit_iq_start.textChanged.connect(self._slotIQ_StartChanged)
         self.textEdit_iq_end.textChanged.connect(self._slotIQ_EndChanged)
         self.plainTextEdit_pd_bit_viewer_hex.textChanged.connect(self._slotPD_BitViewerHexChanged)
+        self.textEdit_archive_extension.textChanged.connect(self._slotArchiveDownloadRefreshClicked)
         
         # Tree Widgets
         self.treeWidget_attack_attacks.itemDoubleClicked.connect(self._slotAttackTemplatesDoubleClicked)
@@ -17736,65 +17743,60 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         if len(get_dir) > 0:            
             self.comboBox3_archive_download_folder.addItem(get_dir)      
             self.comboBox3_archive_download_folder.setCurrentIndex(self.comboBox3_archive_download_folder.count()-1)
-            
-    def _slotArchiveDownloadFoldersChanged(self):
-        """ Changes the IQ Files in the Archive downloaded listbox.
-        """
-        # Load the Files in the Listbox
-        get_dir = str(self.comboBox3_archive_download_folder.currentText())
-        if get_dir != "":
-            self.listWidget_archive_download_files.clear()
-            file_names = []
-            for fname in os.listdir(get_dir):
-                if os.path.isfile(get_dir+"/"+fname):
-                    file_names.append(fname)
-            file_names = sorted(file_names)
-            for n in file_names:
-                self.listWidget_archive_download_files.addItem(n)
-        if self.listWidget_archive_download_files.count() > 0:
-            self.listWidget_archive_download_files.setCurrentRow(0)
-                
+
     def _slotArchiveDownloadRefreshClicked(self):
         """ Reloads the files in the current Archive folder
         """
-        try:
-            # Get the Folder Location
-            get_folder = str(self.comboBox3_archive_download_folder.currentText())
-                
-            # Get the Files for the Listbox
-            try:
-                get_row = self.listWidget_archive_download_files.currentRow()
-            except:
-                get_row = -1
-            self.listWidget_archive_download_files.clear()
-            temp_names = []
-            for fname in os.listdir(get_folder):
-                if os.path.isfile(get_folder+"/"+fname):
-                    temp_names.append(fname)
-                  
-            # Sort and Add to the Listbox
-            temp_names = sorted(temp_names)
-            for n in temp_names:
-                self.listWidget_archive_download_files.addItem(n)
-                    
-            # Set the Listbox Selection
-            if (get_row >= 0) and (get_row < self.listWidget_archive_download_files.count()-1):
-                self.listWidget_archive_download_files.setCurrentRow(get_row)
-            else:
-                self.listWidget_archive_download_files.setCurrentRow(self.listWidget_archive_download_files.count()-1)
-        except:
-            pass
+        # Get the Folder Location
+        get_folder = self.listView_archive.model().rootPath()
+        
+        # Get the Extension Filter
+        get_extension = str(self.comboBox_archive_extension.currentText())
+        if get_extension == "All":
+            filters = ['*']
+        elif get_extension == "Custom":
+            get_custom_extension = str(self.textEdit_archive_extension.toPlainText())
+            filters = ['*' + get_custom_extension]
+        else:
+            filters = ['*' + get_extension]
+        
+        # Reset ListView
+        #path = QtCore.QDir.rootPath()  #get_folder
+        model = QtWidgets.QFileSystemModel(nameFilterDisables=False)
+        model.setRootPath(get_folder)
+        model.setFilter(QtCore.QDir.NoDot|QtCore.QDir.AllDirs|QtCore.QDir.Files)
+        model.setNameFilters(filters)
+        self.listView_archive.setModel(model)
+        self.listView_archive.setRootIndex(model.index(get_folder))
             
     def _slotArchiveDownloadDeleteClicked(self):
         """ Deletes an IQ file from the Archive downloaded list.
         """
         # Get Highlighted File from Listbox
-        get_file = str(self.listWidget_archive_download_files.currentItem().text())
-        get_folder = str(self.comboBox3_archive_download_folder.currentText())
-        delete_filepath = get_folder + '/' + get_file
+        get_index = self.listView_archive.currentIndex()
+        delete_filepath = str(self.listView_archive.model().filePath(get_index))        
+        if len(delete_filepath) == 0:
+            return        
         
-        # Delete
-        os.system('rm "' + delete_filepath + '"')
+        # Delete Folder
+        if self.listView_archive.model().isDir(get_index) == True:
+            # DotDot
+            if delete_filepath[-2:] == '..':
+                return
+            
+            # Folder
+            else:
+                # Yes/No Dialog
+                qm = QtWidgets.QMessageBox
+                ret = qm.question(self,'', "Delete this folder?", qm.Yes | qm.No)
+                if ret == qm.Yes:
+                    os.system('rm -Rf "' + delete_filepath + '"')
+                else:
+                    return
+        
+        # Delete File
+        else:
+            os.system('rm "' + delete_filepath + '"')
         
         # Refresh
         self._slotArchiveDownloadRefreshClicked()   
@@ -17802,13 +17804,22 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotArchiveDownloadPlotClicked(self):
         """ Plots the Archive file in the IQ Viewer.
         """
+        # Ignore Folders
+        get_index = self.listView_archive.currentIndex()
+        if self.listView_archive.model().isDir(get_index) == True:
+            return
+        
         # Get the Folder and File
-        get_file = str(self.listWidget_archive_download_files.currentItem().text())
-        get_folder = str(self.comboBox3_archive_download_folder.currentText())
+        get_file = str(self.listView_archive.currentIndex().data())
+        get_folder = str(self.listView_archive.model().filePath(self.listView_archive.currentIndex())).rsplit('/',1)[0]
+        
+        # Ignore No Selection
+        if len(get_folder) == 0:
+            return
         
         # Set the Files and Directories in the IQ Tab
         if get_folder == str(os.path.dirname(os.path.realpath(__file__)) + '/Archive'): 
-                self.comboBox3_iq_folders.setCurrentIndex(1)
+            self.comboBox3_iq_folders.setCurrentIndex(1)
         else:
             # Determine if the Directory is Present Already
             match_found = False
@@ -17912,54 +17923,55 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         #self.tableWidget_archive_download.horizontalHeader().setStretchLastSection(False) 
         #self.tableWidget_archive_download.horizontalHeader().setStretchLastSection(True)
         
-        # Populate the Collection Table
-        get_archives = [archive for archive in sorted(self.pd_library['Archive']['Collection'])]
-        notes_width = 150
-        new_font = QtGui.QFont("Times",10)
-        
-        for n in range(0,len(get_archives)):
-            # Get File Info
-            get_file = str(get_archives[n])
-            get_size = str(self.pd_library['Archive']['Collection'][get_archives[n]]['Size'])
-            get_file_count = str(self.pd_library['Archive']['Collection'][get_archives[n]]['Files'])
-            get_format = str(self.pd_library['Archive']['Collection'][get_archives[n]]['Format'])
-            get_notes = str(self.pd_library['Archive']['Collection'][get_archives[n]]['Notes'])
-            
-            # Find Maximum Note Width
-            if len(get_notes)*10 > notes_width:
-                notes_width = len(get_notes)*10
+        # Fill in the Collection Tree View
+        headers = ["Collection","Size","Files","Format","Notes"]
+        get_collections = [archive for archive in sorted(self.pd_library['Archive']['Collection'])]
+        tree = []
+        for n in range(0,len(get_collections)):
+            # Main Collection Folder
+            tree.append([0,
+                get_collections[n],
+                self.pd_library['Archive']['Collection'][get_collections[n]]['Size'],
+                self.pd_library['Archive']['Collection'][get_collections[n]]['Files'],
+                self.pd_library['Archive']['Collection'][get_collections[n]]['Format'],
+                self.pd_library['Archive']['Collection'][get_collections[n]]['Notes']])
+                
+            # Subdirectories
+            try: 
+                get_subdirectories = [subdirectory for subdirectory in sorted(self.pd_library['Archive']['Collection'][get_collections[n]]['Subdirectories'])]
+                for m in range(0,len(get_subdirectories)):
+                    tree.append([1,
+                        get_subdirectories[m],
+                        self.pd_library['Archive']['Collection'][get_collections[n]]['Subdirectories'][get_subdirectories[m]]['Size'],
+                        self.pd_library['Archive']['Collection'][get_collections[n]]['Subdirectories'][get_subdirectories[m]]['Files'],
+                        self.pd_library['Archive']['Collection'][get_collections[n]]['Subdirectories'][get_subdirectories[m]]['Format'],
+                        self.pd_library['Archive']['Collection'][get_collections[n]]['Subdirectories'][get_subdirectories[m]]['Notes']])
+                    
+                    # Files                
+                    get_files = self.pd_library['Archive']['Collection'][get_collections[n]]['Subdirectories'][get_subdirectories[m]]['File List']
+                    for k in range(0,len(get_files)):
+                        tree.append([2,get_files[k],'','','',''])
                         
-            # Insert a Row
-            self.tableWidget_archive_download_collection.setRowCount(self.tableWidget_archive_download_collection.rowCount()+1)
-            
-            # Populate the Table
-            file_item = QtWidgets.QTableWidgetItem(get_file)
-            file_item.setFont(new_font)
-            self.tableWidget_archive_download_collection.setVerticalHeaderItem(self.tableWidget_archive_download_collection.rowCount()-1,file_item)
-            
-            size_item = QtWidgets.QTableWidgetItem(get_size)
-            size_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            size_item.setFlags(size_item.flags() & ~QtCore.Qt.ItemIsEditable)
-            self.tableWidget_archive_download_collection.setItem(self.tableWidget_archive_download_collection.rowCount()-1,0,size_item) 
-            
-            file_count_item = QtWidgets.QTableWidgetItem(get_file_count)
-            file_count_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            file_count_item.setFlags(file_count_item.flags() & ~QtCore.Qt.ItemIsEditable)
-            self.tableWidget_archive_download_collection.setItem(self.tableWidget_archive_download_collection.rowCount()-1,1,file_count_item) 
-            
-            format_item = QtWidgets.QTableWidgetItem(get_format)
-            format_item.setTextAlignment(QtCore.Qt.AlignCenter) 
-            format_item.setFlags(format_item.flags() & ~QtCore.Qt.ItemIsEditable)
-            self.tableWidget_archive_download_collection.setItem(self.tableWidget_archive_download_collection.rowCount()-1,2,format_item) 
-            
-            notes_item = QtWidgets.QTableWidgetItem(get_notes)
-            notes_item.setFlags(notes_item.flags() & ~QtCore.Qt.ItemIsEditable)
-            self.tableWidget_archive_download_collection.setItem(self.tableWidget_archive_download_collection.rowCount()-1,3,notes_item) 
-            
-        # Resize the Table
-        self.tableWidget_archive_download_collection.resizeColumnsToContents() 
-        self.tableWidget_archive_download_collection.setColumnWidth(8, notes_width)
-        self.tableWidget_archive_download_collection.resizeRowsToContents() 
+            except:
+                # Files without a Subdirectory           
+                get_files = self.pd_library['Archive']['Collection'][get_collections[n]]['File List']
+                for k in range(0,len(get_files)):
+                    tree.append([1,get_files[k],'','','',''])
+                
+        #tree = [[0,'Root','a','b','c','d'],[1,'Collection1','aa','bb','cc','dd'],[1,'Collection2','aaa','bbb','ccc','ddd'],[1,'Collection3','aaaa','bbbb','cccc','dddd'],[0,'Root2','a','b','c','d'],[1,'Collection11','aa','bb','cc','dd']]
+        new_model = TreeModel(headers, tree)
+        self.treeView_archive_download_collection.setModel(new_model)
+        
+        self.treeView_archive_download_collection.setAnimated(False)
+        self.treeView_archive_download_collection.setIndentation(20)
+        self.treeView_archive_download_collection.setSortingEnabled(False)
+        
+        self.treeView_archive_download_collection.header().setSectionResizeMode(0, QtWidgets.QHeaderView.ResizeToContents)
+        self.treeView_archive_download_collection.header().setSectionResizeMode(1, QtWidgets.QHeaderView.ResizeToContents)
+        self.treeView_archive_download_collection.header().setSectionResizeMode(2, QtWidgets.QHeaderView.ResizeToContents)
+        self.treeView_archive_download_collection.header().setSectionResizeMode(3, QtWidgets.QHeaderView.ResizeToContents)
+        self.treeView_archive_download_collection.header().setSectionResizeMode(4, QtWidgets.QHeaderView.ResizeToContents)
+        # ~ self.treeView_archive_download_collection.header().setDefaultAlignment(QtCore.Qt.AlignCenter|QtCore.Qt.AlignVCenter)  # Centering item text is difficult
         
     def _slotArchiveDownloadClicked(self):
         """ Downloads the selected file from the internet.
@@ -17971,7 +17983,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_file = str(self.tableWidget_archive_download.verticalHeaderItem(get_row).text())
             
             # Get Folder 
-            get_folder = str(self.comboBox3_archive_download_folder.currentText())
+            get_folder = str(self.listView_archive.model().rootPath())
             
             # Download        
             os.system('wget -P "' + get_folder + '/"' + ' https://fissure.ainfosec.com/' + get_file)
@@ -17981,8 +17993,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Adds a selected archive file to the playlist table.
         """
         # Get File
-        get_archive_file = str(self.listWidget_archive_download_files.currentItem().text())
-        get_archive_folder = str(self.comboBox3_archive_download_folder.currentText()) + '/'
+        get_archive_file = str(self.listView_archive.currentIndex().data())
+        get_archive_folder = str(self.listView_archive.model().filePath(self.listView_archive.currentIndex())).rsplit('/',1)[0] + '/'
         
         get_archives = [archive for archive in self.pd_library['Archive']['File']]
         
@@ -18550,17 +18562,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Update the Status Dialog
         self.status_dialog.tableWidget_status_results.item(3,0).setText("Not Running")
-        
-    def _slotArchiveListWidgetDoubleClicked(self):
-        """ Adds the IQ file to the replay table when double clicked in the list widget.
-        """
-        # Add Only on Replay
-        if self.tabWidget_archive.currentIndex() == 1:
-            self._slotArchiveReplayAddClicked()
-            
-        # Add on Datasets
-        elif self.tabWidget_archive.currentIndex() == 2:
-            self._slotArchiveDatasetsAddClicked()     
             
     def _slotMenuFileExitClicked(self):
         """ Exits FISSURE
@@ -23960,11 +23961,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Get File
         if (filepath == None) or (filepath == False) :
-            get_archive_file = str(self.listWidget_archive_download_files.currentItem().text())
-            get_archive_folder = str(self.comboBox3_archive_download_folder.currentText()) + '/'
+            get_archive_file = str(self.listView_archive.currentIndex().data())
+            get_archive_folder = str(self.listView_archive.model().filePath(self.listView_archive.currentIndex())).rsplit('/',1)[0] + '/'
         else:
             get_archive_file = str(filepath).rsplit("/",1)[1]
-            get_archive_folder = str(filepath).rsplit("/",1)[0] + '/'     
+            get_archive_folder = str(filepath).rsplit("/",1)[0] + '/'
         
         get_archives = [archive for archive in self.pd_library['Archive']['File']]
         
@@ -24089,7 +24090,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens a file dialog to select IQ files for the Datasets table.
         """
         # Choose File
-        get_archive_folder = str(self.comboBox3_archive_download_folder.currentText()) + '/'
+        get_archive_folder = str(self.listView_archive.model().rootPath()) + '/'
         fname = QtWidgets.QFileDialog.getOpenFileNames(None,"Select IQ File...", get_archive_folder, filter="All Files (*)")
         if fname != "":
             for n in fname[0]:
@@ -24627,21 +24628,42 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         os.system("sensible-browser http://complextoreal.com/tutorials/ &")
         
     def _slotArchiveDownloadCollectionClicked(self):
-        """ Downloads a collection of IQ files and unzips them.
+        """ Downloads a single IQ file or a collection of IQ files and unzips them.
         """
-        # Find Selected Row
-        get_row = self.tableWidget_archive_download_collection.currentRow()
-        if get_row >= 0:
-            # Get File
-            get_file = str(self.tableWidget_archive_download_collection.verticalHeaderItem(get_row).text())
-            
-            # Get Folder 
-            get_folder = str(self.comboBox3_archive_download_folder.currentText())
-            
-            # Download and Unzip
-            os.system('wget -P "' + get_folder + '/"' + ' https://fissure.ainfosec.com/' + get_file)
-            #os.system('unzip "' + get_folder + '/' + get_file + '" && rm "' + get_folder + '/' + get_file + '"')
-            self._slotArchiveDownloadRefreshClicked()
+        # Find Selected Row Text and Parent Text
+        try:
+            item_index = self.treeView_archive_download_collection.selectedIndexes()[0]
+        except:
+            self.errorMessage("Select a collection")
+            return    
+        parent1_index = self.treeView_archive_download_collection.model().parent(item_index)
+        parent2_index = self.treeView_archive_download_collection.model().parent(parent1_index)
+        
+        item_data = self.treeView_archive_download_collection.model().data(item_index)
+        parent1_data = self.treeView_archive_download_collection.model().data(parent1_index)
+        parent2_data = self.treeView_archive_download_collection.model().data(parent2_index)
+        
+        # Assemble Filepath
+        if parent1_data == "Notes":
+            get_filepath = self.pd_library['Archive']['Collection'][item_data]['Filepath']
+        elif parent2_data == "Notes":
+            if '.sigmf-data' in item_data:
+                get_filepath = self.pd_library['Archive']['Collection'][parent1_data]['Filepath'].replace('.tar','') + '/' + item_data
+            else:
+                get_filepath = self.pd_library['Archive']['Collection'][parent1_data]['Filepath'].replace('.tar','') + '/' + item_data + '.tar'
+        else:
+            get_filepath = self.pd_library['Archive']['Collection'][parent2_data]['Filepath'].replace('.tar','') + '/' + parent1_data + '/' + item_data
+        
+        # Download and Unzip
+        get_folder = str(self.listView_archive.model().rootPath())
+        if get_filepath[-4:] == '.tar':
+            os.system('wget https://fissure.ainfosec.com' + get_filepath + ' -O - | tar -x -C "' + get_folder + '/"')
+        elif get_filepath[-11:] == '.sigmf-data':
+            os.system('wget https://fissure.ainfosec.com' + get_filepath + ' -P "' + get_folder + '/"')
+            os.system('wget https://fissure.ainfosec.com' + get_filepath.replace('.sigmf-data','.sigmf-meta') + ' -P "' + get_folder + '/"')
+        else: 
+            os.system('wget https://fissure.ainfosec.com' + get_filepath + ' -P "' + get_folder + '/"')
+        self._slotArchiveDownloadRefreshClicked()
             
     def _slotMenuSolveCryptoWithForceClicked(self):
         """ Opens scwf.dima.ninja in a browser.
@@ -25143,7 +25165,95 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tableWidget_archive_datasets.resizeColumnsToContents() 
             self.tableWidget_archive_datasets.resizeRowsToContents()  
             self.tableWidget_archive_datasets.horizontalHeader().setStretchLastSection(False) 
-            self.tableWidget_archive_datasets.horizontalHeader().setStretchLastSection(True) 
+            self.tableWidget_archive_datasets.horizontalHeader().setStretchLastSection(True)
+            
+    def _slotArchiveExtensionChanged(self):
+        """ Enables/disables the custom extension field in the Archive tab.
+        """
+        # Refresh
+        if str(self.comboBox_archive_extension.currentText()) == "Custom":
+            self.textEdit_archive_extension.setEnabled(True)
+        else:
+            self.textEdit_archive_extension.setEnabled(False)
+            self._slotArchiveDownloadRefreshClicked()
+            
+    def _slotArchiveDownloadCollectionCollapseAllClicked(self):
+        """ Collapses the Collection TreeView.
+        """
+        # Collapse
+        self.treeView_archive_download_collection.collapseAll()
+        
+    def _slotArchiveListViewDoubleClicked(self,mouse_event):          
+        """ Adds the IQ file to the replay table when double clicked in the list widget.
+        """
+        # Index and Filepath
+        get_index = self.listView_archive.currentIndex()
+        get_filepath = self.listView_archive.model().filePath(get_index)
+        
+        # Navigate Folder
+        if self.listView_archive.model().isDir(get_index) == True:
+            # DotDot
+            if get_filepath[-2:] == '..':
+                parent_index = get_index.parent().parent()
+                parent_filepath = self.listView_archive.model().filePath(parent_index)               
+                self.listView_archive.setRootIndex(parent_index)
+                self.listView_archive.model().setRootPath(parent_filepath)  # Need to set this to keep sorting order
+            
+            # Folder
+            else:
+                self.listView_archive.setRootIndex(get_index)
+                self.listView_archive.model().setRootPath(get_filepath)
+        
+        # Do Action on File
+        else:
+            # Add Only on Replay
+            if self.tabWidget_archive.currentIndex() == 1:
+                self._slotArchiveReplayAddClicked()
+                
+            # Add on Datasets
+            elif self.tabWidget_archive.currentIndex() == 2:
+                self._slotArchiveDatasetsAddClicked()  
+            
+    def _slotArchiveDownloadFolderChanged(self):
+        """ Changes the folder displayed in the ListView.
+        """
+        # Get the Folder Location
+        get_folder = str(self.comboBox3_archive_download_folder.currentText())
+        
+        # Get the Extension Filter
+        get_extension = str(self.comboBox_archive_extension.currentText())
+        if get_extension == "All":
+            filters = ['*']
+        elif get_extension == "Custom":
+            get_custom_extension = str(self.textEdit_archive_extension.toPlainText())
+            filters = ['*' + get_custom_extension]
+        else:
+            filters = ['*' + get_extension]
+        
+        # Reset ListView
+        #path = QtCore.QDir.rootPath()  #get_folder
+        model = QtWidgets.QFileSystemModel(nameFilterDisables=False)
+        model.setRootPath(get_folder)
+        model.setFilter(QtCore.QDir.NoDot|QtCore.QDir.AllDirs|QtCore.QDir.Files)
+        model.setNameFilters(filters)
+        self.listView_archive.setModel(model)
+        self.listView_archive.setRootIndex(model.index(get_folder))
+        
+    def _slotArchiveNewFolderClicked(self):
+        """ Creates a new folder in the current directory of the Archive ListView.
+        """
+        text, ok = QtWidgets.QInputDialog.getText(self, 'New Folder', 'Enter new folder name:',QtWidgets.QLineEdit.Normal)
+        if ok:
+            if len(str(text)) > 0:
+                folder_filepath = str(self.listView_archive.model().rootPath())
+                os.system('mkdir "' + folder_filepath + '/' + str(text) + '"')
+        
+    def _slotArchiveFolderClicked(self):
+        """ Opens a window to current directory of the Archive ListView. 
+        """
+        # Open the Folder
+        folder_filepath = str(self.listView_archive.model().rootPath())
+        os.system('nautilus "' + folder_filepath + '" &')
         
 
                     
@@ -27085,6 +27195,170 @@ class OperationsThread(QtCore.QThread):
             p1.wait()
         except:
             print("FAILURE")
+            
+            
+class TreeModel(QtCore.QAbstractItemModel):
+    def __init__(self, headers, data, parent=None):
+        super(TreeModel, self).__init__(parent)
+        """ subclassing the standard interface item models must use and 
+                implementing index(), parent(), rowCount(), columnCount(), and data()."""
+
+        rootData = [header for header in headers]
+        self.rootItem = TreeNode(rootData)
+        indent = -1
+        self.parents = [self.rootItem]
+        self.indentations = [0]
+        self.createData(data, indent)
+
+    def createData(self, data, indent):
+        for n in range(0,len(data)):
+            # Main Collection Folder
+            if data[n][0] == 0:
+                parent = self.parents[0]
+                parent.insertChildren(parent.childCount(), 1, parent.columnCount())
+                
+                # Fill Columns
+                for m in range(1,len(data[n])):
+                    parent.child(parent.childCount() - 1).setData(m-1, data[n][m])
+                    
+                # Save
+                self.parents.append(parent.child(parent.childCount() - 1))
+              
+            # Collection Subdirectories and Files
+            else:                  
+                # Indent
+                if data[n][0] > data[n-1][0]:
+                    parent = self.parents[-1]
+                    self.parents[-1].insertChildren(parent.childCount(), 1, parent.columnCount())
+                
+                    # Fill Columns
+                    for m in range(1,len(data[n])):
+                        parent.child(parent.childCount() - 1).setData(m-1, data[n][m])
+                        
+                    # Do Not Make First File a Parent
+                    if n < len(data)-1:
+                        if (data[n][0] != data[n+1][0]):
+                            self.parents.append(parent.child(parent.childCount() - 1))
+                
+                # Restore Indent
+                elif (data[n][0] < data[n-1][0]):
+                    parent = self.parents[-1].parent()
+                    self.parents[-1].parent().insertChildren(parent.childCount(), 1, parent.columnCount())
+                
+                    # Fill Columns
+                    for m in range(1,len(data[n])):
+                        parent.child(parent.childCount() - 1).setData(m-1, data[n][m])
+                        
+                    self.parents.append(parent.child(parent.childCount() - 1))
+                    
+                # Keep Indent
+                else:
+                    parent = self.parents[-1]
+                    self.parents[-1].insertChildren(parent.childCount(), 1, parent.columnCount())
+                
+                    # Fill Columns
+                    for m in range(1,len(data[n])):
+                        parent.child(parent.childCount() - 1).setData(m-1, data[n][m])
+
+
+    def index(self, row, column, index=QtCore.QModelIndex()):
+        """ Returns the index of the item in the model specified by the given row, column and parent index """
+
+        if not self.hasIndex(row, column, index):
+            return QModelIndex()
+        if not index.isValid():
+            item = self.rootItem
+        else:
+            item = index.internalPointer()
+        child = item.child(row)
+        
+        if child:
+            return self.createIndex(row, column, child)
+        return QtCore.QModelIndex()
+
+    def parent(self, index):
+        """ Returns the parent of the model item with the given index
+                If the item has no parent, an invalid QModelIndex is returned """
+
+        if not index.isValid():
+            return QtCore.QModelIndex()
+        item = index.internalPointer()
+        if not item:
+            return QtCore.QModelIndex()
+
+        parent = item.parentItem
+        if parent == self.rootItem:
+            return QtCore.QModelIndex()
+        else:
+            return self.createIndex(parent.childNumber(), 0, parent)
+
+    def rowCount(self, index=QtCore.QModelIndex()):
+        """ Returns the number of rows under the given parent
+                When the parent is valid it means that rowCount is returning the number of children of parent """
+
+        if index.isValid():
+            parent = index.internalPointer()
+        else:
+            parent = self.rootItem
+        return parent.childCount()
+
+    def columnCount(self, index=QtCore.QModelIndex()):
+        """ Returns the number of columns for the children of the given parent """
+
+        return self.rootItem.columnCount()
+
+    def data(self, index, role=QtCore.Qt.DisplayRole):
+        """ Returns the data stored under the given role for the item referred to by the index """
+
+        if index.isValid() and role == QtCore.Qt.DisplayRole:
+            return index.internalPointer().data(index.column())
+        elif not index.isValid():
+            return self.rootItem.data(index.column())
+
+    def headerData(self, section, orientation, role=QtCore.Qt.DisplayRole):
+        """ Returns the data for the given role and section in the header with the specified orientation """
+
+        if orientation == QtCore.Qt.Horizontal and role == QtCore.Qt.DisplayRole:
+            return self.rootItem.data(section)
+
+
+class TreeNode(object):
+    def __init__(self, data, parent=None):
+        self.parentItem = parent
+        self.itemData = data
+        self.children = []
+
+    def child(self, row):
+        return self.children[row]
+
+    def childCount(self):
+        return len(self.children)
+
+    def childNumber(self):
+        if self.parentItem is not None:
+            return self.parentItem.children.index(self)
+
+    def columnCount(self):
+        return len(self.itemData)
+
+    def data(self, column):
+        return self.itemData[column]
+
+    def insertChildren(self, position, count, columns):
+        if position < 0 or position > len(self.children):
+            return False
+        for row in range(count):
+            data = [None for v in range(columns)]
+            item = TreeNode(data, self)
+            self.children.insert(position, item)
+
+    def parent(self):
+        return self.parentItem
+
+    def setData(self, column, value):
+        if column < 0 or column >= len(self.itemData):
+            return False
+        self.itemData[column] = value 
 
             
 def main(argv):

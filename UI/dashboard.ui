@@ -1189,6 +1189,9 @@
              </property>
             </widget>
             <widget class="QCheckBox" name="checkBox_automation_auto_start_tsi">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
              <property name="geometry">
               <rect>
                <x>400</x>
@@ -15233,6 +15236,11 @@ p, li { white-space: pre-wrap; }
                   <height>27</height>
                  </rect>
                 </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
                 <property name="tabChangesFocus">
                  <bool>true</bool>
                 </property>
@@ -15240,8 +15248,8 @@ p, li { white-space: pre-wrap; }
                  <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
 &lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
 p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:10pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:11pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                 </property>
                </widget>
                <widget class="QLabel" name="label2_iq_status_files">
@@ -21473,7 +21481,7 @@ p, li { white-space: pre-wrap; }
               </property>
               <widget class="QWidget" name="tab_8">
                <attribute name="title">
-                <string>File</string>
+                <string>Favorites</string>
                </attribute>
                <widget class="QTableWidget" name="tableWidget_archive_download">
                 <property name="geometry">
@@ -21657,80 +21665,47 @@ p, li { white-space: pre-wrap; }
                  <string>Download</string>
                 </property>
                </widget>
-               <widget class="QTableWidget" name="tableWidget_archive_download_collection">
+               <widget class="QTreeView" name="treeView_archive_download_collection">
                 <property name="geometry">
                  <rect>
                   <x>0</x>
-                  <y>-1</y>
+                  <y>-2</y>
                   <width>903</width>
                   <height>735</height>
                  </rect>
                 </property>
                 <property name="font">
                  <font>
-                  <pointsize>10</pointsize>
+                  <pointsize>11</pointsize>
                  </font>
                 </property>
-                <property name="selectionMode">
-                 <enum>QAbstractItemView::SingleSelection</enum>
+                <property name="horizontalScrollBarPolicy">
+                 <enum>Qt::ScrollBarAlwaysOn</enum>
                 </property>
-                <property name="selectionBehavior">
-                 <enum>QAbstractItemView::SelectRows</enum>
-                </property>
-                <property name="wordWrap">
+                <attribute name="headerStretchLastSection">
                  <bool>false</bool>
-                </property>
-                <attribute name="horizontalHeaderStretchLastSection">
-                 <bool>true</bool>
                 </attribute>
-                <column>
-                 <property name="text">
-                  <string>Size</string>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>10</pointsize>
-                   <weight>50</weight>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Files</string>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>10</pointsize>
-                   <weight>50</weight>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Format</string>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>10</pointsize>
-                   <weight>50</weight>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                </column>
-                <column>
-                 <property name="text">
-                  <string>Notes</string>
-                 </property>
-                 <property name="font">
-                  <font>
-                   <pointsize>10</pointsize>
-                   <weight>50</weight>
-                   <bold>false</bold>
-                  </font>
-                 </property>
-                </column>
+               </widget>
+               <widget class="QPushButton" name="pushButton_archive_download_collection_collapse_all">
+                <property name="enabled">
+                 <bool>true</bool>
+                </property>
+                <property name="geometry">
+                 <rect>
+                  <x>5</x>
+                  <y>745</y>
+                  <width>90</width>
+                  <height>27</height>
+                 </rect>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>11</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string>Collapse All</string>
+                </property>
                </widget>
               </widget>
              </widget>
@@ -22531,7 +22506,7 @@ p, li { white-space: pre-wrap; }
               <x>5</x>
               <y>25</y>
               <width>300</width>
-              <height>805</height>
+              <height>810</height>
              </rect>
             </property>
             <property name="frameShape">
@@ -22540,24 +22515,6 @@ p, li { white-space: pre-wrap; }
             <property name="frameShadow">
              <enum>QFrame::Raised</enum>
             </property>
-            <widget class="QListWidget" name="listWidget_archive_download_files">
-             <property name="geometry">
-              <rect>
-               <x>10</x>
-               <y>40</y>
-               <width>280</width>
-               <height>725</height>
-              </rect>
-             </property>
-             <property name="font">
-              <font>
-               <pointsize>11</pointsize>
-              </font>
-             </property>
-             <property name="horizontalScrollBarPolicy">
-              <enum>Qt::ScrollBarAlwaysOn</enum>
-             </property>
-            </widget>
             <widget class="QPushButton" name="pushButton_archive_download_refresh">
              <property name="enabled">
               <bool>true</bool>
@@ -22565,7 +22522,7 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>10</x>
-               <y>770</y>
+               <y>745</y>
                <width>90</width>
                <height>27</height>
               </rect>
@@ -22583,7 +22540,7 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>200</x>
-               <y>770</y>
+               <y>745</y>
                <width>90</width>
                <height>27</height>
               </rect>
@@ -22612,7 +22569,7 @@ p, li { white-space: pre-wrap; }
               </font>
              </property>
              <property name="text">
-              <string>Folder</string>
+              <string>Choose</string>
              </property>
             </widget>
             <widget class="QComboBox" name="comboBox3_archive_download_folder">
@@ -22637,7 +22594,7 @@ p, li { white-space: pre-wrap; }
              <property name="geometry">
               <rect>
                <x>105</x>
-               <y>770</y>
+               <y>745</y>
                <width>90</width>
                <height>27</height>
               </rect>
@@ -22649,6 +22606,142 @@ p, li { white-space: pre-wrap; }
              </property>
              <property name="text">
               <string>Plot</string>
+             </property>
+            </widget>
+            <widget class="QListView" name="listView_archive">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>70</y>
+               <width>280</width>
+               <height>670</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
+            </widget>
+            <widget class="QComboBox" name="comboBox_archive_extension">
+             <property name="geometry">
+              <rect>
+               <x>95</x>
+               <y>40</y>
+               <width>105</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
+             <item>
+              <property name="text">
+               <string>All</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>.sigmf-data</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>.iq</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>.cf32</string>
+              </property>
+             </item>
+             <item>
+              <property name="text">
+               <string>Custom</string>
+              </property>
+             </item>
+            </widget>
+            <widget class="QTextEdit" name="textEdit_archive_extension">
+             <property name="enabled">
+              <bool>false</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>205</x>
+               <y>40</y>
+               <width>85</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="pushButton_archive_new_folder">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>775</y>
+               <width>90</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>New Folder</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="pushButton_archive_folder">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="geometry">
+              <rect>
+               <x>105</x>
+               <y>775</y>
+               <width>90</width>
+               <height>27</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>11</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Folder</string>
+             </property>
+            </widget>
+            <widget class="QLabel" name="label2_32">
+             <property name="geometry">
+              <rect>
+               <x>10</x>
+               <y>45</y>
+               <width>75</width>
+               <height>17</height>
+              </rect>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>10</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string>Extensions:</string>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
              </property>
             </widget>
            </widget>
@@ -30613,7 +30706,6 @@ p, li { white-space: pre-wrap; }
   <tabstop>pushButton_iq_morse_code</tabstop>
   <tabstop>pushButton_archive_download_folder</tabstop>
   <tabstop>comboBox3_archive_download_folder</tabstop>
-  <tabstop>listWidget_archive_download_files</tabstop>
   <tabstop>pushButton_archive_download_refresh</tabstop>
   <tabstop>pushButton_archive_download_plot</tabstop>
   <tabstop>pushButton_archive_download_delete</tabstop>
