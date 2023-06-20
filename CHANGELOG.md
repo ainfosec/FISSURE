@@ -1,9 +1,31 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-06-19
+
+Updating Archive collection functionality.
+ 
+### Added
+
+- Download of IQ collections and files from the FISSURE online archive in the Archive tab
+- Filter Archive files by file extension
+- Archive Collapse All, New Folder, Folder buttons
+  
+### Changed
+
+- Updated library.yaml with Archive collection information
+- Renamed "Folder" button to "Choose" in Archive tab
+- Replaced Archive ListWidget with ListView
+- Replaced Archive Collection TableWidget with TableView
+
+### Fixed
+
+- Minor styling changes
+- Added missing <tr> to README
+
 ## 2023-06-12
 
-Initial X410 support, gr-osmosdr fix, crop exclude, relocating files into docs folder.
+Initial X410 support, gr-osmosdr fix, crop exclude, moving files into docs folder.
  
 ### Added
 
