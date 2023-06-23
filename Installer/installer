@@ -132,7 +132,7 @@ gnuradio-companion --help
 # Scapy
 programs_ubuntu20_04.append(('Scapy (33.1 MB)',
 """sudo python3 -m pip install scapy
-sudo python2 -m pip install scapy
+sudo python2 -m pip install scapy==2.4.5
 #sudo apt-get install -y scapy
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
@@ -2136,7 +2136,7 @@ gnuradio-companion --help
 # Scapy
 programs_ubuntu20_04_4.append(('Scapy (33.1 MB)',
 """sudo python3 -m pip install scapy
-sudo python2 -m pip install scapy
+sudo python2 -m pip install scapy==2.4.5
 #sudo apt-get install -y scapy
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
@@ -4094,6 +4094,11 @@ sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/appli
 ls /usr/share/applications/fissure.desktop
 """,True,'Minimum Install'))
 
+# expect Command Fix 
+programs_dragonOS_focal.append(('expect Command Fix',
+"""sudo sed -i 's/lindex $argv 0/lindex $argv/g' """ + fissure_directory + """/Tools/expect_script
+""",True,'Minimum Install'))
+
 # Wireshark
 programs_dragonOS_focal.append(('Wireshark',
 """sudo add-apt-repository --y ppa:wireshark-dev/stable  # Gets installed with Misc. Dependencies (tshark), ESP32 Bluetooth Classic Sniffer
@@ -5332,7 +5337,7 @@ find . -name '*.grc' -exec grcc {} \;
 # # Scapy
 # programs_dragonOS_focal.append(('Scapy',
 # """sudo python3 -m pip install scapy
-# sudo python2 -m pip install scapy
+# sudo python2 -m pip install scapy==2.4.5
 # #sudo apt-get install -y scapy
 # ########## Verify ##########
 # python2 -c "import scapy" && python3 -c "import scapy"
@@ -6135,7 +6140,7 @@ gnuradio-companion --help
 # Scapy
 programs_parrot_os_5_2.append(('Scapy (33.1 MB)',
 """sudo python3 -m pip install scapy
-sudo python2 -m pip install scapy
+sudo python2 -m pip install scapy==2.4.5
 #sudo apt-get install -y scapy
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"

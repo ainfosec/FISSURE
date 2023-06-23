@@ -43,14 +43,14 @@ fi
 # Python2-maint_3.7, Ubuntu 18.04
 if [[ -n "$ubuntu18_04" ]]
 then    
-    echo "This branch is for Ubuntu 18.04 variants only. Switch to the Python2_maint-3.7 branch and try again!"
+    echo "This branch is not for Ubuntu 18.04 variants. Switch to the Python2_maint-3.7 branch and try again!"
     exit
 fi
 
 # Python-maint_3.10, Ubuntu 22.04
 if [[ -n "$ubuntu22_04" ]] || [[ -n "$dragonOS_focalx" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]]
 then
-    echo "This branch is for Ubuntu 22.04 variants only. Switch to the Python3_maint-3.10 branch and try again!"
+    echo "This branch is not for Ubuntu 22.04 variants. Switch to the Python3_maint-3.10 branch and try again!"
     exit
 fi
 
