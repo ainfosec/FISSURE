@@ -512,7 +512,7 @@ QMenuBar#menubar::item:focus:pressed {
 }
 QMenuBar#menubar::item:selected {
     background: transparent;
-    margin-bottom: 2px; 
+    margin-bottom: @menu_hover_padding; 
 }
 
 /*Change Combobox Colors*/

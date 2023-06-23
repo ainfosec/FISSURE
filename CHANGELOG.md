@@ -1,6 +1,37 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-06-23
+
+DragonOS Focal/FocalX fixes.
+ 
+### Added
+
+- Checks for DragonOS in dashboard.py, fg_executor.py
+- Replaced gnome-terminal commands with qterminal for DragonOS
+- Added @menu_hover_padding to stylesheets to remove menubar item hover padding for DragonOS
+  
+### Changed
+
+- ais_rx menu item opens a terminal with an example command instead of executing immediately
+- Updated the Online Archive picture in README
+- Removed ICE9 Bluetooth Sniffer from DragonOS FocalX install and changed the filepath for running the command
+
+### Fixed
+
+- Fixed wrong branch warning message during the install
+- Removed extra line in \_slotMenuQtDesignerOptionsUiClicked()
+- Updated DragonOS installer with fix for the expect_script (used to populate a terminal with text)
+- Path locations for ais_rx, rds_rx, Iridium Extractor, Iridium Parser, and IridiumLive commands in Python3_maint-3.10 branch
+- Executing btclassify.py with Python2
+- Removed directory for kal example in the menu for DragonOS
+- Replaced evince commands with open command for DragonOS
+- Added extra '/' to qFlipper command for DragonOS to prevent extra text in terminal
+- Moved default directories for srsRAN commands for DragonOS
+- Changed where FalconGUI is called for DragonOS
+- Changed where SDRTrunk is called for DragonOS
+- Changed Python2 scapy2 version to 2.4.5 to avoid import errors with version 2.5.0
+
 ## 2023-06-19
 
 Updating Archive collection functionality.

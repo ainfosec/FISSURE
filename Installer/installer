@@ -128,7 +128,7 @@ gnuradio-companion --help
 programs_ubuntu22_04.append(('Scapy (80.1 MB)',
 """sudo apt-get install -y python3-scapy
 #sudo python3 -m pip install scapy  # Causes errors
-sudo python2 -m pip install scapy
+sudo python2 -m pip install scapy==2.4.5
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
 """,True,"Minimum Install"))
@@ -2037,6 +2037,11 @@ sudo cp """ + fissure_directory + """/Installer/fissure.desktop /usr/share/appli
 ls ~/.local/bin/fissure
 """, True, "Minimum Install"))
 
+# expect Command Fix
+programs_dragonOS_focalx.append(('expect Command Fix',
+"""sudo sed -i 's/lindex $argv 0/lindex $argv/g' """ + fissure_directory + """/Tools/expect_script
+""", True, "Minimum Install"))
+
 # # GNU Radio
 # programs_dragonOS_focalx.append(('GNU Radio',
 # """sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases
@@ -2071,7 +2076,7 @@ ls ~/.local/bin/fissure
 programs_dragonOS_focalx.append(('Scapy',
 """sudo apt-get install -y python3-scapy
 #sudo python3 -m pip install scapy  # Causes errors
-sudo python2 -m pip install scapy
+sudo python2 -m pip install scapy==2.4.5
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
 """, True, "Minimum Install"))
@@ -3773,22 +3778,22 @@ sudo make install hamclock-1600x960
 ls /usr/local/bin/hamclock
 """, True, 'Ham Radio'))
 
-# ICE9 Bluetooth Sniffer
-programs_dragonOS_focalx.append(('ICE9 Bluetooth Sniffer',
-"""sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
-sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
-mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-git clone https://github.com/mikeryan/ice9-bluetooth-sniffer.git
-cd ice9-bluetooth-sniffer
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-########## Verify ##########
-ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
-""", True, 'Bluetooth'))
+# # ICE9 Bluetooth Sniffer
+# programs_dragonOS_focalx.append(('ICE9 Bluetooth Sniffer',
+# """sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
+# sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
+# mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/mikeryan/ice9-bluetooth-sniffer.git
+# cd ice9-bluetooth-sniffer
+# mkdir build
+# cd build
+# cmake ..
+# make
+# sudo make install
+# ########## Verify ##########
+# ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
+# """, True, 'Bluetooth'))
 
 # dump978
 programs_dragonOS_focalx.append(('dump978',
@@ -4024,7 +4029,7 @@ programs_kali2023_1.append(('Scapy (22.1 MB)',
 """sudo apt-get install -y python3-scapy
 sudo python2 -m pip install setuptools
 #sudo python3 -m pip install scapy  # Causes errors
-sudo python2 -m pip install scapy  # Doesn't work on Kali
+sudo python2 -m pip install scapy==2.4.5  # Doesn't work on Kali
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
 """,True,"Minimum Install"))
@@ -5975,7 +5980,7 @@ gnuradio-companion --help
 programs_backbox_linux_8.append(('Scapy (80.1 MB)',
 """sudo apt-get install -y python3-scapy
 #sudo python3 -m pip install scapy  # Causes errors
-sudo python2 -m pip install scapy
+sudo python2 -m pip install scapy==2.4.5
 ########## Verify ##########
 python2 -c "import scapy" && python3 -c "import scapy"
 """,True,"Minimum Install"))

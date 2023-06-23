@@ -106,6 +106,14 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         QtWidgets.QMainWindow.__init__(self)
         self.setupUi(self)
         
+        # Detect Operating System
+        proc = subprocess.Popen("cat /etc/os-dragonos 2>&1 | grep 'DragonOS FocalX'", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
+        if len(output) == 0:
+            self.operating_system = 'Other'
+        else:
+            self.operating_system = 'DragonOS FocalX'
+
         # Disable Unused Menu Items
         self.menuView.menuAction().setVisible(True)
         self.menuOptions.menuAction().setVisible(True)
@@ -1622,7 +1630,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionEchoLink_Link_Status.triggered.connect(self._slotMenuEchoLinkLinkStatusClicked)
         self.actionSolarHam.triggered.connect(self._slotMenuSolarHamClicked)
         self.actionBless.triggered.connect(self._slotMenuBlessHexEditorClicked)
-        self.actionTrackerjacker.triggered.connect(self._slotMenuTrackjackerClicked)
+        self.actionTrackerjacker.triggered.connect(self._slotMenuTrackerjackerClicked)
         self.actionSanitized_IEEE_OUI_Data.triggered.connect(self._slotMenuSanitizedIEEE_OUI_DataClicked)
         self.actionMarineTraffic.triggered.connect(self._slotMenuMarineTrafficClicked)
         self.actionVesselFinder.triggered.connect(self._slotMenuVesselFinderClicked)
@@ -12285,13 +12293,19 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo iwlist scan"', shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo iwlist scan"', shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo iwlist scan"', shell=True)        
         
     def _slotMenuKismetClicked(self):
         """ Opens Kismet for viewing wireless networks.
         """
         # Run Kismet
-        command_text = 'gnome-terminal -- kismet &'
+        if self.operating_system == 'DragonOS FocalX':
+            command_text = 'qterminal -e kismet &'
+        else:
+            command_text = 'gnome-terminal -- kismet &'
         proc = subprocess.Popen(command_text, shell=True)
 
     def _slotMenuQSpectrumAnalyzerClicked(self):
@@ -12527,14 +12541,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Run Dump1090
         dump1090_directory = os.path.expanduser("~/Installed_by_FISSURE/dump1090/")
-        proc=subprocess.Popen("gnome-terminal -- ./dump1090 --interactive --net --freq 1090000000 --net-http-port 8081", cwd=dump1090_directory, shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen("qterminal -e ./dump1090 --interactive --net --freq 1090000000 --net-http-port 8081", cwd=dump1090_directory, shell=True)
+        else:
+            proc=subprocess.Popen("gnome-terminal -- ./dump1090 --interactive --net --freq 1090000000 --net-http-port 8081", cwd=dump1090_directory, shell=True)
         webbrowser.open("http://127.0.0.1:8081")
         
     def _slotMenuLimeSuite_Clicked(self):
         """ Launches LimeSuiteGUI for the LimeSDR.
         """
         # Run LimeSuitGUI
-        command_text = 'gnome-terminal -- LimeSuiteGUI &'
+        if self.operating_system == 'DragonOS FocalX':
+            command_text = 'qterminal -e LimeSuiteGUI &'
+        else:
+            command_text = 'gnome-terminal -- LimeSuiteGUI &'
         proc = subprocess.Popen(command_text, shell=True)
         
     def _slotStatusbarTSI_Clicked(self):
@@ -13858,7 +13878,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Run Monitor Mode Tool
         monitor_mode_tool_directory = os.path.dirname(os.path.abspath(__file__)) + "/Tools/Monitor_Mode_Tool/"
-        proc=subprocess.Popen("gnome-terminal -- python3 monitor_mode_tool.py", cwd=monitor_mode_tool_directory, shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen("qterminal -e python3 monitor_mode_tool.py", cwd=monitor_mode_tool_directory, shell=True)
+        else:
+            proc=subprocess.Popen("gnome-terminal -- python3 monitor_mode_tool.py", cwd=monitor_mode_tool_directory, shell=True)
         
     def _slotIQ_CropClicked(self):
         """ Crops a data file to a smaller size.
@@ -15702,7 +15725,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Start Transmitting
         if len(get_iface) > 0:
             scapy_send_directory = os.path.dirname(os.path.abspath(__file__)) + "/Tools/"
-            proc=subprocess.Popen("gnome-terminal -- sudo python2 scapy_send.py " + get_iface + " " + get_interval + " " + get_loop, cwd=scapy_send_directory, shell=True)
+            if self.operating_system == 'DragonOS FocalX':
+                proc=subprocess.Popen("qterminal -e sudo python2 scapy_send.py " + get_iface + " " + get_interval + " " + get_loop, cwd=scapy_send_directory, shell=True)
+            else:
+                proc=subprocess.Popen("gnome-terminal -- sudo python2 scapy_send.py " + get_iface + " " + get_interval + " " + get_loop, cwd=scapy_send_directory, shell=True)
         else:
             msgBox = MyMessageBox(my_text = " Specify wireless interface.", width=200, height=100)
             msgBox.exec_()
@@ -16236,7 +16262,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue Load Command
         if get_file != None:
             try:
-                command_text = 'gnome-terminal -- bladeRF-cli -l ' + str(get_file) + ' &'
+                if self.operating_system == 'DragonOS FocalX':
+                    command_text = 'qterminal -e bladeRF-cli -l ' + str(get_file) + ' &'
+                else:
+                    command_text = 'gnome-terminal -- bladeRF-cli -l ' + str(get_file) + ' &'
                 proc = subprocess.Popen(command_text, shell=True)            
             except:
                 print("Error Loading FPGA Image")
@@ -16293,19 +16322,25 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Open gr-rds rds_rx.grc GUI for RTL2832U.
         """
         # Opens the rdx_rx without Opening GRC
-        osCommandString = "grcc " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.8/gr-rds-maint-3.8/examples/rds_rx.grc -o " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.8/gr-rds-maint-3.8/examples/ -r"
+        if self.operating_system == 'DragonOS FocalX':
+            osCommandString = "grcc /usr/src/gr-rds/examples/rds_rx.grc -o /usr/src/gr-rds/examples/ -r"
+        else:
+            osCommandString = "grcc " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-rds/examples/rds_rx.grc -o " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-rds/examples/ -r"
         os.system(osCommandString+ " &")     
                               
     def _slotMenuSrsLTE_Clicked(self):
         """ Opens the terminals with locations for manually running srsLTE programs.
         """
-        # srsepc, srsenb
-        srsLTE_dir = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/srsepc")
-                
         # Two Terminals
-        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"      
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo srsepc ~/.config/srsran/epc.conf"', cwd=srsLTE_dir, shell=True)                
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo srsenb ~/.config/srsran/enb.conf"', cwd=srsLTE_dir, shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        if self.operating_system == 'DragonOS FocalX':
+            srsLTE_dir = "/usr/src/srsRAN/srsepc/"
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo srsepc ~/.config/srsran/epc.conf"', cwd=srsLTE_dir, shell=True)                
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo srsenb ~/.config/srsran/enb.conf"', cwd=srsLTE_dir, shell=True)
+        else:
+            srsLTE_dir = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/srsepc")
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo srsepc ~/.config/srsran/epc.conf"', cwd=srsLTE_dir, shell=True)                
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo srsenb ~/.config/srsran/enb.conf"', cwd=srsLTE_dir, shell=True)
                 
         # # Two Tabs
         # proc=subprocess.Popen('gnome-terminal --window --working-directory="' + srsLTE_dir + '" ' + \
@@ -16463,7 +16498,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens Wireshark.
         """
         # Open Wireshark in the Background
-        proc=subprocess.Popen(['gnome-terminal -- wireshark'], shell=True)  
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen(['qterminal -e wireshark'], shell=True)  
+        else:
+            proc=subprocess.Popen(['gnome-terminal -- wireshark'], shell=True)  
         
     def _slotPD_BitViewerHexClicked(self):
         """ Converts list of bits into hex.
@@ -17007,7 +17045,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens a terminal with bluetoothctl running.
         """
         # Run bluetoothctl
-        command_text = 'gnome-terminal -- bluetoothctl'
+        if self.operating_system == 'DragonOS FocalX':
+            command_text = 'qterminal -e bluetoothctl'
+        else:
+            command_text = 'gnome-terminal -- bluetoothctl'
         proc = subprocess.Popen(command_text, shell=True)        
 
     def _slotPacketPattern1Clicked(self):
@@ -17238,7 +17279,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Run V2Verfier main.py
         command_text = 'sudo python3 main.py local dsrc -g'
-        proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True, cwd=os.path.dirname(os.path.realpath(__file__)) + '/Tools/v2verifier-master')
+        if self.operating_system == 'DragonOS FocalX':
+            proc = subprocess.Popen('qterminal -e ' + command_text + " &", shell=True, cwd=os.path.dirname(os.path.realpath(__file__)) + '/Tools/v2verifier-master')
+        else:
+            proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True, cwd=os.path.dirname(os.path.realpath(__file__)) + '/Tools/v2verifier-master')
         
     def _slotMenuV2VerifierWifiTxClicked(self):
         """ Opens the V2Verifier wifi_tx flow graph.
@@ -17277,7 +17321,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens FALCON for LTE monitoring.
         """
         # Run FALCON
-        proc=subprocess.Popen("FalconGUI &", shell=True) 
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen("/usr/src/falcon/build/src/gui/FalconGUI &", shell=True) 
+        else:
+            proc=subprocess.Popen("FalconGUI &", shell=True) 
         
     def _slotMenuCyberChefClicked(self):
         """ Opens CyberChef in a browser
@@ -17302,15 +17349,21 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens a minicom in a terminal.
         """  
         # Run Minicom
-        command_text = "sudo minicom" 
-        proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
+        command_text = "sudo minicom"
+        if self.operating_system == 'DragonOS FocalX':
+            proc = subprocess.Popen('qterminal -e ' + command_text + " &", shell=True)
+        else:
+            proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
         
     def _slotMenuPuttyClicked(self):
         """ Opens a PuTTY in a terminal.
         """  
         # Run PuTTY
         command_text = "sudo putty" 
-        proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc = subprocess.Popen('qterminal -e ' + command_text + " &", shell=True)
+        else:
+            proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
         
     def _slotMenuOpenHAB_Clicked(self):
         """ Opens a PuTTY in a terminal.
@@ -17322,15 +17375,21 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens a PuTTY in a terminal.
         """  
         # Start openHAB Service
-        command_text = "sudo /bin/systemctl start openhab.service" 
-        proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
+        command_text = "sudo /bin/systemctl start openhab.service"
+        if self.operating_system == 'DragonOS FocalX':
+            proc = subprocess.Popen('qterminal -e ' + command_text + " &", shell=True)
+        else:
+            proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
         
     def _slotMenuStop_openHAB_ServiceClicked(self):
         """ Opens a PuTTY in a terminal.
         """  
         # Stop openHAB Service
         command_text = "sudo /bin/systemctl stop openhab.service" 
-        proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc = subprocess.Popen('qterminal -e ' + command_text + " &", shell=True)
+        else:
+            proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
         
     def _slotPD_BitViewerUnDiff0Clicked(self):
         """ Undoes a bit diff operation starting with a 0.
@@ -17421,32 +17480,44 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Run rtl_sdr and rtl_zwave
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/rtl-zwave-master/")        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 908.42e6 -s 2048000 -g 25 - | ./rtl_zwave"', cwd=rtl_zwave_directory, shell=True)
+        rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/rtl-zwave-master/")
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_sdr -f 908.42e6 -s 2048000 -g 25 - | ./rtl_zwave"', cwd=rtl_zwave_directory, shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 908.42e6 -s 2048000 -g 25 - | ./rtl_zwave"', cwd=rtl_zwave_directory, shell=True)
         
     def _slotMenuRtlZwave916_Clicked(self):
         """ Runs rtl_sdr and rtl_zwave at 916 MHz.
         """
         # Run rtl_sdr and rtl_zwave
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/rtl-zwave-master/")        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 916e6 -s 2048000 -g 25 - | ./rtl_zwave"', cwd=rtl_zwave_directory, shell=True)        
+        rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/rtl-zwave-master/")
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_sdr -f 916e6 -s 2048000 -g 25 - | ./rtl_zwave"', cwd=rtl_zwave_directory, shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 916e6 -s 2048000 -g 25 - | ./rtl_zwave"', cwd=rtl_zwave_directory, shell=True)        
         
     def _slotMenuWavingZ_908_Clicked(self):
         """ Runs rtl_sdr and wave-in at 908.42 MHz.
         """
         # Run rtl_sdr and waving-z
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/waving-z/build/")        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 908420000 -s 2000000 -g 25  - | ./wave-in -u"', cwd=rtl_zwave_directory, shell=True)        
+        rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/waving-z/build/")
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_sdr -f 908420000 -s 2000000 -g 25  - | ./wave-in -u"', cwd=rtl_zwave_directory, shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 908420000 -s 2000000 -g 25  - | ./wave-in -u"', cwd=rtl_zwave_directory, shell=True)        
         
     def _slotMenuWavingZ_916_Clicked(self):
         """ Runs rtl_sdr and wave-in at 916 MHz.
         """
         # Run rtl_sdr and waving-z
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/waving-z/build/")        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 916000000 -s 2000000 -g 25  - | ./wave-in -u"', cwd=rtl_zwave_directory, shell=True)          
+        rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/waving-z/build/")
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_sdr -f 916000000 -s 2000000 -g 25  - | ./wave-in -u"', cwd=rtl_zwave_directory, shell=True)          
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 916000000 -s 2000000 -g 25  - | ./wave-in -u"', cwd=rtl_zwave_directory, shell=True)          
 
     def _slotMenuStandaloneTpmsRxClicked(self):
         """ Opens the standalone flow graph in GNU Radio Companion.
@@ -18561,21 +18632,30 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Runs 'LimeUtil --update' to fix Gateware version mismatch issues.
         """
         # Issue the Command
-        proc = subprocess.Popen('gnome-terminal -- LimeUtil --update &', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc = subprocess.Popen('qterminal -e LimeUtil --update &', shell=True)
+        else:
+            proc = subprocess.Popen('gnome-terminal -- LimeUtil --update &', shell=True)
         
     def _slotMenuBaudlineClicked(self):
         """ Opens baudline - the time-frequency browser designed for scientific visualization of the spectral domain.
         """
         # Run the Executable
-        baudline_command = os.path.expanduser("~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline")          
-        command_text = 'gnome-terminal -- ' + baudline_command + ' &'
+        baudline_command = os.path.expanduser("~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline")
+        if self.operating_system == 'DragonOS FocalX':      
+            command_text = 'qterminal -e ' + baudline_command + ' &'
+        else:
+            command_text = 'gnome-terminal -- ' + baudline_command + ' &'
         proc = subprocess.Popen(command_text, shell=True)
         
     def _slotMenuURH_Clicked(self):
         """ Opens Universal Radio Hacker.
         """
         # Issue the Command
-        command_text = 'gnome-terminal -- urh &'
+        if self.operating_system == 'DragonOS FocalX':
+            command_text = 'qterminal -e urh &'
+        else:
+            command_text = 'gnome-terminal -- urh &'
         proc = subprocess.Popen(command_text, shell=True)
         
     def _slotMenu4G_IMSI_CatcherClicked(self):
@@ -18592,8 +18672,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_value = chooser_dlg.return_value
         if len(get_value) > 0:             
             script_location = os.path.dirname(os.path.realpath(__file__)) + "/Tools/IMSI-Catcher_4G/"   
-            cell_search_binary_location = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/build/lib/examples/cell_search")    
-            command_text = 'gnome-terminal -- python3 ' + script_location + 'start_sniffing.py -b ' + get_value + ' ' + cell_search_binary_location + ' &'
+            cell_search_binary_location = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/build/lib/examples/cell_search")
+            if self.operating_system == 'DragonOS FocalX':
+                command_text = 'qterminal -e python3 ' + script_location + 'start_sniffing.py -b ' + get_value + ' ' + cell_search_binary_location + ' &'
+            else:
+                command_text = 'gnome-terminal -- python3 ' + script_location + 'start_sniffing.py -b ' + get_value + ' ' + cell_search_binary_location + ' &'
             proc = subprocess.Popen(command_text, cwd=script_location, shell=True)
         
     def _slotPD_SnifferNetcatClicked(self):
@@ -18611,16 +18694,25 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         
         # Issue the Command
         if get_tcp_udp == "TCP":
-            command_text = 'gnome-terminal -- nc -l ' + get_ip + ' ' + get_port + ' &'
+            if self.operating_system == 'DragonOS FocalX':
+                command_text = 'qterminal -e nc -l ' + get_ip + ' ' + get_port + ' &'
+            else:
+                command_text = 'gnome-terminal -- nc -l ' + get_ip + ' ' + get_port + ' &'
         else:
-            command_text = 'gnome-terminal -- nc -lu ' + get_ip + ' ' + get_port + ' &'
+            if self.operating_system == 'DragonOS FocalX':
+                command_text = 'qterminal -e nc -lu ' + get_ip + ' ' + get_port + ' &'
+            else:
+                command_text = 'gnome-terminal -- nc -lu ' + get_ip + ' ' + get_port + ' &'
         proc = subprocess.Popen(command_text, shell=True)
         
     def _slotMenuInspectrumClicked(self):
         """ Opens Inspectrum.
         """
         # Issue the Command
-        command_text = 'gnome-terminal -- inspectrum &'
+        if self.operating_system == 'DragonOS FocalX':
+            command_text = 'qterminal -e inspectrum &'
+        else:
+            command_text = 'gnome-terminal -- inspectrum &'
         proc = subprocess.Popen(command_text, shell=True)
         
     def _slotPD_DissectorsUpdateAllClicked(self):
@@ -18654,15 +18746,23 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Launches OpenCPN.
         """
         # Issue the Command
-        command_text = 'gnome-terminal -- opencpn &'
+        if self.operating_system == 'DragonOS FocalX':
+            command_text = 'qterminal -e opencpn &'
+        else:
+            command_text = 'gnome-terminal -- opencpn &'
         proc = subprocess.Popen(command_text, shell=True)
         
     def _slotMenuAis_rxClicked(self):
         """ Launches ais_rx.
         """
         # Issue the Command
-        ais_rx_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.8/gr-ais-master/apps/ais_rx"
-        command_text = 'gnome-terminal -- python3 "' + ais_rx_filepath  + '" &'
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
+        if self.operating_system == 'DragonOS FocalX':
+            ais_rx_command = 'python3 ' + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-ais/apps/ais_rx.py"
+            command_text = 'qterminal -e ' + expect_script_filepath + ' "' + ais_rx_command + '"'
+        else:
+            ais_rx_command = 'python3 ' + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-ais/apps/ais_rx.py"
+            command_text = 'gnome-terminal -- ' + expect_script_filepath + ' "' + ais_rx_command + '"'
         proc = subprocess.Popen(command_text, shell=True) 
         
     def _slotMenuProtocolSpreadsheetClicked(self):
@@ -18799,7 +18899,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         # ~ command_text = 'gnome-terminal -- /bin/bash -c "grgsm_scanner -b PCS1900 -g 70 && echo "Done" && read"'  # bash and read keep the terminal open after running
-        command_text = 'gnome-terminal -- ' + expect_script_filepath + ' "grgsm_scanner -b PCS1900 -g 70"'  # let the user choose band, hardware, gain
+        if self.operating_system == 'DragonOS FocalX':
+            command_text = 'qterminal -e ' + expect_script_filepath + ' "grgsm_scanner -b PCS1900 -g 70"'  # let the user choose band, hardware, gain
+        else:
+            command_text = 'gnome-terminal -- ' + expect_script_filepath + ' "grgsm_scanner -b PCS1900 -g 70"'  # let the user choose band, hardware, gain
         proc = subprocess.Popen(command_text, shell=True)
         
     def _slotMenuKalibrateClicked(self):
@@ -18807,8 +18910,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        kalibrate_directory = os.path.expanduser("~/Installed_by_FISSURE/kalibrate-rtl/src/")        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./kal -h"', cwd=kalibrate_directory, shell=True)  
+        kalibrate_directory = os.path.expanduser("~/Installed_by_FISSURE/kalibrate-rtl/src/")
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./kal -h"', shell=True)  
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./kal -h"', cwd=kalibrate_directory, shell=True)  
         
     def _slotMenuTowerSearchClicked(self):
         """ Opens a terminal for searching for eNodeB information using the srsRAN cell search binary.
@@ -18820,8 +18926,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         cell_search_binary_location = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/build/lib/examples/cell_search")
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        lte_script_directory = os.path.dirname(os.path.realpath(__file__)) + "/Tools/LTE_Tower_Search"        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python3 tower_search_part1.py ' + cell_search_binary_location + ' [2,4]"', cwd=lte_script_directory, shell=True) 
+        lte_script_directory = os.path.dirname(os.path.realpath(__file__)) + "/Tools/LTE_Tower_Search"
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "python3 tower_search_part1.py ' + cell_search_binary_location + ' [2,4]"', cwd=lte_script_directory, shell=True) 
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python3 tower_search_part1.py ' + cell_search_binary_location + ' [2,4]"', cwd=lte_script_directory, shell=True) 
              
     def _slotMenuTowerSearchPart2Clicked(self):
         """ Opens a terminal for finding the LTE MCC/MNC and TAC values for a dictionary result provided by Tower Search Part 1.
@@ -18830,7 +18939,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         lte_script_directory = os.path.dirname(os.path.realpath(__file__)) + "/Tools/LTE_Tower_Search"        
         output_example = """\\\"{\'MHz\': \'2125.0\', \'EARFCN\': \'2100\', \'PHYID\': \'276\', \'PRB\': \'50\', \'ports\': \'4\', \'PSS power\': \'-28.9 dBm\'}\\\" """
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python3 tower_search_part2.py ' + output_example + '"', cwd=lte_script_directory, shell=True) 
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "python3 tower_search_part2.py ' + output_example + '"', cwd=lte_script_directory, shell=True) 
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python3 tower_search_part2.py ' + output_example + '"', cwd=lte_script_directory, shell=True) 
                                  
     def checkFrequencyBounds(self, get_frequency, get_hardware, get_daughterboard):
         """ Returns True or False if the frequency is within the bounds of the hardware.
@@ -19058,15 +19170,21 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         retrogram_directory = os.path.expanduser("~/Installed_by_FISSURE/retrogram-rtlsdr-master")       
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./retrogram-rtlsdr --rate 2e6 --freq 100e6 --step 1e5"', cwd=retrogram_directory, shell=True) 
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./retrogram-rtlsdr --rate 2e6 --freq 100e6 --step 1e5"', cwd=retrogram_directory, shell=True) 
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./retrogram-rtlsdr --rate 2e6 --freq 100e6 --step 1e5"', cwd=retrogram_directory, shell=True) 
     
     def _slotMenuRTLSDR_AirbandClicked(self):
         """ Opens a terminal with an example command for RTLSDR-Airband. Needs a configuration file.
         """         
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        airband_directory = os.path.expanduser("~/Installed_by_FISSURE/RTLSDR-Airband")       
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_airband -h"', cwd=airband_directory, shell=True)
+        airband_directory = os.path.expanduser("~/Installed_by_FISSURE/RTLSDR-Airband")
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_airband -h"', cwd=airband_directory, shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_airband -h"', cwd=airband_directory, shell=True)
         
     def _slotMenuRadioReferenceDatabaseClicked(self):
         """ Opens a browser to radioreference.com.
@@ -19078,29 +19196,42 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         spektrum_filepath = os.path.expanduser("~/Installed_by_FISSURE/spektrum/spektrum")
-        command_text = 'gnome-terminal -- "' + spektrum_filepath + '" &'
+        if self.operating_system == 'DragonOS FocalX':
+            command_text = 'qterminal -e "' + spektrum_filepath + '" &'
+        else:
+            command_text = 'gnome-terminal -- "' + spektrum_filepath + '" &'
         proc = subprocess.Popen(command_text, shell=True) 
         
     def _slotMenuRTL_TestClicked(self):
         """ Runs rtl_test command to detect hardware.
         """
         # Issue the Command
-        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"       
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_test -t"', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_test -t"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_test -t"', shell=True)
         
     def _slotMenuSDR_TrunkClicked(self):
         """ Launches SDRTrunk.
         """
         # Issue the Command
-        sdr_trunk_filepath = os.path.expanduser("~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk")
-        command_text = 'gnome-terminal -- "' + sdr_trunk_filepath + '" &'
+        if self.operating_system == 'DragonOS FocalX':
+            sdr_trunk_filepath = "/usr/src/sdr-trunk-linux-x86_64-v0.6.0-alpha5/bin/sdr-trunk"
+            command_text = 'qterminal -e "' + sdr_trunk_filepath + '" &'
+        else:
+            sdr_trunk_filepath = os.path.expanduser("~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk")
+            command_text = 'gnome-terminal -- "' + sdr_trunk_filepath + '" &'
         proc = subprocess.Popen(command_text, shell=True) 
         
     def _slotMenuAudacityClicked(self):
         """ Launches Audacity.
         """
         # Issue the Command
-        command_text = 'gnome-terminal -- "audacity" &'
+        if self.operating_system == 'DragonOS FocalX':
+            command_text = 'qterminal -e "audacity" &'
+        else:
+            command_text = 'gnome-terminal -- "audacity" &'
         proc = subprocess.Popen(command_text, shell=True)      
         
     def _slotIQ_MorseCodeClicked(self):
@@ -19397,8 +19528,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proxmark3_directory = os.path.expanduser("~/Installed_by_FISSURE/proxmark3/client/")       
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./proxmark3 /dev/ttyACM0"', cwd=proxmark3_directory, shell=True)
+        proxmark3_directory = os.path.expanduser("~/Installed_by_FISSURE/proxmark3/client/")
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo ./proxmark3 /dev/ttyACM0"', cwd=proxmark3_directory, shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./proxmark3 /dev/ttyACM0"', cwd=proxmark3_directory, shell=True)
         
     def _slotMenuProxmark3_CheatsheetClicked(self):
         """ Opens a Proxmark3 cheat sheet in a browser.
@@ -19425,8 +19559,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        radiosonde_directory = os.path.expanduser("~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/")       
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python3 auto_rx.py"', cwd=radiosonde_directory, shell=True)        
+        radiosonde_directory = os.path.expanduser("~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/")
+        if self.operating_system == 'DragonOS FocalX':  
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "python3 auto_rx.py"', cwd=radiosonde_directory, shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python3 auto_rx.py"', cwd=radiosonde_directory, shell=True)        
         
     def _slotMenuRadiosondeAutoRxConfigClicked(self):
         """ Opens the radiosonde_auto_rx configuration file.
@@ -19444,15 +19581,21 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens SdrGlut in a new terminal.
         """
         # Issue the Command
-        sdr_glut_directory = os.path.expanduser("~/Installed_by_FISSURE/SdrGlut/")       
-        proc=subprocess.Popen('gnome-terminal -- "./sdrglut.x" &', cwd=sdr_glut_directory, shell=True)
+        sdr_glut_directory = os.path.expanduser("~/Installed_by_FISSURE/SdrGlut/")
+        if self.operating_system == 'DragonOS FocalX':  
+            proc=subprocess.Popen('qterminal -e "./sdrglut.x" &', cwd=sdr_glut_directory, shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- "./sdrglut.x" &', cwd=sdr_glut_directory, shell=True)
         
     def _slotMenuUS_FrequencyAllocationsClicked(self):
         """ Opens the US Frequency Allocations wall chart.
         """
         # Open the File
-        us_freq_allocations_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/january_2016_spectrum_wall_chart.pdf" 
-        os.system("evince " + us_freq_allocations_filepath + " &")
+        us_freq_allocations_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/january_2016_spectrum_wall_chart.pdf"
+        if self.operating_system == 'DragonOS FocalX':
+            os.system("open " + us_freq_allocations_filepath + " &")
+        else:
+            os.system("evince " + us_freq_allocations_filepath + " &")
         
     def _slotMenuCyberChefRecipesClicked(self):
         """ Opens the cyberchef-recipes github page.
@@ -19462,8 +19605,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     def _slotMenuRehexClicked(self):
         """ Opens the Reverse Engineers' Hex Editor (rehex).
         """
-        # Issue the Command    
-        proc=subprocess.Popen('gnome-terminal -- "rehex" &', shell=True)
+        # Issue the Command
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e "rehex" &', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- "rehex" &', shell=True)
         
     def _slotMenuZEPASSD_Clicked(self):
         """ Opens a terminal with the command for running ZEPASSD.
@@ -19471,23 +19617,32 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         zepassd_directory = os.path.expanduser("~/Installed_by_FISSURE/zepassd/")       
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./zepassd --tx-port A:A --rx-port A:A --tx-gain 87 --rx-gain 85 -p 20 foobar"', cwd=zepassd_directory, shell=True)  
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./zepassd --tx-port A:A --rx-port A:A --tx-gain 87 --rx-gain 85 -p 20 foobar"', cwd=zepassd_directory, shell=True)  
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./zepassd --tx-port A:A --rx-port A:A --tx-gain 87 --rx-gain 85 -p 20 foobar"', cwd=zepassd_directory, shell=True)  
         
     def _slotMenuIridiumExtractorClicked(self):
         """ Opens a terminal with a command for recording Iridium bits with iridium-extractor.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        iridium_directory = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.8/gr-iridium-maint-3.8/"
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "iridium-extractor -D 4 examples/hackrf.conf | grep A:OK > ~/output.bits"', cwd=iridium_directory, shell=True)  
+        iridium_directory = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-iridium/"
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "iridium-extractor -D 4 examples/hackrf.conf | grep A:OK > ~/output.bits"', cwd=iridium_directory, shell=True)  
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "iridium-extractor -D 4 examples/hackrf.conf | grep A:OK > ~/output.bits"', cwd=iridium_directory, shell=True)  
                 
     def _slotMenuIridiumParserClicked(self):
         """ Opens a terminal with the command to parse the bits created by iridium-extractor.py and prepare it for stats-voc.py to allow audio playback.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        iridium_directory = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.8/gr-iridium-maint-3.8/"
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python2 iridium-parser.py -p ~/output.bits > ~/output.parsed"', cwd=iridium_directory, shell=True)  
+        iridium_directory = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-iridium/"
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "python2 iridium-parser.py -p ~/output.bits > ~/output.parsed"', cwd=iridium_directory, shell=True)  
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python2 iridium-parser.py -p ~/output.bits > ~/output.parsed"', cwd=iridium_directory, shell=True)  
             
     def _slotMenuStatsVocClicked(self):
         """ Opens a terminal with the command to play the audio from the parsed Iridium files. Left-click and right-click on the red dots in each row.
@@ -19495,30 +19650,42 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         iridium_toolkit_directory = os.path.expanduser("~/Installed_by_FISSURE/iridium-toolkit/")
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "export PATH=$PATH:' + iridium_toolkit_directory + ' && ./stats-voc.py ~/output.parsed"', cwd=iridium_toolkit_directory, shell=True)  
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "export PATH=$PATH:' + iridium_toolkit_directory + ' && ./stats-voc.py ~/output.parsed"', cwd=iridium_toolkit_directory, shell=True)  
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "export PATH=$PATH:' + iridium_toolkit_directory + ' && ./stats-voc.py ~/output.parsed"', cwd=iridium_toolkit_directory, shell=True)  
             
     def _slotMenuIridiumLiveClicked(self):
         """ Opens a terminal for running the iridium-extractor/iridium-parser and piping the output to udp-for-il.py (localhost). Runs IridiumLive and opens a browser to 127.0.0.1:7777.
         """
         # Issue the IridiumLive Command
-        iridiumlive_directory = os.path.expanduser("~/Installed_by_FISSURE/linux-x64/")       
-        proc=subprocess.Popen('gnome-terminal -- "./IridiumLive" &', cwd=iridiumlive_directory, shell=True)
+        iridiumlive_directory = os.path.expanduser("~/Installed_by_FISSURE/linux-x64/")
+        if self.operating_system == 'DragonOS FocalX':    
+            proc=subprocess.Popen('qterminal -e "./IridiumLive" &', cwd=iridiumlive_directory, shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- "./IridiumLive" &', cwd=iridiumlive_directory, shell=True)
         
         # Open the Browser
         os.system("sensible-browser http://127.0.0.1:7777/ &")
         
         # Issue the Command for Extractor and Parser
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        iridium_directory = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.8/gr-iridium-maint-3.8/"
+        iridium_directory = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-iridium/"
         tools_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "iridium-extractor --offline --multi-frame ' + iridium_directory + 'examples/hackrf.conf | ~/Installed_by_FISSURE/iridium-toolkit/iridium-parser.py -p /dev/stdin /dev/stdout | python2 ' + tools_filepath + 'IridiumLive/udp-for-il.py"', cwd=iridium_directory, shell=True) 
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "iridium-extractor --offline --multi-frame ' + iridium_directory + 'examples/hackrf.conf | ~/Installed_by_FISSURE/iridium-toolkit/iridium-parser.py -p /dev/stdin /dev/stdout | python2 ' + tools_filepath + 'IridiumLive/udp-for-il.py"', cwd=iridium_directory, shell=True) 
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "iridium-extractor --offline --multi-frame ' + iridium_directory + 'examples/hackrf.conf | ~/Installed_by_FISSURE/iridium-toolkit/iridium-parser.py -p /dev/stdin /dev/stdout | python2 ' + tools_filepath + 'IridiumLive/udp-for-il.py"', cwd=iridium_directory, shell=True) 
         
     def _slotMenuNETATTACK2_Clicked(self):
         """ Opens a terminal and launches NETATTACK2.
         """
         # Issue the Command
         netattack2_directory = os.path.expanduser("~/Installed_by_FISSURE/netattack2/")       
-        proc=subprocess.Popen('gnome-terminal -- sudo python2 netattack2.py &', cwd=netattack2_directory, shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e sudo python2 netattack2.py &', cwd=netattack2_directory, shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- sudo python2 netattack2.py &', cwd=netattack2_directory, shell=True)
         
     def _slotMenuWifiteClicked(self):
         """ Opens a terminal and launches Wifite.
@@ -19526,21 +19693,30 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"  # Expect is needed because Wifite closes on completion
         wifite2_directory = os.path.expanduser("~/Installed_by_FISSURE/wifite2/")       
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./Wifite.py"', cwd=wifite2_directory, shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo wifite"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./Wifite.py"', cwd=wifite2_directory, shell=True)
         
     def _slotMenuRtl_433_Clicked(self):
         """ Opens a terminal and launches rtl_433.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"         
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_433"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_433"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_433"', shell=True)
         
     def _slotMenuRouterSploitClicked(self):
         """ Opens a terminal and launches RouterSploit.
         """
         # Issue the Command
-        routersploit_directory = os.path.expanduser("~/Installed_by_FISSURE/routersploit/")       
-        proc=subprocess.Popen('gnome-terminal -- python3 rsf.py &', cwd=routersploit_directory, shell=True)
+        routersploit_directory = os.path.expanduser("~/Installed_by_FISSURE/routersploit/")
+        if self.operating_system == 'DragonOS FocalX':   
+            proc=subprocess.Popen('qterminal -e python3 rsf.py &', cwd=routersploit_directory, shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- python3 rsf.py &', cwd=routersploit_directory, shell=True)
         
     def _slotMenuExploitDatabaseClicked(self):
         """ Opens ExploitDB in a browser.
@@ -19552,13 +19728,19 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens msfconsole in a new terminal.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- msfconsole &', shell=True)      
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e msfconsole &', shell=True)      
+        else:
+            proc=subprocess.Popen('gnome-terminal -- msfconsole &', shell=True)      
         
     def _slotMenuMonitor_rtl433_Clicked(self):
         """ Runs monitor_rtl433 and opens a browser to view data.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- sudo python3 -m monitor_rtl433 &', shell=True) 
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e sudo python3 -m monitor_rtl433 &', shell=True) 
+        else:
+            proc=subprocess.Popen('gnome-terminal -- sudo python3 -m monitor_rtl433 &', shell=True) 
         
         # Open the Browser
         os.system("sensible-browser http://127.0.0.1:5000/ &")    
@@ -19594,8 +19776,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_interface = wifi_interfaces[0]
 
         # Issue the Command
-        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"         
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "scan-ssid -p ' + get_interface + '"', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"     
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "scan-ssid -p ' + get_interface + '"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "scan-ssid -p ' + get_interface + '"', shell=True)
         
     def _slotMenuPySimReadClicked(self):
         """ Opens a terminal in the pySim directory for using pySim-read.py.
@@ -19603,7 +19788,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         pysim_directory = os.path.expanduser("~/Installed_by_FISSURE/pysim/")
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./pySim-read.py -p 0"', cwd=pysim_directory, shell=True)  
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./pySim-read.py -p 0"', cwd=pysim_directory, shell=True)  
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./pySim-read.py -p 0"', cwd=pysim_directory, shell=True)  
     
     def _slotMenuPySimProgClicked(self):
         """ Opens a terminal in the pySim directory for using pySim-prog.py.
@@ -19611,7 +19799,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         pysim_directory = os.path.expanduser("~/Installed_by_FISSURE/pysim/")
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./pySim-prog.py -p 0 -x 310 -y 070 -n test1 -t sysmoUSIM-SJS1 -i 901700000023688 -s 8988211000000236888 -o 1B0A4D434B184DE7BA88147E725C5AAD -k 0B7BBF089FD188EA0C64FEE245EB03E7 -a 12100237"', cwd=pysim_directory, shell=True)  
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./pySim-prog.py -p 0 -x 310 -y 070 -n test1 -t sysmoUSIM-SJS1 -i 901700000023688 -s 8988211000000236888 -o 1B0A4D434B184DE7BA88147E725C5AAD -k 0B7BBF089FD188EA0C64FEE245EB03E7 -a 12100237"', cwd=pysim_directory, shell=True)  
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./pySim-prog.py -p 0 -x 310 -y 070 -n test1 -t sysmoUSIM-SJS1 -i 901700000023688 -s 8988211000000236888 -o 1B0A4D434B184DE7BA88147E725C5AAD -k 0B7BBF089FD188EA0C64FEE245EB03E7 -a 12100237"', cwd=pysim_directory, shell=True)  
             
     def _slotMenuLessonLuaDissectorsClicked(self):
         """ Opens the html file in a browser.
@@ -19623,7 +19814,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "minimodem --rx 110"', shell=True)  
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "minimodem --rx 110"', shell=True)  
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "minimodem --rx 110"', shell=True)  
                 
     def _slotMenuMinimodemTxClicked(self):
         """ Opens a terminal and populates it with the minimodem --tx command.
@@ -19631,13 +19825,19 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         transmit_text = """\\\"This is a test message!\\\" """
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "printf ' + transmit_text + ' | minimodem --tx 110"', shell=True)       
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "printf ' + transmit_text + ' | minimodem --tx 110"', shell=True)       
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "printf ' + transmit_text + ' | minimodem --tx 110"', shell=True)       
         
     def _slotMenuWSJTX_Clicked(self):
         """ Issues the wsjtx command.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- wsjtx &', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e wsjtx &', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- wsjtx &', shell=True)
         
     def _slotMenuWSPRnetMapClicked(self):
         """ Opens the WSPRnet Map in the browser.
@@ -19670,7 +19870,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens VLC.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- vlc &', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e vlc &', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- vlc &', shell=True)
         
     def _slotMenuZigbeeOpenSnifferClicked(self):
         """ Opens ZigBe Open Sniffer Web GUI
@@ -19684,7 +19887,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens SimpleScreenRecorder.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- simplescreenrecorder &', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e simplescreenrecorder &', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- simplescreenrecorder &', shell=True)
         
     def _slotMenuPixieDustListClicked(self):
         """ Opens a list of devices vulnerable to Pixie Dust (Wifite).
@@ -19696,7 +19902,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rec test.wav trim 0 0:10"', shell=True)          
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rec test.wav trim 0 0:10"', shell=True)          
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rec test.wav trim 0 0:10"', shell=True)          
         
     def _slotMenuESP_BoardClicked(self):
         """ Opens the html file in a browser.
@@ -19707,14 +19916,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens Google Earth Pro.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- google-earth-pro &', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e google-earth-pro &', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- google-earth-pro &', shell=True)
         
     def _slotMenuGrAirModesClicked(self):
         """ Opens a terminal with an example command for using gr-air-modes.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "modes_rx -s osmocom -K aircrafts.kml"', shell=True)       
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "modes_rx -s osmocom -K aircrafts.kml"', shell=True)       
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "modes_rx -s osmocom -K aircrafts.kml"', shell=True)       
         
     def _slotMenuESP8266_DeautherInoClicked(self):
         """ Opens the .ino file in the Arduino IDE.
@@ -19749,44 +19964,65 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Runs the cgps command in a terminal.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- cgps &', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e cgps &', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- cgps &', shell=True)
         
     def _slotMenuGpsdecodeClicked(self):
         """ Decodes the output of gpscat in a terminal.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo gpscat /dev/ttyACM0 | gpsdecode"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo gpscat /dev/ttyACM0 | gpsdecode"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo gpscat /dev/ttyACM0 | gpsdecode"', shell=True)
         
     def _slotMenuGpsmonClicked(self):
         """ Runs the gpsmon command in a terminal.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- gpsmon &', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e gpsmon &', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- gpsmon &', shell=True)
                 
     def _slotMenuXgpsClicked(self):
         """ Runs the xgps command in a terminal.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- xgps &', shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e xgps &', shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- xgps &', shell=True)        
         
     def _slotMenuXgpsspeedClicked(self):
         """ Runs the xgsspeed command in a terminal.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- xgpsspeed &', shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e xgpsspeed &', shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- xgpsspeed &', shell=True)        
 
     def _slotMenuVikingClicked(self):
         """ Opens Viking tool. May need to link ports to track GPS: "sudo ln -s /dev/ttyACM0 /dev/ttyUSB0"
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- viking &', shell=True)                
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e viking &', shell=True)                
+        else:
+            proc=subprocess.Popen('gnome-terminal -- viking &', shell=True)                
 
     def _slotMenuPyGPSClientClicked(self):
         """ Opens the PyGPSClient program.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- sudo python3 -m pygpsclient &', shell=True)   
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e sudo python3 -m pygpsclient &', shell=True)   
+        else:
+            proc=subprocess.Popen('gnome-terminal -- sudo python3 -m pygpsclient &', shell=True)   
         
     def _slotMenuRadioStationLocator(self):
         """ Opens the Radio Station Locator in a browser.
@@ -19870,7 +20106,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens Gpredict.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- gpredict &', shell=True) 
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e gpredict &', shell=True) 
+        else:
+            proc=subprocess.Popen('gnome-terminal -- gpredict &', shell=True) 
         
     def _slotMenuTechInfoDepotClicked(self):
         """ Opens TechInfoDepot in a browser.
@@ -19901,7 +20140,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens the FoxtrotGPS program.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- foxtrotgps &', shell=True) 
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e foxtrotgps &', shell=True) 
+        else:
+            proc=subprocess.Popen('gnome-terminal -- foxtrotgps &', shell=True) 
         
     def _slotMenuGoogleMapsAPRS_Clicked(self):
         """ Opens Google Maps APRS in a browser.
@@ -19913,14 +20155,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_fm -f 144.390M -s 22050|multimon-ng -t raw -a AFSK1200 -f alpha -A /dev/stdin"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_fm -f 144.390M -s 22050|multimon-ng -t raw -a AFSK1200 -f alpha -A /dev/stdin"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_fm -f 144.390M -s 22050|multimon-ng -t raw -a AFSK1200 -f alpha -A /dev/stdin"', shell=True)
                 
     def _slotMenuLTE_CellScannerClicked(self):
         """ Opens an example command for LTE-Cell-Scanner in a terminal.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "CellSearch --freq-start 884e6 --freq-end 886e6"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "CellSearch --freq-start 884e6 --freq-end 886e6"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "CellSearch --freq-start 884e6 --freq-end 886e6"', shell=True)
             
     def _slotMenu_esriSatelliteMapClicked(self):
         """ Opens esri Satellite Map in a browser.
@@ -19937,7 +20185,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "btrx -f 2402M -r 4M -g 40 -a hackrf"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "btrx -f 2402M -r 4M -g 40 -a hackrf"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "btrx -f 2402M -r 4M -g 40 -a hackrf"', shell=True)
         
     def _slotMenuBleDumpTriggered(self):
         """ Opens an example command for using ble_dump and creates a fifo for Wireshark.
@@ -19947,7 +20198,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         ble_dump_directory = os.path.dirname(os.path.realpath(__file__)) + "/Tools/ble_dump-master/"              
         proc=subprocess.Popen('mkfifo /tmp/fifo1', shell=True)
         proc=subprocess.call("wireshark -S -k -i /tmp/fifo1 &", shell=True)
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo python2 ble_dump.py -s 4000000 -o /tmp/fifo1"', cwd=ble_dump_directory, shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -q ' + expect_script_filepath + ' "sudo python2 ble_dump.py -s 4000000 -o /tmp/fifo1"', cwd=ble_dump_directory, shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo python2 ble_dump.py -s 4000000 -o /tmp/fifo1"', cwd=ble_dump_directory, shell=True)
         
     def _slotMenuFlashESP32_BoardClicked(self):
         """ Flashes the ESP32 board with the BrakTooth Sniffer.
@@ -19955,7 +20209,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         esp32_sniffer_directory = os.path.expanduser("~/Installed_by_FISSURE/esp32_bluetooth_classic_sniffer/")
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./firmware.py flash /dev/ttyUSB0"', cwd=esp32_sniffer_directory, shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo ./firmware.py flash /dev/ttyUSB0"', cwd=esp32_sniffer_directory, shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./firmware.py flash /dev/ttyUSB0"', cwd=esp32_sniffer_directory, shell=True)        
         
     def _slotMenuBT_SnifferBREDR_Clicked(self):
         """ Runs the Bluetooth Classic Sniffer in slave role.
@@ -19963,28 +20220,40 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         esp32_sniffer_directory = os.path.expanduser("~/Installed_by_FISSURE/esp32_bluetooth_classic_sniffer/")
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./BTSnifferBREDR.py --port=/dev/ttyUSB0 --live-terminal --live-wireshark"',  cwd=esp32_sniffer_directory, shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo ./BTSnifferBREDR.py --port=/dev/ttyUSB0 --live-terminal --live-wireshark"',  cwd=esp32_sniffer_directory, shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./BTSnifferBREDR.py --port=/dev/ttyUSB0 --live-terminal --live-wireshark"',  cwd=esp32_sniffer_directory, shell=True)        
         
     def _slotMenuHcitoolScanClicked(self):
         """ Opens the hcitool scan command in a terminal.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "hcitool scan"', shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "hcitool scan"', shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "hcitool scan"', shell=True)        
         
     def _slotMenuSdptoolBrowseClicked(self):
         """ Opens the sdptool browse command in a terminal.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sdptool browse 00:80:98:24:15:6D"', shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sdptool browse 00:80:98:24:15:6D"', shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sdptool browse 00:80:98:24:15:6D"', shell=True)        
 
     def _slotMenuHcitoolInqClicked(self):
         """ Opens the hcitool inq command in a terminal.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "hcitool inq"', shell=True)          
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "hcitool inq"', shell=True)          
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "hcitool inq"', shell=True)          
 
     def _slotMenuDeviceClassListClicked(self):
         """ Opens "Bluetooth - Class of Device List" in a browser.
@@ -19997,27 +20266,39 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         btclassify_directory = os.path.dirname(os.path.realpath(__file__)) + "/Tools/btclassify-master" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./btclassify.py 38010c 0x5a020c 240404"', cwd=btclassify_directory, shell=True)   
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "python2 btclassify.py 38010c 0x5a020c 240404"', cwd=btclassify_directory, shell=True)   
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python2 btclassify.py 38010c 0x5a020c 240404"', cwd=btclassify_directory, shell=True)   
         
     def _slotMenuL2pingClicked(self):
         """ Opens the l2ping command in a terminal.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo l2ping 00:80:98:24:15:6D"', shell=True)         
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo l2ping 00:80:98:24:15:6D"', shell=True)         
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo l2ping 00:80:98:24:15:6D"', shell=True)         
         
     def _slotMenuBtscannerClicked(self):
         """ Opens the btscanner program.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- sudo btscanner &', shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e sudo btscanner &', shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- sudo btscanner &', shell=True)        
         
     def _slotMenuHcidumpClicked(self):
         """ Opens the hcidump command in a terminal.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo hcidump -Xt"', shell=True)  
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo hcidump -Xt"', shell=True)  
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo hcidump -Xt"', shell=True)  
         
     def _slotHIPRFISR_Offline(self):
         """ Modifies the statusbar buttons. Needs to be a separate slot to avoid segmentation faults.
@@ -20417,7 +20698,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         uhd_command = """\\\"/usr/bin/uhd_image_loader\\\" --args=\\\"type=x300,addr=192.168.40.2\\\" """        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + uhd_command + '"', shell=True) 
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + uhd_command + '"', shell=True) 
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + uhd_command + '"', shell=True) 
         
     def _slotMenuTinyWowClicked(self):
         """ Opens TinyWow in a browser.
@@ -20498,7 +20782,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         spectrum_painter_directory = os.path.expanduser("~/Installed_by_FISSURE/spectrum_painter/")
         converter_command = "convert -pointsize 30 -fill black label:hello hello.png && convert -flip hello.png hello.png && python3 -m spectrum_painter.img2iqstream hello.png --samplerate 8000000 --format hackrf > hello.raw"        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + converter_command + '"', cwd=spectrum_painter_directory, shell=True) 
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + converter_command + '"', cwd=spectrum_painter_directory, shell=True) 
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + converter_command + '"', cwd=spectrum_painter_directory, shell=True) 
 
     def _slotMenuModifyingDashboardClicked(self):
         """ Opens the html file in a browser.
@@ -20511,7 +20798,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         nrsc_command = "nrsc5 94.9 0 -g 40"        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + nrsc_command + '"', shell=True)         
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + nrsc_command + '"', shell=True)         
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + nrsc_command + '"', shell=True)         
     
     def _slotMenuStandaloneHd_tx_usrpClicked(self):
         """ Opens the standalone flow graph in GNU Radio Companion.
@@ -20887,7 +21177,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open the Terminal
         get_dir = str(self.comboBox3_iq_folders.currentText())
-        proc=subprocess.Popen('gnome-terminal', cwd=get_dir, shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal', cwd=get_dir, shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal', cwd=get_dir, shell=True)
 
     def _slotIQ_TabClicked(self, button_name):
         """ Simulates a QTabWidget and changes the IQ QStackedWidget index.
@@ -21383,7 +21676,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open the File
         pdf_location = os.path.dirname(os.path.realpath(__file__)) + "/Tools/Ham Radio Exam/2022-2026 Technician Pool Released Jan17 Revised.pdf" 
-        os.system('evince "' + pdf_location + '" &')
+        if self.operating_system == 'DragonOS FocalX':
+            os.system('open "' + pdf_location + '" &')
+        else:
+            os.system('evince "' + pdf_location + '" &')
         
     def _slotMenuLicenseSearchClicked(self):
         """ Opens a browser to the license search for the Universal Licensing System.
@@ -21420,7 +21716,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open the File
         pdf_location = os.path.dirname(os.path.realpath(__file__)) + "/Tools/SDS13781-Z-Wave-Application-Command-Class-Specification.pdf" 
-        os.system('evince "' + pdf_location + '" &')        
+        if self.operating_system == 'DragonOS FocalX':
+            os.system('open "' + pdf_location + '" &')        
+        else:
+            os.system('evince "' + pdf_location + '" &')        
         
     def _slotMenuCommandClassListClicked(self):
         """ Opens the Z-Wave Command Class List.
@@ -21508,13 +21807,16 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         proc = subprocess.Popen("bless", shell=True)   
         
-    def _slotMenuTrackjackerClicked(self):
+    def _slotMenuTrackerjackerClicked(self):
         """ Opens a terminal with an example trackerjacker command.
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         trackerjacker_command = "sudo trackerjacker -i wlan1337 --map --map-file ~/wifi_map.yaml"        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + trackerjacker_command + '"', shell=True) 
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + trackerjacker_command + '"', shell=True) 
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + trackerjacker_command + '"', shell=True) 
         
     def _slotMenuSanitizedIEEE_OUI_DataClicked(self):
         """ Open a browser to download updated OUI lists.
@@ -21615,7 +21917,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         airgeddon_directory = os.path.expanduser("~/Installed_by_FISSURE/airgeddon/")
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo bash airgeddon.sh"', cwd=airgeddon_directory, shell=True)   
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo bash airgeddon.sh"', cwd=airgeddon_directory, shell=True)   
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo bash airgeddon.sh"', cwd=airgeddon_directory, shell=True)   
         
     def _slotMenuWhoisherePyClicked(self):
         """ Opens a terminal with whoishere.py command.
@@ -21624,7 +21929,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         whoishere_command = "sudo python2 whoishere.py"   
         whoishere_dir = os.path.dirname(os.path.realpath(__file__)) + "/Tools/whoishere.py-master/"  
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + whoishere_command + '"', cwd=whoishere_dir, shell=True)         
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + whoishere_command + '"', cwd=whoishere_dir, shell=True)         
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + whoishere_command + '"', cwd=whoishere_dir, shell=True)         
         
     def _slotMenuWhoishereConfClicked(self):
         """ Opens the whoishere.conf file.
@@ -21640,7 +21948,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         password_list = os.path.dirname(os.path.realpath(__file__)) + "/Tools/Credentials/top-20-common-SSH-passwords.txt"  
         hydra_command = "hydra -l root -P " + password_list + " ssh://192.168.1.1 -t 4"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + hydra_command + '"', shell=True)     
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + hydra_command + '"', shell=True)     
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + hydra_command + '"', shell=True)     
         
     def _slotMenuSecListsClicked(self):
         """ Opens the SecLists GitHub page for usernames, passwords, and other data.
@@ -21654,8 +21965,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         password_list = os.path.dirname(os.path.realpath(__file__)) + "/Tools/Credentials/root_userpass.txt"  
-        msf_command = """msfconsole -x \\\"use auxiliary/scanner/ssh/ssh_login; set RHOSTS 192.168.1.1; set USERPASS_FILE """ + password_list + """; run\\\" """   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + msf_command + '"', shell=True)  
+        if self.operating_system == 'DragonOS FocalX':
+            msf_command = """msfconsole -x "use auxiliary/scanner/ssh/ssh_login; set RHOSTS 192.168.1.1; set USERPASS_FILE """ + password_list + """; run" """   
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + msf_command + '"', shell=True)  
+        else:
+            msf_command = """msfconsole -x \\\"use auxiliary/scanner/ssh/ssh_login; set RHOSTS 192.168.1.1; set USERPASS_FILE """ + password_list + """; run\\\" """   
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + msf_command + '"', shell=True)  
         
     def _slotMenuMetasploitWordlistsClicked(self):
         """ Opens the Metasploit Wordlists GitHub page for usernames, passwords, and other data.
@@ -21671,7 +21986,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         username_list = "multiplesources-users-fabian-fingerle.de.txt"  
         script_command = "python3 OpenSSH7-2_Username_Enumeration.py 192.168.1.1 -U " + username_list + " --factor 10"   
         script_dir = os.path.dirname(os.path.realpath(__file__)) + "/Tools/Credentials/"  
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + script_command + '"', cwd=script_dir, shell=True)  
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + script_command + '"', cwd=script_dir, shell=True)  
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + script_command + '"', cwd=script_dir, shell=True)  
                
     def _slotMenuLessonHamRadioExamsClicked(self):
         """ Opens the html file in a browser.
@@ -21683,7 +22001,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open the File
         pdf_location = os.path.dirname(os.path.realpath(__file__)) + "/Tools/Ham Radio Exam/2019-2023GeneralClassQuestionPool.pdf" 
-        os.system('evince "' + pdf_location + '" &')
+        if self.operating_system == 'DragonOS FocalX':
+            os.system('open "' + pdf_location + '" &')
+        else:
+            os.system('evince "' + pdf_location + '" &')
         
     def _slotMenuGitHubFISSURE_Clicked(self):
         """ Opens the FISSURE GitHub page.
@@ -21719,7 +22040,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         nrsc5_gui_filepath = os.path.expanduser("~/Installed_by_FISSURE/nrsc5-gui/")
-        proc=subprocess.Popen('gnome-terminal -- ./nrsc5_gui.py', shell=True, cwd=nrsc5_gui_filepath)  
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ./nrsc5_gui.py', shell=True, cwd=nrsc5_gui_filepath)  
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ./nrsc5_gui.py', shell=True, cwd=nrsc5_gui_filepath)  
         
     def _slotMenuStandaloneJ2497_ModHackRF_Direct_Clicked(self):
         """ Opens the standalone flow graph in GNU Radio Companion.
@@ -21751,7 +22075,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Terminal
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         enscribe_command = "enscribe -oversample -lf=5 -hf=70 -color=yb -wav input.jpg output.wav"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + enscribe_command + '"', shell=True)       
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + enscribe_command + '"', shell=True)       
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + enscribe_command + '"', shell=True)       
         
     def _slotMenuOpenWeatherClicked(self):
         """ Opens the Open-weather website in a browser.
@@ -21784,7 +22111,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             srsue_location = os.path.expanduser("~/Installed_by_FISSURE/LTE-ciphercheck/build/srsue/src") 
             config_file_location = os.path.expanduser("~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf")            
             command_text = 'sudo ./srsue ' + config_file_location
-            proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + command_text + '"', cwd=srsue_location, shell=True)    
+            if self.operating_system == 'DragonOS FocalX':
+                proc = subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + command_text + '"', cwd=srsue_location, shell=True)    
+            else:
+                proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + command_text + '"', cwd=srsue_location, shell=True)    
             
     def _slotMenuElectromagneticRadiationSpectrumClicked(self):
         """ Opens the unihedron Electromagnetic Radiation Spectrum Poster in a browser.
@@ -21868,7 +22198,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         ham2mon_cmd = 'python3 ham2mon.py -a "uhd" -n 8 -d 0 -f 146E6 -r 4E6 -g 30 -s -60 -v 0 -t 10'
         #proc = subprocess.Popen('gnome-terminal --maximize --window --working-directory="' + ham2mon_directory + \
         #    '" -- ' + ham2mon_cmd, cwd=ham2mon_directory, shell=True)            
-        proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + ham2mon_cmd + '"', cwd=ham2mon_directory, shell=True)  
+        if self.operating_system == 'DragonOS FocalX':
+            proc = subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + ham2mon_cmd + '"', cwd=ham2mon_directory, shell=True)  
+        else:
+            proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + ham2mon_cmd + '"', cwd=ham2mon_directory, shell=True)  
         
     def _slotMenuLessonProgrammingSDRsClicked(self):
         """ Opens the Bastian Bloessl tutorial from ACM WiSec2021 Conference.
@@ -21889,7 +22222,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         #tpms_command = "tpms_rx --source rtlsdr --if-rate 400000 --tuned-frequency 315000000"
         tpms_command = "sudo tpms_rx --source hackrf --if-rate 400000 --tuned-frequency 315000000"      
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + tpms_command + '"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + tpms_command + '"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + tpms_command + '"', shell=True)
         
     def _slotMenuQSSTV_Clicked(self):
         """ Opens QSSTV from the menu.
@@ -21903,7 +22239,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Terminal
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         m17_demod_cmd = 'nc -l -u -p 7355 | m17-demod -l -d | play -q -b 16 -r 8000 -c1 -t s16 -'
-        proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + m17_demod_cmd + '"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc = subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + m17_demod_cmd + '"', shell=True)
+        else:
+            proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + m17_demod_cmd + '"', shell=True)
         
     def _slotMenuMultimon_ngClicked(self):
         """ Opens a terminal with an example multimon-ng command for POCSAG. Works with Narrow FM in Gqrx and UDP output.
@@ -21911,7 +22250,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Terminal
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         multimon_ng_cmd = 'nc -l -u -p 7355 | sox -t raw -esigned-integer -b 16 -r 48000 - -esigned-integer -b 16 -r 22050 -t raw - | multimon-ng -t raw -a POCSAG512 -a POCSAG1200 -a POCSAG2400 -f alpha -'
-        proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + multimon_ng_cmd + '"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc = subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + multimon_ng_cmd + '"', shell=True)
+        else:
+            proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + multimon_ng_cmd + '"', shell=True)
         
     def _slotMenuFldigiClicked(self):
         """ Opens Fldigi from the menu.
@@ -23012,7 +23354,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         dire_wolf_command = "direwolf -r 48000 udp:7355  # GQRX: Narrow FM, UDP port 7355"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dire_wolf_command + '"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + dire_wolf_command + '"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dire_wolf_command + '"', shell=True)
         
     def _slotMenuMeldClicked(self):
         """ Launches Meld for diff'ing files and folders.
@@ -23039,7 +23384,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         sample_diagram = os.path.dirname(os.path.realpath(__file__)) + "/Tools/simple.diag"
         packetdiag_command = "packetdiag " + sample_diagram + " -o ~/simple.png  # Edit /FISSURE/Tools/simple.diag"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + packetdiag_command + '"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + packetdiag_command + '"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + packetdiag_command + '"', shell=True)
         
     def _slotMenuHamClockClicked(self):
         """ Launches HamClock.
@@ -23052,9 +23400,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        ice9_directory = os.path.expanduser("~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/")
         ice9_command = "./ice9-bluetooth -l -c 2427 -C 20 -w ~/ble.pcap"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + ice9_command + '"', cwd=ice9_directory, shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            ice9_directory = '/usr/src/ice9-bluetooth-sniffer/build/'
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + ice9_command + '"', cwd=ice9_directory, shell=True)
+        else:
+            ice9_directory = os.path.expanduser("~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/")
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + ice9_command + '"', cwd=ice9_directory, shell=True)
         
     def _slotMenuStandalone_pocsagtxClicked(self):
         """ Opens the standalone flow graph in GNU Radio Companion.
@@ -23071,7 +23423,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         dump978_directory = os.path.expanduser("~/Installed_by_FISSURE/dump978/")
         dump978_command = "rtl_sdr -f 978000000 -s 2083334 -g 48 - | ./dump978 | ./uat2text"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dump978_command + '"', cwd=dump978_directory, shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + dump978_command + '"', cwd=dump978_directory, shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dump978_command + '"', cwd=dump978_directory, shell=True)
         
     def _slotMenuIQEngineClicked(self):
         """ Opens IQEngine in a browser.
@@ -23103,7 +23458,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         htop_command = "htop -t"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + htop_command + '"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + htop_command + '"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + htop_command + '"', shell=True)
         
     def _slotMenu_WSPR_RocksClicked(self):
         """ Opens WSPR Rocks! in a browser.
@@ -23117,7 +23475,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         wttr_in_command = "curl wttr.in?3"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + wttr_in_command + '"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + wttr_in_command + '"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + wttr_in_command + '"', shell=True)
         
     def _slotMenuGeanyDashboardPyClicked(self):
         """ Opens dashboard.py in Geany.
@@ -23126,7 +23487,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         fissure_directory = os.path.dirname(os.path.realpath(__file__))
         dashboard_py_command = "geany dashboard.py"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dashboard_py_command + '"', cwd=fissure_directory, shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + dashboard_py_command + '"', cwd=fissure_directory, shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dashboard_py_command + '"', cwd=fissure_directory, shell=True)        
         
     def _slotMenuQtDesignerDashboardUiClicked(self):
         """ Opens dashboard.ui in QtDesigner.
@@ -23135,7 +23499,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         ui_directory = os.path.dirname(os.path.realpath(__file__)) + "/UI/"
         dashboard_ui_command = "designer dashboard.ui"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dashboard_ui_command + '"', cwd=ui_directory, shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + dashboard_ui_command + '"', cwd=ui_directory, shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dashboard_ui_command + '"', cwd=ui_directory, shell=True)        
         
     def _slotMenuQtDesignerOptionsUiClicked(self):
         """ Opens options.ui in QtDesigner.
@@ -23144,8 +23511,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         ui_directory = os.path.dirname(os.path.realpath(__file__)) + "/UI/"
         options_ui_command = "designer options.ui"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + options_ui_command + '"', cwd=ui_directory, shell=True)        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dashboard_ui_command + '"', cwd=ui_directory, shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + options_ui_command + '"', cwd=ui_directory, shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + options_ui_command + '"', cwd=ui_directory, shell=True)
         
     def _slotMenuGripClicked(self):
         """ Provides an example grip command to convert Markdown to HTML.
@@ -23154,7 +23523,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         grip_directory = os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/Markdown"
         grip_command = "grip Lesson1_OpenBTS.md --export ../HTML/Lesson1_OpenBTS.html"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + grip_command + '"', cwd=grip_directory, shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + grip_command + '"', cwd=grip_directory, shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + grip_command + '"', cwd=grip_directory, shell=True)        
         
     def _slotMenuArduinoClicked(self):
         """ Opens a terminal with the Arduino IDE command.
@@ -23162,7 +23534,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         arduino_command = "arduino"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + arduino_command + '"', shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + arduino_command + '"', shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + arduino_command + '"', shell=True)        
         
     def _slotMenu_guidusClicked(self):
         """ Opens a terminal with the guidus command for editing USBs.
@@ -23170,7 +23545,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         guidus_command = "sudo guidus"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + guidus_command + '"', shell=True)        
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + guidus_command + '"', shell=True)        
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + guidus_command + '"', shell=True)        
         
     def _slotMenuSystembackClicked(self):
         """ Opens a terminal with the Systemback command for creating system images.
@@ -23178,7 +23556,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         systemback_command = "sudo systemback"   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + systemback_command + '"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + systemback_command + '"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + systemback_command + '"', shell=True)
         
     def _slotMenuOpenWebRX_Clicked(self):
         """ Starts the openwebrx service and opens a browser to localhost:8083.
@@ -23187,7 +23568,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         openwebrx_command = "sudo openwebrx"
         os.system("sensible-browser http://127.0.0.1:8073 &")
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + openwebrx_command + '"', shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + openwebrx_command + '"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + openwebrx_command + '"', shell=True)
         
     def _slotMenuTuneInExplorerClicked(self):
         """ Opens TuneIn Explorer in a browser.
@@ -24445,6 +24829,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_css_text = get_css_text.replace("@color4",self.dashboard_settings_dictionary['color4'])
         get_css_text = get_css_text.replace("@color5",self.dashboard_settings_dictionary['color5'])
         get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons")
+        if self.operating_system == 'DragonOS FocalX':
+            get_css_text = get_css_text.replace('@menu_hover_padding','0px')
+        else:
+            get_css_text = get_css_text.replace('@menu_hover_padding','2px')
         self.setStyleSheet(get_css_text)
         
         # Adjust Custom Widgets
@@ -24502,6 +24890,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_css_text = get_css_text.replace("@color4",self.dashboard_settings_dictionary['color4'])
         get_css_text = get_css_text.replace("@color5",self.dashboard_settings_dictionary['color5'])
         get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons")
+        if self.operating_system == 'DragonOS FocalX':
+            get_css_text = get_css_text.replace('@menu_hover_padding','0px')
+        else:
+            get_css_text = get_css_text.replace('@menu_hover_padding','2px')
         self.setStyleSheet(get_css_text)
         
         # Adjust Custom Widgets
@@ -24580,6 +24972,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_css_text = get_css_text.replace("@color4",self.dashboard_settings_dictionary['color4'])
             get_css_text = get_css_text.replace("@color5",self.dashboard_settings_dictionary['color5'])
             get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons")
+            if self.operating_system == 'DragonOS FocalX':
+                get_css_text = get_css_text.replace('@menu_hover_padding','0px')
+            else:
+                get_css_text = get_css_text.replace('@menu_hover_padding','2px')
             self.setStyleSheet(get_css_text)
             
             # Adjust Custom Widgets
@@ -25068,9 +25464,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
-        qFlipper_command = "sudo ./qFlipper*"
         qFlipper_dir = os.path.expanduser("~/Installed_by_FISSURE/qFlipper/")   
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + qFlipper_command + '"', cwd=qFlipper_dir, shell=True)
+        if self.operating_system == 'DragonOS FocalX':
+            qFlipper_command = "sudo .//qFlipper*"
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + qFlipper_command + '"', cwd=qFlipper_dir, shell=True)
+        else:
+            qFlipper_command = "sudo ./qFlipper*"
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + qFlipper_command + '"', cwd=qFlipper_dir, shell=True)
         
     def _slotArchiveDatasetsRegenerateClicked(self):
         """ Regenerates the checkbox values in the Dataset Builder table.

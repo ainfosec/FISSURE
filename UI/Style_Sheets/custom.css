@@ -511,7 +511,7 @@ QMenuBar#menubar {
 QMenuBar#menubar::item:focus:pressed {background-color: @color3;}
 QMenuBar#menubar::item:selected {
     background: transparent;
-    margin-bottom: 2px; 
+    margin-bottom: @menu_hover_padding; 
 }
 
 

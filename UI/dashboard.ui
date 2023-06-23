@@ -12964,6 +12964,12 @@ p, li { white-space: pre-wrap; }
                      <height>27</height>
                     </rect>
                    </property>
+                   <property name="verticalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
+                   <property name="horizontalScrollBarPolicy">
+                    <enum>Qt::ScrollBarAlwaysOff</enum>
+                   </property>
                    <property name="tabChangesFocus">
                     <bool>true</bool>
                    </property>
@@ -28989,7 +28995,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionFALCON">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>FALCON</string>

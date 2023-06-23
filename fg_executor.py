@@ -42,7 +42,15 @@ class FGE_Executor():
     #######################  FISSURE Functions  ########################
     def __init__(self):
         """ The start of the FGE Executor.
-        """     
+        """
+        # Detect Operating System
+        proc = subprocess.Popen("cat /etc/os-dragonos 2>&1 | grep 'DragonOS FocalX'", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
+        if len(output) == 0:
+            self.operating_system = 'Other'
+        else:
+            self.operating_system = 'DragonOS FocalX'
+            
         self.hiprfisr_connected = False
         self.dashboard_connected = False
         
@@ -315,7 +323,10 @@ class FGE_Executor():
             #output, error = proc.communicate()
             
             # In New Terminal
-            proc = subprocess.Popen('gnome-terminal -- ' + osCommandString + " &", shell=True)            
+            if self.operating_system == 'DragonOS FocalX':
+                proc = subprocess.Popen('qterminal -e ' + osCommandString + " &", shell=True)            
+            else:
+                proc = subprocess.Popen('gnome-terminal -- ' + osCommandString + " &", shell=True)            
               
             self.flowGraphStarted("Attack")  # Signals to other components
             self.attack_script_name = flow_graph_filename

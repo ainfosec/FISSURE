@@ -39,14 +39,14 @@ fi
 # Python3_maint-3.7, Ubuntu 18.04
 if [[ -n "$ubuntu18_04" ]]
 then
-    echo "This branch is for Ubuntu 18.04 only. Switch to the Python2_maint-3.7 branch and try again!"
+    echo "This branch is not for Ubuntu 18.04 variants. Switch to the Python2_maint-3.7 branch and try again!"
     exit
 fi
 
 # Python3_maint-3.8, Ubuntu 20.04, DragonOS Focal, KDE neon
 if [[ -n "$ubuntu20_04" ]] || [[ -n "$dragonOS_focal" ]] || [[ -n "$kde_neon" ]] || [[ -n "$parrot_os" ]]
 then    
-    echo "This branch is for Ubuntu 20.04 variants only. Switch to the Python3_maint-3.8 branch and try again!"
+    echo "This branch is not for Ubuntu 20.04 variants. Switch to the Python3_maint-3.8 branch and try again!"
     exit
 fi
 
