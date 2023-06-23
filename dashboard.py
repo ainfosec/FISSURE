@@ -18400,8 +18400,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Launches ais_rx.
         """
         # Issue the Command
-        ais_rx_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.7/gr-ais/apps/ais_rx"
-        command_text = 'gnome-terminal -- "' + ais_rx_filepath  + '" &'
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        ais_rx_command = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.7/gr-ais/apps/ais_rx"
+        command_text = 'gnome-terminal -- ' + expect_script_filepath + ' "' + ais_rx_command  + '"'
         proc = subprocess.Popen(command_text, shell=True) 
         
     def _slotMenuProtocolSpreadsheetClicked(self):
@@ -19736,7 +19737,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script" 
         btclassify_directory = os.path.dirname(os.path.realpath(__file__)) + "/Tools/btclassify-master" 
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./btclassify.py 38010c 0x5a020c 240404"', cwd=btclassify_directory, shell=True)   
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python2 btclassify.py 38010c 0x5a020c 240404"', cwd=btclassify_directory, shell=True)   
         
     def _slotMenuL2pingClicked(self):
         """ Opens the l2ping command in a terminal.
@@ -23088,7 +23089,6 @@ class MainWindow(QtGui.QMainWindow, form_class):
         ui_directory = os.path.dirname(os.path.realpath(__file__)) + "/UI/"
         options_ui_command = "designer options.ui"   
         proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + options_ui_command + '"', cwd=ui_directory, shell=True)        
-        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dashboard_ui_command + '"', cwd=ui_directory, shell=True)        
         
     def _slotMenuGripClicked(self):
         """ Provides an example grip command to convert Markdown to HTML.
