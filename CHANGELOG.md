@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-06-25
+
+Additional color options.
+ 
+### Added
+
+- Gpick to menu for DragonOS FocalX, disabled wl-color-picker
+- Color options for buttons, comboboxes, disabled widgets, and hovered widgets
+  
+### Changed
+
+- Disabling menu items on Dashboard launch based on operating system
+
+### Fixed
+
+- Set styles for disabled menu items
+- Adjusting some single and double quotes to be consistent
+- Removing trailing whitespace from main components
+
 ## 2023-06-23
 
 DragonOS Focal/FocalX fixes.

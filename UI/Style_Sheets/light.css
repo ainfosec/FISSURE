@@ -85,20 +85,23 @@ QListWidget:disabled{
     border: 1px solid lightgray;
 }
 QMenu{
-    color:@color4;
-    background-color:@color2;
+    color: @color4;
+    background-color: @color2;
     font-family: "Ubuntu";
 }
 QMenu::item{
-    background-color:transparent;
+    background-color: transparent;
 }
 QMenu::item:selected{
-    color:@color5;
-    background-color:#308CC6;
+    color: @color5;
+    background-color: #308CC6;
+}
+QMenu::item:disabled{
+    color: darkgray;
 }
 QMenu:selected{
-    color:@color5;
-    background-color:#308CC6;
+    color: @color5;
+    background-color: #308CC6;
 }
 QPlainTextEdit{
     border: 1px solid lightgray;
@@ -135,20 +138,20 @@ QPushButton{
 QPushButton[objectName|="pushButton_"]{
     border: 1px solid #ABABAB;
     border-radius: 2px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #EFEFEF);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color6, stop: 1 @color7);
     color: black;
     font-family: "Ubuntu";
 }
 QPushButton[objectName|="pushButton_"]:disabled{
     border: 1px solid #C4C4C4;
     border-radius: 2px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #EFEFEF);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color8, stop: 1 @color9);
     color: #C0C0C0;
 }
 QPushButton[objectName|="pushButton_"]:hover{
     border: 1px solid #ABABAB;
     border-radius: 2px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #FEFEFE, stop: 1 #F8F8F8);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color10, stop: 1 @color11);
     color: black;
 }
 /*

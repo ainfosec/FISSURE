@@ -91,19 +91,22 @@ QListWidget:disabled{
     border: 1px solid @color1;
 }
 QMenu{
-    color:@color4;
-    background-color:@color2;
+    color: @color4;
+    background-color: @color2;
     font-family: "Ubuntu";    
 }
 QMenu::item{
-    background-color:transparent;
+    background-color: transparent;
 }
 QMenu::item:selected{
-    color:@color4;
-    background-color:@color3;
+    color: @color4;
+    background-color: @color3;
+}
+QMenu::item:disabled{
+    color: @color1;
 }
 QMenu:selected{
-    background-color:@color3;
+    background-color: @color3;
 }
 QPlainTextEdit{
     background-color: @color5;
@@ -134,18 +137,18 @@ QProgressBar:disabled{
 QPushButton[objectName|="pushButton_"]{
     color: #000000;
     border: 1px solid #111111;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #aaaaaa, stop: 1 #666666);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color6, stop: 1 @color7);
     font-family: "Ubuntu";    
 }
 QPushButton[objectName|="pushButton_"]:disabled{
     color: #999999;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #dddddd, stop: 1 #999999);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color8, stop: 1 @color9);
 }
 QPushButton[objectName|="pushButton_"]:hover{
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #afafaf, stop: 1 #6f6f6f);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color10, stop: 1 @color11);
 }
 QPushButton[objectName|="pushButton_"]:pressed{
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #666666, stop: 1 #666666);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color7, stop: 1 @color7);
 }
 QRadioButton{
     color: @color4;
@@ -545,7 +548,7 @@ QComboBox[objectName|="comboBox_"] {
     padding-left: 4px;
     color: #000000;
     border: 1px solid @color2;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #aaaaaa, stop: 1 #666666);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color6, stop: 1 @color7);
     padding: 1px 1px 1px 5px;  /* padding needed for color to work, also prevents right align */
 }
 QComboBox[objectName|="comboBox_"]::item {
@@ -553,12 +556,12 @@ QComboBox[objectName|="comboBox_"]::item {
 }
 QComboBox[objectName|="comboBox_"]:disabled{
     padding-left: 4px;
-    color: #999999;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #dddddd, stop: 1 #999999);
+    color: @color9;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color8, stop: 1 @color9);
 }
 QComboBox[objectName|="comboBox_"]:hover{
     padding-left: 4px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #afafaf, stop: 1 #6f6f6f);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color10, stop: 1 @color11);
 }
 QComboBox[objectName|="comboBox_"]::item:selected{
     background-color: #F6724F;
@@ -575,7 +578,7 @@ QComboBox[objectName|="comboBox2_"] {
     padding-left: 4px;
     color: #000000;
     border: 1px solid #111111;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #aaaaaa, stop: 1 #666666);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color6, stop: 1 @color7);
     padding: 1px 1px 1px 5px;  /* padding needed for color to work */
     font: 10pt "Ubuntu";
 }
@@ -584,13 +587,13 @@ QComboBox[objectName|="comboBox2_"]::item {
 }
 QComboBox[objectName|="comboBox2_"]:disabled{
     padding-left: 4px;
-    color: #999999;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #dddddd, stop: 1 #999999);
+    color: @color9;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color8, stop: 1 @color9);
     font: 10pt "Ubuntu";
 }
 QComboBox[objectName|="comboBox2_"]:hover{
     padding-left: 4px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #afafaf, stop: 1 #6f6f6f);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color10, stop: 1 @color11);
 }
 QComboBox[objectName|="comboBox2_"]::item:selected{
     background-color: #F6724F;
@@ -606,7 +609,7 @@ QComboBox[objectName|="comboBox2_"]::indicator{
 QComboBox[objectName|="comboBox3_"] {
     color: #000000;
     border: 1px solid @color2;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #aaaaaa, stop: 1 #666666);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color6, stop: 1 @color7);
     padding: 1px 1px 1px 5px;  /* padding needed for color to work, also prevents right align, leaving comboBox3 here in case there is a solution someday */
     /*text-align: right;*/
 }
@@ -614,11 +617,11 @@ QComboBox[objectName|="comboBox3_"]::item {
     color: @color4;
 }
 QComboBox[objectName|="comboBox3_"]:disabled{
-    color: #999999;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #dddddd, stop: 1 #999999);
+    color: @color9;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color8, stop: 1 @color9);
 }
 QComboBox[objectName|="comboBox3_"]:hover{
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #afafaf, stop: 1 #6f6f6f);
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color10, stop: 1 @color11);
 }
 QComboBox[objectName|="comboBox3_"]::item:selected{
     background-color: #F6724F;
