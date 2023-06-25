@@ -28665,6 +28665,7 @@ p, li { white-space: pre-wrap; }
      </widget>
      <addaction name="actionArduino"/>
      <addaction name="menuGeany"/>
+     <addaction name="actionGpick"/>
      <addaction name="actiongrip"/>
      <addaction name="actionguidus"/>
      <addaction name="actionhtop"/>
@@ -29311,7 +29312,7 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionNETATTACK2">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
     <string>NETATTACK2</string>
@@ -29823,9 +29824,6 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionTrackerjacker">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>trackerjacker</string>
    </property>
@@ -30016,9 +30014,6 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionLTE_ciphercheck">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>LTE-ciphercheck</string>
    </property>
@@ -30029,9 +30024,6 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionIIO_Oscilloscope">
-   <property name="enabled">
-    <bool>false</bool>
-   </property>
    <property name="text">
     <string>IIO Oscilloscope</string>
    </property>
@@ -30295,11 +30287,6 @@ p, li { white-space: pre-wrap; }
     <string>Custom Mode</string>
    </property>
   </action>
-  <action name="actionGpick">
-   <property name="text">
-    <string>Gpick</string>
-   </property>
-  </action>
   <action name="actionwl_color_picker">
    <property name="text">
     <string>wl-color-picker</string>
@@ -30333,6 +30320,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionqFlipper">
    <property name="text">
     <string>qFlipper</string>
+   </property>
+  </action>
+  <action name="actionGpick">
+   <property name="text">
+    <string>Gpick</string>
    </property>
   </action>
  </widget>
