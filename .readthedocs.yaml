@@ -12,5 +12,5 @@ submodules:
     exclude: all
 
 formats:
-    - html
+    - htmlzip
     - pdf
