@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>FISSURE Install</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../docs/Icons/logo_f.png</normaloff>../docs/Icons/logo_f.png</iconset>
+  </property>
   <widget class="QPushButton" name="pushButton_ok">
    <property name="geometry">
     <rect>
@@ -102,7 +106,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>DragonOS FocalX (beta)</string>
+     <string>DragonOS FocalX</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="radioButton_kali_2023_1">

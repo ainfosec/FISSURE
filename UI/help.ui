@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Tab Help</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../docs/Icons/logo_f.png</normaloff>../docs/Icons/logo_f.png</iconset>
+  </property>
   <widget class="QFrame" name="frame1_63">
    <property name="geometry">
     <rect>

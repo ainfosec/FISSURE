@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string>FISSURE Dashboard</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../docs/Icons/logo_f.png</normaloff>../docs/Icons/logo_f.png</iconset>
+  </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
