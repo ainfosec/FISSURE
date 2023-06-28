@@ -1,6 +1,26 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-06-28
+
+Terminals for menu items, Read the Docs test files.
+ 
+### Added
+
+- Documentation section added to README
+- Read the Docs test files for Python3_maint-3.10 branch
+- Added FISSURE logo to all FISSURE .ui icons
+
+### Changed
+
+- Opening more menu items in terminal with expect script rather than launching them directly
+- Removed beta designation in the installer and README from DragonOS FocalX
+- Disabling LTE menu items requiring specific srsRAN configurations and locations for DragonOS FocalX
+
+### Fixed
+
+- Changed directory in command for \_slotMenuRdsRx2Clicked() for Python3_maint-3.8 branch
+
 ## 2023-06-25
 
 Additional color options.

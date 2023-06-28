@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string/>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../docs/Icons/logo_f.png</normaloff>../docs/Icons/logo_f.png</iconset>
+  </property>
   <property name="styleSheet">
    <string notr="true"/>
   </property>
