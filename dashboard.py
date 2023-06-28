@@ -5674,13 +5674,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuUHD_FindDevicesClicked(self):
         """ Opens a message box and copies the results of "uhd_find_devices"
         """
-        # Get the Text
-        proc=subprocess.Popen("uhd_find_devices &", shell=True, stdout=subprocess.PIPE, )
-        output=proc.communicate()[0]
-
-        # Create a Dialog Window
-        msgBox = MyMessageBox(my_text = output)
-        msgBox.exec_()
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "uhd_find_devices"', shell=True)
 
     def _slotAutomationSystemResetClicked(self):
         """ This will reset all the tables and data collected thus far back to startup conditions.
@@ -5733,35 +5729,23 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuHackrfInfoClicked(self):
         """ Opens a message box and copies the results of "hackrf_info"
         """
-        # Get the Text
-        proc=subprocess.Popen('hackrf_info &', shell=True, stdout=subprocess.PIPE, )
-        output=proc.communicate()[0]
-
-        # Create a Dialog Window
-        msgBox = MyMessageBox(my_text = output)
-        msgBox.exec_()
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "hackrf_info"', shell=True)
 
     def _slotMenuLsusbClicked(self):
         """ Opens a message box and copies the results of "lsusb"
         """
-        # Get the Text
-        proc=subprocess.Popen('lsusb &', shell=True, stdout=subprocess.PIPE, )
-        output=proc.communicate()[0]
-
-        # Create a Dialog Window
-        msgBox = MyMessageBox(my_text = output)
-        msgBox.exec_()
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "lsusb"', shell=True)
 
     def _slotMenuIwconfigClicked(self):
         """ Opens a message box and copies the results of "iwconfig"
         """
-        # Get the Text
-        proc=subprocess.Popen('iwconfig &', shell=True, stdout=subprocess.PIPE, )
-        output=proc.communicate()[0]
-
-        # Create a Dialog Window
-        msgBox = MyMessageBox(my_text = output)
-        msgBox.exec_()
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "iwconfig"', shell=True)
 
     def _slotPD_SnifferStreamClicked(self):
         """ Launches the Sniffer_stream flow graph which sniffs a ZMQ PUB port, passes the data to a UDP port, and opens Wireshark.
@@ -12278,14 +12262,16 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuQSpectrumAnalyzerClicked(self):
         """ Opens QSpectrumAnalyzer for viewing RF signals.
         """
-        # Run QSpectrumAnalyzer
-        proc=subprocess.Popen("qspectrumanalyzer &", shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "qspectrumanalyzer"', shell=True)
 
     def _slotMenuGQRX_Clicked(self):
         """ Opens GQRX for viewing RF signals.
         """
-        # Run GQRX
-        proc=subprocess.Popen("gqrx &", shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "gqrx"', shell=True)
 
     def _slotPD_DemodHardwareChanged(self):
         """ Updates the list of demodulation flow graphs.
@@ -12513,9 +12499,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuLimeSuite_Clicked(self):
         """ Launches LimeSuiteGUI for the LimeSDR.
         """
-        # Run LimeSuitGUI
-        command_text = 'gnome-terminal -- LimeSuiteGUI &'
-        proc = subprocess.Popen(command_text, shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "LimeSuiteGUI"', shell=True)
 
     def _slotStatusbarTSI_Clicked(self):
         """ Restarts tsi.py.
@@ -15979,9 +15965,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuRdsRx2Clicked(self):
         """ Open gr-rds rds_rx.grc GUI for RTL2832U.
         """
-        # Opens the rdx_rx without Opening GRC
-        osCommandString = "grcc " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.7/gr-rds-maint-3.7/apps/rds_rx.grc -d " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.7/gr-rds-maint-3.7/apps/ -e"
-        os.system(osCommandString+ " &")
+        # Issue the Command
+        osCommandString = "grcc " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.7/gr-rds/apps/rds_rx.grc -d " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.7/gr-rds/apps/ -e"
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + osCommandString + '"', shell=True)
 
     def _slotMenuOpenBTS_Clicked(self):
         """ Opens the four terminals for OpenBTS ()
@@ -16203,8 +16190,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuWiresharkClicked(self):
         """ Opens Wireshark.
         """
-        # Open Wireshark in the Background
-        proc=subprocess.Popen(['gnome-terminal -- wireshark'], shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "wireshark"', shell=True)
 
     def _slotPD_BitViewerHexClicked(self):
         """ Converts list of bits into hex.
@@ -16743,9 +16731,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuBluetoothctlClicked(self):
         """ Opens a terminal with bluetoothctl running.
         """
-        # Run bluetoothctl
-        command_text = 'gnome-terminal -- bluetoothctl'
-        proc = subprocess.Popen(command_text, shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "bluetoothctl"', shell=True)
 
     def _slotPacketPattern1Clicked(self):
         """ Converts hex data (0000) to \x00\x00 in assembled text edit box.
@@ -16973,9 +16961,10 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuV2VerifierClicked(self):
         """ Opens the V2Verifier GUI for DSRC testing.
         """
-        # Run V2Verfier main.py
+        # Issue the Command
         command_text = 'sudo python3 main.py local dsrc -g'
-        proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True, cwd=os.path.dirname(os.path.realpath(__file__)) + '/Tools/v2verifier-master')
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + command_text + '"', shell=True, cwd=os.path.dirname(os.path.realpath(__file__)) + '/Tools/v2verifier-master')
 
     def _slotMenuV2VerifierWifiTxClicked(self):
         """ Opens the V2Verifier wifi_tx flow graph.
@@ -17013,8 +17002,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuFALCON_Clicked(self):
         """ Opens FALCON for LTE monitoring.
         """
-        # Run FALCON
-        proc=subprocess.Popen("FalconGUI &", shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "FalconGUI"', shell=True)
 
     def _slotMenuCyberChefClicked(self):
         """ Opens CyberChef in a browser
@@ -17038,16 +17028,16 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuMinicomClicked(self):
         """ Opens a minicom in a terminal.
         """
-        # Run Minicom
-        command_text = "sudo minicom"
-        proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo minicom"', shell=True)
 
     def _slotMenuPuttyClicked(self):
         """ Opens a PuTTY in a terminal.
         """
-        # Run PuTTY
-        command_text = "sudo putty"
-        proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo putty"', shell=True)
 
     def _slotMenuOpenHAB_Clicked(self):
         """ Opens a PuTTY in a terminal.
@@ -17058,16 +17048,21 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuStart_openHAB_ServiceClicked(self):
         """ Opens a PuTTY in a terminal.
         """
-        # Start openHAB Service
+        # Issue the Command
         command_text = "sudo /bin/systemctl start openhab.service"
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + command_text + '"', shell=True)
+        
+        # Start openHAB Service
         proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
 
     def _slotMenuStop_openHAB_ServiceClicked(self):
         """ Opens a PuTTY in a terminal.
         """
-        # Stop openHAB Service
+        # Issue the Command
         command_text = "sudo /bin/systemctl stop openhab.service"
-        proc = subprocess.Popen('gnome-terminal -- ' + command_text + " &", shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + command_text + '"', shell=True)
 
     def _slotPD_BitViewerUnDiff0Clicked(self):
         """ Undoes a bit diff operation starting with a 0.
@@ -18299,22 +18294,23 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Runs 'LimeUtil --update' to fix Gateware version mismatch issues.
         """
         # Issue the Command
-        proc = subprocess.Popen('gnome-terminal -- LimeUtil --update &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "LimeUtil"', shell=True)
 
     def _slotMenuBaudlineClicked(self):
         """ Opens baudline - the time-frequency browser designed for scientific visualization of the spectral domain.
         """
-        # Run the Executable
+        # Issue the Command
         baudline_command = os.path.expanduser("~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline")
-        command_text = 'gnome-terminal -- ' + baudline_command + ' &'
-        proc = subprocess.Popen(command_text, shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + baudline_command + '"', shell=True)
 
     def _slotMenuURH_Clicked(self):
         """ Opens Universal Radio Hacker.
         """
         # Issue the Command
-        command_text = 'gnome-terminal -- urh &'
-        proc = subprocess.Popen(command_text, shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "urh"', shell=True)
 
     def _slotMenu4G_IMSI_CatcherClicked(self):
         """ Runs 'start_sniffing.py' to sniff for towers, mimic a tower, and print IMSIs for phones joining the network.
@@ -18358,8 +18354,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens Inspectrum.
         """
         # Issue the Command
-        command_text = 'gnome-terminal -- inspectrum &'
-        proc = subprocess.Popen(command_text, shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "inspectrum"', shell=True)
 
     def _slotPD_DissectorsUpdateAllClicked(self):
         """ Copies the contents of the /FISSURE/Dissectors folder to the ~/.config/wireshark/plugins folder.
@@ -18392,8 +18388,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Launches OpenCPN.
         """
         # Issue the Command
-        command_text = 'gnome-terminal -- opencpn &'
-        proc = subprocess.Popen(command_text, shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "opencpn"', shell=True)
 
     def _slotMenuAis_rxClicked(self):
         """ Launches ais_rx.
@@ -18817,8 +18813,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Issue the Command
         spektrum_filepath = os.path.expanduser("~/Installed_by_FISSURE/spektrum/spektrum")
-        command_text = 'gnome-terminal -- "' + spektrum_filepath + '" &'
-        proc = subprocess.Popen(command_text, shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + spektrum_filepath + '"', shell=True)
 
     def _slotMenuRTL_TestClicked(self):
         """ Runs rtl_test command to detect hardware.
@@ -18832,15 +18828,15 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Issue the Command
         sdr_trunk_filepath = os.path.expanduser("~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk")
-        command_text = 'gnome-terminal -- "' + sdr_trunk_filepath + '" &'
-        proc = subprocess.Popen(command_text, shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + sdr_trunk_filepath + '"', shell=True)
 
     def _slotMenuAudacityClicked(self):
         """ Launches Audacity.
         """
         # Issue the Command
-        command_text = 'gnome-terminal -- "audacity" &'
-        proc = subprocess.Popen(command_text, shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "audacity"', shell=True)
 
     def _slotIQ_MorseCodeClicked(self):
         """ Auto-detects Morse Code from the magnitude of an IQ file and returns the text.
@@ -19184,7 +19180,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Issue the Command
         sdr_glut_directory = os.path.expanduser("~/Installed_by_FISSURE/SdrGlut/")
-        proc=subprocess.Popen('gnome-terminal -- "./sdrglut.x" &', cwd=sdr_glut_directory, shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./sdrglut.x"', shell=True, cwd=sdr_glut_directory)
 
     def _slotMenuUS_FrequencyAllocationsClicked(self):
         """ Opens the US Frequency Allocations wall chart.
@@ -19202,7 +19199,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens the Reverse Engineers' Hex Editor (rehex).
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- "rehex" &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rehex"', shell=True)
 
     def _slotMenuZEPASSD_Clicked(self):
         """ Opens a terminal with the command for running ZEPASSD.
@@ -19257,7 +19255,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Issue the Command
         netattack2_directory = os.path.expanduser("~/Installed_by_FISSURE/netattack2/")
-        proc=subprocess.Popen('gnome-terminal -- sudo python2 netattack2.py &', cwd=netattack2_directory, shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo python2 netattack2.py"', shell=True, cwd=netattack2_directory)
 
     def _slotMenuWifiteClicked(self):
         """ Opens a terminal and launches Wifite.
@@ -19279,7 +19278,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Issue the Command
         routersploit_directory = os.path.expanduser("~/Installed_by_FISSURE/routersploit/")
-        proc=subprocess.Popen('gnome-terminal -- python3 rsf.py &', cwd=routersploit_directory, shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python3 rsf.py"', shell=True, cwd=routersploit_directory)
 
     def _slotMenuExploitDatabaseClicked(self):
         """ Opens ExploitDB in a browser.
@@ -19291,13 +19291,15 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens msfconsole in a new terminal.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- msfconsole &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "msfconsole"', shell=True)
 
     def _slotMenuMonitor_rtl433_Clicked(self):
         """ Runs monitor_rtl433 and opens a browser to view data.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- sudo python3 -m monitor_rtl433 &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo python3 -m monitor_rtl433"', shell=True)
 
         # Open the Browser
         os.system("sensible-browser http://127.0.0.1:5000/ &")
@@ -19376,7 +19378,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Issues the wsjtx command.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- wsjtx &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "wsjtx"', shell=True)
 
     def _slotMenuWSPRnetMapClicked(self):
         """ Opens the WSPRnet Map in the browser.
@@ -19409,21 +19412,23 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens VLC.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- vlc &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "vlc"', shell=True)
 
     def _slotMenuZigbeeOpenSnifferClicked(self):
         """ Opens ZigBe Open Sniffer Web GUI
         """
         # Issue the Command
-        filepath = os.path.expanduser("~/Installed_by_FISSURE/OpenSniffer-0.1/ZigBee_GUI.py")
-        cmd  = "python2 " + filepath
-        proc=subprocess.Popen(cmd, shell=True)
+        open_sniffer_command = "python2 " + os.path.expanduser("~/Installed_by_FISSURE/OpenSniffer-0.1/ZigBee_GUI.py")
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + open_sniffer_command + '"', shell=True)
 
     def _slotMenuSimpleScreenRecorderClicked(self):
         """ Opens SimpleScreenRecorder.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- simplescreenrecorder &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "simplescreenrecorder"', shell=True)
 
     def _slotMenuPixieDustListClicked(self):
         """ Opens a list of devices vulnerable to Pixie Dust (Wifite).
@@ -19446,7 +19451,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens Google Earth Pro.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- google-earth-pro &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "google-earth-pro"', shell=True)
 
     def _slotMenuGrAirModesClicked(self):
         """ Opens a terminal with an example command for using gr-air-modes.
@@ -19458,9 +19464,11 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuESP8266_DeautherInoClicked(self):
         """ Opens the .ino file in the Arduino IDE.
         """
-        # Open Arduino IDE
+        # Issue the Command
         deauther_directory = os.path.expanduser("~/Installed_by_FISSURE/esp8266_deauther-2/esp8266_deauther/")
-        proc=subprocess.Popen("sudo arduino " + deauther_directory + "esp8266_deauther.ino &", shell=True)
+        deauther_command = "sudo arduino " + deauther_directory + "esp8266_deauther.ino"
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + deauther_command + '"', shell=True)
 
     def _slotMenuESP8266_DeautherWebInterfaceClicked(self):
         """ Opens a browser to the Deauther web interface. Need to connect to its wireless network.
@@ -19488,7 +19496,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Runs the cgps command in a terminal.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- cgps &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "cgps"', shell=True)
 
     def _slotMenuGpsdecodeClicked(self):
         """ Decodes the output of gpscat in a terminal.
@@ -19501,31 +19510,36 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Runs the gpsmon command in a terminal.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- gpsmon &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "gpsmon"', shell=True)
 
     def _slotMenuXgpsClicked(self):
         """ Runs the xgps command in a terminal.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- xgps &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "xgps"', shell=True)
 
     def _slotMenuXgpsspeedClicked(self):
         """ Runs the xgsspeed command in a terminal.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- xgpsspeed &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "xgpsspeed"', shell=True)
 
     def _slotMenuVikingClicked(self):
         """ Opens Viking tool. May need to link ports to track GPS: "sudo ln -s /dev/ttyACM0 /dev/ttyUSB0"
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- viking &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "viking"', shell=True)
 
     def _slotMenuPyGPSClientClicked(self):
         """ Opens the PyGPSClient program.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- sudo python3 -m pygpsclient &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo python3 -m pygpsclient"', shell=True)
 
     def _slotMenuRadioStationLocator(self):
         """ Opens the Radio Station Locator in a browser.
@@ -19609,7 +19623,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens Gpredict.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- gpredict &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "gpredict"', shell=True)
 
     def _slotMenuTechInfoDepotClicked(self):
         """ Opens TechInfoDepot in a browser.
@@ -19640,7 +19655,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens the FoxtrotGPS program.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- foxtrotgps &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "foxtrotgps"', shell=True)
 
     def _slotMenuGoogleMapsAPRS_Clicked(self):
         """ Opens Google Maps APRS in a browser.
@@ -19749,7 +19765,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens the btscanner program.
         """
         # Issue the Command
-        proc=subprocess.Popen('gnome-terminal -- sudo btscanner &', shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo btscanner"', shell=True)
 
     def _slotMenuHcidumpClicked(self):
         """ Opens the hcidump command in a terminal.
@@ -21120,8 +21137,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuAnkiClicked(self):
         """ Opens Anki for reviewing flashcards.
         """
-        # Launch Anki
-        proc = subprocess.Popen("anki &", shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "anki"', shell=True)
 
     def _slotMenuAnkiDecksClicked(self):
         """ Opens a browser to download amateur radio Anki decks.
@@ -21232,7 +21250,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens the Bless hex editor.
         """
         # Issue the Command
-        proc = subprocess.Popen("bless", shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "bless"', shell=True)
 
     def _slotMenuTrackjackerClicked(self):
         """ Opens a terminal with an example trackerjacker command.
@@ -21445,7 +21464,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """
         # Issue the Command
         nrsc5_gui_filepath = os.path.expanduser("~/Installed_by_FISSURE/nrsc5-gui/")
-        proc=subprocess.Popen('gnome-terminal -- ./nrsc5_gui.py', shell=True, cwd=nrsc5_gui_filepath)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./nrsc5_gui.py"', shell=True, cwd=nrsc5_gui_filepath)
 
     def _slotMenuStandaloneJ2497_ModHackRF_DirectClicked(self):
         """ Opens the standalone flow graph in GNU Radio Companion.
@@ -21521,9 +21541,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuIIO_OscilloscopeClicked(self):
         """ Opens the IIO Oscilloscope for Analog Devices products (PlutoSDR).
         """
-        # Open IIO Oscilloscope
-        print "Please wait about 30 seconds for IIO Oscilloscope to load..."
-        os.system("osc &")
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "osc"', shell=True)
 
     def _slotMenuHelpDiscordClicked(self):
         """ Opens a browser to the FISSURE Discord server.
@@ -21594,8 +21614,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuQSSTV_Clicked(self):
         """ Opens QSSTV from the menu.
         """
-        # Launch QSSTV
-        proc = subprocess.Popen("qsstv &", shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "qsstv"', shell=True)
 
     def _slotMenu_m17_demodClicked(self):
         """ Opens a terminal with an example m17-demod command.
@@ -21616,8 +21637,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuFldigiClicked(self):
         """ Opens Fldigi from the menu.
         """
-        # Launch Fldigi
-        proc = subprocess.Popen("fldigi &", shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "fldigi"', shell=True)
 
     def _slotMenuStandaloneFrequencyTranslatingClicked(self):
         """ Opens the standalone flow graph in GNU Radio Companion.
@@ -22969,8 +22991,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuMeldClicked(self):
         """ Launches Meld for diff'ing files and folders.
         """
-        # Launch Meld
-        proc = subprocess.Popen("meld &", shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "meld"', shell=True)
 
     def _slotMenuHfpropagationClicked(self):
         """ Opens hfpropagation.com in a browser.
@@ -22987,8 +23010,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuHamClockClicked(self):
         """ Launches HamClock.
         """
-        # Launch HamClock
-        proc = subprocess.Popen("hamclock &", shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "hamclock"', shell=True)
 
     def _slotMenuIC9_BluetoothSnifferClicked(self):
         """ Opens a terminal with an example command for using the ICE9 Bluetooth Sniffer for HackRF.
@@ -24597,8 +24621,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
     def _slotMenuGpickClicked(self):
         """ Launches Gpick.
         """
-        # Launch Gpick
-        proc = subprocess.Popen("gpick &", shell=True)
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "gpick"', shell=True)
 
     def _slotMenuLessonComplexToRealClicked(self):
         """ Opens complextoreal.com tutorials on digital communications engineering in a browser.
@@ -24660,7 +24685,8 @@ class MainWindow(QtGui.QMainWindow, form_class):
         """ Opens the GHex editor.
         """
         # Issue the Command
-        proc = subprocess.Popen("ghex", shell=True)
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "ghex"', shell=True)
 
     def _slotIQ_StripClicked(self):
         """ Removes samples before and after a signal in IQ files.

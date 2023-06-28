@@ -38,6 +38,7 @@ Operating System            |  FISSURE Branch
 | Ubuntu 20.04.6 (x64) | Python3_maint-3.8 |
 | KDE neon 5.25 (x64) | Python3_maint-3.8 |
 | Ubuntu 22.04 (x64) | Python3_maint-3.10 |
+| DragonOS FocalX (x86_64) | Python3_maint-3.10 |
 
 **In-Progress (beta)**
 
@@ -47,7 +48,6 @@ Operating System            |  FISSURE Branch
 :-------------------------:|:-------------------------:
 | DragonOS Focal (x86_64) | Python3_maint-3.8 |
 | Parrot OS 5.2 (amd64) | Python3_maint-3.8 |
-| DragonOS FocalX (x86_64) | Python3_maint-3.10 |
 | Kali 23.1 (x64) | Python3_maint-3.10 |
 | BackBox Linux 8 (amd64) | Python3_maint-3.10 |
 
@@ -148,7 +148,9 @@ The following is a list of "supported" hardware with varying levels of integrati
 - Open Sniffer
 - PlutoSDR
 
-**Modifications**
+## Documentation
+
+**Read the Docs coming soon!**
 
 More documentation will be released in the future on how to work within the framework to integrate new components and implement message handling. Refer to these Help menu items to modify the Dashboard using PyQt and for how to add your own attacks, inspection/analysis flow graphs, and customized options.
 - [Modifying Dashboard](/docs/Help/Markdown/ModifyingDashboard.md)

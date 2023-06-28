@@ -16,6 +16,10 @@
   <property name="windowTitle">
    <string>Hardware</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../docs/Icons/logo_f.png</normaloff>../docs/Icons/logo_f.png</iconset>
+  </property>
   <widget class="QLabel" name="label2_108">
    <property name="geometry">
     <rect>

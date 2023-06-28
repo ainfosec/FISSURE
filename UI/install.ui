@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>FISSURE Install</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../docs/Icons/logo_f.png</normaloff>../docs/Icons/logo_f.png</iconset>
+  </property>
   <widget class="QPushButton" name="pushButton_ok">
    <property name="geometry">
     <rect>
