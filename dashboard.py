@@ -282,7 +282,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         new_combobox1.addItem("Power")
         new_combobox1.addItem("Frequency")
         new_combobox1.addItem("Modulation")
-        new_combobox1.setSizeAdjustPolicy(0)
         new_combobox1.currentIndexChanged.connect(self._slotSOI_PriorityCategoryChanged)
         new_combobox1.setCurrentIndex(0)
 
@@ -293,7 +292,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         new_combobox2.addItem("Nearest to")
         new_combobox2.addItem("Greater than")
         new_combobox2.addItem("Less than")
-        new_combobox2.setSizeAdjustPolicy(0)
 
         empty_item1 = QtWidgets.QTableWidgetItem("")
         self.tableWidget_automation_soi_list_priority.setItem(0,2,empty_item1)
@@ -597,8 +595,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         #new_iq_combobox4.addItem("Int/Int 32")
         #new_iq_combobox4.addItem("Short/Int 16")
         #new_iq_combobox4.addItem("Byte/Int 8")
-        new_iq_combobox4.setSizeAdjustPolicy(0)
-        new_iq_combobox4.setFixedSize(80,49)
+        new_iq_combobox4.setFixedSize(150,49)
         new_iq_combobox4.setCurrentIndex(0)
 
         self.tableWidget_iq_record.resizeColumnsToContents()
@@ -612,14 +609,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         #new_iq_combobox4.addItem("Int/Int 32")
         #new_iq_combobox4.addItem("Short/Int 16")
         #new_iq_combobox4.addItem("Byte/Int 8")
-        new_iq_playback_combobox3.setSizeAdjustPolicy(0)
         new_iq_playback_combobox3.setCurrentIndex(0)
 
         new_iq_playback_combobox4 = QtWidgets.QComboBox(self, objectName='comboBox2_')
         self.tableWidget_iq_playback.setCellWidget(0,6,new_iq_playback_combobox4)
         new_iq_playback_combobox4.addItem("Yes")
         new_iq_playback_combobox4.addItem("No")
-        new_iq_playback_combobox4.setSizeAdjustPolicy(0)
         new_iq_playback_combobox4.setCurrentIndex(0)
 
         self.tableWidget_iq_playback.resizeColumnsToContents()
@@ -3769,7 +3764,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,4,new_combobox1)
                 new_combobox1.addItem("Binary")
                 new_combobox1.addItem("Hex")
-                new_combobox1.setSizeAdjustPolicy(0)
                 new_combobox1.currentIndexChanged.connect(lambda: self._slotPacketBinaryHex(self.tableWidget_attack_fuzzing_data_field))
                 new_combobox1.setCurrentIndex(0)
                 new_combobox1.setProperty("row", n)
@@ -3785,7 +3779,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,1,new_combobox2)
                 new_combobox2.addItem("Random")
                 new_combobox2.addItem("Sequential")
-                new_combobox2.setSizeAdjustPolicy(0)
                 new_combobox2.setCurrentIndex(0)
 
             # Resize the Table
@@ -4172,7 +4165,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     new_combobox1.setCurrentIndex(1)
 
             # Format
-            new_combobox1.setSizeAdjustPolicy(0)
             new_combobox1.setFixedSize(75,24)
             new_combobox1.setCurrentIndex(0)
             new_combobox1.currentIndexChanged.connect(lambda: self._slotPacketBinaryHex(self.tableWidget1_attack_packet_editor))
@@ -4231,7 +4223,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             new_combobox1 = QtWidgets.QComboBox(self, objectName='comboBox2_')
             new_combobox1.addItem("Binary")
             new_combobox1.addItem("Hex")
-            new_combobox1.setSizeAdjustPolicy(0)
             new_combobox1.setFixedSize(75,24)
             new_combobox1.setCurrentIndex(1)
             new_combobox1.currentIndexChanged.connect(lambda: self._slotPacketBinaryHex(self.tableWidget1_attack_packet_editor))
@@ -5465,7 +5456,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
             # Adjust the Table
             self.tableWidget_automation_soi_list_priority.cellWidget(get_rows-1,0).setEnabled(False)
-            new_combobox.setSizeAdjustPolicy(0)
             new_combobox.currentIndexChanged.connect(self._slotSOI_PriorityCategoryChanged)
             self.tableWidget_automation_soi_list_priority.resizeRowsToContents()
 
@@ -6556,7 +6546,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,4,new_combobox1)
                 new_combobox1.addItem("Binary")
                 new_combobox1.addItem("Hex")
-                new_combobox1.setSizeAdjustPolicy(0)
                 new_combobox1.setFixedSize(113,24)
                 new_combobox1.setCurrentIndex(1)
                 new_combobox1.currentIndexChanged.connect(lambda: self._slotPacketBinaryHex(self.tableWidget_attack_fuzzing_data_field))
@@ -6573,7 +6562,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,1,new_combobox2)
                 new_combobox2.addItem("Random")
                 new_combobox2.addItem("Sequential")
-                new_combobox2.setSizeAdjustPolicy(0)
                 new_combobox2.setFixedSize(90,24)
                 new_combobox2.setCurrentIndex(0)
                 new_combobox2.setProperty("row", n)
@@ -6638,7 +6626,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,4,new_combobox1)
             new_combobox1.addItem("Binary")
             new_combobox1.addItem("Hex")
-            new_combobox1.setSizeAdjustPolicy(0)
             new_combobox1.setFixedSize(113,24)
             new_combobox1.setCurrentIndex(0)
             new_combobox1.currentIndexChanged.connect(lambda: self._slotPacketBinaryHex(self.tableWidget_attack_fuzzing_data_field))
@@ -6660,7 +6647,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,1,new_combobox2)
             new_combobox2.addItem("Random")
             new_combobox2.addItem("Sequential")
-            new_combobox2.setSizeAdjustPolicy(0)
             new_combobox2.setFixedSize(90,24)
             new_combobox2.setCurrentIndex(0)
 
@@ -7159,7 +7145,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 self.tableWidget_fuzzing_variables.setCellWidget(self.tableWidget_fuzzing_variables.rowCount()-1,1,new_fuzzing_combobox)
                                 new_fuzzing_combobox.addItem("Random")
                                 new_fuzzing_combobox.addItem("Sequential")
-                                new_fuzzing_combobox.setSizeAdjustPolicy(0)
                                 new_fuzzing_combobox.setCurrentIndex(0)
 
                             # Disable the Row
@@ -8499,7 +8484,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         # Type ComboBox
         new_combobox = QtWidgets.QComboBox(self, objectName='comboBox2_')
-        new_combobox.setSizeAdjustPolicy(0)
         new_combobox.addItem("ftypes.NONE")
         new_combobox.addItem("ftypes.BOOLEAN")
         new_combobox.addItem("ftypes.CHAR")
@@ -8540,7 +8524,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         # Display ComboBox
         new_combobox2 = QtWidgets.QComboBox(self, objectName='comboBox2_')
-        new_combobox2.setSizeAdjustPolicy(0)
         new_combobox2.addItem("base.NONE")
         new_combobox2.addItem("base.DEC")
         new_combobox2.addItem("base.HEX")
@@ -18161,7 +18144,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 else:
                     new_combobox1.addItem("")
                 new_combobox1.setFixedSize(67,24)
-                new_combobox1.setSizeAdjustPolicy(0)
                 new_combobox1.setCurrentIndex(0)
 
                 # Gain
@@ -18307,7 +18289,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         else:
             new_combobox1.addItem("")
         new_combobox1.setFixedSize(67,24)
-        new_combobox1.setSizeAdjustPolicy(0)
         new_combobox1.setCurrentIndex(0)
 
         # Gain
@@ -24869,6 +24850,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.dashboard_settings_dictionary['color9'] = "#EFEFEF"
         self.dashboard_settings_dictionary['color10'] = "#FEFEFE"
         self.dashboard_settings_dictionary['color11'] = "#F8F8F8"
+        self.dashboard_settings_dictionary['color12'] = "#000000"
+        self.dashboard_settings_dictionary['color13'] = "#C0C0C0"
+        self.dashboard_settings_dictionary['icon_style'] = "Light"
         self.dashboard_settings_dictionary['color_mode'] = "Light Mode"
         get_css_text = str(open(os.path.dirname(os.path.realpath(__file__)) + "/UI/Style_Sheets/light.css","r").read())
         get_css_text = re.sub(r'@color1\b',self.dashboard_settings_dictionary['color1'],get_css_text)
@@ -24882,6 +24866,16 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_css_text = re.sub(r'@color9\b',self.dashboard_settings_dictionary['color9'],get_css_text)
         get_css_text = re.sub(r'@color10\b',self.dashboard_settings_dictionary['color10'],get_css_text)
         get_css_text = re.sub(r'@color11\b',self.dashboard_settings_dictionary['color11'],get_css_text)
+        get_css_text = re.sub(r'@color12\b',self.dashboard_settings_dictionary['color12'],get_css_text)
+        get_css_text = re.sub(r'@color13\b',self.dashboard_settings_dictionary['color13'],get_css_text)
+        get_css_text = re.sub(r'@unchecked_enabled\b','light-unchecked.png',get_css_text)
+        get_css_text = re.sub(r'@checked_enabled\b','light-checked.png',get_css_text)
+        get_css_text = re.sub(r'@checked_disabled\b','light-checked-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@unchecked_disabled\b','light-unchecked-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@down_arrow_enabled\b','light-down-arrow.png',get_css_text)
+        get_css_text = re.sub(r'@down_arrow_disabled\b','light-down-arrow-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@radio_unchecked_enabled\b','light-radio.png',get_css_text)
+        get_css_text = re.sub(r'@radio_checked_enabled\b','light-radio-checked.png',get_css_text)
         get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons")
         if self.operating_system == 'DragonOS Focal':
             get_css_text = get_css_text.replace('@menu_hover_padding','0px')
@@ -24933,7 +24927,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.dashboard_settings_dictionary['color1'] = "#121212"   # Background
         self.dashboard_settings_dictionary['color2'] = "#292929"   # Frame Background
         self.dashboard_settings_dictionary['color3'] = "#002D63"   # Label Background
-        self.dashboard_settings_dictionary['color4'] = "#CCCCCC"   # Font Color
+        self.dashboard_settings_dictionary['color4'] = "#CCCCCC"   # Label Text
         self.dashboard_settings_dictionary['color5'] = "#444444"   # Text Edit Background
         self.dashboard_settings_dictionary['color6'] = "#AAAAAA"   # Button Gradient 1
         self.dashboard_settings_dictionary['color7'] = "#666666"   # Button Gradient 2
@@ -24941,6 +24935,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.dashboard_settings_dictionary['color9'] = "#999999"   # Disabled Gradient 2
         self.dashboard_settings_dictionary['color10'] = "#AFAFAF"  # Hover Gradient 1
         self.dashboard_settings_dictionary['color11'] = "#6F6F6F"  # Hover Gradient 2
+        self.dashboard_settings_dictionary['color12'] = "#000000"  # Button Text
+        self.dashboard_settings_dictionary['color13'] = "#666666"  # Disabled Text
+        self.dashboard_settings_dictionary['icon_style'] = "Dark"
         self.dashboard_settings_dictionary['color_mode'] = "Dark Mode"
         get_css_text = str(open(os.path.dirname(os.path.realpath(__file__)) + "/UI/Style_Sheets/dark.css","r").read())
         get_css_text = re.sub(r'@color1\b',self.dashboard_settings_dictionary['color1'],get_css_text)
@@ -24954,6 +24951,16 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         get_css_text = re.sub(r'@color9\b',self.dashboard_settings_dictionary['color9'],get_css_text)
         get_css_text = re.sub(r'@color10\b',self.dashboard_settings_dictionary['color10'],get_css_text)
         get_css_text = re.sub(r'@color11\b',self.dashboard_settings_dictionary['color11'],get_css_text)
+        get_css_text = re.sub(r'@color12\b',self.dashboard_settings_dictionary['color12'],get_css_text)
+        get_css_text = re.sub(r'@color13\b',self.dashboard_settings_dictionary['color13'],get_css_text)
+        get_css_text = re.sub(r'@unchecked_enabled\b','dark-unchecked.png',get_css_text)
+        get_css_text = re.sub(r'@checked_enabled\b','dark-checked.png',get_css_text)
+        get_css_text = re.sub(r'@checked_disabled\b','dark-checked-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@unchecked_disabled\b','dark-unchecked-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@down_arrow_enabled\b','dark-down-arrow.png',get_css_text)
+        get_css_text = re.sub(r'@down_arrow_disabled\b','dark-down-arrow-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@radio_unchecked_enabled\b','radio-unchecked.png',get_css_text)
+        get_css_text = re.sub(r'@radio_checked_enabled\b','radio-checked.png',get_css_text)
         get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons")
         if self.operating_system == 'DragonOS Focal':
             get_css_text = get_css_text.replace('@menu_hover_padding','0px')
@@ -25013,6 +25020,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.dashboard_settings_dictionary['custom_color9'] = '#%02X%02X%02X' % (r(),r(),r())
             self.dashboard_settings_dictionary['custom_color10'] = '#%02X%02X%02X' % (r(),r(),r())
             self.dashboard_settings_dictionary['custom_color11'] = '#%02X%02X%02X' % (r(),r(),r())
+            self.dashboard_settings_dictionary['custom_color12'] = '#%02X%02X%02X' % (r(),r(),r())
+            self.dashboard_settings_dictionary['custom_color13'] = '#%02X%02X%02X' % (r(),r(),r())
+            if random.randint(0,1) == 0:
+                self.dashboard_settings_dictionary['custom_icon_style'] = "Light"
+            else:
+                self.dashboard_settings_dictionary['custom_icon_style'] = "Dark"
+
             get_value = 'pass'
 
         # Custom Mode Clicked
@@ -25029,17 +25043,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.actionLight_Mode.setChecked(False)
             self.actionDark_Mode.setChecked(False)
             self.actionCustom_Mode.setChecked(True)
-            self.dashboard_settings_dictionary['color1'] = self.dashboard_settings_dictionary['custom_color1']    # Background
-            self.dashboard_settings_dictionary['color2'] = self.dashboard_settings_dictionary['custom_color2']    # Frame Background
-            self.dashboard_settings_dictionary['color3'] = self.dashboard_settings_dictionary['custom_color3']    # Label Background
-            self.dashboard_settings_dictionary['color4'] = self.dashboard_settings_dictionary['custom_color4']    # Font Color
-            self.dashboard_settings_dictionary['color5'] = self.dashboard_settings_dictionary['custom_color5']    # Text Edit Background
-            self.dashboard_settings_dictionary['color6'] = self.dashboard_settings_dictionary['custom_color6']    # Button Gradient 1
-            self.dashboard_settings_dictionary['color7'] = self.dashboard_settings_dictionary['custom_color7']    # Button Gradient 2
-            self.dashboard_settings_dictionary['color8'] = self.dashboard_settings_dictionary['custom_color8']    # Disabled Gradient 1
-            self.dashboard_settings_dictionary['color9'] = self.dashboard_settings_dictionary['custom_color9']    # Disabled Gradient 2
-            self.dashboard_settings_dictionary['color10'] = self.dashboard_settings_dictionary['custom_color10']  # Hover Gradient 1
-            self.dashboard_settings_dictionary['color11'] = self.dashboard_settings_dictionary['custom_color11']  # Hover Gradient 2
+            self.dashboard_settings_dictionary['color1'] = self.dashboard_settings_dictionary['custom_color1']          # Background
+            self.dashboard_settings_dictionary['color2'] = self.dashboard_settings_dictionary['custom_color2']          # Frame Background
+            self.dashboard_settings_dictionary['color3'] = self.dashboard_settings_dictionary['custom_color3']          # Label Background
+            self.dashboard_settings_dictionary['color4'] = self.dashboard_settings_dictionary['custom_color4']          # Label Text
+            self.dashboard_settings_dictionary['color5'] = self.dashboard_settings_dictionary['custom_color5']          # Text Edit Background
+            self.dashboard_settings_dictionary['color6'] = self.dashboard_settings_dictionary['custom_color6']          # Button Gradient 1
+            self.dashboard_settings_dictionary['color7'] = self.dashboard_settings_dictionary['custom_color7']          # Button Gradient 2
+            self.dashboard_settings_dictionary['color8'] = self.dashboard_settings_dictionary['custom_color8']          # Disabled Gradient 1
+            self.dashboard_settings_dictionary['color9'] = self.dashboard_settings_dictionary['custom_color9']          # Disabled Gradient 2
+            self.dashboard_settings_dictionary['color10'] = self.dashboard_settings_dictionary['custom_color10']        # Hover Gradient 1
+            self.dashboard_settings_dictionary['color11'] = self.dashboard_settings_dictionary['custom_color11']        # Hover Gradient 2
+            self.dashboard_settings_dictionary['color12'] = self.dashboard_settings_dictionary['custom_color12']        # Button Text
+            self.dashboard_settings_dictionary['color13'] = self.dashboard_settings_dictionary['custom_color13']        # Disabled Text
+            self.dashboard_settings_dictionary['icon_style'] = self.dashboard_settings_dictionary['custom_icon_style']  # Icon Images
             self.dashboard_settings_dictionary['color_mode'] = "Custom Mode"
             get_css_text = str(open(os.path.dirname(os.path.realpath(__file__)) + "/UI/Style_Sheets/custom.css","r").read())
             get_css_text = re.sub(r'@color1\b',self.dashboard_settings_dictionary['color1'],get_css_text)
@@ -25053,6 +25070,26 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_css_text = re.sub(r'@color9\b',self.dashboard_settings_dictionary['color9'],get_css_text)
             get_css_text = re.sub(r'@color10\b',self.dashboard_settings_dictionary['color10'],get_css_text)
             get_css_text = re.sub(r'@color11\b',self.dashboard_settings_dictionary['color11'],get_css_text)
+            get_css_text = re.sub(r'@color12\b',self.dashboard_settings_dictionary['color12'],get_css_text)
+            get_css_text = re.sub(r'@color13\b',self.dashboard_settings_dictionary['color13'],get_css_text)
+            if self.dashboard_settings_dictionary['icon_style'] == "Light":
+                get_css_text = re.sub(r'@unchecked_enabled\b','light-unchecked.png',get_css_text)
+                get_css_text = re.sub(r'@checked_enabled\b','light-checked.png',get_css_text)
+                get_css_text = re.sub(r'@checked_disabled\b','light-checked-disabled.png',get_css_text)
+                get_css_text = re.sub(r'@unchecked_disabled\b','light-unchecked-disabled.png',get_css_text)
+                get_css_text = re.sub(r'@down_arrow_enabled\b','light-down-arrow.png',get_css_text)
+                get_css_text = re.sub(r'@down_arrow_disabled\b','light-down-arrow-disabled.png',get_css_text)
+                get_css_text = re.sub(r'@radio_unchecked_enabled\b','light-radio.png',get_css_text)
+                get_css_text = re.sub(r'@radio_checked_enabled\b','light-radio-checked.png',get_css_text)
+            else:
+                get_css_text = re.sub(r'@unchecked_enabled\b','dark-unchecked.png',get_css_text)
+                get_css_text = re.sub(r'@checked_enabled\b','dark-checked.png',get_css_text)
+                get_css_text = re.sub(r'@checked_disabled\b','dark-checked-disabled.png',get_css_text)
+                get_css_text = re.sub(r'@unchecked_disabled\b','dark-unchecked-disabled.png',get_css_text)
+                get_css_text = re.sub(r'@down_arrow_enabled\b','dark-down-arrow.png',get_css_text)
+                get_css_text = re.sub(r'@down_arrow_disabled\b','dark-down-arrow-disabled.png',get_css_text)
+                get_css_text = re.sub(r'@radio_unchecked_enabled\b','radio-unchecked.png',get_css_text)
+                get_css_text = re.sub(r'@radio_checked_enabled\b','radio-checked.png',get_css_text)                
             get_css_text = get_css_text.replace("@icon_path",os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons")
             if self.operating_system == 'DragonOS Focal':
                 get_css_text = get_css_text.replace('@menu_hover_padding','0px')
@@ -25927,7 +25964,7 @@ class CustomColor(QtWidgets.QDialog, form_class11):
         self.return_value = ""
 
         # Prevent Resizing/Maximizing
-        self.setFixedSize(390, 395)
+        self.setFixedSize(390, 525)
 
         # Connect Slots
         self.pushButton_ok.clicked.connect(self._slotOK_Clicked)
@@ -25943,30 +25980,81 @@ class CustomColor(QtWidgets.QDialog, form_class11):
         self.pushButton_color9.clicked.connect(lambda: self._slotColor_Clicked(self.textEdit_color9))
         self.pushButton_color10.clicked.connect(lambda: self._slotColor_Clicked(self.textEdit_color10))
         self.pushButton_color11.clicked.connect(lambda: self._slotColor_Clicked(self.textEdit_color11))
+        self.pushButton_color12.clicked.connect(lambda: self._slotColor_Clicked(self.textEdit_color12))
+        self.pushButton_color13.clicked.connect(lambda: self._slotColor_Clicked(self.textEdit_color13))
+
+        self.comboBox_autofill.currentIndexChanged.connect(self._slotAutofillChanged)
 
         # Fill in Default Values
-        if len(self.parent.dashboard_settings_dictionary['custom_color1']) == 7:
-            self.textEdit_color1.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color1']))
-        if len(self.parent.dashboard_settings_dictionary['custom_color2']) == 7:
-            self.textEdit_color2.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color2']))
-        if len(self.parent.dashboard_settings_dictionary['custom_color3']) == 7:
-            self.textEdit_color3.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color3']))
-        if len(self.parent.dashboard_settings_dictionary['custom_color4']) == 7:
-            self.textEdit_color4.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color4']))
-        if len(self.parent.dashboard_settings_dictionary['custom_color5']) == 7:
-            self.textEdit_color5.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color5']))
-        if len(self.parent.dashboard_settings_dictionary['custom_color6']) == 7:
-            self.textEdit_color6.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color6']))
-        if len(self.parent.dashboard_settings_dictionary['custom_color7']) == 7:
-            self.textEdit_color7.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color7']))
-        if len(self.parent.dashboard_settings_dictionary['custom_color8']) == 7:
-            self.textEdit_color8.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color8']))
-        if len(self.parent.dashboard_settings_dictionary['custom_color9']) == 7:
-            self.textEdit_color9.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color9']))
-        if len(self.parent.dashboard_settings_dictionary['custom_color10']) == 7:
-            self.textEdit_color10.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color10']))
-        if len(self.parent.dashboard_settings_dictionary['custom_color11']) == 7:
-            self.textEdit_color11.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color11']))
+        self.comboBox_autofill.setCurrentIndex(2)
+        self._slotAutofillChanged()
+        
+    def _slotAutofillChanged(self):
+        """ Populate the values on launch and after selecting autofill option.
+        """
+        if str(self.comboBox_autofill.currentText()) == "Custom":
+            if len(self.parent.dashboard_settings_dictionary['custom_color1']) == 7:
+                self.textEdit_color1.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color1']))
+            if len(self.parent.dashboard_settings_dictionary['custom_color2']) == 7:
+                self.textEdit_color2.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color2']))
+            if len(self.parent.dashboard_settings_dictionary['custom_color3']) == 7:
+                self.textEdit_color3.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color3']))
+            if len(self.parent.dashboard_settings_dictionary['custom_color4']) == 7:
+                self.textEdit_color4.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color4']))
+            if len(self.parent.dashboard_settings_dictionary['custom_color5']) == 7:
+                self.textEdit_color5.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color5']))
+            if len(self.parent.dashboard_settings_dictionary['custom_color6']) == 7:
+                self.textEdit_color6.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color6']))
+            if len(self.parent.dashboard_settings_dictionary['custom_color7']) == 7:
+                self.textEdit_color7.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color7']))
+            if len(self.parent.dashboard_settings_dictionary['custom_color8']) == 7:
+                self.textEdit_color8.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color8']))
+            if len(self.parent.dashboard_settings_dictionary['custom_color9']) == 7:
+                self.textEdit_color9.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color9']))
+            if len(self.parent.dashboard_settings_dictionary['custom_color10']) == 7:
+                self.textEdit_color10.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color10']))
+            if len(self.parent.dashboard_settings_dictionary['custom_color11']) == 7:
+                self.textEdit_color11.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color11']))
+            if len(self.parent.dashboard_settings_dictionary['custom_color12']) == 7:
+                self.textEdit_color12.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color12']))            
+            if len(self.parent.dashboard_settings_dictionary['custom_color13']) == 7:
+                self.textEdit_color13.setPlainText(str(self.parent.dashboard_settings_dictionary['custom_color13']))            
+            if self.parent.dashboard_settings_dictionary['custom_icon_style'] == 'Light':
+                self.comboBox_icon_style.setCurrentIndex(0)
+            else:
+                self.comboBox_icon_style.setCurrentIndex(1)
+                
+        elif str(self.comboBox_autofill.currentText()) == "Light":
+            self.textEdit_color1.setPlainText("#F4F4F4")
+            self.textEdit_color2.setPlainText("#FBFBFB")
+            self.textEdit_color3.setPlainText("#17365D")
+            self.textEdit_color4.setPlainText("#000000")
+            self.textEdit_color5.setPlainText("#FFFFFF")
+            self.textEdit_color6.setPlainText("#FEFEFE")
+            self.textEdit_color7.setPlainText("#EFEFEF")
+            self.textEdit_color8.setPlainText("#FEFEFE")
+            self.textEdit_color9.setPlainText("#EFEFEF")
+            self.textEdit_color10.setPlainText("#FEFEFE")
+            self.textEdit_color11.setPlainText("#F8F8F8")
+            self.textEdit_color12.setPlainText("#000000")
+            self.textEdit_color13.setPlainText("#C0C0C0")
+            self.comboBox_icon_style.setCurrentIndex(0)
+
+        elif str(self.comboBox_autofill.currentText()) == "Dark":
+            self.textEdit_color1.setPlainText("#121212")
+            self.textEdit_color2.setPlainText("#292929")
+            self.textEdit_color3.setPlainText("#002D63")
+            self.textEdit_color4.setPlainText("#CCCCCC")
+            self.textEdit_color5.setPlainText("#444444")
+            self.textEdit_color6.setPlainText("#AAAAAA")
+            self.textEdit_color7.setPlainText("#666666")
+            self.textEdit_color8.setPlainText("#DDDDDD")
+            self.textEdit_color9.setPlainText("#999999")
+            self.textEdit_color10.setPlainText("#AFAFAF")
+            self.textEdit_color11.setPlainText("#6F6F6F")
+            self.textEdit_color12.setPlainText("#000000")
+            self.textEdit_color13.setPlainText("#666666")
+            self.comboBox_icon_style.setCurrentIndex(1)            
 
     def _slotOK_Clicked(self):
         """ Saves the color values and closes the dialog.
@@ -25985,6 +26073,9 @@ class CustomColor(QtWidgets.QDialog, form_class11):
         get_color9 = str(self.textEdit_color9.toPlainText())
         get_color10 = str(self.textEdit_color10.toPlainText())
         get_color11 = str(self.textEdit_color11.toPlainText())
+        get_color12 = str(self.textEdit_color12.toPlainText())
+        get_color13 = str(self.textEdit_color13.toPlainText())
+        get_icon_style = str(self.comboBox_icon_style.currentText())
         if len(get_color1) == 7:  # "#123456/#RRGGBB"
             self.parent.dashboard_settings_dictionary['custom_color1'] = get_color1
         if len(get_color2) == 7:
@@ -26007,6 +26098,11 @@ class CustomColor(QtWidgets.QDialog, form_class11):
             self.parent.dashboard_settings_dictionary['custom_color10'] = get_color10
         if len(get_color11) == 7:
             self.parent.dashboard_settings_dictionary['custom_color11'] = get_color11
+        if len(get_color12) == 7:
+            self.parent.dashboard_settings_dictionary['custom_color12'] = get_color12            
+        if len(get_color13) == 7:
+            self.parent.dashboard_settings_dictionary['custom_color13'] = get_color13           
+        self.parent.dashboard_settings_dictionary['custom_icon_style'] = get_icon_style
 
         self.close()
 

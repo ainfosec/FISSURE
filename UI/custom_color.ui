@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>390</width>
-    <height>395</height>
+    <height>525</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,7 +23,7 @@
      <x>5</x>
      <y>5</y>
      <width>380</width>
-     <height>385</height>
+     <height>515</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -36,7 +36,7 @@
     <property name="geometry">
      <rect>
       <x>105</x>
-      <y>350</y>
+      <y>480</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -49,7 +49,7 @@
     <property name="geometry">
      <rect>
       <x>195</x>
-      <y>350</y>
+      <y>480</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -62,7 +62,7 @@
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>10</y>
+      <y>45</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -88,7 +88,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>15</y>
+      <y>50</y>
       <width>235</width>
       <height>17</height>
      </rect>
@@ -109,7 +109,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>40</y>
+      <y>75</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -135,7 +135,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>45</y>
+      <y>80</y>
       <width>235</width>
       <height>17</height>
      </rect>
@@ -156,7 +156,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>70</y>
+      <y>105</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -182,7 +182,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>75</y>
+      <y>110</y>
       <width>235</width>
       <height>17</height>
      </rect>
@@ -203,7 +203,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>100</y>
+      <y>135</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -229,7 +229,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>105</y>
+      <y>140</y>
       <width>235</width>
       <height>17</height>
      </rect>
@@ -240,7 +240,7 @@ p, li { white-space: pre-wrap; }
      </font>
     </property>
     <property name="text">
-     <string>custom_color4 (Font Color):</string>
+     <string>custom_color4 (Label Text):</string>
     </property>
     <property name="alignment">
      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -250,7 +250,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>130</y>
+      <y>165</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -276,7 +276,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>135</y>
+      <y>170</y>
       <width>235</width>
       <height>17</height>
      </rect>
@@ -297,7 +297,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>10</y>
+      <y>45</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -310,7 +310,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>40</y>
+      <y>75</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -323,7 +323,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>70</y>
+      <y>105</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -336,7 +336,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>100</y>
+      <y>135</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -349,7 +349,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>130</y>
+      <y>165</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -362,7 +362,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>160</y>
+      <y>195</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -388,7 +388,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>160</y>
+      <y>195</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -401,7 +401,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>165</y>
+      <y>200</y>
       <width>235</width>
       <height>17</height>
      </rect>
@@ -422,7 +422,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>190</y>
+      <y>225</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -448,7 +448,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>190</y>
+      <y>225</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -461,7 +461,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>195</y>
+      <y>230</y>
       <width>235</width>
       <height>17</height>
      </rect>
@@ -482,7 +482,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>220</y>
+      <y>255</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -508,7 +508,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>220</y>
+      <y>255</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -521,7 +521,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>225</y>
+      <y>260</y>
       <width>235</width>
       <height>17</height>
      </rect>
@@ -542,7 +542,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>250</y>
+      <y>285</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -568,7 +568,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>250</y>
+      <y>285</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -581,7 +581,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>255</y>
+      <y>290</y>
       <width>235</width>
       <height>17</height>
      </rect>
@@ -602,7 +602,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>280</y>
+      <y>315</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -628,7 +628,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>285</y>
+      <y>320</y>
       <width>235</width>
       <height>17</height>
      </rect>
@@ -649,7 +649,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>310</y>
+      <y>345</y>
       <width>40</width>
       <height>27</height>
      </rect>
@@ -662,7 +662,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>240</x>
-      <y>310</y>
+      <y>345</y>
       <width>85</width>
       <height>27</height>
      </rect>
@@ -688,7 +688,7 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>0</x>
-      <y>315</y>
+      <y>350</y>
       <width>235</width>
       <height>17</height>
      </rect>
@@ -709,7 +709,233 @@ p, li { white-space: pre-wrap; }
     <property name="geometry">
      <rect>
       <x>330</x>
-      <y>280</y>
+      <y>315</y>
+      <width>40</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pick</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label2_153">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>380</y>
+      <width>235</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>custom_color12 (Button Text):</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit_color12">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>375</y>
+      <width>85</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;#CCCCCC&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_color12">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>375</y>
+      <width>40</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Pick</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label2_154">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>440</y>
+      <width>235</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>icon_style (Icon Images):</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox_icon_style">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>435</y>
+      <width>86</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>1</number>
+    </property>
+    <item>
+     <property name="text">
+      <string>Light</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Dark</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QComboBox" name="comboBox_autofill">
+    <property name="geometry">
+     <rect>
+      <x>195</x>
+      <y>5</y>
+      <width>85</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="currentIndex">
+     <number>2</number>
+    </property>
+    <item>
+     <property name="text">
+      <string>Light</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Dark</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>Custom</string>
+     </property>
+    </item>
+   </widget>
+   <widget class="QLabel" name="label2_155">
+    <property name="geometry">
+     <rect>
+      <x>105</x>
+      <y>10</y>
+      <width>85</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>Autofill:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>1</x>
+      <y>36</y>
+      <width>378</width>
+      <height>3</height>
+     </rect>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label2_156">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>410</y>
+      <width>235</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>10</pointsize>
+     </font>
+    </property>
+    <property name="text">
+     <string>custom_color13 (Disabled Text):</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QTextEdit" name="textEdit_color13">
+    <property name="geometry">
+     <rect>
+      <x>240</x>
+      <y>405</y>
+      <width>85</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <property name="verticalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="horizontalScrollBarPolicy">
+     <enum>Qt::ScrollBarAlwaysOff</enum>
+    </property>
+    <property name="readOnly">
+     <bool>false</bool>
+    </property>
+    <property name="html">
+     <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;#DDDDDD&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_color13">
+    <property name="geometry">
+     <rect>
+      <x>330</x>
+      <y>405</y>
       <width>40</width>
       <height>27</height>
      </rect>

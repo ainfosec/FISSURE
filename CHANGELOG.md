@@ -1,6 +1,37 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-07-03
+
+Miscellaneous style updates.
+ 
+### Added
+
+- Custom pushbutton/combobox text color option
+- Disabled text color option
+- Icon style (light/dark) color option
+- Autofill combobox to populate custom color values (light/dark/custom)
+- New color defaults to Options dialog
+
+### Changed
+
+- Assigned global combobox styles and removed extra lines for the exceptions
+- Selection font and background colors
+- Resized data type combobox in IQ Recording table
+
+### Fixed
+
+- Table comboboxes not resizing to the full height
+- Table font size styling
+- Combobox font color not set to a defined color
+- Disabled doublespinbox/spinbox background color
+- Removed extra padding in comboboxes
+- Restored right align for certain comboxes
+- Menu item shortcuts added to top level items
+- Missing custom color replacements in the installer
+- Added default values in CRC Calculator tab for Python3_maint-3.10 and Python2_maint-3.7 branches
+- Constructed Sequence position in Packet Crafter tab for Python2_maint-3.7 branch
+
 ## 2023-06-28
 
 Terminals for menu items, Read the Docs test files.
