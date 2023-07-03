@@ -3553,7 +3553,7 @@ p, li { white-space: pre-wrap; }
                 <x>810</x>
                 <y>360</y>
                 <width>255</width>
-                <height>425</height>
+                <height>420</height>
                </rect>
               </property>
               <property name="sizePolicy">
@@ -3651,7 +3651,7 @@ p, li { white-space: pre-wrap; }
               <property name="geometry">
                <rect>
                 <x>902</x>
-                <y>785</y>
+                <y>782</y>
                 <width>70</width>
                 <height>27</height>
                </rect>
@@ -14967,7 +14967,7 @@ p, li { white-space: pre-wrap; }
                  </font>
                 </property>
                 <attribute name="horizontalHeaderDefaultSectionSize">
-                 <number>140</number>
+                 <number>100</number>
                 </attribute>
                 <attribute name="horizontalHeaderMinimumSectionSize">
                  <number>5</number>
@@ -23252,7 +23252,7 @@ p, li { white-space: pre-wrap; }
               <property name="geometry">
                <rect>
                 <x>10</x>
-                <y>185</y>
+                <y>180</y>
                 <width>1195</width>
                 <height>86</height>
                </rect>
@@ -23742,7 +23742,7 @@ p, li { white-space: pre-wrap; }
                </font>
               </property>
               <property name="text">
-               <string>SCAPY Injection</string>
+               <string>Scapy Injection</string>
               </property>
              </widget>
             </widget>
@@ -28009,7 +28009,7 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
-     <string>Help</string>
+     <string>&amp;Help</string>
     </property>
     <widget class="QMenu" name="menuEditing_FISSURE">
      <property name="title">
@@ -28070,7 +28070,7 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menuFlow_Graphs">
     <property name="title">
-     <string>Standalone</string>
+     <string>&amp;Standalone</string>
     </property>
     <widget class="QMenu" name="menuStandaloneGSM">
      <property name="title">
@@ -28212,7 +28212,7 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menuSDR_Tools">
     <property name="title">
-     <string>Tools</string>
+     <string>&amp;Tools</string>
     </property>
     <widget class="QMenu" name="menuSDR_Tools_2">
      <property name="title">
@@ -28691,7 +28691,7 @@ p, li { white-space: pre-wrap; }
    </widget>
    <widget class="QMenu" name="menuLessons">
     <property name="title">
-     <string>Lessons</string>
+     <string>&amp;Lessons</string>
     </property>
     <addaction name="actionLessonOpenBTS"/>
     <addaction name="actionLessonLuaDissectors"/>

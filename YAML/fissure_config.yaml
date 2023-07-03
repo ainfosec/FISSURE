@@ -1,5 +1,5 @@
 SOI_quantity_limit: 5
-SOI_trigger_mode: 0
+SOI_trigger_mode: '0'
 SOI_trigger_time: 0
 SOI_trigger_timeout: 10
 buffer_size_interval: 2
@@ -7,6 +7,8 @@ clear_log_file_on_startup: true
 color1: '#F4F4F4'
 color10: '#FEFEFE'
 color11: '#F8F8F8'
+color12: '#000000'
+color13: '#C0C0C0'
 color2: '#FBFBFB'
 color3: '#17365D'
 color4: '#000000'
@@ -19,6 +21,8 @@ color_mode: Light Mode
 custom_color1: '#121212'
 custom_color10: '#AFAFAF'
 custom_color11: '#6F6F6F'
+custom_color12: '#000000'
+custom_color13: '#666666'
 custom_color2: '#292929'
 custom_color3: '#2D6300'
 custom_color4: '#CCCCCC'
@@ -27,6 +31,7 @@ custom_color6: '#AAAAAA'
 custom_color7: '#666666'
 custom_color8: '#DDDDDD'
 custom_color9: '#999999'
+custom_icon_style: Dark
 dashboard_hiprfisr_dealer_port: 5051
 dashboard_pub_port: 5057
 dataset_freq_shift_max: 0
@@ -75,6 +80,7 @@ hardware_serial_tsi: ''
 hardware_tsi: ''
 heartbeat_interval: 5
 hiprfisr_pub_port: 5055
+icon_style: Light
 morse_code_amplitude_threshold: 0.5
 morse_code_between_letter_spacing: 3
 morse_code_between_word_spacing: 7
