@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Components &mdash; FISSURE  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Operation" href="operation.html" />
+    <link rel="prev" title="Hardware" href="hardware.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            FISSURE
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Components</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#communications">Communications</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#library">Library</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-structure">File Structure</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#dashboard">Dashboard</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#concepts">Concepts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#communication">Communication</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#modification">Modification</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#target-signal-identification">Target Signal Identification</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#protocol-discovery">Protocol Discovery</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#flow-graph-script-executor">Flow Graph/Script Executor</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hiprfisr">HIPRFISR</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">FISSURE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Components</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/pages/components.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="components">
+<h1>Components<a class="headerlink" href="#components" title="Permalink to this heading"></a></h1>
+<p>FISSURE is a tool suite and RF framework consisting of dedicated Python components networked together for the purpose of RF device assessment and vulnerability analysis.</p>
+<section id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
+<p>FISSURE stemmed from the need to quickly identify and react to unknown devices or devices operating in unidentified modes in a congested RF environment. Over the years it has grown into an in-house laboratory tool used by AIS for nearly all things RF.</p>
+<section id="communications">
+<h3>Communications<a class="headerlink" href="#communications" title="Permalink to this heading"></a></h3>
+<p>The major components for FISSURE are written in Python/PyQt and communicate over an IP network to a central hub using ZeroMQ. Each component has a direct connection to the hub but can also have an unlimited number of one-to-many connections to broadcast status messages to other components. Any number of custom components can be added to the framework as long as the inputs/outputs are clearly defined in YAML and adhere to a simple message schema that allows for input sanitization and error handling.</p>
+</section>
+<section id="library">
+<h3>Library<a class="headerlink" href="#library" title="Permalink to this heading"></a></h3>
+<p>Library utilities for browsing; searching; uploading images; adding/removing modulation types, packet types, signals of interest, statistics, demodulation flow graphs, and attacks.</p>
+</section>
+<section id="file-structure">
+<h3>File Structure<a class="headerlink" href="#file-structure" title="Permalink to this heading"></a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>FISSURE
+├── Archive
+│   ├── Datasets
+│   └── Playlists
+├── Attack Recordings
+├── Crafted Packets
+│   ├── Defaults
+│   └── Scapy
+├── Custom_Blocks
+│   └── maint-3.x
+│       ├── gr-a...
+│       ├── ...
+│       └── gr-z...
+├── Dissectors
+├── docs
+│   ├── Gallery
+│   ├── Help
+│   ├── Icons
+│   ├── Lessons
+│   └── RTD
+├── Flow Graph Library
+│   ├── Archive Flow Graphs
+│   ├── Fuzzing Flow Graphs
+│   ├── Inspection Flow Graphs
+│   ├── IQ Flow Graphs
+│   ├── PD Flow Graphs
+│   ├── Single-Stage Flow Graphs
+│   ├── Sniffer Flow Graphs
+│   ├── Standalone Flow Graphs
+│   └── TSI Flow Graphs
+├── Installer
+├── IQ Recordings
+├── Logs
+│   └── Session Logs
+├── Multi-Stage Attack Files
+├── Protocol Discovery Data
+├── Tools
+├── UI
+│   └── Style_Sheets
+└── YAML
+    ├── Library Backups
+    └── User Configs
+</pre></div>
+</div>
+<dl class="simple">
+<dt>Archive/</dt><dd><p>Default location for downloading IQ files from the online signal archive.</p>
+</dd>
+<dt>Archive/Datasets/</dt><dd><p>Default location for storing generated IQ datasets and .csv files from the Archive Datasets tab.</p>
+</dd>
+<dt>Archive/Playlists/</dt><dd><p>Default location for storing signal playlists for the Archive Replay tab.</p>
+</dd>
+<dt>Attack Recordings/</dt><dd><p>Default location for storing any recordings produced from attacks.</p>
+</dd>
+<dt>Crafted Packets/</dt><dd><p>Default location for storing packet data from the Packet Crafter tab.</p>
+</dd>
+<dt>Crafted Packets/Defaults/</dt><dd><p>Location for default packet types listed in the Packet Crafter. Used to send data to UDP ports in the Sniffer tab. Not used to populate the Packet Crafter as defaults for packet types are acquired from the FISSURE library.</p>
+</dd>
+<dt>Crafted Packets/Scapy/</dt><dd><p>Location for temporarily storing loaded Scapy data used by the Scapy Injector in the Packet Crafter.</p>
+</dd>
+<dt>Custom_Blocks/</dt><dd><p>Contains GNU Radio out-of-tree (OOT) modules used by FISSURE. These include git submodules of specific compatible branches from online repositories. Any updates to these branches will be reflected in the contents of this folder. A few OOT modules are not git submodules and reside locally.</p>
+</dd>
+<dt>Custom_Blocks/maint-3.x/</dt><dd><p>Subfolder named after the major version of GNU Radio supported by the current branch.</p>
+</dd>
+<dt>Dissectors/</dt><dd><p>Default location for saving and editing Lua dissectors created by the Protocol Discovery Dissectors tab. Dissector files in this folder get copied to the Wireshark plugins folder during the FISSURE install and after clicking the Update Wireshark button in the Dissectors tab.</p>
+</dd>
+<dt>docs/</dt><dd><p>Contains static files used by FISSURE for display and documentation.</p>
+</dd>
+<dt>docs/Gallery/</dt><dd><p>Location of images of note that can be assigned to a protocol found in the FISSURE library. The image file must begin with the same name as the protocol to be displayed in the Library Gallery tab.</p>
+</dd>
+<dt>docs/Help/</dt><dd><p>Location of FISSURE help pages written in Markdown and HTML. Contents will eventually be folded into this Read the Docs project.</p>
+</dd>
+<dt>docs/Icons/</dt><dd><p>Location of icons used by the FISSURE GUI widgets and README.</p>
+</dd>
+<dt>docs/Lessons/</dt><dd><p>Location of FISSURE lesson pages written in Markdown and HTML. Contents will eventually be folded into this Read the Docs project.</p>
+</dd>
+<dt>docs/RTD/</dt><dd><p>Contains the HTML and PDF versions of this Read the Docs project. The Python3_maint-3.10 branch of FISSURE contains the files needed to populate and build the project.</p>
+</dd>
+<dt>Flow Graph Library/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Flow Graph Library/Archive Flow Graphs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Flow Graph Library/Fuzzing Flow Graphs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Flow Graph Library/Inspection Flow Graphs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Flow Graph Library/IQ Flow Graphs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Flow Graph Library/PD Flow Graphs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Flow Graph Library/Single-Stage Flow Graphs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Flow Graph Library/Sniffer Flow Graphs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Flow Graph Library/Standalone Flow Graphs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Flow Graph Library/TSI Flow Graphs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Installer/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>IQ Recordings/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Logs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Session Logs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Multi-Stage Attack Files/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Protocol Discovery Data/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>Tools/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>UI/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>UI/Style_Sheets/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>YAML/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>YAML/Library Backups/</dt><dd><p>sdfdsfsd</p>
+</dd>
+<dt>YAML/User Configs/</dt><dd><p>sdfdsfsd</p>
+</dd>
+</dl>
+</section>
+</section>
+<section id="dashboard">
+<h2>Dashboard<a class="headerlink" href="#dashboard" title="Permalink to this heading"></a></h2>
+<section id="concepts">
+<h3>Concepts<a class="headerlink" href="#concepts" title="Permalink to this heading"></a></h3>
+<p>The User Dashboard is the means for the operator to configure FISSURE and communicate with and view information from the other components. It offers several other features that do not require their own dedicated component including:</p>
+<ul class="simple">
+<li><p>A packet crafter for protocols found the FISSURE library. It includes Scapy integration for transmitting different types of 802.11 packets while in monitor mode.</p></li>
+<li><p>Library utilities for browsing; searching; uploading images; adding/removing modulation types, packet types, signals of interest, statistics, demodulation flow graphs, and attacks.</p></li>
+<li><p>Menu items for launching standalone GNU Radio flow graphs.</p></li>
+<li><p>Third-party and online tools as menu items organized by protocol or application.</p></li>
+<li><p>Lessons and tutorials for interacting with various RF protocols.</p></li>
+<li><p>Help pages for operation and development, protocol reference material, calculators, and hardware instructions.</p></li>
+<li><p>Buttons for: assigning RF-enabled hardware to individual components (USRP B205mini, B210, X300 series; HackRF; bladeRF; LimeSDR; 802.11x Adapters; RTL2832U; Open Sniffer); probing the hardware for diagnostics; and acquiring IP address, daughterboard, and serial number information.</p></li>
+</ul>
+</section>
+<section id="communication">
+<h3>Communication<a class="headerlink" href="#communication" title="Permalink to this heading"></a></h3>
+</section>
+<section id="modification">
+<h3>Modification<a class="headerlink" href="#modification" title="Permalink to this heading"></a></h3>
+</section>
+</section>
+<section id="target-signal-identification">
+<h2>Target Signal Identification<a class="headerlink" href="#target-signal-identification" title="Permalink to this heading"></a></h2>
+<p>The Target Signal Identification (TSI) component runs four subcomponents: a detector, a signal conditioner, a feature extractor, and a classifier.</p>
+<p>The Detector subcomponent allows the operator to configure scan parameters for multiple search bands with the goal of reporting the power, frequency, and time of observed signals.</p>
+<p>The Signal Conditioner subcomponent will be responsible for isolating and conditioning signals from a stream of raw I/Q data for more detailed analysis.</p>
+<p>The Feature Extractor subcomponent will accept the conditioned signals and extract a predetermined list of signal characteristics dependent on the AI/ML method chosen for classification.</p>
+<p>The Signal Classifier subcomponent will interpret the feature sets and make specific conclusions such as the confidence levels for protocol and emitter classification.</p>
+</section>
+<section id="protocol-discovery">
+<h2>Protocol Discovery<a class="headerlink" href="#protocol-discovery" title="Permalink to this heading"></a></h2>
+<p>The Protocol Discovery component is responsible for identifying and reversing RF protocols to help extract meaningful data from unknown signals. It is designed to: accept signal of interest information, iterate flow graphs to perform recursive demodulation techniques, deduce protocol methods, assign confidence levels, analyze a bitstream, calculate CRC polynomials, and create custom Wireshark dissectors.</p>
+</section>
+<section id="flow-graph-script-executor">
+<h2>Flow Graph/Script Executor<a class="headerlink" href="#flow-graph-script-executor" title="Permalink to this heading"></a></h2>
+<p>The Flow Graph/Script Executor component runs flow graphs or Python scripts to perform single-stage attacks, multi-stage attacks, fuzzing attacks, IQ recording and playback, live signal inspection/analysis, and transmit playlists of signal data constructed with files downloaded from an online archive.</p>
+</section>
+<section id="hiprfisr">
+<h2>HIPRFISR<a class="headerlink" href="#hiprfisr" title="Permalink to this heading"></a></h2>
+<p>The Central Hub receives commands from the User Dashboard to distribute to other components, manages automation and editing of the main library - which contains RF protocol information, script and flow graph mappings, and observation data.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="hardware.html" class="btn btn-neutral float-left" title="Hardware" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="operation.html" class="btn btn-neutral float-right" title="Operation" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Chris Poore.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

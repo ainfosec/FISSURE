@@ -1182,6 +1182,86 @@
       </row>
       <row>
        <property name="text">
+        <string>custom_color6</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>custom_color7</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>custom_color8</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>custom_color9</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>custom_color10</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>custom_color11</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>custom_color12</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>custom_color13</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
         <string>color1</string>
        </property>
        <property name="font">
@@ -1223,6 +1303,76 @@
       <row>
        <property name="text">
         <string>color5</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>color6</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>color7</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>color8</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>color9</string>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>color10</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>color11</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>color12</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>color13</string>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+      </row>
+      <row>
+       <property name="text">
+        <string>icon_style</string>
        </property>
        <property name="font">
         <font>

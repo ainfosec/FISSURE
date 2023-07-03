@@ -1,13 +1,3 @@
-
-/*Five-Color Scheme
-color1: @color1;
-color2: @color2;
-color3: @color3;
-color4: @color4;
-color5: @color5;
-*/
-
-
 /*Global*/
 QCheckBox[objectName^="checkBox_"]{
     background-color: rgba(0,0,0,0);
@@ -16,34 +6,49 @@ QCheckBox[objectName^="checkBox_"]{
     font-size: 10pt;
 }
 QCheckBox[objectName^="checkBox_"]:disabled{
-    color: @color1;
+    color: @color13;
     background-color: rgba(0,0,0,0);
 }
 QCheckBox[objectName^="checkBox_"]::indicator:unchecked {
-    image: url(@icon_path/dark-unchecked.png);
+    image: url(@icon_path/@unchecked_enabled);
 }
 QCheckBox[objectName^="checkBox_"]::indicator:checked {
-    image: url(@icon_path/dark-checked.png);
+    image: url(@icon_path/@checked_enabled);
 }
 QCheckBox[objectName^="checkBox_"]::indicator:disabled:checked {
-    image: url(@icon_path/dark-checked-disabled.png);
+    image: url(@icon_path/@checked_disabled);
 }
 QCheckBox[objectName^="checkBox_"]::indicator:disabled:unchecked {
-    image: url(@icon_path/dark-unchecked-disabled.png);    
+    image: url(@icon_path/@unchecked_disabled);    
 }
 QComboBox{
-    font-family: "Ubuntu";
+    font: 11pt "Ubuntu";
+    border: 1px solid #111111;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color6, stop: 1 @color7);
+    selection-color: #FFFFFF;
+    selection-background-color: #308CC6;
+}
+QComboBox QAbstractItemView {
+    background-color: @color2;
+    color: @color4;
 }
 QComboBox::drop-down {
     border: none;
 }
 QComboBox::down-arrow {
-    image: url(@icon_path/dark-down-arrow.png);
+    image: url(@icon_path/@down_arrow_enabled);
     background-color: transparent;
 }
 QComboBox::down-arrow:disabled {
-    image: url(@icon_path/dark-down-arrow-disabled.png);
+    image: url(@icon_path/@down_arrow_disabled);
     background-color: transparent;
+}
+QComboBox:disabled{
+    color: @color13;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color8, stop: 1 @color9);
+}
+QComboBox:hover{
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color10, stop: 1 @color11);
 }
 QDoubleSpinBox{
     background-color: @color5;
@@ -53,7 +58,7 @@ QDoubleSpinBox{
 }
 QDoubleSpinBox:disabled{
     background-color: @color5;
-    color: @color1;
+    color: @color13;
     border: 1px solid @color1;
 }
 QDoubleSpinBox::up-button {
@@ -78,7 +83,7 @@ QListView{
 }
 QListView:disabled{
     background-color: @color5;
-    color: @color1;
+    color: @color13;
     border: 1px solid @color1;
 }
 QListWidget{
@@ -89,7 +94,7 @@ QListWidget{
 }
 QListWidget:disabled{
     background-color: @color5;
-    color: @color1;
+    color: @color13;
     border: 1px solid @color1;
 }
 QMenu{
@@ -101,14 +106,23 @@ QMenu::item{
     background-color: transparent;
 }
 QMenu::item:selected{
-    color: @color4;
-    background-color: @color3;
+    color: #FFFFFF;
+    background-color: #308CC6;
 }
 QMenu::item:disabled{
-    color: @color1;
+    color: @color13;
 }
-QMenu:selected{
-    background-color:@color3;
+QMenuBar {
+    color: @color4;
+    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, x3: 0, y3: 1, stop: 0 @color2, stop: 0.1 @color5, stop: 1 @color1);
+}
+QMenuBar::item:focus:pressed {
+    color: #FFFFFF;
+    background-color: #308CC6;
+}
+QMenuBar::item:selected {
+    background: transparent;
+    margin-bottom: @menu_hover_padding; 
 }
 QPlainTextEdit{
     background-color: @color5;
@@ -118,7 +132,7 @@ QPlainTextEdit{
 }
 QPlainTextEdit:disabled{
     background-color: @color5;
-    color: @color1;
+    color: @color13;
     border: 1px solid @color1;
 }
 QProgressBar{
@@ -134,16 +148,16 @@ QProgressBar{
 }*/
 QProgressBar:disabled{
     background-color: @color5;
-    color: @color1;
+    color: @color13;
 }
 QPushButton[objectName^="pushButton_"]{
-    color: #000000;
+    color: @color12;
     border: 1px solid #111111;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color6, stop: 1 @color7);
     font-family: "Ubuntu";    
 }
 QPushButton[objectName^="pushButton_"]:disabled{
-    color: @color9;
+    color: @color13;
     background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color8, stop: 1 @color9);
 }
 QPushButton[objectName^="pushButton_"]:hover{
@@ -157,14 +171,14 @@ QRadioButton{
     font-family: "Ubuntu";    
 }
 QRadioButton:disabled{
-    color: @color1;
+    color: @color13;
     background-color: rgba(0,0,0,0);
 }
 QRadioButton::indicator:unchecked {
-    image: url(@icon_path/radio-unchecked.png);
+    image: url(@icon_path/@radio_unchecked_enabled);
 }
 QRadioButton::indicator:checked {
-    image: url(@icon_path/radio-checked.png);
+    image: url(@icon_path/@radio_checked_enabled);
 }
 QScrollBar{
     background: @color2;
@@ -195,7 +209,7 @@ QSpinBox{
 }
 QSpinBox:disabled{
     background-color: @color5;
-    color: @color1;
+    color: @color13;
     border: 1px solid @color1;
 }
 QSpinBox::up-button {
@@ -215,15 +229,17 @@ QTableWidget{
     background-color: @color5;
     color: @color4;
     border: 1px solid #111111;
-    font-family: "Ubuntu";    
+    font-family: "Ubuntu";
+    font-size: 10pt; 
 }
 QTableWidget > QHeaderView{
     background-color: @color2;
     color: @color4;
+    font-size: 10pt;
 }
 QTableWidget > QHeaderView:disabled{
     background-color: @color2;
-    color: @color1;
+    color: @color13;
 }
 QTableWidget > QTableCornerButton{
     background-color: @color2;
@@ -231,7 +247,7 @@ QTableWidget > QTableCornerButton{
 }
 QTableWidget:disabled{
     background-color: @color5;
-    color: @color1;
+    color: @color13;
 }
 
 #tabWidget > QTabBar::tab {
@@ -245,9 +261,9 @@ QTableWidget:disabled{
     width: 132px; 
 }
 QTabBar::tab:disabled {
-    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #eeeeee, stop:0.12 #888888, stop:0.3 #666666,   stop:0.85 #444444, stop:1 #444444);
+    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 @color8, stop:1 @color9);
     border: 1px solid #444444;
-    color: rgb(150, 150, 150);
+    color: @color13;
 }
 QTabWidget::pane { 
     border: 1px solid @color3;
@@ -279,7 +295,7 @@ QTextEdit{
 }
 QTextEdit:disabled{
     background-color: @color5;
-    color: @color1;
+    color: @color13;
     font-family: "Ubuntu";
     border: 1px solid @color1;
 }
@@ -416,9 +432,6 @@ QTextEdit[objectName^="textEdit2_"]{
 
 
 QTableWidget[objectName^="tableWidget1_"]{border: 1px solid @color3;}
-#tableWidget1_attack_flow_graph_current_values > QHeaderView {font-size: 10pt;}
-#tableWidget1_attack_packet_editor > QHeaderView {font-size: 10pt;}
-#treeWidget_attack_attacks > QHeaderView {font-size: 10pt;}
 
 QLabel[objectName^="label1_"]{
     qproperty-alignment: AlignCenter;
@@ -432,7 +445,7 @@ QLabel[objectName^="label1_"]{
     font: bold 10pt "Ubuntu";
 }
 QLabel[objectName^="label2_"]{color: @color4;}
-QLabel[objectName^="label2_"]:disabled{color: @color1;}
+QLabel[objectName^="label2_"]:disabled{color: @color13;}
 QLabel[objectName^="label3_"]{
     color: @color4;
     border: 1px solid @color1;
@@ -503,18 +516,6 @@ QWidget#scrollAreaWidgetContents_2 {
     background-color: @color1;
 }
 
-QMenuBar#menubar {
-    color: @color4;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, x3: 0, y3: 1, stop: 0 @color2, stop: 0.1 @color5, stop: 1 @color1);
-    /*background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 @color2, stop: 1 @color1,);*/
-    /*border-bottom: 1px solid black;*/
-}
-QMenuBar#menubar::item:focus:pressed {background-color: @color3;}
-QMenuBar#menubar::item:selected {
-    background: transparent;
-    margin-bottom: @menu_hover_padding; 
-}
-
 
 QFrame[objectName^="line1_"]{background: @color3;}
 QFrame[objectName^="line2_"]{background: @color1;}
@@ -527,47 +528,15 @@ QTabWidget#tabWidget2_2::pane{
     border-bottom-right-radius: 15px;    
 }
 
-QComboBox[objectName^="comboBox_"]{
-    padding-left: 4px;
-    border: 1px solid #111111;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color6, stop: 1 @color7);
-}
-QComboBox[objectName^="comboBox_"]:disabled{
-    padding-left: 4px;
-    color: @color9;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color8, stop: 1 @color9);
-}
-QComboBox[objectName^="comboBox_"]:hover{
-    padding-left: 4px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color10, stop: 1 @color11);
-}
+
 QComboBox[objectName^="comboBox2_"]{
-    padding-left: 4px;
-    border: 1px solid #111111;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color6, stop: 1 @color7);
-    font: 10pt "Ubuntu";
+    font-size: 10pt;
 }
 QComboBox[objectName^="comboBox2_"]:disabled{
-    padding-left: 4px;
-    color: @color9;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color8, stop: 1 @color9);
-    font: 10pt "Ubuntu";
-}
-QComboBox[objectName^="comboBox2_"]:hover{
-    padding-left: 4px;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color10, stop: 1 @color11);
+    font-size: 10pt;
 }
 QComboBox[objectName^="comboBox3_"]{
-    border: 1px solid #111111;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color6, stop: 1 @color7);
     text-align: right;
-}
-QComboBox[objectName^="comboBox3_"]:disabled{
-    color: @color9;
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color8, stop: 1 @color9);
-}
-QComboBox[objectName^="comboBox3_"]:hover{
-    background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 @color10, stop: 1 @color11);
 }
 
 QWidget#HardwareSelect{
@@ -590,8 +559,6 @@ QDialog#Dialog_chooser{background-color: @color1;}
 QDialog#Dialog_new_soi{background-color: @color1;}
 QDialog#SigMF_Window{background-color: @color1;}
 QDialog#Dialog_custom_color{background-color: @color1;}
-QDialog#Dialog_install{background-color: @color1;}
-QDialog#Dialog_install2{background-color: @color1;}
 
 QTreeView#treeWidget_attack_attacks > QHeaderView::section{
     color: @color4;
@@ -601,17 +568,4 @@ QTreeView#treeWidget_attack_attacks > QHeaderView::section{
     padding: 2px;
     padding-left: 4px;
 }
-
-/*
-QTreeWidget::branch:open:has-children:!has-siblings,
-QTreeWidget::branch:open:has-children:has-siblings  {
-    border-image: none;
-    image: url(@icon_path/light-tree-open.png);  /* Replace with dark mode icon *
-
-QTreeWidget::branch:has-children:!has-siblings:closed,
-QTreeWidget::branch:closed:has-children:has-siblings {
-    border-image: none;
-    image: url(@icon_path/light-tree-closed.png);
-}
-*/
 

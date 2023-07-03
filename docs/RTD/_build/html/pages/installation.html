@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; FISSURE  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Hardware" href="hardware.html" />
+    <link rel="prev" title="FISSURE - The RF Framework" href="../index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            FISSURE
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#cloning">Cloning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installer">Installer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#uninstalling">Uninstalling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="components.html">Components</a></li>
+<li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">FISSURE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/pages/installation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="installation">
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<p>The FISSURE installer is helpful for staging computers or installing select software programs of interest. The code can be quickly modified to allow for custom software installs. The size estimates for the programs are before and after readings from a full install. The sizes for each program are not exact as some dependencies are installed in previously checked items. The sizes may also change over time as programs get updated.</p>
+<section id="requirements">
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
+<p>It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. The items listed under the “Minimum Install” category are what is required to launch the FISSURE Dashboard without errors. Select all the recommended checkboxes (Default button) to avoid additonal errors while operating the various tools within FISSURE. There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names.</p>
+</section>
+<section id="cloning">
+<h2>Cloning<a class="headerlink" href="#cloning" title="Permalink to this heading"></a></h2>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ainfosec/FISSURE.git
+<span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>FISSURE
+<span class="gp">$ </span>git<span class="w"> </span>checkout<span class="w"> </span>&lt;Python2_maint-3.7&gt;<span class="w"> </span>or<span class="w"> </span>&lt;Python3_maint-3.8&gt;<span class="w"> </span>or<span class="w"> </span>&lt;Python3_maint-3.10&gt;
+<span class="gp">$ </span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init
+<span class="gp">$ </span>./install
+</pre></div>
+</div>
+<p>This will install PyQt software dependencies required to launch the installation GUIs if they are not found. The git submodule command will download all missing GNU Radio out-of-tree modules from their repositories.</p>
+</section>
+<section id="installer">
+<h2>Installer<a class="headerlink" href="#installer" title="Permalink to this heading"></a></h2>
+<p>Next, select the option that best matches your operating system (should be detected automatically if your OS matches an option). The “Minimum Install” option is a list of programs needed to launch the FISSURE Dashboard without any errors. The remaining programs are needed to utilize the various hardware and software tools integrated into FISSURE menu items and tabs.</p>
+</section>
+<section id="uninstalling">
+<h2>Uninstalling<a class="headerlink" href="#uninstalling" title="Permalink to this heading"></a></h2>
+<p>There is no uninstaller for FISSURE. Exercise caution when installing several GB of new software for all the installer checkboxes. There are only a few places where FISSURE writes to the system outside of apt-get, make, or pip commands. A future uninstaller could get rid of those changes.</p>
+<p>The following are locations that are impacted by the FISSURE installer:</p>
+<ul class="simple">
+<li><p>a couple PPAs for getting the latest/specific versions of software</p></li>
+<li><p>writes to <code class="docutils literal notranslate"><span class="pre">~/.local/bin</span></code> and <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code> (or equivalent) for issuing the fissure command and displaying the icon</p></li>
+<li><p>GNU Radio paths added to <code class="docutils literal notranslate"><span class="pre">~/.bashrc</span></code> (or equivalent)</p></li>
+<li><p>GNU Radio <code class="docutils literal notranslate"><span class="pre">~/.gnuradio/config.conf</span></code> file for detecting FISSURE OOT modules</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/etc/udev</span></code> rules for detecting hardware</p></li>
+<li><p>UHD images from <code class="docutils literal notranslate"><span class="pre">uhd_images_downloader</span></code> command, <code class="docutils literal notranslate"><span class="pre">sysctl</span></code> changes to <code class="docutils literal notranslate"><span class="pre">net.core.wmem_max</span></code></p></li>
+<li><p>Optional Wireshark user groups to use it without sudo</p></li>
+<li><p>ESP32 Bluetooth Classic Sniffer and FISSURE Sniffer wireshark plugins</p></li>
+</ul>
+<p>Many programs are stored in the ~/Installed_by_FISSURE folder but the dependencies are heavily intertwined amongst the programs.</p>
+</section>
+<section id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
+<p>Open a terminal and enter: <code class="docutils literal notranslate"><span class="pre">fissure</span></code></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../index.html" class="btn btn-neutral float-left" title="FISSURE - The RF Framework" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="hardware.html" class="btn btn-neutral float-right" title="Hardware" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Chris Poore.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -7,6 +7,7 @@ import subprocess
 import os
 import sys
 import time
+import re
 
 this_file_directory = os.path.dirname(os.path.realpath(__file__))
 fissure_directory = os.path.abspath(os.path.join(this_file_directory, os.pardir))
@@ -7838,13 +7839,39 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         color3 = "#17365D"
         color4 = "#000000"
         color5 = "#FFFFFF"
+        color6 = "#FEFEFE"
+        color7 = "#EFEFEF"
+        color8 = "#FEFEFE"
+        color9 = "#EFEFEF"
+        color10 = "#FEFEFE"
+        color11 = "#F8F8F8"
+        color12 = "#000000"
+        color13 = "#C0C0C0"        
         get_css_text = str(open('/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/UI/Style_Sheets/light.css","r").read())
-        get_css_text = get_css_text.replace("@color1",color1)
-        get_css_text = get_css_text.replace("@color2",color2)
-        get_css_text = get_css_text.replace("@color3",color3)
-        get_css_text = get_css_text.replace("@color4",color4)
-        get_css_text = get_css_text.replace("@color5",color5)
+        get_css_text = re.sub(r'@color1\b',color1,get_css_text)
+        get_css_text = re.sub(r'@color2\b',color2,get_css_text)
+        get_css_text = re.sub(r'@color3\b',color3,get_css_text)
+        get_css_text = re.sub(r'@color4\b',color4,get_css_text)
+        get_css_text = re.sub(r'@color5\b',color5,get_css_text)
+        get_css_text = re.sub(r'@color6\b',color6,get_css_text)
+        get_css_text = re.sub(r'@color7\b',color7,get_css_text)
+        get_css_text = re.sub(r'@color8\b',color8,get_css_text)
+        get_css_text = re.sub(r'@color9\b',color9,get_css_text)
+        get_css_text = re.sub(r'@color10\b',color10,get_css_text)
+        get_css_text = re.sub(r'@color11\b',color11,get_css_text)
+        get_css_text = re.sub(r'@color12\b',color12,get_css_text)
+        get_css_text = re.sub(r'@color13\b',color13,get_css_text)
+        get_css_text = re.sub(r'@unchecked_enabled\b','light-unchecked.png',get_css_text)
+        get_css_text = re.sub(r'@checked_enabled\b','light-checked.png',get_css_text)
+        get_css_text = re.sub(r'@checked_disabled\b','light-checked-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@unchecked_disabled\b','light-unchecked-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@down_arrow_enabled\b','light-down-arrow.png',get_css_text)
+        get_css_text = re.sub(r'@down_arrow_disabled\b','light-down-arrow-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@radio_unchecked_enabled\b','light-radio.png',get_css_text)
+        get_css_text = re.sub(r'@radio_checked_enabled\b','light-radio-checked.png',get_css_text)
         get_css_text = get_css_text.replace("@icon_path",'/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/docs/Icons")
+        get_css_text = get_css_text.replace('@menu_hover_padding','0px')
+        self.setStyleSheet(get_css_text)
         self.setStyleSheet(get_css_text) 
         
         # Do SIGNAL/Slots Connections
@@ -8138,14 +8165,39 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
         color3 = "#17365D"
         color4 = "#000000"
         color5 = "#FFFFFF"
+        color6 = "#FEFEFE"
+        color7 = "#EFEFEF"
+        color8 = "#FEFEFE"
+        color9 = "#EFEFEF"
+        color10 = "#FEFEFE"
+        color11 = "#F8F8F8"
+        color12 = "#000000"
+        color13 = "#C0C0C0"        
         get_css_text = str(open('/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/UI/Style_Sheets/light.css","r").read())
-        get_css_text = get_css_text.replace("@color1",color1)
-        get_css_text = get_css_text.replace("@color2",color2)
-        get_css_text = get_css_text.replace("@color3",color3)
-        get_css_text = get_css_text.replace("@color4",color4)
-        get_css_text = get_css_text.replace("@color5",color5)
+        get_css_text = re.sub(r'@color1\b',color1,get_css_text)
+        get_css_text = re.sub(r'@color2\b',color2,get_css_text)
+        get_css_text = re.sub(r'@color3\b',color3,get_css_text)
+        get_css_text = re.sub(r'@color4\b',color4,get_css_text)
+        get_css_text = re.sub(r'@color5\b',color5,get_css_text)
+        get_css_text = re.sub(r'@color6\b',color6,get_css_text)
+        get_css_text = re.sub(r'@color7\b',color7,get_css_text)
+        get_css_text = re.sub(r'@color8\b',color8,get_css_text)
+        get_css_text = re.sub(r'@color9\b',color9,get_css_text)
+        get_css_text = re.sub(r'@color10\b',color10,get_css_text)
+        get_css_text = re.sub(r'@color11\b',color11,get_css_text)
+        get_css_text = re.sub(r'@color12\b',color12,get_css_text)
+        get_css_text = re.sub(r'@color13\b',color13,get_css_text)
+        get_css_text = re.sub(r'@unchecked_enabled\b','light-unchecked.png',get_css_text)
+        get_css_text = re.sub(r'@checked_enabled\b','light-checked.png',get_css_text)
+        get_css_text = re.sub(r'@checked_disabled\b','light-checked-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@unchecked_disabled\b','light-unchecked-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@down_arrow_enabled\b','light-down-arrow.png',get_css_text)
+        get_css_text = re.sub(r'@down_arrow_disabled\b','light-down-arrow-disabled.png',get_css_text)
+        get_css_text = re.sub(r'@radio_unchecked_enabled\b','light-radio.png',get_css_text)
+        get_css_text = re.sub(r'@radio_checked_enabled\b','light-radio-checked.png',get_css_text)
         get_css_text = get_css_text.replace("@icon_path",'/' + os.path.dirname(os.path.realpath(__file__)).strip('/Installer') + "/docs/Icons")
-        self.setStyleSheet(get_css_text)           
+        get_css_text = get_css_text.replace('@menu_hover_padding','0px')
+        self.setStyleSheet(get_css_text)          
         
         # Do SIGNAL/Slots Connections
         self._connectSlots()  
