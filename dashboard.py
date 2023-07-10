@@ -108,12 +108,15 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.setupUi(self)
 
         # Detect Operating System
+        self.operating_system = 'Other'
         proc = subprocess.Popen("cat /etc/os-dragonos 2>&1 | grep 'DragonOS FocalX'", shell=True, stdout=subprocess.PIPE, )
         output = proc.communicate()[0].decode()
-        if len(output) == 0:
-            self.operating_system = 'Other'
-        else:
-            self.operating_system = 'DragonOS FocalX'
+        if len(output) > 0:
+            self.operating_system = 'DragonOS FocalX'           
+        proc = subprocess.Popen("lsb_release -d 2>&1 | grep 'Kali'", shell=True, stdout=subprocess.PIPE, )
+        output = proc.communicate()[0].decode()
+        if len(output) > 0:
+            self.operating_system = 'Kali'           
 
         # Disable Unused Menu Items
         if self.operating_system == 'DragonOS FocalX':
@@ -122,10 +125,19 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.action4G_IMSI_Catcher.setEnabled(False)
             self.actionTower_Search.setEnabled(False)
             self.actionTower_Search_Part_2.setEnabled(False)
+        elif self.operating_system == 'Kali':
+            self.actionZigbeeOpen_Sniffer.setEnabled(False)
+            self.actionFALCON.setEnabled(False)
+            #self.actionLTE_ciphercheck.setEnabled(False)
+            self.actionOpenCPN.setEnabled(False)
+            self.actionRTLSDR_Airband.setEnabled(False)
+            self.actionguidus.setEnabled(False)
+            self.actionSystemback.setEnabled(False)
+            self.actiondump978.setEnabled(False)
+            self.actionOpenWebRX.setEnabled(False)
         else:
             self.actionGpick.setEnabled(False)
         self.actionNETATTACK2.setEnabled(False)
-        self.actionTrackerjacker.setEnabled(False)
         self.actionLTE_ciphercheck.setEnabled(False)
         self.actionIIO_Oscilloscope.setEnabled(False)
 
@@ -3781,7 +3793,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 new_combobox1.setProperty("row", n)
 
                 # CheckBoxes
-                new_checkbox = QtWidgets.QCheckBox("",self)
+                new_checkbox = QtWidgets.QCheckBox("",self,objectName='checkBox_')
                 new_checkbox.setStyleSheet("margin-left:17%")  # doesn't center, could create a layout and put the radio button in the layout
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,0,new_checkbox)
                 #new_checkbox.stateChanged.connect(self._slotAttackFuzzingDataSelectCheckboxClicked)
@@ -5701,7 +5713,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "uhd_find_devices"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "uhd_find_devices"', shell=True)
@@ -5759,7 +5771,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "hackrf_info"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "hackrf_info"', shell=True)
@@ -5769,7 +5781,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "lsusb"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "lsusb"', shell=True)
@@ -5779,7 +5791,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "iwconfig"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "iwconfig"', shell=True)
@@ -6560,7 +6572,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 new_combobox1.setProperty("row", n)
 
                 # CheckBoxes
-                new_checkbox = QtWidgets.QCheckBox("",self)
+                new_checkbox = QtWidgets.QCheckBox("",self,objectName='checkBox_')
                 new_checkbox.setStyleSheet("margin-left:17%")  # doesn't center, could create a layout and put the radio button in the layout
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,0,new_checkbox)
                 #new_checkbox.stateChanged.connect(self._slotAttackFuzzingDataSelectCheckboxClicked)
@@ -6644,7 +6656,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 new_combobox1.setCurrentIndex(1)
 
             # CheckBoxes
-            new_checkbox = QtWidgets.QCheckBox("",self)
+            new_checkbox = QtWidgets.QCheckBox("",self,objectName='checkBox_')
             new_checkbox.setStyleSheet("margin-left:17%")  # doesn't center, could create a layout and put the radio button in the layout
             self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,0,new_checkbox)
             #new_checkbox.stateChanged.connect(self._slotAttackFuzzingDataSelectCheckboxClicked)
@@ -12294,7 +12306,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo iwlist scan"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo iwlist scan"', shell=True)
@@ -12303,7 +12315,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """ Opens Kismet for viewing wireless networks.
         """
         # Run Kismet
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             command_text = 'qterminal -e kismet &'
         else:
             command_text = 'gnome-terminal -- kismet &'
@@ -12314,7 +12326,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "qspectrumanalyzer"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "qspectrumanalyzer"', shell=True)
@@ -12324,7 +12336,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "gqrx"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "gqrx"', shell=True)
@@ -12550,7 +12562,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Run Dump1090
         dump1090_directory = os.path.expanduser("~/Installed_by_FISSURE/dump1090/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen("qterminal -e ./dump1090 --interactive --net --freq 1090000000 --net-http-port 8081", cwd=dump1090_directory, shell=True)
         else:
             proc=subprocess.Popen("gnome-terminal -- ./dump1090 --interactive --net --freq 1090000000 --net-http-port 8081", cwd=dump1090_directory, shell=True)
@@ -12561,7 +12573,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "LimeSuiteGUI"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "LimeSuiteGUI"', shell=True)
@@ -13899,7 +13911,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Run Monitor Mode Tool
         monitor_mode_tool_directory = os.path.dirname(os.path.abspath(__file__)) + "/Tools/Monitor_Mode_Tool/"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen("qterminal -e python3 monitor_mode_tool.py", cwd=monitor_mode_tool_directory, shell=True)
         else:
             proc=subprocess.Popen("gnome-terminal -- python3 monitor_mode_tool.py", cwd=monitor_mode_tool_directory, shell=True)
@@ -15746,7 +15758,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Start Transmitting
         if len(get_iface) > 0:
             scapy_send_directory = os.path.dirname(os.path.abspath(__file__)) + "/Tools/"
-            if self.operating_system == 'DragonOS FocalX':
+            if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
                 proc=subprocess.Popen("qterminal -e sudo python2 scapy_send.py " + get_iface + " " + get_interval + " " + get_loop, cwd=scapy_send_directory, shell=True)
             else:
                 proc=subprocess.Popen("gnome-terminal -- sudo python2 scapy_send.py " + get_iface + " " + get_interval + " " + get_loop, cwd=scapy_send_directory, shell=True)
@@ -16281,7 +16293,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue Load Command
         if get_file != None:
             try:
-                if self.operating_system == 'DragonOS FocalX':
+                if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
                     command_text = 'qterminal -e bladeRF-cli -l ' + str(get_file) + ' &'
                 else:
                     command_text = 'gnome-terminal -- bladeRF-cli -l ' + str(get_file) + ' &'
@@ -16344,9 +16356,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         if self.operating_system == 'DragonOS FocalX':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "grcc /usr/src/gr-rds/examples/rds_rx.grc -o /usr/src/gr-rds/examples/ -r "', shell=True)
+        elif self.operating_system == 'Kali':
+            rds_command = "grcc " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-rds/examples/rds_rx.grc -o " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-rds/examples/ -r"
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + rds_command + '"', shell=True)
         else:
             rds_command = "grcc " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-rds/examples/rds_rx.grc -o " + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-rds/examples/ -r"
-            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + rds_comman + '"', shell=True)
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + rds_command + '"', shell=True)
 
     def _slotMenuSrsLTE_Clicked(self):
         """ Opens the terminals with locations for manually running srsLTE programs.
@@ -16357,8 +16372,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             srsLTE_dir = "/usr/src/srsRAN/srsepc/"
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo srsepc ~/.config/srsran/epc.conf"', cwd=srsLTE_dir, shell=True)
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo srsenb ~/.config/srsran/enb.conf"', cwd=srsLTE_dir, shell=True)
-        else:
+        elif self.operating_system == 'Kali':
             srsLTE_dir = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/srsepc")
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo srsepc ~/.config/srsran/epc.conf"', cwd=srsLTE_dir, shell=True)
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo srsenb ~/.config/srsran/enb.conf"', cwd=srsLTE_dir, shell=True)
+        else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo srsepc ~/.config/srsran/epc.conf"', cwd=srsLTE_dir, shell=True)
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo srsenb ~/.config/srsran/enb.conf"', cwd=srsLTE_dir, shell=True)
 
@@ -16519,7 +16537,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "wireshark"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "wireshark"', shell=True)
@@ -17067,7 +17085,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "bluetoothctl"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "bluetoothctl"', shell=True)
@@ -17301,7 +17319,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         command_text = 'sudo python3 main.py local dsrc -g'
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + command_text + '"', shell=True, cwd=os.path.dirname(os.path.realpath(__file__)) + '/Tools/v2verifier-master')
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + command_text + '"', shell=True, cwd=os.path.dirname(os.path.realpath(__file__)) + '/Tools/v2verifier-master')
@@ -17346,6 +17364,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         if self.operating_system == 'DragonOS FocalX':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "/usr/src/falcon/build/src/gui/FalconGUI"', shell=True)
+        elif self.operating_system == 'Kali':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "FalconGUI"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "FalconGUI"', shell=True)
 
@@ -17373,7 +17393,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo minicom"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo minicom"', shell=True)
@@ -17383,7 +17403,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo putty"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo putty"', shell=True)
@@ -17399,7 +17419,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo /bin/systemctl start openhab.service"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo /bin/systemctl start openhab.service"', shell=True)
@@ -17409,7 +17429,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo /bin/systemctl stop openhab.service"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo /bin/systemctl stop openhab.service"', shell=True)
@@ -17504,7 +17524,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Run rtl_sdr and rtl_zwave
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/rtl-zwave-master/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_sdr -f 908.42e6 -s 2048000 -g 25 - | ./rtl_zwave"', cwd=rtl_zwave_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 908.42e6 -s 2048000 -g 25 - | ./rtl_zwave"', cwd=rtl_zwave_directory, shell=True)
@@ -17515,7 +17535,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Run rtl_sdr and rtl_zwave
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/rtl-zwave-master/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_sdr -f 916e6 -s 2048000 -g 25 - | ./rtl_zwave"', cwd=rtl_zwave_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 916e6 -s 2048000 -g 25 - | ./rtl_zwave"', cwd=rtl_zwave_directory, shell=True)
@@ -17526,7 +17546,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Run rtl_sdr and waving-z
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/waving-z/build/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_sdr -f 908420000 -s 2000000 -g 25  - | ./wave-in -u"', cwd=rtl_zwave_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 908420000 -s 2000000 -g 25  - | ./wave-in -u"', cwd=rtl_zwave_directory, shell=True)
@@ -17537,7 +17557,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Run rtl_sdr and waving-z
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         rtl_zwave_directory = os.path.expanduser("~/Installed_by_FISSURE/waving-z/build/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_sdr -f 916000000 -s 2000000 -g 25  - | ./wave-in -u"', cwd=rtl_zwave_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_sdr -f 916000000 -s 2000000 -g 25  - | ./wave-in -u"', cwd=rtl_zwave_directory, shell=True)
@@ -18654,7 +18674,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "LimeUtil --update"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "LimeUtil --update"', shell=True)
@@ -18665,7 +18685,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         baudline_command = os.path.expanduser("~/Installed_by_FISSURE/baudline_1.08_linux_x86_64/baudline")
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + baudline_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + baudline_command + '"', shell=True)
@@ -18675,7 +18695,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "urh"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "urh"', shell=True)
@@ -18697,6 +18717,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             if self.operating_system == 'DragonOS FocalX':
                 cell_search_binary_location = "/usr/src/srsRAN/build/lib/examples/cell_search"
                 command_text = 'qterminal -e python3 ' + script_location + 'start_sniffing.py -b ' + get_value + ' ' + cell_search_binary_location + ' &'
+            elif self.operating_system == 'Kali':
+                cell_search_binary_location = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/build/lib/examples/cell_search")
+                command_text = 'qterminal -e python3 ' + script_location + 'start_sniffing.py -b ' + get_value + ' ' + cell_search_binary_location + ' &'
             else:
                 cell_search_binary_location = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/build/lib/examples/cell_search")
                 command_text = 'gnome-terminal -- python3 ' + script_location + 'start_sniffing.py -b ' + get_value + ' ' + cell_search_binary_location + ' &'
@@ -18717,12 +18740,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         # Issue the Command
         if get_tcp_udp == "TCP":
-            if self.operating_system == 'DragonOS FocalX':
+            if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
                 command_text = 'qterminal -e nc -l ' + get_ip + ' ' + get_port + ' &'
             else:
                 command_text = 'gnome-terminal -- nc -l ' + get_ip + ' ' + get_port + ' &'
         else:
-            if self.operating_system == 'DragonOS FocalX':
+            if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
                 command_text = 'qterminal -e nc -lu ' + get_ip + ' ' + get_port + ' &'
             else:
                 command_text = 'gnome-terminal -- nc -lu ' + get_ip + ' ' + get_port + ' &'
@@ -18733,7 +18756,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "inspectrum"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "inspectrum"', shell=True)
@@ -18770,7 +18793,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "opencpn"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "opencpn"', shell=True)
@@ -18780,7 +18803,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             ais_rx_command = 'python3 ' + os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-ais/apps/ais_rx.py"
             command_text = 'qterminal -e ' + expect_script_filepath + ' "' + ais_rx_command + '"'
         else:
@@ -18922,7 +18945,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         # ~ command_text = 'gnome-terminal -- /bin/bash -c "grgsm_scanner -b PCS1900 -g 70 && echo "Done" && read"'  # bash and read keep the terminal open after running
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             command_text = 'qterminal -e ' + expect_script_filepath + ' "grgsm_scanner -b PCS1900 -g 70"'  # let the user choose band, hardware, gain
         else:
             command_text = 'gnome-terminal -- ' + expect_script_filepath + ' "grgsm_scanner -b PCS1900 -g 70"'  # let the user choose band, hardware, gain
@@ -18934,7 +18957,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         kalibrate_directory = os.path.expanduser("~/Installed_by_FISSURE/kalibrate-rtl/src/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./kal -h"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./kal -h"', cwd=kalibrate_directory, shell=True)
@@ -18950,7 +18973,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         cell_search_binary_location = os.path.expanduser("~/Installed_by_FISSURE/srsRAN/build/lib/examples/cell_search")
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         lte_script_directory = os.path.dirname(os.path.realpath(__file__)) + "/Tools/LTE_Tower_Search"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "python3 tower_search_part1.py ' + cell_search_binary_location + ' [2,4]"', cwd=lte_script_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python3 tower_search_part1.py ' + cell_search_binary_location + ' [2,4]"', cwd=lte_script_directory, shell=True)
@@ -18962,7 +18985,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         lte_script_directory = os.path.dirname(os.path.realpath(__file__)) + "/Tools/LTE_Tower_Search"
         output_example = """\\\"{\'MHz\': \'2125.0\', \'EARFCN\': \'2100\', \'PHYID\': \'276\', \'PRB\': \'50\', \'ports\': \'4\', \'PSS power\': \'-28.9 dBm\'}\\\" """
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "python3 tower_search_part2.py ' + output_example + '"', cwd=lte_script_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python3 tower_search_part2.py ' + output_example + '"', cwd=lte_script_directory, shell=True)
@@ -19193,7 +19216,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         retrogram_directory = os.path.expanduser("~/Installed_by_FISSURE/retrogram-rtlsdr-master")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./retrogram-rtlsdr --rate 2e6 --freq 100e6 --step 1e5"', cwd=retrogram_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./retrogram-rtlsdr --rate 2e6 --freq 100e6 --step 1e5"', cwd=retrogram_directory, shell=True)
@@ -19204,7 +19227,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         airband_directory = os.path.expanduser("~/Installed_by_FISSURE/RTLSDR-Airband")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_airband -h"', cwd=airband_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_airband -h"', cwd=airband_directory, shell=True)
@@ -19220,7 +19243,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         spektrum_filepath = os.path.expanduser("~/Installed_by_FISSURE/spektrum/spektrum")
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + spektrum_filepath + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + spektrum_filepath + '"', shell=True)
@@ -19230,7 +19253,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_test -t"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_test -t"', shell=True)
@@ -19243,6 +19266,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         if self.operating_system == 'DragonOS FocalX':
             sdr_trunk_filepath = "/usr/src/sdr-trunk-linux-x86_64-v0.6.0-alpha5/bin/sdr-trunk"
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + sdr_trunk_filepath + '"', shell=True)
+        elif self.operating_system == 'Kali':
+            sdr_trunk_filepath = os.path.expanduser("~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk")
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + sdr_trunk_filepath + '"', shell=True)
         else:
             sdr_trunk_filepath = os.path.expanduser("~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk")
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + sdr_trunk_filepath + '"', shell=True)
@@ -19252,7 +19278,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "audacity"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "audacity"', shell=True)
@@ -19552,7 +19578,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         proxmark3_directory = os.path.expanduser("~/Installed_by_FISSURE/proxmark3/client/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo ./proxmark3 /dev/ttyACM0"', cwd=proxmark3_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./proxmark3 /dev/ttyACM0"', cwd=proxmark3_directory, shell=True)
@@ -19583,7 +19609,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         radiosonde_directory = os.path.expanduser("~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "python3 auto_rx.py"', cwd=radiosonde_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python3 auto_rx.py"', cwd=radiosonde_directory, shell=True)
@@ -19606,7 +19632,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         sdr_glut_directory = os.path.expanduser("~/Installed_by_FISSURE/SdrGlut/")
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./sdrglut.x"', shell=True, cwd=sdr_glut_directory)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./sdrglut.x"', shell=True, cwd=sdr_glut_directory)
@@ -19616,7 +19642,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open the File
         us_freq_allocations_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/january_2016_spectrum_wall_chart.pdf"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             os.system("open " + us_freq_allocations_filepath + " &")
         else:
             os.system("evince " + us_freq_allocations_filepath + " &")
@@ -19631,7 +19657,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rehex"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rehex"', shell=True)
@@ -19642,7 +19668,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         zepassd_directory = os.path.expanduser("~/Installed_by_FISSURE/zepassd/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./zepassd --tx-port A:A --rx-port A:A --tx-gain 87 --rx-gain 85 -p 20 foobar"', cwd=zepassd_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./zepassd --tx-port A:A --rx-port A:A --tx-gain 87 --rx-gain 85 -p 20 foobar"', cwd=zepassd_directory, shell=True)
@@ -19653,7 +19679,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         iridium_directory = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-iridium/"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "iridium-extractor -D 4 examples/hackrf.conf | grep A:OK > ~/output.bits"', cwd=iridium_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "iridium-extractor -D 4 examples/hackrf.conf | grep A:OK > ~/output.bits"', cwd=iridium_directory, shell=True)
@@ -19664,7 +19690,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         iridium_directory = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-iridium/"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "python2 iridium-parser.py -p ~/output.bits > ~/output.parsed"', cwd=iridium_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python2 iridium-parser.py -p ~/output.bits > ~/output.parsed"', cwd=iridium_directory, shell=True)
@@ -19675,7 +19701,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         iridium_toolkit_directory = os.path.expanduser("~/Installed_by_FISSURE/iridium-toolkit/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "export PATH=$PATH:' + iridium_toolkit_directory + ' && ./stats-voc.py ~/output.parsed"', cwd=iridium_toolkit_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "export PATH=$PATH:' + iridium_toolkit_directory + ' && ./stats-voc.py ~/output.parsed"', cwd=iridium_toolkit_directory, shell=True)
@@ -19685,7 +19711,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the IridiumLive Command
         iridiumlive_directory = os.path.expanduser("~/Installed_by_FISSURE/linux-x64/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e "./IridiumLive" &', cwd=iridiumlive_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- "./IridiumLive" &', cwd=iridiumlive_directory, shell=True)
@@ -19697,7 +19723,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         iridium_directory = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.10/gr-iridium/"
         tools_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "iridium-extractor --offline --multi-frame ' + iridium_directory + 'examples/hackrf.conf | ~/Installed_by_FISSURE/iridium-toolkit/iridium-parser.py -p /dev/stdin /dev/stdout | python2 ' + tools_filepath + 'IridiumLive/udp-for-il.py"', cwd=iridium_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "iridium-extractor --offline --multi-frame ' + iridium_directory + 'examples/hackrf.conf | ~/Installed_by_FISSURE/iridium-toolkit/iridium-parser.py -p /dev/stdin /dev/stdout | python2 ' + tools_filepath + 'IridiumLive/udp-for-il.py"', cwd=iridium_directory, shell=True)
@@ -19708,7 +19734,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         netattack2_directory = os.path.expanduser("~/Installed_by_FISSURE/netattack2/")
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo python2 netattack2.py"', shell=True, cwd=netattack2_directory)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo python2 netattack2.py"', shell=True, cwd=netattack2_directory)
@@ -19719,7 +19745,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"  # Expect is needed because Wifite closes on completion
         wifite2_directory = os.path.expanduser("~/Installed_by_FISSURE/wifite2/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo wifite"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./Wifite.py"', cwd=wifite2_directory, shell=True)
@@ -19729,7 +19755,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_433"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_433"', shell=True)
@@ -19740,7 +19766,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         routersploit_directory = os.path.expanduser("~/Installed_by_FISSURE/routersploit/")
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "python3 rsf.py"', shell=True, cwd=routersploit_directory)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python3 rsf.py"', shell=True, cwd=routersploit_directory)
@@ -19756,7 +19782,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "msfconsole"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "msfconsole"', shell=True)
@@ -19766,7 +19792,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo python3 -m monitor_rtl433"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo python3 -m monitor_rtl433"', shell=True)
@@ -19806,7 +19832,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "scan-ssid -p ' + get_interface + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "scan-ssid -p ' + get_interface + '"', shell=True)
@@ -19817,7 +19843,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         pysim_directory = os.path.expanduser("~/Installed_by_FISSURE/pysim/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./pySim-read.py -p 0"', cwd=pysim_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./pySim-read.py -p 0"', cwd=pysim_directory, shell=True)
@@ -19828,7 +19854,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         pysim_directory = os.path.expanduser("~/Installed_by_FISSURE/pysim/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./pySim-prog.py -p 0 -x 310 -y 070 -n test1 -t sysmoUSIM-SJS1 -i 901700000023688 -s 8988211000000236888 -o 1B0A4D434B184DE7BA88147E725C5AAD -k 0B7BBF089FD188EA0C64FEE245EB03E7 -a 12100237"', cwd=pysim_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./pySim-prog.py -p 0 -x 310 -y 070 -n test1 -t sysmoUSIM-SJS1 -i 901700000023688 -s 8988211000000236888 -o 1B0A4D434B184DE7BA88147E725C5AAD -k 0B7BBF089FD188EA0C64FEE245EB03E7 -a 12100237"', cwd=pysim_directory, shell=True)
@@ -19843,7 +19869,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "minimodem --rx 110"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "minimodem --rx 110"', shell=True)
@@ -19854,7 +19880,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         transmit_text = """\\\"This is a test message!\\\" """
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "printf ' + transmit_text + ' | minimodem --tx 110"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "printf ' + transmit_text + ' | minimodem --tx 110"', shell=True)
@@ -19864,7 +19890,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "wsjtx"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "wsjtx"', shell=True)
@@ -19901,7 +19927,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "vlc"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "vlc"', shell=True)
@@ -19912,7 +19938,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         open_sniffer_command = "python2 " + os.path.expanduser("~/Installed_by_FISSURE/OpenSniffer-0.1/ZigBee_GUI.py")
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + open_sniffer_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + open_sniffer_command + '"', shell=True)
@@ -19922,7 +19948,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "simplescreenrecorder"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "simplescreenrecorder"', shell=True)
@@ -19937,7 +19963,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rec test.wav trim 0 0:10"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rec test.wav trim 0 0:10"', shell=True)
@@ -19952,7 +19978,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "google-earth-pro"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "google-earth-pro"', shell=True)
@@ -19962,7 +19988,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "modes_rx -s osmocom -K aircrafts.kml"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "modes_rx -s osmocom -K aircrafts.kml"', shell=True)
@@ -19974,7 +20000,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         deauther_directory = os.path.expanduser("~/Installed_by_FISSURE/esp8266_deauther-2/esp8266_deauther/")
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         deauther_cmd = "sudo arduino " + deauther_directory + "esp8266_deauther.ino"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + deauther_cmd + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + deauther_cmd + '"', shell=True)
@@ -20006,7 +20032,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "cgps"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "cgps"', shell=True)
@@ -20016,7 +20042,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo gpscat /dev/ttyACM0 | gpsdecode"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo gpscat /dev/ttyACM0 | gpsdecode"', shell=True)
@@ -20026,7 +20052,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "gpsmon"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "gpsmon"', shell=True)
@@ -20036,7 +20062,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "xgps"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "xgps"', shell=True)
@@ -20046,7 +20072,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "xgpsspeed"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "xgpsspeed"', shell=True)
@@ -20056,7 +20082,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "viking"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "viking"', shell=True)
@@ -20066,7 +20092,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo python3 -m pygpsclient"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo python3 -m pygpsclient"', shell=True)
@@ -20154,7 +20180,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "gpredict"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "gpredict"', shell=True)
@@ -20189,7 +20215,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "foxtrotgps"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "foxtrotgps"', shell=True)
@@ -20204,7 +20230,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "rtl_fm -f 144.390M -s 22050|multimon-ng -t raw -a AFSK1200 -f alpha -A /dev/stdin"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "rtl_fm -f 144.390M -s 22050|multimon-ng -t raw -a AFSK1200 -f alpha -A /dev/stdin"', shell=True)
@@ -20214,7 +20240,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "CellSearch --freq-start 884e6 --freq-end 886e6"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "CellSearch --freq-start 884e6 --freq-end 886e6"', shell=True)
@@ -20234,7 +20260,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "btrx -f 2402M -r 4M -g 40 -a hackrf"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "btrx -f 2402M -r 4M -g 40 -a hackrf"', shell=True)
@@ -20247,7 +20273,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         ble_dump_directory = os.path.dirname(os.path.realpath(__file__)) + "/Tools/ble_dump-master/"
         proc=subprocess.Popen('mkfifo /tmp/fifo1', shell=True)
         proc=subprocess.call("wireshark -S -k -i /tmp/fifo1 &", shell=True)
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -q ' + expect_script_filepath + ' "sudo python2 ble_dump.py -s 4000000 -o /tmp/fifo1"', cwd=ble_dump_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo python2 ble_dump.py -s 4000000 -o /tmp/fifo1"', cwd=ble_dump_directory, shell=True)
@@ -20258,7 +20284,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         esp32_sniffer_directory = os.path.expanduser("~/Installed_by_FISSURE/esp32_bluetooth_classic_sniffer/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo ./firmware.py flash /dev/ttyUSB0"', cwd=esp32_sniffer_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./firmware.py flash /dev/ttyUSB0"', cwd=esp32_sniffer_directory, shell=True)
@@ -20269,7 +20295,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         esp32_sniffer_directory = os.path.expanduser("~/Installed_by_FISSURE/esp32_bluetooth_classic_sniffer/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo ./BTSnifferBREDR.py --port=/dev/ttyUSB0 --live-terminal --live-wireshark"',  cwd=esp32_sniffer_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo ./BTSnifferBREDR.py --port=/dev/ttyUSB0 --live-terminal --live-wireshark"',  cwd=esp32_sniffer_directory, shell=True)
@@ -20279,7 +20305,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "hcitool scan"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "hcitool scan"', shell=True)
@@ -20289,7 +20315,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sdptool browse 00:80:98:24:15:6D"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sdptool browse 00:80:98:24:15:6D"', shell=True)
@@ -20299,7 +20325,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "hcitool inq"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "hcitool inq"', shell=True)
@@ -20315,7 +20341,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         btclassify_directory = os.path.dirname(os.path.realpath(__file__)) + "/Tools/btclassify-master"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "python2 btclassify.py 38010c 0x5a020c 240404"', cwd=btclassify_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "python2 btclassify.py 38010c 0x5a020c 240404"', cwd=btclassify_directory, shell=True)
@@ -20325,7 +20351,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo l2ping 00:80:98:24:15:6D"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo l2ping 00:80:98:24:15:6D"', shell=True)
@@ -20335,7 +20361,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo btscanner"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo btscanner"', shell=True)
@@ -20345,7 +20371,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo hcidump -Xt"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo hcidump -Xt"', shell=True)
@@ -20748,7 +20774,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         uhd_command = """\\\"/usr/bin/uhd_image_loader\\\" --args=\\\"type=x300,addr=192.168.40.2\\\" """
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + uhd_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + uhd_command + '"', shell=True)
@@ -20832,7 +20858,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         spectrum_painter_directory = os.path.expanduser("~/Installed_by_FISSURE/spectrum_painter/")
         converter_command = "convert -pointsize 30 -fill black label:hello hello.png && convert -flip hello.png hello.png && python3 -m spectrum_painter.img2iqstream hello.png --samplerate 8000000 --format hackrf > hello.raw"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + converter_command + '"', cwd=spectrum_painter_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + converter_command + '"', cwd=spectrum_painter_directory, shell=True)
@@ -20848,7 +20874,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         nrsc_command = "nrsc5 94.9 0 -g 40"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + nrsc_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + nrsc_command + '"', shell=True)
@@ -21227,7 +21253,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open the Terminal
         get_dir = str(self.comboBox3_iq_folders.currentText())
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal', cwd=get_dir, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal', cwd=get_dir, shell=True)
@@ -21726,7 +21752,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open the File
         pdf_location = os.path.dirname(os.path.realpath(__file__)) + "/Tools/Ham Radio Exam/2022-2026 Technician Pool Released Jan17 Revised.pdf"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             os.system('open "' + pdf_location + '" &')
         else:
             os.system('evince "' + pdf_location + '" &')
@@ -21742,7 +21768,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "anki"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "anki"', shell=True)
@@ -21770,7 +21796,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open the File
         pdf_location = os.path.dirname(os.path.realpath(__file__)) + "/Tools/SDS13781-Z-Wave-Application-Command-Class-Specification.pdf"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             os.system('open "' + pdf_location + '" &')
         else:
             os.system('evince "' + pdf_location + '" &')
@@ -21860,7 +21886,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "bless"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "bless"', shell=True)
@@ -21871,7 +21897,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         trackerjacker_command = "sudo trackerjacker -i wlan1337 --map --map-file ~/wifi_map.yaml"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + trackerjacker_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + trackerjacker_command + '"', shell=True)
@@ -21975,7 +22001,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         airgeddon_directory = os.path.expanduser("~/Installed_by_FISSURE/airgeddon/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "sudo bash airgeddon.sh"', cwd=airgeddon_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "sudo bash airgeddon.sh"', cwd=airgeddon_directory, shell=True)
@@ -21987,7 +22013,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         whoishere_command = "sudo python2 whoishere.py"
         whoishere_dir = os.path.dirname(os.path.realpath(__file__)) + "/Tools/whoishere.py-master/"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + whoishere_command + '"', cwd=whoishere_dir, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + whoishere_command + '"', cwd=whoishere_dir, shell=True)
@@ -22006,7 +22032,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         password_list = os.path.dirname(os.path.realpath(__file__)) + "/Tools/Credentials/top-20-common-SSH-passwords.txt"
         hydra_command = "hydra -l root -P " + password_list + " ssh://192.168.1.1 -t 4"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + hydra_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + hydra_command + '"', shell=True)
@@ -22023,7 +22049,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         password_list = os.path.dirname(os.path.realpath(__file__)) + "/Tools/Credentials/root_userpass.txt"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             msf_command = """msfconsole -x "use auxiliary/scanner/ssh/ssh_login; set RHOSTS 192.168.1.1; set USERPASS_FILE """ + password_list + """; run" """
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + msf_command + '"', shell=True)
         else:
@@ -22044,7 +22070,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         username_list = "multiplesources-users-fabian-fingerle.de.txt"
         script_command = "python3 OpenSSH7-2_Username_Enumeration.py 192.168.1.1 -U " + username_list + " --factor 10"
         script_dir = os.path.dirname(os.path.realpath(__file__)) + "/Tools/Credentials/"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + script_command + '"', cwd=script_dir, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + script_command + '"', cwd=script_dir, shell=True)
@@ -22059,7 +22085,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open the File
         pdf_location = os.path.dirname(os.path.realpath(__file__)) + "/Tools/Ham Radio Exam/2019-2023GeneralClassQuestionPool.pdf"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             os.system('open "' + pdf_location + '" &')
         else:
             os.system('evince "' + pdf_location + '" &')
@@ -22099,7 +22125,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         nrsc5_gui_filepath = os.path.expanduser("~/Installed_by_FISSURE/nrsc5-gui/")
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "./nrsc5_gui.py"', shell=True, cwd=nrsc5_gui_filepath)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "./nrsc5_gui.py"', shell=True, cwd=nrsc5_gui_filepath)
@@ -22134,7 +22160,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Terminal
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         enscribe_command = "enscribe -oversample -lf=5 -hf=70 -color=yb -wav input.jpg output.wav"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + enscribe_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + enscribe_command + '"', shell=True)
@@ -22170,7 +22196,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             srsue_location = os.path.expanduser("~/Installed_by_FISSURE/LTE-ciphercheck/build/srsue/src")
             config_file_location = os.path.expanduser("~/Installed_by_FISSURE/LTE-ciphercheck/srsue/ciphercheck.conf")
             command_text = 'sudo ./srsue ' + config_file_location
-            if self.operating_system == 'DragonOS FocalX':
+            if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
                 proc = subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + command_text + '"', cwd=srsue_location, shell=True)
             else:
                 proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + command_text + '"', cwd=srsue_location, shell=True)
@@ -22186,7 +22212,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "osc"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "osc"', shell=True)
@@ -22250,7 +22276,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "SigDigger"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "SigDigger"', shell=True)
@@ -22264,7 +22290,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         ham2mon_cmd = 'python3 ham2mon.py -a "uhd" -n 8 -d 0 -f 146E6 -r 4E6 -g 30 -s -60 -v 0 -t 10'
         #proc = subprocess.Popen('gnome-terminal --maximize --window --working-directory="' + ham2mon_directory + \
         #    '" -- ' + ham2mon_cmd, cwd=ham2mon_directory, shell=True)
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc = subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + ham2mon_cmd + '"', cwd=ham2mon_directory, shell=True)
         else:
             proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + ham2mon_cmd + '"', cwd=ham2mon_directory, shell=True)
@@ -22288,7 +22314,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         #tpms_command = "tpms_rx --source rtlsdr --if-rate 400000 --tuned-frequency 315000000"
         tpms_command = "sudo tpms_rx --source hackrf --if-rate 400000 --tuned-frequency 315000000"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + tpms_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + tpms_command + '"', shell=True)
@@ -22298,7 +22324,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "qsstv"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "qsstv"', shell=True)
@@ -22309,7 +22335,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Terminal
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         m17_demod_cmd = 'nc -l -u -p 7355 | m17-demod -l -d | play -q -b 16 -r 8000 -c1 -t s16 -'
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc = subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + m17_demod_cmd + '"', shell=True)
         else:
             proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + m17_demod_cmd + '"', shell=True)
@@ -22320,7 +22346,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Terminal
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         multimon_ng_cmd = 'nc -l -u -p 7355 | sox -t raw -esigned-integer -b 16 -r 48000 - -esigned-integer -b 16 -r 22050 -t raw - | multimon-ng -t raw -a POCSAG512 -a POCSAG1200 -a POCSAG2400 -f alpha -'
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc = subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + multimon_ng_cmd + '"', shell=True)
         else:
             proc = subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + multimon_ng_cmd + '"', shell=True)
@@ -22330,7 +22356,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "fldigi"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "fldigi"', shell=True)
@@ -22950,7 +22976,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "pyfdax"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "pyfdax"', shell=True)
@@ -23432,7 +23458,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         dire_wolf_command = "direwolf -r 48000 udp:7355  # GQRX: Narrow FM, UDP port 7355"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + dire_wolf_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dire_wolf_command + '"', shell=True)
@@ -23442,7 +23468,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "meld"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "meld"', shell=True)
@@ -23466,7 +23492,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         sample_diagram = os.path.dirname(os.path.realpath(__file__)) + "/Tools/simple.diag"
         packetdiag_command = "packetdiag " + sample_diagram + " -o ~/simple.png  # Edit /FISSURE/Tools/simple.diag"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + packetdiag_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + packetdiag_command + '"', shell=True)
@@ -23476,7 +23502,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "hamclock"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "hamclock"', shell=True)
@@ -23489,6 +23515,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         ice9_command = "./ice9-bluetooth -l -c 2427 -C 20 -w ~/ble.pcap"
         if self.operating_system == 'DragonOS FocalX':
             ice9_directory = '/usr/src/ice9-bluetooth-sniffer/build/'
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + ice9_command + '"', cwd=ice9_directory, shell=True)
+        elif self.operating_system == 'Kali':
+            ice9_directory = os.path.expanduser("~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/")
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + ice9_command + '"', cwd=ice9_directory, shell=True)
         else:
             ice9_directory = os.path.expanduser("~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/")
@@ -23509,7 +23538,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         dump978_directory = os.path.expanduser("~/Installed_by_FISSURE/dump978/")
         dump978_command = "rtl_sdr -f 978000000 -s 2083334 -g 48 - | ./dump978 | ./uat2text"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + dump978_command + '"', cwd=dump978_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dump978_command + '"', cwd=dump978_directory, shell=True)
@@ -23544,7 +23573,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         htop_command = "htop -t"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + htop_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + htop_command + '"', shell=True)
@@ -23561,7 +23590,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         wttr_in_command = "curl wttr.in?3"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + wttr_in_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + wttr_in_command + '"', shell=True)
@@ -23573,7 +23602,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         fissure_directory = os.path.dirname(os.path.realpath(__file__))
         dashboard_py_command = "geany dashboard.py"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + dashboard_py_command + '"', cwd=fissure_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dashboard_py_command + '"', cwd=fissure_directory, shell=True)
@@ -23585,7 +23614,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         ui_directory = os.path.dirname(os.path.realpath(__file__)) + "/UI/"
         dashboard_ui_command = "designer dashboard.ui"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + dashboard_ui_command + '"', cwd=ui_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + dashboard_ui_command + '"', cwd=ui_directory, shell=True)
@@ -23597,7 +23626,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         ui_directory = os.path.dirname(os.path.realpath(__file__)) + "/UI/"
         options_ui_command = "designer options.ui"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + options_ui_command + '"', cwd=ui_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + options_ui_command + '"', cwd=ui_directory, shell=True)
@@ -23609,7 +23638,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         grip_directory = os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/Markdown"
         grip_command = "grip Lesson1_OpenBTS.md --export ../HTML/Lesson1_OpenBTS.html"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + grip_command + '"', cwd=grip_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + grip_command + '"', cwd=grip_directory, shell=True)
@@ -23620,7 +23649,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         arduino_command = "arduino"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + arduino_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + arduino_command + '"', shell=True)
@@ -23631,7 +23660,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         guidus_command = "sudo guidus"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + guidus_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + guidus_command + '"', shell=True)
@@ -23642,7 +23671,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         systemback_command = "sudo systemback"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + systemback_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + systemback_command + '"', shell=True)
@@ -23654,7 +23683,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         openwebrx_command = "sudo openwebrx"
         os.system("sensible-browser http://127.0.0.1:8073 &")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + openwebrx_command + '"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + openwebrx_command + '"', shell=True)
@@ -25271,7 +25300,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "ghex"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "ghex"', shell=True)
@@ -25652,7 +25681,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
         qFlipper_dir = os.path.expanduser("~/Installed_by_FISSURE/qFlipper/")
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             qFlipper_command = "sudo .//qFlipper*"
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + qFlipper_command + '"', cwd=qFlipper_dir, shell=True)
         else:
@@ -25856,7 +25885,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Issue the Command
         expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        if self.operating_system == 'DragonOS FocalX':
+        if self.operating_system == 'DragonOS FocalX' or self.operating_system == 'Kali':
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "gpick"', shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "gpick"', shell=True)

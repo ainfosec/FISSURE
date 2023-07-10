@@ -19,6 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Development" href="development.html" />
     <link rel="prev" title="Components" href="components.html" /> 
 </head>
 
@@ -47,8 +48,11 @@
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="components.html">Components</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Operation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#start-up-procedures">Start-Up Procedures</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#hardware-buttons">Hardware Buttons</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#start-up-procedures">Start-Up Procedures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hardware-buttons">Hardware Buttons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#networking-configuration">Networking Configuration</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="#menu-items">Menu Items</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#lessons">Lessons</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#standalone-flow-graphs">Standalone Flow Graphs</a></li>
@@ -69,6 +73,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#status-bar">Status Bar</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
 </ul>
 
         </div>
@@ -100,9 +105,30 @@
 <p>FISSURE is meant for people of all skill levels. Students or beginners can navigate through lessons and tutorials on how to interact with various wireless technologies. The User Dashboard offers friendly visual aids that demonstrate the RF device assessment process from start to finish. Beginners can also evade the hurdle that is traditionally associated with installing open-source tools - as the installer consists of a list of checkboxes for installing programs and dependencies. Meanwhile developers, educators, and researchers can use the framework for their daily tasks or to expose their cutting-edge solutions to a wider audience. Future development will draw heavily from feedback and interaction with the open-source community.</p>
 <section id="start-up-procedures">
 <h2>Start-Up Procedures<a class="headerlink" href="#start-up-procedures" title="Permalink to this heading"></a></h2>
-</section>
+<ol class="arabic simple">
+<li><p>Open a terminal and enter <cite>fissure</cite></p></li>
+<li><p>Attach hardware and assign to components using the hardware buttons (see below)</p></li>
+<li><p>Click the “Start” button to kick off automation and access remaining tabs</p></li>
+<li><p>Click the “Start” buttons for individual components such as TSI or PD to trigger operations</p></li>
+</ol>
 <section id="hardware-buttons">
-<h2>Hardware Buttons<a class="headerlink" href="#hardware-buttons" title="Permalink to this heading"></a></h2>
+<h3>Hardware Buttons<a class="headerlink" href="#hardware-buttons" title="Permalink to this heading"></a></h3>
+<p>The hardware buttons located at the top of the FISSURE Dashboard assign radio equipment to functionality that can benefit from hardware separation. This includes:</p>
+<ul class="simple">
+<li><p>TSI</p></li>
+<li><p>PD</p></li>
+<li><p>Attack</p></li>
+<li><p>IQ</p></li>
+<li><p>Archive</p></li>
+</ul>
+<p>A new dialog will open upon clicking the hardware button. The user must select the supported hardware type and can provide optional serial number, IP address, interface name, or daughterboard information which is used to auto-populate various fields while operating FISSURE. Some features such as IQ recording will remain disabled until the hardware type is assigned.</p>
+<p>The “Guess” button will attempt to populate the field information based on the hardware type selected. Clicking the button a second time will cycle through other potential values that may be available.</p>
+<p>The “Probe” button will attempt to reach out to the hardware and return information that could be useful in populating the missing fields. Some probe actions may take minutes to perform depending on the hardware type.</p>
+</section>
+<section id="networking-configuration">
+<h3>Networking Configuration<a class="headerlink" href="#networking-configuration" title="Permalink to this heading"></a></h3>
+<p>FISSURE was originally designed to run its major Python components on different computers across a network. The network connections were simplified to run every component locally on one computer. Future updates may restore this functionality if the components are matured enough to require simultaneous operation and distributions in processing.</p>
+</section>
 </section>
 <section id="menu-items">
 <h2>Menu Items<a class="headerlink" href="#menu-items" title="Permalink to this heading"></a></h2>
@@ -162,6 +188,7 @@ Online Resources</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="components.html" class="btn btn-neutral float-left" title="Components" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="development.html" class="btn btn-neutral float-right" title="Development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

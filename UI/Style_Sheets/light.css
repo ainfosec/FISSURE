@@ -30,6 +30,9 @@ QComboBox{
     selection-background-color: #308CC6;
     selection-color: #FFFFFF;
 }
+QComboBox:editable{
+    color: @color12;
+}
 QComboBox QAbstractItemView {
     background-color: @color2;
     color: @color4;

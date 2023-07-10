@@ -1623,10 +1623,11 @@ ls /usr/bin/bless
 # trackerjacker - Fix (needs newer scapy version, something else (netattack2?) resets it, some pieces don't work while running it)
 programs_ubuntu22_04.append(('trackerjacker',
 """sudo ln -s -f /usr/lib/x86_64-linux-gnu/libc.a /usr/lib/x86_64-linux-gnu/liblibc.a  # Python3.9 missing file
+sudo sed -i 's/tostring/tobytes/g' /usr/local/lib/python3.10/dist-packages/scapy/arch/linux.py
 sudo python3 -m pip install trackerjacker
 ########## Verify ##########
 sudo trackerjacker --help
-""",False,'802.11'))
+""",True,'802.11'))
 
 # airgeddon
 programs_ubuntu22_04.append(('airgeddon (222.1 MB)',
@@ -3571,10 +3572,10 @@ ls /usr/bin/bless
 # trackerjacker - Fix (needs newer scapy version, something else (netattack2?) resets it, some pieces don't work while running it)
 programs_dragonOS_focalx.append(('trackerjacker',
 """sudo ln -s -f /usr/lib/x86_64-linux-gnu/libc.a /usr/lib/x86_64-linux-gnu/liblibc.a  # Python3.9 missing file
-sudo python3 -m pip install trackerjacker
+sudo python3 -m pip install trackerjacker --no-dependencies
 ########## Verify ##########
 sudo trackerjacker --help
-""", False, '802.11'))
+""", True, '802.11'))
 
 # airgeddon
 programs_dragonOS_focalx.append(('airgeddon',
@@ -4993,7 +4994,7 @@ make
 ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
 """,True,'SDR'))
 
-# RTLSDR-Airband
+# RTLSDR-Airband - FIX
 programs_kali2023_1.append(('RTLSDR-Airband (7.2 MB)',
 """sudo apt-get install -y build-essential cmake pkg-config libmp3lame-dev libshout3-dev libconfig++-dev libfftw3-dev libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
@@ -5007,7 +5008,7 @@ make
 sudo make install
 ########## Verify ##########
 rtl_airband -h
-""",True,'SDR'))
+""",False,'SDR'))
 
 # Spektrum
 programs_kali2023_1.append(('Spektrum (241.9 MB)',
@@ -5134,9 +5135,9 @@ make -f makefileUbunta
 ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 """,True,'SDR'))
 
-# rehex - FIX
+# rehex
 programs_kali2023_1.append(('rehex',
-"""sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted
+"""sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev lua5.4 liblua5.4-dev libwxgtk3.2-dev libunistring-dev libgtk-3-dev lua-busted
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/solemnwarning/rehex.git
@@ -5146,7 +5147,7 @@ sudo cpan Template
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/rehex 
-""",False,'Data'))
+""",True,'Data'))
 
 # ZEPASSD
 programs_kali2023_1.append(('ZEPASSD (11.9 MB)',
@@ -5528,13 +5529,13 @@ programs_kali2023_1.append(('Bless (61.1 MB)',
 ls /usr/bin/bless
 """,True,'Data'))
 
-# trackerjacker - Fix (needs newer scapy version, something else (netattack2?) resets it, some pieces don't work while running it)
+# trackerjacker (no longer complains about needing newer scapy version?, something else (netattack2?) resets it, some pieces don't work while running it)
 programs_kali2023_1.append(('trackerjacker',
 """sudo ln -s -f /usr/lib/x86_64-linux-gnu/libc.a /usr/lib/x86_64-linux-gnu/liblibc.a  # Python3.9 missing file
 sudo python3 -m pip install trackerjacker
 ########## Verify ##########
 sudo trackerjacker --help
-""",False,'802.11'))
+""",True,'802.11'))
 
 # airgeddon
 programs_kali2023_1.append(('airgeddon (97.1 MB)',
@@ -5739,9 +5740,9 @@ sudo make install hamclock-1600x960
 ls /usr/local/bin/hamclock
 """,True,'Ham Radio'))
 
-# ICE9 Bluetooth Sniffer - FIX
+# ICE9 Bluetooth Sniffer
 programs_kali2023_1.append(('ICE9 Bluetooth Sniffer',
-"""sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
+"""sudo apt-get install -y libliquid-dev libbtbb-dev libuhd-dev xxd
 sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -5754,7 +5755,7 @@ make
 sudo make install
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
-""",False,'Bluetooth'))
+""",True,'Bluetooth'))
 
 # dump978 - FIX
 programs_kali2023_1.append(('dump978',

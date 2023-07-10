@@ -118,73 +118,70 @@ docs/RTD/
     Contains the HTML and PDF versions of this Read the Docs project. The Python3_maint-3.10 branch of FISSURE contains the files needed to populate and build the project.
 
 Flow Graph Library/
-    sdfdsfsd
+    Contains the flow graphs and Python scripts that are called by the main FISSURE components.
 
 Flow Graph Library/Archive Flow Graphs/
-    sdfdsfsd
+    Location of flow graphs used by the Archive tab for IQ file replay and building datasets from altered IQ files.
 
 Flow Graph Library/Fuzzing Flow Graphs/
-    sdfdsfsd
+    Location of special Attack flow graphs containing Fuzzer blocks that periodically change message contents during transmission.
 
 Flow Graph Library/Inspection Flow Graphs/
-    sdfdsfsd
+    Location of inspection flow graphs used by the IQ Data tab for analyzing signal data sourced from streaming SDRs and file captures ("File" folder). 
 
 Flow Graph Library/IQ Flow Graphs/
-    sdfdsfsd
+    Location of flow graphs used by the IQ Data tab for recording and playback of signals. Contains two types of playback flow graphs: single playback and repeating playback.
 
 Flow Graph Library/PD Flow Graphs/
-    sdfdsfsd
+    Location of flow graphs used by the Protocol Discovery tab for signal analysis and demodulation.
 
 Flow Graph Library/Single-Stage Flow Graphs/
-    sdfdsfsd
+    Location of flow graphs and Python scripts for the single-stage attacks listed in the Attack tab tree widget. Support files for the single-stage attacks are stored in the "Attack Files" folder.
 
 Flow Graph Library/Sniffer Flow Graphs/
-    sdfdsfsd
+    Location of flow graphs that tap into a running Protocol Discovery demodulation flow graph to pass data to a UDP port for Wireshark viewing.
 
 Flow Graph Library/Standalone Flow Graphs/
-    sdfdsfsd
+    Location of flow graphs that are accessed from the Standalone menu. These flow graphs are copies and can be modified without impacting FISSURE or the out-of-tree modules.
 
 Flow Graph Library/TSI Flow Graphs/   
-    sdfdsfsd
+    Location of flow graphs used by the TSI component for slow scanning detection and fixed frequency detection.
 
 Installer/
-    sdfdsfsd
+    Location of the primary FISSURE installation script and its support files. It is called by the "install" bash script after checking for prerequisities.
 
 IQ Recordings/
-    sdfdsfsd
+    Default location for storing IQ files captured with the IQ Data tab recorder. Contains example files for testing purposes.
 
 Logs/
-    sdfdsfsd
+    Default location for event logs saved by FISSURE.
 
-Session Logs/
-    sdfdsfsd
+Logs/Session Logs/
+    Default location for session logs saved by the user.
 
 Multi-Stage Attack Files/
-    sdfdsfsd
+    Default location for storing multi-stage attack playlists from the Attack Multi-Stage tab.
 
 Protocol Discovery Data/
-    sdfdsfsd
+    Default location for storing data during the process of protocol discovery.
 
 Tools/
-    sdfdsfsd
+    Additional scripts, patches, configuration files, reference material, or standalone programs used to support FISSURE and the installer. These files are generally not modified during the install or while operating FISSURE. Installed third-party tools are located elsewhere in the "~/Installed_by_FISSURE" directory.
 
 UI/
-    sdfdsfsd
+    Default location for PyQt .ui files.
 
 UI/Style_Sheets/
-    sdfdsfsd
+    Default location for FISSURE style sheets which control UI appearance and color schemes.
 
 YAML/
-    sdfdsfsd
+    Location of the FISSURE library, logging configuration, and component messaging definitions and input sanitization.
 
 YAML/Library Backups/
-    sdfdsfsd
+    Location for storing backups and temporary copies of the FISSURE library before performing library operations.
 
 YAML/User Configs/
-    sdfdsfsd
-
-
-
+    Location of default settings for FISSURE including hardware configurations, component networking, and default options.
 
 Dashboard
 =========
