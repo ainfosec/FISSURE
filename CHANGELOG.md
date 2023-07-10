@@ -1,6 +1,27 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-07-09
+
+Installer, style, and Kali fixes.
+ 
+### Added
+
+- Check for Kali upon starting Dashboard
+- Swapping gnome-terminal commands for qterminal in Kali
+- Disabling Kali menu items that fail to install
+
+### Changed
+
+- Disabled radiosonde auto_rx for DragonOS FocalX install
+
+### Fixed
+
+- trackerjacker install
+- ice9-bluetooth-sniffer, rehex install for Kali
+- ComboBox font color of selected item set properly for Python3 branches
+- Dynamic checkboxes set to follow stylesheets
+
 ## 2023-07-03
 
 Miscellaneous style updates.
