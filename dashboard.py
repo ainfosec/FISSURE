@@ -3769,7 +3769,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 new_combobox1.setProperty("row", n)
 
                 # CheckBoxes
-                new_checkbox = QtWidgets.QCheckBox("",self)
+                new_checkbox = QtWidgets.QCheckBox("",self,objectName='checkBox_')
                 new_checkbox.setStyleSheet("margin-left:17%")  # doesn't center, could create a layout and put the radio button in the layout
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,0,new_checkbox)
                 #new_checkbox.stateChanged.connect(self._slotAttackFuzzingDataSelectCheckboxClicked)
@@ -6552,7 +6552,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 new_combobox1.setProperty("row", n)
 
                 # CheckBoxes
-                new_checkbox = QtWidgets.QCheckBox("",self)
+                new_checkbox = QtWidgets.QCheckBox("",self,objectName='checkBox_')
                 new_checkbox.setStyleSheet("margin-left:17%")  # doesn't center, could create a layout and put the radio button in the layout
                 self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,0,new_checkbox)
                 #new_checkbox.stateChanged.connect(self._slotAttackFuzzingDataSelectCheckboxClicked)
@@ -6637,7 +6637,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 new_combobox1.setCurrentIndex(1)
 
             # CheckBoxes
-            new_checkbox = QtWidgets.QCheckBox("",self)
+            new_checkbox = QtWidgets.QCheckBox("",self,objectName='checkBox_')
             new_checkbox.setStyleSheet("margin-left:17%")  # doesn't center, could create a layout and put the radio button in the layout
             self.tableWidget_attack_fuzzing_data_field.setCellWidget(n,0,new_checkbox)
             #new_checkbox.stateChanged.connect(self._slotAttackFuzzingDataSelectCheckboxClicked)
