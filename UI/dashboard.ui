@@ -8217,6 +8217,49 @@ p, li { white-space: pre-wrap; }
                 <string>Differential</string>
                </property>
               </widget>
+              <widget class="QLabel" name="label2_182">
+               <property name="geometry">
+                <rect>
+                 <x>405</x>
+                 <y>295</y>
+                 <width>40</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Bits:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_pd_bit_viewer_bits">
+               <property name="geometry">
+                <rect>
+                 <x>450</x>
+                 <y>295</y>
+                 <width>45</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>0</string>
+               </property>
+              </widget>
              </widget>
              <widget class="QFrame" name="frame1_43">
               <property name="geometry">
@@ -8339,6 +8382,49 @@ p, li { white-space: pre-wrap; }
                </property>
                <property name="text">
                 <string>Fill Table</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_195">
+               <property name="geometry">
+                <rect>
+                 <x>235</x>
+                 <y>295</y>
+                 <width>60</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>Nibbles:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_pd_bit_viewer_nibbles">
+               <property name="geometry">
+                <rect>
+                 <x>300</x>
+                 <y>295</y>
+                 <width>45</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                 <weight>50</weight>
+                 <bold>false</bold>
+                </font>
+               </property>
+               <property name="text">
+                <string>0</string>
                </property>
               </widget>
              </widget>
@@ -28459,6 +28545,10 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionVesselFinder"/>
      <addaction name="actionBoatnerd"/>
      <addaction name="actionCruiseMapper"/>
+     <addaction name="actionAIVDM_AIVDO_Decoding"/>
+     <addaction name="actionAIS_VDM_VDO_Decoder"/>
+     <addaction name="actionAIS_Online_Decoder"/>
+     <addaction name="actionPyais_GitHub"/>
     </widget>
     <widget class="QMenu" name="menuTrunked_Radio">
      <property name="title">
@@ -30271,6 +30361,26 @@ p, li { white-space: pre-wrap; }
   <action name="actionGHex">
    <property name="text">
     <string>GHex</string>
+   </property>
+  </action>
+  <action name="actionAIVDM_AIVDO_Decoding">
+   <property name="text">
+    <string>AIVDM/AIVDO Decoding</string>
+   </property>
+  </action>
+  <action name="actionAIS_VDM_VDO_Decoder">
+   <property name="text">
+    <string>AIS VDM/VDO Decoder</string>
+   </property>
+  </action>
+  <action name="actionAIS_Online_Decoder">
+   <property name="text">
+    <string>AIS Online Decoder</string>
+   </property>
+  </action>
+  <action name="actionPyais_GitHub">
+   <property name="text">
+    <string>pyais GitHub</string>
    </property>
   </action>
  </widget>

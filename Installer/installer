@@ -1905,6 +1905,13 @@ programs_ubuntu18_04.append(('TSI Flow Graphs',
 find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
 
+# pyais
+programs_ubuntu18_04.append(('pyais',
+"""sudo python3 -m pip install pyais
+########## Verify ##########
+ls /usr/local/lib/python3*/dist-packages/pyais
+""",True,'AIS'))
+
 
 
 ########################################################################
@@ -3796,6 +3803,13 @@ programs_ubuntu18_04_5.append(('TSI Flow Graphs',
 """cd """ + fissure_directory + """/Flow\ Graph\ Library/TSI\ Flow\ Graphs/
 find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
+
+# pyais
+programs_ubuntu18_04_5.append(('pyais',
+"""sudo python3 -m pip install pyais
+########## Verify ##########
+ls /usr/local/lib/python3*/dist-packages/pyais
+""",True,'AIS'))
 
 
 
@@ -5689,6 +5703,13 @@ programs_ubuntu18_04_6.append(('TSI Flow Graphs',
 """cd """ + fissure_directory + """/Flow\ Graph\ Library/TSI\ Flow\ Graphs/
 find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
+
+# pyais
+programs_ubuntu18_04_6.append(('pyais',
+"""sudo python3 -m pip install pyais
+########## Verify ##########
+ls /usr/local/lib/python3*/dist-packages/pyais
+""",True,'AIS'))
 
 
 
