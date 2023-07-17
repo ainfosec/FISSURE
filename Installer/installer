@@ -1962,6 +1962,13 @@ programs_ubuntu22_04.append(('TSI Flow Graphs',
 find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
 
+# pyais
+programs_ubuntu22_04.append(('pyais',
+"""sudo python3 -m pip install pyais
+########## Verify ##########
+ls /usr/local/lib/python3*/dist-packages/pyais
+""",True,'AIS'))
+
 
 
 ########################################################################
@@ -3917,6 +3924,13 @@ programs_dragonOS_focalx.append(('TSI Flow Graphs',
 find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
 
+# pyais
+programs_dragonOS_focalx.append(('pyais',
+"""sudo python3 -m pip install pyais
+########## Verify ##########
+ls /usr/local/lib/python3*/dist-packages/pyais
+""",True,'AIS'))
+
 
 
 ########################################################################
@@ -5871,6 +5885,13 @@ programs_kali2023_1.append(('TSI Flow Graphs',
 find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
 
+# pyais
+programs_kali2023_1.append(('pyais',
+"""sudo python3 -m pip install pyais
+########## Verify ##########
+ls /usr/local/lib/python3*/dist-packages/pyais
+""",True,'AIS'))
+
 
 
 ########################################################################
@@ -7813,6 +7834,13 @@ programs_backbox_linux_8.append(('TSI Flow Graphs',
 """cd """ + fissure_directory + """/Flow\ Graph\ Library/TSI\ Flow\ Graphs/
 find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
+
+# pyais
+programs_backbox_linux_8.append(('pyais',
+"""sudo python3 -m pip install pyais
+########## Verify ##########
+ls /usr/local/lib/python3*/dist-packages/pyais
+""",True,'AIS'))
 
 
 
