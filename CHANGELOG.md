@@ -1,6 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-07-17
+
+Automatic identification system (AIS) tools
+ 
+### Added
+
+- AIVDM/AIVDO Decoding, AIS VDM/VDO Decoder, AIS Online Decoder, pyais GitHub menu items
+- Bit and Nibble counters in Data Viewer
+- gla-rad/ais (gr-aistx) to Python3_maint-3.8 branch
+- AiS_TX.grc standalone flow graph for Python_maint-3.8 branch
+- ais_rx standalone flow graphs for Python3 branches
+
+### Changed
+
+- Replaced bistromath/gr-ais with bmagistro/gr-ais for Python3_maint-3.8 branch
+- Removed ais_rx from Tools menu (open the Standalone flow graph instead) for Python3 branches
+- README language for installing FISSURE
+
+### Fixed
+
+- gr-ais for Python3_maint-3.8 branch
+
 ## 2023-07-09
 
 Installer, style, and Kali fixes.

@@ -70,9 +70,11 @@ Python2_maint-3.7            |  Python3_maint-3.8            |  Python3_maint-3.
 :-------------------------:|:-------------------------:|:-------------------------:
 ![install1b](/docs/Icons/README/install1b.png)  |  ![install1a](/docs/Icons/README/install1a.png)  |  ![install1c](/docs/Icons/README/install1c.png)
 
-It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. The items listed under the "Minimum Install" category are what is required to launch the FISSURE Dashboard without errors. Select all the recommended checkboxes (Default button) to avoid additonal errors while operating the various tools within FISSURE. There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. 
+It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. The items listed under the "Minimum Install" category are what is required to launch the FISSURE Dashboard without errors. Software programs outside the minimum install are optional and can be installed as needed. Select all the recommended checkboxes (Default button) to avoid errors while operating the various tools within FISSURE. Items unchecked by default may not install properly or could possibly conflict with existing programs (please suggest fixes!). There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. This information is primarily for installing third-party tools, refer to installation instructions provided by the maintainer for details.
 
 If an item contains a "Verify" section at the end, the installer will run the command that follows and highlight the checkbox item green or red depending on if any errors are produced by the command. Checked items without a "Verify" section will remain black following the installation.
+
+To avoid installation and permission errors, download FISSURE to a user owned directory such as Home. Run the install script and the fissure command without using sudo. Many of the third-party tools will be downloaded to and installed from the `~/Installed_by_FISSURE` directory.
 
 <p align="center">
 <img src="/docs/Icons/README/install2.png" width="692" height="479">
@@ -216,7 +218,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 - [ ] Support the addition of both closed source and user-developed plugins
 - [ ] Improve the look for different resolutions and window sizes, dark mode
 - [x] Group third-party programs in the installer by type
-- [ ] Resolve DragonOS conflicts
+- [x] Resolve DragonOS conflicts
 
 ### Phase II
 

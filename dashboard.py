@@ -1434,6 +1434,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.textEdit_iq_start.textChanged.connect(self._slotIQ_StartChanged)
         self.textEdit_iq_end.textChanged.connect(self._slotIQ_EndChanged)
         self.plainTextEdit_pd_bit_viewer_hex.textChanged.connect(self._slotPD_BitViewerHexChanged)
+        self.plainTextEdit_pd_bit_viewer_bits.textChanged.connect(self._slotPD_BitViewerBitsChanged)
         self.textEdit_archive_extension.textChanged.connect(self._slotArchiveDownloadRefreshClicked)
 
         # Tree Widgets
@@ -1508,7 +1509,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.action4G_IMSI_Catcher.triggered.connect(self._slotMenu4G_IMSI_CatcherClicked)
         self.actionInspectrum.triggered.connect(self._slotMenuInspectrumClicked)
         self.actionOpenCPN.triggered.connect(self._slotMenuOpenCPN_Clicked)
-        self.actionAis_rx.triggered.connect(self._slotMenuAis_rxClicked)
         self.actionProtocol_Spreadsheet.triggered.connect(self._slotMenuProtocolSpreadsheetClicked)
         self.actionGrgsm_scanner.triggered.connect(self._slotMenuGrgsm_scannerClicked)
         self.actionKalibrate.triggered.connect(self._slotMenuKalibrateClicked)
@@ -1743,6 +1743,12 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionRandom.triggered.connect(lambda: self._slotMenuCustomModeClicked(random_clicked=True))
         self.actionGHex.triggered.connect(self._slotMenuGHexClicked)
         self.actionqFlipper.triggered.connect(self._slotMenu_qFlipperClicked)
+        self.actionAIVDM_AIVDO_Decoding.triggered.connect(self._slotMenuAIVDM_AIVDO_DecodingClicked)
+        self.actionAIS_VDM_VDO_Decoder.triggered.connect(self._slotMenuAIS_VDM_VDO_DecoderClicked)
+        self.actionAIS_Online_Decoder.triggered.connect(self._slotMenuAIS_OnlineDecoderClicked)
+        self.actionpyais_GitHub.triggered.connect(self._slotMenu_pyaisGitHubClicked)
+        self.actionAiS_TX.triggered.connect(self._slotMenuStandaloneAiS_TX_Clicked)
+        self.actionais_rx_demod.triggered.connect(self._slotMenuStandalone_ais_rx_demodClicked)
 
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -18737,17 +18743,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "opencpn"', shell=True)
 
-    def _slotMenuAis_rxClicked(self):
-        """ Launches ais_rx.
-        """
-        # Issue the Command
-        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
-        ais_rx_command = os.path.dirname(os.path.realpath(__file__)) + "/Custom_Blocks/maint-3.8/gr-ais-master/apps/ais_rx"
-        if self.operating_system == 'DragonOS Focal':
-            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + ais_rx_command + '"', shell=True)
-        else:
-            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + ais_rx_command + '"', shell=True)
-
     def _slotMenuProtocolSpreadsheetClicked(self):
         """ Opens the Protocols_and_More.xlsx spreadsheet.
         """
@@ -20674,6 +20669,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Display the ASCII
         get_hex_str = str(self.plainTextEdit_pd_bit_viewer_hex.toPlainText()).replace(" ","")
+
+        # Update Counter
+        self.label2_pd_bit_viewer_nibbles.setText(str(len(get_hex_str.replace('\t','').replace('\n',''))))
 
         # Split by Line
         get_hex = get_hex_str.splitlines()
@@ -25790,6 +25788,55 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open the Folder
         folder_filepath = str(self.listView_archive.model().rootPath())
         os.system('nautilus "' + folder_filepath + '" &')
+        
+    def _slotMenuAIVDM_AIVDO_DecodingClicked(self):
+        """ Opens AIVDM AIVDO Decoding in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://gpsd.gitlab.io/gpsd/AIVDM.html &")
+        
+    def _slotMenuAIS_VDM_VDO_DecoderClicked(self):
+        """ Opens AIS VDM VDO Decoder in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://www.maritec.co.za/aisvdmvdodecoding &")
+        
+    def _slotMenuAIS_OnlineDecoderClicked(self):
+        """ Opens AIS Online Decoder in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://www.aggsoft.com/ais-decoder.htm &")
+        
+    def _slotMenu_pyaisGitHubClicked(self):
+        """ Opens pyais GitHub in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://github.com/M0r13n/pyais &")
+        
+    def _slotPD_BitViewerBitsChanged(self):
+        """ Updates the bit counter in the Data Viewer.
+        """
+        # Obtain the Count
+        get_bit_count = len(str(self.plainTextEdit_pd_bit_viewer_bits.toPlainText()).replace(' ','').replace('\t','').replace('\n',''))
+        
+        # Update the Bits
+        self.label2_pd_bit_viewer_bits.setText(str(get_bit_count))
+        
+    def _slotMenuStandaloneAiS_TX_Clicked(self):
+        """ Opens the standalone flow graph in GNU Radio Companion.
+        """
+        # Open the Flow Graph in GNU Radio Companion
+        filepath = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/Standalone\ Flow\ Graphs/AiS_TX.grc"
+        osCommandString = "gnuradio-companion " + filepath
+        os.system(osCommandString+ " &")
+        
+    def _slotMenuStandalone_ais_rx_demodClicked(self):
+        """ Opens the standalone flow graph in GNU Radio Companion.
+        """
+        # Open the Flow Graph in GNU Radio Companion
+        filepath = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/Standalone\ Flow\ Graphs/ais_rx_demod.grc"
+        osCommandString = "gnuradio-companion " + filepath
+        os.system(osCommandString+ " &")
 
 
 

@@ -419,6 +419,25 @@ fi
 ls /usr/local/lib/python*/*/ais
 """,True,'Out-of-Tree Modules'))
 
+# gr-aistx
+programs_ubuntu20_04.append(('gr-aistx',
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.8/ais/gr-aistx/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/ais/gr-aistx/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
+########## Verify ##########
+ls /usr/local/lib/python*/*/AISTX
+""",True,'Out-of-Tree Modules'))
+
 # gr-bluetooth-maint-3.8
 programs_ubuntu20_04.append(('gr-bluetooth-maint-3.8 (13.3 MB)',
 """mkdir -p ~/Installed_by_FISSURE
@@ -2022,6 +2041,12 @@ programs_ubuntu20_04.append(('TSI Flow Graphs',
 find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
 
+# pyais
+programs_ubuntu20_04.append(('pyais',
+"""sudo python3 -m pip install pyais
+########## Verify ##########
+ls /usr/local/lib/python3*/dist-packages/pyais
+""",True,'AIS'))
 
 
 ########################################################################
@@ -2421,6 +2446,25 @@ else
 fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ais
+""",True,'Out-of-Tree Modules'))
+
+# gr-aistx
+programs_ubuntu20_04_4.append(('gr-aistx',
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.8/ais/gr-aistx/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/ais/gr-aistx/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
+########## Verify ##########
+ls /usr/local/lib/python*/*/AISTX
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth-maint-3.8
@@ -4026,6 +4070,12 @@ programs_ubuntu20_04_4.append(('TSI Flow Graphs',
 find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
 
+# pyais
+programs_ubuntu20_04_4.append(('pyais',
+"""sudo python3 -m pip install pyais
+########## Verify ##########
+ls /usr/local/lib/python3*/dist-packages/pyais
+""",True,'AIS'))
 
 
 ########################################################################
@@ -4289,6 +4339,25 @@ else
 fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ais
+""",True,'Out-of-Tree Modules'))
+
+# gr-aistx
+programs_dragonOS_focal.append(('gr-aistx',
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.8/ais/gr-aistx/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/ais/gr-aistx/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
+########## Verify ##########
+ls /usr/local/lib/python*/*/AISTX
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth-maint-3.8
@@ -5106,6 +5175,13 @@ programs_dragonOS_focal.append(('TSI Flow Graphs',
 """cd """ + fissure_directory + """/Flow\ Graph\ Library/TSI\ Flow\ Graphs/
 find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
+
+# pyais
+programs_dragonOS_focal.append(('pyais',
+"""sudo python3 -m pip install pyais
+########## Verify ##########
+ls /usr/local/lib/python3*/dist-packages/pyais
+""",True,'AIS'))
 
 
 ######## Not Tested Queue ######## 
@@ -6425,6 +6501,25 @@ else
 fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/ais
+""",True,'Out-of-Tree Modules'))
+
+# gr-aistx
+programs_parrot_os_5_2.append(('gr-aistx',
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.8/ais/gr-aistx/)" ]; 
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.8/ais/gr-aistx/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
+########## Verify ##########
+ls /usr/local/lib/python*/*/AISTX
 """,True,'Out-of-Tree Modules'))
 
 # gr-bluetooth-maint-3.8
@@ -8027,6 +8122,13 @@ programs_parrot_os_5_2.append(('TSI Flow Graphs',
 """cd """ + fissure_directory + """/Flow\ Graph\ Library/TSI\ Flow\ Graphs/
 find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
+
+# pyais
+programs_parrot_os_5_2.append(('pyais',
+"""sudo python3 -m pip install pyais
+########## Verify ##########
+ls /usr/local/lib/python3*/dist-packages/pyais
+""",True,'AIS'))
 
 
 

@@ -2,10 +2,6 @@
 	path = Custom_Blocks/maint-3.8/gr-adsb
 	url = https://github.com/mhostetter/gr-adsb
 	branch = master
-[submodule "Custom_Blocks/maint-3.8/gr-ais"]
-	path = Custom_Blocks/maint-3.8/gr-ais
-	url = https://github.com/bistromath/gr-ais
-	branch = master
 [submodule "Custom_Blocks/maint-3.8/gr-clapper_plus"]
 	path = Custom_Blocks/maint-3.8/gr-clapper_plus
 	url = https://github.com/cpoore1/gr-clapper_plus
@@ -74,3 +70,11 @@
 	path = Custom_Blocks/maint-3.8/gr-mixalot
 	url = https://github.com/unsynchronized/gr-mixalot.git
 	branch = maint-3.8
+[submodule "Custom_Blocks/maint-3.8/gr-ais"]
+	path = Custom_Blocks/maint-3.8/gr-ais
+	url = https://github.com/bmagistro/gr-ais
+	branch = gnuradio-3.8-port
+[submodule "Custom_Blocks/maint-3.8/ais"]
+	path = Custom_Blocks/maint-3.8/ais
+	url = https://github.com/gla-rad/ais
+	branch = gnuradio-3.8-port
