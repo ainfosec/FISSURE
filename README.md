@@ -152,54 +152,52 @@ The following is a list of "supported" hardware with varying levels of integrati
 
 ## Documentation
 
-**Read the Docs coming soon!**
-
 <p align='center'>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/Icons/README/documentation_user_manual.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/Icons/README/documentation_user_manual.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_user_manual.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_user_manual.png" width="13.2%">
   <img alt="User Manual" src="">
 </picture>
 </a>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/installation.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/Icons/README/documentation_installation.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/Icons/README/documentation_installation.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_installation.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_installation.png" width="13.2%">
   <img alt="Installation" src="">
 </picture>
 </a>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/hardware.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/Icons/README/documentation_hardware.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/Icons/README/documentation_hardware.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_hardware.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_hardware.png" width="13.2%">
   <img alt="Hardware" src="">
 </picture>
 </a>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/components.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/Icons/README/documentation_components.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/Icons/README/documentation_components.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_components.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_components.png" width="13.2%">
   <img alt="Components" src="">
 </picture>
 </a>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/operation.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/Icons/README/documentation_operation.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/Icons/README/documentation_operation.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_operation.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_operation.png" width="13.2%">
   <img alt="Operation" src="">
 </picture>
 </a>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/development.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/Icons/README/documentation_development.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/Icons/README/documentation_development.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_development.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_development.png" width="13.2%">
   <img alt="Development" src="">
 </picture>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/about.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/Icons/README/documentation_credits.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/Icons/README/documentation_credits.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_credits.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_credits.png" width="13.2%">
   <img alt="Credits" src="">
 </picture>
 </a>
