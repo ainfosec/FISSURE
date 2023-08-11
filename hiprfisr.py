@@ -582,11 +582,11 @@ class Hiprfisr():
         # Send Message to FGE
         self.fge_hiprfisr_server.sendmsg('Commands', Identifier = 'HIPRFISR', MessageName = 'Stop PD Flow Graph', Parameters = '')
 
-    def attackFlowGraphStart(self, flow_graph_filepath, variable_names, variable_values, file_type):
+    def attackFlowGraphStart(self, flow_graph_filepath, variable_names, variable_values, file_type, run_with_sudo):
         """ Command for loading an attack.
         """
         # Send Message to FGE
-        self.fge_hiprfisr_server.sendmsg('Commands', Identifier = 'HIPRFISR', MessageName = 'Run Attack Flow Graph', Parameters = [flow_graph_filepath, variable_names, variable_values, file_type])
+        self.fge_hiprfisr_server.sendmsg('Commands', Identifier = 'HIPRFISR', MessageName = 'Run Attack Flow Graph', Parameters = [flow_graph_filepath, variable_names, variable_values, file_type, run_with_sudo])
 
     def iqFlowGraphStart(self, flow_graph_filepath, variable_names, variable_values, file_type):
         """ Command for loading an attack.
