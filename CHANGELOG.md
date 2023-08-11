@@ -1,6 +1,41 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-08-11
+
+Copying Help menu items to Read the Docs, HD Radio fuzzing attack, Run with sudo option
+ 
+### Added
+
+- Read the Docs HTML files for offline viewing
+- Renamed Help menu items to match Read the Docs headers
+- Additional Help menu items to point to Read the Docs sections
+- Link to towers.stratux.me in the menu
+- Link to GNU Radio Hardware wiki page in the menu
+- Link to APRS Track Direct in the menu 
+- Documentation icons in the README
+- Changed Usage text in README
+- HD Radio fuzzing attack
+- List of strings extracted from Naughty Strings to "Attack Files" folder
+- "Run with sudo" checkbox in Single-Stage Attacks tab
+- Multi-stage attacks check for "run\_with\_sudo" variable
+
+### Changed
+
+- Removed Tab Help GUI and menu item, replacing with Read the Docs
+- Moved existing Help menu items to their corresponding Read the Docs headers
+- Opening Help menu items to Read the Docs and no longer opening the markdown/html files
+- Removed Documentation links from README
+- Removed duplicate credits links in README
+- Checking for run_with_sudo variable in attacks to set default value for "Run with sudo" checkbox
+- Modifying the default values for certain filepath variables in attacks to reflect the location of FISSURE directory
+
+### Fixed
+
+- Python attack scripts no longer adding extra set of quotations to filepath variables
+- Any attack variable with "filepath" in its name will be treated specially in flow graphs and Python scripts to ensure spaces are carried over correctly
+- Attacks have the option to be run with sudo, sudo was an issue when calling flow graphs from a secondary Python script
+
 ## 2023-07-17
 
 Automatic identification system (AIS) tools

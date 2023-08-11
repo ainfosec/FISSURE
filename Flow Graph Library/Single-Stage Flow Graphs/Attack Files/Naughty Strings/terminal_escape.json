@@ -1,0 +1,5 @@
+[
+    "Roses are \u001b[0;31mred\u001b[0m, violets are \u001b[0;34mblue. Hope you enjoy terminal hue", 
+    "But now...\u001b[20Cfor my greatest trick...\u001b[8m", 
+    "The quic\b\b\b\b\b\bk brown fo\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007\u0007x... [Beeeep]"
+]

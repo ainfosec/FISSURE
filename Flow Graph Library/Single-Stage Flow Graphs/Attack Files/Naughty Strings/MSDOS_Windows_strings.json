@@ -1,0 +1,16 @@
+[
+    "CON", 
+    "PRN", 
+    "AUX", 
+    "CLOCK$", 
+    "NUL", 
+    "A:", 
+    "ZZ:", 
+    "COM1", 
+    "LPT1", 
+    "LPT2", 
+    "LPT3", 
+    "COM2", 
+    "COM3", 
+    "COM4"
+]

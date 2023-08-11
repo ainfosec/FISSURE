@@ -12087,6 +12087,27 @@ p, li { white-space: pre-wrap; }
                </property>
               </widget>
              </widget>
+             <widget class="QCheckBox" name="checkBox_attack_single_stage_sudo">
+              <property name="enabled">
+               <bool>false</bool>
+              </property>
+              <property name="geometry">
+               <rect>
+                <x>345</x>
+                <y>778</y>
+                <width>120</width>
+                <height>22</height>
+               </rect>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>10</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string>Run with sudo</string>
+              </property>
+             </widget>
              <zorder>frame1_29</zorder>
              <zorder>tableWidget1_attack_flow_graph_current_values</zorder>
              <zorder>label2_attack_flow_graph_status</zorder>
@@ -12098,6 +12119,7 @@ p, li { white-space: pre-wrap; }
              <zorder>label1_206</zorder>
              <zorder>frame1_28</zorder>
              <zorder>label1_selected_attack</zorder>
+             <zorder>checkBox_attack_single_stage_sudo</zorder>
             </widget>
             <widget class="QWidget" name="tab_attack_multi_stage">
              <attribute name="title">
@@ -28123,16 +28145,6 @@ p, li { white-space: pre-wrap; }
     <property name="title">
      <string>&amp;Help</string>
     </property>
-    <widget class="QMenu" name="menuEditing_FISSURE">
-     <property name="title">
-      <string>Editing FISSURE</string>
-     </property>
-     <addaction name="actionModifying_Dashboard"/>
-     <addaction name="actionAddingCustomOptions"/>
-     <addaction name="actionHelpUploadingFlowGraphs"/>
-     <addaction name="actionHelpUploadingPythonScripts"/>
-     <addaction name="actionInspection_Flow_Graphs"/>
-    </widget>
     <widget class="QMenu" name="menuProtocol_Signal_References">
      <property name="title">
       <string>Protocol/Signal References</string>
@@ -28146,17 +28158,6 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionWavelength_Calculator"/>
      <addaction name="actionElectromagnetic_Radiation_Spectrum"/>
     </widget>
-    <widget class="QMenu" name="menuSDR_Hardware_References">
-     <property name="title">
-      <string>SDR/Hardware References</string>
-     </property>
-     <addaction name="actionHelpNewUSRPX310"/>
-     <addaction name="actionHelpUpdatingHackRF"/>
-     <addaction name="actionHelpLimeSDR"/>
-     <addaction name="actionRoundup_of_SDRs"/>
-     <addaction name="actionList_of_SDRs"/>
-     <addaction name="actionAntenna_Comparison"/>
-    </widget>
     <widget class="QMenu" name="menuGitHub">
      <property name="title">
       <string>GitHub</string>
@@ -28165,15 +28166,116 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionGitHub_cpoore1"/>
      <addaction name="actionGitHub_ainfosec"/>
     </widget>
-    <addaction name="actionHelp"/>
+    <widget class="QMenu" name="menuInstallation">
+     <property name="title">
+      <string>Installation</string>
+     </property>
+     <addaction name="actionRequirements"/>
+     <addaction name="actionCloning"/>
+     <addaction name="actionInstaller"/>
+     <addaction name="actionUninstalling"/>
+     <addaction name="actionUsage"/>
+     <addaction name="actionKnown_Conflicts"/>
+     <addaction name="actionThird_Party_Software_2"/>
+     <addaction name="actionThird_Party_Software_Versions"/>
+    </widget>
+    <widget class="QMenu" name="menuDevelopment_2">
+     <property name="title">
+      <string>Development</string>
+     </property>
+     <addaction name="actionAddingCustomOptions"/>
+     <addaction name="actionHelpBuiltWith"/>
+     <addaction name="actionHelpUploadingFlowGraphs"/>
+     <addaction name="actionHelpUploadingPythonScripts"/>
+     <addaction name="actionInspection_Flow_Graphs"/>
+     <addaction name="actionModifying_Dashboard"/>
+    </widget>
+    <widget class="QMenu" name="menuHardware">
+     <property name="title">
+      <string>Hardware</string>
+     </property>
+     <widget class="QMenu" name="menuNotes">
+      <property name="title">
+       <string>Notes</string>
+      </property>
+      <addaction name="actionHelpLimeSDR"/>
+      <addaction name="actionHelpNewUSRPX310"/>
+      <addaction name="actionHelpUpdatingHackRF"/>
+     </widget>
+     <addaction name="actionSupported"/>
+     <addaction name="actionConfiguring"/>
+     <addaction name="menuNotes"/>
+     <addaction name="separator"/>
+     <addaction name="actionRoundup_of_SDRs"/>
+     <addaction name="actionList_of_SDRs"/>
+     <addaction name="actionAntenna_Comparison"/>
+     <addaction name="actionGNU_Radio_Hardware"/>
+    </widget>
+    <widget class="QMenu" name="menuComponents">
+     <property name="title">
+      <string>Components</string>
+     </property>
+     <widget class="QMenu" name="menuOverview">
+      <property name="title">
+       <string>Overview</string>
+      </property>
+      <addaction name="actionCommunications"/>
+      <addaction name="actionLibrary"/>
+      <addaction name="actionFile_Structure"/>
+      <addaction name="actionSupported_Protocols"/>
+     </widget>
+     <addaction name="menuOverview"/>
+     <addaction name="actionDashboard"/>
+     <addaction name="actionTarget_Signal_Identification"/>
+     <addaction name="actionProtocol_Discovery"/>
+     <addaction name="actionFlow_Graph_Script_Executor"/>
+     <addaction name="actionHIPRFISR"/>
+    </widget>
+    <widget class="QMenu" name="menuOperation">
+     <property name="title">
+      <string>Operation</string>
+     </property>
+     <widget class="QMenu" name="menuStart_Up_Procedures">
+      <property name="title">
+       <string>Start-Up Procedures</string>
+      </property>
+      <addaction name="actionHardware_Buttons"/>
+      <addaction name="actionNetworking_Configuration"/>
+     </widget>
+     <widget class="QMenu" name="menuMenu_Items">
+      <property name="title">
+       <string>Menu Items</string>
+      </property>
+      <addaction name="actionLessons"/>
+      <addaction name="actionStandalone_Flow_Graphs"/>
+      <addaction name="actionTools"/>
+      <addaction name="actionOptions"/>
+      <addaction name="actionView"/>
+     </widget>
+     <addaction name="menuStart_Up_Procedures"/>
+     <addaction name="menuMenu_Items"/>
+     <addaction name="actionAutomation_Tab"/>
+     <addaction name="actionTSI_Tab"/>
+     <addaction name="actionPD_Tab"/>
+     <addaction name="actionAttack_Tab"/>
+     <addaction name="actionIQ_Data_Tab"/>
+     <addaction name="actionArchive_Tab"/>
+     <addaction name="actionPacket_Crafter_Tab"/>
+     <addaction name="actionLibrary_Tab"/>
+     <addaction name="actionLog_Tab"/>
+     <addaction name="actionStatus_Bar"/>
+    </widget>
+    <addaction name="actionUser_Manual"/>
     <addaction name="separator"/>
-    <addaction name="menuEditing_FISSURE"/>
+    <addaction name="menuInstallation"/>
+    <addaction name="menuHardware"/>
+    <addaction name="menuComponents"/>
+    <addaction name="menuOperation"/>
+    <addaction name="menuDevelopment_2"/>
+    <addaction name="actionCredits"/>
+    <addaction name="separator"/>
     <addaction name="menuProtocol_Signal_References"/>
-    <addaction name="menuSDR_Hardware_References"/>
     <addaction name="separator"/>
-    <addaction name="actionHelpSupportedProtocols"/>
-    <addaction name="actionHelpSoftwareAndConflicts"/>
-    <addaction name="actionHelpBuiltWith"/>
     <addaction name="menuGitHub"/>
     <addaction name="actionDiscord"/>
     <addaction name="actionYouTube"/>
@@ -28502,6 +28604,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionGr_air_modes"/>
      <addaction name="menuTrackers"/>
      <addaction name="actiondump978"/>
+     <addaction name="actionADS_B_Towers"/>
     </widget>
     <widget class="QMenu" name="menuLTE">
      <property name="title">
@@ -28541,6 +28644,7 @@ p, li { white-space: pre-wrap; }
       <addaction name="actionGoogle_Maps_APRS"/>
       <addaction name="actionAPRS_multimon_ng"/>
       <addaction name="actionDire_Wolf"/>
+      <addaction name="actionAPRS_Track_Direct"/>
      </widget>
      <addaction name="menuAPRS"/>
      <addaction name="menuExam"/>
@@ -30455,6 +30559,211 @@ p, li { white-space: pre-wrap; }
   <action name="actionais_rx_demod">
    <property name="text">
     <string>ais_rx_demod</string>
+   </property>
+  </action>
+  <action name="actionUser_Manual">
+   <property name="text">
+    <string>User Manual</string>
+   </property>
+  </action>
+  <action name="actionADS_B_Towers">
+   <property name="text">
+    <string>ADS-B Towers</string>
+   </property>
+  </action>
+  <action name="actionRequirements">
+   <property name="text">
+    <string>Requirements</string>
+   </property>
+  </action>
+  <action name="actionCloning">
+   <property name="text">
+    <string>Cloning</string>
+   </property>
+  </action>
+  <action name="actionInstaller">
+   <property name="text">
+    <string>Installer</string>
+   </property>
+  </action>
+  <action name="actionUninstalling">
+   <property name="text">
+    <string>Uninstalling</string>
+   </property>
+  </action>
+  <action name="actionUsage">
+   <property name="text">
+    <string>Usage</string>
+   </property>
+  </action>
+  <action name="actionKnown_Conflicts">
+   <property name="text">
+    <string>Known Conflicts</string>
+   </property>
+  </action>
+  <action name="actionThird_Party_Software_2">
+   <property name="text">
+    <string>Third-Party Software</string>
+   </property>
+  </action>
+  <action name="actionThird_Party_Software_Versions">
+   <property name="text">
+    <string>Third-Party Software Versions</string>
+   </property>
+  </action>
+  <action name="actionSupported">
+   <property name="text">
+    <string>Supported</string>
+   </property>
+  </action>
+  <action name="actionConfiguring">
+   <property name="text">
+    <string>Configuring</string>
+   </property>
+  </action>
+  <action name="actionGNU_Radio_Hardware">
+   <property name="text">
+    <string>GNU Radio Hardware</string>
+   </property>
+  </action>
+  <action name="actionDashboard">
+   <property name="text">
+    <string>Dashboard</string>
+   </property>
+  </action>
+  <action name="actionTarget_Signal_Identification">
+   <property name="text">
+    <string>Target Signal Identification</string>
+   </property>
+  </action>
+  <action name="actionProtocol_Discovery">
+   <property name="text">
+    <string>Protocol Discovery</string>
+   </property>
+  </action>
+  <action name="actionFlow_Graph_Script_Executor">
+   <property name="text">
+    <string>Flow Graph/Script Executor</string>
+   </property>
+  </action>
+  <action name="actionHIPRFISR">
+   <property name="text">
+    <string>HIPRFISR</string>
+   </property>
+  </action>
+  <action name="actionCommunications">
+   <property name="text">
+    <string>Communications</string>
+   </property>
+  </action>
+  <action name="actionLibrary">
+   <property name="text">
+    <string>Library</string>
+   </property>
+  </action>
+  <action name="actionFile_Structure">
+   <property name="text">
+    <string>File Structure</string>
+   </property>
+  </action>
+  <action name="actionSupported_Protocols">
+   <property name="text">
+    <string>Supported Protocols</string>
+   </property>
+  </action>
+  <action name="actionHardware_Buttons">
+   <property name="text">
+    <string>Hardware Buttons</string>
+   </property>
+  </action>
+  <action name="actionNetworking_Configuration">
+   <property name="text">
+    <string>Networking Configuration</string>
+   </property>
+  </action>
+  <action name="actionLessons">
+   <property name="text">
+    <string>Lessons</string>
+   </property>
+  </action>
+  <action name="actionStandalone_Flow_Graphs">
+   <property name="text">
+    <string>Standalone Flow Graphs</string>
+   </property>
+  </action>
+  <action name="actionTools">
+   <property name="text">
+    <string>Tools</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="text">
+    <string>Options</string>
+   </property>
+  </action>
+  <action name="actionView">
+   <property name="text">
+    <string>View</string>
+   </property>
+  </action>
+  <action name="actionAutomation_Tab">
+   <property name="text">
+    <string>Automation Tab</string>
+   </property>
+  </action>
+  <action name="actionTSI_Tab">
+   <property name="text">
+    <string>TSI Tab</string>
+   </property>
+  </action>
+  <action name="actionPD_Tab">
+   <property name="text">
+    <string>PD Tab</string>
+   </property>
+  </action>
+  <action name="actionAttack_Tab">
+   <property name="text">
+    <string>Attack Tab</string>
+   </property>
+  </action>
+  <action name="actionIQ_Data_Tab">
+   <property name="text">
+    <string>IQ Data Tab</string>
+   </property>
+  </action>
+  <action name="actionArchive_Tab">
+   <property name="text">
+    <string>Archive Tab</string>
+   </property>
+  </action>
+  <action name="actionPacket_Crafter_Tab">
+   <property name="text">
+    <string>Packet Crafter Tab</string>
+   </property>
+  </action>
+  <action name="actionLibrary_Tab">
+   <property name="text">
+    <string>Library Tab</string>
+   </property>
+  </action>
+  <action name="actionLog_Tab">
+   <property name="text">
+    <string>Log Tab</string>
+   </property>
+  </action>
+  <action name="actionStatus_Bar">
+   <property name="text">
+    <string>Status Bar</string>
+   </property>
+  </action>
+  <action name="actionAPRS_Track_Direct">
+   <property name="text">
+    <string>APRS Track Direct</string>
+   </property>
+  </action>
+  <action name="actionCredits">
+   <property name="text">
+    <string>Credits</string>
    </property>
   </action>
  </widget>

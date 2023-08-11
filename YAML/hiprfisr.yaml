@@ -177,6 +177,7 @@ attackFlowGraphStart:
              variable_names
              variable_values
              file_type
+             run_with_sudo
     
 iqFlowGraphStart:
     Type: callback

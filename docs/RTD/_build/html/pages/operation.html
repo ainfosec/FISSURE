@@ -1,0 +1,612 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Operation &mdash; FISSURE  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/sphinx_highlight.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Development" href="development.html" />
+    <link rel="prev" title="Components" href="components.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            FISSURE
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="components.html">Components</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Operation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#start-up-procedures">Start-Up Procedures</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hardware-buttons">Hardware Buttons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#networking-configuration">Networking Configuration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#menu-items">Menu Items</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#lessons">Lessons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#standalone-flow-graphs">Standalone Flow Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#tools">Tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#options">Options</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#view">View</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#automation-tab">Automation Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#manual">Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#discovery-disabled">Discovery (Disabled)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#target-disabled">Target (Disabled)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#custom-disabled">Custom (Disabled)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#tsi-tab">TSI Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#detector-sweep">Detector/Sweep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#conditioner-future">Conditioner (Future)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#feature-extractor-future">Feature Extractor (Future)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#classifier-future">Classifier (Future)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#pd-tab">PD Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#status">Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#demodulation">Demodulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#bit-slicing">Bit Slicing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#data-viewer">Data Viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dissectors">Dissectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sniffer">Sniffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crc-calculator">CRC Calculator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#attack-tab">Attack Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#single-stage">Single-Stage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#multi-stage">Multi-Stage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzing-fields">Fuzzing (Fields)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#fuzzing-variables">Fuzzing (Variables)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#history">History</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#iq-data-tab">IQ Data Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#record">Record</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#playback">Playback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#inspection">Inspection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#crop">Crop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#convert">Convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#append">Append</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transfer">Transfer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#timeslot">Timeslot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#overlap">Overlap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#resample">Resample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ofdm">OFDM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#normalize">Normalize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#viewer">Viewer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#archive-tab">Archive Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#download">Download</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#replay">Replay</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#packet-crafter-tab">Packet Crafter Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#packet-editor">Packet Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#scapy">Scapy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#library-tab">Library Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#browse">Browse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gallery">Gallery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#search">Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#remove">Remove</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#add">Add</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#log-tab">Log Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#system-log">System Log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#session-notes">Session Notes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#status-bar">Status Bar</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">FISSURE</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Operation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/pages/operation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="operation">
+<h1>Operation<a class="headerlink" href="#operation" title="Permalink to this heading"></a></h1>
+<p>FISSURE is meant for people of all skill levels. Students or beginners can navigate through lessons and tutorials on how to interact with various wireless technologies. The User Dashboard offers friendly visual aids that demonstrate the RF device assessment process from start to finish. Beginners can also evade the hurdle that is traditionally associated with installing open-source tools - as the installer consists of a list of checkboxes for installing programs and dependencies. Meanwhile developers, educators, and researchers can use the framework for their daily tasks or to expose their cutting-edge solutions to a wider audience. Future development will draw heavily from feedback and interaction with the open-source community.</p>
+<section id="start-up-procedures">
+<h2>Start-Up Procedures<a class="headerlink" href="#start-up-procedures" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Open a terminal and enter <cite>fissure</cite></p></li>
+<li><p>Attach hardware and assign to components using the hardware buttons (see below)</p></li>
+<li><p>Click the “Start” button to kick off automation and access remaining tabs</p></li>
+<li><p>Click the “Start” buttons for individual components such as TSI or PD to trigger operations</p></li>
+</ol>
+<section id="hardware-buttons">
+<h3>Hardware Buttons<a class="headerlink" href="#hardware-buttons" title="Permalink to this heading"></a></h3>
+<p>The hardware buttons located at the top of the FISSURE Dashboard assign radio equipment to functionality that can benefit from hardware separation. This includes:</p>
+<ul class="simple">
+<li><p>TSI</p></li>
+<li><p>PD</p></li>
+<li><p>Attack</p></li>
+<li><p>IQ</p></li>
+<li><p>Archive</p></li>
+</ul>
+<p>A new dialog will open upon clicking the hardware button. The user must select the supported hardware type and can provide optional serial number, IP address, interface name, or daughterboard information which is used to auto-populate various fields while operating FISSURE. Some features such as IQ recording will remain disabled until the hardware type is assigned.</p>
+<p>The “Guess” button will attempt to populate the field information based on the hardware type selected. Clicking the button a second time will cycle through other potential values that may be available.</p>
+<p>The “Probe” button will attempt to reach out to the hardware and return information that could be useful in populating the missing fields. Some probe actions may take minutes to perform depending on the hardware type.</p>
+</section>
+<section id="networking-configuration">
+<h3>Networking Configuration<a class="headerlink" href="#networking-configuration" title="Permalink to this heading"></a></h3>
+<p>FISSURE was originally designed to run its major Python components on different computers across a network. The network connections were simplified to run every component locally on one computer. Future updates may restore this functionality if the components are matured enough to require simultaneous operation and distributions in processing.</p>
+</section>
+</section>
+<section id="menu-items">
+<h2>Menu Items<a class="headerlink" href="#menu-items" title="Permalink to this heading"></a></h2>
+<section id="lessons">
+<h3>Lessons<a class="headerlink" href="#lessons" title="Permalink to this heading"></a></h3>
+<p>Lesson 1
+Lesson 2
+Online Resources</p>
+</section>
+<section id="standalone-flow-graphs">
+<h3>Standalone Flow Graphs<a class="headerlink" href="#standalone-flow-graphs" title="Permalink to this heading"></a></h3>
+</section>
+<section id="tools">
+<h3>Tools<a class="headerlink" href="#tools" title="Permalink to this heading"></a></h3>
+</section>
+<section id="options">
+<h3>Options<a class="headerlink" href="#options" title="Permalink to this heading"></a></h3>
+</section>
+<section id="view">
+<h3>View<a class="headerlink" href="#view" title="Permalink to this heading"></a></h3>
+</section>
+</section>
+<section id="automation-tab">
+<h2>Automation Tab<a class="headerlink" href="#automation-tab" title="Permalink to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Select Automation Mode</p></li>
+</ol>
+<section id="manual">
+<h3>Manual<a class="headerlink" href="#manual" title="Permalink to this heading"></a></h3>
+<p>User confirms all phases and can edit parameters</p>
+</section>
+<section id="discovery-disabled">
+<h3>Discovery (Disabled)<a class="headerlink" href="#discovery-disabled" title="Permalink to this heading"></a></h3>
+<p>Mostly automated, system chooses which signals to target and process</p>
+</section>
+<section id="target-disabled">
+<h3>Target (Disabled)<a class="headerlink" href="#target-disabled" title="Permalink to this heading"></a></h3>
+<p>User-defined specifications, only pursue targets fitting certain criteria</p>
+<ol class="arabic simple">
+<li><p>Select target protocol</p></li>
+<li><p>Configure SOI auto-select criteria (optional)</p></li>
+<li><p>Lock search band (optional)</p></li>
+<li><p>Check RF hardware connections</p></li>
+<li><p>Click Start</p></li>
+</ol>
+</section>
+<section id="custom-disabled">
+<h3>Custom (Disabled)<a class="headerlink" href="#custom-disabled" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>User creates any combination of settings</p></li>
+</ol>
+</section>
+</section>
+<section id="tsi-tab">
+<h2>TSI Tab<a class="headerlink" href="#tsi-tab" title="Permalink to this heading"></a></h2>
+<section id="detector-sweep">
+<h3>Detector/Sweep<a class="headerlink" href="#detector-sweep" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Click Start</p></li>
+<li><p>Add search bands to table</p></li>
+<li><p>Adjust Advanced Settings</p></li>
+<li><p>Click Update TSI Configuration</p></li>
+<li><p>Blacklist frequency ranges</p></li>
+<li><p>View detected signals</p></li>
+<li><p>Search signals by frequency in library</p></li>
+</ol>
+</section>
+<section id="conditioner-future">
+<h3>Conditioner (Future)<a class="headerlink" href="#conditioner-future" title="Permalink to this heading"></a></h3>
+<p>Tune, filter, separate, record, isolate</p>
+</section>
+<section id="feature-extractor-future">
+<h3>Feature Extractor (Future)<a class="headerlink" href="#feature-extractor-future" title="Permalink to this heading"></a></h3>
+<p>Select AI/ML technique, acquire feature set</p>
+</section>
+<section id="classifier-future">
+<h3>Classifier (Future)<a class="headerlink" href="#classifier-future" title="Permalink to this heading"></a></h3>
+<p>Choose AI/ML models, classify protocols/emitters, compare results</p>
+</section>
+</section>
+<section id="pd-tab">
+<h2>PD Tab<a class="headerlink" href="#pd-tab" title="Permalink to this heading"></a></h2>
+<section id="status">
+<h3>Status<a class="headerlink" href="#status" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Start Protocol Discovery (PD)</p></li>
+</ol>
+</section>
+<section id="demodulation">
+<h3>Demodulation<a class="headerlink" href="#demodulation" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Search library for flow graphs</p></li>
+<li><p>Start demodulation flow graph</p></li>
+</ol>
+</section>
+<section id="bit-slicing">
+<h3>Bit Slicing<a class="headerlink" href="#bit-slicing" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Search for preambles</p></li>
+<li><p>Slice buffer by preamble</p></li>
+<li><p>Determine field delineations</p></li>
+</ol>
+</section>
+<section id="data-viewer">
+<h3>Data Viewer<a class="headerlink" href="#data-viewer" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Enter binary or hex data, perform binary operations</p></li>
+<li><p>Fill Protocol Matching table, apply against protocols in library</p></li>
+<li><p>Manually send hex data to PD buffer for analysis</p></li>
+</ol>
+</section>
+<section id="dissectors">
+<h3>Dissectors<a class="headerlink" href="#dissectors" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Create Lua sissectors for new packet types</p></li>
+<li><p>Follow lesson on Lua dissectors</p></li>
+<li><p>Click Update Wireshark to copy all FISSURE dissectors to Wireshark folder</p></li>
+</ol>
+</section>
+<section id="sniffer">
+<h3>Sniffer<a class="headerlink" href="#sniffer" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Start demodulation flow graph with sniffer sink</p></li>
+<li><p>Launch sniffer flow graph created for packet type</p></li>
+<li><p>Manually send data to sniffer port</p></li>
+</ol>
+</section>
+<section id="crc-calculator">
+<h3>CRC Calculator<a class="headerlink" href="#crc-calculator" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Enter hex, select configuration, calculate CRC</p></li>
+<li><p>Enter two messages with known CRCs, find polynomial</p></li>
+</ol>
+</section>
+</section>
+<section id="attack-tab">
+<h2>Attack Tab<a class="headerlink" href="#attack-tab" title="Permalink to this heading"></a></h2>
+<section id="single-stage">
+<h3>Single-Stage<a class="headerlink" href="#single-stage" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Select protocol, modulation type, hardware combination</p></li>
+<li><p>Double-click attack in tree widget</p></li>
+<li><p>Configure attack variables</p></li>
+<li><p>Start Attack</p></li>
+<li><p>Apply changes while running flow graphs</p></li>
+</ol>
+</section>
+<section id="multi-stage">
+<h3>Multi-Stage<a class="headerlink" href="#multi-stage" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Double-click attack in tree widget or click Add button</p></li>
+<li><p>Adjust durations and reorder attacks</p></li>
+<li><p>Click Generate</p></li>
+<li><p>Adjust variables, Save, Load, select Repeat</p></li>
+<li><p>Click Start</p></li>
+</ol>
+</section>
+<section id="fuzzing-fields">
+<h3>Fuzzing (Fields)<a class="headerlink" href="#fuzzing-fields" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Choose fuzzing Fields attack (if available)</p></li>
+<li><p>Choose protocol subcategory</p></li>
+<li><p>Check fields, select type, enter limits</p></li>
+<li><p>Start Attack</p></li>
+</ol>
+</section>
+<section id="fuzzing-variables">
+<h3>Fuzzing (Variables)<a class="headerlink" href="#fuzzing-variables" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Choose fuzzing Variables attack</p></li>
+<li><p>Load flow graph</p></li>
+<li><p>Select variable</p></li>
+<li><p>Start Attack</p></li>
+</ol>
+</section>
+<section id="history">
+<h3>History<a class="headerlink" href="#history" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>View attack history, delete rows</p></li>
+</ol>
+</section>
+</section>
+<section id="iq-data-tab">
+<h2>IQ Data Tab<a class="headerlink" href="#iq-data-tab" title="Permalink to this heading"></a></h2>
+<section id="record">
+<h3>Record<a class="headerlink" href="#record" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Assign device to IQ hardware button</p></li>
+<li><p>Adjust settings in reference to applicable GNU Radio sinks</p></li>
+<li><p>Record signals to IQ file(s)</p></li>
+</ol>
+</section>
+<section id="playback">
+<h3>Playback<a class="headerlink" href="#playback" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Configure settings or copy Record settings</p></li>
+<li><p>Click Play</p></li>
+</ol>
+</section>
+<section id="inspection">
+<h3>Inspection<a class="headerlink" href="#inspection" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Double-click flow graph or click Load, Start</p></li>
+<li><p>Adjust variables in GUI</p></li>
+</ol>
+</section>
+<section id="crop">
+<h3>Crop<a class="headerlink" href="#crop" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Double-click IQ file in Viewer</p></li>
+<li><p>Enter name for cropped IQ file</p></li>
+<li><p>Adjust Start/End samples in Viewer</p></li>
+<li><p>Click Crop</p></li>
+</ol>
+</section>
+<section id="convert">
+<h3>Convert<a class="headerlink" href="#convert" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Choose input file, name output file</p></li>
+<li><p>Select file types</p></li>
+<li><p>Click Convert</p></li>
+</ol>
+</section>
+<section id="append">
+<h3>Append<a class="headerlink" href="#append" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Choose/enter file 1, file 2, output file</p></li>
+<li><p>Check Null to append samples to the front or end</p></li>
+<li><p>Click Append</p></li>
+</ol>
+</section>
+<section id="transfer">
+<h3>Transfer<a class="headerlink" href="#transfer" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Copy folders or files to new locations</p></li>
+</ol>
+</section>
+<section id="timeslot">
+<h3>Timeslot<a class="headerlink" href="#timeslot" title="Permalink to this heading"></a></h3>
+<p>Makes copies of a message at regular intervals</p>
+<ol class="arabic simple">
+<li><p>Choose input file with zeros before and after signal</p></li>
+<li><p>Adjust sample rate, period, and number of copies</p></li>
+<li><p>Click Pad Data</p></li>
+</ol>
+</section>
+<section id="overlap">
+<h3>Overlap<a class="headerlink" href="#overlap" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Plot data, store data, shift data, add data together</p></li>
+</ol>
+</section>
+<section id="resample">
+<h3>Resample<a class="headerlink" href="#resample" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Select input file, specify output file, choose rates, resample</p></li>
+</ol>
+</section>
+<section id="ofdm">
+<h3>OFDM<a class="headerlink" href="#ofdm" title="Permalink to this heading"></a></h3>
+<p>Experimental</p>
+</section>
+<section id="normalize">
+<h3>Normalize<a class="headerlink" href="#normalize" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Select input file, speciy output file, choose min/max, normalize</p></li>
+</ol>
+</section>
+<section id="viewer">
+<h3>Viewer<a class="headerlink" href="#viewer" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Choose data folder</p></li>
+<li><p>Double-click/Load File to read data</p></li>
+<li><p>Plot All, plot range, click End to detect last sample</p></li>
+<li><p>Use toolbar to zoom, pan, save</p></li>
+<li><p>Click Cursor, select two points on plot, Get Range</p></li>
+<li><p>Use functions and analysis buttons</p></li>
+<li><p>Click gear icon to adjust options</p></li>
+</ol>
+</section>
+</section>
+<section id="archive-tab">
+<h2>Archive Tab<a class="headerlink" href="#archive-tab" title="Permalink to this heading"></a></h2>
+<section id="download">
+<h3>Download<a class="headerlink" href="#download" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Select row in Online Archive table</p></li>
+<li><p>Click Download</p></li>
+<li><p>Plot or delete</p></li>
+</ol>
+</section>
+<section id="replay">
+<h3>Replay<a class="headerlink" href="#replay" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Double-click downloaded file or press Add button</p></li>
+<li><p>Build and configure playlist</p></li>
+<li><p>Check Repeat, click Start</p></li>
+</ol>
+</section>
+</section>
+<section id="packet-crafter-tab">
+<h2>Packet Crafter Tab<a class="headerlink" href="#packet-crafter-tab" title="Permalink to this heading"></a></h2>
+<section id="packet-editor">
+<h3>Packet Editor<a class="headerlink" href="#packet-editor" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Select protocol and packet type</p></li>
+<li><p>Edit field values</p></li>
+<li><p>Calculate CRC (when applicable)</p></li>
+<li><p>Assemble message</p></li>
+<li><p>Construct packet sequence</p></li>
+<li><p>Save sequence to file</p></li>
+</ol>
+</section>
+<section id="scapy">
+<h3>Scapy<a class="headerlink" href="#scapy" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Put wireless interface in monitor mode</p></li>
+<li><p>Select 802.11x and packet type</p></li>
+<li><p>Edit field values</p></li>
+<li><p>Click Load Data</p></li>
+<li><p>Click Refresh, enter interval, choose interface</p></li>
+<li><p>Click Start</p></li>
+</ol>
+</section>
+</section>
+<section id="library-tab">
+<h2>Library Tab<a class="headerlink" href="#library-tab" title="Permalink to this heading"></a></h2>
+<section id="browse">
+<h3>Browse<a class="headerlink" href="#browse" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Choose FISSURE YAML file</p></li>
+<li><p>Look at the contents</p></li>
+</ol>
+</section>
+<section id="gallery">
+<h3>Gallery<a class="headerlink" href="#gallery" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Select protocol</p></li>
+<li><p>Click through pictures</p></li>
+</ol>
+</section>
+<section id="search">
+<h3>Search<a class="headerlink" href="#search" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Enter information for signals of interest (SOIs)</p></li>
+<li><p>Enter data values for messages in library</p></li>
+<li><p>Choose the checkboxes to use during search</p></li>
+<li><p>Search Library</p></li>
+</ol>
+</section>
+<section id="remove">
+<h3>Remove<a class="headerlink" href="#remove" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Select Protocol</p></li>
+<li><p>Choose types to remove from library</p></li>
+<li><p>Click associated Remove button</p></li>
+</ol>
+</section>
+<section id="add">
+<h3>Add<a class="headerlink" href="#add" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Create new protocol</p></li>
+<li><p>Add modulation type, packet type, signal of interest, statistics, demodulation flow graph, and attacks to existing protocol</p></li>
+</ol>
+</section>
+</section>
+<section id="log-tab">
+<h2>Log Tab<a class="headerlink" href="#log-tab" title="Permalink to this heading"></a></h2>
+<section id="system-log">
+<h3>System Log<a class="headerlink" href="#system-log" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Filter messages to view from log, click Refresh</p></li>
+</ol>
+</section>
+<section id="session-notes">
+<h3>Session Notes<a class="headerlink" href="#session-notes" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Make notes and save attack history, system log, and session notes</p></li>
+</ol>
+</section>
+</section>
+<section id="status-bar">
+<h2>Status Bar<a class="headerlink" href="#status-bar" title="Permalink to this heading"></a></h2>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="components.html" class="btn btn-neutral float-left" title="Components" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="development.html" class="btn btn-neutral float-right" title="Development" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Chris Poore.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

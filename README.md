@@ -94,7 +94,7 @@ Open a terminal and enter:
 fissure
 ```
 
-Refer to the FISSURE Help menu for more details on usage. 
+The intended method for launching FISSURE is through the terminal without sudo. The terminal provides important status and feedback for some operations. Refer to the FISSURE documentation for more details. 
 
 ## Details
 
@@ -152,14 +152,56 @@ The following is a list of "supported" hardware with varying levels of integrati
 
 ## Documentation
 
-**Read the Docs coming soon!**
-
-More documentation will be released in the future on how to work within the framework to integrate new components and implement message handling. Refer to these Help menu items to modify the Dashboard using PyQt and for how to add your own attacks, inspection/analysis flow graphs, and customized options.
-- [Modifying Dashboard](/docs/Help/Markdown/ModifyingDashboard.md)
-- [Adding Custom Options](/docs/Help/Markdown/AddingCustomOptions.md)
-- [Attack Flow Graphs](/docs/Help/Markdown/UploadingFlowGraphs.md)
-- [Attack Python Scripts](/docs/Help/Markdown/UploadingPythonScripts.md)
-- [Inspection Flow Graphs](/docs/Help/Markdown/InspectionFlowGraphs.md)
+<p align='center'>
+<a target="_blank" href="https://fissure.readthedocs.io/en/latest/">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_user_manual.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_user_manual.png" width="13.2%">
+  <img alt="User Manual" src="">
+</picture>
+</a>
+<a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/installation.html">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_installation.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_installation.png" width="13.2%">
+  <img alt="Installation" src="">
+</picture>
+</a>
+<a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/hardware.html">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_hardware.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_hardware.png" width="13.2%">
+  <img alt="Hardware" src="">
+</picture>
+</a>
+<a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/components.html">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_components.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_components.png" width="13.2%">
+  <img alt="Components" src="">
+</picture>
+</a>
+<a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/operation.html">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_operation.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_operation.png" width="13.2%">
+  <img alt="Operation" src="">
+</picture>
+</a>
+<a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/development.html">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_development.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_development.png" width="13.2%">
+  <img alt="Development" src="">
+</picture>
+<a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/about.html">
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_credits.png" width="13.2%">
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_credits.png" width="13.2%">
+  <img alt="Credits" src="">
+</picture>
+</a>
+</p>
 
 ## Videos
 
@@ -305,12 +347,6 @@ Follow on Twitter: [@FissureRF](https://twitter.com/fissurerf), [@AinfoSec](http
 Chris Poore - Assured Information Security, Inc. - poorec@ainfosec.com
 
 Business Development - Assured Information Security, Inc. - bd@ainfosec.com
-
-## Credits
-
-We acknowledge and are grateful to these developers: 
-
-[Credits](/CREDITS.md)
 
 ## Acknowledgments
 

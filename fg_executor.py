@@ -275,7 +275,7 @@ class FGE_Executor():
             self.fge_pub_server.sendmsg('Status', Identifier = 'FGE', MessageName = 'Multi-Stage Attack Finished', Parameters = "")
             #~ #raise e
 
-    def runPythonScriptThread(self, stop_event, file_type, flow_graph_filename, variable_names, variable_values):
+    def runPythonScriptThread(self, stop_event, file_type, flow_graph_filename, variable_names, variable_values, run_with_sudo):
         """ Runs the attack flow graph in the new thread.
         """
         # Stop Any Running Attack Flow Graphs
@@ -297,12 +297,17 @@ class FGE_Executor():
 
             # Python3
             if file_type == "Python3 Script":
-                osCommandString = "sudo python3 " + '"' + flow_graph_filename + '" ' + arguments
+                if run_with_sudo == True:
+                    osCommandString = "sudo python3 " + '"' + flow_graph_filename + '" ' + arguments
+                else:
+                    osCommandString = "python3 " + '"' + flow_graph_filename + '" ' + arguments
 
             # Python2
             else:
-                osCommandString = "sudo python2 " + '"' + flow_graph_filename + '" ' + arguments
-                print(osCommandString)
+                if run_with_sudo == True:
+                    osCommandString = "sudo python2 " + '"' + flow_graph_filename + '" ' + arguments
+                else:
+                    osCommandString = "python2 " + '"' + flow_graph_filename + '" ' + arguments
 
             # In FISSURE Dashboard
             #proc = subprocess.Popen(osCommandString + " &", shell=True)#, stderr=subprocess.PIPE)
@@ -404,7 +409,7 @@ class FGE_Executor():
 
 
     ######################  Attack Flow Graphs  ########################
-    def attackFlowGraphStart(self, flow_graph_filename, variable_names, variable_values, file_type):
+    def attackFlowGraphStart(self, flow_graph_filename, variable_names, variable_values, file_type, run_with_sudo):
         """ Runs the flow graph with the specified file path.
         """
         # Make a new Thread
@@ -427,7 +432,7 @@ class FGE_Executor():
             #print("after")
             #print(variable_values)
             #print("function")
-            c_thread = threading.Thread(target=self.runPythonScriptThread, args=(stop_event,file_type,flow_graph_filename,variable_names,variable_values))  # backticks execute commands
+            c_thread = threading.Thread(target=self.runPythonScriptThread, args=(stop_event,file_type,flow_graph_filename,variable_names,variable_values,run_with_sudo))  # backticks execute commands
 
         c_thread.daemon = True
         c_thread.start()
@@ -854,7 +859,15 @@ class FGE_Executor():
                     c_thread = threading.Thread(target=self.runFlowGraphThread, args=(stop_event,flow_graph_filename,variable_names[n],variable_values[n]))
                 # Python2, Python3
                 else:
-                    c_thread = threading.Thread(target=self.runPythonScriptThread, args=(stop_event,file_types[n],filenames[n],variable_names[n],variable_values[n]))
+                    run_with_sudo = True
+                    for m in range(0,len(variable_names[n])):
+                        if variable_names[n][m] == "run_with_sudo":
+                            if str(variable_values[n][m]).lower() == "true":
+                                run_with_sudo = True
+                            else:
+                                run_with_sudo = False
+                            break
+                    c_thread = threading.Thread(target=self.runPythonScriptThread, args=(stop_event,file_types[n],filenames[n],variable_names[n],variable_values[n],run_with_sudo))
 
                 c_thread.daemon = True
                 c_thread.start()
