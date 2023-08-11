@@ -46,14 +46,20 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Hardware</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#concepts">Concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#supported">Supported</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#configuring">Configuring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#notes">Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#limesdr-notes">LimeSDR Notes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#new-usrp-x310">New USRP X310</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#updating-hackrf-firmware">Updating HackRF Firmware</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="components.html">Components</a></li>
 <li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
 </ul>
 
         </div>
@@ -82,11 +88,17 @@
              
   <section id="hardware">
 <h1>Hardware<a class="headerlink" href="#hardware" title="Permalink to this heading"></a></h1>
-<p>FISSURE is a tool suite and RF framework consisting of dedicated Python components networked together for the purpose of RF device assessment and vulnerability analysis. FISSURE stemmed from the need to quickly identify and react to unknown devices or devices operating in unidentified modes in a congested RF environment. Over the years it has grown into an in-house laboratory tool used by AIS for nearly all things RF. In addition to its analysis and protocol cataloguing capabilities, it doubles as a repository for tried-and-true code developed by AIS along with popular third-party open-source software tools frequently used by the community. FISSURE can also be used to reliably stage Linux computers and bypass some of the more complicated software installs. FISSURE is continuously growing and while it has an impressive list of capabilities it has yet to reach its full potential. The framework embodies a robust approach and provides easy-to-use mechanisms for adding content. It is expected to always be in a state of maturation to continuously meet the needs of advancing technology.</p>
-<section id="concepts">
-<h2>Concepts<a class="headerlink" href="#concepts" title="Permalink to this heading"></a></h2>
-<p>FISSURE is intended to support COTS devices and support integration for non-COTS devices.</p>
-</section>
+<p>FISSURE was designed to be flexible in its support for integration of commercial-off-the-shelf (COTS) and non-COTS devices. The receive and transmit capabilities within FISSURE are subject to the limitations inherent to the connected hardware. Any device that can be networked and configured through scripting could be supported within FISSURE. More hardware devices and capabilities will be added over time.</p>
+<p>Hardware is utilized by FISSURE through the following ways:</p>
+<ul class="simple">
+<li><p>Example commands for third-party tools accessed from the menu</p></li>
+<li><p>Target Signal Identifcation (TSI) flow graphs for detection and signal conditioning</p></li>
+<li><p>Protocol Discovery flow graphs for demodulation purposes</p></li>
+<li><p>Attack scripts and flow graphs for single-stage, multi-stage, and fuzzing attacks</p></li>
+<li><p>IQ recording, playback, and inspection in the IQ Data tab</p></li>
+<li><p>Transmitting signal playlists in the Archive tab</p></li>
+<li><p>Transmitting Scapy messages crafted in the Packet Crafter tab</p></li>
+</ul>
 <section id="supported">
 <h2>Supported<a class="headerlink" href="#supported" title="Permalink to this heading"></a></h2>
 <p>The following is a list of “supported” hardware with varying levels of integration:</p>
@@ -105,6 +117,95 @@
 <h2>Configuring<a class="headerlink" href="#configuring" title="Permalink to this heading"></a></h2>
 <p>Buttons for: assigning RF-enabled hardware to individual components (USRP B205mini, B210, X300 series; HackRF; bladeRF; LimeSDR; 802.11x Adapters; RTL2832U; Open Sniffer); probing the hardware for diagnostics; and acquiring IP address, daughterboard, and serial number information.</p>
 <p>The hardware information is used to set display items in the Dashboard and pass it to components when running operations that use flow graphs and scripts. Third-party tools do not incorporate information from the hardware buttons.</p>
+</section>
+<section id="notes">
+<h2>Notes<a class="headerlink" href="#notes" title="Permalink to this heading"></a></h2>
+<p>The following are miscellaneous notes regarding particular hardware models.</p>
+<section id="limesdr-notes">
+<h3>LimeSDR Notes<a class="headerlink" href="#limesdr-notes" title="Permalink to this heading"></a></h3>
+<p><strong>Links</strong></p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://wiki.myriadrf.org/Lime_Suite">https://wiki.myriadrf.org/Lime_Suite</a></p></li>
+<li><p><a class="reference external" href="https://wiki.myriadrf.org/Gr-limesdr_Plugin_for_GNURadio">https://wiki.myriadrf.org/Gr-limesdr_Plugin_for_GNURadio</a></p></li>
+<li><p><a class="reference external" href="https://myriadrf.org/news/limesdr-made-simple-part-1/">https://myriadrf.org/news/limesdr-made-simple-part-1/</a></p></li>
+</ul>
+<p><strong>Installing</strong></p>
+<p><em>From Repo</em></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo add-apt-repository -y ppa:myriadrf/drivers</span>
+<span class="go">sudo apt-get update</span>
+<span class="go">sudo apt-get install limesuite liblimesuite-dev limesuite-udev limesuite-images</span>
+<span class="go">sudo apt-get install soapysdr-tools soapysdr-module-lms7</span>
+</pre></div>
+</div>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>soapysdr-tools<span class="w"> </span>was<span class="w"> </span>called<span class="w"> </span>soapysdr<span class="w"> </span>on<span class="w"> </span>older<span class="w"> </span>packages
+<span class="go">sudo apt-get install soapysdr soapysdr-module-lms7</span>
+</pre></div>
+</div>
+<p><em>From Source</em></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">sudo apt-get install libboost-all-dev swig</span>
+
+<span class="go">git clone https://github.com/myriadrf/gr-limesdr</span>
+
+<span class="go">cd gr-limesdr</span>
+<span class="go">mkdir build</span>
+<span class="go">cd build</span>
+<span class="go">cmake ..</span>
+<span class="go">make</span>
+<span class="go">sudo make install</span>
+<span class="go">sudo ldconfig</span>
+</pre></div>
+</div>
+<p><strong>Other Notes</strong></p>
+<ul class="simple">
+<li><p><cite>LimeUtil --find</cite></p></li>
+<li><p>LimeSDR-USB and LimeSDR-PCIe sample rate must be no more than 61.44 MS/s.</p></li>
+<li><p>Gain range must be 0dB–70dB (60 on transmit, 70 on receive).</p></li>
+<li><p>Up to 10 dBm</p></li>
+<li><p>Analog filter bandw. (callback function value): Enter RX analog filter bandwidth for each channel. 0 means that analog filter is turned OFF.</p></li>
+<li><p>RX analog filter bandwidth range must be 1.5MHz–130MHz.</p></li>
+<li><p>Digital filter bandw. (callback function value):Enter RX digital filter bandwidth for each channel. 0 means that digital filter is turned OFF.</p></li>
+<li><p>RX digital filter bandwidth should not be higher than sampling rate.</p></li>
+<li><p>LimeSDR v1.4s</p></li>
+<li><p><cite>LimeSuiteGUI</cite></p></li>
+</ul>
+</section>
+<section id="new-usrp-x310">
+<h3>New USRP X310<a class="headerlink" href="#new-usrp-x310" title="Permalink to this heading"></a></h3>
+<ol class="arabic simple">
+<li><p>Plug 10 GbE into second slot on USRP</p></li>
+<li><p>Set computer IP to 192.168.40.1. Ping 192.168.40.2. Run <cite>uhd_find_devices</cite>. If there is an RFNOC error about a missing folder, download a UHD release and copy the folder:</p></li>
+<li><p><cite>wget https://codeload.github.com/EttusResearch/uhd/zip/release_003_010_003_000 -O uhd.zip</cite></p></li>
+<li><p><cite>unzip uhd.zip</cite></p></li>
+<li><p><cite>cd uhd-release_003_010_003_000/host/include</cite></p></li>
+<li><p><cite>sudo cp -Rv uhd/rfnoc /usr/share/uhd/</cite></p></li>
+<li><p>Try to run flow graph. It will print out instructions for matching FPGA images for current version of UHD.</p></li>
+<li><p><cite>/home/user/lib/uhd/utils/uhd_images_downloader.py</cite> or  <cite>/usr/lib/uhd/utils/uhd_images_downloader.py</cite></p></li>
+<li><p><cite>/home/user/bin/uhd_image_loader –args=”type=x300,addr=192.168.40.2”</cite> or <cite>/usr/bin/uhd_image_loader” –args=”type=x300,addr=192.168.140.2”</cite></p></li>
+<li><p>Set MTU to 9000 for the 10 GbE network connection.</p></li>
+<li><p>Change IP address of USRP 10 GbE connection as needed:</p></li>
+</ol>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">cd usr/lib/uhd/utils</span>
+<span class="go">./usrp_burn_mb_eeprom --args=&lt;optional device args&gt; --values=&quot;ip-addr3=192.168.140.2&quot;</span>
+</pre></div>
+</div>
+<ol class="arabic simple" start="12">
+<li><p>Adjust this value to something like: <cite>sudo sysctl -w net.core.wmem_max=24862979</cite></p></li>
+</ol>
+</section>
+<section id="updating-hackrf-firmware">
+<h3>Updating HackRF Firmware<a class="headerlink" href="#updating-hackrf-firmware" title="Permalink to this heading"></a></h3>
+<p>Firmware is included with each HackRF <a class="reference external" href="https://github.com/greatscottgadgets/hackrf/releases">release</a>. Firmware updates allow for more advanced features like <em>hackrf_sweep</em>.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">hackrf_spiflash -w ~/Installed_by_FISSURE/hackrf-2022.09.1/firmware-bin/hackrf_one_usb.bin</span>
+</pre></div>
+</div>
+<p><strong>Updating the CPLD</strong></p>
+<p>Older versions of HackRF firmware (prior to release 2021.03.1) require an additional step to program a bitstream into the CPLD.</p>
+<p>To update the CPLD image, first update the SPI flash firmware, libhackrf, and hackrf-tools to the version you are installing. Then:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">hackrf_cpldjtag -x firmware/cpld/sgpio_if/default.xsvf</span>
+</pre></div>
+</div>
+<p>After a few seconds, three LEDs should start blinking. This indicates that the CPLD has been programmed successfully. Reset the HackRF device by pressing the RESET button or by unplugging it and plugging it back in.</p>
+</section>
 </section>
 </section>
 

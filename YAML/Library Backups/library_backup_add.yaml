@@ -1,118 +1,1181 @@
 Archive:
-     ASR9_2822_85_2GSps.iq:
-          Date: 2022/03/12
-          Format: Complex Float 32
-          Modulation: CW
-          Notes: Pulses are two different frequencies
-          Protocol: Radar
-          Sample Rate: 2e9
-          Samples: 5000
-          Size: 40 kB
-          Tuned Frequency: 2822.85e6
-     ASR9_Log_Video_2822_85_1MSps.iq:
-          Date: 2022/03/12
-          Format: Int 8
-          Modulation: Log Video
-          Notes: One revolution
-          Protocol: Radar
-          Sample Rate: 1e6
-          Samples: 7371000
-          Size: 4364.1 kB
-          Tuned Frequency: 2822.85e6
-     ClapperPlus_434_1MSPs.iq:
-          Date: 2022/03/14
-          Format: Complex Float 32
-          Modulation: OOK
-          Notes: Five bursts
-          Protocol: Clapper Plus
-          Sample Rate: 1e6
-          Samples: 200000
-          Size: 1600 kB
-          Tuned Frequency: 434e6
-     GarageDoor_310_1MSPs.iq:
-          Date: 2022/03/14
-          Format: Complex Float 32
-          Modulation: OOK
-          Notes: Five bursts
-          Protocol: Garage Door
-          Sample Rate: 1e6
-          Samples: 195000
-          Size: 1560 kB
-          Tuned Frequency: 310e6
-     TPMS_Good_315_1MSps.iq:
-          Date: 2022/02/05
-          Format: Complex Float 32
-          Modulation: FSK
-          Notes: PMV-107J
-          Protocol: TPMS
-          Sample Rate: 1e6
-          Samples: 60000
-          Size: 480 kB
-          Tuned Frequency: 315e6
-     TPMS_Low_315_1MSps.iq:
-          Date: 2022/02/05
-          Format: Complex Float 32
-          Modulation: FSK
-          Notes: PMV-107J
-          Protocol: TPMS
-          Sample Rate: 1e6
-          Samples: 40000
-          Size: 320 kB
-          Tuned Frequency: 315e6
-     X10_311_1MSPs.iq:
-          Date: 2022/03/14
-          Format: Complex Float 32
-          Modulation: OOK
-          Notes: Five bursts
-          Protocol: X10
-          Sample Rate: 1e6
-          Samples: 440000
-          Size: 3520 kB
-          Tuned Frequency: 311e6
-     ZWAVE_Green_916_1MSps.iq:
-          Date: 2021/09/15
-          Format: Complex Float 32
-          Modulation: GFSK
-          Notes: Signal to turn Monoprice Z-Wave Plus RGB Smart Bulb green (Home ID
-               0xfa1c0b48 and Node ID 0x02)
-          Protocol: Z-Wave
-          Sample Rate: 1e6
-          Samples: 7000
-          Size: 56 kB
-          Tuned Frequency: 916e6
-     ZWAVE_Off_916_1MSps.iq:
-          Date: 2022/08/07
-          Format: Complex Float 32
-          Modulation: GFSK
-          Notes: Signal to turn off Monoprice Z-Wave Plus RGB Smart Bulb (Home ID
-               0xfa1c0b48 and Node ID 0x02)
-          Protocol: Z-Wave
-          Sample Rate: 1e6
-          Samples: 10000
-          Size: 80 kB
-          Tuned Frequency: 916e6
-     ZWAVE_On_916_1MSps.iq:
-          Date: 2022/08/07
-          Format: Complex Float 32
-          Modulation: GFSK
-          Notes: Signal to turn on Monoprice Z-Wave Plus RGB Smart Bulb (Home ID 0xfa1c0b48
-               and Node ID 0x02)
-          Protocol: Z-Wave
-          Sample Rate: 1e6
-          Samples: 10000
-          Size: 80 kB
-          Tuned Frequency: 916e6
-     ZWAVE_Red_916_1MSps.iq:
-          Date: 2021/09/15
-          Format: Complex Float 32
-          Modulation: GFSK
-          Notes: Signal to turn Monoprice Z-Wave Plus RGB Smart Bulb red (Home ID
-               0xfa1c0b48 and Node ID 0x02)
-          Protocol: Z-Wave
-          Sample Rate: 1e6
-          Samples: 8000
-          Size: 64 kB
-          Tuned Frequency: 916e6
+     Collection:
+          1MSps_Examples:
+               File List:
+               - avent_scd560_1922_5MHz_1MSps_1.sigmf-data
+               - clapper_plus_433_8MHz_1MSps_1.sigmf-data
+               - CW_Morse_Code_915MHz_1MSps_1.sigmf-data
+               - f150_fob_315MHz_1MSps_1.sigmf-data
+               - garage_door_310MHz_1MSps_1.sigmf-data
+               - juentai_jt-6188plus_145_5MHz_1MSps_1.sigmf-data
+               - midland_t10_462_4_1MSps_1.sigmf-data
+               - mototrbo_xpr7550e_451_5MHz_1MSps_1.sigmf-data
+               - Ocusync2_Downlink_2441_5MHz_1MSps_1.sigmf-data
+               - Ocusync2_Uplink_2407_5MHz_1MSps_1.sigmf-data
+               - prius_fob_314MHz_1MSps_1.sigmf-data
+               - silverado_fob_314_7MHz_1MSps_1.sigmf-data
+               - x10_310_9MHz_1MSps_1.sigmf-data
+               - zigbee_philips_hue_2402_1MSps_1.sigmf-data
+               - zwave_monoprice_915_9_1MSps_1.sigmf-data
+               Filepath: /1MSps_Examples.tar
+               Files: 15
+               Format: Complex Float 32
+               Notes: A collection of signals from miscellaneous devices recorded
+                    by Assured Information Security.
+               Size: 38.2 MB
+          X3xx_10MSps_All:
+               Filepath: /X3xx/10MSps.tar
+               Files: 75
+               Format: Complex Float 32
+               Notes: A collection of signals from miscellaneous devices recorded
+                    by Assured Information Security.
+               Size: 1.8 GB
+               Subdirectories:
+                    Avent_SCD560:
+                         File List:
+                         - avent_scd560_1922_5MHz_10MSps_1.sigmf-data
+                         - avent_scd560_1922_5MHz_10MSps_2.sigmf-data
+                         - avent_scd560_1922_5MHz_10MSps_3.sigmf-data
+                         - avent_scd560_1922_5MHz_10MSps_4.sigmf-data
+                         - avent_scd560_1922_5MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 179.6 kB
+                    CW_Morse_Code:
+                         File List:
+                         - CW_Morse_Code_915MHz_10MSps_1.sigmf-data
+                         - CW_Morse_Code_915MHz_10MSps_2.sigmf-data
+                         - CW_Morse_Code_915MHz_10MSps_3.sigmf-data
+                         - CW_Morse_Code_915MHz_10MSps_4.sigmf-data
+                         - CW_Morse_Code_915MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 117.8 MB
+                    Clapper_Plus:
+                         File List:
+                         - clapper_plus_433_8MHz_10MSps_1.sigmf-data
+                         - clapper_plus_433_8MHz_10MSps_2.sigmf-data
+                         - clapper_plus_433_8MHz_10MSps_3.sigmf-data
+                         - clapper_plus_433_8MHz_10MSps_4.sigmf-data
+                         - clapper_plus_433_8MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 17.4 MB
+                    F150_Fob:
+                         File List:
+                         - f150_fob_315MHz_10MSps_1.sigmf-data
+                         - f150_fob_315MHz_10MSps_2.sigmf-data
+                         - f150_fob_315MHz_10MSps_3.sigmf-data
+                         - f150_fob_315MHz_10MSps_4.sigmf-data
+                         - f150_fob_315MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 21.3 MB
+                    Garage_Door:
+                         File List:
+                         - garage_door_310MHz_10MSps_1.sigmf-data
+                         - garage_door_310MHz_10MSps_2.sigmf-data
+                         - garage_door_310MHz_10MSps_3.sigmf-data
+                         - garage_door_310MHz_10MSps_4.sigmf-data
+                         - garage_door_310MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 9.9 MB
+                    Juentai_JT-6188Plus:
+                         File List:
+                         - juentai_jt-6188plus_145_5MHz_10MSps_1.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_10MSps_2.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_10MSps_3.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_10MSps_4.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 388.9 MB
+                    MOTOTRBO_XPR7550e:
+                         File List:
+                         - mototrbo_xpr7550e_451_5MHz_10MSps_1.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_10MSps_2.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_10MSps_3.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_10MSps_4.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 283.3 MB
+                    Midland_T10:
+                         File List:
+                         - midland_t10_462_4_10MSps_1.sigmf-data
+                         - midland_t10_462_4_10MSps_2.sigmf-data
+                         - midland_t10_462_4_10MSps_3.sigmf-data
+                         - midland_t10_462_4_10MSps_4.sigmf-data
+                         - midland_t10_462_4_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 678.1 MB
+                    Ocusync2_Downlink:
+                         File List:
+                         - Ocusync2_Downlink_2441_5MHz_10MSps_1.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_10MSps_2.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_10MSps_3.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_10MSps_4.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 1.5 MB
+                    Ocusync2_Uplink:
+                         File List:
+                         - Ocusync2_Uplink_2406_8_5MHz_10MSps_1.sigmf-data
+                         - Ocusync2_Uplink_2406_8_5MHz_10MSps_2.sigmf-data
+                         - Ocusync2_Uplink_2406_8_5MHz_10MSps_3.sigmf-data
+                         - Ocusync2_Uplink_2406_8_5MHz_10MSps_4.sigmf-data
+                         - Ocusync2_Uplink_2406_8_5MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 232.7 kB
+                    Prius_Fob:
+                         File List:
+                         - prius_fob_314MHz_10MSps_1.sigmf-data
+                         - prius_fob_314MHz_10MSps_2.sigmf-data
+                         - prius_fob_314MHz_10MSps_3.sigmf-data
+                         - prius_fob_314MHz_10MSps_4.sigmf-data
+                         - prius_fob_314MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 232.6 MB
+                    Silverado_Fob:
+                         File List:
+                         - silverado_fob_314_7MHz_10MSps_1.sigmf-data
+                         - silverado_fob_314_7MHz_10MSps_2.sigmf-data
+                         - silverado_fob_314_7MHz_10MSps_3.sigmf-data
+                         - silverado_fob_314_7MHz_10MSps_4.sigmf-data
+                         - silverado_fob_314_7MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 16.3 MB
+                    X10:
+                         File List:
+                         - x10_310_9MHz_10MSps_1.sigmf-data
+                         - x10_310_9MHz_10MSps_2.sigmf-data
+                         - x10_310_9MHz_10MSps_3.sigmf-data
+                         - x10_310_9MHz_10MSps_4.sigmf-data
+                         - x10_310_9MHz_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 31.7 MB
+                    ZWave_Monoprice:
+                         File List:
+                         - zwave_monoprice_915_9_10MSps_1.sigmf-data
+                         - zwave_monoprice_915_9_10MSps_2.sigmf-data
+                         - zwave_monoprice_915_9_10MSps_3.sigmf-data
+                         - zwave_monoprice_915_9_10MSps_4.sigmf-data
+                         - zwave_monoprice_915_9_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 2.0 MB
+                    Zigbee_Philips_Hue:
+                         File List:
+                         - zigbee_philips_hue_2401_8_10MSps_1.sigmf-data
+                         - zigbee_philips_hue_2401_8_10MSps_2.sigmf-data
+                         - zigbee_philips_hue_2401_8_10MSps_3.sigmf-data
+                         - zigbee_philips_hue_2401_8_10MSps_4.sigmf-data
+                         - zigbee_philips_hue_2401_8_10MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 165.2 kB
+          X3xx_1MSps_All:
+               Filepath: /X3xx/1MSps.tar
+               Files: 75
+               Format: Complex Float 32
+               Notes: A collection of signals from miscellaneous devices recorded
+                    by Assured Information Security.
+               Size: 181.8 MB
+               Subdirectories:
+                    Avent_SCD560:
+                         File List:
+                         - avent_scd560_1922_5MHz_1MSps_1.sigmf-data
+                         - avent_scd560_1922_5MHz_1MSps_2.sigmf-data
+                         - avent_scd560_1922_5MHz_1MSps_3.sigmf-data
+                         - avent_scd560_1922_5MHz_1MSps_4.sigmf-data
+                         - avent_scd560_1922_5MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 24.2 kB
+                    CW_Morse_Code:
+                         File List:
+                         - CW_Morse_Code_915MHz_1MSps_1.sigmf-data
+                         - CW_Morse_Code_915MHz_1MSps_2.sigmf-data
+                         - CW_Morse_Code_915MHz_1MSps_3.sigmf-data
+                         - CW_Morse_Code_915MHz_1MSps_4.sigmf-data
+                         - CW_Morse_Code_915MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 12.9 MB
+                    Clapper_Plus:
+                         File List:
+                         - clapper_plus_433_8MHz_1MSps_1.sigmf-data
+                         - clapper_plus_433_8MHz_1MSps_2.sigmf-data
+                         - clapper_plus_433_8MHz_1MSps_3.sigmf-data
+                         - clapper_plus_433_8MHz_1MSps_4.sigmf-data
+                         - clapper_plus_433_8MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 1.7 MB
+                    F150_Fob:
+                         File List:
+                         - f150_fob_315MHz_1MSps_1.sigmf-data
+                         - f150_fob_315MHz_1MSps_2.sigmf-data
+                         - f150_fob_315MHz_1MSps_3.sigmf-data
+                         - f150_fob_315MHz_1MSps_4.sigmf-data
+                         - f150_fob_315MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 2.3 MB
+                    Garage_Door:
+                         File List:
+                         - garage_door_310MHz_1MSps_1.sigmf-data
+                         - garage_door_310MHz_1MSps_2.sigmf-data
+                         - garage_door_310MHz_1MSps_3.sigmf-data
+                         - garage_door_310MHz_1MSps_4.sigmf-data
+                         - garage_door_310MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 1.1 MB
+                    Juentai_JT-6188Plus:
+                         File List:
+                         - juentai_jt-6188plus_145_5MHz_1MSps_1.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_1MSps_2.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_1MSps_3.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_1MSps_4.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 26.3 MB
+                    MOTOTRBO_XPR7550e:
+                         File List:
+                         - mototrbo_xpr7550e_451_5MHz_1MSps_1.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_1MSps_2.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_1MSps_3.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_1MSps_4.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 37.5 MB
+                    Midland_T10:
+                         File List:
+                         - midland_t10_462_4_1MSps_1.sigmf-data
+                         - midland_t10_462_4_1MSps_2.sigmf-data
+                         - midland_t10_462_4_1MSps_3.sigmf-data
+                         - midland_t10_462_4_1MSps_4.sigmf-data
+                         - midland_t10_462_4_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 69.8 MB
+                    Ocusync2_Downlink:
+                         File List:
+                         - Ocusync2_Downlink_2441_5MHz_1MSps_1.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_1MSps_2.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_1MSps_3.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_1MSps_4.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 184.2 kB
+                    Ocusync2_Uplink:
+                         File List:
+                         - Ocusync2_Uplink_2407_5MHz_1MSps_1.sigmf-data
+                         - Ocusync2_Uplink_2407_5MHz_1MSps_2.sigmf-data
+                         - Ocusync2_Uplink_2407_5MHz_1MSps_3.sigmf-data
+                         - Ocusync2_Uplink_2407_5MHz_1MSps_4.sigmf-data
+                         - Ocusync2_Uplink_2407_5MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 37.7 kB
+                    Prius_Fob:
+                         File List:
+                         - prius_fob_314MHz_1MSps_1.sigmf-data
+                         - prius_fob_314MHz_1MSps_2.sigmf-data
+                         - prius_fob_314MHz_1MSps_3.sigmf-data
+                         - prius_fob_314MHz_1MSps_4.sigmf-data
+                         - prius_fob_314MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 24.8 MB
+                    Silverado_Fob:
+                         File List:
+                         - silverado_fob_314_7MHz_1MSps_1.sigmf-data
+                         - silverado_fob_314_7MHz_1MSps_2.sigmf-data
+                         - silverado_fob_314_7MHz_1MSps_3.sigmf-data
+                         - silverado_fob_314_7MHz_1MSps_4.sigmf-data
+                         - silverado_fob_314_7MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 1.7 MB
+                    X10:
+                         File List:
+                         - x10_310_9MHz_1MSps_1.sigmf-data
+                         - x10_310_9MHz_1MSps_2.sigmf-data
+                         - x10_310_9MHz_1MSps_3.sigmf-data
+                         - x10_310_9MHz_1MSps_4.sigmf-data
+                         - x10_310_9MHz_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 3.1 MB
+                    ZWave_Monoprice:
+                         File List:
+                         - zwave_monoprice_915_9_1MSps_1.sigmf-data
+                         - zwave_monoprice_915_9_1MSps_2.sigmf-data
+                         - zwave_monoprice_915_9_1MSps_3.sigmf-data
+                         - zwave_monoprice_915_9_1MSps_4.sigmf-data
+                         - zwave_monoprice_915_9_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 233.2 kB
+                    Zigbee_Philips_Hue:
+                         File List:
+                         - zigbee_philips_hue_2402_1MSps_1.sigmf-data
+                         - zigbee_philips_hue_2402_1MSps_2.sigmf-data
+                         - zigbee_philips_hue_2402_1MSps_3.sigmf-data
+                         - zigbee_philips_hue_2402_1MSps_4.sigmf-data
+                         - zigbee_philips_hue_2402_1MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 22.8 kB
+          X3xx_20MSps_All:
+               Filepath: /X3xx/20MSps.tar
+               Files: 75
+               Format: Complex Float 32
+               Notes: A collection of signals from miscellaneous devices recorded
+                    by Assured Information Security.
+               Size: 3.5 GB
+               Subdirectories:
+                    Avent_SCD560:
+                         File List:
+                         - avent_scd560_1922_5MHz_20MSps_1.sigmf-data
+                         - avent_scd560_1922_5MHz_20MSps_2.sigmf-data
+                         - avent_scd560_1922_5MHz_20MSps_3.sigmf-data
+                         - avent_scd560_1922_5MHz_20MSps_4.sigmf-data
+                         - avent_scd560_1922_5MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 342.3 kB
+                    CW_Morse_Code:
+                         File List:
+                         - CW_Morse_Code_915MHz_20MSps_1.sigmf-data
+                         - CW_Morse_Code_915MHz_20MSps_2.sigmf-data
+                         - CW_Morse_Code_915MHz_20MSps_3.sigmf-data
+                         - CW_Morse_Code_915MHz_20MSps_4.sigmf-data
+                         - CW_Morse_Code_915MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 242.6 MB
+                    Clapper_Plus:
+                         File List:
+                         - clapper_plus_433_8MHz_20MSps_1.sigmf-data
+                         - clapper_plus_433_8MHz_20MSps_2.sigmf-data
+                         - clapper_plus_433_8MHz_20MSps_3.sigmf-data
+                         - clapper_plus_433_8MHz_20MSps_4.sigmf-data
+                         - clapper_plus_433_8MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 35.0 MB
+                    F150_Fob:
+                         File List:
+                         - f150_fob_315MHz_20MSps_1.sigmf-data
+                         - f150_fob_315MHz_20MSps_2.sigmf-data
+                         - f150_fob_315MHz_20MSps_3.sigmf-data
+                         - f150_fob_315MHz_20MSps_4.sigmf-data
+                         - f150_fob_315MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 42.0 MB
+                    Garage_Door:
+                         File List:
+                         - garage_door_310MHz_20MSps_1.sigmf-data
+                         - garage_door_310MHz_20MSps_2.sigmf-data
+                         - garage_door_310MHz_20MSps_3.sigmf-data
+                         - garage_door_310MHz_20MSps_4.sigmf-data
+                         - garage_door_310MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 20.2 MB
+                    Juentai_JT-6188Plus:
+                         File List:
+                         - juentai_jt-6188plus_145_5MHz_20MSps_1.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_20MSps_2.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_20MSps_3.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_20MSps_4.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 725.1 MB
+                    MOTOTRBO_XPR7550e:
+                         File List:
+                         - mototrbo_xpr7550e_451_5MHz_20MSps_1.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_20MSps_2.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_20MSps_3.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_20MSps_4.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 622.2 MB
+                    Midland_T10:
+                         File List:
+                         - midland_t10_462_4_20MSps_1.sigmf-data
+                         - midland_t10_462_4_20MSps_2.sigmf-data
+                         - midland_t10_462_4_20MSps_3.sigmf-data
+                         - midland_t10_462_4_20MSps_4.sigmf-data
+                         - midland_t10_462_4_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 1.2 GB
+                    Ocusync2_Downlink:
+                         File List:
+                         - Ocusync2_Downlink_2441_5MHz_20MSps_1.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_20MSps_2.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_20MSps_3.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_20MSps_4.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 3.0 MB
+                    Ocusync2_Uplink:
+                         File List:
+                         - Ocusync2_Uplink_2406_8MHz_20MSps_1.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_20MSps_2.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_20MSps_3.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_20MSps_4.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 451.8 kB
+                    Prius_Fob:
+                         File List:
+                         - prius_fob_314MHz_20MSps_1.sigmf-data
+                         - prius_fob_314MHz_20MSps_2.sigmf-data
+                         - prius_fob_314MHz_20MSps_3.sigmf-data
+                         - prius_fob_314MHz_20MSps_4.sigmf-data
+                         - prius_fob_314MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 465.6 MB
+                    Silverado_Fob:
+                         File List:
+                         - silverado_fob_314_7MHz_20MSps_1.sigmf-data
+                         - silverado_fob_314_7MHz_20MSps_2.sigmf-data
+                         - silverado_fob_314_7MHz_20MSps_3.sigmf-data
+                         - silverado_fob_314_7MHz_20MSps_4.sigmf-data
+                         - silverado_fob_314_7MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 30.8 MB
+                    X10:
+                         File List:
+                         - x10_310_9MHz_20MSps_1.sigmf-data
+                         - x10_310_9MHz_20MSps_2.sigmf-data
+                         - x10_310_9MHz_20MSps_3.sigmf-data
+                         - x10_310_9MHz_20MSps_4.sigmf-data
+                         - x10_310_9MHz_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 60.7 MB
+                    ZWave_Monoprice:
+                         File List:
+                         - zwave_monoprice_915_9_20MSps_1.sigmf-data
+                         - zwave_monoprice_915_9_20MSps_2.sigmf-data
+                         - zwave_monoprice_915_9_20MSps_3.sigmf-data
+                         - zwave_monoprice_915_9_20MSps_4.sigmf-data
+                         - zwave_monoprice_915_9_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 4.1 MB
+                    Zigbee_Philips_Hue:
+                         File List:
+                         - zigbee_philips_hue_2401_8_20MSps_1.sigmf-data
+                         - zigbee_philips_hue_2401_8_20MSps_2.sigmf-data
+                         - zigbee_philips_hue_2401_8_20MSps_3.sigmf-data
+                         - zigbee_philips_hue_2401_8_20MSps_4.sigmf-data
+                         - zigbee_philips_hue_2401_8_20MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 336.4 kB
+          X3xx_2MSps_All:
+               Filepath: /X3xx/2MSps.tar
+               Files: 75
+               Format: Complex Float 32
+               Notes: A collection of signals from miscellaneous devices recorded
+                    by Assured Information Security.
+               Size: 343.2 MB
+               Subdirectories:
+                    Avent_SCD560:
+                         File List:
+                         - avent_scd560_1922_5MHz_2MSps_1.sigmf-data
+                         - avent_scd560_1922_5MHz_2MSps_2.sigmf-data
+                         - avent_scd560_1922_5MHz_2MSps_3.sigmf-data
+                         - avent_scd560_1922_5MHz_2MSps_4.sigmf-data
+                         - avent_scd560_1922_5MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 39.8 kB
+                    CW_Morse_Code:
+                         File List:
+                         - CW_Morse_Code_915MHz_2MSps_1.sigmf-data
+                         - CW_Morse_Code_915MHz_2MSps_2.sigmf-data
+                         - CW_Morse_Code_915MHz_2MSps_3.sigmf-data
+                         - CW_Morse_Code_915MHz_2MSps_4.sigmf-data
+                         - CW_Morse_Code_915MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 25.5 MB
+                    Clapper_Plus:
+                         File List:
+                         - clapper_plus_433_8MHz_2MSps_1.sigmf-data
+                         - clapper_plus_433_8MHz_2MSps_2.sigmf-data
+                         - clapper_plus_433_8MHz_2MSps_3.sigmf-data
+                         - clapper_plus_433_8MHz_2MSps_4.sigmf-data
+                         - clapper_plus_433_8MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 3.4 MB
+                    F150_Fob:
+                         File List:
+                         - f150_fob_315MHz_2MSps_1.sigmf-data
+                         - f150_fob_315MHz_2MSps_2.sigmf-data
+                         - f150_fob_315MHz_2MSps_3.sigmf-data
+                         - f150_fob_315MHz_2MSps_4.sigmf-data
+                         - f150_fob_315MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 4.3 MB
+                    Garage_Door:
+                         File List:
+                         - garage_door_310MHz_2MSps_1.sigmf-data
+                         - garage_door_310MHz_2MSps_2.sigmf-data
+                         - garage_door_310MHz_2MSps_3.sigmf-data
+                         - garage_door_310MHz_2MSps_4.sigmf-data
+                         - garage_door_310MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 2.3 MB
+                    Juentai_JT-6188Plus:
+                         File List:
+                         - juentai_jt-6188plus_145_5MHz_2MSps_1.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_2MSps_2.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_2MSps_3.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_2MSps_4.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 75.4 MB
+                    MOTOTRBO_XPR7550e:
+                         File List:
+                         - mototrbo_xpr7550e_451_5MHz_2MSps_1.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_2MSps_2.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_2MSps_3.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_2MSps_4.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 58.3 MB
+                    Midland_T10:
+                         File List:
+                         - midland_t10_462_4_2MSps_1.sigmf-data
+                         - midland_t10_462_4_2MSps_2.sigmf-data
+                         - midland_t10_462_4_2MSps_3.sigmf-data
+                         - midland_t10_462_4_2MSps_4.sigmf-data
+                         - midland_t10_462_4_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 117.3 MB
+                    Ocusync2_Downlink:
+                         File List:
+                         - Ocusync2_Downlink_2441_5MHz_2MSps_1.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_2MSps_2.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_2MSps_3.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_2MSps_4.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 355.3 kB
+                    Ocusync2_Uplink:
+                         File List:
+                         - Ocusync2_Uplink_2407_5MHz_2MSps_1.sigmf-data
+                         - Ocusync2_Uplink_2407_5MHz_2MSps_2.sigmf-data
+                         - Ocusync2_Uplink_2407_5MHz_2MSps_3.sigmf-data
+                         - Ocusync2_Uplink_2407_5MHz_2MSps_4.sigmf-data
+                         - Ocusync2_Uplink_2407_5MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 56.3 kB
+                    Prius_Fob:
+                         File List:
+                         - prius_fob_314MHz_2MSps_1.sigmf-data
+                         - prius_fob_314MHz_2MSps_2.sigmf-data
+                         - prius_fob_314MHz_2MSps_3.sigmf-data
+                         - prius_fob_314MHz_2MSps_4.sigmf-data
+                         - prius_fob_314MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 46.1 MB
+                    Silverado_Fob:
+                         File List:
+                         - silverado_fob_314_7MHz_2MSps_1.sigmf-data
+                         - silverado_fob_314_7MHz_2MSps_2.sigmf-data
+                         - silverado_fob_314_7MHz_2MSps_3.sigmf-data
+                         - silverado_fob_314_7MHz_2MSps_4.sigmf-data
+                         - silverado_fob_314_7MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 3.3 MB
+                    X10:
+                         File List:
+                         - x10_310_9MHz_2MSps_1.sigmf-data
+                         - x10_310_9MHz_2MSps_2.sigmf-data
+                         - x10_310_9MHz_2MSps_3.sigmf-data
+                         - x10_310_9MHz_2MSps_4.sigmf-data
+                         - x10_310_9MHz_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 6.3 MB
+                    ZWave_Monoprice:
+                         File List:
+                         - zwave_monoprice_915_9_2MSps_1.sigmf-data
+                         - zwave_monoprice_915_9_2MSps_2.sigmf-data
+                         - zwave_monoprice_915_9_2MSps_3.sigmf-data
+                         - zwave_monoprice_915_9_2MSps_4.sigmf-data
+                         - zwave_monoprice_915_9_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 426.0 kB
+                    Zigbee_Philips_Hue:
+                         File List:
+                         - zigbee_philips_hue_2401_8_2MSps_1.sigmf-data
+                         - zigbee_philips_hue_2401_8_2MSps_2.sigmf-data
+                         - zigbee_philips_hue_2401_8_2MSps_3.sigmf-data
+                         - zigbee_philips_hue_2401_8_2MSps_4.sigmf-data
+                         - zigbee_philips_hue_2401_8_2MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 38.8 kB
+          X3xx_50MSps_All:
+               Filepath: /X3xx/50MSps.tar
+               Files: 75
+               Format: Complex Float 32
+               Notes: A collection of signals from miscellaneous devices recorded
+                    by Assured Information Security.
+               Size: 8.1 GB
+               Subdirectories:
+                    Avent_SCD560:
+                         File List:
+                         - avent_scd560_1922_5MHz_50MSps_1.sigmf-data
+                         - avent_scd560_1922_5MHz_50MSps_2.sigmf-data
+                         - avent_scd560_1922_5MHz_50MSps_3.sigmf-data
+                         - avent_scd560_1922_5MHz_50MSps_4.sigmf-data
+                         - avent_scd560_1922_5MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 854.6 kB
+                    CW_Morse_Code:
+                         File List:
+                         - CW_Morse_Code_915MHz_50MSps_1.sigmf-data
+                         - CW_Morse_Code_915MHz_50MSps_2.sigmf-data
+                         - CW_Morse_Code_915MHz_50MSps_3.sigmf-data
+                         - CW_Morse_Code_915MHz_50MSps_4.sigmf-data
+                         - CW_Morse_Code_915MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 471.1 MB
+                    Clapper_Plus:
+                         File List:
+                         - clapper_plus_433_8MHz_50MSps_1.sigmf-data
+                         - clapper_plus_433_8MHz_50MSps_2.sigmf-data
+                         - clapper_plus_433_8MHz_50MSps_3.sigmf-data
+                         - clapper_plus_433_8MHz_50MSps_4.sigmf-data
+                         - clapper_plus_433_8MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 81.4 MB
+                    F150_Fob:
+                         File List:
+                         - f150_fob_315MHz_50MSps_1.sigmf-data
+                         - f150_fob_315MHz_50MSps_2.sigmf-data
+                         - f150_fob_315MHz_50MSps_3.sigmf-data
+                         - f150_fob_315MHz_50MSps_4.sigmf-data
+                         - f150_fob_315MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 106.1 MB
+                    Garage_Door:
+                         File List:
+                         - garage_door_310MHz_50MSps_1.sigmf-data
+                         - garage_door_310MHz_50MSps_2.sigmf-data
+                         - garage_door_310MHz_50MSps_3.sigmf-data
+                         - garage_door_310MHz_50MSps_4.sigmf-data
+                         - garage_door_310MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 48.4 MB
+                    Juentai_JT-6188Plus:
+                         File List:
+                         - juentai_jt-6188plus_145_5MHz_50MSps_1.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_50MSps_2.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_50MSps_3.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_50MSps_4.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 1.5 GB
+                    MOTOTRBO_XPR7550e:
+                         File List:
+                         - mototrbo_xpr7550e_451_5MHz_50MSps_1.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_50MSps_2.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_50MSps_3.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_50MSps_4.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 1.2 GB
+                    Midland_T10:
+                         File List:
+                         - midland_t10_462_4_50MSps_1.sigmf-data
+                         - midland_t10_462_4_50MSps_2.sigmf-data
+                         - midland_t10_462_4_50MSps_3.sigmf-data
+                         - midland_t10_462_4_50MSps_4.sigmf-data
+                         - midland_t10_462_4_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 3.2 GB
+                    Ocusync2_Downlink:
+                         File List:
+                         - Ocusync2_Downlink_2441_5MHz_50MSps_1.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_50MSps_2.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_50MSps_3.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_50MSps_4.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 8.7 MB
+                    Ocusync2_Uplink:
+                         File List:
+                         - Ocusync2_Uplink_2406_8MHz_50MSps_1.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_50MSps_2.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_50MSps_3.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_50MSps_4.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 1.1 MB
+                    Prius_Fob:
+                         File List:
+                         - prius_fob_314MHz_50MSps_1.sigmf-data
+                         - prius_fob_314MHz_50MSps_2.sigmf-data
+                         - prius_fob_314MHz_50MSps_3.sigmf-data
+                         - prius_fob_314MHz_50MSps_4.sigmf-data
+                         - prius_fob_314MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 1.1 GB
+                    Silverado_Fob:
+                         File List:
+                         - silverado_fob_314_7MHz_50MSps_1.sigmf-data
+                         - silverado_fob_314_7MHz_50MSps_2.sigmf-data
+                         - silverado_fob_314_7MHz_50MSps_3.sigmf-data
+                         - silverado_fob_314_7MHz_50MSps_4.sigmf-data
+                         - silverado_fob_314_7MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 78.1 MB
+                    X10:
+                         File List:
+                         - x10_310_9MHz_50MSps_1.sigmf-data
+                         - x10_310_9MHz_50MSps_2.sigmf-data
+                         - x10_310_9MHz_50MSps_3.sigmf-data
+                         - x10_310_9MHz_50MSps_4.sigmf-data
+                         - x10_310_9MHz_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 165.0 MB
+                    ZWave_Monoprice:
+                         File List:
+                         - zwave_monoprice_915_9_50MSps_1.sigmf-data
+                         - zwave_monoprice_915_9_50MSps_2.sigmf-data
+                         - zwave_monoprice_915_9_50MSps_3.sigmf-data
+                         - zwave_monoprice_915_9_50MSps_4.sigmf-data
+                         - zwave_monoprice_915_9_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 9.9 MB
+                    Zigbee_Philips_Hue:
+                         File List:
+                         - zigbee_philips_hue_2401_8_50MSps_1.sigmf-data
+                         - zigbee_philips_hue_2401_8_50MSps_2.sigmf-data
+                         - zigbee_philips_hue_2401_8_50MSps_3.sigmf-data
+                         - zigbee_philips_hue_2401_8_50MSps_4.sigmf-data
+                         - zigbee_philips_hue_2401_8_50MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 786.8 kB
+          X3xx_5MSps_All:
+               Filepath: /X3xx/5MSps.tar
+               Files: 75
+               Format: Complex Float 32
+               Notes: A collection of signals from miscellaneous devices recorded
+                    by Assured Information Security.
+               Size: 836.5 MB
+               Subdirectories:
+                    Avent_SCD560:
+                         File List:
+                         - avent_scd560_1922_5MHz_5MSps_1.sigmf-data
+                         - avent_scd560_1922_5MHz_5MSps_2.sigmf-data
+                         - avent_scd560_1922_5MHz_5MSps_3.sigmf-data
+                         - avent_scd560_1922_5MHz_5MSps_4.sigmf-data
+                         - avent_scd560_1922_5MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 91.8 kB
+                    CW_Morse_Code:
+                         File List:
+                         - CW_Morse_Code_915MHz_5MSps_1.sigmf-data
+                         - CW_Morse_Code_915MHz_5MSps_2.sigmf-data
+                         - CW_Morse_Code_915MHz_5MSps_3.sigmf-data
+                         - CW_Morse_Code_915MHz_5MSps_4.sigmf-data
+                         - CW_Morse_Code_915MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 59.1 MB
+                    Clapper_Plus:
+                         File List:
+                         - clapper_plus_433_8MHz_5MSps_1.sigmf-data
+                         - clapper_plus_433_8MHz_5MSps_2.sigmf-data
+                         - clapper_plus_433_8MHz_5MSps_3.sigmf-data
+                         - clapper_plus_433_8MHz_5MSps_4.sigmf-data
+                         - clapper_plus_433_8MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 8.7 MB
+                    F150_Fob:
+                         File List:
+                         - f150_fob_315MHz_5MSps_1.sigmf-data
+                         - f150_fob_315MHz_5MSps_2.sigmf-data
+                         - f150_fob_315MHz_5MSps_3.sigmf-data
+                         - f150_fob_315MHz_5MSps_4.sigmf-data
+                         - f150_fob_315MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 11.0 MB
+                    Garage_Door:
+                         File List:
+                         - garage_door_310MHz_5MSps_1.sigmf-data
+                         - garage_door_310MHz_5MSps_2.sigmf-data
+                         - garage_door_310MHz_5MSps_3.sigmf-data
+                         - garage_door_310MHz_5MSps_4.sigmf-data
+                         - garage_door_310MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 6.1 MB
+                    Juentai_JT-6188Plus:
+                         File List:
+                         - juentai_jt-6188plus_145_5MHz_5MSps_1.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_5MSps_2.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_5MSps_3.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_5MSps_4.sigmf-data
+                         - juentai_jt-6188plus_145_5MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 170.3 MB
+                    MOTOTRBO_XPR7550e:
+                         File List:
+                         - mototrbo_xpr7550e_451_5MHz_5MSps_1.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_5MSps_2.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_5MSps_3.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_5MSps_4.sigmf-data
+                         - mototrbo_xpr7550e_451_5MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 151.1 MB
+                    Midland_T10:
+                         File List:
+                         - midland_t10_462_4_5MSps_1.sigmf-data
+                         - midland_t10_462_4_5MSps_2.sigmf-data
+                         - midland_t10_462_4_5MSps_3.sigmf-data
+                         - midland_t10_462_4_5MSps_4.sigmf-data
+                         - midland_t10_462_4_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 290.9 MB
+                    Ocusync2_Downlink:
+                         File List:
+                         - Ocusync2_Downlink_2441_5MHz_5MSps_1.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_5MSps_2.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_5MSps_3.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_5MSps_4.sigmf-data
+                         - Ocusync2_Downlink_2441_5MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 737.8 kB
+                    Ocusync2_Uplink:
+                         File List:
+                         - Ocusync2_Uplink_2406_8MHz_5MSps_1.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_5MSps_2.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_5MSps_3.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_5MSps_4.sigmf-data
+                         - Ocusync2_Uplink_2406_8MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 168.4 kB
+                    Prius_Fob:
+                         File List:
+                         - prius_fob_314MHz_5MSps_1.sigmf-data
+                         - prius_fob_314MHz_5MSps_2.sigmf-data
+                         - prius_fob_314MHz_5MSps_3.sigmf-data
+                         - prius_fob_314MHz_5MSps_4.sigmf-data
+                         - prius_fob_314MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 115.9 MB
+                    Silverado_Fob:
+                         File List:
+                         - silverado_fob_314_7MHz_5MSps_1.sigmf-data
+                         - silverado_fob_314_7MHz_5MSps_2.sigmf-data
+                         - silverado_fob_314_7MHz_5MSps_3.sigmf-data
+                         - silverado_fob_314_7MHz_5MSps_4.sigmf-data
+                         - silverado_fob_314_7MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 7.6 MB
+                    X10:
+                         File List:
+                         - x10_310_9MHz_5MSps_1.sigmf-data
+                         - x10_310_9MHz_5MSps_2.sigmf-data
+                         - x10_310_9MHz_5MSps_3.sigmf-data
+                         - x10_310_9MHz_5MSps_4.sigmf-data
+                         - x10_310_9MHz_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 13.6 MB
+                    ZWave_Monoprice:
+                         File List:
+                         - zwave_monoprice_915_9_5MSps_1.sigmf-data
+                         - zwave_monoprice_915_9_5MSps_2.sigmf-data
+                         - zwave_monoprice_915_9_5MSps_3.sigmf-data
+                         - zwave_monoprice_915_9_5MSps_4.sigmf-data
+                         - zwave_monoprice_915_9_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 1.0 MB
+                    Zigbee_Philips_Hue:
+                         File List:
+                         - zigbee_philips_hue_2401_8_5MSps_1.sigmf-data
+                         - zigbee_philips_hue_2401_8_5MSps_2.sigmf-data
+                         - zigbee_philips_hue_2401_8_5MSps_3.sigmf-data
+                         - zigbee_philips_hue_2401_8_5MSps_4.sigmf-data
+                         - zigbee_philips_hue_2401_8_5MSps_5.sigmf-data
+                         Files: 5
+                         Format: Complex Float 32
+                         Notes: ''
+                         Size: 81.2 kB
+     File:
+          ASR9_2822_85_2GSps.iq:
+               Date: 2022/03/12
+               Format: Complex Float 32
+               Modulation: CW
+               Notes: Pulses are two different frequencies
+               Protocol: Radar
+               Sample Rate: 2e9
+               Samples: 5000
+               Size: 40 kB
+               Tuned Frequency: 2822.85e6
+          ASR9_Log_Video_2822_85_1MSps.iq:
+               Date: 2022/03/12
+               Format: Int 8
+               Modulation: Log Video
+               Notes: One revolution
+               Protocol: Radar
+               Sample Rate: 1e6
+               Samples: 7371000
+               Size: 4364.1 kB
+               Tuned Frequency: 2822.85e6
+          ClapperPlus_434_1MSPs.iq:
+               Date: 2022/03/14
+               Format: Complex Float 32
+               Modulation: OOK
+               Notes: Five bursts
+               Protocol: Clapper Plus
+               Sample Rate: 1e6
+               Samples: 200000
+               Size: 1600 kB
+               Tuned Frequency: 434e6
+          GarageDoor_310_1MSPs.iq:
+               Date: 2022/03/14
+               Format: Complex Float 32
+               Modulation: OOK
+               Notes: Five bursts
+               Protocol: Garage Door
+               Sample Rate: 1e6
+               Samples: 195000
+               Size: 1560 kB
+               Tuned Frequency: 310e6
+          TPMS_Good_315_1MSps.iq:
+               Date: 2022/02/05
+               Format: Complex Float 32
+               Modulation: FSK
+               Notes: PMV-107J
+               Protocol: TPMS
+               Sample Rate: 1e6
+               Samples: 60000
+               Size: 480 kB
+               Tuned Frequency: 315e6
+          TPMS_Low_315_1MSps.iq:
+               Date: 2022/02/05
+               Format: Complex Float 32
+               Modulation: FSK
+               Notes: PMV-107J
+               Protocol: TPMS
+               Sample Rate: 1e6
+               Samples: 40000
+               Size: 320 kB
+               Tuned Frequency: 315e6
+          X10_311_1MSPs.iq:
+               Date: 2022/03/14
+               Format: Complex Float 32
+               Modulation: OOK
+               Notes: Five bursts
+               Protocol: X10
+               Sample Rate: 1e6
+               Samples: 440000
+               Size: 3520 kB
+               Tuned Frequency: 311e6
+          ZWAVE_Green_916_1MSps.iq:
+               Date: 2021/09/15
+               Format: Complex Float 32
+               Modulation: GFSK
+               Notes: Signal to turn Monoprice Z-Wave Plus RGB Smart Bulb green (Home
+                    ID 0xfa1c0b48 and Node ID 0x02)
+               Protocol: Z-Wave
+               Sample Rate: 1e6
+               Samples: 7000
+               Size: 56 kB
+               Tuned Frequency: 916e6
+          ZWAVE_Off_916_1MSps.iq:
+               Date: 2022/08/07
+               Format: Complex Float 32
+               Modulation: GFSK
+               Notes: Signal to turn off Monoprice Z-Wave Plus RGB Smart Bulb (Home
+                    ID 0xfa1c0b48 and Node ID 0x02)
+               Protocol: Z-Wave
+               Sample Rate: 1e6
+               Samples: 10000
+               Size: 80 kB
+               Tuned Frequency: 916e6
+          ZWAVE_On_916_1MSps.iq:
+               Date: 2022/08/07
+               Format: Complex Float 32
+               Modulation: GFSK
+               Notes: Signal to turn on Monoprice Z-Wave Plus RGB Smart Bulb (Home
+                    ID 0xfa1c0b48 and Node ID 0x02)
+               Protocol: Z-Wave
+               Sample Rate: 1e6
+               Samples: 10000
+               Size: 80 kB
+               Tuned Frequency: 916e6
+          ZWAVE_Red_916_1MSps.iq:
+               Date: 2021/09/15
+               Format: Complex Float 32
+               Modulation: GFSK
+               Notes: Signal to turn Monoprice Z-Wave Plus RGB Smart Bulb red (Home
+                    ID 0xfa1c0b48 and Node ID 0x02)
+               Protocol: Z-Wave
+               Sample Rate: 1e6
+               Samples: 8000
+               Size: 64 kB
+               Tuned Frequency: 916e6
 Attack Categories:
 - Single-Stage
 - Multi-Stage
@@ -311,6 +1374,12 @@ Inspection Flow Graphs:
      - time_sink_x3x0.py
      - time_sink_1_10_100_x3x0.py
      - waterfall_x3x0.py
+     USRP X410:
+     - instantaneous_frequency_usrp_x410.py
+     - signal_envelope_usrp_x410.py
+     - time_sink_usrp_x410.py
+     - time_sink_1_10_100_usrp_x410.py
+     - waterfall_usrp_x410.py
      USRP2:
      - instantaneous_frequency_usrp2.py
      - signal_envelope_usrp2.py
@@ -3192,6 +4261,8 @@ Protocols:
                                    Flow Graph: FM_Radio_FM_USRPB210_From_Wav_File.py
                               USRP X3x0:
                                    Flow Graph: FM_Radio_FM_USRPX310_From_Wav_File.py
+                              bladeRF 2.0:
+                                   Flow Graph: FM_Radio_FM_bladeRF2_From_Wav_File.py
                FM Radio - Gaussian:
                     FM:
                          Hardware:
@@ -3260,6 +4331,10 @@ Protocols:
                                    Flow Graph: Garage_Door_OOK_USRPX310_Transmit.py
           Modulation Types:
           - OOK
+     HD Radio:
+          Modulation Types:
+          - Default
+          Null Placeholder: null
      Mode S:
           Attacks:
                Mode S  - From File:

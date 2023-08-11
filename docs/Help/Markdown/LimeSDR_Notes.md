@@ -40,7 +40,7 @@ sudo ldconfig
 
 ## Other Notes 
 
-- `LimeUtil --find`
+- `LimeUtil \-\-find`
 - LimeSDR-USB and LimeSDR-PCIe sample rate must be no more than 61.44 MS/s.
 - Gain range must be 0dB–70dB (60 on transmit, 70 on receive).
 - Up to 10 dBm

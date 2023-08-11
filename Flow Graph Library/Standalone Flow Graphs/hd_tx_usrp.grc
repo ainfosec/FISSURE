@@ -259,7 +259,8 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    file: /home/user/FISSURE/Custom_Blocks/maint-3.8/gr-nrsc5-maint-3.8/sample.wav
+    file: /home/laptop1/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/Attack
+      Files/sample.wav
     maxoutbuf: '0'
     minoutbuf: '0'
     nchan: '2'
@@ -277,7 +278,8 @@ blocks:
     affinity: ''
     alias: ''
     comment: ''
-    file: /home/user/FISSURE/Custom_Blocks/maint-3.8/gr-nrsc5-maint-3.8/sample_mono.wav
+    file: /home/laptop1/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/Attack
+      Files/sample_mono.wav
     maxoutbuf: '0'
     minoutbuf: '0'
     nchan: '1'
@@ -817,3 +819,4 @@ connections:
 
 metadata:
   file_format: 1
+  grc_version: 3.10.5.0

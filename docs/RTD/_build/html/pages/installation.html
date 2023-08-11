@@ -50,12 +50,21 @@
 <li class="toctree-l2"><a class="reference internal" href="#installer">Installer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#uninstalling">Uninstalling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#known-conflicts">Known Conflicts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#third-party-software">Third-Party Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#third-party-software-versions">Third-Party Software Versions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-18-04-6">Ubuntu 18.04.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-20-04-4">Ubuntu 20.04.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#ubuntu-22-04-1">Ubuntu 22.04.1</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
 <li class="toctree-l1"><a class="reference internal" href="components.html">Components</a></li>
 <li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
 </ul>
 
         </div>
@@ -123,6 +132,2545 @@
 <section id="usage">
 <h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
 <p>Open a terminal and enter: <code class="docutils literal notranslate"><span class="pre">fissure</span></code></p>
+<p>The intended method for launching FISSURE is through the terminal without sudo. The terminal provides important status and feedback for some operations. Refer to the FISSURE documentation for more details.</p>
+</section>
+<section id="known-conflicts">
+<h2>Known Conflicts<a class="headerlink" href="#known-conflicts" title="Permalink to this heading"></a></h2>
+<p>The following are a list of known software conflicts and incompatibilities within FISSURE:</p>
+<ul class="simple">
+<li><p>Ubuntu 18.04
+- aircrack 8812au driver crashes computer on reboot, other drivers are dependent on kernel version
+- Python2 branch avoids installation of programs that depend on PyQt5.</p></li>
+<li><p>Ubuntu 20.04
+- Geany in 20.04 needs <cite>[styling] line_height=0;2;</cite> added to Tools&gt;Configuration Files&gt;filetypes.common to see underscores</p></li>
+<li><p>Ubuntu 22.04
+- Gpick does not work on Wayland, using wl-color-picker as a substitute</p></li>
+<li><p>Other
+- gr-gsm has to be installed twice for all blocks to be recognized
+- UBX daughterboards require specific UHD versions
+- Don’t name the TSI component “tsi.py”, it messes with importing gr-TSI blocks
+- ZMQ header adds something similar to 0x0007020004 to TCP data in PUB sink (flags/payload_length/command_length/command). A <cite>sub_listener.setsockopt_string(zmq.SUBSCRIBE,u’’)</cite> would need to drop the three bytes for the command length and command.
+- The default variable values for flow graphs with GUIs cannot be changed with <cite>loadedmod = __import__(flow_graph_filename)</cite>. This means serial or IP address variables must be accessed with parameter blocks and flow graphs called by the python command (mostly for inspection flow graphs).</p></li>
+</ul>
+</section>
+<section id="third-party-software">
+<h2>Third-Party Software<a class="headerlink" href="#third-party-software" title="Permalink to this heading"></a></h2>
+<p>The following is a table of the major software tools that have been proven to work for each supported operating system.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 40%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Software</p></th>
+<th class="head"><p>Ubuntu 18.04.6</p></th>
+<th class="head"><p>Ubuntu 20.04.4</p></th>
+<th class="head"><p>Ubuntu 22.04.1</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Aircrack-ng</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>airgeddon</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Anki</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Arduino IDE</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>baudline</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bless</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>btscanner</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>CRC RevEng</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>CyberChef</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Dire Wolf</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Dump1090</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Enscribe</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>ESP32 Bluetooth Classic Sniffer</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>ESP8266 Deauther v2</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>FALCON</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❓</p></td>
+</tr>
+<tr class="row-odd"><td><p>fl2k</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Fldigi</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>FoxtrotGPS</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Geany</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>GNU Radio</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Google Earth Pro</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Gpredict</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Gpick</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>GQRX</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-acars</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-adsb</p></td>
+<td><p>✅</p></td>
+<td><p>❓</p></td>
+<td><p>❓</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-ainfosec</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-air-modes</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-ais</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-bluetooth</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❓</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-clapper_plus</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-dect2</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-foo</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-fuzzer</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-garage_door</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-gsm</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-ieee802-11</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-ieee802-15-4</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-iio</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-iridium</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-j2497</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-limesdr</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-mixalot</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-nrsc5</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-paint</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-rds</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-tpms</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-tpms_poore</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-X10</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-Zwave</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-even"><td><p>gr-zwave_poore</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>GraphicsMagick</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Grip</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>HackRF</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>ham2mon</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>HamClock</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>hcidump</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>htop</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Hydra</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>ICE9 Bluetooth Sniffer</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>IIO Oscilloscope</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>IMSI-Catcher 4G</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Inspectrum</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>IridiumLive</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>iridium-toolkit</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Kalibrate</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Kismet</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>libbtbb</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>LTE-Cell-Scanner</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>LTE-ciphercheck</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-even"><td><p>m17-cxx-demod</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Meld</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Metasploit</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>minicom</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>minimodem</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>mkusb/dus/guidus</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>monitor_rtl433</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>multimon-ng</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>NETATTACK2</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>nrsc5</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>OpenBTS</p></td>
+<td><p>✅</p></td>
+<td><p>❌</p></td>
+<td><p>❌</p></td>
+</tr>
+<tr class="row-odd"><td><p>openCPN</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>openHAB</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>❓</p></td>
+</tr>
+<tr class="row-odd"><td><p>openWebRX</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Proxmark3</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>PuTTY</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>pyFDA</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>PyGPSClient</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>QSpectrumAnalyzer</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>QSSTV</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>QtDesigner</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>radiosonde_auto_rx</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>rehex</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>retrogram-rtlsdr</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>RouterSploit</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>rtl_433</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>rtl8812au Driver</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>RTLSDR-Airband</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>rtl-zwave</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>scan-ssid</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Scapy</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>SdrGlut</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>SDRTrunk</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>SigDigger</p></td>
+<td><p>❌</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Spectrum Painter</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Spektrum</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>srsRAN/srsLTE</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>systemback</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>trackerjacker</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>UDP Replay</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Universal Radio Hacker</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>V2Verifier</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Viking</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>WaveDrom</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Waving-Z</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Wifite</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>Wireshark</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>wl-color-picker</p></td>
+<td><p>❓</p></td>
+<td><p>❓</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>WSJT-X</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Xastir</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-even"><td><p>ZEPASSD</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+<tr class="row-odd"><td><p>Zigbee Sniffer</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+<td><p>✅</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="third-party-software-versions">
+<h2>Third-Party Software Versions<a class="headerlink" href="#third-party-software-versions" title="Permalink to this heading"></a></h2>
+<p>The following are the software versions that are included with the FISSURE installer for the most recent major version of each supported operating system. This list will be updated periodically.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#ubuntu-18-04-6"><span class="std std-ref">Ubuntu 18.04.6</span></a></p></li>
+<li><p><a class="reference internal" href="#ubuntu-20-04-4"><span class="std std-ref">Ubuntu 20.04.4</span></a></p></li>
+<li><p><a class="reference internal" href="#ubuntu-22-04-1"><span class="std std-ref">Ubuntu 22.04.1</span></a></p></li>
+</ul>
+<section id="ubuntu-18-04-6">
+<h3>Ubuntu 18.04.6<a class="headerlink" href="#ubuntu-18-04-6" title="Permalink to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 56%" />
+<col style="width: 11%" />
+<col style="width: 6%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Software</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>From Source</p></th>
+<th class="head"><p>Links/Author</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Aircrack-ng</p></td>
+<td><p>1.2 rc4</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.aircrack-ng.org/">http://www.aircrack-ng.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Arduino IDE</p></td>
+<td><p>1.8.15</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.arduino.cc/en/software">https://www.arduino.cc/en/software</a></p></td>
+</tr>
+<tr class="row-even"><td><p>airgeddon</p></td>
+<td><p>v11.01</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/v1s1t0r1sh3r3/airgeddon">https://github.com/v1s1t0r1sh3r3/airgeddon</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Anki</p></td>
+<td><p>2.1.0beta36</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://apps.ankiweb.net/">https://apps.ankiweb.net/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>baudline</p></td>
+<td><p>version 1.08</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.baudline.com/">https://www.baudline.com/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Bless</p></td>
+<td><p>0.6.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/afrantzis/bless">https://github.com/afrantzis/bless</a></p></td>
+</tr>
+<tr class="row-even"><td><p>btscanner</p></td>
+<td><p>2.1-6</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://salsa.debian.org/pkg-security-team/btscanner">https://salsa.debian.org/pkg-security-team/btscanner</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>CRC RevEng</p></td>
+<td><p>3.0.5</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://reveng.sourceforge.io/">https://reveng.sourceforge.io/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>CyberChef</p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://gchq.github.io/CyberChef/">https://gchq.github.io/CyberChef/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Dire Wolf</p></td>
+<td><p>dev</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/wb2osz/direwolf">https://github.com/wb2osz/direwolf</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Dump1090</p></td>
+<td><p>1.10.3010.14</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/antirez/dump1090">https://github.com/antirez/dump1090</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>dump978</p></td>
+<td><p>latest</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mutability/dump978">https://github.com/mutability/dump978</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Enscribe</p></td>
+<td><p>0.1.0</p></td>
+<td><p>No</p></td>
+<td><p>Jason Downer</p></td>
+</tr>
+<tr class="row-odd"><td><p>ESP32 Bluetooth Classic Sniffer</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer">https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer</a></p></td>
+</tr>
+<tr class="row-even"><td><p>ESP8266 Deauther v2</p></td>
+<td><p>v2</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/SpacehuhnTech/esp8266_deauther">https://github.com/SpacehuhnTech/esp8266_deauther</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>FALCON</p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/falkenber9/falcon">https://github.com/falkenber9/falcon</a></p></td>
+</tr>
+<tr class="row-even"><td><p>fl2k</p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://osmocom.org/projects/osmo-fl2k/wiki">https://osmocom.org/projects/osmo-fl2k/wiki</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Fldigi</p></td>
+<td><p>4.0.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.w1hkj.com/">http://www.w1hkj.com/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>FoxtrotGPS</p></td>
+<td><p>1.2.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.foxtrotgps.org/">https://www.foxtrotgps.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Geany</p></td>
+<td><p>1.32</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.geany.org/">https://www.geany.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>GNU Radio</p></td>
+<td><p>3.7.13.5</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.gnuradio.org/">https://www.gnuradio.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Google Earth Pro</p></td>
+<td><p>latest</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.google.com/earth/versions/">https://www.google.com/earth/versions/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Gpick</p></td>
+<td><p>0.2.5</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/thezbyg/gpick">https://github.com/thezbyg/gpick</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Gpredict</p></td>
+<td><p>2.0-4</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://gpredict.oz9aec.net/">http://gpredict.oz9aec.net/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>GQRX</p></td>
+<td><p>2.9</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://gqrx.dk/">https://gqrx.dk/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-acars</p></td>
+<td><p>3.7.5</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://sourceforge.net/projects/gr-acars/">https://sourceforge.net/projects/gr-acars/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-adsb</p></td>
+<td><p>master/wnagele</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/wnagele/gr-adsb">https://github.com/wnagele/gr-adsb</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-ainfosec</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ainfosec/fissure">https://github.com/ainfosec/fissure</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-air-modes</p></td>
+<td><p>0.0.2.c29eb60-2ubuntu1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/bistromath/gr-air-modes">https://github.com/bistromath/gr-air-modes</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-ais</p></td>
+<td><p>?</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bistromath/gr-ais">https://github.com/bistromath/gr-ais</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-bluetooth</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/greatscottgadgets/gr-bluetooth">https://github.com/greatscottgadgets/gr-bluetooth</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-clapper_plus</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-clapper_plus">https://github.com/cpoore1/gr-clapper_plus</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-dect2</p></td>
+<td><p>pyqt4</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/pavelyazev/gr-dect2">https://github.com/pavelyazev/gr-dect2</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-foo</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bastibl/gr-foo">https://github.com/bastibl/gr-foo</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-fuzzer</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ainfosec/fissure">https://github.com/ainfosec/fissure</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-garage_door</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-garage_door">https://github.com/cpoore1/gr-garage_door</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-gsm</p></td>
+<td><p>development</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ptrkrysik/gr-gsm">https://github.com/ptrkrysik/gr-gsm</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-ieee802-11</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bastibl/gr-ieee802-11">https://github.com/bastibl/gr-ieee802-11</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-ieee802-15-4</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bastibl/gr-ieee802-15-4">https://github.com/bastibl/gr-ieee802-15-4</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-iio</p></td>
+<td><p>0.3-myriadrf1~bionic</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/analogdevicesinc/gr-iio">https://github.com/analogdevicesinc/gr-iio</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-iridium</p></td>
+<td><p>?</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/muccc/gr-iridium">https://github.com/muccc/gr-iridium</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-j2497</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ainfosec/gr-j2497">https://github.com/ainfosec/gr-j2497</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-limesdr</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/myriadrf/gr-limesdr">https://github.com/myriadrf/gr-limesdr</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-mixalot</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/unsynchronized/gr-mixalot">https://github.com/unsynchronized/gr-mixalot</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-nrsc5</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/argilo/gr-nrsc5">https://github.com/argilo/gr-nrsc5</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-paint</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/drmpeg/gr-paint">https://github.com/drmpeg/gr-paint</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-rds</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bastibl/gr-rds">https://github.com/bastibl/gr-rds</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-tpms</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/jboone/gr-tpms">https://github.com/jboone/gr-tpms</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-tpms_poore</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-tpms_poore">https://github.com/cpoore1/gr-tpms_poore</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-X10</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-X10">https://github.com/cpoore1/gr-X10</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-Zwave</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/BastilleResearch/scapy-radio/tree/master/gnuradio/gr-Zwave">https://github.com/BastilleResearch/scapy-radio/tree/master/gnuradio/gr-Zwave</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-zwave_poore</p></td>
+<td><p>maint-3.7</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-zwave_poore">https://github.com/cpoore1/gr-zwave_poore</a></p></td>
+</tr>
+<tr class="row-even"><td><p>GraphicsMagick</p></td>
+<td><p>1.3.28-2ubuntu0.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.graphicsmagick.org/">http://www.graphicsmagick.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Grip</p></td>
+<td><p>4.6.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/joeyespo/grip">https://github.com/joeyespo/grip</a></p></td>
+</tr>
+<tr class="row-even"><td><p>HackRF</p></td>
+<td><p>2022.09.1</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/greatscottgadgets/hackrf/releases">https://github.com/greatscottgadgets/hackrf/releases</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>ham2mon</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/madengr/ham2mon">https://github.com/madengr/ham2mon</a></p></td>
+</tr>
+<tr class="row-even"><td><p>HamClock</p></td>
+<td><p>latest</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.clearskyinstitute.com/ham/HamClock/">https://www.clearskyinstitute.com/ham/HamClock/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>hcidump</p></td>
+<td><p>5.48</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.bluez.org/">http://www.bluez.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>htop</p></td>
+<td><p>2.1.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/htop-dev/htop">https://github.com/htop-dev/htop</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Hydra</p></td>
+<td><p>8.6</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/vanhauser-thc/thc-hydra">https://github.com/vanhauser-thc/thc-hydra</a></p></td>
+</tr>
+<tr class="row-even"><td><p>ICE9 Bluetooth Sniffer</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mikeryan/ice9-bluetooth-sniffer">https://github.com/mikeryan/ice9-bluetooth-sniffer</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>IIO Oscilloscope</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/analogdevicesinc/iio-oscilloscope">https://github.com/analogdevicesinc/iio-oscilloscope</a></p></td>
+</tr>
+<tr class="row-even"><td><p>IMSI-Catcher 4G</p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p>Joe Reith, AIS</p></td>
+</tr>
+<tr class="row-odd"><td><p>Inspectrum</p></td>
+<td><p>0.2-1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/miek/inspectrum">https://github.com/miek/inspectrum</a></p></td>
+</tr>
+<tr class="row-even"><td><p>IridiumLive</p></td>
+<td><p>1.2-35021</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/microp11/iridiumlive">https://github.com/microp11/iridiumlive</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>iridium-toolkit</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/muccc/iridium-toolkit">https://github.com/muccc/iridium-toolkit</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Kalibrate</p></td>
+<td><p>v0.4.1-rtl</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/steve-m/kalibrate-rtl">https://github.com/steve-m/kalibrate-rtl</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Kismet</p></td>
+<td><p>Kismet 2016-07-R1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.kismetwireless.net/">https://www.kismetwireless.net/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>libbtbb</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/greatscottgadgets/libbtbb">https://github.com/greatscottgadgets/libbtbb</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>LTE-Cell-Scanner</p></td>
+<td><p>master/1.1.0</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/JiaoXianjun/LTE-Cell-Scanner">https://github.com/JiaoXianjun/LTE-Cell-Scanner</a></p></td>
+</tr>
+<tr class="row-even"><td><p>LTE-ciphercheck</p></td>
+<td><p>rebase_20.04</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mrlnc/LTE-ciphercheck">https://github.com/mrlnc/LTE-ciphercheck</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Meld</p></td>
+<td><p>3.18.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://meldmerge.org/">https://meldmerge.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Metasploit</p></td>
+<td><p>6.2.10-dev-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.metasploit.com/">https://www.metasploit.com/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>minicom</p></td>
+<td><p>2.7.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://salsa.debian.org/minicom-team/minicom">https://salsa.debian.org/minicom-team/minicom</a></p></td>
+</tr>
+<tr class="row-even"><td><p>minimodem</p></td>
+<td><p>0.24</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.whence.com/minimodem/">http://www.whence.com/minimodem/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>mkusb/dus/guidus</p></td>
+<td><p>22.1.2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://help.ubuntu.com/community/mkusb">https://help.ubuntu.com/community/mkusb</a></p></td>
+</tr>
+<tr class="row-even"><td><p>monitor_rtl433</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mcbridejc/monitor_rtl433">https://github.com/mcbridejc/monitor_rtl433</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>multimon-ng</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/EliasOenal/multimon-ng">https://github.com/EliasOenal/multimon-ng</a></p></td>
+</tr>
+<tr class="row-even"><td><p>NETATTACK2</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/chrizator/netattack2">https://github.com/chrizator/netattack2</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>nrsc5</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/theori-io/nrsc5">https://github.com/theori-io/nrsc5</a></p></td>
+</tr>
+<tr class="row-even"><td><p>OpenBTS</p></td>
+<td><p>release 5.0-master+646bb6e79f</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="http://openbts.org/">http://openbts.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>openCPN</p></td>
+<td><p>5.6.2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://opencpn.org/">https://opencpn.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>openHAB</p></td>
+<td><p>3.1.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.openhab.org/">https://www.openhab.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Proxmark3</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/Proxmark/proxmark3">https://github.com/Proxmark/proxmark3</a></p></td>
+</tr>
+<tr class="row-even"><td><p>PuTTY</p></td>
+<td><p>Release 0.70</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.putty.org/">https://www.putty.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>PyGPSClient</p></td>
+<td><p>1.3.5</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/semuconsulting/PyGPSClient">https://github.com/semuconsulting/PyGPSClient</a></p></td>
+</tr>
+<tr class="row-even"><td><p>QSpectrumAnalyzer</p></td>
+<td><p>2.1.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/xmikos/qspectrumanalyzer">https://github.com/xmikos/qspectrumanalyzer</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>QSSTV</p></td>
+<td><p>9.2.6</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://charlesreid1.com/wiki/Qsstv">https://charlesreid1.com/wiki/Qsstv</a></p></td>
+</tr>
+<tr class="row-even"><td><p>QtDesigner</p></td>
+<td><p>4.8.7</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://doc.qt.io/qt-5/qtdesigner-manual.html">https://doc.qt.io/qt-5/qtdesigner-manual.html</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>radiosonde_auto_rx</p></td>
+<td><p>master</p></td>
+<td><p>yes</p></td>
+<td><p><a class="reference external" href="https://github.com/projecthorus/radiosonde_auto_rx">https://github.com/projecthorus/radiosonde_auto_rx</a></p></td>
+</tr>
+<tr class="row-even"><td><p>rehex</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/solemnwarning/rehex">https://github.com/solemnwarning/rehex</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>retrogram-rtlsdr</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/r4d10n/retrogram-rtlsdr">https://github.com/r4d10n/retrogram-rtlsdr</a></p></td>
+</tr>
+<tr class="row-even"><td><p>RouterSploit</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.github.com/threat9/routersploit">https://www.github.com/threat9/routersploit</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>rtl_433</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/merbanan/rtl_433">https://github.com/merbanan/rtl_433</a></p></td>
+</tr>
+<tr class="row-even"><td><p>rtl8812au Driver</p></td>
+<td><p>latest (fix)</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/aircrack-ng/rtl8812au">https://github.com/aircrack-ng/rtl8812au</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>RTLSDR-Airband</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/szpajder/RTLSDR-Airband">https://github.com/szpajder/RTLSDR-Airband</a></p></td>
+</tr>
+<tr class="row-even"><td><p>rtl-zwave</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/andersesbensen/rtl-zwave">https://github.com/andersesbensen/rtl-zwave</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>scan-ssid</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/Resethel/scan-ssid">https://github.com/Resethel/scan-ssid</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Scapy</p></td>
+<td><div class="line-block">
+<div class="line">2.4.5 (Python2)</div>
+<div class="line">2.4.5 (Python3)</div>
+<div class="line">2.4.0 (scapy command)</div>
+</div>
+</td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://scapy.net/">https://scapy.net/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>SdrGlut</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/righthalfplane/SdrGlut">https://github.com/righthalfplane/SdrGlut</a></p></td>
+</tr>
+<tr class="row-even"><td><p>SDRTrunk</p></td>
+<td><p>v0.5.0-alpha.6</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/DSheirer/sdrtrunk">https://github.com/DSheirer/sdrtrunk</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Spectrum Painter</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/polygon/spectrum_painter">https://github.com/polygon/spectrum_painter</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Spektrum</p></td>
+<td><p>2.1.0</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/pavels/spektrum">https://github.com/pavels/spektrum</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>srsRAN/srsLTE</p></td>
+<td><p>20.10.1</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.srslte.com/">https://www.srslte.com/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>systemback</p></td>
+<td><p>1.8.402~ubuntu16.04.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/BluewhaleRobot/systemback">https://github.com/BluewhaleRobot/systemback</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>trackerjacker</p></td>
+<td><p>1.9.0</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/calebmadrigal/trackerjacker">https://github.com/calebmadrigal/trackerjacker</a></p></td>
+</tr>
+<tr class="row-even"><td><p>UDP Replay</p></td>
+<td><p>1.0.0</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/rigtorp/udpreplay">https://github.com/rigtorp/udpreplay</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Universal Radio Hacker</p></td>
+<td><p>2.9.3</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/jopohl/urh">https://github.com/jopohl/urh</a></p></td>
+</tr>
+<tr class="row-even"><td><p>V2Verifier</p></td>
+<td><p>1.1: 9e025e1</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/twardokus/v2verifier">https://github.com/twardokus/v2verifier</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Viking</p></td>
+<td><p>1.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://sourceforge.net/projects/viking/">https://sourceforge.net/projects/viking/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>WaveDrom</p></td>
+<td><p>Online Editor</p></td>
+<td><p>-</p></td>
+<td><p><a class="reference external" href="https://github.com/wavedrom/wavedrom">https://github.com/wavedrom/wavedrom</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Waving-Z</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/baol/waving-z">https://github.com/baol/waving-z</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Wifite</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/derv82/wifite2">https://github.com/derv82/wifite2</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Wireshark</p></td>
+<td><p>3.6.5</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.wireshark.org/">https://www.wireshark.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>WSJT-X</p></td>
+<td><p>1.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://physics.princeton.edu/pulsar/k1jt/wsjtx.html">https://physics.princeton.edu/pulsar/k1jt/wsjtx.html</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Xastir</p></td>
+<td><p>2.1.0-1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/Xastir/Xastir">https://github.com/Xastir/Xastir</a></p></td>
+</tr>
+<tr class="row-even"><td><p>ZEPASSD</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/pvachon/zepassd">https://github.com/pvachon/zepassd</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Zigbee Sniffer</p></td>
+<td><p>0.1</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/yiek888/opensniffer">https://github.com/yiek888/opensniffer</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ubuntu-20-04-4">
+<h3>Ubuntu 20.04.4<a class="headerlink" href="#ubuntu-20-04-4" title="Permalink to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 56%" />
+<col style="width: 11%" />
+<col style="width: 6%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Software</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>From Source</p></th>
+<th class="head"><p>Links/Author</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Aircrack-ng</p></td>
+<td><p>1.6</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.aircrack-ng.org/">http://www.aircrack-ng.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Arduino IDE</p></td>
+<td><p>1.8.15</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.arduino.cc/en/software">https://www.arduino.cc/en/software</a></p></td>
+</tr>
+<tr class="row-even"><td><p>airgeddon</p></td>
+<td><p>v11.01</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/v1s1t0r1sh3r3/airgeddon">https://github.com/v1s1t0r1sh3r3/airgeddon</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Anki</p></td>
+<td><p>2.1.15</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://apps.ankiweb.net/">https://apps.ankiweb.net/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>baudline</p></td>
+<td><p>1.08</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.baudline.com/">https://www.baudline.com/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Bless</p></td>
+<td><p>0.6.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/afrantzis/bless">https://github.com/afrantzis/bless</a></p></td>
+</tr>
+<tr class="row-even"><td><p>btscanner</p></td>
+<td><p>2.1-8</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://salsa.debian.org/pkg-security-team/btscanner">https://salsa.debian.org/pkg-security-team/btscanner</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>CRC RevEng</p></td>
+<td><p>3.0.5</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://reveng.sourceforge.io/">https://reveng.sourceforge.io/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>CyberChef</p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://gchq.github.io/CyberChef/">https://gchq.github.io/CyberChef/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Dire Wolf</p></td>
+<td><p>dev</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/wb2osz/direwolf">https://github.com/wb2osz/direwolf</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Dump1090</p></td>
+<td><p>1.010.3010.14</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/antirez/dump1090">https://github.com/antirez/dump1090</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>dump978</p></td>
+<td><p>latest</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mutability/dump978">https://github.com/mutability/dump978</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Enscribe</p></td>
+<td><p>0.1.0</p></td>
+<td><p>No</p></td>
+<td><p>Jason Downer</p></td>
+</tr>
+<tr class="row-odd"><td><p>ESP32 Bluetooth Classic Sniffer</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer">https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer</a></p></td>
+</tr>
+<tr class="row-even"><td><p>ESP8266 Deauther v2</p></td>
+<td><p>v2</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/SpacehuhnTech/esp8266_deauther">https://github.com/SpacehuhnTech/esp8266_deauther</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>FALCON</p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/falkenber9/falcon">https://github.com/falkenber9/falcon</a></p></td>
+</tr>
+<tr class="row-even"><td><p>fl2k</p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://osmocom.org/projects/osmo-fl2k/wiki">https://osmocom.org/projects/osmo-fl2k/wiki</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Fldigi</p></td>
+<td><p>4.1.06</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.w1hkj.com/">http://www.w1hkj.com/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>FoxtrotGPS</p></td>
+<td><p>1.2.2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.foxtrotgps.org/">https://www.foxtrotgps.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Geany</p></td>
+<td><p>1.36</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.geany.org/">https://www.geany.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>GNU Radio</p></td>
+<td><p>3.8.5.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.gnuradio.org/">https://www.gnuradio.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Google Earth Pro</p></td>
+<td><p>latest</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.google.com/earth/versions/">https://www.google.com/earth/versions/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Gpick</p></td>
+<td><p>0.2.6rc1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/thezbyg/gpick">https://github.com/thezbyg/gpick</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Gpredict</p></td>
+<td><p>2.3-33-gca42d22-1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://gpredict.oz9aec.net/">http://gpredict.oz9aec.net/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>GQRX</p></td>
+<td><p>2.12</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://gqrx.dk/">https://gqrx.dk/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-acars</p></td>
+<td><p>3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://sourceforge.net/projects/gr-acars/">https://sourceforge.net/projects/gr-acars/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-adsb</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mhostetter/gr-adsb">https://github.com/mhostetter/gr-adsb</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-ainfosec</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ainfosec/fissure">https://github.com/ainfosec/fissure</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-air-modes</p></td>
+<td><p>0.0.20190917-2build2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/bistromath/gr-air-modes">https://github.com/bistromath/gr-air-modes</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-ais</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bistromath/gr-ais">https://github.com/bistromath/gr-ais</a></p></td>
+</tr>
+<tr class="row-even"><td><p><strike> gr-bluetooth </strike></p></td>
+<td></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/greatscottgadgets/gr-bluetooth">https://github.com/greatscottgadgets/gr-bluetooth</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-clapper_plus</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-clapper_plus">https://github.com/cpoore1/gr-clapper_plus</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-dect2</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/pavelyazev/gr-dect2">https://github.com/pavelyazev/gr-dect2</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-foo</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bastibl/gr-foo">https://github.com/bastibl/gr-foo</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-fuzzer</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ainfosec/fissure">https://github.com/ainfosec/fissure</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-garage_door</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-garage_door">https://github.com/cpoore1/gr-garage_door</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-gsm</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ptrkrysik/gr-gsm">https://github.com/ptrkrysik/gr-gsm</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-ieee802-11</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bastibl/gr-ieee802-11">https://github.com/bastibl/gr-ieee802-11</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-ieee802-15-4</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bastibl/gr-ieee802-15-4">https://github.com/bastibl/gr-ieee802-15-4</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-iio</p></td>
+<td><p>upgrade-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/analogdevicesinc/gr-iio">https://github.com/analogdevicesinc/gr-iio</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-iridium</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/muccc/gr-iridium">https://github.com/muccc/gr-iridium</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-j2497</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ainfosec/gr-j2497">https://github.com/ainfosec/gr-j2497</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-limesdr</p></td>
+<td><p>gr-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/myriadrf/gr-limesdr">https://github.com/myriadrf/gr-limesdr</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-mixalot</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/unsynchronized/gr-mixalot">https://github.com/unsynchronized/gr-mixalot</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-nrsc5</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/argilo/gr-nrsc5">https://github.com/argilo/gr-nrsc5</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-paint</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/drmpeg/gr-paint">https://github.com/drmpeg/gr-paint</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-rds</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bastibl/gr-rds">https://github.com/bastibl/gr-rds</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strike> gr-tpms </strike></p></td>
+<td></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/jboone/gr-tpms">https://github.com/jboone/gr-tpms</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-tpms_poore</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-tpms_poore">https://github.com/cpoore1/gr-tpms_poore</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-X10</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-X10">https://github.com/cpoore1/gr-X10</a></p></td>
+</tr>
+<tr class="row-even"><td><p><strike> gr-Zwave </strike></p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/BastilleResearch/scapy-radio/tree/master/gnuradio/gr-Zwave">https://github.com/BastilleResearch/scapy-radio/tree/master/gnuradio/gr-Zwave</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-zwave_poore</p></td>
+<td><p>maint-3.8</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-zwave_poore">https://github.com/cpoore1/gr-zwave_poore</a></p></td>
+</tr>
+<tr class="row-even"><td><p>GraphicsMagick</p></td>
+<td><p>1.4+really1.3.35-1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.graphicsmagick.org/">http://www.graphicsmagick.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Grip</p></td>
+<td><p>4.6.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/joeyespo/grip">https://github.com/joeyespo/grip</a></p></td>
+</tr>
+<tr class="row-even"><td><p>HackRF</p></td>
+<td><p>2022.09.1</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/greatscottgadgets/hackrf/releases">https://github.com/greatscottgadgets/hackrf/releases</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>ham2mon</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ta6o/ham2mon">https://github.com/ta6o/ham2mon</a></p></td>
+</tr>
+<tr class="row-even"><td><p>HamClock</p></td>
+<td><p>latest</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.clearskyinstitute.com/ham/HamClock/">https://www.clearskyinstitute.com/ham/HamClock/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>hcidump</p></td>
+<td><p>5.53</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.bluez.org/">http://www.bluez.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>htop</p></td>
+<td><p>2.2.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/htop-dev/htop">https://github.com/htop-dev/htop</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Hydra</p></td>
+<td><p>9.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/vanhauser-thc/thc-hydra">https://github.com/vanhauser-thc/thc-hydra</a></p></td>
+</tr>
+<tr class="row-even"><td><p>ICE9 Bluetooth Sniffer</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mikeryan/ice9-bluetooth-sniffer">https://github.com/mikeryan/ice9-bluetooth-sniffer</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>IIO Oscilloscope</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/analogdevicesinc/iio-oscilloscope">https://github.com/analogdevicesinc/iio-oscilloscope</a></p></td>
+</tr>
+<tr class="row-even"><td><p>IMSI-Catcher 4G</p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p>Joe Reith, AIS</p></td>
+</tr>
+<tr class="row-odd"><td><p>Inspectrum</p></td>
+<td><p>0.2.2-1build1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/miek/inspectrum">https://github.com/miek/inspectrum</a></p></td>
+</tr>
+<tr class="row-even"><td><p>IridiumLive</p></td>
+<td><p>v1.2</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/microp11/iridiumlive">https://github.com/microp11/iridiumlive</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>iridium-toolkit</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/muccc/iridium-toolkit">https://github.com/muccc/iridium-toolkit</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Kalibrate</p></td>
+<td><p>v0.4.1-rtl</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/steve-m/kalibrate-rtl">https://github.com/steve-m/kalibrate-rtl</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Kismet</p></td>
+<td><p>Kismet 2016-07-R1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.kismetwireless.net/">https://www.kismetwireless.net/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>libbtbb</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/greatscottgadgets/libbtbb">https://github.com/greatscottgadgets/libbtbb</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>LTE-Cell-Scanner</p></td>
+<td><p>master/1.1.0</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/JiaoXianjun/LTE-Cell-Scanner">https://github.com/JiaoXianjun/LTE-Cell-Scanner</a></p></td>
+</tr>
+<tr class="row-even"><td><p>LTE-ciphercheck</p></td>
+<td><p>rebase_20.04</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mrlnc/LTE-ciphercheck">https://github.com/mrlnc/LTE-ciphercheck</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>m17-cxx-demod</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mobilinkd/m17-cxx-demod">https://github.com/mobilinkd/m17-cxx-demod</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Meld</p></td>
+<td><p>3.20.2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://meldmerge.org/">https://meldmerge.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Metasploit</p></td>
+<td><p>v6.1.44-dev-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.metasploit.com/">https://www.metasploit.com/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>minicom</p></td>
+<td><p>2.7.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://salsa.debian.org/minicom-team/minicom">https://salsa.debian.org/minicom-team/minicom</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>minimodem</p></td>
+<td><p>0.24</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.whence.com/minimodem/">http://www.whence.com/minimodem/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>mkusb/dus/guidus</p></td>
+<td><p>22.1.2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://help.ubuntu.com/community/mkusb">https://help.ubuntu.com/community/mkusb</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>monitor_rtl433</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mcbridejc/monitor_rtl433">https://github.com/mcbridejc/monitor_rtl433</a></p></td>
+</tr>
+<tr class="row-even"><td><p>multimon-ng</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/EliasOenal/multimon-ng">https://github.com/EliasOenal/multimon-ng</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>NETATTACK2</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/chrizator/netattack2">https://github.com/chrizator/netattack2</a></p></td>
+</tr>
+<tr class="row-even"><td><p>nrsc5</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/theori-io/nrsc5">https://github.com/theori-io/nrsc5</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strike> OpenBTS </strike></p></td>
+<td></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/RangeNetworks/dev">https://github.com/RangeNetworks/dev</a></p></td>
+</tr>
+<tr class="row-even"><td><p>openCPN</p></td>
+<td><p>5.6.2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://opencpn.org/">https://opencpn.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strike> openHAB </strike> (fix)</p></td>
+<td></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.openhab.org/">https://www.openhab.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>OpenWebRX</p></td>
+<td><p>v0.20.3</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/jketterl/openwebrx">https://github.com/jketterl/openwebrx</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Proxmark3</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/Proxmark/proxmark3">https://github.com/Proxmark/proxmark3</a></p></td>
+</tr>
+<tr class="row-even"><td><p>PuTTY</p></td>
+<td><p>0.73</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.putty.org/">https://www.putty.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>pyFDA</p></td>
+<td><p>0.7.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/chipmuenk/pyfda">https://github.com/chipmuenk/pyfda</a></p></td>
+</tr>
+<tr class="row-even"><td><p>PyGPSClient</p></td>
+<td><p>1.3.5</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/semuconsulting/PyGPSClient">https://github.com/semuconsulting/PyGPSClient</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>QSpectrumAnalyzer</p></td>
+<td><p>2.1.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/xmikos/qspectrumanalyzer">https://github.com/xmikos/qspectrumanalyzer</a></p></td>
+</tr>
+<tr class="row-even"><td><p>QSSTV</p></td>
+<td><p>9.4.4</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://charlesreid1.com/wiki/Qsstv">https://charlesreid1.com/wiki/Qsstv</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>QtDesigner</p></td>
+<td><p>5.12.8</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://doc.qt.io/qt-5/qtdesigner-manual.html">https://doc.qt.io/qt-5/qtdesigner-manual.html</a></p></td>
+</tr>
+<tr class="row-even"><td><p>radiosonde_auto_rx</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/projecthorus/radiosonde_auto_rx">https://github.com/projecthorus/radiosonde_auto_rx</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>rehex</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/solemnwarning/rehex">https://github.com/solemnwarning/rehex</a></p></td>
+</tr>
+<tr class="row-even"><td><p>retrogram-rtlsdr</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/r4d10n/retrogram-rtlsdr">https://github.com/r4d10n/retrogram-rtlsdr</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>RouterSploit</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.github.com/threat9/routersploit">https://www.github.com/threat9/routersploit</a></p></td>
+</tr>
+<tr class="row-even"><td><p>rtl_433</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/merbanan/rtl_433">https://github.com/merbanan/rtl_433</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>rtl8812au Driver</p></td>
+<td><p>latest</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/aircrack-ng/rtl8812au">https://github.com/aircrack-ng/rtl8812au</a></p></td>
+</tr>
+<tr class="row-even"><td><p>RTLSDR-Airband</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/szpajder/RTLSDR-Airband">https://github.com/szpajder/RTLSDR-Airband</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>rtl-zwave</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/andersesbensen/rtl-zwave">https://github.com/andersesbensen/rtl-zwave</a></p></td>
+</tr>
+<tr class="row-even"><td><p>scan-ssid</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/Resethel/scan-ssid">https://github.com/Resethel/scan-ssid</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Scapy</p></td>
+<td><p>2.4.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://scapy.net/">https://scapy.net/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>SdrGlut</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/righthalfplane/SdrGlut">https://github.com/righthalfplane/SdrGlut</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>SDRTrunk</p></td>
+<td><p>v0.5.0-alpha.6</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/DSheirer/sdrtrunk">https://github.com/DSheirer/sdrtrunk</a></p></td>
+</tr>
+<tr class="row-even"><td><p>SigDigger</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/BatchDrake/SigDigger">https://github.com/BatchDrake/SigDigger</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Spectrum Painter</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/polygon/spectrum_painter">https://github.com/polygon/spectrum_painter</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Spektrum</p></td>
+<td><p>2.1.0</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/pavels/spektrum">https://github.com/pavels/spektrum</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>srsRAN/srsLTE</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.srslte.com/">https://www.srslte.com/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>systemback</p></td>
+<td><p>1.8.402~ubuntu16.04.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/BluewhaleRobot/systemback">https://github.com/BluewhaleRobot/systemback</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>trackerjacker</p></td>
+<td><p>1.9.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/calebmadrigal/trackerjacker">https://github.com/calebmadrigal/trackerjacker</a></p></td>
+</tr>
+<tr class="row-even"><td><p>UDP Replay</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/rigtorp/udpreplay">https://github.com/rigtorp/udpreplay</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Universal Radio Hacker</p></td>
+<td><p>2.9.3</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/jopohl/urh">https://github.com/jopohl/urh</a></p></td>
+</tr>
+<tr class="row-even"><td><p>V2Verifier</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/twardokus/v2verifier">https://github.com/twardokus/v2verifier</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Viking</p></td>
+<td><p>1.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://sourceforge.net/projects/viking/">https://sourceforge.net/projects/viking/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>WaveDrom</p></td>
+<td><p>Online Editor</p></td>
+<td><p>-</p></td>
+<td><p><a class="reference external" href="https://github.com/wavedrom/wavedrom">https://github.com/wavedrom/wavedrom</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Waving-Z</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/baol/waving-z">https://github.com/baol/waving-z</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Wifite</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/derv82/wifite2">https://github.com/derv82/wifite2</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Wireshark</p></td>
+<td><p>3.6.5</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.wireshark.org/">https://www.wireshark.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>WSJT-X</p></td>
+<td><p>2.1.2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://physics.princeton.edu/pulsar/k1jt/wsjtx.html">https://physics.princeton.edu/pulsar/k1jt/wsjtx.html</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Xastir</p></td>
+<td><p>2.1.4+git20191127.bb66a77-3</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/Xastir/Xastir">https://github.com/Xastir/Xastir</a></p></td>
+</tr>
+<tr class="row-even"><td><p>ZEPASSD</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/pvachon/zepassd">https://github.com/pvachon/zepassd</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Zigbee Sniffer</p></td>
+<td><p>0.1</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/yiek888/opensniffer">https://github.com/yiek888/opensniffer</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="ubuntu-22-04-1">
+<h3>Ubuntu 22.04.1<a class="headerlink" href="#ubuntu-22-04-1" title="Permalink to this heading"></a></h3>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 56%" />
+<col style="width: 11%" />
+<col style="width: 6%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Software</p></th>
+<th class="head"><p>Version</p></th>
+<th class="head"><p>From Source</p></th>
+<th class="head"><p>Links/Author</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Aircrack-ng</p></td>
+<td><p>1.6</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.aircrack-ng.org/">http://www.aircrack-ng.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Arduino IDE</p></td>
+<td><p>1.8.15</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.arduino.cc/en/software">https://www.arduino.cc/en/software</a></p></td>
+</tr>
+<tr class="row-even"><td><p>airgeddon</p></td>
+<td><p>v11.01</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/v1s1t0r1sh3r3/airgeddon">https://github.com/v1s1t0r1sh3r3/airgeddon</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Anki</p></td>
+<td><p>2.1.15</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://apps.ankiweb.net/">https://apps.ankiweb.net/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>baudline</p></td>
+<td><p>1.08</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.baudline.com/">https://www.baudline.com/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Bless</p></td>
+<td><p>0.6.3</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/afrantzis/bless">https://github.com/afrantzis/bless</a></p></td>
+</tr>
+<tr class="row-even"><td><p>btscanner</p></td>
+<td><p>2.1-9</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://salsa.debian.org/pkg-security-team/btscanner">https://salsa.debian.org/pkg-security-team/btscanner</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>CRC RevEng</p></td>
+<td><p>3.0.5</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://reveng.sourceforge.io/">https://reveng.sourceforge.io/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>CyberChef</p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://gchq.github.io/CyberChef/">https://gchq.github.io/CyberChef/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Dire Wolf</p></td>
+<td><p>dev</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/wb2osz/direwolf">https://github.com/wb2osz/direwolf</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Dump1090</p></td>
+<td><p>1.010.3010.14</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/antirez/dump1090">https://github.com/antirez/dump1090</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>dump978</p></td>
+<td><p>latest</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mutability/dump978">https://github.com/mutability/dump978</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Enscribe</p></td>
+<td><p>0.1.0</p></td>
+<td><p>No</p></td>
+<td><p>Jason Downer</p></td>
+</tr>
+<tr class="row-odd"><td><p>ESP32 Bluetooth Classic Sniffer</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer">https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer</a></p></td>
+</tr>
+<tr class="row-even"><td><p>ESP8266 Deauther v2</p></td>
+<td><p>v2</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/SpacehuhnTech/esp8266_deauther">https://github.com/SpacehuhnTech/esp8266_deauther</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strike> FALCON </strike></p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/falkenber9/falcon">https://github.com/falkenber9/falcon</a></p></td>
+</tr>
+<tr class="row-even"><td><p>fl2k</p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://osmocom.org/projects/osmo-fl2k/wiki">https://osmocom.org/projects/osmo-fl2k/wiki</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Fldigi</p></td>
+<td><p>4.1.20</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.w1hkj.com/">http://www.w1hkj.com/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>FoxtrotGPS</p></td>
+<td><p>1.2.2+</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.foxtrotgps.org/">https://www.foxtrotgps.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Geany</p></td>
+<td><p>1.38</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.geany.org/">https://www.geany.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>GNU Radio</p></td>
+<td><p>3.10.4.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.gnuradio.org/">https://www.gnuradio.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Google Earth Pro</p></td>
+<td><p>latest</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.google.com/earth/versions/">https://www.google.com/earth/versions/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Gpredict</p></td>
+<td><p>2.3-72-gc596101-3</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://gpredict.oz9aec.net/">http://gpredict.oz9aec.net/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>GQRX</p></td>
+<td><p>2.15.8</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://gqrx.dk/">https://gqrx.dk/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-acars</p></td>
+<td><p>3.10ng</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://git.code.sf.net/u/bkerler/gr-acars.git">https://git.code.sf.net/u/bkerler/gr-acars.git</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-adsb</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bkerler/gr-adsb">https://github.com/bkerler/gr-adsb</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-ainfosec</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ainfosec/fissure">https://github.com/ainfosec/fissure</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-air-modes</p></td>
+<td><p>0.0.20210211-2build2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/bistromath/gr-air-modes">https://github.com/bistromath/gr-air-modes</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-ais</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bkerler/gr-ais">https://github.com/bkerler/gr-ais</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strike> gr-bluetooth </strike></p></td>
+<td></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/greatscottgadgets/gr-bluetooth">https://github.com/greatscottgadgets/gr-bluetooth</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-clapper_plus</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-clapper_plus">https://github.com/cpoore1/gr-clapper_plus</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-dect2</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bkerler/gr-dect2">https://github.com/bkerler/gr-dect2</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-foo</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bastibl/gr-foo">https://github.com/bastibl/gr-foo</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-fuzzer</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ainfosec/fissure">https://github.com/ainfosec/fissure</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-garage_door</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-garage_door">https://github.com/cpoore1/gr-garage_door</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-gsm</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bkerler/gr-gsm">https://github.com/bkerler/gr-gsm</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-ieee802-11</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bastibl/gr-ieee802-11">https://github.com/bastibl/gr-ieee802-11</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-ieee802-15-4</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bkerler/gr-ieee802-15-4">https://github.com/bkerler/gr-ieee802-15-4</a></p></td>
+</tr>
+<tr class="row-even"><td><p><strike> gr-iio </strike></p></td>
+<td></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/analogdevicesinc/gr-iio">https://github.com/analogdevicesinc/gr-iio</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-iridium</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/muccc/gr-iridium">https://github.com/muccc/gr-iridium</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-j2497</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/ainfosec/gr-j2497">https://github.com/ainfosec/gr-j2497</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strike> gr-limesdr </strike></p></td>
+<td></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/myriadrf/gr-limesdr">https://github.com/myriadrf/gr-limesdr</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-mixalot</p></td>
+<td><p>main</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/unsynchronized/gr-mixalot">https://github.com/unsynchronized/gr-mixalot</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-nrsc5</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/argilo/gr-nrsc5">https://github.com/argilo/gr-nrsc5</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-paint</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/drmpeg/gr-paint">https://github.com/drmpeg/gr-paint</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-rds</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bastibl/gr-rds">https://github.com/bastibl/gr-rds</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-tpms</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bkerler/gr-tpms">https://github.com/bkerler/gr-tpms</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>gr-tpms_poore</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-tpms_poore">https://github.com/cpoore1/gr-tpms_poore</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-X10</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-X10">https://github.com/cpoore1/gr-X10</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strike> gr-Zwave </strike></p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/BastilleResearch/scapy-radio/tree/master/gnuradio/gr-Zwave">https://github.com/BastilleResearch/scapy-radio/tree/master/gnuradio/gr-Zwave</a></p></td>
+</tr>
+<tr class="row-even"><td><p>gr-zwave_poore</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/cpoore1/gr-zwave_poore">https://github.com/cpoore1/gr-zwave_poore</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>GraphicsMagick</p></td>
+<td><p>1.4+really1.3.38-1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.graphicsmagick.org/">http://www.graphicsmagick.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Grip</p></td>
+<td><p>4.6.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/joeyespo/grip">https://github.com/joeyespo/grip</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>HackRF</p></td>
+<td><p>2022.09.1</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/greatscottgadgets/hackrf/releases">https://github.com/greatscottgadgets/hackrf/releases</a></p></td>
+</tr>
+<tr class="row-even"><td><p>ham2mon</p></td>
+<td><p>maint-3.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/bkerler/ham2mon">https://github.com/bkerler/ham2mon</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>HamClock</p></td>
+<td><p>latest</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.clearskyinstitute.com/ham/HamClock/">https://www.clearskyinstitute.com/ham/HamClock/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>hcidump</p></td>
+<td><p>5.64</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.bluez.org/">http://www.bluez.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>htop</p></td>
+<td><p>3.0.5</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/htop-dev/htop">https://github.com/htop-dev/htop</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Hydra</p></td>
+<td><p>9.2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/vanhauser-thc/thc-hydra">https://github.com/vanhauser-thc/thc-hydra</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>ICE9 Bluetooth Sniffer</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mikeryan/ice9-bluetooth-sniffer">https://github.com/mikeryan/ice9-bluetooth-sniffer</a></p></td>
+</tr>
+<tr class="row-even"><td><p>IIO Oscilloscope</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/analogdevicesinc/iio-oscilloscope">https://github.com/analogdevicesinc/iio-oscilloscope</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>IMSI-Catcher 4G</p></td>
+<td><p>-</p></td>
+<td><p>Yes</p></td>
+<td><p>Joe Reith, AIS</p></td>
+</tr>
+<tr class="row-even"><td><p>Inspectrum</p></td>
+<td><p>0.2.3-2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/miek/inspectrum">https://github.com/miek/inspectrum</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>IridiumLive</p></td>
+<td><p>v1.2</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/microp11/iridiumlive">https://github.com/microp11/iridiumlive</a></p></td>
+</tr>
+<tr class="row-even"><td><p>iridium-toolkit</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/muccc/iridium-toolkit">https://github.com/muccc/iridium-toolkit</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Kalibrate</p></td>
+<td><p>v0.4.1-rtl</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/steve-m/kalibrate-rtl">https://github.com/steve-m/kalibrate-rtl</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Kismet</p></td>
+<td><p>latest</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.kismetwireless.net/">https://www.kismetwireless.net/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strike> libbtbb </strike></p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/greatscottgadgets/libbtbb">https://github.com/greatscottgadgets/libbtbb</a></p></td>
+</tr>
+<tr class="row-even"><td><p>LTE-Cell-Scanner</p></td>
+<td><p>master/1.1.0</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/JiaoXianjun/LTE-Cell-Scanner">https://github.com/JiaoXianjun/LTE-Cell-Scanner</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>LTE-ciphercheck</p></td>
+<td><p>rebase_20.04</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mrlnc/LTE-ciphercheck">https://github.com/mrlnc/LTE-ciphercheck</a></p></td>
+</tr>
+<tr class="row-even"><td><p>m17-cxx-demod</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mobilinkd/m17-cxx-demod">https://github.com/mobilinkd/m17-cxx-demod</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Meld</p></td>
+<td><p>3.20.4</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://meldmerge.org/">https://meldmerge.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p><strike> Metasploit </strike></p></td>
+<td><p>v6.1.44-dev-</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.metasploit.com/">https://www.metasploit.com/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>minicom</p></td>
+<td><p>2.8</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://salsa.debian.org/minicom-team/minicom">https://salsa.debian.org/minicom-team/minicom</a></p></td>
+</tr>
+<tr class="row-even"><td><p>minimodem</p></td>
+<td><p>0.24</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="http://www.whence.com/minimodem/">http://www.whence.com/minimodem/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>mkusb/dus/guidus</p></td>
+<td><p>22.1.2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://help.ubuntu.com/community/mkusb">https://help.ubuntu.com/community/mkusb</a></p></td>
+</tr>
+<tr class="row-even"><td><p>monitor_rtl433</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/mcbridejc/monitor_rtl433">https://github.com/mcbridejc/monitor_rtl433</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>multimon-ng</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/EliasOenal/multimon-ng">https://github.com/EliasOenal/multimon-ng</a></p></td>
+</tr>
+<tr class="row-even"><td><p><strike> NETATTACK2 </strike></p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/chrizator/netattack2">https://github.com/chrizator/netattack2</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>nrsc5</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/theori-io/nrsc5">https://github.com/theori-io/nrsc5</a></p></td>
+</tr>
+<tr class="row-even"><td><p><strike> OpenBTS </strike></p></td>
+<td></td>
+<td></td>
+<td><p><a class="reference external" href="https://github.com/RangeNetworks/dev">https://github.com/RangeNetworks/dev</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>openCPN</p></td>
+<td><p>5.6.2</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://opencpn.org/">https://opencpn.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p><strike> openHAB </strike> (fix)</p></td>
+<td></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.openhab.org/">https://www.openhab.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>OpenWebRX</p></td>
+<td><p>v1.2.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/jketterl/openwebrx">https://github.com/jketterl/openwebrx</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Proxmark3</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/Proxmark/proxmark3">https://github.com/Proxmark/proxmark3</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>PuTTY</p></td>
+<td><p>0.76</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.putty.org/">https://www.putty.org/</a></p></td>
+</tr>
+<tr class="row-even"><td><p>pyFDA</p></td>
+<td><p>0.7.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/chipmuenk/pyfda">https://github.com/chipmuenk/pyfda</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>PyGPSClient</p></td>
+<td><p>1.3.5</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/semuconsulting/PyGPSClient">https://github.com/semuconsulting/PyGPSClient</a></p></td>
+</tr>
+<tr class="row-even"><td><p>QSpectrumAnalyzer</p></td>
+<td><p>2.1.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/xmikos/qspectrumanalyzer">https://github.com/xmikos/qspectrumanalyzer</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>QSSTV</p></td>
+<td><p>9.5.8</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://charlesreid1.com/wiki/Qsstv">https://charlesreid1.com/wiki/Qsstv</a></p></td>
+</tr>
+<tr class="row-even"><td><p>QtDesigner</p></td>
+<td><p>5.15.3</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://doc.qt.io/qt-5/qtdesigner-manual.html">https://doc.qt.io/qt-5/qtdesigner-manual.html</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>radiosonde_auto_rx</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/projecthorus/radiosonde_auto_rx">https://github.com/projecthorus/radiosonde_auto_rx</a></p></td>
+</tr>
+<tr class="row-even"><td><p>rehex</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/solemnwarning/rehex">https://github.com/solemnwarning/rehex</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>retrogram-rtlsdr</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/r4d10n/retrogram-rtlsdr">https://github.com/r4d10n/retrogram-rtlsdr</a></p></td>
+</tr>
+<tr class="row-even"><td><p>RouterSploit</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.github.com/threat9/routersploit">https://www.github.com/threat9/routersploit</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>rtl_433</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/merbanan/rtl_433">https://github.com/merbanan/rtl_433</a></p></td>
+</tr>
+<tr class="row-even"><td><p>rtl8812au Driver</p></td>
+<td><p>latest</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/aircrack-ng/rtl8812au">https://github.com/aircrack-ng/rtl8812au</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>RTLSDR-Airband</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/szpajder/RTLSDR-Airband">https://github.com/szpajder/RTLSDR-Airband</a></p></td>
+</tr>
+<tr class="row-even"><td><p>rtl-zwave</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/andersesbensen/rtl-zwave">https://github.com/andersesbensen/rtl-zwave</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>scan-ssid</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/Resethel/scan-ssid">https://github.com/Resethel/scan-ssid</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Scapy</p></td>
+<td><div class="line-block">
+<div class="line">2.4.5 (Python2)</div>
+<div class="line">2.4.4 (Python3)</div>
+</div>
+</td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://scapy.net/">https://scapy.net/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p><strike> SdrGlut </strike></p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/righthalfplane/SdrGlut">https://github.com/righthalfplane/SdrGlut</a></p></td>
+</tr>
+<tr class="row-even"><td><p>SDRTrunk</p></td>
+<td><p>v0.5.0-alpha.6</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/DSheirer/sdrtrunk">https://github.com/DSheirer/sdrtrunk</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>SigDigger</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/BatchDrake/SigDigger">https://github.com/BatchDrake/SigDigger</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Spectrum Painter</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/polygon/spectrum_painter">https://github.com/polygon/spectrum_painter</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Spektrum</p></td>
+<td><p>2.1.0</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/pavels/spektrum">https://github.com/pavels/spektrum</a></p></td>
+</tr>
+<tr class="row-even"><td><p>srsRAN/srsLTE</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://www.srslte.com/">https://www.srslte.com/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>systemback</p></td>
+<td><p>1.8.402~ubuntu16.04.1</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/BluewhaleRobot/systemback">https://github.com/BluewhaleRobot/systemback</a></p></td>
+</tr>
+<tr class="row-even"><td><p>trackerjacker</p></td>
+<td><p>1.9.0</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/calebmadrigal/trackerjacker">https://github.com/calebmadrigal/trackerjacker</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>UDP Replay</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/rigtorp/udpreplay">https://github.com/rigtorp/udpreplay</a></p></td>
+</tr>
+<tr class="row-even"><td><p><strike> Universal Radio Hacker </strike></p></td>
+<td><p>2.9.3</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/jopohl/urh">https://github.com/jopohl/urh</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>V2Verifier</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/twardokus/v2verifier">https://github.com/twardokus/v2verifier</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Viking</p></td>
+<td><p>1.10</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://sourceforge.net/projects/viking/">https://sourceforge.net/projects/viking/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>WaveDrom</p></td>
+<td><p>Online Editor</p></td>
+<td><p>-</p></td>
+<td><p><a class="reference external" href="https://github.com/wavedrom/wavedrom">https://github.com/wavedrom/wavedrom</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Waving-Z</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/baol/waving-z">https://github.com/baol/waving-z</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Wifite</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/derv82/wifite2">https://github.com/derv82/wifite2</a></p></td>
+</tr>
+<tr class="row-even"><td><p>Wireshark</p></td>
+<td><p>3.6.5</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://www.wireshark.org/">https://www.wireshark.org/</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>wl-color-picker</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/jgmdev/wl-color-picker">https://github.com/jgmdev/wl-color-picker</a></p></td>
+</tr>
+<tr class="row-even"><td><p>WSJT-X</p></td>
+<td><p>2.5.4</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://physics.princeton.edu/pulsar/k1jt/wsjtx.html">https://physics.princeton.edu/pulsar/k1jt/wsjtx.html</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Xastir</p></td>
+<td><p>2.1.6-4</p></td>
+<td><p>No</p></td>
+<td><p><a class="reference external" href="https://github.com/Xastir/Xastir">https://github.com/Xastir/Xastir</a></p></td>
+</tr>
+<tr class="row-even"><td><p>ZEPASSD</p></td>
+<td><p>master</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/pvachon/zepassd">https://github.com/pvachon/zepassd</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Zigbee Sniffer</p></td>
+<td><p>0.1</p></td>
+<td><p>Yes</p></td>
+<td><p><a class="reference external" href="https://github.com/yiek888/opensniffer">https://github.com/yiek888/opensniffer</a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 </section>
 

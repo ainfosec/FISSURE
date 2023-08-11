@@ -6,7 +6,6 @@ import os
 form_class = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + '/UI/dashboard.ui')[0]
 form_class3 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + '/UI/options.ui')[0]
 form_class5 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + '/UI/hardware_select.ui')[0]
-form_class6 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + '/UI/help.ui')[0]
 form_class7 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + '/UI/status.ui')[0]
 form_class8 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + '/UI/chooser.ui')[0]
 form_class9 = uic.loadUiType(os.path.dirname(os.path.realpath(__file__)) + '/UI/new_soi.ui')[0]
@@ -1486,16 +1485,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionV2Verifier.triggered.connect(self._slotMenuV2VerifierClicked)
         self.actionV2Verifier_wifi_tx.triggered.connect(self._slotMenuV2VerifierWifiTxClicked)
         self.actionV2Verifier_wifi_rx.triggered.connect(self._slotMenuV2VerifierWifiRxClicked)
-        self.actionHelp.triggered.connect(self._slotMenuHelpClicked)
-        self.actionHelpUploadingFlowGraphs.triggered.connect(self._slotMenuHelpUploadingFlowGraphsClicked)
-        self.actionHelpUploadingPythonScripts.triggered.connect(self._slotMenuHelpUploadingPythonScriptesClicked)
-        self.actionHelpNewUSRPX310.triggered.connect(self._slotMenuHelpNewUSRPX310_Clicked)
-        self.actionHelpUpdatingHackRF.triggered.connect(self._slotMenuHelpUpdatingHackRFClicked)
-        self.actionHelpLimeSDR.triggered.connect(self._slotMenuHelpLimeSDR_Clicked)
-        self.actionHelpSupportedProtocols.triggered.connect(self._slotMenuHelpSupportedProtocolsClicked)
-        self.actionHelpSoftwareAndConflicts.triggered.connect(self._slotMenuHelpSoftwareAndConflictsClicked)
-        self.actionHelpBuiltWith.triggered.connect(self._slotMenuHelpBuiltWithClicked)
-        self.actionHelpAbout.triggered.connect(self._slotMenuHelpAboutClicked)
         self.actionLessonOpenBTS.triggered.connect(self._slotMenuLessonOpenBTS_Clicked)
         self.actionFALCON.triggered.connect(self._slotMenuFALCON_Clicked)
         self.actionCyberChef.triggered.connect(self._slotMenuCyberChefClicked)
@@ -1637,12 +1626,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionHcidump.triggered.connect(self._slotMenuHcidumpClicked)
         self.actionLessonRFID.triggered.connect(self._slotMenuLessonRFID_Clicked)
         self.actionFM_Radio_Capture.triggered.connect(self._slotMenuStandaloneFM_RadioCaptureClicked)
-        self.actionAddingCustomOptions.triggered.connect(self._slotMenuAddingCustomOptionsClicked)
         self.actionProtocol_CSV.triggered.connect(self._slotMenuProtocolCSV_Clicked)
         self.actionUhd_image_loader.triggered.connect(self._slotMenuUHD_ImageLoaderClicked)
         self.actionTinyWow.triggered.connect(self._slotMenuTinyWowClicked)
         self.actionGr_paint_Converter.triggered.connect(self._slotMenuGrPaintConverterClicked)
-        self.actionModifying_Dashboard.triggered.connect(self._slotMenuModifyingDashboardClicked)
         self.actionNrsc5.triggered.connect(self._slotMenuNrsc5_Clicked)
         self.actionHd_tx_usrp.triggered.connect(self._slotMenuStandaloneHd_tx_usrpClicked)
         self.actionAntenna_Comparison.triggered.connect(self._slotMenuAntennaComparisonClicked)
@@ -1720,7 +1707,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionAmateur_Satellite_Database.triggered.connect(self._slotMenuAmateurSatelliteDatabaseClicked)
         self.actioncryptii.triggered.connect(self._slotMenuCryptiiClicked)
         self.actionLesson_Creating_Bootable_USBs.triggered.connect(self._slotMenuLessonCreatingBootableUSBsClicked)
-        self.actionInspection_Flow_Graphs.triggered.connect(self._slotMenuHelpInspectionFlowGraphsClicked)
         self.actionDire_Wolf.triggered.connect(self._slotMenuDireWolfClicked)
         self.actionMeld.triggered.connect(self._slotMenuMeldClicked)
         self.actionhfpropagation_com.triggered.connect(self._slotMenuHfpropagationClicked)
@@ -1763,6 +1749,57 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionAIS_Online_Decoder.triggered.connect(self._slotMenuAIS_OnlineDecoderClicked)
         self.actionpyais_GitHub.triggered.connect(self._slotMenu_pyaisGitHubClicked)
         self.actionais_rx.triggered.connect(self._slotMenuStandalone_ais_rxClicked)
+        self.actionADS_B_Towers.triggered.connect(self._slotMenuADSB_TowersClicked)
+        self.actionUser_Manual.triggered.connect(self._slotMenuHelpUserManualClicked)
+        self.actionRequirements.triggered.connect(self._slotMenuHelpRequirementsClicked)
+        self.actionCloning.triggered.connect(self._slotMenuHelpCloningClicked)
+        self.actionInstaller.triggered.connect(self._slotMenuHelpInstallerClicked)
+        self.actionUninstalling.triggered.connect(self._slotMenuHelpUninstallingClicked)
+        self.actionUsage.triggered.connect(self._slotMenuHelpUsageClicked)
+        self.actionKnown_Conflicts.triggered.connect(self._slotMenuHelpKnownConflictsClicked)
+        self.actionThird_Party_Software_2.triggered.connect(self._slotMenuHelpThirdPartySoftwareClicked)
+        self.actionThird_Party_Software_Versions.triggered.connect(self._slotMenuHelpThirdPartySoftwareVersionsClicked)
+        self.actionSupported.triggered.connect(self._slotMenuHelpHardwareSupportedClicked)
+        self.actionConfiguring.triggered.connect(self._slotMenuHelpHardwareConfiguringClicked)
+        self.actionHelpLimeSDR.triggered.connect(self._slotMenuHelpHardwareLimeSDR_Clicked)
+        self.actionHelpNewUSRPX310.triggered.connect(self._slotMenuHelpHardwareNewUSRPX310_Clicked)
+        self.actionHelpUpdatingHackRF.triggered.connect(self._slotMenuHelpHardwareUpdatingHackRFClicked)
+        self.actionGNU_Radio_Hardware.triggered.connect(self._slotMenuHelpHardwareGNU_RadioHardwareClicked)        
+        self.actionCommunications.triggered.connect(self._slotMenuHelpComponentsCommunicationsClicked)
+        self.actionLibrary.triggered.connect(self._slotMenuHelpComponentsLibraryClicked)
+        self.actionFile_Structure.triggered.connect(self._slotMenuHelpComponentsFileStructureClicked)
+        self.actionHelpSupportedProtocols.triggered.connect(self._slotMenuHelpComponentsSupportedProtocolsClicked)
+        self.actionDashboard.triggered.connect(self._slotMenuHelpComponentsDashboardClicked)
+        self.actionTarget_Signal_Identification.triggered.connect(self._slotMenuHelpComponentsTSI_Clicked)
+        self.actionProtocol_Discovery.triggered.connect(self._slotMenuHelpComponentsPD_Clicked)
+        self.actionFlow_Graph_Script_Executor.triggered.connect(self._slotMenuHelpComponentsFGE_Clicked)
+        self.actionHIPRFISR.triggered.connect(self._slotMenuHelpComponentsHIPRFISR_Clicked)
+        self.actionHardware_Buttons.triggered.connect(self._slotMenuHelpOperationHardwareButtonsClicked)
+        self.actionNetworking_Configuration.triggered.connect(self._slotMenuHelpOperationNetworkingConfigurationClicked)
+        self.actionLessons.triggered.connect(self._slotMenuHelpOperationLessonsClicked)
+        self.actionStandalone_Flow_Graphs.triggered.connect(self._slotMenuHelpOperationStandaloneFlowGraphsClicked)
+        self.actionTools.triggered.connect(self._slotMenuHelpOperationToolsClicked)
+        self.actionOptions.triggered.connect(self._slotMenuHelpOperationOptionsClicked)
+        self.actionView.triggered.connect(self._slotMenuHelpOperationViewClicked)
+        self.actionAutomation_Tab.triggered.connect(self._slotMenuHelpOperationAutomationClicked)
+        self.actionTSI_Tab.triggered.connect(self._slotMenuHelpOperationTSI_Clicked)
+        self.actionPD_Tab.triggered.connect(self._slotMenuHelpOperationPD_Clicked)
+        self.actionAttack_Tab.triggered.connect(self._slotMenuHelpOperationAttackClicked)
+        self.actionIQ_Data_Tab.triggered.connect(self._slotMenuHelpOperationIQ_DataClicked)
+        self.actionArchive_Tab.triggered.connect(self._slotMenuHelpOperationArchiveClicked)
+        self.actionPacket_Crafter_Tab.triggered.connect(self._slotMenuHelpOperationPacketCrafterClicked)
+        self.actionLibrary_Tab.triggered.connect(self._slotMenuHelpOperationLibraryClicked)
+        self.actionLog_Tab.triggered.connect(self._slotMenuHelpOperationLogClicked)
+        self.actionStatus_Bar.triggered.connect(self._slotMenuHelpOperationStatusBarClicked)
+        self.actionAddingCustomOptions.triggered.connect(self._slotMenuHelpDevelopmentAddingCustomOptionsClicked)
+        self.actionHelpBuiltWith.triggered.connect(self._slotMenuHelpDevelopmentBuiltWithClicked)
+        self.actionHelpUploadingFlowGraphs.triggered.connect(self._slotMenuHelpDevelopmentUploadingFlowGraphsClicked)
+        self.actionHelpUploadingPythonScripts.triggered.connect(self._slotMenuHelpDevelopmentUploadingPythonScriptsClicked)
+        self.actionInspection_Flow_Graphs.triggered.connect(self._slotMenuHelpDevelopmentInspectionFlowGraphsClicked)
+        self.actionModifying_Dashboard.triggered.connect(self._slotMenuHelpDevelopmentModifyingDashboardClicked)
+        self.actionAPRS_Track_Direct.triggered.connect(self._slotMenuAPRS_TrackDirectClicked)
+        self.actionHelpAbout.triggered.connect(self._slotMenuHelpAboutClicked)
+        self.actionCredits.triggered.connect(self._slotMenuHelpCreditsClicked)
 
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -2792,6 +2829,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     # Enable the Pushbuttons
                     self.pushButton_attack_start_stop.setEnabled(True)
                     self.pushButton_attack_view_flow_graph.setEnabled(True)
+                    self.checkBox_attack_single_stage_sudo.setEnabled(True)
 
                     # Load the File
                     self._slotAttackLoadFromLibraryClicked(None,fname,get_file_type)
@@ -3184,6 +3222,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
                 # Flow Graph
                 if ftype == "Flow Graph":
+                    # Run with sudo Checkbox
+                    self.checkBox_attack_single_stage_sudo.setChecked(False)
+                    self.checkBox_attack_single_stage_sudo.setEnabled(False)
+                    
                     # Read Flow Graph Variables
                     temp_flow_graph_variables = {}
                     parsing = False
@@ -3260,9 +3302,18 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                         # Adjust Table
                                         self.tableWidget1_attack_flow_graph_current_values.setColumnWidth(1,35)
                                         self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch)
+                                        
+                                        # Modify Filepath for FISSURE Location
+                                        if "/FISSURE/" in value_text:
+                                            new_filepath = os.path.dirname(os.path.realpath(__file__)) + '/' + value_text.split('/FISSURE/',1)[-1]
+                                            self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,QtWidgets.QTableWidgetItem(new_filepath))
 
                 # Flow Graph - GUI
                 elif ftype == "Flow Graph - GUI":
+                    # Run with sudo Checkbox
+                    self.checkBox_attack_single_stage_sudo.setChecked(False)
+                    self.checkBox_attack_single_stage_sudo.setEnabled(False)
+                    
                     # Read Flow Graph Variables
                     temp_flow_graph_variables = {}
                     parsing = False
@@ -3339,12 +3390,21 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                         # Adjust Table
                                         self.tableWidget1_attack_flow_graph_current_values.setColumnWidth(1,35)
                                         self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch)
+                                        
+                                        # Modify Filepath for FISSURE Location
+                                        if "/FISSURE/" in value_text:
+                                            new_filepath = os.path.dirname(os.path.realpath(__file__)) + '/' + value_text.split('/FISSURE/',1)[-1]
+                                            self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,QtWidgets.QTableWidgetItem(new_filepath))
 
                     # Disable the Table
                     self.tableWidget1_attack_flow_graph_current_values.setEnabled(False)
 
                 # Python Script
                 else:
+                    # Run with sudo Checkbox
+                    self.checkBox_attack_single_stage_sudo.setChecked(True)
+                    self.checkBox_attack_single_stage_sudo.setEnabled(True)
+                    
                     # Get Python2/Python3 Variables
                     if ftype == "Python3 Script":
                         proc=subprocess.Popen("python3 python_importer.py " + get_file.replace('.py',''), shell=True, stdout=subprocess.PIPE, cwd=flow_graph_directory)
@@ -3364,8 +3424,16 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                         # Ignore Notes in the Table
                         if str(get_vars[n]).lower() == 'notes':
                             self.label2_selected_notes.setText(str(get_vals[n]))
+                            
+                        # Check if sudo is Required
+                        elif str(get_vars[n]).lower() == 'run_with_sudo':
+                            if str(get_vals[n]).lower() == 'true':
+                                self.checkBox_attack_single_stage_sudo.setChecked(True)
+                            else:
+                                self.checkBox_attack_single_stage_sudo.setChecked(False)   
+
+                        # Replace with Global Constants
                         else:
-                            # Replace with Global Constants
                             if get_vars[n] == "iface":
                                 get_vals[n] = self.dashboard_settings_dictionary['hardware_interface_attack']
 
@@ -3403,6 +3471,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 if self.tableWidget1_attack_flow_graph_current_values.columnWidth(1) > 65:  # check for iface/guess column width
                                     self.tableWidget1_attack_flow_graph_current_values.setColumnWidth(1,35)
                                 self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch)
+                                
+                                # Modify Filepath for FISSURE Location
+                                if "/FISSURE/" in str(value.text()):
+                                    new_filepath = os.path.dirname(os.path.realpath(__file__)) + '/' + str(value.text()).split('/FISSURE/',1)[-1]
+                                    self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,QtWidgets.QTableWidgetItem(new_filepath))
 
                             # Add a Guess Interface Button
                             if str(variable_name.text()) == 'iface':
@@ -3526,21 +3599,28 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                     self.tableWidget1_attack_flow_graph_current_values.setItem(get_row,0,get_value_item)
 
                 # Save the Variable Value in the Row to a Dictionary
-                if get_name == "filepath":
+                if "filepath" in get_name:
                     if str(self.label2_attack_single_stage_file_type.text()) == "Flow Graph" or str(self.label2_attack_single_stage_file_type.text()) == "Flow Graph - GUI":
                         variable_values.append('"' + '"' + str(self.tableWidget1_attack_flow_graph_current_values.item(get_row,0).text()) + '"' + '"')  # Needs two sets of quotes
                     else:
-                        variable_values.append('"' + str(self.tableWidget1_attack_flow_graph_current_values.item(get_row,0).text()) + '"')  # Needs one set of quotes
+                        #variable_values.append('"' + str(self.tableWidget1_attack_flow_graph_current_values.item(get_row,0).text()) + '"')  # Needs one set of quotes
+                        variable_values.append(str(self.tableWidget1_attack_flow_graph_current_values.item(get_row,0).text()))
                 else:
                     variable_values.append(str(self.tableWidget1_attack_flow_graph_current_values.item(get_row,0).text()))
 
+            # Run with/without Sudo
+            if self.checkBox_attack_single_stage_sudo.isChecked() == True:
+                run_with_sudo = True
+            else:
+                run_with_sudo = False
+                
             # Update Flow Graph Status Label
             self.label2_attack_flow_graph_status.setText("Starting...")
 
             # Send "Run Attack Flow Graph" Message to the HIPRFISR
             fname = self.label2_selected_flow_graph.text()
             get_file_type = str(self.label2_attack_single_stage_file_type.text())
-            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Attack Flow Graph', Parameters = [str(fname), variable_names, variable_values, get_file_type])
+            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Attack Flow Graph', Parameters = [str(fname), variable_names, variable_values, get_file_type, run_with_sudo])
 
             # Toggle the Text
             self.pushButton_attack_start_stop.setText("Stop Attack")
@@ -6906,7 +6986,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             # Send "Run Attack Flow Graph" Message to the HIPRFISR
             fname = self.label2_attack_fuzzing_selected_flow_graph.text()
             get_file_type = "Flow Graph"
-            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Attack Flow Graph', Parameters = [str(fname), variable_names, variable_values, get_file_type])
+            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Run Attack Flow Graph', Parameters = [str(fname), variable_names, variable_values, get_file_type, False])
 
             # Update the Status Dialog
             self.status_dialog.tableWidget_status_results.item(3,0).setText('Starting... "' + fname.split('/')[-1] + '"')
@@ -7464,6 +7544,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                         self.table_list[n].horizontalHeader().setMinimumSectionSize(5)
                                         self.table_list[n].setColumnWidth(1,35)
                                     self.table_list[n].horizontalHeader().setSectionResizeMode(0,QtWidgets.QHeaderView.Stretch)
+                                    
+                                    # Modify Filepath for FISSURE Location
+                                    if "/FISSURE/" in value_text:
+                                        new_filepath = os.path.dirname(os.path.realpath(__file__)) + '/' + value_text.split('/FISSURE/',1)[-1]
+                                        self.table_list[n].setItem(self.table_list[n].rowCount()-1,0,QtWidgets.QTableWidgetItem(new_filepath))
 
                                 # Add a Guess Interface Button
                                 if variable_name == 'iface':
@@ -13904,13 +13989,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         else:
             self.pushButton_top_archive.setToolTip('None')
 
-    def _slotMenuHelpClicked(self):
-        """ Opens a new window with help information following a menu click.
-        """
-        help_dlg = HelpMenuDialog(self)
-        help_dlg.show()
-        help_dlg.exec_()
-
     def _slotMenuMonitorModeToolClicked(self):
         """ Launches the CLI Tool for quickly changing wireless interface configurations.
         """
@@ -17231,51 +17309,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             for i in dec_man_bits:
                 self.plainTextEdit_pd_bit_viewer_bits.appendPlainText(i)
 
-    def _slotMenuHelpUploadingFlowGraphsClicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/UploadingFlowGraphs.html &")
-
-    def _slotMenuHelpUploadingPythonScriptesClicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/UploadingPythonScripts.html &")
-
-    def _slotMenuHelpNewUSRPX310_Clicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/NewUSRP_X310.html &")
-
-    def _slotMenuHelpUpdatingHackRFClicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/UpdatingHackRF_Firmware.html &")
-
-    def _slotMenuHelpLimeSDR_Clicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/LimeSDR_Notes.html &")
-
-    def _slotMenuHelpSupportedProtocolsClicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/SupportedProtocols.html &")
-
-    def _slotMenuHelpSoftwareAndConflictsClicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/SoftwareAndConflicts.html &")
-
-    def _slotMenuHelpBuiltWithClicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/BuiltWith.html &")
-
-    def _slotMenuHelpAboutClicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/About.html &")
-
     def _slotMenuLessonOpenBTS_Clicked(self):
         """ Opens the html file in a browser.
         """
@@ -17359,6 +17392,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             get_directory = os.path.dirname(os.path.realpath(__file__)) + "/Crafted Packets/"
         elif attack_name == "FM_Radio_FM_From_File.py":
             get_directory = os.path.dirname(os.path.realpath(__file__)) + "/Crafted Packets/Attack Recordings"
+        elif attack_name == "hd_string_injection.py":
+            if variable_name == "json_filepath":
+                get_directory = os.path.dirname(os.path.realpath(__file__)) + "/Flow Graph Library/Single-Stage Flow Graphs/Attack Files/Naughty Strings/"
+            elif (variable_name == "wav1_filepath") or (variable_name == "wav2_filepath"):
+                get_directory = os.path.dirname(os.path.realpath(__file__)) + "/Flow Graph Library/Single-Stage Flow Graphs/Attack Files/"
 
         return get_directory
 
@@ -20694,12 +20732,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         elif get_detector == 'IQ File':
             self.stackedWidget1_tsi_detector.setCurrentIndex(3)
 
-
-    def _slotMenuAddingCustomOptionsClicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/AddingCustomOptions.html &")
-
     def _slotPD_StatusSOI_NewClicked(self):
         """ Manually creates a new signal of interest.
         """
@@ -20857,11 +20889,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + converter_command + '"', cwd=spectrum_painter_directory, shell=True)
         else:
             proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + converter_command + '"', cwd=spectrum_painter_directory, shell=True)
-
-    def _slotMenuModifyingDashboardClicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/ModifyingDashboard.html &")
 
     def _slotMenuNrsc5_Clicked(self):
         """ Opens the nrsc5 command (for rtl devices) in a terminal. Press 0,1,2,3 once running to switch programs.
@@ -23442,11 +23469,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Lessons/HTML/Lesson12_Creating_Bootable_USBs.html &")
 
-    def _slotMenuHelpInspectionFlowGraphsClicked(self):
-        """ Opens the html file in a browser.
-        """
-        os.system("sensible-browser " + os.path.dirname(os.path.realpath(__file__)) + "/docs/Help/HTML/InspectionFlowGraphs.html &")
-
     def _slotMenuDireWolfClicked(self):
         """ Opens a terminal with an example Dire Wolf command.
         """
@@ -25925,32 +25947,312 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         filepath = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/Standalone\ Flow\ Graphs/ais_rx.grc"
         osCommandString = "gnuradio-companion " + filepath
         os.system(osCommandString + " &")
-
-
-class HelpMenuDialog(QtWidgets.QDialog, form_class6):
-    def __init__(self,parent):
-        """ First thing that executes.
+        
+    def _slotMenuADSB_TowersClicked(self):
+        """ Opens towers.stratux.me in a browser.
         """
-        QtWidgets.QDialog.__init__(self,parent)
-        self.setupUi(self)
-
-        # Prevent Resizing/Maximizing
-        self.setFixedSize(700, 700)
-
-        # Do SIGNAL/Slots Connections
-        self._connectSlots()
-
-    def _connectSlots(self):
-        """ Contains the connect functions for all the signals and slots
+        # Open a Browser
+        os.system("sensible-browser http://towers.stratux.me/ &")
+        
+    def _slotMenuHelpUserManualClicked(self):
+        """ Opens the FISSURE documentation in a browser.
         """
-        # Combo Boxes
-        self.comboBox_how_to.currentIndexChanged.connect(self._slotHowToTabChanged)
-
-    def _slotHowToTabChanged(self):
-        """ Changes the stacked widget index in the help dialog how to section depending on which item in the combobox is selected.
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/index.html# &")
+        
+    def _slotMenuHelpRequirementsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
         """
-        # Change the Stacked Widget
-        self.stackedWidget_how_to.setCurrentIndex(self.comboBox_how_to.currentIndex())
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/installation.html#requirements &")
+        
+    def _slotMenuHelpCloningClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/installation.html#cloning &")
+        
+    def _slotMenuHelpInstallerClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/installation.html#installer &")
+        
+    def _slotMenuHelpUninstallingClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/installation.html#uninstalling &")
+        
+    def _slotMenuHelpUsageClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/installation.html#usage &")
+        
+    def _slotMenuHelpKnownConflictsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/installation.html#known-conflicts &")
+        
+    def _slotMenuHelpThirdPartySoftwareClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/installation.html#third-party-software &")
+        
+    def _slotMenuHelpThirdPartySoftwareVersionsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/installation.html#third-party-software-versions &")
+        
+    def _slotMenuHelpHardwareSupportedClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/hardware.html#supported &")
+        
+    def _slotMenuHelpHardwareConfiguringClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/hardware.html#configuring &")
+        
+    def _slotMenuHelpHardwareLimeSDR_Clicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/hardware.html#limesdr-notes &")
+        
+    def _slotMenuHelpHardwareNewUSRPX310_Clicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/hardware.html#new-usrp-x310 &")
+        
+    def _slotMenuHelpHardwareUpdatingHackRFClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/hardware.html#updating-hackrf-firmware &")
+        
+    def _slotMenuHelpHardwareGNU_RadioHardwareClicked(self):
+        """ Opens the GNU Radio Hardware wiki page in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://wiki.gnuradio.org/index.php/Hardware &")
+    
+    def _slotMenuHelpComponentsCommunicationsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/components.html#communications &")
+        
+    def _slotMenuHelpComponentsLibraryClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/components.html#library &")
+        
+    def _slotMenuHelpComponentsFileStructureClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/components.html#file-structure &")
+        
+    def _slotMenuHelpComponentsSupportedProtocolsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/components.html#supported-protocols &")
+        
+    def _slotMenuHelpComponentsDashboardClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/components.html#dashboard &")
+        
+    def _slotMenuHelpComponentsTSI_Clicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/components.html#target-signal-identification &")
+        
+    def _slotMenuHelpComponentsPD_Clicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/components.html#protocol-discovery &")
+        
+    def _slotMenuHelpComponentsFGE_Clicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/components.html#flow-graph-script-executor &")
+        
+    def _slotMenuHelpComponentsHIPRFISR_Clicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/components.html#hiprfisr &")
+
+    def _slotMenuHelpOperationHardwareButtonsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#hardware-buttons &")
+        
+    def _slotMenuHelpOperationNetworkingConfigurationClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#networking-configuration &")
+        
+    def _slotMenuHelpOperationLessonsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#lessons &")
+        
+    def _slotMenuHelpOperationStandaloneFlowGraphsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#standalone-flow-graphs &")
+        
+    def _slotMenuHelpOperationToolsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#tools &")
+        
+    def _slotMenuHelpOperationOptionsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#options &")
+        
+    def _slotMenuHelpOperationViewClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#view &")
+        
+    def _slotMenuHelpOperationAutomationClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#automation-tab &")
+        
+    def _slotMenuHelpOperationTSI_Clicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#tsi-tab &")
+        
+    def _slotMenuHelpOperationPD_Clicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#pd-tab &")
+        
+    def _slotMenuHelpOperationAttackClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#attack-tab &")
+        
+    def _slotMenuHelpOperationIQ_DataClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#iq-data-tab &")
+        
+    def _slotMenuHelpOperationArchiveClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#archive-tab &")
+        
+    def _slotMenuHelpOperationPacketCrafterClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#packet-crafter-tab &")
+        
+    def _slotMenuHelpOperationLibraryClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#library-tab &")
+        
+    def _slotMenuHelpOperationLogClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#log-tab &")
+        
+    def _slotMenuHelpOperationStatusBarClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/operation.html#status-bar &")
+        
+    def _slotMenuAPRS_TrackDirectClicked(self):
+        """ Opens the APRS Track Direct map in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser http://lora.ham-radio-op.net/ &")
+        
+    def _slotMenuHelpDevelopmentAddingCustomOptionsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/development.html#adding-custom-options &")
+        
+    def _slotMenuHelpDevelopmentBuiltWithClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/development.html#built-with &")
+        
+    def _slotMenuHelpDevelopmentUploadingFlowGraphsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/development.html#attack-flow-graphs &")
+        
+    def _slotMenuHelpDevelopmentUploadingPythonScriptsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/development.html#attack-python-scripts &")
+        
+    def _slotMenuHelpDevelopmentInspectionFlowGraphsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/development.html#inspection-flow-graphs &")
+        
+    def _slotMenuHelpDevelopmentModifyingDashboardClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/development.html#modifying-dashboard &")
+        
+    def _slotMenuHelpAboutClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/about.html &")
+        
+    def _slotMenuHelpCreditsClicked(self):
+        """ Opens the FISSURE documentation in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/about.html#credits &")
 
 
 class VLine(QtWidgets.QFrame):

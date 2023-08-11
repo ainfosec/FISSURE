@@ -19,6 +19,7 @@
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="About" href="about.html" />
     <link rel="prev" title="Operation" href="operation.html" /> 
 </head>
 
@@ -50,8 +51,17 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#adding-custom-options">Adding Custom Options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#built-with">Built With</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#attack-flow-graphs">Attack Flow Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#attack-python-scripts">Attack Python Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#inspection-flow-graphs">Inspection Flow Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modifying-dashboard">Modifying Dashboard</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#qtdesigner">QtDesigner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dashboard-py">dashboard.py</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="about.html">About</a></li>
 </ul>
 
         </div>
@@ -88,11 +98,17 @@
 <p><strong>default.yaml</strong></p>
 <p>Open <em>FISSURE/YAML/User Configs/default.yaml</em> and insert the variable name and value (fft_size: 4096) for the new option.</p>
 <p><strong>dashboard.py</strong></p>
-<p>Access the variable in _dashboard.py_ with: <cite>int(self.dashboard_settings_dictionary[‘fft_size’])</cite>.</p>
+<p>Access the variable in <em>dashboard.py</em> with: <cite>int(self.dashboard_settings_dictionary[‘fft_size’])</cite>.</p>
 </section>
 <section id="built-with">
 <h2>Built With<a class="headerlink" href="#built-with" title="Permalink to this heading"></a></h2>
 <p>The following software tools are used to edit FISSURE.</p>
+<p><strong>Read the Docs</strong></p>
+<p>To regenerate the offline HTML RTD documentation:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>~/FISSURE/docs/RTD
+<span class="gp">$ </span>make<span class="w"> </span>clean<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>html
+</pre></div>
+</div>
 <p><strong>Git</strong></p>
 <p>To add a new git submodule for repositories like GNU Radio out-of-tree modules:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>submodule<span class="w"> </span>add<span class="w"> </span>-b<span class="w"> </span>maint-3.8<span class="w"> </span>https://github.com/someone/gr-something.git<span class="w"> </span>./Custom_Blocks/maint-3.8/gr-something
@@ -126,6 +142,530 @@
 </pre></div>
 </div>
 </section>
+<section id="attack-flow-graphs">
+<h2>Attack Flow Graphs<a class="headerlink" href="#attack-flow-graphs" title="Permalink to this heading"></a></h2>
+<p><strong>Flow Graph Configuration</strong></p>
+<p>A new Python file is generated each time a .grc file is executed in GNU Radio Companion. The format of this auto-generated Python file is used by FISSURE to perform actions like: displaying variable names, starting attacks, changing values for a running flow graph, etc. Editing the Python file may cause FISSURE to not function properly.</p>
+<p><em>GUI vs. No GUI</em></p>
+<p>Flow graphs are called differently depending on if there is a GUI or not. Flow graphs configured to “No GUI” mode in the “Options” block will be loaded as a Python module prior to runtime and then modify the default variables. The standard start(), wait(), and stop() commands are applied in this case.</p>
+<p>Flow graphs with GUIs have their Python files called directly and behave similarly to inspection flow graphs (See <em>Help&gt;&gt;Inspection Flow Graphs</em>). Variables can be changed from the GNU Radio GUI in the form of GUI widgets or as command line arguments from parameter blocks.</p>
+<p><em>Options Block (No GUI)</em></p>
+<p>Within the “Options” block:</p>
+<ul class="simple">
+<li><p>“ID” must match the file name</p></li>
+<li><p>“Generate Options” must be set to “No GUI”</p></li>
+</ul>
+<p><em>Special Variables</em></p>
+<p>The Dashboard populates certain flow graphs variable names like “ip_address” and “serial” to match the values in the Attack hardware button. These variables must be named correctly in the flow graph to be populated automatically and handled as intended. Refer to other attack flow graphs as examples for how these variables should be utilized.</p>
+<p><em>Numerical Strings</em></p>
+<p>To help specify that a string variable containing only numerical values is indeed a string and should not to be interpreted as a float, a new variable named “string_variables” can be added to the flow graph. Its value must be a list with the names of the variables to be considered as exceptions: [“variable_name”]</p>
+<p>For example:</p>
+<img alt="../_images/string_variables.png" src="../_images/string_variables.png" />
+<p><strong>Uploading Attack Flow Graph</strong></p>
+<p>Attack flow graphs can be added to FISSURE within the <em>Library&gt;Add</em> tab by selecting a protocol and choosing “Attack”. Attacks will be visible within the Attack tree if the “Attack Template Name” is entered properly.</p>
+</section>
+<section id="attack-python-scripts">
+<h2>Attack Python Scripts<a class="headerlink" href="#attack-python-scripts" title="Permalink to this heading"></a></h2>
+<p><strong>Creating Python Scripts</strong></p>
+<p>Non-GNU Radio attacks can be added to the FISSURE library by uploading specially configured Python (.py) files. A function is needed within the Python script to identify which variables can be modified in the FISSURE Dashboard (<cite>getArguments()</cite>). Those variables are used by the system as command line arguments during execution of the script. All FISSURE branches accept both Python2 and Python3 attack scripts.</p>
+<p>FISSURE will parse a variable named “run_with_sudo” set to True or False and set the “Run with sudo” checkbox upon loading the attack in the Single-Stage Attack tab. For multi-stage attacks, this variable is listed in the generated tables and its value is used to run the script with or without sudo. If no variable is found, then Python scripts will rely on the checkbox for single-stage attacks and be run with sudo for multi-stage attacks.</p>
+<p>Variables with filepath in their name will automatically generate a file navigation button for tables inside FISSURE. If the filepath contains “/FISSURE/”, the string will be split and appended to the user’s location for FISSURE. This is to make configuring an attack easier by accounting for the current username in filepaths.</p>
+<p><em>Scapy Example</em></p>
+<p>The following example uses Scapy to send multiple deauthentication frames from a wireless interface. Use the code as a reference for creating future Python scripts.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scapy.all</span> <span class="kn">import</span> <span class="n">Dot11</span><span class="p">,</span><span class="n">Dot11Deauth</span><span class="p">,</span><span class="n">RadioTap</span><span class="p">,</span><span class="n">sendp</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+
+<span class="c1">#################################################</span>
+<span class="c1">############ Default FISSURE Header ############</span>
+<span class="c1">#################################################</span>
+<span class="k">def</span> <span class="nf">getArguments</span><span class="p">():</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="s1">&#39;00:11:22:33:44:55&#39;</span>        <span class="c1"># Target MAC address</span>
+    <span class="n">bssid</span> <span class="o">=</span> <span class="s1">&#39;AA:BB:CC:11:22:33&#39;</span>         <span class="c1"># Access Point MAC address</span>
+    <span class="n">iface</span> <span class="o">=</span> <span class="s1">&#39;wlan0&#39;</span>                     <span class="c1"># Wireless interface name</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="mi">1</span>                         <span class="c1"># Wireless channel</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="mf">0.01</span>                     <span class="c1"># Scapy interval</span>
+    <span class="n">arg_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;client&#39;</span><span class="p">,</span><span class="s1">&#39;bssid&#39;</span><span class="p">,</span><span class="s1">&#39;iface&#39;</span><span class="p">,</span><span class="s1">&#39;channel&#39;</span><span class="p">,</span><span class="s1">&#39;interval&#39;</span><span class="p">]</span>
+    <span class="n">arg_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">client</span><span class="p">,</span> <span class="n">bssid</span><span class="p">,</span> <span class="n">iface</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">interval</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">arg_names</span><span class="p">,</span><span class="n">arg_values</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="c1"># Default Values</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="s1">&#39;00:11:22:33:44:55&#39;</span>        <span class="c1"># Target MAC address</span>
+    <span class="n">bssid</span> <span class="o">=</span> <span class="s1">&#39;AA:BB:CC:11:22:33&#39;</span>         <span class="c1"># Access Point MAC address</span>
+    <span class="n">iface</span> <span class="o">=</span> <span class="s1">&#39;wlan0&#39;</span>                     <span class="c1"># Wireless interface name</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>                       <span class="c1"># Wireless channel</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="s1">&#39;0.01&#39;</span>                   <span class="c1"># Scapy interval</span>
+
+    <span class="c1"># Accept Command Line Arguments</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">bssid</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">iface</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="c1">#################################################</span>
+
+    <span class="c1"># Create Frame</span>
+    <span class="n">packet</span> <span class="o">=</span> <span class="n">RadioTap</span><span class="p">()</span><span class="o">/</span><span class="n">Dot11</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">subtype</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">addr1</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="n">addr2</span><span class="o">=</span><span class="n">bssid</span><span class="p">,</span> <span class="n">addr3</span><span class="o">=</span><span class="n">bssid</span><span class="p">)</span><span class="o">/</span><span class="n">Dot11Deauth</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+
+    <span class="c1"># Set Monitor Mode and Channel</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo ifconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; down&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo iwconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; mode monitor&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo ifconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; up&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo iwconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; channel &quot;</span> <span class="o">+</span> <span class="n">channel</span><span class="p">)</span>
+
+    <span class="c1"># Send Frame</span>
+    <span class="n">sendp</span><span class="p">(</span><span class="n">packet</span><span class="p">,</span> <span class="n">iface</span><span class="o">=</span><span class="n">iface</span><span class="p">,</span> <span class="n">inter</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">interval</span><span class="p">),</span> <span class="n">loop</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Uploading Attack Files</strong></p>
+<p>Python files can be uploaded to FISSURE within the <em>Library&gt;&gt;Add</em> tab by choosing a protocol and selecting “Attack”. The file type must be set to “Python2 Script” or “Python3 Script” and the file must have a valid .py extension. Attacks added to the library and named with a proper “Attack Template Name” will immediately show up in the Attack tree widget.</p>
+</section>
+<section id="inspection-flow-graphs">
+<h2>Inspection Flow Graphs<a class="headerlink" href="#inspection-flow-graphs" title="Permalink to this heading"></a></h2>
+<p>Inspection flow graphs can be added to FISSURE to perform frequently used analysis on live streams from SDRs or directly on prerecorded data files. Flow graph Python files (.py) are called directly with Python2/3 and use the GNU Radio “parameter” block as arguments to the Python call. This enables variables found in blocks that do not utilize callbacks (like IP address or serial number) to be changed prior to runtime. The following are instructions for creating a new inspection flow graph within the <em>IQ Data&gt;&gt;Inspection</em> tab.</p>
+<img alt="../_images/inspection1.png" src="../_images/inspection1.png" />
+<p><strong>Location</strong></p>
+<p>Inspection flow graphs must be placed in the <em>/FISSURE/Flow Graph Library/Inspection Flow Graphs/</em> or <em>/FISSURE/Flow Graph Library/Inspection Flow Graphs/File/</em> directories. Refer to other inspection flow graphs as examples when creating new flow graphs.</p>
+<p><strong>library.yaml</strong></p>
+<p>The names of inspection flow graphs are assigned to Python files within the <em>library.yaml</em> file. Assign names under the applicable hardware type or under “File” if the new flow graph will be used on IQ files.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Inspection Flow Graphs:</span>
+<span class="go">     802.11x Adapter:</span>
+<span class="go">     - None</span>
+<span class="go">     Computer:</span>
+<span class="go">     - None</span>
+<span class="go">     File:</span>
+<span class="go">     - instantaneous_frequency.py</span>
+<span class="go">     - signal_envelope.py</span>
+<span class="go">     - waterfall.py</span>
+<span class="go">     HackRF:</span>
+<span class="go">     - instantaneous_frequency_hackrf.py</span>
+<span class="go">     - signal_envelope_hackrf.py</span>
+<span class="go">     - time_sink_hackrf.py</span>
+<span class="go">     - time_sink_1_10_100_hackrf.py</span>
+<span class="go">     - waterfall_hackrf.py</span>
+</pre></div>
+</div>
+<p><strong>GNU Radio</strong></p>
+<p>The following are helpful tips for configuring the GNU Radio flow graph:</p>
+<ul class="simple">
+<li><p>The “Options” block ID must match (without the extension) what is entered in the <em>library.yaml</em> file</p></li>
+<li><p>Keep the parameter blocks as a string type and apply conversions within other blocks</p></li>
+<li><p>Add “QT GUI Chooser” blocks for variables that will be changed during runtime such as frequency and sample rate. Fill out the GUI Hints to make it look nice.</p></li>
+<li><p>Follow examples of other flow graphs on how to configure device/IP addresses, serial numbers, and similar arguments for SDR blocks. This will allow FISSURE-specific features like the IQ hardware button to pass information into the flow graph properly.</p></li>
+<li><p>Parameter blocks will replace ‘_’ with ‘-’ when using variables names as command line arguments for the flow graph Python call (FISSURE will handle this)</p></li>
+<li><p>Enter filepath and sample rate as “filepath” and “sample_rate” in GNU Radio variable names</p></li>
+</ul>
+<p><strong>Dashboard</strong></p>
+<p>Double-click/load an IQ file in the IQ Data tab Data Viewer and enter sample rate and frequency information prior to loading a file-based inspection flow graph. These values will automatically copy over to the table if available.</p>
+</section>
+<section id="modifying-dashboard">
+<h2>Modifying Dashboard<a class="headerlink" href="#modifying-dashboard" title="Permalink to this heading"></a></h2>
+<p>This guide will provide examples on how to add GUI elements to the FISSURE Dashboard and interact with those elements within the Dashboard.py code.</p>
+<section id="qtdesigner">
+<h3>QtDesigner<a class="headerlink" href="#qtdesigner" title="Permalink to this heading"></a></h3>
+<p>Launch QtDesigner with the <cite>designer</cite> command and open the <em>/FISSURE/UI/dashboard.ui</em> file.</p>
+<img alt="../_images/qtdesigner.png" src="../_images/qtdesigner.png" />
+<p><strong>Creating New Widgets</strong></p>
+<p>Frequently used widgets:</p>
+<ul class="simple">
+<li><p>Push Button</p></li>
+<li><p>Text Edit</p></li>
+<li><p>Combo Box</p></li>
+<li><p>Check Box</p></li>
+<li><p>Label</p></li>
+<li><p>Frame</p></li>
+<li><p>Spin Box</p></li>
+<li><p>Double Spin Box</p></li>
+<li><p>Horizontal Slider</p></li>
+<li><p>Table Widget</p></li>
+<li><p>Tab Widget</p></li>
+<li><p>Stacked Widget</p></li>
+<li><p>Tree Widget</p></li>
+<li><p>Group Box</p></li>
+<li><p>Progress Bar</p></li>
+<li><p>List Widget</p></li>
+</ul>
+<p>Drag widgets onto the Dashboard and modify their property values in the Property Editor.</p>
+<p>It is suggested to use an objectName consistent with the FINDINGS naming convention: _widget-type_tab-location_description_ (e.g. pushButton_automation_manual, textEdit_iq_timeslot_input)</p>
+<p>Menu items can be added by clicking “Type Here” in any of the menus/submenus and entering text. Separators can be added by clicking “Add Separator” and then dragged or by right clicking and clicking “Insert Separator”. Submenus can be added by clicking the right side of any menu item.</p>
+<p><strong>Styling Widgets</strong></p>
+<p>Many labels and frames use stylesheets. Stylesheets can be applied to all widgets sharing the same type or only to specific widgets. Each widget has their own unique properties that can be customized. If possible, avoid setting the stylesheets in the <em>dashboard.py</em> code to better manage and organize the stylesheets.</p>
+<p>Tab Widget Example 1:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>tabWidget<span class="w"> </span>&gt;<span class="w"> </span>QTabBar::tab<span class="w"> </span><span class="o">{</span>
+<span class="go">    width: 132px;</span>
+<span class="go">    height:27px;</span>
+<span class="go">    margin-top: 0px;</span>
+<span class="go">}</span>
+
+<span class="gp">#</span>tabWidget<span class="w"> </span>&gt;<span class="w"> </span>QTabBar::tab:!selected<span class="w"> </span><span class="o">{</span>
+<span class="go">    margin-top: 6px;</span>
+<span class="go">    height: 21px;</span>
+<span class="go">    width: 132px;</span>
+<span class="go">}</span>
+
+<span class="go">QTabBar::tab:disabled {</span>
+<span class="go">    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #eeeeee, stop:0.12 #888888, stop:0.3 #666666,   stop:0.85 #444444, stop:1 #444444);</span>
+<span class="go">    border: 1px solid #444444;</span>
+<span class="go">    color: rgb(150, 150, 150);</span>
+<span class="go">}</span>
+
+<span class="go">QTabWidget::pane {</span>
+<span class="go">    border: 1px solid #17365D;</span>
+<span class="go">}</span>
+
+<span class="go">QTabBar::tab {</span>
+<span class="go">    qproperty-alignment: AlignCenter;</span>
+<span class="go">    border-top-left-radius: 15px;</span>
+<span class="go">    border-top-right-radius: 15px;</span>
+<span class="go">    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);</span>
+<span class="go">    border: 1px solid #17365D;</span>
+<span class="go">    color:rgb(0, 220, 0);</span>
+<span class="go">    font: bold 10pt &quot;Ubuntu&quot;;</span>
+<span class="go">    margin-right:1px;</span>
+<span class="go">    width: 132px;</span>
+<span class="go">    height:22px;</span>
+<span class="go">    margin-top: 3px;</span>
+<span class="go">}</span>
+
+<span class="go">QTabBar::tab:!selected {</span>
+<span class="go">    margin-top: 7px;</span>
+<span class="go">    height: 18px;</span>
+<span class="go">    color: rgb(255, 255, 255);</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>Tab Widget Example 2:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>tabWidget_3<span class="w"> </span>&gt;<span class="w"> </span>QTabBar::tab<span class="o">{</span>width:110px<span class="o">}</span>
+</pre></div>
+</div>
+<p>Label Example 1:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">QLabel#label_294 {</span>
+<span class="go">    qproperty-alignment: AlignCenter;</span>
+<span class="go">    border: 1px solid #17365D;</span>
+<span class="go">    border-top-left-radius: 15px;</span>
+<span class="go">    border-top-right-radius: 15px;</span>
+<span class="go">    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);</span>
+<span class="go">    padding: 0px 0px;</span>
+<span class="go">    color: rgb(255, 255, 255);</span>
+<span class="go">    max-height: 20px;</span>
+<span class="go">    font: bold 10pt &quot;Ubuntu&quot;;</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>Frame Example 1:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">QFrame#frame_9 {</span>
+<span class="go">    background-color: rgb(251, 251, 251);</span>
+<span class="go">    border: 1px solid #17365D;</span>
+<span class="go">    border-bottom-left-radius: 15px;</span>
+<span class="go">    border-bottom-right-radius: 15px;</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>Push Button Example 1:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>pushButton_top_tsi<span class="o">{</span>
+<span class="go">    color: rgb(0, 0, 0,);</span>
+<span class="go">    padding: 45px 0px 0px 92px;</span>
+<span class="go">    background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));</span>
+<span class="go">    border-style: outset;</span>
+<span class="go">    border-width: 2px;</span>
+<span class="go">    border-radius: 10px;</span>
+<span class="go">    /*border-color: #152947;*/</span>
+<span class="go">    border-color:  #17365D;</span>
+<span class="go">}</span>
+
+<span class="gp">#</span>pushButton_top_tsi:hover<span class="o">{</span>
+<span class="go">    background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(170, 170, 170,50));</span>
+<span class="go">}</span>
+
+<span class="gp">#</span>pushButton_top_tsi:pressed<span class="o">{</span>
+<span class="go">    background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));</span>
+<span class="go">    padding: 47px -2px 0px 92px;</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+</section>
+<section id="dashboard-py">
+<h3>dashboard.py<a class="headerlink" href="#dashboard-py" title="Permalink to this heading"></a></h3>
+<p>Any widget in the Dashboard can be referenced with <cite>self.objectName</cite>.</p>
+<p>The following are frequently called public functions for the widgets in FISSURE:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Push<span class="w"> </span>Button
+<span class="go">self.pushButton_name.text()</span>
+<span class="go">self.pushButton_name.setText(&quot;Text&quot;)</span>
+<span class="go">self.pushButton_name.setEnabled(False)</span>
+<span class="go">self.pushButton_name.setVisible(True)</span>
+
+<span class="gp"># </span>Text<span class="w"> </span>Edit
+<span class="go">str(self.textEdit_name.toPlainText())</span>
+<span class="go">self.textEdit_name.setPlainText(&quot;Text&quot;)</span>
+
+<span class="gp"># </span>Combo<span class="w"> </span>Box
+<span class="go">str(self.comboBox_name.currentText())</span>
+<span class="go">self.comboBox_name.clear()</span>
+<span class="go">self.comboBox_name.addItem(get_dissector)</span>
+<span class="go">self.comboBox_name.addItems(get_packet_types)</span>
+<span class="go">self.comboBox_name.setCurrentIndex(0)</span>
+<span class="go">self.comboBox_name.currentIndex(0)</span>
+
+<span class="gp"># </span>Check<span class="w"> </span>Box
+<span class="go">self.checkBox_name.isChecked()</span>
+<span class="go">self.checkBox_name.setChecked(False)</span>
+
+<span class="gp"># </span>Label
+<span class="go">self.label_name.text()</span>
+<span class="go">self.label_name.setText(get_samples)</span>
+<span class="go">self.label_name.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + &quot;/docs/Icons/USRP_X310.png&quot;))</span>
+
+<span class="gp"># </span>Frame
+<span class="go">self.frame_name.pos()</span>
+<span class="go">self.frame_name.geometry()</span>
+
+<span class="gp"># </span>Spin<span class="w"> </span>Box/Double<span class="w"> </span>Spin<span class="w"> </span>Box
+<span class="go">self.spinBox_name.value()</span>
+<span class="go">self.spinBox_name.setValue(10)</span>
+<span class="go">self.spinBox_name.setMaximum(35)</span>
+<span class="go">self.spinBox_name.setMinimum(0)</span>
+
+<span class="gp"># </span>Horizontal/Vertical<span class="w"> </span>Slider
+<span class="go">self.horizontalSlider_name.setMinimum(int(win_min))</span>
+<span class="go">self.horizontalSlider_name.setMaximum(int(win_max))</span>
+<span class="go">self.horizontalSlider_name.setValue(int(win_min))</span>
+<span class="go">self.horizontalSlider_name.setSliderPosition(2)</span>
+
+<span class="gp"># </span>Table<span class="w"> </span>Widget
+<span class="go">self.tableWidget_name.rowCount()</span>
+<span class="go">self.tableWidget_name.columnCount()</span>
+<span class="go">self.tableWidget_name.setColumnCount(1)</span>
+<span class="go">self.tableWidget_name.setRowCount(0)</span>
+<span class="go">self.tableWidget_name.removeRow(1)</span>
+<span class="go">self.tableWidget_name.removeColumn(5)</span>
+<span class="go">self.tableWidget_name.insertRow(0)</span>
+<span class="go">self.tableWidget_name.currentRow()</span>
+<span class="go">self.tableWidget_name.clearContents()</span>
+<span class="go">self.tableWidget_name.resizeRowsToContents()</span>
+<span class="go">self.tableWidget_name.resizeColumnsToContents()</span>
+<span class="go">self.tableWidget_name.setColumnWidth(4,130)</span>
+<span class="go">self.tableWidget_name.horizontalHeader().setResizeMode(2,QtGui.QHeaderView.Stretch)</span>
+<span class="go">self.tableWidget_name.horizontalHeader().setStretchLastSection(True)</span>
+<span class="go">self.tableWidget_name.verticalHeaderItem(0).text()</span>
+<span class="go">self.tableWidget_name.setHorizontalHeaderItem(1,QtGui.QTableWidgetItem(&quot;&quot;))</span>
+<span class="go">self.tableWidget_name.item(0,5).text()</span>
+<span class="go">self.tableWidget_name.setCurrentCell(self.tableWidget_name.currentRow()-1,0)</span>
+<span class="go">table_item = self.tableWidget_name.takeItem(self.tableWidget_name.currentRow()-1,0)</span>
+<span class="go">table_item = QtGui.QTableWidgetItem(str(657))  # from PyQt4 import QtCore, QtGui, uic</span>
+<span class="go">table_item.setTextAlignment(QtCore.Qt.AlignCenter)</span>
+<span class="go">table_item.setFlags(table_item.flags() &amp; ~QtCore.Qt.ItemIsEditable)</span>
+<span class="go">self.tableWidget_name.setItem(0,0,table_item)</span>
+<span class="go">self.tableWidget_name.item(row,4).setFlags(self.tableWidget_name.item(row,4).flags() ^ QtCore.Qt.ItemIsEnabled)</span>
+<span class="go">self.tableWidget_name.cellWidget(0,4).currentText()</span>
+<span class="go">self.tableWidget_name.cellWidget(1,0).isChecked()</span>
+<span class="go">self.tableWidget_name.cellWidget(row,0).isEnabled()</span>
+<span class="go">self.tableWidget_name.cellWidget(row,0).setCurrentIndex(1)</span>
+<span class="go">self.tableWidget_name.setCellWidget(0,0,new_button)</span>
+
+<span class="go">new_checkbox = QtGui.QCheckBox(&quot;&quot;,self)</span>
+<span class="gp">new_checkbox.setStyleSheet(&quot;margin-left:17%</span><span class="s2">&quot;)</span>
+<span class="go">self.tableWidget_name.setCellWidget(n,0,new_checkbox)</span>
+
+<span class="go">new_pushbutton = QtGui.QPushButton(self.table_list[n])</span>
+<span class="go">new_pushbutton.setText(&quot;Guess&quot;)</span>
+<span class="go">new_pushbutton.setFixedSize(64,23)</span>
+<span class="go">self.tableWidget_name.setCellWidget(self.tableWidget_name.rowCount()-1,1,new_pushbutton)</span>
+<span class="go">new_pushbutton.clicked.connect(lambda: self._slotGuessInterfaceTableClicked(get_value))</span>
+
+<span class="gp"># </span>Tab<span class="w"> </span>Widget
+<span class="go">self.tabWidget_name.currentIndex()</span>
+<span class="go">self.tabWidget_name.setCurrentIndex(4)</span>
+<span class="go">self.tabWidget_name.tabText(self.tabWidget_name.currentIndex())</span>
+<span class="go">self.tabWidget_name.setTabText(0,&quot;Detector&quot;)</span>
+<span class="go">self.tabWidget_name.setTabToolTip(1,&quot;Target Signal Identification&quot;)</span>
+<span class="go">self.tabWidget_name.setTabEnabled(2,False)</span>
+<span class="go">self.tabWidget_name.count()</span>
+<span class="go">self.tabWidget_name.removeTab(1)</span>
+<span class="go">new_tab = QtGui.QWidget()</span>
+<span class="go">vBoxlayout  = QtGui.QVBoxLayout()</span>
+<span class="go">vBoxlayout.addWidget(self.table_name)</span>
+<span class="go">new_tab.setLayout(vBoxlayout)</span>
+<span class="go">self.tabWidget_name.addTab(new_tab,&quot;text&quot;)</span>
+<span class="go">get_table = self.tabWidget_name.children()[0].widget(n).children()[1]  # TabWidget&gt;&gt;StackedLayout&gt;&gt;Tab&gt;&gt;Table</span>
+
+<span class="gp"># </span>Stacked<span class="w"> </span>Widget
+<span class="go">self.stackedWidget_name.currentIndex()</span>
+<span class="go">self.stackedWidget_name.setCurrentIndex(1)</span>
+<span class="go">self.stackedWidget_name.count()</span>
+
+<span class="gp"># </span>Tree<span class="w"> </span>Widget
+<span class="go">self.treeWidget_name.currentItem().text(0)</span>
+<span class="go">self.treeWidget_name.setCurrentItem(self.treeWidget_name.topLevelItem(0))</span>
+<span class="go">new_item = QtGui.QTreeWidgetItem()</span>
+<span class="go">new_item.setText(0,&quot;text&quot;)</span>
+<span class="go">new_item.setDisabled(True)</span>
+<span class="go">self.treeWidget_name.addTopLevelItem(new_item)</span>
+<span class="go">self.treeWidget_name.clear()</span>
+<span class="go">self.treeWidget_name.setHeaderLabel(&quot;text&quot;)</span>
+<span class="go">self.treeWidget_name.invisibleRootItem()</span>
+<span class="go">self.treeWidget_name.collapseAll()</span>
+<span class="go">self.treeWidget_name.expandAll()</span>
+<span class="go">self.treeWidget_name.findItems(&quot;text&quot;,QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive,0)[0].setDisabled(False)</span>
+<span class="go">self.treeWidget_name.findItems(&quot;text&quot;,QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive,0)[0].setHidden(False)</span>
+<span class="go">iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget_name)</span>
+<span class="go">while iterator.value():</span>
+<span class="go">    item = iterator.value()</span>
+<span class="go">    if item.text(0) in self.pd_library[&#39;Attack Categories&#39;]:</span>
+<span class="go">        item.setFont(0,QtGui.QFont(&quot;Times&quot;, 11, QtGui.QFont.Bold))</span>
+<span class="go">    iterator+=1</span>
+
+<span class="gp"># </span>Group<span class="w"> </span>Box
+<span class="go">self.groupBox_name.setVisible(False)</span>
+<span class="go">self.groupBox_name.setEnabled(False)</span>
+
+<span class="gp"># </span>Progress<span class="w"> </span>Bar
+<span class="go">self.progressBar_name.hide()</span>
+<span class="go">self.progressBar_name.show()</span>
+<span class="go">self.progressBar_name.setMaximum(100)</span>
+<span class="go">self.progressBar_name.setValue(10)</span>
+
+<span class="gp"># </span>List<span class="w"> </span>Widget
+<span class="go">self.listWidget_name.setCurrentRow(0)</span>
+<span class="go">get_index = self.listWidget_name.currentRow()</span>
+<span class="go">self.listWidget_name.count()</span>
+<span class="go">get_text = str(self.listWidget_name.item(row).text())</span>
+<span class="go">self.listWidget_name.addItem(preset_name)</span>
+<span class="go">self.listWidget_name.addItems(modulation_list)</span>
+<span class="go">for item in self.listWidget_name.selectedItems()</span>
+<span class="go">self.listWidget_name.takeItem(self.listWidget_name.row(item))</span>
+<span class="go">self.listWidget_name.clear()</span>
+</pre></div>
+</div>
+<p>The <cite>_connectSlots()</cite> function in <em>dashboard.py</em> is used to assign functions to widget actions. Group the signal/slot assignments for widgets by their type and the tab they reside in.</p>
+<p>The following are examples to link new widgets to new functions in the <em>MainWindow</em> class.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Push<span class="w"> </span>Buttons
+<span class="go">self.pushButton_tsi_clear_SOI_list.clicked.connect(self._slotTSI_ClearSOI_ListClicked)</span>
+<span class="go">self.pushButton_pd_dissectors_construct.clicked.connect(lambda: self._slotPD_DissectorsConstructClicked(preview = False))</span>
+
+<span class="gp"># </span>Check<span class="w"> </span>Boxes
+<span class="go">self.checkBox_automation_receive_only.clicked.connect(self._slotAutomationReceiveOnlyClicked)</span>
+
+<span class="gp"># </span>Combo<span class="w"> </span>Boxes
+<span class="go">self.comboBox_tsi_detector.currentIndexChanged.connect(self._slotTSI_DetectorChanged)</span>
+
+<span class="gp"># </span>Radio<span class="w"> </span>Buttons
+<span class="go">self.radioButton_library_search_binary.clicked.connect(self._slotLibrarySearchBinaryClicked)</span>
+
+<span class="gp"># </span>Double<span class="w"> </span>Spin<span class="w"> </span>Boxes
+<span class="go">self.doubleSpinBox_pd_bit_slicing_window_size.valueChanged.connect(self._slotPD_BitSlicingSpinboxWindowChanged)</span>
+
+<span class="gp"># </span>Horizontal<span class="w"> </span>Sliders
+<span class="go">self.horizontalSlider_pd_bit_slicing_preamble_stats.valueChanged.connect(self._slotPD_BitSlicingSliderWindowChanged)</span>
+
+<span class="gp"># </span>Table<span class="w"> </span>Widgets
+<span class="go">self.tableWidget_automation_scan_options.cellChanged.connect(self._slotAutomationLockSearchBandClicked)</span>
+<span class="go">self.tableWidget_pd_bit_slicing_lengths.itemSelectionChanged.connect(self._slotPD_BitSlicingLengthsChanged)</span>
+<span class="go">self.tableWidget_pd_bit_slicing_candidate_preambles.cellDoubleClicked.connect(self._slotPD_BitSlicingCandidateDoubleClicked)</span>
+<span class="go">self.tableWidget_pd_bit_slicing_packets.horizontalHeader().sectionClicked.connect(self._slotPD_BitSlicingColumnClicked)</span>
+
+<span class="gp"># </span>Labels
+<span class="go">self.label_iq_end.mousePressEvent = self._slotIQ_EndLabelClicked</span>
+
+<span class="gp"># </span>List<span class="w"> </span>Widgets
+<span class="go">self.listWidget_library_gallery.currentItemChanged.connect(self._slotLibraryGalleryImageChanged)</span>
+<span class="go">self.listWidget_library_browse_demod_fgs.itemClicked.connect(self._slotLibraryBrowseDemodFGsClicked)</span>
+<span class="go">self.listWidget_iq_inspection_flow_graphs.itemDoubleClicked.connect(self._slotIQ_InspectionFlowGraphClicked)</span>
+
+<span class="gp"># </span>Text<span class="w"> </span>Edits
+<span class="go">self.textEdit_iq_start.textChanged.connect(self._slotIQ_StartChanged)</span>
+
+<span class="gp"># </span>Tree<span class="w"> </span>Widgets
+<span class="go">self.treeWidget_attack_attacks.itemDoubleClicked.connect(self._slotAttackTemplatesDoubleClicked)</span>
+
+<span class="gp"># </span>Menu<span class="w"> </span>Items
+<span class="go">self.actionAll_Options.triggered.connect(self._slotMenuOptionsClicked)</span>
+
+<span class="gp"># </span>Tab<span class="w"> </span>Widgets
+<span class="go">self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)</span>
+
+<span class="gp"># </span>List<span class="w"> </span>Widget
+<span class="go">self.listWidget_options.currentItemChanged.connect(self._slotOptionsListWidgetChanged)</span>
+<span class="go">self.listWidget_library_browse_attacks3.itemClicked.connect(self._slotLibraryBrowseAttacksClicked)</span>
+<span class="go">self.listWidget_pd_flow_graphs_recommended_fgs.itemDoubleClicked.connect(self._slotPD_DemodulationLoadSelectedClicked)</span>
+
+<span class="gp"># </span>Custom<span class="w"> </span>Signals
+<span class="go">self.connect(self, self.signal_PD_Offline, self._slotPD_Offline)</span>
+</pre></div>
+</div>
+<p>To avoid threading issues in FISSURE’s event listener, custom signals can be issued from within the thread to slots located in the Dashboard.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">self.signal_PD_Offline = QtCore.SIGNAL(&quot;pdOffline&quot;)               # Defined in Dashboard</span>
+<span class="go">self.connect(self, self.signal_PD_Offline, self._slotPD_Offline)  # Defined in Dashboard</span>
+<span class="go">self.emit(self.signal_PD_Offline)                                 # Issued in thread</span>
+</pre></div>
+</div>
+<p>Connected slots/functions are appended to the class.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">def _slotIQ_ConvertClicked(self):</span>
+<span class="go">    &quot;&quot;&quot; Converts the original file to a new data type.</span>
+<span class="go">    &quot;&quot;&quot;</span>
+<span class="gp">    # </span>Get<span class="w"> </span>Values
+<span class="go">    print &quot;text&quot;</span>
+</pre></div>
+</div>
+<p><strong>Generic Input Dialogs</strong></p>
+<p>Text Edit:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">text, ok = QtGui.QInputDialog.getText(self, &#39;Rename&#39;, &#39;Enter new name:&#39;,QtGui.QLineEdit.Normal,get_file)</span>
+<span class="go">if ok:</span>
+<span class="go">    print text</span>
+</pre></div>
+</div>
+<p>ComboBox:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Open<span class="w"> </span>the<span class="w"> </span>Band<span class="w"> </span>Chooser<span class="w"> </span>Dialog
+<span class="go">new_label_text = &quot;Choose 4G Band&quot;</span>
+<span class="go">new_items = [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;, &#39;5&#39;, &#39;7&#39;, &#39;12&#39;, &#39;13&#39;, &#39;14&#39;, &#39;17&#39;, &#39;20&#39;, &#39;25&#39;, &#39;26&#39;, &#39;29&#39;, &#39;30&#39;, &#39;40&#39;, &#39;41&#39;, &#39;46&#39;, &#39;48&#39;, &#39;66&#39;, &#39;71&#39;]</span>
+<span class="go">chooser_dlg = MiscChooser(parent=self, label_text=new_label_text, chooser_items=new_items)</span>
+<span class="go">chooser_dlg.show()</span>
+<span class="go">chooser_dlg.exec_()</span>
+
+<span class="gp"># </span>Run<span class="w"> </span>the<span class="w"> </span>Script
+<span class="go">get_value = chooser_dlg.return_value</span>
+<span class="go">if len(get_value) &gt; 0:</span>
+<span class="go">    print get_value</span>
+</pre></div>
+</div>
+<p>Folder:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Choose<span class="w"> </span>Folder
+<span class="go">get_dir = str(QtGui.QFileDialog.getExistingDirectory(self, &quot;Select Directory&quot;))</span>
+<span class="go">if len(get_dir) &gt; 0:</span>
+<span class="go">    print get_dir</span>
+</pre></div>
+</div>
+<p>Open File:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Choose<span class="w"> </span>File
+<span class="go">fname = QtGui.QFileDialog.getOpenFileName(None,&quot;Select IQ File...&quot;, default_directory, filter=&quot;All Files (*)&quot;)</span>
+<span class="go">if fname != &quot;&quot;:</span>
+<span class="go">    print fname</span>
+</pre></div>
+</div>
+<p>Save File:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Choose<span class="w"> </span>File
+<span class="go">fname = QtGui.QFileDialog.getSaveFileName(None,&quot;Select File...&quot;, default_directory, filter=&quot;All Files (*)&quot;)</span>
+<span class="go">if fname != &quot;&quot;:</span>
+<span class="go">    print fname</span>
+</pre></div>
+</div>
+<p>Error Message:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">self.errorMessage(&quot;Flow Graph was not Found in PD Flow Graph Library!&quot;)</span>
+</pre></div>
+</div>
+<p>Message Box:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">msgBox = MyMessageBox(my_text = &quot; Choose an IQ file.&quot;, height = 75, width = 140)</span>
+<span class="go">msgBox.exec_()</span>
+</pre></div>
+</div>
+</section>
+</section>
 </section>
 
 
@@ -133,6 +673,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="operation.html" class="btn btn-neutral float-left" title="Operation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="about.html" class="btn btn-neutral float-right" title="About" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

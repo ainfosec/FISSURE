@@ -48,6 +48,7 @@
 <li class="toctree-l1"><a class="reference internal" href="pages/components.html">Components</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pages/operation.html">Operation</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pages/development.html">Development</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pages/about.html">About</a></li>
 </ul>
 
         </div>
@@ -77,10 +78,20 @@
   <section id="fissure-the-rf-framework">
 <h1>FISSURE - The RF Framework<a class="headerlink" href="#fissure-the-rf-framework" title="Permalink to this heading"></a></h1>
 <img alt="_images/logo.png" src="_images/logo.png" />
+<p><a class="reference external" href="https://github.com/ainfosec/FISSURE">https://github.com/ainfosec/FISSURE</a></p>
 <p><strong>Frequency Independent SDR-based Signal Understanding and Reverse Engineering</strong></p>
 <p>FISSURE is an open-source RF and reverse engineering framework designed for all skill levels with hooks for signal detection and classification, protocol discovery, attack execution, IQ manipulation, vulnerability analysis, automation, and AI/ML. The framework was built to promote the rapid integration of software modules, radios, protocols, signal data, scripts, flow graphs, reference material, and third-party tools. FISSURE is a workflow enabler that keeps software in one location and allows teams to effortlessly get up to speed while sharing the same proven baseline configuration for specific Linux distributions.</p>
 <p>The framework and tools included with FISSURE are designed to detect the presence of RF energy, understand the characteristics of a signal, collect and analyze samples, develop transmit and/or injection techniques, and craft custom payloads or messages. FISSURE contains a growing library of protocol and signal information to assist in identification, packet crafting, and fuzzing. Online archive capabilities exist to download signal files and build playlists to simulate traffic and test systems.</p>
 <p>The friendly Python codebase and user interface allows beginners to quickly learn about popular tools and techniques involving RF and reverse engineering. Educators in cybersecurity and engineering can take advantage of the built-in material or utilize the framework to demonstrate their own real-world applications. Developers and researchers can use FISSURE for their daily tasks or to expose their cutting-edge solutions to a wider audience. As awareness and usage of FISSURE grows in the community, so will the extent of its capabilities and the breadth of the technology it encompasses.</p>
+<section id="history">
+<h2>History<a class="headerlink" href="#history" title="Permalink to this heading"></a></h2>
+<p>FISSURE is a tool suite and RF framework consisting of dedicated Python components networked together for the purpose of RF device assessment and vulnerability analysis. FISSURE stemmed from the need to quickly identify and react to unknown devices or devices operating in unidentified modes in a congested RF environment. Over the years it has grown into an in-house laboratory tool used by AIS for nearly all things RF. In addition to its analysis and protocol cataloguing capabilities, it doubles as a repository for tried-and-true code developed by AIS along with popular third-party open-source software tools frequently used by the community. FISSURE can also be used to reliably stage Linux computers and bypass some of the more complicated software installs.</p>
+<p>FISSURE was released to the public in August 2021 and is continuously growing. While it has an impressive list of capabilities, it has yet to reach its full potential. The framework embodies a robust approach and provides easy-to-use mechanisms for adding content. It is expected to always be in a state of maturation to continuously meet the needs of advancing technology.</p>
+</section>
+<section id="contributing">
+<h2>Contributing<a class="headerlink" href="#contributing" title="Permalink to this heading"></a></h2>
+<p>Suggestions for improving FISSURE are strongly encouraged. If you have any thoughts for new features, design changes, RF protocols, analysis tools, hardware, or targets, please contact Chris Poore via the GitHub Discussions and Issues tabs, the Discord channel, by submitting a pull request, or through email to <a class="reference external" href="mailto:poorec&#37;&#52;&#48;ainfosec&#46;com">poorec<span>&#64;</span>ainfosec<span>&#46;</span>com</a>.</p>
+</section>
 <section id="contacts">
 <h2>Contacts<a class="headerlink" href="#contacts" title="Permalink to this heading"></a></h2>
 <div class="line-block">
@@ -105,6 +116,11 @@
 <div class="line">GPL-3.0</div>
 <div class="line">For license details, see <a class="reference external" href="https://github.com/ainfosec/FISSURE/blob/Python3_maint-3.8/LICENSE">LICENSE</a></div>
 </div>
+</section>
+<section id="authors">
+<h2>Authors<a class="headerlink" href="#authors" title="Permalink to this heading"></a></h2>
+<p><strong>Christopher Poore</strong></p>
+<p>Chris Poore is a Senior Reverse Engineer at Assured Information Security in Rome, NY. He has expertise discovering vulnerabilities in wireless systems, gaining access to systems via RF, reverse engineering RF protocols, forensically testing cybersecurity systems, and administering RF collection events. He has been the main figure behind the design and implementation of FISSURE since its inception in 2014. Chris is excited about implementing ideas drawn from the community and taking advantage of increased networking opportunities, so please reach out to him.</p>
 <div class="toctree-wrapper compound">
 <p class="caption" role="heading"><span class="caption-text">Table of Contents:</span></p>
 <ul>
@@ -114,12 +130,25 @@
 <li class="toctree-l2"><a class="reference internal" href="pages/installation.html#installer">Installer</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/installation.html#uninstalling">Uninstalling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/installation.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/installation.html#known-conflicts">Known Conflicts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/installation.html#third-party-software">Third-Party Software</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/installation.html#third-party-software-versions">Third-Party Software Versions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/installation.html#ubuntu-18-04-6">Ubuntu 18.04.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/installation.html#ubuntu-20-04-4">Ubuntu 20.04.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/installation.html#ubuntu-22-04-1">Ubuntu 22.04.1</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pages/hardware.html">Hardware</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pages/hardware.html#concepts">Concepts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/hardware.html#supported">Supported</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/hardware.html#configuring">Configuring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/hardware.html#notes">Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/hardware.html#limesdr-notes">LimeSDR Notes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/hardware.html#new-usrp-x310">New USRP X310</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/hardware.html#updating-hackrf-firmware">Updating HackRF Firmware</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pages/components.html">Components</a><ul>
@@ -127,6 +156,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pages/components.html#communications">Communications</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/components.html#library">Library</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/components.html#file-structure">File Structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/components.html#supported-protocols">Supported Protocols</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pages/components.html#dashboard">Dashboard</a><ul>
@@ -155,21 +185,95 @@
 <li class="toctree-l3"><a class="reference internal" href="pages/operation.html#view">View</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#automation-tab">Automation Tab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#tsi-tab">TSI Tab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#pd-tab">PD Tab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#attack-tab">Attack Tab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#iq-data-tab">IQ Data Tab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#packet-crafter-tab">Packet Crafter Tab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#archive-tab">Archive Tab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#library-tab">Library Tab</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#log-tab">Log Tab</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#automation-tab">Automation Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#manual">Manual</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#discovery-disabled">Discovery (Disabled)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#target-disabled">Target (Disabled)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#custom-disabled">Custom (Disabled)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#tsi-tab">TSI Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#detector-sweep">Detector/Sweep</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#conditioner-future">Conditioner (Future)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#feature-extractor-future">Feature Extractor (Future)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#classifier-future">Classifier (Future)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#pd-tab">PD Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#status">Status</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#demodulation">Demodulation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#bit-slicing">Bit Slicing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#data-viewer">Data Viewer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#dissectors">Dissectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#sniffer">Sniffer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#crc-calculator">CRC Calculator</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#attack-tab">Attack Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#single-stage">Single-Stage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#multi-stage">Multi-Stage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#fuzzing-fields">Fuzzing (Fields)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#fuzzing-variables">Fuzzing (Variables)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#history">History</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#iq-data-tab">IQ Data Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#record">Record</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#playback">Playback</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#inspection">Inspection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#crop">Crop</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#convert">Convert</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#append">Append</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#transfer">Transfer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#timeslot">Timeslot</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#overlap">Overlap</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#resample">Resample</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#ofdm">OFDM</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#normalize">Normalize</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#viewer">Viewer</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#archive-tab">Archive Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#download">Download</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#replay">Replay</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#packet-crafter-tab">Packet Crafter Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#packet-editor">Packet Editor</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#scapy">Scapy</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#library-tab">Library Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#browse">Browse</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#gallery">Gallery</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#search">Search</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#remove">Remove</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#add">Add</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#log-tab">Log Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#system-log">System Log</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#session-notes">Session Notes</a></li>
+</ul>
+</li>
 <li class="toctree-l2"><a class="reference internal" href="pages/operation.html#status-bar">Status Bar</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pages/development.html">Development</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pages/development.html#adding-custom-options">Adding Custom Options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/development.html#built-with">Built With</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/development.html#attack-flow-graphs">Attack Flow Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/development.html#attack-python-scripts">Attack Python Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/development.html#inspection-flow-graphs">Inspection Flow Graphs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/development.html#modifying-dashboard">Modifying Dashboard</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/development.html#qtdesigner">QtDesigner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/development.html#dashboard-py">dashboard.py</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pages/about.html">About</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="pages/about.html#credits">Credits</a></li>
 </ul>
 </li>
 </ul>

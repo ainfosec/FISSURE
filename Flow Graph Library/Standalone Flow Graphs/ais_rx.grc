@@ -150,7 +150,7 @@ blocks:
     label: Gain
     short_id: ''
     type: intx
-    value: '65'
+    value: '70'
   states:
     bus_sink: false
     bus_source: false

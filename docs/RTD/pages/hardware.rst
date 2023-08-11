@@ -2,13 +2,18 @@
 Hardware
 ========
 
-FISSURE is a tool suite and RF framework consisting of dedicated Python components networked together for the purpose of RF device assessment and vulnerability analysis. FISSURE stemmed from the need to quickly identify and react to unknown devices or devices operating in unidentified modes in a congested RF environment. Over the years it has grown into an in-house laboratory tool used by AIS for nearly all things RF. In addition to its analysis and protocol cataloguing capabilities, it doubles as a repository for tried-and-true code developed by AIS along with popular third-party open-source software tools frequently used by the community. FISSURE can also be used to reliably stage Linux computers and bypass some of the more complicated software installs. FISSURE is continuously growing and while it has an impressive list of capabilities it has yet to reach its full potential. The framework embodies a robust approach and provides easy-to-use mechanisms for adding content. It is expected to always be in a state of maturation to continuously meet the needs of advancing technology.
+FISSURE was designed to be flexible in its support for integration of commercial-off-the-shelf (COTS) and non-COTS devices. The receive and transmit capabilities within FISSURE are subject to the limitations inherent to the connected hardware. Any device that can be networked and configured through scripting could be supported within FISSURE. More hardware devices and capabilities will be added over time.
 
-Concepts
-========
+Hardware is utilized by FISSURE through the following ways:
 
-FISSURE is intended to support COTS devices and support integration for non-COTS devices.
-
+- Example commands for third-party tools accessed from the menu
+- Target Signal Identifcation (TSI) flow graphs for detection and signal conditioning
+- Protocol Discovery flow graphs for demodulation purposes
+- Attack scripts and flow graphs for single-stage, multi-stage, and fuzzing attacks
+- IQ recording, playback, and inspection in the IQ Data tab
+- Transmitting signal playlists in the Archive tab
+- Transmitting Scapy messages crafted in the Packet Crafter tab
+ 
 Supported
 =========
 
@@ -30,7 +35,106 @@ Buttons for: assigning RF-enabled hardware to individual components (USRP B205mi
 
 The hardware information is used to set display items in the Dashboard and pass it to components when running operations that use flow graphs and scripts. Third-party tools do not incorporate information from the hardware buttons.
 
+Notes
+=====
+
+The following are miscellaneous notes regarding particular hardware models.
+
+LimeSDR Notes
+-------------
+
+**Links**
+
+- https://wiki.myriadrf.org/Lime_Suite
+- https://wiki.myriadrf.org/Gr-limesdr_Plugin_for_GNURadio
+- https://myriadrf.org/news/limesdr-made-simple-part-1/
+
+**Installing**
+
+*From Repo*
+
+.. code-block:: console
+
+    sudo add-apt-repository -y ppa:myriadrf/drivers
+    sudo apt-get update
+    sudo apt-get install limesuite liblimesuite-dev limesuite-udev limesuite-images
+    sudo apt-get install soapysdr-tools soapysdr-module-lms7
+
+.. code-block:: console
+
+    # soapysdr-tools was called soapysdr on older packages
+    sudo apt-get install soapysdr soapysdr-module-lms7
+
+*From Source*
+
+.. code-block:: console
+
+    sudo apt-get install libboost-all-dev swig
+
+    git clone https://github.com/myriadrf/gr-limesdr
+
+    cd gr-limesdr
+    mkdir build
+    cd build
+    cmake ..
+    make
+    sudo make install
+    sudo ldconfig
+
+**Other Notes**
+
+- `LimeUtil \--find`
+- LimeSDR-USB and LimeSDR-PCIe sample rate must be no more than 61.44 MS/s.
+- Gain range must be 0dB–70dB (60 on transmit, 70 on receive).
+- Up to 10 dBm
+- Analog filter bandw. (callback function value): Enter RX analog filter bandwidth for each channel. 0 means that analog filter is turned OFF.
+- RX analog filter bandwidth range must be 1.5MHz–130MHz.
+- Digital filter bandw. (callback function value):Enter RX digital filter bandwidth for each channel. 0 means that digital filter is turned OFF.
+- RX digital filter bandwidth should not be higher than sampling rate.
+- LimeSDR v1.4s
+- `LimeSuiteGUI`
 
 
+New USRP X310
+-------------
 
+1. Plug 10 GbE into second slot on USRP
+2. Set computer IP to 192.168.40.1. Ping 192.168.40.2. Run `uhd_find_devices`. If there is an RFNOC error about a missing folder, download a UHD release and copy the folder:
+3. `wget https://codeload.github.com/EttusResearch/uhd/zip/release_003_010_003_000 -O uhd.zip`
+4. `unzip uhd.zip`
+5. `cd uhd-release_003_010_003_000/host/include`
+6. `sudo cp -Rv uhd/rfnoc /usr/share/uhd/`
+7. Try to run flow graph. It will print out instructions for matching FPGA images for current version of UHD.
+8. `/home/user/lib/uhd/utils/uhd_images_downloader.py` or  `/usr/lib/uhd/utils/uhd_images_downloader.py`
+9. `/home/user/bin/uhd_image_loader --args="type=x300,addr=192.168.40.2"` or `/usr/bin/uhd_image_loader" --args="type=x300,addr=192.168.140.2"`
+10. Set MTU to 9000 for the 10 GbE network connection.
+11. Change IP address of USRP 10 GbE connection as needed:
+
+.. code-block:: console
+
+    cd usr/lib/uhd/utils
+    ./usrp_burn_mb_eeprom --args=<optional device args> --values="ip-addr3=192.168.140.2"
+
+12. Adjust this value to something like: `sudo sysctl -w net.core.wmem_max=24862979`
+
+Updating HackRF Firmware
+------------------------
+
+Firmware is included with each HackRF `release <https://github.com/greatscottgadgets/hackrf/releases>`_. Firmware updates allow for more advanced features like *hackrf_sweep*.
+
+.. code-block:: console
+
+    hackrf_spiflash -w ~/Installed_by_FISSURE/hackrf-2022.09.1/firmware-bin/hackrf_one_usb.bin
+
+**Updating the CPLD**
+
+Older versions of HackRF firmware (prior to release 2021.03.1) require an additional step to program a bitstream into the CPLD.
+
+To update the CPLD image, first update the SPI flash firmware, libhackrf, and hackrf-tools to the version you are installing. Then:
+
+.. code-block:: console
+
+    hackrf_cpldjtag -x firmware/cpld/sgpio_if/default.xsvf
+
+After a few seconds, three LEDs should start blinking. This indicates that the CPLD has been programmed successfully. Reset the HackRF device by pressing the RESET button or by unplugging it and plugging it back in.
 

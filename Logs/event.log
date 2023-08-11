@@ -1,59 +1,59 @@
-07/17/2023 03:31:49 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
-07/17/2023 03:31:49 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
-07/17/2023 03:31:49 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
-07/17/2023 03:31:49 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
-07/17/2023 03:31:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
-07/17/2023 03:31:49 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
-07/17/2023 03:31:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
-07/17/2023 03:31:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
-07/17/2023 03:31:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
-07/17/2023 03:31:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
-07/17/2023 03:31:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
-07/17/2023 03:31:49 PM - hiprfisr: End of HIPRFISR Initialization
-07/17/2023 03:31:49 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
-07/17/2023 03:31:50 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-07/17/2023 03:31:50 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
-07/17/2023 03:31:50 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-07/17/2023 03:31:50 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
-07/17/2023 03:31:50 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-07/17/2023 03:31:50 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
-07/17/2023 03:31:50 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-07/17/2023 03:31:50 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
-07/17/2023 03:31:50 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-07/17/2023 03:31:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
-07/17/2023 03:31:50 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-07/17/2023 03:31:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
-07/17/2023 03:31:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
-07/17/2023 03:31:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
-07/17/2023 03:31:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
-07/17/2023 03:31:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
-07/17/2023 03:31:50 PM - hiprfisr: Start of Main Event Loop
-07/17/2023 03:31:50 PM - fge: Port Connected to tcp://127.0.0.1:5053
-07/17/2023 03:31:50 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-07/17/2023 03:31:50 PM - fge: Port Initialized to tcp://127.0.0.1:5061
-07/17/2023 03:31:50 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-07/17/2023 03:31:50 PM - fge: Port Connected to tcp://127.0.0.1:5055
-07/17/2023 03:31:50 PM - tsi: Port Connected to tcp://localhost:5052
-07/17/2023 03:31:50 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-07/17/2023 03:31:50 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-07/17/2023 03:31:50 PM - fge: Port Connected to tcp://127.0.0.1:5057
-07/17/2023 03:31:50 PM - tsi: Port Initialized to tcp://*:5059
-07/17/2023 03:31:50 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-07/17/2023 03:31:50 PM - tsi: Port Connected to tcp://127.0.0.1:5055
-07/17/2023 03:31:50 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-07/17/2023 03:31:50 PM - tsi: Port Connected to tcp://127.0.0.1:5057
-07/17/2023 03:31:51 PM - pd: Port Connected to tcp://127.0.0.1:5054
-07/17/2023 03:31:51 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
-07/17/2023 03:31:51 PM - pd: Port Initialized to tcp://127.0.0.1:5063
-07/17/2023 03:31:51 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
-07/17/2023 03:31:51 PM - pd: Port Connected to tcp://127.0.0.1:5055
-07/17/2023 03:31:51 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
-07/17/2023 03:31:51 PM - pd: Port Connected to tcp://127.0.0.1:5057
-07/17/2023 03:31:51 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
-07/17/2023 03:31:51 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
-07/17/2023 03:31:51 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
-07/17/2023 03:31:52 PM - dashboard: Received message: HIPRFISR: Connected TSI
-07/17/2023 03:31:52 PM - dashboard: Received message: HIPRFISR: Connected FGE
-07/17/2023 03:31:52 PM - dashboard: Received message: HIPRFISR: Connected PD
-07/17/2023 03:32:07 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-07/17/2023 03:32:07 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters
+08/11/2023 01:52:26 AM - dashboard: Port Initialized to tcp://127.0.0.1:5051
+08/11/2023 01:52:26 AM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
+08/11/2023 01:52:26 AM - dashboard: Port Initialized to tcp://127.0.0.1:5057
+08/11/2023 01:52:26 AM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
+08/11/2023 01:52:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5055
+08/11/2023 01:52:26 AM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
+08/11/2023 01:52:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5059
+08/11/2023 01:52:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5060
+08/11/2023 01:52:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5065
+08/11/2023 01:52:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5061
+08/11/2023 01:52:26 AM - dashboard: Port Connected to tcp://127.0.0.1:5063
+08/11/2023 01:52:27 AM - hiprfisr: End of HIPRFISR Initialization
+08/11/2023 01:52:27 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
+08/11/2023 01:52:27 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+08/11/2023 01:52:27 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
+08/11/2023 01:52:27 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+08/11/2023 01:52:27 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
+08/11/2023 01:52:27 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+08/11/2023 01:52:27 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
+08/11/2023 01:52:27 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+08/11/2023 01:52:27 AM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
+08/11/2023 01:52:27 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+08/11/2023 01:52:27 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
+08/11/2023 01:52:27 AM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+08/11/2023 01:52:27 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
+08/11/2023 01:52:27 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
+08/11/2023 01:52:27 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
+08/11/2023 01:52:27 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
+08/11/2023 01:52:27 AM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
+08/11/2023 01:52:27 AM - hiprfisr: Start of Main Event Loop
+08/11/2023 01:52:28 AM - tsi: Port Connected to tcp://localhost:5052
+08/11/2023 01:52:28 AM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+08/11/2023 01:52:28 AM - tsi: Port Initialized to tcp://*:5059
+08/11/2023 01:52:28 AM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+08/11/2023 01:52:28 AM - fge: Port Connected to tcp://127.0.0.1:5053
+08/11/2023 01:52:28 AM - tsi: Port Connected to tcp://127.0.0.1:5055
+08/11/2023 01:52:28 AM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+08/11/2023 01:52:28 AM - tsi: Port Connected to tcp://127.0.0.1:5057
+08/11/2023 01:52:28 AM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+08/11/2023 01:52:28 AM - fge: Port Initialized to tcp://127.0.0.1:5061
+08/11/2023 01:52:28 AM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+08/11/2023 01:52:28 AM - fge: Port Connected to tcp://127.0.0.1:5055
+08/11/2023 01:52:28 AM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+08/11/2023 01:52:28 AM - fge: Port Connected to tcp://127.0.0.1:5057
+08/11/2023 01:52:28 AM - pd: Port Connected to tcp://127.0.0.1:5054
+08/11/2023 01:52:28 AM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
+08/11/2023 01:52:28 AM - pd: Port Initialized to tcp://127.0.0.1:5063
+08/11/2023 01:52:28 AM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
+08/11/2023 01:52:28 AM - pd: Port Connected to tcp://127.0.0.1:5055
+08/11/2023 01:52:28 AM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
+08/11/2023 01:52:28 AM - pd: Port Connected to tcp://127.0.0.1:5057
+08/11/2023 01:52:29 AM - hiprfisr: Sending message: HIPRFISR: Connected TSI
+08/11/2023 01:52:29 AM - hiprfisr: Sending message: HIPRFISR: Connected FGE
+08/11/2023 01:52:29 AM - hiprfisr: Sending message: HIPRFISR: Connected PD
+08/11/2023 01:52:29 AM - dashboard: Received message: HIPRFISR: Connected TSI
+08/11/2023 01:52:29 AM - dashboard: Received message: HIPRFISR: Connected FGE
+08/11/2023 01:52:29 AM - dashboard: Received message: HIPRFISR: Connected PD
+08/11/2023 01:52:38 AM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
+08/11/2023 01:52:38 AM - dashboard: Sending message: Dashboard: Stop PD $Parameters
