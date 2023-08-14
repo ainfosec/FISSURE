@@ -251,7 +251,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 - [ ] Update documentation to instruct users how to work within the framework
 - [ ] Provide base support for hardware already on the market
 - [ ] Identify the most desirable third-party tools within the community
-- [ ] Identify the most desirable operating systems within the community
+- [x] Identify the most desirable operating systems within the community
 - [ ] Release a signal conditioner that allows users to select and add techniques for isolating and conditioning signals from large streams of IQ data
 - [ ] Release a feature extractor that allows users to select and add techniques for extracting features from isolated signals for use in protocol and emitter classification
 - [ ] Release a signal classifier that allows users to select and add AI/ML techniques. In addition, a decision tree with adjustable features and weights.
