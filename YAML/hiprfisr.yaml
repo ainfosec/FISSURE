@@ -43,6 +43,8 @@ Commands:
     - Set Auto Start PD
     - Start TSI Detector
     - Stop TSI Detector
+    - Start TSI Conditioner
+    - Stop TSI Conditioner
     - Start PD
     - Stop PD
     - Ignore SOIs
@@ -110,6 +112,8 @@ Status:
      - Connect to TSI
      - Connect to FGE
      - Archive Playlist Position
+     - TSI Conditioner Finished
+     - Conditioner Progress Bar
 
 
 # Callback to Function Lookup
@@ -133,6 +137,8 @@ Stop Sniffer Flow Graph: snifferFlowGraphStop
 Set Auto Start PD: setAutoStartPD
 Start TSI Detector: startTSI_Detector
 Stop TSI Detector: stopTSI_Detector
+Start TSI Conditioner: startTSI_Conditioner
+Stop TSI Conditioner: stopTSI_Conditioner
 Start PD: startPD
 Stop PD: stopPD
 Ignore SOIs: ignoreSOIs
@@ -282,6 +288,17 @@ startTSI_Detector:
              variable_values
 
 stopTSI_Detector:
+    Type: callback
+    
+startTSI_Conditioner:
+    Type: callback
+    Parameters:
+             common_parameter_names
+             common_parameter_values
+             method_parameter_names
+             method_parameter_values
+
+stopTSI_Conditioner:
     Type: callback
 
 startPD: 

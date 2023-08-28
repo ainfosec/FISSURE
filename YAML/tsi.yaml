@@ -40,6 +40,8 @@ Wideband:
 Commands:
      - Start TSI Detector
      - Stop TSI Detector
+     - Start TSI Conditioner
+     - Stop TSI Conditioner
      - Start IQ Recording
      - Add Blacklist
      - Remove Blacklist
@@ -52,6 +54,8 @@ Commands:
 # Callback to Function Lookup
 Start TSI Detector: startTSI_Detector
 Stop TSI Detector: stopTSI_Detector
+Start TSI Conditioner: startTSI_Conditioner
+Stop TSI Conditioner: stopTSI_Conditioner
 Start IQ Recording: startIQ_Recording
 Add Blacklist: addBlacklist
 Remove Blacklist: removeBlacklist
@@ -69,6 +73,18 @@ startTSI_Detector:
              variable_values
      
 stopTSI_Detector:
+    Type: callback
+    Parameters:
+    
+startTSI_Conditioner:
+    Type: callback
+    Parameters:
+             common_parameter_names
+             common_parameter_values
+             method_parameter_names
+             method_parameter_values
+     
+stopTSI_Conditioner:
     Type: callback
     Parameters:
 

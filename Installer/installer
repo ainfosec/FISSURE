@@ -1195,7 +1195,7 @@ programs_ubuntu22_04.append(('Simple Screen Recorder (5.6 MB)',
 """sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
-""",True,'Video'))
+""",False,'Video'))
 
 # radiosonde_auto_rx
 programs_ubuntu22_04.append(('radiosonde_auto_rx (82.4 MB)',
@@ -5110,7 +5110,7 @@ programs_kali2023_1.append(('Simple Screen Recorder (5.8 MB)',
 """sudo apt-get install -y simplescreenrecorder
 ########## Verify ##########
 simplescreenrecorder --help
-""",True,'Video'))
+""",False,'Video'))
 
 # radiosonde_auto_rx
 programs_kali2023_1.append(('radiosonde_auto_rx (46.5 MB)',
