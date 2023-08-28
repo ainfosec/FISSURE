@@ -543,6 +543,794 @@ class TSI_Component:
 
 ########################################################################
 
+    def startTSI_Conditioner(self, common_parameter_names, common_parameter_values, method_parameter_names, method_parameter_values):
+        """ Accepts a Start message from the HIPRFISR and begins the new thread.
+        """
+        # Create a New Thread
+        self.conditioner_stop_event = threading.Event()
+        c_thread = threading.Thread(target=self.startTSI_ConditionerThread, args=(self.conditioner_stop_event, common_parameter_names, common_parameter_values, method_parameter_names, method_parameter_values))
+        c_thread.start()
+        
+    def startTSI_ConditionerThread(self, stop_event, common_parameter_names, common_parameter_values, method_parameter_names, method_parameter_values):
+        """ Performs the signal conditioning actions.
+        """        
+        # Common Parameters
+        for n in range(len(common_parameter_names)):
+            if common_parameter_names[n] == 'category':
+                get_category = common_parameter_values[n]
+            elif common_parameter_names[n] == 'method':
+                get_method = common_parameter_values[n]
+            elif common_parameter_names[n] == 'output_directory':
+                get_output_directory = common_parameter_values[n]
+            elif common_parameter_names[n] == 'prefix':
+                get_prefix = common_parameter_values[n]
+            elif common_parameter_names[n] == 'sample_rate':
+                get_sample_rate = common_parameter_values[n]
+            elif common_parameter_names[n] == 'tuned_frequency':
+                get_tuned_freq = common_parameter_values[n]
+            elif common_parameter_names[n] == 'data_type':
+                get_type = common_parameter_values[n]
+            elif common_parameter_names[n] == 'max_files':
+                get_max_files = common_parameter_values[n]
+            elif common_parameter_names[n] == 'min_samples':
+                get_min_samples = common_parameter_values[n]
+            elif common_parameter_names[n] == 'all_filepaths':
+                get_all_filepaths = common_parameter_values[n]
+            elif common_parameter_names[n] == 'detect_saturation':
+                get_detect_saturation = common_parameter_values[n]
+            elif common_parameter_names[n] == 'saturation_min':
+                get_saturation_min = common_parameter_values[n]
+            elif common_parameter_names[n] == 'saturation_max':
+                get_saturation_max = common_parameter_values[n]
+            elif common_parameter_names[n] == 'normalize_output':
+                get_normalize_output = common_parameter_values[n]
+            elif common_parameter_names[n] == 'normalize_min':
+                try:
+                    get_normalize_min = float(common_parameter_values[n])
+                except:
+                    get_normalize_min = ''
+            elif common_parameter_names[n] == 'normalize_max':
+                try:
+                    get_normalize_max = float(common_parameter_values[n])
+                except:
+                    get_normalize_max = ''
+            
+        # Flow Graph Directory
+        if get_type == "Complex Float 32":
+            fg_directory = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/TSI\ Flow\ Graphs/Conditioner/Flow_Graphs/ComplexFloat32"
+        elif get_type == "Complex Int 16":
+            fg_directory = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/TSI\ Flow\ Graphs/Conditioner/Flow_Graphs/ComplexInt16"
+        
+        # Method1: burst_tagger
+        if (get_category == "Energy - Burst Tagger") and (get_method == "Normal"):    
+            count = 0   
+            new_files = []
+            original_filenames = []         
+            
+            # Create a List of Files in Output Directory
+            if get_output_directory != "":
+                file_names = []
+                for fname in os.listdir(get_output_directory):
+                    if os.path.isfile(get_output_directory+"/"+fname):
+                        file_names.append(fname)
+                            
+            for n in range(0,len(get_all_filepaths)):
+
+                # Stop Conditioner Triggered
+                if self.conditioner_stop_event.is_set():
+                    print("TSI Conditioner Stopped")
+                    return
+                            
+                # Update Progress Bar
+                progress_value = 1+int((float((n+1))/len(get_all_filepaths)*90))
+                self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n]) 
+                
+                # Method Parameters
+                for m in range(len(method_parameter_names)):
+                    if method_parameter_names[m] == 'threshold':
+                        get_threshold = method_parameter_values[m]
+                                    
+                # Run the Flow Graph                       
+                cmd = "python2 " + fg_directory + "/burst_tagger/normal.py --filepath '" + get_all_filepaths[n] \
+                    + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold
+                p1 = subprocess.Popen(cmd, shell=True, cwd=get_output_directory)
+                (output, err) = p1.communicate()
+                p1.wait()                     
+                
+                # Rename the New Files        
+                if get_output_directory != "":                        
+                    for fname in os.listdir(get_output_directory):
+                        if os.path.isfile(get_output_directory + "/" + fname):
+                            if fname not in file_names:
+                                count = count + 1
+                                os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                original_filenames.append(get_all_filepaths[n])
+
+            # Update Progress Bar
+            progress_value = 95
+            self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n]) 
+        
+        # Method2: burst_tagger with Decay
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Normal Decay"):    
+            count = 0   
+            new_files = []
+            original_filenames = []         
+            
+            # Create a List of Files in Output Directory
+            if get_output_directory != "":
+                file_names = []
+                for fname in os.listdir(get_output_directory):
+                    if os.path.isfile(get_output_directory+"/"+fname):
+                        file_names.append(fname)
+                            
+            for n in range(0,len(get_all_filepaths)):
+                
+                # Stop Conditioner Triggered
+                if self.conditioner_stop_event.is_set():
+                    print("TSI Conditioner Stopped")
+                    return
+
+                # Update Progress Bar
+                progress_value = 1+int((float((n+1))/len(get_all_filepaths)*90))
+                self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n])
+                
+                # Method Parameters
+                for m in range(len(method_parameter_names)):
+                    if method_parameter_names[m] == 'threshold':
+                        get_threshold = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'decay':
+                        get_decay = method_parameter_values[m]
+                                    
+                # Run the Flow Graph                       
+                cmd = "python2 "  + fg_directory + "/burst_tagger/normal_decay.py --filepath '" + get_all_filepaths[n] \
+                    + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --decay " + get_decay
+                p1 = subprocess.Popen(cmd, shell=True, cwd=get_output_directory)
+                (output, err) = p1.communicate()
+                p1.wait() 
+                
+                # Rename the New Files        
+                if get_output_directory != "":                        
+                    for fname in os.listdir(get_output_directory):
+                        if os.path.isfile(get_output_directory + "/" + fname):
+                            if fname not in file_names:
+                                count = count + 1
+                                os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                original_filenames.append(get_all_filepaths[n])
+                                
+            # Update Progress Bar
+            progress_value = 95
+            self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n]) 
+        
+        # Method3: power_squelch_with_burst_tagger
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch"):
+            count = 0   
+            new_files = []
+            original_filenames = []         
+            
+            # Create a List of Files in Output Directory
+            if get_output_directory != "":
+                file_names = []
+                for fname in os.listdir(get_output_directory):
+                    if os.path.isfile(get_output_directory+"/"+fname):
+                        file_names.append(fname)
+                            
+            for n in range(0,len(get_all_filepaths)):
+
+                # Stop Conditioner Triggered
+                if self.conditioner_stop_event.is_set():
+                    print("TSI Conditioner Stopped")
+                    return
+                
+                # Update Progress Bar
+                progress_value = 1+int((float((n+1))/len(get_all_filepaths)*90))
+                self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n])
+                    
+                # Method Parameters
+                for m in range(len(method_parameter_names)):
+                    if method_parameter_names[m] == 'squelch':
+                        get_squelch = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'threshold':
+                        get_threshold = method_parameter_values[m]
+                        
+                # Run the Flow Graph                       
+                cmd = "python2 " + fg_directory + "/burst_tagger/power_squelch.py --filepath '" + get_all_filepaths[n] \
+                    + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --squelch " + get_squelch
+                p1 = subprocess.Popen(cmd, shell=True, cwd=get_output_directory)
+                (output, err) = p1.communicate()
+                p1.wait()         
+                
+                # Rename the New Files        
+                if get_output_directory != "":                        
+                    for fname in os.listdir(get_output_directory):
+                        if os.path.isfile(get_output_directory + "/" + fname):
+                            if fname not in file_names:
+                                count = count + 1
+                                os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                original_filenames.append(get_all_filepaths[n])
+
+            # Update Progress Bar
+            progress_value = 95
+            self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n]) 
+        
+        # Method4: lowpass_filter
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Lowpass"):
+            count = 0   
+            new_files = []
+            original_filenames = []         
+            
+            # Create a List of Files in Output Directory
+            if get_output_directory != "":
+                file_names = []
+                for fname in os.listdir(get_output_directory):
+                    if os.path.isfile(get_output_directory+"/"+fname):
+                        file_names.append(fname)
+                            
+            for n in range(0,len(get_all_filepaths)):
+                
+                # Stop Conditioner Triggered
+                if self.conditioner_stop_event.is_set():
+                    print("TSI Conditioner Stopped")
+                    return
+
+                # Update Progress Bar
+                progress_value = 1+int((float((n+1))/len(get_all_filepaths)*90))
+                self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n])
+                    
+                # Method Parameters
+                for m in range(len(method_parameter_names)):
+                    if method_parameter_names[m] == 'threshold':
+                        get_threshold = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'cutoff':
+                        get_cutoff = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'transition':
+                        get_transition = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'beta':
+                        get_beta = method_parameter_values[m]
+                        
+                # Run the Flow Graph                       
+                cmd = "python2 " + fg_directory + "/burst_tagger/lowpass.py --filepath '" + get_all_filepaths[n] \
+                    + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --cutoff-freq " + get_cutoff + " --transition-width " + get_transition \
+                    + " --beta " + get_beta
+                p1 = subprocess.Popen(cmd, shell=True, cwd=get_output_directory)
+                (output, err) = p1.communicate()
+                p1.wait()         
+                
+                # Rename the New Files        
+                if get_output_directory != "":                        
+                    for fname in os.listdir(get_output_directory):
+                        if os.path.isfile(get_output_directory + "/" + fname):
+                            if fname not in file_names:
+                                count = count + 1
+                                os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                original_filenames.append(get_all_filepaths[n])
+
+            # Update Progress Bar
+            progress_value = 95
+            self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n]) 
+        
+        # Method5: power_squelch_lowpass
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch then Lowpass"):
+            count = 0   
+            new_files = []
+            original_filenames = []         
+            
+            # Create a List of Files in Output Directory
+            if get_output_directory != "":
+                file_names = []
+                for fname in os.listdir(get_output_directory):
+                    if os.path.isfile(get_output_directory+"/"+fname):
+                        file_names.append(fname)
+                            
+            for n in range(0,len(get_all_filepaths)):
+                
+                # Stop Conditioner Triggered
+                if self.conditioner_stop_event.is_set():
+                    print("TSI Conditioner Stopped")
+                    return
+
+                # Update Progress Bar
+                progress_value = 1+int((float((n+1))/len(get_all_filepaths)*90))
+                self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n])
+                
+                # Method Parameters
+                for m in range(len(method_parameter_names)):
+                    if method_parameter_names[m] == 'squelch':
+                        get_squelch = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'cutoff':
+                        get_cutoff = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'transition':
+                        get_transition = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'beta':
+                        get_beta = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'threshold':
+                        get_threshold = method_parameter_values[m]
+                        
+                # Run the Flow Graph                       
+                cmd = "python2 " + fg_directory + "/burst_tagger/power_squelch_lowpass.py --filepath '" + get_all_filepaths[n] \
+                    + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --cutoff-freq " + get_cutoff + " --transition-width " + get_transition \
+                    + " --beta " + get_beta + " --squelch " + get_squelch
+                p1 = subprocess.Popen(cmd, shell=True, cwd=get_output_directory)
+                (output, err) = p1.communicate()
+                p1.wait()  
+                
+                # Rename the New Files        
+                if get_output_directory != "":                        
+                    for fname in os.listdir(get_output_directory):
+                        if os.path.isfile(get_output_directory + "/" + fname):
+                            if fname not in file_names:
+                                count = count + 1
+                                os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                original_filenames.append(get_all_filepaths[n])
+
+            # Update Progress Bar
+            progress_value = 95
+            self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n])  
+            
+        # Method6: bandpass_filter
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Bandpass"):
+            count = 0   
+            new_files = []
+            original_filenames = []         
+            
+            # Create a List of Files in Output Directory
+            if get_output_directory != "":
+                file_names = []
+                for fname in os.listdir(get_output_directory):
+                    if os.path.isfile(get_output_directory+"/"+fname):
+                        file_names.append(fname)
+                            
+            for n in range(0,len(get_all_filepaths)):
+                
+                # Stop Conditioner Triggered
+                if self.conditioner_stop_event.is_set():
+                    print("TSI Conditioner Stopped")
+                    return
+
+                # Update Progress Bar
+                progress_value = 1+int((float((n+1))/len(get_all_filepaths)*90))
+                self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n])
+                    
+                # Method Parameters
+                for m in range(len(method_parameter_names)):
+                    if method_parameter_names[m] == 'bandpass_frequency':
+                        get_bandpass_freq = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'bandpass_width':
+                        get_bandpass_width = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'transition':
+                        get_transition = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'beta':
+                        get_beta = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'threshold':
+                        get_threshold = method_parameter_values[m]
+                        
+                # Run the Flow Graph                       
+                cmd = "python2 " + fg_directory + "/burst_tagger/bandpass.py --filepath '" + get_all_filepaths[n] \
+                    + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --bandpass-freq " + get_bandpass_freq + " --transition-width " + get_transition \
+                    + " --beta " + get_beta + " --bandpass-width " + get_bandpass_width
+                p1 = subprocess.Popen(cmd, shell=True, cwd=get_output_directory)
+                (output, err) = p1.communicate()
+                p1.wait()
+                
+                # Rename the New Files        
+                if get_output_directory != "":                        
+                    for fname in os.listdir(get_output_directory):
+                        if os.path.isfile(get_output_directory + "/" + fname):
+                            if fname not in file_names:
+                                count = count + 1
+                                os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                original_filenames.append(get_all_filepaths[n])
+
+            # Update Progress Bar
+            progress_value = 95
+            self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n]) 
+            
+        # Method7: strongest
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Strongest Frequency then Bandpass"):
+            #self.textEdit_tsi_settings_bt_sfb_freq.setPlainText("?")
+            #self.textEdit_tsi_settings_bt_sfb_freq.setAlignment(QtCore.Qt.AlignCenter)
+            count = 0   
+            new_files = []
+            original_filenames = []         
+            
+            # Create a List of Files in Output Directory
+            if get_output_directory != "":
+                file_names = []
+                for fname in os.listdir(get_output_directory):
+                    if os.path.isfile(get_output_directory+"/"+fname):
+                        file_names.append(fname)
+                            
+            for n in range(0,len(get_all_filepaths)):
+
+                # Stop Conditioner Triggered
+                if self.conditioner_stop_event.is_set():
+                    print("TSI Conditioner Stopped")
+                    return
+
+                # Update Progress Bar
+                progress_value = 1+int((float((n+1))/len(get_all_filepaths)*90))
+                self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n])
+                    
+                # Method Parameters
+                for m in range(len(method_parameter_names)):
+                    if method_parameter_names[m] == 'fft_size':
+                        get_fft_size = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'fft_threshold':
+                        get_fft_threshold = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'bandpass_width':
+                        get_bandpass_width = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'transition':
+                        get_transition = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'beta':
+                        get_beta = method_parameter_values[m]
+                    elif method_parameter_names[m] == 'threshold':
+                        get_threshold = method_parameter_values[m]
+
+                # Acquire Number of Samples
+                file_bytes = os.path.getsize(get_all_filepaths[n])
+                file_samples = "-1"
+                if file_bytes > 0:            
+                    if get_type == "Complex Float 32":
+                        file_samples = str(int(file_bytes/8))
+                    elif get_type == "Float/Float 32":
+                        file_samples = str(int(file_bytes/4))
+                    elif get_type == "Short/Int 16":
+                        file_samples = str(int(file_bytes/2))
+                    elif get_type == "Int/Int 32":
+                        file_samples = str(int(file_bytes/4))
+                    elif get_type == "Byte/Int 8":
+                        file_samples = str(int(file_bytes/1))
+                    elif get_type == "Complex Int 16":
+                        file_samples = str(int(file_bytes/4))
+                    elif get_type == "Complex Int 8":
+                        file_samples = str(int(file_bytes/2))
+                    elif get_type == "Complex Float 64":
+                        file_samples = str(int(file_bytes/16))
+                    elif get_type == "Complex Int 64":
+                        file_samples = str(int(file_bytes/16))
+                else:
+                    continue       
+                
+                # Where to Store Strongest Frequency Results
+                peak_file_location =  os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/TSI\ Flow\ Graphs/Conditioner/peaks.txt"
+                
+                # Run the Flow Graph                       
+                cmd = "python2 " + fg_directory + "/fft/strongest.py --filepath '" + get_all_filepaths[n] \
+                    + "' --sample-rate " + get_sample_rate + " --fft-threshold " + get_fft_threshold + " --samples " + file_samples + " --peak-file-location " + peak_file_location \
+                    + " --fft-size " + get_fft_size
+                p1 = subprocess.Popen(cmd, shell=True, cwd=get_output_directory)
+                (output, err) = p1.communicate()
+                p1.wait()
+
+                # Read the Frequency Result
+                file = open(peak_file_location.replace('\\',''),"r")                    
+                freq_result = str(round(float(file.read()),2))
+                file.close()
+                
+                # Bandpass Filter is Applied to Negative and Positive Sides
+                if float(freq_result) < 0:
+                    freq_result = str(abs(float(freq_result)))
+                    
+                # Avoid Errors with Filter Width
+                if (float(freq_result) + float(get_bandpass_width)/2) > float(get_sample_rate)/2:
+                    freq_result = str(float(get_sample_rate)/2 - float(get_bandpass_width)/2)
+                elif (float(freq_result) - float(get_bandpass_width)/2) < 0:
+                    freq_result = str(float(get_bandpass_width)/2)
+                    
+                # Strongest Frequency Result
+                print("Strongest Frequency Detected at: " + str(freq_result))
+                #self.textEdit_settings_bt_sfb_freq.setPlainText(freq_result)
+                #self.textEdit_settings_bt_sfb_freq.setAlignment(QtCore.Qt.AlignCenter)
+                #get_bandpass_freq = str(self.textEdit_settings_bt_sfb_freq.toPlainText())
+                                        
+                # Run the Bandpass Flow Graph                    
+                cmd = "python2 " + fg_directory + "/burst_tagger/bandpass.py --filepath '" + get_all_filepaths[n] \
+                    + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --bandpass-freq " + freq_result + " --transition-width " + get_transition \
+                    + " --beta " + get_beta + " --bandpass-width " + get_bandpass_width
+                p1 = subprocess.Popen(cmd, shell=True, cwd=get_output_directory)
+                (output, err) = p1.communicate()
+                p1.wait() 
+                
+                # Rename the New Files        
+                if get_output_directory != "":                        
+                    for fname in os.listdir(get_output_directory):
+                        if os.path.isfile(get_output_directory + "/" + fname):
+                            if fname not in file_names:
+                                count = count + 1
+                                os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                original_filenames.append(get_all_filepaths[n])
+
+            # Update Progress Bar
+            progress_value = 95
+            self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'Conditioner Progress Bar', Parameters = [progress_value,n])    
+            
+        # Invalid Method
+        else:
+            print("Invalid method")
+            self.finishedTSI_Conditioner()
+            return
+            
+        # Remove Files with Too Few Samples
+        temp_files = new_files
+        for n,fname in reversed(list(enumerate(temp_files))):
+            get_bytes = os.path.getsize(get_output_directory + "/" + fname)
+            get_samples = "-1"
+            if get_bytes > 0:            
+                if get_type == "Complex Float 32":
+                    get_samples = int(get_bytes/8)
+                elif get_type == "Float/Float 32":
+                    get_samples = int(get_bytes/4)
+                elif get_type == "Short/Int 16":
+                    get_samples = int(get_bytes/2)
+                elif get_type == "Int/Int 32":
+                    get_samples = int(get_bytes/4)
+                elif get_type == "Byte/Int 8":
+                    get_samples = int(get_bytes/1)
+                elif get_type == "Complex Int 16":
+                    get_samples = int(get_bytes/4)
+                elif get_type == "Complex Int 8":
+                    get_samples = int(get_bytes/2)
+                elif get_type == "Complex Float 64":
+                    get_samples = int(get_bytes/16)
+                elif get_type == "Complex Int 64":
+                    get_samples = int(get_bytes/16)  
+            
+            # Remove File
+            if get_samples < get_min_samples:
+                temp_files.pop(n)
+        new_files = temp_files
+                                
+        # File Count
+        file_count = str(len(new_files))
+         
+        # Generate Results for Table
+        table_strings = []
+        for n, fname in enumerate(new_files):
+            new_table_row = ['','','','','','','','','']
+            
+            # Filename
+            new_table_row[0] = fname
+            
+            # File Size
+            get_bytes = os.path.getsize(get_output_directory + "/" + fname)
+            new_table_row[1] = str(round(get_bytes/1048576,2))
+
+            # Samples
+            get_samples = "-1"
+            if get_bytes > 0:            
+                if get_type == "Complex Float 32":
+                    get_samples = str(int(get_bytes/8))
+                elif get_type == "Float/Float 32":
+                    get_samples = str(int(get_bytes/4))
+                elif get_type == "Short/Int 16":
+                    get_samples = str(int(get_bytes/2))
+                elif get_type == "Int/Int 32":
+                    get_samples = str(int(get_bytes/4))
+                elif get_type == "Byte/Int 8":
+                    get_samples = str(int(get_bytes/1))
+                elif get_type == "Complex Int 16":
+                    get_samples = str(int(get_bytes/4))
+                elif get_type == "Complex Int 8":
+                    get_samples = str(int(get_bytes/2))
+                elif get_type == "Complex Float 64":
+                    get_samples = str(int(get_bytes/16))
+                elif get_type == "Complex Int 64":
+                    get_samples = str(int(get_bytes/16))
+            new_table_row[2] = str(get_samples)
+            
+            # Format
+            new_table_row[3] = get_type
+            
+            # Sample Rate
+            new_table_row[4] = get_sample_rate
+            
+            # Saturated
+            new_table_row[5] = ''
+            if get_detect_saturation == 'True':                
+                get_original_file = get_output_directory + "/" + fname 
+                if (len(get_original_file) > 0) and (len(fname) > 0):
+                    # Read the Data 
+                    file = open(get_original_file,"rb")                    
+                    plot_data = file.read() 
+                    file.close()
+                    
+                    # Complex Float 64
+                    if (get_type == "Complex Float 64"):                
+                        # Normalize and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'d', plot_data)                
+                        np_data = np.asarray(plot_data_formatted, dtype=np.float64)
+                        array_min = float(min(np_data))
+                        array_max = float(max(np_data))                                     
+                          
+                    # Complex Float 32
+                    elif (get_type == "Complex Float 32") or (get_type == "Float/Float 32"):                
+                        # Normalize and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'f', plot_data)                
+                        np_data = np.asarray(plot_data_formatted, dtype=np.float32)
+                        array_min = float(min(np_data))
+                        array_max = float(max(np_data))            
+                    
+                    # Complex Int 16
+                    elif (get_type == "Complex Int 16") or (get_type == "Short/Int 16"):               
+                        # Convert and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/2)*'h', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int16)
+                        array_min = float(min(np_data))
+                        array_max = float(max(np_data))
+                    
+                    # Complex Int 64
+                    elif (get_type == "Complex Int 64"):               
+                        # Convert and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'l', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int64)
+                        array_min = float(min(np_data))
+                        array_max = float(max(np_data))
+                        
+                    # Int/Int 32
+                    elif (get_type == "Int/Int 32"):               
+                        # Convert and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'h', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int32)
+                        array_min = float(min(np_data))
+                        array_max = float(max(np_data))
+                        
+                    # Complex Int 8
+                    elif (get_type == "Complex Int 8") or (get_type == "Byte/Int 8"):               
+                        # Convert and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes)*'b', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int8)
+                        array_min = float(min(np_data))
+                        array_max = float(max(np_data))
+                    
+                    # Unknown
+                    else:
+                        print("Cannot normalize " + get_type + ".")
+                        
+                    # Detect
+                    if (array_min <= float(get_saturation_min)) or (array_max >= float(get_saturation_max)):
+                        new_table_row[5] = 'Yes'
+                    else:
+                        new_table_row[5] = 'No'
+            
+            # Tuned Frequency
+            new_table_row[6] = get_tuned_freq
+            
+            # Source
+            new_table_row[7] = original_filenames[n]
+            
+            # Notes
+            new_table_row[8] = ''
+            
+            # Append the Row
+            table_strings.append(new_table_row)
+        
+        # Normalize Output
+        if get_normalize_output == 'True':           
+            # Load the Data
+            get_original_file = get_output_directory + "/" + fname 
+            get_new_file = get_original_file        
+
+            # Files Selected
+            if (len(get_output_directory) > 0) and (len(fname) > 0):
+                # Read the Data 
+                file = open(get_original_file,"rb")                    
+                plot_data = file.read() 
+                file.close()
+                
+                # Complex Float 64
+                if (get_type == "Complex Float 64"):                
+                    # Normalize and Write
+                    number_of_bytes = os.path.getsize(get_original_file)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'d', plot_data)                
+                    np_data = np.asarray(plot_data_formatted, dtype=np.float64)
+                    array_min = float(min(np_data))
+                    array_max = float(max(np_data))
+                    for n in range(0, len(np_data)):
+                        np_data[n] = (np_data[n] - array_min)*(get_normalize_max-get_normalize_min)/(array_max-array_min) + get_normalize_min
+                    np_data.tofile(get_new_file)            
+                      
+                # Complex Float 32
+                elif (get_type == "Complex Float 32") or (get_type == "Float/Float 32"):                
+                    # Normalize and Write
+                    number_of_bytes = os.path.getsize(get_original_file)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'f', plot_data)                
+                    np_data = np.asarray(plot_data_formatted, dtype=np.float32)
+                    array_min = float(min(np_data))
+                    array_max = float(max(np_data))
+                    for n in range(0, len(np_data)):
+                        np_data[n] = (np_data[n] - array_min)*(get_normalize_max-get_normalize_min)/(array_max-array_min) + get_normalize_min
+                    np_data.tofile(get_new_file)              
+                
+                # Complex Int 16
+                elif (get_type == "Complex Int 16") or (get_type == "Short/Int 16"):               
+                    # Convert and Write
+                    number_of_bytes = os.path.getsize(get_original_file)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/2)*'h', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int16)
+                    array_min = float(min(np_data))
+                    array_max = float(max(np_data))
+                    for n in range(0, len(np_data)):
+                        np_data[n] = (float(np_data[n]) - array_min)*(get_normalize_max-get_normalize_min)/(array_max-array_min) + get_normalize_min
+                    np_data.tofile(get_new_file)
+                
+                # Complex Int 64
+                elif (get_type == "Complex Int 64"):               
+                    # Convert and Write
+                    number_of_bytes = os.path.getsize(get_original_file)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'l', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int64)
+                    array_min = float(min(np_data))
+                    array_max = float(max(np_data))
+                    for n in range(0, len(np_data)):
+                        np_data[n] = (float(np_data[n]) - array_min)*(get_normalize_max-get_normalize_min)/(array_max-array_min) + get_normalize_min
+                    np_data.tofile(get_new_file)
+                    
+                # Int/Int 32
+                elif (get_type == "Int/Int 32"):               
+                    # Convert and Write
+                    number_of_bytes = os.path.getsize(get_original_file)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'h', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int32)
+                    array_min = float(min(np_data))
+                    array_max = float(max(np_data))
+                    for n in range(0, len(np_data)):
+                        np_data[n] = (float(np_data[n]) - array_min)*(get_normalize_max-get_normalize_min)/(array_max-array_min) + get_normalize_min
+                    np_data.tofile(get_new_file)
+                    
+                # Complex Int 8
+                elif (get_type == "Complex Int 8") or (get_type == "Byte/Int 8"):               
+                    # Convert and Write
+                    number_of_bytes = os.path.getsize(get_original_file)
+                    plot_data_formatted = struct.unpack(int(number_of_bytes)*'b', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int8)
+                    array_min = float(min(np_data))
+                    array_max = float(max(np_data))
+                    for n in range(0, len(np_data)):
+                        np_data[n] = (float(np_data[n]) - array_min)*(get_normalize_max-get_normalize_min)/(array_max-array_min) + get_normalize_min
+                    np_data.tofile(get_new_file)
+                
+                # Unknown
+                else:
+                    print("Cannot normalize " + get_type + ".")
+                    
+        # Return the Table Data
+        self.finishedTSI_Conditioner(table_strings)
+        
+    def stopTSI_Conditioner(self):
+        """ Accepts a Stop message from the HIPRFISR to stop the signal conditioning operation.
+        """
+        # Stop the Thread
+        print("Stopping TSI Conditioner...")
+        self.conditioner_stop_event.set()
+        
+    def finishedTSI_Conditioner(self, table_strings=""):
+        """ Sends a message to the HIPRFISR to signal the signal conditioner operation is complete.
+        """
+        # Send the Message
+        print("TSI Conditioner Complete. Returning Table Data...")
+        self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'TSI Conditioner Finished', Parameters = table_strings)
+
+########################################################################
+
     def addRandomTSI_Message(self, random_number):
         """ Sends a random message over a connection for testing purposes
         """

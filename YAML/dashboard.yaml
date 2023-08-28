@@ -54,6 +54,8 @@ Status:
      - BandID
      - Connect to FGE
      - Archive Playlist Position
+     - TSI Conditioner Finished
+     - Conditioner Progress Bar
 
 
 Heartbeats: 
