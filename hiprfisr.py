@@ -693,6 +693,18 @@ class Hiprfisr():
         # Send Message
         self.tsi_hiprfisr_server.sendmsg('Commands', Identifier = 'HIPRFISR', MessageName = 'Stop TSI Detector')
 
+    def startTSI_Conditioner(self, common_parameter_names, common_parameter_values, method_parameter_names, method_parameter_values):
+        """ Signals to TSI to start TSI Conditioner.
+        """
+        # Send Message
+        self.tsi_hiprfisr_server.sendmsg('Commands', Identifier = 'HIPRFISR', MessageName = 'Start TSI Conditioner', Parameters = [common_parameter_names, common_parameter_values, method_parameter_names, method_parameter_values])
+
+    def stopTSI_Conditioner(self):
+        """ Signals to TSI to stop TSI conditioner.
+        """
+        # Send Message
+        self.tsi_hiprfisr_server.sendmsg('Commands', Identifier = 'HIPRFISR', MessageName = 'Stop TSI Conditioner')
+
     def stopPD(self):
         """ Signals to PD to stop protocol discovery.
         """

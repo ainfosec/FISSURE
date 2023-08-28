@@ -98,6 +98,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
     signal_PD_Online = pyqtSignal(name='pdOnline')
     signal_FGE_Offline = pyqtSignal(name='fgeOffline')
     signal_FGE_Online = pyqtSignal(name='fgeOnline')
+    signal_TSI_ConditionerFinished = pyqtSignal(str, name='TSI_ConditionerFinished')
+    signal_TSI_ConditionerProgress = pyqtSignal(str, name='TSI_ConditionerProgress')   
 
 
     def __init__(self, parent=None):
@@ -384,7 +386,6 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Under Construction Labels
         self.label_under_construction1.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + '/docs/Icons/under_construction.png'))
         self.label_under_construction2.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + '/docs/Icons/under_construction.png'))
-        self.label_under_construction3.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + '/docs/Icons/under_construction.png'))
 
         # Create Tooltip
         self.tabWidget.setTabToolTip(1,"Target Signal Identification")
@@ -394,6 +395,14 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
 
         # Default Detector Simulator File
         self.textEdit_tsi_detector_csv_file.setPlainText(os.path.dirname(os.path.realpath(__file__)) +'/Tools/TSI_Detector_Sim_Data/tsi_simulator.csv')
+        
+        # Set Conditioner Prefix
+        now = datetime.datetime.now()
+        self.textEdit_tsi_conditioner_settings_prefix.setPlainText(now.strftime("%Y-%m-%d %H:%M:%S").replace(' ','_') + '_')
+        
+        # Set Conditioner Default Directories
+        self.comboBox_tsi_conditioner_input_folders.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/Conditioner Data/Input'))  
+        self.comboBox_tsi_conditioner_settings_folder.addItem(str(os.path.dirname(os.path.realpath(__file__)) + '/Conditioner Data/Output'))  
 
         ##### Protocol Discovery #####
         self.textEdit_pd_status_min_buffer_size.setPlainText("100")
@@ -861,6 +870,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                                 self.signal_detectorFlowGraphError.emit(parsed['Parameters'])
                             elif parsed['MessageName'] == 'BandID':
                                 self.signal_bandID.emit(parsed['Parameters'])
+                            elif parsed['MessageName'] == 'TSI Conditioner Finished':
+                                self.signal_TSI_ConditionerFinished.emit(parsed['Parameters'])
+                            elif parsed['MessageName'] == 'Conditioner Progress Bar':
+                                self.signal_TSI_ConditionerProgress.emit(parsed['Parameters'])
 
                     # HIPRFISR Messages
                     elif parsed['Identifier'] == 'HIPRFISR':
@@ -1062,6 +1075,28 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_tsi_detector_csv_file_browse.clicked.connect(self._slotTSI_DetectorCSV_FileBrowseClicked)
         self.pushButton_tsi_detector_csv_file_edit.clicked.connect(self._slotTSI_DetectorCSV_FileEditClicked)
         self.pushButton_tsi_detector_fixed_start.clicked.connect(self._slotTSI_DetectorFixedStartClicked)
+        #####################################
+        self.pushButton_tsi_conditioner_input_folder.clicked.connect(self._slotTSI_ConditionerInputFolderClicked)
+        self.pushButton_tsi_conditioner_input_load_file.clicked.connect(self._slotTSI_ConditionerInputLoadFileClicked)
+        self.pushButton_tsi_conditioner_input_refresh.clicked.connect(self._slotTSI_ConditionerInputRefreshClicked)
+        self.pushButton_tsi_conditioner_input_remove.clicked.connect(self._slotTSI_ConditionerInputRemoveClicked)
+        self.pushButton_tsi_conditioner_input_rename.clicked.connect(self._slotTSI_ConditionerInputRenameClicked)
+        self.pushButton_tsi_conditioner_input_terminal.clicked.connect(self._slotTSI_ConditionerInputTerminalClicked)
+        self.pushButton_tsi_conditioner_input_preview.clicked.connect(self._slotTSI_ConditionerInputPreviewClicked)
+        self.pushButton_tsi_conditioner_settings_browse.clicked.connect(self._slotTSI_ConditionerSettingsBrowseClicked)
+        self.pushButton_tsi_conditioner_operation_start.clicked.connect(self._slotTSI_ConditionerOperationStartClicked)
+        self.pushButton_tsi_conditioner_settings_now.clicked.connect(self._slotTSI_ConditionerSettingsNowClicked)
+        self.pushButton_tsi_conditioner_results_preview.clicked.connect(self._slotTSI_ConditionerResultsPreviewClicked)
+        self.pushButton_tsi_conditioner_results_folder.clicked.connect(self._slotTSI_ConditionerResultsFolderClicked)
+        self.pushButton_tsi_conditioner_results_export.clicked.connect(self._slotTSI_ConditionerResultsExportClicked)
+        self.pushButton_tsi_conditioner_results_delete.clicked.connect(self._slotTSI_ConditionerResultsDeleteClicked)
+        self.pushButton_tsi_conditioner_settings_view.clicked.connect(self._slotTSI_ConditionerSettingsViewClicked)
+        self.pushButton_tsi_conditioner_results_strip.clicked.connect(self._slotTSI_ConditionerResultsStripClicked)
+        self.pushButton_tsi_conditioner_results_strip_all.clicked.connect(self._slotTSI_ConditionerResultsStripAllClicked)
+        self.pushButton_tsi_conditioner_results_refresh.clicked.connect(self._slotTSI_ConditionerResultsRefreshClicked)
+        self.pushButton_tsi_conditioner_results_delete_all.clicked.connect(self._slotTSI_ConditionerResultsDeleteAllClicked)
+        #######################################
+        
 
         #self.pushButton_pd_status_untarget.clicked.connect(self._slotTSI_SOI_UntargetClicked)
         self.pushButton_pd_status_soi_new.clicked.connect(self._slotPD_StatusSOI_NewClicked)
@@ -1339,6 +1374,10 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.checkBox_attack_show_all.clicked.connect(self._slotAttackProtocols)
         self.checkBox_iq_record_sigmf.clicked.connect(self._slotIQ_RecordSigMF_Clicked)
         self.checkBox_iq_strip_overwrite.clicked.connect(self._slotIQ_StripOverwriteClicked)
+        ################################################
+        self.checkBox_tsi_conditioner_settings_normalize_output.clicked.connect(self._slotTSI_ConditionerSettingsNormalizeChecked)
+        self.checkBox_tsi_conditioner_settings_saturation.clicked.connect(self._slotTSI_ConditionerSettingsSaturationChecked)
+        ################################################
 
         # Combo Boxes
         self.comboBox_tsi_detector.currentIndexChanged.connect(self._slotTSI_DetectorChanged)
@@ -1373,10 +1412,20 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.comboBox_pd_sniffer_test_folders.currentIndexChanged.connect(self._slotPD_SnifferTestFoldersChanged)
         self.comboBox_tsi_detector_fixed.currentIndexChanged.connect(self._slotTSI_DetectorFixedChanged)
         self.comboBox_archive_extension.currentIndexChanged.connect(self._slotArchiveExtensionChanged)
+        ####################################
+        self.comboBox_tsi_conditioner_input_folders.currentIndexChanged.connect(self._slotTSI_ConditionerInputFolderChanged)
+        self.comboBox_tsi_conditioner_settings_isolation_method.currentIndexChanged.connect(self._slotTSI_ConditionerSettingsIsolationMethodChanged)
+        self.comboBox_tsi_conditioner_settings_input_source.currentIndexChanged.connect(self._slotTSI_ConditionerSettingsInputSourceChanged)
+        self.comboBox_tsi_conditioner_settings_isolation_category.currentIndexChanged.connect(self._slotTSI_ConditionerSettingsIsolationCategoryChanged)
+        ####################################
 
         # Radio Buttons
         self.radioButton_library_search_binary.clicked.connect(self._slotLibrarySearchBinaryClicked)
         self.radioButton_library_search_hex.clicked.connect(self._slotLibrarySearchHexClicked)
+        #######################################
+        self.radioButton_tsi_conditioner_input_extensions_all.clicked.connect(self._slotTSI_ConditionerInputExtensionsAllClicked)
+        self.radioButton_tsi_conditioner_input_extensions_custom.clicked.connect(self._slotTSI_ConditionerInputExtensionsCustomClicked)
+        ########################################
 
         # Double Spin Boxes
         self.doubleSpinBox_pd_bit_slicing_window_size.valueChanged.connect(self._slotPD_BitSlicingSpinboxWindowChanged)
@@ -1428,6 +1477,9 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.listWidget_pd_flow_graphs_recommended_fgs.itemDoubleClicked.connect(self._slotPD_DemodulationLoadSelectedClicked)
         self.listWidget_pd_flow_graphs_all_fgs.itemDoubleClicked.connect(self._slotPD_DemodulationLoadSelectedAllClicked)
         self.listWidget_iq_files.itemDoubleClicked.connect(self._slotIQ_LoadIQ_Data)
+        #######################################
+        self.listWidget_tsi_conditioner_input_files.itemDoubleClicked.connect(self._slotTSI_ConditionerInputLoadFileClicked)
+        #######################################
 
         # Text Edits
         self.textEdit_iq_start.textChanged.connect(self._slotIQ_StartChanged)
@@ -1826,6 +1878,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.signal_PD_Online.connect(self._slotPD_Online)
         self.signal_FGE_Offline.connect(self._slotFGE_Offline)
         self.signal_FGE_Online.connect(self._slotFGE_Online)
+        self.signal_TSI_ConditionerFinished.connect(self._slotTSI_ConditionerFinished)
+        self.signal_TSI_ConditionerProgress.connect(self._slotTSI_ConditionerProgress)
 
 
     def _slotLogRefreshClicked(self):
@@ -26166,6 +26220,2025 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Browser
         os.system("sensible-browser " + "file://" + os.path.dirname(os.path.realpath(__file__)) + "/docs/RTD/_build/html/pages/about.html#credits &")
 
+##################################################################
+
+    def _slotTSI_ConditionerInputExtensionsAllClicked(self):
+        """ Disables the Custom text edit box.
+        """
+        # Disable
+        self.textEdit_tsi_conditioner_input_extensions.setEnabled(False)
+    
+    def _slotTSI_ConditionerInputExtensionsCustomClicked(self):
+        """ Enables the Custom text edit box.
+        """
+        # Enable
+        self.textEdit_tsi_conditioner_input_extensions.setEnabled(True)
+        
+    def _slotTSI_ConditionerInputFolderChanged(self):
+        """ Changes the IQ files in the input listbox.
+        """
+        # Load the Files in the Listbox
+        get_dir = str(self.comboBox_tsi_conditioner_input_folders.currentText())
+        if get_dir != "":
+            self.listWidget_tsi_conditioner_input_files.clear()
+            file_names = []
+            for fname in os.listdir(get_dir):
+                if os.path.isfile(get_dir+"/"+fname):
+                    file_names.append(fname)
+            file_names = sorted(file_names, key=str.lower)
+            for n in file_names:
+                self.listWidget_tsi_conditioner_input_files.addItem(n)
+                
+    def _slotTSI_ConditionerInputFolderClicked(self):
+        """ Selects a source folder for input data.
+        """
+        # Choose Folder
+        get_pwd = str(self.comboBox_tsi_conditioner_input_folders.currentText())
+        get_dir = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory",get_pwd))
+        
+        # Add Directory to the Combobox       
+        if len(get_dir) > 0:   
+                
+            # Load Directory and File
+            folder_index = self.comboBox_tsi_conditioner_input_folders.findText(get_dir)
+            if folder_index < 0:
+                # New Directory
+                self.comboBox_tsi_conditioner_input_folders.addItem(get_dir)      
+                self.comboBox_tsi_conditioner_input_folders.setCurrentIndex(self.comboBox_tsi_conditioner_input_folders.count()-1)
+            else:
+                # Directory Exists
+                self.comboBox_tsi_conditioner_input_folders.setCurrentIndex(folder_index)
+                
+    def _slotTSI_ConditionerInputLoadFileClicked(self):
+        """ Loads the currently selected IQ files.
+        """
+        # File Name
+        get_file = str(self.listWidget_tsi_conditioner_input_files.currentItem().text())
+        self.label2_tsi_conditioner_info_file_name.setText("File: " + get_file)
+        
+        # Number of Bytes & Samples
+        get_type = str(self.comboBox_tsi_conditioner_input_data_type.currentText())
+        get_bytes = os.path.getsize(str(self.comboBox_tsi_conditioner_input_folders.currentText()) + "/" + get_file)
+        get_samples = "-1"
+        if get_bytes > 0:            
+            if get_type == "Complex Float 32":
+                get_samples = str(int(get_bytes/8))
+            elif get_type == "Float/Float 32":
+                get_samples = str(int(get_bytes/4))
+            elif get_type == "Short/Int 16":
+                get_samples = str(int(get_bytes/2))
+            elif get_type == "Int/Int 32":
+                get_samples = str(int(get_bytes/4))
+            elif get_type == "Byte/Int 8":
+                get_samples = str(int(get_bytes/1))
+            elif get_type == "Complex Int 16":
+                get_samples = str(int(get_bytes/4))
+            elif get_type == "Complex Int 8":
+                get_samples = str(int(get_bytes/2))
+            elif get_type == "Complex Float 64":
+                get_samples = str(int(get_bytes/16))
+            elif get_type == "Complex Int 64":
+                get_samples = str(int(get_bytes/16))   
+        self.label2_tsi_conditioner_info_file_size.setText("Size (MB): " + str(round(get_bytes/1048576,2)))
+        self.label2_tsi_conditioner_info_samples.setText("Samples: " + get_samples)
+        
+        # Enable Start Button
+        self.pushButton_tsi_conditioner_operation_start.setEnabled(True)
+        
+    def _slotTSI_ConditionerInputPreviewClicked(self):
+        """ Plots a zoomed out version of the input file.
+        """       
+        # Get the Filepath
+        get_type = str(self.comboBox_tsi_conditioner_input_data_type.currentText())
+        get_file = str(self.listWidget_tsi_conditioner_input_files.currentItem().text())
+        get_filepath = str(self.comboBox_tsi_conditioner_input_folders.currentText()) + "/" + get_file
+        try:
+            number_of_bytes = os.path.getsize(get_filepath)
+        except:
+            number_of_bytes = -1
+            
+        # Number of Samples
+        get_samples = "-1"
+        if number_of_bytes > 0:            
+            if get_type == "Complex Float 32":
+                num_samples = int(number_of_bytes/8)
+            elif get_type == "Float/Float 32":
+                num_samples = int(number_of_bytes/4)
+            elif get_type == "Short/Int 16":
+                num_samples = int(number_of_bytes/2)
+            elif get_type == "Int/Int 32":
+                num_samples = int(number_of_bytes/4)
+            elif get_type == "Byte/Int 8":
+                num_samples = int(number_of_bytes/1)
+            elif get_type == "Complex Int 16":
+                num_samples = int(number_of_bytes/4)
+            elif get_type == "Complex Int 8":
+                num_samples = int(number_of_bytes/2)
+            elif get_type == "Complex Float 64":
+                num_samples = int(number_of_bytes/16)
+            elif get_type == "Complex Int 64":
+                num_samples = int(number_of_bytes/16)
+        
+        # File with Zero Bytes
+        if number_of_bytes <= 0:
+            print("File is empty")
+
+        # Skip Bytes if File is Too Large        
+        else:            
+            # Get the Number of Samples
+            start_sample = 1
+        
+            # Get the Size of Each Sample in Bytes   
+            complex_multiple = 1   
+            if get_type == "Complex Float 32":
+                sample_size = 4
+                complex_multiple = 2
+                num_samples = complex_multiple * num_samples               
+            elif get_type == "Float/Float 32":
+                sample_size = 4
+            elif get_type == "Short/Int 16":
+                sample_size = 2
+            elif get_type == "Int/Int 32":
+                sample_size = 4
+            elif get_type == "Byte/Int 8":
+                sample_size = 1
+            elif get_type == "Complex Int 16":
+                sample_size = 2
+                complex_multiple = 2
+                num_samples = complex_multiple * num_samples                  
+            elif get_type == "Complex Int 8":
+                sample_size = 1
+                complex_multiple = 2
+                num_samples = complex_multiple * num_samples   
+            elif get_type == "Complex Float 64":
+                sample_size = 8
+                complex_multiple = 2
+                num_samples = complex_multiple * num_samples 
+            elif get_type == "Complex Int 64":
+                sample_size = 8
+                complex_multiple = 2
+                num_samples = complex_multiple * num_samples 
+                            
+            # Read the Data 
+            plot_data = b''
+            file = open(get_filepath,"rb")                          # Open the file
+            try:
+                if "Complex" in get_type:
+                    starting_byte = 2*(start_sample-1) * sample_size
+                else:
+                    starting_byte = (start_sample-1) * sample_size
+                  
+                # No Skip
+                if number_of_bytes <= 400000:                   
+                    skip = 1
+                    file.seek(starting_byte)
+                    plot_data = file.read(num_samples * sample_size)    # Read the right number of bytes
+                    
+                # Skip
+                else:
+                    # Every 10th Sample
+                    if number_of_bytes > 400000 and number_of_bytes <= 4000000:
+                        skip = 10
+                        
+                    # Every 100th Sample
+                    elif number_of_bytes > 4000000 and number_of_bytes <= 40000000:
+                        skip = 100
+                        
+                    # Every 1000th Sample
+                    elif number_of_bytes > 40000000 and number_of_bytes <= 400000000:
+                        skip = 1000
+                        
+                    # Every 10000th Sample
+                    elif number_of_bytes > 400000000 and number_of_bytes <= 4000000000:
+                        skip = 10000
+                        
+                    # Every 100000th Sample
+                    elif number_of_bytes > 4000000000 and number_of_bytes <= 40000000000:
+                        skip = 100000
+                        
+                    # Skip 1000000
+                    else:
+                        skip = 1000000
+                    
+                    # Read
+                    for n in range(starting_byte,number_of_bytes,(sample_size*skip*complex_multiple)):
+                        file.seek(n)
+                        plot_data = plot_data + file.read(sample_size)
+                        if "Complex" in get_type:
+                            plot_data = plot_data + file.read(sample_size)
+
+            except:
+                # Close the File
+                file.close() 
+            
+            # Close the File
+            file.close()         
+                             
+            # Format the Data
+            if get_type == "Complex Float 32":
+                #plot_data_formatted = struct.unpack(num_samples/skip*'f', plot_data)
+                plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'f', plot_data)
+            elif get_type == "Float/Float 32":
+                plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'f', plot_data)
+            elif get_type == "Short/Int 16":
+                plot_data_formatted = struct.unpack(int(len(plot_data)/2)*'h', plot_data)
+            elif get_type == "Int/Int 32":
+                plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'i', plot_data)
+            elif get_type == "Byte/Int 8":
+                plot_data_formatted = struct.unpack(int(len(plot_data)/1)*'b', plot_data)
+            elif get_type == "Complex Int 16":
+                plot_data_formatted = struct.unpack(int(len(plot_data)/2)*'h', plot_data)
+            elif get_type == "Complex Int 8":
+                plot_data_formatted = struct.unpack(int(len(plot_data)/1)*'b', plot_data)
+            elif get_type == "Complex Float 64":
+                plot_data_formatted = struct.unpack(int(len(plot_data)/8)*'d', plot_data)
+            elif get_type == "Complex Int 64":
+                plot_data_formatted = struct.unpack(int(len(plot_data)/8)*'l', plot_data)
+            
+            # Plot
+            plt.ion()
+            plt.close(1) 
+            if "Complex" in get_type:                    
+                # Plot
+                plt.plot(range(1,len(plot_data_formatted[::2])+1),plot_data_formatted[::2],'b',linewidth=1,zorder=2)
+                plt.plot(range(1,len(plot_data_formatted[::2])+1),plot_data_formatted[1::2],'r',linewidth=1,zorder=2)
+                plt.show()
+            else:
+                plt.plot(range(1,len(plot_data_formatted)+1),plot_data_formatted,'b',linewidth=1,zorder=2)
+                plt.show()
+                
+            # Axes Labels
+            if skip == 1:
+                plt.xlabel('Samples') 
+                plt.ylabel('Amplitude (LSB)') 
+            else:
+                plt.xlabel('Samples/' + str(skip)) 
+                plt.ylabel('Amplitude (LSB)') 
+                
+    def _slotTSI_ConditionerInputRefreshClicked(self):
+        """ Refreshes the files displayed in the input listbox.
+        """
+        try:
+            # Get the Folder Location
+            get_folder = str(self.comboBox_tsi_conditioner_input_folders.currentText())
+                
+            # Get the Files for the Listbox
+            self.listWidget_tsi_conditioner_input_files.clear()
+            temp_names = []
+            for fname in os.listdir(get_folder):
+                if os.path.isfile(get_folder+"/"+fname):
+                    # All Files
+                    if self.radioButton_tsi_conditioner_input_extensions_all.isChecked():
+                        temp_names.append(fname)
+                    # Only Files with Extension
+                    else:
+                        get_extension = str(self.textEdit_tsi_conditioner_input_extensions.toPlainText())
+                        if fname[-len(get_extension):] == get_extension:
+                            temp_names.append(fname)
+                  
+            # Sort and Add to the Listbox
+            temp_names = sorted(temp_names, key=str.lower)
+            for n in temp_names:
+                self.listWidget_tsi_conditioner_input_files.addItem(n)
+                    
+            # Set the Listbox Selection
+            self.listWidget_tsi_conditioner_input_files.setCurrentRow(0)
+        except:
+            pass  
+            
+    def _slotTSI_ConditionerInputRemoveClicked(self):
+        """ Removes the selected file from the input listbox.
+        """
+        # Get Highlighted File from Listbox
+        if self.listWidget_tsi_conditioner_input_files.count() > 0:
+            get_index = int(self.listWidget_tsi_conditioner_input_files.currentRow())
+            
+            # Remove Item
+            for item in self.listWidget_tsi_conditioner_input_files.selectedItems():
+                self.listWidget_tsi_conditioner_input_files.takeItem(self.listWidget_tsi_conditioner_input_files.row(item))
+            
+            # Reset Selected Item 
+            if get_index == self.listWidget_tsi_conditioner_input_files.count():
+                get_index = get_index -1
+            self.listWidget_tsi_conditioner_input_files.setCurrentRow(get_index)
+            
+    def _slotTSI_ConditionerInputRenameClicked(self):
+        """ Renames the selected file from the input listbox.
+        """
+        # Get the Selected File
+        try:
+            get_file = str(self.listWidget_tsi_conditioner_input_files.currentItem().text())
+        except:
+            print("No File Selected.")
+            return        
+        get_file_path = str(self.comboBox_tsi_conditioner_input_folders.currentText()) + "/" + get_file
+        
+        # Open the GUI
+        text, ok = QtWidgets.QInputDialog.getText(self, 'Rename', 'Enter new name:',QtWidgets.QLineEdit.Normal,get_file)
+        
+        # Ok Clicked
+        if ok:
+            os.rename(get_file_path,str(self.comboBox_tsi_conditioner_input_folders.currentText()) + "/" + text)
+            self._slotTSI_ConditionerInputRefreshClicked()
+            
+    def _slotTSI_ConditionerInputTerminalClicked(self):
+        """ Opens a terminal at the location of the input data folder.
+        """
+        # Open the Terminal
+        get_dir = str(self.comboBox_tsi_conditioner_input_folders.currentText())
+        if len(get_dir) > 0:
+            proc=subprocess.Popen('gnome-terminal', cwd=get_dir, shell=True)
+            
+    def _slotTSI_ConditionerOperationStartClicked(self):
+        """ Begins conditioning and isolating signals from a file or several files.
+        """
+        # Stop
+        if self.pushButton_tsi_conditioner_operation_start.text() == "Stop":
+            # Cancel Future Isolation Runs
+            #self.stop_operations = True
+            
+            # Send the Message        
+            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Stop TSI Conditioner')
+            
+            # Reset Progress Bar
+            self.progressBar_tsi_conditioner_operation.setValue(0)
+            
+            # Toggle the Text
+            self.pushButton_tsi_conditioner_operation_start.setText("Start")
+                        
+        # Start
+        elif self.pushButton_tsi_conditioner_operation_start.text() == "Start": 
+        
+            # Toggle the Text
+            #self.stop_operations = False
+            self.pushButton_tsi_conditioner_operation_start.setText("Stop")  
+            
+            # Reset Progress Bar
+            self.progressBar_tsi_conditioner_operation.setValue(0)
+            
+            # Common GUI Parameters
+            get_input_source = str(self.comboBox_tsi_conditioner_settings_input_source.currentText())
+
+            get_category = str(self.comboBox_tsi_conditioner_settings_isolation_category.currentText())
+            get_method = str(self.comboBox_tsi_conditioner_settings_isolation_method.currentText())
+            get_output_directory = str(self.comboBox_tsi_conditioner_settings_folder.currentText())
+            get_prefix = str(self.textEdit_tsi_conditioner_settings_prefix.toPlainText())
+            get_sample_rate = str(self.textEdit_tsi_conditioner_info_sample_rate.toPlainText())
+            get_tuned_freq = str(self.textEdit_tsi_conditioner_info_frequency.toPlainText())
+            get_type = str(self.comboBox_tsi_conditioner_input_data_type.currentText())
+            get_max_files = int(self.textEdit_tsi_conditioner_settings_max_files.toPlainText())
+            get_min_samples = int(self.textEdit_tsi_conditioner_settings_min_samples.toPlainText())
+            get_detect_saturation = str(self.checkBox_tsi_conditioner_settings_saturation.isChecked())
+            get_saturation_min = ''
+            get_saturation_max = ''
+            get_normalize_output = str(self.checkBox_tsi_conditioner_settings_normalize_output.isChecked())
+            get_normalize_min = ''
+            get_normalize_max = ''
+
+            # Check for Saturation
+            if self.checkBox_tsi_conditioner_settings_saturation.isChecked():
+                # Get Min/Max
+                if self.comboBox_tsi_conditioner_settings_saturation.currentIndex() == 0:
+                    get_saturation_min = '-1'
+                    get_saturation_max = '1'
+                elif self.comboBox_tsi_conditioner_settings_saturation.currentIndex() == 1:
+                    get_saturation_min = '-128'
+                    get_saturation_max = '127'
+                elif self.comboBox_tsi_conditioner_settings_saturation.currentIndex() == 2:
+                    get_saturation_min = '-32768'
+                    get_saturation_max = '32767'
+                elif self.comboBox_tsi_conditioner_settings_saturation.currentIndex() == 3:
+                    get_saturation_min = '-2147483648'
+                    get_saturation_max = '2147483647'
+                elif self.comboBox_tsi_conditioner_settings_saturation.currentIndex() == 4:
+                    get_saturation_min = '-9223372036854775808'
+                    get_saturation_max = '9223372036854775807'
+                    
+            # Check for Normalize
+            if self.checkBox_tsi_conditioner_settings_normalize_output.isChecked():
+                # Get Min/Max
+                if self.comboBox_tsi_conditioner_settings_normalize.currentIndex() == 0:
+                    get_normalize_min = '-1'
+                    get_normalize_max = '1'
+                elif self.comboBox_tsi_conditioner_settings_normalize.currentIndex() == 1:
+                    get_normalize_min = '-128'
+                    get_normalize_max = '127'
+                elif self.comboBox_tsi_conditioner_settings_normalize.currentIndex() == 2:
+                    get_normalize_min = '-32768'
+                    get_normalize_max = '32767'
+                elif self.comboBox_tsi_conditioner_settings_normalize.currentIndex() == 3:
+                    get_normalize_min = '-2147483648'
+                    get_normalize_max = '2147483647'
+                elif self.comboBox_tsi_conditioner_settings_normalize.currentIndex() == 4:
+                    get_normalize_min = '-9223372036854775808'
+                    get_normalize_max = '9223372036854775807'
+                # else:
+                    # try:
+                        # get_min = float(self.textEdit_iq_normalize_min.toPlainText())
+                        # get_max = float(self.textEdit_iq_normalize_max.toPlainText())
+                    # except:
+                        # print("Not a valid float.")
+                        # return
+                                    
+            # File
+            get_all_filepaths = []
+            if get_input_source == "File":
+                get_filename = str(self.label2_tsi_conditioner_info_file_name.text().replace("File: ",""))
+                get_filepath = str(self.comboBox_tsi_conditioner_input_folders.currentText()) + "/" + get_filename
+                get_all_filepaths.append(get_filepath)
+            
+            # Folder
+            else:
+                if self.listWidget_tsi_conditioner_input_files.count() > 0:
+                    for n in range(0,self.listWidget_tsi_conditioner_input_files.count()):
+                        # All Files
+                        if self.radioButton_tsi_conditioner_input_extensions_all.isChecked():
+                            get_all_filepaths.append(str(self.comboBox_tsi_conditioner_input_folders.currentText()) + "/" + str(self.listWidget_tsi_conditioner_input_files.item(n).text()))
+                        # Only Files with Extension
+                        else:
+                            get_extension = str(self.textEdit_tsi_conditioner_input_extensions.toPlainText())
+                            if str(self.listWidget_tsi_conditioner_input_files.item(n).text())[-len(get_extension):] == get_extension:
+                                get_all_filepaths.append(str(self.comboBox_tsi_conditioner_input_folders.currentText()) + "/" + str(self.listWidget_tsi_conditioner_input_files.item(n).text()))
+
+                else:
+                    print("No input files found.")
+                    return
+            
+            # Method1: burst_tagger
+            if (get_category == "Energy - Burst Tagger") and (get_method == "Normal"):
+                get_threshold = str(self.textEdit_tsi_conditioner_settings_bt_threshold.toPlainText())
+                method_parameter_names = ['threshold']
+                method_parameter_values = [get_threshold]
+                
+            # Method2: burst_tagger with Decay    
+            elif (get_category == "Energy - Burst Tagger") and (get_method == "Normal Decay"):
+                get_threshold = str(self.textEdit_tsi_conditioner_settings_bt_decay_threshold.toPlainText())
+                get_decay = str(self.textEdit_tsi_conditioner_settings_bt_decay_decay.toPlainText())
+                method_parameter_names = ['threshold','decay']
+                method_parameter_values = [get_threshold,get_decay]
+                
+            # Method3: power_squelch_with_burst_tagger    
+            elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch"):
+                get_squelch = str(self.textEdit_tsi_conditioner_settings_psbt_squelch.toPlainText())
+                get_threshold = str(self.textEdit_tsi_conditioner_settings_psbt_threshold.toPlainText())
+                method_parameter_names = ['squelch','threshold']
+                method_parameter_values = [get_squelch,get_threshold]
+                
+            # Method4: lowpass_filter    
+            elif (get_category == "Energy - Burst Tagger") and (get_method == "Lowpass"):
+                get_threshold = str(self.textEdit_tsi_conditioner_settings_bt_lowpass_threshold.toPlainText())
+                get_cutoff = str(self.textEdit_tsi_conditioner_settings_bt_lowpass_cutoff.toPlainText())
+                get_transition = str(self.textEdit_tsi_conditioner_settings_bt_lowpass_transition.toPlainText())
+                get_beta = str(self.textEdit_tsi_conditioner_settings_bt_lowpass_beta.toPlainText())
+                method_parameter_names = ['threshold','cutoff','transition','beta']
+                method_parameter_values = [get_threshold,get_cutoff,get_transition,get_beta]
+            
+            # Method5: power_squelch_lowpass    
+            elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch then Lowpass"):
+                get_squelch = str(self.textEdit_tsi_conditioner_settings_bt_psl_squelch.toPlainText())
+                get_cutoff = str(self.textEdit_tsi_conditioner_settings_bt_psl_cutoff.toPlainText())
+                get_transition = str(self.textEdit_tsi_conditioner_settings_bt_psl_transition.toPlainText())
+                get_beta = str(self.textEdit_tsi_conditioner_settings_bt_psl_beta.toPlainText())
+                get_threshold = str(self.textEdit_tsi_conditioner_settings_bt_psl_threshold.toPlainText())
+                method_parameter_names = ['squelch','cutoff','transition','beta','threshold']
+                method_parameter_values = [get_squelch,get_cutoff,get_transition,get_beta,get_threshold]
+                    
+            # Method6: bandpass_filter    
+            elif (get_category == "Energy - Burst Tagger") and (get_method == "Bandpass"):
+                get_bandpass_freq = str(self.textEdit_tsi_conditioner_settings_bt_bandpass_freq.toPlainText())
+                get_bandpass_width = str(self.textEdit_tsi_conditioner_settings_bt_bandpass_width.toPlainText())
+                get_transition = str(self.textEdit_tsi_conditioner_settings_bt_bandpass_transition.toPlainText())
+                get_beta = str(self.textEdit_tsi_conditioner_settings_bt_bandpass_beta.toPlainText())
+                get_threshold = str(self.textEdit_tsi_conditioner_settings_bt_bandpass_threshold.toPlainText())
+                method_parameter_names = ['bandpass_frequency','bandpass_width','transition','beta','threshold']
+                method_parameter_values = [get_bandpass_freq,get_bandpass_width,get_transition,get_beta,get_threshold]
+            
+            # Method7: strongest    
+            elif (get_category == "Energy - Burst Tagger") and (get_method == "Strongest Frequency then Bandpass"):
+                get_fft_size = str(self.textEdit_tsi_conditioner_settings_bt_sfb_fft_size.toPlainText())
+                get_fft_threshold = str(self.textEdit_tsi_conditioner_settings_bt_sfb_fft_threshold.toPlainText())
+                get_bandpass_width = str(self.textEdit_tsi_conditioner_settings_bt_sfb_width.toPlainText())
+                get_transition = str(self.textEdit_tsi_conditioner_settings_bt_sfb_transition.toPlainText())
+                get_beta = str(self.textEdit_tsi_conditioner_settings_bt_sfb_beta.toPlainText())
+                get_threshold = str(self.textEdit_tsi_conditioner_settings_bt_sfb_threshold.toPlainText())
+                method_parameter_names = ['fft_size','fft_threshold','bandpass_width','transition','beta','threshold']
+                method_parameter_values = [get_fft_size,get_fft_threshold,get_bandpass_width,get_transition,get_beta,get_threshold]
+                
+            # Uknown Method
+            else:
+                self.progressBar_tsi_conditioner_operation.setValue(0)
+                #self.stop_operations = True        
+                self.pushButton_tsi_conditioner_operation_start.setText("Start")
+                return
+                
+            # Assemble
+            common_parameter_names = ['category','method','output_directory','prefix','sample_rate','tuned_frequency','data_type','max_files','min_samples','all_filepaths','detect_saturation','saturation_min','saturation_max','normalize_output','normalize_min','normalize_max']
+            common_parameter_values = [get_category,get_method,get_output_directory,get_prefix,get_sample_rate,get_tuned_freq,get_type,get_max_files,get_min_samples,get_all_filepaths,get_detect_saturation,get_saturation_min,get_saturation_max,get_normalize_output,get_normalize_min,get_normalize_max]
+
+            # Start the Progress Bar
+            self.progressBar_tsi_conditioner_operation.setValue(1)
+            
+            # Send the Message        
+            self.dashboard_hiprfisr_server.sendmsg('Commands', Identifier = 'Dashboard', MessageName = 'Start TSI Conditioner', Parameters = [common_parameter_names, common_parameter_values, method_parameter_names, method_parameter_values])
+            
+            
+            # # Method1: burst_tagger
+            # self.progressBar_tsi_conditioner_operation.setValue(1)
+            # if (get_category == "Energy - Burst Tagger") and (get_method == "Normal"):    
+                # count = 0   
+                # new_files = []
+                # original_filenames = []         
+                
+                # # Create a List of Files in Output Directory
+                # if get_output_directory != "":
+                    # file_names = []
+                    # for fname in os.listdir(get_output_directory):
+                        # if os.path.isfile(get_output_directory+"/"+fname):
+                            # file_names.append(fname)
+                                
+                # for n in range(0,len(get_all_filepaths)):
+                    # # Update Loaded File
+                    # if self.comboBox_tsi_conditioner_settings_input_source.currentText() == "Folder":
+                        # self.listWidget_tsi_conditioner_input_files.setCurrentRow(n)
+                        # self._slotTSI_ConditionerInputLoadFileClicked()
+                    
+                    # # Method Parameters
+                    # get_threshold = str(self.textEdit_tsi_conditioner_settings_bt_threshold.toPlainText())
+                                        
+                    # # Run the Flow Graph
+                    # self.loop = True
+                    # self.loadthread = OperationsThread("python3 " + fg_directory + "/burst_tagger/normal.py --filepath '" + get_all_filepaths[n] \
+                        # + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold,get_output_directory, self)                        
+                    # self.loadthread.finished.connect(self.on_finished)
+                    # self.loadthread.start()
+                    # while self.loop == True:
+                        # QtWidgets.QApplication.processEvents()
+                        # time.sleep(0.1)
+                        # if self.stop_operations == True:
+                            # break
+                    
+                    # self.progressBar_tsi_conditioner_operation.setValue(1+int((float((n+1)/len(get_all_filepaths))*90)))        
+                    
+                    # # Rename the New Files        
+                    # if get_output_directory != "":                        
+                        # for fname in os.listdir(get_output_directory):
+                            # if os.path.isfile(get_output_directory + "/" + fname):
+                                # if fname not in file_names:
+                                    # count = count + 1
+                                    # os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                    # new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                    # file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                    # original_filenames.append(get_all_filepaths[n])
+                    # if self.stop_operations == True:
+                        # break
+                # self.progressBar_tsi_conditioner_operation.setValue(95)
+            
+            # # Method2: burst_tagger with Decay
+            # elif (get_category == "Energy - Burst Tagger") and (get_method == "Normal Decay"):    
+                # count = 0   
+                # new_files = []
+                # original_filenames = []         
+                
+                # # Create a List of Files in Output Directory
+                # if get_output_directory != "":
+                    # file_names = []
+                    # for fname in os.listdir(get_output_directory):
+                        # if os.path.isfile(get_output_directory+"/"+fname):
+                            # file_names.append(fname)
+                                
+                # for n in range(0,len(get_all_filepaths)):
+                    # # Update Loaded File
+                    # if self.comboBox_tsi_conditioner_settings_input_source.currentText() == "Folder":
+                        # self.listWidget_tsi_conditioner_input_files.setCurrentRow(n)
+                        # self._slotTSI_ConditionerInputLoadFileClicked()
+                    
+                    # # Method Parameters
+                    # get_threshold = str(self.textEdit_tsi_conditioner_settings_bt_decay_threshold.toPlainText())
+                    # get_decay = str(self.textEdit_tsi_conditioner_settings_bt_decay_decay.toPlainText())
+                                        
+                    # # Run the Flow Graph
+                    # self.loop = True
+                    # self.loadthread = OperationsThread("python3 "  + fg_directory + "/burst_tagger/normal_decay.py --filepath '" + get_all_filepaths[n] \
+                        # + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --decay " + get_decay,get_output_directory, self)                        
+                    # self.loadthread.finished.connect(self.on_finished)
+                    # self.loadthread.start()
+                    # while self.loop == True:
+                        # QtWidgets.QApplication.processEvents()
+                        # time.sleep(0.1)
+                        # if self.stop_operations == True:
+                            # break
+                    
+                    # self.progressBar_tsi_conditioner_operation.setValue(1+int((float((n+1)/len(get_all_filepaths))*90)))        
+                    
+                    # # Rename the New Files        
+                    # if get_output_directory != "":                        
+                        # for fname in os.listdir(get_output_directory):
+                            # if os.path.isfile(get_output_directory + "/" + fname):
+                                # if fname not in file_names:
+                                    # count = count + 1
+                                    # os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                    # new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                    # file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                    # original_filenames.append(get_all_filepaths[n])
+                    # if self.stop_operations == True:
+                        # break
+                # self.progressBar_tsi_conditioner_operation.setValue(95)
+            
+            # # Method3: power_squelch_with_burst_tagger
+            # elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch"):
+                # count = 0   
+                # new_files = []
+                # original_filenames = []         
+                
+                # # Create a List of Files in Output Directory
+                # if get_output_directory != "":
+                    # file_names = []
+                    # for fname in os.listdir(get_output_directory):
+                        # if os.path.isfile(get_output_directory+"/"+fname):
+                            # file_names.append(fname)
+                                
+                # for n in range(0,len(get_all_filepaths)):
+                    # # Update Loaded File
+                    # if self.comboBox_tsi_conditioner_settings_input_source.currentText() == "Folder":
+                        # self.listWidget_tsi_conditioner_input_files.setCurrentRow(n)
+                        # self._slotTSI_ConditionerInputLoadFileClicked()
+                        
+                    # # Method Parameters
+                    # get_squelch = str(self.textEdit_tsi_conditioner_settings_psbt_squelch.toPlainText())
+                    # get_threshold = str(self.textEdit_tsi_conditioner_settings_psbt_threshold.toPlainText())
+                    
+                    # # ~ # Run the Flow Graph
+                    # # ~ proc = subprocess.Popen("python3 " + os.path.dirname(os.path.realpath(__file__)) + "/Flow_Graphs/burst_tagger/power_squelch.py --filepath '" + get_all_filepaths[n] \
+                        # # ~ + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --squelch " + get_squelch + " &", shell=True, cwd=get_output_directory)  
+                    
+                    # # Run the Flow Graph
+                    # self.loop = True
+                    # print(get_all_filepaths[n])
+                    # self.loadthread = OperationsThread("python3 " + fg_directory + "/burst_tagger/power_squelch.py --filepath '" + get_all_filepaths[n] \
+                        # + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --squelch " + get_squelch,get_output_directory, self)                        
+                    # self.loadthread.finished.connect(self.on_finished)
+                    # self.loadthread.start()
+                    # while self.loop == True:
+                        # QtWidgets.QApplication.processEvents()
+                        # time.sleep(0.1)
+                        # if self.stop_operations == True:
+                            # break
+                    
+                    # self.progressBar_tsi_conditioner_operation.setValue(1+int((float((n+1)/len(get_all_filepaths))*90)))        
+                    
+                    # # Rename the New Files        
+                    # if get_output_directory != "":                        
+                        # for fname in os.listdir(get_output_directory):
+                            # if os.path.isfile(get_output_directory + "/" + fname):
+                                # if fname not in file_names:
+                                    # count = count + 1
+                                    # os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                    # new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                    # file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                    # original_filenames.append(get_all_filepaths[n])
+                    # if self.stop_operations == True:
+                        # break
+                # self.progressBar_tsi_conditioner_operation.setValue(95)
+            
+            # # Method4: lowpass_filter
+            # elif (get_category == "Energy - Burst Tagger") and (get_method == "Lowpass"):
+                # count = 0   
+                # new_files = []
+                # original_filenames = []         
+                
+                # # Create a List of Files in Output Directory
+                # if get_output_directory != "":
+                    # file_names = []
+                    # for fname in os.listdir(get_output_directory):
+                        # if os.path.isfile(get_output_directory+"/"+fname):
+                            # file_names.append(fname)
+                                
+                # for n in range(0,len(get_all_filepaths)):
+                    # # Update Loaded File
+                    # if self.comboBox_tsi_conditioner_settings_input_source.currentText() == "Folder":
+                        # self.listWidget_tsi_conditioner_input_files.setCurrentRow(n)
+                        # self._slotTSI_ConditionerInputLoadFileClicked()
+                        
+                    # # Method Parameters
+                    # get_threshold = str(self.textEdit_tsi_conditioner_settings_bt_lowpass_threshold.toPlainText())
+                    # get_cutoff = str(self.textEdit_tsi_conditioner_settings_bt_lowpass_cutoff.toPlainText())
+                    # get_transition = str(self.textEdit_tsi_conditioner_settings_bt_lowpass_transition.toPlainText())
+                    # get_beta = str(self.textEdit_tsi_conditioner_settings_bt_lowpass_beta.toPlainText())
+                    
+                    # # ~ # Run the Flow Graph
+                    # # ~ proc = subprocess.Popen("python3 " + os.path.dirname(os.path.realpath(__file__)) + "/Flow_Graphs/burst_tagger/lowpass.py --filepath '" + get_all_filepaths[n] \
+                        # # ~ + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --cutoff-freq " + get_cutoff + " --transition-width " + get_transition \
+                        # # ~ + " --beta " + get_beta + " &", shell=True, cwd=get_output_directory)  
+                        
+                    # # Run the Flow Graph
+                    # self.loop = True
+                    # self.loadthread = OperationsThread("python3 " + fg_directory + "/burst_tagger/lowpass.py --filepath '" + get_all_filepaths[n] \
+                        # + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --cutoff-freq " + get_cutoff + " --transition-width " + get_transition \
+                        # + " --beta " + get_beta,get_output_directory, self)                        
+                    # self.loadthread.finished.connect(self.on_finished)
+                    # self.loadthread.start()
+                    # while self.loop == True:
+                        # QtWidgets.QApplication.processEvents()
+                        # time.sleep(0.1)
+                        # if self.stop_operations == True:
+                            # break
+                    
+                    # self.progressBar_tsi_conditioner_operation.setValue(1+int((float((n+1)/len(get_all_filepaths))*90)))        
+                    
+                    # # Rename the New Files        
+                    # if get_output_directory != "":                        
+                        # for fname in os.listdir(get_output_directory):
+                            # if os.path.isfile(get_output_directory + "/" + fname):
+                                # if fname not in file_names:
+                                    # count = count + 1
+                                    # os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                    # new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                    # file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                    # original_filenames.append(get_all_filepaths[n])
+                    # if self.stop_operations == True:
+                        # break
+                # self.progressBar_tsi_conditioner_operation.setValue(95)
+            
+            # # Method5: power_squelch_lowpass
+            # elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch then Lowpass"):
+                # count = 0   
+                # new_files = []
+                # original_filenames = []         
+                
+                # # Create a List of Files in Output Directory
+                # if get_output_directory != "":
+                    # file_names = []
+                    # for fname in os.listdir(get_output_directory):
+                        # if os.path.isfile(get_output_directory+"/"+fname):
+                            # file_names.append(fname)
+                                
+                # for n in range(0,len(get_all_filepaths)):
+                    # # Update Loaded File
+                    # if self.comboBox_tsi_conditioner_settings_input_source.currentText() == "Folder":
+                        # self.listWidget_tsi_conditioner_input_files.setCurrentRow(n)
+                        # self._slotTSI_ConditionerInputLoadFileClicked()
+                        
+                    # # Method Parameters
+                    # get_squelch = str(self.textEdit_tsi_conditioner_settings_bt_psl_squelch.toPlainText())
+                    # get_cutoff = str(self.textEdit_tsi_conditioner_settings_bt_psl_cutoff.toPlainText())
+                    # get_transition = str(self.textEdit_tsi_conditioner_settings_bt_psl_transition.toPlainText())
+                    # get_beta = str(self.textEdit_tsi_conditioner_settings_bt_psl_beta.toPlainText())
+                    # get_threshold = str(self.textEdit_tsi_settings_bt_psl_threshold.toPlainText())
+
+                    # # ~ # Run the Flow Graph
+                    # # ~ proc = subprocess.Popen("python3 " + os.path.dirname(os.path.realpath(__file__)) + "/Flow_Graphs/burst_tagger/power_squelch_lowpass.py --filepath '" + get_all_filepaths[n] \
+                        # # ~ + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --cutoff-freq " + get_cutoff + " --transition-width " + get_transition \
+                        # # ~ + " --beta " + get_beta + " --squelch " + get_squelch + " &", shell=True, cwd=get_output_directory)
+                        
+                    # # Run the Flow Graph
+                    # self.loop = True
+                    # self.loadthread = OperationsThread("python3 " + fg_directory + "/burst_tagger/power_squelch_lowpass.py --filepath '" + get_all_filepaths[n] \
+                        # + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --cutoff-freq " + get_cutoff + " --transition-width " + get_transition \
+                        # + " --beta " + get_beta + " --squelch " + get_squelch,get_output_directory, self)                        
+                    # self.loadthread.finished.connect(self.on_finished)
+                    # self.loadthread.start()
+                    # while self.loop == True:
+                        # QtWidgets.QApplication.processEvents()
+                        # time.sleep(0.1)
+                        # if self.stop_operations == True:
+                            # break
+                    
+                    # self.progressBar_tsi_conditioner_operation.setValue(1+int((float((n+1)/len(get_all_filepaths))*90)))        
+                    
+                    # # Rename the New Files        
+                    # if get_output_directory != "":                        
+                        # for fname in os.listdir(get_output_directory):
+                            # if os.path.isfile(get_output_directory + "/" + fname):
+                                # if fname not in file_names:
+                                    # count = count + 1
+                                    # os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                    # new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                    # file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                    # original_filenames.append(get_all_filepaths[n])
+                    # if self.stop_operations == True:
+                        # break
+                # self.progressBar_tsi_conditioner_operation.setValue(95)
+                
+            # # Method6: bandpass_filter
+            # elif (get_category == "Energy - Burst Tagger") and (get_method == "Bandpass"):
+                # count = 0   
+                # new_files = []
+                # original_filenames = []         
+                
+                # # Create a List of Files in Output Directory
+                # if get_output_directory != "":
+                    # file_names = []
+                    # for fname in os.listdir(get_output_directory):
+                        # if os.path.isfile(get_output_directory+"/"+fname):
+                            # file_names.append(fname)
+                                
+                # for n in range(0,len(get_all_filepaths)):
+                    # # Update Loaded File
+                    # if self.comboBox_tsi_conditioner_settings_input_source.currentText() == "Folder":
+                        # self.listWidget_tsi_conditioner_input_files.setCurrentRow(n)
+                        # self._slotTSI_ConditionerInputLoadFileClicked()
+                        
+                    # # Method Parameters
+                    # get_bandpass_freq = str(self.textEdit_tsi_conditioner_settings_bt_bandpass_freq.toPlainText())
+                    # get_bandpass_width = str(self.textEdit_tsi_conditioner_settings_bt_bandpass_width.toPlainText())
+                    # get_transition = str(self.textEdit_tsi_conditioner_settings_bt_bandpass_transition.toPlainText())
+                    # get_beta = str(self.textEdit_tsi_conditioner_settings_bt_bandpass_beta.toPlainText())
+                    # get_threshold = str(self.textEdit_tsi_conditioner_settings_bt_bandpass_threshold.toPlainText())
+                                            
+                    # # Run the Flow Graph
+                    # self.loop = True
+                    # self.loadthread = OperationsThread("python3 " + fg_directory + "/burst_tagger/bandpass.py --filepath '" + get_all_filepaths[n] \
+                        # + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --bandpass-freq " + get_bandpass_freq + " --transition-width " + get_transition \
+                        # + " --beta " + get_beta + " --bandpass-width " + get_bandpass_width,get_output_directory, self)                        
+                    # self.loadthread.finished.connect(self.on_finished)
+                    # self.loadthread.start()
+                    # while self.loop == True:
+                        # QtWidgets.QApplication.processEvents()
+                        # time.sleep(0.1)
+                        # if self.stop_operations == True:
+                            # break
+                    
+                    # self.progressBar_tsi_conditioner_operation.setValue(1+int((float((n+1)/len(get_all_filepaths))*90)))        
+                    
+                    # # Rename the New Files        
+                    # if get_output_directory != "":                        
+                        # for fname in os.listdir(get_output_directory):
+                            # if os.path.isfile(get_output_directory + "/" + fname):
+                                # if fname not in file_names:
+                                    # count = count + 1
+                                    # os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                    # new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                    # file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                    # original_filenames.append(get_all_filepaths[n])
+                    # if self.stop_operations == True:
+                        # break
+                # self.progressBar_tsi_conditioner_operation.setValue(95)
+                
+            # # Method7: strongest
+            # elif (get_category == "Energy - Burst Tagger") and (get_method == "Strongest Frequency then Bandpass"):
+                # self.textEdit_tsi_settings_bt_sfb_freq.setPlainText("?")
+                # self.textEdit_tsi_settings_bt_sfb_freq.setAlignment(QtCore.Qt.AlignCenter)
+                # count = 0   
+                # new_files = []
+                # original_filenames = []         
+                
+                # # Create a List of Files in Output Directory
+                # if get_output_directory != "":
+                    # file_names = []
+                    # for fname in os.listdir(get_output_directory):
+                        # if os.path.isfile(get_output_directory+"/"+fname):
+                            # file_names.append(fname)
+                                
+                # for n in range(0,len(get_all_filepaths)):
+                    # # Update Loaded File
+                    # if self.comboBox_tsi_conditioner_settings_input_source.currentText() == "Folder":
+                        # self.listWidget_tsi_conditioner_input_files.setCurrentRow(n)
+                        # self._slotTSI_ConditionerInputLoadFileClicked()
+                        
+                    # # Method Parameters
+                    # get_fft_size = str(self.textEdit_tsi_conditioner_settings_bt_sfb_fft_size.toPlainText())
+                    # get_fft_threshold = str(self.textEdit_tsi_conditioner_settings_bt_sfb_fft_threshold.toPlainText())
+                    # get_bandpass_width = str(self.textEdit_tsi_settings_bt_sfb_width.toPlainText())
+                    # get_transition = str(self.textEdit_tsi_settings_bt_sfb_transition.toPlainText())
+                    # get_beta = str(self.textEdit_tsi_settings_bt_sfb_beta.toPlainText())
+                    # get_threshold = str(self.textEdit_tsi_settings_bt_sfb_threshold.toPlainText())
+                    
+                    # # Acquire Number of Samples
+                    # file_bytes = os.path.getsize(get_all_filepaths[n])
+                    # file_samples = "-1"
+                    # if file_bytes > 0:            
+                        # if get_type == "Complex Float 32":
+                            # file_samples = str(int(file_bytes/8))
+                        # elif get_type == "Float/Float 32":
+                            # file_samples = str(int(file_bytes/4))
+                        # elif get_type == "Short/Int 16":
+                            # file_samples = str(int(file_bytes/2))
+                        # elif get_type == "Int/Int 32":
+                            # file_samples = str(int(file_bytes/4))
+                        # elif get_type == "Byte/Int 8":
+                            # file_samples = str(int(file_bytes/1))
+                        # elif get_type == "Complex Int 16":
+                            # file_samples = str(int(file_bytes/4))
+                        # elif get_type == "Complex Int 8":
+                            # file_samples = str(int(file_bytes/2))
+                        # elif get_type == "Complex Float 64":
+                            # file_samples = str(int(file_bytes/16))
+                        # elif get_type == "Complex Int 64":
+                            # file_samples = str(int(file_bytes/16))
+                    # else:
+                        # continue       
+                    
+                    # # Where to Store Strongest Frequency Results
+                    # peak_file_location =  os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/TSI\ Flow\ Graphs/Conditioner/peaks.txt"
+                                            
+                    # # Run the Flow Graph
+                    # self.loop = True
+                    # self.loadthread = OperationsThread("python3 " + fg_directory + "/fft/strongest.py --filepath '" + get_all_filepaths[n] \
+                        # + "' --sample-rate " + get_sample_rate + " --fft-threshold " + get_fft_threshold + " --samples " + file_samples + " --peak-file-location " + peak_file_location \
+                        # + " --fft-size " + get_fft_size,get_output_directory, self)                        
+                    # self.loadthread.finished.connect(self.on_finished)
+                    # self.loadthread.start()
+                    # while self.loop == True:
+                        # QtWidgets.QApplication.processEvents()
+                        # time.sleep(0.1)
+                        # if self.stop_operations == True:
+                            # break
+                    
+                    # # Read the Frequency Result
+                    # file = open(peak_file_location,"r")                    
+                    # freq_result = str(round(float(file.read()),2))
+                    # file.close()
+                    
+                    # # Bandpass Filter is Applied to Negative and Positive Sides
+                    # if float(freq_result) < 0:
+                        # freq_result = str(abs(float(freq_result)))
+                        
+                    # # Avoid Errors with Filter Width
+                    # if (float(freq_result) + float(get_bandpass_width)/2) > float(get_sample_rate)/2:
+                        # freq_result = str(float(get_sample_rate)/2 - float(get_bandpass_width)/2)
+                    # elif (float(freq_result) - float(get_bandpass_width)/2) < 0:
+                        # freq_result = str(float(get_bandpass_width)/2)
+                        
+                    # self.textEdit_settings_bt_sfb_freq.setPlainText(freq_result)
+                    # self.textEdit_settings_bt_sfb_freq.setAlignment(QtCore.Qt.AlignCenter)
+                    # get_bandpass_freq = str(self.textEdit_settings_bt_sfb_freq.toPlainText())
+                                            
+                    # # Run the Bandpass Flow Graph
+                    # self.loop = True
+                    # self.loadthread = OperationsThread("python3 " + fg_directory + "/burst_tagger/bandpass.py --filepath '" + get_all_filepaths[n] \
+                        # + "' --sample-rate " + get_sample_rate + " --threshold " + get_threshold + " --bandpass-freq " + get_bandpass_freq + " --transition-width " + get_transition \
+                        # + " --beta " + get_beta + " --bandpass-width " + get_bandpass_width,get_output_directory, self)                        
+                    # self.loadthread.finished.connect(self.on_finished)
+                    # self.loadthread.start()
+                    # while self.loop == True:
+                        # QtWidgets.QApplication.processEvents()
+                        # time.sleep(0.1)
+                        # if self.stop_operations == True:
+                            # break
+                    
+                    # self.progressBar_tsi_conditioner_operation.setValue(1+int((float((n+1)/len(get_all_filepaths))*90)))        
+                    
+                    # # Rename the New Files        
+                    # if get_output_directory != "":                        
+                        # for fname in os.listdir(get_output_directory):
+                            # if os.path.isfile(get_output_directory + "/" + fname):
+                                # if fname not in file_names:
+                                    # count = count + 1
+                                    # os.rename(get_output_directory + "/" + fname, get_output_directory + "/" + get_prefix + str(count).zfill(5) + ".iq")
+                                    # new_files.append(get_prefix + str(count).zfill(5) + ".iq")  
+                                    # file_names.append(get_prefix + str(count).zfill(5) + ".iq")
+                                    # original_filenames.append(get_all_filepaths[n])
+                    # if self.stop_operations == True:
+                        # break
+                # self.progressBar_tsi_conditioner_operation.setValue(95)
+                
+            # # Invalid Method
+            # else:
+                # print("Invalid method")
+                # self.progressBar_tsi_conditioner_operation.setValue(100)
+                # self.pushButton_tsi_conditioner_operation_start.setText("Start")
+                # return
+                
+            # # Remove Files with Too Few Samples
+            # temp_files = new_files
+            # for n,fname in reversed(list(enumerate(temp_files))):
+                # get_bytes = os.path.getsize(get_output_directory + "/" + fname)
+                # get_samples = "-1"
+                # if get_bytes > 0:            
+                    # if get_type == "Complex Float 32":
+                        # get_samples = int(get_bytes/8)
+                    # elif get_type == "Float/Float 32":
+                        # get_samples = int(get_bytes/4)
+                    # elif get_type == "Short/Int 16":
+                        # get_samples = int(get_bytes/2)
+                    # elif get_type == "Int/Int 32":
+                        # get_samples = int(get_bytes/4)
+                    # elif get_type == "Byte/Int 8":
+                        # get_samples = int(get_bytes/1)
+                    # elif get_type == "Complex Int 16":
+                        # get_samples = int(get_bytes/4)
+                    # elif get_type == "Complex Int 8":
+                        # get_samples = int(get_bytes/2)
+                    # elif get_type == "Complex Float 64":
+                        # get_samples = int(get_bytes/16)
+                    # elif get_type == "Complex Int 64":
+                        # get_samples = int(get_bytes/16)  
+                
+                # # Remove File
+                # if get_samples < get_min_samples:
+                    # temp_files.pop(n)
+            # new_files = temp_files
+                                    
+            # # File Count
+            # self.label2_tsi_conditioner_results_file_count.setText("File Count: " + str(len(new_files)))
+                        
+            # # Report Results in Table
+            # for row in reversed(range(0,self.tableWidget_tsi_conditioner_results.rowCount())):
+                # self.tableWidget_tsi_conditioner_results.removeRow(row)
+    
+            # for n, fname in enumerate(new_files):
+                # self.tableWidget_tsi_conditioner_results.setRowCount(self.tableWidget_tsi_conditioner_results.rowCount()+1)
+                
+                # # Filename
+                # table_item = QtWidgets.QTableWidgetItem(fname)
+                # table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # self.tableWidget_tsi_conditioner_results.setItem(self.tableWidget_tsi_conditioner_results.rowCount()-1,0,table_item)
+                
+                # # File Size
+                # get_bytes = os.path.getsize(get_output_directory + "/" + fname)
+                # table_item = QtWidgets.QTableWidgetItem(str(round(get_bytes/1048576,2)))
+                # table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # self.tableWidget_tsi_conditioner_results.setItem(self.tableWidget_tsi_conditioner_results.rowCount()-1,1,table_item)
+
+                # # Samples
+                # get_samples = "-1"
+                # if get_bytes > 0:            
+                    # if get_type == "Complex Float 32":
+                        # get_samples = str(int(get_bytes/8))
+                    # elif get_type == "Float/Float 32":
+                        # get_samples = str(int(get_bytes/4))
+                    # elif get_type == "Short/Int 16":
+                        # get_samples = str(int(get_bytes/2))
+                    # elif get_type == "Int/Int 32":
+                        # get_samples = str(int(get_bytes/4))
+                    # elif get_type == "Byte/Int 8":
+                        # get_samples = str(int(get_bytes/1))
+                    # elif get_type == "Complex Int 16":
+                        # get_samples = str(int(get_bytes/4))
+                    # elif get_type == "Complex Int 8":
+                        # get_samples = str(int(get_bytes/2))
+                    # elif get_type == "Complex Float 64":
+                        # get_samples = str(int(get_bytes/16))
+                    # elif get_type == "Complex Int 64":
+                        # get_samples = str(int(get_bytes/16))   
+                # table_item = QtWidgets.QTableWidgetItem(str(get_samples))
+                # table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # self.tableWidget_tsi_conditioner_results.setItem(self.tableWidget_tsi_conditioner_results.rowCount()-1,2,table_item)
+                
+                # # Format
+                # table_item = QtWidgets.QTableWidgetItem(get_type)
+                # table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # self.tableWidget_tsi_conditioner_results.setItem(self.tableWidget_tsi_conditioner_results.rowCount()-1,3,table_item)
+                
+                # # Sample Rate
+                # table_item = QtWidgets.QTableWidgetItem(get_sample_rate)
+                # table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # self.tableWidget_tsi_conditioner_results.setItem(self.tableWidget_tsi_conditioner_results.rowCount()-1,4,table_item)
+                
+                # # Saturated
+                # table_item = QtWidgets.QTableWidgetItem("")
+                # table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # self.tableWidget_tsi_conditioner_results.setItem(self.tableWidget_tsi_conditioner_results.rowCount()-1,5,table_item)
+                
+                # # Tuned Frequency
+                # table_item = QtWidgets.QTableWidgetItem(get_tuned_freq)
+                # table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # self.tableWidget_tsi_conditioner_results.setItem(self.tableWidget_tsi_conditioner_results.rowCount()-1,6,table_item)
+                
+                # # Source
+                # table_item = QtWidgets.QTableWidgetItem(original_filenames[n])
+                # table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # self.tableWidget_tsi_conditioner_results.setItem(self.tableWidget_tsi_conditioner_results.rowCount()-1,7,table_item)
+                
+                # # Notes
+                # table_item = QtWidgets.QTableWidgetItem("")
+                # table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                # self.tableWidget_tsi_conditioner_results.setItem(self.tableWidget_tsi_conditioner_results.rowCount()-1,8,table_item)
+                
+                # # Resize Table
+                # self.tableWidget_tsi_conditioner_results.resizeRowsToContents()
+                # self.tableWidget_tsi_conditioner_results.resizeColumnsToContents()
+                # self.tableWidget_tsi_conditioner_results.horizontalHeader().setStretchLastSection(False)
+                # self.tableWidget_tsi_conditioner_results.horizontalHeader().setStretchLastSection(True)
+                
+            # # Check for Saturation
+            # if self.checkBox_tsi_conditioner_settings_saturation.isChecked():
+                # self.progressBar_tsi_conditioner_operation.setValue(96)
+                # # Get Min/Max
+                # if self.comboBox_tsi_conditioner_settings_saturation.currentIndex() == 0:
+                    # get_min = -1
+                    # get_max = 1
+                # elif self.comboBox_tsi_conditioner_settings_saturation.currentIndex() == 1:
+                    # get_min = -128
+                    # get_max = 127
+                # elif self.comboBox_tsi_conditioner_settings_saturation.currentIndex() == 2:
+                    # get_min = -32768
+                    # get_max = 32767
+                # elif self.comboBox_tsi_conditioner_settings_saturation.currentIndex() == 3:
+                    # get_min = -2147483648
+                    # get_max = 2147483647
+                # elif self.comboBox_tsi_conditioner_settings_saturation.currentIndex() == 4:
+                    # get_min = -9223372036854775808
+                    # get_max = 9223372036854775807
+                    
+                # # Load the Data
+                # get_data_type = str(self.comboBox_tsi_conditioner_input_data_type.currentText())
+                # for x,fname in enumerate(new_files):
+                    # get_original_file = get_output_directory + "/" + fname 
+                    # get_new_file = get_original_file        
+
+                    # # Files Selected
+                    # if (len(get_original_file) > 0) and (len(get_new_file) > 0):
+                        # # Read the Data 
+                        # file = open(get_original_file,"rb")                    
+                        # plot_data = file.read() 
+                        # file.close()
+                        
+                        # # Complex Float 64
+                        # if (get_data_type == "Complex Float 64"):                
+                            # # Normalize and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'d', plot_data)                
+                            # np_data = np.asarray(plot_data_formatted, dtype=np.float64)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))                                     
+                              
+                        # # Complex Float 32
+                        # elif (get_data_type == "Complex Float 32") or (get_data_type == "Float/Float 32"):                
+                            # # Normalize and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'f', plot_data)                
+                            # np_data = np.asarray(plot_data_formatted, dtype=np.float32)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))            
+                        
+                        # # Complex Int 16
+                        # elif (get_data_type == "Complex Int 16") or (get_data_type == "Short/Int 16"):               
+                            # # Convert and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes/2)*'h', plot_data)
+                            # np_data = np.array(plot_data_formatted, dtype=np.int16)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))
+                        
+                        # # Complex Int 64
+                        # elif (get_data_type == "Complex Int 64"):               
+                            # # Convert and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'l', plot_data)
+                            # np_data = np.array(plot_data_formatted, dtype=np.int64)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))
+                            
+                        # # Int/Int 32
+                        # elif (get_data_type == "Int/Int 32"):               
+                            # # Convert and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'h', plot_data)
+                            # np_data = np.array(plot_data_formatted, dtype=np.int32)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))
+                            
+                        # # Complex Int 8
+                        # elif (get_data_type == "Complex Int 8") or (get_data_type == "Byte/Int 8"):               
+                            # # Convert and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes)*'b', plot_data)
+                            # np_data = np.array(plot_data_formatted, dtype=np.int8)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))
+                        
+                        # # Unknown
+                        # else:
+                            # print("Cannot normalize " + get_data_type + ".")
+                            # continue
+                            
+                        # # Edit the Table
+                        # table_item_yes = QtWidgets.QTableWidgetItem("Yes")
+                        # table_item_yes.setTextAlignment(QtCore.Qt.AlignCenter)
+                        # table_item_no = QtWidgets.QTableWidgetItem("No")
+                        # table_item_no.setTextAlignment(QtCore.Qt.AlignCenter)
+                        # if (array_min <= get_min) or (array_max >= get_max):
+                            # self.tableWidget_tsi_conditioner_results.setItem(x,5,table_item_yes)
+                        # else:
+                            # self.tableWidget_tsi_conditioner_results.setItem(x,5,table_item_no)                 
+                            
+            # # Normalize Output
+            # if self.checkBox_tsi_conditioner_settings_normalize_output.isChecked():
+                # self.progressBar_tsi_conditioner_operation.setValue(98)
+                # # Get Min/Max
+                # if self.comboBox_tsi_conditioner_settings_normalize.currentIndex() == 0:
+                    # get_min = -1
+                    # get_max = 1
+                # elif self.comboBox_tsi_conditioner_settings_normalize.currentIndex() == 1:
+                    # get_min = -128
+                    # get_max = 127        
+                # elif self.comboBox_tsi_conditioner_settings_normalize.currentIndex() == 2:
+                    # get_min = -32768
+                    # get_max = 32767      
+                # elif self.comboBox_tsi_conditioner_settings_normalize.currentIndex() == 3:
+                    # get_min = -2147483648
+                    # get_max = 2147483647 
+                # elif self.comboBox_tsi_conditioner_settings_normalize.currentIndex() == 4:
+                    # get_min = -9223372036854775808
+                    # get_max = 9223372036854775807
+                # # else:
+                    # # try:
+                        # # get_min = float(self.textEdit_iq_normalize_min.toPlainText())
+                        # # get_max = float(self.textEdit_iq_normalize_max.toPlainText())
+                    # # except:
+                        # # print("Not a valid float.")
+                        # # return
+                
+                # # Load the Data
+                # get_data_type = str(self.comboBox_tsi_conditioner_input_data_type.currentText())
+                # for fname in new_files:
+                    # get_original_file = get_output_directory + "/" + fname 
+                    # get_new_file = get_original_file        
+
+                    # # Files Selected
+                    # if (len(get_original_file) > 0) and (len(get_new_file) > 0):
+                        # # Read the Data 
+                        # file = open(get_original_file,"rb")                    
+                        # plot_data = file.read() 
+                        # file.close()
+                        
+                        # # Complex Float 64
+                        # if (get_data_type == "Complex Float 64"):                
+                            # # Normalize and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'d', plot_data)                
+                            # np_data = np.asarray(plot_data_formatted, dtype=np.float64)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))
+                            # for n in range(0, len(np_data)):
+                                # np_data[n] = (np_data[n] - array_min)*(get_max-get_min)/(array_max-array_min) + get_min
+                            # np_data.tofile(get_new_file)            
+                              
+                        # # Complex Float 32
+                        # elif (get_data_type == "Complex Float 32") or (get_data_type == "Float/Float 32"):                
+                            # # Normalize and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'f', plot_data)                
+                            # np_data = np.asarray(plot_data_formatted, dtype=np.float32)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))
+                            # for n in range(0, len(np_data)):
+                                # np_data[n] = (np_data[n] - array_min)*(get_max-get_min)/(array_max-array_min) + get_min
+                            # np_data.tofile(get_new_file)              
+                        
+                        # # Complex Int 16
+                        # elif (get_data_type == "Complex Int 16") or (get_data_type == "Short/Int 16"):               
+                            # # Convert and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes/2)*'h', plot_data)
+                            # np_data = np.array(plot_data_formatted, dtype=np.int16)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))
+                            # for n in range(0, len(np_data)):
+                                # np_data[n] = (float(np_data[n]) - array_min)*(get_max-get_min)/(array_max-array_min) + get_min
+                            # np_data.tofile(get_new_file)
+                        
+                        # # Complex Int 64
+                        # elif (get_data_type == "Complex Int 64"):               
+                            # # Convert and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'l', plot_data)
+                            # np_data = np.array(plot_data_formatted, dtype=np.int64)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))
+                            # for n in range(0, len(np_data)):
+                                # np_data[n] = (float(np_data[n]) - array_min)*(get_max-get_min)/(array_max-array_min) + get_min
+                            # np_data.tofile(get_new_file)
+                            
+                        # # Int/Int 32
+                        # elif (get_data_type == "Int/Int 32"):               
+                            # # Convert and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'h', plot_data)
+                            # np_data = np.array(plot_data_formatted, dtype=np.int32)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))
+                            # for n in range(0, len(np_data)):
+                                # np_data[n] = (float(np_data[n]) - array_min)*(get_max-get_min)/(array_max-array_min) + get_min
+                            # np_data.tofile(get_new_file)
+                            
+                        # # Complex Int 8
+                        # elif (get_data_type == "Complex Int 8") or (get_data_type == "Byte/Int 8"):               
+                            # # Convert and Write
+                            # number_of_bytes = os.path.getsize(get_original_file)
+                            # plot_data_formatted = struct.unpack(int(number_of_bytes)*'b', plot_data)
+                            # np_data = np.array(plot_data_formatted, dtype=np.int8)
+                            # array_min = float(min(np_data))
+                            # array_max = float(max(np_data))
+                            # for n in range(0, len(np_data)):
+                                # np_data[n] = (float(np_data[n]) - array_min)*(get_max-get_min)/(array_max-array_min) + get_min
+                            # np_data.tofile(get_new_file)
+                        
+                        # # Unknown
+                        # else:
+                            # print("Cannot normalize " + get_data_type + ".")
+                            
+            # # Set Progress Bar
+            # self.progressBar_tsi_conditioner_operation.setValue(100)
+            # self.pushButton_tsi_conditioner_operation_start.setText("Start")
+            
+            # # Refresh Listbox                     # UNCOMMENT THIS LATER
+            # self._slotFE_InputRefreshClicked()    # UNCOMMENT THIS LATER
+            
+    def _slotTSI_ConditionerProgress(self, parameters):
+        """ Updates the TSI Conditioner progress bar.
+        """
+        # Update the Progress Bar
+        parameters = eval(parameters)
+        progress_value = parameters[0]
+        file_index = parameters[1]
+        if int(progress_value) < 100:
+            self.progressBar_tsi_conditioner_operation.setValue(int(progress_value))
+            if self.comboBox_tsi_conditioner_settings_input_source.currentText() == "Folder":
+                self.listWidget_tsi_conditioner_input_files.setCurrentRow(file_index)
+                self._slotTSI_ConditionerInputLoadFileClicked()
+            
+    def _slotTSI_ConditionerFinished(self, table_strings=''):
+        """ Acting on a TSI Conditioner Finished message from the TSI Component.
+        """
+        # Convert String to List
+        table_list = eval(table_strings)
+                
+        # File Count
+        self.label2_tsi_conditioner_results_file_count.setText("File Count: " + str(len(table_list)))
+                        
+        # Clear Table
+        for row in reversed(range(0,self.tableWidget_tsi_conditioner_results.rowCount())):
+            self.tableWidget_tsi_conditioner_results.removeRow(row)
+                
+        # Row
+        for n in range(0,len(table_list)):
+            self.tableWidget_tsi_conditioner_results.setRowCount(self.tableWidget_tsi_conditioner_results.rowCount()+1)
+            
+            # Column
+            for m in range(0,len(table_list[0])):            
+                table_item = QtWidgets.QTableWidgetItem(table_list[n][m])
+                table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                self.tableWidget_tsi_conditioner_results.setItem(self.tableWidget_tsi_conditioner_results.rowCount()-1,m,table_item)
+
+        # Resize Table
+        self.tableWidget_tsi_conditioner_results.resizeRowsToContents()
+        self.tableWidget_tsi_conditioner_results.resizeColumnsToContents()
+        self.tableWidget_tsi_conditioner_results.horizontalHeader().setStretchLastSection(False)
+        self.tableWidget_tsi_conditioner_results.horizontalHeader().setStretchLastSection(True)
+        
+        # Set Progress Bar
+        self.progressBar_tsi_conditioner_operation.setValue(100)
+        self.pushButton_tsi_conditioner_operation_start.setText("Start")
+    
+    def _slotTSI_ConditionerResultsDeleteAllClicked(self):
+        """ Deletes all the IQ files in the Signal Conditioner output directory.
+        """
+        # Delete All Files
+        if self.tableWidget_tsi_conditioner_results.rowCount() > 0:
+            for get_row in reversed(range(0,self.tableWidget_tsi_conditioner_results.rowCount())):
+                get_file = str(self.tableWidget_tsi_conditioner_results.item(get_row,0).text())          
+                get_type = str(self.tableWidget_tsi_conditioner_results.item(get_row,3).text()) 
+                get_filepath = str(self.comboBox_tsi_conditioner_settings_folder.currentText()) + "/" + get_file
+                
+                # Delete
+                os.system('rm "' + get_filepath + '"')
+                
+                # Remove Row
+                self.tableWidget_tsi_conditioner_results.removeRow(get_row)
+                    
+                # Update File Count
+                self.label2_tsi_conditioner_results_file_count.setText("File Count: " + str(self.tableWidget_tsi_conditioner_results.rowCount()))
+                
+    def _slotTSI_ConditionerResultsDeleteClicked(self):
+        """ Deletes the selected file listed in the results.
+        """
+        # Get Highlighted File from Table
+        if self.tableWidget_tsi_conditioner_results.rowCount() > 0:
+            get_row = self.tableWidget_tsi_conditioner_results.currentRow()
+            if get_row >= 0:
+                get_file = str(self.tableWidget_tsi_conditioner_results.item(get_row,0).text())          
+                get_type = str(self.tableWidget_tsi_conditioner_results.item(get_row,3).text()) 
+                get_filepath = str(self.comboBox_tsi_conditioner_settings_folder.currentText()) + "/" + get_file
+                
+                # Delete
+                os.system('rm "' + get_filepath + '"')
+                
+                # Remove Row
+                self.tableWidget_tsi_conditioner_results.removeRow(get_row)
+                if get_row == self.tableWidget_tsi_conditioner_results.rowCount():
+                    self.tableWidget_tsi_conditioner_results.setCurrentCell(self.tableWidget_tsi_conditioner_results.rowCount()-1,0)                 
+                elif get_row >= 0:
+                    self.tableWidget_tsi_conditioner_results.setCurrentCell(get_row,0)
+                    
+                # Update File Count
+                self.label2_tsi_conditioner_results_file_count.setText("File Count: " + str(self.tableWidget_tsi_conditioner_results.rowCount()))
+                
+    def _slotTSI_ConditionerResultsExportClicked(self):
+        """ Exports the contents of the Results table to a CSV.
+        """
+        # Choose File Location
+        path, ok = QtWidgets.QFileDialog.getSaveFileName(self, 'Save CSV', 'results.csv', 'CSV(*.csv)')
+        if ok:
+            columns = range(self.tableWidget_tsi_conditioner_results.columnCount())
+            header = [self.tableWidget_tsi_conditioner_results.horizontalHeaderItem(column).text() for column in columns]
+            with open(path, 'w') as csvfile:
+                writer = csv.writer(csvfile, dialect='excel', lineterminator='\n')
+                writer.writerow(header)
+                for row in range(self.tableWidget_tsi_conditioner_results.rowCount()):
+                    writer.writerow(self.tableWidget_tsi_conditioner_results.item(row, column).text() for column in columns)
+                    
+    def _slotTSI_ConditionerResultsFolderClicked(self):
+        """ Opens a window to the output directory.
+        """
+        # Open a Window
+        get_folder = str(self.comboBox_tsi_conditioner_settings_folder.currentText())
+        subprocess.Popen(['xdg-open', get_folder])
+        
+    def _slotTSI_ConditionerResultsPreviewClicked(self):
+        """ Plots a zoomed out version of the output file.
+        """    
+        # Get the Filepath
+        get_row = self.tableWidget_tsi_conditioner_results.currentRow()
+        if get_row >= 0:
+            # Get File
+            get_file = str(self.tableWidget_tsi_conditioner_results.item(get_row,0).text())          
+            get_type = str(self.tableWidget_tsi_conditioner_results.item(get_row,3).text()) 
+            get_filepath = str(self.comboBox_tsi_conditioner_settings_folder.currentText()) + "/" + get_file
+            try:
+                number_of_bytes = os.path.getsize(get_filepath)
+            except:
+                number_of_bytes = -1
+                
+            # Number of Samples
+            get_samples = "-1"
+            if number_of_bytes > 0:            
+                if get_type == "Complex Float 32":
+                    num_samples = int(number_of_bytes/8)
+                elif get_type == "Float/Float 32":
+                    num_samples = int(number_of_bytes/4)
+                elif get_type == "Short/Int 16":
+                    num_samples = int(number_of_bytes/2)
+                elif get_type == "Int/Int 32":
+                    num_samples = int(number_of_bytes/4)
+                elif get_type == "Byte/Int 8":
+                    num_samples = int(number_of_bytes/1)
+                elif get_type == "Complex Int 16":
+                    num_samples = int(number_of_bytes/4)
+                elif get_type == "Complex Int 8":
+                    num_samples = int(number_of_bytes/2)
+                elif get_type == "Complex Float 64":
+                    num_samples = int(number_of_bytes/16)
+                elif get_type == "Complex Int 64":
+                    num_samples = int(number_of_bytes/16)
+            
+            # File with Zero Bytes
+            if number_of_bytes <= 0:
+                print("File is empty")
+
+            # Skip Bytes if File is Too Large        
+            else:            
+                # Get the Number of Samples
+                start_sample = 1
+            
+                # Get the Size of Each Sample in Bytes   
+                complex_multiple = 1   
+                if get_type == "Complex Float 32":
+                    sample_size = 4
+                    complex_multiple = 2
+                    num_samples = complex_multiple * num_samples               
+                elif get_type == "Float/Float 32":
+                    sample_size = 4
+                elif get_type == "Short/Int 16":
+                    sample_size = 2
+                elif get_type == "Int/Int 32":
+                    sample_size = 4
+                elif get_type == "Byte/Int 8":
+                    sample_size = 1
+                elif get_type == "Complex Int 16":
+                    sample_size = 2
+                    complex_multiple = 2
+                    num_samples = complex_multiple * num_samples                  
+                elif get_type == "Complex Int 8":
+                    sample_size = 1
+                    complex_multiple = 2
+                    num_samples = complex_multiple * num_samples   
+                elif get_type == "Complex Float 64":
+                    sample_size = 8
+                    complex_multiple = 2
+                    num_samples = complex_multiple * num_samples 
+                elif get_type == "Complex Int 64":
+                    sample_size = 8
+                    complex_multiple = 2
+                    num_samples = complex_multiple * num_samples 
+                                
+                # Read the Data 
+                plot_data = b''
+                file = open(get_filepath,"rb")                          # Open the file
+                try:
+                    if "Complex" in get_type:
+                        starting_byte = 2*(start_sample-1) * sample_size
+                    else:
+                        starting_byte = (start_sample-1) * sample_size
+                      
+                    # No Skip
+                    if number_of_bytes <= 400000:                   
+                        skip = 1
+                        file.seek(starting_byte)
+                        plot_data = file.read(num_samples * sample_size)    # Read the right number of bytes
+                        
+                    # Skip
+                    else:
+                        # Every 10th Sample
+                        if number_of_bytes > 400000 and number_of_bytes <= 4000000:
+                            skip = 10
+                            
+                        # Every 100th Sample
+                        elif number_of_bytes > 4000000 and number_of_bytes <= 40000000:
+                            skip = 100
+                            
+                        # Every 1000th Sample
+                        elif number_of_bytes > 40000000 and number_of_bytes <= 400000000:
+                            skip = 1000
+                            
+                        # Every 10000th Sample
+                        elif number_of_bytes > 400000000 and number_of_bytes <= 4000000000:
+                            skip = 10000
+                            
+                        # Every 100000th Sample
+                        elif number_of_bytes > 4000000000 and number_of_bytes <= 40000000000:
+                            skip = 100000
+                            
+                        # Skip 1000000
+                        else:
+                            skip = 1000000
+                        
+                        # Read
+                        for n in range(starting_byte,number_of_bytes,(sample_size*skip*complex_multiple)):
+                            file.seek(n)
+                            plot_data = plot_data + file.read(sample_size)
+                            if "Complex" in get_type:
+                                plot_data = plot_data + file.read(sample_size)
+
+                except:
+                    # Close the File
+                    file.close() 
+                
+                # Close the File
+                file.close()         
+                                 
+                # Format the Data
+                if get_type == "Complex Float 32":
+                    #plot_data_formatted = struct.unpack(num_samples/skip*'f', plot_data)
+                    plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'f', plot_data)
+                elif get_type == "Float/Float 32":
+                    plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'f', plot_data)
+                elif get_type == "Short/Int 16":
+                    plot_data_formatted = struct.unpack(int(len(plot_data)/2)*'h', plot_data)
+                elif get_type == "Int/Int 32":
+                    plot_data_formatted = struct.unpack(int(len(plot_data)/4)*'i', plot_data)
+                elif get_type == "Byte/Int 8":
+                    plot_data_formatted = struct.unpack(int(len(plot_data)/1)*'b', plot_data)
+                elif get_type == "Complex Int 16":
+                    plot_data_formatted = struct.unpack(int(len(plot_data)/2)*'h', plot_data)
+                elif get_type == "Complex Int 8":
+                    plot_data_formatted = struct.unpack(int(len(plot_data)/1)*'b', plot_data)
+                elif get_type == "Complex Float 64":
+                    plot_data_formatted = struct.unpack(int(len(plot_data)/8)*'d', plot_data)
+                elif get_type == "Complex Int 64":
+                    plot_data_formatted = struct.unpack(int(len(plot_data)/8)*'l', plot_data)
+                
+                # Plot
+                plt.ion()
+                plt.close(1) 
+                if "Complex" in get_type:                    
+                    # Plot
+                    plt.plot(range(1,len(plot_data_formatted[::2])+1),plot_data_formatted[::2],'b',linewidth=1,zorder=2)
+                    plt.plot(range(1,len(plot_data_formatted[::2])+1),plot_data_formatted[1::2],'r',linewidth=1,zorder=2)
+                    plt.show()
+                else:
+                    plt.plot(range(1,len(plot_data_formatted)+1),plot_data_formatted,'b',linewidth=1,zorder=2)
+                    plt.show()
+                    
+                # Axes Labels
+                if skip == 1:
+                    plt.xlabel('Samples') 
+                    plt.ylabel('Amplitude (LSB)') 
+                else:
+                    plt.xlabel('Samples/' + str(skip)) 
+                    plt.ylabel('Amplitude (LSB)') 
+                    
+    def _slotTSI_ConditionerResultsRefreshClicked(self):
+        """ Updates the Signal Conditioner Results table with values obtained from files in the output folder location.
+        """
+        # Common GUI Parameters
+        get_category = str(self.comboBox_tsi_conditioner_settings_isolation_category.currentText())
+        get_method = str(self.comboBox_tsi_conditioner_settings_isolation_method.currentText())
+        get_input_source = str(self.comboBox_tsi_conditioner_settings_input_source.currentText())
+        get_output_directory = str(self.comboBox_tsi_conditioner_settings_folder.currentText())
+        get_prefix = str(self.textEdit_tsi_conditioner_settings_prefix.toPlainText())
+        get_sample_rate = str(self.textEdit_tsi_conditioner_info_sample_rate.toPlainText())
+        get_tuned_freq = str(self.textEdit_tsi_conditioner_info_frequency.toPlainText())
+        get_type = str(self.comboBox_tsi_conditioner_input_data_type.currentText())
+        get_max_files = int(self.textEdit_tsi_conditioner_settings_max_files.toPlainText())
+        get_min_samples = int(self.textEdit_tsi_conditioner_settings_min_samples.toPlainText())
+            
+        # Get Files in Output Folder
+        file_names = []
+        get_output_directory = str(self.comboBox_tsi_conditioner_settings_folder.currentText())
+        for row in reversed(range(0,self.tableWidget_tsi_conditioner_results.rowCount())):
+            fname = str(self.tableWidget_tsi_conditioner_results.item(row,0).text())
+            if os.path.isfile(get_output_directory+"/"+fname):
+                
+                # File Size
+                get_bytes = os.path.getsize(get_output_directory + "/" + fname)
+                table_item = QtWidgets.QTableWidgetItem(str(round(get_bytes/1048576,2)))
+                table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                self.tableWidget_tsi_conditioner_results.setItem(row,1,table_item)
+
+                # Samples
+                get_samples = "-1"
+                if get_bytes > 0:            
+                    if get_type == "Complex Float 32":
+                        get_samples = str(int(get_bytes/8))
+                    elif get_type == "Float/Float 32":
+                        get_samples = str(int(get_bytes/4))
+                    elif get_type == "Short/Int 16":
+                        get_samples = str(int(get_bytes/2))
+                    elif get_type == "Int/Int 32":
+                        get_samples = str(int(get_bytes/4))
+                    elif get_type == "Byte/Int 8":
+                        get_samples = str(int(get_bytes/1))
+                    elif get_type == "Complex Int 16":
+                        get_samples = str(int(get_bytes/4))
+                    elif get_type == "Complex Int 8":
+                        get_samples = str(int(get_bytes/2))
+                    elif get_type == "Complex Float 64":
+                        get_samples = str(int(get_bytes/16))
+                    elif get_type == "Complex Int 64":
+                        get_samples = str(int(get_bytes/16))   
+                table_item = QtWidgets.QTableWidgetItem(str(get_samples))
+                table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+                self.tableWidget_tsi_conditioner_results.setItem(row,2,table_item)
+                
+        # Resize Table
+        self.tableWidget_tsi_conditioner_results.resizeRowsToContents()
+        self.tableWidget_tsi_conditioner_results.resizeColumnsToContents()
+        self.tableWidget_tsi_conditioner_results.horizontalHeader().setStretchLastSection(False)
+        self.tableWidget_tsi_conditioner_results.horizontalHeader().setStretchLastSection(True)
+        
+    def _slotTSI_ConditionerResultsStripAllClicked(self):
+        """ Removes silence before and after a signal for all IQ files in the Signal Conditioner Results table.
+        """
+        text, ok = QtWidgets.QInputDialog.getText(self, 'Strip', 'Enter amplitude threshold:',QtWidgets.QLineEdit.Normal,"0.001")
+        if ok:            
+            # Load the Data
+            for get_row in range(0,self.tableWidget_tsi_conditioner_results.rowCount()):
+                get_data_type = str(self.tableWidget_tsi_conditioner_results.item(get_row,3).text())
+                fname = str(self.tableWidget_tsi_conditioner_results.item(get_row,0).text())
+                get_output_directory = str(self.comboBox_tsi_conditioner_settings_folder.currentText())
+                get_original_file = get_output_directory + "/" + fname
+                
+                if os.path.isfile(get_original_file):
+                    # Read the Data 
+                    file = open(get_original_file,"rb")                    
+                    plot_data = file.read() 
+                    file.close()
+                    
+                    # Complex Float 64
+                    if (get_data_type == "Complex Float 64"):                
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'d', plot_data)                
+                        np_data = np.asarray(plot_data_formatted, dtype=np.float64)
+                          
+                    # Complex Float 32
+                    elif (get_data_type == "Complex Float 32") or (get_data_type == "Float/Float 32"):                
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'f', plot_data)                
+                        np_data = np.asarray(plot_data_formatted, dtype=np.float32)         
+                    
+                    # Complex Int 16
+                    elif (get_data_type == "Complex Int 16") or (get_data_type == "Short/Int 16"):               
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/2)*'h', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int16)
+                    
+                    # Complex Int 64
+                    elif (get_data_type == "Complex Int 64"):               
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'l', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int64)
+                        
+                    # Int/Int 32
+                    elif (get_data_type == "Int/Int 32"):               
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'h', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int32)
+                        
+                    # Complex Int 8
+                    elif (get_data_type == "Complex Int 8") or (get_data_type == "Byte/Int 8"):               
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes)*'b', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int8)
+                    
+                    # Unknown
+                    else:
+                        print("Unknown Data Type")
+                        return
+                    
+                    # Strip and Save
+                    strip_left = 0
+                    strip_right = len(np_data)
+                    for n in range(0, len(np_data)):
+                        if abs(np_data[n]) > float(text): 
+                            strip_left = n
+                            break
+                    for n in reversed(range(0, len(np_data))):
+                        if abs(np_data[n]) > float(text): 
+                            strip_right = n
+                            break                                
+                    np_data = np_data[strip_left:strip_right]
+                    np_data.tofile(get_original_file)
+            
+            # Refresh Samples
+            self._slotTSI_ConditionerResultsRefreshClicked()
+            
+    def _slotTSI_ConditionerResultsStripClicked(self):
+        """ Removes silence before and after a signal in an IQ file.
+        """
+        text, ok = QtWidgets.QInputDialog.getText(self, 'Strip', 'Enter amplitude threshold:',QtWidgets.QLineEdit.Normal,"0.001")
+        if ok:            
+            # Load the Data
+            get_row = self.tableWidget_tsi_conditioner_results.currentRow()
+            if get_row >= 0:
+                get_data_type = str(self.tableWidget_tsi_conditioner_results.item(get_row,3).text())
+                fname = str(self.tableWidget_tsi_conditioner_results.item(get_row,0).text())
+                get_output_directory = str(self.comboBox_tsi_conditioner_settings_folder.currentText())
+                get_original_file = get_output_directory + "/" + fname
+                
+                if os.path.isfile(get_original_file):
+                    # Read the Data 
+                    file = open(get_original_file,"rb")                    
+                    plot_data = file.read() 
+                    file.close()
+                    
+                    # Complex Float 64
+                    if (get_data_type == "Complex Float 64"):                
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'d', plot_data)                
+                        np_data = np.asarray(plot_data_formatted, dtype=np.float64)
+                          
+                    # Complex Float 32
+                    elif (get_data_type == "Complex Float 32") or (get_data_type == "Float/Float 32"):                
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'f', plot_data)                
+                        np_data = np.asarray(plot_data_formatted, dtype=np.float32)         
+                    
+                    # Complex Int 16
+                    elif (get_data_type == "Complex Int 16") or (get_data_type == "Short/Int 16"):               
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/2)*'h', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int16)
+                    
+                    # Complex Int 64
+                    elif (get_data_type == "Complex Int 64"):               
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'l', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int64)
+                        
+                    # Int/Int 32
+                    elif (get_data_type == "Int/Int 32"):               
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'h', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int32)
+                        
+                    # Complex Int 8
+                    elif (get_data_type == "Complex Int 8") or (get_data_type == "Byte/Int 8"):               
+                        # Strip and Write
+                        number_of_bytes = os.path.getsize(get_original_file)
+                        plot_data_formatted = struct.unpack(int(number_of_bytes)*'b', plot_data)
+                        np_data = np.array(plot_data_formatted, dtype=np.int8)
+                    
+                    # Unknown
+                    else:
+                        print("Unknown Data Type")
+                        return
+                    
+                    # Strip and Save
+                    strip_left = 0
+                    strip_right = len(np_data)
+                    for n in range(0, len(np_data)-1):
+                        if abs(np_data[n]) > float(text):
+                            if n%2 == 1:
+                                strip_left = n+1
+                            else:
+                                strip_left = n
+                            break
+                    for n in reversed(range(1, len(np_data))):
+                        if abs(np_data[n]) > float(text):
+                            if n%2 == 1:
+                                strip_right = n-1
+                            else:
+                                strip_right = n
+                            break                                
+                    np_data = np_data[strip_left:strip_right]
+                    np_data.tofile(get_original_file)
+            
+                # Refresh Samples
+                self._slotTSI_ConditionerResultsRefreshClicked()
+                
+    def _slotTSI_ConditionerSettingsBrowseClicked(self):
+        """ Browses for a new folder location to output the isolated signal data.
+        """
+        # Choose Folder
+        get_pwd = str(self.comboBox_tsi_conditioner_settings_folder.currentText())
+        get_dir = str(QtWidgets.QFileDialog.getExistingDirectory(self, "Select Directory",get_pwd))
+        
+        # Add Directory to the Combobox       
+        if len(get_dir) > 0:   
+                
+            # Load Directory and File
+            folder_index = self.comboBox_tsi_conditioner_settings_folder.findText(get_dir)
+            if folder_index < 0:
+                # New Directory
+                self.comboBox_tsi_conditioner_settings_folder.addItem(get_dir)      
+                self.comboBox_tsi_conditioner_settings_folder.setCurrentIndex(self.comboBox_tsi_conditioner_settings_folder.count()-1)
+            else:
+                # Directory Exists
+                self.comboBox_tsi_conditioner_settings_folder.setCurrentIndex(folder_index)
+                
+    def _slotTSI_ConditionerSettingsInputSourceChanged(self):
+        """ Enables/disables the Start button if folder or file is selected with no valid filepath.
+        """
+        # File
+        if self.comboBox_tsi_conditioner_settings_input_source.currentText() == "File":
+            if self.label2_tsi_conditioner_info_file_name.text() == "File:":
+                self.pushButton_tsi_conditioner_operation_start.setEnabled(False)
+            else:
+                self.pushButton_tsi_conditioner_operation_start.setEnabled(True)
+
+        # Folder
+        elif self.comboBox_tsi_conditioner_settings_input_source.currentText() == "Folder":
+            if self.comboBox_tsi_conditioner_input_folders.currentText() == "":
+                self.pushButton_tsi_conditioner_operation_start.setEnabled(False)
+            elif self.listWidget_tsi_conditioner_input_files.count() == 0:
+                self.pushButton_tsi_conditioner_operation_start.setEnabled(False)
+            else:
+                self.pushButton_tsi_conditioner_operation_start.setEnabled(True)
+                
+    def _slotTSI_ConditionerSettingsIsolationCategoryChanged(self):
+        """ Changes the isolation method options.
+        """
+        # Energy - Burst Tagger
+        if self.comboBox_tsi_conditioner_settings_isolation_category.currentText() == "Energy - Burst Tagger":
+            self.comboBox_tsi_conditioner_settings_isolation_method.clear()
+            methods = ['Normal','Normal Decay','Power Squelch','Lowpass','Power Squelch then Lowpass','Bandpass','Strongest Frequency then Bandpass']
+            self.comboBox_tsi_conditioner_settings_isolation_method.addItems(methods)
+        
+        # Energy - Imagery
+        elif self.comboBox_tsi_conditioner_settings_isolation_category.currentText() == "Energy - Imagery":
+            self.comboBox_tsi_conditioner_settings_isolation_method.clear()
+            methods = ['None']
+            self.comboBox_tsi_conditioner_settings_isolation_method.addItems(methods)
+        
+        # Eigenvalue
+        elif self.comboBox_tsi_conditioner_settings_isolation_category.currentText() == "Eigenvalue":
+            self.comboBox_tsi_conditioner_settings_isolation_method.clear()
+            methods = ['None']
+            self.comboBox_tsi_conditioner_settings_isolation_method.addItems(methods)
+        
+        # Matched Filter
+        elif self.comboBox_tsi_conditioner_settings_isolation_category.currentText() == "Matched Filter":
+            self.comboBox_tsi_conditioner_settings_isolation_method.clear()
+            methods = ['None']
+            self.comboBox_tsi_conditioner_settings_isolation_method.addItems(methods)
+        
+        # Cyclostationary
+        elif self.comboBox_tsi_conditioner_settings_isolation_category.currentText() == "Cyclostationary":
+            self.comboBox_tsi_conditioner_settings_isolation_method.clear()
+            methods = ['None']
+            self.comboBox_tsi_conditioner_settings_isolation_method.addItems(methods)
+            
+    def _slotTSI_ConditionerSettingsIsolationMethodChanged(self):
+        """ Changes the settings to match the selected isolation method.
+        """
+        get_method = str(self.comboBox_tsi_conditioner_settings_isolation_method.currentText())
+        if get_method == "Normal":
+            self.stackedWidget_tsi_conditioner_settings.setCurrentIndex(0)
+            self.pushButton_tsi_conditioner_settings_view.setEnabled(True)
+        elif get_method == "Normal Decay":
+            self.stackedWidget_tsi_conditioner_settings.setCurrentIndex(1)
+            self.pushButton_tsi_conditioner_settings_view.setEnabled(True)
+        elif get_method == "Power Squelch":
+            self.stackedWidget_tsi_conditioner_settings.setCurrentIndex(2)
+            self.pushButton_tsi_conditioner_settings_view.setEnabled(True)
+        elif get_method == "None":
+            self.stackedWidget_tsi_conditioner_settings.setCurrentIndex(3)
+            self.pushButton_tsi_conditioner_settings_view.setEnabled(False)
+        elif get_method == "Lowpass":
+            self.stackedWidget_tsi_conditioner_settings.setCurrentIndex(4)
+            self.pushButton_tsi_conditioner_settings_view.setEnabled(True)
+        elif get_method == "Power Squelch then Lowpass":
+            self.stackedWidget_tsi_conditioner_settings.setCurrentIndex(5)
+            self.pushButton_tsi_conditioner_settings_view.setEnabled(True)
+        elif get_method == "Bandpass":
+            self.stackedWidget_tsi_conditioner_settings.setCurrentIndex(6)
+            self.pushButton_tsi_conditioner_settings_view.setEnabled(True)
+        elif get_method == "Strongest Frequency then Bandpass":
+            self.stackedWidget_tsi_conditioner_settings.setCurrentIndex(7)
+            self.pushButton_tsi_conditioner_settings_view.setEnabled(True)
+            
+    def _slotTSI_ConditionerSettingsNormalizeChecked(self):
+        """ Enables/disables the normalize min/max combobox.
+        """
+        # Enable
+        if self.checkBox_tsi_conditioner_settings_normalize_output.isChecked():
+            self.comboBox_tsi_conditioner_settings_normalize.setEnabled(True)
+        # Disable
+        else:
+            self.comboBox_tsi_conditioner_settings_normalize.setEnabled(False)
+            
+    def _slotTSI_ConditionerSettingsNowClicked(self):
+        """ Generates a new timestamp for the output file prefix.
+        """
+        # Set Prefix
+        now = datetime.datetime.now()
+        self.textEdit_tsi_conditioner_settings_prefix.setPlainText(now.strftime("%Y-%m-%d %H:%M:%S").replace(' ','_') + '_')
+        
+    def _slotTSI_ConditionerSettingsSaturationChecked(self):
+        """ Toggles the saturation combobox.
+        """
+        # Enable
+        if self.checkBox_tsi_conditioner_settings_saturation.isChecked():
+            self.comboBox_tsi_conditioner_settings_saturation.setEnabled(True)
+        # Disable
+        else:
+            self.comboBox_tsi_conditioner_settings_saturation.setEnabled(False)
+            
+    def _slotTSI_ConditionerSettingsViewClicked(self):
+        """ Opens visualization (GNU Radio Companion flow graph, image, code) for the isolation technique.
+        """
+        # View if Possible
+        get_category = str(self.comboBox_tsi_conditioner_settings_isolation_category.currentText())
+        get_method = str(self.comboBox_tsi_conditioner_settings_isolation_method.currentText())
+        get_type = str(self.comboBox_tsi_conditioner_input_data_type.currentText())
+        
+        # Flow Graph Directory
+        if get_type == "Complex Float 32":
+            fg_directory = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/TSI\ Flow\ Graphs/Conditioner/Flow_Graphs/ComplexFloat32"
+        elif get_type == "Complex Int 16":
+            fg_directory = os.path.dirname(os.path.realpath(__file__)) + "/Flow\ Graph\ Library/TSI\ Flow\ Graphs/Conditioner/Flow_Graphs/ComplexInt16"
+
+        # Method1: burst_tagger
+        if (get_category == "Energy - Burst Tagger") and (get_method == "Normal"):
+            filepath = fg_directory + "/burst_tagger/normal.grc"
+            osCommandString = "gnuradio-companion " + filepath
+            os.system(osCommandString + " &")
+        
+        # Method2: burst_tagger with Decay
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Normal Decay"):
+            filepath = fg_directory + "/burst_tagger/normal_decay.grc"
+            osCommandString = "gnuradio-companion " + filepath
+            os.system(osCommandString + " &")
+        
+        # Method3: power_squelch_with_burst_tagger
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch"):
+            filepath = fg_directory + "/burst_tagger/power_squelch.grc"
+            osCommandString = "gnuradio-companion " + filepath
+            os.system(osCommandString + " &")
+        
+        # Method4: lowpass_filter
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Lowpass"):
+            filepath = fg_directory + "/burst_tagger/lowpass.grc"
+            osCommandString = "gnuradio-companion " + filepath
+            os.system(osCommandString + " &")
+        
+        # Method5: power_squelch_lowpass
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Power Squelch then Lowpass"):
+            filepath = fg_directory + "/burst_tagger/power_squelch_lowpass.grc"
+            osCommandString = "gnuradio-companion " + filepath
+            os.system(osCommandString + " &")
+            
+        # Method6: bandpass_filter
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Bandpass"):
+            filepath = fg_directory + "/burst_tagger/bandpass.grc"
+            osCommandString = "gnuradio-companion " + filepath
+            os.system(osCommandString + " &")
+            
+        # Method7: strongest
+        elif (get_category == "Energy - Burst Tagger") and (get_method == "Strongest Frequency then Bandpass"):
+            filepath1 = fg_directory + "/fft/strongest.grc"
+            filepath2 = fg_directory + "/burst_tagger/bandpass.grc"
+            osCommandString = "gnuradio-companion " + filepath1 + ' ' + filepath2
+            os.system(osCommandString + " &")                                                                                                                                                                                                                                            
+                                                                
+                
+                                        
+        
+        
+####################################################################
 
         
 

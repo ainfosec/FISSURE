@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-08-28
+
+Logo, README, Signal Conditioner updates
+ 
+### Added
+
+- Initial Signal Conditioner code for isolating signals from large streams of IQ data (files only for now)
+- Logo image files
+
+### Changed
+
+- Updated FISSURE logo in Dashboard, README, and user manual
+- Reordered README sections and modified some text
+
+### Fixed
+
+- Disabled SimpleScreenRecorder menu item from Python3_maint-3.10 branch (Wayland problems)
+- No longer installing SimpleScreenRecorder by default in installer.py for Python3_maint-3.10 branch (Wayland problems)
+
 ## 2023-08-11
 
 Copying Help menu items to Read the Docs, HD Radio fuzzing attack, Run with sudo option

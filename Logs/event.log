@@ -1,149 +1,65 @@
-08/11/2023 01:15:24 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
-08/11/2023 01:15:24 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-08/11/2023 01:15:24 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
-08/11/2023 01:15:24 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-08/11/2023 01:15:24 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
-08/11/2023 01:15:24 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-08/11/2023 01:15:24 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
-08/11/2023 01:15:24 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
-08/11/2023 01:15:24 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
-08/11/2023 01:15:24 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
-08/11/2023 01:15:24 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
-08/11/2023 01:15:24 PM - hiprfisr: End of HIPRFISR Initialization
-08/11/2023 01:15:24 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
-08/11/2023 01:15:25 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/11/2023 01:15:25 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
-08/11/2023 01:15:25 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/11/2023 01:15:25 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
-08/11/2023 01:15:25 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/11/2023 01:15:25 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
-08/11/2023 01:15:25 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/11/2023 01:15:25 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
-08/11/2023 01:15:25 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/11/2023 01:15:25 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
-08/11/2023 01:15:25 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-08/11/2023 01:15:25 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
-08/11/2023 01:15:25 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
-08/11/2023 01:15:25 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
-08/11/2023 01:15:25 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
-08/11/2023 01:15:25 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
-08/11/2023 01:15:25 PM - hiprfisr: Start of Main Event Loop
-08/11/2023 01:15:25 PM - fge: Port Connected to tcp://127.0.0.1:5053
-08/11/2023 01:15:25 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/11/2023 01:15:25 PM - fge: Port Initialized to tcp://127.0.0.1:5061
-08/11/2023 01:15:25 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/11/2023 01:15:25 PM - fge: Port Connected to tcp://127.0.0.1:5055
-08/11/2023 01:15:25 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-08/11/2023 01:15:25 PM - fge: Port Connected to tcp://127.0.0.1:5057
-08/11/2023 01:15:25 PM - tsi: Port Connected to tcp://localhost:5052
-08/11/2023 01:15:25 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/11/2023 01:15:25 PM - tsi: Port Initialized to tcp://*:5059
-08/11/2023 01:15:25 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/11/2023 01:15:25 PM - tsi: Port Connected to tcp://127.0.0.1:5055
-08/11/2023 01:15:25 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-08/11/2023 01:15:25 PM - tsi: Port Connected to tcp://127.0.0.1:5057
-08/11/2023 01:15:26 PM - pd: Port Connected to tcp://127.0.0.1:5054
-08/11/2023 01:15:26 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-08/11/2023 01:15:26 PM - pd: Port Initialized to tcp://127.0.0.1:5063
-08/11/2023 01:15:26 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-08/11/2023 01:15:26 PM - pd: Port Connected to tcp://127.0.0.1:5055
-08/11/2023 01:15:26 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-08/11/2023 01:15:26 PM - pd: Port Connected to tcp://127.0.0.1:5057
-08/11/2023 01:15:26 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
-08/11/2023 01:15:26 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
-08/11/2023 01:15:26 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
-08/11/2023 01:15:27 PM - dashboard: Received message: HIPRFISR: Connected TSI
-08/11/2023 01:15:27 PM - dashboard: Received message: HIPRFISR: Connected FGE
-08/11/2023 01:15:27 PM - dashboard: Received message: HIPRFISR: Connected PD
-08/11/2023 01:17:40 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
-08/11/2023 01:17:40 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
-08/11/2023 01:17:40 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
-08/11/2023 01:17:40 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
-08/11/2023 01:17:40 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
-08/11/2023 01:17:40 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
-08/11/2023 01:29:53 PM - dashboard: Sending message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:29:53 PM - hiprfisr: Received message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:29:53 PM - hiprfisr: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:29:53 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:29:53 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:29:53 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:29:54 PM - pd: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:29:54 PM - pd: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:29:54 PM - fge: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:29:54 PM - fge: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:29:54 PM - tsi: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:29:54 PM - tsi: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:30:32 PM - dashboard: Sending message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:30:32 PM - hiprfisr: Received message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:30:32 PM - hiprfisr: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:30:32 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:30:32 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:30:32 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:30:33 PM - pd: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:30:33 PM - pd: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:30:33 PM - fge: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:30:33 PM - fge: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:30:33 PM - tsi: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:30:33 PM - tsi: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:31:08 PM - dashboard: Sending message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:31:08 PM - hiprfisr: Received message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:31:08 PM - hiprfisr: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:31:09 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:31:09 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:31:09 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:31:09 PM - pd: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:31:09 PM - pd: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:31:09 PM - fge: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:31:09 PM - fge: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:31:09 PM - tsi: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:31:09 PM - tsi: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:33:00 PM - dashboard: Sending message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:33:00 PM - hiprfisr: Received message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:33:00 PM - hiprfisr: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:33:00 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:33:00 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:33:00 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:33:00 PM - pd: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:33:00 PM - pd: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:33:00 PM - fge: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:33:00 PM - fge: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:33:00 PM - tsi: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:33:00 PM - tsi: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:37:20 PM - dashboard: Sending message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:37:20 PM - hiprfisr: Received message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:37:20 PM - hiprfisr: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:37:20 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:37:20 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:37:20 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:37:20 PM - pd: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:37:20 PM - pd: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:37:21 PM - fge: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:37:21 PM - fge: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:37:21 PM - tsi: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:37:21 PM - tsi: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:40:16 PM - dashboard: Sending message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:40:16 PM - hiprfisr: Received message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 01:40:16 PM - hiprfisr: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:40:16 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:40:16 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:40:16 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:40:17 PM - pd: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:40:17 PM - pd: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:40:17 PM - fge: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:40:17 PM - fge: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 01:40:17 PM - tsi: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 01:40:17 PM - tsi: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 09:59:21 PM - dashboard: Sending message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 09:59:22 PM - hiprfisr: Received message: Dashboard: Update FISSURE Configuration $Parameters
-08/11/2023 09:59:22 PM - hiprfisr: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 09:59:22 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 09:59:22 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 09:59:22 PM - hiprfisr: Sending message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 09:59:22 PM - tsi: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 09:59:22 PM - tsi: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 09:59:23 PM - fge: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 09:59:23 PM - pd: Received message: HIPRFISR: Update FISSURE Configuration $Parameters
-08/11/2023 09:59:23 PM - fge: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 09:59:23 PM - pd: Executing Callback: updateFISSURE_Configuration with parameters None
-08/11/2023 10:33:25 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-08/11/2023 10:33:25 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters
+08/28/2023 06:17:06 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
+08/28/2023 06:17:06 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+08/28/2023 06:17:07 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
+08/28/2023 06:17:07 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+08/28/2023 06:17:07 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
+08/28/2023 06:17:07 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+08/28/2023 06:17:07 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
+08/28/2023 06:17:07 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
+08/28/2023 06:17:07 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
+08/28/2023 06:17:07 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
+08/28/2023 06:17:07 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
+08/28/2023 06:17:07 PM - hiprfisr: End of HIPRFISR Initialization
+08/28/2023 06:17:07 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
+08/28/2023 06:17:07 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/28/2023 06:17:07 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
+08/28/2023 06:17:07 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/28/2023 06:17:07 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
+08/28/2023 06:17:07 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/28/2023 06:17:07 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
+08/28/2023 06:17:07 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/28/2023 06:17:07 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
+08/28/2023 06:17:07 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/28/2023 06:17:07 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
+08/28/2023 06:17:07 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+08/28/2023 06:17:07 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
+08/28/2023 06:17:07 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
+08/28/2023 06:17:07 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
+08/28/2023 06:17:07 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
+08/28/2023 06:17:07 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
+08/28/2023 06:17:07 PM - hiprfisr: Start of Main Event Loop
+08/28/2023 06:17:08 PM - fge: Port Connected to tcp://127.0.0.1:5053
+08/28/2023 06:17:08 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/28/2023 06:17:08 PM - fge: Port Initialized to tcp://127.0.0.1:5061
+08/28/2023 06:17:08 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/28/2023 06:17:08 PM - fge: Port Connected to tcp://127.0.0.1:5055
+08/28/2023 06:17:08 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+08/28/2023 06:17:08 PM - fge: Port Connected to tcp://127.0.0.1:5057
+08/28/2023 06:17:08 PM - tsi: Port Connected to tcp://localhost:5052
+08/28/2023 06:17:08 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/28/2023 06:17:08 PM - tsi: Port Initialized to tcp://*:5059
+08/28/2023 06:17:08 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/28/2023 06:17:08 PM - tsi: Port Connected to tcp://127.0.0.1:5055
+08/28/2023 06:17:08 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+08/28/2023 06:17:08 PM - tsi: Port Connected to tcp://127.0.0.1:5057
+08/28/2023 06:17:08 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
+08/28/2023 06:17:08 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
+08/28/2023 06:17:09 PM - pd: Port Connected to tcp://127.0.0.1:5054
+08/28/2023 06:17:09 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+08/28/2023 06:17:09 PM - pd: Port Initialized to tcp://127.0.0.1:5063
+08/28/2023 06:17:09 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+08/28/2023 06:17:09 PM - pd: Port Connected to tcp://127.0.0.1:5055
+08/28/2023 06:17:09 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+08/28/2023 06:17:09 PM - pd: Port Connected to tcp://127.0.0.1:5057
+08/28/2023 06:17:09 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
+08/28/2023 06:17:09 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
+08/28/2023 06:17:09 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
+08/28/2023 06:17:09 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
+08/28/2023 06:17:09 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
+08/28/2023 06:17:09 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
+08/28/2023 06:17:09 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
+08/28/2023 06:17:10 PM - dashboard: Received message: HIPRFISR: Connected TSI
+08/28/2023 06:17:10 PM - dashboard: Received message: HIPRFISR: Connected FGE
+08/28/2023 06:17:10 PM - dashboard: Received message: HIPRFISR: Connected PD
+08/28/2023 06:18:19 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
+08/28/2023 06:18:19 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters
