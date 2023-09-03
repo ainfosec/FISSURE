@@ -72,6 +72,8 @@ sudo apt-get install -y gpsd-clients python3-gi-cairo
 sudo python3 -m pip install pandas
 sudo apt-get install -y dsniff
 sudo apt-get install -y ncurses-term
+sudo python3 -m pip install yellowbrick
+sudo python3 -m pip install seaborn
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -2023,6 +2025,8 @@ sudo python2 -m pip install netaddr
 #sudo python3 -m pip install pandas
 sudo apt-get install -y dsniff
 sudo apt-get install -y ncurses-term
+sudo python3 -m pip install yellowbrick
+sudo python3 -m pip install seaborn
 . ~/.bashrc
 """, True, "Minimum Install"))
 
@@ -3987,6 +3991,8 @@ sudo apt-get install -y dsniff
 sudo apt-get install -y ncurses-term
 sudo apt-get install -y eog
 sudo python2 -m pip install cryptography
+sudo python3 -m pip install yellowbrick
+sudo python3 -m pip install seaborn
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -5946,6 +5952,8 @@ sudo apt-get install -y gpsd-clients python3-gi-cairo
 sudo python3 -m pip install pandas
 sudo apt-get install -y dsniff
 sudo apt-get install -y ncurses-term
+sudo python3 -m pip install yellowbrick
+sudo python3 -m pip install seaborn
 . ~/.bashrc
 """,True,"Minimum Install"))
 

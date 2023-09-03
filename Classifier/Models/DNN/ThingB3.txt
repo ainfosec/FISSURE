@@ -1,0 +1,25 @@
+Technique: Deep Neural Network
+Target: Avent_SCD560
+Layer1: 12, relu
+Layer2: 8, relu
+Layer3: 1, sigmoid
+Threshold: 0.16
+Truth Categories: ['Avent_SCD560' 'Clapper_Plus' 'CW_Morse_Code' 'Garage_Door'
+ 'Juentai_JT-6188Plus' 'Midland_T10' 'MOTOTRBO_XPR7550e'
+ 'Ocusync2_Downlink' 'Ocusync2_Uplink' 'X10' 'Zigbee_Philips_Hue'
+ 'ZWave_Monoprice']
+Possible Features: ['Skewness of BP', 'Std. Dev.', 'Std. Dev. of BP', 'Sum of TBP', 'Variance', 'Variance of BP', 'Zero Crossings']
+Features: ['Skewness of BP', 'Std. Dev.', 'Std. Dev. of BP', 'Sum of TBP', 'Variance', 'Variance of BP', 'Zero Crossings']
+Confusion Matrix: [[25  0  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0 25  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0 25  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0 25  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0 25  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0 25  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0 25  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0 25  0  0  0  0  0]
+ [25  0  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0 25  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0 25  0  0  0  0  0]
+ [25  0  0  0  0  0  0  0  0  0  0  0  0]]

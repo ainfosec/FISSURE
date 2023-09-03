@@ -169,7 +169,7 @@ Operating System            |  FISSURE Branch
 | Kali 23.1 (x64) | Python3_maint-3.10 |
 | BackBox Linux 8 (amd64) | Python3_maint-3.10 |
 
-Note: Certain software tools do not work for every OS. Refer to [Software And Conflicts](/docs/Help/Markdown/SoftwareAndConflicts.md)
+Note: Certain software tools do not work for every OS. Refer to [Known Conflicts and Third-Party Software](https://fissure.readthedocs.io/en/latest/pages/installation.html#known-conflicts)
 
 **Installation** 
 ```
@@ -242,7 +242,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 - [ ] Identify the most desirable third-party tools within the community
 - [x] Identify the most desirable operating systems within the community
 - [x] Release a signal conditioner that allows users to select and add techniques for isolating and conditioning signals from large streams of IQ data
-- [ ] Release a feature extractor that allows users to select and add techniques for extracting features from isolated signals for use in protocol and emitter classification
+- [x] Release a feature extractor that allows users to select and add techniques for extracting features from isolated signals for use in protocol and emitter classification
 - [ ] Release a signal classifier that allows users to select and add AI/ML techniques. In addition, a decision tree with adjustable features and weights.
 - [ ] Implement recursive demodulation mechanisms for producing a bitstream from unknown signals
 - [x] Increase the online signal archive, support download of selectable collections

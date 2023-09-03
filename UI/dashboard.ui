@@ -6395,20 +6395,1357 @@ p, li { white-space: pre-wrap; }
              <attribute name="title">
               <string>Feature Extractor</string>
              </attribute>
-             <widget class="QLabel" name="label_under_construction1">
+             <widget class="QFrame" name="frame1_19">
               <property name="geometry">
                <rect>
-                <x>100</x>
-                <y>100</y>
-                <width>1000</width>
-                <height>550</height>
+                <x>10</x>
+                <y>30</y>
+                <width>270</width>
+                <height>350</height>
                </rect>
               </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <widget class="QListWidget" name="listWidget_tsi_fe_input_files">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>100</y>
+                 <width>250</width>
+                 <height>180</height>
+                </rect>
+               </property>
+               <property name="horizontalScrollBarPolicy">
+                <enum>Qt::ScrollBarAlwaysOn</enum>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_input_load_file">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>285</y>
+                 <width>80</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Load File</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_input_refresh">
+               <property name="enabled">
+                <bool>true</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>94</x>
+                 <y>285</y>
+                 <width>80</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Refresh</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_73">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>40</y>
+                 <width>80</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Data Type:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="comboBox_tsi_fe_input_data_type">
+               <property name="geometry">
+                <rect>
+                 <x>100</x>
+                 <y>40</y>
+                 <width>157</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <item>
+                <property name="text">
+                 <string>Complex Float 32</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Float/Float 32</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Short/Int 16</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Int/Int 32</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Byte/Int 8</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Complex Float 64</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Complex Int 64</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Complex Int 16</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Complex Int 8</string>
+                </property>
+               </item>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_input_remove">
+               <property name="geometry">
+                <rect>
+                 <x>178</x>
+                 <y>285</y>
+                 <width>80</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Remove</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_input_folder">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>70</y>
+                 <width>81</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Browse</string>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="comboBox_tsi_fe_input_folders">
+               <property name="geometry">
+                <rect>
+                 <x>95</x>
+                 <y>70</y>
+                 <width>165</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::RightToLeft</enum>
+               </property>
+               <property name="inputMethodHints">
+                <set>Qt::ImhNone</set>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_input_rename">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>315</y>
+                 <width>80</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Rename</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_input_terminal">
+               <property name="geometry">
+                <rect>
+                 <x>94</x>
+                 <y>315</y>
+                 <width>80</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Terminal</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_input_preview">
+               <property name="geometry">
+                <rect>
+                 <x>178</x>
+                 <y>315</y>
+                 <width>81</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Preview</string>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="comboBox_tsi_fe_settings_input_source">
+               <property name="geometry">
+                <rect>
+                 <x>100</x>
+                 <y>10</y>
+                 <width>75</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="inputMethodHints">
+                <set>Qt::ImhNone</set>
+               </property>
+               <property name="currentIndex">
+                <number>0</number>
+               </property>
+               <item>
+                <property name="text">
+                 <string>File</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Folder</string>
+                </property>
+               </item>
+              </widget>
+              <widget class="QLabel" name="label2_tsi_fe_settings_input_source">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>10</y>
+                 <width>90</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Input Source:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </widget>
+             <widget class="QFrame" name="frame1_21">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>410</y>
+                <width>270</width>
+                <height>90</height>
+               </rect>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <widget class="QLabel" name="label2_tsi_fe_info_file_name">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>5</y>
+                 <width>240</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>File:</string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_tsi_fe_info_file_size">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>25</y>
+                 <width>226</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Size (MB): </string>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_tsi_fe_info_samples">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>45</y>
+                 <width>240</width>
+                 <height>16</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Samples:</string>
+               </property>
+              </widget>
+             </widget>
+             <widget class="QLabel" name="label1_23">
+              <property name="geometry">
+               <rect>
+                <x>290</x>
+                <y>390</y>
+                <width>920</width>
+                <height>22</height>
+               </rect>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Ubuntu</family>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <italic>false</italic>
+                <bold>true</bold>
+               </font>
+              </property>
               <property name="text">
-               <string/>
+               <string>Operation</string>
+              </property>
+             </widget>
+             <widget class="QLabel" name="label1_20">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>390</y>
+                <width>270</width>
+                <height>22</height>
+               </rect>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Ubuntu</family>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <italic>false</italic>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Loaded File</string>
+              </property>
+             </widget>
+             <widget class="QLabel" name="label1_37">
+              <property name="geometry">
+               <rect>
+                <x>290</x>
+                <y>10</y>
+                <width>920</width>
+                <height>22</height>
+               </rect>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Ubuntu</family>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <italic>false</italic>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Feature Extractor Settings</string>
+              </property>
+             </widget>
+             <widget class="QFrame" name="frame1_22">
+              <property name="geometry">
+               <rect>
+                <x>290</x>
+                <y>410</y>
+                <width>920</width>
+                <height>90</height>
+               </rect>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <widget class="QPushButton" name="pushButton_tsi_fe_operation_start">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="geometry">
+                <rect>
+                 <x>420</x>
+                 <y>40</y>
+                 <width>81</width>
+                 <height>37</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Start</string>
+               </property>
+              </widget>
+              <widget class="QProgressBar" name="progressBar_tsi_fe_operation">
+               <property name="geometry">
+                <rect>
+                 <x>60</x>
+                 <y>10</y>
+                 <width>800</width>
+                 <height>20</height>
+                </rect>
+               </property>
+               <property name="maximum">
+                <number>100</number>
+               </property>
+               <property name="value">
+                <number>0</number>
+               </property>
+               <property name="textVisible">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </widget>
+             <widget class="QFrame" name="frame1_23">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>530</y>
+                <width>1200</width>
+                <height>275</height>
+               </rect>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <widget class="QTableWidget" name="tableWidget_tsi_fe_results">
+               <property name="geometry">
+                <rect>
+                 <x>10</x>
+                 <y>10</y>
+                 <width>1180</width>
+                 <height>225</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="selectionMode">
+                <enum>QAbstractItemView::SingleSelection</enum>
+               </property>
+               <property name="wordWrap">
+                <bool>false</bool>
+               </property>
+               <attribute name="horizontalHeaderDefaultSectionSize">
+                <number>150</number>
+               </attribute>
+               <attribute name="horizontalHeaderStretchLastSection">
+                <bool>true</bool>
+               </attribute>
+               <attribute name="verticalHeaderDefaultSectionSize">
+                <number>21</number>
+               </attribute>
+               <row>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+               </row>
+               <column>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                  <weight>50</weight>
+                  <bold>false</bold>
+                 </font>
+                </property>
+               </column>
+               <item row="0" column="0">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>10</pointsize>
+                 </font>
+                </property>
+               </item>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_results_export">
+               <property name="geometry">
+                <rect>
+                 <x>855</x>
+                 <y>240</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Export</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_results_preview">
+               <property name="geometry">
+                <rect>
+                 <x>15</x>
+                 <y>240</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Preview</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_results_plot_column">
+               <property name="geometry">
+                <rect>
+                 <x>120</x>
+                 <y>240</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Plot Col.</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_results_plot_avg">
+               <property name="geometry">
+                <rect>
+                 <x>225</x>
+                 <y>240</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Plot Avg.</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_results_trim">
+               <property name="geometry">
+                <rect>
+                 <x>435</x>
+                 <y>240</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Trim</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_results_import">
+               <property name="geometry">
+                <rect>
+                 <x>750</x>
+                 <y>240</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Import</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_results_remove_col">
+               <property name="geometry">
+                <rect>
+                 <x>645</x>
+                 <y>240</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Remove Col.</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_results_remove_row">
+               <property name="geometry">
+                <rect>
+                 <x>540</x>
+                 <y>240</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Remove Row</string>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_results_joint_plot">
+               <property name="geometry">
+                <rect>
+                 <x>330</x>
+                 <y>240</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Joint Plot</string>
+               </property>
+              </widget>
+             </widget>
+             <widget class="QFrame" name="frame1_20">
+              <property name="geometry">
+               <rect>
+                <x>290</x>
+                <y>30</y>
+                <width>920</width>
+                <height>350</height>
+               </rect>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::StyledPanel</enum>
+              </property>
+              <property name="frameShadow">
+               <enum>QFrame::Raised</enum>
+              </property>
+              <widget class="QLabel" name="label2_tsi_fe_settings_technique">
+               <property name="geometry">
+                <rect>
+                 <x>650</x>
+                 <y>10</y>
+                 <width>70</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Model:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="comboBox_tsi_fe_settings_technique">
+               <property name="geometry">
+                <rect>
+                 <x>725</x>
+                 <y>10</y>
+                 <width>180</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="inputMethodHints">
+                <set>Qt::ImhNone</set>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_tsi_fe_settings_isolation_category_2">
+               <property name="geometry">
+                <rect>
+                 <x>320</x>
+                 <y>10</y>
+                 <width>90</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Technique:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="comboBox_tsi_fe_settings_classification">
+               <property name="geometry">
+                <rect>
+                 <x>415</x>
+                 <y>10</y>
+                 <width>230</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="inputMethodHints">
+                <set>Qt::ImhNone</set>
+               </property>
+              </widget>
+              <widget class="Line" name="line_3">
+               <property name="geometry">
+                <rect>
+                 <x>1</x>
+                 <y>50</y>
+                 <width>918</width>
+                 <height>3</height>
+                </rect>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_mean">
+               <property name="geometry">
+                <rect>
+                 <x>15</x>
+                 <y>85</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Mean</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_max">
+               <property name="geometry">
+                <rect>
+                 <x>15</x>
+                 <y>110</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Max</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_peak">
+               <property name="geometry">
+                <rect>
+                 <x>15</x>
+                 <y>135</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Peak</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_ptp">
+               <property name="geometry">
+                <rect>
+                 <x>15</x>
+                 <y>160</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Peak to Peak</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_rms">
+               <property name="geometry">
+                <rect>
+                 <x>15</x>
+                 <y>185</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>RMS</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_variance">
+               <property name="geometry">
+                <rect>
+                 <x>15</x>
+                 <y>210</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Variance</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_std_dev">
+               <property name="geometry">
+                <rect>
+                 <x>15</x>
+                 <y>235</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Standard Deviation</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_power">
+               <property name="geometry">
+                <rect>
+                 <x>15</x>
+                 <y>260</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Power</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_crest">
+               <property name="geometry">
+                <rect>
+                 <x>15</x>
+                 <y>285</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Crest Factor</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_pulse">
+               <property name="geometry">
+                <rect>
+                 <x>180</x>
+                 <y>85</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Pulse Indicator</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_28">
+               <property name="geometry">
+                <rect>
+                 <x>175</x>
+                 <y>60</y>
+                 <width>100</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <underline>true</underline>
+                </font>
+               </property>
+               <property name="text">
+                <string>Time Domain</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+              <widget class="QLabel" name="label2_38">
+               <property name="geometry">
+                <rect>
+                 <x>605</x>
+                 <y>60</y>
+                 <width>200</width>
+                 <height>17</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <underline>true</underline>
+                </font>
+               </property>
+               <property name="text">
+                <string>Frequency Domain</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignCenter</set>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_margin">
+               <property name="geometry">
+                <rect>
+                 <x>180</x>
+                 <y>110</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Margin</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_kurtosis">
+               <property name="geometry">
+                <rect>
+                 <x>180</x>
+                 <y>135</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Kurtosis</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_skewness">
+               <property name="geometry">
+                <rect>
+                 <x>180</x>
+                 <y>160</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Skewness</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_mean_bps">
+               <property name="geometry">
+                <rect>
+                 <x>500</x>
+                 <y>85</y>
+                 <width>250</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Mean of Band Power Spectrum</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_max_bps">
+               <property name="geometry">
+                <rect>
+                 <x>500</x>
+                 <y>110</y>
+                 <width>250</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Max of Band Power Spectrum</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_sum_tbp">
+               <property name="geometry">
+                <rect>
+                 <x>500</x>
+                 <y>135</y>
+                 <width>250</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Sum of Total Band Power</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_peak_bp">
+               <property name="geometry">
+                <rect>
+                 <x>500</x>
+                 <y>160</y>
+                 <width>250</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Peak of Band Power</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_var_bp">
+               <property name="geometry">
+                <rect>
+                 <x>500</x>
+                 <y>185</y>
+                 <width>250</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Variance of Band Power</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_std_dev_bp">
+               <property name="geometry">
+                <rect>
+                 <x>500</x>
+                 <y>210</y>
+                 <width>260</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Standard Deviation of Band Power</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_skewness_bp">
+               <property name="geometry">
+                <rect>
+                 <x>500</x>
+                 <y>235</y>
+                 <width>250</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Skewness of Band Power</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_kurtosis_bp">
+               <property name="geometry">
+                <rect>
+                 <x>500</x>
+                 <y>260</y>
+                 <width>250</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Kurtosis of Band Power</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_rel_spectral_peak_band">
+               <property name="geometry">
+                <rect>
+                 <x>500</x>
+                 <y>285</y>
+                 <width>250</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Relative Spectral Peak per Band</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_settings_deselect_all">
+               <property name="geometry">
+                <rect>
+                 <x>465</x>
+                 <y>315</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Deselect All</string>
+               </property>
+              </widget>
+              <widget class="Line" name="line_2">
+               <property name="geometry">
+                <rect>
+                 <x>460</x>
+                 <y>50</y>
+                 <width>3</width>
+                 <height>260</height>
+                </rect>
+               </property>
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+              </widget>
+              <widget class="QPushButton" name="pushButton_tsi_fe_settings_select_all">
+               <property name="geometry">
+                <rect>
+                 <x>355</x>
+                 <y>315</y>
+                 <width>100</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Select All</string>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_zero_crossings">
+               <property name="geometry">
+                <rect>
+                 <x>180</x>
+                 <y>185</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Zero Crossings</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QCheckBox" name="checkBox_tsi_fe_td_samples">
+               <property name="geometry">
+                <rect>
+                 <x>180</x>
+                 <y>210</y>
+                 <width>150</width>
+                 <height>23</height>
+                </rect>
+               </property>
+               <property name="text">
+                <string>Samples</string>
+               </property>
+               <property name="checked">
+                <bool>true</bool>
+               </property>
+              </widget>
+              <widget class="QComboBox" name="comboBox_tsi_fe_settings_category">
+               <property name="geometry">
+                <rect>
+                 <x>80</x>
+                 <y>10</y>
+                 <width>230</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="layoutDirection">
+                <enum>Qt::LeftToRight</enum>
+               </property>
+               <property name="inputMethodHints">
+                <set>Qt::ImhNone</set>
+               </property>
+               <item>
+                <property name="text">
+                 <string>All</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Supervised Learning</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>Artificial Neural Network</string>
+                </property>
+               </item>
+              </widget>
+              <widget class="QLabel" name="label2_tsi_fe_settings_isolation_category_11">
+               <property name="geometry">
+                <rect>
+                 <x>0</x>
+                 <y>10</y>
+                 <width>75</width>
+                 <height>27</height>
+                </rect>
+               </property>
+               <property name="font">
+                <font>
+                 <pointsize>10</pointsize>
+                </font>
+               </property>
+               <property name="text">
+                <string>Category:</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+               </property>
+              </widget>
+             </widget>
+             <widget class="QLabel" name="label1_22">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>510</y>
+                <width>1200</width>
+                <height>22</height>
+               </rect>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Ubuntu</family>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <italic>false</italic>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Results</string>
+              </property>
+             </widget>
+             <widget class="QLabel" name="label1_35">
+              <property name="geometry">
+               <rect>
+                <x>10</x>
+                <y>10</y>
+                <width>270</width>
+                <height>20</height>
+               </rect>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>16777215</height>
+               </size>
+              </property>
+              <property name="font">
+               <font>
+                <family>Ubuntu</family>
+                <pointsize>10</pointsize>
+                <weight>75</weight>
+                <italic>false</italic>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>Input Data</string>
+              </property>
+              <property name="scaledContents">
+               <bool>false</bool>
               </property>
               <property name="alignment">
-               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+               <set>Qt::AlignCenter</set>
+              </property>
+              <property name="margin">
+               <number>0</number>
               </property>
              </widget>
             </widget>
