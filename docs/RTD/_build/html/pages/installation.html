@@ -138,19 +138,39 @@
 <h2>Known Conflicts<a class="headerlink" href="#known-conflicts" title="Permalink to this heading"></a></h2>
 <p>The following are a list of known software conflicts and incompatibilities within FISSURE:</p>
 <ul class="simple">
-<li><p>Ubuntu 18.04
-- aircrack 8812au driver crashes computer on reboot, other drivers are dependent on kernel version
-- Python2 branch avoids installation of programs that depend on PyQt5.</p></li>
-<li><p>Ubuntu 20.04
-- Geany in 20.04 needs <cite>[styling] line_height=0;2;</cite> added to Tools&gt;Configuration Files&gt;filetypes.common to see underscores</p></li>
-<li><p>Ubuntu 22.04
-- Gpick does not work on Wayland, using wl-color-picker as a substitute</p></li>
-<li><p>Other
-- gr-gsm has to be installed twice for all blocks to be recognized
-- UBX daughterboards require specific UHD versions
-- Don’t name the TSI component “tsi.py”, it messes with importing gr-TSI blocks
-- ZMQ header adds something similar to 0x0007020004 to TCP data in PUB sink (flags/payload_length/command_length/command). A <cite>sub_listener.setsockopt_string(zmq.SUBSCRIBE,u’’)</cite> would need to drop the three bytes for the command length and command.
-- The default variable values for flow graphs with GUIs cannot be changed with <cite>loadedmod = __import__(flow_graph_filename)</cite>. This means serial or IP address variables must be accessed with parameter blocks and flow graphs called by the python command (mostly for inspection flow graphs).</p></li>
+<li><dl class="simple">
+<dt>Ubuntu 18.04</dt><dd><ul>
+<li><p>aircrack 8812au driver crashes computer on reboot, other drivers are dependent on kernel version</p></li>
+<li><p>Python2 branch avoids installation of programs that depend on PyQt5.</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ubuntu 20.04</dt><dd><ul>
+<li><p>Geany in 20.04 needs <cite>[styling] line_height=0;2;</cite> added to Tools&gt;Configuration Files&gt;filetypes.common to see underscores</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Ubuntu 22.04</dt><dd><ul>
+<li><p>Gpick does not work on Wayland, using wl-color-picker as a substitute</p></li>
+</ul>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt>Other</dt><dd><ul>
+<li><p>gr-gsm has to be installed twice for all blocks to be recognized</p></li>
+<li><p>UBX daughterboards require specific UHD versions</p></li>
+<li><p>Don’t name the TSI component “tsi.py”, it messes with importing gr-TSI blocks</p></li>
+<li><p>ZMQ header adds something similar to 0x0007020004 to TCP data in PUB sink (flags/payload_length/command_length/command). A <cite>sub_listener.setsockopt_string(zmq.SUBSCRIBE,u’’)</cite> would need to drop the three bytes for the command length and command.</p></li>
+<li><p>The default variable values for flow graphs with GUIs cannot be changed with <cite>loadedmod = __import__(flow_graph_filename)</cite>. This means serial or IP address variables must be accessed with parameter blocks and flow graphs called by the python command (mostly for inspection flow graphs).</p></li>
+</ul>
+</dd>
+</dl>
+</li>
 </ul>
 </section>
 <section id="third-party-software">

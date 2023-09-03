@@ -1,0 +1,33 @@
+Technique: Decision Tree
+Accuracy: 0.93
+Precision: 0.95
+Recall: 0.93
+F1 Score: 0.93
+Max. Depth: 5
+Criterion: entropy
+Splitter: best
+Node Count: 31
+Training Count: 209
+Testing Count: 91
+Truth Categories: ['Avent_SCD560' 'Clapper_Plus' 'CW_Morse_Code' 'F150_Fob' 'Garage_Door'
+ 'Juentai_JT-6188Plus' 'Midland_T10' 'MOTOTRBO_XPR7550e'
+ 'Ocusync2_Downlink' 'Ocusync2_Uplink' 'Prius_Fob' 'Silverado_Fob' 'X10'
+ 'Zigbee_Philips_Hue' 'ZWave_Monoprice']
+Possible Features: ['Crest Factor', 'Kurtosis', 'Margin', 'Max of BPS', 'Peak of BP', 'RSPpB', 'Kurtosis of BP', 'Mean', 'Mean of BPS', 'Power', 'Pulse Indicator', 'RMS', 'Skewness', 'Skewness of BP', 'Std. Dev.', 'Std. Dev. of BP', 'Sum of TBP', 'Variance', 'Variance of BP']
+Features: ['Crest Factor', 'Kurtosis', 'Margin', 'RSPpB', 'Kurtosis of BP', 'Skewness', 'Skewness of BP', 'Sum of TBP']
+Feature Importance: [0.25, 0.2, 0.02, 0.04, 0.14, 0.01, 0.31, 0.03]
+Confusion Matrix: [[6 0 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 3 0 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 0 8 0 0 0 0 0 0 0 0 0 0 0 0]
+ [0 2 0 4 2 0 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 4 0 0 0 0 0 0 0 2 0 0]
+ [0 0 0 0 0 7 0 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 9 0 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 7 0 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 5 0 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 3 0 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 4 0 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 6 0 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 6 0 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 5 0]
+ [0 0 0 0 0 0 0 0 0 0 0 0 0 0 8]]

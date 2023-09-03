@@ -56,7 +56,8 @@ Status:
      - Archive Playlist Position
      - TSI Conditioner Finished
      - Conditioner Progress Bar
-
+     - TSI FE Finished
+     - FE Progress Bar
 
 Heartbeats: 
      - Heartbeat 

@@ -45,6 +45,8 @@ Commands:
     - Stop TSI Detector
     - Start TSI Conditioner
     - Stop TSI Conditioner
+    - Start TSI FE
+    - Stop TSI FE
     - Start PD
     - Stop PD
     - Ignore SOIs
@@ -114,6 +116,8 @@ Status:
      - Archive Playlist Position
      - TSI Conditioner Finished
      - Conditioner Progress Bar
+     - TSI FE Finished
+     - FE Progress Bar
 
 
 # Callback to Function Lookup
@@ -139,6 +143,8 @@ Start TSI Detector: startTSI_Detector
 Stop TSI Detector: stopTSI_Detector
 Start TSI Conditioner: startTSI_Conditioner
 Stop TSI Conditioner: stopTSI_Conditioner
+Start TSI FE: startTSI_FE
+Stop TSI FE: stopTSI_FE
 Start PD: startPD
 Stop PD: stopPD
 Ignore SOIs: ignoreSOIs
@@ -299,6 +305,15 @@ startTSI_Conditioner:
              method_parameter_values
 
 stopTSI_Conditioner:
+    Type: callback
+    
+startTSI_FE:
+    Type: callback
+    Parameters:
+             common_parameter_names
+             common_parameter_values
+
+stopTSI_FE:
     Type: callback
 
 startPD: 

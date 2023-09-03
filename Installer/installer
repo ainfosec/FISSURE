@@ -64,6 +64,7 @@ sudo python2 -m pip install pyserial
 sudo apt-get install -y gpsd-clients python-gi-cairo
 sudo python2 -m pip install pandas
 sudo apt-get install -y dsniff
+sudo python2 -m pip install seaborn 
 source ~/.bashrc
 """,True,'Minimum Install'))
 
@@ -1959,6 +1960,7 @@ sudo python2 -m pip install pyserial
 sudo apt-get install -y gpsd-clients python-gi-cairo
 sudo python2 -m pip install pandas
 sudo apt-get install -y dsniff
+sudo python2 -m pip install seaborn 
 source ~/.bashrc
 """,True,'Minimum Install'))
 
@@ -3858,6 +3860,7 @@ sudo python2 -m pip install pyserial
 sudo apt-get install -y gpsd-clients python-gi-cairo
 sudo python2 -m pip install pandas
 sudo apt-get install -y dsniff
+sudo python2 -m pip install seaborn 
 source ~/.bashrc
 """,True,'Minimum Install'))
 
