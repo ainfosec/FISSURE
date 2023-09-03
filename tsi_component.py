@@ -14,6 +14,8 @@ from fissureclass import fissure_server
 import subprocess
 import struct
 import numpy as np
+from scipy.fftpack import fft,fftfreq,next_fast_len
+import scipy.stats as stats
 sys.path.insert(0, os.path.dirname(os.path.realpath(__file__)) + '/Flow Graph Library/TSI Flow Graphs')
 
 # Insert Any Argument While Executing to Run Locally
@@ -1325,6 +1327,325 @@ class TSI_Component:
 
 ########################################################################
 
+    def startTSI_FE(self, common_parameter_names, common_parameter_values):
+        """ Accepts a Start message from the HIPRFISR and begins the new thread.
+        """
+        # Create a New Thread
+        self.fe_stop_event = threading.Event()
+        c_thread = threading.Thread(target=self.startTSI_FE_Thread, args=(self.fe_stop_event, common_parameter_names, common_parameter_values))
+        c_thread.start()
+        
+    def startTSI_FE_Thread(self, stop_event, common_parameter_names, common_parameter_values):
+        """ Performs the feature extractor actions.
+        """     
+        # Common Parameters
+        for n in range(len(common_parameter_names)):
+            if common_parameter_names[n] == 'checkboxes':
+                get_checkboxes = common_parameter_values[n]
+            elif common_parameter_names[n] == 'data_type':
+                get_data_type = common_parameter_values[n]
+            elif common_parameter_names[n] == 'all_filepaths':
+                get_all_filepaths = common_parameter_values[n]
+                
+        # Table Headers
+        header_strings = ['File']
+        for n in range(0,len(get_checkboxes)):
+            header_strings.append(get_checkboxes[n])
+        table_strings = [header_strings]
+                
+        # Features that Require FFT Operation
+        fft_features = ["Mean of Band Power Spectrum","Max of Band Power Spectrum","Sum of Total Band Power","Peak of Band Power",
+                    "Variance of Band Power","Standard Deviation of Band Power","Skewness of Band Power","Kurtosis of Band Power",
+                    "Relative Spectral Peak per Band"]
+            
+        # Cycle Through Each File
+        for n in range(0,len(get_all_filepaths)):
+            
+            # Start a New Row
+            new_table_row = ['']
+                
+            # Files Selected
+            if (len(get_all_filepaths[n]) > 0):
+                
+                # Filepath
+                new_table_row[0] = str(get_all_filepaths[n].split('/')[-1])
+                
+                # Read the Data 
+                file = open(get_all_filepaths[n],"rb")                    
+                plot_data = file.read() 
+                file.close()
+                number_of_bytes = os.path.getsize(get_all_filepaths[n])
+
+                # Complex Float 64
+                if (get_data_type == "Complex Float 64"):                
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'d', plot_data)                
+                    np_data = np.asarray(plot_data_formatted, dtype=np.float64)
+                      
+                # Complex Float 32
+                elif (get_data_type == "Complex Float 32") or (get_data_type == "Float/Float 32"):                
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'f', plot_data)                
+                    np_data = np.asarray(plot_data_formatted, dtype=np.float32)
+                
+                # Complex Int 16
+                elif (get_data_type == "Complex Int 16") or (get_data_type == "Short/Int 16"):               
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/2)*'h', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int16)
+                
+                # Complex Int 64
+                elif (get_data_type == "Complex Int 64"):               
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/8)*'l', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int64)
+                    
+                # Int/Int 32
+                elif (get_data_type == "Int/Int 32"):               
+                    plot_data_formatted = struct.unpack(int(number_of_bytes/4)*'h', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int32)
+                    
+                # Complex Int 8
+                elif (get_data_type == "Complex Int 8") or (get_data_type == "Byte/Int 8"):               
+                    plot_data_formatted = struct.unpack(int(number_of_bytes)*'b', plot_data)
+                    np_data = np.array(plot_data_formatted, dtype=np.int8)
+                
+                # Unknown
+                else:
+                    print("Cannot read  " + get_data_type + ".")
+                    continue
+                    
+                # Do FFT Once
+                for m in get_checkboxes:
+                    if m in fft_features:
+                        ft = fft(np_data,next_fast_len(len(np_data)))
+                        S = np.abs(ft**2)/len(np_data)
+                        break
+            
+                # Time Domain: Mean
+                col_count = 0
+                if "Mean" in get_checkboxes:                    
+                    # Obtain the Value
+                    array_mean = str(float(np.mean(np_data)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_mean)
+                    
+                # Time Domain: Max
+                if "Max" in get_checkboxes:
+                    # Obtain the Value
+                    array_max = str(float(max(np_data)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_max)
+                    
+                # Time Domain: Peak
+                if "Peak" in get_checkboxes:
+                    # Obtain the Value
+                    array_peak = str(float(np.max(np.abs(np_data))))
+
+                    # Add Value to Table
+                    new_table_row.append(array_peak)
+                    
+                # Time Domain: Peak to Peak
+                if "Peak to Peak" in get_checkboxes:
+                    # Obtain the Value
+                    array_peak_to_peak = str(float(np.ptp(np_data)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_peak_to_peak)
+                    
+                # Time Domain: RMS
+                if "RMS" in get_checkboxes:
+                    # Obtain the Value
+                    array_rms = str(float(np.sqrt(np.mean(np_data**2))))
+
+                    # Add Value to Table
+                    new_table_row.append(array_rms)
+                    
+                # Time Domain: Variance
+                if "Variance" in get_checkboxes:
+                    # Obtain the Value
+                    array_variance = str(float(np.var(np_data)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_variance)
+                    
+                # Time Domain: Standard Deviation
+                if "Standard Deviation" in get_checkboxes:
+                    # Obtain the Value
+                    array_std_dev = str(float(np.std(np_data)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_std_dev)
+                    
+                # Time Domain: Power
+                if "Power" in get_checkboxes:
+                    # Obtain the Value
+                    array_power = str(float(np.mean(np_data**2)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_power)
+
+                # Time Domain: Crest Factor
+                if "Crest Factor" in get_checkboxes:
+                    # Obtain the Value
+                    array_crest_factor = str(float(np.max(np.abs(np_data))/np.sqrt(np.mean(np_data**2))))
+
+                    # Add Value to Table
+                    new_table_row.append(array_crest_factor)
+                    
+                # Time Domain: Pulse Indicator
+                if "Pulse Indicator" in get_checkboxes:
+                    # Obtain the Value
+                    array_pulse_indicator = str(float(np.max(np.abs(np_data))/np.mean(np_data)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_pulse_indicator)
+                    
+                # Time Domain: Margin
+                if "Margin" in get_checkboxes:
+                    # Obtain the Value
+                    array_margin = str(float(np.max(np.abs(np_data))/(np.abs(np.mean(np.sqrt(np.abs(np_data))))**2)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_margin)
+                    
+                # Time Domain: Kurtosis
+                if "Kurtosis" in get_checkboxes:
+                    # Obtain the Value
+                    array_kurtosis = str(float(stats.kurtosis(np_data)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_kurtosis)
+                    
+                # Time Domain: Skewness
+                if "Skewness" in get_checkboxes:
+                    # Obtain the Value
+                    array_skewness = str(float(stats.skew(np_data)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_skewness)
+                    
+                # Time Domain: Zero Crossings
+                if "Zero Crossings" in get_checkboxes:
+                    # Obtain the Value
+                    count1 = np.where(np.diff(np.sign( [i for i in np_data[::2] if i] )))[0].shape[0]
+                    count2 = np.where(np.diff(np.sign( [i for i in np_data[1::2] if i] )))[0].shape[0]                        
+                    array_zero_crossings = str(count1 + count2)
+
+                    # Add Value to Table
+                    new_table_row.append(array_zero_crossings)
+                    
+                # Time Domain: Samples
+                if "Samples" in get_checkboxes:
+                    # Obtain the Value
+                    if "Complex" in get_data_type:     
+                        array_samples = str(int(len(np_data)/2))
+                    else:
+                        array_samples = str(int(len(np_data)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_samples)
+                    
+                # Frequency Domain: Mean of Band Power Spectrum
+                if "Mean of Band Power Spectrum" in get_checkboxes:
+                    # Obtain the Value
+                    array_mean_bps = str(float(np.mean(S)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_mean_bps)
+                    
+                # Frequency Domain: Max of Band Power Spectrum
+                if "Max of Band Power Spectrum" in get_checkboxes:
+                    # Obtain the Value
+                    array_max_bps = str(float(np.max(S)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_max_bps)
+                    
+                # Frequency Domain: Sum of Total Band Power
+                if "Sum of Total Band Power" in get_checkboxes:
+                    # Obtain the Value
+                    array_sum_tbp = str(float(np.sum(S)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_sum_tbp)
+                    
+                # Frequency Domain: Peak of Band Power
+                if "Peak of Band Power" in get_checkboxes:
+                    # Obtain the Value
+                    array_peak_bp = str(float(np.max(np.abs(S))))
+
+                    # Add Value to Table
+                    new_table_row.append(array_peak_bp)
+                    
+                # Frequency Domain: Variance of Band Power
+                if "Variance of Band Power" in get_checkboxes:
+                    # Obtain the Value
+                    array_var_bp = str(float(np.var(S)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_var_bp)
+                
+                # Frequency Domain: Standard Deviation of Band Power
+                if "Standard Deviation of Band Power" in get_checkboxes:
+                    # Obtain the Value
+                    array_std_dev_bp = str(float(np.std(S)))
+                  
+                    # Add Value to Table
+                    new_table_row.append(array_std_dev_bp)
+                    
+                # Frequency Domain: Skewness of Band Power
+                if "Skewness of Band Power" in get_checkboxes:
+                    # Obtain the Value
+                    array_skewness_bp = str(float(stats.skew(S)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_skewness_bp)
+                    
+                # Frequency Domain: Kurtosis of Band Power
+                if "Kurtosis of Band Power" in get_checkboxes:
+                    # Obtain the Value
+                    array_kurtosis_bp = str(float(stats.kurtosis(S)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_kurtosis_bp)
+                    
+                # Frequency Domain: Relative Spectral Peak per Band
+                if "Relative Spectral Peak per Band" in get_checkboxes:
+                    # Obtain the Value
+                    array_rsppb = str(float(np.max(S)/np.mean(S)))
+
+                    # Add Value to Table
+                    new_table_row.append(array_rsppb)
+            
+            # Append the Row
+            table_strings.append(new_table_row)
+            
+            # Update Progress Bar
+            progress_value = 1+int((float((n+1)/len(get_all_filepaths))*99))
+            self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'FE Progress Bar', Parameters = [progress_value,n])
+                    
+            # Check for Break
+            if self.fe_stop_event.is_set():
+                print("TSI Feature Extractor Stopped")
+                return        
+                
+        # Return the Table Data
+        self.finishedTSI_FE(table_strings)
+        
+    def stopTSI_FE(self):
+        """ Accepts a Stop message from the HIPRFISR to stop the feature extractor operation.
+        """
+        # Stop the Thread
+        print("Stopping TSI Feature Extractor...")
+        self.fe_stop_event.set()
+        
+    def finishedTSI_FE(self, table_strings=""):
+        """ Sends a message to the HIPRFISR to signal the feature extractor operation is complete.
+        """
+        # Send the Message
+        print("TSI Feature Extractor Complete. Returning Table Data...")
+        self.tsi_pub_server.sendmsg('Status', Identifier = 'TSI', MessageName = 'TSI FE Finished', Parameters = table_strings)
+            
+########################################################################
 
     def addRandomTSI_Message(self, random_number):
         """ Sends a random message over a connection for testing purposes

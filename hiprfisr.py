@@ -705,6 +705,18 @@ class Hiprfisr():
         # Send Message
         self.tsi_hiprfisr_server.sendmsg('Commands', Identifier = 'HIPRFISR', MessageName = 'Stop TSI Conditioner')
 
+    def startTSI_FE(self, common_parameter_names, common_parameter_values):
+        """ Signals to TSI to start TSI feature extractor.
+        """
+        # Send Message
+        self.tsi_hiprfisr_server.sendmsg('Commands', Identifier = 'HIPRFISR', MessageName = 'Start TSI FE', Parameters = [common_parameter_names, common_parameter_values])
+
+    def stopTSI_FE(self):
+        """ Signals to TSI to stop TSI feature extractor.
+        """
+        # Send Message
+        self.tsi_hiprfisr_server.sendmsg('Commands', Identifier = 'HIPRFISR', MessageName = 'Stop TSI FE')
+
     def stopPD(self):
         """ Signals to PD to stop protocol discovery.
         """

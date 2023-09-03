@@ -1,6 +1,21 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-09-02
+
+Feature Extractor and Python package updates
+ 
+### Added
+
+- Initial Feature Extractor GUI elements, code, and test files that generate example statistical features for Signal Classifier machine learning model training and testing
+
+### Fixed
+
+- Added missing yellowbrick and seaborn Python packages to installer for Python3_maint-3.10 branch and Python2_maint-3.7 branch (yellowbrick not working with Python2 branch)
+- Removed extra commented code relating to Signal Conditioner
+- Software and Conflicts link in the README points to Read the Docs (renamed to "Known Conflicts and Third-Party Software")
+- Corrected formatting errors for Installation and About pages in user manual 
+
 ## 2023-08-28
 
 Logo, README, Signal Conditioner updates

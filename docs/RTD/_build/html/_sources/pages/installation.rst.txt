@@ -63,19 +63,18 @@ Known Conflicts
 The following are a list of known software conflicts and incompatibilities within FISSURE:
 
 - Ubuntu 18.04
-  - aircrack 8812au driver crashes computer on reboot, other drivers are dependent on kernel version
-  - Python2 branch avoids installation of programs that depend on PyQt5.
+   - aircrack 8812au driver crashes computer on reboot, other drivers are dependent on kernel version
+   - Python2 branch avoids installation of programs that depend on PyQt5.
 - Ubuntu 20.04
-  - Geany in 20.04 needs `[styling] line_height=0;2;` added to Tools>Configuration Files>filetypes.common to see underscores
+   - Geany in 20.04 needs `[styling] line_height=0;2;` added to Tools>Configuration Files>filetypes.common to see underscores
 - Ubuntu 22.04
-  - Gpick does not work on Wayland, using wl-color-picker as a substitute
-
+   - Gpick does not work on Wayland, using wl-color-picker as a substitute
 - Other
-  - gr-gsm has to be installed twice for all blocks to be recognized
-  - UBX daughterboards require specific UHD versions
-  - Don't name the TSI component "tsi.py", it messes with importing gr-TSI blocks
-  - ZMQ header adds something similar to 0x0007020004 to TCP data in PUB sink (flags/payload_length/command_length/command). A `sub_listener.setsockopt_string(zmq.SUBSCRIBE,u'')` would need to drop the three bytes for the command length and command.
-  - The default variable values for flow graphs with GUIs cannot be changed with `loadedmod = __import__(flow_graph_filename)`. This means serial or IP address variables must be accessed with parameter blocks and flow graphs called by the python command (mostly for inspection flow graphs).
+   - gr-gsm has to be installed twice for all blocks to be recognized
+   - UBX daughterboards require specific UHD versions
+   - Don't name the TSI component "tsi.py", it messes with importing gr-TSI blocks
+   - ZMQ header adds something similar to 0x0007020004 to TCP data in PUB sink (flags/payload_length/command_length/command). A `sub_listener.setsockopt_string(zmq.SUBSCRIBE,u'')` would need to drop the three bytes for the command length and command.
+   - The default variable values for flow graphs with GUIs cannot be changed with `loadedmod = __import__(flow_graph_filename)`. This means serial or IP address variables must be accessed with parameter blocks and flow graphs called by the python command (mostly for inspection flow graphs).
 
 
 Third-Party Software

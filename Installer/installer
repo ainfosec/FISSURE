@@ -74,6 +74,8 @@ sudo python3 -m pip install pandas
 sudo apt-get install -y dsniff
 sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d  # removes sudo apt-get update warnings
 sudo apt-get -y install ncurses-term
+sudo python3 -m pip install yellowbrick
+sudo python3 -m pip install seaborn
 . ~/.bashrc
 """,True,'Minimum Install'))
 
@@ -2103,6 +2105,8 @@ sudo python3 -m pip install pandas
 sudo apt-get install -y dsniff
 sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d  # removes sudo apt-get update warnings
 sudo apt-get -y install ncurses-term
+sudo python3 -m pip install yellowbrick
+sudo python3 -m pip install seaborn
 . ~/.bashrc
 """,True,'Minimum Install'))
 
@@ -4133,6 +4137,8 @@ sudo apt-get install -y dsniff
 sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d  # removes sudo apt-get update warnings
 sudo apt-get -y install ncurses-term
 sudo ln -s /usr/src/falcon/build/src/gui/gui /usr/bin/FalconGUI
+sudo python3 -m pip install yellowbrick
+sudo python3 -m pip install seaborn
 # """,True,'Minimum Install'))
 
 # fissure Command 
@@ -6158,6 +6164,8 @@ sudo python3 -m pip install pandas
 sudo apt-get install -y dsniff
 #sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d  # removes sudo apt-get update warnings
 sudo apt-get -y install ncurses-term
+sudo python3 -m pip install yellowbrick
+sudo python3 -m pip install seaborn
 . ~/.bashrc
 """,True,'Minimum Install'))
 

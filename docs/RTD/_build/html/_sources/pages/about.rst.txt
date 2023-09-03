@@ -66,9 +66,9 @@ We are grateful to all developers for their contributions to open source. Please
 | Crown Copyright 2016  
 | License (Apache Licence, Version 2.0): https://github.com/gchq/CyberChef/blob/master/LICENSE
 
-**Dire Wolf**  
-Project: https://github.com/wb2osz/direwolf  
-License (GPL-2.0): https://github.com/wb2osz/direwolf/blob/master/LICENSE
+| **Dire Wolf**  
+| Project: https://github.com/wb2osz/direwolf  
+| License (GPL-2.0): https://github.com/wb2osz/direwolf/blob/master/LICENSE
 
 | **Dump1090**  
 | Project: https://github.com/antirez/dump1090  
