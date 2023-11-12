@@ -169,10 +169,26 @@ sudo apt-get install -y libboost-all-dev swig
 ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
-# gr-osmosdr
-programs_ubuntu20_04.append(('gr-osmosdr (56.4 MB)',
+# HackRF, RTL-SDR, gr-osmosdr
+programs_ubuntu20_04.append(('HackRF, RTL-SDR, gr-osmosdr',
 """sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config  # Needed for RTL SDRs, 'sudo apt-get install gr-osmosdr' needs mods to work with newer GNU Radio 3.8 versions but is still needed for gr-gsm
+
+# HackRF
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+unzip hackrf-2022.09.1.zip
+rm hackrf-2022.09.1.zip
+mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
+sudo udevadm trigger --action=change
+
+# RTL-SDR
 cd ~/Installed_by_FISSURE
 git clone https://gitea.osmocom.org/sdr/rtl-sdr.git
 cd rtl-sdr
@@ -185,6 +201,8 @@ sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
 sudo ldconfig
 sudo rmmod dvb_usb_rtl28xxu
 echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+
+# gr-osmosdr
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y libusb-1.0-0-dev
 #git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git  # Produces errors with GNU Radio 3.8.5.0
@@ -193,9 +211,9 @@ cd gr-osmosdr
 git checkout gr3.8
 mkdir build
 cd build
-#cmake ..
-#make
-#sudo make install
+cmake ..
+make
+sudo make install
 sudo ldconfig
 sudo apt-get install -y gr-osmosdr  # Temporary fix
 ########## Verify ##########
@@ -226,26 +244,6 @@ rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
 /usr/lib/uhd/utils/uhd_images_downloader.py
 #"/usr/bin/uhd_image_loader" --args="type=x300,addr=192.168.40.2"  # Use your X310 IP
 sudo sysctl -w net.core.wmem_max=24862979
-""",True,'Hardware'))
-
-# HackRF
-programs_ubuntu20_04.append(('HackRF (52.6 MB)',
-"""sudo apt-get install -y libusb-1.0-0-dev
-mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE/
-wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
-unzip hackrf-2022.09.1.zip
-rm hackrf-2022.09.1.zip
-mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
-sudo udevadm trigger --action=change
-########## Verify ##########
-hackrf_sweep --help
 """,True,'Hardware'))
 
 # 8812au Driver
@@ -2200,10 +2198,26 @@ sudo apt-get install -y libboost-all-dev swig
 ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
-# gr-osmosdr
-programs_ubuntu20_04_4.append(('gr-osmosdr (56.4 MB)',
+# HackRF, RTL-SDR, gr-osmosdr
+programs_ubuntu20_04_4.append(('HackRF, RTL-SDR, gr-osmosdr',
 """sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config  # Needed for RTL SDRs, 'sudo apt-get install gr-osmosdr' needs mods to work with newer GNU Radio 3.8 versions but is still needed for gr-gsm
+
+# HackRF
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+unzip hackrf-2022.09.1.zip
+rm hackrf-2022.09.1.zip
+mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
+sudo udevadm trigger --action=change
+
+# RTL-SDR
 cd ~/Installed_by_FISSURE
 git clone https://gitea.osmocom.org/sdr/rtl-sdr.git
 cd rtl-sdr
@@ -2216,6 +2230,8 @@ sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
 sudo ldconfig
 sudo rmmod dvb_usb_rtl28xxu
 echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+
+# gr-osmosdr
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y libusb-1.0-0-dev
 #git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git  # Produces errors with GNU Radio 3.8.5.0
@@ -2224,9 +2240,9 @@ cd gr-osmosdr
 git checkout gr3.8
 mkdir build
 cd build
-#cmake ..
-#make
-#sudo make install
+cmake ..
+make
+sudo make install
 sudo ldconfig
 sudo apt-get install -y gr-osmosdr  # Temporary fix
 ########## Verify ##########
@@ -2257,26 +2273,6 @@ rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
 /usr/lib/uhd/utils/uhd_images_downloader.py
 #"/usr/bin/uhd_image_loader" --args="type=x300,addr=192.168.40.2"  # Use your X310 IP
 sudo sysctl -w net.core.wmem_max=24862979
-""",True,'Hardware'))
-
-# HackRF
-programs_ubuntu20_04_4.append(('HackRF (52.6 MB)',
-"""sudo apt-get install -y libusb-1.0-0-dev
-mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE/
-wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
-unzip hackrf-2022.09.1.zip
-rm hackrf-2022.09.1.zip
-mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
-sudo udevadm trigger --action=change
-########## Verify ##########
-hackrf_sweep --help
 """,True,'Hardware'))
 
 # 8812au Driver
@@ -5438,9 +5434,25 @@ ls /usr/local/lib/python3*/dist-packages/pyais
 # """,True,'Hardware'))
 
 # # gr-osmosdr
-# programs_dragonOS_focal.append(('gr-osmosdr',
+# programs_dragonOS_focal.append(('HackRF, RTL-SDR, gr-osmosdr',
 # """sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config  # Needed for RTL SDRs, 'sudo apt-get install gr-osmosdr' needs mods to work with newer GNU Radio 3.8 versions but is still needed for gr-gsm
+#
+# # HackRF
 # mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+# unzip hackrf-2022.09.1.zip
+# rm hackrf-2022.09.1.zip
+# mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+# cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+# cmake ..
+# make
+# sudo make install
+# sudo ldconfig
+# sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
+# sudo udevadm trigger --action=change
+#
+# # RTL-SDR
 # cd ~/Installed_by_FISSURE
 # git clone https://gitea.osmocom.org/sdr/rtl-sdr.git
 # cd rtl-sdr
@@ -5453,6 +5465,8 @@ ls /usr/local/lib/python3*/dist-packages/pyais
 # sudo ldconfig
 # sudo rmmod dvb_usb_rtl28xxu
 # echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+#
+# # gr-osmosdr
 # cd ~/Installed_by_FISSURE
 # sudo apt-get install -y libusb-1.0-0-dev
 # #git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git  # Produces errors with GNU Radio 3.8.5.0
@@ -5461,9 +5475,9 @@ ls /usr/local/lib/python3*/dist-packages/pyais
 # git checkout gr3.8
 # mkdir build
 # cd build
-# #cmake ..
-# #make
-# #sudo make install
+# cmake ..
+# make
+# sudo make install
 # sudo ldconfig
 # sudo apt-get install -y gr-osmosdr  # Temporary fix
 # ########## Verify ##########
@@ -5494,26 +5508,6 @@ ls /usr/local/lib/python3*/dist-packages/pyais
 # /usr/lib/uhd/utils/uhd_images_downloader.py
 # #"/usr/bin/uhd_image_loader" --args="type=x300,addr=192.168.40.2"  # Use your X310 IP
 # sudo sysctl -w net.core.wmem_max=24862979
-# """,True,'Hardware'))
-
-# # HackRF
-# programs_dragonOS_focal.append(('HackRF',
-# """sudo apt-get install -y libusb-1.0-0-dev
-# mkdir -p ~/Installed_by_FISSURE
-# cd ~/Installed_by_FISSURE/
-# wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
-# unzip hackrf-2022.09.1.zip
-# rm hackrf-2022.09.1.zip
-# mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-# cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-# cmake ..
-# make
-# sudo make install
-# sudo ldconfig
-# sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
-# sudo udevadm trigger --action=change
-# ########## Verify ##########
-# hackrf_sweep --help
 # """,True,'Hardware'))
 
 # # gr-dect2
@@ -6260,9 +6254,25 @@ ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
 # gr-osmosdr
-programs_parrot_os_5_2.append(('gr-osmosdr (56.4 MB)',
+programs_parrot_os_5_2.append(('HackRF, RTL-SDR, gr-osmosdr',
 """sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config  # Needed for RTL SDRs, 'sudo apt-get install gr-osmosdr' needs mods to work with newer GNU Radio 3.8 versions but is still needed for gr-gsm
+
+# HackRF
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+unzip hackrf-2022.09.1.zip
+rm hackrf-2022.09.1.zip
+mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
+sudo udevadm trigger --action=change
+
+# RTL-SDR
 cd ~/Installed_by_FISSURE
 git clone https://gitea.osmocom.org/sdr/rtl-sdr.git
 cd rtl-sdr
@@ -6275,6 +6285,8 @@ sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
 sudo ldconfig
 sudo rmmod dvb_usb_rtl28xxu
 echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+
+# gr-osmosdr
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y libusb-1.0-0-dev
 #git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git  # Produces errors with GNU Radio 3.8.5.0
@@ -6283,9 +6295,9 @@ cd gr-osmosdr
 git checkout gr3.8
 mkdir build
 cd build
-#cmake ..
-#make
-#sudo make install
+cmake ..
+make
+sudo make install
 sudo ldconfig
 sudo apt-get install -y gr-osmosdr  # Temporary fix
 ########## Verify ##########
@@ -6316,26 +6328,6 @@ rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
 /usr/lib/uhd/utils/uhd_images_downloader.py
 #"/usr/bin/uhd_image_loader" --args="type=x300,addr=192.168.40.2"  # Use your X310 IP
 sudo sysctl -w net.core.wmem_max=24862979
-""",True,'Hardware'))
-
-# HackRF
-programs_parrot_os_5_2.append(('HackRF (52.6 MB)',
-"""sudo apt-get install -y libusb-1.0-0-dev
-mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE/
-wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
-unzip hackrf-2022.09.1.zip
-rm hackrf-2022.09.1.zip
-mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
-sudo udevadm trigger --action=change
-########## Verify ##########
-hackrf_sweep --help
 """,True,'Hardware'))
 
 # 8812au Driver

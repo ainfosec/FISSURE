@@ -32443,6 +32443,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionIIO_Oscilloscope"/>
      <addaction name="actionSigDigger"/>
      <addaction name="actionOpenWebRX"/>
+     <addaction name="actionWebSDR"/>
     </widget>
     <widget class="QMenu" name="menu802_11_Tools_2">
      <property name="title">
@@ -32745,6 +32746,8 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionAPT3000"/>
      <addaction name="actionEsri_Satellite_Map"/>
      <addaction name="actionAmateur_Satellite_Database"/>
+     <addaction name="actionOrbital_Element_Converter"/>
+     <addaction name="actionSatellite_Link_Budget"/>
     </widget>
     <widget class="QMenu" name="menu433_MHz">
      <property name="title">
@@ -32882,6 +32885,12 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionwttr_in"/>
      <addaction name="actionOpen_weather"/>
     </widget>
+    <widget class="QMenu" name="menuRailway">
+     <property name="title">
+      <string>Railway</string>
+     </property>
+     <addaction name="actionOpenRailwayMap"/>
+    </widget>
     <addaction name="menu433_MHz"/>
     <addaction name="menu802_11_Tools_2"/>
     <addaction name="menuAircraft"/>
@@ -32904,6 +32913,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="menuPOCSAG"/>
     <addaction name="menuPoint_to_Point"/>
     <addaction name="menuRadiosonde"/>
+    <addaction name="menuRailway"/>
     <addaction name="menuRFID"/>
     <addaction name="menuSatellite"/>
     <addaction name="menuSSH"/>
@@ -32939,6 +32949,8 @@ p, li { white-space: pre-wrap; }
     <addaction name="actionProgramming_SDRs_with_GNU_Radio"/>
     <addaction name="actionLearn_SDR"/>
     <addaction name="actioncomplextoreal_com"/>
+    <addaction name="actioncemaxecuter_YouTube"/>
+    <addaction name="actionIceman_YouTube"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -34755,6 +34767,36 @@ p, li { white-space: pre-wrap; }
   <action name="actionCredits">
    <property name="text">
     <string>Credits</string>
+   </property>
+  </action>
+  <action name="actionOpenRailwayMap">
+   <property name="text">
+    <string>OpenRailwayMap</string>
+   </property>
+  </action>
+  <action name="actionOrbital_Element_Converter">
+   <property name="text">
+    <string>Orbital Element Converter</string>
+   </property>
+  </action>
+  <action name="actionSatellite_Link_Budget">
+   <property name="text">
+    <string>Satellite Link Budget</string>
+   </property>
+  </action>
+  <action name="actionWebSDR">
+   <property name="text">
+    <string>WebSDR</string>
+   </property>
+  </action>
+  <action name="actionIceman_YouTube">
+   <property name="text">
+    <string>Iceman YouTube</string>
+   </property>
+  </action>
+  <action name="actioncemaxecuter_YouTube">
+   <property name="text">
+    <string>cemaxecuter YouTube</string>
    </property>
   </action>
  </widget>

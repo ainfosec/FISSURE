@@ -1,6 +1,31 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-11-12
+
+Menu links and installer updates
+ 
+### Added
+
+- OpenRailwayMap to the menu
+- Orbital Element Converter to the menu
+- Satellite Link Budget calculator to the menu
+- WebSDR to the menu
+- cemaxecuter YouTube to the menu
+- Iceman YouTube to the menu
+- Ubuntu 22.04.1, 22.04.2, 22.04.3 installer options
+
+### Changed
+
+- Combining HackRF, gr-osmosdr, and RTL installer checkboxes
+- Enabling source gr-osmosdr during install for Python3_maint-3.8 branch
+
+### Fixed
+
+- Positioning HackRF install before gr-osmosdr
+- Added fixed Documentation icon image sizes to the README to prevent poor resizing in certain browsers
+- Updating Scapy file with tostring()/tobytes() error as part of Scapy install for Python3_maint-3.10 branch
+
 ## 2023-09-02
 
 Feature Extractor and Python package updates
