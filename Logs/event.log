@@ -1,77 +1,59 @@
-09/02/2023 10:08:59 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
-09/02/2023 10:08:59 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
-09/02/2023 10:08:59 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
-09/02/2023 10:08:59 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
-09/02/2023 10:08:59 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
-09/02/2023 10:08:59 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
-09/02/2023 10:08:59 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
-09/02/2023 10:08:59 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
-09/02/2023 10:08:59 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
-09/02/2023 10:08:59 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
-09/02/2023 10:08:59 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
-09/02/2023 10:09:00 PM - hiprfisr: End of HIPRFISR Initialization
-09/02/2023 10:09:00 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
-09/02/2023 10:09:00 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-09/02/2023 10:09:00 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
-09/02/2023 10:09:00 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-09/02/2023 10:09:00 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
-09/02/2023 10:09:00 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-09/02/2023 10:09:00 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
-09/02/2023 10:09:00 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-09/02/2023 10:09:00 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
-09/02/2023 10:09:00 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-09/02/2023 10:09:00 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
-09/02/2023 10:09:00 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
-09/02/2023 10:09:00 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
-09/02/2023 10:09:00 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
-09/02/2023 10:09:00 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
-09/02/2023 10:09:00 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
-09/02/2023 10:09:00 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
-09/02/2023 10:09:00 PM - hiprfisr: Start of Main Event Loop
-09/02/2023 10:09:00 PM - fge: Port Connected to tcp://127.0.0.1:5053
-09/02/2023 10:09:00 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-09/02/2023 10:09:00 PM - fge: Port Initialized to tcp://127.0.0.1:5061
-09/02/2023 10:09:00 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-09/02/2023 10:09:00 PM - fge: Port Connected to tcp://127.0.0.1:5055
-09/02/2023 10:09:00 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
-09/02/2023 10:09:00 PM - fge: Port Connected to tcp://127.0.0.1:5057
-09/02/2023 10:09:01 PM - tsi: Port Connected to tcp://localhost:5052
-09/02/2023 10:09:01 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-09/02/2023 10:09:01 PM - tsi: Port Initialized to tcp://*:5059
-09/02/2023 10:09:01 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-09/02/2023 10:09:01 PM - tsi: Port Connected to tcp://127.0.0.1:5055
-09/02/2023 10:09:01 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
-09/02/2023 10:09:01 PM - tsi: Port Connected to tcp://127.0.0.1:5057
-09/02/2023 10:09:01 PM - pd: Port Connected to tcp://127.0.0.1:5054
-09/02/2023 10:09:01 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
-09/02/2023 10:09:01 PM - pd: Port Initialized to tcp://127.0.0.1:5063
-09/02/2023 10:09:01 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
-09/02/2023 10:09:01 PM - pd: Port Connected to tcp://127.0.0.1:5055
-09/02/2023 10:09:01 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
-09/02/2023 10:09:01 PM - pd: Port Connected to tcp://127.0.0.1:5057
-09/02/2023 10:09:01 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
-09/02/2023 10:09:01 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
-09/02/2023 10:09:01 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
-09/02/2023 10:09:01 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
-09/02/2023 10:09:01 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
-09/02/2023 10:09:02 PM - dashboard: Received message: HIPRFISR: Connected TSI
-09/02/2023 10:09:02 PM - dashboard: Received message: HIPRFISR: Connected FGE
-09/02/2023 10:09:02 PM - dashboard: Received message: HIPRFISR: Connected PD
-09/02/2023 10:09:02 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
-09/02/2023 10:09:02 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
-09/02/2023 10:09:02 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
-09/02/2023 10:09:02 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
-09/02/2023 10:09:18 PM - dashboard: Sending message: Dashboard: Start TSI FE [['checkboxes', 'data_type', 'all_filepaths'], [['Crest Factor', 'Margin', 'Kurtosis', 'Skewness', 'Sum of Total Band Power', 'Skewness of Band Power', 'Kurtosis of Band Power', 'Relative Spectral Peak per Band'], 'Complex Float 32', [' home laptop1 FISSURE Conditioner Data Output 2023-09-02_18:43:53_00003.iq']]]
-09/02/2023 10:09:19 PM - hiprfisr: Received message: Dashboard: Start TSI FE [['checkboxes', 'data_type', 'all_filepaths'], [['Crest Factor', 'Margin', 'Kurtosis', 'Skewness', 'Sum of Total Band Power', 'Skewness of Band Power', 'Kurtosis of Band Power', 'Relative Spectral Peak per Band'], 'Complex Float 32', [' home laptop1 FISSURE Conditioner Data Output 2023-09-02_18:43:53_00003.iq']]]
-09/02/2023 10:09:19 PM - hiprfisr: Executing Callback: startTSI_FE with parameters [['checkboxes', 'data_type', 'all_filepaths'], [['Crest Factor', 'Margin', 'Kurtosis', 'Skewness', 'Sum of Total Band Power', 'Skewness of Band Power', 'Kurtosis of Band Power', 'Relative Spectral Peak per Band'], 'Complex Float 32', ['/home/laptop1/FISSURE/Conditioner Data/Output/2023-09-02_18:43:53_00003.iq']]]
-09/02/2023 10:09:19 PM - hiprfisr: Sending message: HIPRFISR: Start TSI FE [['checkboxes', 'data_type', 'all_filepaths'], [['Crest Factor', 'Margin', 'Kurtosis', 'Skewness', 'Sum of Total Band Power', 'Skewness of Band Power', 'Kurtosis of Band Power', 'Relative Spectral Peak per Band'], 'Complex Float 32', [' home laptop1 FISSURE Conditioner Data Output 2023-09-02_18:43:53_00003.iq']]]
-09/02/2023 10:09:20 PM - tsi: Received message: HIPRFISR: Start TSI FE [['checkboxes', 'data_type', 'all_filepaths'], [['Crest Factor', 'Margin', 'Kurtosis', 'Skewness', 'Sum of Total Band Power', 'Skewness of Band Power', 'Kurtosis of Band Power', 'Relative Spectral Peak per Band'], 'Complex Float 32', [' home laptop1 FISSURE Conditioner Data Output 2023-09-02_18:43:53_00003.iq']]]
-09/02/2023 10:09:20 PM - tsi: Executing Callback: startTSI_FE with parameters [['checkboxes', 'data_type', 'all_filepaths'], [['Crest Factor', 'Margin', 'Kurtosis', 'Skewness', 'Sum of Total Band Power', 'Skewness of Band Power', 'Kurtosis of Band Power', 'Relative Spectral Peak per Band'], 'Complex Float 32', ['/home/laptop1/FISSURE/Conditioner Data/Output/2023-09-02_18:43:53_00003.iq']]]
-09/02/2023 10:09:20 PM - tsi: Sending message: TSI: FE Progress Bar [100, 0]
-09/02/2023 10:09:20 PM - tsi: Sending message: TSI: TSI FE Finished [['File', 'Crest Factor', 'Margin', 'Kurtosis', 'Skewness', 'Sum of Total Band Power', 'Skewness of Band Power', 'Kurtosis of Band Power', 'Relative Spectral Peak per Band'], ['2023-09-02_18:43:53_00003.iq', '1.6226341724395752', '2.2474704243513632', '-1.3576178485832506', '-0.00010847350650379735', '268921.99902795', '78.99115231429589', '9718.92853717059', '5825.445721796385']]
-09/02/2023 10:09:20 PM - dashboard: Received message: TSI: FE Progress Bar [100, 0]
-09/02/2023 10:09:20 PM - dashboard: Received message: TSI: TSI FE Finished [['File', 'Crest Factor', 'Margin', 'Kurtosis', 'Skewness', 'Sum of Total Band Power', 'Skewness of Band Power', 'Kurtosis of Band Power', 'Relative Spectral Peak per Band'], ['2023-09-02_18:43:53_00003.iq', '1.6226341724395752', '2.2474704243513632', '-1.3576178485832506', '-0.00010847350650379735', '268921.99902795', '78.99115231429589', '9718.92853717059', '5825.445721796385']]
-09/02/2023 10:09:20 PM - hiprfisr: Received message: TSI: FE Progress Bar [100, 0]
-09/02/2023 10:09:20 PM - hiprfisr: Received message: TSI: TSI FE Finished [['File', 'Crest Factor', 'Margin', 'Kurtosis', 'Skewness', 'Sum of Total Band Power', 'Skewness of Band Power', 'Kurtosis of Band Power', 'Relative Spectral Peak per Band'], ['2023-09-02_18:43:53_00003.iq', '1.6226341724395752', '2.2474704243513632', '-1.3576178485832506', '-0.00010847350650379735', '268921.99902795', '78.99115231429589', '9718.92853717059', '5825.445721796385']]
-09/02/2023 10:09:59 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-09/02/2023 10:09:59 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters
+11/12/2023 05:20:36 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
+11/12/2023 05:20:36 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
+11/12/2023 05:20:36 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
+11/12/2023 05:20:36 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
+11/12/2023 05:20:36 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
+11/12/2023 05:20:36 PM - dashboard: Initialized Schema: /home/laptop1/FISSURE/YAML/dashboard.yaml
+11/12/2023 05:20:36 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
+11/12/2023 05:20:36 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
+11/12/2023 05:20:36 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
+11/12/2023 05:20:36 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
+11/12/2023 05:20:36 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
+11/12/2023 05:20:37 PM - hiprfisr: End of HIPRFISR Initialization
+11/12/2023 05:20:37 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
+11/12/2023 05:20:37 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+11/12/2023 05:20:37 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
+11/12/2023 05:20:37 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+11/12/2023 05:20:37 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
+11/12/2023 05:20:37 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+11/12/2023 05:20:37 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
+11/12/2023 05:20:37 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+11/12/2023 05:20:37 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
+11/12/2023 05:20:37 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+11/12/2023 05:20:37 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
+11/12/2023 05:20:37 PM - hiprfisr: Initialized Schema: /home/laptop1/FISSURE/YAML/hiprfisr.yaml
+11/12/2023 05:20:37 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
+11/12/2023 05:20:37 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
+11/12/2023 05:20:37 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
+11/12/2023 05:20:37 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
+11/12/2023 05:20:37 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
+11/12/2023 05:20:37 PM - hiprfisr: Start of Main Event Loop
+11/12/2023 05:20:37 PM - fge: Port Connected to tcp://127.0.0.1:5053
+11/12/2023 05:20:37 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+11/12/2023 05:20:37 PM - fge: Port Initialized to tcp://127.0.0.1:5061
+11/12/2023 05:20:37 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+11/12/2023 05:20:37 PM - fge: Port Connected to tcp://127.0.0.1:5055
+11/12/2023 05:20:37 PM - fge: Initialized Schema: /home/laptop1/FISSURE/YAML/fge.yaml
+11/12/2023 05:20:37 PM - fge: Port Connected to tcp://127.0.0.1:5057
+11/12/2023 05:20:38 PM - tsi: Port Connected to tcp://localhost:5052
+11/12/2023 05:20:38 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+11/12/2023 05:20:38 PM - tsi: Port Initialized to tcp://*:5059
+11/12/2023 05:20:38 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+11/12/2023 05:20:38 PM - tsi: Port Connected to tcp://127.0.0.1:5055
+11/12/2023 05:20:38 PM - tsi: Initialized Schema: /home/laptop1/FISSURE/YAML/tsi.yaml
+11/12/2023 05:20:38 PM - tsi: Port Connected to tcp://127.0.0.1:5057
+11/12/2023 05:20:38 PM - pd: Port Connected to tcp://127.0.0.1:5054
+11/12/2023 05:20:38 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
+11/12/2023 05:20:38 PM - pd: Port Initialized to tcp://127.0.0.1:5063
+11/12/2023 05:20:38 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
+11/12/2023 05:20:38 PM - pd: Port Connected to tcp://127.0.0.1:5055
+11/12/2023 05:20:38 PM - pd: Initialized Schema: /home/laptop1/FISSURE/YAML/pd.yaml
+11/12/2023 05:20:38 PM - pd: Port Connected to tcp://127.0.0.1:5057
+11/12/2023 05:20:38 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
+11/12/2023 05:20:38 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
+11/12/2023 05:20:38 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
+11/12/2023 05:20:39 PM - dashboard: Received message: HIPRFISR: Connected TSI
+11/12/2023 05:20:39 PM - dashboard: Received message: HIPRFISR: Connected FGE
+11/12/2023 05:20:39 PM - dashboard: Received message: HIPRFISR: Connected PD
+11/12/2023 05:21:51 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
+11/12/2023 05:21:51 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters

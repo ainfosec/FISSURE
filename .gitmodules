@@ -82,3 +82,7 @@
 	path = Custom_Blocks/maint-3.10/gr-mixalot
 	url = https://github.com/unsynchronized/gr-mixalot
 	branch = main
+[submodule "Custom_Blocks/maint-3.10/ais"]
+	path = Custom_Blocks/maint-3.10/ais
+	url = https://github.com/gla-rad/ais
+	branch = gnuradio-3.10-port-udp

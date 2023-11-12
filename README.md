@@ -19,49 +19,49 @@ The friendly Python codebase and user interface allows beginners to quickly lear
 <p align='center'>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_user_manual.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_user_manual.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_user_manual.png" width=110px, height=110px>
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_user_manual.png" width=110px, height=110px>
   <img alt="User Manual" src="">
 </picture>
 </a>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/installation.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_installation.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_installation.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_installation.png" width=110px, height=110px>
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_installation.png" width=110px, height=110px>
   <img alt="Installation" src="">
 </picture>
 </a>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/hardware.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_hardware.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_hardware.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_hardware.png" width=110px, height=110px>
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_hardware.png" width=110px, height=110px>
   <img alt="Hardware" src="">
 </picture>
 </a>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/components.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_components.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_components.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_components.png" width=110px, height=110px>
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_components.png" width=110px, height=110px>
   <img alt="Components" src="">
 </picture>
 </a>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/operation.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_operation.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_operation.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_operation.png" width=110px, height=110px>
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_operation.png" width=110px, height=110px>
   <img alt="Operation" src="">
 </picture>
 </a>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/development.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_development.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_development.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_development.png" width=110px, height=110px>
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_development.png" width=110px, height=110px>
   <img alt="Development" src="">
 </picture>
 <a target="_blank" href="https://fissure.readthedocs.io/en/latest/pages/about.html">
 <picture>
-  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_credits.png" width="13.2%">
-  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_credits.png" width="13.2%">
+  <source media="(prefers-color-scheme: dark)" srcset="/docs/Icons/README/documentation_credits.png" width=110px, height=110px>
+  <source media="(prefers-color-scheme: light)" srcset="/docs/Icons/README/documentation_credits.png" width=110px, height=110px>
   <img alt="Credits" src="">
 </picture>
 </a>
@@ -155,7 +155,9 @@ Operating System            |  FISSURE Branch
 | Ubuntu 20.04.5 (x64) | Python3_maint-3.8 |
 | Ubuntu 20.04.6 (x64) | Python3_maint-3.8 |
 | KDE neon 5.25 (x64) | Python3_maint-3.8 |
-| Ubuntu 22.04 (x64) | Python3_maint-3.10 |
+| Ubuntu 22.04.1 (x64) | Python3_maint-3.10 |
+| Ubuntu 22.04.2 (x64) | Python3_maint-3.10 |
+| Ubuntu 22.04.3 (x64) | Python3_maint-3.10 |
 | DragonOS FocalX (x86_64) | Python3_maint-3.10 |
 
 **In-Progress (beta)**
