@@ -1860,6 +1860,12 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.actionAPRS_Track_Direct.triggered.connect(self._slotMenuAPRS_TrackDirectClicked)
         self.actionHelpAbout.triggered.connect(self._slotMenuHelpAboutClicked)
         self.actionCredits.triggered.connect(self._slotMenuHelpCreditsClicked)
+        self.actionOpenRailwayMap.triggered.connect(self._slotMenuOpenRailwayMapClicked)
+        self.actionWebSDR.triggered.connect(self._slotMenuWebSDR_Clicked)
+        self.actionOrbital_Element_Converter.triggered.connect(self._slotMenuOrbitalElementConverterClicked)
+        self.actionSatellite_Link_Budget.triggered.connect(self._slotMenuSatelliteLinkBudgetClicked)
+        self.actionCemaxecuter_YouTube.triggered.connect(self._slotMenuCemaxecuterYouTubeClicked)
+        self.actionIceman_YouTube.triggered.connect(self._slotMenuIcemanYouTubeClicked)
 
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -28088,6 +28094,43 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.checkBox_tsi_fe_kurtosis_bp.setChecked(True)
             if "RSPpB" in get_features:
                 self.checkBox_tsi_fe_rel_spectral_peak_band.setChecked(True)
+                
+    def _slotMenuOpenRailwayMapClicked(self):
+        """ Opens OpenRailwayMap in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://www.openrailwaymap.org/ &")
+                
+    def _slotMenuOrbitalElementConverterClicked(self):
+        """ Opens orbital element converter in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser http://orbitsimulator.com/formulas/OrbitalElements.html &")
+                
+    def _slotMenuSatelliteLinkBudgetClicked(self):
+        """ Opens satellite link budget calculator in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://www.satsig.net/linkbugt.htm &")
+                
+    def _slotMenuWebSDR_Clicked(self):
+        """ Opens WebSDR in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser http://websdr.org/ &")
+                
+    def _slotMenuCemaxecuterYouTubeClicked(self):
+        """ Opens cemaexecuter YouTube videos in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://www.youtube.com/@cemaxecuter7783/videos &")
+                
+    def _slotMenuIcemanYouTubeClicked(self):
+        """ Opens Iceman YouTube videos in browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://www.youtube.com/@iceman1001/videos &")
+
 
 
 class VLine(QtGui.QFrame):

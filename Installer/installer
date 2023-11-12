@@ -153,11 +153,27 @@ sudo apt-get install -y libboost-all-dev swig
 ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
-# gr-osmosdr
-programs_ubuntu18_04.append(('gr-osmosdr (22.6 MB)',
+# HackRF, RTL-SDR, gr-osmosdr
+programs_ubuntu18_04.append(('HackRF, RTL-SDR, gr-osmosdr',
 """sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config
+
+# HackRF
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
+wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+unzip hackrf-2022.09.1.zip
+rm hackrf-2022.09.1.zip
+mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
+sudo udevadm trigger --action=change
+
+# RTL-SDR
+cd ~/Installed_by_FISSURE/
 git clone https://gitea.osmocom.org/sdr/rtl-sdr.git
 cd rtl-sdr
 mkdir build
@@ -169,6 +185,8 @@ sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
 sudo ldconfig
 sudo rmmod dvb_usb_rtl28xxu
 echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+
+# gr-osmosdr
 cd ~/Installed_by_FISSURE
 git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
 cd gr-osmosdr
@@ -219,26 +237,6 @@ unzip uhd.zip
 cd uhd-release_003_010_003_000/host/include
 sudo cp -Rv uhd/rfnoc /usr/share/uhd/
 rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
-""",True,'Hardware'))
-
-# HackRF
-programs_ubuntu18_04.append(('HackRF (52.4 MB)',
-"""sudo apt-get install -y libusb-1.0-0-dev pkg-config  # Needs gr-osmosdr for flow graph blocks
-mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE/
-wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
-unzip hackrf-2022.09.1.zip
-rm hackrf-2022.09.1.zip
-mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
-sudo udevadm trigger --action=change
-########## Verify ##########
-hackrf_sweep --help
 """,True,'Hardware'))
 
 # 8812au Driver
@@ -2049,10 +2047,26 @@ sudo apt-get install -y libboost-all-dev swig
 ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
-# gr-osmosdr
-programs_ubuntu18_04_5.append(('gr-osmosdr (22.6 MB)',
+# HackRF, RTL-SDR, gr-osmosdr
+programs_ubuntu18_04_5.append(('HackRF, RTL-SDR, gr-osmosdr',
 """sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config
+
+# HackRF
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE/
+wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+unzip hackrf-2022.09.1.zip
+rm hackrf-2022.09.1.zip
+mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
+sudo udevadm trigger --action=change
+
+# RTL-SDR
 cd ~/Installed_by_FISSURE
 git clone https://gitea.osmocom.org/sdr/rtl-sdr.git
 cd rtl-sdr
@@ -2065,6 +2079,8 @@ sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
 sudo ldconfig
 sudo rmmod dvb_usb_rtl28xxu
 echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+
+# gr-osmosdr
 cd ~/Installed_by_FISSURE
 git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
 cd gr-osmosdr
@@ -2115,26 +2131,6 @@ unzip uhd.zip
 cd uhd-release_003_010_003_000/host/include
 sudo cp -Rv uhd/rfnoc /usr/share/uhd/
 rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
-""",True,'Hardware'))
-
-# HackRF
-programs_ubuntu18_04_5.append(('HackRF (52.4 MB)',
-"""sudo apt-get install -y libusb-1.0-0-dev pkg-config  # Needs gr-osmosdr for flow graph blocks
-mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE/
-wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
-unzip hackrf-2022.09.1.zip
-rm hackrf-2022.09.1.zip
-mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
-sudo udevadm trigger --action=change
-########## Verify ##########
-hackrf_sweep --help
 """,True,'Hardware'))
 
 # 8812au Driver
@@ -3949,10 +3945,26 @@ sudo apt-get install -y libboost-all-dev swig
 ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
-# gr-osmosdr
-programs_ubuntu18_04_6.append(('gr-osmosdr (22.6 MB)',
+# HackRF, RTL-SDR, gr-osmosdr
+programs_ubuntu18_04_6.append(('HackRF, RTL-SDR, gr-osmosdr',
 """sudo apt-get install -y libusb-1.0-0-dev git cmake pkg-config
+
+# HackRF
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
+unzip hackrf-2022.09.1.zip
+rm hackrf-2022.09.1.zip
+mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
+cmake ..
+make
+sudo make install
+sudo ldconfig
+sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
+sudo udevadm trigger --action=change
+
+# RTL-SDR
 cd ~/Installed_by_FISSURE
 git clone https://gitea.osmocom.org/sdr/rtl-sdr.git
 cd rtl-sdr
@@ -3965,6 +3977,8 @@ sudo cp ../rtl-sdr.rules /etc/udev/rules.d/
 sudo ldconfig
 sudo rmmod dvb_usb_rtl28xxu
 echo 'blacklist dvb_usb_rtl28xxu' | sudo tee --append /etc/modprobe.d/blacklist-dvb_usb_rtl28xxu.conf
+
+# gr-osmosdr
 cd ~/Installed_by_FISSURE
 git clone https://gitea.osmocom.org/sdr/gr-osmosdr.git
 cd gr-osmosdr
@@ -4015,26 +4029,6 @@ unzip uhd.zip
 cd uhd-release_003_010_003_000/host/include
 sudo cp -Rv uhd/rfnoc /usr/share/uhd/
 rm -Rf ~/Installed_by_FISSURE/uhd-release_003_010_003_000
-""",True,'Hardware'))
-
-# HackRF
-programs_ubuntu18_04_6.append(('HackRF (52.4 MB)',
-"""sudo apt-get install -y libusb-1.0-0-dev pkg-config  # Needs gr-osmosdr for flow graph blocks
-mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE/
-wget https://github.com/greatscottgadgets/hackrf/releases/download/v2022.09.1/hackrf-2022.09.1.zip
-unzip hackrf-2022.09.1.zip
-rm hackrf-2022.09.1.zip
-mkdir ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cd ~/Installed_by_FISSURE/hackrf-2022.09.1/host/build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-sudo cp """ + fissure_directory + """/Tools/53-hackrf.rules /etc/udev/rules.d/53-hackrf.rules
-sudo udevadm trigger --action=change
-########## Verify ##########
-hackrf_sweep --help
 """,True,'Hardware'))
 
 # 8812au Driver
