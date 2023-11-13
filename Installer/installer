@@ -10336,7 +10336,7 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
         if self.radioButton_ubuntu22_04_1.isChecked():
             self.get_os = "Ubuntu 22.04"
         elif self.radioButton_ubuntu22_04_2.isChecked():
-            self.get_os = "Ubuntu 22.04"
+            self.get_os = "Ubuntu 22.04.3"
         elif self.radioButton_ubuntu22_04_3.isChecked():
             self.get_os = "Ubuntu 22.04.3"
         elif self.radioButton_dragonos_focalx.isChecked():
