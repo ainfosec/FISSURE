@@ -1346,6 +1346,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton1_iq_tab_ofdm.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_ofdm"))
         self.pushButton1_iq_tab_normalize.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_normalize"))
         self.pushButton1_iq_tab_strip.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_strip"))
+        self.pushButton1_iq_tab_split.clicked.connect(lambda: self._slotIQ_TabClicked(button_name = "pushButton1_iq_tab_split"))
         self.pushButton_iq_polar.clicked.connect(self._slotIQ_PolarClicked)
         self.pushButton_iq_normalize_original_load.clicked.connect(self._slotIQ_NormalizeOriginalLoadClicked)
         self.pushButton_iq_normalize_new_load.clicked.connect(self._slotIQ_NormalizeNewLoadClicked)
@@ -1379,6 +1380,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.pushButton_iq_append_up.clicked.connect(self._slotIQ_AppendUpClicked)
         self.pushButton_iq_append_down.clicked.connect(self._slotIQ_AppendDownClicked)
         self.pushButton_iq_append_copy.clicked.connect(self._slotIQ_AppendCopyClicked)
+        self.pushButton_iq_split_input_select.clicked.connect(self._slotIQ_SplitInputSelectClicked)
+        self.pushButton_iq_split_input_load.clicked.connect(self._slotIQ_SplitInputLoadClicked)        
+        self.pushButton_iq_split_output_select.clicked.connect(self._slotIQ_SplitOutputSelectClicked)
+        self.pushButton_iq_split_output_load.clicked.connect(self._slotIQ_SplitOutputLoadClicked)        
+        self.pushButton_iq_split.clicked.connect(self._slotIQ_SplitClicked)
 
         self.pushButton_archive_download_folder.clicked.connect(self._slotArchiveDownloadFolderClicked)
         self.pushButton_archive_download_refresh.clicked.connect(self._slotArchiveDownloadRefreshClicked)
@@ -1451,7 +1457,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.comboBox_attack_protocols.currentIndexChanged.connect(self._slotAttackProtocols)
         self.comboBox_attack_fuzzing_subcategory.currentIndexChanged.connect(self._slotAttackFuzzingSubcategory)
         self.comboBox_attack_modulation.currentIndexChanged.connect(self._slotAttackModulationChanged)
-        self.comboBox_attack_hardware.currentIndexChanged.connect(self.slotAttackHardwareChanged)
+        self.comboBox_attack_hardware.currentIndexChanged.connect(self._slotAttackHardwareChanged)
         self.comboBox_packet_protocols.currentIndexChanged.connect(self._slotPacketProtocols)
         self.comboBox_packet_subcategory.currentIndexChanged.connect(self._slotPacketSubcategory)
         self.comboBox3_archive_download_folder.currentIndexChanged.connect(self._slotArchiveDownloadFolderChanged)
@@ -1937,6 +1943,17 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.signal_TSI_ConditionerProgress.connect(self._slotTSI_ConditionerProgress)
         self.signal_TSI_FE_Finished.connect(self._slotTSI_FE_Finished)
         self.signal_TSI_FE_Progress.connect(self._slotTSI_FE_Progress)
+        
+        # Interrupts
+        signal.signal(signal.SIGINT, self._slotInterruptHandler)
+        signal.signal(signal.SIGTERM, self._slotInterruptHandler)
+        signal.signal(signal.SIGQUIT, self._slotInterruptHandler) 
+        
+    def _slotInterruptHandler(self, *args):
+        """ Prevents other programs from running with events like ctrl+c.
+        """
+        # Close the Program like the X was Clicked
+        self.closeEvent(QtGui.QCloseEvent)
 
     def _slotLogRefreshClicked(self):
         """ Refresh is clicked in the Log tab
@@ -8212,7 +8229,7 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.treeWidget_attack_attacks.findItems(p,QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive,0)[0].setDisabled(False)
             self.treeWidget_attack_attacks.findItems(p,QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive,0)[0].setHidden(False)
 
-    def slotAttackHardwareChanged(self):
+    def _slotAttackHardwareChanged(self):
         """ Updates the attack tree widget and is used to run attacks.
         """
         self._slotAttackModulationChanged()
@@ -21406,9 +21423,11 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self.stackedWidget3_iq.setCurrentIndex(11)
         elif button_name == "pushButton1_iq_tab_strip":
             self.stackedWidget3_iq.setCurrentIndex(12)
+        elif button_name == "pushButton1_iq_tab_split":
+            self.stackedWidget3_iq.setCurrentIndex(13)
 
         # Reset All Stylesheets
-        button_list = ['pushButton1_iq_tab_record','pushButton1_iq_tab_playback','pushButton1_iq_tab_inspection','pushButton1_iq_tab_crop','pushButton1_iq_tab_convert','pushButton1_iq_tab_append','pushButton1_iq_tab_transfer','pushButton1_iq_tab_timeslot','pushButton1_iq_tab_overlap','pushButton1_iq_tab_resample','pushButton1_iq_tab_ofdm','pushButton1_iq_tab_normalize','pushButton1_iq_tab_strip']
+        button_list = ['pushButton1_iq_tab_record','pushButton1_iq_tab_playback','pushButton1_iq_tab_inspection','pushButton1_iq_tab_crop','pushButton1_iq_tab_convert','pushButton1_iq_tab_append','pushButton1_iq_tab_transfer','pushButton1_iq_tab_timeslot','pushButton1_iq_tab_overlap','pushButton1_iq_tab_resample','pushButton1_iq_tab_ofdm','pushButton1_iq_tab_normalize','pushButton1_iq_tab_strip','pushButton1_iq_tab_split']
         for n in button_list:
             exec("self." + n + """.setStyleSheet("QPushButton#""" + n + """ {}")""")
             # ~ exec("self." + n + """.setStyleSheet("QPushButton#""" + n + """ {"
@@ -25115,6 +25134,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self._slotIQ_TabClicked("pushButton1_iq_tab_normalize")
         elif self.stackedWidget3_iq.currentIndex() == 12:
             self._slotIQ_TabClicked("pushButton1_iq_tab_strip")
+        elif self.stackedWidget3_iq.currentIndex() == 13:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_split")
 
         self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
@@ -25201,6 +25222,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
             self._slotIQ_TabClicked("pushButton1_iq_tab_normalize")
         elif self.stackedWidget3_iq.currentIndex() == 12:
             self._slotIQ_TabClicked("pushButton1_iq_tab_strip")
+        elif self.stackedWidget3_iq.currentIndex() == 13:
+            self._slotIQ_TabClicked("pushButton1_iq_tab_split")
 
         self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
         self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
@@ -25330,6 +25353,8 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
                 self._slotIQ_TabClicked("pushButton1_iq_tab_normalize")
             elif self.stackedWidget3_iq.currentIndex() == 12:
                 self._slotIQ_TabClicked("pushButton1_iq_tab_strip")
+            elif self.stackedWidget3_iq.currentIndex() == 13:
+                self._slotIQ_TabClicked("pushButton1_iq_tab_split")
 
             self.iq_matplotlib_widget.configureAxes(polar=False,background_color=self.dashboard_settings_dictionary['color2'],face_color=self.dashboard_settings_dictionary['color5'],text_color=self.dashboard_settings_dictionary['color4'])
             self.iq_matplotlib_widget.applyLabels("IQ Data",'Samples','Amplitude (LSB)',None,None,text_color=self.dashboard_settings_dictionary['color4'])
@@ -28670,7 +28695,142 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         # Open a Browser
         os.system("sensible-browser https://www.youtube.com/@iceman1001/videos &")
         
+    def _slotIQ_SplitInputSelectClicked(self):
+        """ Loads the current file selected in the list widget as the input file.
+        """
+        try:
+            # Get Highlighted File from Listbox
+            get_file = str(self.listWidget_iq_files.currentItem().text())
+            get_folder = str(self.label_iq_folder.text())
+            self.textEdit_iq_split_input.setPlainText(get_folder + '/' + get_file)
 
+        except:
+            pass
+        
+    def _slotIQ_SplitInputLoadClicked(self):
+        """ Selects a file to split.
+        """
+        # Select a File
+        dialog = QtWidgets.QFileDialog(self)
+        directory = os.path.dirname(os.path.realpath(__file__)) + "/IQ Recordings/"  # Default Directory
+        dialog.setDirectory(directory)
+        dialog.setNameFilters(['Data File (*.*)'])
+
+        if dialog.exec_():
+            for d in dialog.selectedFiles():
+                folder = d
+        try:
+            self.textEdit_iq_split_input.setPlainText(folder)
+        except:
+            pass
+        
+    def _slotIQ_SplitOutputSelectClicked(self):
+        """ Loads the current file selected in the list widget as the output file template.
+        """
+        try:
+            # Get Highlighted File from Listbox
+            get_file = str(self.listWidget_iq_files.currentItem().text())
+            get_folder = str(self.label_iq_folder.text())
+            self.textEdit_iq_split_output.setPlainText(get_folder + '/' + get_file)
+
+        except:
+            pass
+        
+    def _slotIQ_SplitOutputLoadClicked(self):
+        """ Selects a file for split output template.
+        """
+        # Select a File
+        dialog = QtWidgets.QFileDialog(self)
+        directory = os.path.dirname(os.path.realpath(__file__)) + "/IQ Recordings/"  # Default Directory
+        dialog.setDirectory(directory)
+        dialog.setNameFilters(['Data File (*.*)'])
+
+        if dialog.exec_():
+            for d in dialog.selectedFiles():
+                folder = d
+        try:
+            self.textEdit_iq_split_output.setPlainText(folder)
+        except:
+            pass
+
+    def _slotIQ_SplitClicked(self):
+        """ Splits a large file into many smaller files.
+        """
+        # Get Values
+        get_data_type = str(self.comboBox_iq_split_data_type.currentText())
+        get_input_file = str(self.textEdit_iq_split_input.toPlainText())
+        get_output_file = str(self.textEdit_iq_split_output.toPlainText())
+        get_num_files = int(self.spinBox_iq_split.value())
+        if (len(get_input_file) == 0) or (len(get_output_file) == 0):
+            print("Enter filepaths")
+            return
+        
+        # Number of Samples
+        number_of_bytes = os.path.getsize(get_input_file)
+        num_samples = 0
+        if number_of_bytes > 0:
+            if get_data_type == "Complex Float 32":
+                num_samples = int(number_of_bytes/8)
+            elif get_data_type == "Float/Float 32":
+                num_samples = int(number_of_bytes/4)
+            elif get_data_type == "Short/Int 16":
+                num_samples = int(number_of_bytes/2)
+            elif get_data_type == "Int/Int 32":
+                num_samples = int(number_of_bytes/4)
+            elif get_data_type == "Byte/Int 8":
+                num_samples = int(number_of_bytes/1)
+            elif get_data_type == "Complex Int 16":
+                num_samples = int(number_of_bytes/4)
+            elif get_data_type == "Complex Int 8":
+                num_samples = int(number_of_bytes/2)
+            elif get_data_type == "Complex Float 64":
+                num_samples = int(number_of_bytes/16)
+            elif get_data_type == "Complex Int 64":
+                num_samples = int(number_of_bytes/16)
+        else:
+            print("Error. File is empty.")
+            return
+        
+        # Split
+        block_size = int(float(num_samples)/get_num_files)
+        remainder = int(float(num_samples)%get_num_files)
+        
+        # Sample Size in Bytes
+        if get_data_type == "Complex Float 32":
+            bs = "8"
+        elif get_data_type == "Float/Float 32":
+            bs = "4"
+        elif get_data_type == "Short/Int 16":
+            bs = "2"
+        elif get_data_type == "Int/Int 32":
+            bs = "4"
+        elif get_data_type == "Byte/Int 8":
+            bs = "1"
+        elif get_data_type == "Complex Float 64":
+            bs = "16"
+        elif get_data_type == "Complex Int 64":
+            bs = "16"
+        elif get_data_type == "Complex Int 16":
+            bs = "4"
+        elif get_data_type == "Complex Int 8":
+            bs = "2"
+
+        # Save Files
+        start_location = 0
+        for n in range(0, get_num_files):
+            if '.' in get_output_file:
+                new_output_file = (get_output_file.rpartition('.')[0] + '_' + str(n+1) + '.' + get_output_file.rpartition('.')[2])
+            else:
+                new_output_file = get_output_file + '_' + str(n+1)
+            
+            # Last File Gets Remainder
+            if n == get_num_files-1:
+                os.system('dd if="'+ get_input_file + '" of="' + new_output_file + '" bs=' + bs + ' skip=' + str(start_location) + ' count=' + str(block_size+remainder))
+            else:
+                os.system('dd if="'+ get_input_file + '" of="' + new_output_file + '" bs=' + bs + ' skip=' + str(start_location) + ' count=' + str(block_size))
+            start_location = start_location + block_size
+            
+            
 
 class VLine(QtWidgets.QFrame):
     """ Vertical line for the statusbar.
