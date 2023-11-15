@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-11-14
+
+Split IQ tab
+ 
+### Added
+
+- Split IQ tab for making smaller files from one large file
+
+### Fixed
+
+- Added interrupt handlers to prevent programs hanging
+
 ## 2023-11-12
 
 Menu links and installer updates
