@@ -1,6 +1,17 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-11-27
+
+Signal Classifier widgets
+ 
+### Added
+
+- GPSJAM to the menu
+- HF Propagation Map to the menu
+- HAMRS to installer and menu
+- GUI widgets for TSI Signal Classifier (no code yet)
+
 ## 2023-11-14
 
 Split IQ tab

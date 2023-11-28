@@ -1872,6 +1872,9 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.actionSatellite_Link_Budget.triggered.connect(self._slotMenuSatelliteLinkBudgetClicked)
         self.actionCemaxecuter_YouTube.triggered.connect(self._slotMenuCemaxecuterYouTubeClicked)
         self.actionIceman_YouTube.triggered.connect(self._slotMenuIcemanYouTubeClicked)
+        self.actionGPSJAM.triggered.connect(self._slotMenuGPSJAM_Clicked)
+        self.actionHF_Propagation_Map.triggered.connect(self._slotMenuHF_PropagationMapClicked)
+        self.actionHAMRS.triggered.connect(self._slotMenuHAMRS_Clicked)
 
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -28290,6 +28293,27 @@ class MainWindow(QtGui.QMainWindow, form_class):
             else:
                 os.system('dd if="'+ get_input_file + '" of="' + new_output_file + '" bs=' + bs + ' skip=' + str(start_location) + ' count=' + str(block_size))
             start_location = start_location + block_size
+            
+    def _slotMenuGPSJAM_Clicked(self):
+        """ Opens GPSJAM in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://gpsjam.org/ &")
+            
+    def _slotMenuHF_PropagationMapClicked(self):
+        """ Opens HF Propagation Map in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://hf.dxview.org/ &")
+        
+    def _slotMenuHAMRS_Clicked(self):
+        """ Opens a terminal to the HAMRS location.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        hamrs_dir = os.path.expanduser("~/Installed_by_FISSURE/HAMRS/")
+        hamrs_command = "./hamrs*"
+        proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + hamrs_command + '"', cwd=hamrs_dir, shell=True)
             
             
 
