@@ -2048,6 +2048,16 @@ programs_ubuntu20_04.append(('pyais',
 ls /usr/local/lib/python3*/dist-packages/pyais
 """,True,'AIS'))
 
+# HAMRS
+programs_ubuntu20_04.append(('HAMRS (105.8 MB)',
+"""mkdir -p ~/Installed_by_FISSURE/HAMRS
+cd ~/Installed_by_FISSURE/HAMRS
+wget https://hamrs-releases.s3.us-east-2.amazonaws.com/1.0.6/hamrs-1.0.6-linux-x86_64.AppImage
+sudo chmod +x hamrs*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/HAMRS/hamrs*
+""",True,'Ham Radio'))
+
 
 ########################################################################
 ############################ Ubuntu 20.04.4 ############################
@@ -4077,6 +4087,15 @@ programs_ubuntu20_04_4.append(('pyais',
 ls /usr/local/lib/python3*/dist-packages/pyais
 """,True,'AIS'))
 
+# HAMRS
+programs_ubuntu20_04_4.append(('HAMRS (105.8 MB)',
+"""mkdir -p ~/Installed_by_FISSURE/HAMRS
+cd ~/Installed_by_FISSURE/HAMRS
+wget https://hamrs-releases.s3.us-east-2.amazonaws.com/1.0.6/hamrs-1.0.6-linux-x86_64.AppImage
+sudo chmod +x hamrs*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/HAMRS/hamrs*
+""",True,'Ham Radio'))
 
 ########################################################################
 ############################ DragonOS Focal ############################
@@ -5187,6 +5206,16 @@ ls /usr/local/lib/python3*/dist-packages/pyais
 
 
 ######## Not Tested Queue ######## 
+
+# HAMRS
+programs_dragonOS_focal.append(('HAMRS (105.8 MB)',
+"""mkdir -p ~/Installed_by_FISSURE/HAMRS
+cd ~/Installed_by_FISSURE/HAMRS
+wget https://hamrs-releases.s3.us-east-2.amazonaws.com/1.0.6/hamrs-1.0.6-linux-x86_64.AppImage
+sudo chmod +x hamrs*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/HAMRS/hamrs*
+""",True,'Ham Radio'))
 
 # # QSSTV
 # programs_dragonOS_focal.append(('QSSTV',
@@ -8129,6 +8158,16 @@ programs_parrot_os_5_2.append(('pyais',
 ########## Verify ##########
 ls /usr/local/lib/python3*/dist-packages/pyais
 """,True,'AIS'))
+
+# HAMRS
+programs_parrot_os_5_2.append(('HAMRS (105.8 MB)',
+"""mkdir -p ~/Installed_by_FISSURE/HAMRS
+cd ~/Installed_by_FISSURE/HAMRS
+wget https://hamrs-releases.s3.us-east-2.amazonaws.com/1.0.6/hamrs-1.0.6-linux-x86_64.AppImage
+sudo chmod +x hamrs*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/HAMRS/hamrs*
+""",True,'Ham Radio'))
 
 
 
