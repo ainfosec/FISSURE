@@ -1994,6 +1994,16 @@ programs_ubuntu22_04.append(('pyais',
 ls /usr/local/lib/python3*/dist-packages/pyais
 """,True,'AIS'))
 
+# HAMRS
+programs_ubuntu22_04.append(('HAMRS (105.8 MB)',
+"""mkdir -p ~/Installed_by_FISSURE/HAMRS
+cd ~/Installed_by_FISSURE/HAMRS
+wget https://hamrs-releases.s3.us-east-2.amazonaws.com/1.0.6/hamrs-1.0.6-linux-x86_64.AppImage
+sudo chmod +x hamrs*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/HAMRS/hamrs*
+""",True,'Ham Radio'))
+
 
 
 ########################################################################
@@ -3970,6 +3980,16 @@ programs_ubuntu22_04_3.append(('pyais',
 ########## Verify ##########
 ls /usr/local/lib/python3*/dist-packages/pyais
 """,True,'AIS'))
+
+# HAMRS
+programs_ubuntu22_04_3.append(('HAMRS (105.8 MB)',
+"""mkdir -p ~/Installed_by_FISSURE/HAMRS
+cd ~/Installed_by_FISSURE/HAMRS
+wget https://hamrs-releases.s3.us-east-2.amazonaws.com/1.0.6/hamrs-1.0.6-linux-x86_64.AppImage
+sudo chmod +x hamrs*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/HAMRS/hamrs*
+""",True,'Ham Radio'))
 
 
 
@@ -5954,7 +5974,15 @@ programs_dragonOS_focalx.append(('pyais',
 ls /usr/local/lib/python3*/dist-packages/pyais
 """,True,'AIS'))
 
-
+# HAMRS
+programs_dragonOS_focalx.append(('HAMRS (105.8 MB)',
+"""mkdir -p ~/Installed_by_FISSURE/HAMRS
+cd ~/Installed_by_FISSURE/HAMRS
+wget https://hamrs-releases.s3.us-east-2.amazonaws.com/1.0.6/hamrs-1.0.6-linux-x86_64.AppImage
+sudo chmod +x hamrs*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/HAMRS/hamrs*
+""",True,'Ham Radio'))
 
 ########################################################################
 ############################ Kali 2023.1 ###############################
@@ -7940,6 +7968,15 @@ programs_kali2023_1.append(('pyais',
 ls /usr/local/lib/python3*/dist-packages/pyais
 """,True,'AIS'))
 
+# HAMRS
+programs_kali2023_1.append(('HAMRS (105.8 MB)',
+"""mkdir -p ~/Installed_by_FISSURE/HAMRS
+cd ~/Installed_by_FISSURE/HAMRS
+wget https://hamrs-releases.s3.us-east-2.amazonaws.com/1.0.6/hamrs-1.0.6-linux-x86_64.AppImage
+sudo chmod +x hamrs*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/HAMRS/hamrs*
+""",True,'Ham Radio'))
 
 
 ########################################################################
@@ -9914,6 +9951,16 @@ programs_backbox_linux_8.append(('pyais',
 ########## Verify ##########
 ls /usr/local/lib/python3*/dist-packages/pyais
 """,True,'AIS'))
+
+# HAMRS
+programs_backbox_linux_8.append(('HAMRS (105.8 MB)',
+"""mkdir -p ~/Installed_by_FISSURE/HAMRS
+cd ~/Installed_by_FISSURE/HAMRS
+wget https://hamrs-releases.s3.us-east-2.amazonaws.com/1.0.6/hamrs-1.0.6-linux-x86_64.AppImage
+sudo chmod +x hamrs*
+########## Verify ##########
+ls ~/Installed_by_FISSURE/HAMRS/hamrs*
+""",True,'Ham Radio'))
 
 
 
