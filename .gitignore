@@ -10,3 +10,5 @@ routersploit.log
 # Some currently unused env files, but often contains secrets, so better be safe than sorry
 .env
 env.py
+.venv/
+venv/
