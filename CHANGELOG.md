@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-12-08
+
+Fixing flow graph with GUI attacks
+ 
+### Added
+
+- General Protocol and an IF flow graph for testing GUIs
+- MLAT Feeder Map to menu
+
+### Fixed
+
+- Single-Stage and Multi-Stage Attacks load/run flow graphs with GUIs more like Inspection Flow Graphs using parameter blocks instead of variable blocks
+
 ## 2023-11-27
 
 Signal Classifier widgets

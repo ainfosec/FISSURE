@@ -1,65 +1,95 @@
-11/27/2023 11:25:26 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
-11/27/2023 11:25:26 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-11/27/2023 11:25:26 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
-11/27/2023 11:25:26 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-11/27/2023 11:25:26 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
-11/27/2023 11:25:26 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-11/27/2023 11:25:26 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
-11/27/2023 11:25:26 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
-11/27/2023 11:25:26 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
-11/27/2023 11:25:26 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
-11/27/2023 11:25:26 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
-11/27/2023 11:25:27 PM - hiprfisr: End of HIPRFISR Initialization
-11/27/2023 11:25:27 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
-11/27/2023 11:25:27 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-11/27/2023 11:25:27 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
-11/27/2023 11:25:27 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-11/27/2023 11:25:27 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
-11/27/2023 11:25:27 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-11/27/2023 11:25:27 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
-11/27/2023 11:25:27 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-11/27/2023 11:25:27 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
-11/27/2023 11:25:27 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-11/27/2023 11:25:27 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
-11/27/2023 11:25:27 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-11/27/2023 11:25:27 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
-11/27/2023 11:25:27 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
-11/27/2023 11:25:27 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
-11/27/2023 11:25:27 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
-11/27/2023 11:25:27 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
-11/27/2023 11:25:27 PM - hiprfisr: Start of Main Event Loop
-11/27/2023 11:25:28 PM - fge: Port Connected to tcp://127.0.0.1:5053
-11/27/2023 11:25:28 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-11/27/2023 11:25:28 PM - fge: Port Initialized to tcp://127.0.0.1:5061
-11/27/2023 11:25:28 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-11/27/2023 11:25:28 PM - fge: Port Connected to tcp://127.0.0.1:5055
-11/27/2023 11:25:28 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-11/27/2023 11:25:28 PM - fge: Port Connected to tcp://127.0.0.1:5057
-11/27/2023 11:25:28 PM - tsi: Port Connected to tcp://localhost:5052
-11/27/2023 11:25:28 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-11/27/2023 11:25:28 PM - tsi: Port Initialized to tcp://*:5059
-11/27/2023 11:25:28 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-11/27/2023 11:25:28 PM - tsi: Port Connected to tcp://127.0.0.1:5055
-11/27/2023 11:25:28 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-11/27/2023 11:25:28 PM - tsi: Port Connected to tcp://127.0.0.1:5057
-11/27/2023 11:25:28 PM - pd: Port Connected to tcp://127.0.0.1:5054
-11/27/2023 11:25:28 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-11/27/2023 11:25:28 PM - pd: Port Initialized to tcp://127.0.0.1:5063
-11/27/2023 11:25:28 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-11/27/2023 11:25:28 PM - pd: Port Connected to tcp://127.0.0.1:5055
-11/27/2023 11:25:28 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-11/27/2023 11:25:28 PM - pd: Port Connected to tcp://127.0.0.1:5057
-11/27/2023 11:25:29 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
-11/27/2023 11:25:29 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
-11/27/2023 11:25:29 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
-11/27/2023 11:25:29 PM - dashboard: Received message: HIPRFISR: Connected TSI
-11/27/2023 11:25:29 PM - dashboard: Received message: HIPRFISR: Connected FGE
-11/27/2023 11:25:29 PM - dashboard: Received message: HIPRFISR: Connected PD
-11/27/2023 11:25:29 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
-11/27/2023 11:25:30 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
-11/27/2023 11:25:30 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
-11/27/2023 11:25:30 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
-11/27/2023 11:25:30 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
-11/27/2023 11:25:30 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
-11/27/2023 11:25:55 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-11/27/2023 11:25:55 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters
+12/08/2023 03:04:49 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
+12/08/2023 03:04:49 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+12/08/2023 03:04:49 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
+12/08/2023 03:04:49 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+12/08/2023 03:04:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
+12/08/2023 03:04:49 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+12/08/2023 03:04:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
+12/08/2023 03:04:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
+12/08/2023 03:04:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
+12/08/2023 03:04:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
+12/08/2023 03:04:49 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
+12/08/2023 03:04:50 PM - hiprfisr: End of HIPRFISR Initialization
+12/08/2023 03:04:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
+12/08/2023 03:04:50 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+12/08/2023 03:04:50 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
+12/08/2023 03:04:50 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+12/08/2023 03:04:50 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
+12/08/2023 03:04:50 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+12/08/2023 03:04:50 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
+12/08/2023 03:04:50 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+12/08/2023 03:04:50 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
+12/08/2023 03:04:50 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+12/08/2023 03:04:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
+12/08/2023 03:04:50 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+12/08/2023 03:04:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
+12/08/2023 03:04:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
+12/08/2023 03:04:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
+12/08/2023 03:04:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
+12/08/2023 03:04:50 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
+12/08/2023 03:04:50 PM - hiprfisr: Start of Main Event Loop
+12/08/2023 03:04:50 PM - fge: Port Connected to tcp://127.0.0.1:5053
+12/08/2023 03:04:50 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+12/08/2023 03:04:50 PM - fge: Port Initialized to tcp://127.0.0.1:5061
+12/08/2023 03:04:50 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+12/08/2023 03:04:50 PM - fge: Port Connected to tcp://127.0.0.1:5055
+12/08/2023 03:04:50 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+12/08/2023 03:04:50 PM - fge: Port Connected to tcp://127.0.0.1:5057
+12/08/2023 03:04:50 PM - tsi: Port Connected to tcp://localhost:5052
+12/08/2023 03:04:50 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+12/08/2023 03:04:50 PM - tsi: Port Initialized to tcp://*:5059
+12/08/2023 03:04:50 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+12/08/2023 03:04:50 PM - tsi: Port Connected to tcp://127.0.0.1:5055
+12/08/2023 03:04:50 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+12/08/2023 03:04:50 PM - tsi: Port Connected to tcp://127.0.0.1:5057
+12/08/2023 03:04:51 PM - pd: Port Connected to tcp://127.0.0.1:5054
+12/08/2023 03:04:51 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+12/08/2023 03:04:51 PM - pd: Port Initialized to tcp://127.0.0.1:5063
+12/08/2023 03:04:51 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+12/08/2023 03:04:51 PM - pd: Port Connected to tcp://127.0.0.1:5055
+12/08/2023 03:04:51 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+12/08/2023 03:04:51 PM - pd: Port Connected to tcp://127.0.0.1:5057
+12/08/2023 03:04:51 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
+12/08/2023 03:04:51 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
+12/08/2023 03:04:51 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
+12/08/2023 03:04:52 PM - dashboard: Received message: HIPRFISR: Connected TSI
+12/08/2023 03:04:52 PM - dashboard: Received message: HIPRFISR: Connected FGE
+12/08/2023 03:04:52 PM - dashboard: Received message: HIPRFISR: Connected PD
+12/08/2023 03:05:08 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
+12/08/2023 03:05:08 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
+12/08/2023 03:05:08 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
+12/08/2023 03:05:08 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
+12/08/2023 03:05:08 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
+12/08/2023 03:05:08 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
+12/08/2023 03:05:38 PM - dashboard: Sending message: Dashboard: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py', ['rx-usrp-channel', 'serial'], ['A:A', 'False'], 'Flow Graph - GUI', False]
+12/08/2023 03:05:38 PM - hiprfisr: Received message: Dashboard: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py', ['rx-usrp-channel', 'serial'], ['A:A', 'False'], 'Flow Graph - GUI', False]
+12/08/2023 03:05:38 PM - hiprfisr: Executing Callback: attackFlowGraphStart with parameters ['/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/General_General_USRPB210_IF.py', ['rx-usrp-channel', 'serial'], ['A:A', 'False'], 'Flow Graph - GUI', False]
+12/08/2023 03:05:38 PM - hiprfisr: Sending message: HIPRFISR: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py', ['rx-usrp-channel', 'serial'], ['A:A', 'False'], 'Flow Graph - GUI', False]
+12/08/2023 03:05:39 PM - fge: Received message: HIPRFISR: Run Attack Flow Graph [' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py', ['rx-usrp-channel', 'serial'], ['A:A', 'False'], 'Flow Graph - GUI', False]
+12/08/2023 03:05:39 PM - fge: Executing Callback: attackFlowGraphStart with parameters ['/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/General_General_USRPB210_IF.py', ['rx-usrp-channel', 'serial'], ['A:A', 'False'], 'Flow Graph - GUI', False]
+12/08/2023 03:05:39 PM - fge: Sending message: FGE: Flow Graph Started Attack
+12/08/2023 03:05:40 PM - dashboard: Received message: FGE: Flow Graph Started Attack
+12/08/2023 03:05:40 PM - hiprfisr: Received message: FGE: Flow Graph Started Attack
+12/08/2023 03:05:46 PM - dashboard: Sending message: Dashboard: Stop Attack Flow Graph ['Flow Graph - GUI']
+12/08/2023 03:05:46 PM - hiprfisr: Received message: Dashboard: Stop Attack Flow Graph ['Flow Graph - GUI']
+12/08/2023 03:05:46 PM - hiprfisr: Executing Callback: attackFlowGraphStop with parameters ['Flow Graph - GUI']
+12/08/2023 03:05:46 PM - hiprfisr: Sending message: HIPRFISR: Stop Attack Flow Graph ['Flow Graph - GUI']
+12/08/2023 03:05:47 PM - fge: Received message: HIPRFISR: Stop Attack Flow Graph ['Flow Graph - GUI']
+12/08/2023 03:05:47 PM - fge: Executing Callback: attackFlowGraphStop with parameters ['Flow Graph - GUI']
+12/08/2023 03:06:29 PM - dashboard: Sending message: Dashboard: Start Multi-Stage Attack [[' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py', ' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py'], [['rx-usrp-channel', 'serial'], ['rx-usrp-channel', 'serial']], [['A:A', 'False'], ['A:A', 'False']], ['5', '5'], False, ['Flow Graph - GUI', 'Flow Graph - GUI']]
+12/08/2023 03:06:29 PM - hiprfisr: Received message: Dashboard: Start Multi-Stage Attack [[' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py', ' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py'], [['rx-usrp-channel', 'serial'], ['rx-usrp-channel', 'serial']], [['A:A', 'False'], ['A:A', 'False']], ['5', '5'], False, ['Flow Graph - GUI', 'Flow Graph - GUI']]
+12/08/2023 03:06:29 PM - hiprfisr: Executing Callback: multiStageAttackStart with parameters [['/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/General_General_USRPB210_IF.py', '/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/General_General_USRPB210_IF.py'], [['rx-usrp-channel', 'serial'], ['rx-usrp-channel', 'serial']], [['A:A', 'False'], ['A:A', 'False']], ['5', '5'], False, ['Flow Graph - GUI', 'Flow Graph - GUI']]
+12/08/2023 03:06:29 PM - hiprfisr: Sending message: HIPRFISR: Start Multi-Stage Attack [[' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py', ' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py'], [['rx-usrp-channel', 'serial'], ['rx-usrp-channel', 'serial']], [['A:A', 'False'], ['A:A', 'False']], ['5', '5'], False, ['Flow Graph - GUI', 'Flow Graph - GUI']]
+12/08/2023 03:06:30 PM - fge: Received message: HIPRFISR: Start Multi-Stage Attack [[' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py', ' home user FISSURE Flow Graph Library Single-Stage Flow Graphs General_General_USRPB210_IF.py'], [['rx-usrp-channel', 'serial'], ['rx-usrp-channel', 'serial']], [['A:A', 'False'], ['A:A', 'False']], ['5', '5'], False, ['Flow Graph - GUI', 'Flow Graph - GUI']]
+12/08/2023 03:06:30 PM - fge: Executing Callback: multiStageAttackStart with parameters [['/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/General_General_USRPB210_IF.py', '/home/user/FISSURE/Flow Graph Library/Single-Stage Flow Graphs/General_General_USRPB210_IF.py'], [['rx-usrp-channel', 'serial'], ['rx-usrp-channel', 'serial']], [['A:A', 'False'], ['A:A', 'False']], ['5', '5'], False, ['Flow Graph - GUI', 'Flow Graph - GUI']]
+12/08/2023 03:06:30 PM - fge: Sending message: FGE: Flow Graph Started Attack
+12/08/2023 03:06:31 PM - dashboard: Received message: FGE: Flow Graph Started Attack
+12/08/2023 03:06:31 PM - hiprfisr: Received message: FGE: Flow Graph Started Attack
+12/08/2023 03:06:38 PM - fge: Sending message: FGE: Flow Graph Started Attack
+12/08/2023 03:06:38 PM - hiprfisr: Received message: FGE: Flow Graph Started Attack
+12/08/2023 03:06:39 PM - dashboard: Received message: FGE: Flow Graph Started Attack
+12/08/2023 03:06:46 PM - fge: Sending message: FGE: Multi-Stage Attack Finished 
+12/08/2023 03:06:46 PM - hiprfisr: Received message: FGE: Multi-Stage Attack Finished 
+12/08/2023 03:06:47 PM - dashboard: Received message: FGE: Multi-Stage Attack Finished 
+12/08/2023 03:06:50 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
+12/08/2023 03:06:50 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters

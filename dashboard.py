@@ -1875,6 +1875,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.actionGPSJAM.triggered.connect(self._slotMenuGPSJAM_Clicked)
         self.actionHF_Propagation_Map.triggered.connect(self._slotMenuHF_PropagationMapClicked)
         self.actionHAMRS.triggered.connect(self._slotMenuHAMRS_Clicked)
+        self.actionMLAT_Feeder_Map.triggered.connect(self._slotMenuMLAT_FeederMapClicked)
 
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -3390,13 +3391,16 @@ class MainWindow(QtGui.QMainWindow, form_class):
                                             self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,QtGui.QTableWidgetItem(new_filepath))
 
                 # Flow Graph - GUI
-                elif ftype == "Flow Graph - GUI":
+                elif ftype == "Flow Graph - GUI": 
+                     
                     # Run with sudo Checkbox
                     self.checkBox_attack_single_stage_sudo.setChecked(False)
                     self.checkBox_attack_single_stage_sudo.setEnabled(False)
                     
-                    # Read Flow Graph Variables
-                    temp_flow_graph_variables = {}
+                    # Return Parameter Block Text
+                    f = open(fname,'r')
+                    
+                    # Read Notes
                     parsing = False
                     for line in f:
                         if line.startswith("        # Variables"):
@@ -3409,7 +3413,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                             get_line = get_line.split('#',1)[0]
                             get_line = get_line.lstrip()
 
-                            if get_line is not "":
+                            if get_line != "":
                                 # Get Default Variable Name and Value
                                 variable_name = get_line.split(' = ')[0]
                                 variable_name_item = QtGui.QTableWidgetItem(variable_name)
@@ -3419,66 +3423,87 @@ class MainWindow(QtGui.QMainWindow, form_class):
                                 # Ignore Notes in the Table
                                 if str(variable_name_item.text()).lower() == 'notes':
                                     self.label2_selected_notes.setText(value_text)
-                                else:
-                                    # Replace with Global Constants
-                                    if variable_name == "ip_address":
-                                        value_text = self.dashboard_settings_dictionary['hardware_ip_attack']
-                                    elif variable_name == "serial":
-                                        if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
-                                            if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
-                                                value_text = self.dashboard_settings_dictionary['hardware_serial_attack']
-                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
-                                                value_text = self.dashboard_settings_dictionary['hardware_serial_attack']
-                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
-                                                value_text = self.dashboard_settings_dictionary['hardware_serial_attack']
-                                            else:
-                                                value_text = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']
+                    
+                    # Return Parameter Block Text
+                    temp_flow_graph_variables = {}
+                    parsing = False
+                    f.seek(0)
+                    for line in f:
+                        if line.startswith("    def __init__(self,"):
+                            parsing = True
+                        elif line.startswith("        gr.top_block."):
+                            parsing = False
+                        if parsing:
+                            # Strip Extra Text
+                            fg_parameters = line[:-3].split(',')
+                            parameter_names = []
+                            parameter_values = []
+                            for p in range(1,len(fg_parameters)):
+                                # Get Default Variable Name and Value
+                                parameter_name = fg_parameters[p].lstrip(' ').split('=')[0].replace('_','-')
+                                parameter_name_item = QtGui.QTableWidgetItem(parameter_name)
+
+                                # Replace with Global Constants
+                                if parameter_name == "ip-address":
+                                    parameter_value = self.dashboard_settings_dictionary['hardware_ip_iq']
+                                elif parameter_name == "serial":
+                                    if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
+                                        if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
+                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
+                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
                                         else:
-                                            if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
-                                                value_text = ""
-                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
-                                                value_text = "0"
-                                            elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
-                                                value_text = "0"
-                                            else:
-                                                value_text = "False"
+                                            parameter_value = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']
+                                    else:
+                                        if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                                            parameter_value = ""
+                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                                            parameter_value = "0"
+                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                                            parameter_value = "0"
+                                        else:
+                                            parameter_value = "False"
+                                else:
+                                    parameter_value = fg_parameters[p].lstrip(' ').split('=')[1].replace('"','')
 
-                                    # Fill in the "Current Values" Table
-                                    value = QtGui.QTableWidgetItem(value_text)
-                                    self.tableWidget1_attack_flow_graph_current_values.setRowCount(self.tableWidget1_attack_flow_graph_current_values.rowCount()+1)
-                                    self.tableWidget1_attack_flow_graph_current_values.setVerticalHeaderItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,variable_name_item)
-                                    self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,value)
+                                # Fill in the "Current Values" Table
+                                value = QtGui.QTableWidgetItem(parameter_value)
+                                self.tableWidget1_attack_flow_graph_current_values.setRowCount(self.tableWidget1_attack_flow_graph_current_values.rowCount()+1)
+                                self.tableWidget1_attack_flow_graph_current_values.setVerticalHeaderItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,parameter_name_item)
+                                self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,value)
 
-                                    # Store Variables and Values to a Dictionary
-                                    temp_flow_graph_variables[str(variable_name_item.text())] = str(value.text())
+                                # Store Variables and Values to a Dictionary
+                                temp_flow_graph_variables[str(parameter_name_item.text())] = str(value.text())
 
-                                    # Add a Filepath Button
-                                    if 'filepath' in variable_name:
-                                        # Add a New Column
-                                        self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
-                                        self.tableWidget1_attack_flow_graph_current_values.setColumnCount(2)
-                                        self.tableWidget1_attack_flow_graph_current_values.setHorizontalHeaderItem(1,QtGui.QTableWidgetItem(""))
+                                # Add a Filepath Button
+                                if 'filepath' in parameter_name:
+                                    # Add a New Column
+                                    self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
+                                    self.tableWidget1_attack_flow_graph_current_values.setColumnCount(2)
+                                    self.tableWidget1_attack_flow_graph_current_values.setHorizontalHeaderItem(1,QtGui.QTableWidgetItem(""))
 
-                                        # Create the PushButton
-                                        new_pushbutton = QtGui.QPushButton(self.tableWidget1_attack_flow_graph_current_values,objectName='pushButton_')
-                                        new_pushbutton.setText("...")
-                                        new_pushbutton.setFixedSize(34,23)
-                                        self.tableWidget1_attack_flow_graph_current_values.setCellWidget(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
-                                        get_row_number = self.tableWidget1_attack_flow_graph_current_values.rowCount()-1
-                                        get_default_directory = self.defaultAttackFilepathDirectory(str(self.label2_selected_flow_graph.text()).rsplit('/')[-1],variable_name)
-                                        new_pushbutton.clicked.connect((lambda get_row_number,get_default_directory: lambda: self._slotSelectFilepath(-1, get_row = get_row_number, default_directory = get_default_directory))(get_row_number,get_default_directory))  # Pass constant value, not variable value
+                                    # Create the PushButton
+                                    new_pushbutton = QtGui.QPushButton(self.tableWidget1_attack_flow_graph_current_values,objectName='pushButton_')
+                                    new_pushbutton.setText("...")
+                                    new_pushbutton.setFixedSize(34,23)
+                                    self.tableWidget1_attack_flow_graph_current_values.setCellWidget(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,1,new_pushbutton)
+                                    get_row_number = self.tableWidget1_attack_flow_graph_current_values.rowCount()-1
+                                    get_default_directory = self.defaultAttackFilepathDirectory(str(self.label2_selected_flow_graph.text()).rsplit('/')[-1],parameter_name)
+                                    new_pushbutton.clicked.connect((lambda get_row_number,get_default_directory: lambda: self._slotSelectFilepath(-1, get_row = get_row_number, default_directory = get_default_directory))(get_row_number,get_default_directory))  # Pass constant value, not variable value
 
-                                        # Adjust Table
-                                        self.tableWidget1_attack_flow_graph_current_values.setColumnWidth(1,35)
-                                        self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setResizeMode(0,QtGui.QHeaderView.Stretch)
-                                        
-                                        # Modify Filepath for FISSURE Location
-                                        if "/FISSURE/" in value_text:
-                                            new_filepath = os.path.dirname(os.path.realpath(__file__)) + '/' + value_text.split('/FISSURE/',1)[-1]
-                                            self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,QtGui.QTableWidgetItem(new_filepath))
+                                    # Adjust Table
+                                    self.tableWidget1_attack_flow_graph_current_values.setColumnWidth(1,35)
+                                    self.tableWidget1_attack_flow_graph_current_values.horizontalHeader().setSectionResizeMode(0,QtGui.QHeaderView.Stretch)
+                                    
+                                    # Modify Filepath for FISSURE Location
+                                    if "/FISSURE/" in parameter_value:
+                                        new_filepath = os.path.dirname(os.path.realpath(__file__)) + '/' + parameter_value.split('/FISSURE/',1)[-1]
+                                        self.tableWidget1_attack_flow_graph_current_values.setItem(self.tableWidget1_attack_flow_graph_current_values.rowCount()-1,0,QtGui.QTableWidgetItem(new_filepath))
 
-                    # Disable the Table
-                    self.tableWidget1_attack_flow_graph_current_values.setEnabled(False)
+                    # Close the File
+                    f.close()
 
                 # Python Script
                 else:
@@ -7531,7 +7556,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
                 self.table_list.append(new_table)
 
                 ftype = str(self.tableWidget_attack_multi_stage_attacks.item(n,4).text()) #"Python2 Script"
-                # To Do: Flow Graph - GUI
+                # Flow Graphs without GUIs
                 if ftype == "Flow Graph":
 
                     # Read Single-Stage Flow Graph Variables
@@ -7636,6 +7661,95 @@ class MainWindow(QtGui.QMainWindow, form_class):
                     # Close the File
                     f.close()
 
+                # Flow Graph - GUI
+                elif ftype == "Flow Graph - GUI":
+                    # Return Parameter Block Text
+                    f = open(fname,'r')
+                                        
+                    # Return Parameter Block Text
+                    temp_flow_graph_variables = {}
+                    parsing = False
+                    f.seek(0)
+                    for line in f:
+                        if line.startswith("    def __init__(self,"):
+                            parsing = True
+                        elif line.startswith("        gr.top_block."):
+                            parsing = False
+                        if parsing:
+                            # Strip Extra Text
+                            fg_parameters = line[:-3].split(',')
+                            parameter_names = []
+                            parameter_values = []
+                            for p in range(1,len(fg_parameters)):
+                                # Get Default Variable Name and Value
+                                parameter_name = fg_parameters[p].lstrip(' ').split('=')[0].replace('_','-')
+                                parameter_name_item = QtGui.QTableWidgetItem(parameter_name)
+
+                                # Replace with Global Constants
+                                if parameter_name == "ip-address":
+                                    parameter_value = self.dashboard_settings_dictionary['hardware_ip_iq']
+                                elif parameter_name == "serial":
+                                    if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
+                                        if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
+                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
+                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
+                                        else:
+                                            parameter_value = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']
+                                    else:
+                                        if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                                            parameter_value = ""
+                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                                            parameter_value = "0"
+                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                                            parameter_value = "0"
+                                        else:
+                                            parameter_value = "False"
+                                else:
+                                    parameter_value = fg_parameters[p].lstrip(' ').split('=')[1].replace('"','')
+
+                                # Fill in the "Current Values" Table
+                                value = QtGui.QTableWidgetItem(parameter_value)
+                                self.table_list[n].setRowCount(self.table_list[n].rowCount()+1)
+                                self.table_list[n].setVerticalHeaderItem(self.table_list[n].rowCount()-1,parameter_name_item)
+                                self.table_list[n].setItem(self.table_list[n].rowCount()-1,0,value)
+
+                                # Store Variables and Values to a Dictionary
+                                temp_flow_graph_variables[str(parameter_name_item.text())] = str(value.text())
+                                
+                                # Add a Filepath Button
+                                if 'filepath' in parameter_name:
+                                    # Add a New Column
+                                    if self.table_list[n].columnCount() == 1:
+                                        self.table_list[n].horizontalHeader().setStretchLastSection(False)
+                                        self.table_list[n].setColumnCount(2)
+                                        self.table_list[n].setHorizontalHeaderItem(1,QtGui.QTableWidgetItem(""))
+
+                                    # Create the PushButton
+                                    new_pushbutton = QtGui.QPushButton(self.table_list[n],objectName='pushButton_')
+                                    new_pushbutton.setText("...")
+                                    new_pushbutton.setFixedSize(34,23)
+                                    self.table_list[n].setCellWidget(self.table_list[n].rowCount()-1,1,new_pushbutton)
+                                    get_row_number = self.table_list[n].rowCount()-1
+                                    get_default_directory = self.defaultAttackFilepathDirectory(str(self.label2_selected_flow_graph.text()).rsplit('/')[-1],parameter_name)
+                                    new_pushbutton.clicked.connect((lambda get_row_number,get_default_directory: lambda: self._slotSelectFilepath(self.tabWidget_attack_multi_stage.currentIndex(), get_row = get_row_number, default_directory = get_default_directory))(get_row_number,get_default_directory))  # Pass constant value, not variable value
+
+                                    # Adjust Table
+                                    if self.table_list[n].columnWidth(1) > 65:  # check for iface/guess column width
+                                        self.table_list[n].horizontalHeader().setMinimumSectionSize(5)
+                                        self.table_list[n].setColumnWidth(1,35)
+                                    self.table_list[n].horizontalHeader().setSectionResizeMode(0,QtGui.QHeaderView.Stretch)
+                                    
+                                    # Modify Filepath for FISSURE Location
+                                    if "/FISSURE/" in value_text:
+                                        new_filepath = os.path.dirname(os.path.realpath(__file__)) + '/' + parameter_value.split('/FISSURE/',1)[-1]
+                                        self.table_list[n].setItem(self.table_list[n].rowCount()-1,0,QtGui.QTableWidgetItem(new_filepath))
+
+                    # Close the File
+                    f.close()
+                    
                 # Python Script
                 else:
                     # Get Python3 Variables
@@ -28315,7 +28429,14 @@ class MainWindow(QtGui.QMainWindow, form_class):
         hamrs_command = "./hamrs*"
         proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + hamrs_command + '"', cwd=hamrs_dir, shell=True)
             
-            
+    def _slotMenuMLAT_FeederMapClicked(self):
+        """ Opens MLAT Feeder Map in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://map.adsbexchange.com/mlat-map/ &")
+        
+        
+        
 
 class VLine(QtGui.QFrame):
     """ Vertical line for the statusbar.
