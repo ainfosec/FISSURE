@@ -246,26 +246,26 @@ class FGE_Executor():
     def runFlowGraphGUI_Thread(self, stop_event, flow_graph_filename, variable_names, variable_values):
         """ Runs the attack flow graph in the new thread.
         """
-        # Stop Any Running Attack Flow Graphs
-        try:
-            self.attackFlowGraphStop(None)
-        except:
-            pass
+        # # Stop Any Running Attack Flow Graphs
+        # try:
+            # self.attackFlowGraphStop(None)
+        # except:
+            # pass
 
         try:
             # Start it
             filepath = flow_graph_filename
             flow_graph_filename = flow_graph_filename.rsplit("/",1)[1]
             arguments = ""
-            for n in variable_values:
-                arguments = arguments + n + " "
+            for n in range(0,len(variable_names)):
+                arguments = arguments + '--' + variable_names[n] + '="' + variable_values[n] + '" '
 
             osCommandString = "python3 " + '"' + filepath + '" ' + arguments
-            proc = subprocess.Popen(osCommandString + " &", shell=True)#, stderr=subprocess.PIPE)
-            #output, error = proc.communicate()
-
+            proc = subprocess.Popen(osCommandString + " &", shell=True)
             self.flowGraphStarted("Attack")  # Signals to other components
             self.attack_script_name = flow_graph_filename
+            time.sleep(4.8)  # Need a way to detect flow graph/hardware is running when called via Python
+            self.attack_flow_graph_loaded = True
 
         # Error Loading Flow Graph
         except Exception as e:
@@ -450,6 +450,7 @@ class FGE_Executor():
             #os.system("sudo kill " + str(script_pid))
         elif parameter == "Flow Graph - GUI":
             os.system("pkill -f " + '"' + self.attack_script_name +'"')
+            self.attack_flow_graph_loaded = False
         else:
             self.attackflowtoexec.stop()
             self.attackflowtoexec.wait()
@@ -855,8 +856,8 @@ class FGE_Executor():
                     flow_graph_filename = filenames[n].replace(".py","")
                     c_thread = threading.Thread(target=self.runFlowGraphThread, args=(stop_event,flow_graph_filename,variable_names[n],variable_values[n]))
                 elif file_types[n] == "Flow Graph - GUI":
-                    flow_graph_filename = filenames[n].replace(".py","")
-                    c_thread = threading.Thread(target=self.runFlowGraphThread, args=(stop_event,flow_graph_filename,variable_names[n],variable_values[n]))
+                    flow_graph_filename = filenames[n]
+                    c_thread = threading.Thread(target=self.runFlowGraphGUI_Thread, args=(stop_event,flow_graph_filename,variable_names[n],variable_values[n]))
                 # Python2, Python3
                 else:
                     run_with_sudo = True
@@ -875,7 +876,7 @@ class FGE_Executor():
                 # Wait for the Flow Graph to Start
                 if (file_types[n] == "Flow Graph") or (file_types[n] == "Flow Graph - GUI"):
                     while self.attack_flow_graph_loaded == False:
-                        pass
+                        time.sleep(0.05)
 
                 # Start the Timer
                 start_time = time.time()
@@ -886,8 +887,11 @@ class FGE_Executor():
                     time.sleep(.05)
 
                 # Stop the Flow Graph
-                if (file_types[n] == "Flow Graph") or (file_types[n] == "Flow Graph - GUI"):
-                    self.attackFlowGraphStop("")
+                if file_types[n] == "Flow Graph":
+                    self.attackFlowGraphStop("Flow Graph")
+                    time.sleep(0.5)  # LimeSDR needs time to stop or there will be a busy error
+                elif file_types[n] == "Flow Graph - GUI":
+                    self.attackFlowGraphStop("Flow Graph - GUI")
                     time.sleep(0.5)  # LimeSDR needs time to stop or there will be a busy error
                 else:
                     self.attackFlowGraphStop("Python Script")
