@@ -1237,6 +1237,7 @@ Attacks:
      - Mail Bomb,2
      - DECT - Null Flow Graph,1
      - Spoofing,1
+     - HD Radio - Naughty String Injection,2
      - 802.11x - wifi_tx Beacon,2
      - Ethernet - MAC Flooding,2
      - 802.11x - wifi_tx UDP Crafter QoS,2
@@ -4331,7 +4332,17 @@ Protocols:
                                    Flow Graph: Garage_Door_OOK_USRPX310_Transmit.py
           Modulation Types:
           - OOK
+     General:
+          Modulation Types:
+          - General
+          Null Placeholder: null
      HD Radio:
+          Attacks:
+               HD Radio - Naughty String Injection:
+                    Default:
+                         Hardware:
+                              USRP B2x0:
+                                   Python3 Script: hd_string_injection.py
           Modulation Types:
           - Default
           Null Placeholder: null

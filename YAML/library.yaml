@@ -1279,6 +1279,7 @@ Attacks:
      - SimpliciTI - Add Node,2
      - SimpliciTI - Unlink Node,2
      - Sniffing/Snooping,1
+     - General - Instantaneous Frequency,2
      - FM Radio - File_Sink,2
      - FM Radio - Audio_Sink,2
      - ZWAVE - Receive,2
@@ -4332,6 +4333,16 @@ Protocols:
                                    Flow Graph: Garage_Door_OOK_USRPX310_Transmit.py
           Modulation Types:
           - OOK
+     General:
+          Attacks:
+               General - Instantaneous Frequency:
+                    General:
+                         Hardware:
+                              USRP B2x0:
+                                   Flow Graph - GUI: General_General_USRPB210_IF.py
+          Modulation Types:
+          - General
+          Null Placeholder: null
      HD Radio:
           Attacks:
                HD Radio - Naughty String Injection:

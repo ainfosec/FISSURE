@@ -35245,6 +35245,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="menuTrackers"/>
      <addaction name="actiondump978"/>
      <addaction name="actionADS_B_Towers"/>
+     <addaction name="actionMLAT_Feeder_Map"/>
     </widget>
     <widget class="QMenu" name="menuLTE">
      <property name="title">
@@ -37474,6 +37475,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionHAMRS">
    <property name="text">
     <string>HAMRS</string>
+   </property>
+  </action>
+  <action name="actionMLAT_Feeder_Map">
+   <property name="text">
+    <string>MLAT Feeder Map</string>
    </property>
   </action>
  </widget>
