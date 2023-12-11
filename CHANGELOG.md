@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-12-11
+
+2023 FISSURE Challenge announcement
+
+### Added
+
+- 2023 FISSURE Challenge announcement to README
+
+### Fixed
+
+- Multi-stage attacks with GUIs use Attack hardware defaults instead of IQ hardware defaults
+- Adding missing python3-pyaudio to nrsc5 install
+
 ## 2023-12-08
 
 Fixing flow graph with GUI attacks

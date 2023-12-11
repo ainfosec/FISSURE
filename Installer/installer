@@ -1602,7 +1602,7 @@ git clone https://github.com/polygon/spectrum_painter.git
 
 # nrsc5 and nrsc5-gui
 programs_ubuntu22_04.append(('nrsc5 (116.2 MB)',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
+"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev python3-pyaudio
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/theori-io/nrsc5.git
@@ -3589,7 +3589,7 @@ git clone https://github.com/polygon/spectrum_painter.git
 
 # nrsc5 and nrsc5-gui
 programs_ubuntu22_04_3.append(('nrsc5 (116.2 MB)',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
+"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev python3-pyaudio
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/theori-io/nrsc5.git
@@ -5576,7 +5576,7 @@ git clone https://github.com/polygon/spectrum_painter.git
 
 # nrsc5 and nrsc5-gui
 programs_dragonOS_focalx.append(('nrsc5',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
+"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev python3-pyaudio
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/theori-io/nrsc5.git
@@ -7569,7 +7569,7 @@ git clone https://github.com/polygon/spectrum_painter.git
 
 # nrsc5 and nrsc5-gui
 programs_kali2023_1.append(('nrsc5 (121.2 MB)',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
+"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev python3-pyaudio
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/theori-io/nrsc5.git
@@ -9561,7 +9561,7 @@ git clone https://github.com/polygon/spectrum_painter.git
 
 # nrsc5 and nrsc5-gui
 programs_backbox_linux_8.append(('nrsc5 (116.2 MB)',
-"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev
+"""sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev python3-pyaudio
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/theori-io/nrsc5.git
