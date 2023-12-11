@@ -3445,23 +3445,23 @@ class MainWindow(QtGui.QMainWindow, form_class):
 
                                 # Replace with Global Constants
                                 if parameter_name == "ip-address":
-                                    parameter_value = self.dashboard_settings_dictionary['hardware_ip_iq']
+                                    parameter_value = self.dashboard_settings_dictionary['hardware_ip_attack']
                                 elif parameter_name == "serial":
-                                    if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
-                                        if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
-                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
-                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
-                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
-                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
-                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
+                                    if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
+                                        if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_attack']
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_attack']
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_attack']
                                         else:
-                                            parameter_value = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']
+                                            parameter_value = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']
                                     else:
-                                        if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                                        if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                             parameter_value = ""
-                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
                                             parameter_value = "0"
-                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
                                             parameter_value = "0"
                                         else:
                                             parameter_value = "False"
@@ -7687,23 +7687,23 @@ class MainWindow(QtGui.QMainWindow, form_class):
 
                                 # Replace with Global Constants
                                 if parameter_name == "ip-address":
-                                    parameter_value = self.dashboard_settings_dictionary['hardware_ip_iq']
+                                    parameter_value = self.dashboard_settings_dictionary['hardware_ip_attack']
                                 elif parameter_name == "serial":
-                                    if len(self.dashboard_settings_dictionary['hardware_serial_iq']) > 0:
-                                        if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
-                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
-                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
-                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
-                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
-                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_iq']
+                                    if len(self.dashboard_settings_dictionary['hardware_serial_attack']) > 0:
+                                        if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_attack']
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_attack']
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
+                                            parameter_value = self.dashboard_settings_dictionary['hardware_serial_attack']
                                         else:
-                                            parameter_value = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_iq']
+                                            parameter_value = 'serial=' + self.dashboard_settings_dictionary['hardware_serial_attack']
                                     else:
-                                        if self.dashboard_settings_dictionary['hardware_iq'] == "HackRF":
+                                        if self.dashboard_settings_dictionary['hardware_attack'] == "HackRF":
                                             parameter_value = ""
-                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF":
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF":
                                             parameter_value = "0"
-                                        elif self.dashboard_settings_dictionary['hardware_iq'] == "bladeRF 2.0":
+                                        elif self.dashboard_settings_dictionary['hardware_attack'] == "bladeRF 2.0":
                                             parameter_value = "0"
                                         else:
                                             parameter_value = "False"

@@ -14,6 +14,10 @@ The friendly Python codebase and user interface allows beginners to quickly lear
 <img src="/docs/Icons/README/rf_re.png" width="400" height="400">
 </p>
 
+## :triangular_flag_on_post::triangular_flag_on_post::triangular_flag_on_post: 2023 FISSURE Challenge :triangular_flag_on_post::triangular_flag_on_post::triangular_flag_on_post:
+
+The first annual FISSURE Challenge will be held online December 18-24, 2023. The event will be a CTFd capture-the-flag competition with the goal of highlighting a new subset of features and tools added to FISSURE each year. No SDRs will be required for any of the challenges this first go around. Return here soon for links and registration details.
+
 ## Documentation
 
 <p align='center'>
