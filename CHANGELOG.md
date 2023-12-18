@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-12-18
+
+2023 FISSURE Challenge details
+
+### Added
+
+- FISSURE Challenge link to menu
+
+### Changed
+
+- 2023 FISSURE Challenge text in README
+
 ## 2023-12-11
 
 2023 FISSURE Challenge announcement

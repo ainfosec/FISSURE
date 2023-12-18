@@ -1,65 +1,65 @@
-12/11/2023 06:05:31 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
-12/11/2023 06:05:31 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-12/11/2023 06:05:31 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
-12/11/2023 06:05:31 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-12/11/2023 06:05:31 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
-12/11/2023 06:05:31 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
-12/11/2023 06:05:31 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
-12/11/2023 06:05:31 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
-12/11/2023 06:05:31 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
-12/11/2023 06:05:31 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
-12/11/2023 06:05:31 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
-12/11/2023 06:05:32 PM - hiprfisr: End of HIPRFISR Initialization
-12/11/2023 06:05:32 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
-12/11/2023 06:05:32 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-12/11/2023 06:05:32 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
-12/11/2023 06:05:32 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-12/11/2023 06:05:32 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
-12/11/2023 06:05:32 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-12/11/2023 06:05:32 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
-12/11/2023 06:05:32 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-12/11/2023 06:05:32 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
-12/11/2023 06:05:32 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-12/11/2023 06:05:32 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
-12/11/2023 06:05:32 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
-12/11/2023 06:05:32 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
-12/11/2023 06:05:32 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
-12/11/2023 06:05:32 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
-12/11/2023 06:05:32 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
-12/11/2023 06:05:32 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
-12/11/2023 06:05:32 PM - hiprfisr: Start of Main Event Loop
-12/11/2023 06:05:32 PM - fge: Port Connected to tcp://127.0.0.1:5053
-12/11/2023 06:05:32 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-12/11/2023 06:05:32 PM - fge: Port Initialized to tcp://127.0.0.1:5061
-12/11/2023 06:05:32 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-12/11/2023 06:05:32 PM - fge: Port Connected to tcp://127.0.0.1:5055
-12/11/2023 06:05:32 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
-12/11/2023 06:05:32 PM - fge: Port Connected to tcp://127.0.0.1:5057
-12/11/2023 06:05:32 PM - tsi: Port Connected to tcp://localhost:5052
-12/11/2023 06:05:32 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-12/11/2023 06:05:33 PM - tsi: Port Initialized to tcp://*:5059
-12/11/2023 06:05:33 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-12/11/2023 06:05:33 PM - tsi: Port Connected to tcp://127.0.0.1:5055
-12/11/2023 06:05:33 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
-12/11/2023 06:05:33 PM - tsi: Port Connected to tcp://127.0.0.1:5057
-12/11/2023 06:05:33 PM - pd: Port Connected to tcp://127.0.0.1:5054
-12/11/2023 06:05:33 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-12/11/2023 06:05:33 PM - pd: Port Initialized to tcp://127.0.0.1:5063
-12/11/2023 06:05:33 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-12/11/2023 06:05:33 PM - pd: Port Connected to tcp://127.0.0.1:5055
-12/11/2023 06:05:33 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
-12/11/2023 06:05:33 PM - pd: Port Connected to tcp://127.0.0.1:5057
-12/11/2023 06:05:33 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
-12/11/2023 06:05:33 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
-12/11/2023 06:05:33 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
-12/11/2023 06:05:34 PM - dashboard: Received message: HIPRFISR: Connected TSI
-12/11/2023 06:05:34 PM - dashboard: Received message: HIPRFISR: Connected FGE
-12/11/2023 06:05:34 PM - dashboard: Received message: HIPRFISR: Connected PD
-12/11/2023 06:06:02 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
-12/11/2023 06:06:02 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
-12/11/2023 06:06:02 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
-12/11/2023 06:06:02 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
-12/11/2023 06:06:02 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
-12/11/2023 06:06:02 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
-12/11/2023 06:06:58 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
-12/11/2023 06:06:58 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters
+12/18/2023 12:59:58 PM - dashboard: Port Initialized to tcp://127.0.0.1:5051
+12/18/2023 12:59:58 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+12/18/2023 12:59:58 PM - dashboard: Port Initialized to tcp://127.0.0.1:5057
+12/18/2023 12:59:58 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+12/18/2023 12:59:58 PM - dashboard: Port Connected to tcp://127.0.0.1:5055
+12/18/2023 12:59:58 PM - dashboard: Initialized Schema: /home/user/FISSURE/YAML/dashboard.yaml
+12/18/2023 12:59:58 PM - dashboard: Port Connected to tcp://127.0.0.1:5059
+12/18/2023 12:59:58 PM - dashboard: Port Connected to tcp://127.0.0.1:5060
+12/18/2023 12:59:58 PM - dashboard: Port Connected to tcp://127.0.0.1:5065
+12/18/2023 12:59:58 PM - dashboard: Port Connected to tcp://127.0.0.1:5061
+12/18/2023 12:59:58 PM - dashboard: Port Connected to tcp://127.0.0.1:5063
+12/18/2023 12:59:59 PM - hiprfisr: End of HIPRFISR Initialization
+12/18/2023 12:59:59 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5051
+12/18/2023 12:59:59 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+12/18/2023 12:59:59 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5052
+12/18/2023 12:59:59 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+12/18/2023 12:59:59 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5053
+12/18/2023 12:59:59 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+12/18/2023 12:59:59 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5054
+12/18/2023 12:59:59 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+12/18/2023 12:59:59 PM - hiprfisr: Port Initialized to tcp://127.0.0.1:5055
+12/18/2023 12:59:59 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+12/18/2023 12:59:59 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5057
+12/18/2023 12:59:59 PM - hiprfisr: Initialized Schema: /home/user/FISSURE/YAML/hiprfisr.yaml
+12/18/2023 12:59:59 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5059
+12/18/2023 12:59:59 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5060
+12/18/2023 12:59:59 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5065
+12/18/2023 12:59:59 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5061
+12/18/2023 12:59:59 PM - hiprfisr: Port Connected to tcp://127.0.0.1:5063
+12/18/2023 12:59:59 PM - hiprfisr: Start of Main Event Loop
+12/18/2023 12:59:59 PM - fge: Port Connected to tcp://127.0.0.1:5053
+12/18/2023 01:00:00 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+12/18/2023 01:00:00 PM - fge: Port Initialized to tcp://127.0.0.1:5061
+12/18/2023 01:00:00 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+12/18/2023 01:00:00 PM - fge: Port Connected to tcp://127.0.0.1:5055
+12/18/2023 01:00:00 PM - fge: Initialized Schema: /home/user/FISSURE/YAML/fge.yaml
+12/18/2023 01:00:00 PM - fge: Port Connected to tcp://127.0.0.1:5057
+12/18/2023 01:00:00 PM - tsi: Port Connected to tcp://localhost:5052
+12/18/2023 01:00:00 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+12/18/2023 01:00:00 PM - tsi: Port Initialized to tcp://*:5059
+12/18/2023 01:00:00 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+12/18/2023 01:00:00 PM - tsi: Port Connected to tcp://127.0.0.1:5055
+12/18/2023 01:00:00 PM - tsi: Initialized Schema: /home/user/FISSURE/YAML/tsi.yaml
+12/18/2023 01:00:00 PM - tsi: Port Connected to tcp://127.0.0.1:5057
+12/18/2023 01:00:00 PM - pd: Port Connected to tcp://127.0.0.1:5054
+12/18/2023 01:00:00 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+12/18/2023 01:00:00 PM - pd: Port Initialized to tcp://127.0.0.1:5063
+12/18/2023 01:00:00 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+12/18/2023 01:00:00 PM - pd: Port Connected to tcp://127.0.0.1:5055
+12/18/2023 01:00:00 PM - pd: Initialized Schema: /home/user/FISSURE/YAML/pd.yaml
+12/18/2023 01:00:00 PM - pd: Port Connected to tcp://127.0.0.1:5057
+12/18/2023 01:00:01 PM - dashboard: Sending message: Dashboard: Set Process SOIs [False, None, None, None]
+12/18/2023 01:00:01 PM - dashboard: Sending message: Dashboard: SOI Selection Mode 0
+12/18/2023 01:00:01 PM - hiprfisr: Received message: Dashboard: Set Process SOIs [False, None, None, None]
+12/18/2023 01:00:01 PM - hiprfisr: Executing Callback: setProcessSOIs with parameters [False, None, None, None]
+12/18/2023 01:00:01 PM - hiprfisr: Received message: Dashboard: SOI Selection Mode 0
+12/18/2023 01:00:01 PM - hiprfisr: Executing Callback: setSOI_SelectionMode with parameters 0
+12/18/2023 01:00:01 PM - hiprfisr: Sending message: HIPRFISR: Connected TSI
+12/18/2023 01:00:01 PM - hiprfisr: Sending message: HIPRFISR: Connected FGE
+12/18/2023 01:00:01 PM - hiprfisr: Sending message: HIPRFISR: Connected PD
+12/18/2023 01:00:01 PM - dashboard: Received message: HIPRFISR: Connected TSI
+12/18/2023 01:00:01 PM - dashboard: Received message: HIPRFISR: Connected FGE
+12/18/2023 01:00:01 PM - dashboard: Received message: HIPRFISR: Connected PD
+12/18/2023 01:00:19 PM - dashboard: Sending message: Dashboard: Stop TSI Detector $Parameters
+12/18/2023 01:00:19 PM - dashboard: Sending message: Dashboard: Stop PD $Parameters
