@@ -16,7 +16,9 @@ The friendly Python codebase and user interface allows beginners to quickly lear
 
 ## :triangular_flag_on_post::triangular_flag_on_post::triangular_flag_on_post: 2023 FISSURE Challenge :triangular_flag_on_post::triangular_flag_on_post::triangular_flag_on_post:
 
-The first annual FISSURE Challenge will be held online December 18-24, 2023. The event will be a CTFd capture-the-flag competition with the goal of highlighting a new subset of features and tools added to FISSURE each year. No SDRs will be required for any of the challenges this first go around. Return here soon for links and registration details.
+The first annual [FISSURE Challenge](https://fissure.ainfosec.com/) will be held online December 20-31, 2023. The event is a free CTFd capture-the-flag competition with the goal of highlighting a new subset of features and tools added to FISSURE each year. No SDRs will be required for any of the challenges this first go around. The challenges will be archived and made available after the event. Monitor the event on Discord and Twitter. Register and view details at:
+
+- https://fissure.ainfosec.com/
 
 ## Documentation
 

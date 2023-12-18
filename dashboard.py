@@ -1876,6 +1876,7 @@ class MainWindow(QtGui.QMainWindow, form_class):
         self.actionHF_Propagation_Map.triggered.connect(self._slotMenuHF_PropagationMapClicked)
         self.actionHAMRS.triggered.connect(self._slotMenuHAMRS_Clicked)
         self.actionMLAT_Feeder_Map.triggered.connect(self._slotMenuMLAT_FeederMapClicked)
+        self.actionFISSURE_Challenge.triggered.connect(self._slotMenuHelpFISSURE_ChallengeClicked)
 
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -28435,7 +28436,11 @@ class MainWindow(QtGui.QMainWindow, form_class):
         # Open a Browser
         os.system("sensible-browser https://map.adsbexchange.com/mlat-map/ &")
         
-        
+    def _slotMenuHelpFISSURE_ChallengeClicked(self):
+        """ Opens the FISSURE Challenge page in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://fissure.ainfosec.com/ &")
         
 
 class VLine(QtGui.QFrame):
