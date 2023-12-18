@@ -34919,6 +34919,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="menuGitHub"/>
     <addaction name="actionDiscord"/>
     <addaction name="actionYouTube"/>
+    <addaction name="actionFISSURE_Challenge"/>
     <addaction name="separator"/>
     <addaction name="actionHelpAbout"/>
    </widget>
@@ -37480,6 +37481,11 @@ p, li { white-space: pre-wrap; }
   <action name="actionMLAT_Feeder_Map">
    <property name="text">
     <string>MLAT Feeder Map</string>
+   </property>
+  </action>
+  <action name="actionFISSURE_Challenge">
+   <property name="text">
+    <string>FISSURE Challenge</string>
    </property>
   </action>
  </widget>
