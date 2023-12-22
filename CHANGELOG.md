@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2023-12-22
+
+First attempt at Raspberry Pi OS (bookworm) install
+
+### Added
+
+- Raspberry Pi OS (bookworm) installer item, in beta status
+
+### Fixed
+
+- Changed hackrf_sweep check during install from `--help` to `-h`
+
 ## 2023-12-18
 
 2023 FISSURE Challenge details
