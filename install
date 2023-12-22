@@ -11,6 +11,7 @@ dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal$")
 dragonOS_focalx=$(cat /etc/os-dragonos 2>&1 | grep "DragonOS FocalX")
 kde_neon=$(lsb_release -d 2>&1 | grep "KDE neon")
 backbox=$(cat /etc/issue 2>&1 | grep "BackBox")
+raspberry_pi_os=$(lsb_release -d 2>&1 | grep "bookworm")
 
 # Ubuntu 22.04
 if [[ -n "$ubuntu22_04" ]]
@@ -34,6 +35,12 @@ fi
 if [[ -n "$backbox" ]]
 then
     echo "BackBox detected"
+fi
+
+# Raspberry Pi OS
+if [[ -n "$raspberry_pi_os" ]]
+then
+    echo "Raspberry Pi OS (bookworm) detected"
 fi
 
 # Python3_maint-3.7, Ubuntu 18.04
@@ -64,10 +71,10 @@ then
         # Yes/Everything Else
         * )            
             # Ubuntu 22.04, Kali 23.1, BackBox
-            if [[ -n "$ubuntu22_04" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]]
+            if [[ -n "$ubuntu22_04" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]] || [[ -n "$raspberry_pi_os" ]]
             then
                 sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools python3-pyqt5
-                if [[ -n "$kali23_1" ]]
+                if [[ -n "$kali23_1" ]] || [[ -n "$raspberry_pi_os" ]]
                 then
                     sudo apt-get install -y fonts-ubuntu
                 fi

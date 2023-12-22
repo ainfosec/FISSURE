@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>240</width>
-    <height>245</height>
+    <width>320</width>
+    <height>270</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,8 +20,8 @@
   <widget class="QPushButton" name="pushButton_ok">
    <property name="geometry">
     <rect>
-     <x>120</x>
-     <y>210</y>
+     <x>165</x>
+     <y>235</y>
      <width>90</width>
      <height>27</height>
     </rect>
@@ -36,8 +36,8 @@
   <widget class="QPushButton" name="pushButton_cancel">
    <property name="geometry">
     <rect>
-     <x>25</x>
-     <y>210</y>
+     <x>70</x>
+     <y>235</y>
      <width>90</width>
      <height>27</height>
     </rect>
@@ -51,7 +51,7 @@
     <rect>
      <x>20</x>
      <y>20</y>
-     <width>200</width>
+     <width>280</width>
      <height>22</height>
     </rect>
    </property>
@@ -67,8 +67,8 @@
     <rect>
      <x>20</x>
      <y>42</y>
-     <width>200</width>
-     <height>163</height>
+     <width>280</width>
+     <height>188</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -173,12 +173,29 @@
      <string>Ubuntu 22.04.2</string>
     </property>
    </widget>
+   <widget class="QRadioButton" name="radioButton_raspberry_pi_os">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>155</y>
+      <width>265</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Raspberry Pi OS (bookworm) (beta)</string>
+    </property>
+   </widget>
    <zorder>radioButton_ubuntu22_04_1</zorder>
    <zorder>radioButton_kali_2023_1</zorder>
    <zorder>radioButton_dragonos_focalx</zorder>
    <zorder>radioButton_backbox_linux_8</zorder>
    <zorder>radioButton_ubuntu22_04_3</zorder>
    <zorder>radioButton_ubuntu22_04_2</zorder>
+   <zorder>radioButton_raspberry_pi_os</zorder>
   </widget>
  </widget>
  <resources/>
