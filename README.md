@@ -176,6 +176,7 @@ Operating System            |  FISSURE Branch
 | Parrot OS 5.2 (amd64) | Python3_maint-3.8 |
 | Kali 23.1 (x64) | Python3_maint-3.10 |
 | BackBox Linux 8 (amd64) | Python3_maint-3.10 |
+| Raspberry Pi OS (bookworm) | Python3_maint-3.10 |
 
 Note: Certain software tools do not work for every OS. Refer to [Known Conflicts and Third-Party Software](https://fissure.readthedocs.io/en/latest/pages/installation.html#known-conflicts)
 

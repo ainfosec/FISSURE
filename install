@@ -11,6 +11,7 @@ kde_neon=$(lsb_release -d 2>&1 | grep "KDE neon")
 ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
 kali23_1=$(lsb_release -d 2>&1 | grep "Kali")
 backbox=$(cat /etc/issue -d 2>&1 | grep "BackBox")
+raspberry_pi_os=$(lsb_release -d 2>&1 | grep "bookworm")
 
 if [[ -n "$ubuntu18_04" ]]
 then
@@ -26,7 +27,7 @@ then
 fi
 
 # Python3_maint-3.10, Ubuntu 22.04
-if [[ -n "$ubuntu22_04" ]] || [[ -n "$dragonOS_focalx" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]]
+if [[ -n "$ubuntu22_04" ]] || [[ -n "$dragonOS_focalx" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]] || [[ -n "$raspberry_pi_os" ]]
 then
     echo "Ubuntu 22.04 variant detected"
     echo "This branch is not for Ubuntu 22.04 variants. Switch to the Python3_maint-3.10 branch and try again!"
