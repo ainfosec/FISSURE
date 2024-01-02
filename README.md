@@ -14,12 +14,6 @@ The friendly Python codebase and user interface allows beginners to quickly lear
 <img src="/docs/Icons/README/rf_re.png" width="400" height="400">
 </p>
 
-## :triangular_flag_on_post::triangular_flag_on_post::triangular_flag_on_post: 2023 FISSURE Challenge :triangular_flag_on_post::triangular_flag_on_post::triangular_flag_on_post:
-
-The first annual [FISSURE Challenge](https://fissure.ainfosec.com/) will be held online December 20-31, 2023. The event is a free CTFd capture-the-flag competition with the goal of highlighting a new subset of features and tools added to FISSURE each year. No SDRs will be required for any of the challenges this first go around. The challenges will be archived and made available after the event. Monitor the event on Discord and Twitter. Register and view details at:
-
-- https://fissure.ainfosec.com/
-
 ## Documentation
 
 <p align='center'>
@@ -300,6 +294,10 @@ FISSURE comes with several helpful guides to become familiar with different tech
 - [ ] Provide yearly capture-the-flag contests around FISSURE
 - [ ] Support new GNU Radio releases
 - [ ] Update the project idea list every year
+
+## FISSURE Challenge
+
+The annual "FISSURE Challenge" capture-the-flag contest to showcase new additions to FISSURE is held in December each year. Past challenges are archived and can be solved all year round! Gain hands-on experience and view solutions at: [FISSURE Challenge](https://fissure.ainfosec.com/).
 
 ## Contributing
 

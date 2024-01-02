@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-01-02
+
+Updating FISSURE Challenge section in README
+
+### Changed
+
+- Moved and edited FISSURE Challenge section in README
+
 ## 2023-12-22
 
 First attempt at Raspberry Pi OS (bookworm) install
