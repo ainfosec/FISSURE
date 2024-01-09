@@ -35172,6 +35172,7 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionSolve_Crypto_with_Force"/>
      <addaction name="actionCrackStation"/>
      <addaction name="actionGHex"/>
+     <addaction name="actionBinwalk"/>
     </widget>
     <widget class="QMenu" name="menuBluetooth">
      <property name="title">
@@ -35400,6 +35401,11 @@ p, li { white-space: pre-wrap; }
      <addaction name="actionAmateur_Satellite_Database"/>
      <addaction name="actionOrbital_Element_Converter"/>
      <addaction name="actionSatellite_Link_Budget"/>
+     <addaction name="actionN2YO"/>
+     <addaction name="actionFind_Satellites"/>
+     <addaction name="actionAGSatTrack"/>
+     <addaction name="actionCelestrak"/>
+     <addaction name="actionSpot_The_Station"/>
     </widget>
     <widget class="QMenu" name="menu433_MHz">
      <property name="title">
@@ -35604,6 +35610,7 @@ p, li { white-space: pre-wrap; }
     <addaction name="actioncomplextoreal_com"/>
     <addaction name="actioncemaxecuter_YouTube"/>
     <addaction name="actionIceman_YouTube"/>
+    <addaction name="actionHideo_Okawara"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -37475,6 +37482,41 @@ p, li { white-space: pre-wrap; }
   <action name="actionFISSURE_Challenge">
    <property name="text">
     <string>FISSURE Challenge</string>
+   </property>
+  </action>
+  <action name="actionBinwalk">
+   <property name="text">
+    <string>Binwalk</string>
+   </property>
+  </action>
+  <action name="actionN2YO">
+   <property name="text">
+    <string>N2YO</string>
+   </property>
+  </action>
+  <action name="actionFind_Satellites">
+   <property name="text">
+    <string>Find Satellites</string>
+   </property>
+  </action>
+  <action name="actionAGSatTrack">
+   <property name="text">
+    <string>AGSatTrack</string>
+   </property>
+  </action>
+  <action name="actionCelestrak">
+   <property name="text">
+    <string>Celestrak</string>
+   </property>
+  </action>
+  <action name="actionSpot_The_Station">
+   <property name="text">
+    <string>Spot The Station</string>
+   </property>
+  </action>
+  <action name="actionHideo_Okawara">
+   <property name="text">
+    <string>Hideo Okawara's Mixed Signal Lecture Series</string>
    </property>
   </action>
  </widget>

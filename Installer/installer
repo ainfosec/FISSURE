@@ -2058,6 +2058,13 @@ sudo chmod +x hamrs*
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
 
+# Binwalk
+programs_ubuntu20_04.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
+
 
 ########################################################################
 ############################ Ubuntu 20.04.4 ############################
@@ -4097,6 +4104,15 @@ sudo chmod +x hamrs*
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
 
+# Binwalk
+programs_ubuntu20_04_4.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
+
+
+
 ########################################################################
 ############################ DragonOS Focal ############################
 ########################################################################
@@ -5216,6 +5232,13 @@ sudo chmod +x hamrs*
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
+
+# Binwalk
+programs_dragonOS_focal.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
 
 # # QSSTV
 # programs_dragonOS_focal.append(('QSSTV',
@@ -8168,6 +8191,13 @@ sudo chmod +x hamrs*
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
+
+# Binwalk
+programs_parrot_os_5_2.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
 
 
 

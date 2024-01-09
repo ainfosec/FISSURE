@@ -1888,6 +1888,13 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         self.actionHAMRS.triggered.connect(self._slotMenuHAMRS_Clicked)
         self.actionMLAT_Feeder_Map.triggered.connect(self._slotMenuMLAT_FeederMapClicked)
         self.actionFISSURE_Challenge.triggered.connect(self._slotMenuHelpFISSURE_ChallengeClicked)
+        self.actionBinwalk.triggered.connect(self._slotMenuBinwalkClicked)
+        self.actionN2YO.triggered.connect(self._slotMenuN2YO_Clicked)
+        self.actionFind_Satellites.triggered.connect(self._slotMenuFindSatellitesClicked)
+        self.actionAGSatTrack.triggered.connect(self._slotMenuAGSatTrackClicked)
+        self.actionCelestrak.triggered.connect(self._slotMenuCelestrakClicked)
+        self.actionSpot_The_Station.triggered.connect(self._slotMenuSpotTheStationClicked)
+        self.actionHideo_Okawara.triggered.connect(self._slotMenuLessonHideoOkawaraClicked)
 
         # Tab Widgets
         self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
@@ -28896,6 +28903,53 @@ class MainWindow(QtWidgets.QMainWindow, form_class):
         """
         # Open a Browser
         os.system("sensible-browser https://fissure.ainfosec.com/ &")
+        
+    def _slotMenuBinwalkClicked(self):
+        """ Opens a terminal with an example binwalk command.
+        """
+        # Issue the Command
+        expect_script_filepath = os.path.dirname(os.path.realpath(__file__)) + "/Tools/expect_script"
+        binwalk_command = "binwalk -h"
+        if self.operating_system == 'DragonOS Focal':
+            proc=subprocess.Popen('qterminal -e ' + expect_script_filepath + ' "' + binwalk_command + '"', shell=True)
+        else:
+            proc=subprocess.Popen('gnome-terminal -- ' + expect_script_filepath + ' "' + binwalk_command + '"', shell=True)
+    
+    def _slotMenuN2YO_Clicked(self):
+        """ Opens N2YO in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://www.n2yo.com/ &")
+    
+    def _slotMenuFindSatellitesClicked(self):
+        """ Opens Find Satellites in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://www.find-satellites.com/ &")
+    
+    def _slotMenuAGSatTrackClicked(self):
+        """ Opens AGSatTrack in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://agsattrack.com/ &")
+    
+    def _slotMenuCelestrakClicked(self):
+        """ Opens Celestrak in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://celestrak.org/ &")
+    
+    def _slotMenuSpotTheStationClicked(self):
+        """ Opens Spot The Station in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://spotthestation.nasa.gov/ &")
+        
+    def _slotMenuLessonHideoOkawaraClicked(self):
+        """ Opens Hideo Okawara's Mixed Signal Lecture Series (Tom Verbeure) in a browser.
+        """
+        # Open a Browser
+        os.system("sensible-browser https://tomverbeure.github.io/2024/01/06/Hideo-Okawara-Mixed-Signal-Lecture-Series.html &")
         
             
 class VLine(QtWidgets.QFrame):
