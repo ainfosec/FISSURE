@@ -1921,6 +1921,14 @@ sudo chmod +x hamrs*
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
 
+# Binwalk
+programs_ubuntu18_04.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
+
+
 
 ########################################################################
 ############################# Ubuntu 18.04.5 ###########################
@@ -3827,6 +3835,14 @@ sudo chmod +x hamrs*
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
+
+# Binwalk
+programs_ubuntu18_04_5.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
+
 
 
 ########################################################################
@@ -5735,6 +5751,15 @@ sudo chmod +x hamrs*
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
+
+# Binwalk
+programs_ubuntu18_04_6.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
+
+
 
 ########################################################################
 

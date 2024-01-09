@@ -1,6 +1,20 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-01-09
+
+Binwalk and satellite links.
+
+### Added
+
+- Binwalk to the installer and menu
+- N2YO, Find Satellites, AGSatTrack, Celestrak, Spot The Station to the menu
+- Hideo Okawara's Mixed Signal Lecture Series (Tom Verbeure) to the Lessons Menu
+
+### Fixed
+
+- Adjusted gqrx install to source for Python3_maint-3.10 branch
+
 ## 2024-01-02
 
 Updating FISSURE Challenge section in README
