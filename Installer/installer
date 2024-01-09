@@ -835,10 +835,19 @@ ls ~/.local/bin/qspectrumanalyzer
 """,True,'SDR'))
 
 # GQRX
-programs_ubuntu22_04.append(('GQRX (7.0 MB)',
-"""sudo apt-get install -y gqrx-sdr
+programs_ubuntu22_04.append(('GQRX',
+"""sudo apt-get install -y libqt5svg5-dev  #sudo apt-get install -y gqrx-sdr
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE/
+git clone https://github.com/gqrx-sdr/gqrx.git
+cd  ~/Installed_by_FISSURE/gqrx
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
 ########## Verify ##########
-ls /usr/bin/gqrx
+ls /usr/local/bin/gqrx
 """,True,'SDR'))
 
 # Dump1090
@@ -2004,6 +2013,13 @@ sudo chmod +x hamrs*
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
 
+# Binwalk
+programs_ubuntu22_04.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
+
 
 
 ########################################################################
@@ -2823,9 +2839,18 @@ ls ~/.local/bin/qspectrumanalyzer
 
 # GQRX
 programs_ubuntu22_04_3.append(('GQRX (7.0 MB)',
-"""sudo apt-get install -y gqrx-sdr
+"""sudo apt-get install -y libqt5svg5-dev  #sudo apt-get install -y gqrx-sdr
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE/
+git clone https://github.com/gqrx-sdr/gqrx.git
+cd  ~/Installed_by_FISSURE/gqrx
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
 ########## Verify ##########
-ls /usr/bin/gqrx
+ls /usr/local/bin/gqrx
 """,True,'SDR'))
 
 # Dump1090
@@ -3991,6 +4016,13 @@ sudo chmod +x hamrs*
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
 
+# Binwalk
+programs_ubuntu22_04_3.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
+
 
 
 ########################################################################
@@ -4810,9 +4842,18 @@ ls /usr/local/lib/python*/*/gnuradio/zwave_poore
 
 # # GQRX
 # programs_dragonOS_focalx.append(('GQRX',
-# """sudo apt-get install -y gqrx-sdr
+# """sudo apt-get install -y libqt5svg5-dev  #sudo apt-get install -y gqrx-sdr
+# mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE/
+# git clone https://github.com/gqrx-sdr/gqrx.git
+# cd  ~/Installed_by_FISSURE/gqrx
+# mkdir build
+# cd build
+# cmake ..
+# make
+# sudo make install
 # ########## Verify ##########
-# ls /usr/bin/gqrx
+# ls /usr/local/bin/gqrx
 # """,True,None))
 
 # Dump1090
@@ -5984,6 +6025,15 @@ sudo chmod +x hamrs*
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
 
+# Binwalk
+programs_dragonOS_focalx.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
+
+
+
 ########################################################################
 ############################ Kali 2023.1 ###############################
 ########################################################################
@@ -6803,9 +6853,18 @@ ls ~/.local/bin/qspectrumanalyzer
 
 # GQRX
 programs_kali2023_1.append(('GQRX (2.9 MB)',
-"""sudo apt-get install -y gqrx-sdr
+"""sudo apt-get install -y libqt5svg5-dev  #sudo apt-get install -y gqrx-sdr
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE/
+git clone https://github.com/gqrx-sdr/gqrx.git
+cd  ~/Installed_by_FISSURE/gqrx
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
 ########## Verify ##########
-ls /usr/bin/gqrx
+ls /usr/local/bin/gqrx
 """,True,'SDR'))
 
 # Dump1090
@@ -7978,6 +8037,14 @@ sudo chmod +x hamrs*
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
 
+# Binwalk
+programs_kali2023_1.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
+
+
 
 ########################################################################
 ######################## BackBox Linux 8 ###############################
@@ -8795,9 +8862,18 @@ ls ~/.local/bin/qspectrumanalyzer
 
 # GQRX
 programs_backbox_linux_8.append(('GQRX (7.0 MB)',
-"""sudo apt-get install -y gqrx-sdr
+"""sudo apt-get install -y libqt5svg5-dev  #sudo apt-get install -y gqrx-sdr
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE/
+git clone https://github.com/gqrx-sdr/gqrx.git
+cd  ~/Installed_by_FISSURE/gqrx
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
 ########## Verify ##########
-ls /usr/bin/gqrx
+ls /usr/local/bin/gqrx
 """,True,'SDR'))
 
 # Dump1090
@@ -9962,6 +10038,13 @@ sudo chmod +x hamrs*
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
 
+# Binwalk
+programs_backbox_linux_8.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
+
 
 
 ########################################################################
@@ -10781,9 +10864,18 @@ ls ~/.local/bin/qspectrumanalyzer
 
 # GQRX
 programs_raspberry_pi_os.append(('GQRX',
-"""sudo apt-get install -y gqrx-sdr
+"""sudo apt-get install -y libqt5svg5-dev  #sudo apt-get install -y gqrx-sdr
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE/
+git clone https://github.com/gqrx-sdr/gqrx.git
+cd  ~/Installed_by_FISSURE/gqrx
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
 ########## Verify ##########
-ls /usr/bin/gqrx
+ls /usr/local/bin/gqrx
 """,True,'SDR'))
 
 # Dump1090
@@ -11948,6 +12040,13 @@ sudo chmod +x hamrs*
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 """,True,'Ham Radio'))
+
+# Binwalk
+programs_raspberry_pi_os.append(('Binwalk',
+"""sudo apt-get install -y python3-binwalk binwalk
+########## Verify ##########
+ls /usr/bin/binwalk
+""",True,'Data'))
 
 
 
