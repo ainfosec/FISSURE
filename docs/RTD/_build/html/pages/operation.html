@@ -11,8 +11,6 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
@@ -170,10 +168,10 @@
            <div itemprop="articleBody">
              
   <section id="operation">
-<h1>Operation<a class="headerlink" href="#operation" title="Permalink to this heading"></a></h1>
+<h1>Operation<a class="headerlink" href="#operation" title="Permalink to this heading">¶</a></h1>
 <p>FISSURE is meant for people of all skill levels. Students or beginners can navigate through lessons and tutorials on how to interact with various wireless technologies. The User Dashboard offers friendly visual aids that demonstrate the RF device assessment process from start to finish. Beginners can also evade the hurdle that is traditionally associated with installing open-source tools - as the installer consists of a list of checkboxes for installing programs and dependencies. Meanwhile developers, educators, and researchers can use the framework for their daily tasks or to expose their cutting-edge solutions to a wider audience. Future development will draw heavily from feedback and interaction with the open-source community.</p>
 <section id="start-up-procedures">
-<h2>Start-Up Procedures<a class="headerlink" href="#start-up-procedures" title="Permalink to this heading"></a></h2>
+<h2>Start-Up Procedures<a class="headerlink" href="#start-up-procedures" title="Permalink to this heading">¶</a></h2>
 <ol class="arabic simple">
 <li><p>Open a terminal and enter <cite>fissure</cite></p></li>
 <li><p>Attach hardware and assign to components using the sensor node buttons (see below)</p></li>
@@ -182,12 +180,12 @@
 <li><p>Click the “Start” buttons for individual components such as TSI or PD to start specific operations</p></li>
 </ol>
 <section id="sensor-node-buttons">
-<h3>Sensor Node Buttons<a class="headerlink" href="#sensor-node-buttons" title="Permalink to this heading"></a></h3>
+<h3>Sensor Node Buttons<a class="headerlink" href="#sensor-node-buttons" title="Permalink to this heading">¶</a></h3>
 <p>The sensor node buttons at the top of the Dashboard are used for configuring one local sensor or multiple remote sensor nodes. To start, click the “New Sensor Node” button to view the sensor node configuration window. Following configuration, the sensor node button will display the nickname of the sensor node. Repeat the same steps to connect up to five sensor nodes. Use the sensor node configuration window to delete a sensor node. Right-click a sensor node button to select an active sensor node. Selection is necessary to dictate where messages originating from the Dashboard will go to, to display the available hardware options throughout the Dashboard, and to update the information in statusbar at the bottom of the Dashboard.</p>
 <img alt="../_images/hardware_buttons.png" src="../_images/hardware_buttons.png" />
 </section>
 <section id="sensor-node-configuration-window">
-<h3>Sensor Node Configuration Window<a class="headerlink" href="#sensor-node-configuration-window" title="Permalink to this heading"></a></h3>
+<h3>Sensor Node Configuration Window<a class="headerlink" href="#sensor-node-configuration-window" title="Permalink to this heading">¶</a></h3>
 <p>The Sensor Node Configuration window is opened after clicking on a sensor node button. The window will display the settings of an existing sensor node or allow the user to configure a new sensor node. The “Sensor Node Topology” section provides the option to choose local or remote as well as enter nicknames, locations, and notes for a sensor node. A local sensor node will run sensor_node.py on the same computer as the Dashboard. The remote option requires the IP address, DEALER port, and PUB port of the remote sensor node in order to connect. The “Ping” button will ping the IP address in the terminal to determine if the sensor node address is reachable. The connect button will establish the HIPRFISR connections to the remote sensor node. If the “Recall Settings on Connect” checkbox is checked, the saved settings from the sensor node configuration file will populate items in the Sensor Node Configuration window. The fields and tables in the window are used by the Dashboard to pull information for a sensor node and keep track of network connections.</p>
 <img alt="../_images/hardware_configuration_local.png" src="../_images/hardware_configuration_local.png" />
 <p>The “Mass Hardware Scan” window allows the user to select multiple radio types that are assumed to be connected to the sensor node computer. The “Autoscan” button will perform localized hardware scans for each type selected and return the results in the “Scan Results” section. Table rows that do not contain hardware details indicate scans that were unsuccessful. The “Manual Entry” button will forgo the localized scan and add a new row to the “Scan Results” table. Once a row is created, the user can manually type in hardware details or use the “Probe” or “Guess” buttons to help populate relevant columns in the table.</p>
@@ -196,41 +194,41 @@
 </section>
 </section>
 <section id="menu-items">
-<h2>Menu Items<a class="headerlink" href="#menu-items" title="Permalink to this heading"></a></h2>
+<h2>Menu Items<a class="headerlink" href="#menu-items" title="Permalink to this heading">¶</a></h2>
 <section id="lessons">
-<h3>Lessons<a class="headerlink" href="#lessons" title="Permalink to this heading"></a></h3>
+<h3>Lessons<a class="headerlink" href="#lessons" title="Permalink to this heading">¶</a></h3>
 <p>Lesson 1</p>
 <p>Lesson 2</p>
 <p>Online Resources</p>
 </section>
 <section id="standalone-flow-graphs">
-<h3>Standalone Flow Graphs<a class="headerlink" href="#standalone-flow-graphs" title="Permalink to this heading"></a></h3>
+<h3>Standalone Flow Graphs<a class="headerlink" href="#standalone-flow-graphs" title="Permalink to this heading">¶</a></h3>
 </section>
 <section id="tools">
-<h3>Tools<a class="headerlink" href="#tools" title="Permalink to this heading"></a></h3>
+<h3>Tools<a class="headerlink" href="#tools" title="Permalink to this heading">¶</a></h3>
 </section>
 <section id="options">
-<h3>Options<a class="headerlink" href="#options" title="Permalink to this heading"></a></h3>
+<h3>Options<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h3>
 </section>
 <section id="view">
-<h3>View<a class="headerlink" href="#view" title="Permalink to this heading"></a></h3>
+<h3>View<a class="headerlink" href="#view" title="Permalink to this heading">¶</a></h3>
 </section>
 </section>
 <section id="automation-tab">
-<h2>Automation Tab<a class="headerlink" href="#automation-tab" title="Permalink to this heading"></a></h2>
+<h2>Automation Tab<a class="headerlink" href="#automation-tab" title="Permalink to this heading">¶</a></h2>
 <ol class="arabic simple">
 <li><p>Select Automation Mode</p></li>
 </ol>
 <section id="manual">
-<h3>Manual<a class="headerlink" href="#manual" title="Permalink to this heading"></a></h3>
+<h3>Manual<a class="headerlink" href="#manual" title="Permalink to this heading">¶</a></h3>
 <p>User confirms all phases and can edit parameters</p>
 </section>
 <section id="discovery-disabled">
-<h3>Discovery (Disabled)<a class="headerlink" href="#discovery-disabled" title="Permalink to this heading"></a></h3>
+<h3>Discovery (Disabled)<a class="headerlink" href="#discovery-disabled" title="Permalink to this heading">¶</a></h3>
 <p>Mostly automated, system chooses which signals to target and process</p>
 </section>
 <section id="target-disabled">
-<h3>Target (Disabled)<a class="headerlink" href="#target-disabled" title="Permalink to this heading"></a></h3>
+<h3>Target (Disabled)<a class="headerlink" href="#target-disabled" title="Permalink to this heading">¶</a></h3>
 <p>User-defined specifications, only pursue targets fitting certain criteria</p>
 <ol class="arabic simple">
 <li><p>Select target protocol</p></li>
@@ -241,16 +239,16 @@
 </ol>
 </section>
 <section id="custom-disabled">
-<h3>Custom (Disabled)<a class="headerlink" href="#custom-disabled" title="Permalink to this heading"></a></h3>
+<h3>Custom (Disabled)<a class="headerlink" href="#custom-disabled" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>User creates any combination of settings</p></li>
 </ol>
 </section>
 </section>
 <section id="tsi-tab">
-<h2>TSI Tab<a class="headerlink" href="#tsi-tab" title="Permalink to this heading"></a></h2>
+<h2>TSI Tab<a class="headerlink" href="#tsi-tab" title="Permalink to this heading">¶</a></h2>
 <section id="detector-sweep">
-<h3>Detector/Sweep<a class="headerlink" href="#detector-sweep" title="Permalink to this heading"></a></h3>
+<h3>Detector/Sweep<a class="headerlink" href="#detector-sweep" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Click Start</p></li>
 <li><p>Add search bands to table</p></li>
@@ -262,35 +260,35 @@
 </ol>
 </section>
 <section id="conditioner-future">
-<h3>Conditioner (Future)<a class="headerlink" href="#conditioner-future" title="Permalink to this heading"></a></h3>
+<h3>Conditioner (Future)<a class="headerlink" href="#conditioner-future" title="Permalink to this heading">¶</a></h3>
 <p>Tune, filter, separate, record, isolate</p>
 </section>
 <section id="feature-extractor-future">
-<h3>Feature Extractor (Future)<a class="headerlink" href="#feature-extractor-future" title="Permalink to this heading"></a></h3>
+<h3>Feature Extractor (Future)<a class="headerlink" href="#feature-extractor-future" title="Permalink to this heading">¶</a></h3>
 <p>Select AI/ML technique, acquire feature set</p>
 </section>
 <section id="classifier-future">
-<h3>Classifier (Future)<a class="headerlink" href="#classifier-future" title="Permalink to this heading"></a></h3>
+<h3>Classifier (Future)<a class="headerlink" href="#classifier-future" title="Permalink to this heading">¶</a></h3>
 <p>Choose AI/ML models, classify protocols/emitters, compare results</p>
 </section>
 </section>
 <section id="pd-tab">
-<h2>PD Tab<a class="headerlink" href="#pd-tab" title="Permalink to this heading"></a></h2>
+<h2>PD Tab<a class="headerlink" href="#pd-tab" title="Permalink to this heading">¶</a></h2>
 <section id="status">
-<h3>Status<a class="headerlink" href="#status" title="Permalink to this heading"></a></h3>
+<h3>Status<a class="headerlink" href="#status" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Start Protocol Discovery (PD)</p></li>
 </ol>
 </section>
 <section id="demodulation">
-<h3>Demodulation<a class="headerlink" href="#demodulation" title="Permalink to this heading"></a></h3>
+<h3>Demodulation<a class="headerlink" href="#demodulation" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Search library for flow graphs</p></li>
 <li><p>Start demodulation flow graph</p></li>
 </ol>
 </section>
 <section id="bit-slicing">
-<h3>Bit Slicing<a class="headerlink" href="#bit-slicing" title="Permalink to this heading"></a></h3>
+<h3>Bit Slicing<a class="headerlink" href="#bit-slicing" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Search for preambles</p></li>
 <li><p>Slice buffer by preamble</p></li>
@@ -298,7 +296,7 @@
 </ol>
 </section>
 <section id="data-viewer">
-<h3>Data Viewer<a class="headerlink" href="#data-viewer" title="Permalink to this heading"></a></h3>
+<h3>Data Viewer<a class="headerlink" href="#data-viewer" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Enter binary or hex data, perform binary operations</p></li>
 <li><p>Fill Protocol Matching table, apply against protocols in library</p></li>
@@ -306,7 +304,7 @@
 </ol>
 </section>
 <section id="dissectors">
-<h3>Dissectors<a class="headerlink" href="#dissectors" title="Permalink to this heading"></a></h3>
+<h3>Dissectors<a class="headerlink" href="#dissectors" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Create Lua sissectors for new packet types</p></li>
 <li><p>Follow lesson on Lua dissectors</p></li>
@@ -314,7 +312,7 @@
 </ol>
 </section>
 <section id="sniffer">
-<h3>Sniffer<a class="headerlink" href="#sniffer" title="Permalink to this heading"></a></h3>
+<h3>Sniffer<a class="headerlink" href="#sniffer" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Start demodulation flow graph with sniffer sink</p></li>
 <li><p>Launch sniffer flow graph created for packet type</p></li>
@@ -322,7 +320,7 @@
 </ol>
 </section>
 <section id="crc-calculator">
-<h3>CRC Calculator<a class="headerlink" href="#crc-calculator" title="Permalink to this heading"></a></h3>
+<h3>CRC Calculator<a class="headerlink" href="#crc-calculator" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Enter hex, select configuration, calculate CRC</p></li>
 <li><p>Enter two messages with known CRCs, find polynomial</p></li>
@@ -330,9 +328,9 @@
 </section>
 </section>
 <section id="attack-tab">
-<h2>Attack Tab<a class="headerlink" href="#attack-tab" title="Permalink to this heading"></a></h2>
+<h2>Attack Tab<a class="headerlink" href="#attack-tab" title="Permalink to this heading">¶</a></h2>
 <section id="single-stage">
-<h3>Single-Stage<a class="headerlink" href="#single-stage" title="Permalink to this heading"></a></h3>
+<h3>Single-Stage<a class="headerlink" href="#single-stage" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Select protocol, modulation type, hardware combination</p></li>
 <li><p>Double-click attack in tree widget</p></li>
@@ -342,7 +340,7 @@
 </ol>
 </section>
 <section id="multi-stage">
-<h3>Multi-Stage<a class="headerlink" href="#multi-stage" title="Permalink to this heading"></a></h3>
+<h3>Multi-Stage<a class="headerlink" href="#multi-stage" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Double-click attack in tree widget or click Add button</p></li>
 <li><p>Adjust durations and reorder attacks</p></li>
@@ -352,7 +350,7 @@
 </ol>
 </section>
 <section id="fuzzing-fields">
-<h3>Fuzzing (Fields)<a class="headerlink" href="#fuzzing-fields" title="Permalink to this heading"></a></h3>
+<h3>Fuzzing (Fields)<a class="headerlink" href="#fuzzing-fields" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Choose fuzzing Fields attack (if available)</p></li>
 <li><p>Choose protocol subcategory</p></li>
@@ -361,7 +359,7 @@
 </ol>
 </section>
 <section id="fuzzing-variables">
-<h3>Fuzzing (Variables)<a class="headerlink" href="#fuzzing-variables" title="Permalink to this heading"></a></h3>
+<h3>Fuzzing (Variables)<a class="headerlink" href="#fuzzing-variables" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Choose fuzzing Variables attack</p></li>
 <li><p>Load flow graph</p></li>
@@ -370,13 +368,13 @@
 </ol>
 </section>
 <section id="history">
-<h3>History<a class="headerlink" href="#history" title="Permalink to this heading"></a></h3>
+<h3>History<a class="headerlink" href="#history" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>View attack history, delete rows</p></li>
 </ol>
 </section>
 <section id="packet-crafter">
-<h3>Packet Crafter<a class="headerlink" href="#packet-crafter" title="Permalink to this heading"></a></h3>
+<h3>Packet Crafter<a class="headerlink" href="#packet-crafter" title="Permalink to this heading">¶</a></h3>
 <p><strong>Packet Editor</strong></p>
 <ol class="arabic simple">
 <li><p>Select protocol and packet type</p></li>
@@ -398,9 +396,9 @@
 </section>
 </section>
 <section id="iq-data-tab">
-<h2>IQ Data Tab<a class="headerlink" href="#iq-data-tab" title="Permalink to this heading"></a></h2>
+<h2>IQ Data Tab<a class="headerlink" href="#iq-data-tab" title="Permalink to this heading">¶</a></h2>
 <section id="record">
-<h3>Record<a class="headerlink" href="#record" title="Permalink to this heading"></a></h3>
+<h3>Record<a class="headerlink" href="#record" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Assign device to IQ hardware button</p></li>
 <li><p>Adjust settings in reference to applicable GNU Radio sinks</p></li>
@@ -408,21 +406,21 @@
 </ol>
 </section>
 <section id="playback">
-<h3>Playback<a class="headerlink" href="#playback" title="Permalink to this heading"></a></h3>
+<h3>Playback<a class="headerlink" href="#playback" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Configure settings or copy Record settings</p></li>
 <li><p>Click Play</p></li>
 </ol>
 </section>
 <section id="inspection">
-<h3>Inspection<a class="headerlink" href="#inspection" title="Permalink to this heading"></a></h3>
+<h3>Inspection<a class="headerlink" href="#inspection" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Double-click flow graph or click Load, Start</p></li>
 <li><p>Adjust variables in GUI</p></li>
 </ol>
 </section>
 <section id="crop">
-<h3>Crop<a class="headerlink" href="#crop" title="Permalink to this heading"></a></h3>
+<h3>Crop<a class="headerlink" href="#crop" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Double-click IQ file in Viewer</p></li>
 <li><p>Enter name for cropped IQ file</p></li>
@@ -431,7 +429,7 @@
 </ol>
 </section>
 <section id="convert">
-<h3>Convert<a class="headerlink" href="#convert" title="Permalink to this heading"></a></h3>
+<h3>Convert<a class="headerlink" href="#convert" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Choose input file, name output file</p></li>
 <li><p>Select file types</p></li>
@@ -439,7 +437,7 @@
 </ol>
 </section>
 <section id="append">
-<h3>Append<a class="headerlink" href="#append" title="Permalink to this heading"></a></h3>
+<h3>Append<a class="headerlink" href="#append" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Choose/enter file 1, file 2, output file</p></li>
 <li><p>Check Null to append samples to the front or end</p></li>
@@ -447,13 +445,13 @@
 </ol>
 </section>
 <section id="transfer">
-<h3>Transfer<a class="headerlink" href="#transfer" title="Permalink to this heading"></a></h3>
+<h3>Transfer<a class="headerlink" href="#transfer" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Copy folders or files to new locations</p></li>
 </ol>
 </section>
 <section id="timeslot">
-<h3>Timeslot<a class="headerlink" href="#timeslot" title="Permalink to this heading"></a></h3>
+<h3>Timeslot<a class="headerlink" href="#timeslot" title="Permalink to this heading">¶</a></h3>
 <p>Makes copies of a message at regular intervals</p>
 <ol class="arabic simple">
 <li><p>Choose input file with zeros before and after signal</p></li>
@@ -462,29 +460,29 @@
 </ol>
 </section>
 <section id="overlap">
-<h3>Overlap<a class="headerlink" href="#overlap" title="Permalink to this heading"></a></h3>
+<h3>Overlap<a class="headerlink" href="#overlap" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Plot data, store data, shift data, add data together</p></li>
 </ol>
 </section>
 <section id="resample">
-<h3>Resample<a class="headerlink" href="#resample" title="Permalink to this heading"></a></h3>
+<h3>Resample<a class="headerlink" href="#resample" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Select input file, specify output file, choose rates, resample</p></li>
 </ol>
 </section>
 <section id="ofdm">
-<h3>OFDM<a class="headerlink" href="#ofdm" title="Permalink to this heading"></a></h3>
+<h3>OFDM<a class="headerlink" href="#ofdm" title="Permalink to this heading">¶</a></h3>
 <p>Experimental</p>
 </section>
 <section id="normalize">
-<h3>Normalize<a class="headerlink" href="#normalize" title="Permalink to this heading"></a></h3>
+<h3>Normalize<a class="headerlink" href="#normalize" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Select input file, speciy output file, choose min/max, normalize</p></li>
 </ol>
 </section>
 <section id="viewer">
-<h3>Viewer<a class="headerlink" href="#viewer" title="Permalink to this heading"></a></h3>
+<h3>Viewer<a class="headerlink" href="#viewer" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Choose data folder</p></li>
 <li><p>Double-click/Load File to read data</p></li>
@@ -497,9 +495,9 @@
 </section>
 </section>
 <section id="archive-tab">
-<h2>Archive Tab<a class="headerlink" href="#archive-tab" title="Permalink to this heading"></a></h2>
+<h2>Archive Tab<a class="headerlink" href="#archive-tab" title="Permalink to this heading">¶</a></h2>
 <section id="download">
-<h3>Download<a class="headerlink" href="#download" title="Permalink to this heading"></a></h3>
+<h3>Download<a class="headerlink" href="#download" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Select row in Online Archive table</p></li>
 <li><p>Click Download</p></li>
@@ -507,7 +505,7 @@
 </ol>
 </section>
 <section id="replay">
-<h3>Replay<a class="headerlink" href="#replay" title="Permalink to this heading"></a></h3>
+<h3>Replay<a class="headerlink" href="#replay" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Double-click downloaded file or press Add button</p></li>
 <li><p>Build and configure playlist</p></li>
@@ -516,10 +514,10 @@
 </section>
 </section>
 <section id="sensor-nodes-tab">
-<h2>Sensor Nodes Tab<a class="headerlink" href="#sensor-nodes-tab" title="Permalink to this heading"></a></h2>
+<h2>Sensor Nodes Tab<a class="headerlink" href="#sensor-nodes-tab" title="Permalink to this heading">¶</a></h2>
 <p>The Dashboard Sensor Nodes tab contains operations for the active sensor node (right-click). These operations include building autorun playlists and file navigation for computers running the sensor nodes.</p>
 <section id="autorun">
-<h3>Autorun<a class="headerlink" href="#autorun" title="Permalink to this heading"></a></h3>
+<h3>Autorun<a class="headerlink" href="#autorun" title="Permalink to this heading">¶</a></h3>
 <img alt="../_images/autorun1.png" src="../_images/autorun1.png" />
 <p><strong>Description</strong></p>
 <p>The Autorun tab is used to build, view, transfer, and initiate autorun playlists on the actively selected sensor node. The autorun feature consists of executing a playlist comprised of single-stage and multi-stage attack scripts. Each item is run simultaneously in their own thread to take advantage of more than one radio peripheral connected to the sensor node at a time. The sensor node has the option to run these playlists without interaction from the FISSURE Dashboard if the “autorun” field is set in the sensor node configuration <cite>default.yaml</cite> file.</p>
@@ -534,7 +532,7 @@
 <p>The “Overwrite Default Playlist” button will transfer the contents of the table and overwrite the <cite>/Autorun_Playlists/default.yaml</cite> file located on the sensor node.</p>
 </section>
 <section id="file-navigation">
-<h3>File Navigation<a class="headerlink" href="#file-navigation" title="Permalink to this heading"></a></h3>
+<h3>File Navigation<a class="headerlink" href="#file-navigation" title="Permalink to this heading">¶</a></h3>
 <img alt="../_images/file_navigation1.png" src="../_images/file_navigation1.png" />
 <p><strong>Sensor Node</strong></p>
 <p>The “Sensor Node” frame displays file information inside folders on the the actively selected sensor node. The user can delete files or folders and download them to the Dashboard computer. Folders are compressed into a .zip file prior to the transfer.</p>
@@ -543,23 +541,23 @@
 </section>
 </section>
 <section id="library-tab">
-<h2>Library Tab<a class="headerlink" href="#library-tab" title="Permalink to this heading"></a></h2>
+<h2>Library Tab<a class="headerlink" href="#library-tab" title="Permalink to this heading">¶</a></h2>
 <section id="browse">
-<h3>Browse<a class="headerlink" href="#browse" title="Permalink to this heading"></a></h3>
+<h3>Browse<a class="headerlink" href="#browse" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Choose FISSURE YAML file</p></li>
 <li><p>Look at the contents</p></li>
 </ol>
 </section>
 <section id="gallery">
-<h3>Gallery<a class="headerlink" href="#gallery" title="Permalink to this heading"></a></h3>
+<h3>Gallery<a class="headerlink" href="#gallery" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Select protocol</p></li>
 <li><p>Click through pictures</p></li>
 </ol>
 </section>
 <section id="search">
-<h3>Search<a class="headerlink" href="#search" title="Permalink to this heading"></a></h3>
+<h3>Search<a class="headerlink" href="#search" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Enter information for signals of interest (SOIs)</p></li>
 <li><p>Enter data values for messages in library</p></li>
@@ -568,7 +566,7 @@
 </ol>
 </section>
 <section id="remove">
-<h3>Remove<a class="headerlink" href="#remove" title="Permalink to this heading"></a></h3>
+<h3>Remove<a class="headerlink" href="#remove" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Select Protocol</p></li>
 <li><p>Choose types to remove from library</p></li>
@@ -576,7 +574,7 @@
 </ol>
 </section>
 <section id="add">
-<h3>Add<a class="headerlink" href="#add" title="Permalink to this heading"></a></h3>
+<h3>Add<a class="headerlink" href="#add" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Create new protocol</p></li>
 <li><p>Add modulation type, packet type, signal of interest, statistics, demodulation flow graph, and attacks to existing protocol</p></li>
@@ -584,27 +582,27 @@
 </section>
 </section>
 <section id="log-tab">
-<h2>Log Tab<a class="headerlink" href="#log-tab" title="Permalink to this heading"></a></h2>
+<h2>Log Tab<a class="headerlink" href="#log-tab" title="Permalink to this heading">¶</a></h2>
 <section id="system-log">
-<h3>System Log<a class="headerlink" href="#system-log" title="Permalink to this heading"></a></h3>
+<h3>System Log<a class="headerlink" href="#system-log" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Filter messages to view from log, click Refresh</p></li>
 </ol>
 </section>
 <section id="session-notes">
-<h3>Session Notes<a class="headerlink" href="#session-notes" title="Permalink to this heading"></a></h3>
+<h3>Session Notes<a class="headerlink" href="#session-notes" title="Permalink to this heading">¶</a></h3>
 <ol class="arabic simple">
 <li><p>Make notes and save attack history, system log, and session notes</p></li>
 </ol>
 </section>
 </section>
 <section id="status-bar">
-<h2>Status Bar<a class="headerlink" href="#status-bar" title="Permalink to this heading"></a></h2>
+<h2>Status Bar<a class="headerlink" href="#status-bar" title="Permalink to this heading">¶</a></h2>
 </section>
 <section id="triggers">
-<h2>Triggers<a class="headerlink" href="#triggers" title="Permalink to this heading"></a></h2>
+<h2>Triggers<a class="headerlink" href="#triggers" title="Permalink to this heading">¶</a></h2>
 <section id="configuration">
-<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading"></a></h3>
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading">¶</a></h3>
 <p>Triggers are scripts that loop indefinitely until a condition is statisfied and are used to delay the start of transmission of electromagnetic effects for single-stage attacks, multi-stage attacks, archive replay, and autorun playlists. In each of those tabs a “Triggers” section can be found as shown below for the Single-Stage attack tab.</p>
 <img alt="../_images/trigger2.png" src="../_images/trigger2.png" />
 <p>Clicking the “Edit” button will open the following dialog for selecting and configuring triggers.</p>
@@ -612,7 +610,7 @@
 <p>Choose the category and trigger from the comboboxes. Enter values into the user interface widgets specific to the trigger. Click “Add” to select a trigger. Multiple triggers can be selected and will be run simultaneously. Once the first trigger is complete, the remaining triggers will end and the subsequent action will be executed. Select a trigger from the table and click “Remove” to delete it. Click “OK” to save the triggers.</p>
 </section>
 <section id="trigger-list">
-<h3>Trigger List<a class="headerlink" href="#trigger-list" title="Permalink to this heading"></a></h3>
+<h3>Trigger List<a class="headerlink" href="#trigger-list" title="Permalink to this heading">¶</a></h3>
 <p>The following is a list of triggers integrated into FISSURE. To create new triggers refer to <a class="reference internal" href="development.html#creating-triggers"><span class="std std-ref">Creating Triggers</span></a>.</p>
 <table class="docutils align-default">
 <colgroup>

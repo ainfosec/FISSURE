@@ -11,8 +11,6 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
@@ -94,14 +92,14 @@
            <div itemprop="articleBody">
              
   <section id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading"></a></h1>
+<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this heading">¶</a></h1>
 <p>The FISSURE installer is helpful for staging computers or installing select software programs of interest. The code can be quickly modified to allow for custom software installs. The size estimates for the programs are before and after readings from a full install. The sizes for each program are not exact as some dependencies are installed in previously checked items. The sizes may also change over time as programs get updated.</p>
 <section id="requirements">
-<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading"></a></h2>
+<h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this heading">¶</a></h2>
 <p>It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. The items listed under the “Minimum Install” category are what is required to launch the FISSURE Dashboard without errors. Select all the recommended checkboxes (Default button) to avoid additonal errors while operating the various tools within FISSURE. There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names.</p>
 </section>
 <section id="cloning">
-<h2>Cloning<a class="headerlink" href="#cloning" title="Permalink to this heading"></a></h2>
+<h2>Cloning<a class="headerlink" href="#cloning" title="Permalink to this heading">¶</a></h2>
 <p>For adding SSH keys to GitHub:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519
 <span class="gp">$ </span>cat<span class="w"> </span>~/.ssh/id_ed25519.pub
@@ -118,7 +116,7 @@
 </div>
 </section>
 <section id="installer">
-<h2>Installer<a class="headerlink" href="#installer" title="Permalink to this heading"></a></h2>
+<h2>Installer<a class="headerlink" href="#installer" title="Permalink to this heading">¶</a></h2>
 <p>Notes:</p>
 <ul class="simple">
 <li><p>The git submodule command will download all missing GNU Radio out-of-tree modules from their online repositories and is required to install the GNU Radio out-of-tree modules.</p></li>
@@ -141,7 +139,7 @@
 <p>The FISSURE installer is helpful for staging computers or installing select software programs of interest. The code can be quickly modified to allow for custom software installs. The size estimates for the programs are before and after readings from a full install. The sizes for each program are not exact as some dependencies are installed in previously checked items. The sizes may also change over time as programs get updated.</p>
 </section>
 <section id="remote-sensor-node-installation">
-<h2>Remote Sensor Node Installation<a class="headerlink" href="#remote-sensor-node-installation" title="Permalink to this heading"></a></h2>
+<h2>Remote Sensor Node Installation<a class="headerlink" href="#remote-sensor-node-installation" title="Permalink to this heading">¶</a></h2>
 <p>Install FISSURE per usual on a general purpose computer. Install FISSURE on the remote computer in the same directory location as the local computer (until further notice) to avoid filepath errors with certain actions. To configure the sensor node for remote operation, edit the “default.yaml” file in the <cite>./fissure/Sensor_Node/Sensor_Node_Config/</cite> directory. Edit the following fields to change from local to remote operation:</p>
 <ul class="simple">
 <li><p>local_remote: remote (from local)</p></li>
@@ -152,7 +150,7 @@
 <p>The remote sensor node acts as a server and must have a set of valid certificates (generated during install) that match with the client (local computer). The server needs the “server.key_secret” and “client.key” files while the client needs the “client.key_secret” and “server.key” files. If the certificates folder was generated on the server computer, the client files must be manually transferred to the other computer.</p>
 </section>
 <section id="uninstalling">
-<h2>Uninstalling<a class="headerlink" href="#uninstalling" title="Permalink to this heading"></a></h2>
+<h2>Uninstalling<a class="headerlink" href="#uninstalling" title="Permalink to this heading">¶</a></h2>
 <p>There is no uninstaller for FISSURE. Exercise caution when installing several GB of new software for all the installer checkboxes. There are only a few places where FISSURE writes to the system outside of apt-get, make, or pip commands. A future uninstaller could get rid of those changes.</p>
 <p>The following are locations that are impacted by the FISSURE installer:</p>
 <ul class="simple">
@@ -168,7 +166,7 @@
 <p>Many programs are stored in the ~/Installed_by_FISSURE folder but the dependencies are heavily intertwined amongst the programs.</p>
 </section>
 <section id="local-dashboard-usage">
-<h2>Local Dashboard Usage<a class="headerlink" href="#local-dashboard-usage" title="Permalink to this heading"></a></h2>
+<h2>Local Dashboard Usage<a class="headerlink" href="#local-dashboard-usage" title="Permalink to this heading">¶</a></h2>
 <p>Open a terminal and enter:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>fissure
 </pre></div>
@@ -183,7 +181,7 @@
 </div>
 </section>
 <section id="remote-sensor-node-usage">
-<h2>Remote Sensor Node Usage<a class="headerlink" href="#remote-sensor-node-usage" title="Permalink to this heading"></a></h2>
+<h2>Remote Sensor Node Usage<a class="headerlink" href="#remote-sensor-node-usage" title="Permalink to this heading">¶</a></h2>
 <p>After configuring the sensor node config file (see above), the code can be run using this command from the root directory:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python3<span class="w"> </span>./fissure/Sensor_Node/SensorNode.py
 </pre></div>
@@ -191,7 +189,7 @@
 <p>The sensor node code will stay active until ctrl+c is applied. Connecting to the remote sensor node is performed through the top buttons of the FISSURE Dashboard. Right-clicking the top buttons will select an active sensor node to perform operations. Future operations that utilize more than one node at a time will be handled on a case-by-case basis within the individual tabs.</p>
 </section>
 <section id="known-conflicts">
-<h2>Known Conflicts<a class="headerlink" href="#known-conflicts" title="Permalink to this heading"></a></h2>
+<h2>Known Conflicts<a class="headerlink" href="#known-conflicts" title="Permalink to this heading">¶</a></h2>
 <p>The following are a list of known software conflicts and incompatibilities within FISSURE:</p>
 <ul class="simple">
 <li><dl class="simple">
@@ -230,7 +228,7 @@
 </ul>
 </section>
 <section id="third-party-software">
-<h2>Third-Party Software<a class="headerlink" href="#third-party-software" title="Permalink to this heading"></a></h2>
+<h2>Third-Party Software<a class="headerlink" href="#third-party-software" title="Permalink to this heading">¶</a></h2>
 <p>The following is a table of the major software tools that have been proven to work for each supported operating system.</p>
 <table class="docutils align-default">
 <colgroup>
@@ -861,7 +859,7 @@
 </table>
 </section>
 <section id="third-party-software-versions">
-<h2>Third-Party Software Versions<a class="headerlink" href="#third-party-software-versions" title="Permalink to this heading"></a></h2>
+<h2>Third-Party Software Versions<a class="headerlink" href="#third-party-software-versions" title="Permalink to this heading">¶</a></h2>
 <p>The following are the software versions that are included with the FISSURE installer for the most recent major version of each supported operating system. This list will be updated periodically.</p>
 <ul class="simple">
 <li><p><a class="reference internal" href="#ubuntu-18-04-6"><span class="std std-ref">Ubuntu 18.04.6</span></a></p></li>
@@ -869,7 +867,7 @@
 <li><p><a class="reference internal" href="#ubuntu-22-04-1"><span class="std std-ref">Ubuntu 22.04.1</span></a></p></li>
 </ul>
 <section id="ubuntu-18-04-6">
-<h3>Ubuntu 18.04.6<a class="headerlink" href="#ubuntu-18-04-6" title="Permalink to this heading"></a></h3>
+<h3>Ubuntu 18.04.6<a class="headerlink" href="#ubuntu-18-04-6" title="Permalink to this heading">¶</a></h3>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 56%" />
@@ -1484,7 +1482,7 @@
 </table>
 </section>
 <section id="ubuntu-20-04-4">
-<h3>Ubuntu 20.04.4<a class="headerlink" href="#ubuntu-20-04-4" title="Permalink to this heading"></a></h3>
+<h3>Ubuntu 20.04.4<a class="headerlink" href="#ubuntu-20-04-4" title="Permalink to this heading">¶</a></h3>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 56%" />
@@ -2114,7 +2112,7 @@
 </table>
 </section>
 <section id="ubuntu-22-04-1">
-<h3>Ubuntu 22.04.1<a class="headerlink" href="#ubuntu-22-04-1" title="Permalink to this heading"></a></h3>
+<h3>Ubuntu 22.04.1<a class="headerlink" href="#ubuntu-22-04-1" title="Permalink to this heading">¶</a></h3>
 <table class="docutils align-default">
 <colgroup>
 <col style="width: 56%" />

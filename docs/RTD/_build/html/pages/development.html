@@ -11,8 +11,6 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
         <script src="../_static/doctools.js"></script>
         <script src="../_static/sphinx_highlight.js"></script>
@@ -90,9 +88,9 @@
            <div itemprop="articleBody">
              
   <section id="development">
-<h1>Development<a class="headerlink" href="#development" title="Permalink to this heading"></a></h1>
+<h1>Development<a class="headerlink" href="#development" title="Permalink to this heading">¶</a></h1>
 <section id="adding-custom-options">
-<h2>Adding Custom Options<a class="headerlink" href="#adding-custom-options" title="Permalink to this heading"></a></h2>
+<h2>Adding Custom Options<a class="headerlink" href="#adding-custom-options" title="Permalink to this heading">¶</a></h2>
 <p><strong>Options Dialog</strong></p>
 <p>Bring up the options dialog in Qt Designer using the <cite>designer</cite> command and then open the <em>FISSURE/UI/options.ui</em> file. Click the arrows for the stacked widget (top right) to locate the table where the custom option will be inserted. Double-click on the table and add a new row with the name of the variable. Set the font size to match the other rows with the “Properties&lt;&lt;” button.</p>
 <img alt="../_images/options.png" src="../_images/options.png" />
@@ -102,7 +100,7 @@
 <p>Access the variable in <em>dashboard.py</em> with: <cite>int(self.dashboard_settings_dictionary[‘fft_size’])</cite>.</p>
 </section>
 <section id="built-with">
-<h2>Built With<a class="headerlink" href="#built-with" title="Permalink to this heading"></a></h2>
+<h2>Built With<a class="headerlink" href="#built-with" title="Permalink to this heading">¶</a></h2>
 <p>The following software tools are used to edit FISSURE.</p>
 <p><strong>Read the Docs</strong></p>
 <p>To regenerate the offline HTML RTD documentation:</p>
@@ -144,7 +142,7 @@
 </div>
 </section>
 <section id="attack-flow-graphs">
-<h2>Attack Flow Graphs<a class="headerlink" href="#attack-flow-graphs" title="Permalink to this heading"></a></h2>
+<h2>Attack Flow Graphs<a class="headerlink" href="#attack-flow-graphs" title="Permalink to this heading">¶</a></h2>
 <p><strong>Flow Graph Configuration</strong></p>
 <p>A new Python file is generated each time a .grc file is executed in GNU Radio Companion. The format of this auto-generated Python file is used by FISSURE to perform actions like: displaying variable names, starting attacks, changing values for a running flow graph, etc. Editing the Python file may cause FISSURE to not function properly.</p>
 <p><em>GUI vs. No GUI</em></p>
@@ -166,7 +164,7 @@
 <p>Attack flow graphs can be added to FISSURE within the <em>Library&gt;Add</em> tab by selecting a protocol and choosing “Attack”. Attacks will be visible within the Attack tree if the “Attack Template Name” is entered properly.</p>
 </section>
 <section id="attack-python-scripts">
-<h2>Attack Python Scripts<a class="headerlink" href="#attack-python-scripts" title="Permalink to this heading"></a></h2>
+<h2>Attack Python Scripts<a class="headerlink" href="#attack-python-scripts" title="Permalink to this heading">¶</a></h2>
 <p><strong>Creating Python Scripts</strong></p>
 <p>Non-GNU Radio attacks can be added to the FISSURE library by uploading specially configured Python (.py) files. A function is needed within the Python script to identify which variables can be modified in the FISSURE Dashboard (<cite>getArguments()</cite>). Those variables are used by the system as command line arguments during execution of the script. All FISSURE branches accept both Python2 and Python3 attack scripts.</p>
 <p>FISSURE will parse a variable named “run_with_sudo” set to True or False and set the “Run with sudo” checkbox upon loading the attack in the Single-Stage Attack tab. For multi-stage attacks, this variable is listed in the generated tables and its value is used to run the script with or without sudo. If no variable is found, then Python scripts will rely on the checkbox for single-stage attacks and be run with sudo for multi-stage attacks.</p>
@@ -229,7 +227,7 @@
 <p>Python files can be uploaded to FISSURE within the <em>Library&gt;&gt;Add</em> tab by choosing a protocol and selecting “Attack”. The file type must be set to “Python2 Script” or “Python3 Script” and the file must have a valid .py extension. Attacks added to the library and named with a proper “Attack Template Name” will immediately show up in the Attack tree widget.</p>
 </section>
 <section id="inspection-flow-graphs">
-<h2>Inspection Flow Graphs<a class="headerlink" href="#inspection-flow-graphs" title="Permalink to this heading"></a></h2>
+<h2>Inspection Flow Graphs<a class="headerlink" href="#inspection-flow-graphs" title="Permalink to this heading">¶</a></h2>
 <p>Inspection flow graphs can be added to FISSURE to perform frequently used analysis on live streams from SDRs or directly on prerecorded data files. Flow graph Python files (.py) are called directly with Python2/3 and use the GNU Radio “parameter” block as arguments to the Python call. This enables variables found in blocks that do not utilize callbacks (like IP address or serial number) to be changed prior to runtime. The following are instructions for creating a new inspection flow graph within the <em>IQ Data&gt;&gt;Inspection</em> tab.</p>
 <img alt="../_images/inspection1.png" src="../_images/inspection1.png" />
 <p><strong>Location</strong></p>
@@ -267,10 +265,10 @@
 <p>Double-click/load an IQ file in the IQ Data tab Data Viewer and enter sample rate and frequency information prior to loading a file-based inspection flow graph. These values will automatically copy over to the table if available.</p>
 </section>
 <section id="modifying-dashboard">
-<h2>Modifying Dashboard<a class="headerlink" href="#modifying-dashboard" title="Permalink to this heading"></a></h2>
+<h2>Modifying Dashboard<a class="headerlink" href="#modifying-dashboard" title="Permalink to this heading">¶</a></h2>
 <p>This guide will provide examples on how to add GUI elements to the FISSURE Dashboard and interact with those elements within the Dashboard.py code.</p>
 <section id="qtdesigner">
-<h3>QtDesigner<a class="headerlink" href="#qtdesigner" title="Permalink to this heading"></a></h3>
+<h3>QtDesigner<a class="headerlink" href="#qtdesigner" title="Permalink to this heading">¶</a></h3>
 <p>Launch QtDesigner with the <cite>designer</cite> command and open the <em>/FISSURE/UI/dashboard.ui</em> file.</p>
 <img alt="../_images/qtdesigner.png" src="../_images/qtdesigner.png" />
 <p><strong>Creating New Widgets</strong></p>
@@ -393,7 +391,7 @@
 </div>
 </section>
 <section id="dashboard-py">
-<h3>dashboard.py<a class="headerlink" href="#dashboard-py" title="Permalink to this heading"></a></h3>
+<h3>dashboard.py<a class="headerlink" href="#dashboard-py" title="Permalink to this heading">¶</a></h3>
 <p>Any widget in the Dashboard can be referenced with <cite>self.objectName</cite>.</p>
 <p>The following are frequently called public functions for the widgets in FISSURE:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Push<span class="w"> </span>Button
@@ -668,7 +666,7 @@
 </section>
 </section>
 <section id="creating-triggers">
-<h2>Creating Triggers<a class="headerlink" href="#creating-triggers" title="Permalink to this heading"></a></h2>
+<h2>Creating Triggers<a class="headerlink" href="#creating-triggers" title="Permalink to this heading">¶</a></h2>
 <p>There are four major steps in creating a new trigger for use in single-stage attacks, multi-stage attacks, archive replay, and autorun playlists: building the Python script, adding widgets to .ui file in QtDesigner, updating the Triggers Dialog slots, and adding information to the FISSURE library.yaml file.</p>
 <p><strong>Scripting</strong></p>
 <p>For the moment, triggers consist of a Python3 file that accepts input arguments provided by the FISSURE Dashboard and loops until a condition is satisfied. Trigger scripts can call secondary programs like GNU Radio flow graphs and monitor output such as text printed to stdout. A value of 0 is returned if the trigger is successful and -1 if an error was caught. Two examples of trigger scripts are provided below. The first waits until a specific time and the second reads text produced from a flow graph.</p>
