@@ -3,14 +3,14 @@ version: 1
 disable_existing_loggers: False
 formatters:
     hiprfisrfmt:
-        format: '%(asctime)s - %(name)s: %(message)s'
+        format: '%(asctime)s - %(name)s: [%(levelname)s] %(message)s'
         datefmt: '%m/%d/%Y %I:%M:%S %p'
 
 
 handlers:
     console:
         class: logging.StreamHandler
-        level: DEBUG
+        level: INFO
         formatter: hiprfisrfmt
         stream: ext://sys.stdout
 
@@ -28,22 +28,30 @@ root:
     level: DEBUG
     handlers: [console,file]
 
-tsi:
+fissure:
     level: DEBUG
-    handler: [console,file]
+    handlers: [console, file]
 
-fge:
+fissure.dashboard:
     level: DEBUG
-    handler: [console,file]
+    handlers: [console, file]
 
-dashboard:
+fissure.hiprfisr:
     level: DEBUG
-    handler: [console,file]
+    handlers: [console, file]
 
-hiprfisr:
+fissure.pd:
     level: DEBUG
-    handler: [console, file]
+    handlers: [console, file]
 
-pd:
+fissure.tsi:
     level: DEBUG
-    handler: [console,file]
+    handlers: [console, file]
+
+fissure.sensor_node:
+    level: DEBUG
+    handlers: [console, file]
+
+fissure.test:
+    level: DEBUG
+    handlers: [console, file]

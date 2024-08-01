@@ -1,0 +1,60 @@
+id: fuzzer_fuzzer
+label: fuzzer
+category: '[fuzzer]'
+
+templates:
+  imports: import fuzzer
+  make: fuzzer.fuzzer(${fuzzing_seed},${fuzzing_fields},${fuzzing_type},${fuzzing_min},${fuzzing_max},${fuzzing_data},${fuzzing_interval},${fuzzing_protocol},${fuzzing_packet_type},${library_filepath})
+
+parameters:
+- id: fuzzing_seed
+  label: Fuzzing Seed
+  dtype: string
+  default: "0"
+- id: fuzzing_fields
+  label: Fuzzing Fields
+  dtype: string
+  default: "0"
+- id: fuzzing_type
+  label: Fuzzing Type
+  dtype: string
+  default: "0"
+- id: fuzzing_min
+  label: Fuzzing Min
+  dtype: string
+  default: "0"
+- id: fuzzing_max
+  label: Fuzzing Max
+  dtype: string
+  default: "0"
+- id: fuzzing_data
+  label: Fuzzing Data
+  dtype: string
+  default: "0"
+- id: fuzzing_interval
+  label: Fuzzing Interval
+  dtype: string
+  default: "0"
+- id: fuzzing_protocol
+  label: Fuzzing Protocol
+  dtype: string
+  default: "0"
+- id: fuzzing_packet_type
+  label: Fuzzing Packet Type
+  dtype: string
+  default: "0"
+- id: library_filepath
+  label: Library Filepath
+  dtype: string
+  default: "~/FISSURE/YAML/library.yaml"         
+
+
+outputs:
+- label: packet_out
+  domain: message
+  dtype: message
+  vlen: 1
+  optional: 0
+
+
+file_format: 1

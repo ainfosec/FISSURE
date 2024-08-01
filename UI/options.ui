@@ -78,7 +78,7 @@
    </item>
    <item>
     <property name="text">
-     <string>Packet Crafter</string>
+     <string>Sensor Nodes</string>
     </property>
    </item>
    <item>
@@ -89,11 +89,6 @@
    <item>
     <property name="text">
      <string>Log</string>
-    </property>
-   </item>
-   <item>
-    <property name="text">
-     <string>Hardware</string>
     </property>
    </item>
    <item>
@@ -574,7 +569,7 @@
      </widget>
     </widget>
     <widget class="QWidget" name="page_10">
-     <widget class="QTableWidget" name="tableWidget_options_packet_crafter">
+     <widget class="QTableWidget" name="tableWidget_options_sensor_nodes">
       <property name="geometry">
        <rect>
         <x>0</x>
@@ -668,43 +663,9 @@
       <attribute name="verticalHeaderStretchLastSection">
        <bool>false</bool>
       </attribute>
-      <column>
-       <property name="text">
-        <string/>
-       </property>
-      </column>
-     </widget>
-    </widget>
-    <widget class="QWidget" name="page_11">
-     <widget class="QTableWidget" name="tableWidget_options_hardware">
-      <property name="geometry">
-       <rect>
-        <x>0</x>
-        <y>0</y>
-        <width>498</width>
-        <height>398</height>
-       </rect>
-      </property>
-      <property name="font">
-       <font>
-        <pointsize>10</pointsize>
-       </font>
-      </property>
-      <attribute name="horizontalHeaderVisible">
-       <bool>false</bool>
-      </attribute>
-      <attribute name="horizontalHeaderDefaultSectionSize">
-       <number>100</number>
-      </attribute>
-      <attribute name="horizontalHeaderStretchLastSection">
-       <bool>true</bool>
-      </attribute>
-      <attribute name="verticalHeaderStretchLastSection">
-       <bool>false</bool>
-      </attribute>
       <row>
        <property name="text">
-        <string>hardware_tsi</string>
+        <string>console_logging_level</string>
        </property>
        <property name="font">
         <font>
@@ -714,237 +675,7 @@
       </row>
       <row>
        <property name="text">
-        <string>hardware_pd</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_attack</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_iq</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_archive</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_ip_tsi</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_ip_pd</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_ip_attack</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_ip_iq</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_ip_archive</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_serial_tsi</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_serial_pd</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_serial_attack</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_serial_iq</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_serial_archive</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_interface_tsi</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_interface_pd</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_interface_attack</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_interface_iq</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_interface_archive</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_daughterboard_tsi</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_daughterboard_pd</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_daughterboard_attack</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_daughterboard_iq</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>hardware_daughterboard_archive</string>
+        <string>file_logging_level</string>
        </property>
        <property name="font">
         <font>
@@ -1028,7 +759,7 @@
       </row>
       <row>
        <property name="text">
-        <string>fge_hiprfisr_dealer_port</string>
+        <string>sensor_node_hiprfisr_dealer_port</string>
        </property>
        <property name="font">
         <font>
@@ -1098,7 +829,7 @@
       </row>
       <row>
        <property name="text">
-        <string>fge_pub_port</string>
+        <string>sensor_node_pub_port</string>
        </property>
        <property name="font">
         <font>
@@ -1129,136 +860,6 @@
       <row>
        <property name="text">
         <string>clear_log_file_on_startup</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color1</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color2</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color3</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color4</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color5</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color6</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color7</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color8</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color9</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color10</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color11</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color12</string>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-      </row>
-      <row>
-       <property name="text">
-        <string>custom_color13</string>
        </property>
        <property name="font">
         <font>

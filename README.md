@@ -10,9 +10,39 @@ The framework and tools included with FISSURE are designed to detect the presenc
 
 The friendly Python codebase and user interface allows beginners to quickly learn about popular tools and techniques involving RF and reverse engineering. Educators in cybersecurity and engineering can take advantage of the built-in material or utilize the framework to demonstrate their own real-world applications. Developers and researchers can use FISSURE for their daily tasks or to expose their cutting-edge solutions to a wider audience. As awareness and usage of FISSURE grows in the community, so will the extent of its capabilities and the breadth of the technology it encompasses.
 
+
 <p align="center">
 <img src="/docs/Icons/README/rf_re.png" width="400" height="400">
 </p>
+
+## News
+
+![NEW](https://img.shields.io/badge/NEW-Feature-brightgreen) 
+
+**Deployable remote sensor nodes** for general-purpose computers (SBCs, mini PCs, laptops, desktops) that support any type of peripheral that can be controlled by computer. These remote sensor nodes run a small subset of code that can be controlled over a network through the FISSURE Dashboard GUI to perform traditional FISSURE operations and also execute new types of scripted actions that can be run autonomously on startup or semi-autonomously through user interaction (autorun playlists). 
+
+The deployment of multiple sensor nodes on the same network unlocks many geospatial applications for future development of FISSURE. Such applications include direction finding, tracking, intrusion detection, mobile deployment, and perimeter defense. A small form factor and autonomous capabilities grant unique opportunities for stealth deployment and packaging onto existing platforms. These updates can also provide a low-cost mechanism for remote workers to conduct combined RF-cybersecurity testing and access specialized RF environments like international localities of interest, laboratories, and test sites.
+
+![NEW](https://img.shields.io/badge/NEW-Feature-brightgreen) 
+
+**Trigger capabilities** for autorun playlists, single-stage attacks, multi-stage attacks, and archive replay. Includes over 20 examples of acoustic, environmental, filesystem, networking, RF, time, and visual triggers for kicking off electromagnetic effects. Refer to the [Trigger List](https://fissure.readthedocs.io/en/latest/pages/operation.html#trigger-list) section in the user manual for the current list and the [Creating Triggers](https://fissure.readthedocs.io/en/latest/pages/development.html#creating-triggers) section on how to add your own.
+
+![NEW](https://img.shields.io/badge/NEW-Feature-brightgreen) 
+
+**Signal Classifier tab** for training decision tree and DNN models based solely on extracted statistical features from IQ data. This tab is used to assign truth information to features sets (produced from Feature Extractor) gathered from isolated signals files (produced from Signal Conditioner) to develop machine learning models using TensorFlow and scikit-learn. Unknown signals can be run through all available models to compare results and establish confidence. The Signal Conditioner, Feature Extractor, and Signal Classifier tabs act as a testbed for developing new algorithms and eventually the results (isolated IQ signals, statistical features, classification confidence) will be cataloged into the FISSURE library as signals of interest for further analysis or to trigger automated actions.
+
+![NEW](https://img.shields.io/badge/NEW-Feature-brightgreen) 
+
+**On-off keying signal generator** in the IQ Data tab for quick viewing and testing of signals/devices. Custom signals can be saved as IQ files for replay to perform actions on targets or simulate RF devices. 
+
+
+### Upcoming/Recent Events
+
+![Conference](https://img.shields.io/badge/Event-Conference-blue) **Sat. August 10, 2024**: DEF CON 32 - RF Village - 1400-1500 PST
+
+![Career Fair](https://img.shields.io/badge/Event-Career%20Fair-orange) **Thu. September 5, 2024**: Binghamton University STEM Job and Internship Fair - 1100-1530 EST
+
+![Conference](https://img.shields.io/badge/Event-Conference-blue) **Tue. September 17, 2024**: GNU Radio Conference 2024 - 1605-1635 EST
 
 ## Documentation
 
@@ -140,62 +170,69 @@ The following is a list of "supported" hardware with varying levels of integrati
 
 **Supported**
 
-There are three branches within FISSURE to make file navigation easier and reduce code redundancy. Each branch codebase is dependent on the major version of Python and GNU Radio.
-- Python2_maint-3.7 branch: Python2, PyQt4, GNU Radio 3.7
-- Python3_maint-3.8 branch: Python3, PyQt5, GNU Radio 3.8
-- Python3_maint-3.10 branch: Python3, PyQt5, GNU Radio 3.10.
+There are now two branches within FISSURE: the Python3 branch and the Python2_maint-3.7 branch. The Python3 branch contains the latest code and has support for PyQt5 and GNU Radio versions 3.8 and 3.10. The Python2_maint-3.7 branch has been deprecated and will only be updated if specific third-party tools require GNU Radio version 3.7 or an older operating system. Only the latest minor versions of operating systems will be supported for installs and we will do our best to keep up.
 
-Operating System            |  FISSURE Branch
-:-------------------------:|:-------------------------:
-| Ubuntu 18.04 (x64) | Python2_maint-3.7 | 
-| Ubuntu 18.04.5 (x64) | Python2_maint-3.7 |
-| Ubuntu 18.04.6 (x64) | Python2_maint-3.7 |
-| Ubuntu 20.04.1 (x64) | Python3_maint-3.8 |
-| Ubuntu 20.04.4 (x64) | Python3_maint-3.8 |
-| Ubuntu 20.04.5 (x64) | Python3_maint-3.8 |
-| Ubuntu 20.04.6 (x64) | Python3_maint-3.8 |
-| KDE neon 5.25 (x64) | Python3_maint-3.8 |
-| Ubuntu 22.04.1 (x64) | Python3_maint-3.10 |
-| Ubuntu 22.04.2 (x64) | Python3_maint-3.10 |
-| Ubuntu 22.04.3 (x64) | Python3_maint-3.10 |
-| DragonOS FocalX (x86_64) | Python3_maint-3.10 |
+Operating System | FISSURE Branch | Default GNU Radio Version
+:-------------------------:|:-------------------------:|:-------------------------:
+| BackBox Linux 8 (amd64) | Python3 | maint-3.10 |
+| DragonOS FocalX (x86_64) | Python3 | maint-3.10 |
+| Kali 23.1 (x64) | Python3 | maint-3.10 |
+| KDE neon 5.25 (x64) (6.0 not tested) | Python3 | maint-3.8 |
+| Parrot OS 5.2 (amd64) | Python3 | maint-3.8 |
+| Raspberry Pi OS (bookworm) | Python3 | maint-3.10 |
+| Ubuntu 18.04 (x64) | Python2_maint-3.7 | maint-3.7 |
+| Ubuntu 20.04 (x64) | Python3 | maint-3.8 |
+| Ubuntu 22.04 (x64) | Python3 | maint-3.10 |
+| Ubuntu 22.04 (ARM/Orange Pi) | Python3 | maint-3.10 |
 
 **In-Progress (beta)**
 
 These operating systems are still in beta status. They are under development and several features are known to be missing. Items in the installer might conflict with existing programs or fail to install until the status is removed.
 
-Operating System            |  FISSURE Branch
-:-------------------------:|:-------------------------:
-| DragonOS Focal (x86_64) | Python3_maint-3.8 |
-| Parrot OS 5.2 (amd64) | Python3_maint-3.8 |
-| Kali 23.1 (x64) | Python3_maint-3.10 |
-| BackBox Linux 8 (amd64) | Python3_maint-3.10 |
-| Raspberry Pi OS (bookworm) | Python3_maint-3.10 |
+Operating System | FISSURE Branch | Default GNU Radio Version
+:-------------------------:|:-------------------------:|:-------------------------:
+| DragonOS Focal (x86_64) | Python3 | maint-3.8 |
 
 Note: Certain software tools do not work for every OS. Refer to [Known Conflicts and Third-Party Software](https://fissure.readthedocs.io/en/latest/pages/installation.html#known-conflicts)
 
 **Installation** 
+
+For adding SSH keys to GitHub:
+```
+ssh-keygen -t ed25519
+cat ~/.ssh/id_ed25519.pub
+Paste text into "Settings" > "SSH and GPG keys" > "New SSH Key"
+git clone git@github.com:ainfosec/FISSURE.git 
+```
+
 ```
 git clone https://github.com/ainfosec/FISSURE.git
 cd FISSURE
-git checkout <Python2_maint-3.7> or <Python3_maint-3.8> or <Python3_maint-3.10>
+git checkout Python3  # or Python2_maint-3.7
 git submodule update --init
 ./install
 ```
 
-This will install PyQt software dependencies required to launch the installation GUIs if they are not found. The git submodule command will download all missing GNU Radio out-of-tree modules from their repositories.
+Notes:
+- The git submodule command will download all missing GNU Radio out-of-tree modules from their online repositories and is required to install the GNU Radio out-of-tree modules.
+- The installer will ask to install PyQt software dependencies required to launch the installation GUIs if they are not found. 
+- Select the operating option in the GUI that best matches your operating system (should be detected automatically if your OS matches an option).
+- Periodically answer prompts regarding third-party throughout the install. Use your best judgement, the answers will not likely impact FISSURE.
 
-Next, select the option that best matches your operating system (should be detected automatically if your OS matches an option).
+<p align="center">
+<img src="/docs/Icons/README/install1.png">
+</p>
 
-Python2_maint-3.7            |  Python3_maint-3.8            |  Python3_maint-3.10
-:-------------------------:|:-------------------------:|:-------------------------:
-![install1b](/docs/Icons/README/install1b.png)  |  ![install1a](/docs/Icons/README/install1a.png)  |  ![install1c](/docs/Icons/README/install1c.png)
-
-It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. The items listed under the "Minimum Install" category are what is required to launch the FISSURE Dashboard without errors. Software programs outside the minimum install are optional and can be installed as needed. Select all the recommended checkboxes (Default button) to avoid errors while operating the various tools within FISSURE. Items unchecked by default may not install properly or could possibly conflict with existing programs (please suggest fixes!). There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. This information is primarily for installing third-party tools, refer to installation instructions provided by the maintainer for details.
-
-If an item contains a "Verify" section at the end, the installer will run the command that follows and highlight the checkbox item green or red depending on if any errors are produced by the command. Checked items without a "Verify" section will remain black following the installation.
-
-To avoid installation and permission errors, download FISSURE to a user owned directory such as Home. Run the install script and the fissure command without using sudo. Many of the third-party tools will be downloaded to and installed from the `~/Installed_by_FISSURE` directory.
+It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. Further efforts towards virtualization and dependency management will be continued. Notes on the installer:
+- The items listed under the "Minimum Install" category are what is required to launch the FISSURE Dashboard without errors. 
+- The radio hardware and out of tree modules are required to perform many actions in FISSURE.
+- The flow graphs need to be recompiled to avoid errors across GNU Radio minor versions.
+- Software programs outside the minimum install are optional and can be installed as needed. 
+- Select all the recommended checkboxes (Default button) to avoid errors while operating the various tools within FISSURE. 
+- Items unchecked by default may not install properly or could possibly conflict with existing programs (please suggest fixes!). 
+- There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. These prompts are primarily tied to third-party tools, refer to installation instructions provided by the maintainer for details.
+- If an item contains a "Verify" section at the end, the installer will run the command that follows and highlight the checkbox item green or red depending on if any errors are produced by the command. Checked items without a "Verify" section will remain black following the installation.
+- To avoid installation and permission errors, download FISSURE to a user owned directory such as Home. Run the install script and the fissure command without using sudo. Many of the third-party tools will be downloaded to and installed from the `~/Installed_by_FISSURE` directory.
 
 <p align="center">
 <img src="/docs/Icons/README/install2.png" width="692" height="479">
@@ -207,7 +244,18 @@ The FISSURE installer is helpful for staging computers or installing select soft
 <img src="/docs/Icons/README/install3.png" width="692" height="479">
 </p>
 
-**Usage**
+**Remote Sensor Node Installation**
+
+Install FISSURE per usual on a general purpose computer. Install FISSURE on the remote computer in the same directory location as the local computer (until further notice) to avoid filepath errors with certain actions. To configure the sensor node for remote operation, edit the "default.yaml" file in the `./fissure/Sensor_Node/Sensor_Node_Config/` directory. Edit the following fields to change from local to remote operation:
+- local_remote: remote (from local)
+- nickname: (anything but "Local Sensor Node")
+- ip_address: (your remote sensor node computer's ip_address)
+
+Change the "autorun" field from from `false` to `true` to run the default autorun playlist file on startup and forgo remote operations. New autorun playlists can be generated and saved from the Dashboard Autorun tab.
+
+The remote sensor node acts as a server and must have a set of valid certificates (generated during install) that match with the client (local computer). The server needs the "server.key_secret" and "client.key" files while the client needs the "client.key_secret" and "server.key" files. If the certificates folder was generated on the server computer, the client files must be manually transferred to the other computer.
+
+**Local Dashboard Usage**
 
 Open a terminal and enter:
 
@@ -215,8 +263,26 @@ Open a terminal and enter:
 fissure
 ```
 
-The intended method for launching FISSURE is through the terminal without sudo. The terminal provides important status and feedback for some operations. Refer to the FISSURE documentation for more details. 
+The intended method for launching the FISSURE Dashboard is through the terminal without sudo. The terminal provides important status and feedback for some operations. Refer to the FISSURE documentation for more details. 
 
+A local sensor node can be launched through the top buttons in the FISSURE Dashboard and helps maintain all pre-existing FISSURE functionality on a standalone workstation. Only one local and four remote sensor nodes (or five remote) are supported at this time. 
+
+If any of the programs freeze or hang on clsoe, the following commands can be used to detect a problem or forcibly shut down:
+```
+sudo ps -aux | grep python3
+sudo pkill python3
+sudo kill -9 <PID of __main__.py>
+```
+
+**Remote Sensor Node Usage**
+
+After configuring the sensor node config file (see above), the code can be run using this command from the root directory:
+
+```
+python3 ./fissure/Sensor_Node/SensorNode.py
+```
+
+The sensor node code will stay active until ctrl+c is applied. Connecting to the remote sensor node is performed through the top buttons of the FISSURE Dashboard. Right-clicking the top buttons will select an active sensor node to perform operations. Future operations that utilize more than one node at a time will be handled on a case-by-case basis within the individual tabs.
 
 ## Lessons
 
@@ -246,7 +312,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 - [x] Identify the most desirable operating systems within the community
 - [x] Release a signal conditioner that allows users to select and add techniques for isolating and conditioning signals from large streams of IQ data
 - [x] Release a feature extractor that allows users to select and add techniques for extracting features from isolated signals for use in protocol and emitter classification
-- [ ] Release a signal classifier that allows users to select and add AI/ML techniques. In addition, a decision tree with adjustable features and weights.
+- [x] Release a signal classifier that allows users to select and add AI/ML techniques. In addition, a decision tree with adjustable features and weights.
 - [ ] Implement recursive demodulation mechanisms for producing a bitstream from unknown signals
 - [x] Increase the online signal archive, support download of selectable collections
 - [ ] Support the addition of both closed source and user-developed plugins
@@ -256,7 +322,7 @@ FISSURE comes with several helpful guides to become familiar with different tech
 
 ### Phase II
 
-- [ ] Transition the main FISSURE components to a generic sensor node deployment scheme
+- [x] Transition the main FISSURE components to a generic sensor node deployment scheme
 - [ ] Increase automation and information exchange between components
 - [ ] Transition the FISSURE library into a database
 - [ ] Support alternative FISSURE packaging options

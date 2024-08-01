@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Operation &mdash; FISSURE  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -49,8 +51,8 @@
 <li class="toctree-l1"><a class="reference internal" href="components.html">Components</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Operation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#start-up-procedures">Start-Up Procedures</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#hardware-buttons">Hardware Buttons</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#networking-configuration">Networking Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sensor-node-buttons">Sensor Node Buttons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sensor-node-configuration-window">Sensor Node Configuration Window</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#menu-items">Menu Items</a><ul>
@@ -91,6 +93,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#fuzzing-fields">Fuzzing (Fields)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#fuzzing-variables">Fuzzing (Variables)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#packet-crafter">Packet Crafter</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#iq-data-tab">IQ Data Tab</a><ul>
@@ -114,9 +117,9 @@
 <li class="toctree-l3"><a class="reference internal" href="#replay">Replay</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="#packet-crafter-tab">Packet Crafter Tab</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#packet-editor">Packet Editor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#scapy">Scapy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sensor-nodes-tab">Sensor Nodes Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#autorun">Autorun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#file-navigation">File Navigation</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#library-tab">Library Tab</a><ul>
@@ -133,6 +136,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#status-bar">Status Bar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#triggers">Triggers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#trigger-list">Trigger List</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
@@ -170,36 +178,32 @@
 <h2>Start-Up Procedures<a class="headerlink" href="#start-up-procedures" title="Permalink to this heading"></a></h2>
 <ol class="arabic simple">
 <li><p>Open a terminal and enter <cite>fissure</cite></p></li>
-<li><p>Attach hardware and assign to components using the hardware buttons (see below)</p></li>
+<li><p>Attach hardware and assign to components using the sensor node buttons (see below)</p></li>
+<li><p>Launch a local sensor node or connect to a remote sensor node</p></li>
 <li><p>Click the “Start” button to kick off automation and access remaining tabs</p></li>
-<li><p>Click the “Start” buttons for individual components such as TSI or PD to trigger operations</p></li>
+<li><p>Click the “Start” buttons for individual components such as TSI or PD to start specific operations</p></li>
 </ol>
-<section id="hardware-buttons">
-<h3>Hardware Buttons<a class="headerlink" href="#hardware-buttons" title="Permalink to this heading"></a></h3>
-<p>The hardware buttons located at the top of the FISSURE Dashboard assign radio equipment to functionality that can benefit from hardware separation. This includes:</p>
-<ul class="simple">
-<li><p>TSI</p></li>
-<li><p>PD</p></li>
-<li><p>Attack</p></li>
-<li><p>IQ</p></li>
-<li><p>Archive</p></li>
-</ul>
-<p>A new dialog will open upon clicking the hardware button. The user must select the supported hardware type and can provide optional serial number, IP address, interface name, or daughterboard information which is used to auto-populate various fields while operating FISSURE. Some features such as IQ recording will remain disabled until the hardware type is assigned.</p>
-<p>The “Guess” button will attempt to populate the field information based on the hardware type selected. Clicking the button a second time will cycle through other potential values that may be available.</p>
-<p>The “Probe” button will attempt to reach out to the hardware and return information that could be useful in populating the missing fields. Some probe actions may take minutes to perform depending on the hardware type.</p>
+<section id="sensor-node-buttons">
+<h3>Sensor Node Buttons<a class="headerlink" href="#sensor-node-buttons" title="Permalink to this heading"></a></h3>
+<p>The sensor node buttons at the top of the Dashboard are used for configuring one local sensor or multiple remote sensor nodes. To start, click the “New Sensor Node” button to view the sensor node configuration window. Following configuration, the sensor node button will display the nickname of the sensor node. Repeat the same steps to connect up to five sensor nodes. Use the sensor node configuration window to delete a sensor node. Right-click a sensor node button to select an active sensor node. Selection is necessary to dictate where messages originating from the Dashboard will go to, to display the available hardware options throughout the Dashboard, and to update the information in statusbar at the bottom of the Dashboard.</p>
+<img alt="../_images/hardware_buttons.png" src="../_images/hardware_buttons.png" />
 </section>
-<section id="networking-configuration">
-<h3>Networking Configuration<a class="headerlink" href="#networking-configuration" title="Permalink to this heading"></a></h3>
-<p>FISSURE was originally designed to run its major Python components on different computers across a network. The network connections were simplified to run every component locally on one computer. Future updates may restore this functionality if the components are matured enough to require simultaneous operation and distributions in processing.</p>
+<section id="sensor-node-configuration-window">
+<h3>Sensor Node Configuration Window<a class="headerlink" href="#sensor-node-configuration-window" title="Permalink to this heading"></a></h3>
+<p>The Sensor Node Configuration window is opened after clicking on a sensor node button. The window will display the settings of an existing sensor node or allow the user to configure a new sensor node. The “Sensor Node Topology” section provides the option to choose local or remote as well as enter nicknames, locations, and notes for a sensor node. A local sensor node will run sensor_node.py on the same computer as the Dashboard. The remote option requires the IP address, DEALER port, and PUB port of the remote sensor node in order to connect. The “Ping” button will ping the IP address in the terminal to determine if the sensor node address is reachable. The connect button will establish the HIPRFISR connections to the remote sensor node. If the “Recall Settings on Connect” checkbox is checked, the saved settings from the sensor node configuration file will populate items in the Sensor Node Configuration window. The fields and tables in the window are used by the Dashboard to pull information for a sensor node and keep track of network connections.</p>
+<img alt="../_images/hardware_configuration_local.png" src="../_images/hardware_configuration_local.png" />
+<p>The “Mass Hardware Scan” window allows the user to select multiple radio types that are assumed to be connected to the sensor node computer. The “Autoscan” button will perform localized hardware scans for each type selected and return the results in the “Scan Results” section. Table rows that do not contain hardware details indicate scans that were unsuccessful. The “Manual Entry” button will forgo the localized scan and add a new row to the “Scan Results” table. Once a row is created, the user can manually type in hardware details or use the “Probe” or “Guess” buttons to help populate relevant columns in the table.</p>
+<p>Each row in the “Scan Results” table can be added to the “Default Hardware Assignments” table. This table is what is used to save the sensor node hardware information and limit what can be accessed in each tab/component in FISSURE. Individual hardware selection for any FISSURE operation is done using comboboxes throughout the Dashboard.</p>
+<p>The “Import” and “Export” buttons will translate the sensor node configuration information to/from a YAML file. The “Apply” will save the sensor node information. The “Delete” button will disconnect and remove a sensor node that has already been saved. Be sure to disconnect from a sensor node that has not had its settings saved with the “Apply” button prior to clicking the “Cancel” button.</p>
 </section>
 </section>
 <section id="menu-items">
 <h2>Menu Items<a class="headerlink" href="#menu-items" title="Permalink to this heading"></a></h2>
 <section id="lessons">
 <h3>Lessons<a class="headerlink" href="#lessons" title="Permalink to this heading"></a></h3>
-<p>Lesson 1
-Lesson 2
-Online Resources</p>
+<p>Lesson 1</p>
+<p>Lesson 2</p>
+<p>Online Resources</p>
 </section>
 <section id="standalone-flow-graphs">
 <h3>Standalone Flow Graphs<a class="headerlink" href="#standalone-flow-graphs" title="Permalink to this heading"></a></h3>
@@ -373,6 +377,27 @@ Online Resources</p>
 <li><p>View attack history, delete rows</p></li>
 </ol>
 </section>
+<section id="packet-crafter">
+<h3>Packet Crafter<a class="headerlink" href="#packet-crafter" title="Permalink to this heading"></a></h3>
+<p><strong>Packet Editor</strong></p>
+<ol class="arabic simple">
+<li><p>Select protocol and packet type</p></li>
+<li><p>Edit field values</p></li>
+<li><p>Calculate CRC (when applicable)</p></li>
+<li><p>Assemble message</p></li>
+<li><p>Construct packet sequence</p></li>
+<li><p>Save sequence to file</p></li>
+</ol>
+<p><strong>Scapy</strong></p>
+<ol class="arabic simple">
+<li><p>Put wireless interface in monitor mode</p></li>
+<li><p>Select 802.11x and packet type</p></li>
+<li><p>Edit field values</p></li>
+<li><p>Click Load Data</p></li>
+<li><p>Click Refresh, enter interval, choose interface</p></li>
+<li><p>Click Start</p></li>
+</ol>
+</section>
 </section>
 <section id="iq-data-tab">
 <h2>IQ Data Tab<a class="headerlink" href="#iq-data-tab" title="Permalink to this heading"></a></h2>
@@ -492,29 +517,31 @@ Online Resources</p>
 </ol>
 </section>
 </section>
-<section id="packet-crafter-tab">
-<h2>Packet Crafter Tab<a class="headerlink" href="#packet-crafter-tab" title="Permalink to this heading"></a></h2>
-<section id="packet-editor">
-<h3>Packet Editor<a class="headerlink" href="#packet-editor" title="Permalink to this heading"></a></h3>
-<ol class="arabic simple">
-<li><p>Select protocol and packet type</p></li>
-<li><p>Edit field values</p></li>
-<li><p>Calculate CRC (when applicable)</p></li>
-<li><p>Assemble message</p></li>
-<li><p>Construct packet sequence</p></li>
-<li><p>Save sequence to file</p></li>
-</ol>
+<section id="sensor-nodes-tab">
+<h2>Sensor Nodes Tab<a class="headerlink" href="#sensor-nodes-tab" title="Permalink to this heading"></a></h2>
+<p>The Dashboard Sensor Nodes tab contains operations for the active sensor node (right-click). These operations include building autorun playlists and file navigation for computers running the sensor nodes.</p>
+<section id="autorun">
+<h3>Autorun<a class="headerlink" href="#autorun" title="Permalink to this heading"></a></h3>
+<img alt="../_images/autorun1.png" src="../_images/autorun1.png" />
+<p><strong>Description</strong></p>
+<p>The Autorun tab is used to build, view, transfer, and initiate autorun playlists on the actively selected sensor node. The autorun feature consists of executing a playlist comprised of single-stage and multi-stage attack scripts. Each item is run simultaneously in their own thread to take advantage of more than one radio peripheral connected to the sensor node at a time. The sensor node has the option to run these playlists without interaction from the FISSURE Dashboard if the “autorun” field is set in the sensor node configuration <cite>default.yaml</cite> file.</p>
+<p><strong>Adding, Removing, Viewing Items</strong></p>
+<p>Playlist items can be added through the Single-Stage and Multi-Stage attack tabs. For Single-Stage attacks, load the attack by double-clicking the Attack Template and fill out the variable values for the attack. Click the “Add to Autorun” button to copy the attack details over to the playlist table. For Multi-Stage attacks, add the attacks and click “Generate” as normal. Click the “Add to Autorun” button to copy the multi-stage attack details over to the playlist table.</p>
+<p>To remove a playlist item, select a row and click the “Remove” button. To view a playlist item as a single-stage or multi-stage attack, click the “View” button. Attack details cannot be edited in the playlist table.</p>
+<p><strong>Configuration</strong></p>
+<p>Playlists can have a delayed start time and date. Clicking the “Delay Start” checkbox will enable the feature. The playlist will execute immediately if unchecked. Each playlist item can have its own delayed start time if the “Delay” checkbox is checked. The value is ignored if unchecked. The timeout option for an item is used to stop the thread after so many seconds. Playlist items can finish before the timeout value depending on the nature of the script. Item threads will not repeat themselves unless the repeat option is set. A negative timeout value will cause an item to run indefinitely. The “Start” button will execute the contents of the table. Clicking the “Stop” button will end the playlist on the sensor node.</p>
+<p><strong>Import &amp; Export</strong></p>
+<p>The “Export” and “Import” buttons are used to save and load playlists. The export feature allows the user to save a playlist to a YAML file. This file can copied directly to a sensor node to replace the <cite>/Autorun_Playlists/default.yaml</cite> file used for the autorun feature. The import feature will populate the playlist table from an exported YAML file. The “Existing Playlists” combobox is used to recall local playlists saved on the Dashboard computer in the <cite>/Sensor Nodes/Autorun_Playlists/ folder</cite>.</p>
+<p><strong>Overwriting Default Playlist</strong></p>
+<p>The “Overwrite Default Playlist” button will transfer the contents of the table and overwrite the <cite>/Autorun_Playlists/default.yaml</cite> file located on the sensor node.</p>
 </section>
-<section id="scapy">
-<h3>Scapy<a class="headerlink" href="#scapy" title="Permalink to this heading"></a></h3>
-<ol class="arabic simple">
-<li><p>Put wireless interface in monitor mode</p></li>
-<li><p>Select 802.11x and packet type</p></li>
-<li><p>Edit field values</p></li>
-<li><p>Click Load Data</p></li>
-<li><p>Click Refresh, enter interval, choose interface</p></li>
-<li><p>Click Start</p></li>
-</ol>
+<section id="file-navigation">
+<h3>File Navigation<a class="headerlink" href="#file-navigation" title="Permalink to this heading"></a></h3>
+<img alt="../_images/file_navigation1.png" src="../_images/file_navigation1.png" />
+<p><strong>Sensor Node</strong></p>
+<p>The “Sensor Node” frame displays file information inside folders on the the actively selected sensor node. The user can delete files or folders and download them to the Dashboard computer. Folders are compressed into a .zip file prior to the transfer.</p>
+<p><strong>Local</strong></p>
+<p>The “Local” frame is used to select where downloaded files will saved. The folder used for downloading is the value in the combobox and not a folder selected in the tree. Selected files in the tree can be deleted and unzipped. Certain file extensions such as .txt can be opened using the view button. Custom viewing capabilities will be added for more file extensions to do operations like signal plotting. Small files can be transferred over the network and saved to the currently selected sensor node folder in the combobox. Large files are not supported at this time.</p>
 </section>
 </section>
 <section id="library-tab">
@@ -575,6 +602,154 @@ Online Resources</p>
 </section>
 <section id="status-bar">
 <h2>Status Bar<a class="headerlink" href="#status-bar" title="Permalink to this heading"></a></h2>
+</section>
+<section id="triggers">
+<h2>Triggers<a class="headerlink" href="#triggers" title="Permalink to this heading"></a></h2>
+<section id="configuration">
+<h3>Configuration<a class="headerlink" href="#configuration" title="Permalink to this heading"></a></h3>
+<p>Triggers are scripts that loop indefinitely until a condition is statisfied and are used to delay the start of transmission of electromagnetic effects for single-stage attacks, multi-stage attacks, archive replay, and autorun playlists. In each of those tabs a “Triggers” section can be found as shown below for the Single-Stage attack tab.</p>
+<img alt="../_images/trigger2.png" src="../_images/trigger2.png" />
+<p>Clicking the “Edit” button will open the following dialog for selecting and configuring triggers.</p>
+<img alt="../_images/trigger1.png" src="../_images/trigger1.png" />
+<p>Choose the category and trigger from the comboboxes. Enter values into the user interface widgets specific to the trigger. Click “Add” to select a trigger. Multiple triggers can be selected and will be run simultaneously. Once the first trigger is complete, the remaining triggers will end and the subsequent action will be executed. Select a trigger from the table and click “Remove” to delete it. Click “OK” to save the triggers.</p>
+</section>
+<section id="trigger-list">
+<h3>Trigger List<a class="headerlink" href="#trigger-list" title="Permalink to this heading"></a></h3>
+<p>The following is a list of triggers integrated into FISSURE. To create new triggers refer to <a class="reference internal" href="development.html#creating-triggers"><span class="std std-ref">Creating Triggers</span></a>.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 17.6%" />
+<col style="width: 17.6%" />
+<col style="width: 17.6%" />
+<col style="width: 17.6%" />
+<col style="width: 29.4%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Category</p></th>
+<th class="head"><p>Trigger Name</p></th>
+<th class="head"><p>Script Name</p></th>
+<th class="head"><p>Hardware/Requirements</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Acoustic</p></td>
+<td><p>Sound Threshold</p></td>
+<td><p>sound_threshold.py</p></td>
+<td><p>Microphone</p></td>
+<td><p>Activates once a custom audio threshold is reached on the active computer microphone</p></td>
+</tr>
+<tr class="row-odd"><td><p>Environmental</p></td>
+<td><p>Sunrise/Sunset</p></td>
+<td><p>sunrise_sunset.py</p></td>
+<td><p>Internet Connection</p></td>
+<td><p>Checks for sunrise and sunset time using “%S” and “%s” returns from wttr.in</p></td>
+</tr>
+<tr class="row-even"><td><p>Environmental</p></td>
+<td><p>Temperature</p></td>
+<td><p>temperature.py</p></td>
+<td><p>Internet Connection</p></td>
+<td><p>Compares the temperature in a location to a value using wttr.in</p></td>
+</tr>
+<tr class="row-odd"><td><p>Environmental</p></td>
+<td><p>Weather</p></td>
+<td><p>weather.py</p></td>
+<td><p>Internet Connection</p></td>
+<td><p>Checks for rain, snow/sleet, clear, cloudy/fog in a city using keywords found in the “%C” returns from wttr.in</p></td>
+</tr>
+<tr class="row-even"><td><p>Environmental</p></td>
+<td><p>Wind</p></td>
+<td><p>wind.py</p></td>
+<td><p>Internet Connection</p></td>
+<td><p>Checks for wind speeds above a threshold using “%w” returns from wttr.in</p></td>
+</tr>
+<tr class="row-odd"><td><p>Filesystem</p></td>
+<td><p>File Modified</p></td>
+<td><p>file_modified.py</p></td>
+<td><p>None</p></td>
+<td><p>Waits for a file to be modified</p></td>
+</tr>
+<tr class="row-even"><td><p>Filesystem</p></td>
+<td><p>Folder Modified</p></td>
+<td><p>folder_modified.py</p></td>
+<td><p>None</p></td>
+<td><p>Waits for a folder to change the number of files it contains</p></td>
+</tr>
+<tr class="row-odd"><td><p>Networking</p></td>
+<td><p>Webserver Curl</p></td>
+<td><p>webserver_curl.py</p></td>
+<td><p>Network Connection</p></td>
+<td><p>Creates a local webserver that listens for a <cite>curl http://&lt;ip_address&gt;:&lt;port&gt;</cite> command to exit</p></td>
+</tr>
+<tr class="row-even"><td><p>RF</p></td>
+<td><p>Cellular Tower</p></td>
+<td><p>cellular_tower.py</p></td>
+<td><p>RTL2832U</p></td>
+<td><p>Continuously runs “CellSearch” at a specific frequency to find a matching PCI/cell ID for a site</p></td>
+</tr>
+<tr class="row-odd"><td><p>RF</p></td>
+<td><p>Detect SSID</p></td>
+<td><p>detect_ssid.py</p></td>
+<td><p>WLAN Interface (Managed Mode)</p></td>
+<td><p>Looks for a matching SSID name using iwlist for a provided interface</p></td>
+</tr>
+<tr class="row-even"><td><p>RF</p></td>
+<td><p>GPS Line</p></td>
+<td><p>gps_line.py</p></td>
+<td><p>GPS Receiver</p></td>
+<td><p>Checks if current GPS coordinates have crossed either a latitude or longitude threshold (N-S/E-W line)</p></td>
+</tr>
+<tr class="row-odd"><td><p>RF</p></td>
+<td><p>GPS Point</p></td>
+<td><p>gps_point.py</p></td>
+<td><p>GPS Receiver</p></td>
+<td><p>Checks current GPS coordinates until they are a specified distance from a point</p></td>
+</tr>
+<tr class="row-even"><td><p>RF</p></td>
+<td><p>Plane Spotting</p></td>
+<td><p>plane_spotting.py</p></td>
+<td><p>RTL2832U</p></td>
+<td><p>Looks for an ICAO in dump1090 stdout from an RTL dongle</p></td>
+</tr>
+<tr class="row-odd"><td><p>RF</p></td>
+<td><p>Power Threshold</p></td>
+<td><p>power_threshold.py</p></td>
+<td><p>USRP B2x0</p></td>
+<td><p>Looks for a signal above a power threshold at a specified frequency. Reuses the TSI fixed detector flow graphs without the GUI.</p></td>
+</tr>
+<tr class="row-even"><td><p>RF</p></td>
+<td><p>RDS Keyword</p></td>
+<td><p>rds_keyword.py</p></td>
+<td><p>USRP B2x0</p></td>
+<td><p>Looks for a keyword in the RDS printed from gr-rds for a radio station</p></td>
+</tr>
+<tr class="row-odd"><td><p>RF</p></td>
+<td><p>X10 Demod</p></td>
+<td><p>x10_demod.py</p></td>
+<td><p>USRP B2x0</p></td>
+<td><p>Demodulates X10 signals for a USRP B210 and checks the flow graph stdout for matching text</p></td>
+</tr>
+<tr class="row-even"><td><p>Time</p></td>
+<td><p>Sensor Node Time</p></td>
+<td><p>sensor_node_time.py</p></td>
+<td><p>None</p></td>
+<td><p>Waits for date/time to elapse</p></td>
+</tr>
+<tr class="row-odd"><td><p>Time</p></td>
+<td><p>Timer</p></td>
+<td><p>timer.py</p></td>
+<td><p>None</p></td>
+<td><p>Waits for N seconds after trigger script start</p></td>
+</tr>
+<tr class="row-even"><td><p>Visual</p></td>
+<td><p>Motion Detector</p></td>
+<td><p>motion_detector.py</p></td>
+<td><p>Camera</p></td>
+<td><p>Checks for motion using the default camera</p></td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 </section>
 

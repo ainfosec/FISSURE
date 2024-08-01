@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Installation &mdash; FISSURE  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -48,8 +50,10 @@
 <li class="toctree-l2"><a class="reference internal" href="#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cloning">Cloning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#installer">Installer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#remote-sensor-node-installation">Remote Sensor Node Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#uninstalling">Uninstalling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#local-dashboard-usage">Local Dashboard Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#remote-sensor-node-usage">Remote Sensor Node Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#known-conflicts">Known Conflicts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#third-party-software">Third-Party Software</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#third-party-software-versions">Third-Party Software Versions</a><ul>
@@ -100,18 +104,54 @@
 </section>
 <section id="cloning">
 <h2>Cloning<a class="headerlink" href="#cloning" title="Permalink to this heading"></a></h2>
+<p>For adding SSH keys to GitHub:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>ssh-keygen<span class="w"> </span>-t<span class="w"> </span>ed25519
+<span class="gp">$ </span>cat<span class="w"> </span>~/.ssh/id_ed25519.pub
+<span class="gp">$ </span><span class="c1"># Paste text into &quot;Settings&quot; &gt; &quot;SSH and GPG keys&quot; &gt; &quot;New SSH Key&quot;</span>
+<span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>git@github.com:ainfosec/FISSURE.git
+</pre></div>
+</div>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/ainfosec/FISSURE.git
 <span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>FISSURE
-<span class="gp">$ </span>git<span class="w"> </span>checkout<span class="w"> </span>&lt;Python2_maint-3.7&gt;<span class="w"> </span>or<span class="w"> </span>&lt;Python3_maint-3.8&gt;<span class="w"> </span>or<span class="w"> </span>&lt;Python3_maint-3.10&gt;
+<span class="gp">$ </span>git<span class="w"> </span>checkout<span class="w"> </span>Python3<span class="w">  </span><span class="c1"># or Python2_maint-3.7</span>
 <span class="gp">$ </span>git<span class="w"> </span>submodule<span class="w"> </span>update<span class="w"> </span>--init
 <span class="gp">$ </span>./install
 </pre></div>
 </div>
-<p>This will install PyQt software dependencies required to launch the installation GUIs if they are not found. The git submodule command will download all missing GNU Radio out-of-tree modules from their repositories.</p>
 </section>
 <section id="installer">
 <h2>Installer<a class="headerlink" href="#installer" title="Permalink to this heading"></a></h2>
-<p>Next, select the option that best matches your operating system (should be detected automatically if your OS matches an option). The “Minimum Install” option is a list of programs needed to launch the FISSURE Dashboard without any errors. The remaining programs are needed to utilize the various hardware and software tools integrated into FISSURE menu items and tabs.</p>
+<p>Notes:</p>
+<ul class="simple">
+<li><p>The git submodule command will download all missing GNU Radio out-of-tree modules from their online repositories and is required to install the GNU Radio out-of-tree modules.</p></li>
+<li><p>The installer will ask to install PyQt software dependencies required to launch the installation GUIs if they are not found.</p></li>
+<li><p>Select the operating option in the GUI that best matches your operating system (should be detected automatically if your OS matches an option).</p></li>
+<li><p>Periodically answer prompts regarding third-party throughout the install. Use your best judgement, the answers will not likely impact FISSURE.</p></li>
+</ul>
+<p>It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. Further efforts towards virtualization and dependency management will be continued. Notes on the installer:</p>
+<ul class="simple">
+<li><p>The items listed under the “Minimum Install” category are what is required to launch the FISSURE Dashboard without errors.</p></li>
+<li><p>The radio hardware and out of tree modules are required to perform many actions in FISSURE.</p></li>
+<li><p>The flow graphs need to be recompiled to avoid errors across GNU Radio minor versions.</p></li>
+<li><p>Software programs outside the minimum install are optional and can be installed as needed.</p></li>
+<li><p>Select all the recommended checkboxes (Default button) to avoid errors while operating the various tools within FISSURE.</p></li>
+<li><p>Items unchecked by default may not install properly or could possibly conflict with existing programs (please suggest fixes!).</p></li>
+<li><p>There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. These prompts are primarily tied to third-party tools, refer to installation instructions provided by the maintainer for details.</p></li>
+<li><p>If an item contains a “Verify” section at the end, the installer will run the command that follows and highlight the checkbox item green or red depending on if any errors are produced by the command. Checked items without a “Verify” section will remain black following the installation.</p></li>
+<li><p>To avoid installation and permission errors, download FISSURE to a user owned directory such as Home. Run the install script and the fissure command without using sudo. Many of the third-party tools will be downloaded to and installed from the <cite>~/Installed_by_FISSURE</cite> directory.</p></li>
+</ul>
+<p>The FISSURE installer is helpful for staging computers or installing select software programs of interest. The code can be quickly modified to allow for custom software installs. The size estimates for the programs are before and after readings from a full install. The sizes for each program are not exact as some dependencies are installed in previously checked items. The sizes may also change over time as programs get updated.</p>
+</section>
+<section id="remote-sensor-node-installation">
+<h2>Remote Sensor Node Installation<a class="headerlink" href="#remote-sensor-node-installation" title="Permalink to this heading"></a></h2>
+<p>Install FISSURE per usual on a general purpose computer. Install FISSURE on the remote computer in the same directory location as the local computer (until further notice) to avoid filepath errors with certain actions. To configure the sensor node for remote operation, edit the “default.yaml” file in the <cite>./fissure/Sensor_Node/Sensor_Node_Config/</cite> directory. Edit the following fields to change from local to remote operation:</p>
+<ul class="simple">
+<li><p>local_remote: remote (from local)</p></li>
+<li><p>nickname: (anything but “Local Sensor Node”)</p></li>
+<li><p>ip_address: (your remote sensor node computer’s ip_address)</p></li>
+</ul>
+<p>Change the “autorun” field from from <cite>false</cite> to <cite>true</cite> to run the default autorun playlist file on startup and forgo remote operations. New autorun playlists can be generated and saved from the Dashboard Autorun tab.</p>
+<p>The remote sensor node acts as a server and must have a set of valid certificates (generated during install) that match with the client (local computer). The server needs the “server.key_secret” and “client.key” files while the client needs the “client.key_secret” and “server.key” files. If the certificates folder was generated on the server computer, the client files must be manually transferred to the other computer.</p>
 </section>
 <section id="uninstalling">
 <h2>Uninstalling<a class="headerlink" href="#uninstalling" title="Permalink to this heading"></a></h2>
@@ -129,10 +169,28 @@
 </ul>
 <p>Many programs are stored in the ~/Installed_by_FISSURE folder but the dependencies are heavily intertwined amongst the programs.</p>
 </section>
-<section id="usage">
-<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this heading"></a></h2>
-<p>Open a terminal and enter: <code class="docutils literal notranslate"><span class="pre">fissure</span></code></p>
-<p>The intended method for launching FISSURE is through the terminal without sudo. The terminal provides important status and feedback for some operations. Refer to the FISSURE documentation for more details.</p>
+<section id="local-dashboard-usage">
+<h2>Local Dashboard Usage<a class="headerlink" href="#local-dashboard-usage" title="Permalink to this heading"></a></h2>
+<p>Open a terminal and enter:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>fissure
+</pre></div>
+</div>
+<p>The intended method for launching the FISSURE Dashboard is through the terminal without sudo. The terminal provides important status and feedback for some operations. Refer to the FISSURE documentation for more details.</p>
+<p>A local sensor node can be launched through the top buttons in the FISSURE Dashboard and helps maintain all pre-existing FISSURE functionality on a standalone workstation. Only one local and four remote sensor nodes (or five remote) are supported at this time.</p>
+<p>If any of the programs freeze or hang on clsoe, the following commands can be used to detect a problem or forcibly shut down:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>ps<span class="w"> </span>-aux<span class="w"> </span><span class="p">|</span><span class="w"> </span>grep<span class="w"> </span>python3
+<span class="gp">$ </span>sudo<span class="w"> </span>pkill<span class="w"> </span>python3
+<span class="gp">$ </span>sudo<span class="w"> </span><span class="nb">kill</span><span class="w"> </span>-9<span class="w"> </span>&lt;PID<span class="w"> </span>of<span class="w"> </span>__main__.py&gt;
+</pre></div>
+</div>
+</section>
+<section id="remote-sensor-node-usage">
+<h2>Remote Sensor Node Usage<a class="headerlink" href="#remote-sensor-node-usage" title="Permalink to this heading"></a></h2>
+<p>After configuring the sensor node config file (see above), the code can be run using this command from the root directory:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>python3<span class="w"> </span>./fissure/Sensor_Node/SensorNode.py
+</pre></div>
+</div>
+<p>The sensor node code will stay active until ctrl+c is applied. Connecting to the remote sensor node is performed through the top buttons of the FISSURE Dashboard. Right-clicking the top buttons will select an active sensor node to perform operations. Future operations that utilize more than one node at a time will be handled on a case-by-case basis within the individual tabs.</p>
 </section>
 <section id="known-conflicts">
 <h2>Known Conflicts<a class="headerlink" href="#known-conflicts" title="Permalink to this heading"></a></h2>
@@ -178,16 +236,16 @@
 <p>The following is a table of the major software tools that have been proven to work for each supported operating system.</p>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 40%" />
-<col style="width: 20%" />
-<col style="width: 20%" />
-<col style="width: 20%" />
+<col style="width: 40.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
+<col style="width: 20.0%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Software</p></th>
-<th class="head"><p>Ubuntu 18.04.6</p></th>
-<th class="head"><p>Ubuntu 20.04.4</p></th>
-<th class="head"><p>Ubuntu 22.04.1</p></th>
+<th class="head"><p>Ubuntu 18.04</p></th>
+<th class="head"><p>Ubuntu 20.04</p></th>
+<th class="head"><p>Ubuntu 22.04</p></th>
 </tr>
 </thead>
 <tbody>
@@ -816,10 +874,10 @@
 <h3>Ubuntu 18.04.6<a class="headerlink" href="#ubuntu-18-04-6" title="Permalink to this heading"></a></h3>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 56%" />
-<col style="width: 11%" />
-<col style="width: 6%" />
-<col style="width: 28%" />
+<col style="width: 55.6%" />
+<col style="width: 11.1%" />
+<col style="width: 5.6%" />
+<col style="width: 27.8%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Software</p></th>
@@ -1431,10 +1489,10 @@
 <h3>Ubuntu 20.04.4<a class="headerlink" href="#ubuntu-20-04-4" title="Permalink to this heading"></a></h3>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 56%" />
-<col style="width: 11%" />
-<col style="width: 6%" />
-<col style="width: 28%" />
+<col style="width: 55.6%" />
+<col style="width: 11.1%" />
+<col style="width: 5.6%" />
+<col style="width: 27.8%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Software</p></th>
@@ -2061,10 +2119,10 @@
 <h3>Ubuntu 22.04.1<a class="headerlink" href="#ubuntu-22-04-1" title="Permalink to this heading"></a></h3>
 <table class="docutils align-default">
 <colgroup>
-<col style="width: 56%" />
-<col style="width: 11%" />
-<col style="width: 6%" />
-<col style="width: 28%" />
+<col style="width: 55.6%" />
+<col style="width: 11.1%" />
+<col style="width: 5.6%" />
+<col style="width: 27.8%" />
 </colgroup>
 <thead>
 <tr class="row-odd"><th class="head"><p>Software</p></th>

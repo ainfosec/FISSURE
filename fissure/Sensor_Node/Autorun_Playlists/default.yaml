@@ -1,0 +1,26 @@
+'0':
+     delay: 'False'
+     details: '[''X10 - On'', ''X10'', ''OOK'', ''USRP B2x0 - 30AD2E1'', ''/home/user/Music/testprivaterepo/Flow
+          Graph Library/Single-Stage Flow Graphs/X10_OOK_USRPB210_X10_On.py'', ''Flow
+          Graph'', False]'
+     repeat: 'False'
+     start_time: 09:57:44
+     timeout_seconds: '5'
+     type: Single-Stage
+     variable_names: '[''tx_usrp_gain'', ''tx_usrp_frequency'', ''tx_usrp_channel'',
+          ''tx_usrp_antenna'', ''string_variables'', ''serial'', ''sample_rate'',
+          ''press_repetition_interval'', ''press_duration'', ''data_code'', ''address_code'']'
+     variable_values: '[''60'', ''310.8e6'', ''A:A'', ''TX/RX'', ''[address_code,data_code]'',
+          ''serial=30AD2E1'', ''1e6'', ''10'', ''4'', ''0x00'', ''0x60'']'
+delay_start: 'False'
+delay_start_time: '2024-07-16 09:57:19'
+repetition_interval_seconds: '-1'
+trigger_values:
+-    - sound_threshold.py
+     - Python3 Script
+     - '[''get_threshold'', ''get_duration'', ''get_sample_rate'']'
+     - '[''0.2'', ''0.1'', ''44100.0'']'
+-    - cellular_tower.py
+     - Python3 Script
+     - '[''hardware'', ''pci'', ''frequency'']'
+     - '[''Computer'', ''0'', ''739.0'']'

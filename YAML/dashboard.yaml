@@ -13,7 +13,7 @@ Message Types:
  
 # The Format to Follow for each Message Type
 Schema: 
-      Heartbeats: '$Identifier: $MessageName $Time'
+      Heartbeats: '$Identifier: $MessageName $Time $IP'
       Status: '$Identifier: $MessageName $Parameters'
       SOI: '$Identifier: $MessageName $ModulationType $Frequency $Power $Bandwidth $Continuous $StartFrequency $EndFrequency $Timestamp $Confidence'    
       Wideband: '$Identifier: $MessageName $Frequency $Power $Timestamp'  
@@ -23,41 +23,46 @@ Schema:
 
 # Message Names
 Status:
-     - Connected
-     - Disconnected
+     #- Connected
+     #- Disconnected
+     - Shutting Down  # Needs to remain separate from commands
      - Exit Connect Loop
-     - Set Recommended Flow Graphs
+     #- Set Recommended Flow Graphs
      - Full Library
-     - Flow Graph Finished
-     - Flow Graph Started
-     - SOI Chosen
-     - Starting PD
-     - Detector Flow Graph Error
-     - Flow Graph Error
-     - Flow Graph Finished IQ
-     - Flow Graph Finished IQ Playback
-     - Flow Graph Finished IQ Inspection
-     - Flow Graph Finished Sniffer
-     - Flow Graph Started IQ
-     - Flow Graph Started IQ Playback
-     - Flow Graph Started IQ Inspection
-     - Flow Graph Started Sniffer
-     - Multi-Stage Attack Finished
-     - Archive Playlist Finished
-     - Found Preambles
-     - Captured Preamble Stats
-     - Set Window Parameters  # ???
-     - Found Preambles in Library 
-     - Slice By Preamble Return
-     - Buffer Size
-     - Entropy Return
-     - BandID
-     - Connect to FGE
-     - Archive Playlist Position
-     - TSI Conditioner Finished
-     - Conditioner Progress Bar
-     - TSI FE Finished
-     - FE Progress Bar
+     #- Flow Graph Finished
+     #- Flow Graph Started
+     #- SOI Chosen
+     #- Detector Flow Graph Error
+     #- Flow Graph Error
+     #- Flow Graph Finished IQ
+     #- Flow Graph Finished IQ Playback
+     #- Flow Graph Finished IQ Inspection
+     #- Flow Graph Finished Sniffer
+     #- Flow Graph Started IQ
+     #- Flow Graph Started IQ Playback
+     #- Flow Graph Started IQ Inspection
+     #- Flow Graph Started Sniffer
+     #- Multi-Stage Attack Finished
+     #- Archive Playlist Finished
+     #- Found Preambles
+     #- Found Preambles in Library 
+     #- Slice By Preamble Return
+     #- Buffer Size
+     #- Entropy Return
+     #- BandID
+     #- Archive Playlist Position
+     #- TSI Conditioner Finished
+     #- Conditioner Progress Bar
+     #- TSI FE Finished
+     #- FE Progress Bar
+     #- Sensor Node Settings  # Recall Settings Returned
+     #- Hardware Scan Results
+     #- Hardware Probe Results
+     #- Hardware Guess Results
+     #- Autorun Playlist Started
+     #- Autorun Playlist Finished
+     #- Refresh Sensor Node Files Results
+     #- File Downloaded
 
 
 Heartbeats: 
@@ -69,17 +74,283 @@ SOI:
 Wideband:
      - Signal Found
 
+Commands:
+     - Recall Settings Return
+     - Hardware Probe Results
+     - Hardware Guess Results
+     - Hardware Scan Results
+     - Band ID Return
+     - Conditioner Progress Bar
+     - TSI Conditioner Finished
+     - TSI FE Finished
+     - FE Progress Bar
+     - Flow Graph Started
+     - Flow Graph Started IQ
+     - Flow Graph Started IQ Playback
+     - Flow Graph Started IQ Inspection
+     - Flow Graph Started Sniffer
+     - Flow Graph Finished
+     - Flow Graph Finished IQ
+     - Flow Graph Finished IQ Inspection
+     - Flow Graph Finished IQ Playback
+     - Flow Graph Finished Sniffer
+     - Multi-Stage Attack Finished
+     - Archive Playlist Position
+     - Archive Playlist Finished
+     - Detector Flow Graph Error
+     - Flow Graph Error
+     - Autorun Playlist Finished
+     - Autorun Playlist Started
+     - Refresh Sensor Node Files Results
+     - File Downloaded
+     - Found Preambles
+     - Found Preambles in Library
+     - Slice By Preamble Return
+     - Buffer Size
+     - SOI Chosen
+     - Set Recommended Flow Graphs
+     - Component Connected
+     - Component Disconnected
 
 # Callback to Function Lookup
+Recall Settings Return: recallSettingsReturn
+Hardware Probe Results: hardwareProbeResults
+Hardware Guess Results: hardwareGuessResults
+Hardware Scan Results: hardwareScanResults
+Band ID Return: bandID_Return
+Conditioner Progress Bar: conditionerProgressBar
+TSI Conditioner Finished: TSI_ConditionerFinished
+TSI FE Finished: TSI_FE_Finished
+FE Progress Bar: FE_ProgressBar
+Flow Graph Started: flowGraphStarted
+Flow Graph Started IQ: flowGraphStartedIQ
+Flow Graph Started IQ Playback: flowGraphStartedIQ_Playback
+Flow Graph Started IQ Inspection: flowGraphStartedIQ_Inspection
+Flow Graph Started Sniffer: flowGraphStartedSniffer
+Flow Graph Finished: flowGraphFinished
+Flow Graph Finished IQ: flowGraphFinishedIQ
+Flow Graph Finished IQ Inspection: flowGraphFinishedIQ_Inspection
+Flow Graph Finished IQ Playback: flowGraphFinishedIQ_Playback
+Flow Graph Finished Sniffer: flowGraphFinishedSniffer
+Multi-Stage Attack Finished: multiStageAttackFinished
+Archive Playlist Position: archivePlaylistPosition
+Archive Playlist Finished: archivePlaylistFinished
+Detector Flow Graph Error: detectorFlowGraphError
+Flow Graph Error: flowGraphError
+Autorun Playlist Finished: autorunPlaylistFinished
+Autorun Playlist Started: autorunPlaylistStarted
+Refresh Sensor Node Files Results: refreshSensorNodeFilesResults
+File Downloaded: fileDownloaded
+Found Preambles: foundPreambles
+Found Preambles in Library: foundPreamblesInLibrary
+Slice By Preamble Return: sliceByPreambleReturn
+Buffer Size: bufferSize
+SOI Chosen: SOI_Chosen
+Set Recommended Flow Graphs: setRecommendedFlowGraphs
+Component Connected: componentConnected
+Component Disconnected: componentDisconnected
+
 
 #Function/Parameter Verification 
+recallSettingsReturn:
+    Type: callback
+    Parameters:
+             settings_dict
 
+hardwareProbeResults:
+    Type: callback
+    Parameters:
+             tab_index
+             output
+             height_width
 
+hardwareGuessResults:
+    Type: callback
+    Parameters:
+             tab_index
+             table_row
+             hardware_type
+             scan_results
+             new_guess_index
 
+hardwareScanResults:
+    Type: callback
+    Parameters:
+             tab_index
+             hardware_scan_results
 
+bandID_Return:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             band_id
+             frequency
 
+conditionerProgressBar:
+    Type: callback
+    Parameters:
+             progress
+             file_index
 
+TSI_ConditionerFinished:
+    Type: callback
+    Parameters:
+             table_strings
 
+TSI_FE_Finished:
+    Type: callback
+    Parameters:
+             table_strings
 
+FE_ProgressBar:
+    Type: callback
+    Parameters:
+             progress
+             file_index
 
-       
+flowGraphStarted:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             category
+
+flowGraphStartedIQ:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+flowGraphStartedIQ_Playback:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+flowGraphStartedIQ_Inspection:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+flowGraphStartedSniffer:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             category
+
+flowGraphFinished:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             category
+
+flowGraphFinishedIQ:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+flowGraphFinishedIQ_Inspection:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+flowGraphFinishedIQ_Playback:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+flowGraphFinishedSniffer:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             category
+
+multiStageAttackFinished:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             
+archivePlaylistPosition:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             position
+
+archivePlaylistFinished:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+detectorFlowGraphError:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             error
+
+flowGraphError:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             error
+
+autorunPlaylistFinished:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+autorunPlaylistStarted:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+refreshSensorNodeFilesResults:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             filepaths
+             file_sizes
+             file_types
+             modified_dates
+
+fileDownloaded:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+foundPreambles:
+    Type: callback
+    Parameters:
+             parameters
+
+foundPreamblesInLibrary:
+    Type: callback
+    Parameters:
+             parameters
+
+sliceByPreambleReturn:
+    Type: callback
+    Parameters:
+             packet_lengths
+             packet_dict
+
+bufferSize:
+    Type: callback
+    Parameters:
+             buffer_size
+
+SOI_Chosen:
+    Type: callback
+    Parameters:
+             returned_soi
+
+setRecommendedFlowGraphs:
+    Type: callback
+    Parameters:
+             flow_graphs
+
+componentConnected:
+    Type: callback
+    Parameters:
+             component_name
+
+componentDisconnected:
+    Type: callback
+    Parameters:
+             component_name

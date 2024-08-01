@@ -1,0 +1,809 @@
+options:
+  parameters:
+    author: ''
+    catch_exceptions: 'True'
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: no_gui
+    hier_block_src_path: '.:'
+    id: ZWAVE_FSK_LimeSDR_Off
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: ''
+    window_size: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: command
+  id: variable
+  parameters:
+    comment: ''
+    value: '"0100"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [672, 76]
+    rotation: 0
+    state: enabled
+- name: command_class
+  id: variable
+  parameters:
+    comment: ''
+    value: '"26"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [552, 76]
+    rotation: 0
+    state: enabled
+- name: configuration
+  id: variable
+  parameters:
+    comment: ''
+    value: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [592, 12]
+    rotation: 0
+    state: disabled
+- name: destination_node_id
+  id: variable
+  parameters:
+    comment: ''
+    value: '"02"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1032, 12]
+    rotation: 0
+    state: enabled
+- name: frame_control
+  id: variable
+  parameters:
+    comment: ''
+    value: '"4108"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [920, 12]
+    rotation: 0
+    state: enabled
+- name: home_id
+  id: variable
+  parameters:
+    comment: ''
+    value: '"fa1c0b48"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [696, 12]
+    rotation: 0
+    state: enabled
+- name: msg_length
+  id: variable
+  parameters:
+    comment: Home ID through CRC
+    value: '14'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 76]
+    rotation: 0
+    state: enabled
+- name: notes
+  id: variable
+  parameters:
+    comment: ''
+    value: '"Transmits an off message for a Monoprice Z-Wave Plus RGB Smart Bulb."'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [760, 76]
+    rotation: 0
+    state: enabled
+- name: repetition_interval
+  id: variable
+  parameters:
+    comment: ''
+    value: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [456, 12]
+    rotation: 0
+    state: enabled
+- name: samp_rate
+  id: variable
+  parameters:
+    comment: ''
+    value: 1e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 92]
+    rotation: 0
+    state: enabled
+- name: source_node_id
+  id: variable
+  parameters:
+    comment: ''
+    value: '"01"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [800, 12]
+    rotation: 0
+    state: enabled
+- name: string_variables
+  id: variable
+  parameters:
+    comment: ''
+    value: '["home_id","source_node_id","frame_control","destination_node_id","command_class","command"]'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 12]
+    rotation: 0
+    state: enabled
+- name: tx_channel
+  id: variable
+  parameters:
+    comment: ''
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 284]
+    rotation: 0
+    state: enabled
+- name: tx_frequency
+  id: variable
+  parameters:
+    comment: ''
+    value: 916e6
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 156]
+    rotation: 0
+    state: enabled
+- name: tx_gain
+  id: variable
+  parameters:
+    comment: ''
+    value: '60'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 220]
+    rotation: 0
+    state: enabled
+- name: analog_quadrature_demod_cf_0_0
+  id: analog_quadrature_demod_cf
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    gain: samp_rate/(2*math.pi*80000/8.0)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [904, 548]
+    rotation: 0
+    state: disabled
+- name: blocks_delay_0
+  id: blocks_delay
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: on/off
+    delay: (10*8*(26+14+4))-24
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_ports: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [360, 556]
+    rotation: 0
+    state: disabled
+- name: blocks_delay_0_0
+  id: blocks_delay
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: colors
+    delay: (10*8*(26+msg_length+4))-24
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_ports: '1'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [368, 660]
+    rotation: 0
+    state: enabled
+- name: blocks_file_sink_0
+  id: blocks_file_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    append: 'False'
+    comment: ''
+    file: ''
+    type: complex
+    unbuffered: 'False'
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1080, 836]
+    rotation: 0
+    state: disabled
+- name: blocks_head_0
+  id: blocks_head
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: 2*10*8*(26+msg_length+4)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [912, 852]
+    rotation: 0
+    state: disabled
+- name: blocks_stream_to_tagged_stream_0
+  id: blocks_stream_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: on/off
+    len_tag_key: '"packet_len"'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    packet_len: 10*8*(26+14+4)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [496, 548]
+    rotation: 0
+    state: disabled
+- name: blocks_stream_to_tagged_stream_0_0
+  id: blocks_stream_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: colors
+    len_tag_key: '"packet_len"'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    packet_len: 10*8*(26+msg_length+4)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [496, 652]
+    rotation: 0
+    state: enabled
+- name: blocks_tag_gate_0
+  id: blocks_tag_gate
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    propagate_tags: 'False'
+    single_key: '""'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [672, 428]
+    rotation: 0
+    state: enabled
+- name: digital_gfsk_mod_0
+  id: digital_gfsk_mod
+  parameters:
+    affinity: ''
+    alias: ''
+    bt: '0.65'
+    comment: ''
+    do_unpack: 'True'
+    log: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_symbol: '10'
+    sensitivity: '0.25'
+    verbose: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [480, 412]
+    rotation: 0
+    state: enabled
+- name: limesdr_sink_0
+  id: limesdr_sink
+  parameters:
+    affinity: ''
+    alias: ''
+    allow_tcxo_dac: '0'
+    analog_bandw_ch0: 5e6
+    analog_bandw_ch1: 5e6
+    calibr_bandw_ch0: 5e6
+    calibr_bandw_ch1: 5e6
+    channel_mode: int(tx_channel)
+    comment: ''
+    dacVal: '125'
+    digital_bandw_ch0: '0'
+    digital_bandw_ch1: '0'
+    filename: ''
+    gain_dB_ch0: int(tx_gain)
+    gain_dB_ch1: int(tx_gain)
+    length_tag_name: packet_len
+    nco_freq_ch0: '0'
+    nco_freq_ch1: '0'
+    oversample: '0'
+    pa_path_ch0: '255'
+    pa_path_ch1: '1'
+    rf_freq: tx_frequency
+    samp_rate: samp_rate
+    serial: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1080, 612]
+    rotation: 0
+    state: enabled
+- name: pdu_pdu_to_tagged_stream_0
+  id: pdu_pdu_to_tagged_stream
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    tag: packet_len
+    type: byte
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [256, 460.0]
+    rotation: 0
+    state: true
+- name: qtgui_time_sink_x_0_0_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'True'
+    grid: 'True'
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '""'
+    nconnections: '1'
+    size: '20000'
+    srate: '1'
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '100'
+    ymin: '-100'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1080, 532]
+    rotation: 0
+    state: disabled
+- name: qtgui_time_sink_x_0_0_0_1
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'True'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'True'
+    grid: 'True'
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '""'
+    nconnections: '1'
+    size: '20000'
+    srate: '1'
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.0'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: complex
+    update_time: '0.10'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '100'
+    ymin: '-100'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1080, 452]
+    rotation: 0
+    state: disabled
+- name: zwave_poore_message_generator_pdu_0
+  id: zwave_poore_message_generator_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    command: command
+    command_class: command_class
+    comment: 'on'
+    configuration: '1'
+    destination_node_id: destination_node
+    frame_control: frame_control
+    home_id: home_id
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repetition_interval: repetition_interval
+    source_node_id: source_node_id
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [32, 372]
+    rotation: 0
+    state: disabled
+- name: zwave_poore_message_generator_pdu_0_0
+  id: zwave_poore_message_generator_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    command: '"0100"'
+    command_class: '"26"'
+    comment: 'off'
+    configuration: '1'
+    destination_node_id: '"02"'
+    frame_control: '"4108"'
+    home_id: home_id
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repetition_interval: repetition_interval
+    source_node_id: source_node_id
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [32, 564]
+    rotation: 0
+    state: enabled
+- name: zwave_poore_message_generator_pdu_0_0_0_0_0_0
+  id: zwave_poore_message_generator_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    command: '"050500000100020003ff0400"'
+    command_class: '"33"'
+    comment: green
+    configuration: '1'
+    destination_node_id: '"02"'
+    frame_control: '"4108"'
+    home_id: home_id
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repetition_interval: repetition_interval
+    source_node_id: source_node_id
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [416, 204]
+    rotation: 0
+    state: disabled
+- name: zwave_poore_message_generator_pdu_0_0_0_0_0_0_0
+  id: zwave_poore_message_generator_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    command: '"0505000001000240039c0400"'
+    command_class: '"33"'
+    comment: color_list
+    configuration: '2'
+    destination_node_id: '"02"'
+    frame_control: '"4108"'
+    home_id: home_id
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repetition_interval: repetition_interval
+    source_node_id: source_node_id
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [840, 204]
+    rotation: 0
+    state: disabled
+- name: zwave_poore_message_generator_pdu_0_0_0_0_0_0_0_0
+  id: zwave_poore_message_generator_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    command: '"0505000001000240039c0400"'
+    command_class: '"33"'
+    comment: random
+    configuration: '3'
+    destination_node_id: '"02"'
+    frame_control: '"4108"'
+    home_id: home_id
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repetition_interval: repetition_interval
+    source_node_id: source_node_id
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1056, 204]
+    rotation: 0
+    state: disabled
+- name: zwave_poore_message_generator_pdu_0_0_0_0_0_0_1
+  id: zwave_poore_message_generator_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    command: '"0505000001000200030004ff"'
+    command_class: '"33"'
+    comment: green
+    configuration: '1'
+    destination_node_id: '"02"'
+    frame_control: '"4108"'
+    home_id: home_id
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repetition_interval: repetition_interval
+    source_node_id: source_node_id
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [624, 204]
+    rotation: 0
+    state: disabled
+- name: zwave_poore_message_generator_pdu_0_0_0_1
+  id: zwave_poore_message_generator_pdu
+  parameters:
+    affinity: ''
+    alias: ''
+    command: command
+    command_class: command_class
+    comment: red
+    configuration: '1'
+    destination_node_id: destination_node_id
+    frame_control: frame_control
+    home_id: home_id
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    repetition_interval: repetition_interval
+    source_node_id: source_node_id
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [184, 204]
+    rotation: 0
+    state: disabled
+
+connections:
+- [analog_quadrature_demod_cf_0_0, '0', qtgui_time_sink_x_0_0_0, '0']
+- [blocks_delay_0, '0', blocks_stream_to_tagged_stream_0, '0']
+- [blocks_delay_0_0, '0', blocks_stream_to_tagged_stream_0_0, '0']
+- [blocks_head_0, '0', blocks_file_sink_0, '0']
+- [blocks_stream_to_tagged_stream_0, '0', analog_quadrature_demod_cf_0_0, '0']
+- [blocks_stream_to_tagged_stream_0, '0', qtgui_time_sink_x_0_0_0_1, '0']
+- [blocks_stream_to_tagged_stream_0_0, '0', analog_quadrature_demod_cf_0_0, '0']
+- [blocks_stream_to_tagged_stream_0_0, '0', blocks_head_0, '0']
+- [blocks_stream_to_tagged_stream_0_0, '0', limesdr_sink_0, '0']
+- [blocks_stream_to_tagged_stream_0_0, '0', qtgui_time_sink_x_0_0_0_1, '0']
+- [blocks_tag_gate_0, '0', blocks_delay_0, '0']
+- [blocks_tag_gate_0, '0', blocks_delay_0_0, '0']
+- [digital_gfsk_mod_0, '0', blocks_tag_gate_0, '0']
+- [pdu_pdu_to_tagged_stream_0, '0', digital_gfsk_mod_0, '0']
+- [zwave_poore_message_generator_pdu_0_0, out, pdu_pdu_to_tagged_stream_0, pdus]
+
+metadata:
+  file_format: 1

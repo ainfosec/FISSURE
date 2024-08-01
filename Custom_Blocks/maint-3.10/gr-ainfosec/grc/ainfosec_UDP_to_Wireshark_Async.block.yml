@@ -1,0 +1,25 @@
+id: ainfosec_UDP_to_Wireshark_Async
+label: UDP_to_Wireshark_Async
+category: '[ainfosec]'
+
+templates:
+  imports: import gnuradio.ainfosec as ainfosec
+  make: ainfosec.UDP_to_Wireshark_Async(${port})
+
+
+parameters:
+- id: port
+  label: Port
+  dtype: int
+  default: 50000
+  
+
+inputs:
+- label: in
+  domain: message
+  dtype: message
+  vlen: 1
+  optional: 0
+
+
+file_format: 1

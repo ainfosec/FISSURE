@@ -1,0 +1,53 @@
+[tool.poetry]
+name = "fissure"
+version = "0.1.0"
+description = ""
+authors = []
+
+[tool.poetry.dependencies]
+python = ">=3.8.1,<3.12"
+pyzmq = "^25.1.2"
+pyaml = "^23.12.0"
+pyqt5 = "=5.15.4"
+pyqt5-qt5 = "5.15.2"
+pyqt5-sip = "12.12.1"
+qasync = "^0.27.1"
+matplotlib = "=3.7.5"
+scipy = "=1.10.1"
+scapy = "^2.5.0"
+crcmod = "^1.7"
+yellowbrick = "^1.5"
+pandas = "=2.0.3"
+seaborn = "^0.13.2"
+distro = "^1.9.0"
+
+[tool.poetry.group.dev.dependencies]
+isort = "^5.13.2"
+flake8 = "^7.0.0"
+flake8-pyproject = "^1.2.3"
+coverage = "^7.4.1"
+black = "^24.2.0"
+
+[tool.poetry.scripts]
+fissure = "fissure.cli:main"
+dashboard = "fissure.cli:run_dashboard"
+server = "fissure.cli:run_server"
+hiprfisr = "fissure.cli:run_hiprfisr"
+pd = "fissure.cli:run_protocol_discovery"
+tsi = "fissure.cli:run_target_signal_identification"
+create_certs = "fissure.cli:generate_certs"
+
+[tool.black]
+line-length = 120
+
+[tool.isort]
+force_alphabetical_sort = "True"
+
+[tool.flake8]
+max-line-length = 120
+per-file-ignores = "__init__.py:F401,F403"
+ignore = "E203, E722, W503"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

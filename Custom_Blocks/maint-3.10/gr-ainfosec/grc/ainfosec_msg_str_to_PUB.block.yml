@@ -1,0 +1,25 @@
+id: ainfosec_msg_str_to_PUB
+label: msg_str_to_PUB
+category: '[ainfosec]'
+
+templates:
+  imports: from gnuradio import ainfosec
+  make: ainfosec.msg_str_to_PUB(${address})
+
+
+parameters:
+- id: address
+  label: Address
+  dtype: string
+
+inputs:
+- label: Message
+  domain: message
+  dtype: message
+  vlen: 1
+  optional: 1
+
+
+#  'file_format' specifies the version of the GRC yml format used in the file
+#  and should usually not be changed.
+file_format: 1

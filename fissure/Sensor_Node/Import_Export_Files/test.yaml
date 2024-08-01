@@ -1,0 +1,110 @@
+Sensor Node 1:
+     archive:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     attack:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     dealer_port: ''
+     enabled_disabled: enabled
+     ip_address: ''
+     iq:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     local_remote: local
+     location: sdaf
+     nickname: Local Sensor Node
+     notes: sadfsad
+     pd:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     pub_port: ''
+     tsi:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+Sensor Node 2:
+     archive: {}
+     attack: {}
+     dealer_port: '5053'
+     enabled_disabled: disabled
+     ip_address: ''
+     iq: {}
+     local_remote: remote
+     location: ''
+     nickname: ''
+     notes: ''
+     pd: {}
+     pub_port: '5061'
+     tsi: {}
+Sensor Node 3:
+     archive: {}
+     attack: {}
+     dealer_port: '5053'
+     enabled_disabled: disabled
+     ip_address: ''
+     iq: {}
+     local_remote: remote
+     location: ''
+     nickname: ''
+     notes: ''
+     pd: {}
+     pub_port: '5061'
+     tsi: {}
+Sensor Node 4:
+     archive: {}
+     attack: {}
+     dealer_port: '5053'
+     enabled_disabled: disabled
+     ip_address: ''
+     iq: {}
+     local_remote: remote
+     location: ''
+     nickname: ''
+     notes: ''
+     pd: {}
+     pub_port: '5061'
+     tsi: {}
+Sensor Node 5:
+     archive: {}
+     attack: {}
+     dealer_port: '5053'
+     enabled_disabled: disabled
+     ip_address: ''
+     iq: {}
+     local_remote: remote
+     location: ''
+     nickname: ''
+     notes: ''
+     pd: {}
+     pub_port: '5061'
+     tsi: {}

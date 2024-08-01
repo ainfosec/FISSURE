@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Components &mdash; FISSURE  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="../_static/jquery.js"></script>
-        <script src="../_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script src="../_static/jquery.js?v=5d32c60e"></script>
+        <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -64,6 +66,14 @@
 <li class="toctree-l2"><a class="reference internal" href="#protocol-discovery">Protocol Discovery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#flow-graph-script-executor">Flow Graph/Script Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hiprfisr">HIPRFISR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#sensor-nodes">Sensor Nodes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#sensor-node-description">Sensor Node Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sensor-node-networking">Sensor Node Networking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sensor-node-inner-workings">Sensor Node Inner Workings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sensor-node-config-file">Sensor Node Config File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#autorun-playlist-format">Autorun Playlist Format</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
@@ -103,7 +113,7 @@
 <p>FISSURE stemmed from the need to quickly identify and react to unknown devices or devices operating in unidentified modes in a congested RF environment. Over the years it has grown into an in-house laboratory tool used by AIS for nearly all things RF.</p>
 <section id="communications">
 <h3>Communications<a class="headerlink" href="#communications" title="Permalink to this heading"></a></h3>
-<p>The major components for FISSURE are written in Python/PyQt and communicate over an IP network to a central hub using ZeroMQ. Each component has a direct connection to the hub but can also have an unlimited number of one-to-many connections to broadcast status messages to other components. Any number of custom components can be added to the framework as long as the inputs/outputs are clearly defined in YAML and adhere to a simple message schema that allows for input sanitization and error handling.</p>
+<p>(Updates coming soon)</p>
 </section>
 <section id="library">
 <h3>Library<a class="headerlink" href="#library" title="Permalink to this heading"></a></h3>
@@ -111,6 +121,7 @@
 </section>
 <section id="file-structure">
 <h3>File Structure<a class="headerlink" href="#file-structure" title="Permalink to this heading"></a></h3>
+<p>(Updates coming soon)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>FISSURE
 ├── Archive
 │   ├── Datasets
@@ -313,6 +324,116 @@
 <section id="hiprfisr">
 <h2>HIPRFISR<a class="headerlink" href="#hiprfisr" title="Permalink to this heading"></a></h2>
 <p>The Central Hub receives commands from the User Dashboard to distribute to other components, manages automation and editing of the main library - which contains RF protocol information, script and flow graph mappings, and observation data.</p>
+</section>
+<section id="sensor-nodes">
+<h2>Sensor Nodes<a class="headerlink" href="#sensor-nodes" title="Permalink to this heading"></a></h2>
+<section id="sensor-node-description">
+<h3>Sensor Node Description<a class="headerlink" href="#sensor-node-description" title="Permalink to this heading"></a></h3>
+<p>FISSURE transitioned to a sensor node deployment scheme capable of connecting multiple computers with their own radios and peripherals that can be controlled remotely or run autonomously. This will facilitate many geospatial scenarios such as direction finding, tracking, perimeter defense, remote access for employees who need to do RF testing, and providing a global gateway for advanced laboratory environments. The automated scripts combined with lightweight, compact computing options will unlock several more possibilities for subjects like wardriving, warshipping, UAS payloads, and logging/tracking at key locations of interest.</p>
+<p>The Sensor Node component is responsible for interacting with the radio peripherals, receiving commands from the Dashboard/HIPRFISR, and returning status messages and data. Sensor nodes consist of the sensor_node.py code running any type on computing hardware. Each sensor node has a copy of the entire FISSURE flow graph library. Sensor nodes can be run remotely or locally on the same computer as the rest of the FISSURE components. Only one local sensor node can be run at a time and up to five remote sensor nodes can be deployed. Actions within the Dashboard tabs will usually only impact one sensor node at a time dictated by selection (through right-clicking) of one of the sensor node buttons at the top of the Dashboard. Additionally, sensor nodes can be configured with autorun playlists (created through the Dashboard) that run scripts independently of the FISSURE Dashboard.</p>
+</section>
+<section id="sensor-node-networking">
+<h3>Sensor Node Networking<a class="headerlink" href="#sensor-node-networking" title="Permalink to this heading"></a></h3>
+</section>
+<section id="sensor-node-inner-workings">
+<h3>Sensor Node Inner Workings<a class="headerlink" href="#sensor-node-inner-workings" title="Permalink to this heading"></a></h3>
+<p>Upon starting the sensor_node.py file, it reads the default.yaml file and then creates the ZMQ sockets. It continuously enters a loop where it checks for messages from the HIPRFISR and sends heartbeats to the rest of the FISSURE components. If the autorun feature is set to “True” in the sensor node configuration file, it will begin running the default playlist after the specified timeout has been surpassed. Otherwise, the sensor node will be idle and wait for the Dashboard to initiate a playlist. The autorun playlists can be configured to run once or at regular intervals (in seconds).</p>
+<p>To take advantage of multiple radio peripherals connected to a sensor node, the autorun playlist items are run in their own threads at the same time. There are two types of playlist items: single-stage and multi-stage. Single-stage items only have one file that is executed. Multi-stage items contain multiple files that are run in succession. For both item types there are options to specify a timeout, to choose whether to repeat the operation if completed before the timeout, and to have a delayed start time.</p>
+<p>The sensor node also run commands from the Dashboard beyond the autorun playlists. There are several tabs within the Dashboard that require the user to choose a hardware option among those assigned to the active sensor node. Such examples include: Target Signal Identification detector scripts, Protocol Discovery demodulation flow graphs, Attack scripts, IQ recording, IQ playback, IQ inspection, and Archive playlists. Archive playlists are a more on-demand and simplified solution compared to the autorun playlists.</p>
+</section>
+<section id="sensor-node-config-file">
+<h3>Sensor Node Config File<a class="headerlink" href="#sensor-node-config-file" title="Permalink to this heading"></a></h3>
+<p>The sensor node config file is comprised of sensor node descriptors (nickname, location, notes), autorun settings, networking settings, and default hardware assignments for all the FISSURE components. The user has the option to recall the default hardware assignments upon establishing a connection from the Dashboard and do not impact the sensor_node.py file directly. The following is a sample sensor node configuration file:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Sensor Node:</span>
+<span class="go">    archive:</span>
+<span class="go">        0:</span>
+<span class="go">            daughterboard: &#39;&#39;</span>
+<span class="go">            ip_address: &#39;&#39;</span>
+<span class="go">            network_interface: &#39;&#39;</span>
+<span class="go">            radio_name: &#39;&#39;</span>
+<span class="go">            serial: 30FE2D1</span>
+<span class="go">            type: USRP B2x0</span>
+<span class="go">            uid: &#39;&#39;</span>
+<span class="go">    attack:</span>
+<span class="go">        0:</span>
+<span class="go">            daughterboard: &#39;&#39;</span>
+<span class="go">            ip_address: &#39;&#39;</span>
+<span class="go">            network_interface: &#39;&#39;</span>
+<span class="go">            radio_name: &#39;&#39;</span>
+<span class="go">            serial: 30FE2D1</span>
+<span class="go">            type: USRP B2x0</span>
+<span class="go">            uid: &#39;&#39;</span>
+<span class="go">    autorun: false</span>
+<span class="go">    autorun_delay_seconds: 3</span>
+<span class="go">    autorun_interval_seconds: 3</span>
+<span class="go">    enabled_disabled: enabled</span>
+<span class="go">    ip_address: &#39;192.168.1.123&#39;</span>
+<span class="go">    iq:</span>
+<span class="go">        0:</span>
+<span class="go">            daughterboard: &#39;&#39;</span>
+<span class="go">            ip_address: &#39;&#39;</span>
+<span class="go">            network_interface: &#39;&#39;</span>
+<span class="go">            radio_name: &#39;&#39;</span>
+<span class="go">            serial: 30FE2D1</span>
+<span class="go">            type: USRP B2x0</span>
+<span class="go">            uid: &#39;&#39;</span>
+<span class="go">    local_remote: remote</span>
+<span class="go">    location: fgh</span>
+<span class="go">    nickname: Node 1</span>
+<span class="go">    notes: fdh</span>
+<span class="go">    pd:</span>
+<span class="go">        0:</span>
+<span class="go">            daughterboard: &#39;&#39;</span>
+<span class="go">            ip_address: &#39;&#39;</span>
+<span class="go">            network_interface: &#39;&#39;</span>
+<span class="go">            radio_name: &#39;&#39;</span>
+<span class="go">            serial: 30FE2D1</span>
+<span class="go">            type: USRP B2x0</span>
+<span class="go">            uid: &#39;&#39;</span>
+<span class="go">    msg_port: &#39;5052&#39;</span>
+<span class="go">    hb_port: &#39;5051&#39;</span>
+<span class="go">    tsi:</span>
+<span class="go">        0:</span>
+<span class="go">            daughterboard: &#39;&#39;</span>
+<span class="go">            ip_address: &#39;&#39;</span>
+<span class="go">            network_interface: &#39;&#39;</span>
+<span class="go">            radio_name: &#39;&#39;</span>
+<span class="go">            serial: 30FE2D1</span>
+<span class="go">            type: USRP B2x0</span>
+<span class="go">            uid: &#39;&#39;</span>
+<span class="go">    console_logging_level: &#39;INFO&#39;</span>
+<span class="go">    file_logging_level: &#39;DEBUG&#39;</span>
+</pre></div>
+</div>
+</section>
+<section id="autorun-playlist-format">
+<h3>Autorun Playlist Format<a class="headerlink" href="#autorun-playlist-format" title="Permalink to this heading"></a></h3>
+<p>Autorun playlists can be imported and exported from the Dashboard. Upon building a new playlist and clicking the “Start” button in the Autorun tab, the table contents will be converted to a dictionary with the same format as those found in the import/export YAML files. Autorun playlist files can be edited outside of the Dashboard in any text editor. The following is an example of an autorun playlist YAML file:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">delay_start: &#39;False&#39;</span>
+<span class="go">delay_start_time: &#39;2024-07-31 12:26:58&#39;</span>
+<span class="go">repetition_interval_seconds: &#39;-1&#39;</span>
+<span class="go">0:</span>
+<span class="go">    delay: &#39;False&#39;</span>
+<span class="go">    details: &#39;[&#39;&#39;X10 - Off&#39;&#39;, &#39;&#39;X10&#39;&#39;, &#39;&#39;OOK&#39;&#39;, &#39;&#39;USRP B2x0 - 30AD2E1&#39;&#39;, &#39;&#39;/home/user/Videos/testprivaterepo/Flow</span>
+<span class="go">        Graph Library/maint-3.8/Single-Stage Flow Graphs/X10_OOK_USRPB210_X10_Off.py&#39;&#39;,</span>
+<span class="go">        &#39;&#39;Flow Graph&#39;&#39;, False]&#39;</span>
+<span class="go">    repeat: &#39;False&#39;</span>
+<span class="go">    start_time: &#39;12:30:46&#39;</span>
+<span class="go">    timeout_seconds: &#39;5&#39;</span>
+<span class="go">    type: Single-Stage</span>
+<span class="go">    variable_names: &#39;[&#39;&#39;tx_usrp_gain&#39;&#39;, &#39;&#39;tx_usrp_frequency&#39;&#39;, &#39;&#39;tx_usrp_channel&#39;&#39;,</span>
+<span class="go">        &#39;&#39;tx_usrp_antenna&#39;&#39;, &#39;&#39;string_variables&#39;&#39;, &#39;&#39;serial&#39;&#39;, &#39;&#39;sample_rate&#39;&#39;,</span>
+<span class="go">        &#39;&#39;press_repetition_interval&#39;&#39;, &#39;&#39;press_duration&#39;&#39;, &#39;&#39;data_code&#39;&#39;, &#39;&#39;address_code&#39;&#39;]&#39;</span>
+<span class="go">    variable_values: &#39;[&#39;&#39;60&#39;&#39;, &#39;&#39;310.8e6&#39;&#39;, &#39;&#39;A:A&#39;&#39;, &#39;&#39;TX/RX&#39;&#39;, &#39;&#39;[address_code,data_code]&#39;&#39;,</span>
+<span class="go">        &#39;&#39;serial=30AD2E1&#39;&#39;, &#39;&#39;1e6&#39;&#39;, &#39;&#39;10&#39;&#39;, &#39;&#39;4&#39;&#39;, &#39;&#39;0x20&#39;&#39;, &#39;&#39;0x60&#39;&#39;]&#39;</span>
+<span class="go">trigger_values:</span>
+<span class="go">-    - x10_demod.py</span>
+<span class="go">    - Python3 Script</span>
+<span class="go">    - &#39;[&#39;&#39;hardware&#39;&#39;, &#39;&#39;matching_text&#39;&#39;]&#39;</span>
+<span class="go">    - &#39;[&#39;&#39;USRP B2x0 - 30AD2E1&#39;&#39;, &#39;&#39;Bits: 01100000100111110000000011111111&#39;&#39;]&#39;</span>
+</pre></div>
+</div>
+</section>
 </section>
 </section>
 

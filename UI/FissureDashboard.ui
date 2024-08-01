@@ -1,0 +1,2845 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>DashboardWindow</class>
+ <widget class="QMainWindow" name="DashboardWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1280</width>
+    <height>1024</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>FISSURE Dashboard</string>
+  </property>
+  <widget class="QWidget" name="centralwidget"/>
+  <widget class="QMenuBar" name="menubar">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1280</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="defaultUp">
+    <bool>false</bool>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>true</bool>
+   </property>
+   <widget class="QMenu" name="menuView">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>&amp;View</string>
+    </property>
+    <addaction name="actionLight_Mode"/>
+    <addaction name="actionDark_Mode"/>
+    <addaction name="actionCustom_Mode"/>
+    <addaction name="actionRandom"/>
+   </widget>
+   <widget class="QMenu" name="menuOptions">
+    <property name="title">
+     <string>&amp;Options</string>
+    </property>
+    <addaction name="actionAll_Options"/>
+    <addaction name="separator"/>
+    <addaction name="actionLoad_Configuration"/>
+    <addaction name="actionSave_Configuration"/>
+    <addaction name="actionRemember_Configuration"/>
+    <addaction name="separator"/>
+    <addaction name="actionAuto_Connect_HIPRFISR"/>
+   </widget>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>&amp;File</string>
+    </property>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <widget class="QMenu" name="menuProtocol_Signal_References">
+     <property name="title">
+      <string>Protocol/Signal References</string>
+     </property>
+     <addaction name="actionProtocol_Spreadsheet"/>
+     <addaction name="actionProtocol_CSV"/>
+     <addaction name="actionUS_Frequency_Allocations"/>
+     <addaction name="actionSignal_Identification_Guide"/>
+     <addaction name="actionFccID_Lookup"/>
+     <addaction name="actionFSPL_Calculator"/>
+     <addaction name="actionWavelength_Calculator"/>
+     <addaction name="actionElectromagnetic_Radiation_Spectrum"/>
+    </widget>
+    <widget class="QMenu" name="menuGitHub">
+     <property name="title">
+      <string>GitHub</string>
+     </property>
+     <addaction name="actionGitHub_FISSURE"/>
+     <addaction name="actionGitHub_cpoore1"/>
+     <addaction name="actionGitHub_ainfosec"/>
+    </widget>
+    <widget class="QMenu" name="menuInstallation">
+     <property name="title">
+      <string>Installation</string>
+     </property>
+     <addaction name="actionRequirements"/>
+     <addaction name="actionCloning"/>
+     <addaction name="actionInstaller"/>
+     <addaction name="actionUninstalling"/>
+     <addaction name="actionUsage"/>
+     <addaction name="actionKnown_Conflicts"/>
+     <addaction name="actionThird_Party_Software_2"/>
+     <addaction name="actionThird_Party_Software_Versions"/>
+    </widget>
+    <widget class="QMenu" name="menuDevelopment_2">
+     <property name="title">
+      <string>Development</string>
+     </property>
+     <addaction name="actionAddingCustomOptions"/>
+     <addaction name="actionHelpBuiltWith"/>
+     <addaction name="actionHelpUploadingFlowGraphs"/>
+     <addaction name="actionHelpUploadingPythonScripts"/>
+     <addaction name="actionInspection_Flow_Graphs"/>
+     <addaction name="actionModifying_Dashboard"/>
+    </widget>
+    <widget class="QMenu" name="menuHardware">
+     <property name="title">
+      <string>Hardware</string>
+     </property>
+     <widget class="QMenu" name="menuNotes">
+      <property name="title">
+       <string>Notes</string>
+      </property>
+      <addaction name="actionHelpLimeSDR"/>
+      <addaction name="actionHelpNewUSRPX310"/>
+      <addaction name="actionHelpUpdatingHackRF"/>
+     </widget>
+     <addaction name="actionSupported"/>
+     <addaction name="actionConfiguring"/>
+     <addaction name="menuNotes"/>
+     <addaction name="separator"/>
+     <addaction name="actionRoundup_of_SDRs"/>
+     <addaction name="actionList_of_SDRs"/>
+     <addaction name="actionAntenna_Comparison"/>
+     <addaction name="actionGNU_Radio_Hardware"/>
+    </widget>
+    <widget class="QMenu" name="menuComponents">
+     <property name="title">
+      <string>Components</string>
+     </property>
+     <widget class="QMenu" name="menuOverview">
+      <property name="title">
+       <string>Overview</string>
+      </property>
+      <addaction name="actionCommunications"/>
+      <addaction name="actionLibrary"/>
+      <addaction name="actionFile_Structure"/>
+      <addaction name="actionSupported_Protocols"/>
+     </widget>
+     <addaction name="menuOverview"/>
+     <addaction name="actionDashboard"/>
+     <addaction name="actionTarget_Signal_Identification"/>
+     <addaction name="actionProtocol_Discovery"/>
+     <addaction name="actionFlow_Graph_Script_Executor"/>
+     <addaction name="actionHIPRFISR"/>
+    </widget>
+    <widget class="QMenu" name="menuOperation">
+     <property name="title">
+      <string>Operation</string>
+     </property>
+     <widget class="QMenu" name="menuStart_Up_Procedures">
+      <property name="title">
+       <string>Start-Up Procedures</string>
+      </property>
+      <addaction name="actionHardware_Buttons"/>
+      <addaction name="actionNetworking_Configuration"/>
+     </widget>
+     <widget class="QMenu" name="menuMenu_Items">
+      <property name="title">
+       <string>Menu Items</string>
+      </property>
+      <addaction name="actionLessons"/>
+      <addaction name="actionStandalone_Flow_Graphs"/>
+      <addaction name="actionTools"/>
+      <addaction name="actionOptions"/>
+      <addaction name="actionView"/>
+     </widget>
+     <addaction name="menuStart_Up_Procedures"/>
+     <addaction name="menuMenu_Items"/>
+     <addaction name="actionAutomation_Tab"/>
+     <addaction name="actionTSI_Tab"/>
+     <addaction name="actionPD_Tab"/>
+     <addaction name="actionAttack_Tab"/>
+     <addaction name="actionIQ_Data_Tab"/>
+     <addaction name="actionArchive_Tab"/>
+     <addaction name="actionPacket_Crafter_Tab"/>
+     <addaction name="actionLibrary_Tab"/>
+     <addaction name="actionLog_Tab"/>
+     <addaction name="actionStatus_Bar"/>
+    </widget>
+    <addaction name="actionUser_Manual"/>
+    <addaction name="separator"/>
+    <addaction name="menuInstallation"/>
+    <addaction name="menuHardware"/>
+    <addaction name="menuComponents"/>
+    <addaction name="menuOperation"/>
+    <addaction name="menuDevelopment_2"/>
+    <addaction name="actionCredits"/>
+    <addaction name="separator"/>
+    <addaction name="menuProtocol_Signal_References"/>
+    <addaction name="separator"/>
+    <addaction name="menuGitHub"/>
+    <addaction name="actionDiscord"/>
+    <addaction name="actionYouTube"/>
+    <addaction name="actionFISSURE_Challenge"/>
+    <addaction name="separator"/>
+    <addaction name="actionHelpAbout"/>
+   </widget>
+   <widget class="QMenu" name="menuFlow_Graphs">
+    <property name="title">
+     <string>&amp;Standalone</string>
+    </property>
+    <widget class="QMenu" name="menuStandaloneGSM">
+     <property name="title">
+      <string>GSM</string>
+     </property>
+     <addaction name="actionGsm_uplink_downlink"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneACARS">
+     <property name="title">
+      <string>ACARS</string>
+     </property>
+     <addaction name="actionAcars_demo"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneJ2497">
+     <property name="title">
+      <string>J2497</string>
+     </property>
+     <addaction name="actionJ2497_demod_method1"/>
+     <addaction name="actionj2497_mod_hackrfdirect"/>
+     <addaction name="actionj2497_mod_fl2k"/>
+     <addaction name="actionj2497_mod"/>
+    </widget>
+    <widget class="QMenu" name="menuStandalone802_11">
+     <property name="title">
+      <string>802.11</string>
+     </property>
+     <addaction name="actionWifi_rx"/>
+     <addaction name="actionWifi_tx"/>
+     <addaction name="actionWifi_relay"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneZigbee">
+     <property name="title">
+      <string>Zigbee</string>
+     </property>
+     <addaction name="actionIEEE_802_15_4_transceiver_OQPSK"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneFM">
+     <property name="title">
+      <string>FM</string>
+     </property>
+     <addaction name="actionFM_Radio_Capture"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneRDS">
+     <property name="title">
+      <string>RDS</string>
+     </property>
+     <addaction name="actionRds_rx"/>
+     <addaction name="actionRds_tx"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneHD_Radio">
+     <property name="title">
+      <string>HD Radio</string>
+     </property>
+     <addaction name="actionHd_tx_usrp"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneX10">
+     <property name="title">
+      <string>X10</string>
+     </property>
+     <addaction name="actionX10_tx_rx"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneV2V">
+     <property name="title">
+      <string>V2V</string>
+     </property>
+     <addaction name="actionV2Verifier_wifi_tx"/>
+     <addaction name="actionV2Verifier_wifi_rx"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneTPMS">
+     <property name="title">
+      <string>TPMS</string>
+     </property>
+     <addaction name="actionStandaloneTpms_rx"/>
+     <addaction name="actionStandaloneTpms_tx"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneZ_Wave">
+     <property name="title">
+      <string>Z-Wave</string>
+     </property>
+     <addaction name="actionZwave_tx"/>
+     <addaction name="actionZwave_rx"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneMorse_Code">
+     <property name="title">
+      <string>Morse Code</string>
+     </property>
+     <addaction name="actionMorseGen"/>
+    </widget>
+    <widget class="QMenu" name="menuStandaloneClapper_Plus">
+     <property name="title">
+      <string>Clapper Plus</string>
+     </property>
+     <addaction name="actionClapper_Plus_Transmit"/>
+    </widget>
+    <widget class="QMenu" name="menuStandalonePainting">
+     <property name="title">
+      <string>Painting</string>
+     </property>
+     <addaction name="actionPaint_tx"/>
+    </widget>
+    <widget class="QMenu" name="menuGarage_Door">
+     <property name="title">
+      <string>Garage Door</string>
+     </property>
+     <addaction name="actionGarage_Door_Transmit"/>
+     <addaction name="actionGarage_Door_Cycle"/>
+    </widget>
+    <widget class="QMenu" name="menuPOCSAG_2">
+     <property name="title">
+      <string>POCSAG</string>
+     </property>
+     <addaction name="actionpocsagtx"/>
+    </widget>
+    <widget class="QMenu" name="menuAIS_2">
+     <property name="title">
+      <string>AIS</string>
+     </property>
+     <addaction name="actionais_rx_demod"/>
+     <addaction name="actionAiS_TX"/>
+    </widget>
+    <widget class="QMenu" name="menuTesla">
+     <property name="title">
+      <string>Tesla</string>
+     </property>
+     <addaction name="actiontesla_charge_port"/>
+    </widget>
+    <addaction name="menuStandalone802_11"/>
+    <addaction name="menuStandaloneACARS"/>
+    <addaction name="menuAIS_2"/>
+    <addaction name="menuStandaloneClapper_Plus"/>
+    <addaction name="menuStandaloneFM"/>
+    <addaction name="menuGarage_Door"/>
+    <addaction name="menuStandaloneGSM"/>
+    <addaction name="menuStandaloneHD_Radio"/>
+    <addaction name="menuStandaloneJ2497"/>
+    <addaction name="menuStandaloneMorse_Code"/>
+    <addaction name="menuStandalonePainting"/>
+    <addaction name="menuPOCSAG_2"/>
+    <addaction name="menuStandaloneRDS"/>
+    <addaction name="menuTesla"/>
+    <addaction name="menuStandaloneTPMS"/>
+    <addaction name="menuStandaloneX10"/>
+    <addaction name="menuStandaloneV2V"/>
+    <addaction name="menuStandaloneZ_Wave"/>
+    <addaction name="menuStandaloneZigbee"/>
+    <addaction name="separator"/>
+    <addaction name="actionAntenna_test_rx"/>
+    <addaction name="actionAntenna_test_tx"/>
+    <addaction name="separator"/>
+    <addaction name="actionNoise_source"/>
+    <addaction name="separator"/>
+    <addaction name="actionfrequency_translating"/>
+   </widget>
+   <widget class="QMenu" name="menuSDR_Tools">
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <widget class="QMenu" name="menuSDR_Tools_2">
+     <property name="title">
+      <string>SDR</string>
+     </property>
+     <addaction name="actionQSpectrumAnalyzer"/>
+     <addaction name="actionGQRX"/>
+     <addaction name="actionBaudline"/>
+     <addaction name="actionUniversal_Radio_Hacker"/>
+     <addaction name="actionInspectrum"/>
+     <addaction name="actionRetrogram_rtlsdr"/>
+     <addaction name="actionRTLSDR_Airband"/>
+     <addaction name="actionSpektrum"/>
+     <addaction name="actionSdrGlut"/>
+     <addaction name="actionGr_paint_Converter"/>
+     <addaction name="actionIIO_Oscilloscope"/>
+     <addaction name="actionSigDigger"/>
+     <addaction name="actionOpenWebRX"/>
+     <addaction name="actionWebSDR"/>
+    </widget>
+    <widget class="QMenu" name="menu802_11_Tools_2">
+     <property name="title">
+      <string>802.11</string>
+     </property>
+     <widget class="QMenu" name="menuESP8266_Deauther_V2">
+      <property name="title">
+       <string>ESP8266 Deauther v2</string>
+      </property>
+      <addaction name="actionEsp8266_deauther_ino"/>
+      <addaction name="actionESP8266_Deauther_Web_Interface"/>
+      <addaction name="actionESP8266_Deauther_Credentials"/>
+     </widget>
+     <widget class="QMenu" name="menuwhoishere_py">
+      <property name="title">
+       <string>whoishere.py</string>
+      </property>
+      <addaction name="actionwhoishere_py_2"/>
+      <addaction name="actionwhoishere_conf"/>
+     </widget>
+     <addaction name="actionMonitorModeTool"/>
+     <addaction name="actionIwlist_scan"/>
+     <addaction name="actionKismet"/>
+     <addaction name="actionWireshark"/>
+     <addaction name="actionESP8266_beacon_spammer"/>
+     <addaction name="actionNETATTACK2"/>
+     <addaction name="actionWifite"/>
+     <addaction name="actionRouterSploit"/>
+     <addaction name="actionExploit_Database"/>
+     <addaction name="actionMetasploit"/>
+     <addaction name="actionWiGLE_net"/>
+     <addaction name="actionScan_ssid"/>
+     <addaction name="actionPixie_Dust_List"/>
+     <addaction name="menuESP8266_Deauther_V2"/>
+     <addaction name="actionTechInfoDepot"/>
+     <addaction name="actionWikiDevi"/>
+     <addaction name="actionTrackerjacker"/>
+     <addaction name="actionSanitized_IEEE_OUI_Data"/>
+     <addaction name="actionAirgeddon"/>
+     <addaction name="menuwhoishere_py"/>
+    </widget>
+    <widget class="QMenu" name="menuHardware_2">
+     <property name="title">
+      <string>Hardware</string>
+     </property>
+     <addaction name="actionUhd_find_devices"/>
+     <addaction name="actionHackrf_info"/>
+     <addaction name="actionLsusb"/>
+     <addaction name="actionIwconfig"/>
+     <addaction name="actionLimeSuiteGUI"/>
+     <addaction name="actionLimeUtilUpdate"/>
+     <addaction name="actionLoad_bladeRF_FPGA"/>
+     <addaction name="actionMinicom"/>
+     <addaction name="actionPutty"/>
+     <addaction name="actionRtl_test"/>
+     <addaction name="actionUhd_image_loader"/>
+     <addaction name="actionqFlipper"/>
+    </widget>
+    <widget class="QMenu" name="menuData">
+     <property name="title">
+      <string>Data</string>
+     </property>
+     <addaction name="actionCyberChef"/>
+     <addaction name="actionCyberChef_Recipes"/>
+     <addaction name="actionRehex"/>
+     <addaction name="actionDiffchecker"/>
+     <addaction name="actionCloudConvert"/>
+     <addaction name="actionTinyWow"/>
+     <addaction name="actionOnline_Hex_Converter"/>
+     <addaction name="actionBless"/>
+     <addaction name="actiontriq_org"/>
+     <addaction name="actioncryptii"/>
+     <addaction name="actionMeld"/>
+     <addaction name="actionWaveDrom"/>
+     <addaction name="actionPacket_Diagram"/>
+     <addaction name="actionIQEngine"/>
+     <addaction name="actionSolve_Crypto_with_Force"/>
+     <addaction name="actionCrackStation"/>
+     <addaction name="actionGHex"/>
+     <addaction name="actionBinwalk"/>
+    </widget>
+    <widget class="QMenu" name="menuBluetooth">
+     <property name="title">
+      <string>Bluetooth</string>
+     </property>
+     <widget class="QMenu" name="menuESP32_Bluetooth_Classic_Sniffer">
+      <property name="title">
+       <string>ESP32 Bluetooth Classic Sniffer</string>
+      </property>
+      <addaction name="actionBTSnifferBREDR"/>
+      <addaction name="actionFlash_ESP32_Board"/>
+     </widget>
+     <addaction name="actionBluetoothctl"/>
+     <addaction name="actionESP32_BLEBeaconSpam"/>
+     <addaction name="actionBtrx"/>
+     <addaction name="actionBle_dump"/>
+     <addaction name="menuESP32_Bluetooth_Classic_Sniffer"/>
+     <addaction name="actionHcitool_scan"/>
+     <addaction name="actionHcitool_inq"/>
+     <addaction name="actionSdptool_browse"/>
+     <addaction name="actionDevice_Class_List"/>
+     <addaction name="actionBtclassify"/>
+     <addaction name="actionL2ping"/>
+     <addaction name="actionBtscanner"/>
+     <addaction name="actionHcidump"/>
+     <addaction name="actionICE9_Bluetooth_Scanner"/>
+    </widget>
+    <widget class="QMenu" name="menuZ_Wave">
+     <property name="title">
+      <string>Z-Wave</string>
+     </property>
+     <addaction name="actionOpenHAB"/>
+     <addaction name="actionStart_openHAB_Service"/>
+     <addaction name="actionStop_openHAB_Service"/>
+     <addaction name="separator"/>
+     <addaction name="actionRtl_zwave_908_42_MHz"/>
+     <addaction name="actionRtl_zwave_916_MHz"/>
+     <addaction name="separator"/>
+     <addaction name="actionWaving_z_908_42_MHz"/>
+     <addaction name="actionWaving_z_916_MHz"/>
+     <addaction name="separator"/>
+     <addaction name="actionCommand_Class_Specification"/>
+     <addaction name="actionCommand_Class_List"/>
+    </widget>
+    <widget class="QMenu" name="menuGSM">
+     <property name="title">
+      <string>GSM</string>
+     </property>
+     <addaction name="actionGrgsm_scanner"/>
+     <addaction name="actionKalibrate"/>
+     <addaction name="actionPySim_read"/>
+     <addaction name="actionPySim_prog"/>
+    </widget>
+    <widget class="QMenu" name="menuAircraft">
+     <property name="title">
+      <string>Aircraft</string>
+     </property>
+     <widget class="QMenu" name="menuTrackers">
+      <property name="title">
+       <string>Trackers</string>
+      </property>
+      <addaction name="actionFlightAware"/>
+      <addaction name="actionFlightradar24"/>
+      <addaction name="actionFlightStats"/>
+      <addaction name="actionPlane_Finder"/>
+      <addaction name="actionADS_B_Exchange"/>
+      <addaction name="actionacars_adsbexchange"/>
+      <addaction name="actionAirframes"/>
+     </widget>
+     <addaction name="actionDump1090"/>
+     <addaction name="actionGr_air_modes"/>
+     <addaction name="menuTrackers"/>
+     <addaction name="actiondump978"/>
+     <addaction name="actionADS_B_Towers"/>
+     <addaction name="actionMLAT_Feeder_Map"/>
+    </widget>
+    <widget class="QMenu" name="menuLTE">
+     <property name="title">
+      <string>LTE</string>
+     </property>
+     <addaction name="actionSrsLTE"/>
+     <addaction name="actionFALCON"/>
+     <addaction name="action4G_IMSI_Catcher"/>
+     <addaction name="actionTower_Search"/>
+     <addaction name="actionTower_Search_Part_2"/>
+     <addaction name="actionCellmapper"/>
+     <addaction name="actionLTE_Cell_Scanner"/>
+     <addaction name="actionAntennaSearch"/>
+     <addaction name="actionLTE_ciphercheck"/>
+    </widget>
+    <widget class="QMenu" name="menuHam_Radio">
+     <property name="title">
+      <string>Ham Radio</string>
+     </property>
+     <widget class="QMenu" name="menuExam">
+      <property name="title">
+       <string>Exam</string>
+      </property>
+      <addaction name="action2022_2026_Technician_Pool"/>
+      <addaction name="action2019_2023_General_Pool"/>
+      <addaction name="actionAnki"/>
+      <addaction name="actionAnki_Decks"/>
+      <addaction name="actionExam_Locations"/>
+      <addaction name="actionHow_to_File"/>
+      <addaction name="actionRadioQTH_Available_Call_Signs"/>
+      <addaction name="actionAE7Q_Available_Call_Signs"/>
+     </widget>
+     <widget class="QMenu" name="menuAPRS">
+      <property name="title">
+       <string>APRS</string>
+      </property>
+      <addaction name="actionGoogle_Maps_APRS"/>
+      <addaction name="actionAPRS_multimon_ng"/>
+      <addaction name="actionDire_Wolf"/>
+      <addaction name="actionAPRS_Track_Direct"/>
+     </widget>
+     <addaction name="menuAPRS"/>
+     <addaction name="menuExam"/>
+     <addaction name="actionEchoLink_Link_Status"/>
+     <addaction name="actionEvery_Time_Zone"/>
+     <addaction name="actionFldigi"/>
+     <addaction name="actionham2mon"/>
+     <addaction name="actionHamClock"/>
+     <addaction name="actionHAMRS"/>
+     <addaction name="actionhfpropagation_com"/>
+     <addaction name="actionHF_Propagation_Map"/>
+     <addaction name="actionLicense_Search"/>
+     <addaction name="actionMorse_Code_Translator"/>
+     <addaction name="actionPSK_Reporter"/>
+     <addaction name="actionQSSTV"/>
+     <addaction name="actionSolarHam"/>
+     <addaction name="actionWSJT_X"/>
+     <addaction name="actionWSPRnet_Map"/>
+     <addaction name="actionWSPR_Rocks"/>
+    </widget>
+    <widget class="QMenu" name="menuV2V">
+     <property name="title">
+      <string>V2V</string>
+     </property>
+     <addaction name="actionV2Verifier"/>
+    </widget>
+    <widget class="QMenu" name="menuAIS">
+     <property name="title">
+      <string>AIS</string>
+     </property>
+     <addaction name="actionOpenCPN"/>
+     <addaction name="actionMarineTraffic"/>
+     <addaction name="actionVesselFinder"/>
+     <addaction name="actionBoatnerd"/>
+     <addaction name="actionCruiseMapper"/>
+     <addaction name="actionAIVDM_AIVDO_Decoding"/>
+     <addaction name="actionAIS_VDM_VDO_Decoder"/>
+     <addaction name="actionAIS_Online_Decoder"/>
+     <addaction name="actionpyais_GitHub"/>
+    </widget>
+    <widget class="QMenu" name="menuTrunked_Radio">
+     <property name="title">
+      <string>Trunked Radio</string>
+     </property>
+     <addaction name="actionSDRTrunk"/>
+     <addaction name="actionRadio_Reference_Database"/>
+    </widget>
+    <widget class="QMenu" name="menuAudio">
+     <property name="title">
+      <string>Audio</string>
+     </property>
+     <widget class="QMenu" name="menuMinimodem">
+      <property name="title">
+       <string>minimodem</string>
+      </property>
+      <addaction name="actionMinimodem_rx"/>
+      <addaction name="actionMinimodem_tx"/>
+     </widget>
+     <addaction name="actionAudacity"/>
+     <addaction name="menuMinimodem"/>
+     <addaction name="actionAudioRecord"/>
+     <addaction name="actionEnscribe"/>
+    </widget>
+    <widget class="QMenu" name="menuRadiosonde">
+     <property name="title">
+      <string>Radiosonde</string>
+     </property>
+     <addaction name="actionRadiosonde_auto_rx"/>
+     <addaction name="actionRadiosonde_auto_rx_Config"/>
+     <addaction name="actionSondeHub_Radiosonde_Tracker"/>
+     <addaction name="actionSQ6KXY_Radiosonde_Tracker"/>
+     <addaction name="actionEarth_Nullschool"/>
+     <addaction name="actionCUSF_Landing_Predictor"/>
+     <addaction name="actionHabhub_tracker"/>
+    </widget>
+    <widget class="QMenu" name="menuPoint_to_Point">
+     <property name="title">
+      <string>Point-to-Point</string>
+     </property>
+     <addaction name="actionAirLink"/>
+     <addaction name="actionSCADACore_RF_Line_of_Sight"/>
+    </widget>
+    <widget class="QMenu" name="menuRFID">
+     <property name="title">
+      <string>RFID</string>
+     </property>
+     <addaction name="actionProxmark3"/>
+     <addaction name="actionProxmark3_Cheatsheet"/>
+     <addaction name="actionZEPASSD"/>
+     <addaction name="actionrfidpics"/>
+    </widget>
+    <widget class="QMenu" name="menuSatellite">
+     <property name="title">
+      <string>Satellite</string>
+     </property>
+     <widget class="QMenu" name="menuIridium">
+      <property name="title">
+       <string>Iridium</string>
+      </property>
+      <addaction name="actionIridium_extractor"/>
+      <addaction name="actionIridium_parser"/>
+      <addaction name="actionStats_voc"/>
+      <addaction name="actionIridiumLive"/>
+     </widget>
+     <addaction name="menuIridium"/>
+     <addaction name="actionLow_Earth_Orbit_Visualization"/>
+     <addaction name="actionLeoLabs_Catalog"/>
+     <addaction name="actionGpredict"/>
+     <addaction name="actionAPT3000"/>
+     <addaction name="actionEsri_Satellite_Map"/>
+     <addaction name="actionAmateur_Satellite_Database"/>
+     <addaction name="actionOrbital_Element_Converter"/>
+     <addaction name="actionSatellite_Link_Budget"/>
+     <addaction name="actionN2YO"/>
+     <addaction name="actionFind_Satellites"/>
+     <addaction name="actionAGSatTrack"/>
+     <addaction name="actionCelestrak"/>
+     <addaction name="actionSpot_The_Station"/>
+    </widget>
+    <widget class="QMenu" name="menu433_MHz">
+     <property name="title">
+      <string>433 MHz</string>
+     </property>
+     <addaction name="actionRtl_433"/>
+     <addaction name="actionMonitor_rtl433"/>
+    </widget>
+    <widget class="QMenu" name="menuVideo">
+     <property name="title">
+      <string>Video</string>
+     </property>
+     <addaction name="actionVLC"/>
+     <addaction name="actionSimpleScreenRecorder"/>
+    </widget>
+    <widget class="QMenu" name="menuMapping">
+     <property name="title">
+      <string>Mapping</string>
+     </property>
+     <addaction name="actionGoogle_Earth_Pro"/>
+     <addaction name="actionViking"/>
+     <addaction name="actionUS_County_Overlays"/>
+    </widget>
+    <widget class="QMenu" name="menuGPS">
+     <property name="title">
+      <string>GPS</string>
+     </property>
+     <addaction name="actionCgps"/>
+     <addaction name="actionGpsdecode"/>
+     <addaction name="actionGpsmon"/>
+     <addaction name="actionXgps"/>
+     <addaction name="actionXgpsspeed"/>
+     <addaction name="actionPyGPSClient"/>
+     <addaction name="actionFoxtrotGPS"/>
+     <addaction name="actionGPSJAM"/>
+    </widget>
+    <widget class="QMenu" name="menuVHF">
+     <property name="title">
+      <string>VHF</string>
+     </property>
+     <addaction name="actionLiveATC_net"/>
+    </widget>
+    <widget class="QMenu" name="menuAM_Radio">
+     <property name="title">
+      <string>AM Radio</string>
+     </property>
+     <addaction name="actionAM_Query"/>
+    </widget>
+    <widget class="QMenu" name="menuFM_Radio">
+     <property name="title">
+      <string>FM Radio</string>
+     </property>
+     <widget class="QMenu" name="menuRDS_2">
+      <property name="title">
+       <string>RDS</string>
+      </property>
+      <addaction name="actionRds_rx_2"/>
+     </widget>
+     <addaction name="actionFM_Query"/>
+     <addaction name="actionRadio_Station_Locator"/>
+     <addaction name="menuRDS_2"/>
+     <addaction name="actionRadio_Garden"/>
+     <addaction name="actionTuneIn_Explorer"/>
+    </widget>
+    <widget class="QMenu" name="menuHD_Radio">
+     <property name="title">
+      <string>HD Radio</string>
+     </property>
+     <addaction name="actionNrsc5"/>
+     <addaction name="actionnrsc5_gui"/>
+    </widget>
+    <widget class="QMenu" name="menuZigBee">
+     <property name="title">
+      <string>Zigbee</string>
+     </property>
+     <addaction name="actionZigbeeOpen_Sniffer"/>
+    </widget>
+    <widget class="QMenu" name="menuSSH">
+     <property name="title">
+      <string>SSH</string>
+     </property>
+     <addaction name="actionHydra"/>
+     <addaction name="actionssh_login"/>
+     <addaction name="actionSecLists"/>
+     <addaction name="actionMetasploit_Wordlists"/>
+     <addaction name="actionOpenSSH_Username_Enumeration"/>
+    </widget>
+    <widget class="QMenu" name="menuM17">
+     <property name="title">
+      <string>M17</string>
+     </property>
+     <addaction name="actionm17_demod"/>
+    </widget>
+    <widget class="QMenu" name="menuPOCSAG">
+     <property name="title">
+      <string>POCSAG</string>
+     </property>
+     <addaction name="actionmultimon_ng"/>
+    </widget>
+    <widget class="QMenu" name="menuFilters">
+     <property name="title">
+      <string>Filters</string>
+     </property>
+     <addaction name="actionpyFDA"/>
+    </widget>
+    <widget class="QMenu" name="menuDevelopment">
+     <property name="title">
+      <string>Development</string>
+     </property>
+     <widget class="QMenu" name="menuQtDesigner">
+      <property name="title">
+       <string>QtDesigner</string>
+      </property>
+      <addaction name="actiondashboard_ui"/>
+      <addaction name="actionFissureDashboard_ui"/>
+      <addaction name="actionoptions_ui"/>
+     </widget>
+     <addaction name="actionArduino"/>
+     <addaction name="actionGpick"/>
+     <addaction name="actiongrip"/>
+     <addaction name="actionguidus"/>
+     <addaction name="actionhtop"/>
+     <addaction name="menuQtDesigner"/>
+     <addaction name="actionSystemback"/>
+     <addaction name="actionwl_color_picker"/>
+    </widget>
+    <widget class="QMenu" name="menuWeather">
+     <property name="title">
+      <string>Weather</string>
+     </property>
+     <addaction name="actionwttr_in"/>
+     <addaction name="actionOpen_weather"/>
+    </widget>
+    <widget class="QMenu" name="menuRailway">
+     <property name="title">
+      <string>Railway</string>
+     </property>
+     <addaction name="actionOpenRailwayMap"/>
+    </widget>
+    <widget class="QMenu" name="menuTPMS">
+     <property name="title">
+      <string>TPMS</string>
+     </property>
+     <addaction name="actiontpms_rx"/>
+    </widget>
+    <addaction name="menu433_MHz"/>
+    <addaction name="menu802_11_Tools_2"/>
+    <addaction name="menuAircraft"/>
+    <addaction name="menuAIS"/>
+    <addaction name="menuAM_Radio"/>
+    <addaction name="menuAudio"/>
+    <addaction name="menuBluetooth"/>
+    <addaction name="menuData"/>
+    <addaction name="menuDevelopment"/>
+    <addaction name="menuFilters"/>
+    <addaction name="menuFM_Radio"/>
+    <addaction name="menuGPS"/>
+    <addaction name="menuGSM"/>
+    <addaction name="menuHam_Radio"/>
+    <addaction name="menuHardware_2"/>
+    <addaction name="menuHD_Radio"/>
+    <addaction name="menuLTE"/>
+    <addaction name="menuM17"/>
+    <addaction name="menuMapping"/>
+    <addaction name="menuPOCSAG"/>
+    <addaction name="menuPoint_to_Point"/>
+    <addaction name="menuRadiosonde"/>
+    <addaction name="menuRailway"/>
+    <addaction name="menuRFID"/>
+    <addaction name="menuSatellite"/>
+    <addaction name="menuSSH"/>
+    <addaction name="menuSDR_Tools_2"/>
+    <addaction name="menuTrunked_Radio"/>
+    <addaction name="menuTPMS"/>
+    <addaction name="menuV2V"/>
+    <addaction name="menuVideo"/>
+    <addaction name="menuVHF"/>
+    <addaction name="menuWeather"/>
+    <addaction name="menuZ_Wave"/>
+    <addaction name="menuZigBee"/>
+   </widget>
+   <widget class="QMenu" name="menuLessons">
+    <property name="title">
+     <string>&amp;Lessons</string>
+    </property>
+    <addaction name="actionLessonOpenBTS"/>
+    <addaction name="actionLessonLuaDissectors"/>
+    <addaction name="actionLessonSound_eXchange"/>
+    <addaction name="actionLessonESP_Boards"/>
+    <addaction name="actionLessonRadiosondeTracking"/>
+    <addaction name="actionLessonRFID"/>
+    <addaction name="actionLesson_Data_Types"/>
+    <addaction name="actionLesson_Custom_GNU_Radio_Blocks"/>
+    <addaction name="actionLesson_TPMS"/>
+    <addaction name="actionLesson_Ham_Radio_Exams"/>
+    <addaction name="actionLesson_WiFi_Tools"/>
+    <addaction name="actionLesson_Creating_Bootable_USBs"/>
+    <addaction name="separator"/>
+    <addaction name="actionPySDR_org"/>
+    <addaction name="actionLessonSDR_WithHackRF"/>
+    <addaction name="actionGNU_Radio_Tutorials"/>
+    <addaction name="actionProgramming_SDRs_with_GNU_Radio"/>
+    <addaction name="actionLearn_SDR"/>
+    <addaction name="actioncomplextoreal_com"/>
+    <addaction name="actioncemaxecuter_YouTube"/>
+    <addaction name="actionIceman_YouTube"/>
+    <addaction name="actionHideo_Okawara"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+   <addaction name="menuOptions"/>
+   <addaction name="menuFlow_Graphs"/>
+   <addaction name="menuSDR_Tools"/>
+   <addaction name="menuLessons"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+  <action name="actionLoad_Configuration">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Load Configuration</string>
+   </property>
+  </action>
+  <action name="actionSave_Configuration">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Save Configuration As</string>
+   </property>
+  </action>
+  <action name="actionAll_Options">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;All Options</string>
+   </property>
+  </action>
+  <action name="actionUhd_find_devices">
+   <property name="text">
+    <string>uhd_find_devices</string>
+   </property>
+  </action>
+  <action name="actionHackrf_info">
+   <property name="text">
+    <string>hackrf_info</string>
+   </property>
+  </action>
+  <action name="actionLsusb">
+   <property name="text">
+    <string>lsusb</string>
+   </property>
+  </action>
+  <action name="actionIwconfig">
+   <property name="text">
+    <string>iwconfig</string>
+   </property>
+  </action>
+  <action name="actionHelp">
+   <property name="text">
+    <string>Tab Help</string>
+   </property>
+  </action>
+  <action name="actionMonitorModeTool">
+   <property name="text">
+    <string>Monitor Mode Tool</string>
+   </property>
+  </action>
+  <action name="actionLoad_bladeRF_FPGA">
+   <property name="text">
+    <string>Load bladeRF FPGA</string>
+   </property>
+  </action>
+  <action name="actionGsm_uplink_downlink">
+   <property name="text">
+    <string>gsm_uplink_downlink</string>
+   </property>
+  </action>
+  <action name="actionJ2497_demod_method1">
+   <property name="text">
+    <string>j2497_demod_method1</string>
+   </property>
+  </action>
+  <action name="actionWifi_rx">
+   <property name="text">
+    <string>wifi_rx</string>
+   </property>
+  </action>
+  <action name="actionWifi_tx">
+   <property name="text">
+    <string>wifi_tx</string>
+   </property>
+  </action>
+  <action name="actionRds_rx">
+   <property name="text">
+    <string>rds_rx</string>
+   </property>
+  </action>
+  <action name="actionRds_tx">
+   <property name="text">
+    <string>rds_tx</string>
+   </property>
+  </action>
+  <action name="actionIwlist_scan">
+   <property name="text">
+    <string>iwlist scan</string>
+   </property>
+  </action>
+  <action name="actionKismet">
+   <property name="text">
+    <string>Kismet</string>
+   </property>
+  </action>
+  <action name="actionQSpectrumAnalyzer">
+   <property name="text">
+    <string>QSpectrumAnalyzer</string>
+   </property>
+  </action>
+  <action name="actionGQRX">
+   <property name="text">
+    <string>GQRX</string>
+   </property>
+  </action>
+  <action name="actionDump1090">
+   <property name="text">
+    <string>Dump1090</string>
+   </property>
+  </action>
+  <action name="actionLimeSuiteGUI">
+   <property name="text">
+    <string>LimeSuiteGUI</string>
+   </property>
+  </action>
+  <action name="actionRds_rx_2">
+   <property name="text">
+    <string>rds_rx</string>
+   </property>
+  </action>
+  <action name="actionOpenBTS">
+   <property name="text">
+    <string>OpenBTS</string>
+   </property>
+  </action>
+  <action name="actionTpms_rx">
+   <property name="text">
+    <string>tpms_rx</string>
+   </property>
+  </action>
+  <action name="actionSrsLTE">
+   <property name="text">
+    <string>srsRAN (srsLTE)</string>
+   </property>
+  </action>
+  <action name="actionPaint_tx">
+   <property name="text">
+    <string>paint_tx</string>
+   </property>
+  </action>
+  <action name="actionHam2mon">
+   <property name="text">
+    <string>ham2mon</string>
+   </property>
+  </action>
+  <action name="actionX10_tx_rx">
+   <property name="text">
+    <string>x10_tx_rx</string>
+   </property>
+  </action>
+  <action name="actionWifi_relay">
+   <property name="text">
+    <string>wifi_relay</string>
+   </property>
+  </action>
+  <action name="actionWireshark">
+   <property name="text">
+    <string>Wireshark</string>
+   </property>
+  </action>
+  <action name="actionBluetoothctl">
+   <property name="text">
+    <string>bluetoothctl</string>
+   </property>
+  </action>
+  <action name="actionNoise_source">
+   <property name="text">
+    <string>noise_source</string>
+   </property>
+  </action>
+  <action name="actionHelpAbout">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="actionHelpBuiltWith">
+   <property name="text">
+    <string>Built With</string>
+   </property>
+  </action>
+  <action name="actionHelpLimeSDR">
+   <property name="text">
+    <string>LimeSDR Notes</string>
+   </property>
+  </action>
+  <action name="actionHelpSoftwareAndConflicts">
+   <property name="text">
+    <string>Software and Conflicts</string>
+   </property>
+  </action>
+  <action name="actionHelpNewUSRPX310">
+   <property name="text">
+    <string>New USRP X310</string>
+   </property>
+  </action>
+  <action name="actionHelpSupportedProtocols">
+   <property name="text">
+    <string>Supported Protocols</string>
+   </property>
+  </action>
+  <action name="actionHelpUpdatingHackRF">
+   <property name="text">
+    <string>Updating HackRF Firmware</string>
+   </property>
+  </action>
+  <action name="actionHelpUploadingFlowGraphs">
+   <property name="text">
+    <string>Attack Flow Graphs</string>
+   </property>
+  </action>
+  <action name="actionHelpUploadingPythonScripts">
+   <property name="text">
+    <string>Attack Python Scripts</string>
+   </property>
+  </action>
+  <action name="actionHelpCustomBlocks">
+   <property name="text">
+    <string>Custom GNU Radio Blocks</string>
+   </property>
+  </action>
+  <action name="actionLessonOpenBTS">
+   <property name="text">
+    <string>Lesson #1: OpenBTS</string>
+   </property>
+  </action>
+  <action name="actionThird_Party_Software">
+   <property name="text">
+    <string>Third-Party Software</string>
+   </property>
+  </action>
+  <action name="actionV2Verifier">
+   <property name="text">
+    <string>V2Verifier GUI</string>
+   </property>
+  </action>
+  <action name="actionV2Verifier_wifi_tx">
+   <property name="text">
+    <string>V2Verifier wifi_tx</string>
+   </property>
+  </action>
+  <action name="actionV2Verifier_wifi_rx">
+   <property name="text">
+    <string>V2Verifier wifi_rx</string>
+   </property>
+  </action>
+  <action name="actionFALCON">
+   <property name="text">
+    <string>FALCON</string>
+   </property>
+  </action>
+  <action name="actionCyberChef">
+   <property name="text">
+    <string>CyberChef</string>
+   </property>
+  </action>
+  <action name="actionESP32_BLEBeaconSpam">
+   <property name="text">
+    <string>ESP32-BLEBeaconSpam</string>
+   </property>
+  </action>
+  <action name="actionMinicom">
+   <property name="text">
+    <string>Minicom</string>
+   </property>
+  </action>
+  <action name="actionESP8266_beacon_spammer">
+   <property name="text">
+    <string>ESP8266 Beacon Spammer</string>
+   </property>
+  </action>
+  <action name="actionPutty">
+   <property name="text">
+    <string>PuTTY</string>
+   </property>
+  </action>
+  <action name="actionOpenHAB">
+   <property name="text">
+    <string>openHAB</string>
+   </property>
+  </action>
+  <action name="actionStart_openHAB_Service">
+   <property name="text">
+    <string>Start openHAB Service</string>
+   </property>
+  </action>
+  <action name="actionStop_openHAB_Service">
+   <property name="text">
+    <string>Stop openHAB Service</string>
+   </property>
+  </action>
+  <action name="actionIEEE_802_15_4_transceiver_OQPSK">
+   <property name="text">
+    <string>IEEE_802.15.4 transceiver_OQPSK</string>
+   </property>
+  </action>
+  <action name="actionZwave">
+   <property name="text">
+    <string>Zwave</string>
+   </property>
+  </action>
+  <action name="actionRtl_zwave_908_42_MHz">
+   <property name="text">
+    <string>rtl_zwave 908.42 MHz</string>
+   </property>
+  </action>
+  <action name="actionRtl_zwave_916_MHz">
+   <property name="text">
+    <string>rtl_zwave 916 MHz</string>
+   </property>
+  </action>
+  <action name="actionWaving_z_908_42_MHz">
+   <property name="text">
+    <string>waving-z 908.42 MHz</string>
+   </property>
+  </action>
+  <action name="actionWaving_z_916_MHz">
+   <property name="text">
+    <string>waving-z 916 MHz</string>
+   </property>
+  </action>
+  <action name="actionStandaloneTpms_rx">
+   <property name="text">
+    <string>tpms_rx</string>
+   </property>
+  </action>
+  <action name="actionStandaloneTpms_tx">
+   <property name="text">
+    <string>tpms_tx</string>
+   </property>
+  </action>
+  <action name="actionZwave_tx">
+   <property name="text">
+    <string>zwave_tx</string>
+   </property>
+  </action>
+  <action name="actionZwave_rx">
+   <property name="text">
+    <string>zwave_rx</string>
+   </property>
+  </action>
+  <action name="actionLimeUtilUpdate">
+   <property name="text">
+    <string>LimeUtil --update</string>
+   </property>
+  </action>
+  <action name="actionBaudline">
+   <property name="text">
+    <string>baudline</string>
+   </property>
+  </action>
+  <action name="actionUniversal_Radio_Hacker">
+   <property name="text">
+    <string>Universal Radio Hacker</string>
+   </property>
+  </action>
+  <action name="action4G_IMSI_Catcher">
+   <property name="text">
+    <string>4G IMSI-Catcher</string>
+   </property>
+  </action>
+  <action name="actionInspectrum">
+   <property name="text">
+    <string>Inspectrum</string>
+   </property>
+  </action>
+  <action name="actionOpenCPN">
+   <property name="text">
+    <string>OpenCPN</string>
+   </property>
+  </action>
+  <action name="actionAis_rx">
+   <property name="text">
+    <string>ais_rx</string>
+   </property>
+  </action>
+  <action name="actionProtocol_Spreadsheet">
+   <property name="text">
+    <string>Protocol Spreadsheet (By Type)</string>
+   </property>
+  </action>
+  <action name="actionGrgsm_scanner">
+   <property name="text">
+    <string>grgsm_scanner</string>
+   </property>
+  </action>
+  <action name="actionKalibrate">
+   <property name="text">
+    <string>Kalibrate</string>
+   </property>
+  </action>
+  <action name="actionTower_Search">
+   <property name="text">
+    <string>Tower Search Part 1</string>
+   </property>
+  </action>
+  <action name="actionTower_Search_Part_2">
+   <property name="text">
+    <string>Tower Search Part 2</string>
+   </property>
+  </action>
+  <action name="actionRetrogram_rtlsdr">
+   <property name="text">
+    <string>retrogram-rtlsdr</string>
+   </property>
+  </action>
+  <action name="actionRTLSDR_Airband">
+   <property name="text">
+    <string>RTLSDR-Airband</string>
+   </property>
+  </action>
+  <action name="actionRadio_Reference_Database">
+   <property name="text">
+    <string>Radio Reference Database</string>
+   </property>
+  </action>
+  <action name="actionSpektrum">
+   <property name="text">
+    <string>Spektrum</string>
+   </property>
+  </action>
+  <action name="actionRtl_test">
+   <property name="text">
+    <string>rtl_test</string>
+   </property>
+  </action>
+  <action name="actionSDRTrunk">
+   <property name="text">
+    <string>SDRTrunk</string>
+   </property>
+  </action>
+  <action name="actionAudacity">
+   <property name="text">
+    <string>Audacity</string>
+   </property>
+  </action>
+  <action name="actionSignal_Identification_Guide">
+   <property name="text">
+    <string>Signal Identification Guide</string>
+   </property>
+  </action>
+  <action name="actionSondeHub_Radiosonde_Tracker">
+   <property name="text">
+    <string>SondeHub Radiosonde Tracker</string>
+   </property>
+  </action>
+  <action name="actionCellmapper">
+   <property name="text">
+    <string>cellmapper.net</string>
+   </property>
+  </action>
+  <action name="actionAirLink">
+   <property name="text">
+    <string>airLink</string>
+   </property>
+  </action>
+  <action name="actionFccID_Lookup">
+   <property name="text">
+    <string>FCC ID Lookup</string>
+   </property>
+  </action>
+  <action name="actionMorseGen">
+   <property name="text">
+    <string>MorseGen</string>
+   </property>
+  </action>
+  <action name="actionRemember_Configuration">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Remember Configuration</string>
+   </property>
+  </action>
+  <action name="actionProxmark3">
+   <property name="text">
+    <string>Proxmark3</string>
+   </property>
+  </action>
+  <action name="actionProxmark3_Cheatsheet">
+   <property name="text">
+    <string>Proxmark3 Cheat Sheet</string>
+   </property>
+  </action>
+  <action name="actionEarth_Nullschool">
+   <property name="text">
+    <string>Earth Nullschool</string>
+   </property>
+  </action>
+  <action name="actionCUSF_Landing_Predictor">
+   <property name="text">
+    <string>CUSF Landing Predictor</string>
+   </property>
+  </action>
+  <action name="actionFlightAware">
+   <property name="text">
+    <string>FlightAware</string>
+   </property>
+  </action>
+  <action name="actionRadiosonde_auto_rx">
+   <property name="text">
+    <string>radiosonde_auto_rx</string>
+   </property>
+  </action>
+  <action name="actionRadiosonde_auto_rx_Config">
+   <property name="text">
+    <string>radiosonde_auto_rx Config</string>
+   </property>
+  </action>
+  <action name="actionSQ6KXY_Radiosonde_Tracker">
+   <property name="text">
+    <string>SQ6KXY Radiosonde Tracker</string>
+   </property>
+  </action>
+  <action name="actionSdrGlut">
+   <property name="text">
+    <string>SdrGlut</string>
+   </property>
+  </action>
+  <action name="actionUS_Frequency_Allocations">
+   <property name="text">
+    <string>US Frequency Allocations</string>
+   </property>
+  </action>
+  <action name="actionCyberChef_Recipes">
+   <property name="text">
+    <string>CyberChef Recipes</string>
+   </property>
+  </action>
+  <action name="actionRehex">
+   <property name="text">
+    <string>rehex</string>
+   </property>
+  </action>
+  <action name="actionZEPASSD">
+   <property name="text">
+    <string>ZEPASSD: E-Z Pass Capture Agent</string>
+   </property>
+  </action>
+  <action name="actionIridium_extractor">
+   <property name="text">
+    <string>iridium-extractor</string>
+   </property>
+  </action>
+  <action name="actionIridium_parser">
+   <property name="text">
+    <string>iridium-parser</string>
+   </property>
+  </action>
+  <action name="actionStats_voc">
+   <property name="text">
+    <string>stats-voc</string>
+   </property>
+  </action>
+  <action name="actionIridiumLive">
+   <property name="text">
+    <string>IridiumLive</string>
+   </property>
+  </action>
+  <action name="actionNETATTACK2">
+   <property name="text">
+    <string>NETATTACK2</string>
+   </property>
+  </action>
+  <action name="actionWifite">
+   <property name="text">
+    <string>Wifite</string>
+   </property>
+  </action>
+  <action name="actionRtl_433">
+   <property name="text">
+    <string>rtl_433</string>
+   </property>
+  </action>
+  <action name="actionRouterSploit">
+   <property name="text">
+    <string>RouterSploit</string>
+   </property>
+  </action>
+  <action name="actionExploit_Database">
+   <property name="text">
+    <string>Exploit Database</string>
+   </property>
+  </action>
+  <action name="actionMetasploit">
+   <property name="text">
+    <string>Metasploit</string>
+   </property>
+  </action>
+  <action name="actionMonitor_rtl433">
+   <property name="text">
+    <string>monitor_rtl433</string>
+   </property>
+  </action>
+  <action name="actionWiGLE_net">
+   <property name="text">
+    <string>WiGLE.net</string>
+   </property>
+  </action>
+  <action name="actionScan_ssid">
+   <property name="text">
+    <string>scan-ssid</string>
+   </property>
+  </action>
+  <action name="actionPySim_read">
+   <property name="text">
+    <string>pySim-read</string>
+   </property>
+  </action>
+  <action name="actionPySim_prog">
+   <property name="text">
+    <string>pySim-prog</string>
+   </property>
+  </action>
+  <action name="actionLessonLuaDissectors">
+   <property name="text">
+    <string>Lesson #2: Lua Dissectors</string>
+   </property>
+  </action>
+  <action name="actionMinimodem_rx">
+   <property name="text">
+    <string>minimodem rx</string>
+   </property>
+  </action>
+  <action name="actionMinimodem_tx">
+   <property name="text">
+    <string>minimodem tx</string>
+   </property>
+  </action>
+  <action name="actionWSJT_X">
+   <property name="text">
+    <string>WSJT-X</string>
+   </property>
+  </action>
+  <action name="actionWSPRnet_Map">
+   <property name="text">
+    <string>WSPRnet Map</string>
+   </property>
+  </action>
+  <action name="actionAntenna_test_rx">
+   <property name="text">
+    <string>antenna_test_rx</string>
+   </property>
+  </action>
+  <action name="actionAntenna_test_tx">
+   <property name="text">
+    <string>antenna_test_tx</string>
+   </property>
+  </action>
+  <action name="actionLessonSound_eXchange">
+   <property name="text">
+    <string>Lesson #3: Sound eXchange</string>
+   </property>
+  </action>
+  <action name="actionVLC">
+   <property name="text">
+    <string>VLC</string>
+   </property>
+  </action>
+  <action name="actionSimpleScreenRecorder">
+   <property name="text">
+    <string>SimpleScreenRecorder</string>
+   </property>
+  </action>
+  <action name="actionPixie_Dust_List">
+   <property name="text">
+    <string>Pixie Dust List</string>
+   </property>
+  </action>
+  <action name="actionAudioRecord">
+   <property name="text">
+    <string>Record</string>
+   </property>
+  </action>
+  <action name="actionLessonESP_Boards">
+   <property name="text">
+    <string>Lesson #4: ESP Boards</string>
+   </property>
+  </action>
+  <action name="actionGoogle_Earth_Pro">
+   <property name="text">
+    <string>Google Earth Pro</string>
+   </property>
+  </action>
+  <action name="actionGr_air_modes">
+   <property name="text">
+    <string>gr-air-modes</string>
+   </property>
+  </action>
+  <action name="actionEsp8266_deauther_ino">
+   <property name="text">
+    <string>esp8266_deauther.ino</string>
+   </property>
+  </action>
+  <action name="actionESP8266_Deauther_Web_Interface">
+   <property name="text">
+    <string>Web Interface</string>
+   </property>
+  </action>
+  <action name="actionESP8266_Deauther_Credentials">
+   <property name="text">
+    <string>Credentials</string>
+   </property>
+  </action>
+  <action name="actionLow_Earth_Orbit_Visualization">
+   <property name="text">
+    <string>Low Earth Orbit Visualization</string>
+   </property>
+  </action>
+  <action name="actionLeoLabs_Catalog">
+   <property name="text">
+    <string>LeoLabs Catalog</string>
+   </property>
+  </action>
+  <action name="actionCgps">
+   <property name="text">
+    <string>cgps</string>
+   </property>
+  </action>
+  <action name="actionGpsdecode">
+   <property name="text">
+    <string>gpsdecode</string>
+   </property>
+  </action>
+  <action name="actionGpsmon">
+   <property name="text">
+    <string>gpsmon</string>
+   </property>
+  </action>
+  <action name="actionXgps">
+   <property name="text">
+    <string>xgps</string>
+   </property>
+  </action>
+  <action name="actionXgpsspeed">
+   <property name="text">
+    <string>xgpsspeed</string>
+   </property>
+  </action>
+  <action name="actionViking">
+   <property name="text">
+    <string>Viking</string>
+   </property>
+  </action>
+  <action name="actionPyGPSClient">
+   <property name="text">
+    <string>PyGPSClient</string>
+   </property>
+  </action>
+  <action name="actionRadio_Station_Locator">
+   <property name="text">
+    <string>Radio Station Locator</string>
+   </property>
+  </action>
+  <action name="actionLiveATC_net">
+   <property name="text">
+    <string>LiveATC.net</string>
+   </property>
+  </action>
+  <action name="actionFlightradar24">
+   <property name="text">
+    <string>Flightradar24</string>
+   </property>
+  </action>
+  <action name="actionFlightStats">
+   <property name="text">
+    <string>FlightStats</string>
+   </property>
+  </action>
+  <action name="actionPlane_Finder">
+   <property name="text">
+    <string>Plane Finder</string>
+   </property>
+  </action>
+  <action name="actionUS_County_Overlays">
+   <property name="text">
+    <string>U.S. County Overlays</string>
+   </property>
+  </action>
+  <action name="actionAM_Query">
+   <property name="text">
+    <string>AM Query</string>
+   </property>
+  </action>
+  <action name="actionFM_Query">
+   <property name="text">
+    <string>FM Query</string>
+   </property>
+  </action>
+  <action name="actionRadio_Garden">
+   <property name="text">
+    <string>Radio Garden</string>
+   </property>
+  </action>
+  <action name="actionDiffchecker">
+   <property name="text">
+    <string>Diffchecker</string>
+   </property>
+  </action>
+  <action name="actionEvery_Time_Zone">
+   <property name="text">
+    <string>Every Time Zone</string>
+   </property>
+  </action>
+  <action name="actionCloudConvert">
+   <property name="text">
+    <string>CloudConvert</string>
+   </property>
+  </action>
+  <action name="actionList_of_SDRs">
+   <property name="text">
+    <string>List of SDRs</string>
+   </property>
+  </action>
+  <action name="actionRoundup_of_SDRs">
+   <property name="text">
+    <string>Roundup of SDRs</string>
+   </property>
+  </action>
+  <action name="actionAcars_demo">
+   <property name="text">
+    <string>acars_demo</string>
+   </property>
+  </action>
+  <action name="actionGpredict">
+   <property name="text">
+    <string>Gpredict</string>
+   </property>
+  </action>
+  <action name="actionTechInfoDepot">
+   <property name="text">
+    <string>TechInfoDepot</string>
+   </property>
+  </action>
+  <action name="actionWikiDevi">
+   <property name="text">
+    <string>WikiDevi</string>
+   </property>
+  </action>
+  <action name="actionAPT3000">
+   <property name="text">
+    <string>APT3000</string>
+   </property>
+  </action>
+  <action name="actionFSPL_Calculator">
+   <property name="text">
+    <string>FSPL Calculator</string>
+   </property>
+  </action>
+  <action name="actionHabhub_tracker">
+   <property name="text">
+    <string>habhub tracker</string>
+   </property>
+  </action>
+  <action name="actionFoxtrotGPS">
+   <property name="text">
+    <string>FoxtrotGPS</string>
+   </property>
+  </action>
+  <action name="actionGoogle_Maps_APRS">
+   <property name="text">
+    <string>Google Maps APRS</string>
+   </property>
+  </action>
+  <action name="actionAPRS_multimon_ng">
+   <property name="text">
+    <string>APRS multimon-ng</string>
+   </property>
+  </action>
+  <action name="actionLTE_Cell_Scanner">
+   <property name="text">
+    <string>LTE-Cell-Scanner</string>
+   </property>
+  </action>
+  <action name="actionEsri_Satellite_Map">
+   <property name="text">
+    <string>esri Satellite Map</string>
+   </property>
+  </action>
+  <action name="actionLessonRadiosondeTracking">
+   <property name="text">
+    <string>Lesson #5: Radiosonde Tracking</string>
+   </property>
+  </action>
+  <action name="actionBtrx">
+   <property name="text">
+    <string>btrx</string>
+   </property>
+  </action>
+  <action name="actionBle_dump">
+   <property name="text">
+    <string>ble_dump</string>
+   </property>
+  </action>
+  <action name="actionFlash_ESP32_Board">
+   <property name="text">
+    <string>Flash ESP32 Board</string>
+   </property>
+  </action>
+  <action name="actionBTSnifferBREDR">
+   <property name="text">
+    <string>BTSnifferBREDR</string>
+   </property>
+  </action>
+  <action name="actionHcitool_scan">
+   <property name="text">
+    <string>hcitool scan</string>
+   </property>
+  </action>
+  <action name="actionSdptool_browse">
+   <property name="text">
+    <string>sdptool browse</string>
+   </property>
+  </action>
+  <action name="actionHcitool_inq">
+   <property name="text">
+    <string>hcitool inq</string>
+   </property>
+  </action>
+  <action name="actionDevice_Class_List">
+   <property name="text">
+    <string>Device Class List</string>
+   </property>
+  </action>
+  <action name="actionBtclassify">
+   <property name="text">
+    <string>btclassify</string>
+   </property>
+  </action>
+  <action name="actionL2ping">
+   <property name="text">
+    <string>l2ping</string>
+   </property>
+  </action>
+  <action name="actionBtscanner">
+   <property name="text">
+    <string>btscanner</string>
+   </property>
+  </action>
+  <action name="actionHcidump">
+   <property name="text">
+    <string>hcidump</string>
+   </property>
+  </action>
+  <action name="actionLessonRFID">
+   <property name="text">
+    <string>Lesson #6: RFID</string>
+   </property>
+  </action>
+  <action name="actionFM_Radio_Capture">
+   <property name="text">
+    <string>FM_Radio_Capture</string>
+   </property>
+  </action>
+  <action name="actionAddingCustomOptions">
+   <property name="text">
+    <string>Adding Custom Options</string>
+   </property>
+  </action>
+  <action name="actionProtocol_CSV">
+   <property name="text">
+    <string>Protocol CSV (By Frequency)</string>
+   </property>
+  </action>
+  <action name="actionUhd_image_loader">
+   <property name="text">
+    <string>uhd_image_loader</string>
+   </property>
+  </action>
+  <action name="actionTinyWow">
+   <property name="text">
+    <string>TinyWow</string>
+   </property>
+  </action>
+  <action name="actionGr_paint_Converter">
+   <property name="text">
+    <string>gr-paint Converter</string>
+   </property>
+  </action>
+  <action name="actionModifying_Dashboard">
+   <property name="text">
+    <string>Modifying Dashboard</string>
+   </property>
+  </action>
+  <action name="actionNrsc5">
+   <property name="text">
+    <string>nrsc5</string>
+   </property>
+  </action>
+  <action name="actionHd_tx_usrp">
+   <property name="text">
+    <string>hd_tx_usrp</string>
+   </property>
+  </action>
+  <action name="actionZigbeeOpen_Sniffer">
+   <property name="text">
+    <string>Open Sniffer</string>
+   </property>
+  </action>
+  <action name="action2022_2026_Technician_Pool">
+   <property name="text">
+    <string>2022-2026 Technician Pool</string>
+   </property>
+  </action>
+  <action name="actionLicense_Search">
+   <property name="text">
+    <string>License Search</string>
+   </property>
+  </action>
+  <action name="actionAnki">
+   <property name="text">
+    <string>Anki</string>
+   </property>
+  </action>
+  <action name="actionAnki_Decks">
+   <property name="text">
+    <string>Anki Decks</string>
+   </property>
+  </action>
+  <action name="actionWavelength_Calculator">
+   <property name="text">
+    <string>Wavelength Calculator</string>
+   </property>
+  </action>
+  <action name="actionAntennaSearch">
+   <property name="text">
+    <string>AntennaSearch</string>
+   </property>
+  </action>
+  <action name="actionCommand_Class_Specification">
+   <property name="text">
+    <string>Command Class Specification</string>
+   </property>
+  </action>
+  <action name="actionCommand_Class_List">
+   <property name="text">
+    <string>Command Class List</string>
+   </property>
+  </action>
+  <action name="actionSCADACore_RF_Line_of_Sight">
+   <property name="text">
+    <string>SCADACore RF Line-of-Sight</string>
+   </property>
+  </action>
+  <action name="actionOnline_Hex_Converter">
+   <property name="text">
+    <string>Online Hex Converter</string>
+   </property>
+  </action>
+  <action name="actionExam_Locations">
+   <property name="text">
+    <string>Exam Locations</string>
+   </property>
+  </action>
+  <action name="actionEchoLink_Link_Status">
+   <property name="text">
+    <string>EchoLink Link Status</string>
+   </property>
+  </action>
+  <action name="actionSolarHam">
+   <property name="text">
+    <string>SolarHam</string>
+   </property>
+  </action>
+  <action name="actionBless">
+   <property name="text">
+    <string>Bless Hex Editor</string>
+   </property>
+  </action>
+  <action name="actionTrackerjacker">
+   <property name="text">
+    <string>trackerjacker</string>
+   </property>
+  </action>
+  <action name="actionSanitized_IEEE_OUI_Data">
+   <property name="text">
+    <string>Sanitized IEEE OUI Data</string>
+   </property>
+  </action>
+  <action name="actionMarineTraffic">
+   <property name="text">
+    <string>MarineTraffic</string>
+   </property>
+  </action>
+  <action name="actionVesselFinder">
+   <property name="text">
+    <string>VesselFinder</string>
+   </property>
+  </action>
+  <action name="actionBoatnerd">
+   <property name="text">
+    <string>Boatnerd</string>
+   </property>
+  </action>
+  <action name="actionCruiseMapper">
+   <property name="text">
+    <string>CruiseMapper</string>
+   </property>
+  </action>
+  <action name="actionLesson_Data_Types">
+   <property name="text">
+    <string>Lesson #7: Data Types</string>
+   </property>
+  </action>
+  <action name="actionLesson_Custom_GNU_Radio_Blocks">
+   <property name="text">
+    <string>Lesson #8: Custom GNU Radio Blocks</string>
+   </property>
+  </action>
+  <action name="actionADS_B_Exchange">
+   <property name="text">
+    <string>ADS-B Exchange</string>
+   </property>
+  </action>
+  <action name="actionClapper_Plus_Transmit">
+   <property name="text">
+    <string>Clapper_Plus_Transmit</string>
+   </property>
+  </action>
+  <action name="actionGarage_Door_Transmit">
+   <property name="text">
+    <string>Garage_Door_Transmit</string>
+   </property>
+  </action>
+  <action name="actionGarage_Door_Cycle">
+   <property name="text">
+    <string>Garage_Door_Cycle</string>
+   </property>
+  </action>
+  <action name="actionLesson_TPMS">
+   <property name="text">
+    <string>Lesson #9: TPMS</string>
+   </property>
+  </action>
+  <action name="actionAntenna_Comparison">
+   <property name="text">
+    <string>Antenna Comparison</string>
+   </property>
+  </action>
+  <action name="actionHow_to_File">
+   <property name="text">
+    <string>How to File</string>
+   </property>
+  </action>
+  <action name="actionRadioQTH_Available_Call_Signs">
+   <property name="text">
+    <string>RadioQTH - Available Call Signs</string>
+   </property>
+  </action>
+  <action name="actionAE7Q_Available_Call_Signs">
+   <property name="text">
+    <string>AE7Q - Available Call Signs</string>
+   </property>
+  </action>
+  <action name="actionAirgeddon">
+   <property name="text">
+    <string>airgeddon</string>
+   </property>
+  </action>
+  <action name="actionwhoishere_py_2">
+   <property name="text">
+    <string>whoishere.py</string>
+   </property>
+  </action>
+  <action name="actionwhoishere_conf">
+   <property name="text">
+    <string>whoishere.conf</string>
+   </property>
+  </action>
+  <action name="actionHydra">
+   <property name="text">
+    <string>Hydra</string>
+   </property>
+  </action>
+  <action name="actionSecLists">
+   <property name="text">
+    <string>SecLists</string>
+   </property>
+  </action>
+  <action name="actionssh_login">
+   <property name="text">
+    <string>ssh_login</string>
+   </property>
+  </action>
+  <action name="actionMetasploit_Wordlists">
+   <property name="text">
+    <string>Metasploit Wordlists</string>
+   </property>
+  </action>
+  <action name="actionOpenSSH_Username_Enumeration">
+   <property name="text">
+    <string>OpenSSH Username Enumeration</string>
+   </property>
+  </action>
+  <action name="actionLesson_Ham_Radio_Exams">
+   <property name="text">
+    <string>Lesson #10: Ham Radio Exams</string>
+   </property>
+  </action>
+  <action name="action2019_2023_General_Pool">
+   <property name="text">
+    <string>2019-2023 General Pool</string>
+   </property>
+  </action>
+  <action name="actionGitHub_FISSURE">
+   <property name="text">
+    <string>FISSURE</string>
+   </property>
+  </action>
+  <action name="actionGitHub_cpoore1">
+   <property name="text">
+    <string>cpoore1</string>
+   </property>
+  </action>
+  <action name="actionGitHub_ainfosec">
+   <property name="text">
+    <string>ainfosec</string>
+   </property>
+  </action>
+  <action name="actionLesson_WiFi_Tools">
+   <property name="text">
+    <string>Lesson #11: Wi-Fi Tools</string>
+   </property>
+  </action>
+  <action name="actionPySDR_org">
+   <property name="text">
+    <string>PySDR.org</string>
+   </property>
+  </action>
+  <action name="actionnrsc5_gui">
+   <property name="text">
+    <string>nrsc5-gui</string>
+   </property>
+  </action>
+  <action name="actionj2497_mod">
+   <property name="text">
+    <string>j2497_mod</string>
+   </property>
+  </action>
+  <action name="actionj2497_mod_fl2k">
+   <property name="text">
+    <string>j2497_mod_fl2k</string>
+   </property>
+  </action>
+  <action name="actionj2497_mod_hackrfdirect">
+   <property name="text">
+    <string>j2497_mod_hackrfdirect</string>
+   </property>
+  </action>
+  <action name="actionEnscribe">
+   <property name="text">
+    <string>Enscribe</string>
+   </property>
+  </action>
+  <action name="actionOpen_weather">
+   <property name="text">
+    <string>Open-weather</string>
+   </property>
+  </action>
+  <action name="actionLTE_ciphercheck">
+   <property name="text">
+    <string>LTE-ciphercheck</string>
+   </property>
+  </action>
+  <action name="actionElectromagnetic_Radiation_Spectrum">
+   <property name="text">
+    <string>Electromagnetic Radiation Spectrum</string>
+   </property>
+  </action>
+  <action name="actionIIO_Oscilloscope">
+   <property name="text">
+    <string>IIO Oscilloscope</string>
+   </property>
+  </action>
+  <action name="actionDiscord">
+   <property name="text">
+    <string>Discord</string>
+   </property>
+  </action>
+  <action name="actionLessonSDR_WithHackRF">
+   <property name="text">
+    <string>Software Defined Radio with HackRF</string>
+   </property>
+  </action>
+  <action name="actionGNU_Radio_Tutorials">
+   <property name="text">
+    <string>GNU Radio Tutorials</string>
+   </property>
+  </action>
+  <action name="actionSigDigger">
+   <property name="text">
+    <string>SigDigger</string>
+   </property>
+  </action>
+  <action name="actionham2mon">
+   <property name="text">
+    <string>ham2mon</string>
+   </property>
+  </action>
+  <action name="actionProgramming_SDRs_with_GNU_Radio">
+   <property name="text">
+    <string>Programming SDRs with GNU Radio</string>
+   </property>
+  </action>
+  <action name="actionLearn_SDR">
+   <property name="text">
+    <string>Learn SDR</string>
+   </property>
+  </action>
+  <action name="actionQSSTV">
+   <property name="text">
+    <string>QSSTV</string>
+   </property>
+  </action>
+  <action name="actionm17_demod">
+   <property name="text">
+    <string>m17-demod</string>
+   </property>
+  </action>
+  <action name="actionmultimon_ng">
+   <property name="text">
+    <string>multimon-ng</string>
+   </property>
+  </action>
+  <action name="actionFldigi">
+   <property name="text">
+    <string>Fldigi</string>
+   </property>
+  </action>
+  <action name="actionfrequency_translating">
+   <property name="text">
+    <string>frequency_translating</string>
+   </property>
+  </action>
+  <action name="actiontriq_org">
+   <property name="text">
+    <string>triq.org</string>
+   </property>
+  </action>
+  <action name="actionpyFDA">
+   <property name="text">
+    <string>pyFDA</string>
+   </property>
+  </action>
+  <action name="actionMorse_Code_Translator">
+   <property name="text">
+    <string>Morse Code Translator</string>
+   </property>
+  </action>
+  <action name="actionPSK_Reporter">
+   <property name="text">
+    <string>PSK Reporter</string>
+   </property>
+  </action>
+  <action name="actionAmateur_Satellite_Database">
+   <property name="text">
+    <string>Amateur Satellite Database</string>
+   </property>
+  </action>
+  <action name="actioncryptii">
+   <property name="text">
+    <string>cryptii</string>
+   </property>
+  </action>
+  <action name="actionLesson_Creating_Bootable_USBs">
+   <property name="text">
+    <string>Lesson #12: Creating Bootable USBs</string>
+   </property>
+  </action>
+  <action name="actionInspection_Flow_Graphs">
+   <property name="text">
+    <string>Inspection Flow Graphs</string>
+   </property>
+  </action>
+  <action name="actionDire_Wolf">
+   <property name="text">
+    <string>Dire Wolf</string>
+   </property>
+  </action>
+  <action name="actionMeld">
+   <property name="text">
+    <string>Meld</string>
+   </property>
+  </action>
+  <action name="actionhfpropagation_com">
+   <property name="text">
+    <string>hfpropagation.com</string>
+   </property>
+  </action>
+  <action name="actionWaveDrom">
+   <property name="text">
+    <string>WaveDrom</string>
+   </property>
+  </action>
+  <action name="actionPacket_Diagram">
+   <property name="text">
+    <string>Packet Diagram</string>
+   </property>
+  </action>
+  <action name="actionHamClock">
+   <property name="text">
+    <string>HamClock</string>
+   </property>
+  </action>
+  <action name="actionICE9_Bluetooth_Scanner">
+   <property name="text">
+    <string>ICE9 Bluetooth Scanner</string>
+   </property>
+  </action>
+  <action name="actionpocsagtx">
+   <property name="text">
+    <string>pocsagtx</string>
+   </property>
+  </action>
+  <action name="actiondump978">
+   <property name="text">
+    <string>dump978</string>
+   </property>
+  </action>
+  <action name="actionIQEngine">
+   <property name="text">
+    <string>IQEngine</string>
+   </property>
+  </action>
+  <action name="actionrfidpics">
+   <property name="text">
+    <string>rfidpics</string>
+   </property>
+  </action>
+  <action name="actionacars_adsbexchange">
+   <property name="text">
+    <string>acars.adsbexchange</string>
+   </property>
+  </action>
+  <action name="actionAirframes">
+   <property name="text">
+    <string>Airframes</string>
+   </property>
+  </action>
+  <action name="actionhtop">
+   <property name="text">
+    <string>htop</string>
+   </property>
+  </action>
+  <action name="actionWSPR_Rocks">
+   <property name="text">
+    <string>WSPR Rocks!</string>
+   </property>
+  </action>
+  <action name="actionwttr_in">
+   <property name="text">
+    <string>wttr.in</string>
+   </property>
+  </action>
+  <action name="actiondashboard_py">
+   <property name="text">
+    <string>dashboard.py</string>
+   </property>
+  </action>
+  <action name="actiondashboard_ui">
+   <property name="text">
+    <string>dashboard.ui</string>
+   </property>
+  </action>
+  <action name="actionoptions_ui">
+   <property name="text">
+    <string>options.ui</string>
+   </property>
+  </action>
+  <action name="actiongrip">
+   <property name="text">
+    <string>grip</string>
+   </property>
+  </action>
+  <action name="actionArduino">
+   <property name="text">
+    <string>Arduino</string>
+   </property>
+  </action>
+  <action name="actionSystemback">
+   <property name="text">
+    <string>Systemback</string>
+   </property>
+  </action>
+  <action name="actionguidus">
+   <property name="text">
+    <string>guidus</string>
+   </property>
+  </action>
+  <action name="actionOpenWebRX">
+   <property name="text">
+    <string>OpenWebRX</string>
+   </property>
+  </action>
+  <action name="actionTuneIn_Explorer">
+   <property name="text">
+    <string>TuneIn Explorer</string>
+   </property>
+  </action>
+  <action name="actionYouTube">
+   <property name="text">
+    <string>YouTube</string>
+   </property>
+  </action>
+  <action name="actionLight_Mode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Light Mode</string>
+   </property>
+  </action>
+  <action name="actionDark_Mode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Dark Mode</string>
+   </property>
+  </action>
+  <action name="actionCustom_Mode">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Custom Mode</string>
+   </property>
+  </action>
+  <action name="actionGpick">
+   <property name="text">
+    <string>Gpick</string>
+   </property>
+  </action>
+  <action name="actioncomplextoreal_com">
+   <property name="text">
+    <string>complextoreal.com</string>
+   </property>
+  </action>
+  <action name="actionSolve_Crypto_with_Force">
+   <property name="text">
+    <string>Solve Crypto with Force</string>
+   </property>
+  </action>
+  <action name="actionCrackStation">
+   <property name="text">
+    <string>CrackStation</string>
+   </property>
+  </action>
+  <action name="actionRandom">
+   <property name="text">
+    <string>Random</string>
+   </property>
+  </action>
+  <action name="actionGHex">
+   <property name="text">
+    <string>GHex</string>
+   </property>
+  </action>
+  <action name="actionqFlipper">
+   <property name="text">
+    <string>qFlipper</string>
+   </property>
+  </action>
+  <action name="actionAIVDM_AIVDO_Decoding">
+   <property name="text">
+    <string>AIVDM/AIVDO Decoding</string>
+   </property>
+  </action>
+  <action name="actionAIS_VDM_VDO_Decoder">
+   <property name="text">
+    <string>AIS VDM/VDO Decoder</string>
+   </property>
+  </action>
+  <action name="actionAIS_Online_Decoder">
+   <property name="text">
+    <string>AIS Online Decoder</string>
+   </property>
+  </action>
+  <action name="actionpyais_GitHub">
+   <property name="text">
+    <string>pyais GitHub</string>
+   </property>
+  </action>
+  <action name="actionAiS_TX">
+   <property name="text">
+    <string>AiS_TX</string>
+   </property>
+  </action>
+  <action name="actionais_rx_demod">
+   <property name="text">
+    <string>ais_rx_demod</string>
+   </property>
+  </action>
+  <action name="actionUser_Manual">
+   <property name="text">
+    <string>User Manual</string>
+   </property>
+  </action>
+  <action name="actionADS_B_Towers">
+   <property name="text">
+    <string>ADS-B Towers</string>
+   </property>
+  </action>
+  <action name="actionRequirements">
+   <property name="text">
+    <string>Requirements</string>
+   </property>
+  </action>
+  <action name="actionCloning">
+   <property name="text">
+    <string>Cloning</string>
+   </property>
+  </action>
+  <action name="actionInstaller">
+   <property name="text">
+    <string>Installer</string>
+   </property>
+  </action>
+  <action name="actionUninstalling">
+   <property name="text">
+    <string>Uninstalling</string>
+   </property>
+  </action>
+  <action name="actionUsage">
+   <property name="text">
+    <string>Usage</string>
+   </property>
+  </action>
+  <action name="actionKnown_Conflicts">
+   <property name="text">
+    <string>Known Conflicts</string>
+   </property>
+  </action>
+  <action name="actionThird_Party_Software_2">
+   <property name="text">
+    <string>Third-Party Software</string>
+   </property>
+  </action>
+  <action name="actionThird_Party_Software_Versions">
+   <property name="text">
+    <string>Third-Party Software Versions</string>
+   </property>
+  </action>
+  <action name="actionSupported">
+   <property name="text">
+    <string>Supported</string>
+   </property>
+  </action>
+  <action name="actionConfiguring">
+   <property name="text">
+    <string>Configuring</string>
+   </property>
+  </action>
+  <action name="actionGNU_Radio_Hardware">
+   <property name="text">
+    <string>GNU Radio Hardware</string>
+   </property>
+  </action>
+  <action name="actionDashboard">
+   <property name="text">
+    <string>Dashboard</string>
+   </property>
+  </action>
+  <action name="actionTarget_Signal_Identification">
+   <property name="text">
+    <string>Target Signal Identification</string>
+   </property>
+  </action>
+  <action name="actionProtocol_Discovery">
+   <property name="text">
+    <string>Protocol Discovery</string>
+   </property>
+  </action>
+  <action name="actionFlow_Graph_Script_Executor">
+   <property name="text">
+    <string>Flow Graph/Script Executor</string>
+   </property>
+  </action>
+  <action name="actionHIPRFISR">
+   <property name="text">
+    <string>HIPRFISR</string>
+   </property>
+  </action>
+  <action name="actionCommunications">
+   <property name="text">
+    <string>Communications</string>
+   </property>
+  </action>
+  <action name="actionLibrary">
+   <property name="text">
+    <string>Library</string>
+   </property>
+  </action>
+  <action name="actionFile_Structure">
+   <property name="text">
+    <string>File Structure</string>
+   </property>
+  </action>
+  <action name="actionSupported_Protocols">
+   <property name="text">
+    <string>Supported Protocols</string>
+   </property>
+  </action>
+  <action name="actionHardware_Buttons">
+   <property name="text">
+    <string>Hardware Buttons</string>
+   </property>
+  </action>
+  <action name="actionNetworking_Configuration">
+   <property name="text">
+    <string>Networking Configuration</string>
+   </property>
+  </action>
+  <action name="actionLessons">
+   <property name="text">
+    <string>Lessons</string>
+   </property>
+  </action>
+  <action name="actionStandalone_Flow_Graphs">
+   <property name="text">
+    <string>Standalone Flow Graphs</string>
+   </property>
+  </action>
+  <action name="actionTools">
+   <property name="text">
+    <string>Tools</string>
+   </property>
+  </action>
+  <action name="actionOptions">
+   <property name="text">
+    <string>Options</string>
+   </property>
+  </action>
+  <action name="actionView">
+   <property name="text">
+    <string>View</string>
+   </property>
+  </action>
+  <action name="actionAutomation_Tab">
+   <property name="text">
+    <string>Automation Tab</string>
+   </property>
+  </action>
+  <action name="actionTSI_Tab">
+   <property name="text">
+    <string>TSI Tab</string>
+   </property>
+  </action>
+  <action name="actionPD_Tab">
+   <property name="text">
+    <string>PD Tab</string>
+   </property>
+  </action>
+  <action name="actionAttack_Tab">
+   <property name="text">
+    <string>Attack Tab</string>
+   </property>
+  </action>
+  <action name="actionIQ_Data_Tab">
+   <property name="text">
+    <string>IQ Data Tab</string>
+   </property>
+  </action>
+  <action name="actionArchive_Tab">
+   <property name="text">
+    <string>Archive Tab</string>
+   </property>
+  </action>
+  <action name="actionPacket_Crafter_Tab">
+   <property name="text">
+    <string>Packet Crafter Tab</string>
+   </property>
+  </action>
+  <action name="actionLibrary_Tab">
+   <property name="text">
+    <string>Library Tab</string>
+   </property>
+  </action>
+  <action name="actionLog_Tab">
+   <property name="text">
+    <string>Log Tab</string>
+   </property>
+  </action>
+  <action name="actionStatus_Bar">
+   <property name="text">
+    <string>Status Bar</string>
+   </property>
+  </action>
+  <action name="actionAPRS_Track_Direct">
+   <property name="text">
+    <string>APRS Track Direct</string>
+   </property>
+  </action>
+  <action name="actionCredits">
+   <property name="text">
+    <string>Credits</string>
+   </property>
+  </action>
+  <action name="actionOpenRailwayMap">
+   <property name="text">
+    <string>OpenRailwayMap</string>
+   </property>
+  </action>
+  <action name="actionOrbital_Element_Converter">
+   <property name="text">
+    <string>Orbital Element Converter</string>
+   </property>
+  </action>
+  <action name="actionSatellite_Link_Budget">
+   <property name="text">
+    <string>Satellite Link Budget</string>
+   </property>
+  </action>
+  <action name="actionWebSDR">
+   <property name="text">
+    <string>WebSDR</string>
+   </property>
+  </action>
+  <action name="actionIceman_YouTube">
+   <property name="text">
+    <string>Iceman YouTube</string>
+   </property>
+  </action>
+  <action name="actioncemaxecuter_YouTube">
+   <property name="text">
+    <string>cemaxecuter YouTube</string>
+   </property>
+  </action>
+  <action name="actionGPSJAM">
+   <property name="text">
+    <string>GPSJAM</string>
+   </property>
+  </action>
+  <action name="actionHF_Propagation_Map">
+   <property name="text">
+    <string>HF Propagation Map</string>
+   </property>
+  </action>
+  <action name="actionHAMRS">
+   <property name="text">
+    <string>HAMRS</string>
+   </property>
+  </action>
+  <action name="actionMLAT_Feeder_Map">
+   <property name="text">
+    <string>MLAT Feeder Map</string>
+   </property>
+  </action>
+  <action name="actionFISSURE_Challenge">
+   <property name="text">
+    <string>FISSURE Challenge</string>
+   </property>
+  </action>
+  <action name="actionBinwalk">
+   <property name="text">
+    <string>Binwalk</string>
+   </property>
+  </action>
+  <action name="actionN2YO">
+   <property name="text">
+    <string>N2YO</string>
+   </property>
+  </action>
+  <action name="actionFind_Satellites">
+   <property name="text">
+    <string>Find Satellites</string>
+   </property>
+  </action>
+  <action name="actionAGSatTrack">
+   <property name="text">
+    <string>AGSatTrack</string>
+   </property>
+  </action>
+  <action name="actionCelestrak">
+   <property name="text">
+    <string>Celestrak</string>
+   </property>
+  </action>
+  <action name="actionSpot_The_Station">
+   <property name="text">
+    <string>Spot The Station</string>
+   </property>
+  </action>
+  <action name="actionHideo_Okawara">
+   <property name="text">
+    <string>Hideo Okawara's Mixed Signal Lecture Series</string>
+   </property>
+  </action>
+  <action name="actiontesla_charge_port">
+   <property name="text">
+    <string>tesla_charge_port_remote_ook_synthesizer</string>
+   </property>
+  </action>
+  <action name="actionAuto_Connect_HIPRFISR">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Auto Connect HIPRFISR</string>
+   </property>
+  </action>
+  <action name="actionwl_color_picker">
+   <property name="text">
+    <string>wl-color-picker</string>
+   </property>
+  </action>
+  <action name="actionFissureDashboard_ui">
+   <property name="text">
+    <string>FissureDashboard.ui</string>
+   </property>
+  </action>
+  <action name="actiontpms_rx">
+   <property name="text">
+    <string>tpms_rx</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

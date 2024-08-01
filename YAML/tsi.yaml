@@ -15,7 +15,7 @@ Message Types:
 Schema: 
       SOI: '$Identifier: $MessageName $ModulationType $Frequency $Power $Bandwidth $Continuous $StartFrequency $EndFrequency $Timestamp $Confidence'    
       Wideband: '$Identifier: $MessageName $Frequency $Power $Timestamp'
-      Heartbeats: '$Identifier: $MessageName $Time'
+      Heartbeats: '$Identifier: $MessageName $Time $IP'
       Status: '$Identifier: $MessageName $Parameters'
       Commands: '$Identifier: $MessageName $Parameters'
 
@@ -38,51 +38,55 @@ Wideband:
      - Signal Found
 
 Commands:
-     - Start TSI Detector
-     - Stop TSI Detector
+     - Shutdown
+     #- Start TSI Detector
+     #- Stop TSI Detector
      - Start TSI Conditioner
      - Stop TSI Conditioner
      - Start TSI FE
      - Stop TSI FE
-     - Start IQ Recording
      - Add Blacklist
      - Remove Blacklist
-     - Update Configuration
+     #- Update Configuration
      - Set Heartbeat Interval
-     - Stop IQ Recording
      - Update FISSURE Configuration
 
 
 # Callback to Function Lookup
-Start TSI Detector: startTSI_Detector
-Stop TSI Detector: stopTSI_Detector
+Shutdown: process_shutdown_command
+#Start TSI Detector: startTSI_Detector
+#Stop TSI Detector: stopTSI_Detector
 Start TSI Conditioner: startTSI_Conditioner
 Stop TSI Conditioner: stopTSI_Conditioner
 Start TSI FE: startTSI_FE
 Stop TSI FE: stopTSI_FE
-Start IQ Recording: startIQ_Recording
 Add Blacklist: addBlacklist
 Remove Blacklist: removeBlacklist
-Update Configuration: updateConfiguration
+#Update Configuration: updateConfiguration
 Set Heartbeat Interval: setHeartbeatInterval
-Stop IQ Recording: stopIQ_Recording
 Update FISSURE Configuration: updateFISSURE_Configuration
 
 # Function/Parameter Verification 
-startTSI_Detector:
+process_shutdown_command:
     Type: callback
     Parameters:
-             detector
-             variable_names
-             variable_values
+        identifiers
+
+#startTSI_Detector:
+    #Type: callback
+    #Parameters:
+             #detector
+             #variable_names
+             #variable_values
      
-stopTSI_Detector:
-    Type: callback
-    Parameters:
+#stopTSI_Detector:
+    #Type: callback
+    #Parameters:
     
 startTSI_Conditioner:
     Type: callback
     Parameters:
+             sensor_node_id
              common_parameter_names
              common_parameter_values
              method_parameter_names
@@ -91,6 +95,7 @@ startTSI_Conditioner:
 stopTSI_Conditioner:
     Type: callback
     Parameters:
+             sensor_node_id
     
 startTSI_FE:
     Type: callback
@@ -101,12 +106,6 @@ startTSI_FE:
 stopTSI_FE:
     Type: callback
     Parameters:
-
-startIQ_Recording:
-    Type: callback
-    Parameters:
-             variable_names
-             variable_values
 
 addBlacklist:
     Type: callback
@@ -120,22 +119,18 @@ removeBlacklist:
              start_frequency
              end_frequency
 
-updateConfiguration:
-    Type: callback
-    Parameters:
-             start_frequency
-             end_frequency
-             step_size   
-             dwell_time
+#updateConfiguration:
+    #Type: callback
+    #Parameters:
+             #start_frequency
+             #end_frequency
+             #step_size   
+             #dwell_time
              
 setHeartbeatInterval:
     Type: callback
     Parameters:
-             interval
-             
-stopIQ_Recording:
-    Type: callback 
-    Parameters:        
+             interval  
 
 updateFISSURE_Configuration:
     Type: callback 

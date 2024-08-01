@@ -1,0 +1,391 @@
+# Message Types and Verification for Messages sent to/from Sensor Node
+Identifier: Sensor Node
+
+
+# The Generic Categories for Messages
+Message Types:
+    - Heartbeats
+    - Status
+    - Commands
+    - Wideband
+
+
+# The Format to Follow for each Message Type
+Schema: 
+      Heartbeats: '$Identifier: $MessageName $Time $IP'
+      Status: '$Identifier: $MessageName $Parameters'
+      Commands: '$Identifier: $MessageName $Parameters'
+      Wideband: '$Identifier: $MessageName $Frequency $Power $Timestamp'
+
+
+# Message Names
+Status:
+     - Connected
+     - Disconnected
+     - Exit Connect Loop
+     - Connect to TSI
+     - Connect to Sensor Node
+     - Full Library  
+
+Heartbeats: 
+     - Heartbeat 
+
+Commands:
+    - Run PD Flow Graph
+    - Stop PD Flow Graph
+    - Set Variable
+    - Run Attack Flow Graph
+    - Run IQ Flow Graph
+    - Run Inspection Flow Graph
+    - Run Sniffer Flow Graph
+    - Stop Attack Flow Graph
+    - Stop IQ Flow Graph
+    - Stop Inspection Flow Graph
+    - Stop Sniffer Flow Graph
+    - Start Physical Fuzzing
+    - Stop Physical Fuzzing
+    - Start Multi-Stage Attack
+    - Stop Multi-Stage Attack
+    - Start Archive Playlist
+    - Stop Archive Playlist
+    - Update FISSURE Configuration
+    - Start TSI Detector
+    - Stop TSI Detector 
+    - Start TSI Conditioner
+    - Stop TSI Conditioner
+    - Update Configuration
+    - Start Scapy
+    - Stop Scapy
+    - Recall Settings
+    - Scan Hardware
+    - Probe Hardware
+    - Guess Hardware
+    - Terminate Sensor Node
+    - Send PUB Status Message
+    - Start Autorun
+    - Stop Autorun
+    - Refresh Sensor Node Files
+    - Delete Sensor Node File
+    - Download Sensor Node File
+    - Overwrite Default Autorun Playlist
+    - Transfer Sensor Node File
+    - Delete Archive Replay Files
+    - HIPRFISR Disconnecting
+    
+Wideband:
+    - Signal Found
+    
+
+
+# Callback to Function Lookup
+Run PD Flow Graph: protocolDiscoveryFG_Start
+Stop PD Flow Graph: protocolDiscoveryFG_Stop
+Set Variable: setVariable
+Run Attack Flow Graph: attackFlowGraphStart
+Run IQ Flow Graph: iqFlowGraphStart
+Run Inspection Flow Graph: inspectionFlowGraphStart
+Run Sniffer Flow Graph: snifferFlowGraphStart
+Stop Attack Flow Graph: attackFlowGraphStop
+Stop IQ Flow Graph: iqFlowGraphStop
+Stop Inspection Flow Graph: inspectionFlowGraphStop
+Stop Sniffer Flow Graph: snifferFlowGraphStop
+Start Physical Fuzzing: physicalFuzzingStart
+Stop Physical Fuzzing: physicalFuzzingStop
+Start Multi-Stage Attack: multiStageAttackStart
+Stop Multi-Stage Attack: multiStageAttackStop
+Start Archive Playlist: archivePlaylistStart
+Stop Archive Playlist: archivePlaylistStop
+Update FISSURE Configuration: updateFISSURE_Configuration
+Start TSI Detector: startTSI_Detector
+Stop TSI Detector: stopTSI_Detector
+Start TSI Conditioner: startTSI_Conditioner
+Stop TSI Conditioner: stopTSI_Conditioner
+Update Configuration: updateConfiguration
+Start Scapy: scapyStart
+Stop Scapy: scapyStop
+Recall Settings: recallSettings
+Scan Hardware: scanHardware
+Probe Hardware: probeHardware
+Guess Hardware: guessHardware
+Terminate Sensor Node: terminateSensorNode
+Send PUB Status Message: sendPUB_StatusMessage
+Start Autorun: autorunPlaylistStart
+Stop Autorun: autorunPlaylistStop
+Refresh Sensor Node Files: refreshSensorNodeFiles
+Delete Sensor Node File: deleteSensorNodeFile
+Download Sensor Node File: downloadSensorNodeFile
+Overwrite Default Autorun Playlist: overwriteDefaultAutorunPlaylist
+Transfer Sensor Node File: transferSensorNodeFile
+Delete Archive Replay Files: deleteArchiveReplayFiles
+HIPRFISR Disconnecting: hiprfisrDisconnecting
+
+
+# Function/Parameter Verification 
+protocolDiscoveryFG_Start: 
+    Type: callback
+    Parameters:
+             sensor_node_id
+             flow_graph_filepath
+             variable_names
+             variable_values
+
+protocolDiscoveryFG_Stop: 
+    Type: callback
+    Parameters:
+             sensor_node_id
+             parameter
+
+setVariable:
+    Type: callback
+    Parameters:
+             flow_graph
+             variable             
+             value
+
+attackFlowGraphStart: 
+    Type: callback
+    Parameters:
+             sensor_node_id
+             flow_graph_filepath
+             variable_names
+             variable_values
+             file_type
+             run_with_sudo
+             autorun_index
+
+iqFlowGraphStart: 
+    Type: callback
+    Parameters:
+             sensor_node_id
+             flow_graph_filepath
+             variable_names
+             variables_values
+             file_type
+             
+inspectionFlowGraphStart: 
+    Type: callback
+    Parameters:
+             sensor_node_id
+             flow_graph_filepath
+             variable_names
+             variable_values
+             file_type
+             
+snifferFlowGraphStart: 
+    Type: callback
+    Parameters:
+             sensor_node_id
+             flow_graph_filepath
+             variable_names
+             variable_values
+
+attackFlowGraphStop: 
+    Type: callback
+    Parameters:
+             sensor_node_id
+             parameter
+             autorun_index
+
+iqFlowGraphStop: 
+    Type: callback
+    Parameters:
+             parameter
+             
+inspectionFlowGraphStop: 
+    Type: callback
+    Parameters:
+             parameter
+             
+snifferFlowGraphStop: 
+    Type: callback
+    Parameters:
+             sensor_node_id
+             parameter
+
+physicalFuzzingStart: 
+    Type: callback
+    Parameters:
+             sensor_node_id
+             fuzzing_variables
+             fuzzing_type
+             fuzzing_min
+             fuzzing_max
+             fuzzing_update_period
+             fuzzing_seed_step      
+
+physicalFuzzingStop: 
+    Type: callback
+    Parameters:
+             sensor_node_id    
+
+multiStageAttackStart:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             filenames
+             variable_names
+             variable_values
+             durations
+             repeat
+             file_types
+             autorun_index
+
+multiStageAttackStop:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             autorun_index
+    
+archivePlaylistStart:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             flow_graph
+             filenames
+             frequencies
+             sample_rates
+             formats
+             channels
+             gains
+             durations
+             repeat
+             ip_address
+             serial
+
+archivePlaylistStop:
+    Type: callback
+    Parameters:
+             sensor_node_id      
+
+updateFISSURE_Configuration:
+    Type: callback     
+      
+startTSI_Detector:
+    Type: callback
+    Parameters:
+             detector
+             variable_names
+             variable_values
+             node_id
+     
+stopTSI_Detector:
+    Type: callback
+    Parameters:
+             node_id
+    
+startTSI_Conditioner:  # Not Present Yet
+    Type: callback
+    Parameters:
+             common_parameter_names
+             common_parameter_values
+             method_parameter_names
+             method_parameter_values
+     
+stopTSI_Conditioner:    # Not Present Yet
+    Type: callback
+    Parameters:
+    
+updateConfiguration:
+    Type: callback
+    Parameters:
+             start_frequency
+             end_frequency
+             step_size   
+             dwell_time
+             node_id
+    
+scapyStart:
+    Type: callback
+    Parameters:
+             interface
+             interval
+             loop   
+             operating_system
+    
+scapyStop:
+    Type: callback
+    
+recallSettings:
+    Type: callback
+    
+scanHardware:
+    Type: callback
+    Parameters:
+             tab_index
+             hardware_list
+    
+probeHardware:
+    Type: callback
+    Parameters:
+             tab_index
+             table_row_text
+    
+guessHardware:
+    Type: callback
+    Parameters:
+             tab_index
+             table_row
+             table_row_text
+             guess_index
+
+terminateSensorNode:
+    Type: callback
+    
+sendPUB_StatusMessage:
+    Type: callback
+    Parameters:
+             identifier
+             message_name
+             parameters
+             
+autorunPlaylistStart:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             playlist_dict
+
+autorunPlaylistStop:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             
+refreshSensorNodeFiles:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             sensor_node_folder
+             
+deleteSensorNodeFile:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             sensor_node_file
+             
+downloadSensorNodeFile:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             sensor_node_file
+             download_folder
+             
+overwriteDefaultAutorunPlaylist:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             playlist_dict
+
+transferSensorNodeFile:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             local_file_data
+             remote_filepath
+             refresh_file_list
+
+deleteArchiveReplayFiles:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+hiprfisrDisconnecting:
+    Type: callback

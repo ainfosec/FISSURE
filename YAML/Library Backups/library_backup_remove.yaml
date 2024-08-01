@@ -1237,6 +1237,13 @@ Attacks:
      - Mail Bomb,2
      - DECT - Null Flow Graph,1
      - Spoofing,1
+     - General - OOK Transmit,2
+     - General - IQ Playback Repeat,2
+     - General - IQ Playback Single,2
+     - DECT - From File,2
+     - FM Radio - From File,2
+     - FM Radio - From Wav File,2
+     - FM Radio - Simple Replay,2
      - HD Radio - Naughty String Injection,2
      - 802.11x - wifi_tx Beacon,2
      - Ethernet - MAC Flooding,2
@@ -1244,6 +1251,7 @@ Attacks:
      - Morse Code - File,2
      - Morse Code - Transmit,2
      - Mode S  - From File,2
+     - SimpliciTI - From File,2
      - ZWAVE - Random Colors,2
      - ZWAVE - Color List,2
      - ZWAVE - Off,2
@@ -1279,6 +1287,12 @@ Attacks:
      - SimpliciTI - Add Node,2
      - SimpliciTI - Unlink Node,2
      - Sniffing/Snooping,1
+     - Mode S - Dump1090 Raw Network,2
+     - Mode S - dump978 uat2text,2
+     - Mode S - Dump1090 Raw File,2
+     - General - IQ Record,2
+     - General - IQ Record Squelch,2
+     - General - Instantaneous Frequency,2
      - FM Radio - File_Sink,2
      - FM Radio - Audio_Sink,2
      - ZWAVE - Receive,2
@@ -1287,12 +1301,10 @@ Attacks:
      - Bluetooth Low Energy - btrx,2
      - Bluetooth Classic - btrx,2
      - X10 - Decode,2
-     - Mode S - File Sink,2
-     - Mode S - stdout,2
-     - Mode S - dump1090,2
      - DECT - Audio Sink,2
      - FM Radio - Audio Sink,2
      - DECT - File Sink,2
+     - DECT - File Sink IQ,2
      - FM Radio - File Sink,2
      - DECT - Wireshark,2
      - Probe Attacks,1
@@ -1309,13 +1321,6 @@ Attacks:
      - 802.11x - TP-Link Archer A7 Exploit,2
      - SQL Injection,2
      - Misuse of Resources,1
-     - File,1
-     - DECT - From File,2
-     - FM Radio - From File,2
-     - SimpliciTI - From File,2
-     - FM Radio - From Wav File,2
-     - From File Sequence,2
-     - FM Radio - Simple Replay,2
 Inspection Flow Graphs:
      802.11x Adapter:
      - None
@@ -4332,7 +4337,41 @@ Protocols:
                                    Flow Graph: Garage_Door_OOK_USRPX310_Transmit.py
           Modulation Types:
           - OOK
-     Generic:
+     General:
+          Attacks:
+               General - IQ Playback Repeat:
+                    General:
+                         Hardware:
+                              USRP B2x0:
+                                   Flow Graph: General_General_USRPB2x0_IQ_Playback_Repeat.py
+               General - IQ Playback Single:
+                    General:
+                         Hardware:
+                              USRP B2x0:
+                                   Flow Graph: General_General_USRPB2x0_IQ_Playback_Single.py
+               General - IQ Record:
+                    General:
+                         Hardware:
+                              USRP B2x0:
+                                   Flow Graph: General_General_USRPB2x0_IQ_Record.py
+               General - IQ Record Squelch:
+                    General:
+                         Hardware:
+                              USRP B2x0:
+                                   Flow Graph: General_General_USRPB2x0_IQ_Record_Squelch.py
+               General - Instantaneous Frequency:
+                    General:
+                         Hardware:
+                              USRP B2x0:
+                                   Flow Graph - GUI: General_General_USRPB210_IF.py
+               General - OOK Transmit:
+                    OOK:
+                         Hardware:
+                              USRP B2x0:
+                                   Flow Graph: General_OOK_USRPB210_OOK_Transmit.py
+          Modulation Types:
+          - General
+          - OOK
           Null Placeholder: null
      HD Radio:
           Attacks:
@@ -4351,6 +4390,16 @@ Protocols:
                          Hardware:
                               LimeSDR:
                                    Flow Graph: Mode_S_PPM_LimeSDR_From_File.py
+               Mode S - Dump1090 Raw File:
+                    PPM:
+                         Hardware:
+                              RTL2832U:
+                                   Python3 Script: Mode_S_PPM_RTL2832U_dump1090_raw.py
+               Mode S - Dump1090 Raw Network:
+                    PPM:
+                         Hardware:
+                              RTL2832U:
+                                   Python3 Script: Mode_S_PPM_RTL2832U_dump1090_raw_network.py
                Mode S - Fields:
                     PPM:
                          Hardware:
@@ -4364,21 +4413,6 @@ Protocols:
                                    Flow Graph: Mode_S_PPM_USRPB210_Fields.py
                               USRP X3x0:
                                    Flow Graph: Mode_S_PPM_USRPX310_Fields.py
-               Mode S - File Sink:
-                    PPM:
-                         Hardware:
-                              HackRF:
-                                   Flow Graph: Mode_S_PPM_HackRF_File_Sink.py
-                              LimeSDR:
-                                   Flow Graph: Mode_S_PPM_LimeSDR_File_Sink.py
-                              RTL2832U:
-                                   Flow Graph: Mode_S_PPM_RTL2832U_File_Sink.py
-                              USRP B20xmini:
-                                   Flow Graph: Mode_S_PPM_USRPB205mini_File_Sink.py
-                              USRP B2x0:
-                                   Flow Graph: Mode_S_PPM_USRPB210_File_Sink.py
-                              USRP X3x0:
-                                   Flow Graph: Mode_S_PPM_USRPX310_File_Sink.py
                Mode S - From File:
                     PPM:
                          Hardware:
@@ -4395,25 +4429,11 @@ Protocols:
                          Hardware:
                               RTL2832U:
                                    Python2 Script: Mode_S_DPSK_dump1090.py
+               Mode S - dump978 uat2text:
                     PPM:
                          Hardware:
                               RTL2832U:
-                                   Python2 Script: Mode_S_PPM_dump1090.py
-               Mode S - stdout:
-                    PPM:
-                         Hardware:
-                              HackRF:
-                                   Flow Graph: Mode_S_PPM_HackRF_stdout.py
-                              LimeSDR:
-                                   Flow Graph: Mode_S_PPM_LimeSDR_stdout.py
-                              RTL2832U:
-                                   Flow Graph: Mode_S_PPM_RTL2832U_stdout.py
-                              USRP B20xmini:
-                                   Flow Graph: Mode_S_PPM_USRPB205mini_stdout.py
-                              USRP B2x0:
-                                   Flow Graph: Mode_S_PPM_USRPB210_stdout.py
-                              USRP X3x0:
-                                   Flow Graph: Mode_S_PPM_USRPX310_stdout.py
+                                   Python3 Script: Mode_S_PPM_RTL2832U_dump978_uat2text.py
           Demodulation Flow Graphs:
                PPM:
                     HackRF:
@@ -6138,3 +6158,95 @@ Protocols:
                     Modulation: FSK, GFSK
                     Notes: ''
                     Start Frequency: 919.771
+Triggers:
+     Acoustic:
+          Sound Threshold:
+               Default Settings:
+                    Duration: '0.1'
+                    Sample Rate: '44100'
+                    Threshold: '0.2'
+               File: sound_threshold.py
+               Type: Python3 Script
+     Environmental:
+          Sunrise/Sunset:
+               Default Settings: None
+               File: sunrise_sunset.py
+               Type: Python3 Script
+          Temperature:
+               Default Settings: None
+               File: temperature.py
+               Type: Python3 Script
+          Weather:
+               Default Settings: None
+               File: weather.py
+               Type: Python3 Script
+          Wind:
+               Default Settings: None
+               File: wind.py
+               Type: Python3 Script
+     Filesystem:
+          File Modified:
+               Default Settings: None
+               File: file_modified.py
+               Type: Python3 Script
+          Folder Modified:
+               Default Settings: None
+               File: folder_modified.py
+               Type: Python3 Script
+     Networking:
+          Webserver Curl:
+               Default Settings:
+                    IP Address: 0.0.0.0
+               File: webserver_curl.py
+               Type: Python3 Script
+     RF:
+          Cellular Tower:
+               Default Settings: None
+               File: cellular_tower.py
+               Type: Python3 Script
+          Detect SSID:
+               Default Settings: None
+               File: detect_ssid.py
+               Type: Python3 Script
+          GPS Line:
+               Default Settings: None
+               File: gps_line.py
+               Type: Python3 Script
+          GPS Point:
+               Default Settings: None
+               File: gps_point.py
+               Type: Python3 Script
+          Plane Spotting:
+               Default Settings: None
+               File: plane_spotting.py
+               Type: Python3 Script
+          Power Threshold:
+               Default Settings:
+                    Sample Rate: '5'
+               File: power_threshold.py
+               Type: Python3 Script
+          RDS Keyword:
+               Default Settings: None
+               File: rds_keyword.py
+               Type: Python3 Script
+          X10 Demod:
+               Default Settings:
+                    Matching Text: 'Bits: 01100000100111110000000011111111'
+               File: x10_demod.py
+               Type: Python3 Script
+     Time:
+          Sensor Node Time:
+               Default Settings:
+                    Time: '2024-01-24 14:08:47.182000'
+               File: sensor_node_time.py
+               Type: Python3 Script
+          Timer:
+               Default Settings:
+                    Timer Seconds: '20'
+               File: timer.py
+               Type: Python3 Script
+     Visual:
+          Motion Detector:
+               Default Settings: None
+               File: motion_detector.py
+               Type: Python3 Script

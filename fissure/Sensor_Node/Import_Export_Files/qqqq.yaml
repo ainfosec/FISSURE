@@ -1,0 +1,130 @@
+Sensor Node 1:
+     archive:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     attack:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     autorun: true
+     autorun_delay_seconds: 3.0
+     console_logging_level: true
+     enabled_disabled: enabled
+     file_logging_level: true
+     hb_port: '5051'
+     ip_address: 127.0.0.1
+     iq:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     local_remote: local
+     location: fgh
+     msg_port: '5052'
+     nickname: Local Sensor Node
+     notes: fdh
+     pd:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     tsi:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+Sensor Node 2:
+     archive: {}
+     attack: {}
+     autorun: false
+     autorun_delay_seconds: ''
+     console_logging_level: false
+     enabled_disabled: disabled
+     file_logging_level: false
+     hb_port: '5051'
+     ip_address: 192.168.1.100
+     iq: {}
+     local_remote: local
+     location: ''
+     msg_port: '5052'
+     nickname: Local Sensor Node
+     notes: ''
+     pd: {}
+     tsi: {}
+Sensor Node 3:
+     archive: {}
+     attack: {}
+     autorun: false
+     autorun_delay_seconds: ''
+     console_logging_level: false
+     enabled_disabled: disabled
+     file_logging_level: false
+     hb_port: '5051'
+     ip_address: 192.168.1.100
+     iq: {}
+     local_remote: local
+     location: ''
+     msg_port: '5052'
+     nickname: Local Sensor Node
+     notes: ''
+     pd: {}
+     tsi: {}
+Sensor Node 4:
+     archive: {}
+     attack: {}
+     autorun: false
+     autorun_delay_seconds: ''
+     console_logging_level: false
+     enabled_disabled: disabled
+     file_logging_level: false
+     hb_port: '5051'
+     ip_address: 192.168.1.100
+     iq: {}
+     local_remote: local
+     location: ''
+     msg_port: '5052'
+     nickname: Local Sensor Node
+     notes: ''
+     pd: {}
+     tsi: {}
+Sensor Node 5:
+     archive: {}
+     attack: {}
+     autorun: false
+     autorun_delay_seconds: ''
+     console_logging_level: false
+     enabled_disabled: disabled
+     file_logging_level: false
+     hb_port: '5051'
+     ip_address: 192.168.1.100
+     iq: {}
+     local_remote: local
+     location: ''
+     msg_port: '5052'
+     nickname: Local Sensor Node
+     notes: ''
+     pd: {}
+     tsi: {}

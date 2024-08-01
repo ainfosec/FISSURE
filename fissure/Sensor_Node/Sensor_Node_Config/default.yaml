@@ -1,0 +1,59 @@
+Sensor Node:
+     archive:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     attack:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     autorun: false
+     autorun_delay_seconds: 3
+     autorun_interval_seconds: 3
+     enabled_disabled: enabled
+     ip_address: '127.0.0.1'
+     iq:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     local_remote: local
+     location: fgh
+     nickname: Local Sensor Node
+     notes: fdh
+     pd:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     msg_port: '5052'
+     hb_port: '5051'
+     tsi:
+          0:
+               daughterboard: ''
+               ip_address: ''
+               network_interface: ''
+               radio_name: ''
+               serial: 30AD2E1
+               type: USRP B2x0
+               uid: ''
+     console_logging_level: 'INFO'
+     file_logging_level: 'DEBUG'

@@ -2,6 +2,7 @@ SOI_quantity_limit: 5
 SOI_trigger_mode: 0
 SOI_trigger_time: 0
 SOI_trigger_timeout: 10
+auto_connect_hiprfisr: true
 buffer_size_interval: 2
 clear_log_file_on_startup: true
 color1: '#F4F4F4'
@@ -18,20 +19,7 @@ color7: '#EFEFEF'
 color8: '#FEFEFE'
 color9: '#EFEFEF'
 color_mode: Light Mode
-custom_color1: '#121212'
-custom_color10: '#AFAFAF'
-custom_color11: '#6F6F6F'
-custom_color12: '#000000'
-custom_color13: '#666666'
-custom_color2: '#292929'
-custom_color3: '#2D6300'
-custom_color4: '#CCCCCC'
-custom_color5: '#444444'
-custom_color6: '#AAAAAA'
-custom_color7: '#666666'
-custom_color8: '#DDDDDD'
-custom_color9: '#999999'
-custom_icon_style: Dark
+console_logging_level: INFO
 dashboard_hiprfisr_dealer_port: 5051
 dashboard_pub_port: 5057
 dataset_freq_shift_max: 0
@@ -51,34 +39,17 @@ disabled_running_flow_graph_variables:
 - filepath
 failure_multiple: 5
 fft_size: 8192
-fge_hiprfisr_dealer_port: 5053
-fge_pub_port: 5061
-hardware_archive: ''
-hardware_attack: ''
-hardware_daughterboard_archive: ''
-hardware_daughterboard_attack: ''
-hardware_daughterboard_iq: ''
-hardware_daughterboard_pd: ''
-hardware_daughterboard_tsi: ''
-hardware_interface_archive: ''
-hardware_interface_attack: ''
-hardware_interface_iq: ''
-hardware_interface_pd: ''
-hardware_interface_tsi: ''
-hardware_ip_archive: ''
-hardware_ip_attack: ''
-hardware_ip_iq: ''
-hardware_ip_pd: ''
-hardware_ip_tsi: ''
-hardware_iq: ''
-hardware_pd: ''
-hardware_serial_archive: ''
-hardware_serial_attack: ''
-hardware_serial_iq: ''
-hardware_serial_pd: ''
-hardware_serial_tsi: ''
-hardware_tsi: ''
+file_logging_level: DEBUG
 heartbeat_interval: 5
+hiprfisr:
+  backend:
+    address: fissure-backend
+    protocol: ipc
+  frontend:
+    address: 0.0.0.0
+    heartbeat_channel: 5051
+    message_channel: 5052
+    protocol: tcp
 hiprfisr_pub_port: 5055
 icon_style: Light
 morse_code_amplitude_threshold: 0.5
@@ -90,8 +61,93 @@ moving_avg_points: 5
 pd_bits_port: 5066
 pd_hiprfisr_dealer_port: 5054
 pd_pub_port: 5063
-process_SOIs: 'False'
-remember_configuration: 'False'
+remember_configuration: false
+sensor_node1:
+  archive: ''
+  attack: ''
+  hb_port: ''
+  ip_address: ''
+  iq: ''
+  local_remote: ''
+  location: ''
+  msg_port: ''
+  nickname: ''
+  notes: ''
+  pd: ''
+  tsi: ''
+sensor_node2:
+  archive: ''
+  attack: ''
+  autorun: ''
+  autorun_delay_seconds: ''
+  console_logging_level: ''
+  file_logging_level: ''
+  hb_port: ''
+  ip_address: ''
+  iq: ''
+  local_remote: ''
+  location: ''
+  msg_port: ''
+  nickname: ''
+  notes: ''
+  pd: ''
+  tsi: ''
+sensor_node3:
+  archive: ''
+  attack: ''
+  autorun: ''
+  autorun_delay_seconds: ''
+  console_logging_level: ''
+  file_logging_level: ''
+  hb_port: ''
+  ip_address: ''
+  iq: ''
+  local_remote: ''
+  location: ''
+  msg_port: ''
+  nickname: ''
+  notes: ''
+  pd: ''
+  tsi: ''
+sensor_node4:
+  archive: ''
+  attack: ''
+  autorun: ''
+  autorun_delay_seconds: ''
+  console_logging_level: ''
+  file_logging_level: ''
+  hb_port: ''
+  ip_address: ''
+  iq: ''
+  local_remote: ''
+  location: ''
+  msg_port: ''
+  nickname: ''
+  notes: ''
+  pd: ''
+  tsi: ''
+sensor_node5:
+  archive: ''
+  attack: ''
+  autorun: ''
+  autorun_delay_seconds: ''
+  console_logging_level: ''
+  file_logging_level: ''
+  hb_port: ''
+  ip_address: ''
+  iq: ''
+  local_remote: ''
+  location: ''
+  msg_port: ''
+  nickname: ''
+  notes: ''
+  pd: ''
+  tsi: ''
+sensor_node_hiprfisr_dealer_port: 5053
+sensor_node_pub_port: 5061
+server:
+  address: fissure
+  protocol: ipc
 startup_automation_mode: Manual
 target_SOI: 0
 tsi_hiprfisr_dealer_port: 5052

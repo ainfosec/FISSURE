@@ -141,7 +141,7 @@ class fuzzer(gr.sync_block):
                                             
                         # Random Fuzzing Type for Field  (Check if the Length is Greater than some Limit, Break it up into Chunks?)
                         if self.fuzzing_type[fuzz_index] == "Random":
-                            new_value = generic_rng.randrange(self.fuzzing_min[fuzz_index],self.fuzzing_max[fuzz_index],1)
+                            new_value = generic_rng.randrange(self.fuzzing_min[fuzz_index],self.fuzzing_max[fuzz_index]+1,1)
                             
                         # Sequence Fuzzing Type for Field  (Check if the Length is Greater than some Limit, Break it up into Chunks?)
                         elif self.fuzzing_type[fuzz_index] == "Sequential":

@@ -16,13 +16,14 @@ Schema:
       Commands: '$Identifier: $MessageName $Parameters'
       SOI: '$Identifier: $MessageName $ModulationType $Frequency $Power $Bandwidth $Continuous $StartFrequency $EndFrequency $Timestamp $Confidence'    
       Wideband: '$Identifier: $MessageName $Frequency $Power $Timestamp'  
-      Heartbeats: '$Identifier: $MessageName $Time'
+      Heartbeats: '$Identifier: $MessageName $Time $IP'
       Status: '$Identifier: $MessageName $Parameters'
       Set: '$Identifier: $Set $Variable $Value'  # Does anything use this? Delete?
    
 
 # Message Names
 Commands:
+    - Shutdown
     - Clear SOI List
     - Clear Wideband List
     - Run Attack Flow Graph
@@ -77,6 +78,57 @@ Commands:
     - Remove Packet Type
     - Remove Modulation Type
     - Update FISSURE Configuration
+    - Connect to Sensor Node
+    - Start Scapy
+    - Stop Scapy
+    - Scan Hardware
+    - Probe Hardware
+    - Guess Hardware
+    - Terminate Sensor Node
+    - Disconnect from Sensor Node
+    - Save File
+    - Start Autorun
+    - Stop Autorun
+    - Refresh Sensor Node Files
+    - Delete Sensor Node File
+    - Download Sensor Node File
+    - Overwrite Default Autorun Playlist
+    - Transfer Sensor Node File
+    - Delete Archive Replay Files
+    - Recall Settings Return
+    - Hardware Probe Results
+    - Hardware Guess Results
+    - Hardware Scan Results
+    - Band ID Return
+    - Conditioner Progress Bar
+    - TSI Conditioner Finished
+    - TSI FE Finished
+    - FE Progress Bar
+    - Flow Graph Started
+    - Flow Graph Started IQ
+    - Flow Graph Started IQ Inspection
+    - Flow Graph Started IQ Playback
+    - Flow Graph Started Sniffer
+    - Flow Graph Finished
+    - Flow Graph Finished IQ
+    - Flow Graph Finished IQ Inspection
+    - Flow Graph Finished IQ Playback
+    - Flow Graph Finished Sniffer
+    - Multi-Stage Attack Finished
+    - Archive Playlist Position
+    - Archive Playlist Finished
+    - Detector Flow Graph Error
+    - Flow Graph Error
+    - Autorun Playlist Finished
+    - Autorun Playlist Started
+    - Refresh Sensor Node Files Results
+    - Found Preambles
+    - Found Preambles in Library
+    - Slice By Preamble Return
+    - Buffer Size
+    - Set Recommended Flow Graphs
+    - Sensor Node Offline
+
 
 SOI:
      - Signal Classification
@@ -88,39 +140,48 @@ Heartbeats:
      - Heartbeat 
 
 Status:
+     - Shutting Down  # Needs to remain separate from commands
      - Full Library
-     - Set Recommended Flow Graphs
+     #- Set Recommended Flow Graphs
      - Exit Connect Loop
-     - Flow Graph Finished
-     - Flow Graph Started
-     - Detector Flow Graph Error
-     - Flow Graph Error
-     - Flow Graph Finished IQ
-     - Flow Graph Finished IQ Playback
-     - Flow Graph Finished IQ Inspection
-     - Flow Graph Finished Sniffer
-     - Flow Graph Started IQ
-     - Flow Graph Started IQ Playback
-     - Flow Graph Started IQ Inspection
-     - Flow Graph Started Sniffer
-     - Multi-Stage Attack Finished
-     - Archive Playlist Finished
-     - Found Preambles
-     - Found Preambles in Library
-     - Slice By Preamble Return
-     - Buffer Size
-     - Entropy Return
-     - BandID
-     - Connect to TSI
-     - Connect to FGE
-     - Archive Playlist Position
-     - TSI Conditioner Finished
-     - Conditioner Progress Bar
-     - TSI FE Finished
-     - FE Progress Bar
+     #- Flow Graph Finished
+     #- Flow Graph Started
+     #- Detector Flow Graph Error
+     #- Flow Graph Error
+     #- Flow Graph Finished IQ
+     #- Flow Graph Finished IQ Playback
+     #- Flow Graph Finished IQ Inspection
+     #- Flow Graph Finished Sniffer
+     #- Flow Graph Started IQ
+     #- Flow Graph Started IQ Playback
+     #- Flow Graph Started IQ Inspection
+     #- Flow Graph Started Sniffer
+     #- Multi-Stage Attack Finished
+     #- Archive Playlist Finished
+     #- Found Preambles
+     #- Found Preambles in Library
+     #- Slice By Preamble Return
+     #- Buffer Size
+     #- Entropy Return
+     #- BandID
+     #- Connect to TSI
+     #- Archive Playlist Position
+     #- TSI Conditioner Finished
+     #- Conditioner Progress Bar
+     #- TSI FE Finished
+     #- FE Progress Bar
+     #- Sensor Node Settings  # Recall Settings Returned
+     #- Hardware Scan Results
+     #- Hardware Probe Results
+     #- Hardware Guess Results
+     #- Autorun Playlist Started
+     #- Autorun Playlist Finished
+     #- Refresh Sensor Node Files Results
+     #- File Downloaded
 
 
 # Callback to Function Lookup
+Shutdown: process_shutdown_command
 Clear SOI List: clear_SOI_List
 Clear Wideband List: clearWidebandList
 Run Attack Flow Graph: attackFlowGraphStart
@@ -174,8 +235,63 @@ Remove SOI: removeSOI
 Remove Packet Type: removePacketType
 Remove Modulation Type: removeModulationType
 Update FISSURE Configuration: updateFISSURE_Configuration
+Connect to Sensor Node: connectToSensorNode
+Start Scapy: startScapy
+Stop Scapy: stopScapy
+Scan Hardware: scanHardware
+Probe Hardware: probeHardware
+Guess Hardware: guessHardware
+Terminate Sensor Node: terminateSensorNode
+Disconnect from Sensor Node: disconnectFromSensorNode
+Save File: saveFile
+Start Autorun: autorunPlaylistStart
+Stop Autorun: autorunPlaylistStop
+Refresh Sensor Node Files: refreshSensorNodeFiles
+Delete Sensor Node File: deleteSensorNodeFile
+Download Sensor Node File: downloadSensorNodeFile
+Overwrite Default Autorun Playlist: overwriteDefaultAutorunPlaylist
+Transfer Sensor Node File: transferSensorNodeFile
+Delete Archive Replay Files: deleteArchiveReplayFiles
+Recall Settings Return: recallSettingsReturn
+Hardware Probe Results: hardwareProbeResults
+Hardware Guess Results: hardwareGuessResults
+Hardware Scan Results: hardwareScanResults
+Band ID Return: bandID_Return
+Conditioner Progress Bar: conditionerProgressBar
+TSI Conditioner Finished: TSI_ConditionerFinished
+TSI FE Finished: TSI_FE_Finished
+FE Progress Bar: FE_ProgressBar
+Flow Graph Started: flowGraphStarted
+Flow Graph Started IQ: flowGraphStartedIQ
+Flow Graph Started IQ Playback: flowGraphStartedIQ_Playback
+Flow Graph Started IQ Inspection: flowGraphStartedIQ_Inspection
+Flow Graph Started Sniffer: flowGraphStartedSniffer
+Flow Graph Finished: flowGraphFinished
+Flow Graph Finished IQ: flowGraphFinishedIQ
+Flow Graph Finished IQ Inspection: flowGraphFinishedIQ_Inspection
+Flow Graph Finished IQ Playback: flowGraphFinishedIQ_Playback
+Flow Graph Finished Sniffer: flowGraphFinishedSniffer
+Multi-Stage Attack Finished: multiStageAttackFinished
+Archive Playlist Position: archivePlaylistPosition
+Archive Playlist Finished: archivePlaylistFinished
+Detector Flow Graph Error: detectorFlowGraphError
+Flow Graph Error: flowGraphError
+Autorun Playlist Finished: autorunPlaylistFinished
+Autorun Playlist Started: autorunPlaylistStarted
+Refresh Sensor Node Files Results: refreshSensorNodeFilesResults
+Found Preambles: foundPreambles
+Found Preambles in Library: foundPreamblesInLibrary
+Slice By Preamble Return: sliceByPreambleReturn
+Buffer Size: bufferSize
+Set Recommended Flow Graphs: setRecommendedFlowGraphs
+
 
 #Function/Parameter Verification 
+process_shutdown_command:
+    Type: callback
+    Parameters:
+        identifiers
+
 clear_SOI_List: 
     Type: callback
 
@@ -185,15 +301,18 @@ clearWidebandList:
 attackFlowGraphStart:
     Type: callback
     Parameters:
+             sensor_node_id
              flow_graph_filepath
              variable_names
              variable_values
              file_type
              run_with_sudo
+             autorun_index
     
 iqFlowGraphStart:
     Type: callback
     Parameters:
+             sensor_node_id
              flow_graph_filepath
              variable_names
              variable_values
@@ -202,6 +321,7 @@ iqFlowGraphStart:
 inspectionFlowGraphStart:
     Type: callback
     Parameters:
+             sensor_node_id
              flow_graph_filepath
              variable_names
              variable_values
@@ -210,6 +330,7 @@ inspectionFlowGraphStart:
 snifferFlowGraphStart:
     Type: callback
     Parameters:
+             sensor_node_id
              flow_graph_filepath
              variable_names
              variable_values
@@ -217,9 +338,15 @@ snifferFlowGraphStart:
 protocolDiscoveryFG_Start:
     Type: callback
     Parameters:
+             sensor_node_id
              flow_graph_filepath
              variable_names
              variable_values
+
+protocolDiscoveryFG_Stop:
+    Type: callback
+    Parameters:
+             sensor_node_id
 
 setHeartbeatInterval:
     Type: callback
@@ -257,6 +384,7 @@ stopFlowGraph:
 setVariable:
     Type: callback
     Parameters:
+             sensor_node_id
              flow_graph
              variable
              value
@@ -264,21 +392,26 @@ setVariable:
 attackFlowGraphStop:
     Type: callback
     Parameters:
+             sensor_node_id
              parameter
+             autorun_index
 
 iqFlowGraphStop:
     Type: callback
     Parameters:
+             sensor_node_id
              parameter
              
 inspectionFlowGraphStop:
     Type: callback
     Parameters:
+             sensor_node_id
              parameter
              
 snifferFlowGraphStop:
     Type: callback
     Parameters:
+             sensor_node_id
              parameter
 
 setAutoStartPD:
@@ -289,16 +422,20 @@ setAutoStartPD:
 startTSI_Detector:
     Type: callback
     Parameters:
+             sensor_node_id
              detector
              variable_names
              variable_values
 
 stopTSI_Detector:
     Type: callback
-
+    Parameters:
+             sensor_node_id
+             
 startTSI_Conditioner:
     Type: callback
     Parameters:
+             sensor_node_id
              common_parameter_names
              common_parameter_values
              method_parameter_names
@@ -306,6 +443,8 @@ startTSI_Conditioner:
 
 stopTSI_Conditioner:
     Type: callback
+    Parameters:
+             sensor_node_id
 
 startTSI_FE:
     Type: callback
@@ -342,6 +481,7 @@ removeBlacklist:
 updateConfiguration:
     Type: callback
     Parameters:
+             sensor_node_id
              start_frequency
              end_frequency
              step_size
@@ -350,6 +490,7 @@ updateConfiguration:
 physicalFuzzingStart: 
     Type: callback
     Parameters:
+             sensor_node_id
              fuzzing_variables
              fuzzing_type
              fuzzing_min
@@ -359,23 +500,31 @@ physicalFuzzingStart:
 
 physicalFuzzingStop: 
     Type: callback
+    Parameters:
+             sensor_node_id
              
 multiStageAttackStart:
     Type: callback
     Parameters:
+             sensor_node_id
              filenames
-             variable_namess
+             variable_names
              variable_values
              durations
              repeat
              file_types
+             autorun_index
 
 multiStageAttackStop:
     Type: callback
+    Parameters:
+             sensor_node_id
+             autorun_index
     
 archivePlaylistStart:
     Type: callback
     Parameters:
+             sensor_node_id
              flow_graph
              filenames
              frequencies
@@ -389,7 +538,9 @@ archivePlaylistStart:
              serial
 
 archivePlaylistStop:
-    Type: callback    
+    Type: callback
+    Parameters:
+             sensor_node_id
 
 setWindowParameters: 
     Type: callback
@@ -498,3 +649,299 @@ removeModulationType:
              
 updateFISSURE_Configuration: 
     Type: callback
+    
+connectToSensorNode: 
+    Type: callback
+    Parameters:
+             sensor_node_id
+             ip_address
+             dealer_port
+             pub_port
+             recall_settings
+
+startScapy:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             interface
+             interval
+             loop   
+             operating_system
+    
+stopScapy:
+    Type: callback
+    Parameters:
+             sensor_node_id    
+    
+scanHardware:
+    Type: callback
+    Parameters:
+             tab_index
+             hardware_list
+             
+probeHardware:
+    Type: callback
+    Parameters:
+             tab_index
+             table_row_text
+             
+guessHardware:
+    Type: callback
+    Parameters:
+             tab_index
+             table_row
+             table_row_text
+             guess_index
+
+terminateSensorNode:
+    Type: callback
+    Parameters:
+             sensor_node_id      
+
+disconnectFromSensorNode:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             ip_address
+             pub_port
+             delete_node
+
+saveFile:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             operation
+             filepath
+             data
+
+autorunPlaylistStart:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             playlist_dict
+
+autorunPlaylistStop:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             
+refreshSensorNodeFiles:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             sensor_node_folder
+             
+deleteSensorNodeFile:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             sensor_node_file
+             
+downloadSensorNodeFile:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             sensor_node_file
+             download_folder
+
+overwriteDefaultAutorunPlaylist:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             playlist_dict
+
+transferSensorNodeFile:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             local_file
+             remote_folder
+             refresh_file_list
+             
+deleteArchiveReplayFiles:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             
+recallSettingsReturn:
+    Type: callback
+    Parameters:
+             settings_dict
+             
+hardwareProbeResults:
+    Type: callback
+    Parameters:
+             tab_index
+             output
+             height_width
+             
+hardwareGuessResults:
+    Type: callback
+    Parameters:
+             tab_index
+             table_row
+             hardware_type
+             scan_results
+             new_guess_index
+             
+hardwareScanResults:
+    Type: callback
+    Parameters:
+             tab_index
+             hardware_scan_results
+        
+bandID_Return:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             band_id
+             frequency
+
+conditionerProgressBar:
+    Type: callback
+    Parameters:
+             progress
+             file_index
+
+TSI_ConditionerFinished:
+    Type: callback
+    Parameters:
+             table_strings
+
+TSI_FE_Finished:
+    Type: callback
+    Parameters:
+             table_strings
+
+FE_ProgressBar:
+    Type: callback
+    Parameters:
+             progress
+             file_index
+             
+flowGraphStarted:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             category
+             
+flowGraphStartedIQ:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             
+flowGraphStartedIQ_Playback:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             
+flowGraphStartedIQ_Inspection:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+flowGraphStartedSniffer:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             category
+
+flowGraphFinished:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             category
+
+flowGraphFinishedIQ:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+flowGraphFinishedIQ_Inspection:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+flowGraphFinishedIQ_Playback:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+flowGraphFinishedSniffer:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             category
+
+multiStageAttackFinished:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+archivePlaylistPosition:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             position
+
+archivePlaylistFinished:
+    Type: callback
+    Parameters:
+             sensor_node_id
+
+detectorFlowGraphError:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             error
+             
+flowGraphError:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             error
+             
+autorunPlaylistFinished:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             
+autorunPlaylistStarted:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             
+refreshSensorNodeFilesResults:
+    Type: callback
+    Parameters:
+             sensor_node_id
+             filepaths
+             file_sizes
+             file_types
+             modified_dates
+
+foundPreambles:
+    Type: callback
+    Parameters:
+             parameters
+
+foundPreamblesInLibrary:
+    Type: callback
+    Parameters:
+             parameters
+
+sliceByPreambleReturn:
+    Type: callback
+    Parameters:
+             packet_lengths
+             packet_dict
+
+bufferSize:
+    Type: callback
+    Parameters:
+             buffer_size
+
+setRecommendedFlowGraphs:
+    Type: callback
+    Parameters:
+             flow_graphs

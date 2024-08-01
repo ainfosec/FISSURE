@@ -11,7 +11,7 @@ Message Types:
 
 # The Format to Follow for each Message Type
 Schema: 
-      Heartbeats: '$Identifier: $MessageName $Time'
+      Heartbeats: '$Identifier: $MessageName $Time $IP'
       Status: '$Identifier: $MessageName $Parameters'
       Commands: '$Identifier: $MessageName $Parameters'
 
@@ -21,18 +21,13 @@ Status:
      - Connected
      - Disconnected
      - Set Recommended Flow Graphs
-     - Full Library     
-     - Exit Connect Loop
-     - Flow Graph Started
-     - Flow Graph Finished
-     - Flow Graph Error
-     - Connect to TSI
-     - Connect to FGE
+     - Full Library
 
 Heartbeats: 
-     - Heartbeat 
+     - Heartbeat
 
 Commands:
+     - Shutdown
      - Start PD
      - Stop PD
      - Search Library for Flow Graphs
@@ -49,6 +44,7 @@ Commands:
 
 
 # Callback to Function Lookup
+Shutdown: process_shutdown_command
 Start PD: startPD
 Stop PD: stopPD
 Search Library for Flow Graphs: searchLibraryForFlowGraphsCallback
@@ -65,6 +61,11 @@ Update FISSURE Configuration: updateFISSURE_Configuration
 
 
 #Function/Parameter Verification  
+process_shutdown_command:
+    Type: callback
+    Parameters:
+        identifiers
+
 startPD:
     Type: callback
 

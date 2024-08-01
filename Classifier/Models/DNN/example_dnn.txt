@@ -1,0 +1,28 @@
+Technique: Deep Neural Network
+Target: Prius_Fob
+Layer1: 12, relu
+Layer2: 8, relu
+Layer3: 1, sigmoid
+Threshold: 0.26
+Truth Categories: ['Avent_SCD560' 'Clapper_Plus' 'CW_Morse_Code' 'F150_Fob' 'Garage_Door'
+ 'Juentai_JT-6188Plus' 'Midland_T10' 'MOTOTRBO_XPR7550e'
+ 'Ocusync2_Downlink' 'Ocusync2_Uplink' 'Prius_Fob' 'Silverado_Fob' 'X10'
+ 'Zigbee_Philips_Hue' 'Zwave_Monoprice']
+Possible Features: ['Skewness of Band Power', 'Standard Deviation of Band Power', 'Sum of Total Band Power', 'Samples', 'Standard Deviation', 'Variance']
+Features: ['Skewness of Band Power', 'Standard Deviation of Band Power', 'Sum of Total Band Power', 'Samples', 'Standard Deviation', 'Variance']
+Confusion Matrix: [[ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 15  0  0  5  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  6  0  0 14  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  0  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0  1  0  0 19  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]
+ [ 0  0  0  0  0  0  0  0 20  0  0  0  0  0  0  0]]

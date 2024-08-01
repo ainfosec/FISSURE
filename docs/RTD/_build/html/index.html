@@ -1,21 +1,23 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FISSURE - The RF Framework &mdash; FISSURE  documentation</title>
-      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script src="_static/jquery.js"></script>
-        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
-        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/sphinx_highlight.js"></script>
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -128,8 +130,10 @@
 <li class="toctree-l2"><a class="reference internal" href="pages/installation.html#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/installation.html#cloning">Cloning</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/installation.html#installer">Installer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/installation.html#remote-sensor-node-installation">Remote Sensor Node Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/installation.html#uninstalling">Uninstalling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pages/installation.html#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/installation.html#local-dashboard-usage">Local Dashboard Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/installation.html#remote-sensor-node-usage">Remote Sensor Node Usage</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/installation.html#known-conflicts">Known Conflicts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/installation.html#third-party-software">Third-Party Software</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/installation.html#third-party-software-versions">Third-Party Software Versions</a><ul>
@@ -141,8 +145,8 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pages/hardware.html">Hardware</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="pages/hardware.html#supported">Supported</a></li>
-<li class="toctree-l2"><a class="reference internal" href="pages/hardware.html#configuring">Configuring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/hardware.html#supported-peripherals">Supported Peripherals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/hardware.html#supported-sensor-node-hardware">Supported Sensor Node Hardware</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/hardware.html#notes">Notes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="pages/hardware.html#limesdr-notes">LimeSDR Notes</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/hardware.html#new-usrp-x310">New USRP X310</a></li>
@@ -169,12 +173,20 @@
 <li class="toctree-l2"><a class="reference internal" href="pages/components.html#protocol-discovery">Protocol Discovery</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/components.html#flow-graph-script-executor">Flow Graph/Script Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="pages/components.html#hiprfisr">HIPRFISR</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/components.html#sensor-nodes">Sensor Nodes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/components.html#sensor-node-description">Sensor Node Description</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/components.html#sensor-node-networking">Sensor Node Networking</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/components.html#sensor-node-inner-workings">Sensor Node Inner Workings</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/components.html#sensor-node-config-file">Sensor Node Config File</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/components.html#autorun-playlist-format">Autorun Playlist Format</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pages/operation.html">Operation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pages/operation.html#start-up-procedures">Start-Up Procedures</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#hardware-buttons">Hardware Buttons</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#networking-configuration">Networking Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#sensor-node-buttons">Sensor Node Buttons</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#sensor-node-configuration-window">Sensor Node Configuration Window</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pages/operation.html#menu-items">Menu Items</a><ul>
@@ -215,6 +227,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pages/operation.html#fuzzing-fields">Fuzzing (Fields)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/operation.html#fuzzing-variables">Fuzzing (Variables)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="pages/operation.html#history">History</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#packet-crafter">Packet Crafter</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pages/operation.html#iq-data-tab">IQ Data Tab</a><ul>
@@ -238,9 +251,9 @@
 <li class="toctree-l3"><a class="reference internal" href="pages/operation.html#replay">Replay</a></li>
 </ul>
 </li>
-<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#packet-crafter-tab">Packet Crafter Tab</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#packet-editor">Packet Editor</a></li>
-<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#scapy">Scapy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#sensor-nodes-tab">Sensor Nodes Tab</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#autorun">Autorun</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#file-navigation">File Navigation</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pages/operation.html#library-tab">Library Tab</a><ul>
@@ -257,6 +270,11 @@
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="pages/operation.html#status-bar">Status Bar</a></li>
+<li class="toctree-l2"><a class="reference internal" href="pages/operation.html#triggers">Triggers</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#configuration">Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="pages/operation.html#trigger-list">Trigger List</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pages/development.html">Development</a><ul>
@@ -270,6 +288,7 @@
 <li class="toctree-l3"><a class="reference internal" href="pages/development.html#dashboard-py">dashboard.py</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="pages/development.html#creating-triggers">Creating Triggers</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="pages/about.html">About</a><ul>

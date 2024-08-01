@@ -1,93 +1,15 @@
-startup_automation_mode: Manual
+SOI_quantity_limit: 5
 SOI_trigger_mode: 0
 SOI_trigger_time: 0
 SOI_trigger_timeout: 10
-SOI_quantity_limit: 5
-target_SOI: 0
-
+auto_connect_hiprfisr: true
 buffer_size_interval: 2
-
-disabled_running_flow_graph_variables:
-  - ip_address
-  - tx_usrp_channel 
-  - rx_usrp_channel
-  - tx_usrp_antenna
-  - rx_usrp_antenna
-  - filepath
-
-fft_size: 8192
-morse_code_amplitude_threshold: 0.5
-morse_code_error_tolerance: 0.05
-morse_code_same_letter_spacing: 1
-morse_code_between_letter_spacing: 3
-morse_code_between_word_spacing: 7
-moving_avg_points: 5
-
-dataset_noise_min: 0
-dataset_noise_max: 0.1
-dataset_phase_rot_min: 0
-dataset_phase_rot_max: 0.1
-dataset_scale_min: 0.2
-dataset_scale_max: 1
-dataset_freq_shift_min: 0
-dataset_freq_shift_max: 0
-
-hardware_tsi: ''
-hardware_pd: ''
-hardware_attack: ''
-hardware_iq: ''
-hardware_archive: ''
-hardware_ip_tsi: ''
-hardware_ip_pd: ''
-hardware_ip_attack: ''
-hardware_ip_iq: ''
-hardware_ip_archive: ''
-hardware_serial_tsi: ''
-hardware_serial_pd: ''
-hardware_serial_attack: ''
-hardware_serial_iq: ''
-hardware_serial_archive: ''
-hardware_interface_tsi: ''
-hardware_interface_pd: ''
-hardware_interface_attack: ''
-hardware_interface_iq: ''
-hardware_interface_archive: ''
-hardware_daughterboard_tsi: ''
-hardware_daughterboard_pd: ''
-hardware_daughterboard_attack: ''
-hardware_daughterboard_iq: ''
-hardware_daughterboard_archive: ''
-
-heartbeat_interval: 5
-failure_multiple: 5
-dashboard_hiprfisr_dealer_port: 5051
-tsi_hiprfisr_dealer_port: 5052
-fge_hiprfisr_dealer_port: 5053
-pd_hiprfisr_dealer_port: 5054
-hiprfisr_pub_port: 5055
-dashboard_pub_port: 5057
-tsi_pub_port: 5059
-tsi_pub_port_id: 5060
-tsi_pub_port_classification: 5065
-fge_pub_port: 5061
-pd_pub_port: 5063
-pd_bits_port: 5066
-clear_log_file_on_startup: True
-custom_color1: '#121212'
-custom_color2: '#292929'
-custom_color3: '#2D6300'
-custom_color4: '#CCCCCC'
-custom_color5: '#444444'
-custom_color6: '#AAAAAA'
-custom_color7: '#666666'
-custom_color8: '#DDDDDD'
-custom_color9: '#999999'
-custom_color10: '#AFAFAF'
-custom_color11: '#6F6F6F'
-custom_color12: '#000000'
-custom_color13: '#666666'
-custom_icon_style: 'Dark'
+clear_log_file_on_startup: true
 color1: '#F4F4F4'
+color10: '#FEFEFE'
+color11: '#F8F8F8'
+color12: '#000000'
+color13: '#C0C0C0'
 color2: '#FBFBFB'
 color3: '#17365D'
 color4: '#000000'
@@ -96,9 +18,139 @@ color6: '#FEFEFE'
 color7: '#EFEFEF'
 color8: '#FEFEFE'
 color9: '#EFEFEF'
-color10: '#FEFEFE'
-color11: '#F8F8F8'
-color12: '#000000'
-color13: '#C0C0C0'
-icon_style: 'Light'
-color_mode: 'Light Mode'
+color_mode: Light Mode
+console_logging_level: INFO
+dashboard_hiprfisr_dealer_port: 5051
+dashboard_pub_port: 5057
+dataset_freq_shift_max: 0
+dataset_freq_shift_min: 0
+dataset_noise_max: 0.1
+dataset_noise_min: 0
+dataset_phase_rot_max: 0.1
+dataset_phase_rot_min: 0
+dataset_scale_max: 1
+dataset_scale_min: 0.2
+disabled_running_flow_graph_variables:
+- ip_address
+- tx_usrp_channel
+- rx_usrp_channel
+- tx_usrp_antenna
+- rx_usrp_antenna
+- filepath
+failure_multiple: 5
+fft_size: 8192
+file_logging_level: DEBUG
+heartbeat_interval: 5
+hiprfisr:
+  backend:
+    address: fissure-backend
+    protocol: ipc
+  frontend:
+    address: 0.0.0.0
+    heartbeat_channel: 5051
+    message_channel: 5052
+    protocol: tcp
+hiprfisr_pub_port: 5055
+icon_style: Light
+morse_code_amplitude_threshold: 0.5
+morse_code_between_letter_spacing: 3
+morse_code_between_word_spacing: 7
+morse_code_error_tolerance: 0.05
+morse_code_same_letter_spacing: 1
+moving_avg_points: 5
+pd_bits_port: 5066
+pd_hiprfisr_dealer_port: 5054
+pd_pub_port: 5063
+remember_configuration: false
+sensor_node1:
+  archive: ''
+  attack: ''
+  hb_port: ''
+  ip_address: ''
+  iq: ''
+  local_remote: ''
+  location: ''
+  msg_port: ''
+  nickname: ''
+  notes: ''
+  pd: ''
+  tsi: ''
+sensor_node2:
+  archive: ''
+  attack: ''
+  autorun: ''
+  autorun_delay_seconds: ''
+  console_logging_level: ''
+  file_logging_level: ''
+  hb_port: ''
+  ip_address: ''
+  iq: ''
+  local_remote: ''
+  location: ''
+  msg_port: ''
+  nickname: ''
+  notes: ''
+  pd: ''
+  tsi: ''
+sensor_node3:
+  archive: ''
+  attack: ''
+  autorun: ''
+  autorun_delay_seconds: ''
+  console_logging_level: ''
+  file_logging_level: ''
+  hb_port: ''
+  ip_address: ''
+  iq: ''
+  local_remote: ''
+  location: ''
+  msg_port: ''
+  nickname: ''
+  notes: ''
+  pd: ''
+  tsi: ''
+sensor_node4:
+  archive: ''
+  attack: ''
+  autorun: ''
+  autorun_delay_seconds: ''
+  console_logging_level: ''
+  file_logging_level: ''
+  hb_port: ''
+  ip_address: ''
+  iq: ''
+  local_remote: ''
+  location: ''
+  msg_port: ''
+  nickname: ''
+  notes: ''
+  pd: ''
+  tsi: ''
+sensor_node5:
+  archive: ''
+  attack: ''
+  autorun: ''
+  autorun_delay_seconds: ''
+  console_logging_level: ''
+  file_logging_level: ''
+  hb_port: ''
+  ip_address: ''
+  iq: ''
+  local_remote: ''
+  location: ''
+  msg_port: ''
+  nickname: ''
+  notes: ''
+  pd: ''
+  tsi: ''
+sensor_node_hiprfisr_dealer_port: 5053
+sensor_node_pub_port: 5061
+server:
+  address: fissure
+  protocol: ipc
+startup_automation_mode: Manual
+target_SOI: 0
+tsi_hiprfisr_dealer_port: 5052
+tsi_pub_port: 5059
+tsi_pub_port_classification: 5065
+tsi_pub_port_id: 5060

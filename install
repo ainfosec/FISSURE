@@ -1,6 +1,8 @@
 #!/bin/bash
 
-# Check Operating System
+########################################
+#        Check Operating System        #
+########################################
 ubuntu20_04=$(lsb_release -d 2>&1 | grep "Ubuntu 20.04")
 parrot_os=$(lsb_release -d 2>&1 | grep "Parrot OS")
 dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal$")
@@ -13,6 +15,9 @@ kali23_1=$(lsb_release -d 2>&1 | grep "Kali")
 backbox=$(cat /etc/issue -d 2>&1 | grep "BackBox")
 raspberry_pi_os=$(lsb_release -d 2>&1 | grep "bookworm")
 
+########################################
+#            Print Detected            #
+########################################
 # Ubuntu 20.04
 if [[ -n "$ubuntu20_04" ]]
 then
@@ -41,6 +46,41 @@ then
     fi
 fi
 
+# Ubuntu 22.04
+if [[ -n "$ubuntu22_04" ]]
+then
+    echo "Ubuntu 22.04 detected"
+    ubuntu_arm=$(lscpu 2>&1 | grep "ARM")
+    if [[ -n "$ubuntu_arm" ]]
+    then
+        echo "ARM detected"
+    fi
+fi
+
+# Kali 23.1
+if [[ -n "$kali23_1" ]]
+then
+    echo "Kali detected"
+fi
+
+# DragonOS FocalX
+if [[ -n "$dragonOS_focalx" ]]
+then
+    echo "DragonOS FocalX detected"
+fi
+
+# BackBox
+if [[ -n "$backbox" ]]
+then
+    echo "BackBox detected"
+fi
+
+# Raspberry Pi OS
+if [[ -n "$raspberry_pi_os" ]]
+then
+    echo "Raspberry Pi OS (bookworm) detected"
+fi
+
 # Python2-maint_3.7, Ubuntu 18.04
 if [[ -n "$ubuntu18_04" ]]
 then    
@@ -48,19 +88,14 @@ then
     exit
 fi
 
-# Python-maint_3.10, Ubuntu 22.04
-if [[ -n "$ubuntu22_04" ]] || [[ -n "$dragonOS_focalx" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]] || [[ -n "$raspberry_pi_os" ]]
-then
-    echo "This branch is not for Ubuntu 22.04 variants. Switch to the Python3_maint-3.10 branch and try again!"
-    exit
-fi
-
-# Check for Qt5
+########################################
+#            Check for Qt5             #
+########################################
 qt5_version=$(qmake --version | grep "version 5")
 if [[ -z "$qt5_version" ]]
 then
     echo "No Qt5 found."
-    read -p "Qt5 is required to open the installer. Do you want to proceed? [y]/n: " yn
+    read -p "Qt5 is required to open the installer. Proceeding with this operation will install the missing packages and open the installer. Do you want to proceed? [y]/n: " yn
     case $yn in
         # No
         [Nn]* ) exit;;       
@@ -99,11 +134,23 @@ then
                     sudo apt-get install -y fonts-ubuntu
                 fi                            
             fi
+              
+            # Ubuntu 22.04, Kali 23.1, BackBox
+            if [[ -n "$ubuntu22_04" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]] || [[ -n "$raspberry_pi_os" ]]
+            then
+                sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools python3-pyqt5
+                if [[ -n "$kali23_1" ]] || [[ -n "$raspberry_pi_os" ]]
+                then
+                    sudo apt-get install -y fonts-ubuntu
+                fi
+            fi
         ;;
     esac
 fi
 
-# Run the Full Installer
+########################################
+#        Run the Full Installer        #
+########################################
 DIR=$(CDPATH= cd -- "$(dirname -- "$0")" && pwd)
 $DIR/Installer/installer
 
