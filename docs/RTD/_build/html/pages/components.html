@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Components &mdash; FISSURE  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -60,7 +62,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#target-signal-identification">Target Signal Identification</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#protocol-discovery">Protocol Discovery</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#flow-graph-script-executor">Flow Graph/Script Executor</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#hiprfisr">HIPRFISR</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#sensor-nodes">Sensor Nodes</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#sensor-node-description">Sensor Node Description</a></li>
@@ -215,7 +216,7 @@
 </dd>
 <dt>Flow Graph Library/TSI Flow Graphs/</dt><dd><p>Location of flow graphs used by the TSI component for slow scanning detection and fixed frequency detection.</p>
 </dd>
-<dt>Installer/</dt><dd><p>Location of the primary FISSURE installation script and its support files. It is called by the “install” bash script after checking for prerequisities.</p>
+<dt>Installer/</dt><dd><p>Location of the primary FISSURE installation script and its support files. It is called by the “install” bash script after checking for prerequisites.</p>
 </dd>
 <dt>IQ Recordings/</dt><dd><p>Default location for storing IQ files captured with the IQ Data tab recorder. Contains example files for testing purposes.</p>
 </dd>
@@ -312,10 +313,6 @@
 <section id="protocol-discovery">
 <h2>Protocol Discovery<a class="headerlink" href="#protocol-discovery" title="Permalink to this heading">¶</a></h2>
 <p>The Protocol Discovery component is responsible for identifying and reversing RF protocols to help extract meaningful data from unknown signals. It is designed to: accept signal of interest information, iterate flow graphs to perform recursive demodulation techniques, deduce protocol methods, assign confidence levels, analyze a bitstream, calculate CRC polynomials, and create custom Wireshark dissectors.</p>
-</section>
-<section id="flow-graph-script-executor">
-<h2>Flow Graph/Script Executor<a class="headerlink" href="#flow-graph-script-executor" title="Permalink to this heading">¶</a></h2>
-<p>The Flow Graph/Script Executor component runs flow graphs or Python scripts to perform single-stage attacks, multi-stage attacks, fuzzing attacks, IQ recording and playback, live signal inspection/analysis, and transmit playlists of signal data constructed with files downloaded from an online archive.</p>
 </section>
 <section id="hiprfisr">
 <h2>HIPRFISR<a class="headerlink" href="#hiprfisr" title="Permalink to this heading">¶</a></h2>

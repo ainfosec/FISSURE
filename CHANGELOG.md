@@ -1,6 +1,67 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-08-03
+
+Fixing Help menu items.
+
+### Added
+
+- Sensor Node and trigger user manual pages inserted into the menu
+
+### Changed
+
+- Removed outdated user manual pages from the help menu
+
+### Fixed
+
+- Help menu opens the pages in the local user manual
+- Added missing CHANGELOG entry for 2024-08-01
+
+### Documentation
+
+- Miscellaneous spelling errors
+- Adding missing Trigger file location
+- Filled out Lessons section
+
+## 2024-08-01
+
+Remote sensor node updates.
+
+### Added
+
+- Sensor node configuration window for deploying remote or local sensor nodes
+- Autorun playlists for scripting Single-Stage and Multi-Stage attack items to run with or without user interaction
+- Trigger mechanisms and around 20 example scripts for single-stage attacks, multi-stage attacks, archive replay, and autorun playlists
+- Sensor Node tab with Autorun Playlist and File Navigation tabs
+- On-off keying signal generator
+- Signal Classifier tab for training and testing machine learning models against extracted IQ data features
+- More "General" protocol attack scripts
+- More Mode S/ADS-B attack scripts
+- Raw bit comparison between messages in PD Data Viewer tab
+
+### Changed
+
+- Moved the Packet Crafter tab under the Attack tab
+- Replaced top buttons with Sensor Node buttons
+- Replaced FGE code and moved flow graph functionality into SensorNode.py
+- Refactored code base to separate callbacks, slots, classes, and use more asynchronous messaging
+- Removed YAML definitions for messaging
+
+### Fixed
+
+- Library adding/removing errors
+
+### Documentation
+
+- Updated installation instructions with sensor node information and new FISSURE branch information
+- Added "Remote Sensor Node Usage" section
+- Added "Supported Sensor Node Hardware" section
+- Added "Sensor Nodes" section
+- Added "Sensor Nodes Tab" section
+- Added "Triggers" section
+- Added "Creating Triggers" section
+
 ## 2024-01-09
 
 Binwalk and satellite links.

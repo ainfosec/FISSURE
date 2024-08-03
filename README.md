@@ -217,7 +217,7 @@ Notes:
 - The git submodule command will download all missing GNU Radio out-of-tree modules from their online repositories and is required to install the GNU Radio out-of-tree modules.
 - The installer will ask to install PyQt software dependencies required to launch the installation GUIs if they are not found. 
 - Select the operating option in the GUI that best matches your operating system (should be detected automatically if your OS matches an option).
-- Periodically answer prompts regarding third-party throughout the install. Use your best judgement, the answers will not likely impact FISSURE.
+- Periodically answer prompts regarding third-party throughout the install. Use your best judgment, the answers will not likely impact FISSURE.
 
 <p align="center">
 <img src="/docs/Icons/README/install1.png">
@@ -267,7 +267,7 @@ The intended method for launching the FISSURE Dashboard is through the terminal 
 
 A local sensor node can be launched through the top buttons in the FISSURE Dashboard and helps maintain all pre-existing FISSURE functionality on a standalone workstation. Only one local and four remote sensor nodes (or five remote) are supported at this time. 
 
-If any of the programs freeze or hang on clsoe, the following commands can be used to detect a problem or forcibly shut down:
+If any of the programs freeze or hang on close, the following commands can be used to detect a problem or forcibly shut down:
 ```
 sudo ps -aux | grep python3
 sudo pkill python3

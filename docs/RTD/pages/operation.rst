@@ -39,12 +39,58 @@ Menu Items
 Lessons
 -------
 
-Lesson 1
+Lessons are included in FISSURE to help summarize technologies and provide practical examples for performing various tasks. The numbered lessons are created by FISSURE developers and the lower section contains public links to relevant lesson material found on the internet. Please inform the developers of any new lesson material or edits to existing material you may have.
 
-Lesson 2
+The following is a summary of the lessons included in the menu:
 
-Online Resources
+.. list-table:: 
+   :header-rows: 1
 
+   * - Lesson Name
+     - Description
+   * - Lesson 1: OpenBTS
+     - Describes OpenBTS; provides installation steps; example configurations; and example commands for OpenBTS, Asterisk, and SIM programming.
+   * - Lesson 2: Lua Dissectors
+     - Details Lua Wireshark dissectors, provides reference material, and walks through the FISSURE tabs for creating dissectors and using them in the Sniffer tab.
+   * - Lesson 3: Sound eXchange
+     - Lists many sox commands for working with audio files.
+   * - Lesson 4: ESP Boards
+     - Contains examples for programming and using ESP boards for different RF technologies.
+   * - Lesson 5: Radiosonde Tracking
+     - Provides reference material relating to radiosondes and steps for tracking and posting to Sondehub.org
+   * - Lesson 6: RFID
+     - Contains extensive details into RFID, NFC, readers, antennas, modules, development kits, tags, and standards. Example Proxmark3 commands are included as well as for other RFID software.
+   * - Lesson 7: Data Types
+     - Describes data type definitions for GNU Radio and Python.
+   * - Lesson 8: Custom GNU Radio Blocks
+     - Provides background into creating Custom GNU Radio blocks with example commands and code snippets. Needs to be updated for newer GNU Radio versions.
+   * - Lesson 9: TPMS
+     - Contains reference material and example software programs for receiving and transmitting TPMS messages.
+   * - Lesson 10: Ham Radio Exams
+     - Summarizes the minimum actions needs to take an exam for a license in the United States.
+   * - Lesson 11: Wi-Fi Tools
+     - Provides example commands for several common Wi-Fi software tools.
+   * - Lesson 12:
+     - Shows an example of creating a bootable USB image of a Linux environment to isolate FISSURE for classroom activities or similar events.
+   * - PySDR
+     - The go-to guide for SDR and DSP using Python.
+   * - Software Defined Radio with HackRF
+     - Practical videos for a good introduction to software-defined radio.
+   * - GNU Radio Tutorials 
+     - Official location for GNU Radio tutorials.
+   * - Programming Software Defined Radio w/GNU Radio
+     - Presentation video by Bastian Bloessl towards the end.
+   * - Learn SDR
+     - Harvey Mudd College videos on several topics.
+   * - Complex To Real
+     - Tutorials on digital communications engineering.
+   * - cemaxecuter YouTube
+     - A video for everything featuring software on DragonOS.
+   * - Iceman YouTube
+     - Videos on RFID and Proxmark3.
+   * - Hideo Okawara's Mixed Signal Lecture Series
+     - Contains several files with code examples on many DSP topics.
+                                      
 Standalone Flow Graphs
 ----------------------
 

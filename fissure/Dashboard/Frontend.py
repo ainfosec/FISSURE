@@ -2393,7 +2393,6 @@ def connect_menuBar_slots(dashboard: Dashboard):
         MenuBarSlots._slotMenuHelpThirdPartySoftwareVersionsClicked
     )
     dashboard.window.actionSupported.triggered.connect(MenuBarSlots._slotMenuHelpHardwareSupportedClicked)
-    dashboard.window.actionConfiguring.triggered.connect(MenuBarSlots._slotMenuHelpHardwareConfiguringClicked)
     dashboard.window.actionHelpLimeSDR.triggered.connect(MenuBarSlots._slotMenuHelpHardwareLimeSDR_Clicked)
     dashboard.window.actionHelpNewUSRPX310.triggered.connect(MenuBarSlots._slotMenuHelpHardwareNewUSRPX310_Clicked)
     dashboard.window.actionHelpUpdatingHackRF.triggered.connect(MenuBarSlots._slotMenuHelpHardwareUpdatingHackRFClicked)
@@ -2411,12 +2410,7 @@ def connect_menuBar_slots(dashboard: Dashboard):
         MenuBarSlots._slotMenuHelpComponentsTSI_Clicked
     )
     dashboard.window.actionProtocol_Discovery.triggered.connect(MenuBarSlots._slotMenuHelpComponentsPD_Clicked)
-    dashboard.window.actionFlow_Graph_Script_Executor.triggered.connect(MenuBarSlots._slotMenuHelpComponentsFGE_Clicked)
     dashboard.window.actionHIPRFISR.triggered.connect(MenuBarSlots._slotMenuHelpComponentsHIPRFISR_Clicked)
-    dashboard.window.actionHardware_Buttons.triggered.connect(MenuBarSlots._slotMenuHelpOperationHardwareButtonsClicked)
-    dashboard.window.actionNetworking_Configuration.triggered.connect(
-        MenuBarSlots._slotMenuHelpOperationNetworkingConfigurationClicked
-    )
     dashboard.window.actionLessons.triggered.connect(MenuBarSlots._slotMenuHelpOperationLessonsClicked)
     dashboard.window.actionStandalone_Flow_Graphs.triggered.connect(
         MenuBarSlots._slotMenuHelpOperationStandaloneFlowGraphsClicked
@@ -2430,7 +2424,6 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionAttack_Tab.triggered.connect(MenuBarSlots._slotMenuHelpOperationAttackClicked)
     dashboard.window.actionIQ_Data_Tab.triggered.connect(MenuBarSlots._slotMenuHelpOperationIQ_DataClicked)
     dashboard.window.actionArchive_Tab.triggered.connect(MenuBarSlots._slotMenuHelpOperationArchiveClicked)
-    dashboard.window.actionPacket_Crafter_Tab.triggered.connect(MenuBarSlots._slotMenuHelpOperationPacketCrafterClicked)
     dashboard.window.actionLibrary_Tab.triggered.connect(MenuBarSlots._slotMenuHelpOperationLibraryClicked)
     dashboard.window.actionLog_Tab.triggered.connect(MenuBarSlots._slotMenuHelpOperationLogClicked)
     dashboard.window.actionStatus_Bar.triggered.connect(MenuBarSlots._slotMenuHelpOperationStatusBarClicked)
@@ -2453,6 +2446,31 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionHelpAbout.triggered.connect(MenuBarSlots._slotMenuHelpAboutClicked)
     dashboard.window.actionCredits.triggered.connect(MenuBarSlots._slotMenuHelpCreditsClicked)
     dashboard.window.actionFISSURE_Challenge.triggered.connect(MenuBarSlots._slotMenuHelpFISSURE_ChallengeClicked)
+    dashboard.window.actionMenuHelpInstallationRemoteSensorNodeInstallation.triggered.connect(
+        MenuBarSlots._slotMenuHelpInstallationRemoteSensorNodeInstallationClicked
+    )
+    dashboard.window.actionMenuHelpInstallationRemoteSensorNodeUsage.triggered.connect(
+        MenuBarSlots._slotMenuHelpInstallationRemoteSensorNodeUsageClicked
+    )
+    dashboard.window.actionMenuHelpHardwareSupportedSensorNodeHardware.triggered.connect(
+        MenuBarSlots._slotMenuHelpHardwareSupportedSensorNodeHardwareClicked
+    )
+    dashboard.window.actionMenuHelpComponentsSensorNodes.triggered.connect(
+        MenuBarSlots._slotMenuHelpComponentsSensorNodesClicked
+    )
+    dashboard.window.actionMenuHelpOperationSensorNodesTab.triggered.connect(
+        MenuBarSlots._slotMenuHelpOperationSensorNodesTabClicked
+    )
+    dashboard.window.actionMenuHelpOperationTriggers.triggered.connect(
+        MenuBarSlots._slotMenuHelpOperationTriggersClicked
+    )
+    dashboard.window.actionMenuHelpDevelopmentCreatingTriggers.triggered.connect(
+        MenuBarSlots._slotMenuHelpDevelopmentCreatingClicked
+    )
+    dashboard.window.actionMenuHelpOperationStartUpProcedures.triggered.connect(
+        MenuBarSlots._slotMenuHelpOperationStartUpProceduresClicked
+    )
+
 
 
 def connect_automation_slots(dashboard: Dashboard):

@@ -7,6 +7,7 @@ import subprocess
 import yaml
 import random
 import qasync
+import urllib.parse
 
 from fissure.Dashboard.Slots import (
     # ArchiveTabSlots,
@@ -307,7 +308,7 @@ def refreshCustomWidgets(dashboard: QtWidgets.QMainWindow):
 
 @QtCore.pyqtSlot()
 def openUserManual():
-    os.system(f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'index.html')}")
+    os.system(f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'index.html')}")
 
 
 def _slotMenuOptionsClicked(dashboard: QtWidgets.QMainWindow):
@@ -777,7 +778,7 @@ def _slotMenuNoiseSourceClicked(dashboard: QtWidgets.QMainWindow):
 @QtCore.pyqtSlot()
 def _slotMenuLessonOpenBTS_Clicked():
     """Opens the html file in a browser."""
-    os.system(f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson1_OpenBTS.html')}")
+    os.system(f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson1_OpenBTS.html')}")
 
 
 @QtCore.pyqtSlot()
@@ -2049,7 +2050,7 @@ def _slotMenuPySimProgClicked(dashboard: QtWidgets.QMainWindow):
 def _slotMenuLessonLuaDissectorsClicked():
     """Opens the html file in a browser."""
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson2_LuaDissectors.html')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson2_LuaDissectors.html')}"
     )
 
 
@@ -2131,7 +2132,7 @@ def _slotMenuAntennaTestTxClicked(dashboard: QtWidgets.QMainWindow):
 def _slotMenuLessonSound_eXchangeClicked():
     """Opens the html file in a browser."""
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson3_Sound_eXchange.html')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson3_Sound_eXchange.html')}"
     )
 
 
@@ -2202,7 +2203,7 @@ def _slotMenuAudioRecordClicked(dashboard: QtWidgets.QMainWindow):
 def _slotMenuESP_BoardClicked():
     """Opens the html file in a browser."""
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson4_ESP_Boards.html')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson4_ESP_Boards.html')}"
     )
 
 
@@ -2591,7 +2592,7 @@ def _slotMenu_esriSatelliteMapClicked():
 def _slotMenuLessonRadiosondeTrackingClicked():
     """Opens the html file in a browser."""
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson5_Radiosonde_Tracking.html')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson5_Radiosonde_Tracking.html')}"
     )
 
 
@@ -2825,7 +2826,7 @@ def _slotMenuHcidumpClicked(dashboard: QtWidgets.QMainWindow):
 @QtCore.pyqtSlot()
 def _slotMenuLessonRFID_Clicked():
     """Opens the html file in a browser."""
-    os.system(f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson6_RFID.html')}")
+    os.system(f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson6_RFID.html')}")
 
 
 @QtCore.pyqtSlot()
@@ -3114,7 +3115,7 @@ def _slotMenuCruiseMapperClicked():
 def _slotMenuLessonDataTypesClicked():
     """Opens the html file in a browser."""
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson7_Data_Types.html')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson7_Data_Types.html')}"
     )
 
 
@@ -3122,7 +3123,7 @@ def _slotMenuLessonDataTypesClicked():
 def _slotMenuLessonCustomGNU_RadioBlocksClicked():
     """Opens the html file in a browser."""
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson8_Custom_GNU_Radio_Blocks.html')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson8_Custom_GNU_Radio_Blocks.html')}"
     )
 
 
@@ -3163,7 +3164,7 @@ def _slotMenuStandaloneGarageDoorCycleClicked(dashboard: QtWidgets.QMainWindow):
 @QtCore.pyqtSlot()
 def _slotMenuLessonTPMS_Clicked():
     """Opens the html file in a browser."""
-    os.system(f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson9_TPMS.html')}")
+    os.system(f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson9_TPMS.html')}")
 
 
 @QtCore.pyqtSlot()
@@ -3312,7 +3313,7 @@ def _slotMenuOpenSSH_UsernameEnumerationClicked(dashboard: QtWidgets.QMainWindow
 def _slotMenuLessonHamRadioExamsClicked():
     """Opens the html file in a browser."""
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson10_Ham_Radio_Exams.html')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson10_Ham_Radio_Exams.html')}"
     )
 
 
@@ -3357,7 +3358,7 @@ def _slotMenuGitHub_ainfosecClicked():
 def _slotMenuLessonWiFiToolsClicked():
     """Opens the html file in a browser."""
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson11_WiFi_Tools.html')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson11_WiFi_Tools.html')}"
     )
 
 
@@ -3698,7 +3699,7 @@ def _slotMenuCryptiiClicked():
 def _slotMenuLessonCreatingBootableUSBsClicked():
     """Opens the html file in a browser."""
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson12_Creating_Bootable_USBs.html')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'Lessons', 'HTML', 'Lesson12_Creating_Bootable_USBs.html')}"
     )
 
 
@@ -4194,7 +4195,7 @@ def _slotMenuHelpRequirementsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#requirements')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#requirements')}"
     )
 
 
@@ -4203,7 +4204,7 @@ def _slotMenuHelpCloningClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#cloning')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#cloning')}"
     )
 
 
@@ -4212,7 +4213,7 @@ def _slotMenuHelpInstallerClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#installer')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#installer')}"
     )
 
 
@@ -4221,7 +4222,7 @@ def _slotMenuHelpUninstallingClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#uninstalling')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#uninstalling')}"
     )
 
 
@@ -4230,7 +4231,7 @@ def _slotMenuHelpUsageClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#usage')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#usage')}"
     )
 
 
@@ -4239,7 +4240,7 @@ def _slotMenuHelpKnownConflictsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#known-conflicts')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#known-conflicts')}"
     )
 
 
@@ -4248,7 +4249,7 @@ def _slotMenuHelpThirdPartySoftwareClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#third-party-software')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#third-party-software')}"
     )
 
 
@@ -4257,7 +4258,7 @@ def _slotMenuHelpThirdPartySoftwareVersionsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#third-party-software-versions')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#third-party-software-versions')}"
     )
 
 
@@ -4266,16 +4267,7 @@ def _slotMenuHelpHardwareSupportedClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'hardware.html#supported')}"
-    )
-
-
-@QtCore.pyqtSlot()
-def _slotMenuHelpHardwareConfiguringClicked():
-    """Opens the FISSURE documentation in a browser."""
-    # Open a Browser
-    os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'hardware.html#configuring')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'hardware.html#supported')}"
     )
 
 
@@ -4284,7 +4276,7 @@ def _slotMenuHelpHardwareLimeSDR_Clicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'hardware.html#limesdr-notes')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'hardware.html#limesdr-notes')}"
     )
 
 
@@ -4293,7 +4285,7 @@ def _slotMenuHelpHardwareNewUSRPX310_Clicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'hardware.html#new-usrp-x310')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'hardware.html#new-usrp-x310')}"
     )
 
 
@@ -4302,7 +4294,7 @@ def _slotMenuHelpHardwareUpdatingHackRFClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'hardware.html#updating-hackrf-firmware')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'hardware.html#updating-hackrf-firmware')}"
     )
 
 
@@ -4318,7 +4310,7 @@ def _slotMenuHelpComponentsCommunicationsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#communications')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#communications')}"
     )
 
 
@@ -4327,7 +4319,7 @@ def _slotMenuHelpComponentsLibraryClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#library')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#library')}"
     )
 
 
@@ -4336,7 +4328,7 @@ def _slotMenuHelpComponentsFileStructureClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#file-structure')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#file-structure')}"
     )
 
 
@@ -4345,7 +4337,7 @@ def _slotMenuHelpComponentsSupportedProtocolsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#supported-protocols')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#supported-protocols')}"
     )
 
 
@@ -4354,7 +4346,7 @@ def _slotMenuHelpComponentsDashboardClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#dashboard')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#dashboard')}"
     )
 
 
@@ -4363,7 +4355,7 @@ def _slotMenuHelpComponentsTSI_Clicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#target-signal-identification')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#target-signal-identification')}"
     )
 
 
@@ -4372,16 +4364,7 @@ def _slotMenuHelpComponentsPD_Clicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#protocol-discovery')}"
-    )
-
-
-@QtCore.pyqtSlot()
-def _slotMenuHelpComponentsFGE_Clicked():
-    """Opens the FISSURE documentation in a browser."""
-    # Open a Browser
-    os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#flow-graph-script-executor')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#protocol-discovery')}"
     )
 
 
@@ -4390,25 +4373,7 @@ def _slotMenuHelpComponentsHIPRFISR_Clicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#hiprfisr')}"
-    )
-
-
-@QtCore.pyqtSlot()
-def _slotMenuHelpOperationHardwareButtonsClicked():
-    """Opens the FISSURE documentation in a browser."""
-    # Open a Browser
-    os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#hardware-buttons')}"
-    )
-
-
-@QtCore.pyqtSlot()
-def _slotMenuHelpOperationNetworkingConfigurationClicked():
-    """Opens the FISSURE documentation in a browser."""
-    # Open a Browser
-    os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#networking-configuration')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#hiprfisr')}"
     )
 
 
@@ -4417,7 +4382,7 @@ def _slotMenuHelpOperationLessonsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#lessons')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#lessons')}"
     )
 
 
@@ -4426,7 +4391,7 @@ def _slotMenuHelpOperationStandaloneFlowGraphsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#standalone-flow-graphs')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#standalone-flow-graphs')}"
     )
 
 
@@ -4435,7 +4400,7 @@ def _slotMenuHelpOperationToolsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#tools')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#tools')}"
     )
 
 
@@ -4444,7 +4409,7 @@ def _slotMenuHelpOperationOptionsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#options')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#options')}"
     )
 
 
@@ -4453,7 +4418,7 @@ def _slotMenuHelpOperationViewClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#view')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#view')}"
     )
 
 
@@ -4462,7 +4427,7 @@ def _slotMenuHelpOperationAutomationClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#automation-tab')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#automation-tab')}"
     )
 
 
@@ -4471,7 +4436,7 @@ def _slotMenuHelpOperationTSI_Clicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#tsi-tab')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#tsi-tab')}"
     )
 
 
@@ -4480,7 +4445,7 @@ def _slotMenuHelpOperationPD_Clicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#pd-tab')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#pd-tab')}"
     )
 
 
@@ -4489,7 +4454,7 @@ def _slotMenuHelpOperationAttackClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#attack-tab')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#attack-tab')}"
     )
 
 
@@ -4498,7 +4463,7 @@ def _slotMenuHelpOperationIQ_DataClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#iq-data-tab')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#iq-data-tab')}"
     )
 
 
@@ -4507,16 +4472,7 @@ def _slotMenuHelpOperationArchiveClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#archive-tab')}"
-    )
-
-
-@QtCore.pyqtSlot()
-def _slotMenuHelpOperationPacketCrafterClicked():
-    """Opens the FISSURE documentation in a browser."""
-    # Open a Browser
-    os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#packet-crafter-tab')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#archive-tab')}"
     )
 
 
@@ -4525,7 +4481,7 @@ def _slotMenuHelpOperationLibraryClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#library-tab')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#library-tab')}"
     )
 
 
@@ -4534,7 +4490,7 @@ def _slotMenuHelpOperationLogClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#log-tab')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#log-tab')}"
     )
 
 
@@ -4543,7 +4499,7 @@ def _slotMenuHelpOperationStatusBarClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#status-bar')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#status-bar')}"
     )
 
 
@@ -4559,7 +4515,7 @@ def _slotMenuHelpDevelopmentAddingCustomOptionsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#adding-custom-options')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#adding-custom-options')}"
     )
 
 
@@ -4568,7 +4524,7 @@ def _slotMenuHelpDevelopmentBuiltWithClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#built-with')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#built-with')}"
     )
 
 
@@ -4577,7 +4533,7 @@ def _slotMenuHelpDevelopmentUploadingFlowGraphsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#attack-flow-graphs')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#attack-flow-graphs')}"
     )
 
 
@@ -4586,7 +4542,7 @@ def _slotMenuHelpDevelopmentUploadingPythonScriptsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#attack-python-scripts')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#attack-python-scripts')}"
     )
 
 
@@ -4595,7 +4551,7 @@ def _slotMenuHelpDevelopmentInspectionFlowGraphsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#inspection-flow-graphs')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#inspection-flow-graphs')}"
     )
 
 
@@ -4604,7 +4560,7 @@ def _slotMenuHelpDevelopmentModifyingDashboardClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#modifying-dashboard')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#modifying-dashboard')}"
     )
 
 
@@ -4613,7 +4569,7 @@ def _slotMenuHelpAboutClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'about.html')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'about.html')}"
     )
 
 
@@ -4622,7 +4578,7 @@ def _slotMenuHelpCreditsClicked():
     """Opens the FISSURE documentation in a browser."""
     # Open a Browser
     os.system(
-        f"xdg-open {os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'about.html#credits')}"
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'about.html#credits')}"
     )
 
 
@@ -4878,3 +4834,75 @@ def _slotMenuTpmsRxClicked(dashboard: QtWidgets.QMainWindow):
     elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
         proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "' + tpms_command + '"', shell=True)
 
+
+@QtCore.pyqtSlot()
+def _slotMenuHelpInstallationRemoteSensorNodeInstallationClicked():
+    """Opens the FISSURE documentation in a browser."""
+    # Open a Browser
+    os.system(
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#remote-sensor-node-installation')}"
+    )
+
+
+@QtCore.pyqtSlot()
+def _slotMenuHelpInstallationRemoteSensorNodeUsageClicked():
+    """Opens the FISSURE documentation in a browser."""
+    # Open a Browser
+    os.system(
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'installation.html#remote-sensor-node-usage')}"
+    )
+
+
+@QtCore.pyqtSlot()
+def _slotMenuHelpHardwareSupportedSensorNodeHardwareClicked():
+    """Opens the FISSURE documentation in a browser."""
+    # Open a Browser
+    os.system(
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'hardware.html#supported-sensor-node-hardware')}"
+    )
+
+
+@QtCore.pyqtSlot()
+def _slotMenuHelpComponentsSensorNodesClicked():
+    """Opens the FISSURE documentation in a browser."""
+    # Open a Browser
+    os.system(
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'components.html#sensor-nodes')}"
+    )
+
+
+@QtCore.pyqtSlot()
+def _slotMenuHelpOperationSensorNodesTabClicked():
+    """Opens the FISSURE documentation in a browser."""
+    # Open a Browser
+    os.system(
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#sensor-nodes-tab')}"
+    )
+
+
+@QtCore.pyqtSlot()
+def _slotMenuHelpOperationTriggersClicked():
+    """Opens the FISSURE documentation in a browser."""
+    # Open a Browser
+    os.system(
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#triggers')}"
+    )
+
+
+@QtCore.pyqtSlot()
+def _slotMenuHelpDevelopmentCreatingClicked():
+    """Opens the FISSURE documentation in a browser."""
+    # Open a Browser
+    os.system(
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'development.html#creating-triggers')}"
+    )
+
+
+@QtCore.pyqtSlot()
+def _slotMenuHelpOperationStartUpProceduresClicked():
+    """Opens the FISSURE documentation in a browser."""
+    # Open a Browser
+    os.system(
+        f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#start-up-procedures')}"
+    )
+    

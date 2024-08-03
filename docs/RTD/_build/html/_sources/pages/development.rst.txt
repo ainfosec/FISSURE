@@ -7,17 +7,17 @@ Adding Custom Options
 
 **Options Dialog**
 
-Bring up the options dialog in Qt Designer using the `designer` command and then open the *FISSURE/UI/options.ui* file. Click the arrows for the stacked widget (top right) to locate the table where the custom option will be inserted. Double-click on the table and add a new row with the name of the variable. Set the font size to match the other rows with the "Properties<<" button.
+Bring up the options dialog in Qt Designer using the `designer` command and then open the ``FISSURE/UI/options.ui`` file. Click the arrows for the stacked widget (top right) to locate the table where the custom option will be inserted. Double-click on the table and add a new row with the name of the variable. Set the font size to match the other rows with the "Properties<<" button.
 
 .. image:: /pages/Images/options.png
 
 **default.yaml**
 
-Open *FISSURE/YAML/User Configs/default.yaml* and insert the variable name and value (fft_size: 4096) for the new option.
+Open ``FISSURE/YAML/User Configs/default.yaml`` and insert the variable name and value (fft_size: 4096) for the new option.
 
-**dashboard.py**
+**Accessing Stored Values**
 
-Access the variable in *dashboard.py* with: `int(self.dashboard_settings_dictionary['fft_size'])`.
+Access the variables throughout the FISSURE code from the backend or other local settings locations such as: `dashboard.backend.settings['fft_size']` or `self.settings['fft_size']`.
 
 Built With
 ==========
@@ -200,7 +200,7 @@ Inspection flow graphs can be added to FISSURE to perform frequently used analys
 
 **Location**
 
-Inspection flow graphs must be placed in the */FISSURE/Flow Graph Library/Inspection Flow Graphs/* or */FISSURE/Flow Graph Library/Inspection Flow Graphs/File/* directories. Refer to other inspection flow graphs as examples when creating new flow graphs. 
+Inspection flow graphs must be placed in the ``/FISSURE/Flow Graph Library/maint-3.10/Inspection Flow Graphs/`` or ``/FISSURE/Flow Graph Library/maint-3.10/Inspection Flow Graphs/File/`` directories. Refer to other inspection flow graphs as examples when creating new flow graphs. 
 
 **library.yaml**
 
@@ -247,7 +247,7 @@ This guide will provide examples on how to add GUI elements to the FISSURE Dashb
 QtDesigner
 ----------
 
-Launch QtDesigner with the `designer` command and open the */FISSURE/UI/dashboard.ui* file.
+Launch QtDesigner with the `designer` command and open the ``./UI/dashboard.ui`` file. Menu items are stored in the ``./UI/FissureDashboard.ui`` file and other supporting files can also be found in the same folder.
 
 .. image:: /pages/Images/qtdesigner.png
 
@@ -693,7 +693,7 @@ There are four major steps in creating a new trigger for use in single-stage att
 
 **Scripting**
 
-For the moment, triggers consist of a Python3 file that accepts input arguments provided by the FISSURE Dashboard and loops until a condition is satisfied. Trigger scripts can call secondary programs like GNU Radio flow graphs and monitor output such as text printed to stdout. A value of 0 is returned if the trigger is successful and -1 if an error was caught. Two examples of trigger scripts are provided below. The first waits until a specific time and the second reads text produced from a flow graph.
+Triggers consist of a Python3 file that accepts input arguments provided by the FISSURE Dashboard and loops until a condition is satisfied. The trigger files are stored in the ``./Flow Graph Library/maint-3.10/Triggers/`` directory. Trigger scripts can call secondary programs like GNU Radio flow graphs and monitor output such as text printed to stdout. A value of 0 is returned if the trigger is successful and -1 if an error was caught. Two examples of trigger scripts are provided below. The first waits until a specific time and the second reads text produced from a flow graph.
 
 .. code-block:: python
 

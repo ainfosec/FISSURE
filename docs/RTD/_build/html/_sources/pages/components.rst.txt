@@ -148,7 +148,7 @@ Flow Graph Library/TSI Flow Graphs/
     Location of flow graphs used by the TSI component for slow scanning detection and fixed frequency detection.
 
 Installer/
-    Location of the primary FISSURE installation script and its support files. It is called by the "install" bash script after checking for prerequisities.
+    Location of the primary FISSURE installation script and its support files. It is called by the "install" bash script after checking for prerequisites.
 
 IQ Recordings/
     Default location for storing IQ files captured with the IQ Data tab recorder. Contains example files for testing purposes.
@@ -263,11 +263,6 @@ Protocol Discovery
 ==================
 
 The Protocol Discovery component is responsible for identifying and reversing RF protocols to help extract meaningful data from unknown signals. It is designed to: accept signal of interest information, iterate flow graphs to perform recursive demodulation techniques, deduce protocol methods, assign confidence levels, analyze a bitstream, calculate CRC polynomials, and create custom Wireshark dissectors.
-
-Flow Graph/Script Executor
-==========================
-
-The Flow Graph/Script Executor component runs flow graphs or Python scripts to perform single-stage attacks, multi-stage attacks, fuzzing attacks, IQ recording and playback, live signal inspection/analysis, and transmit playlists of signal data constructed with files downloaded from an online archive.
 
 HIPRFISR
 ========

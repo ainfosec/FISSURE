@@ -8,7 +8,7 @@ The FISSURE installer is helpful for staging computers or installing select soft
 Requirements
 ============
 
-It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. The items listed under the "Minimum Install" category are what is required to launch the FISSURE Dashboard without errors. Select all the recommended checkboxes (Default button) to avoid additonal errors while operating the various tools within FISSURE. There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. 
+It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. The items listed under the "Minimum Install" category are what is required to launch the FISSURE Dashboard without errors. Select all the recommended checkboxes (Default button) to avoid additional errors while operating the various tools within FISSURE. There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. 
 
 
 Cloning
@@ -39,7 +39,7 @@ Notes:
 - The git submodule command will download all missing GNU Radio out-of-tree modules from their online repositories and is required to install the GNU Radio out-of-tree modules.
 - The installer will ask to install PyQt software dependencies required to launch the installation GUIs if they are not found. 
 - Select the operating option in the GUI that best matches your operating system (should be detected automatically if your OS matches an option).
-- Periodically answer prompts regarding third-party throughout the install. Use your best judgement, the answers will not likely impact FISSURE.
+- Periodically answer prompts regarding third-party throughout the install. Use your best judgment, the answers will not likely impact FISSURE.
 
 It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. Further efforts towards virtualization and dependency management will be continued. Notes on the installer:
 
@@ -51,14 +51,14 @@ It is recommended to install FISSURE on a clean operating system to avoid confli
 - Items unchecked by default may not install properly or could possibly conflict with existing programs (please suggest fixes!). 
 - There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. These prompts are primarily tied to third-party tools, refer to installation instructions provided by the maintainer for details.
 - If an item contains a "Verify" section at the end, the installer will run the command that follows and highlight the checkbox item green or red depending on if any errors are produced by the command. Checked items without a "Verify" section will remain black following the installation.
-- To avoid installation and permission errors, download FISSURE to a user owned directory such as Home. Run the install script and the fissure command without using sudo. Many of the third-party tools will be downloaded to and installed from the `~/Installed_by_FISSURE` directory.
+- To avoid installation and permission errors, download FISSURE to a user owned directory such as Home. Run the install script and the fissure command without using sudo. Many of the third-party tools will be downloaded to and installed from the ``~/Installed_by_FISSURE`` directory.
 
 The FISSURE installer is helpful for staging computers or installing select software programs of interest. The code can be quickly modified to allow for custom software installs. The size estimates for the programs are before and after readings from a full install. The sizes for each program are not exact as some dependencies are installed in previously checked items. The sizes may also change over time as programs get updated.
 
 Remote Sensor Node Installation
 ===============================
 
-Install FISSURE per usual on a general purpose computer. Install FISSURE on the remote computer in the same directory location as the local computer (until further notice) to avoid filepath errors with certain actions. To configure the sensor node for remote operation, edit the "default.yaml" file in the `./fissure/Sensor_Node/Sensor_Node_Config/` directory. Edit the following fields to change from local to remote operation:
+Install FISSURE per usual on a general purpose computer. Install FISSURE on the remote computer in the same directory location as the local computer (until further notice) to avoid filepath errors with certain actions. To configure the sensor node for remote operation, edit the "default.yaml" file in the ``./fissure/Sensor_Node/Sensor_Node_Config/`` directory. Edit the following fields to change from local to remote operation:
 
 - local_remote: remote (from local)
 - nickname: (anything but "Local Sensor Node")
@@ -84,7 +84,7 @@ The following are locations that are impacted by the FISSURE installer:
 - Optional Wireshark user groups to use it without sudo
 - ESP32 Bluetooth Classic Sniffer and FISSURE Sniffer wireshark plugins
 
-Many programs are stored in the ~/Installed_by_FISSURE folder but the dependencies are heavily intertwined amongst the programs.
+Many programs are stored in the ``~/Installed_by_FISSURE`` folder but the dependencies are heavily intertwined amongst the programs.
 
 
 Local Dashboard Usage
@@ -100,7 +100,7 @@ The intended method for launching the FISSURE Dashboard is through the terminal 
 
 A local sensor node can be launched through the top buttons in the FISSURE Dashboard and helps maintain all pre-existing FISSURE functionality on a standalone workstation. Only one local and four remote sensor nodes (or five remote) are supported at this time. 
 
-If any of the programs freeze or hang on clsoe, the following commands can be used to detect a problem or forcibly shut down:
+If any of the programs freeze or hang on close, the following commands can be used to detect a problem or forcibly shut down:
 
 .. code-block:: console
 

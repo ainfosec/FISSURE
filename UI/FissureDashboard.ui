@@ -94,8 +94,10 @@
      <addaction name="actionRequirements"/>
      <addaction name="actionCloning"/>
      <addaction name="actionInstaller"/>
+     <addaction name="actionMenuHelpInstallationRemoteSensorNodeInstallation"/>
      <addaction name="actionUninstalling"/>
      <addaction name="actionUsage"/>
+     <addaction name="actionMenuHelpInstallationRemoteSensorNodeUsage"/>
      <addaction name="actionKnown_Conflicts"/>
      <addaction name="actionThird_Party_Software_2"/>
      <addaction name="actionThird_Party_Software_Versions"/>
@@ -110,6 +112,7 @@
      <addaction name="actionHelpUploadingPythonScripts"/>
      <addaction name="actionInspection_Flow_Graphs"/>
      <addaction name="actionModifying_Dashboard"/>
+     <addaction name="actionMenuHelpDevelopmentCreatingTriggers"/>
     </widget>
     <widget class="QMenu" name="menuHardware">
      <property name="title">
@@ -124,7 +127,7 @@
       <addaction name="actionHelpUpdatingHackRF"/>
      </widget>
      <addaction name="actionSupported"/>
-     <addaction name="actionConfiguring"/>
+     <addaction name="actionMenuHelpHardwareSupportedSensorNodeHardware"/>
      <addaction name="menuNotes"/>
      <addaction name="separator"/>
      <addaction name="actionRoundup_of_SDRs"/>
@@ -149,20 +152,13 @@
      <addaction name="actionDashboard"/>
      <addaction name="actionTarget_Signal_Identification"/>
      <addaction name="actionProtocol_Discovery"/>
-     <addaction name="actionFlow_Graph_Script_Executor"/>
      <addaction name="actionHIPRFISR"/>
+     <addaction name="actionMenuHelpComponentsSensorNodes"/>
     </widget>
     <widget class="QMenu" name="menuOperation">
      <property name="title">
       <string>Operation</string>
      </property>
-     <widget class="QMenu" name="menuStart_Up_Procedures">
-      <property name="title">
-       <string>Start-Up Procedures</string>
-      </property>
-      <addaction name="actionHardware_Buttons"/>
-      <addaction name="actionNetworking_Configuration"/>
-     </widget>
      <widget class="QMenu" name="menuMenu_Items">
       <property name="title">
        <string>Menu Items</string>
@@ -173,7 +169,7 @@
       <addaction name="actionOptions"/>
       <addaction name="actionView"/>
      </widget>
-     <addaction name="menuStart_Up_Procedures"/>
+     <addaction name="actionMenuHelpOperationStartUpProcedures"/>
      <addaction name="menuMenu_Items"/>
      <addaction name="actionAutomation_Tab"/>
      <addaction name="actionTSI_Tab"/>
@@ -181,10 +177,11 @@
      <addaction name="actionAttack_Tab"/>
      <addaction name="actionIQ_Data_Tab"/>
      <addaction name="actionArchive_Tab"/>
-     <addaction name="actionPacket_Crafter_Tab"/>
+     <addaction name="actionMenuHelpOperationSensorNodesTab"/>
      <addaction name="actionLibrary_Tab"/>
      <addaction name="actionLog_Tab"/>
      <addaction name="actionStatus_Bar"/>
+     <addaction name="actionMenuHelpOperationTriggers"/>
     </widget>
     <addaction name="actionUser_Manual"/>
     <addaction name="separator"/>
@@ -2548,7 +2545,7 @@
   </action>
   <action name="actionUsage">
    <property name="text">
-    <string>Usage</string>
+    <string>Local Dashboard Usage</string>
    </property>
   </action>
   <action name="actionKnown_Conflicts">
@@ -2568,7 +2565,7 @@
   </action>
   <action name="actionSupported">
    <property name="text">
-    <string>Supported</string>
+    <string>Supported Peripherals</string>
    </property>
   </action>
   <action name="actionConfiguring">
@@ -2837,6 +2834,46 @@
   <action name="actiontpms_rx">
    <property name="text">
     <string>tpms_rx</string>
+   </property>
+  </action>
+  <action name="actionMenuHelpInstallationRemoteSensorNodeInstallation">
+   <property name="text">
+    <string>Remote Sensor Node Installation</string>
+   </property>
+  </action>
+  <action name="actionMenuHelpInstallationRemoteSensorNodeUsage">
+   <property name="text">
+    <string>Remote Sensor Node Usage</string>
+   </property>
+  </action>
+  <action name="actionMenuHelpHardwareSupportedSensorNodeHardware">
+   <property name="text">
+    <string>Supported Sensor Node Hardware</string>
+   </property>
+  </action>
+  <action name="actionMenuHelpComponentsSensorNodes">
+   <property name="text">
+    <string>Sensor  Nodes</string>
+   </property>
+  </action>
+  <action name="actionMenuHelpOperationSensorNodesTab">
+   <property name="text">
+    <string>Sensor Nodes Tab</string>
+   </property>
+  </action>
+  <action name="actionMenuHelpOperationTriggers">
+   <property name="text">
+    <string>Triggers</string>
+   </property>
+  </action>
+  <action name="actionMenuHelpDevelopmentCreatingTriggers">
+   <property name="text">
+    <string>Creating Triggers</string>
+   </property>
+  </action>
+  <action name="actionMenuHelpOperationStartUpProcedures">
+   <property name="text">
+    <string>Start-Up Procedures</string>
    </property>
   </action>
  </widget>

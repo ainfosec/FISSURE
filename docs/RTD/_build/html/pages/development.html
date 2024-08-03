@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Development &mdash; FISSURE  documentation</title>
-      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=19f00094" />
+
+  
   <!--[if lt IE 9]>
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
-        <script src="../_static/doctools.js"></script>
-        <script src="../_static/sphinx_highlight.js"></script>
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
+        <script src="../_static/doctools.js?v=888ff710"></script>
+        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -92,12 +94,12 @@
 <section id="adding-custom-options">
 <h2>Adding Custom Options<a class="headerlink" href="#adding-custom-options" title="Permalink to this heading">¶</a></h2>
 <p><strong>Options Dialog</strong></p>
-<p>Bring up the options dialog in Qt Designer using the <cite>designer</cite> command and then open the <em>FISSURE/UI/options.ui</em> file. Click the arrows for the stacked widget (top right) to locate the table where the custom option will be inserted. Double-click on the table and add a new row with the name of the variable. Set the font size to match the other rows with the “Properties&lt;&lt;” button.</p>
+<p>Bring up the options dialog in Qt Designer using the <cite>designer</cite> command and then open the <code class="docutils literal notranslate"><span class="pre">FISSURE/UI/options.ui</span></code> file. Click the arrows for the stacked widget (top right) to locate the table where the custom option will be inserted. Double-click on the table and add a new row with the name of the variable. Set the font size to match the other rows with the “Properties&lt;&lt;” button.</p>
 <img alt="../_images/options.png" src="../_images/options.png" />
 <p><strong>default.yaml</strong></p>
-<p>Open <em>FISSURE/YAML/User Configs/default.yaml</em> and insert the variable name and value (fft_size: 4096) for the new option.</p>
-<p><strong>dashboard.py</strong></p>
-<p>Access the variable in <em>dashboard.py</em> with: <cite>int(self.dashboard_settings_dictionary[‘fft_size’])</cite>.</p>
+<p>Open <code class="docutils literal notranslate"><span class="pre">FISSURE/YAML/User</span> <span class="pre">Configs/default.yaml</span></code> and insert the variable name and value (fft_size: 4096) for the new option.</p>
+<p><strong>Accessing Stored Values</strong></p>
+<p>Access the variables throughout the FISSURE code from the backend or other local settings locations such as: <cite>dashboard.backend.settings[‘fft_size’]</cite> or <cite>self.settings[‘fft_size’]</cite>.</p>
 </section>
 <section id="built-with">
 <h2>Built With<a class="headerlink" href="#built-with" title="Permalink to this heading">¶</a></h2>
@@ -231,7 +233,7 @@
 <p>Inspection flow graphs can be added to FISSURE to perform frequently used analysis on live streams from SDRs or directly on prerecorded data files. Flow graph Python files (.py) are called directly with Python2/3 and use the GNU Radio “parameter” block as arguments to the Python call. This enables variables found in blocks that do not utilize callbacks (like IP address or serial number) to be changed prior to runtime. The following are instructions for creating a new inspection flow graph within the <em>IQ Data&gt;&gt;Inspection</em> tab.</p>
 <img alt="../_images/inspection1.png" src="../_images/inspection1.png" />
 <p><strong>Location</strong></p>
-<p>Inspection flow graphs must be placed in the <em>/FISSURE/Flow Graph Library/Inspection Flow Graphs/</em> or <em>/FISSURE/Flow Graph Library/Inspection Flow Graphs/File/</em> directories. Refer to other inspection flow graphs as examples when creating new flow graphs.</p>
+<p>Inspection flow graphs must be placed in the <code class="docutils literal notranslate"><span class="pre">/FISSURE/Flow</span> <span class="pre">Graph</span> <span class="pre">Library/maint-3.10/Inspection</span> <span class="pre">Flow</span> <span class="pre">Graphs/</span></code> or <code class="docutils literal notranslate"><span class="pre">/FISSURE/Flow</span> <span class="pre">Graph</span> <span class="pre">Library/maint-3.10/Inspection</span> <span class="pre">Flow</span> <span class="pre">Graphs/File/</span></code> directories. Refer to other inspection flow graphs as examples when creating new flow graphs.</p>
 <p><strong>library.yaml</strong></p>
 <p>The names of inspection flow graphs are assigned to Python files within the <em>library.yaml</em> file. Assign names under the applicable hardware type or under “File” if the new flow graph will be used on IQ files.</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Inspection Flow Graphs:</span>
@@ -269,7 +271,7 @@
 <p>This guide will provide examples on how to add GUI elements to the FISSURE Dashboard and interact with those elements within the Dashboard.py code.</p>
 <section id="qtdesigner">
 <h3>QtDesigner<a class="headerlink" href="#qtdesigner" title="Permalink to this heading">¶</a></h3>
-<p>Launch QtDesigner with the <cite>designer</cite> command and open the <em>/FISSURE/UI/dashboard.ui</em> file.</p>
+<p>Launch QtDesigner with the <cite>designer</cite> command and open the <code class="docutils literal notranslate"><span class="pre">./UI/dashboard.ui</span></code> file. Menu items are stored in the <code class="docutils literal notranslate"><span class="pre">./UI/FissureDashboard.ui</span></code> file and other supporting files can also be found in the same folder.</p>
 <img alt="../_images/qtdesigner.png" src="../_images/qtdesigner.png" />
 <p><strong>Creating New Widgets</strong></p>
 <p>Frequently used widgets:</p>
@@ -669,7 +671,7 @@
 <h2>Creating Triggers<a class="headerlink" href="#creating-triggers" title="Permalink to this heading">¶</a></h2>
 <p>There are four major steps in creating a new trigger for use in single-stage attacks, multi-stage attacks, archive replay, and autorun playlists: building the Python script, adding widgets to .ui file in QtDesigner, updating the Triggers Dialog slots, and adding information to the FISSURE library.yaml file.</p>
 <p><strong>Scripting</strong></p>
-<p>For the moment, triggers consist of a Python3 file that accepts input arguments provided by the FISSURE Dashboard and loops until a condition is satisfied. Trigger scripts can call secondary programs like GNU Radio flow graphs and monitor output such as text printed to stdout. A value of 0 is returned if the trigger is successful and -1 if an error was caught. Two examples of trigger scripts are provided below. The first waits until a specific time and the second reads text produced from a flow graph.</p>
+<p>Triggers consist of a Python3 file that accepts input arguments provided by the FISSURE Dashboard and loops until a condition is satisfied. The trigger files are stored in the <code class="docutils literal notranslate"><span class="pre">./Flow</span> <span class="pre">Graph</span> <span class="pre">Library/maint-3.10/Triggers/</span></code> directory. Trigger scripts can call secondary programs like GNU Radio flow graphs and monitor output such as text printed to stdout. A value of 0 is returned if the trigger is successful and -1 if an error was caught. Two examples of trigger scripts are provided below. The first waits until a specific time and the second reads text produced from a flow graph.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Choose File</span>
 <span class="kn">import</span> <span class="nn">time</span>
 <span class="kn">from</span> <span class="nn">dateutil</span> <span class="kn">import</span> <span class="n">parser</span>
