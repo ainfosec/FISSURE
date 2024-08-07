@@ -1,6 +1,20 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-08-07
+
+Fixing installer and autorun playlist errors.
+
+### Fixed
+
+- Merged pull request #51 to add support for high resolution screens
+- Autorun playlist item delay checkbox no longer produces an error
+- Adding IPython to installer, also caused Network Certificates item to fail on install for older operating systems
+
+### Documentation
+
+- Updating information in Menu Items section regarding standalone flow graphs, tools, options, and view items
+
 ## 2024-08-03
 
 Fixing Help menu items.

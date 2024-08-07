@@ -94,15 +94,22 @@ The following is a summary of the lessons included in the menu:
 Standalone Flow Graphs
 ----------------------
 
+Standalone flow graph menu items are commonly used GNU Radio flow graphs that are not accessed anywhere else within the FISSURE Dashboard. These files can be edited and retain their previous states without impacting any of the FISSURE operations. The flow graphs are contained in the ``./Flow Graph Library/maint-3.10/Standalone Flow Graphs`` folder. New items can be added by editing the menu in QtDesigner and connecting the menu object to a new slot. 
+
 Tools
 -----
+
+The Tools menu contains software, reference material, calculators, maps, and links across many technical areas. These menu items are intended to be a list of commonly used tools that support FISSURE-related topics. Many of the tools will open a terminal and provide an example command for the operator to edit and adjust to their needs.
 
 Options
 -------
 
+The Options menu contains items for configuring FISSURE. The "All Options" menu item opens a list of active settings that are spawned from ``./YAML/User Configs/default.yaml`` or ``./YAML/fissure_config.yaml`` on startup (*_default.yaml_* if remember configuration is off). Applying the changed settings in this window will update the local settings dictionaries used by the FISSURE components. The "Load Configuration" item is designed to import a YAML file with custom values but following the same format as *_default.yaml_*. The "Save Configuration" item will save the settings to a YAML file. The "Remember Configuration" item will save the settings to *_fissure_config.yaml_* on exit and recall those values on startup. The "Auto Connect HIPRFISR" will automatically start the HIPRFISR, TSI, and PD components on the local computer. This is the most common way to configure FISSURE. The HIPRFISR has the potential to be run on a separate network address to someday support new types of connections.
+
 View
 ----
 
+The View menu contains options to toggle the stylesheets in support of light, dark, and custom modes. The "Random" option exists for inspiration. The "Custom Mode" item will open a dialog that allows the user to change individual colors defined in the stylesheets. The "Autofill" options will display what the default values are for the light and dark modes to make adjustments easier.
 
 Automation Tab
 ==============

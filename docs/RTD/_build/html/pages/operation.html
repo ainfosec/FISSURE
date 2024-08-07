@@ -276,15 +276,19 @@
 </section>
 <section id="standalone-flow-graphs">
 <h3>Standalone Flow Graphs<a class="headerlink" href="#standalone-flow-graphs" title="Permalink to this heading">¶</a></h3>
+<p>Standalone flow graph menu items are commonly used GNU Radio flow graphs that are not accessed anywhere else within the FISSURE Dashboard. These files can be edited and retain their previous states without impacting any of the FISSURE operations. The flow graphs are contained in the <code class="docutils literal notranslate"><span class="pre">./Flow</span> <span class="pre">Graph</span> <span class="pre">Library/maint-3.10/Standalone</span> <span class="pre">Flow</span> <span class="pre">Graphs</span></code> folder. New items can be added by editing the menu in QtDesigner and connecting the menu object to a new slot.</p>
 </section>
 <section id="tools">
 <h3>Tools<a class="headerlink" href="#tools" title="Permalink to this heading">¶</a></h3>
+<p>The Tools menu contains software, reference material, calculators, maps, and links across many technical areas. These menu items are intended to be a list of commonly used tools that support FISSURE-related topics. Many of the tools will open a terminal and provide an example command for the operator to edit and adjust to their needs.</p>
 </section>
 <section id="options">
 <h3>Options<a class="headerlink" href="#options" title="Permalink to this heading">¶</a></h3>
+<p>The Options menu contains items for configuring FISSURE. The “All Options” menu item opens a list of active settings that are spawned from <code class="docutils literal notranslate"><span class="pre">./YAML/User</span> <span class="pre">Configs/default.yaml</span></code> or <code class="docutils literal notranslate"><span class="pre">./YAML/fissure_config.yaml</span></code> on startup (<em>_default.yaml_</em> if remember configuration is off). Applying the changed settings in this window will update the local settings dictionaries used by the FISSURE components. The “Load Configuration” item is designed to import a YAML file with custom values but following the same format as <em>_default.yaml_</em>. The “Save Configuration” item will save the settings to a YAML file. The “Remember Configuration” item will save the settings to <em>_fissure_config.yaml_</em> on exit and recall those values on startup. The “Auto Connect HIPRFISR” will automatically start the HIPRFISR, TSI, and PD components on the local computer. This is the most common way to configure FISSURE. The HIPRFISR has the potential to be run on a separate network address to someday support new types of connections.</p>
 </section>
 <section id="view">
 <h3>View<a class="headerlink" href="#view" title="Permalink to this heading">¶</a></h3>
+<p>The View menu contains options to toggle the stylesheets in support of light, dark, and custom modes. The “Random” option exists for inspiration. The “Custom Mode” item will open a dialog that allows the user to change individual colors defined in the stylesheets. The “Autofill” options will display what the default values are for the light and dark modes to make adjustments easier.</p>
 </section>
 </section>
 <section id="automation-tab">

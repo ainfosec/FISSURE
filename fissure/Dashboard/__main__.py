@@ -1,7 +1,6 @@
 # from fissure.Dashboard.Backend import DashboardBackend
 from fissure.Dashboard.Frontend import Dashboard
-from PyQt5 import QtWidgets
-from PyQt5 import QtCore
+from PyQt5 import QtWidgets, QtCore
 
 import asyncio
 import fissure.utils
@@ -11,6 +10,7 @@ import sys
 
 def run():
     fissure.utils.init_logging()
+
     # Handle high resolution displays:
     if hasattr(QtCore.Qt, 'AA_EnableHighDpiScaling'):
         QtWidgets.QApplication.setAttribute(QtCore.Qt.AA_EnableHighDpiScaling, True)

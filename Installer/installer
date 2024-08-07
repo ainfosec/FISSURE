@@ -86,6 +86,7 @@ sudo python3 -m pip install pydotplus
 sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
+sudo python3 -m pip install ipython
 . ~/.bashrc
 """,True,'Minimum Install'))
 
@@ -2161,6 +2162,7 @@ sudo python3 -m pip install pydotplus
 sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
+sudo python3 -m pip install ipython
 # """,True,'Minimum Install'))
 
 # fissure Command 
@@ -4236,6 +4238,7 @@ sudo python3 -m pip install pydotplus
 sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
+sudo python3 -m pip install ipython
 . ~/.bashrc
 """,True,'Minimum Install'))
 
@@ -6303,6 +6306,7 @@ sudo python3 -m pip install pydotplus
 sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
+sudo python3 -m pip install ipython
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -8334,6 +8338,7 @@ sudo python3 -m pip install pydotplus
 sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
+sudo python3 -m pip install ipython
 . ~/.bashrc
 """, True, "Minimum Install"))
 
@@ -10361,6 +10366,7 @@ sudo python3 -m pip install pydotplus
 sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
+sudo python3 -m pip install ipython
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -12401,6 +12407,7 @@ sudo python3 -m pip install pydotplus
 sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
+sudo python3 -m pip install ipython
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -14432,6 +14439,7 @@ sudo python3 -m pip install pydotplus --break-system-packages
 sudo python3 -m pip install tensorflow --break-system-packages
 sudo apt-get install -y snapd
 sudo snap install netron
+sudo python3 -m pip install ipython
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -16465,6 +16473,7 @@ sudo python3 -m pip install pydotplus
 sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
+sudo python3 -m pip install ipython
 . ~/.bashrc
 """,True,"Minimum Install"))
 

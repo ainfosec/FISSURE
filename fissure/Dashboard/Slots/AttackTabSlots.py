@@ -2988,7 +2988,7 @@ def _slotAttackSingleStageAutorunClicked(dashboard: QtCore.QObject):
     # Delay
     new_checkbox = QtWidgets.QCheckBox("", dashboard, objectName='checkBox_')
     new_checkbox.setStyleSheet("margin-left:17%")
-    new_checkbox.stateChanged.connect(fissure.Dashboard.Slots.SensorNodesTabSlots._slotSensorNodeAutorunTableDelayChecked)
+    new_checkbox.stateChanged.connect(lambda state, dashboard=dashboard: fissure.Dashboard.Slots.SensorNodesTabSlots._slotSensorNodeAutorunTableDelayChecked(-1, dashboard))
     dashboard.ui.tableWidget_sensor_nodes_autorun.setCellWidget(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,3,new_checkbox)
     
     # Start Time
@@ -3092,7 +3092,7 @@ def _slotAttackMultiStageAutorunClicked(dashboard: QtCore.QObject):
     # Delay
     new_checkbox = QtWidgets.QCheckBox("", dashboard, objectName='checkBox_')
     new_checkbox.setStyleSheet("margin-left:17%")
-    new_checkbox.stateChanged.connect(fissure.Dashboard.Slots.SensorNodesTabSlots._slotSensorNodeAutorunTableDelayChecked)
+    new_checkbox.stateChanged.connect(lambda state, dashboard=dashboard: fissure.Dashboard.Slots.SensorNodesTabSlots._slotSensorNodeAutorunTableDelayChecked(-1, dashboard))
     dashboard.ui.tableWidget_sensor_nodes_autorun.setCellWidget(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,3,new_checkbox)
     
     # Start Time 

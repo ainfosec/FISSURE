@@ -10,7 +10,7 @@ import asyncio
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodeAutorunTableDelayChecked(dashboard: QtCore.QObject):
+def _slotSensorNodeAutorunTableDelayChecked(state: int, dashboard: QtCore.QObject):
     """ 
     Enables/disables the timeEdit box in the table row.
     """
@@ -207,7 +207,7 @@ def _slotSensorNodesAutorunImportClicked(dashboard: QtCore.QObject, filepath="")
         new_checkbox = QtWidgets.QCheckBox("", dashboard, objectName='checkBox_')
         new_checkbox.setStyleSheet("margin-left:17%")
         new_checkbox.setChecked(eval(playlist_dict[k]['delay']))
-        new_checkbox.stateChanged.connect(lambda: _slotSensorNodeAutorunTableDelayChecked(dashboard))
+        new_checkbox.stateChanged.connect(lambda state, dashboard=dashboard: _slotSensorNodeAutorunTableDelayChecked(-1, dashboard))
         dashboard.ui.tableWidget_sensor_nodes_autorun.setCellWidget(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,3,new_checkbox)
     
         # Start Time 
@@ -216,7 +216,7 @@ def _slotSensorNodesAutorunImportClicked(dashboard: QtCore.QObject, filepath="")
         new_time_edit.setTime(QtCore.QTime.fromString(playlist_dict[k]['start_time'],'HH:mm:ss'))
         dashboard.ui.tableWidget_sensor_nodes_autorun.setCellWidget(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1,4,new_time_edit)
         dashboard.ui.tableWidget_sensor_nodes_autorun.selectRow(dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount()-1)
-        _slotSensorNodeAutorunTableDelayChecked(dashboard)
+        _slotSensorNodeAutorunTableDelayChecked(-1, dashboard)
         
         # Details
         details_item = QtWidgets.QTableWidgetItem(playlist_dict[k]['details'])
