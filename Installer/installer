@@ -87,6 +87,7 @@ sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
 sudo python3 -m pip install ipython
+sudo python3 -m pip install scikit-learn==1.3.2
 . ~/.bashrc
 """,True,'Minimum Install'))
 
@@ -2163,6 +2164,7 @@ sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
 sudo python3 -m pip install ipython
+sudo python3 -m pip install scikit-learn==1.3.2
 # """,True,'Minimum Install'))
 
 # fissure Command 
@@ -4239,6 +4241,7 @@ sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
 sudo python3 -m pip install ipython
+sudo python3 -m pip install scikit-learn==1.3.2
 . ~/.bashrc
 """,True,'Minimum Install'))
 
@@ -6307,6 +6310,7 @@ sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
 sudo python3 -m pip install ipython
+sudo python3 -m pip install scikit-learn==1.3.2
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -8339,6 +8343,7 @@ sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
 sudo python3 -m pip install ipython
+sudo python3 -m pip install scikit-learn==1.3.2
 . ~/.bashrc
 """, True, "Minimum Install"))
 
@@ -10367,6 +10372,7 @@ sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
 sudo python3 -m pip install ipython
+sudo python3 -m pip install scikit-learn==1.3.2
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -12408,6 +12414,7 @@ sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
 sudo python3 -m pip install ipython
+sudo python3 -m pip install scikit-learn==1.3.2
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -14440,6 +14447,7 @@ sudo python3 -m pip install tensorflow --break-system-packages
 sudo apt-get install -y snapd
 sudo snap install netron
 sudo python3 -m pip install ipython
+sudo python3 -m pip install scikit-learn==1.3.2
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -16474,6 +16482,7 @@ sudo python3 -m pip install tensorflow
 sudo apt-get install -y snapd
 sudo snap install netron
 sudo python3 -m pip install ipython
+sudo python3 -m pip install scikit-learn==1.3.2
 . ~/.bashrc
 """,True,"Minimum Install"))
 

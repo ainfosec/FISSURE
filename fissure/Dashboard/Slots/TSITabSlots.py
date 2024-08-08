@@ -17,6 +17,7 @@ import qasync
 import asyncio
 import time
 import matplotlib
+matplotlib.use('Qt5Agg')
 
 # Decision Tree
 from sklearn.tree import DecisionTreeClassifier
@@ -4737,7 +4738,7 @@ def _slotTSI_ClassifierTrainingRetrainClicked(dashboard: QtCore.QObject):
             # Extract Relevant Columns
             X = df[get_features]
             y = pd.get_dummies(df.Truth)[get_target]
-            X = X.to_numpy().astype(np.float)
+            X = X.to_numpy().astype(np.float64)
             X =(X-X.min())/(X.max()-X.min())
             y = y.to_numpy()
 
@@ -5092,7 +5093,7 @@ def _slotTSI_ClassifierTrainingTestClicked(dashboard: QtCore.QObject):
         # Extract Relevant Columns
         X = df[get_features]
         y = pd.get_dummies(df.Truth)[get_target]
-        X = X.to_numpy().astype(np.float)
+        X = X.to_numpy().astype(np.float64)
         X =(X-X.min())/(X.max()-X.min())
         y = y.to_numpy()
 
@@ -5620,7 +5621,7 @@ def _slotTSI_ClassifierClassificationPlaylistStartClicked(dashboard: QtCore.QObj
                 
             # Extract Relevant Columns
             X = df[get_features]
-            X = X.to_numpy().astype(np.float)
+            X = X.to_numpy().astype(np.float64)
             X =(X-X.min())/(X.max()-X.min())
 
             # Load the Keras Model
@@ -5746,7 +5747,7 @@ def _slotTSI_ClassifierClassificationTestClicked(dashboard: QtCore.QObject):
             
         # Extract Relevant Columns
         X = df[get_features]
-        X = X.to_numpy().astype(np.float)
+        X = X.to_numpy().astype(np.float64)
         X =(X-X.min())/(X.max()-X.min())
 
         # Load the Keras Model

@@ -3,6 +3,22 @@ All notable changes to this project will be documented in this file.
 
 ## 2024-08-07
 
+Fixing autorun playlist stop and TSI Classifier issues.
+
+### Fixed
+
+- Set scikit-learn to version 1.3.2 in the installer to avoid errors
+- Replaced np.float with np.float64 in TSITabSlots.py
+- Inserted matplotlib.use('Qt5Agg') to get the confusion matrix to appear
+- Archive Plot button now loads the file and plots it in IQ Data tab
+- Autorun playlist now stops flow graphs completely for single-stage and multi-stage attacks
+
+### Documentation
+
+- Removed extra underscores from the Operation page
+
+## 2024-08-07
+
 Fixing installer and autorun playlist errors.
 
 ### Fixed

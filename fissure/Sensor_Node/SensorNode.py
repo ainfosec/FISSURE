@@ -906,6 +906,7 @@ class SensorNode():
             else:
                 self.autorun_playlist_manager[autorun_index].stop()
                 self.autorun_playlist_manager[autorun_index].wait()
+                self.autorun_playlist_manager[autorun_index] = None
                 self.autorun_multistage_watcher[autorun_index] = False
 
 

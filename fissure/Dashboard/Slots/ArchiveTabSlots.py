@@ -1555,10 +1555,10 @@ def _slotArchiveDownloadPlotClicked(dashboard: QtCore.QObject):
             break
 
     # Load the File
-    # self._slotIQ_LoadIQ_Data()  # FIX - Once this function exists
+    fissure.Dashboard.Slots.IQDataTabSlots._slotIQ_LoadIQ_Data(dashboard)
 
     # Plot the File
-    # self._slotIQ_PlotAllClicked()  # FIX - Once this function exists
+    fissure.Dashboard.Slots.IQDataTabSlots._slotIQ_PlotAllClicked(dashboard)
 
     # Change to IQ Tab
     dashboard.ui.tabWidget.setCurrentIndex(4)
