@@ -122,7 +122,7 @@
      <string>KDE neon 5.25 (20.04)</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton_parrot_os_5_2">
+   <widget class="QRadioButton" name="radioButton_parrot_os_6_1">
     <property name="enabled">
      <bool>true</bool>
     </property>
@@ -135,7 +135,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Parrot OS 5.2</string>
+     <string>Parrot OS 6.1</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="radioButton_kali_2023_1">

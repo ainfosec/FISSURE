@@ -34,11 +34,11 @@ FISSURE_CONFIG_DEFAULT = os.path.join("User Configs", "default.yaml")
 LOG_CONFIG_FILE = "logging.yaml"
 
 OS_3_8_KEYWORDS = ["DragonOS Focal", "Ubuntu 20.04"]
-OS_3_10_KEYWORDS = ["Ubuntu 22.04", "Kali", "DragonOS FocalX", "Raspberry Pi OS"]
+OS_3_10_KEYWORDS = ["Ubuntu 22.04", "Kali", "DragonOS FocalX", "Raspberry Pi OS", "Parrot"]
 
 QTERMINAL_LIST = ["DragonOS Focal", "DragonOS FocalX", "Kali"]
 LXTERMINAL_LIST = ["Raspberry Pi OS"]
-GNOME_TERMINAL_LIST = ["Ubuntu 20.04", "Ubuntu 22.04"]
+GNOME_TERMINAL_LIST = ["Ubuntu 20.04", "Ubuntu 22.04", "Parrot"]
 
 
 class FissureUtilObjects:
@@ -342,10 +342,10 @@ def get_os_info() -> Tuple[str, str, str]:
         return "Ubuntu 20.04"  # Same settings as Ubuntu 20.04
     
     # Parrot OS
-    proc = subprocess.Popen("lsb_release -d 2>&1 | grep 'Parrot'", shell=True, stdout=subprocess.PIPE, )  # Test this
+    proc = subprocess.Popen("lsb_release -d 2>&1 | grep 'Parrot'", shell=True, stdout=subprocess.PIPE, )  # Parrot Security 6.1 (lorikeet)
     output = proc.communicate()[0].decode()
     if len(output) > 0:
-        return "Ubuntu 20.04"  # Same settings as Ubuntu 20.04
+        return "Parrot"
     
     # BackBox
     proc = subprocess.Popen("lsb_release -d 2>&1 | grep 'BackBox'", shell=True, stdout=subprocess.PIPE, )  # Test this

@@ -14,12 +14,12 @@ The framework and tools included with FISSURE are designed to detect the presenc
 
 The friendly Python codebase and user interface allows beginners to quickly learn about popular tools and techniques involving RF and reverse engineering. Educators in cybersecurity and engineering can take advantage of the built-in material or utilize the framework to demonstrate their own real-world applications. Developers and researchers can use FISSURE for their daily tasks or to expose their cutting-edge solutions to a wider audience. As awareness and usage of FISSURE grows in the community, so will the extent of its capabilities and the breadth of the technology it encompasses.
 
-History
--------
+Project History
+---------------
 
 FISSURE is a tool suite and RF framework consisting of dedicated Python components networked together for the purpose of RF device assessment and vulnerability analysis. FISSURE stemmed from the need to quickly identify and react to unknown devices or devices operating in unidentified modes in a congested RF environment. Over the years it has grown into an in-house laboratory tool used by AIS for nearly all things RF. In addition to its analysis and protocol cataloguing capabilities, it doubles as a repository for tried-and-true code developed by AIS along with popular third-party open-source software tools frequently used by the community. FISSURE can also be used to reliably stage Linux computers and bypass some of the more complicated software installs. 
 
-FISSURE was released to the public in August 2021 and is continuously growing. While it has an impressive list of capabilities, it has yet to reach its full potential. The framework embodies a robust approach and provides easy-to-use mechanisms for adding content. It is expected to always be in a state of maturation to continuously meet the needs of advancing technology.
+FISSURE was released to the public in August 2022 and is continuously growing. While it has an impressive list of capabilities, it has yet to reach its full potential. The framework embodies a robust approach and provides easy-to-use mechanisms for adding content. It is expected to always be in a state of maturation to continuously meet the needs of advancing technology.
 
 Contributing
 ------------
@@ -37,16 +37,17 @@ Contacts
 Additional Resources
 --------------------
 
+- `Info Sheet <https://www.ainfosec.com/wp-content/uploads/2022/10/AIS-FISSURE-infosheet.pdf>`_
 - `AIS Page  <https://www.ainfosec.com/technologies/fissure/>`_
-- `GRCON22 Slides <https://events.gnuradio.org/event/18/contributions/246/attachments/84/164/FISSURE_Poore_GRCon22.pdf>`_
-- `GRCON22 Paper <https://events.gnuradio.org/event/18/contributions/246/attachments/84/167/FISSURE_Paper_Poore_GRCon22.pdf>`_
+- `GRCon22 Slides <https://events.gnuradio.org/event/18/contributions/246/attachments/84/164/FISSURE_Poore_GRCon22.pdf>`_
+- `GRCon22 Paper <https://events.gnuradio.org/event/18/contributions/246/attachments/84/167/FISSURE_Paper_Poore_GRCon22.pdf>`_
 - `Hack Chat Transcript <https://hackaday.io/event/187076-rf-hacking-hack-chat/log/212136-hack-chat-transcript-part-1>`_
 
 License
 -------
 
 | GPL-3.0
-| For license details, see `LICENSE <https://github.com/ainfosec/FISSURE/blob/Python3_maint-3.8/LICENSE>`_
+| For license details, see `LICENSE <https://github.com/ainfosec/FISSURE/blob/Python3/LICENSE>`_
 
 Authors
 -------

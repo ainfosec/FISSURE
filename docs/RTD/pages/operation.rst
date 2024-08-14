@@ -449,8 +449,8 @@ Gallery
 1) Select protocol
 2) Click through pictures
 
-Search
-------
+Search Library
+--------------
 
 1) Enter information for signals of interest (SOIs)
 2) Enter data values for messages in library

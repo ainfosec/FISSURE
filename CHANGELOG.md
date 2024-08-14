@@ -1,6 +1,32 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-08-14
+
+Updating Parrot OS 5.2 to Parrot Security 6.1.
+
+### Added
+
+- Link to FISSURE info sheet in README
+
+### Changed
+
+- Updating Parrot OS support from 5.2 to 6.1 (Security). Installer testing is incomplete.
+- Grayed out DEF CON event
+
+### Fixed
+
+- Adding morse code special characters and error handling for unrecognized characters
+- Installing opencv-python for motion detector trigger
+- Selecting the appropriate combobox in Library>Browse tab for maint-3.8 or maint-3.10 library 
+
+### Documentation
+
+- Changing the release date from August 2021 to August 2022
+- Adding info sheet link
+- Updating license link to current default branch
+- Removing duplicate labels for RTD sections
+
 ## 2024-08-07
 
 Fixing autorun playlist stop and TSI Classifier issues.

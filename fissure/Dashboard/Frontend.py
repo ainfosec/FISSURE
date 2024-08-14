@@ -725,6 +725,13 @@ class Dashboard(QtWidgets.QMainWindow):
                 protocols_with_images.append(p)
         self.ui.comboBox_library_gallery_protocol.addItems(sorted(protocols_with_images))
 
+        # Select Default Library File to Display
+        get_os = fissure.utils.get_os_info()
+        if any(keyword == get_os for keyword in fissure.utils.OS_3_8_KEYWORDS):
+            self.ui.comboBox_library_browse_yaml.setCurrentIndex(0)
+        else:
+            self.ui.comboBox_library_browse_yaml.setCurrentIndex(1)
+
         # Load Protocols into Add to Library ComboBox
         self.ui.comboBox_library_pd_protocol.addItem("-- New Protocol --")
         self.ui.comboBox_library_pd_protocol.addItems(sorted(protocols))

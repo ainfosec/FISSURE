@@ -5594,21 +5594,19 @@ def morseToEnglish(message):
     """ Converts dits and dahs to English. Not a slot.
     """
     # Dictionary representing the morse code chart
-    MORSE_CODE_DICT = { 'A':'.-', 'B':'-...',
-        'C':'-.-.', 'D':'-..', 'E':'.',
-        'F':'..-.', 'G':'--.', 'H':'....',
-        'I':'..', 'J':'.---', 'K':'-.-',
-        'L':'.-..', 'M':'--', 'N':'-.',
-        'O':'---', 'P':'.--.', 'Q':'--.-',
-        'R':'.-.', 'S':'...', 'T':'-',
-        'U':'..-', 'V':'...-', 'W':'.--',
-        'X':'-..-', 'Y':'-.--', 'Z':'--..',
-        '1':'.----', '2':'..---', '3':'...--',
-        '4':'....-', '5':'.....', '6':'-....',
-        '7':'--...', '8':'---..', '9':'----.',
-        '0':'-----', ', ':'--..--', '.':'.-.-.-',
-        '?':'..--..', '/':'-..-.', '-':'-....-',
-        '(':'-.--.', ')':'-.--.-','!':'-.-.--'}
+    MORSE_CODE_DICT = {
+        'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+        'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+        'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
+        'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+        'Y': '-.--', 'Z': '--..',
+        '1': '.----', '2': '..---', '3': '...--', '4': '....-', '5': '.....',
+        '6': '-....', '7': '--...', '8': '---..', '9': '----.', '0': '-----',
+        ', ': '--..--', '.': '.-.-.-', '?': '..--..', '/': '-..-.', '-': '-....-',
+        '(': '-.--.', ')': '-.--.-', '!': '-.-.--', '&': '.-...', ':': '---...',
+        ';': '-.-.-.', '=': '-...-', '+': '.-.-.', '_': '..--.-', '"': '.-..-.',
+        '$': '...-..-', '@': '.--.-.'
+    }
 
     # Replace '|' with Double Space
     message = message.replace('|','  ')
@@ -5638,7 +5636,12 @@ def morseToEnglish(message):
                 decipher += ' '
             else:
                 # Accessing the Keys using their Values (Reverse of Encryption)
-                decipher += list(MORSE_CODE_DICT.keys())[list(MORSE_CODE_DICT.values()).index(citext)]
+                if citext in MORSE_CODE_DICT.values():
+                    # Accessing the Keys using their Values (Reverse of Encryption)
+                    decipher += list(MORSE_CODE_DICT.keys())[list(MORSE_CODE_DICT.values()).index(citext)]
+                else:
+                    # If the character is not recognized, add a question mark
+                    decipher += '?'
                 citext = ''
 
     return decipher

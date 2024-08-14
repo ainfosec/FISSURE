@@ -38,7 +38,7 @@ The deployment of multiple sensor nodes on the same network unlocks many geospat
 
 ### Upcoming/Recent Events
 
-![Conference](https://img.shields.io/badge/Event-Conference-blue) **Sat. August 10, 2024**: DEF CON 32 - RF Village - 1400-1500 PST
+![Conference](https://img.shields.io/badge/Event-Conference-darkgray) **Sat. August 10, 2024**: DEF CON 32 - RF Village - 1400-1500 PST. Videos coming soon!
 
 ![Career Fair](https://img.shields.io/badge/Event-Career%20Fair-orange) **Thu. September 5, 2024**: Binghamton University STEM Job and Internship Fair - 1100-1530 EST
 
@@ -97,6 +97,7 @@ The deployment of multiple sensor nodes on the same network unlocks many geospat
 </a>
 </p>
 
+- [Info Sheet](https://www.ainfosec.com/wp-content/uploads/2022/10/AIS-FISSURE-infosheet.pdf)
 - [AIS Page](https://www.ainfosec.com/technologies/fissure/)
 - [GRCon22 Slides](https://events.gnuradio.org/event/18/contributions/246/attachments/84/164/FISSURE_Poore_GRCon22.pdf)
 - [GRCon22 Paper](https://events.gnuradio.org/event/18/contributions/246/attachments/84/167/FISSURE_Paper_Poore_GRCon22.pdf)
@@ -178,7 +179,7 @@ Operating System | FISSURE Branch | Default GNU Radio Version
 | DragonOS FocalX (x86_64) | Python3 | maint-3.10 |
 | Kali 23.1 (x64) | Python3 | maint-3.10 |
 | KDE neon 5.25 (x64) (6.0 not tested) | Python3 | maint-3.8 |
-| Parrot OS 5.2 (amd64) | Python3 | maint-3.8 |
+| Parrot Security 6.1 (amd64) | Python3 | maint-3.10 |
 | Raspberry Pi OS (bookworm) | Python3 | maint-3.10 |
 | Ubuntu 18.04 (x64) | Python2_maint-3.7 | maint-3.7 |
 | Ubuntu 20.04 (x64) | Python3 | maint-3.8 |
