@@ -38,7 +38,7 @@ curl https://bootstrap.pypa.io./pip/2.7/get-pip.py | sudo python2  # Installs pi
 sudo apt-get install -y python3-pip
 sudo python3 -m pip install cmake --upgrade
 sudo apt install -y python3-testresources
-sudo python3 -m pip install --upgrade setuptools
+sudo python3 -m pip install "setuptools<71"
 sudo python3 -m pip install --upgrade virtualenv
 sudo python3 -m pip install matplotlib
 sudo python3 -m pip install PyYAML==5.1
@@ -8265,7 +8265,7 @@ curl https://bootstrap.pypa.io./pip/2.7/get-pip.py | sudo python2  # Installs pi
 sudo apt-get install -y python3-pip
 sudo python3 -m pip install cmake --upgrade
 sudo apt install -y python3-testresources
-sudo python3 -m pip install --upgrade setuptools
+sudo python3 -m pip install "setuptools<71"
 sudo python3 -m pip install --upgrade virtualenv
 #sudo python3 -m pip install matplotlib
 sudo python3 -m pip install PyYAML==5.1
