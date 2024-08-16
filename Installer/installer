@@ -4208,7 +4208,7 @@ python2.7 get-pip.py
 sudo python2 -m ensurepip
 
 sudo apt-get install -y libnetfilter-queue-dev
-sudo apt-get install -y libcom-err2=1.47.0-2
+sudo apt-get install -y libcom-err2=1.47.0-2 --allow-downgrades
 sudo apt-get install -y comerr-dev
 sudo apt-get install -y libzmq3-dev
 
@@ -5709,8 +5709,8 @@ cd ~/Installed_by_FISSURE
 git clone git://git.code.sf.net/p/viking/code viking
 sudo apt-get install -y libgdk-pixbuf2.0-dev
 sudo apt-get install -y libjson-glib-dev
-sudo apt-get install -y libatk-bridge2.0-0=2.46.0-5 libatk1.0-0=2.46.0-5
-sudo apt-get install -y libatspi2.0-0=2.46.0-5
+sudo apt-get install -y libatk-bridge2.0-0=2.46.0-5 libatk1.0-0=2.46.0-5 --allow-downgrades
+sudo apt-get install -y libatspi2.0-0=2.46.0-5 --allow-downgrades
 sudo apt-get install -y libgtk-3-dev
 sudo apt install -y gtk-doc-tools docbook-xsl yelp-tools libpng-dev libicu-dev intltool
 sudo apt-get install -y libcurl4-gnutls-dev libglib2.0-dev-bin
