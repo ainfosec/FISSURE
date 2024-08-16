@@ -37,7 +37,7 @@ class SimpliciTI_MSK_Fields(gr.top_block):
         self.tx_usrp_antenna = tx_usrp_antenna = "TX/RX"
         self.tx_frequency = tx_frequency = 2425.6e6
         self.sample_rate = sample_rate = 8e6
-        self.library_filepath = library_filepath = "~/FISSURE/YAML/library.yaml"
+        self.library_filepath = library_filepath = "~/FISSURE/YAML/library_3_10.yaml"
         self.ip_address = ip_address = "192.168.40.2"
         self.fuzzing_type = fuzzing_type = "['Random','Sequential']"
         self.fuzzing_seed = fuzzing_seed = "0"

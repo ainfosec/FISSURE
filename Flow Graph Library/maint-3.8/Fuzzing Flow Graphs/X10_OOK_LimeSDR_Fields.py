@@ -34,7 +34,7 @@ class X10_OOK_LimeSDR_Fields(gr.top_block):
         self.transmit_interval = transmit_interval = 4
         self.string_variables = string_variables = ["address_code","data_code"]
         self.sample_rate = sample_rate = 1e6
-        self.library_filepath = library_filepath = "~/FISSURE/YAML/library.yaml"
+        self.library_filepath = library_filepath = "~/FISSURE/YAML/library_3_8.yaml"
         self.fuzzing_type = fuzzing_type = "['Random']"
         self.fuzzing_seed = fuzzing_seed = "0"
         self.fuzzing_protocol = fuzzing_protocol = "X10"

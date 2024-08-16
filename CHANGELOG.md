@@ -1,6 +1,22 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-08-15
+
+Updating installer for Parrot Security 6.1.
+
+### Changed
+
+- Updated installer photo in README to show Parrot OS 6.1
+
+### Fixed
+
+- Several Parrot Security 6.1 installer issues
+- Table column resize for fuzzing variables with filepath button
+- Changed the library filepaths for fuzzing blocks to point to new library locations
+- Connected Mode S maint-3.8 fuzzing flow graph blocks
+- Changed packetdiag command to packetdiag3 for Packet Diagram tool item in Parrot Security 6.1
+
 ## 2024-08-14
 
 Updating Parrot OS 5.2 to Parrot Security 6.1.

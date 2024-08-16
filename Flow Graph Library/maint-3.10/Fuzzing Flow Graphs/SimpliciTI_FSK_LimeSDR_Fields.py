@@ -39,7 +39,7 @@ class SimpliciTI_FSK_LimeSDR_Fields(gr.top_block):
         self.sampling_multiple = sampling_multiple = 16
         self.sampling_factor = sampling_factor = 100
         self.sample_rate = sample_rate = 4e6
-        self.library_filepath = library_filepath = "~/FISSURE/YAML/library.yaml"
+        self.library_filepath = library_filepath = "~/FISSURE/YAML/library_3_10.yaml"
         self.fuzzing_type = fuzzing_type = "['Random','Sequential']"
         self.fuzzing_seed = fuzzing_seed = "0"
         self.fuzzing_protocol = fuzzing_protocol = "SimpliciTI"

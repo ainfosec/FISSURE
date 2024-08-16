@@ -42,7 +42,7 @@ class RDS_BPSK_USRPX310_Fields(gr.top_block):
         self.rds_gain = rds_gain = .5
         self.pilot_gain = pilot_gain = .3
         self.outbuffer = outbuffer = 10
-        self.library_filepath = library_filepath = "~/FISSURE/YAML/library.yaml"
+        self.library_filepath = library_filepath = "~/FISSURE/YAML/library_3_8.yaml"
         self.ip_address = ip_address = "192.168.1.40"
         self.input_gain = input_gain = .3
         self.fuzzing_type = fuzzing_type = "['Random']"

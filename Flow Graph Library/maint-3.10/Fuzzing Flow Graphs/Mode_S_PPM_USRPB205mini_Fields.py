@@ -33,7 +33,7 @@ class Mode_S_PPM_USRPB205mini_Fields(gr.top_block):
         self.transmit_interval = transmit_interval = .1
         self.serial = serial = "False"
         self.samp_rate = samp_rate = 2e6
-        self.library_filepath = library_filepath = "~/FISSURE/YAML/library.yaml"
+        self.library_filepath = library_filepath = "~/FISSURE/YAML/library_3_10.yaml"
         self.gain = gain = 70
         self.fuzzing_type = fuzzing_type = "['Random']"
         self.fuzzing_seed = fuzzing_seed = "0"

@@ -4190,7 +4190,28 @@ programs_parrot_os_6_1.append(('Misc. Dependencies',
 sudo apt-get -y install cmake
 sudo apt-get install -y python-dev-is-python3 build-essential  # python-setuptools
 sudo apt-get install -y curl
+
+# Python2
 #curl https://bootstrap.pypa.io./pip/2.7/get-pip.py | sudo python2  # Installs pip 20.3.4
+sudo apt-get install -y build-essential libssl-dev zlib1g-dev libncurses5-dev libgdbm-dev libnss3-dev libreadline-dev libffi-dev libsqlite3-dev wget
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+tar -xzf Python-2.7.18.tgz
+cd Python-2.7.18
+./configure --prefix=/usr/local
+make
+sudo make install
+cd ~/Installed_by_FISSURE
+wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+python2.7 get-pip.py
+sudo python2 -m ensurepip
+
+sudo apt-get install -y libnetfilter-queue-dev
+sudo apt-get install -y libcom-err2=1.47.0-2
+sudo apt-get install -y comerr-dev
+sudo apt-get install -y libzmq3-dev
+
 sudo apt-get install -y python3-pip
 sudo python3 -m pip install cmake --upgrade --break-system-packages
 sudo apt install -y python3-testresources
@@ -4464,7 +4485,7 @@ cd proxmark3
 make clean && make all
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
-""",False,'Hardware'))
+""",True,'Hardware'))
 
 # PlutoSDR
 programs_parrot_os_6_1.append(('PlutoSDR',
@@ -4511,7 +4532,7 @@ wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.on
 chmod +x qFlipper*
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
-""",False,'Hardware'))
+""",True,'Hardware'))
 
 # gr-acars-3.10ng
 programs_parrot_os_6_1.append(('gr-acars-3.10ng',
@@ -4548,9 +4569,7 @@ ls /usr/local/lib/python*/*/gnuradio/adsb
 
 # gr-ainfosec
 programs_parrot_os_6_1.append(('gr-ainfosec',
-"""sudo apt-get install -y libcom-err2=1.47.0-2
-sudo apt-get install libzmq3-dev
-cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ainfosec/
+"""cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ainfosec/
 sudo rm -Rf build
 mkdir build
 cd build
@@ -4743,7 +4762,7 @@ else
 fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/gnuradio/gsm
-""",True,'Out-of-Tree Modules'))
+""",False,'Out-of-Tree Modules'))
 
 # gr-ieee802-11
 programs_parrot_os_6_1.append(('gr-ieee802-11',
@@ -4911,7 +4930,8 @@ ls /usr/local/lib/python*/*/paint
 
 # gr-rds
 programs_parrot_os_6_1.append(('gr-rds',
-"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/)" ];  # Needs hardware installed first
+"""sudo apt-get install -y libboost-locale-dev
+if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/)" ];  # Needs hardware installed first
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/
   sudo rm -Rf build
@@ -5043,7 +5063,7 @@ cd ~/Installed_by_FISSURE/dump1090/
 make
 ########## Verify ##########
 ~/Installed_by_FISSURE/dump1090/dump1090 --help
-""",False,'Aircraft'))
+""",True,'Aircraft'))
 
 # QtDesigner
 programs_parrot_os_6_1.append(('QtDesigner',
@@ -5132,7 +5152,7 @@ sudo apt-get install -y fortune cowsay lolcat  # IMSI-Catcher 4G
 srsenb --help
 """,True,'LTE'))
 
-# FALCON - FIX (needs older soapysdr version?)
+# FALCON - FIX (libudev-dev, needs older soapysdr version?)
 programs_parrot_os_6_1.append(('FALCON',
 """sudo apt-get install -y build-essential git cmake libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev  # For srsLTE
 mkdir -p ~/Installed_by_FISSURE
@@ -5268,7 +5288,7 @@ programs_parrot_os_6_1.append(('Universal Radio Hacker',
 sudo python3 -m pip install urh --break-system-packages
 ########## Verify ##########
 urh --version
-""",False,'SDR'))
+""",True,'SDR'))
 
 # Inspectrum
 programs_parrot_os_6_1.append(('Inspectrum',
@@ -5355,7 +5375,7 @@ unzip -q sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 rm sdr-trunk-linux-x86_64-v0.5.0-alpha6.zip
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
-""",False,'Trunked Radio'))
+""",True,'Trunked Radio'))
 
 # Audacity
 programs_parrot_os_6_1.append(('Audacity',
@@ -5409,10 +5429,10 @@ vlc --help
 
 # Simple Screen Recorder
 programs_parrot_os_6_1.append(('Simple Screen Recorder',
-"""sudo apt-get install -y simplescreenrecorder  # Installs but does not support Wayland 
+"""sudo apt-get install -y simplescreenrecorder 
 ########## Verify ##########
 simplescreenrecorder --help
-""",False,'Video'))
+""",True,'Video'))
 
 # radiosonde_auto_rx
 programs_parrot_os_6_1.append(('radiosonde_auto_rx',
@@ -5426,7 +5446,7 @@ cp station.cfg.example station.cfg
 sudo python3 -m pip install -r requirements.txt --break-system-packages
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
-""",False,'Radiosonde'))
+""",True,'Radiosonde'))
 
 # SdrGlut
 programs_parrot_os_6_1.append(('SdrGlut',
@@ -5491,7 +5511,7 @@ sudo make
 cp ir77_ambe_decode ~/Installed_by_FISSURE/iridium-toolkit/
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/osmo-ir77/codec/ir77_ambe_decode
-""",False,'Satellite'))
+""",True,'Satellite'))
 
 # IridiumLive
 programs_parrot_os_6_1.append(('IridiumLive',
@@ -5602,7 +5622,7 @@ python3 -m pip install -r requirements.txt --break-system-packages
 python3 -m pip install bluepy --break-system-packages
 ########## Verify ##########
 ~/Installed_by_FISSURE/routersploit/rsf.py --help
-""",False,'802.11'))
+""",True,'802.11'))
 
 # Metasploit
 programs_parrot_os_6_1.append(('Metasploit',
@@ -5663,7 +5683,7 @@ wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_curre
 sudo dpkg -i google-earth-pro-stable_current_amd64.deb
 ########## Verify ##########
 ls /usr/bin/google-earth-pro
-""",False,'Mapping'))
+""",True,'Mapping'))
 
 # gr-air-modes
 programs_parrot_os_6_1.append(('gr-air-modes',
@@ -5671,7 +5691,7 @@ programs_parrot_os_6_1.append(('gr-air-modes',
 sudo sed -i 's/numpy.float)/numpy.float32)/g' /usr/lib/python3/dist-packages/air_modes/mlat.py  # Deprecated numpy type: np.float->np.float32 or np.float64
 ########## Verify ##########
 modes_rx --help
-""",True,'Aircraft'))
+""",False,'Aircraft'))
 
 # ESP8266 Deauther v2
 programs_parrot_os_6_1.append(('ESP8266 Deauther v2',
@@ -5687,7 +5707,12 @@ programs_parrot_os_6_1.append(('Viking',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.code.sf.net/p/viking/code viking
-sudo apt install -y gtk-doc-tools docbook-xsl yelp-tools libpng-dev libgtk-3-dev libicu-dev libjson-glib-dev intltool
+sudo apt-get install -y libgdk-pixbuf2.0-dev
+sudo apt-get install -y libjson-glib-dev
+sudo apt-get install -y libatk-bridge2.0-0=2.46.0-5 libatk1.0-0=2.46.0-5
+sudo apt-get install -y libatspi2.0-0=2.46.0-5
+sudo apt-get install -y libgtk-3-dev
+sudo apt install -y gtk-doc-tools docbook-xsl yelp-tools libpng-dev libicu-dev intltool
 sudo apt-get install -y libcurl4-gnutls-dev libglib2.0-dev-bin
 sudo apt-get install -y libsqlite3-dev nettle-dev libmapnik-dev libgeoclue-2-dev libgexiv2-dev libgps-dev libmagic-dev libbz2-dev libzip-dev liboauth-dev
 sudo apt-get install -y autopoint libnova-dev
@@ -5698,7 +5723,7 @@ make
 sudo make install
 ########## Verify ##########
 viking --help
-""",False,'Mapping'))
+""",True,'Mapping'))
 
 # PyGPSClient
 programs_parrot_os_6_1.append(('PyGPSClient',
@@ -5759,7 +5784,7 @@ make
 sudo make install
 ########## Verify ##########
 ls /usr/local/bin/CellSearch
-""",False,'LTE'))
+""",True,'LTE'))
 
 # btscanner
 programs_parrot_os_6_1.append(('btscanner',
@@ -5844,7 +5869,7 @@ sudo sed -i 's/tostring/tobytes/g' /usr/local/lib/python3.10/dist-packages/scapy
 sudo python3 -m pip install trackerjacker --break-system-packages
 ########## Verify ##########
 sudo trackerjacker --help
-""",False,'802.11'))
+""",True,'802.11'))
 
 # airgeddon
 programs_parrot_os_6_1.append(('airgeddon',
@@ -5891,31 +5916,36 @@ ls /usr/bin/enscribe
 
 # ESP32 Bluetooth Classic Sniffer
 programs_parrot_os_6_1.append(('ESP32 BT Classic Sniffer',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5, 4.0.3, 4.2.5
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5, 4.0.3, 4.2.5, 4.0.11
 cd ~/Installed_by_FISSURE
 git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
 cd esp32_bluetooth_classic_sniffer
 #rm ./dissectors/config.h  # Produces errors if missing
-sed -i 's/VERSION "3.4.0"/VERSION "4.2.5"/g' ./dissectors/config.h
+sed -i 's/VERSION "3.4.0"/VERSION "4.0.11"/g' ./dissectors/config.h
 sed -i 's/VERSION_MAJOR 3/VERSION_MAJOR 4/g' ./dissectors/config.h
-sed -i 's/VERSION_MINOR 4/VERSION_MINOR 2/g' ./dissectors/config.h
-sed -i 's/VERSION_MICRO 0/VERSION_MICRO 5/g' ./dissectors/config.h
-sed -i 's/PLUGIN_PATH_ID "3.4"/PLUGIN_PATH_ID "4.2"/g' ./dissectors/config.h
+sed -i 's/VERSION_MINOR 4/VERSION_MINOR 0/g' ./dissectors/config.h
+sed -i 's/VERSION_MICRO 0/VERSION_MICRO 11/g' ./dissectors/config.h
+sed -i 's/PLUGIN_PATH_ID "3.4"/PLUGIN_PATH_ID "4.0"/g' ./dissectors/config.h
 sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
 sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
-sed -i 's/3.4/4.2/g' ./dissectors/build.sh
+sed -i 's/3.4/4.0/g' ./dissectors/build.sh
 sudo ./requirements.sh
 ./build.sh
-sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.2/epan/  # Placing it where "sudo Wireshark" dissectors are located
-rm ~/.local/lib/wireshark/plugins/4.2/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/4.0/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
-ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.2/epan/h4bcm.so
-""",False,'Bluetooth'))
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.0/epan/h4bcm.so
+""",True,'Bluetooth'))
 
 # SigDigger
 programs_parrot_os_6_1.append(('SigDigger',
 """#sigutils
-sudo apt-get install -y libsndfile1-dev libfftw3-3 qmake6 soapysdr-tools libsoapysdr-dev
+sudo apt-get install -y libsndfile1-dev    
+sudo apt-get install -y libfftw3-3
+sudo apt-get install -y qmake6
+sudo apt-get install -y soapysdr-tools
+sudo apt-get install -y libsoapysdr-dev
+sudo apt-get install -y portaudio19-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://actinid.org/blsd  # Needs newer version of QMake. Above 5.12.8, 5.14?
@@ -5956,7 +5986,7 @@ chmod a+x blsd
 # sudo make install
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/blsd-dir/SigDigger/SigDigger
-""",False,'SDR'))
+""",True,'SDR'))
 
 # QSSTV
 programs_parrot_os_6_1.append(('QSSTV',
@@ -6010,7 +6040,7 @@ ls /usr/bin/systemback && ls /usr/bin/guidus
 
 # Dire Wolf
 programs_parrot_os_6_1.append(('Dire Wolf',
-"""sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
+"""sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev  # Needs specific version of libudev-dev that is problematic
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://www.github.com/wb2osz/direwolf
@@ -6023,7 +6053,7 @@ sudo make install
 make install-conf
 ########## Verify ##########
 ls /usr/local/bin/direwolf
-""",True,'Ham Radio'))
+""",False,'Ham Radio'))
 
 # Meld
 programs_parrot_os_6_1.append(('Meld',
@@ -6036,7 +6066,7 @@ ls /usr/bin/meld
 programs_parrot_os_6_1.append(('nwdiag',
 """sudo apt-get install -y python3-nwdiag  #sudo python3 -m pip install nwdiag --break-system-packages
 ########## Verify ##########
-packetdiag -h
+packetdiag3 -h
 """,True,'Data'))
 
 # HamClock

@@ -32,7 +32,7 @@ class Mode_S_PPM_USRPX310_Fields(gr.top_block):
         self.tx_freq = tx_freq = 915e6
         self.transmit_interval = transmit_interval = .1
         self.samp_rate = samp_rate = 2e6
-        self.library_filepath = library_filepath = "~/FISSURE/YAML/library.yaml"
+        self.library_filepath = library_filepath = "~/FISSURE/YAML/library_3_10.yaml"
         self.ip_address = ip_address = "192.168.40.2"
         self.gain = gain = 30
         self.fuzzing_type = fuzzing_type = "['Random']"

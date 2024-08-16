@@ -3337,6 +3337,7 @@ def _slotAttackLoadFromLibraryClicked(dashboard: QtCore.QObject, checked, fname=
             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.resizeColumnsToContents()
             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.horizontalHeader().setStretchLastSection(True)
+            adjust_table_columns = False
             parsing = False
             for line in f:
                 if line.startswith("        # Variables"):
@@ -3398,10 +3399,6 @@ def _slotAttackLoadFromLibraryClicked(dashboard: QtCore.QObject, checked, fname=
 
                             # Add a New Column
                             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
-                            table_width = dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.width()
-                            header_width = dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.verticalHeader().sizeHint().width()
-                            col1_width = 35
-                            col0_width = table_width-header_width-col1_width
                             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setColumnCount(2)
                             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
 
@@ -3417,12 +3414,19 @@ def _slotAttackLoadFromLibraryClicked(dashboard: QtCore.QObject, checked, fname=
                             # Adjust Table
                             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setColumnWidth(0,col0_width)
                             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setColumnWidth(1,col1_width)
+                            adjust_table_columns = True
 
             # Close the File
             f.close()
 
             # Adjust Table
             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.resizeRowsToContents()
+            if adjust_table_columns == True:
+                col1_width = 35
+                header_width = dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.verticalHeader().sizeHint().width()
+                col0_width = dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.width() - header_width - col1_width  # .viewport.width() changes size between clicks
+                dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setColumnWidth(0,col0_width)
+                dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setColumnWidth(1,col1_width)
 
             # Copy the Flow Graph Dictionary
             dashboard.attack_flow_graph_variables = temp_flow_graph_variables
@@ -3448,6 +3452,7 @@ def _slotAttackLoadFromLibraryClicked(dashboard: QtCore.QObject, checked, fname=
             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.resizeColumnsToContents()
             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.horizontalHeader().setStretchLastSection(True)
+            adjust_table_columns = False
 
             blocked_variables = ["fuzzing_type","fuzzing_seed","fuzzing_protocol","fuzzing_packet_type","fuzzing_min","fuzzing_max","fuzzing_interval","fuzzing_fields","fuzzing_data"]
 
@@ -3512,13 +3517,8 @@ def _slotAttackLoadFromLibraryClicked(dashboard: QtCore.QObject, checked, fname=
 
                             # Add a Filepath Button
                             if 'filepath' in variable_name:
-
                                 # Add a New Column
                                 dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.horizontalHeader().setStretchLastSection(False)
-                                table_width = dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.width()
-                                header_width = dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.verticalHeader().sizeHint().width()
-                                col1_width = 35
-                                col0_width = table_width-header_width-col1_width
                                 dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setColumnCount(2)
                                 dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setHorizontalHeaderItem(1,QtWidgets.QTableWidgetItem(""))
 
@@ -3531,15 +3531,20 @@ def _slotAttackLoadFromLibraryClicked(dashboard: QtCore.QObject, checked, fname=
                                 get_default_directory = defaultAttackFilepathDirectory(dashboard, str(get_filename), variable_name)
                                 new_pushbutton.clicked.connect((lambda get_row_number,get_default_directory: lambda: _slotAttackFuzzingSelectFilepath(dashboard, get_row = get_row_number, default_directory = get_default_directory))(get_row_number,get_default_directory))  # Pass constant value, not variable value
 
-                                # Adjust Table
-                                dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setColumnWidth(0,col0_width)
-                                dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setColumnWidth(1,col1_width)
+                                # Adjust Table Flag for Filepaths
+                                adjust_table_columns = True
 
             # Close the File
             f.close()
 
             # Adjust Table
             dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.resizeRowsToContents()
+            if adjust_table_columns == True:
+                col1_width = 35
+                header_width = dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.verticalHeader().sizeHint().width()
+                col0_width = dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.width() - header_width - col1_width  # .viewport.width() changes size between clicks
+                dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setColumnWidth(0,col0_width)
+                dashboard.ui.tableWidget_attack_fuzzing_flow_graph_current_values.setColumnWidth(1,col1_width)
 
             # Copy the Flow Graph Dictionary
             dashboard.attack_flow_graph_variables = temp_flow_graph_variables

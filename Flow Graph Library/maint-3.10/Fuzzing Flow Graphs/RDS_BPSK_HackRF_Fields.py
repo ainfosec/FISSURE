@@ -44,7 +44,7 @@ class RDS_BPSK_HackRF_Fields(gr.top_block):
         self.pilot_gain = pilot_gain = .3
         self.outbuffer = outbuffer = 0
         self.lower_rate = lower_rate = 380000
-        self.library_filepath = library_filepath = "~/FISSURE/YAML/library.yaml"
+        self.library_filepath = library_filepath = "~/FISSURE/YAML/library_3_10.yaml"
         self.input_gain = input_gain = .3
         self.fuzzing_type = fuzzing_type = "['Random']"
         self.fuzzing_seed = fuzzing_seed = "0"

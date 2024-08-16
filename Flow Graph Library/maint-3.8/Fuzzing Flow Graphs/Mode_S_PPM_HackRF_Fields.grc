@@ -156,7 +156,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"~/FISSURE/YAML/library.yaml"'
+    value: '"~/FISSURE/YAML/library_3_8.yaml"'
   states:
     bus_sink: false
     bus_source: false
@@ -229,7 +229,7 @@ blocks:
     bus_structure: null
     coordinate: [752, 517]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: adsb_framer_0
   id: adsb_framer
   parameters:
@@ -246,7 +246,7 @@ blocks:
     bus_structure: null
     coordinate: [1000, 441]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_char_to_float_0
   id: blocks_char_to_float
   parameters:
@@ -281,7 +281,7 @@ blocks:
     bus_structure: null
     coordinate: [1112, 510]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_float_to_complex_0
   id: blocks_float_to_complex
   parameters:
@@ -296,6 +296,19 @@ blocks:
     bus_source: false
     bus_structure: null
     coordinate: [744, 233]
+    rotation: 0
+    state: enabled
+- name: blocks_message_debug_0
+  id: blocks_message_debug
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1120, 48.0]
     rotation: 0
     state: enabled
 - name: blocks_message_source_0
@@ -314,7 +327,7 @@ blocks:
     bus_structure: null
     coordinate: [928, 529]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: blocks_multiply_const_vxx_0
   id: blocks_multiply_const_vxx
   parameters:
@@ -402,7 +415,7 @@ blocks:
     bus_structure: null
     coordinate: [760, 422]
     rotation: 0
-    state: enabled
+    state: disabled
 - name: fuzzer_fuzzer_0_0
   id: fuzzer_fuzzer
   parameters:
@@ -704,10 +717,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [944, 209]
+    coordinate: [1008, 196.0]
     rotation: 0
     state: enabled
-connections: []
+
+connections:
+- [blocks_char_to_float_0, '0', blocks_multiply_const_vxx_0, '0']
+- [blocks_float_to_complex_0, '0', osmosdr_sink_1, '0']
+- [blocks_multiply_const_vxx_0, '0', blocks_float_to_complex_0, '0']
+- [blocks_null_source_0, '0', fuzzer_packet_insert_0, '0']
+- [blocks_unpack_k_bits_bb_0, '0', blocks_char_to_float_0, '0']
+- [fuzzer_fuzzer_0_0, packet_out, blocks_message_debug_0, print]
+- [fuzzer_fuzzer_0_0, packet_out, fuzzer_packet_insert_0, packet_in]
+- [fuzzer_packet_insert_0, '0', blocks_unpack_k_bits_bb_0, '0']
 
 metadata:
   file_format: 1

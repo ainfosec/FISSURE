@@ -37,7 +37,7 @@ class X10_OOK_USRPB210_Fields(gr.top_block):
         self.serial = serial = "False"
         self.sample_rate = sample_rate = 1e6
         self.rx_usrp_frequency = rx_usrp_frequency = 310.8e6
-        self.library_filepath = library_filepath = "~/FISSURE/YAML/library.yaml"
+        self.library_filepath = library_filepath = "~/FISSURE/YAML/library_3_8.yaml"
         self.fuzzing_type = fuzzing_type = "['Random']"
         self.fuzzing_seed = fuzzing_seed = "0"
         self.fuzzing_protocol = fuzzing_protocol = "X10"

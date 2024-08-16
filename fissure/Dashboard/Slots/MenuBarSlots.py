@@ -3752,7 +3752,10 @@ def _slotMenuPacketDiagramClicked(dashboard: QtWidgets.QMainWindow):
     # Issue the Command
     expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
     sample_diagram = os.path.join(fissure.utils.TOOLS_DIR, "simple.diag")
-    packetdiag_command = "packetdiag " + sample_diagram + " -o ~/simple.png  # Edit /FISSURE/Tools/simple.diag"
+    if dashboard.backend.os_info == "Parrot":
+        packetdiag_command = "packetdiag3 " + sample_diagram + " -o ~/simple.png  # Edit /FISSURE/Tools/simple.diag"
+    else:
+        packetdiag_command = "packetdiag " + sample_diagram + " -o ~/simple.png  # Edit /FISSURE/Tools/simple.diag"
     if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
         proc = subprocess.Popen(
             "gnome-terminal -- " + expect_script_filepath + ' "' + packetdiag_command + '"', shell=True
