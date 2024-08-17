@@ -27,7 +27,8 @@ fi
 # DragonOS Focal
 if [[ -n "$dragonOS_focal" ]]
 then
-    echo "DragonOS Focal detected"
+    echo "DragonOS Focal detected. Focal is no longer supported. Update to FocalX."
+    exit
 fi
 
 # KDE neon 5.25
@@ -106,21 +107,6 @@ then
             if [[ -n "$ubuntu20_04" ]]
             then
                 sudo apt-get install -y build-essential qtcreator qt5-default python3-pyqt5
-            fi
-            
-            # Parrot OS
-            #if [[ -n "$parrot_os" ]]
-            #then
-            #    sudo apt-get install -y libvulkan-dev=1.3.224.0-1~bpo11+1
-            #    sudo apt-get install -y build-essential qtcreator qt5-default python3-pyqt5
-            #    sudo apt-get install -y fonts-ubuntu
-            #fi
-            
-            # DragonOS Focal
-            if [[ -n "$dragonOS_focal" ]]
-            then
-                sudo apt-get install -y build-essential qtcreator qt5-default python3-pyqt5
-                sudo apt-get install -y fonts-ubuntu
             fi
             
             # KDE Neon

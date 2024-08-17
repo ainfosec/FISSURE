@@ -81,29 +81,13 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>180</y>
+      <y>155</y>
       <width>150</width>
       <height>25</height>
      </rect>
     </property>
     <property name="text">
      <string>Ubuntu 20.04</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton_dragonOS_focal">
-    <property name="enabled">
-     <bool>true</bool>
-    </property>
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>180</width>
-      <height>25</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>DragonOS Focal (beta)</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="radioButton_kde_neon_5_25">
@@ -113,7 +97,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>105</y>
+      <y>80</y>
       <width>180</width>
       <height>25</height>
      </rect>
@@ -129,7 +113,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>130</y>
+      <y>105</y>
       <width>180</width>
       <height>25</height>
      </rect>
@@ -145,7 +129,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>80</y>
+      <y>55</y>
       <width>185</width>
       <height>25</height>
      </rect>
@@ -177,7 +161,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>205</y>
+      <y>180</y>
       <width>180</width>
       <height>25</height>
      </rect>
@@ -193,7 +177,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>230</y>
+      <y>205</y>
       <width>250</width>
       <height>25</height>
      </rect>
@@ -209,7 +193,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>155</y>
+      <y>130</y>
       <width>265</width>
       <height>25</height>
      </rect>
@@ -225,7 +209,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>55</y>
+      <y>30</y>
       <width>185</width>
       <height>25</height>
      </rect>

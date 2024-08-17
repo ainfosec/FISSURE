@@ -4,3 +4,160 @@
 08/16/2024 07:58:21 PM - fissure.sensor node 0: [INFO] === SHUTDOWN ===
 08/16/2024 07:58:21 PM - fissure: [DEBUG] Cleaning Up ZMQ Context
 08/16/2024 07:58:21 PM - fissure.sensor node 0: [DEBUG] [sensor_node] shutdown (tcp://127.0.0.1 [:5051 (hb), :5052 (msg)])
+08/17/2024 12:03:14 PM - asyncio: [DEBUG] Using selector: _Selector
+08/17/2024 12:03:14 PM - fissure.dashboard.frontend: [INFO] === INITIALIZING ===
+08/17/2024 12:03:14 PM - fissure.dashboard.backend: [INFO] === INITIALIZING ===
+08/17/2024 12:03:14 PM - fissure: [DEBUG] loaded default config (User Configs/default.yaml)
+08/17/2024 12:03:14 PM - fissure.dashboard: [DEBUG] [backend] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+08/17/2024 12:03:14 PM - fissure.dashboard: [DEBUG] [backend] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+08/17/2024 12:03:14 PM - fissure.dashboard: [DEBUG] [backend] initialized
+08/17/2024 12:03:15 PM - fissure.dashboard.backend: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+08/17/2024 12:03:15 PM - fissure.dashboard.backend: [DEBUG] registered 41 callbacks from fissure.callbacks.DashboardCallbacks
+08/17/2024 12:03:15 PM - fissure.dashboard.backend: [INFO] === READY ===
+08/17/2024 12:03:18 PM - fissure.dashboard.frontend: [INFO] === READY ===
+08/17/2024 12:03:19 PM - fissure.dashboard.frontend: [INFO] [GUI] Connecting to HIPRFISR @ ipc://fissure [-hb (hb), -msg (msg)] ...
+08/17/2024 12:03:19 PM - fissure.dashboard: [DEBUG] [backend] sent message: {'Identifier': 'Dashboard', 'MessageName': 'Connected', 'Type': 'Status'}
+08/17/2024 12:03:19 PM - fissure.dashboard: [DEBUG] [backend] connected to ipc://fissure [-hb (hb), -msg (msg)]
+08/17/2024 12:03:19 PM - fissure.dashboard.backend: [INFO] connected to HiprFisr @ ipc://fissure [-hb (hb), -msg (msg)]
+08/17/2024 12:03:19 PM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-08-17T16:03:19Z)
+08/17/2024 12:03:19 PM - fissure.dashboard.frontend: [INFO] [GUI] Connected
+08/17/2024 12:03:23 PM - fissure.hiprfisr: [INFO] === INITIALIZING ===
+08/17/2024 12:03:23 PM - fissure: [DEBUG] loaded default config (User Configs/default.yaml)
+08/17/2024 12:03:24 PM - zmq.auth: [DEBUG] Starting
+08/17/2024 12:03:24 PM - zmq.auth: [DEBUG] Allowing 
+08/17/2024 12:03:24 PM - zmq.auth: [DEBUG] Configure curve: *[/home/user/FISSURE/certificates/clients]
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [frontend] initialized
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [frontend] started at ipc://fissure [-hb (hb), -msg (msg)]
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [backend] initialized
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [backend] started at ipc://fissure-backend [-hb (hb), -msg (msg)]
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [DEBUG] registered 110 callbacks from fissure.callbacks.HiprFisrCallbacks
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [INFO] === READY ===
+08/17/2024 12:03:24 PM - fissure.hiprfisr: [INFO] Server listening @ ipc://fissure [-hb (hb), -msg (msg)]
+08/17/2024 12:03:24 PM - fissure.pd: [DEBUG] === INITIALIZING ===
+08/17/2024 12:03:24 PM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-08-17T16:03:24Z)
+08/17/2024 12:03:25 PM - fissure.pd: [DEBUG] [backend] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+08/17/2024 12:03:25 PM - fissure.pd: [DEBUG] [backend] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+08/17/2024 12:03:25 PM - fissure.pd: [DEBUG] [backend] initialized
+08/17/2024 12:03:25 PM - fissure.pd: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+08/17/2024 12:03:25 PM - fissure.pd: [DEBUG] registered 15 callbacks from fissure.callbacks.ProtocolDiscoveryCallbacks
+08/17/2024 12:03:25 PM - fissure.pd: [DEBUG] === READY ===
+08/17/2024 12:03:25 PM - fissure.tsi: [DEBUG] === INITIALIZING ===
+08/17/2024 12:03:25 PM - fissure.tsi: [DEBUG] [backend] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+08/17/2024 12:03:25 PM - fissure.tsi: [DEBUG] [backend] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+08/17/2024 12:03:25 PM - fissure.tsi: [DEBUG] [backend] initialized
+08/17/2024 12:03:25 PM - fissure.tsi: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+08/17/2024 12:03:25 PM - fissure.tsi: [DEBUG] registered 8 callbacks from fissure.callbacks.TargetSignalIdentificationCallbacks
+08/17/2024 12:03:25 PM - fissure.tsi: [DEBUG] === READY ===
+08/17/2024 12:03:25 PM - fissure.hiprfisr: [INFO] === STARTING HIPRFISR ===
+08/17/2024 12:03:25 PM - fissure.hiprfisr: [DEBUG] entering connect loop
+08/17/2024 12:03:25 PM - fissure.pd: [INFO] === STARTING PROTOCOL DISCOVERY COMPONENT ===
+08/17/2024 12:03:25 PM - fissure.pd: [DEBUG] [backend] sent message: {'Identifier': 'PD', 'MessageName': 'Connected', 'Type': 'Status'}
+08/17/2024 12:03:25 PM - fissure.pd: [DEBUG] [backend] connected to ipc://fissure-backend [-hb (hb), -msg (msg)]
+08/17/2024 12:03:25 PM - fissure.pd: [INFO] connected to HiprFisr @ ipc://fissure-backend [-hb (hb), -msg (msg)]
+08/17/2024 12:03:25 PM - fissure.pd: [DEBUG] sent heartbeat (2024-08-17T16:03:25Z)
+08/17/2024 12:03:25 PM - fissure.tsi: [INFO] === STARTING TARGET SIGNAL IDENTIFICATION COMPONENT ===
+08/17/2024 12:03:25 PM - fissure.tsi: [DEBUG] [backend] sent message: {'Identifier': 'TSI', 'MessageName': 'Connected', 'Type': 'Status'}
+08/17/2024 12:03:25 PM - fissure.tsi: [DEBUG] [backend] connected to ipc://fissure-backend [-hb (hb), -msg (msg)]
+08/17/2024 12:03:25 PM - fissure.tsi: [INFO] connected to HiprFisr @ ipc://fissure-backend [-hb (hb), -msg (msg)]
+08/17/2024 12:03:25 PM - fissure.tsi: [DEBUG] sent heartbeat 2024-08-17T16:03:25Z
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11310', identity: b'', mechanism: b'CURVE'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'EBW<v?^!Tt)g]:U{5L=*+XJz!j.BDX!:F*+NbAc?'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11310', identity: b'', mechanism: b'CURVE'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'EBW<v?^!Tt)g]:U{5L=*+XJz!j.BDX!:F*+NbAc?'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11420', identity: b'', mechanism: b'CURVE'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'EBW<v?^!Tt)g]:U{5L=*+XJz!j.BDX!:F*+NbAc?'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11420', identity: b'', mechanism: b'CURVE'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'EBW<v?^!Tt)g]:U{5L=*+XJz!j.BDX!:F*+NbAc?'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11420', identity: b'', mechanism: b'CURVE'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'EBW<v?^!Tt)g]:U{5L=*+XJz!j.BDX!:F*+NbAc?'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11420', identity: b'', mechanism: b'CURVE'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'EBW<v?^!Tt)g]:U{5L=*+XJz!j.BDX!:F*+NbAc?'
+08/17/2024 12:03:25 PM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-08-17T16:03:19Z)
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-08-17T16:03:25Z)
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-08-17T16:03:25Z)
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'Dashboard', 'Type': 'Commands'}
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'PD', 'Type': 'Commands'}
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'TSI', 'Type': 'Commands'}
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] [frontend] received message: {'Identifier': 'Dashboard', 'MessageName': 'Connected', 'Type': 'Status'}
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+08/17/2024 12:03:26 PM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'Dashboard', 'Type': 'Commands', 'callback': 'componentConnected'}
+08/17/2024 12:03:26 PM - fissure.dashboard: [DEBUG] executing callback: componentConnected with parameters: Dashboard
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'PD', 'MessageName': 'Connected', 'Type': 'Status', 'SenderID': 'PD-14d82be1-8b2e-4200-ac21-3acb2fde747e'}
+08/17/2024 12:03:26 PM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'PD', 'Type': 'Commands', 'callback': 'componentConnected'}
+08/17/2024 12:03:26 PM - fissure.dashboard: [DEBUG] executing callback: componentConnected with parameters: PD
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'TSI', 'MessageName': 'Connected', 'Type': 'Status', 'SenderID': 'TSI-9e19a612-6109-4ce7-b98a-3ddbe4ef5656'}
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+08/17/2024 12:03:26 PM - fissure.pd: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+08/17/2024 12:03:26 PM - fissure.tsi: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+08/17/2024 12:03:26 PM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'TSI', 'Type': 'Commands', 'callback': 'componentConnected'}
+08/17/2024 12:03:26 PM - fissure.dashboard: [DEBUG] executing callback: componentConnected with parameters: TSI
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'Connected', 'Parameters': ['PD', 'TSI'], 'Type': 'Status'}
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] exiting connect loop
+08/17/2024 12:03:26 PM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+08/17/2024 12:03:26 PM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'Connected', 'Parameters': ['PD', 'TSI'], 'Type': 'Status'}
+08/17/2024 12:03:26 PM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-08-17T16:03:24Z)
+08/17/2024 12:03:28 PM - fissure.dashboard.frontend: [CRITICAL] [GUI] Shutting Down HIPRFISR
+08/17/2024 12:03:28 PM - fissure.dashboard: [DEBUG] [backend] sent message: {'Identifier': 'Dashboard', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['HiprFisr']}, 'Type': 'Commands'}
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [frontend] received message: {'Identifier': 'Dashboard', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['HiprFisr']}, 'Type': 'Commands', 'callback': 'shutdown'}
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] executing callback: shutdown with parameters: {'identifiers': ['HiprFisr']}
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [INFO] received shutdown command for ['HiprFisr']
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands'}
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands'}
+08/17/2024 12:03:28 PM - fissure.pd: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands', 'callback': 'shutdown'}
+08/17/2024 12:03:28 PM - fissure.pd: [DEBUG] executing callback: shutdown with parameters: {'identifiers': ['PD', 'TSI']}
+08/17/2024 12:03:28 PM - fissure.pd: [INFO] recieved shutdown command
+08/17/2024 12:03:28 PM - fissure.tsi: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands', 'callback': 'shutdown'}
+08/17/2024 12:03:28 PM - fissure.tsi: [DEBUG] executing callback: shutdown with parameters: {'identifiers': ['PD', 'TSI']}
+08/17/2024 12:03:28 PM - fissure.tsi: [INFO] recieved shutdown command
+08/17/2024 12:03:28 PM - fissure.pd: [INFO] PD: Stopping PD bit listener...
+08/17/2024 12:03:28 PM - fissure.pd: [DEBUG] [backend] sent message: {'Identifier': 'PD', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+08/17/2024 12:03:28 PM - fissure.pd: [DEBUG] [backend] disconnected from ipc://fissure-backend [-hb (hb), -msg (msg)]
+08/17/2024 12:03:28 PM - fissure.pd: [DEBUG] [backend] shutdown
+08/17/2024 12:03:28 PM - fissure.pd: [INFO] === SHUTDOWN ===
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'PD', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status', 'SenderID': 'PD-14d82be1-8b2e-4200-ac21-3acb2fde747e'}
+08/17/2024 12:03:28 PM - fissure.tsi: [DEBUG] [backend] sent message: {'Identifier': 'TSI', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+08/17/2024 12:03:28 PM - fissure.tsi: [DEBUG] [backend] disconnected from ipc://fissure-backend [-hb (hb), -msg (msg)]
+08/17/2024 12:03:28 PM - fissure.tsi: [DEBUG] [backend] shutdown
+08/17/2024 12:03:28 PM - fissure.tsi: [INFO] === SHUTDOWN ===
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'TSI', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status', 'SenderID': 'TSI-9e19a612-6109-4ce7-b98a-3ddbe4ef5656'}
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [frontend] shutdown (ipc://fissure [-hb (hb), -msg (msg)])
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [frontend] removing ipc socket: fissure-hb
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [frontend] removing ipc socket: fissure-msg
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [backend] shutdown (ipc://fissure-backend [-hb (hb), -msg (msg)])
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [backend] removing ipc socket: fissure-backend-hb
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [backend] removing ipc socket: fissure-backend-msg
+08/17/2024 12:03:28 PM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [INFO] === SHUTDOWN ===
+08/17/2024 12:03:28 PM - fissure: [DEBUG] Cleaning Up ZMQ Context
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+08/17/2024 12:03:28 PM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+08/17/2024 12:03:28 PM - fissure.dashboard.backend: [WARNING] received shutdown notice from HiprFisr
+08/17/2024 12:03:28 PM - fissure.dashboard: [DEBUG] [backend] disconnected from ipc://fissure [-hb (hb), -msg (msg)]
+08/17/2024 12:03:29 PM - qasync._unix._Selector: [DEBUG] Closing

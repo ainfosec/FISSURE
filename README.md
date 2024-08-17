@@ -192,7 +192,7 @@ These operating systems are still in beta status. They are under development and
 
 Operating System | FISSURE Branch | Default GNU Radio Version
 :-------------------------:|:-------------------------:|:-------------------------:
-| DragonOS Focal (x86_64) | Python3 | maint-3.8 |
+| None |  |  |
 
 Note: Certain software tools do not work for every OS. Refer to [Known Conflicts and Third-Party Software](https://fissure.readthedocs.io/en/latest/pages/installation.html#known-conflicts)
 

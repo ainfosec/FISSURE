@@ -1,6 +1,20 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-08-17
+
+Removing DragonOS Focal installer.
+
+### Changed
+
+- Updated README to remove DragonOS Focal
+- Removed DragonOS Focal from installer. Exits if detected.
+- Adding deprecation warning to README in other branches
+
+### Fixed
+
+- Forcing setutools<71 for DragonOS FocalX install
+
 ## 2024-08-16
 
 Updating installer for DragonOS FocalX.
