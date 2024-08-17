@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-08-16
+
+Updating installer for DragonOS FocalX.
+
+### Fixed
+
+- Removing unused installer categories for all operating systems
+- Removing installer items already in DragonOS FocalX: qflipper, htop, qtdesigner
+- Exporting FISSURE root folder as part of fissure command to avoid "missing fissure module" errors
+- Adding FISSURE root folder to PYTHONPATH in SensorNode.py
+- Forcing pyzmq>23.0.0 on DragonOS FocalX install to avoid zmq.SocketType errors
+- Adding Network Certificates menu item in the installer for DragonOS FocalX
+- Replacing c++11 with c++17 in gr-ais for DragonOS FocalX
+- Adding depenencies for trackerjacker in DragonOS FocalX
+- Checking gr-bluetooth item as default for DragonOS FocalX
+- Adding opencv-python for DragonOS FocalX
+- Installer now checks DragonOS FocalX instead of DragonOS Focal
+
 ## 2024-08-15
 
 Updating installer for Parrot Security 6.1.

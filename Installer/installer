@@ -8298,7 +8298,7 @@ sudo apt install -y python3-testresources
 sudo python3 -m pip install --upgrade setuptools
 sudo python3 -m pip install --upgrade virtualenv
 #sudo python3 -m pip install matplotlib
-sudo python3 -m pip install PyYAML==5.1
+# sudo python3 -m pip install PyYAML==5.1
 #sudo python3 -m pip install pyyaml
 #wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-scipy/python-scipy_0.19.1-2ubuntu1_amd64.deb  # BROKEN
 #sudo apt-get install -y ./python-scipy_0.19.1-2ubuntu1_amd64.deb  # FIX?  # BROKEN
@@ -8314,7 +8314,7 @@ sudo python3 -m pip install bitarray
 #sudo python3 -m pip install crcmod
 sudo python3 -m pip install pycrypto
 sudo apt-get install -y python-tk
-#sudo python3 -m pip install pyzmq
+sudo python3 -m pip install "pyzmq>23.0.0"
 #sudo apt-get install -y libosmocore-dev
 #sudo apt-get install -y liborc-0.4-dev
 sudo apt-get install -y expect
@@ -8343,6 +8343,7 @@ sudo apt-get install -y snapd
 sudo snap install netron
 sudo python3 -m pip install ipython
 sudo python3 -m pip install scikit-learn==1.3.2
+sudo python3 -m pip install opencv-python
 . ~/.bashrc
 """, True, "Minimum Install"))
 
@@ -8355,7 +8356,7 @@ then
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 fi
-/bin/echo -e "cd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
+/bin/echo -e "export PYTHONPATH='""" + fissure_directory + """' \ncd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=__main__.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
@@ -8426,6 +8427,15 @@ cp -a """ + fissure_directory + """/Dissectors/. ~/.config/wireshark/plugins
 ########## Verify ##########
 wireshark --help
 """, True, "Minimum Install"))
+
+# Network Certificates 
+programs_dragonOS_focalx.append(('Network Certificates',
+"""cd '""" + fissure_directory + """'
+export PYTHONPATH='""" + fissure_directory + """':$PYTHONPATH
+python3 ./fissure/cli.py
+########## Verify ##########
+ls '""" + fissure_directory + """/certificates'
+""",True,'Minimum Install'))
 
 # # LimeSDR
 # programs_dragonOS_focalx.append(('LimeSDR (288.6 MB)',
@@ -8593,15 +8603,15 @@ ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
 # ls /usr/lib/python*/*/gnuradio/iio
 # """,True,'Hardware'))
 
-# qFlipper
-programs_dragonOS_focalx.append(('qFlipper',
-"""mkdir -p ~/Installed_by_FISSURE/qFlipper
-cd ~/Installed_by_FISSURE/qFlipper
-wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.one/builds/qFlipper/dev/
-chmod +x qFlipper*
-########## Verify ##########
-ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
-""",True,'Hardware'))
+# # qFlipper
+# programs_dragonOS_focalx.append(('qFlipper',
+# """mkdir -p ~/Installed_by_FISSURE/qFlipper
+# cd ~/Installed_by_FISSURE/qFlipper
+# wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.one/builds/qFlipper/dev/
+# chmod +x qFlipper*
+# ########## Verify ##########
+# ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
+# """,True,'Hardware'))
 
 # gr-acars-3.10ng
 programs_dragonOS_focalx.append(('gr-acars-3.10ng',
@@ -8655,6 +8665,7 @@ programs_dragonOS_focalx.append(('gr-ais',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/
+  sed -i 's/c++11/c++17/g' ./CMakeLists.txt
   sudo rm -Rf build
   mkdir build
   cd build
@@ -8716,7 +8727,7 @@ else
 fi
 ########## Verify ##########
 ls /usr/local/bin/btrx
-""", False, 'Out-of-Tree Modules'))
+""", True, 'Out-of-Tree Modules'))
 
 # gr-clapper_plus
 programs_dragonOS_focalx.append(('gr-clapper_plus',
@@ -9133,12 +9144,12 @@ make
 ~/Installed_by_FISSURE/dump1090/dump1090 --help
 """, True, 'Aircraft'))
 
-# QtDesigner
-programs_dragonOS_focalx.append(('QtDesigner',
-"""sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
-########## Verify ##########
-ls /usr/bin/designer
-""", True, 'Development'))
+# # QtDesigner
+# programs_dragonOS_focalx.append(('QtDesigner',
+# """sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
+# ########## Verify ##########
+# ls /usr/bin/designer
+# """, True, 'Development'))
 
 # Grip
 programs_dragonOS_focalx.append(('Grip',
@@ -9182,43 +9193,43 @@ sudo python3 -m pip install -U pyyaml
 #Needs gr-foo and gr-ieee802-11
 """, True, 'V2V'))
 
-# srsRAN/srsLTE - FIX?
-programs_dragonOS_focalx.append(('srsRAN',
-"""sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev  # srsRAN Already Installed
-sudo apt-get install -y libboost-system-dev libboost-test-dev libboost-thread-dev libqwt-qt5-dev qtbase5-dev  # srsGUI
-mkdir -p ~/Installed_by_FISSURE
-cd ~/Installed_by_FISSURE
-git clone https://github.com/srsLTE/srsGUI.git
-cd srsGUI
-mkdir build
-cd build 
-cmake ..
-make
-sudo make install
-cd ~/Installed_by_FISSURE
-git clone https://github.com/srsRAN/srsRAN.git
-cp """ + fissure_directory + """/Tools/IMSI-Catcher_4G/cell_search.c ~/Installed_by_FISSURE/srsRAN/lib/examples/  # IMSI-Catcher 4G
-cd srsRAN/
-mkdir build
-cd build
-cmake ..
-make
-sudo make install
-sudo ldconfig
-sudo srsran_install_configs.sh user  # user or service, not username
-cd ../..
-mkdir -p ~/.config/srsran
-sudo cp -f """ + fissure_directory + """/Tools/srsRAN_configs/* ~/.config/srsran/
-sudo chown -R $USER:$USER ~/.config/srsran     # IMSI-Catcher 4G
-sudo apt-get install -y fortune cowsay lolcat  # IMSI-Catcher 4G
-# cd srsRAN/srsepc
-# interface=$(route | awk '/default/ {print $0}' | awk 'END {print $(NF)}')
-# sudo ./srsepc_if_masq.sh "$interface"
-# gnome-terminal --tab --title="srsEPC" -- /bin/sh -c 'sudo srsepc; $SHELL' 
-# gnome-terminal --tab --title="srsENB" -- /bin/sh -c 'sudo srsenb; $SHELL'
-########## Verify ##########
-srsenb --help
-""", False, 'LTE'))
+# # srsRAN/srsLTE - FIX?
+# programs_dragonOS_focalx.append(('srsRAN',
+# """sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev  # srsRAN Already Installed
+# sudo apt-get install -y libboost-system-dev libboost-test-dev libboost-thread-dev libqwt-qt5-dev qtbase5-dev  # srsGUI
+# mkdir -p ~/Installed_by_FISSURE
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/srsLTE/srsGUI.git
+# cd srsGUI
+# mkdir build
+# cd build 
+# cmake ..
+# make
+# sudo make install
+# cd ~/Installed_by_FISSURE
+# git clone https://github.com/srsRAN/srsRAN.git
+# cp """ + fissure_directory + """/Tools/IMSI-Catcher_4G/cell_search.c ~/Installed_by_FISSURE/srsRAN/lib/examples/  # IMSI-Catcher 4G
+# cd srsRAN/
+# mkdir build
+# cd build
+# cmake ..
+# make
+# sudo make install
+# sudo ldconfig
+# sudo srsran_install_configs.sh user  # user or service, not username
+# cd ../..
+# mkdir -p ~/.config/srsran
+# sudo cp -f """ + fissure_directory + """/Tools/srsRAN_configs/* ~/.config/srsran/
+# sudo chown -R $USER:$USER ~/.config/srsran     # IMSI-Catcher 4G
+# sudo apt-get install -y fortune cowsay lolcat  # IMSI-Catcher 4G
+# # cd srsRAN/srsepc
+# # interface=$(route | awk '/default/ {print $0}' | awk 'END {print $(NF)}')
+# # sudo ./srsepc_if_masq.sh "$interface"
+# # gnome-terminal --tab --title="srsEPC" -- /bin/sh -c 'sudo srsepc; $SHELL' 
+# # gnome-terminal --tab --title="srsENB" -- /bin/sh -c 'sudo srsenb; $SHELL'
+# ########## Verify ##########
+# srsenb --help
+# """, False, 'LTE'))
 
 # # FALCON - FIX (needs older soapysdr version?)
 # programs_dragonOS_focalx.append(('FALCON',
@@ -9927,7 +9938,10 @@ ls /usr/bin/bless
 
 # trackerjacker - Fix (needs newer scapy version, something else (netattack2?) resets it, some pieces don't work while running it)
 programs_dragonOS_focalx.append(('trackerjacker',
-"""sudo ln -s -f /usr/lib/x86_64-linux-gnu/libc.a /usr/lib/x86_64-linux-gnu/liblibc.a  # Python3.9 missing file
+"""sudo python3 -m pip install pyaml
+sudo python3 -m pip install ruamel.yaml
+sudo python3 -m pip install --upgrade --force-reinstall ruamel.yaml
+sudo ln -s -f /usr/lib/x86_64-linux-gnu/libc.a /usr/lib/x86_64-linux-gnu/liblibc.a  # Python3.9 missing file
 sudo python3 -m pip install trackerjacker --no-dependencies
 ########## Verify ##########
 sudo trackerjacker --help
@@ -10164,12 +10178,12 @@ make
 ls ~/Installed_by_FISSURE/dump978/dump978
 """, True, 'Aircraft'))
 
-# htop
-programs_dragonOS_focalx.append(('htop',
-"""sudo apt-get install -y htop
-########## Verify ##########
-ls /usr/bin/htop
-""",True,'Development'))
+# # htop
+# programs_dragonOS_focalx.append(('htop',
+# """sudo apt-get install -y htop
+# ########## Verify ##########
+# ls /usr/bin/htop
+# """,True,'Development'))
 
 # # OpenWebRX - verify
 # programs_dragonOS_focalx.append(('OpenWebRX',
@@ -18553,6 +18567,14 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
                     parent.setCheckState(0, QtCore.Qt.Checked)
                 else:
                     parent.setCheckState(0, QtCore.Qt.Unchecked)
+
+        # Remove Empty Categories
+        root = self.treeWidget_software.invisibleRootItem()
+        for i in range(root.childCount() - 1, -1, -1):  # Iterate in reverse order
+            parent = root.child(i)
+            if parent.childCount() == 0:
+                root.removeChild(parent)
+
             
     def _connectSlots(self):
         """ Contains the connect functions for all the signals and slots
@@ -18568,7 +18590,8 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         
         # Tables
         self.treeWidget_software.clicked.connect(self._slotTableItemClicked)
-        
+
+
     def _slotOK_Clicked(self):
         """ Install the software.
         """      
@@ -18666,11 +18689,13 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         
         self.loop = False
         
+
     def _slotCancelClicked(self):
         """ Close everything.
         """
         self.close()
         
+
     def _slotTableItemClicked(self, item):
         """ Update text edit box with command text when table row is clicked.
         """
@@ -18686,6 +18711,7 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
                 self.plainTextEdit_commands.setPlainText(self.programs[p][1])
                 break
         
+
     def _slotDeselectClicked(self):
         """ Unchecks all the checkboxes.
         """
@@ -18696,6 +18722,7 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
             item.setCheckState(0, QtCore.Qt.Unchecked)
             iterator+=1  
             
+
     def _slotDefaultClicked(self):
         """ Checks the default checkboxes.
         """
@@ -18712,6 +18739,7 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
                     break           
             iterator+=1  
             
+
     def _slotRankingsClicked(self):
         """ Opens a window with the programs sorted by size.
         """
@@ -18751,12 +18779,14 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
         ret = msgBox.exec_()
         
+
     def _slotExpandAllClicked(self):
         """ Expands the tree widget.
         """
         # Expand
         self.treeWidget_software.expandAll()
         
+
     def _slotCollapseAllClicked(self):
         """ Collapses the tree widget.
         """
@@ -18768,6 +18798,7 @@ class MyThread(QtCore.QThread):
     def __init__(self, n, parent=None):
         QtCore.QThread.__init__(self, parent)
         self.n = n
+
 
     def run(self):
         try:
@@ -18844,6 +18875,8 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
             self.radioButton_ubuntu20_04.setChecked(True)
         elif "Parrot" in stdout:
             self.radioButton_parrot_os_6_1.setChecked(True)
+        elif "DragonOS FocalX" in stdout:
+            self.radioButton_dragonos_focalx.setChecked(True)
         elif "DragonOS Focal" in stdout:
             self.radioButton_dragonOS_focal.setChecked(True)
         elif "KDE neon" in stdout:
@@ -18854,8 +18887,6 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
                 self.radioButton_ubuntu22_04_arm.setChecked(True)
             else:
                 self.radioButton_ubuntu22_04.setChecked(True)            
-        elif "DragonOS FocalX" in stdout:
-            self.radioButton_dragonos_focalx.setChecked(True)
         elif "Kali" in stdout:
             self.radioButton_kali_2023_1.setChecked(True)
         elif "BackBox" in stdout:  # Check this again
@@ -18865,6 +18896,7 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
         
         self.get_os = ""
         
+
     def _connectSlots(self):
         """ Contains the connect functions for all the signals and slots
         """   
@@ -18872,6 +18904,7 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
         self.pushButton_ok.clicked.connect(self._slotOK_Clicked)
         self.pushButton_cancel.clicked.connect(self._slotCancelClicked)
         
+
     def _slotOK_Clicked(self):
         """ Return to open the second install dialog.
         """        
@@ -18899,6 +18932,7 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
             
         self.accept()
         
+
     def _slotCancelClicked(self):
         """ Close everything.
         """
