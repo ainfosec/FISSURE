@@ -1,4 +1,8 @@
-# FISSURE - The RF Framework 
+This branch is deprecated and could be deleted someday. The Python3_maint-3.8 and Python3_maint-3.10 branches were combined into the Python3 branch. Use the Python3 branch for the latest code.
+
+---
+
+# ~FISSURE - The RF Framework~
 
 <img src="/docs/Icons/README/logo.png">
 
