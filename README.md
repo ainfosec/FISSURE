@@ -1,4 +1,8 @@
-# FISSURE - The RF Framework 
+This branch is deprecated and will only be used for updating third-party tools dependent on older versions of software. Use the Python3 branch for the latest code.
+
+---
+
+# ~FISSURE - The RF Framework~
 
 <img src="/docs/Icons/README/logo.png">
 
