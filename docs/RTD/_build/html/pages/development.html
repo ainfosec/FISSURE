@@ -49,16 +49,22 @@
 <li class="toctree-l1"><a class="reference internal" href="components.html">Components</a></li>
 <li class="toctree-l1"><a class="reference internal" href="operation.html">Operation</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Development</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#adding-custom-options">Adding Custom Options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#built-with">Built With</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#modifying-dashboard">Modifying Dashboard</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#qtdesigner">QtDesigner</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dashboard-frontend">Dashboard Frontend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#signals-and-slots">Signals and Slots</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dashboard-backend">Dashboard Backend</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#callbacks">Callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#common-qt-widget-operations">Common Qt Widget Operations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#generic-input-dialogs">Generic Input Dialogs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#style-sheets">Style Sheets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-custom-options">Adding Custom Options</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#attack-flow-graphs">Attack Flow Graphs</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#attack-python-scripts">Attack Python Scripts</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#inspection-flow-graphs">Inspection Flow Graphs</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#modifying-dashboard">Modifying Dashboard</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#qtdesigner">QtDesigner</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#dashboard-py">dashboard.py</a></li>
-</ul>
-</li>
 <li class="toctree-l2"><a class="reference internal" href="#creating-triggers">Creating Triggers</a></li>
 </ul>
 </li>
@@ -91,37 +97,37 @@
              
   <section id="development">
 <h1>Development<a class="headerlink" href="#development" title="Permalink to this heading">¶</a></h1>
-<section id="adding-custom-options">
-<h2>Adding Custom Options<a class="headerlink" href="#adding-custom-options" title="Permalink to this heading">¶</a></h2>
-<p><strong>Options Dialog</strong></p>
-<p>Bring up the options dialog in Qt Designer using the <cite>designer</cite> command and then open the <code class="docutils literal notranslate"><span class="pre">FISSURE/UI/options.ui</span></code> file. Click the arrows for the stacked widget (top right) to locate the table where the custom option will be inserted. Double-click on the table and add a new row with the name of the variable. Set the font size to match the other rows with the “Properties&lt;&lt;” button.</p>
-<img alt="../_images/options.png" src="../_images/options.png" />
-<p><strong>default.yaml</strong></p>
-<p>Open <code class="docutils literal notranslate"><span class="pre">FISSURE/YAML/User</span> <span class="pre">Configs/default.yaml</span></code> and insert the variable name and value (fft_size: 4096) for the new option.</p>
-<p><strong>Accessing Stored Values</strong></p>
-<p>Access the variables throughout the FISSURE code from the backend or other local settings locations such as: <cite>dashboard.backend.settings[‘fft_size’]</cite> or <cite>self.settings[‘fft_size’]</cite>.</p>
-</section>
+<p>This section will explain what it takes to edit the code for FISSURE so you can make your own improvements. FISSURE is intended to make edits easy for the user and the developers want to hear improvement ideas to the interface as well as any new code that you want to share for the project.</p>
 <section id="built-with">
 <h2>Built With<a class="headerlink" href="#built-with" title="Permalink to this heading">¶</a></h2>
-<p>The following software tools are used to edit FISSURE.</p>
+<p>The following software tools are used to edit the different aspects of FISSURE.</p>
 <p><strong>Read the Docs</strong></p>
 <p>To regenerate the offline HTML RTD documentation:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span><span class="nb">cd</span><span class="w"> </span>~/FISSURE/docs/RTD
 <span class="gp">$ </span>make<span class="w"> </span>clean<span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span>make<span class="w"> </span>html
 </pre></div>
 </div>
+<p>The updated html pages will be found in the <code class="docutils literal notranslate"><span class="pre">./docs/RTD/_build/html/pages/</span></code> folder. It is helpful when suggesting changes to the developers or when making pull requests to share the updated text snippets or the .rst files located in <code class="docutils literal notranslate"><span class="pre">./docs/RTD/pages/</span></code> in their entirety.</p>
 <p><strong>Git</strong></p>
-<p>To add a new git submodule for repositories like GNU Radio out-of-tree modules:</p>
+<p>To submit changes for FISSURE, clone the git repository with the SSH address to avoid errors when doing a push later on. Generate an SSH key and add it to your GitHub access settings by following the installation instructions.</p>
+<p>FISSURE contains many git submodules linked to online repositories for downloading GNU Radio out-of-tree modules. To add a new git submodule to the FISSURE git project the following command is needed:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>git<span class="w"> </span>submodule<span class="w"> </span>add<span class="w"> </span>-b<span class="w"> </span>maint-3.8<span class="w"> </span>https://github.com/someone/gr-something.git<span class="w"> </span>./Custom_Blocks/maint-3.8/gr-something
 </pre></div>
 </div>
-<p>To submit changes for FISSURE, clone the git repository with the SSH address to avoid errors when doing a push later on. Generate an SSH key and add it to your GitHub access settings.</p>
+<p>To copy git submodules in bulk from one project to another the following steps can be performed, but keep in mind it may be easier to add them individually with the command listed above to avoid errors with more complicated project configurations.</p>
+<ol class="arabic simple">
+<li><p>Get rid of the files in each OOT module folder except .git</p></li>
+<li><p>Copy the modules folder <code class="docutils literal notranslate"><span class="pre">.git/</span></code></p></li>
+<li><p>Copy the submodule lines in <code class="docutils literal notranslate"><span class="pre">.git/config</span></code></p></li>
+<li><p>Copy the submodule lines in <code class="docutils literal notranslate"><span class="pre">.gitmodules</span></code></p></li>
+</ol>
 <p><strong>Qt Designer</strong></p>
+<p>Qt Designer is used to edit the GUI widgets for the Dashboard and other windows. Existing examples of widgets used with other features can be an excellent guide when making edits for the first time. An important note to recognize is the start of the object name is linked to the style sheets. Styling was removed from the .ui file because it takes precedence over applying changes through the style sheets/View menu items. Refer to the style sheets section below and the .css files in the  <code class="docutils literal notranslate"><span class="pre">./UI/Style_Sheets/</span></code> folder for examples of global and specific styling assignments for widgets.</p>
 <p>Python2 branch:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>python-qt4<span class="w"> </span>qt4-designer
 </pre></div>
 </div>
-<p>Python3 branches:</p>
+<p>Python3 branch:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>apt-get<span class="w"> </span>install<span class="w"> </span>-y<span class="w"> </span>build-essential<span class="w"> </span>qtcreator<span class="w"> </span>qt5-default
 </pre></div>
 </div>
@@ -129,7 +135,9 @@
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>designer
 </pre></div>
 </div>
+<p>Open any .ui file found in the <code class="docutils literal notranslate"><span class="pre">./UI/</span></code> folder to begin editing.</p>
 <p><strong>Grip</strong></p>
+<p>Grip was previously used for generating html help files from markdown files but it has since been replaced by .rst files and Read the Docs.</p>
 <p>Python2 branch:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$ </span>sudo<span class="w"> </span>python2<span class="w"> </span>-m<span class="w"> </span>pip<span class="w"> </span>install<span class="w"> </span>grip
 </pre></div>
@@ -143,135 +151,22 @@
 </pre></div>
 </div>
 </section>
-<section id="attack-flow-graphs">
-<h2>Attack Flow Graphs<a class="headerlink" href="#attack-flow-graphs" title="Permalink to this heading">¶</a></h2>
-<p><strong>Flow Graph Configuration</strong></p>
-<p>A new Python file is generated each time a .grc file is executed in GNU Radio Companion. The format of this auto-generated Python file is used by FISSURE to perform actions like: displaying variable names, starting attacks, changing values for a running flow graph, etc. Editing the Python file may cause FISSURE to not function properly.</p>
-<p><em>GUI vs. No GUI</em></p>
-<p>Flow graphs are called differently depending on if there is a GUI or not. Flow graphs configured to “No GUI” mode in the “Options” block will be loaded as a Python module prior to runtime and then modify the default variables. The standard start(), wait(), and stop() commands are applied in this case.</p>
-<p>Flow graphs with GUIs have their Python files called directly and behave similarly to inspection flow graphs (See <em>Help&gt;&gt;Inspection Flow Graphs</em>). Variables can be changed from the GNU Radio GUI in the form of GUI widgets or as command line arguments from parameter blocks.</p>
-<p><em>Options Block (No GUI)</em></p>
-<p>Within the “Options” block:</p>
-<ul class="simple">
-<li><p>“ID” must match the file name</p></li>
-<li><p>“Generate Options” must be set to “No GUI”</p></li>
-</ul>
-<p><em>Special Variables</em></p>
-<p>The Dashboard populates certain flow graphs variable names like “ip_address” and “serial” to match the values in the Attack hardware button. These variables must be named correctly in the flow graph to be populated automatically and handled as intended. Refer to other attack flow graphs as examples for how these variables should be utilized.</p>
-<p><em>Numerical Strings</em></p>
-<p>To help specify that a string variable containing only numerical values is indeed a string and should not to be interpreted as a float, a new variable named “string_variables” can be added to the flow graph. Its value must be a list with the names of the variables to be considered as exceptions: [“variable_name”]</p>
-<p>For example:</p>
-<img alt="../_images/string_variables.png" src="../_images/string_variables.png" />
-<p><strong>Uploading Attack Flow Graph</strong></p>
-<p>Attack flow graphs can be added to FISSURE within the <em>Library&gt;Add</em> tab by selecting a protocol and choosing “Attack”. Attacks will be visible within the Attack tree if the “Attack Template Name” is entered properly.</p>
-</section>
-<section id="attack-python-scripts">
-<h2>Attack Python Scripts<a class="headerlink" href="#attack-python-scripts" title="Permalink to this heading">¶</a></h2>
-<p><strong>Creating Python Scripts</strong></p>
-<p>Non-GNU Radio attacks can be added to the FISSURE library by uploading specially configured Python (.py) files. A function is needed within the Python script to identify which variables can be modified in the FISSURE Dashboard (<cite>getArguments()</cite>). Those variables are used by the system as command line arguments during execution of the script. All FISSURE branches accept both Python2 and Python3 attack scripts.</p>
-<p>FISSURE will parse a variable named “run_with_sudo” set to True or False and set the “Run with sudo” checkbox upon loading the attack in the Single-Stage Attack tab. For multi-stage attacks, this variable is listed in the generated tables and its value is used to run the script with or without sudo. If no variable is found, then Python scripts will rely on the checkbox for single-stage attacks and be run with sudo for multi-stage attacks.</p>
-<p>Variables with filepath in their name will automatically generate a file navigation button for tables inside FISSURE. If the filepath contains “/FISSURE/”, the string will be split and appended to the user’s location for FISSURE. This is to make configuring an attack easier by accounting for the current username in filepaths.</p>
-<p><em>Scapy Example</em></p>
-<p>The following example uses Scapy to send multiple deauthentication frames from a wireless interface. Use the code as a reference for creating future Python scripts.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scapy.all</span> <span class="kn">import</span> <span class="n">Dot11</span><span class="p">,</span><span class="n">Dot11Deauth</span><span class="p">,</span><span class="n">RadioTap</span><span class="p">,</span><span class="n">sendp</span>
-<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
-
-<span class="c1">#################################################</span>
-<span class="c1">############ Default FISSURE Header ############</span>
-<span class="c1">#################################################</span>
-<span class="k">def</span> <span class="nf">getArguments</span><span class="p">():</span>
-    <span class="n">client</span> <span class="o">=</span> <span class="s1">&#39;00:11:22:33:44:55&#39;</span>        <span class="c1"># Target MAC address</span>
-    <span class="n">bssid</span> <span class="o">=</span> <span class="s1">&#39;AA:BB:CC:11:22:33&#39;</span>         <span class="c1"># Access Point MAC address</span>
-    <span class="n">iface</span> <span class="o">=</span> <span class="s1">&#39;wlan0&#39;</span>                     <span class="c1"># Wireless interface name</span>
-    <span class="n">channel</span> <span class="o">=</span> <span class="mi">1</span>                         <span class="c1"># Wireless channel</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="mf">0.01</span>                     <span class="c1"># Scapy interval</span>
-    <span class="n">arg_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;client&#39;</span><span class="p">,</span><span class="s1">&#39;bssid&#39;</span><span class="p">,</span><span class="s1">&#39;iface&#39;</span><span class="p">,</span><span class="s1">&#39;channel&#39;</span><span class="p">,</span><span class="s1">&#39;interval&#39;</span><span class="p">]</span>
-    <span class="n">arg_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">client</span><span class="p">,</span> <span class="n">bssid</span><span class="p">,</span> <span class="n">iface</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">interval</span><span class="p">]</span>
-
-    <span class="k">return</span> <span class="p">(</span><span class="n">arg_names</span><span class="p">,</span><span class="n">arg_values</span><span class="p">)</span>
-
-
-<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-
-    <span class="c1"># Default Values</span>
-    <span class="n">client</span> <span class="o">=</span> <span class="s1">&#39;00:11:22:33:44:55&#39;</span>        <span class="c1"># Target MAC address</span>
-    <span class="n">bssid</span> <span class="o">=</span> <span class="s1">&#39;AA:BB:CC:11:22:33&#39;</span>         <span class="c1"># Access Point MAC address</span>
-    <span class="n">iface</span> <span class="o">=</span> <span class="s1">&#39;wlan0&#39;</span>                     <span class="c1"># Wireless interface name</span>
-    <span class="n">channel</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>                       <span class="c1"># Wireless channel</span>
-    <span class="n">interval</span> <span class="o">=</span> <span class="s1">&#39;0.01&#39;</span>                   <span class="c1"># Scapy interval</span>
-
-    <span class="c1"># Accept Command Line Arguments</span>
-    <span class="k">try</span><span class="p">:</span>
-        <span class="n">client</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">bssid</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
-        <span class="n">iface</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
-        <span class="n">channel</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
-        <span class="n">interval</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
-    <span class="k">except</span><span class="p">:</span>
-        <span class="k">pass</span>
-
-<span class="c1">#################################################</span>
-
-    <span class="c1"># Create Frame</span>
-    <span class="n">packet</span> <span class="o">=</span> <span class="n">RadioTap</span><span class="p">()</span><span class="o">/</span><span class="n">Dot11</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">subtype</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">addr1</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="n">addr2</span><span class="o">=</span><span class="n">bssid</span><span class="p">,</span> <span class="n">addr3</span><span class="o">=</span><span class="n">bssid</span><span class="p">)</span><span class="o">/</span><span class="n">Dot11Deauth</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
-
-    <span class="c1"># Set Monitor Mode and Channel</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo ifconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; down&quot;</span><span class="p">)</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo iwconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; mode monitor&quot;</span><span class="p">)</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo ifconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; up&quot;</span><span class="p">)</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo iwconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; channel &quot;</span> <span class="o">+</span> <span class="n">channel</span><span class="p">)</span>
-
-    <span class="c1"># Send Frame</span>
-    <span class="n">sendp</span><span class="p">(</span><span class="n">packet</span><span class="p">,</span> <span class="n">iface</span><span class="o">=</span><span class="n">iface</span><span class="p">,</span> <span class="n">inter</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">interval</span><span class="p">),</span> <span class="n">loop</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
-</pre></div>
-</div>
-<p><strong>Uploading Attack Files</strong></p>
-<p>Python files can be uploaded to FISSURE within the <em>Library&gt;&gt;Add</em> tab by choosing a protocol and selecting “Attack”. The file type must be set to “Python2 Script” or “Python3 Script” and the file must have a valid .py extension. Attacks added to the library and named with a proper “Attack Template Name” will immediately show up in the Attack tree widget.</p>
-</section>
-<section id="inspection-flow-graphs">
-<h2>Inspection Flow Graphs<a class="headerlink" href="#inspection-flow-graphs" title="Permalink to this heading">¶</a></h2>
-<p>Inspection flow graphs can be added to FISSURE to perform frequently used analysis on live streams from SDRs or directly on prerecorded data files. Flow graph Python files (.py) are called directly with Python2/3 and use the GNU Radio “parameter” block as arguments to the Python call. This enables variables found in blocks that do not utilize callbacks (like IP address or serial number) to be changed prior to runtime. The following are instructions for creating a new inspection flow graph within the <em>IQ Data&gt;&gt;Inspection</em> tab.</p>
-<img alt="../_images/inspection1.png" src="../_images/inspection1.png" />
-<p><strong>Location</strong></p>
-<p>Inspection flow graphs must be placed in the <code class="docutils literal notranslate"><span class="pre">/FISSURE/Flow</span> <span class="pre">Graph</span> <span class="pre">Library/maint-3.10/Inspection</span> <span class="pre">Flow</span> <span class="pre">Graphs/</span></code> or <code class="docutils literal notranslate"><span class="pre">/FISSURE/Flow</span> <span class="pre">Graph</span> <span class="pre">Library/maint-3.10/Inspection</span> <span class="pre">Flow</span> <span class="pre">Graphs/File/</span></code> directories. Refer to other inspection flow graphs as examples when creating new flow graphs.</p>
-<p><strong>library.yaml</strong></p>
-<p>The names of inspection flow graphs are assigned to Python files within the <em>library.yaml</em> file. Assign names under the applicable hardware type or under “File” if the new flow graph will be used on IQ files.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Inspection Flow Graphs:</span>
-<span class="go">     802.11x Adapter:</span>
-<span class="go">     - None</span>
-<span class="go">     Computer:</span>
-<span class="go">     - None</span>
-<span class="go">     File:</span>
-<span class="go">     - instantaneous_frequency.py</span>
-<span class="go">     - signal_envelope.py</span>
-<span class="go">     - waterfall.py</span>
-<span class="go">     HackRF:</span>
-<span class="go">     - instantaneous_frequency_hackrf.py</span>
-<span class="go">     - signal_envelope_hackrf.py</span>
-<span class="go">     - time_sink_hackrf.py</span>
-<span class="go">     - time_sink_1_10_100_hackrf.py</span>
-<span class="go">     - waterfall_hackrf.py</span>
-</pre></div>
-</div>
-<p><strong>GNU Radio</strong></p>
-<p>The following are helpful tips for configuring the GNU Radio flow graph:</p>
-<ul class="simple">
-<li><p>The “Options” block ID must match (without the extension) what is entered in the <em>library.yaml</em> file</p></li>
-<li><p>Keep the parameter blocks as a string type and apply conversions within other blocks</p></li>
-<li><p>Add “QT GUI Chooser” blocks for variables that will be changed during runtime such as frequency and sample rate. Fill out the GUI Hints to make it look nice.</p></li>
-<li><p>Follow examples of other flow graphs on how to configure device/IP addresses, serial numbers, and similar arguments for SDR blocks. This will allow FISSURE-specific features like the IQ hardware button to pass information into the flow graph properly.</p></li>
-<li><p>Parameter blocks will replace ‘_’ with ‘-’ when using variables names as command line arguments for the flow graph Python call (FISSURE will handle this)</p></li>
-<li><p>Enter filepath and sample rate as “filepath” and “sample_rate” in GNU Radio variable names</p></li>
-</ul>
-<p><strong>Dashboard</strong></p>
-<p>Double-click/load an IQ file in the IQ Data tab Data Viewer and enter sample rate and frequency information prior to loading a file-based inspection flow graph. These values will automatically copy over to the table if available.</p>
-</section>
 <section id="modifying-dashboard">
 <h2>Modifying Dashboard<a class="headerlink" href="#modifying-dashboard" title="Permalink to this heading">¶</a></h2>
-<p>This guide will provide examples on how to add GUI elements to the FISSURE Dashboard and interact with those elements within the Dashboard.py code.</p>
+<p>This guide will provide examples on how to add GUI elements to the FISSURE Dashboard and interact with those elements within the FISSURE code. The process for editing FISSURE is as follows:</p>
+<ol class="arabic simple">
+<li><p>Add new widgets to .ui files with Qt Designer</p></li>
+<li><p>Connect signals from the widgets to slots</p></li>
+<li><p>Messages sent to other components first go to the Dashboard backend</p></li>
+<li><p>The Dashboard Backend forwards messages to the HIPRFISR</p></li>
+<li><p>The HIPRFISR callbacks handle/forward the message to other components on the network</p></li>
+<li><p>The component callbacks handle the message and return status messages and data back to the HIPRFISR callbacks</p></li>
+<li><p>The HIPRFISR forwards the status messages to the Dashboard callbacks</p></li>
+<li><p>The Dashboard callbacks update the frontend GUI components</p></li>
+</ol>
 <section id="qtdesigner">
 <h3>QtDesigner<a class="headerlink" href="#qtdesigner" title="Permalink to this heading">¶</a></h3>
-<p>Launch QtDesigner with the <cite>designer</cite> command and open the <code class="docutils literal notranslate"><span class="pre">./UI/dashboard.ui</span></code> file. Menu items are stored in the <code class="docutils literal notranslate"><span class="pre">./UI/FissureDashboard.ui</span></code> file and other supporting files can also be found in the same folder.</p>
+<p>Launch QtDesigner with the <cite>designer</cite> command and open the <code class="docutils literal notranslate"><span class="pre">./UI/dashboard.ui</span></code> file to edit the Dashboard. Menu items are stored in the <code class="docutils literal notranslate"><span class="pre">./UI/FissureDashboard.ui</span></code> file and other supporting files can also be found in the same folder.</p>
 <img alt="../_images/qtdesigner.png" src="../_images/qtdesigner.png" />
 <p><strong>Creating New Widgets</strong></p>
 <p>Frequently used widgets:</p>
@@ -294,108 +189,128 @@
 <li><p>List Widget</p></li>
 </ul>
 <p>Drag widgets onto the Dashboard and modify their property values in the Property Editor.</p>
-<p>It is suggested to use an objectName consistent with the FINDINGS naming convention: _widget-type_tab-location_description_ (e.g. pushButton_automation_manual, textEdit_iq_timeslot_input)</p>
-<p>Menu items can be added by clicking “Type Here” in any of the menus/submenus and entering text. Separators can be added by clicking “Add Separator” and then dragged or by right clicking and clicking “Insert Separator”. Submenus can be added by clicking the right side of any menu item.</p>
-<p><strong>Styling Widgets</strong></p>
-<p>Many labels and frames use stylesheets. Stylesheets can be applied to all widgets sharing the same type or only to specific widgets. Each widget has their own unique properties that can be customized. If possible, avoid setting the stylesheets in the <em>dashboard.py</em> code to better manage and organize the stylesheets.</p>
-<p>Tab Widget Example 1:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>tabWidget<span class="w"> </span>&gt;<span class="w"> </span>QTabBar::tab<span class="w"> </span><span class="o">{</span>
-<span class="go">    width: 132px;</span>
-<span class="go">    height:27px;</span>
-<span class="go">    margin-top: 0px;</span>
-<span class="go">}</span>
+<p>It is suggested to use an objectName consistent with the following naming convention while also being mindful of the style sheet naming conventions: _widget-type_tab-location_description_ (e.g. pushButton_automation_manual, textEdit_iq_timeslot_input)</p>
+<p>Menu items can be added by clicking “Type Here” in any of the menus/submenus and entering text. Separators can be added by clicking “Add Separator” and then dragged or by right clicking and clicking “Insert Separator”. Submenus can be added by clicking the right side of any menu item. There is an issue with Qt Designer adding new menu items after too many have been added. The screen will cut off the bottom of the menu but you can still navigate with the arrow keys and type in new items. To rearrange the items, close Qt Designer and open the .ui file in a text editor to readjust their positions.</p>
+</section>
+<section id="dashboard-frontend">
+<h3>Dashboard Frontend<a class="headerlink" href="#dashboard-frontend" title="Permalink to this heading">¶</a></h3>
+<p>The Dashboard code is separated by Frontend, Backend, UI Components, and Slots. The Frontend code is responsible for the initializing the GUI elements and connecting signals to slots. Each tab has their own initialization function that is called for setting default values and initializing variables. The Frontend also recalls FISSURE settings and launches the Backend code.</p>
+</section>
+<section id="signals-and-slots">
+<h3>Signals and Slots<a class="headerlink" href="#signals-and-slots" title="Permalink to this heading">¶</a></h3>
+<p>When an action is performed on a Qt widget the function that gets called is assigned through connect functions. The <code class="docutils literal notranslate"><span class="pre">connect_slots()</span></code> function calls other connect functions grouped by the different FISSURE tabs and menus. The following is an example of how to connect a widget to a function:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">connect_attack_slots</span><span class="p">(</span><span class="n">dashboard</span><span class="p">:</span> <span class="n">Dashboard</span><span class="p">):</span>
+    <span class="c1"># Check Box</span>
+    <span class="n">dashboard</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">checkBox_attack_show_all</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="k">lambda</span><span class="p">:</span> <span class="n">AttackTabSlots</span><span class="o">.</span><span class="n">_slotAttackProtocols</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+    <span class="p">)</span>
 
-<span class="gp">#</span>tabWidget<span class="w"> </span>&gt;<span class="w"> </span>QTabBar::tab:!selected<span class="w"> </span><span class="o">{</span>
-<span class="go">    margin-top: 6px;</span>
-<span class="go">    height: 21px;</span>
-<span class="go">    width: 132px;</span>
-<span class="go">}</span>
+    <span class="c1"># Combo Box</span>
+    <span class="n">dashboard</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">comboBox_packet_protocols</span><span class="o">.</span><span class="n">currentIndexChanged</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="k">lambda</span><span class="p">:</span> <span class="n">AttackTabSlots</span><span class="o">.</span><span class="n">_slotPacketProtocols</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+    <span class="p">)</span>
 
-<span class="go">QTabBar::tab:disabled {</span>
-<span class="go">    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #eeeeee, stop:0.12 #888888, stop:0.3 #666666,   stop:0.85 #444444, stop:1 #444444);</span>
-<span class="go">    border: 1px solid #444444;</span>
-<span class="go">    color: rgb(150, 150, 150);</span>
-<span class="go">}</span>
-
-<span class="go">QTabWidget::pane {</span>
-<span class="go">    border: 1px solid #17365D;</span>
-<span class="go">}</span>
-
-<span class="go">QTabBar::tab {</span>
-<span class="go">    qproperty-alignment: AlignCenter;</span>
-<span class="go">    border-top-left-radius: 15px;</span>
-<span class="go">    border-top-right-radius: 15px;</span>
-<span class="go">    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);</span>
-<span class="go">    border: 1px solid #17365D;</span>
-<span class="go">    color:rgb(0, 220, 0);</span>
-<span class="go">    font: bold 10pt &quot;Ubuntu&quot;;</span>
-<span class="go">    margin-right:1px;</span>
-<span class="go">    width: 132px;</span>
-<span class="go">    height:22px;</span>
-<span class="go">    margin-top: 3px;</span>
-<span class="go">}</span>
-
-<span class="go">QTabBar::tab:!selected {</span>
-<span class="go">    margin-top: 7px;</span>
-<span class="go">    height: 18px;</span>
-<span class="go">    color: rgb(255, 255, 255);</span>
-<span class="go">}</span>
+    <span class="c1"># Push Button</span>
+    <span class="n">dashboard</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButton_packet_restore_defaults</span><span class="o">.</span><span class="n">clicked</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
+        <span class="k">lambda</span><span class="p">:</span> <span class="n">AttackTabSlots</span><span class="o">.</span><span class="n">_slotPacketRestoreDefaultsClicked</span><span class="p">(</span><span class="n">dashboard</span><span class="p">)</span>
+    <span class="p">)</span>
 </pre></div>
 </div>
-<p>Tab Widget Example 2:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>tabWidget_3<span class="w"> </span>&gt;<span class="w"> </span>QTabBar::tab<span class="o">{</span>width:110px<span class="o">}</span>
-</pre></div>
-</div>
-<p>Label Example 1:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">QLabel#label_294 {</span>
-<span class="go">    qproperty-alignment: AlignCenter;</span>
-<span class="go">    border: 1px solid #17365D;</span>
-<span class="go">    border-top-left-radius: 15px;</span>
-<span class="go">    border-top-right-radius: 15px;</span>
-<span class="go">    background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);</span>
-<span class="go">    padding: 0px 0px;</span>
-<span class="go">    color: rgb(255, 255, 255);</span>
-<span class="go">    max-height: 20px;</span>
-<span class="go">    font: bold 10pt &quot;Ubuntu&quot;;</span>
-<span class="go">}</span>
-</pre></div>
-</div>
-<p>Frame Example 1:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">QFrame#frame_9 {</span>
-<span class="go">    background-color: rgb(251, 251, 251);</span>
-<span class="go">    border: 1px solid #17365D;</span>
-<span class="go">    border-bottom-left-radius: 15px;</span>
-<span class="go">    border-bottom-right-radius: 15px;</span>
-<span class="go">}</span>
-</pre></div>
-</div>
-<p>Push Button Example 1:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">#</span>pushButton_top_tsi<span class="o">{</span>
-<span class="go">    color: rgb(0, 0, 0,);</span>
-<span class="go">    padding: 45px 0px 0px 92px;</span>
-<span class="go">    background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));</span>
-<span class="go">    border-style: outset;</span>
-<span class="go">    border-width: 2px;</span>
-<span class="go">    border-radius: 10px;</span>
-<span class="go">    /*border-color: #152947;*/</span>
-<span class="go">    border-color:  #17365D;</span>
-<span class="go">}</span>
+<p>The <code class="docutils literal notranslate"><span class="pre">./fissure/Dashboard/Slots/</span></code> folder contains the functions for each FISSURE tab/section. The <cite>dashboard</cite> object passed into each function provides the means to access the .ui objects. Function in other tabs can be access through the <cite>fissure</cite> import item like in this example: <code class="docutils literal notranslate"><span class="pre">fissure.Dashboard.Slots.IQDataTabSlots._slotIQ_LoadIQ_Data(dashboard)</span></code>.</p>
+<p>There are two types of slots, synchronous and asynchronous. Synchronous functions execute sequentially while asynchronous functions do not have to block operations. Asynchronous messages are primarily used for functions that work with FISSURE network commands. This ensures other actions can be performed while messages are passed between components. An example of a synchronous and asynchronous slot is shown below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nd">@QtCore</span><span class="o">.</span><span class="n">pyqtSlot</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">_slotIQ_RecordSigMF_Clicked</span><span class="p">(</span><span class="n">dashboard</span><span class="p">:</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Follows SigMF standard for recording IQ data when enabled.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Enabled</span>
+    <span class="n">get_filename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">tableWidget_iq_record</span><span class="o">.</span><span class="n">item</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">text</span><span class="p">())</span>
+    <span class="o">.</span>
+    <span class="o">.</span>
+    <span class="o">.</span>
 
-<span class="gp">#</span>pushButton_top_tsi:hover<span class="o">{</span>
-<span class="go">    background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(170, 170, 170,50));</span>
-<span class="go">}</span>
-
-<span class="gp">#</span>pushButton_top_tsi:pressed<span class="o">{</span>
-<span class="go">    background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));</span>
-<span class="go">    padding: 47px -2px 0px 92px;</span>
-<span class="go">}</span>
+<span class="nd">@qasync</span><span class="o">.</span><span class="n">asyncSlot</span><span class="p">(</span><span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">)</span>
+<span class="k">async</span> <span class="k">def</span> <span class="nf">_slotIQ_InspectionFG_StartClicked</span><span class="p">(</span><span class="n">dashboard</span><span class="p">:</span> <span class="n">QtCore</span><span class="o">.</span><span class="n">QObject</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Starts the inspection flow graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Stop Flow Graph</span>
+    <span class="k">if</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">pushButton_iq_inspection_fg_start</span><span class="o">.</span><span class="n">text</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Stop&quot;</span><span class="p">:</span>
+        <span class="c1"># Send Message</span>
+        <span class="k">await</span> <span class="n">dashboard</span><span class="o">.</span><span class="n">backend</span><span class="o">.</span><span class="n">inspectionFlowGraphStop</span><span class="p">(</span><span class="n">dashboard</span><span class="o">.</span><span class="n">active_sensor_node</span><span class="p">,</span> <span class="s1">&#39;Flow Graph - GUI&#39;</span><span class="p">)</span>
+    <span class="o">.</span>
+    <span class="o">.</span>
+    <span class="o">.</span>
 </pre></div>
 </div>
 </section>
-<section id="dashboard-py">
-<h3>dashboard.py<a class="headerlink" href="#dashboard-py" title="Permalink to this heading">¶</a></h3>
-<p>Any widget in the Dashboard can be referenced with <cite>self.objectName</cite>.</p>
-<p>The following are frequently called public functions for the widgets in FISSURE:</p>
+<section id="dashboard-backend">
+<h3>Dashboard Backend<a class="headerlink" href="#dashboard-backend" title="Permalink to this heading">¶</a></h3>
+<p>The Dashboard Backend is responsible for network communications to the HIPRFISR (the central hub). It keeps track of heartbeats and incoming messages and also issues outgoing messages. An example of an outgoing message called from the Frontend is shown below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">attackFlowGraphStop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor_node_id</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">autorun_index</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sends a message to stop a single-stage attack.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Send the Message</span>
+    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">hiprfisr_connected</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">PARAMETERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sensor_node_id&quot;</span><span class="p">:</span> <span class="n">sensor_node_id</span><span class="p">,</span> <span class="s2">&quot;parameter&quot;</span><span class="p">:</span> <span class="n">parameter</span><span class="p">,</span> <span class="s2">&quot;autorun_index&quot;</span><span class="p">:</span> <span class="n">autorun_index</span><span class="p">}</span>
+        <span class="n">msg</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="n">fissure</span><span class="o">.</span><span class="n">comms</span><span class="o">.</span><span class="n">MessageFields</span><span class="o">.</span><span class="n">IDENTIFIER</span><span class="p">:</span> <span class="n">fissure</span><span class="o">.</span><span class="n">comms</span><span class="o">.</span><span class="n">Identifiers</span><span class="o">.</span><span class="n">DASHBOARD</span><span class="p">,</span>
+                <span class="n">fissure</span><span class="o">.</span><span class="n">comms</span><span class="o">.</span><span class="n">MessageFields</span><span class="o">.</span><span class="n">MESSAGE_NAME</span><span class="p">:</span> <span class="s2">&quot;attackFlowGraphStop&quot;</span><span class="p">,</span>
+                <span class="n">fissure</span><span class="o">.</span><span class="n">comms</span><span class="o">.</span><span class="n">MessageFields</span><span class="o">.</span><span class="n">PARAMETERS</span><span class="p">:</span> <span class="n">PARAMETERS</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">await</span> <span class="bp">self</span><span class="o">.</span><span class="n">hiprfisr_socket</span><span class="o">.</span><span class="n">send_msg</span><span class="p">(</span><span class="n">fissure</span><span class="o">.</span><span class="n">comms</span><span class="o">.</span><span class="n">MessageTypes</span><span class="o">.</span><span class="n">COMMANDS</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="callbacks">
+<h3>Callbacks<a class="headerlink" href="#callbacks" title="Permalink to this heading">¶</a></h3>
+<p>Callbacks are the functions that are executed when a message is received over the network. The callback files are grouped by FISSURE component and are located in <code class="docutils literal notranslate"><span class="pre">./fissure/callbacks/</span></code>. The HIPRFISR callbacks mainly forward the messages to their intended destinations as shown in the example below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">attackFlowGraphStop</span><span class="p">(</span><span class="n">component</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">sensor_node_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">autorun_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sends message to Sensor Node to stop a running attack flow graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Send Message to Sensor Node</span>
+    <span class="n">PARAMETERS</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;sensor_node_id&quot;</span><span class="p">:</span> <span class="n">sensor_node_id</span><span class="p">,</span> <span class="s2">&quot;parameter&quot;</span><span class="p">:</span> <span class="n">parameter</span><span class="p">,</span> <span class="s2">&quot;autorun_index&quot;</span><span class="p">:</span> <span class="n">autorun_index</span><span class="p">}</span>
+    <span class="n">msg</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">fissure</span><span class="o">.</span><span class="n">comms</span><span class="o">.</span><span class="n">MessageFields</span><span class="o">.</span><span class="n">IDENTIFIER</span><span class="p">:</span> <span class="n">component</span><span class="o">.</span><span class="n">identifier</span><span class="p">,</span>
+        <span class="n">fissure</span><span class="o">.</span><span class="n">comms</span><span class="o">.</span><span class="n">MessageFields</span><span class="o">.</span><span class="n">MESSAGE_NAME</span><span class="p">:</span> <span class="s2">&quot;attackFlowGraphStop&quot;</span><span class="p">,</span>
+        <span class="n">fissure</span><span class="o">.</span><span class="n">comms</span><span class="o">.</span><span class="n">MessageFields</span><span class="o">.</span><span class="n">PARAMETERS</span><span class="p">:</span> <span class="n">PARAMETERS</span><span class="p">,</span>
+    <span class="p">}</span>
+    <span class="k">await</span> <span class="n">component</span><span class="o">.</span><span class="n">sensor_nodes</span><span class="p">[</span><span class="n">sensor_node_id</span><span class="p">]</span><span class="o">.</span><span class="n">listener</span><span class="o">.</span><span class="n">send_msg</span><span class="p">(</span><span class="n">fissure</span><span class="o">.</span><span class="n">comms</span><span class="o">.</span><span class="n">MessageTypes</span><span class="o">.</span><span class="n">COMMANDS</span><span class="p">,</span> <span class="n">msg</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Callback functions will often reference frequently used functions in its component’s primary code. Component variables and functions can be referenced as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">attackFlowGraphStop</span><span class="p">(</span><span class="n">component</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">sensor_node_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">autorun_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Stop the currently running attack flow graph.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Use the Function that is Called Frequently in SensorNode.py</span>
+    <span class="n">component</span><span class="o">.</span><span class="n">attackFlowGraphStop</span><span class="p">(</span><span class="n">sensor_node_id</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">autorun_index</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Dashboard callbacks can reference GUI elements and functions found in other files like in this example:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">flowGraphFinishedIQ</span><span class="p">(</span><span class="n">component</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">sensor_node_id</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Called upon cancelling IQ recording. Changes the status and button text.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Change Status Label and Record Button Text</span>
+    <span class="n">component</span><span class="o">.</span><span class="n">frontend</span><span class="o">.</span><span class="n">ui</span><span class="o">.</span><span class="n">label2_iq_status_files</span><span class="o">.</span><span class="n">setText</span><span class="p">(</span><span class="s2">&quot;Not Recording&quot;</span><span class="p">)</span>
+    <span class="n">component</span><span class="o">.</span><span class="n">frontend</span><span class="o">.</span><span class="n">statusbar_text</span><span class="p">[</span><span class="n">sensor_node_id</span><span class="p">][</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;Not Recording&#39;</span>
+    <span class="n">component</span><span class="o">.</span><span class="n">frontend</span><span class="o">.</span><span class="n">refreshStatusBarText</span><span class="p">()</span>
+
+    <span class="c1"># Refresh File List</span>
+    <span class="n">IQDataTabSlots</span><span class="o">.</span><span class="n">_slotIQ_RefreshClicked</span><span class="p">(</span><span class="n">component</span><span class="o">.</span><span class="n">frontend</span><span class="p">)</span>
+    <span class="o">.</span>
+    <span class="o">.</span>
+    <span class="o">.</span>
+</pre></div>
+</div>
+</section>
+<section id="common-qt-widget-operations">
+<h3>Common Qt Widget Operations<a class="headerlink" href="#common-qt-widget-operations" title="Permalink to this heading">¶</a></h3>
+<p>Any widget in the Dashboard can be referenced with <code class="docutils literal notranslate"><span class="pre">dashboard.ui.objectName</span></code> or <code class="docutils literal notranslate"><span class="pre">component.frontend.ui.objectName</span></code>.</p>
+<p>The following are frequently called public functions for the widgets in FISSURE. They are listed as <code class="docutils literal notranslate"><span class="pre">self.objectName</span></code> for simplicity:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Push<span class="w"> </span>Button
 <span class="go">self.pushButton_name.text()</span>
 <span class="go">self.pushButton_name.setText(&quot;Text&quot;)</span>
@@ -544,8 +459,7 @@
 <span class="go">self.listWidget_name.clear()</span>
 </pre></div>
 </div>
-<p>The <cite>_connectSlots()</cite> function in <em>dashboard.py</em> is used to assign functions to widget actions. Group the signal/slot assignments for widgets by their type and the tab they reside in.</p>
-<p>The following are examples to link new widgets to new functions in the <em>MainWindow</em> class.</p>
+<p>The following are examples of commonly used connect functions:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Push<span class="w"> </span>Buttons
 <span class="go">self.pushButton_tsi_clear_SOI_list.clicked.connect(self._slotTSI_ClearSOI_ListClicked)</span>
 <span class="go">self.pushButton_pd_dissectors_construct.clicked.connect(lambda: self._slotPD_DissectorsConstructClicked(preview = False))</span>
@@ -600,21 +514,11 @@
 <span class="go">self.connect(self, self.signal_PD_Offline, self._slotPD_Offline)</span>
 </pre></div>
 </div>
-<p>To avoid threading issues in FISSURE’s event listener, custom signals can be issued from within the thread to slots located in the Dashboard.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">self.signal_PD_Offline = QtCore.SIGNAL(&quot;pdOffline&quot;)               # Defined in Dashboard</span>
-<span class="go">self.connect(self, self.signal_PD_Offline, self._slotPD_Offline)  # Defined in Dashboard</span>
-<span class="go">self.emit(self.signal_PD_Offline)                                 # Issued in thread</span>
-</pre></div>
-</div>
-<p>Connected slots/functions are appended to the class.</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">def _slotIQ_ConvertClicked(self):</span>
-<span class="go">    &quot;&quot;&quot; Converts the original file to a new data type.</span>
-<span class="go">    &quot;&quot;&quot;</span>
-<span class="gp">    # </span>Get<span class="w"> </span>Values
-<span class="go">    print &quot;text&quot;</span>
-</pre></div>
-</div>
-<p><strong>Generic Input Dialogs</strong></p>
+</section>
+<section id="generic-input-dialogs">
+<h3>Generic Input Dialogs<a class="headerlink" href="#generic-input-dialogs" title="Permalink to this heading">¶</a></h3>
+<p>The generic input dialogs will be moved to a central location in the future. There are synchronous and asynchronous versions available for most types of dialog. If a message box dialog is part of an asynchronous function, it must have an asynchronous version to prevent errors.</p>
+<p>This section will be updated with examples once all the input dialog code has been reorganized. The following are old examples of synchronous input dialogs:</p>
 <p>Text Edit:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">text, ok = QtGui.QInputDialog.getText(self, &#39;Rename&#39;, &#39;Enter new name:&#39;,QtGui.QLineEdit.Normal,get_file)</span>
 <span class="go">if ok:</span>
@@ -666,6 +570,264 @@
 </pre></div>
 </div>
 </section>
+</section>
+<section id="style-sheets">
+<h2>Style Sheets<a class="headerlink" href="#style-sheets" title="Permalink to this heading">¶</a></h2>
+<p>Style sheets are applied to the Dashboard and its child windows using the style sheets found in the <code class="docutils literal notranslate"><span class="pre">./UI/Style_Sheets/</span></code> folder. There are three files: light, dark, and custom. Each file contains a similar structure where settings can be applied to all widgets of the same type or for specific widgets using their object IDs. Many of the styles are applied to widgets that have object names starting with a specific naming convention. This allows commonly used widget subcategories to have their own styles. Each type of widget has their own unique properties that can be customized.</p>
+<p>If possible, avoid hard-coding styling values in the Python code to better manage and organize the styling for FISSURE. Desktop environments will have different appearances for default settings and Qt versions can also have differences. Any style sheet adjustments that need to be made based on operating system will be inserted into the <code class="docutils literal notranslate"><span class="pre">./fissure/Dashboard/Slots/MenuBarSlots.py</span></code> file.</p>
+<p>Colors schemes are assigned to the widgets in the style sheets using temporary variables that later get populated with the RGB values for light, dark, and custom modes. The following mappings are used throughout the style sheets:</p>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Mapping</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>&#64;color1</p></td>
+<td><p>Background</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;color2</p></td>
+<td><p>Frame Background</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;color3</p></td>
+<td><p>Label Background</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;color4</p></td>
+<td><p>Label Text</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;color5</p></td>
+<td><p>Text Edit Background</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;color6</p></td>
+<td><p>Button Gradient 1</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;color7</p></td>
+<td><p>Button Gradient 2</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;color8</p></td>
+<td><p>Disabled Gradient 1</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;color9</p></td>
+<td><p>Disabled Gradient 2</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;color10</p></td>
+<td><p>Hover Gradient 1</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;color11</p></td>
+<td><p>Hover Gradient 2</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;color12</p></td>
+<td><p>Button Text</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;color13</p></td>
+<td><p>Disabled Text</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;icon_path</p></td>
+<td><p>Filepath of Icons Folder</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;checked_enabled</p></td>
+<td><p>File Name of Checked Enabled Checkbox Image</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;checked_disabled</p></td>
+<td><p>File Name of Checked Disabled Checkbox Image</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;unchecked_enabled</p></td>
+<td><p>File Name of Unchecked Enabled Checkbox Image</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;unchecked_disabled</p></td>
+<td><p>File Name of Unchecked Disabled Checkbox Image</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;down_arrow_enabled</p></td>
+<td><p>File Name of Enabled Arrow Down Button Image</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;down_arrow_disabled</p></td>
+<td><p>File Name of Disabled Arrow Down Button Image</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;up_arrow_enabled</p></td>
+<td><p>File Name of Enabled Arrow Up Button Image</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;up_arow_disabled</p></td>
+<td><p>File Name of Disabled Arrow Up Button Image</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;radio_unchecked_enabled</p></td>
+<td><p>File Name of Enabled Unchecked Radio Button Image</p></td>
+</tr>
+<tr class="row-odd"><td><p>&#64;radio_checked_enabled</p></td>
+<td><p>File Name of Enabled Checked Radio Button Image</p></td>
+</tr>
+<tr class="row-even"><td><p>&#64;menu_hover_padding</p></td>
+<td><p>Padding for Menu Hover Text</p></td>
+</tr>
+</tbody>
+</table>
+<p>Style Sheet Example:</p>
+<div class="highlight-css notranslate"><div class="highlight"><pre><span></span><span class="c">/*Global*/</span>
+<span class="nt">QCheckBox</span><span class="p">{</span>
+<span class="w">    </span><span class="k">font-family</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Ubuntu&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font-size</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="kt">pt</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c">/*Subcategory*/</span>
+<span class="nt">QCheckBox</span><span class="o">[</span><span class="nt">objectName</span><span class="o">^=</span><span class="s2">&quot;checkBox_&quot;</span><span class="o">]</span><span class="p">{</span>
+<span class="w">    </span><span class="k">background-color</span><span class="p">:</span><span class="w"> </span><span class="nb">rgba</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">);</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="o">@</span><span class="n">color4</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QCheckBox</span><span class="o">[</span><span class="nt">objectName</span><span class="o">^=</span><span class="s2">&quot;checkBox_&quot;</span><span class="o">]</span><span class="p">:</span><span class="nd">disabled</span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="o">@</span><span class="n">color13</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="nt">QCheckBox</span><span class="o">[</span><span class="nt">objectName</span><span class="o">^=</span><span class="s2">&quot;checkBox_&quot;</span><span class="o">]</span><span class="p">::</span><span class="nd">indicator</span><span class="p">:</span><span class="nd">unchecked</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">image</span><span class="p">:</span><span class="w"> </span><span class="nb">url</span><span class="p">(</span><span class="sx">@icon_path/@unchecked_enabled</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QCheckBox</span><span class="o">[</span><span class="nt">objectName</span><span class="o">^=</span><span class="s2">&quot;checkBox_&quot;</span><span class="o">]</span><span class="p">::</span><span class="nd">indicator</span><span class="p">:</span><span class="nd">checked</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">image</span><span class="p">:</span><span class="w"> </span><span class="nb">url</span><span class="p">(</span><span class="sx">@icon_path/@checked_enabled</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QCheckBox</span><span class="o">[</span><span class="nt">objectName</span><span class="o">^=</span><span class="s2">&quot;checkBox_&quot;</span><span class="o">]</span><span class="p">::</span><span class="nd">indicator</span><span class="p">:</span><span class="nd">disabled</span><span class="p">:</span><span class="nd">checked</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">image</span><span class="p">:</span><span class="w"> </span><span class="nb">url</span><span class="p">(</span><span class="sx">@icon_path/@checked_disabled</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="nt">QCheckBox</span><span class="o">[</span><span class="nt">objectName</span><span class="o">^=</span><span class="s2">&quot;checkBox_&quot;</span><span class="o">]</span><span class="p">::</span><span class="nd">indicator</span><span class="p">:</span><span class="nd">disabled</span><span class="p">:</span><span class="nd">unchecked</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="n">image</span><span class="p">:</span><span class="w"> </span><span class="nb">url</span><span class="p">(</span><span class="sx">@icon_path/@unchecked_disabled</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c">/*Specific*/</span>
+<span class="nt">QLabel</span><span class="p">#</span><span class="nn">label4_status1</span><span class="p">{</span>
+<span class="w">    </span><span class="k">color</span><span class="p">:</span><span class="w"> </span><span class="o">@</span><span class="n">color4</span><span class="p">;</span>
+<span class="w">    </span><span class="k">font</span><span class="p">:</span><span class="w"> </span><span class="mi">10</span><span class="kt">pt</span><span class="w"> </span><span class="s2">&quot;Ubuntu&quot;</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="adding-custom-options">
+<h2>Adding Custom Options<a class="headerlink" href="#adding-custom-options" title="Permalink to this heading">¶</a></h2>
+<p><strong>Options Dialog</strong></p>
+<p>Bring up the options dialog in Qt Designer using the <cite>designer</cite> command and then open the <code class="docutils literal notranslate"><span class="pre">FISSURE/UI/options.ui</span></code> file. Click the arrows for the stacked widget (top right) to locate the table where the custom option will be inserted. Double-click on the table and add a new row with the name of the variable. Set the font size to match the other rows with the “Properties&lt;&lt;” button.</p>
+<img alt="../_images/options.png" src="../_images/options.png" />
+<p><strong>default.yaml</strong></p>
+<p>Open <code class="docutils literal notranslate"><span class="pre">FISSURE/YAML/User</span> <span class="pre">Configs/default.yaml</span></code> and insert the variable name and value (fft_size: 4096) for the new option.</p>
+<p><strong>Accessing Stored Values</strong></p>
+<p>Access the variables throughout the FISSURE code from the backend or other local settings locations such as: <cite>dashboard.backend.settings[‘fft_size’]</cite> or <cite>self.settings[‘fft_size’]</cite>.</p>
+</section>
+<section id="attack-flow-graphs">
+<h2>Attack Flow Graphs<a class="headerlink" href="#attack-flow-graphs" title="Permalink to this heading">¶</a></h2>
+<p><strong>Flow Graph Configuration</strong></p>
+<p>A new Python file is generated each time a .grc file is executed in GNU Radio Companion. The format of this auto-generated Python file is used by FISSURE to perform actions like: displaying variable names, starting attacks, changing values for a running flow graph, etc. Editing the Python file may cause FISSURE to not function properly.</p>
+<p><em>GUI vs. No GUI</em></p>
+<p>Flow graphs are called differently depending on if there is a GUI or not. Flow graphs configured to “No GUI” mode in the “Options” block will be loaded as a Python module prior to runtime and then modify the default variables. The standard start(), wait(), and stop() commands are applied in this case.</p>
+<p>Flow graphs with GUIs have their Python files called directly and behave similarly to inspection flow graphs (See <em>Help&gt;&gt;Inspection Flow Graphs</em>). Variables can be changed from the GNU Radio GUI in the form of GUI widgets or as command line arguments from parameter blocks.</p>
+<p><em>Options Block (No GUI)</em></p>
+<p>Within the “Options” block:</p>
+<ul class="simple">
+<li><p>“ID” must match the file name</p></li>
+<li><p>“Generate Options” must be set to “No GUI”</p></li>
+</ul>
+<p><em>Special Variables</em></p>
+<p>The Dashboard populates certain flow graphs variable names like “ip_address” and “serial” to match the values in the Attack hardware button. These variables must be named correctly in the flow graph to be populated automatically and handled as intended. Refer to other attack flow graphs as examples for how these variables should be utilized.</p>
+<p><em>Numerical Strings</em></p>
+<p>To help specify that a string variable containing only numerical values is indeed a string and should not to be interpreted as a float, a new variable named “string_variables” can be added to the flow graph. Its value must be a list with the names of the variables to be considered as exceptions: [“variable_name”]</p>
+<p>For example:</p>
+<img alt="../_images/string_variables.png" src="../_images/string_variables.png" />
+<p><strong>Uploading Attack Flow Graph</strong></p>
+<p>Attack flow graphs can be added to FISSURE within the <em>Library&gt;Add</em> tab by selecting a protocol and choosing “Attack”. Attacks will be visible within the Attack tree if the “Attack Template Name” is entered properly.</p>
+</section>
+<section id="attack-python-scripts">
+<h2>Attack Python Scripts<a class="headerlink" href="#attack-python-scripts" title="Permalink to this heading">¶</a></h2>
+<p><strong>Creating Python Scripts</strong></p>
+<p>Non-GNU Radio attacks can be added to the FISSURE library by uploading specially configured Python (.py) files. A function is needed within the Python script to identify which variables can be modified in the FISSURE Dashboard (<cite>getArguments()</cite>). Those variables are used by the system as command line arguments during execution of the script. All FISSURE branches accept both Python2 and Python3 attack scripts.</p>
+<p>FISSURE will parse a variable named “run_with_sudo” set to True or False and set the “Run with sudo” checkbox upon loading the attack in the Single-Stage Attack tab. For multi-stage attacks, this variable is listed in the generated tables and its value is used to run the script with or without sudo. If no variable is found, then Python scripts will rely on the checkbox for single-stage attacks and be run with sudo for multi-stage attacks.</p>
+<p>Variables with filepath in their name will automatically generate a file navigation button for tables inside FISSURE. If the filepath contains “/FISSURE/”, the string will be split and appended to the user’s location for FISSURE. This is to make configuring an attack easier by accounting for the current username in filepaths.</p>
+<p><em>Scapy Example</em></p>
+<p>The following example uses Scapy to send multiple deauthentication frames from a wireless interface. Use the code as a reference for creating future Python scripts.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">scapy.all</span> <span class="kn">import</span> <span class="n">Dot11</span><span class="p">,</span><span class="n">Dot11Deauth</span><span class="p">,</span><span class="n">RadioTap</span><span class="p">,</span><span class="n">sendp</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span>
+
+<span class="c1">#################################################</span>
+<span class="c1">############ Default FISSURE Header ############</span>
+<span class="c1">#################################################</span>
+<span class="k">def</span> <span class="nf">getArguments</span><span class="p">():</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="s1">&#39;00:11:22:33:44:55&#39;</span>        <span class="c1"># Target MAC address</span>
+    <span class="n">bssid</span> <span class="o">=</span> <span class="s1">&#39;AA:BB:CC:11:22:33&#39;</span>         <span class="c1"># Access Point MAC address</span>
+    <span class="n">iface</span> <span class="o">=</span> <span class="s1">&#39;wlan0&#39;</span>                     <span class="c1"># Wireless interface name</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="mi">1</span>                         <span class="c1"># Wireless channel</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="mf">0.01</span>                     <span class="c1"># Scapy interval</span>
+    <span class="n">arg_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;client&#39;</span><span class="p">,</span><span class="s1">&#39;bssid&#39;</span><span class="p">,</span><span class="s1">&#39;iface&#39;</span><span class="p">,</span><span class="s1">&#39;channel&#39;</span><span class="p">,</span><span class="s1">&#39;interval&#39;</span><span class="p">]</span>
+    <span class="n">arg_values</span> <span class="o">=</span> <span class="p">[</span><span class="n">client</span><span class="p">,</span> <span class="n">bssid</span><span class="p">,</span> <span class="n">iface</span><span class="p">,</span> <span class="n">channel</span><span class="p">,</span> <span class="n">interval</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">arg_names</span><span class="p">,</span><span class="n">arg_values</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+
+    <span class="c1"># Default Values</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="s1">&#39;00:11:22:33:44:55&#39;</span>        <span class="c1"># Target MAC address</span>
+    <span class="n">bssid</span> <span class="o">=</span> <span class="s1">&#39;AA:BB:CC:11:22:33&#39;</span>         <span class="c1"># Access Point MAC address</span>
+    <span class="n">iface</span> <span class="o">=</span> <span class="s1">&#39;wlan0&#39;</span>                     <span class="c1"># Wireless interface name</span>
+    <span class="n">channel</span> <span class="o">=</span> <span class="s1">&#39;1&#39;</span>                       <span class="c1"># Wireless channel</span>
+    <span class="n">interval</span> <span class="o">=</span> <span class="s1">&#39;0.01&#39;</span>                   <span class="c1"># Scapy interval</span>
+
+    <span class="c1"># Accept Command Line Arguments</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">bssid</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">iface</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="n">channel</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">interval</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+    <span class="k">except</span><span class="p">:</span>
+        <span class="k">pass</span>
+
+<span class="c1">#################################################</span>
+
+    <span class="c1"># Create Frame</span>
+    <span class="n">packet</span> <span class="o">=</span> <span class="n">RadioTap</span><span class="p">()</span><span class="o">/</span><span class="n">Dot11</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">subtype</span><span class="o">=</span><span class="mi">12</span><span class="p">,</span> <span class="n">addr1</span><span class="o">=</span><span class="n">client</span><span class="p">,</span> <span class="n">addr2</span><span class="o">=</span><span class="n">bssid</span><span class="p">,</span> <span class="n">addr3</span><span class="o">=</span><span class="n">bssid</span><span class="p">)</span><span class="o">/</span><span class="n">Dot11Deauth</span><span class="p">(</span><span class="n">reason</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+
+    <span class="c1"># Set Monitor Mode and Channel</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo ifconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; down&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo iwconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; mode monitor&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo ifconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; up&quot;</span><span class="p">)</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">system</span><span class="p">(</span><span class="s2">&quot;sudo iwconfig &quot;</span> <span class="o">+</span> <span class="n">iface</span> <span class="o">+</span> <span class="s2">&quot; channel &quot;</span> <span class="o">+</span> <span class="n">channel</span><span class="p">)</span>
+
+    <span class="c1"># Send Frame</span>
+    <span class="n">sendp</span><span class="p">(</span><span class="n">packet</span><span class="p">,</span> <span class="n">iface</span><span class="o">=</span><span class="n">iface</span><span class="p">,</span> <span class="n">inter</span><span class="o">=</span><span class="nb">float</span><span class="p">(</span><span class="n">interval</span><span class="p">),</span> <span class="n">loop</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Uploading Attack Files</strong></p>
+<p>Python files can be uploaded to FISSURE within the <em>Library&gt;&gt;Add</em> tab by choosing a protocol and selecting “Attack”. The file type must be set to “Python2 Script” or “Python3 Script” and the file must have a valid .py extension. Attacks added to the library and named with a proper “Attack Template Name” will immediately show up in the Attack tree widget.</p>
+</section>
+<section id="inspection-flow-graphs">
+<h2>Inspection Flow Graphs<a class="headerlink" href="#inspection-flow-graphs" title="Permalink to this heading">¶</a></h2>
+<p>Inspection flow graphs can be added to FISSURE to perform frequently used analysis on live streams from SDRs or directly on prerecorded data files. Flow graph Python files (.py) are called directly with Python2/3 and use the GNU Radio “parameter” block as arguments to the Python call. This enables variables found in blocks that do not utilize callbacks (like IP address or serial number) to be changed prior to runtime. The following are instructions for creating a new inspection flow graph within the <em>IQ Data&gt;&gt;Inspection</em> tab.</p>
+<img alt="../_images/inspection1.png" src="../_images/inspection1.png" />
+<p><strong>Location</strong></p>
+<p>Inspection flow graphs must be placed in the <code class="docutils literal notranslate"><span class="pre">/FISSURE/Flow</span> <span class="pre">Graph</span> <span class="pre">Library/maint-3.10/Inspection</span> <span class="pre">Flow</span> <span class="pre">Graphs/</span></code> or <code class="docutils literal notranslate"><span class="pre">/FISSURE/Flow</span> <span class="pre">Graph</span> <span class="pre">Library/maint-3.10/Inspection</span> <span class="pre">Flow</span> <span class="pre">Graphs/File/</span></code> directories. Refer to other inspection flow graphs as examples when creating new flow graphs.</p>
+<p><strong>library.yaml</strong></p>
+<p>The names of inspection flow graphs are assigned to Python files within the <em>library.yaml</em> file. Assign names under the applicable hardware type or under “File” if the new flow graph will be used on IQ files.</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Inspection Flow Graphs:</span>
+<span class="go">     802.11x Adapter:</span>
+<span class="go">     - None</span>
+<span class="go">     Computer:</span>
+<span class="go">     - None</span>
+<span class="go">     File:</span>
+<span class="go">     - instantaneous_frequency.py</span>
+<span class="go">     - signal_envelope.py</span>
+<span class="go">     - waterfall.py</span>
+<span class="go">     HackRF:</span>
+<span class="go">     - instantaneous_frequency_hackrf.py</span>
+<span class="go">     - signal_envelope_hackrf.py</span>
+<span class="go">     - time_sink_hackrf.py</span>
+<span class="go">     - time_sink_1_10_100_hackrf.py</span>
+<span class="go">     - waterfall_hackrf.py</span>
+</pre></div>
+</div>
+<p><strong>GNU Radio</strong></p>
+<p>The following are helpful tips for configuring the GNU Radio flow graph:</p>
+<ul class="simple">
+<li><p>The “Options” block ID must match (without the extension) what is entered in the <em>library.yaml</em> file</p></li>
+<li><p>Keep the parameter blocks as a string type and apply conversions within other blocks</p></li>
+<li><p>Add “QT GUI Chooser” blocks for variables that will be changed during runtime such as frequency and sample rate. Fill out the GUI Hints to make it look nice.</p></li>
+<li><p>Follow examples of other flow graphs on how to configure device/IP addresses, serial numbers, and similar arguments for SDR blocks. This will allow FISSURE-specific features like the IQ hardware button to pass information into the flow graph properly.</p></li>
+<li><p>Parameter blocks will replace ‘_’ with ‘-’ when using variables names as command line arguments for the flow graph Python call (FISSURE will handle this)</p></li>
+<li><p>Enter filepath and sample rate as “filepath” and “sample_rate” in GNU Radio variable names</p></li>
+</ul>
+<p><strong>Dashboard</strong></p>
+<p>Double-click/load an IQ file in the IQ Data tab Data Viewer and enter sample rate and frequency information prior to loading a file-based inspection flow graph. These values will automatically copy over to the table if available.</p>
 </section>
 <section id="creating-triggers">
 <h2>Creating Triggers<a class="headerlink" href="#creating-triggers" title="Permalink to this heading">¶</a></h2>

@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-08-19
+
+Updating Development section of user manual.
+
+### Documentation
+
+- Updating the Development section with details on how to modify the Dashboard for the new structural changes
+
 ## 2024-08-17
 
 Removing DragonOS Focal installer.

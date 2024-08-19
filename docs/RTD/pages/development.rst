@@ -2,27 +2,12 @@
 Development 
 ===========
 
-Adding Custom Options
-=====================
-
-**Options Dialog**
-
-Bring up the options dialog in Qt Designer using the `designer` command and then open the ``FISSURE/UI/options.ui`` file. Click the arrows for the stacked widget (top right) to locate the table where the custom option will be inserted. Double-click on the table and add a new row with the name of the variable. Set the font size to match the other rows with the "Properties<<" button.
-
-.. image:: /pages/Images/options.png
-
-**default.yaml**
-
-Open ``FISSURE/YAML/User Configs/default.yaml`` and insert the variable name and value (fft_size: 4096) for the new option.
-
-**Accessing Stored Values**
-
-Access the variables throughout the FISSURE code from the backend or other local settings locations such as: `dashboard.backend.settings['fft_size']` or `self.settings['fft_size']`.
+This section will explain what it takes to edit the code for FISSURE so you can make your own improvements. FISSURE is intended to make edits easy for the user and the developers want to hear improvement ideas to the interface as well as any new code that you want to share for the project.
 
 Built With
 ==========
 
-The following software tools are used to edit FISSURE.
+The following software tools are used to edit the different aspects of FISSURE.
 
 **Read the Docs**
 
@@ -33,17 +18,28 @@ To regenerate the offline HTML RTD documentation:
    $ cd ~/FISSURE/docs/RTD
    $ make clean && make html
 
+The updated html pages will be found in the ``./docs/RTD/_build/html/pages/`` folder. It is helpful when suggesting changes to the developers or when making pull requests to share the updated text snippets or the .rst files located in ``./docs/RTD/pages/`` in their entirety.
+
 **Git**
 
-To add a new git submodule for repositories like GNU Radio out-of-tree modules:
+To submit changes for FISSURE, clone the git repository with the SSH address to avoid errors when doing a push later on. Generate an SSH key and add it to your GitHub access settings by following the installation instructions.
+
+FISSURE contains many git submodules linked to online repositories for downloading GNU Radio out-of-tree modules. To add a new git submodule to the FISSURE git project the following command is needed:
 
 .. code-block:: console
 
    $ git submodule add -b maint-3.8 https://github.com/someone/gr-something.git ./Custom_Blocks/maint-3.8/gr-something
 
-To submit changes for FISSURE, clone the git repository with the SSH address to avoid errors when doing a push later on. Generate an SSH key and add it to your GitHub access settings.
+To copy git submodules in bulk from one project to another the following steps can be performed, but keep in mind it may be easier to add them individually with the command listed above to avoid errors with more complicated project configurations.
+
+1. Get rid of the files in each OOT module folder except .git
+2. Copy the modules folder ``.git/``
+3. Copy the submodule lines in ``.git/config``
+4. Copy the submodule lines in ``.gitmodules``
 
 **Qt Designer**
+
+Qt Designer is used to edit the GUI widgets for the Dashboard and other windows. Existing examples of widgets used with other features can be an excellent guide when making edits for the first time. An important note to recognize is the start of the object name is linked to the style sheets. Styling was removed from the .ui file because it takes precedence over applying changes through the style sheets/View menu items. Refer to the style sheets section below and the .css files in the  ``./UI/Style_Sheets/`` folder for examples of global and specific styling assignments for widgets.
 
 Python2 branch:
 
@@ -51,7 +47,7 @@ Python2 branch:
 
    $ sudo apt-get install python-qt4 qt4-designer
 
-Python3 branches:
+Python3 branch:
 
 .. code-block:: console
 
@@ -63,7 +59,11 @@ To launch:
 
    $ designer
 
+Open any .ui file found in the ``./UI/`` folder to begin editing.
+
 **Grip**
+
+Grip was previously used for generating html help files from markdown files but it has since been replaced by .rst files and Read the Docs.
 
 Python2 branch:
 
@@ -82,7 +82,586 @@ To convert markdown to html (requires Internet connection):
 .. code-block:: console
 
    $ grip README.md --export README.html
-   
+
+Modifying Dashboard
+===================
+
+This guide will provide examples on how to add GUI elements to the FISSURE Dashboard and interact with those elements within the FISSURE code. The process for editing FISSURE is as follows:
+
+1. Add new widgets to .ui files with Qt Designer
+2. Connect signals from the widgets to slots
+3. Messages sent to other components first go to the Dashboard backend
+4. The Dashboard Backend forwards messages to the HIPRFISR
+5. The HIPRFISR callbacks handle/forward the message to other components on the network
+6. The component callbacks handle the message and return status messages and data back to the HIPRFISR callbacks
+7. The HIPRFISR forwards the status messages to the Dashboard callbacks
+8. The Dashboard callbacks update the frontend GUI components
+
+QtDesigner
+----------
+
+Launch QtDesigner with the `designer` command and open the ``./UI/dashboard.ui`` file to edit the Dashboard. Menu items are stored in the ``./UI/FissureDashboard.ui`` file and other supporting files can also be found in the same folder.
+
+.. image:: /pages/Images/qtdesigner.png
+
+**Creating New Widgets**
+
+Frequently used widgets:
+
+- Push Button
+- Text Edit
+- Combo Box
+- Check Box
+- Label
+- Frame
+- Spin Box
+- Double Spin Box
+- Horizontal Slider
+- Table Widget
+- Tab Widget
+- Stacked Widget
+- Tree Widget
+- Group Box
+- Progress Bar
+- List Widget
+
+Drag widgets onto the Dashboard and modify their property values in the Property Editor. 
+
+It is suggested to use an objectName consistent with the following naming convention while also being mindful of the style sheet naming conventions: \_widget-type\_tab-location\_description_ (e.g. pushButton\_automation\_manual, textEdit\_iq\_timeslot\_input)
+
+Menu items can be added by clicking "Type Here" in any of the menus/submenus and entering text. Separators can be added by clicking "Add Separator" and then dragged or by right clicking and clicking "Insert Separator". Submenus can be added by clicking the right side of any menu item. There is an issue with Qt Designer adding new menu items after too many have been added. The screen will cut off the bottom of the menu but you can still navigate with the arrow keys and type in new items. To rearrange the items, close Qt Designer and open the .ui file in a text editor to readjust their positions.
+
+Dashboard Frontend
+------------------
+
+The Dashboard code is separated by Frontend, Backend, UI Components, and Slots. The Frontend code is responsible for the initializing the GUI elements and connecting signals to slots. Each tab has their own initialization function that is called for setting default values and initializing variables. The Frontend also recalls FISSURE settings and launches the Backend code.
+
+Signals and Slots
+-----------------
+
+When an action is performed on a Qt widget the function that gets called is assigned through connect functions. The ``connect_slots()`` function calls other connect functions grouped by the different FISSURE tabs and menus. The following is an example of how to connect a widget to a function:
+
+.. code-block:: python
+    
+    def connect_attack_slots(dashboard: Dashboard):
+        # Check Box
+        dashboard.ui.checkBox_attack_show_all.clicked.connect(
+            lambda: AttackTabSlots._slotAttackProtocols(dashboard)
+        )
+
+        # Combo Box
+        dashboard.ui.comboBox_packet_protocols.currentIndexChanged.connect(
+            lambda: AttackTabSlots._slotPacketProtocols(dashboard)
+        )
+
+        # Push Button
+        dashboard.ui.pushButton_packet_restore_defaults.clicked.connect(
+            lambda: AttackTabSlots._slotPacketRestoreDefaultsClicked(dashboard)
+        )
+
+The ``./fissure/Dashboard/Slots/`` folder contains the functions for each FISSURE tab/section. The `dashboard` object passed into each function provides the means to access the .ui objects. Function in other tabs can be access through the `fissure` import item like in this example: ``fissure.Dashboard.Slots.IQDataTabSlots._slotIQ_LoadIQ_Data(dashboard)``.
+
+There are two types of slots, synchronous and asynchronous. Synchronous functions execute sequentially while asynchronous functions do not have to block operations. Asynchronous messages are primarily used for functions that work with FISSURE network commands. This ensures other actions can be performed while messages are passed between components. An example of a synchronous and asynchronous slot is shown below:
+
+.. code-block:: python
+
+    @QtCore.pyqtSlot(QtCore.QObject)
+    def _slotIQ_RecordSigMF_Clicked(dashboard: QtCore.QObject):
+        """ 
+        Follows SigMF standard for recording IQ data when enabled.
+        """
+        # Enabled
+        get_filename = str(dashboard.ui.tableWidget_iq_record.item(0,0).text())
+        .
+        .
+        .
+        
+    @qasync.asyncSlot(QtCore.QObject)
+    async def _slotIQ_InspectionFG_StartClicked(dashboard: QtCore.QObject):
+        """ 
+        Starts the inspection flow graph.
+        """
+        # Stop Flow Graph
+        if dashboard.ui.pushButton_iq_inspection_fg_start.text() == "Stop":
+            # Send Message
+            await dashboard.backend.inspectionFlowGraphStop(dashboard.active_sensor_node, 'Flow Graph - GUI')
+        .
+        .
+        .
+
+Dashboard Backend
+-----------------
+
+The Dashboard Backend is responsible for network communications to the HIPRFISR (the central hub). It keeps track of heartbeats and incoming messages and also issues outgoing messages. An example of an outgoing message called from the Frontend is shown below:
+
+.. code-block:: python
+
+    async def attackFlowGraphStop(self, sensor_node_id, parameter, autorun_index):
+        """
+        Sends a message to stop a single-stage attack.
+        """
+        # Send the Message
+        if self.hiprfisr_connected is True:
+            PARAMETERS = {"sensor_node_id": sensor_node_id, "parameter": parameter, "autorun_index": autorun_index}
+            msg = {
+                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+                    fissure.comms.MessageFields.MESSAGE_NAME: "attackFlowGraphStop",
+                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+            }
+            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+Callbacks
+---------
+
+Callbacks are the functions that are executed when a message is received over the network. The callback files are grouped by FISSURE component and are located in ``./fissure/callbacks/``. The HIPRFISR callbacks mainly forward the messages to their intended destinations as shown in the example below:
+
+.. code-block:: python
+
+    async def attackFlowGraphStop(component: object, sensor_node_id=0, parameter="", autorun_index=0):
+        """
+        Sends message to Sensor Node to stop a running attack flow graph.
+        """
+        # Send Message to Sensor Node
+        PARAMETERS = {"sensor_node_id": sensor_node_id, "parameter": parameter, "autorun_index": autorun_index}
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "attackFlowGraphStop",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+        await component.sensor_nodes[sensor_node_id].listener.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+Callback functions will often reference frequently used functions in its component's primary code. Component variables and functions can be referenced as follows:
+
+.. code-block:: python
+
+    async def attackFlowGraphStop(component: object, sensor_node_id=0, parameter="", autorun_index=0):
+        """
+        Stop the currently running attack flow graph.
+        """
+        # Use the Function that is Called Frequently in SensorNode.py
+        component.attackFlowGraphStop(sensor_node_id, parameter, autorun_index)
+
+Dashboard callbacks can reference GUI elements and functions found in other files like in this example:
+
+.. code-block:: python
+
+    async def flowGraphFinishedIQ(component: object, sensor_node_id=0):
+        """ 
+        Called upon cancelling IQ recording. Changes the status and button text.
+        """       
+        # Change Status Label and Record Button Text
+        component.frontend.ui.label2_iq_status_files.setText("Not Recording")
+        component.frontend.statusbar_text[sensor_node_id][4] = 'Not Recording'
+        component.frontend.refreshStatusBarText()
+
+        # Refresh File List
+        IQDataTabSlots._slotIQ_RefreshClicked(component.frontend)
+        .
+        .
+        .
+
+Common Qt Widget Operations
+---------------------------
+
+Any widget in the Dashboard can be referenced with ``dashboard.ui.objectName`` or ``component.frontend.ui.objectName``.
+
+The following are frequently called public functions for the widgets in FISSURE. They are listed as ``self.objectName`` for simplicity:
+
+.. code-block:: console
+    
+    # Push Button
+    self.pushButton_name.text()
+    self.pushButton_name.setText("Text")
+    self.pushButton_name.setEnabled(False)
+    self.pushButton_name.setVisible(True)
+
+    # Text Edit
+    str(self.textEdit_name.toPlainText())
+    self.textEdit_name.setPlainText("Text")
+
+    # Combo Box
+    str(self.comboBox_name.currentText())
+    self.comboBox_name.clear()
+    self.comboBox_name.addItem(get_dissector)
+    self.comboBox_name.addItems(get_packet_types)
+    self.comboBox_name.setCurrentIndex(0)
+    self.comboBox_name.currentIndex(0)
+
+    # Check Box
+    self.checkBox_name.isChecked()
+    self.checkBox_name.setChecked(False)
+
+    # Label
+    self.label_name.text()
+    self.label_name.setText(get_samples)
+    self.label_name.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X310.png")) 
+
+    # Frame
+    self.frame_name.pos()
+    self.frame_name.geometry()
+
+    # Spin Box/Double Spin Box
+    self.spinBox_name.value()
+    self.spinBox_name.setValue(10)
+    self.spinBox_name.setMaximum(35)
+    self.spinBox_name.setMinimum(0)
+
+    # Horizontal/Vertical Slider
+    self.horizontalSlider_name.setMinimum(int(win_min))
+    self.horizontalSlider_name.setMaximum(int(win_max))
+    self.horizontalSlider_name.setValue(int(win_min)) 
+    self.horizontalSlider_name.setSliderPosition(2)
+
+    # Table Widget
+    self.tableWidget_name.rowCount()
+    self.tableWidget_name.columnCount()
+    self.tableWidget_name.setColumnCount(1)
+    self.tableWidget_name.setRowCount(0)
+    self.tableWidget_name.removeRow(1)
+    self.tableWidget_name.removeColumn(5)
+    self.tableWidget_name.insertRow(0)
+    self.tableWidget_name.currentRow() 
+    self.tableWidget_name.clearContents()
+    self.tableWidget_name.resizeRowsToContents()                   
+    self.tableWidget_name.resizeColumnsToContents()    
+    self.tableWidget_name.setColumnWidth(4,130)
+    self.tableWidget_name.horizontalHeader().setResizeMode(2,QtGui.QHeaderView.Stretch)  
+    self.tableWidget_name.horizontalHeader().setStretchLastSection(True)                
+    self.tableWidget_name.verticalHeaderItem(0).text()
+    self.tableWidget_name.setHorizontalHeaderItem(1,QtGui.QTableWidgetItem(""))
+    self.tableWidget_name.item(0,5).text()
+    self.tableWidget_name.setCurrentCell(self.tableWidget_name.currentRow()-1,0)
+    table_item = self.tableWidget_name.takeItem(self.tableWidget_name.currentRow()-1,0)
+    table_item = QtGui.QTableWidgetItem(str(657))  # from PyQt4 import QtCore, QtGui, uic
+    table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+    table_item.setFlags(table_item.flags() & ~QtCore.Qt.ItemIsEditable)
+    self.tableWidget_name.setItem(0,0,table_item) 
+    self.tableWidget_name.item(row,4).setFlags(self.tableWidget_name.item(row,4).flags() ^ QtCore.Qt.ItemIsEnabled)
+    self.tableWidget_name.cellWidget(0,4).currentText()
+    self.tableWidget_name.cellWidget(1,0).isChecked()
+    self.tableWidget_name.cellWidget(row,0).isEnabled()
+    self.tableWidget_name.cellWidget(row,0).setCurrentIndex(1)
+    self.tableWidget_name.setCellWidget(0,0,new_button)                
+
+    new_checkbox = QtGui.QCheckBox("",self)
+    new_checkbox.setStyleSheet("margin-left:17%")
+    self.tableWidget_name.setCellWidget(n,0,new_checkbox)
+
+    new_pushbutton = QtGui.QPushButton(self.table_list[n])
+    new_pushbutton.setText("Guess")
+    new_pushbutton.setFixedSize(64,23)
+    self.tableWidget_name.setCellWidget(self.tableWidget_name.rowCount()-1,1,new_pushbutton)
+    new_pushbutton.clicked.connect(lambda: self._slotGuessInterfaceTableClicked(get_value))
+
+    # Tab Widget
+    self.tabWidget_name.currentIndex()
+    self.tabWidget_name.setCurrentIndex(4)
+    self.tabWidget_name.tabText(self.tabWidget_name.currentIndex())
+    self.tabWidget_name.setTabText(0,"Detector")
+    self.tabWidget_name.setTabToolTip(1,"Target Signal Identification")
+    self.tabWidget_name.setTabEnabled(2,False)
+    self.tabWidget_name.count()
+    self.tabWidget_name.removeTab(1)
+    new_tab = QtGui.QWidget()       
+    vBoxlayout  = QtGui.QVBoxLayout()
+    vBoxlayout.addWidget(self.table_name)
+    new_tab.setLayout(vBoxlayout)   
+    self.tabWidget_name.addTab(new_tab,"text")  
+    get_table = self.tabWidget_name.children()[0].widget(n).children()[1]  # TabWidget>>StackedLayout>>Tab>>Table
+
+    # Stacked Widget
+    self.stackedWidget_name.currentIndex()
+    self.stackedWidget_name.setCurrentIndex(1)
+    self.stackedWidget_name.count()
+
+    # Tree Widget
+    self.treeWidget_name.currentItem().text(0) 
+    self.treeWidget_name.setCurrentItem(self.treeWidget_name.topLevelItem(0))
+    new_item = QtGui.QTreeWidgetItem()
+    new_item.setText(0,"text")
+    new_item.setDisabled(True)
+    self.treeWidget_name.addTopLevelItem(new_item)
+    self.treeWidget_name.clear()
+    self.treeWidget_name.setHeaderLabel("text")
+    self.treeWidget_name.invisibleRootItem()  
+    self.treeWidget_name.collapseAll()   
+    self.treeWidget_name.expandAll() 
+    self.treeWidget_name.findItems("text",QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive,0)[0].setDisabled(False)
+    self.treeWidget_name.findItems("text",QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive,0)[0].setHidden(False)
+    iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget_name)
+    while iterator.value():
+        item = iterator.value()
+        if item.text(0) in self.pd_library['Attack Categories']:
+            item.setFont(0,QtGui.QFont("Times", 11, QtGui.QFont.Bold))                    
+        iterator+=1      
+
+    # Group Box    
+    self.groupBox_name.setVisible(False)
+    self.groupBox_name.setEnabled(False)
+
+    # Progress Bar
+    self.progressBar_name.hide() 
+    self.progressBar_name.show()      
+    self.progressBar_name.setMaximum(100)
+    self.progressBar_name.setValue(10)
+
+    # List Widget
+    self.listWidget_name.setCurrentRow(0)
+    get_index = self.listWidget_name.currentRow()
+    self.listWidget_name.count()
+    get_text = str(self.listWidget_name.item(row).text())
+    self.listWidget_name.addItem(preset_name)
+    self.listWidget_name.addItems(modulation_list)
+    for item in self.listWidget_name.selectedItems()
+    self.listWidget_name.takeItem(self.listWidget_name.row(item))
+    self.listWidget_name.clear()
+
+The following are examples of commonly used connect functions:
+
+.. code-block:: console
+
+    # Push Buttons
+    self.pushButton_tsi_clear_SOI_list.clicked.connect(self._slotTSI_ClearSOI_ListClicked)
+    self.pushButton_pd_dissectors_construct.clicked.connect(lambda: self._slotPD_DissectorsConstructClicked(preview = False))
+
+    # Check Boxes 
+    self.checkBox_automation_receive_only.clicked.connect(self._slotAutomationReceiveOnlyClicked)
+
+    # Combo Boxes
+    self.comboBox_tsi_detector.currentIndexChanged.connect(self._slotTSI_DetectorChanged)
+
+    # Radio Buttons
+    self.radioButton_library_search_binary.clicked.connect(self._slotLibrarySearchBinaryClicked)
+
+    # Double Spin Boxes
+    self.doubleSpinBox_pd_bit_slicing_window_size.valueChanged.connect(self._slotPD_BitSlicingSpinboxWindowChanged)
+
+    # Horizontal Sliders
+    self.horizontalSlider_pd_bit_slicing_preamble_stats.valueChanged.connect(self._slotPD_BitSlicingSliderWindowChanged)
+
+    # Table Widgets   
+    self.tableWidget_automation_scan_options.cellChanged.connect(self._slotAutomationLockSearchBandClicked) 
+    self.tableWidget_pd_bit_slicing_lengths.itemSelectionChanged.connect(self._slotPD_BitSlicingLengthsChanged)
+    self.tableWidget_pd_bit_slicing_candidate_preambles.cellDoubleClicked.connect(self._slotPD_BitSlicingCandidateDoubleClicked)
+    self.tableWidget_pd_bit_slicing_packets.horizontalHeader().sectionClicked.connect(self._slotPD_BitSlicingColumnClicked)  
+
+    # Labels
+    self.label_iq_end.mousePressEvent = self._slotIQ_EndLabelClicked
+
+    # List Widgets
+    self.listWidget_library_gallery.currentItemChanged.connect(self._slotLibraryGalleryImageChanged)
+    self.listWidget_library_browse_demod_fgs.itemClicked.connect(self._slotLibraryBrowseDemodFGsClicked)
+    self.listWidget_iq_inspection_flow_graphs.itemDoubleClicked.connect(self._slotIQ_InspectionFlowGraphClicked)
+
+    # Text Edits
+    self.textEdit_iq_start.textChanged.connect(self._slotIQ_StartChanged)
+
+    # Tree Widgets
+    self.treeWidget_attack_attacks.itemDoubleClicked.connect(self._slotAttackTemplatesDoubleClicked)
+
+    # Menu Items
+    self.actionAll_Options.triggered.connect(self._slotMenuOptionsClicked)
+
+    # Tab Widgets
+    self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
+
+    # List Widget
+    self.listWidget_options.currentItemChanged.connect(self._slotOptionsListWidgetChanged)
+    self.listWidget_library_browse_attacks3.itemClicked.connect(self._slotLibraryBrowseAttacksClicked)
+    self.listWidget_pd_flow_graphs_recommended_fgs.itemDoubleClicked.connect(self._slotPD_DemodulationLoadSelectedClicked)  
+
+    # Custom Signals 
+    self.connect(self, self.signal_PD_Offline, self._slotPD_Offline)
+
+Generic Input Dialogs
+---------------------
+
+The generic input dialogs will be moved to a central location in the future. There are synchronous and asynchronous versions available for most types of dialog. If a message box dialog is part of an asynchronous function, it must have an asynchronous version to prevent errors.
+
+This section will be updated with examples once all the input dialog code has been reorganized. The following are old examples of synchronous input dialogs:
+
+Text Edit:
+
+.. code-block:: console
+
+    text, ok = QtGui.QInputDialog.getText(self, 'Rename', 'Enter new name:',QtGui.QLineEdit.Normal,get_file)
+    if ok:
+        print text
+
+
+ComboBox:
+
+.. code-block:: console
+
+    # Open the Band Chooser Dialog
+    new_label_text = "Choose 4G Band"
+    new_items = ['2', '3', '4', '5', '7', '12', '13', '14', '17', '20', '25', '26', '29', '30', '40', '41', '46', '48', '66', '71']
+    chooser_dlg = MiscChooser(parent=self, label_text=new_label_text, chooser_items=new_items)
+    chooser_dlg.show()
+    chooser_dlg.exec_() 
+
+    # Run the Script
+    get_value = chooser_dlg.return_value
+    if len(get_value) > 0:   
+        print get_value
+
+Folder:
+
+.. code-block:: console
+
+    # Choose Folder
+    get_dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory"))
+    if len(get_dir) > 0:            
+        print get_dir
+
+Open File:
+
+.. code-block:: console
+
+    # Choose File
+    fname = QtGui.QFileDialog.getOpenFileName(None,"Select IQ File...", default_directory, filter="All Files (*)")
+    if fname != "":
+        print fname
+
+Save File:
+
+.. code-block:: console
+
+    # Choose File
+    fname = QtGui.QFileDialog.getSaveFileName(None,"Select File...", default_directory, filter="All Files (*)")
+    if fname != "":
+        print fname
+
+Error Message:
+
+.. code-block:: console
+
+    self.errorMessage("Flow Graph was not Found in PD Flow Graph Library!")
+
+Message Box:
+
+.. code-block:: console
+
+    msgBox = MyMessageBox(my_text = " Choose an IQ file.", height = 75, width = 140)
+    msgBox.exec_() 
+
+Style Sheets
+============
+
+Style sheets are applied to the Dashboard and its child windows using the style sheets found in the ``./UI/Style_Sheets/`` folder. There are three files: light, dark, and custom. Each file contains a similar structure where settings can be applied to all widgets of the same type or for specific widgets using their object IDs. Many of the styles are applied to widgets that have object names starting with a specific naming convention. This allows commonly used widget subcategories to have their own styles. Each type of widget has their own unique properties that can be customized. 
+
+If possible, avoid hard-coding styling values in the Python code to better manage and organize the styling for FISSURE. Desktop environments will have different appearances for default settings and Qt versions can also have differences. Any style sheet adjustments that need to be made based on operating system will be inserted into the ``./fissure/Dashboard/Slots/MenuBarSlots.py`` file.
+
+Colors schemes are assigned to the widgets in the style sheets using temporary variables that later get populated with the RGB values for light, dark, and custom modes. The following mappings are used throughout the style sheets:
+
++---------------------------+-----------------------------------------------------------+
+| Mapping                   | Description                                               |
++===========================+===========================================================+
+| @color1                   | Background                                                | 
++---------------------------+-----------------------------------------------------------+
+| @color2                   | Frame Background                                          |
++---------------------------+-----------------------------------------------------------+
+| @color3                   | Label Background                                          |
++---------------------------+-----------------------------------------------------------+
+| @color4                   | Label Text                                                |
++---------------------------+-----------------------------------------------------------+
+| @color5                   | Text Edit Background                                      |
++---------------------------+-----------------------------------------------------------+
+| @color6                   | Button Gradient 1                                         |
++---------------------------+-----------------------------------------------------------+
+| @color7                   | Button Gradient 2                                         |
++---------------------------+-----------------------------------------------------------+
+| @color8                   | Disabled Gradient 1                                       |
++---------------------------+-----------------------------------------------------------+
+| @color9                   | Disabled Gradient 2                                       |
++---------------------------+-----------------------------------------------------------+
+| @color10                  | Hover Gradient 1                                          |
++---------------------------+-----------------------------------------------------------+
+| @color11                  | Hover Gradient 2                                          |
++---------------------------+-----------------------------------------------------------+
+| @color12                  | Button Text                                               |
++---------------------------+-----------------------------------------------------------+
+| @color13                  | Disabled Text                                             |
++---------------------------+-----------------------------------------------------------+
+| @icon_path                | Filepath of Icons Folder                                  |
++---------------------------+-----------------------------------------------------------+
+| @checked_enabled          | File Name of Checked Enabled Checkbox Image               |
++---------------------------+-----------------------------------------------------------+
+| @checked_disabled         | File Name of Checked Disabled Checkbox Image              |
++---------------------------+-----------------------------------------------------------+
+| @unchecked_enabled        | File Name of Unchecked Enabled Checkbox Image             |
++---------------------------+-----------------------------------------------------------+
+| @unchecked_disabled       | File Name of Unchecked Disabled Checkbox Image            |
++---------------------------+-----------------------------------------------------------+
+| @down_arrow_enabled       | File Name of Enabled Arrow Down Button Image              |
++---------------------------+-----------------------------------------------------------+
+| @down_arrow_disabled      | File Name of Disabled Arrow Down Button Image             |
++---------------------------+-----------------------------------------------------------+
+| @up_arrow_enabled         | File Name of Enabled Arrow Up Button Image                |
++---------------------------+-----------------------------------------------------------+
+| @up_arow_disabled         | File Name of Disabled Arrow Up Button Image               |
++---------------------------+-----------------------------------------------------------+
+| @radio_unchecked_enabled  | File Name of Enabled Unchecked Radio Button Image         |
++---------------------------+-----------------------------------------------------------+
+| @radio_checked_enabled    | File Name of Enabled Checked Radio Button Image           |
++---------------------------+-----------------------------------------------------------+
+| @menu_hover_padding       | Padding for Menu Hover Text                               |
++---------------------------+-----------------------------------------------------------+
+
+Style Sheet Example:
+
+.. code-block:: css
+
+    /*Global*/
+    QCheckBox{
+        font-family: "Ubuntu";
+        font-size: 10pt;
+    }
+
+    /*Subcategory*/
+    QCheckBox[objectName^="checkBox_"]{
+        background-color: rgba(0,0,0,0);
+        color: @color4;
+    }
+    QCheckBox[objectName^="checkBox_"]:disabled{
+        color: @color13;
+    }
+    QCheckBox[objectName^="checkBox_"]::indicator:unchecked {
+        image: url(@icon_path/@unchecked_enabled);
+    }
+    QCheckBox[objectName^="checkBox_"]::indicator:checked {
+        image: url(@icon_path/@checked_enabled);
+    }
+    QCheckBox[objectName^="checkBox_"]::indicator:disabled:checked {
+        image: url(@icon_path/@checked_disabled);
+    }
+    QCheckBox[objectName^="checkBox_"]::indicator:disabled:unchecked {
+        image: url(@icon_path/@unchecked_disabled);
+    }
+
+    /*Specific*/
+    QLabel#label4_status1{
+        color: @color4;
+        font: 10pt "Ubuntu";
+    }
+
+Adding Custom Options
+=====================
+
+**Options Dialog**
+
+Bring up the options dialog in Qt Designer using the `designer` command and then open the ``FISSURE/UI/options.ui`` file. Click the arrows for the stacked widget (top right) to locate the table where the custom option will be inserted. Double-click on the table and add a new row with the name of the variable. Set the font size to match the other rows with the "Properties<<" button.
+
+.. image:: /pages/Images/options.png
+
+**default.yaml**
+
+Open ``FISSURE/YAML/User Configs/default.yaml`` and insert the variable name and value (fft_size: 4096) for the new option.
+
+**Accessing Stored Values**
+
+Access the variables throughout the FISSURE code from the backend or other local settings locations such as: `dashboard.backend.settings['fft_size']` or `self.settings['fft_size']`.
+
 Attack Flow Graphs
 ==================
 
@@ -238,453 +817,6 @@ The following are helpful tips for configuring the GNU Radio flow graph:
 **Dashboard**
 
 Double-click/load an IQ file in the IQ Data tab Data Viewer and enter sample rate and frequency information prior to loading a file-based inspection flow graph. These values will automatically copy over to the table if available.
-
-Modifying Dashboard
-===================
-
-This guide will provide examples on how to add GUI elements to the FISSURE Dashboard and interact with those elements within the Dashboard.py code.
-
-QtDesigner
-----------
-
-Launch QtDesigner with the `designer` command and open the ``./UI/dashboard.ui`` file. Menu items are stored in the ``./UI/FissureDashboard.ui`` file and other supporting files can also be found in the same folder.
-
-.. image:: /pages/Images/qtdesigner.png
-
-**Creating New Widgets**
-
-Frequently used widgets:
-
-- Push Button
-- Text Edit
-- Combo Box
-- Check Box
-- Label
-- Frame
-- Spin Box
-- Double Spin Box
-- Horizontal Slider
-- Table Widget
-- Tab Widget
-- Stacked Widget
-- Tree Widget
-- Group Box
-- Progress Bar
-- List Widget
-
-Drag widgets onto the Dashboard and modify their property values in the Property Editor. 
-
-It is suggested to use an objectName consistent with the FINDINGS naming convention: \_widget-type\_tab-location\_description_ (e.g. pushButton\_automation\_manual, textEdit\_iq\_timeslot\_input)
-
-Menu items can be added by clicking "Type Here" in any of the menus/submenus and entering text. Separators can be added by clicking "Add Separator" and then dragged or by right clicking and clicking "Insert Separator". Submenus can be added by clicking the right side of any menu item.
-
-**Styling Widgets**
-
-Many labels and frames use stylesheets. Stylesheets can be applied to all widgets sharing the same type or only to specific widgets. Each widget has their own unique properties that can be customized. If possible, avoid setting the stylesheets in the *dashboard.py* code to better manage and organize the stylesheets.
-
-Tab Widget Example 1:
-
-.. code-block:: console
-
-    #tabWidget > QTabBar::tab {
-        width: 132px; 
-        height:27px;
-        margin-top: 0px;
-    }
-
-    #tabWidget > QTabBar::tab:!selected {
-        margin-top: 6px;
-        height: 21px;
-        width: 132px; 
-    }
-
-    QTabBar::tab:disabled {
-        background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #eeeeee, stop:0.12 #888888, stop:0.3 #666666,   stop:0.85 #444444, stop:1 #444444);
-        border: 1px solid #444444;
-        color: rgb(150, 150, 150);
-    }
-
-    QTabWidget::pane { 
-        border: 1px solid #17365D;
-    }
-
-    QTabBar::tab {
-        qproperty-alignment: AlignCenter;
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-        background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
-        border: 1px solid #17365D;
-        color:rgb(0, 220, 0);
-        font: bold 10pt "Ubuntu";
-        margin-right:1px;
-        width: 132px;
-        height:22px;
-        margin-top: 3px;
-    }
-
-    QTabBar::tab:!selected {
-        margin-top: 7px;
-        height: 18px;
-        color: rgb(255, 255, 255);
-    }
-
-Tab Widget Example 2:
-
-.. code-block:: console
-
-    #tabWidget_3 > QTabBar::tab{width:110px}
-
-Label Example 1:
-
-.. code-block:: console
-
-    QLabel#label_294 {
-        qproperty-alignment: AlignCenter;
-        border: 1px solid #17365D;
-        border-top-left-radius: 15px;
-        border-top-right-radius: 15px;
-        background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);
-        padding: 0px 0px;
-        color: rgb(255, 255, 255);
-        max-height: 20px;
-        font: bold 10pt "Ubuntu";
-    }
-
-Frame Example 1:
-
-.. code-block:: console
-
-    QFrame#frame_9 {
-        background-color: rgb(251, 251, 251);
-        border: 1px solid #17365D;
-        border-bottom-left-radius: 15px;
-        border-bottom-right-radius: 15px;
-    }
-
-Push Button Example 1:
-
-.. code-block:: console
-
-    #pushButton_top_tsi{
-        color: rgb(0, 0, 0,);
-        padding: 45px 0px 0px 92px;
-        background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));
-        border-style: outset;
-        border-width: 2px;
-        border-radius: 10px;
-        /*border-color: #152947;*/
-        border-color:  #17365D;
-    }
-
-    #pushButton_top_tsi:hover{
-        background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(170, 170, 170,50));
-    }
-
-    #pushButton_top_tsi:pressed{
-        background-color: qradialgradient(cx: 0.3, cy: -0.4, fx: 0.3, fy: -0.4, radius: 1.35, stop: 0 rgba(255, 255, 255,50), stop: 1 rgba(100, 100, 100,50));	
-        padding: 47px -2px 0px 92px;
-    }
-
-dashboard.py
-------------
-
-Any widget in the Dashboard can be referenced with `self.objectName`.
-
-The following are frequently called public functions for the widgets in FISSURE:
-
-.. code-block:: console
-    
-    # Push Button
-    self.pushButton_name.text()
-    self.pushButton_name.setText("Text")
-    self.pushButton_name.setEnabled(False)
-    self.pushButton_name.setVisible(True)
-
-    # Text Edit
-    str(self.textEdit_name.toPlainText())
-    self.textEdit_name.setPlainText("Text")
-
-    # Combo Box
-    str(self.comboBox_name.currentText())
-    self.comboBox_name.clear()
-    self.comboBox_name.addItem(get_dissector)
-    self.comboBox_name.addItems(get_packet_types)
-    self.comboBox_name.setCurrentIndex(0)
-    self.comboBox_name.currentIndex(0)
-
-    # Check Box
-    self.checkBox_name.isChecked()
-    self.checkBox_name.setChecked(False)
-
-    # Label
-    self.label_name.text()
-    self.label_name.setText(get_samples)
-    self.label_name.setPixmap(QtGui.QPixmap(os.path.dirname(os.path.realpath(__file__)) + "/docs/Icons/USRP_X310.png")) 
-
-    # Frame
-    self.frame_name.pos()
-    self.frame_name.geometry()
-
-    # Spin Box/Double Spin Box
-    self.spinBox_name.value()
-    self.spinBox_name.setValue(10)
-    self.spinBox_name.setMaximum(35)
-    self.spinBox_name.setMinimum(0)
-
-    # Horizontal/Vertical Slider
-    self.horizontalSlider_name.setMinimum(int(win_min))
-    self.horizontalSlider_name.setMaximum(int(win_max))
-    self.horizontalSlider_name.setValue(int(win_min)) 
-    self.horizontalSlider_name.setSliderPosition(2)
-
-    # Table Widget
-    self.tableWidget_name.rowCount()
-    self.tableWidget_name.columnCount()
-    self.tableWidget_name.setColumnCount(1)
-    self.tableWidget_name.setRowCount(0)
-    self.tableWidget_name.removeRow(1)
-    self.tableWidget_name.removeColumn(5)
-    self.tableWidget_name.insertRow(0)
-    self.tableWidget_name.currentRow() 
-    self.tableWidget_name.clearContents()
-    self.tableWidget_name.resizeRowsToContents()                   
-    self.tableWidget_name.resizeColumnsToContents()    
-    self.tableWidget_name.setColumnWidth(4,130)
-    self.tableWidget_name.horizontalHeader().setResizeMode(2,QtGui.QHeaderView.Stretch)  
-    self.tableWidget_name.horizontalHeader().setStretchLastSection(True)                
-    self.tableWidget_name.verticalHeaderItem(0).text()
-    self.tableWidget_name.setHorizontalHeaderItem(1,QtGui.QTableWidgetItem(""))
-    self.tableWidget_name.item(0,5).text()
-    self.tableWidget_name.setCurrentCell(self.tableWidget_name.currentRow()-1,0)
-    table_item = self.tableWidget_name.takeItem(self.tableWidget_name.currentRow()-1,0)
-    table_item = QtGui.QTableWidgetItem(str(657))  # from PyQt4 import QtCore, QtGui, uic
-    table_item.setTextAlignment(QtCore.Qt.AlignCenter)
-    table_item.setFlags(table_item.flags() & ~QtCore.Qt.ItemIsEditable)
-    self.tableWidget_name.setItem(0,0,table_item) 
-    self.tableWidget_name.item(row,4).setFlags(self.tableWidget_name.item(row,4).flags() ^ QtCore.Qt.ItemIsEnabled)
-    self.tableWidget_name.cellWidget(0,4).currentText()
-    self.tableWidget_name.cellWidget(1,0).isChecked()
-    self.tableWidget_name.cellWidget(row,0).isEnabled()
-    self.tableWidget_name.cellWidget(row,0).setCurrentIndex(1)
-    self.tableWidget_name.setCellWidget(0,0,new_button)                
-
-    new_checkbox = QtGui.QCheckBox("",self)
-    new_checkbox.setStyleSheet("margin-left:17%")
-    self.tableWidget_name.setCellWidget(n,0,new_checkbox)
-
-    new_pushbutton = QtGui.QPushButton(self.table_list[n])
-    new_pushbutton.setText("Guess")
-    new_pushbutton.setFixedSize(64,23)
-    self.tableWidget_name.setCellWidget(self.tableWidget_name.rowCount()-1,1,new_pushbutton)
-    new_pushbutton.clicked.connect(lambda: self._slotGuessInterfaceTableClicked(get_value))
-
-    # Tab Widget
-    self.tabWidget_name.currentIndex()
-    self.tabWidget_name.setCurrentIndex(4)
-    self.tabWidget_name.tabText(self.tabWidget_name.currentIndex())
-    self.tabWidget_name.setTabText(0,"Detector")
-    self.tabWidget_name.setTabToolTip(1,"Target Signal Identification")
-    self.tabWidget_name.setTabEnabled(2,False)
-    self.tabWidget_name.count()
-    self.tabWidget_name.removeTab(1)
-    new_tab = QtGui.QWidget()       
-    vBoxlayout  = QtGui.QVBoxLayout()
-    vBoxlayout.addWidget(self.table_name)
-    new_tab.setLayout(vBoxlayout)   
-    self.tabWidget_name.addTab(new_tab,"text")  
-    get_table = self.tabWidget_name.children()[0].widget(n).children()[1]  # TabWidget>>StackedLayout>>Tab>>Table
-
-    # Stacked Widget
-    self.stackedWidget_name.currentIndex()
-    self.stackedWidget_name.setCurrentIndex(1)
-    self.stackedWidget_name.count()
-
-    # Tree Widget
-    self.treeWidget_name.currentItem().text(0) 
-    self.treeWidget_name.setCurrentItem(self.treeWidget_name.topLevelItem(0))
-    new_item = QtGui.QTreeWidgetItem()
-    new_item.setText(0,"text")
-    new_item.setDisabled(True)
-    self.treeWidget_name.addTopLevelItem(new_item)
-    self.treeWidget_name.clear()
-    self.treeWidget_name.setHeaderLabel("text")
-    self.treeWidget_name.invisibleRootItem()  
-    self.treeWidget_name.collapseAll()   
-    self.treeWidget_name.expandAll() 
-    self.treeWidget_name.findItems("text",QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive,0)[0].setDisabled(False)
-    self.treeWidget_name.findItems("text",QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive,0)[0].setHidden(False)
-    iterator = QtGui.QTreeWidgetItemIterator(self.treeWidget_name)
-    while iterator.value():
-        item = iterator.value()
-        if item.text(0) in self.pd_library['Attack Categories']:
-            item.setFont(0,QtGui.QFont("Times", 11, QtGui.QFont.Bold))                    
-        iterator+=1      
-
-    # Group Box    
-    self.groupBox_name.setVisible(False)
-    self.groupBox_name.setEnabled(False)
-
-    # Progress Bar
-    self.progressBar_name.hide() 
-    self.progressBar_name.show()      
-    self.progressBar_name.setMaximum(100)
-    self.progressBar_name.setValue(10)
-
-    # List Widget
-    self.listWidget_name.setCurrentRow(0)
-    get_index = self.listWidget_name.currentRow()
-    self.listWidget_name.count()
-    get_text = str(self.listWidget_name.item(row).text())
-    self.listWidget_name.addItem(preset_name)
-    self.listWidget_name.addItems(modulation_list)
-    for item in self.listWidget_name.selectedItems()
-    self.listWidget_name.takeItem(self.listWidget_name.row(item))
-    self.listWidget_name.clear()
-
-The `_connectSlots()` function in *dashboard.py* is used to assign functions to widget actions. Group the signal/slot assignments for widgets by their type and the tab they reside in.
-
-The following are examples to link new widgets to new functions in the *MainWindow* class.
-
-.. code-block:: console
-
-    # Push Buttons
-    self.pushButton_tsi_clear_SOI_list.clicked.connect(self._slotTSI_ClearSOI_ListClicked)
-    self.pushButton_pd_dissectors_construct.clicked.connect(lambda: self._slotPD_DissectorsConstructClicked(preview = False))
-
-    # Check Boxes 
-    self.checkBox_automation_receive_only.clicked.connect(self._slotAutomationReceiveOnlyClicked)
-
-    # Combo Boxes
-    self.comboBox_tsi_detector.currentIndexChanged.connect(self._slotTSI_DetectorChanged)
-
-    # Radio Buttons
-    self.radioButton_library_search_binary.clicked.connect(self._slotLibrarySearchBinaryClicked)
-
-    # Double Spin Boxes
-    self.doubleSpinBox_pd_bit_slicing_window_size.valueChanged.connect(self._slotPD_BitSlicingSpinboxWindowChanged)
-
-    # Horizontal Sliders
-    self.horizontalSlider_pd_bit_slicing_preamble_stats.valueChanged.connect(self._slotPD_BitSlicingSliderWindowChanged)
-
-    # Table Widgets   
-    self.tableWidget_automation_scan_options.cellChanged.connect(self._slotAutomationLockSearchBandClicked) 
-    self.tableWidget_pd_bit_slicing_lengths.itemSelectionChanged.connect(self._slotPD_BitSlicingLengthsChanged)
-    self.tableWidget_pd_bit_slicing_candidate_preambles.cellDoubleClicked.connect(self._slotPD_BitSlicingCandidateDoubleClicked)
-    self.tableWidget_pd_bit_slicing_packets.horizontalHeader().sectionClicked.connect(self._slotPD_BitSlicingColumnClicked)  
-
-    # Labels
-    self.label_iq_end.mousePressEvent = self._slotIQ_EndLabelClicked
-
-    # List Widgets
-    self.listWidget_library_gallery.currentItemChanged.connect(self._slotLibraryGalleryImageChanged)
-    self.listWidget_library_browse_demod_fgs.itemClicked.connect(self._slotLibraryBrowseDemodFGsClicked)
-    self.listWidget_iq_inspection_flow_graphs.itemDoubleClicked.connect(self._slotIQ_InspectionFlowGraphClicked)
-
-    # Text Edits
-    self.textEdit_iq_start.textChanged.connect(self._slotIQ_StartChanged)
-
-    # Tree Widgets
-    self.treeWidget_attack_attacks.itemDoubleClicked.connect(self._slotAttackTemplatesDoubleClicked)
-
-    # Menu Items
-    self.actionAll_Options.triggered.connect(self._slotMenuOptionsClicked)
-
-    # Tab Widgets
-    self.tabWidget_tsi.currentChanged.connect(self._slotTSI_TabChanged)
-
-    # List Widget
-    self.listWidget_options.currentItemChanged.connect(self._slotOptionsListWidgetChanged)
-    self.listWidget_library_browse_attacks3.itemClicked.connect(self._slotLibraryBrowseAttacksClicked)
-    self.listWidget_pd_flow_graphs_recommended_fgs.itemDoubleClicked.connect(self._slotPD_DemodulationLoadSelectedClicked)  
-
-    # Custom Signals 
-    self.connect(self, self.signal_PD_Offline, self._slotPD_Offline)
-
-To avoid threading issues in FISSURE's event listener, custom signals can be issued from within the thread to slots located in the Dashboard.
-
-.. code-block:: console
-
-    self.signal_PD_Offline = QtCore.SIGNAL("pdOffline")               # Defined in Dashboard
-    self.connect(self, self.signal_PD_Offline, self._slotPD_Offline)  # Defined in Dashboard
-    self.emit(self.signal_PD_Offline)                                 # Issued in thread
-
-Connected slots/functions are appended to the class.
-
-.. code-block:: console
-
-    def _slotIQ_ConvertClicked(self):
-        """ Converts the original file to a new data type.
-        """
-        # Get Values
-        print "text"
-
-**Generic Input Dialogs**
-
-Text Edit:
-
-.. code-block:: console
-
-    text, ok = QtGui.QInputDialog.getText(self, 'Rename', 'Enter new name:',QtGui.QLineEdit.Normal,get_file)
-    if ok:
-        print text
-
-
-ComboBox:
-
-.. code-block:: console
-
-    # Open the Band Chooser Dialog
-    new_label_text = "Choose 4G Band"
-    new_items = ['2', '3', '4', '5', '7', '12', '13', '14', '17', '20', '25', '26', '29', '30', '40', '41', '46', '48', '66', '71']
-    chooser_dlg = MiscChooser(parent=self, label_text=new_label_text, chooser_items=new_items)
-    chooser_dlg.show()
-    chooser_dlg.exec_() 
-
-    # Run the Script
-    get_value = chooser_dlg.return_value
-    if len(get_value) > 0:   
-        print get_value
-
-Folder:
-
-.. code-block:: console
-
-    # Choose Folder
-    get_dir = str(QtGui.QFileDialog.getExistingDirectory(self, "Select Directory"))
-    if len(get_dir) > 0:            
-        print get_dir
-
-Open File:
-
-.. code-block:: console
-
-    # Choose File
-    fname = QtGui.QFileDialog.getOpenFileName(None,"Select IQ File...", default_directory, filter="All Files (*)")
-    if fname != "":
-        print fname
-
-Save File:
-
-.. code-block:: console
-
-    # Choose File
-    fname = QtGui.QFileDialog.getSaveFileName(None,"Select File...", default_directory, filter="All Files (*)")
-    if fname != "":
-        print fname
-
-Error Message:
-
-.. code-block:: console
-
-    self.errorMessage("Flow Graph was not Found in PD Flow Graph Library!")
-
-Message Box:
-
-.. code-block:: console
-
-    msgBox = MyMessageBox(my_text = " Choose an IQ file.", height = 75, width = 140)
-    msgBox.exec_() 
-
 
 Creating Triggers
 =================
