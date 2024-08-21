@@ -18,18 +18,26 @@ import time
 import uuid
 import zmq
 
+HEARTBEAT_LOOP_DELAY = 0.1  # Seconds
+EVENT_LOOP_DELAY = 0.1
 
 def run():
     asyncio.run(main())
 
 
 async def main():
-    sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "TSI Flow Graphs"))
-
+    """
+    Server __main__.py does not call this function. Do not edit! Edit __init__() or begin().
+    """
+    # Initialize TSI
+    # sys.path.insert(0, os.path.join(fissure.utils.FISSURE_ROOT, "Flow Graph Library", "TSI Flow Graphs"))
     print("[FISSURE][TargetSignalIdentification] start")
     tsi = TargetSignalIdentification()
+
+    # Start Event Loop
     await tsi.begin()
 
+    # End and Clean Up
     print("[FISSURE][TargetSignalIdentification] end")
     fissure.utils.zmq_cleanup()
 
@@ -117,6 +125,19 @@ class TargetSignalIdentification:
         self.logger.debug(f"registered {len(callbacks)} callbacks from {ctx.__name__}")
 
 
+    async def heartbeat_loop(self):
+        """
+        Sends and reads heartbeat messages, separate from event loop to prevent freezing on blocking events.
+        """
+        while self.shutdown is False:
+            # Heartbeats
+            await self.send_heartbeat()
+            await self.recv_heartbeat()
+            self.check_heartbeat()
+
+            await asyncio.sleep(HEARTBEAT_LOOP_DELAY)
+
+
     async def begin(self):
         self.logger.info("=== STARTING TARGET SIGNAL IDENTIFICATION COMPONENT ===")
 
@@ -124,15 +145,22 @@ class TargetSignalIdentification:
         if await self.hiprfisr_socket.connect(self.hiprfisr_address):
             self.logger.info(f"connected to HiprFisr @ {self.hiprfisr_address}")
 
+        # Start Heartbeat Loop
+        heartbeat_task = asyncio.create_task(self.heartbeat_loop())
+
         # Main Event Loop
         while self.shutdown is False:
-            # Heartbeats
-            await self.send_heartbeat()
-            await self.recv_heartbeat()
-            self.check_heartbeat()
-
             # Process Incoming Messages
             await self.read_HIPRFISR_messages()
+
+            await asyncio.sleep(EVENT_LOOP_DELAY)
+
+        # Ensure the Heartbeat Loop is Stopped
+        heartbeat_task.cancel()
+        try:
+            await heartbeat_task
+        except asyncio.CancelledError:
+            pass  # Heartbeat task was cancelled cleanly
 
         # Clean Up
         if self.conditioner_running == True:
@@ -320,7 +348,7 @@ class TargetSignalIdentification:
 
                 # Stop Conditioner Triggered
                 if self.conditioner_running == False:
-                    print("TSI Conditioner Stopped")
+                    self.logger.info("TSI Conditioner Stopped")
                     return
 
                 # Update Progress Bar
@@ -382,7 +410,7 @@ class TargetSignalIdentification:
 
                 # Stop Conditioner Triggered
                 if self.conditioner_running == False:
-                    print("TSI Conditioner Stopped")
+                    self.logger.info("TSI Conditioner Stopped")
                     return
 
                 # Update Progress Bar
@@ -448,7 +476,7 @@ class TargetSignalIdentification:
 
                 # Stop Conditioner Triggered
                 if self.conditioner_running == False:
-                    print("TSI Conditioner Stopped")
+                    self.logger.info("TSI Conditioner Stopped")
                     return
 
                 # Update Progress Bar
@@ -514,7 +542,7 @@ class TargetSignalIdentification:
 
                 # Stop Conditioner Triggered
                 if self.conditioner_running == False:
-                    print("TSI Conditioner Stopped")
+                    self.logger.info("TSI Conditioner Stopped")
                     return
 
                 # Update Progress Bar
@@ -588,7 +616,7 @@ class TargetSignalIdentification:
 
                 # Stop Conditioner Triggered
                 if self.conditioner_running == False:
-                    print("TSI Conditioner Stopped")
+                    self.logger.info("TSI Conditioner Stopped")
                     return
 
                 # Update Progress Bar
@@ -666,7 +694,7 @@ class TargetSignalIdentification:
 
                 # Stop Conditioner Triggered
                 if self.conditioner_running == False:
-                    print("TSI Conditioner Stopped")
+                    self.logger.info("TSI Conditioner Stopped")
                     return
 
                 # Update Progress Bar
@@ -746,7 +774,7 @@ class TargetSignalIdentification:
 
                 # Stop Conditioner Triggered
                 if self.conditioner_running == False:
-                    print("TSI Conditioner Stopped")
+                    self.logger.info("TSI Conditioner Stopped")
                     return
 
                 # Update Progress Bar
@@ -835,7 +863,7 @@ class TargetSignalIdentification:
                     freq_result = str(float(get_bandpass_width) / 2)
 
                 # Strongest Frequency Result
-                print("Strongest Frequency Detected at: " + str(freq_result))
+                self.logger.info("Strongest Frequency Detected at: " + str(freq_result))
                 # self.textEdit_settings_bt_sfb_freq.setPlainText(freq_result)
                 # self.textEdit_settings_bt_sfb_freq.setAlignment(QtCore.Qt.AlignCenter)
                 # get_bandpass_freq = str(self.textEdit_settings_bt_sfb_freq.toPlainText())
@@ -883,7 +911,7 @@ class TargetSignalIdentification:
 
         # Invalid Method
         else:
-            print("Invalid method")
+            self.logger.error("Invalid method")
             self.finishedTSI_Conditioner()
             return
 
@@ -1027,7 +1055,7 @@ class TargetSignalIdentification:
 
                     # Unknown
                     else:
-                        print("Cannot normalize " + get_type + ".")
+                        self.logger.error("Cannot normalize " + get_type + ".")
 
                     # Detect
                     if (array_min <= float(get_saturation_min)) or (array_max >= float(get_saturation_max)):
@@ -1146,7 +1174,7 @@ class TargetSignalIdentification:
 
                 # Unknown
                 else:
-                    print("Cannot normalize " + get_type + ".")
+                    self.logger.error("Cannot normalize " + get_type + ".")
 
         # Return the Table Data
         asyncio.run(self.finishedTSI_Conditioner(table_strings))
@@ -1169,7 +1197,7 @@ class TargetSignalIdentification:
     async def finishedTSI_Conditioner(self, table_strings=[]):
         """Sends a message to the HIPRFISR to signal the signal conditioner operation is complete."""
         # Send the Message
-        print("TSI Conditioner Complete. Returning Table Data...")
+        self.logger.info("TSI Conditioner Complete. Returning Table Data...")
         PARAMETERS = {"table_strings": table_strings}
         msg = {
             fissure.comms.MessageFields.IDENTIFIER: self.identifier,
@@ -1259,7 +1287,7 @@ class TargetSignalIdentification:
 
                 # Unknown
                 else:
-                    print("Cannot read  " + get_data_type + ".")
+                    self.logger.error("Cannot read  " + get_data_type + ".")
                     continue
 
                 # Do FFT Once
@@ -1478,7 +1506,7 @@ class TargetSignalIdentification:
 
             # Check for Break
             if self.fe_running == False:
-                print("TSI Feature Extractor Stopped")
+                self.logger.info("TSI Feature Extractor Stopped")
                 return
 
         # Return the Table Data
@@ -1504,7 +1532,7 @@ class TargetSignalIdentification:
         Sends a message to the HIPRFISR to signal the feature extractor operation is complete.
         """
         # Send the Message
-        print("TSI Feature Extractor Complete. Returning Table Data...")
+        self.logger.info("TSI Feature Extractor Complete. Returning Table Data...")
         PARAMETERS = {"table_strings": table_strings}
         msg = {
             fissure.comms.MessageFields.IDENTIFIER: self.identifier,

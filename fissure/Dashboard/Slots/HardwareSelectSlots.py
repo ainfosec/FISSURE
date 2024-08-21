@@ -1660,9 +1660,9 @@ async def launch(HWSelect: QtCore.QObject):
     tab_index = HWSelect.tabWidget_nodes.currentIndex()
     recall_settings_widgets = [HWSelect.checkBox_recall_settings_local_1,HWSelect.checkBox_recall_settings_local_2,HWSelect.checkBox_recall_settings_local_3,HWSelect.checkBox_recall_settings_local_4,HWSelect.checkBox_recall_settings_local_5]
     launch_widgets = [HWSelect.pushButton_launch_1,HWSelect.pushButton_launch_2,HWSelect.pushButton_launch_3,HWSelect.pushButton_launch_4,HWSelect.pushButton_launch_5]
-    get_ip = '127.0.0.1'
-    get_msg_port = '5052'
-    get_hb_port = '5051'
+    get_ip = 'ipc'
+    get_msg_port = "ipc:///tmp/zmq_ipc_message"
+    get_hb_port = "ipc:///tmp/zmq_ipc_heartbeat"
     get_recall_settings = str(recall_settings_widgets[tab_index].isChecked())
     
     # Disable Buttons
@@ -1671,7 +1671,7 @@ async def launch(HWSelect: QtCore.QObject):
     QtWidgets.QApplication.processEvents()
     
     # Connect
-    os.system('python3 "' + os.path.join(fissure.utils.SENSOR_NODE_DIR, "SensorNode.py") + '" &')
+    os.system('python3 "' + os.path.join(fissure.utils.SENSOR_NODE_DIR, "SensorNode.py") + '" --local &')
     HWSelect.dashboard.logger.info("Launching local sensor node, please wait...")
     await asyncio.sleep(9)
     # time.sleep(1)
@@ -2348,7 +2348,7 @@ def delete(HWSelect: QtCore.QObject):
             HWSelect.dashboard.ui.pushButton_top_node2.setText("New Sensor Node")
             HWSelect.dashboard.ui.pushButton_top_node2.setVisible(True)
             HWSelect.dashboard.statusBar().sensor_nodes[1].setText("SN2: --")
-            if HWSelect.dashboard.active_sensor_node == 1:
+            if HWSelect.dashboard.active_sensor_node <= 1:
                 fissure.Dashboard.Slots.TopBarSlots.sensor_node_rightClick(HWSelect.dashboard, node_idx=0)
         elif HWSelect.dashboard.backend.settings["sensor_node3"]["nickname"] == "":
             HWSelect.dashboard.ui.pushButton_top_node2.setText(
@@ -2360,6 +2360,8 @@ def delete(HWSelect: QtCore.QObject):
             HWSelect.dashboard.statusBar().sensor_nodes[3].setText("SN3: --")
             if HWSelect.dashboard.active_sensor_node == 2:
                 fissure.Dashboard.Slots.TopBarSlots.sensor_node_rightClick(HWSelect.dashboard, node_idx=1)
+            elif HWSelect.dashboard.active_sensor_node == 0:
+                fissure.Dashboard.Slots.TopBarSlots.sensor_node_rightClick(HWSelect.dashboard, node_idx=0)
         elif HWSelect.dashboard.backend.settings["sensor_node4"]["nickname"] == "":
             HWSelect.dashboard.ui.pushButton_top_node3.setText(
                 HWSelect.dashboard.backend.settings["sensor_node3"]["nickname"]
@@ -2371,6 +2373,8 @@ def delete(HWSelect: QtCore.QObject):
             HWSelect.dashboard.statusBar().sensor_nodes[3].setText("SN4: --")
             if HWSelect.dashboard.active_sensor_node == 3:
                 fissure.Dashboard.Slots.TopBarSlots.sensor_node_rightClick(HWSelect.dashboard, node_idx=2)
+            elif HWSelect.dashboard.active_sensor_node == 0:
+                fissure.Dashboard.Slots.TopBarSlots.sensor_node_rightClick(HWSelect.dashboard, node_idx=0)
         elif HWSelect.dashboard.backend.settings["sensor_node5"]["nickname"] == "":
             HWSelect.dashboard.ui.pushButton_top_node4.setText(
                 HWSelect.dashboard.backend.settings["sensor_node4"]["nickname"]
@@ -2383,5 +2387,7 @@ def delete(HWSelect: QtCore.QObject):
             HWSelect.dashboard.statusBar().sensor_nodes[4].setText("SN5: --")
             if HWSelect.dashboard.active_sensor_node == 4:
                 fissure.Dashboard.Slots.TopBarSlots.sensor_node_rightClick(HWSelect.dashboard, node_idx=3)
+            elif HWSelect.dashboard.active_sensor_node == 0:
+                fissure.Dashboard.Slots.TopBarSlots.sensor_node_rightClick(HWSelect.dashboard, node_idx=0)
 
         HWSelect.accept()

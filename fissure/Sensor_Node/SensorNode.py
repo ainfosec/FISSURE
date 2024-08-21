@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import argparse
 import time
 import random
 import yaml
@@ -60,18 +61,37 @@ elif "maint-3.10" in fissure.utils.get_fg_library_dir(fissure.utils.get_os_info(
 sys.path.insert(0, '/tmp')
 
 
-def run():
-    asyncio.run(main())
+def parse_args():
+    parser = argparse.ArgumentParser(description="Start the Sensor Node.")
+    parser.add_argument("--local", action="store_true", help="Run in local mode.")
+    return parser.parse_args()
 
 
-async def main():
+def run(local_flag):
+    asyncio.run(main(local_flag))
+
+
+async def main(local_flag):
+    # Initialize Sensor Node
     print("[FISSURE][Sensor Node] start")
-    sensor_node = SensorNode()
+    sensor_node = SensorNode(local_flag)
+
+    # Start Heartbeat Loop
+    heartbeat_task = asyncio.create_task(sensor_node.heartbeat_loop())
+    
+    # Start Event Loop
     await sensor_node.begin()
 
+    # Ensure the Heartbeat Loop is Stopped
+    heartbeat_task.cancel()
+    try:
+        await heartbeat_task
+    except asyncio.CancelledError:
+        pass  # Heartbeat task was cancelled cleanly
+
+    # Clean Up and Exit
     print("[FISSURE][Sensor Node] end")
     fissure.utils.zmq_cleanup()
-
     sys.exit()
 
 
@@ -81,8 +101,9 @@ class SensorNode():
     """
     
     # settings: Dict
-    identifier: str = fissure.comms.Identifiers.SENSOR_NODE_0
-    logger: logging.Logger = fissure.utils.get_logger(fissure.comms.Identifiers.SENSOR_NODE_0)
+    identifier: str = "sensor node " + str(uuid.uuid4())[:8]  #fissure.comms.Identifiers.SENSOR_NODE_0
+    #logger: logging.Logger = fissure.utils.get_logger(fissure.comms.Identifiers.SENSOR_NODE_0)
+    logger: logging.Logger = fissure.utils.get_logger(identifier)
     # ip_address: str
     hiprfisr_socket: fissure.comms.Server  # PAIR
     #hiprfisr_connected: bool
@@ -93,11 +114,15 @@ class SensorNode():
     
     #######################  FISSURE Functions  ########################
 
-    def __init__(self):
+    def __init__(self, local_flag):
         """ 
         The start of the sensor node execution.
         """
         self.hiprfisr_connected = False
+        if local_flag == True:
+            self.local_remote = "local"
+        else:
+            self.local_remote = "remote"
 
         # Read Stored Settings
         self.os_info = fissure.utils.get_os_info()
@@ -112,7 +137,8 @@ class SensorNode():
         # Initialize Connection/Heartbeat Variables
         self.ip_address = str(self.settings_dict['Sensor Node']['ip_address'])
         self.heartbeats = {
-            fissure.comms.Identifiers.SENSOR_NODE_0: 0,
+            self.identifier: 0,
+            #fissure.comms.Identifiers.SENSOR_NODE_0: 0,
             fissure.comms.Identifiers.HIPRFISR: 0,
         }
 
@@ -177,7 +203,10 @@ class SensorNode():
         # print(comms_info)
         # sensor_node_pair_address = fissure.comms.Address(address_config=comms_info.get("frontend"))
 
-        sensor_node_pair_address = fissure.comms.Address(protocol="tcp", address=self.ip_address, hb_channel=5051, msg_channel=sensor_node_pair_port)
+        if self.local_remote == "local":
+            sensor_node_pair_address = fissure.comms.Address(protocol="ipc", address=self.ip_address, hb_channel="ipc:///tmp/zmq_ipc_heartbeat", msg_channel="ipc:///tmp/zmq_ipc_message")
+        else:
+            sensor_node_pair_address = fissure.comms.Address(protocol="tcp", address=self.ip_address, hb_channel=5051, msg_channel=sensor_node_pair_port)
 
         # print(sensor_node_pair_address.get("address"))
         # print(sensor_node_pair_address["frontend"]["address"])
@@ -241,15 +270,15 @@ class SensorNode():
         self.hiprfisr_socket.shutdown()
 
 
-    async def begin(self):
+    async def heartbeat_loop(self):
         """
-        Main Event Loop
+        Sends and reads heartbeat messages, separate from event loop to prevent freezing on blocking events.
         """
-        self.logger.info("=== STARTING SENSOR NODE ===")
+        # Start Heartbeat Loop
         while self.shutdown is False:
             await asyncio.sleep(DELAY)
 
-            # Heartbeats
+            # print("looping")
             if self.hiprfisr_connected:
                 try:
                     await asyncio.wait_for(self.send_heartbeat(), timeout=10.0)
@@ -262,6 +291,15 @@ class SensorNode():
             except asyncio.TimeoutError:
                 self.hiprfisr_connected = False
                 self.logger.warning("check_heartbeats() timed out")
+
+
+    async def begin(self):
+        """
+        Main event loop for reading messages and terminating connections.
+        """
+        self.logger.info("=== STARTING SENSOR NODE ===")
+        while self.shutdown is False:
+            await asyncio.sleep(DELAY)
 
             # Process Incoming Messages
             await self.read_hiprfisr_messages()
@@ -446,7 +484,7 @@ class SensorNode():
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
         elif flow_graph_type == "IQ":
             # Remote Sensor Node
-            if self.settings_dict['Sensor Node']['local_remote'] == "remote":
+            if self.local_remote == "remote":
 
                 # If a Valid File
                 if read_filepath != "":
@@ -601,7 +639,7 @@ class SensorNode():
 
             try:
                 # Replace Username in Filepaths
-                if self.settings_dict['Sensor Node']['local_remote'] == "remote":
+                if self.local_remote == "remote":
                     for n in range(0,len(variable_names)):
                         if 'filepath' in variable_names[n]:
                             variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
@@ -663,7 +701,7 @@ class SensorNode():
         # Autorun
         else:
             # Replace Username in Filepaths
-            if self.settings_dict['Sensor Node']['local_remote'] == "remote":
+            if self.local_remote == "remote":
                 for n in range(0,len(variable_names)):
                     if 'filepath' in variable_names[n]:
                         variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
@@ -923,7 +961,7 @@ class SensorNode():
                     pass
                     
                 # Replace Username in Filepaths
-                if self.settings_dict['Sensor Node']['local_remote'] == "remote":
+                if self.local_remote == "remote":
                     for n in range(0,len(variable_names)):
                         if 'filepath' in variable_names[n]:
                             variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
@@ -958,7 +996,7 @@ class SensorNode():
         # Autorun
         else:
             # Replace Username in Filepaths
-            if self.settings_dict['Sensor Node']['local_remote'] == "remote":
+            if self.local_remote == "remote":
                 for n in range(0,len(variable_names)):
                     if 'filepath' in variable_names[n]:
                         variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
@@ -991,7 +1029,7 @@ class SensorNode():
 
             try:
                 # Replace Username in Filepaths
-                if self.settings_dict['Sensor Node']['local_remote'] == "remote":
+                if self.local_remote == "remote":
                     for n in range(0,len(variable_names)):
                         if 'filepath' in variable_names[n]:
                             variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
@@ -1022,7 +1060,7 @@ class SensorNode():
         else:
             try:
                 # Replace Username in Filepaths
-                if self.settings_dict['Sensor Node']['local_remote'] == "remote":
+                if self.local_remote == "remote":
                     for n in range(0,len(variable_names)):
                         if 'filepath' in variable_names[n]:
                             variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
@@ -1198,7 +1236,7 @@ class SensorNode():
 
         try:
             # Replace Username in Filepaths
-            if self.settings_dict['Sensor Node']['local_remote'] == "remote":
+            if self.local_remote == "remote":
                 for n in range(0,len(variable_names)):
                     if 'filepath' in variable_names[n]:
                         variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
@@ -1268,7 +1306,7 @@ class SensorNode():
         """
         try:
             # Replace Username in Filepaths
-            if self.settings_dict['Sensor Node']['local_remote'] == "remote":
+            if self.local_remote == "remote":
                 for n in range(0,len(variable_names)):
                     if 'filepath' in variable_names[n]:
                         variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
@@ -1730,7 +1768,7 @@ class SensorNode():
                 variable_values = [gains[n],frequencies[n],channels[n],sample_rates[n],"",filenames[n],ip_address, serial]
                 
                 # Adjust Filepath
-                if self.settings_dict['Sensor Node']['local_remote'] == "remote":
+                if self.local_remote == "remote":
                     variable_values[5] = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Archive_Replay", filenames[n].split('/')[-1])
 
                 # Make a new Thread
@@ -1964,7 +2002,7 @@ class SensorNode():
         
         try:
             # Replace Username in Filepaths
-            if self.settings_dict['Sensor Node']['local_remote'] == "remote":
+            if self.local_remote == "remote":
                 for n in range(0,len(variable_names)):
                     if 'filepath' in variable_names[n]:
                         variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
@@ -2363,9 +2401,10 @@ class SensorNode():
 
 
 if __name__ == "__main__":
+    args = parse_args()
     rc = 0
     # try:
-    run()
+    run(args.local)
     # except Exception:
         # rc = 1
 

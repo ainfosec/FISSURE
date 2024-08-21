@@ -806,77 +806,89 @@ async def probeHardware(component: object, tab_index=0, table_row_text=[]):
 
         # Probe
         try:
-            proc = subprocess.Popen(
+            proc = await asyncio.create_subprocess_shell(
                 'uhd_usrp_probe --args="addr=' + get_ip + '" &',
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
-            output = proc.communicate()[0].decode()
-        except:
-            output = "Error"
+            output, _ = await proc.communicate()
+            output = output.decode()
+        except Exception as e:
+            output = f"Error: {str(e)}"
 
     elif (get_hardware == "USRP B2x0") or (get_hardware == "USRP B20xmini"):
         # Probe
         try:
-            proc = subprocess.Popen(
+            proc = await asyncio.create_subprocess_shell(
                 'uhd_usrp_probe --args="type=b200" &',
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
-            output = proc.communicate()[0].decode()
-        except:
-            output = "Error"
+            output, _ = await proc.communicate()
+            output = output.decode()
+        except Exception as e:
+            output = f"Error: {str(e)}"
 
     elif get_hardware == "bladeRF":
         try:
-            proc = subprocess.Popen(
+            proc = await asyncio.create_subprocess_shell(
                 "bladeRF-cli -p &",
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
-            output = proc.communicate()[0].decode()
+            output, _ = await proc.communicate()
+            output = output.decode()
             height_width = [140, 400]
-        except:
-            output = "Error"
+        except Exception as e:
+            output = f"Error: {str(e)}"
 
     elif get_hardware == "LimeSDR":
         # Probe
         try:
-            proc = subprocess.Popen(
+            proc = await asyncio.create_subprocess_shell(
                 "LimeUtil --find &",
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
-            output = proc.communicate()[0].decode()
+            output, _ = await proc.communicate()
+            output = output.decode()
             height_width = [75, 700]
-        except:
-            output = "Error"
+        except Exception as e:
+            output = f"Error: {str(e)}"
 
     elif get_hardware == "HackRF":
         # Probe
         try:
-            proc = subprocess.Popen(
+            proc = await asyncio.create_subprocess_shell(
                 "hackrf_info &",
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
-            output = proc.communicate()[0].decode()
+            output, _ = await proc.communicate()
+            output = output.decode()
             height_width = [300, 500]
-        except:
-            output = "Error"
+        except Exception as e:
+            output = f"Error: {str(e)}"
 
     elif get_hardware == "PlutoSDR":
         # Probe
         try:
-            proc = subprocess.Popen(
+            proc = await asyncio.create_subprocess_shell(
                 "iio_info -n pluto.local &",
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
-            output = proc.communicate()[0].decode()
+            output, _ = await proc.communicate()
+            output = output.decode()
             height_width = [600, 900]
-        except:
-            output = "Error"
+        except Exception as e:
+            output = f"Error: {str(e)}"
 
     elif get_hardware == "USRP2":
         # Get IP Address
@@ -884,14 +896,16 @@ async def probeHardware(component: object, tab_index=0, table_row_text=[]):
 
         # Probe
         try:
-            proc = subprocess.Popen(
+            proc = await asyncio.create_subprocess_shell(
                 'uhd_usrp_probe --args="addr=' + get_ip + '" &',
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
-            output = proc.communicate()[0].decode()
-        except:
-            output = "Error"
+            output, _ = await proc.communicate()
+            output = output.decode()
+        except Exception as e:
+            output = f"Error: {str(e)}"
 
     elif get_hardware == "USRP N2xx":
         # Get IP Address
@@ -899,27 +913,31 @@ async def probeHardware(component: object, tab_index=0, table_row_text=[]):
 
         # Probe
         try:
-            proc = subprocess.Popen(
+            proc = await asyncio.create_subprocess_shell(
                 'uhd_usrp_probe --args="addr=' + get_ip + '" &',
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
-            output = proc.communicate()[0].decode()
-        except:
-            output = "Error"
+            output, _ = await proc.communicate()
+            output = output.decode()
+        except Exception as e:
+            output = f"Error: {str(e)}"
 
     elif get_hardware == "bladeRF 2.0":
         # Probe
         try:
-            proc = subprocess.Popen(
+            proc = await asyncio.create_subprocess_shell(
                 "bladeRF-cli -p &",
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
-            output = proc.communicate()[0].decode()
+            output, _ = await proc.communicate()
+            output = output.decode()
             height_width = [140, 400]
-        except:
-            output = "Error"
+        except Exception as e:
+            output = f"Error: {str(e)}"
 
     elif get_hardware == "USRP X410":
         # Get IP Address
@@ -927,27 +945,33 @@ async def probeHardware(component: object, tab_index=0, table_row_text=[]):
 
         # Probe
         try:
-            proc = subprocess.Popen(
+            proc = await asyncio.create_subprocess_shell(
                 'uhd_usrp_probe --args="addr=' + get_ip + '" &',
                 shell=True,
                 stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
             )
-            output = proc.communicate()[0].decode()
-        except:
-            output = "Error"
+            output, _ = await proc.communicate()
+            output = output.decode()
+        except Exception as e:
+            output = f"Error: {str(e)}"
 
     elif get_hardware == "RTL2832U":
         # Probe
         try:
-            proc = subprocess.Popen(
-                "rtl_sdr -d -1 &", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE
+            proc = await asyncio.create_subprocess_shell(
+                "rtl_sdr -d -1 &", 
+                shell=True, 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.PIPE
             )  # Return text is in stderr
-            empty_output, output = proc.communicate()
+            _, output = await proc.communicate()
             output = output.decode()
             output = output.split("No matching devices found.")[0]
+
             height_width = [300, 500]
-        except:
-            output = "Error"
+        except Exception as e:
+            output = f"Error: {str(e)}"
 
     # Return the Text
     PARAMETERS = {"tab_index": tab_index, "output": output, "height_width": height_width}

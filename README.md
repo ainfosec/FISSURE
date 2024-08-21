@@ -248,7 +248,6 @@ The FISSURE installer is helpful for staging computers or installing select soft
 **Remote Sensor Node Installation**
 
 Install FISSURE per usual on a general purpose computer. Install FISSURE on the remote computer in the same directory location as the local computer (until further notice) to avoid filepath errors with certain actions. To configure the sensor node for remote operation, edit the "default.yaml" file in the `./fissure/Sensor_Node/Sensor_Node_Config/` directory. Edit the following fields to change from local to remote operation:
-- local_remote: remote (from local)
 - nickname: (anything but "Local Sensor Node")
 - ip_address: (your remote sensor node computer's ip_address)
 
@@ -406,6 +405,8 @@ For license details, see LICENSE file.
 Join the Discord Server: [https://discord.gg/JZDs5sgxcG](https://discord.gg/JZDs5sgxcG)
 
 Follow on Twitter/X: [@FissureRF](https://twitter.com/fissurerf), [@AinfoSec](https://twitter.com/ainfosec)
+
+Connect on LinkedIn: [FISSURE - The RF Framework](https://www.linkedin.com/company/fissure-the-rf-framework)
 
 Chris Poore - Assured Information Security, Inc. - poorec@ainfosec.com
 

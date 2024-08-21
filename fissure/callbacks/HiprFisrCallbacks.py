@@ -1613,30 +1613,29 @@ async def connectToSensorNode(component: object, sensor_node_id, ip_address, msg
     Connects the HIPRFISR to a sensor node.
     """
     # Connect to Specified Sensor Node
-
-    # Connect Sensor Node & HIPRFISR: DEALER-DEALER
-    # if component.sensor_nodes[sensor_node_id].connected is False:
     sensor_node_id = int(sensor_node_id)
-    # sensor_node_pair_port = str(msg_port)  # int(component.settings['sensor_node_hiprfisr_dealer_port'])
-    # sensor_node_ip_address = ip_address
-    # sensor_node_pub_port = str(pub_port)  # str(component.settings['sensor_node_pub_port'])
 
-    #######################################################
-    # comms_info = self.settings.get("hiprfisr")
-    # self.hiprfisr_address = fissure.comms.Address(address_config=comms_info.get("backend"))
-    # self.socket_id = f"{self.identifier}-{uuid.uuid4()}"
-    # self.hiprfisr_socket = fissure.comms.Listener(sock_type=zmq.DEALER, name=f"{self.identifier}::backend")
-    # self.hiprfisr_socket.set_identity(self.socket_id)
-    #######################################################
+    # Local
+    if ip_address == "ipc":
+        get_protocol = "ipc"
+        get_ip_address = "127.0.0.1"  # needs an address
+        get_hb_port = str(hb_port)
+        get_msg_port = str(msg_port)
 
-    # Connect HiprFisr Listener to Sensor Node
+    # Remote
+    else:
+        get_protocol = "tcp"
+        get_ip_address = ip_address
+        get_hb_port = int(hb_port)
+        get_msg_port = int(msg_port)
+
     sensor_node_address = fissure.comms.Address(
-        protocol="tcp", address=ip_address, hb_channel=int(hb_port), msg_channel=int(msg_port)
+        protocol=get_protocol, address=get_ip_address, hb_channel=get_hb_port, msg_channel=get_msg_port
     )
     component.logger.info(f"connecting to HiprFisr @ {sensor_node_address}")
 
     # Test Connection to Heartbeat Port
-    if ip_address != "127.0.0.1":
+    if ip_address != "ipc":
         try:
             with socket.create_connection((ip_address, hb_port), 10):
                 component.logger.info(f"PUB socket is listening on {ip_address}:{hb_port}")
@@ -1711,11 +1710,11 @@ async def disconnectFromSensorNode(component: object, sensor_node_id=0, ip_addre
             component.sensor_nodes[n].connected = component.sensor_nodes[n + 1].connected
             component.sensor_nodes[n].terminated = component.sensor_nodes[n + 1].terminated
 
-            if component.sensor_nodes[n + 1] is not None:
+            if component.sensor_nodes[n + 1].connected is True:
                 msg = {
                     fissure.comms.MessageFields.IDENTIFIER: component.identifier,
                     fissure.comms.MessageFields.MESSAGE_NAME: "componentConnected",
-                    fissure.comms.MessageFields.PARAMETERS: n,
+                    fissure.comms.MessageFields.PARAMETERS: str(n),
                 }
                 await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 

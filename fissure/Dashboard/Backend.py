@@ -13,6 +13,8 @@ import time
 import zmq
 import signal
 
+EVENT_LOOP_DELAY = 0.1  # Seconds
+
 
 def run():
     asyncio.run(main())
@@ -134,11 +136,27 @@ class DashboardBackend:
         self.logger.debug(f"registered {len(callbacks)} callbacks from {ctx.__name__}")
 
 
+    # async def heartbeat_loop(self):
+    #     """
+    #     Sends and reads heartbeat messages, separate from event loop to prevent freezing on blocking events.
+    #     """
+    #     while self.shutdown is False:
+    #         await self.send_heartbeat()
+    #         await self.recv_heartbeat()
+    #         self.check_heartbeats()
+
+    #         await asyncio.sleep(EVENT_LOOP_DELAY)
+
+
     async def __eventLoop__(self):
         """
         DO NOT CALL DIRECTLY \\
         Instead call `DashboardBackend.start()` to run in the Qt/asyncio Event Loop
         """
+        # Start Heartbeat Loop
+        # loop = asyncio.get_event_loop()
+        # heartbeat_task = loop.create_task(self.heartbeat_loop())
+
         while self.shutdown is False:
             await self.send_heartbeat()
             await self.recv_heartbeat()
@@ -149,7 +167,14 @@ class DashboardBackend:
             else:
                 # yield to pass control flow back to event loop
                 await asyncio.sleep(1)
+            
+            await asyncio.sleep(0.1)
 
+        # # Ensure the Heartbeat Loop is Stopped
+        # heartbeat_task.cancel()
+        # await heartbeat_task
+
+        # Shut Down Comms
         await self.shutdown_comms()
         fissure.utils.save_fissure_config(data=self.settings)  # Check is in save_fissure_config
         self.logger.info("=== SHUTDOWN ===")

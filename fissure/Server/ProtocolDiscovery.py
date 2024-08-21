@@ -18,16 +18,26 @@ import uuid
 import yaml
 import zmq
 
+HEARTBEAT_LOOP_DELAY = 0.1  # Seconds
+EVENT_LOOP_DELAY = 0.1
+
 
 def run():
     asyncio.run(main())
 
 
 async def main():
+    """
+    Server __main__.py does not call this function. Do not edit! Edit __init__() or begin().
+    """
+    # Initialize Protocol Discovery
     print("[FISSURE][ProtocolDiscovery] start")
     protocol_discovery = ProtocolDiscovery()
+
+    # Start Event Loop
     await protocol_discovery.begin()
 
+    # Exit and Clean Up
     print("[FISSURE][ProtocolDiscovery] end")
     fissure.utils.zmq_cleanup()
 
@@ -131,6 +141,19 @@ class ProtocolDiscovery:
         self.logger.debug(f"registered {len(callbacks)} callbacks from {ctx.__name__}")
 
 
+    async def heartbeat_loop(self):
+        """
+        Sends and reads heartbeat messages, separate from event loop to prevent freezing on blocking events.
+        """
+        while self.shutdown is False:
+            # Heartbeats
+            await self.send_heartbeat()
+            await self.recv_heartbeat()
+            self.check_heartbeat()
+
+            await asyncio.sleep(HEARTBEAT_LOOP_DELAY)
+
+
     async def begin(self):
         self.logger.info("=== STARTING PROTOCOL DISCOVERY COMPONENT ===")
 
@@ -138,15 +161,22 @@ class ProtocolDiscovery:
         if await self.hiprfisr_socket.connect(self.hiprfisr_address):
             self.logger.info(f"connected to HiprFisr @ {self.hiprfisr_address}")
 
+        # Start Heartbeat Loop
+        heartbeat_task = asyncio.create_task(self.heartbeat_loop())
+
         # Main Event Loop
         while self.shutdown is False:
-            # Heartbeats
-            await self.send_heartbeat()
-            await self.recv_heartbeat()
-            self.check_heartbeat()
-
             # Process Incoming Messages
             await self.read_HIPRFISR_messages()
+
+            await asyncio.sleep(EVENT_LOOP_DELAY)
+
+        # Ensure the Heartbeat Loop is Stopped
+        heartbeat_task.cancel()
+        try:
+            await heartbeat_task
+        except asyncio.CancelledError:
+            pass  # Heartbeat task was cancelled cleanly
 
         # Clean Up
         self.stopPD()

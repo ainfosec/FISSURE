@@ -1,6 +1,29 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-08-21
+
+Networking and event loop fixes.
+
+### Added
+
+- LinkedIn link in README
+
+### Changed
+
+- Launch button sets local_remote field to local in sensor node code, field reserved for remembering configurations
+- Replaced loopback address with IPC for HIPRFISR to sensor node connection
+- Removed local_remote field description in README and RTD installation sections, no longer required to change to remote or local
+
+### Fixed
+
+- Updated sensor node probeHardware() to not block program
+- Created separate heartbeat loops from event loops to prevent freezing
+- Assigned sensor nodes a randomly generated UUID instead of a constant value for its message ID
+- Added delays into event loops
+- Improved right-click upon node deletion.
+- Replaced print statements with logger messages in TargetSignalIdentification.py
+
 ## 2024-08-19
 
 Updating Development section of user manual.

@@ -12,16 +12,26 @@ import time
 import uuid
 import zmq
 
+HEARTBEAT_LOOP_DELAY = 0.1  # Seconds
+EVENT_LOOP_DELAY = 0.1
+
 
 def run():
     asyncio.run(main())
 
 
 async def main():
+    """
+    Server __main__.py does not call this function. Do not edit! Edit __init__() or begin().
+    """
+    # Initialize HIPFISR
     print("[FISSURE][HiprFisr] start")
     hiprfisr = HiprFisr()
+
+    # Start Event Loop
     await hiprfisr.begin()
 
+    # End and Clean Up
     print("[FISSURE][HiprFisr] end")
     fissure.utils.zmq_cleanup()
 
@@ -103,7 +113,7 @@ class HiprFisr:
             fissure.comms.Identifiers.DASHBOARD: None,
             fissure.comms.Identifiers.PD: None,
             fissure.comms.Identifiers.TSI: None,
-            fissure.comms.Identifiers.SENSOR_NODE: [None] * 5,
+            fissure.comms.Identifiers.SENSOR_NODE: [None, None, None, None, None],
         }
         self.session_active = False
         self.dashboard_connected = False
@@ -191,11 +201,11 @@ class HiprFisr:
         self.backend_router.shutdown()
 
 
-    async def begin(self):
+    async def heartbeat_loop(self):
         """
-        Main Event Loop
+        Sends and reads heartbeat messages, separate from event loop to prevent freezing on blocking events.
         """
-        self.logger.info("=== STARTING HIPRFISR ===")
+        # Start Heartbeat Loop
         while self.shutdown is False:
             if self.connect_loop is False:
                 # Heartbeats
@@ -203,6 +213,22 @@ class HiprFisr:
                 await self.recv_heartbeats()
                 await self.check_heartbeats()
 
+            await asyncio.sleep(HEARTBEAT_LOOP_DELAY)
+
+
+    async def begin(self):
+        """
+        Main Event Loop
+        """
+        # Begin
+        self.logger.info("=== STARTING HIPRFISR ===")
+
+        # Start Heartbeat Loop
+        heartbeat_task = asyncio.create_task(self.heartbeat_loop())
+        
+        # Start Event Loop
+        while self.shutdown is False:
+            if self.connect_loop is False:
                 # Process Incoming Messages
                 if self.dashboard_connected:
                     await self.read_dashboard_messages()
@@ -213,8 +239,20 @@ class HiprFisr:
                     if sensor_node.connected is True:
                         await self.read_sensor_node_messages()
                         break
+                
+                await asyncio.sleep(EVENT_LOOP_DELAY)
+
             else:
                 await self.connect_components()
+
+        # Ensure the Heartbeat Loop is Stopped
+        heartbeat_task.cancel()
+        try:
+            await heartbeat_task
+        except asyncio.CancelledError:
+            pass  # Heartbeat task was cancelled cleanly
+
+        # Shut Down Comms
         await self.shutdown_comms()
         
         self.logger.info("=== SHUTDOWN ===")
@@ -389,18 +427,20 @@ class HiprFisr:
         """
         Receive Heartbeat Messages
         """
+        # Collect Heartbeats
         dashboard_heartbeat = await self.dashboard_socket.recv_heartbeat()
         backend_heartbeats = await self.backend_router.recv_heartbeats()
-
         sensor_node_heartbeats = []
         for sensor_node in self.sensor_nodes:
             sensor_node_heartbeats.append(await sensor_node.listener.recv_heartbeat())
 
+        # Process Dashboard Heartbeats
         if dashboard_heartbeat is not None:
             heartbeat_time = float(dashboard_heartbeat.get(fissure.comms.MessageFields.TIME))
             self.heartbeats[fissure.comms.Identifiers.DASHBOARD] = heartbeat_time
             self.logger.debug(f"received Dashboard heartbeat ({fissure.utils.get_timestamp(heartbeat_time)})")
 
+        # Process Backend Heartbeats
         if len(backend_heartbeats) > 0:
             for heartbeat in backend_heartbeats:
                 sender_id = heartbeat.get(fissure.comms.MessageFields.SENDER_ID)
@@ -419,13 +459,29 @@ class HiprFisr:
                 except KeyError:
                     self.logger.warning(f"received unrecogized heartbeat from {component} at {heartbeat_time}")
 
+        # Process Sensor Node Heartbeats
         for heartbeat in sensor_node_heartbeats:
             if heartbeat is not None:
+                # Sensor Node UUID and Heartbeat Value
                 uuid = heartbeat.get(fissure.comms.MessageFields.IDENTIFIER)
                 heartbeat_time = float(heartbeat.get(fissure.comms.MessageFields.TIME))
-                self.heartbeats[fissure.comms.Identifiers.SENSOR_NODE][
-                    int(uuid.replace("Sensor Node ", ""))
-                ] = heartbeat_time  # .update({uuid: heartbeat_time})
+
+                # Check if UUID is Saved
+                uuid_found = False
+                for idx, item in enumerate(self.heartbeats[fissure.comms.Identifiers.SENSOR_NODE]):
+                    if item is not None:
+                        # Save
+                        if next(iter(item)) == uuid:
+                            self.heartbeats[fissure.comms.Identifiers.SENSOR_NODE][idx] = {uuid: heartbeat_time}
+                            uuid_found = True
+                            break
+                
+                # Save New UUID/Heartbeat to the End of List
+                if uuid_found == False:
+                     for idx, item in enumerate(self.heartbeats[fissure.comms.Identifiers.SENSOR_NODE]):
+                         if item == None:
+                             self.heartbeats[fissure.comms.Identifiers.SENSOR_NODE][idx] = {uuid: heartbeat_time}
+                             break
 
 
     async def check_heartbeats(self):
@@ -505,35 +561,38 @@ class HiprFisr:
 
         # Sensor Node Check
         for idx, sensor_node in enumerate(self.sensor_nodes):
-            last_sensor_node_heartbeat = self.heartbeats.get(fissure.comms.Identifiers.SENSOR_NODE)[idx]
-            if last_sensor_node_heartbeat is not None:
-                # Failed heartbeat check while previously connected
-                if sensor_node.connected and (last_sensor_node_heartbeat < cutoff_time):
-                    msg = {
-                        fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                        # fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.SENSOR_NODE + f"_{idx}",
-                        fissure.comms.MessageFields.MESSAGE_NAME: "componentDisconnected",
-                        fissure.comms.MessageFields.PARAMETERS: str(idx),
-                    }
-                    self.sensor_nodes[idx].connected = False
-                    if self.dashboard_connected:
-                        await self.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+            # Heartbeat has a Value
+            heartbeat_item = self.heartbeats.get(fissure.comms.Identifiers.SENSOR_NODE)[idx]
+            if heartbeat_item is not None and isinstance(heartbeat_item, dict):
+                last_sensor_node_heartbeat = next(iter(heartbeat_item.values()))
+                if last_sensor_node_heartbeat is not None:
+                    # Failed heartbeat check while previously connected
+                    if sensor_node.connected and (last_sensor_node_heartbeat < cutoff_time):
+                        msg = {
+                            fissure.comms.MessageFields.IDENTIFIER: self.identifier,
+                            # fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.SENSOR_NODE + f"_{idx}",
+                            fissure.comms.MessageFields.MESSAGE_NAME: "componentDisconnected",
+                            fissure.comms.MessageFields.PARAMETERS: str(idx),
+                        }
+                        self.sensor_nodes[idx].connected = False
+                        if self.dashboard_connected:
+                            await self.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
-                # Passed heartbeat check while previously disconnected
-                elif (
-                    (not sensor_node.connected)
-                    and (last_sensor_node_heartbeat > cutoff_time)
-                    and (not sensor_node.terminated)
-                ):
-                    msg = {
-                        fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                        # fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.SENSOR_NODE + f"_{idx}",
-                        fissure.comms.MessageFields.MESSAGE_NAME: "componentConnected",
-                        fissure.comms.MessageFields.PARAMETERS: str(idx),  # {"uuid": sensor_node.UUID},
-                    }
-                    self.sensor_nodes[idx].connected = True
-                    if self.dashboard_connected:
-                        await self.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+                    # Passed heartbeat check while previously disconnected
+                    elif (
+                        (not sensor_node.connected)
+                        and (last_sensor_node_heartbeat > cutoff_time)
+                        and (not sensor_node.terminated)
+                    ):
+                        msg = {
+                            fissure.comms.MessageFields.IDENTIFIER: self.identifier,
+                            # fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.SENSOR_NODE + f"_{idx}",
+                            fissure.comms.MessageFields.MESSAGE_NAME: "componentConnected",
+                            fissure.comms.MessageFields.PARAMETERS: str(idx),  # {"uuid": sensor_node.UUID},
+                        }
+                        self.sensor_nodes[idx].connected = True
+                        if self.dashboard_connected:
+                            await self.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
     async def updateLoggingLevels(self, new_console_level="", new_file_level=""):
