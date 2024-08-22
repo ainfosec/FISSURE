@@ -1,5 +1,6 @@
 import binascii
 import fissure.comms
+import fissure.utils
 import fissure.utils.hardware
 import os
 import shutil
@@ -564,7 +565,7 @@ async def setVariable(component: object, sensor_node_id=0, flow_graph="", variab
     """
     # Make it Match GNU Radio Format
     formatted_name = "set_" + variable
-    isNumber = component.isFloat(value)
+    isNumber = fissure.utils.isFloat(value)
     if isNumber:
         if flow_graph == "Protocol Discovery":
             getattr(component.pdflowtoexec, formatted_name)(float(value))

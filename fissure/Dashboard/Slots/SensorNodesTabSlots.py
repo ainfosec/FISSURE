@@ -270,42 +270,42 @@ def _slotSensorNodesAutorunExportClicked(dashboard: QtCore.QObject):
             try:
                 row_dict['type'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,0).text())
             except:
-                dashboard.errorMessage("Invalid Type")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Type")
                 return
             try:
                 row_dict['repeat'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,1).currentText())
             except:
-                dashboard.errorMessage("Invalid Repeat Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Repeat Value")
                 return
             try:
                 row_dict['timeout_seconds'] = str(int(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,2).text()))
             except:
-                dashboard.errorMessage("Invalid Timeout Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Timeout Value")
                 return
             try:
                 row_dict['delay'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,3).isChecked())
             except:
-                dashboard.errorMessage("Invalid Delay Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Delay Value")
                 return
             try:
                 row_dict['start_time'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,4).time().toString('hh:mm:ss'))
             except:
-                dashboard.errorMessage("Invalid Start Time Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Start Time Value")
                 return                                        
             try:
                 row_dict['details'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,5).text())
             except:
-                dashboard.errorMessage("Invalid Details Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Details Value")
                 return
             try:
                 row_dict['variable_names'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,6).text())
             except:
-                dashboard.errorMessage("Invalid Variable Names Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Variable Names Value")
                 return
             try:
                 row_dict['variable_values'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,7).text())
             except:
-                dashboard.errorMessage("Invalid Variable Values Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Variable Values Value")
                 return
             playlist_dict[n] = row_dict
         
@@ -406,7 +406,7 @@ def _slotSensorNodesAutorunRefreshClicked(dashboard: QtCore.QObject):
         # Set the Combobox Selection
         dashboard.ui.comboBox_sensor_nodes_autorun.setCurrentIndex(0)
     except:
-        dashboard.errorMessage("Unable to refresh autorun playlists")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Unable to refresh autorun playlists")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -450,7 +450,7 @@ def _slotSensorNodesFileNavigationLocalUnzipClicked(dashboard: QtCore.QObject):
     if get_zip_file[-4:] == '.zip':
         os.system('unzip ' + get_zip_file + ' -d ' + get_zip_file[:-4])
     else:
-        dashboard.errorMessage("Cannot unzip file")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Cannot unzip file")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -464,14 +464,14 @@ def _slotSensorNodesFileNavigationLocalViewClicked(dashboard: QtCore.QObject):
     
     # Check the Size
     if number_of_bytes > 1000000:  # Adjust limit for IQ data, relocate size check inside type check
-        dashboard.errorMessage("File is too large to view")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("File is too large to view")
         return
     
     # Check the Type
     if get_file[-4:] == '.txt':
         os.system("gedit " + get_file + " &")
     else:
-        dashboard.errorMessage("Not a valid file extension.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Not a valid file extension.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -541,7 +541,7 @@ async def _slotSensorNodesAutorunStartStopClicked(dashboard: QtCore.QObject):
     if dashboard.ui.pushButton_sensor_nodes_autorun_start_stop.text() == "Start":
         # Error with no Sensor Node Selected
         if dashboard.active_sensor_node == -1:
-            dashboard.errorMessage("Select an active sensor node.")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Select an active sensor node.")
             return
 
         # Retrieve Playlist
@@ -554,42 +554,42 @@ async def _slotSensorNodesAutorunStartStopClicked(dashboard: QtCore.QObject):
             try:
                 row_dict['type'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,0).text())
             except:
-                dashboard.errorMessage("Invalid Type")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Type")
                 return
             try:
                 row_dict['repeat'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,1).currentText())
             except:
-                dashboard.errorMessage("Invalid Repeat Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Repeat Value")
                 return
             try:
                 row_dict['timeout_seconds'] = str(int(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,2).text()))
             except:
-                dashboard.errorMessage("Invalid Timeout Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Timeout Value")
                 return
             try:
                 row_dict['delay'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,3).isChecked())
             except:
-                dashboard.errorMessage("Invalid Delay Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Delay Value")
                 return
             try:
                 row_dict['start_time'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,4).time().toString('hh:mm:ss'))
             except:
-                dashboard.errorMessage("Invalid Start Time Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Start Time Value")
                 return                      
             try:
                 row_dict['details'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,5).text())
             except:
-                dashboard.errorMessage("Invalid Details Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Details Value")
                 return
             try:
                 row_dict['variable_names'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,6).text())
             except:
-                dashboard.errorMessage("Invalid Variable Names Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Variable Names Value")
                 return
             try:
                 row_dict['variable_values'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,7).text())
             except:
-                dashboard.errorMessage("Invalid Variable Values Value")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Variable Values Value")
                 return
             playlist_dict[n] = row_dict
         
@@ -620,7 +620,7 @@ async def _slotSensorNodesAutorunOverwriteClicked(dashboard: QtCore.QObject):
     """
     # Error with no Sensor Node Selected
     if dashboard.active_sensor_node == -1:
-        dashboard.errorMessage("Select an active sensor node.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Select an active sensor node.")
         return
 
     # Retrieve Playlist
@@ -633,42 +633,42 @@ async def _slotSensorNodesAutorunOverwriteClicked(dashboard: QtCore.QObject):
         try:
             row_dict['type'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,0).text())
         except:
-            dashboard.errorMessage("Invalid Type")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Type")
             return
         try:
             row_dict['repeat'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,1).currentText())
         except:
-            dashboard.errorMessage("Invalid Repeat Value")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Repeat Value")
             return
         try:
             row_dict['timeout_seconds'] = str(int(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,2).text()))
         except:
-            dashboard.errorMessage("Invalid Timeout Value")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Timeout Value")
             return
         try:
             row_dict['delay'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,3).isChecked())
         except:
-            dashboard.errorMessage("Invalid Delay Value")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Delay Value")
             return
         try:
             row_dict['start_time'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.cellWidget(n,4).time().toString('hh:mm:ss'))
         except:
-            dashboard.errorMessage("Invalid Start Time Value")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Start Time Value")
             return                  
         try:
             row_dict['details'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,5).text())
         except:
-            dashboard.errorMessage("Invalid Details Value")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Details Value")
             return
         try:
             row_dict['variable_names'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,6).text())
         except:
-            dashboard.errorMessage("Invalid Variable Names Value")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Variable Names Value")
             return
         try:
             row_dict['variable_values'] = str(dashboard.ui.tableWidget_sensor_nodes_autorun.item(n,7).text())
         except:
-            dashboard.errorMessage("Invalid Variable Values Value")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid Variable Values Value")
             return
         playlist_dict[n] = row_dict
 
@@ -736,14 +736,12 @@ async def _slotSensorNodesFileNavigationDeleteClicked(dashboard: QtCore.QObject)
     try:
         get_item_path = str(dashboard.ui.tableWidget_sensor_nodes_fn_files.item(dashboard.ui.tableWidget_sensor_nodes_fn_files.currentRow(),0).text())
     except:
-        dashboard.errorMessage("Select a file to delete.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Select a file to delete.")
         return
     
     # Delete the Folder/File
     if (dashboard.active_sensor_node > -1) and (len(get_item_path) > 0):            
-        # qm = QtWidgets.QMessageBox
-        # ret = qm.question(dashboard,'', "Are you sure?", qm.Yes | qm.No)
-        ret = await dashboard.ask_confirmation("Are you sure?")
+        ret = await fissure.Dashboard.UI_Components.Qt5.async_yes_no_dialog(dashboard, "Are you sure?")
         if ret == QtWidgets.QMessageBox.Yes:
             # Local
             get_sensor_node = ['sensor_node1','sensor_node2','sensor_node3','sensor_node4','sensor_node5']
@@ -770,7 +768,7 @@ async def _slotSensorNodesFileNavigationDownloadClicked(dashboard: QtCore.QObjec
     try:
         get_item_path = str(dashboard.ui.tableWidget_sensor_nodes_fn_files.item(dashboard.ui.tableWidget_sensor_nodes_fn_files.currentRow(),0).text())
     except:
-        dashboard.errorMessage("Select a file to download.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Select a file to download.")
         return            
     
     # Download the Folder/File

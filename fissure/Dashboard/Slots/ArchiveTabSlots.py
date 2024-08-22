@@ -86,7 +86,7 @@ def _slotArchiveReplayHardwareChanged(dashboard: QtCore.QObject):
     """
     # Sensor Node Hardware Information
     get_current_hardware = str(dashboard.ui.comboBox_archive_replay_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'archive')
+    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'archive')
     
     # Adjust Existing Channel ComboBoxes and Gain in Replay Tab
     for n in range(0, dashboard.ui.tableWidget_archive_replay.rowCount()):
@@ -775,7 +775,7 @@ def _slotArchiveDownloadCollectionClicked(dashboard: QtCore.QObject):
     try:
         item_index = dashboard.ui.treeView_archive_download_collection.selectedIndexes()[0]
     except:
-        dashboard.errorMessage("Select a collection")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Select a collection")
         return
     parent1_index = dashboard.ui.treeView_archive_download_collection.model().parent(item_index)
     parent2_index = dashboard.ui.treeView_archive_download_collection.model().parent(parent1_index)
@@ -1372,7 +1372,7 @@ async def _slotArchiveReplayStartClicked(dashboard: QtCore.QObject):
     elif dashboard.ui.pushButton_archive_replay_start.text() == "Start":
         # Return if no Sensor Node Selected
         if dashboard.active_sensor_node < 0:
-            ret = await dashboard.ask_confirmation_ok("Select a sensor node.")
+            ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Select a sensor node.")
             return
 
         # Cycle Through Each Tab and Collect the Values
@@ -1397,8 +1397,8 @@ async def _slotArchiveReplayStartClicked(dashboard: QtCore.QObject):
         # Only Replay Complex Float 32 Files
         for n in all_format_list:
             if n != "Complex Float 32":
-                ret = await dashboard.ask_confirmation_ok("Error: Only Complex Float 32 files are supported.")
-                dashboard.errorMessage("")
+                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Error: Only Complex Float 32 files are supported.")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("")
                 return
 
         # Get Repeat Checkbox Value
@@ -1406,7 +1406,7 @@ async def _slotArchiveReplayStartClicked(dashboard: QtCore.QObject):
 
         # Sensor Node Hardware Information
         get_current_hardware = str(dashboard.ui.comboBox_archive_replay_hardware.currentText())
-        get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'archive')
+        get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'archive')
     
         # Choose Replay Flow Graph from Hardware Type
         flow_graph = ""
@@ -1496,7 +1496,7 @@ async def _slotArchiveReplayStartClicked(dashboard: QtCore.QObject):
 
         # Error
         else:
-            ret = await dashboard.ask_confirmation_ok("Choose a valid hardware type.")
+            ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Choose a valid hardware type.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1593,7 +1593,7 @@ def _slotArchiveDatasetsStartClicked(dashboard: QtCore.QObject):
             get_filepath = str(dashboard.ui.tableWidget_archive_datasets.item(row,0).text())
             get_sample_rate = str(dashboard.ui.tableWidget_archive_datasets.item(row,2).text())
             if len(get_sample_rate) == 0:
-                dashboard.errorMessage("Error: Missing sample rate value in table.")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Error: Missing sample rate value in table.")
                 dashboard.ui.pushButton_archive_datasets_start.setText("Start")
                 dashboard.ui.progressBar_archive_datasets.setValue(0)
                 dashboard.ui.progressBar_archive_datasets.setVisible(False)

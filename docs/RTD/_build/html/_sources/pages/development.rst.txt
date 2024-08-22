@@ -476,11 +476,34 @@ The following are examples of commonly used connect functions:
 Generic Input Dialogs
 ---------------------
 
-The generic input dialogs will be moved to a central location in the future. There are synchronous and asynchronous versions available for most types of dialog. If a message box dialog is part of an asynchronous function, it must have an asynchronous version to prevent errors.
+The generic input dialogs are located in ``./fissure/Dashboard/UI_Components/Qt5.py``. There are synchronous and asynchronous versions available for most types of dialog. If a message box dialog is part of an asynchronous function, it must have an asynchronous version to prevent errors when launched.
 
-This section will be updated with examples once all the input dialog code has been reorganized. The following are old examples of synchronous input dialogs:
+The following are examples of input dialogs:
 
-Text Edit:
+**Asynchronous Yes/No Dialog:**
+
+.. code-block:: console
+
+    ret = await fissure.Dashboard.UI_Components.Qt5.async_yes_no_dialog(dashboard, "Are you sure?")
+    if ret == QtWidgets.QMessageBox.Yes:
+        # Do Things
+        pass
+    else:
+        return
+
+**Asynchronous OK Dialog:**
+
+.. code-block:: console
+
+    ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Choose an IQ file.")
+
+**Synchronous Error/Message Box:**
+
+.. code-block:: console
+
+    fissure.Dashboard.UI_Components.Qt5.errorMessage("Flow Graph was not Found in PD Flow Graph Library!")
+
+**Synchronous Text Edit:**
 
 .. code-block:: console
 
@@ -489,23 +512,46 @@ Text Edit:
         print text
 
 
-ComboBox:
+**Synchronous ComboBox:**
 
 .. code-block:: console
 
     # Open the Band Chooser Dialog
     new_label_text = "Choose 4G Band"
-    new_items = ['2', '3', '4', '5', '7', '12', '13', '14', '17', '20', '25', '26', '29', '30', '40', '41', '46', '48', '66', '71']
-    chooser_dlg = MiscChooser(parent=self, label_text=new_label_text, chooser_items=new_items)
+    new_items = [
+        "2",
+        "3",
+        "4",
+        "5",
+        "7",
+        "12",
+        "13",
+        "14",
+        "17",
+        "20",
+        "25",
+        "26",
+        "29",
+        "30",
+        "40",
+        "41",
+        "46",
+        "48",
+        "66",
+        "71",
+    ]
+    chooser_dlg = fissure.Dashboard.UI_Components.Qt5.MiscChooser(
+        parent=dashboard, label_text=new_label_text, chooser_items=new_items
+    )
     chooser_dlg.show()
-    chooser_dlg.exec_() 
+    chooser_dlg.exec_()
 
     # Run the Script
     get_value = chooser_dlg.return_value
     if len(get_value) > 0:   
         print get_value
 
-Folder:
+**Synchronous Folder:**
 
 .. code-block:: console
 
@@ -514,7 +560,7 @@ Folder:
     if len(get_dir) > 0:            
         print get_dir
 
-Open File:
+**Synchronous Open File:**
 
 .. code-block:: console
 
@@ -523,7 +569,7 @@ Open File:
     if fname != "":
         print fname
 
-Save File:
+**Synchronous Save File:**
 
 .. code-block:: console
 
@@ -531,19 +577,6 @@ Save File:
     fname = QtGui.QFileDialog.getSaveFileName(None,"Select File...", default_directory, filter="All Files (*)")
     if fname != "":
         print fname
-
-Error Message:
-
-.. code-block:: console
-
-    self.errorMessage("Flow Graph was not Found in PD Flow Graph Library!")
-
-Message Box:
-
-.. code-block:: console
-
-    msgBox = MyMessageBox(my_text = " Choose an IQ file.", height = 75, width = 140)
-    msgBox.exec_() 
 
 Style Sheets
 ============

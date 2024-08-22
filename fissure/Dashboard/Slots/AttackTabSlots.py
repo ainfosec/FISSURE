@@ -226,7 +226,7 @@ def _slotPacketBinaryHex(dashboard: QtCore.QObject, table_widget):
 
             # Message Data Entered Incorrectly
             except ValueError as inst:
-                dashboard.errorMessage("Message data was entered incorrectly.")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Message data was entered incorrectly.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -264,7 +264,7 @@ def _slotPacketAssembleClicked(dashboard: QtCore.QObject):
 
     # Message Data Entered Incorrectly
     except ValueError as inst:
-        dashboard.errorMessage("Message data was entered incorrectly.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Message data was entered incorrectly.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -999,7 +999,7 @@ def _slotPacketCalculateCRCsClicked(dashboard: QtCore.QObject):  # Somehow use t
 
     # Message Data Entered Incorrectly
     #except ValueError as inst:
-    #    dashboard.errorMessage("Message data was entered incorrectly.")
+    #    fissure.Dashboard.UI_Components.Qt5.errorMessage("Message data was entered incorrectly.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1015,7 +1015,7 @@ def _slotPacketAllHexClicked(dashboard: QtCore.QObject):
 
     # Message Data Entered Incorrectly
     except ValueError as inst:
-        dashboard.errorMessage("Message data was entered incorrectly.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Message data was entered incorrectly.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1032,7 +1032,7 @@ def _slotPacketAllBinaryClicked(dashboard: QtCore.QObject):
 
     # Message Data Entered Incorrectly
     except ValueError as inst:
-        dashboard.errorMessage("Message data was entered incorrectly.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Message data was entered incorrectly.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1084,7 +1084,7 @@ def _slotPacketAppendClicked(dashboard: QtCore.QObject):
         # Update the Constructed Sequence
         dashboard.ui.textEdit1_packet_constructed.setText(get_assembled_text)
     except:
-        dashboard.errorMessage("Enter a Valid Multiplier (Counting Number)")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a Valid Multiplier (Counting Number)")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1137,7 +1137,7 @@ async def _slotPacketScapyStartClicked(dashboard: QtCore.QObject):
         # Send the Message
         await dashboard.backend.startScapy(dashboard.active_sensor_node, get_iface, get_interval, get_loop, dashboard.backend.os_info)
     else:
-        ret = await dashboard.ask_confirmation_ok("Specify wireless interface.")
+        ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Specify wireless interface.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1994,7 +1994,7 @@ def _slotAttackViewFlowGraph(dashboard: QtCore.QObject):
             osCommandString = "gnuradio-companion " + loaded_flow_graph
             os.system(osCommandString+ " &")
         else:
-            dashboard.errorMessage("Missing .grc file.")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Missing .grc file.")
 
     # Python Script
     else:
@@ -2318,7 +2318,7 @@ def _slotAttackMultiStageGenerate(dashboard: QtCore.QObject):
             
             # Sensor Node Hardware Information
             get_current_hardware = str(dashboard.ui.tableWidget_attack_multi_stage_attacks.item(n,3).text())
-            get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'attack')
+            get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'attack')
             
             # Flow Graphs without GUIs
             if (ftype == "Flow Graph"):
@@ -3314,7 +3314,7 @@ def _slotAttackLoadFromLibraryClicked(dashboard: QtCore.QObject, checked, fname=
     if fname != "":
         # Sensor Node Hardware Information
         get_current_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText())
-        get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'attack')
+        get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'attack')
         
         #~ try:
         # Fuzzing (Variables)
@@ -3953,7 +3953,7 @@ def _slotAttackLoadFromLibraryClicked(dashboard: QtCore.QObject, checked, fname=
 
         #~ except:
             #~ pass
-            #~ self.errorMessage()
+            #~ fissure.Dashboard.UI_Components.Qt5.errorMessage()
 
 
 def defaultAttackFilepathDirectory(dashboard: QtCore.QObject, attack_name="", variable_name=""):
@@ -4196,7 +4196,7 @@ def _slotAttackLoadTemplateClicked(dashboard: QtCore.QObject):
 
     # Attack is Currently Running
     else:
-        dashboard.errorMessage("Please stop the attack in progress before starting a new one.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Please stop the attack in progress before starting a new one.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -4330,7 +4330,7 @@ async def _slotAttackStartStopAttack(dashboard: QtCore.QObject):
     """
     # Check for Active Sensor Node
     if dashboard.active_sensor_node <= -1:
-        dashboard.errorMessage("Launch and select a sensor node prior to running attacks.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Launch and select a sensor node prior to running attacks.")
         return
 
     # Stop Flow Graph
@@ -4384,7 +4384,7 @@ async def _slotAttackStartStopAttack(dashboard: QtCore.QObject):
             if "filepath" in get_name:
                 # Check if Empty
                 if len(str(dashboard.ui.tableWidget1_attack_flow_graph_current_values.item(get_row,0).text())) == 0:
-                    dashboard.errorMessage("Enter a valid filepath in attack table.")
+                    fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a valid filepath in attack table.")
                     return
                     
                 # Flow Graph
@@ -4502,7 +4502,7 @@ async def _slotAttackMultiStageStartClicked(dashboard: QtCore.QObject):
     """
     # Check for Active Sensor Node
     if dashboard.active_sensor_node <= -1:
-        dashboard.errorMessage("Launch and select a sensor node prior to running attacks.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Launch and select a sensor node prior to running attacks.")
         return
 
     # Send Stop Message to the HIPRFISR (Flow Graph Currently Running: Stopping)
@@ -4619,7 +4619,7 @@ async def _slotAttackFuzzingStartClicked(dashboard: QtCore.QObject):
     """
     # Check for Active Sensor Node
     if dashboard.active_sensor_node <= -1:
-        dashboard.errorMessage("Launch and select a sensor node prior to running attacks.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Launch and select a sensor node prior to running attacks.")
         return
 
     #~ try:
@@ -4798,12 +4798,12 @@ async def _slotAttackFuzzingStartClicked(dashboard: QtCore.QObject):
                 # Min/Max Error Checking
                 for n in range(0,len(fuzzing_min)):
                     if (fuzzing_min[n] == "" or fuzzing_max[n] == ""):
-                        dashboard.errorMessage("Error in Physical Layer Fuzzing: Min./Max. Value Missing.")
+                        fissure.Dashboard.UI_Components.Qt5.errorMessage("Error in Physical Layer Fuzzing: Min./Max. Value Missing.")
                         raise ValueError
 
                     else:
                         if float(fuzzing_min[n]) > float(fuzzing_max[n]):
-                            dashboard.errorMessage("Error in Physical Layer Fuzzing: Minimum is Greater than Maximum.")
+                            fissure.Dashboard.UI_Components.Qt5.errorMessage("Error in Physical Layer Fuzzing: Minimum is Greater than Maximum.")
                             raise ValueError
 
         # Toggle the Text
@@ -4837,7 +4837,7 @@ async def _slotAttackFuzzingStartClicked(dashboard: QtCore.QObject):
 
     #~ # Message Data Entered Incorrectly
     #~ except ValueError as inst:
-        #~ dashboard.errorMessage("Message data was entered incorrectly.")
+        #~ fissure.Dashboard.UI_Components.Qt5.errorMessage("Message data was entered incorrectly.")
 
     
 @qasync.asyncSlot(QtCore.QObject)

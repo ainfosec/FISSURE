@@ -1840,7 +1840,7 @@ def _slotPD_DemodulationViewFlowGraphClicked(dashboard: QtCore.QObject):
         os.system(osCommandString + ' &')
 
     except:
-        dashboard.errorMessage("Error loading flow graph in GNU Radio Companion")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Error loading flow graph in GNU Radio Companion")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1879,12 +1879,12 @@ def _slotPD_DemodulationLoadFlowGraphClicked(dashboard: QtCore.QObject, fname=''
             f = open(str(fname),'r')
         except:
             error_found = True
-            dashboard.errorMessage("Flow Graph was not Found in PD Flow Graph Library!")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Flow Graph was not Found in PD Flow Graph Library!")
 
         if error_found == False:
             # Sensor Node Hardware Information
             get_current_hardware = str(dashboard.ui.comboBox_pd_demod_hardware.currentText())
-            get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'attack')
+            get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'attack')
             
             # Update the Edit Box
             dashboard.ui.textEdit_pd_flow_graphs_filepath.setPlainText(fname)
@@ -2649,7 +2649,7 @@ def _slotPD_BitViewerApplyClicked(dashboard: QtCore.QObject):
 
             except KeyError:
                 #No Fields Defined!
-                dashboard.errorMessage("No Fields Defined!")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("No Fields Defined!")
 
             if len(get_lengths) > 0:
 
@@ -3238,7 +3238,7 @@ def _slotPD_DissectorsUpdateAllClicked(dashboard: QtCore.QObject):
 
     # Issue the Command
     os.system('cp -R "' + dissector_source + '" "' + dissector_dest + '"')
-    dashboard.errorMessage("Dissectors copied from \"/FISSURE/Dissectors\" to \"~/.config/wireshark/plugins\"")
+    fissure.Dashboard.UI_Components.Qt5.errorMessage("Dissectors copied from \"/FISSURE/Dissectors\" to \"~/.config/wireshark/plugins\"")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -3255,11 +3255,11 @@ def _slotPD_SnifferWireshark80211Clicked(dashboard: QtCore.QObject):
     try:
         stdout, _ = out.communicate(timeout=15)
     except TimeoutError as err:
-        dashboard.errorMessage("Error communicating with Wireshark: {}".format(err))
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Error communicating with Wireshark: {}".format(err))
 
     wireshark_cmd = stdout.decode('UTF-8').strip()
     if not wireshark_cmd:
-        dashboard.errorMessage("Wireshark not found!")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Wireshark not found!")
         return
 
     if len(get_interface) == 0 and len(wireshark_cmd) > 0:
@@ -3291,7 +3291,7 @@ def _slotPD_SnifferNetcatClicked(dashboard: QtCore.QObject):
 
     # Check the Values
     if not (get_port.isdigit() and 1 <= int(get_port) <= 65535):
-        dashboard.errorMessage("Enter a valid port (1-65535).")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a valid port (1-65535).")
         return
 
     # Issue the Command
@@ -3339,7 +3339,7 @@ def _slotPD_SnifferTestSendClicked(dashboard: QtCore.QObject):
 
     # Check the Values
     if not (get_port.isdigit() and 1 <= int(get_port) <= 65535):
-        dashboard.errorMessage("Enter a valid port (1-65535).")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a valid port (1-65535).")
         return
 
     # Issue the Command
@@ -3702,7 +3702,7 @@ async def _slotPD_DissectorsConstructClicked(dashboard: QtCore.QObject, preview 
             my_error = "Filter Name must not contain upper-case letters, numbers, spaces, or symbols other than '-', '_', and '.'."
             raise NameError
     except:
-        dashboard.errorMessage(my_error)
+        fissure.Dashboard.UI_Components.Qt5.errorMessage(my_error)
 
     # Get the Table Values
     get_display_names = []
@@ -3743,7 +3743,7 @@ async def _slotPD_DissectorsConstructClicked(dashboard: QtCore.QObject, preview 
 
     # Preview Dissector (Clicked)
     if preview == True:
-        ret = await dashboard.ask_confirmation_ok(dissector_text, width=1950)
+        ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, dissector_text, width=1950)
 
     # Save the File
     else:
@@ -4361,7 +4361,7 @@ async def _slotPD_SnifferStreamClicked(dashboard: QtCore.QObject):
 
             # Check the Values
             if not (get_port.isdigit() and 1 <= int(get_port) <= 65535):
-                dashboard.errorMessage("Enter a valid port (1-65535).")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a valid port (1-65535).")
                 return
 
             # Send the Message
@@ -4410,7 +4410,7 @@ async def _slotPD_SnifferTaggedStreamClicked(dashboard: QtCore.QObject):
 
             # Check the Values
             if not (get_port.isdigit() and 1 <= int(get_port) <= 65535):
-                dashboard.errorMessage("Enter a valid port (1-65535).")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a valid port (1-65535).")
                 return
 
             # Send the Message
@@ -4458,7 +4458,7 @@ async def _slotPD_SnifferMsgPduClicked(dashboard: QtCore.QObject):
 
             # Check the Values
             if not (get_port.isdigit() and 1 <= int(get_port) <= 65535):
-                dashboard.errorMessage("Enter a valid port (1-65535).")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a valid port (1-65535).")
                 return
 
             # Send the Message

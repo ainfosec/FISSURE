@@ -48,7 +48,7 @@ def _slotTSI_DetectorChanged(dashboard: QtCore.QObject):
     """
     # Sensor Node Hardware Information
     get_current_hardware = str(dashboard.ui.comboBox_tsi_detector_sweep_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'tsi')
+    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'tsi')
     
     # Change Settings
     get_detector = str(dashboard.ui.comboBox_tsi_detector.currentText())
@@ -322,7 +322,7 @@ def _slotTSI_DetectorFixedChanged(dashboard: QtCore.QObject):
     """
     # Sensor Node Hardware Information
     get_current_hardware = str(dashboard.ui.comboBox_tsi_detector_fixed_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'tsi')
+    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'tsi')
     
     # Change Settings
     get_detector = str(dashboard.ui.comboBox_tsi_detector_fixed.currentText())
@@ -960,7 +960,7 @@ def _slotTSI_DetectorSweepHardwareChanged(dashboard: QtCore.QObject):
     """
     # Sensor Node Hardware Information
     get_current_hardware = str(dashboard.ui.comboBox_tsi_detector_sweep_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'tsi')
+    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'tsi')
     
     # Change Settings
     dashboard.ui.comboBox_tsi_detector.clear()
@@ -1186,7 +1186,7 @@ def _slotTSI_DetectorFixedHardwareChanged(dashboard: QtCore.QObject):
     """
     # Sensor Node Hardware Information
     get_current_hardware = str(dashboard.ui.comboBox_tsi_detector_fixed_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'tsi')
+    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'tsi')
     
     # Change Settings
     dashboard.ui.comboBox_tsi_detector_fixed.clear()
@@ -1829,7 +1829,7 @@ def _slotTSI_ConditionerInputRenameClicked(dashboard: QtCore.QObject):
     try:
         get_file = str(dashboard.ui.listWidget_tsi_conditioner_input_files.currentItem().text())
     except:
-        dashboard.errorMessage("No File Selected.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("No File Selected.")
         return        
     get_file_path = os.path.join(str(dashboard.ui.comboBox_tsi_conditioner_input_folders.currentText()), get_file)
     
@@ -1891,7 +1891,7 @@ def _slotTSI_ConditionerInputPreviewClicked(dashboard: QtCore.QObject):
     
     # File with Zero Bytes
     if number_of_bytes <= 0:
-        dashboard.errorMessage("File is empty")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("File is empty")
 
     # Skip Bytes if File is Too Large        
     else:            
@@ -2103,7 +2103,7 @@ def _slotTSI_ConditionerResultsPreviewClicked(dashboard: QtCore.QObject):
         
         # File with Zero Bytes
         if number_of_bytes <= 0:
-            dashboard.errorMessage("File is empty")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("File is empty")
 
         # Skip Bytes if File is Too Large        
         else:            
@@ -2423,7 +2423,7 @@ def _slotTSI_ConditionerResultsStripClicked(dashboard: QtCore.QObject):
                 
                 # Unknown
                 else:
-                    dashboard.errorMessage("Unknown Data Type")
+                    fissure.Dashboard.UI_Components.Qt5.errorMessage("Unknown Data Type")
                     return
                 
                 # Strip and Save
@@ -2514,7 +2514,7 @@ def _slotTSI_ConditionerResultsStripAllClicked(dashboard: QtCore.QObject):
                 
                 # Unknown
                 else:
-                    dashboard.errorMessage("Unknown Data Type")
+                    fissure.Dashboard.UI_Components.Qt5.errorMessage("Unknown Data Type")
                     return
                 
                 # Strip and Save
@@ -2700,7 +2700,7 @@ def _slotTSI_FE_InputRenameClicked(dashboard: QtCore.QObject):
     try:
         get_file = str(dashboard.ui.listWidget_tsi_fe_input_files.currentItem().text())
     except:
-        dashboard.errorMessage("No File Selected.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("No File Selected.")
         return        
     get_file_path = os.path.join(str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText()), get_file)
     
@@ -2762,7 +2762,7 @@ def _slotTSI_FE_InputPreviewClicked(dashboard: QtCore.QObject):
     
     # File with Zero Bytes
     if number_of_bytes <= 0:
-        dashboard.errorMessage("File is empty")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("File is empty")
 
     # Skip Bytes if File is Too Large        
     else:            
@@ -2941,7 +2941,7 @@ def _slotTSI_FE_ResultsPreviewClicked(dashboard: QtCore.QObject):
         
         # File with Zero Bytes
         if number_of_bytes <= 0:
-            dashboard.errorMessage("File is empty")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("File is empty")
 
         # Skip Bytes if File is Too Large        
         else:            
@@ -3103,7 +3103,7 @@ def _slotTSI_FE_ResultsPlotColumnClicked(dashboard: QtCore.QObject):
             plt.xlabel('Row') 
             plt.ylabel('Value')
         else:
-            dashboard.errorMessage("Select a cell in the Results table.")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Select a cell in the Results table.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -3319,7 +3319,7 @@ def _slotTSI_FE_ResultsJointPlotClicked(dashboard: QtCore.QObject):
         get_selected_features = joint_plot_dlg.return_value
         if len(get_selected_features) != 2:
             if get_selected_features != "Cancel":
-                dashboard.errorMessage("Error retrieving two features")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Error retrieving two features")
             return
                         
         # Obtain the Features
@@ -3508,7 +3508,7 @@ async def _slotTSI_DetectorStartClicked(dashboard: QtCore.QObject):
         
         # Sensor Node Hardware Information
         get_current_hardware = str(dashboard.ui.comboBox_tsi_detector_sweep_hardware.currentText())
-        get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'tsi')
+        get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'tsi')
     
         # Get Detector
         get_detector = str(dashboard.ui.comboBox_tsi_detector.currentText())
@@ -3533,7 +3533,7 @@ async def _slotTSI_DetectorStartClicked(dashboard: QtCore.QObject):
             if get_filepath == "":
                 # msgBox = MyMessageBox(my_text = " Choose an IQ file.", height = 75, width = 140)
                 # msgBox.exec_()
-                ret = await dashboard.ask_confirmation_ok("Choose an IQ file.")
+                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Choose an IQ file.")
                 return
 
         elif get_detector == "Simulator":
@@ -3550,7 +3550,7 @@ async def _slotTSI_DetectorStartClicked(dashboard: QtCore.QObject):
             if get_filepath == "":
                 # msgBox = MyMessageBox(my_text = " Choose a CSV file.", height = 75, width = 140)
                 # msgBox.exec_()
-                ret = await dashboard.ask_confirmation_ok("Choose a CSV file.")
+                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Choose a CSV file.")
                 return
 
         else:
@@ -3563,7 +3563,7 @@ async def _slotTSI_DetectorStartClicked(dashboard: QtCore.QObject):
                 # Create a Dialog Window
                 # msgBox = MyMessageBox(my_text = error_text, height = 100, width = 510)
                 # msgBox.exec_()
-                ret = await dashboard.ask_confirmation_ok(error_text)
+                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, error_text)
                 return
 
             # Valid Hardware
@@ -3735,7 +3735,7 @@ async def _slotTSI_DetectorFixedStartClicked(dashboard: QtCore.QObject):
         
         # Sensor Node Hardware Information
         get_current_hardware = str(dashboard.ui.comboBox_tsi_detector_fixed_hardware.currentText())
-        get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'tsi')
+        get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'tsi')
 
         # Get Detector
         get_detector = str(dashboard.ui.comboBox_tsi_detector_fixed.currentText())
@@ -3749,7 +3749,7 @@ async def _slotTSI_DetectorFixedStartClicked(dashboard: QtCore.QObject):
             # Create a Dialog Window
             # msgBox = MyMessageBox(my_text = error_text, height = 100, width = 510)
             # msgBox.exec_()
-            ret = await dashboard.ask_confirmation_ok(error_text)
+            ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, error_text)
             return
 
         # Valid Hardware
@@ -3916,7 +3916,7 @@ async def _slotTSI_ConditionerOperationStartClicked(dashboard: QtCore.QObject):
             if os.path.isfile(get_filepath):
                 get_all_filepaths.append(get_filepath)
             else:
-                ret = await dashboard.ask_confirmation_ok("Invalid input file. Click the Refresh button.")
+                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid input file. Click the Refresh button.")
                 return
         
         # Folder
@@ -3929,7 +3929,7 @@ async def _slotTSI_ConditionerOperationStartClicked(dashboard: QtCore.QObject):
                         if os.path.isfile(complete_filepath):
                             get_all_filepaths.append(complete_filepath)
                         else:
-                            ret = await dashboard.ask_confirmation_ok("Invalid input file. Click the Refresh button.")
+                            ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid input file. Click the Refresh button.")
                             return
                         
                     # Only Files with Extension
@@ -3940,12 +3940,12 @@ async def _slotTSI_ConditionerOperationStartClicked(dashboard: QtCore.QObject):
                             if os.path.isfile(complete_filepath):
                                 get_all_filepaths.append(complete_filepath)
                             else:
-                                ret = await dashboard.ask_confirmation_ok("Invalid input file. Click the Refresh button.")
+                                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid input file. Click the Refresh button.")
                                 return
 
             else:
-                # dashboard.errorMessage("No input files found.")
-                ret = await dashboard.ask_confirmation_ok("No input files found.")
+                # fissure.Dashboard.UI_Components.Qt5.errorMessage("No input files found.")
+                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "No input files found.")
                 return
         
         # Method1: burst_tagger
@@ -4068,7 +4068,7 @@ async def _slotTSI_FE_OperationStartClicked(dashboard: QtCore.QObject):
                 get_filepath = complete_filepath
                 get_all_filepaths.append(get_filepath)
             else:
-                ret = await dashboard.ask_confirmation_ok("Invalid input file. Click the Refresh button.")
+                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid input file. Click the Refresh button.")
                 return
     
         # Folder
@@ -4080,11 +4080,11 @@ async def _slotTSI_FE_OperationStartClicked(dashboard: QtCore.QObject):
                     if os.path.isfile(complete_filepath):
                         get_all_filepaths.append(complete_filepath)
                     else:
-                        ret = await dashboard.ask_confirmation_ok("Invalid input file. Click the Refresh button.")
+                        ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid input file. Click the Refresh button.")
                         return
             else:
-                # dashboard.errorMessage("No input files found.")
-                ret = await dashboard.ask_confirmation_ok("No input files found.")
+                # fissure.Dashboard.UI_Components.Qt5.errorMessage("No input files found.")
+                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "No input files found.")
                 return
         
         # Checked Features

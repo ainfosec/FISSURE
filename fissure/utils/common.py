@@ -352,4 +352,15 @@ def get_os_info() -> Tuple[str, str, str]:
     output = proc.communicate()[0].decode()
     if len(output) > 0:
         return "Ubuntu 22.04"  # Same settings as Ubuntu 22.04
-    
+
+
+def isFloat(x):
+    """
+    Returns "True" if the input is a Float. Returns "False" otherwise.
+    """
+    # Check Value
+    try:
+        float(x)
+    except ValueError:
+        return False
+    return True

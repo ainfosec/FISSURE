@@ -121,7 +121,7 @@ def _slotIQ_RecordHardwareChanged(dashboard: QtCore.QObject):
     """
     # Sensor Node Hardware Information
     get_current_hardware = str(dashboard.ui.comboBox_iq_record_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'iq')
+    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
     
     if get_hardware_type == "Computer":
         dashboard.ui.frame_iq_record.setEnabled(False)
@@ -531,7 +531,7 @@ def _slotIQ_PlaybackHardwareChanged(dashboard: QtCore.QObject):
     """
     # Sensor Node Hardware Information
     get_current_hardware = str(dashboard.ui.comboBox_iq_playback_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'iq')
+    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
     
     if get_hardware_type == "Computer":
         dashboard.ui.frame_iq_playback.setEnabled(False)
@@ -832,7 +832,7 @@ def _slotIQ_InspectionHardwareChanged(dashboard: QtCore.QObject):
     """
     # Sensor Node Hardware Information
     get_current_hardware = str(dashboard.ui.comboBox_iq_inspection_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'iq')
+    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
     
     # Clear Widgets
     dashboard.ui.listWidget_iq_inspection_flow_graphs.clear()
@@ -968,7 +968,7 @@ def _slotIQ_InspectionFlowGraphClicked(dashboard: QtCore.QObject):
         
     # Sensor Node Hardware Information
     get_current_hardware = str(dashboard.ui.comboBox_iq_inspection_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'iq')
+    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
 
     # Read Flow Graph Variables
     try:
@@ -1129,7 +1129,7 @@ def _slotIQ_LoadIQ_Data(dashboard: QtCore.QObject):
     try:
         dashboard.ui.label2_iq_file_name.setText("File: " + dashboard.ui.listWidget_iq_files.currentItem().text())  # File name
     except:
-        dashboard.errorMessage("No file selected.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("No file selected.")
         return
     get_file_path = str(dashboard.ui.label_iq_folder.text() + "/" + dashboard.ui.listWidget_iq_files.currentItem().text())
     dashboard.ui.label2_iq_file_size.setText("Size: " + str(round(float((os.path.getsize(get_file_path)))/1048576,2)) + " MB")  # File Size
@@ -1172,7 +1172,7 @@ def _slotIQ_LoadIQ_Data(dashboard: QtCore.QObject):
 
     # Sensor Node Hardware Information
     get_current_hardware = str(dashboard.ui.comboBox_iq_playback_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'iq')
+    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
     
     # Playback
     dashboard.ui.textEdit_iq_playback_filepath.setPlainText(get_file_path)
@@ -1414,7 +1414,7 @@ def _slotIQ_CropClicked(dashboard: QtCore.QObject):
     elif get_data_type == "Complex Int 8":
         bs = "2"
     else:
-        dashboard.errorMessage("Cannot crop " + get_data_type + ".")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Cannot crop " + get_data_type + ".")
         return
 
     # Calculate Number of Samples
@@ -1888,7 +1888,7 @@ def _slotIQ_ResampleClicked(dashboard: QtCore.QObject):
 
         # Unknown
         else:
-            dashboard.errorMessage("Cannot resample " + get_data_type + ".")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Cannot resample " + get_data_type + ".")
             return
 
         # Refresh Listbox
@@ -2233,7 +2233,7 @@ def _slotIQ_RenameClicked(dashboard: QtCore.QObject):
     try:
         get_file = dashboard.ui.listWidget_iq_files.currentItem().text()
     except:
-        dashboard.errorMessage("No File Selected.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("No File Selected.")
         return
     get_file_path = str(dashboard.ui.label_iq_folder.text() + "/" + get_file)
 
@@ -2614,7 +2614,7 @@ def _slotIQ_ConvertClicked(dashboard: QtCore.QObject):
 
         # Unknown
         else:
-            dashboard.errorMessage("Cannot convert " + str(get_original_type) + " to " + str(get_new_type) + ".")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Cannot convert " + str(get_original_type) + " to " + str(get_new_type) + ".")
             return
 
         dashboard.logger.info("Done.")
@@ -2755,7 +2755,7 @@ def _slotIQ_NormalizeClicked(dashboard: QtCore.QObject):
             get_min = float(dashboard.ui.textEdit_iq_normalize_min.toPlainText())
             get_max = float(dashboard.ui.textEdit_iq_normalize_max.toPlainText())
         except:
-            dashboard.errorMessage("Not a valid float.")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Not a valid float.")
             return
 
     # Load the Data
@@ -2850,7 +2850,7 @@ def _slotIQ_NormalizeClicked(dashboard: QtCore.QObject):
 
         # Unknown
         else:
-            dashboard.errorMessage("Cannot normalize " + get_data_type + ".")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Cannot normalize " + get_data_type + ".")
             return
 
         dashboard.logger.info("Done.")
@@ -2982,12 +2982,12 @@ def _slotIQ_GqrxClicked(dashboard: QtCore.QObject):
     get_sample_rate = str(dashboard.ui.textEdit_iq_sample_rate.toPlainText())
     get_frequency = str(dashboard.ui.textEdit_iq_frequency.toPlainText())
     try:
-        dashboard.isFloat(float(get_sample_rate))
-        dashboard.isFloat(float(get_frequency))
+        fissure.utils.isFloat(float(get_sample_rate))
+        fissure.utils.isFloat(float(get_frequency))
         get_sample_rate = str(int(float(get_sample_rate)*1000000))
         get_frequency = str(int(float(get_frequency)*1000000))
     except:
-        dashboard.errorMessage("Enter a valid sample rate and frequency.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a valid sample rate and frequency.")
         return
 
     # Modify Local Gqrx Config File
@@ -3006,7 +3006,7 @@ def _slotIQ_GqrxClicked(dashboard: QtCore.QObject):
         proc = subprocess.Popen('gqrx -c "' + os.path.join(fissure.utils.TOOLS_DIR, "Gqrx", "default.conf") + '"', shell=True)
 
     else:
-        dashboard.errorMessage("Select a valid file, sample rate, and frequency.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Select a valid file, sample rate, and frequency.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -3022,14 +3022,14 @@ def _slotIQ_InspectrumClicked(dashboard: QtCore.QObject):
         # Get Sample Rate
         get_sample_rate = str(dashboard.ui.textEdit_iq_sample_rate.toPlainText())
         try:
-            dashboard.isFloat(float(get_sample_rate))
+            fissure.utils.isFloat(float(get_sample_rate))
             get_sample_rate = str(int(float(get_sample_rate)*1000000))
             proc = subprocess.Popen('inspectrum -r ' + get_sample_rate + ' "' + get_iq_file + '"', shell=True)
         except:
             proc = subprocess.Popen('inspectrum "' + get_iq_file + '"', shell=True)
 
     else:
-        dashboard.errorMessage("Load an IQ file and try again.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Load an IQ file and try again.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -3059,15 +3059,15 @@ def _slotIQ_StripClicked(dashboard: QtCore.QObject):
     get_output_directory = str(dashboard.ui.textEdit_iq_strip_output.toPlainText())
 
     if (get_overwrite == False) and (len(get_output_directory) == 0):
-        dashboard.errorMessage("Select output directory")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Select output directory")
         return
 
     if len(get_threshold) == 0:
-        dashboard.errorMessage("Enter amplitude threshold")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter amplitude threshold")
         return
 
     if dashboard.ui.listWidget_iq_strip_input.count() == 0:
-        dashboard.errorMessage("Select IQ files to be stripped")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Select IQ files to be stripped")
         return
 
     # Load the Data
@@ -3130,7 +3130,7 @@ def _slotIQ_StripClicked(dashboard: QtCore.QObject):
 
             # Unknown
             else:
-                dashboard.errorMessage("Unknown Data Type")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Unknown Data Type")
                 return
 
             # Strip and Save
@@ -3503,7 +3503,7 @@ def _slotIQ_SplitClicked(dashboard: QtCore.QObject):
     get_output_file = str(dashboard.ui.textEdit_iq_split_output.toPlainText())
     get_num_files = int(dashboard.ui.spinBox_iq_split.value())
     if (len(get_input_file) == 0) or (len(get_output_file) == 0):
-        dashboard.errorMessage("Enter filepaths")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter filepaths")
         return
     
     # Number of Samples
@@ -3529,7 +3529,7 @@ def _slotIQ_SplitClicked(dashboard: QtCore.QObject):
         elif get_data_type == "Complex Int 64":
             num_samples = int(number_of_bytes/16)
     else:
-        dashboard.errorMessage("Error. File is empty.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Error. File is empty.")
         return
     
     # Split
@@ -3613,7 +3613,7 @@ def generateOOK_Signal(dashboard: QtCore.QObject, chip0_pattern, chip1_pattern, 
         elif sequence[n] == "1":
             chip_stream = chip_stream + chip1_pattern
         else:
-            dashboard.errorMessage("Invalid chip/bit sequence. Enter as a series of 0's and 1's.")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid chip/bit sequence. Enter as a series of 0's and 1's.")
             return -1       
             
     # Convert Chips to Samples
@@ -3723,7 +3723,7 @@ def _slotIQ_PlotClicked(dashboard: QtCore.QObject):
 
             # Check the Range
             if (num_samples*sample_size > number_of_bytes) or (complex_multiple*end_sample*sample_size > number_of_bytes) or (start_sample < 1):
-                dashboard.errorMessage("Samples out of range")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Samples out of range")
                 return
 
             # Read the Data
@@ -3783,10 +3783,10 @@ def _slotIQ_PlotClicked(dashboard: QtCore.QObject):
             dashboard.iq_plot_range_end = end_sample
 
         else:
-            dashboard.errorMessage("Too many samples for plotting.")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Too many samples for plotting.")
 
     else:
-        dashboard.errorMessage("File is empty or invalid")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("File is empty or invalid")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -3796,7 +3796,7 @@ def _slotIQ_PlotAllClicked(dashboard: QtCore.QObject):
     """
     # File Loaded
     if len(dashboard.ui.label2_iq_file_name.text().split('File:')[-1]) == 0:
-        dashboard.errorMessage("Load an IQ file before plotting by double-clicking the filename or clicking the Load File button.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Load an IQ file before plotting by double-clicking the filename or clicking the Load File button.")
         return
 
     # Get the Filepath
@@ -3808,7 +3808,7 @@ def _slotIQ_PlotAllClicked(dashboard: QtCore.QObject):
 
     # File with Zero Bytes
     if number_of_bytes <= 0:
-        dashboard.errorMessage("File is empty. Load a valid IQ file before plotting.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("File is empty. Load a valid IQ file before plotting.")
         return
 
     # Skip Bytes if File is Too Large
@@ -4058,8 +4058,8 @@ def _slotIQ_PlotIF_Clicked(dashboard: QtCore.QObject):
             get_frequency = ""
 
         # Calculate IF
-        if dashboard.isFloat(get_sample_rate):
-            if dashboard.isFloat(get_frequency):
+        if fissure.utils.isFloat(get_sample_rate):
+            if fissure.utils.isFloat(get_frequency):
                 instantaneous_frequency = np.diff(np.unwrap(np.angle(complex_data)))/(2.0*np.pi)*get_sample_rate + get_frequency
             else:
                 instantaneous_frequency = np.diff(np.unwrap(np.angle(complex_data)))/(2.0*np.pi)*get_sample_rate
@@ -5337,7 +5337,7 @@ def _slotIQ_CustomClicked(dashboard: QtCore.QObject):
 
         # Check the Range
         if (num_samples*sample_size > number_of_bytes) or (complex_multiple*end_sample*sample_size > number_of_bytes) or (start_sample < 1):
-            dashboard.errorMessage("Out of range.")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Out of range.")
             return
 
         # Read the Data
@@ -5440,7 +5440,7 @@ def _slotIQ_MorseCodeClicked(dashboard: QtCore.QObject):
     """
     # File Loaded
     if len(dashboard.ui.label2_iq_file_name.text().split('File:')[-1]) == 0:
-        dashboard.errorMessage("Load an IQ file by double-clicking the filename or clicking the Load File button, then plot the signal.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Load an IQ file by double-clicking the filename or clicking the Load File button, then plot the signal.")
         return
 
     # Get the Data from the Window
@@ -5500,7 +5500,7 @@ def _slotIQ_MorseCodeClicked(dashboard: QtCore.QObject):
 
     # Invalid Signal
     else:
-        dashboard.errorMessage("Plot a valid Morse Code signal.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Plot a valid Morse Code signal.")
         return
 
     # Reset the Cursor and Draw
@@ -5587,7 +5587,7 @@ def _slotIQ_MorseCodeClicked(dashboard: QtCore.QObject):
             dashboard.logger.info(get_text + '\n')
 
             # Open a MessageBox
-            dashboard.errorMessage(get_text)
+            fissure.Dashboard.UI_Components.Qt5.errorMessage(get_text)
 
 
 def morseToEnglish(message):
@@ -5779,7 +5779,7 @@ def _slotIQ_PolarClicked(dashboard: QtCore.QObject):
 
             # Check the Range
             if (num_samples*sample_size > number_of_bytes) or (complex_multiple*end_sample*sample_size > number_of_bytes) or (start_sample < 1):
-                dashboard.errorMessage("Out of range.")
+                fissure.Dashboard.UI_Components.Qt5.errorMessage("Out of range.")
                 return
 
             # Read the Data
@@ -5814,7 +5814,7 @@ def _slotIQ_PolarClicked(dashboard: QtCore.QObject):
 
         # Too Many Samples
         else:
-            dashboard.errorMessage("Samples must be less than 5,000,000.")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Samples must be less than 5,000,000.")
             return
 
         # Plot
@@ -6103,7 +6103,7 @@ def _slotIQ_FilterClicked(dashboard: QtCore.QObject):
                 start_freq = temp_freq
         sample_rate = float(str(dashboard.ui.textEdit_iq_sample_rate.toPlainText()))*1000000
     except:
-        dashboard.errorMessage("Invalid start frequency, end frequency, or sample rate.")
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid start frequency, end frequency, or sample rate.")
         return
 
     # Get the Data from the Window
@@ -6223,7 +6223,7 @@ def _slotIQ_RecordSigMF_ConfigureClicked(dashboard: QtCore.QObject):
     """
     # Sensor Node Hardware Information
     get_current_hardware = str(dashboard.ui.comboBox_iq_record_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'iq')
+    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
     
     # Copy Values from Table
     # Sample Rate
@@ -6288,7 +6288,7 @@ async def _slotIQ_RecordClicked(dashboard: QtCore.QObject, called_from_thread=Fa
         if dashboard.iq_file_counter > 0:
             # Sensor Node Hardware Information
             get_current_hardware = str(dashboard.ui.comboBox_iq_record_hardware.currentText())
-            get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'iq')
+            get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
 
             # Get the Values from the Table
             try:
@@ -6324,22 +6324,22 @@ async def _slotIQ_RecordClicked(dashboard: QtCore.QObject, called_from_thread=Fa
                 int(get_file_length)
                 float(get_sample_rate)
                 float(get_file_interval)
-                valid_freq = dashboard.checkFrequencyBounds(float(get_frequency), get_hardware_type, get_hardware_daughterboard)
+                valid_freq = fissure.utils.hardware.checkFrequencyBounds(float(get_frequency), get_hardware_type, get_hardware_daughterboard)
                 if valid_freq == False:
                     dashboard.iq_file_counter = 0
-                    dashboard.errorMessage("Frequency outside of hardware bounds.")
+                    ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Frequency outside of hardware bounds.")
                     return
                 if int(get_number_of_files) < 1:
                     dashboard.iq_file_counter = 0
-                    dashboard.errorMessage("Number of files must be >= 1.")
+                    ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Number of files must be >= 1.")
                     return
                 if float(get_file_interval) < 0:
                     dashboard.iq_file_counter = 0
-                    dashboard.errorMessage("File interval must be positive.")
+                    ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "File interval must be positive.")
                     return
             except:
                 dashboard.iq_file_counter = 0
-                dashboard.errorMessage("Invalid input parameter.")
+                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid input parameter.")
                 return
 
             # Get Flow Graph from Hardware
@@ -6437,7 +6437,7 @@ async def _slotIQ_PlaybackClicked(dashboard: QtCore.QObject):
     if dashboard.ui.pushButton_iq_playback.text() == "Play":
         # Return if no Sensor Node Selected
         if dashboard.active_sensor_node < 0:
-            dashboard.errorMessage("Select a sensor node.")
+            ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Select a sensor node.")
             return
 
         # Change Status Label and Record Button Text
@@ -6454,7 +6454,7 @@ async def _slotIQ_PlaybackClicked(dashboard: QtCore.QObject):
 
         # Sensor Node Hardware Information
         get_current_hardware = str(dashboard.ui.comboBox_iq_playback_hardware.currentText())
-        get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = dashboard.hardwareDisplayNameLookup(get_current_hardware,'iq')
+        get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
     
         try:
             # Get the Values from the Table
@@ -6480,14 +6480,14 @@ async def _slotIQ_PlaybackClicked(dashboard: QtCore.QObject):
             float(get_frequency)
             float(get_gain)
             float(get_sample_rate)
-            valid_freq = dashboard.checkFrequencyBounds(float(get_frequency), get_hardware_type, get_hardware_daughterboard)
+            valid_freq = fissure.utils.hardware.checkFrequencyBounds(float(get_frequency), get_hardware_type, get_hardware_daughterboard)
             if valid_freq == False:
-                ret = await dashboard.ask_confirmation_ok("Frequency outside of hardware bounds.")
+                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Frequency outside of hardware bounds.")
                 raise ValueError("Frequency outside of hardware bounds.")
         except:
-            dashboard.errorMessage("Invalid input parameter")
+            ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid input parameter")
             dashboard.ui.label2_iq_playback_status.setText('')
-            dashboard.ui.pushButton_iq_playback.setText("Start")
+            dashboard.ui.pushButton_iq_playback.setText("Play")
             dashboard.ui.pushButton_iq_playback.setEnabled(True)
             dashboard.statusbar_text[dashboard.active_sensor_node][4] = ''
             dashboard.refreshStatusBarText()

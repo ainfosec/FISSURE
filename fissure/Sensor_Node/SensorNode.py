@@ -419,16 +419,6 @@ class SensorNode():
         # #self.settings_dictionary = self.loadConfiguration()
 
 
-    def isFloat(self, x):
-        """ Returns "True" if the input is a Float. Returns "False" otherwise.
-        """
-        try:
-            float(x)
-        except ValueError:
-            return False
-        return True
-        
-
     def replaceUsername(self, filepath, new_username):
         """ Swaps out the username for a filepath in the home directory with a new username.
         """
@@ -795,7 +785,7 @@ class SensorNode():
                         new_value = variable_values[index]
 
                         # A Number
-                        if self.isFloat(new_value):
+                        if fissure.utils.isFloat(new_value):
                             # Make Numerical Value a String
                             if fix_strings == True:
                                 if variable_name.strip() in variable_values[fix_strings_index]:
@@ -838,7 +828,7 @@ class SensorNode():
         """
         # Make it Match GNU Radio Format
         formatted_name = "set_" + variable
-        isNumber = self.isFloat(value)
+        isNumber = fissure.utils.isFloat(value)
         if isNumber:
             if flow_graph == "Protocol Discovery":
                 getattr(self.pdflowtoexec,formatted_name)(float(value))
@@ -1509,14 +1499,14 @@ class SensorNode():
 
             if fuzzing_type[n] == "Sequential":
                 # Check if it is a Float
-                if self.isFloat((fuzzing_min[n])):
+                if fissure.utils.isFloat((fuzzing_min[n])):
                     generic_value = float(fuzzing_min[n])
                 # What Happens for a String?
                 else:
                     generic_value = str(fuzzing_min[n])
             elif fuzzing_type[n] == "Random":
                 # Check if it is a Float
-                if self.isFloat((fuzzing_min[n])):
+                if fissure.utils.isFloat((fuzzing_min[n])):
                     generic_rg = random.Random(float(fuzzing_seed_step[n]))
                     generic_value = generic_rg.randrange(float(fuzzing_min[n]),float(fuzzing_max[n]),1)
                 # What Happens for a String?
@@ -1541,7 +1531,7 @@ class SensorNode():
                 # Generate New Value
                 if fuzzing_type[n] == "Sequential":
                     # Float
-                    if self.isFloat(fuzzing_min[n]):
+                    if fissure.utils.isFloat(fuzzing_min[n]):
                         # Increment
                         generic_value = generic_value + float(fuzzing_seed_step[n])
 
@@ -1554,7 +1544,7 @@ class SensorNode():
                         generic_value = str(fuzzing_min[n])
 
                 elif fuzzing_type[n] == "Random":
-                    if self.isFloat(fuzzing_min[n]):
+                    if fissure.utils.isFloat(fuzzing_min[n]):
                         # New Random Number
                         generic_value = generic_rg.randrange(float(fuzzing_min[n]),float(fuzzing_max[n]),1)
                     # What Happens for a String?

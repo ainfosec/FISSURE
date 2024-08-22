@@ -128,7 +128,7 @@ def _slotViewClicked(TriggersDlg: QtCore.QObject):
             osCommandString = 'gnuradio-companion "' + full_path + '"'
             os.system(osCommandString + " &")
         else:
-            TriggersDlg.dashboard.errorMessage("Missing .grc file.")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Missing .grc file.")
 
     # Python Script
     else:
@@ -137,7 +137,7 @@ def _slotViewClicked(TriggersDlg: QtCore.QObject):
             osCommandString = 'gedit "' + full_path + '"'
             os.system(osCommandString + " &")
         else:
-            TriggersDlg.dashboard.errorMessage("Missing .py file.")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Missing .py file.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)

@@ -586,7 +586,7 @@ def _slotMenuLoadBladeRF_FPGA_Clicked(dashboard: QtWidgets.QMainWindow):
                 command_text = 'lxterminal -e bladeRF-cli -l ' + str(get_file) + ' &'
             proc = subprocess.Popen(command_text, shell=True)
         except:
-            dashboard.errorMessage("Error Loading FPGA Image")
+            fissure.Dashboard.UI_Components.Qt5.errorMessage("Error Loading FPGA Image")
 
 
 @QtCore.pyqtSlot()

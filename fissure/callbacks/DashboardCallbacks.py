@@ -196,6 +196,16 @@ async def hardwareProbeResults(component: object, tab_index=0, output="", height
     ]
     scan_results_labels[int(tab_index)].setVisible(False)
 
+    # Enable Probe Button
+    probe_buttons = [
+        component.frontend.popups["HardwareSelectDialog"].pushButton_scan_results_probe_1,
+        component.frontend.popups["HardwareSelectDialog"].pushButton_scan_results_probe_2,
+        component.frontend.popups["HardwareSelectDialog"].pushButton_scan_results_probe_3,
+        component.frontend.popups["HardwareSelectDialog"].pushButton_scan_results_probe_4,
+        component.frontend.popups["HardwareSelectDialog"].pushButton_scan_results_probe_5
+    ]
+    probe_buttons[int(tab_index)].setEnabled(True)
+
     # Open a Text Dialog
     if height_width[0] == '':
         msgBox = MyMessageBox(my_text = probe_text)
@@ -685,7 +695,7 @@ async def detectorFlowGraphError(component: object, sensor_node_id=0, error=""):
     TSITabSlots._slotTSI_DetectorStartClicked(component.frontend)
 
     # Open Window
-    component.frontend.errorMessage("Flow Graph Error:\n" + error)
+    fissure.Dashboard.UI_Components.Qt5.errorMessage("Flow Graph Error:\n" + error)
 
 
 async def flowGraphError(component: object, sensor_node_id=0, error=""):
@@ -698,7 +708,7 @@ async def flowGraphError(component: object, sensor_node_id=0, error=""):
     component.frontend.ui.comboBox_attack_hardware.setEnabled(True)
 
     # Open Window
-    component.frontend.errorMessage("Flow Graph Error:\n" + error)
+    fissure.Dashboard.UI_Components.Qt5.errorMessage("Flow Graph Error:\n" + error)
 
 
 async def autorunPlaylistFinished(component: object, sensor_node_id=0):
@@ -1106,7 +1116,7 @@ async def setFullLibrary(component: object, message=[]):
     LibraryTabSlots._slotLibraryBrowseYAML_Changed(component.frontend)
 
     # Create a Dialog Window
-    component.frontend.errorMessage("Library updated successfully.")
+    fissure.Dashboard.UI_Components.Qt5.errorMessage("Library updated successfully.")
 
 
 async def findEntropyReturn(component: object, ents):

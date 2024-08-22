@@ -13,6 +13,71 @@ import asyncio
 import qasync
 
 
+def errorMessage(message_text):
+    """
+    Creates a popup window with an error message for synchronous functions.
+    """
+    # Create the Message Box
+    msgBox = QtWidgets.QMessageBox()  # Add parent to make it modal?
+    msgBox.setText(message_text)
+    msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+    msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
+    msgBox.exec_()
+
+
+async def async_yes_no_dialog(parent, message_text):
+    """ 
+    Used for asynchronous message boxes.
+    """
+    msg_box = QtWidgets.QMessageBox(parent)
+    msg_box.setText(message_text)
+    msg_box.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
+    msg_box.setIcon(QtWidgets.QMessageBox.Question)
+
+    loop = asyncio.get_event_loop()
+    future = loop.create_future()
+
+    def on_finished(button):
+        future.set_result(button)
+
+    msg_box.buttonClicked.connect(on_finished)
+    msg_box.show()
+
+    await future
+
+    return msg_box.standardButton(future.result())
+
+
+async def async_ok_dialog(parent, message_text, width=None):
+    """ 
+    Used for asynchronous message boxes. Needs to be its own class to adjust the width.
+    """
+    msg_box = QtWidgets.QMessageBox(parent)
+    msg_box.setText(message_text)
+    msg_box.setStandardButtons(QtWidgets.QMessageBox.Ok)
+    msg_box.setIcon(QtWidgets.QMessageBox.NoIcon)
+    # msg_box.setBaseSize(QtCore.QSize(1950, 120))
+
+    # Set the width if provided
+    if width:
+        pass
+        # msg_box.resize(width, msg_box.sizeHint().height())
+        # msg_box.setFixedSize(width, msg_box.sizeHint().height())
+
+    loop = asyncio.get_event_loop()
+    future = loop.create_future()
+
+    def on_finished(button):
+        future.set_result(button)
+
+    msg_box.buttonClicked.connect(on_finished)
+    msg_box.show()
+
+    await future
+
+    return msg_box.standardButton(future.result())
+
+
 class MiscChooser(QtWidgets.QDialog, UI_Types.Chooser):
     def __init__(self, parent, label_text, chooser_items):
         """
@@ -826,7 +891,7 @@ class OptionsDialog(QtWidgets.QDialog, UI_Types.Options):
                             else:
                                 new_console_logging_level = None
                                 variable_values[n] = self.settings_dictionary[variable_names[n]]
-                                self.parent.errorMessage("Invalid console logging level. New console level will not be saved. Valid levels are: DEBUG, INFO, WARNING, or ERROR.")
+                                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid console logging level. New console level will not be saved. Valid levels are: DEBUG, INFO, WARNING, or ERROR.")
                     elif variable_names[n] == "file_logging_level":
                         if variable_values[n].strip() != self.settings_dictionary[variable_names[n]].strip():
                             if variable_values[n].upper() == "DEBUG":
@@ -844,7 +909,7 @@ class OptionsDialog(QtWidgets.QDialog, UI_Types.Options):
                             else:
                                 new_file_logging_level = None
                                 variable_values[n] = self.settings_dictionary[variable_names[n]]
-                                self.parent.errorMessage("Invalid file logging level. New file level will not be saved. Valid levels are: DEBUG, INFO, WARNING, or ERROR.")
+                                fissure.Dashboard.UI_Components.Qt5.errorMessage("Invalid file logging level. New file level will not be saved. Valid levels are: DEBUG, INFO, WARNING, or ERROR.")
 
                     # Save to Current Settings
                     self.settings_dictionary[variable_names[n]] = variable_values[n]              

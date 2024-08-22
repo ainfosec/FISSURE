@@ -517,19 +517,59 @@
 </section>
 <section id="generic-input-dialogs">
 <h3>Generic Input Dialogs<a class="headerlink" href="#generic-input-dialogs" title="Permalink to this heading">¶</a></h3>
-<p>The generic input dialogs will be moved to a central location in the future. There are synchronous and asynchronous versions available for most types of dialog. If a message box dialog is part of an asynchronous function, it must have an asynchronous version to prevent errors.</p>
-<p>This section will be updated with examples once all the input dialog code has been reorganized. The following are old examples of synchronous input dialogs:</p>
-<p>Text Edit:</p>
+<p>The generic input dialogs are located in <code class="docutils literal notranslate"><span class="pre">./fissure/Dashboard/UI_Components/Qt5.py</span></code>. There are synchronous and asynchronous versions available for most types of dialog. If a message box dialog is part of an asynchronous function, it must have an asynchronous version to prevent errors when launched.</p>
+<p>The following are examples of input dialogs:</p>
+<p><strong>Asynchronous Yes/No Dialog:</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ret = await fissure.Dashboard.UI_Components.Qt5.async_yes_no_dialog(dashboard, &quot;Are you sure?&quot;)</span>
+<span class="go">if ret == QtWidgets.QMessageBox.Yes:</span>
+<span class="gp">    # </span>Do<span class="w"> </span>Things
+<span class="go">    pass</span>
+<span class="go">else:</span>
+<span class="go">    return</span>
+</pre></div>
+</div>
+<p><strong>Asynchronous OK Dialog:</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, &quot;Choose an IQ file.&quot;)</span>
+</pre></div>
+</div>
+<p><strong>Synchronous Error/Message Box:</strong></p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">fissure.Dashboard.UI_Components.Qt5.errorMessage(&quot;Flow Graph was not Found in PD Flow Graph Library!&quot;)</span>
+</pre></div>
+</div>
+<p><strong>Synchronous Text Edit:</strong></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">text, ok = QtGui.QInputDialog.getText(self, &#39;Rename&#39;, &#39;Enter new name:&#39;,QtGui.QLineEdit.Normal,get_file)</span>
 <span class="go">if ok:</span>
 <span class="go">    print text</span>
 </pre></div>
 </div>
-<p>ComboBox:</p>
+<p><strong>Synchronous ComboBox:</strong></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Open<span class="w"> </span>the<span class="w"> </span>Band<span class="w"> </span>Chooser<span class="w"> </span>Dialog
 <span class="go">new_label_text = &quot;Choose 4G Band&quot;</span>
-<span class="go">new_items = [&#39;2&#39;, &#39;3&#39;, &#39;4&#39;, &#39;5&#39;, &#39;7&#39;, &#39;12&#39;, &#39;13&#39;, &#39;14&#39;, &#39;17&#39;, &#39;20&#39;, &#39;25&#39;, &#39;26&#39;, &#39;29&#39;, &#39;30&#39;, &#39;40&#39;, &#39;41&#39;, &#39;46&#39;, &#39;48&#39;, &#39;66&#39;, &#39;71&#39;]</span>
-<span class="go">chooser_dlg = MiscChooser(parent=self, label_text=new_label_text, chooser_items=new_items)</span>
+<span class="go">new_items = [</span>
+<span class="go">    &quot;2&quot;,</span>
+<span class="go">    &quot;3&quot;,</span>
+<span class="go">    &quot;4&quot;,</span>
+<span class="go">    &quot;5&quot;,</span>
+<span class="go">    &quot;7&quot;,</span>
+<span class="go">    &quot;12&quot;,</span>
+<span class="go">    &quot;13&quot;,</span>
+<span class="go">    &quot;14&quot;,</span>
+<span class="go">    &quot;17&quot;,</span>
+<span class="go">    &quot;20&quot;,</span>
+<span class="go">    &quot;25&quot;,</span>
+<span class="go">    &quot;26&quot;,</span>
+<span class="go">    &quot;29&quot;,</span>
+<span class="go">    &quot;30&quot;,</span>
+<span class="go">    &quot;40&quot;,</span>
+<span class="go">    &quot;41&quot;,</span>
+<span class="go">    &quot;46&quot;,</span>
+<span class="go">    &quot;48&quot;,</span>
+<span class="go">    &quot;66&quot;,</span>
+<span class="go">    &quot;71&quot;,</span>
+<span class="go">]</span>
+<span class="go">chooser_dlg = fissure.Dashboard.UI_Components.Qt5.MiscChooser(</span>
+<span class="go">    parent=dashboard, label_text=new_label_text, chooser_items=new_items</span>
+<span class="go">)</span>
 <span class="go">chooser_dlg.show()</span>
 <span class="go">chooser_dlg.exec_()</span>
 
@@ -539,34 +579,25 @@
 <span class="go">    print get_value</span>
 </pre></div>
 </div>
-<p>Folder:</p>
+<p><strong>Synchronous Folder:</strong></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Choose<span class="w"> </span>Folder
 <span class="go">get_dir = str(QtGui.QFileDialog.getExistingDirectory(self, &quot;Select Directory&quot;))</span>
 <span class="go">if len(get_dir) &gt; 0:</span>
 <span class="go">    print get_dir</span>
 </pre></div>
 </div>
-<p>Open File:</p>
+<p><strong>Synchronous Open File:</strong></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Choose<span class="w"> </span>File
 <span class="go">fname = QtGui.QFileDialog.getOpenFileName(None,&quot;Select IQ File...&quot;, default_directory, filter=&quot;All Files (*)&quot;)</span>
 <span class="go">if fname != &quot;&quot;:</span>
 <span class="go">    print fname</span>
 </pre></div>
 </div>
-<p>Save File:</p>
+<p><strong>Synchronous Save File:</strong></p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Choose<span class="w"> </span>File
 <span class="go">fname = QtGui.QFileDialog.getSaveFileName(None,&quot;Select File...&quot;, default_directory, filter=&quot;All Files (*)&quot;)</span>
 <span class="go">if fname != &quot;&quot;:</span>
 <span class="go">    print fname</span>
-</pre></div>
-</div>
-<p>Error Message:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">self.errorMessage(&quot;Flow Graph was not Found in PD Flow Graph Library!&quot;)</span>
-</pre></div>
-</div>
-<p>Message Box:</p>
-<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">msgBox = MyMessageBox(my_text = &quot; Choose an IQ file.&quot;, height = 75, width = 140)</span>
-<span class="go">msgBox.exec_()</span>
 </pre></div>
 </div>
 </section>

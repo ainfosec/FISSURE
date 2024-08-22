@@ -1,6 +1,32 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-08-22
+
+Moving utility functions out of frontend code.
+
+### Added
+
+- Disable hardware probe button on click, enable on return
+
+### Changed
+
+- Moved checkFrequencyBounds(), hardwareDisplayName(), hardwareDisplayNameLookup() from Frontend.py to hardware.py
+- Renamed ask_confirmation() to async_yes_no_dialog and moved from Frontend.py to Qt5.py
+- Renamed ask_confirmation_ok() to async_ok_dialog and moved from Frontend.py to Qt5.py
+- Moved errorMessage() from Frontend.py to Qt5.py
+- Removed warningBox() from Frontend.py
+- Moved isFloat() from Frontend.py to common.py, remove isFloat() from SensorNode.py
+
+### Fixed
+
+- Replaced synchronous error dialogs in asynchronous functions with asynchronous dialogs
+- IQ Playback error now sets button text to "Play" instead of "Start"
+
+### Documentation
+
+- Added code examples for custom dialogs in Development section
+
 ## 2024-08-21
 
 Networking and event loop fixes.

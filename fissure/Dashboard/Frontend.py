@@ -981,66 +981,6 @@ class Dashboard(QtWidgets.QMainWindow):
         if key in self.popups:
             del self.popups[key]
             # print(f"Popup with key '{key}' has been removed.")
-
-
-    def warningBox(self, message: str, details: str = None):
-        msgBox = QtWidgets.QMessageBox()
-        msgBox.warning(self, "WARNING", message)
-        msgBox.setInformativeText(details)
-        msgBox.show()
-
-
-    async def ask_confirmation(self, message_text):
-        """ 
-        Used for asynchronous message boxes.
-        """
-        msg_box = QtWidgets.QMessageBox(self)
-        msg_box.setText(message_text)
-        msg_box.setStandardButtons(QtWidgets.QMessageBox.Yes | QtWidgets.QMessageBox.No)
-        msg_box.setIcon(QtWidgets.QMessageBox.Question)
-
-        loop = asyncio.get_event_loop()
-        future = loop.create_future()
-
-        def on_finished(button):
-            future.set_result(button)
-
-        msg_box.buttonClicked.connect(on_finished)
-        msg_box.show()
-
-        await future
-
-        return msg_box.standardButton(future.result())
-    
-
-    async def ask_confirmation_ok(self, message_text, width=None):
-        """ 
-        Used for asynchronous message boxes. Needs to be its own class to adjust the width.
-        """
-        msg_box = QtWidgets.QMessageBox(self)
-        msg_box.setText(message_text)
-        msg_box.setStandardButtons(QtWidgets.QMessageBox.Ok)
-        msg_box.setIcon(QtWidgets.QMessageBox.NoIcon)
-        # msg_box.setBaseSize(QtCore.QSize(1950, 120))
-
-        # Set the width if provided
-        if width:
-            pass
-            # msg_box.resize(width, msg_box.sizeHint().height())
-            # msg_box.setFixedSize(width, msg_box.sizeHint().height())
-
-        loop = asyncio.get_event_loop()
-        future = loop.create_future()
-
-        def on_finished(button):
-            future.set_result(button)
-
-        msg_box.buttonClicked.connect(on_finished)
-        msg_box.show()
-
-        await future
-
-        return msg_box.standardButton(future.result())
     
 
     def writeSigMF(self, filepath, sigmf_dict):
@@ -1093,138 +1033,6 @@ class Dashboard(QtWidgets.QMainWindow):
         self.close()
 
 
-    def hardwareDisplayName(self, hardware_type, sensor_node, component, index):
-        """Returns a display name for comboboxes based on provided sensor node hardware information."""
-        # Return Display Name Based on Type
-        get_hardware_name = ""
-        if hardware_type == "Computer":
-            get_hardware_name = hardware_type
-        elif hardware_type == "USRP X3x0":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][5]
-        elif hardware_type == "USRP B2x0":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][3]
-        elif hardware_type == "HackRF":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][3]
-        elif hardware_type == "RTL2832U":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][3]
-        elif hardware_type == "802.11x Adapter":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][4]
-        elif hardware_type == "USRP B20xmini":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][3]
-        elif hardware_type == "LimeSDR":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][3]
-        elif hardware_type == "bladeRF":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][3]
-        elif hardware_type == "Open Sniffer":
-            get_hardware_name = hardware_type
-        elif hardware_type == "PlutoSDR":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][5]
-        elif hardware_type == "USRP2":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][5]
-        elif hardware_type == "USRP N2xx":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][5]
-        elif hardware_type == "bladeRF 2.0":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][3]
-        elif hardware_type == "USRP X410":
-            get_hardware_name = hardware_type + " - " + self.backend.settings[sensor_node][component][index][5]
-        else:
-            get_hardware_name = "UNKNOWN HARDWARE"
-
-        return get_hardware_name
-
-
-    def hardwareDisplayNameLookup(self, display_name, component):
-        """Takes in a hardware display name and returns all the sensor node hardware information"""
-        # Return Saved Hardware Information
-        hardware_type = display_name.split(" - ")[0]
-        try:
-            second_value = display_name.split(" - ")[1]
-        except:
-            second_value = ""
-
-        if len(second_value) > 0:
-            get_sensor_node = ["sensor_node1", "sensor_node2", "sensor_node3", "sensor_node4", "sensor_node5"]
-            sensor_node = get_sensor_node[self.active_sensor_node]
-            get_index = 0
-            for n in range(0, len(self.backend.settings[sensor_node][component])):
-                if hardware_type == "Computer":
-                    if second_value == "":  # todo
-                        get_index = n
-                        break
-                elif hardware_type == "USRP X3x0":
-                    if second_value == self.backend.settings[sensor_node][component][n][5]:
-                        get_index = n
-                        break
-                elif hardware_type == "USRP B2x0":
-                    if second_value == self.backend.settings[sensor_node][component][n][3]:
-                        get_index = n
-                        break
-                elif hardware_type == "HackRF":
-                    if second_value == self.backend.settings[sensor_node][component][n][3]:
-                        get_index = n
-                        break
-                elif hardware_type == "RTL2832U":
-                    if second_value == self.backend.settings[sensor_node][component][n][3]:
-                        get_index = n
-                        break
-                elif hardware_type == "802.11x Adapter":
-                    if second_value == self.backend.settings[sensor_node][component][n][4]:
-                        get_index = n
-                        break
-                elif hardware_type == "USRP B20xmini":
-                    if second_value == self.backend.settings[sensor_node][component][n][3]:
-                        get_index = n
-                        break
-                elif hardware_type == "LimeSDR":
-                    if second_value == self.backend.settings[sensor_node][component][n][3]:
-                        get_index = n
-                        break
-                elif hardware_type == "bladeRF":
-                    if second_value == self.backend.settings[sensor_node][component][n][3]:
-                        get_index = n
-                        break
-                elif hardware_type == "Open Sniffer":
-                    if second_value == "":  # todo
-                        get_index = n
-                        break
-                elif hardware_type == "PlutoSDR":
-                    if second_value == self.backend.settings[sensor_node][component][n][5]:
-                        get_index = n
-                        break
-                elif hardware_type == "USRP2":
-                    if second_value == self.backend.settings[sensor_node][component][n][5]:
-                        get_index = n
-                        break
-                elif hardware_type == "USRP N2xx":
-                    if second_value == self.backend.settings[sensor_node][component][n][5]:
-                        get_index = n
-                        break
-                elif hardware_type == "bladeRF 2.0":
-                    if second_value == self.backend.settings[sensor_node][component][n][3]:
-                        get_index = n
-                        break
-                elif hardware_type == "USRP X410":
-                    if second_value == self.backend.settings[sensor_node][component][n][5]:
-                        get_index = n
-                        break
-                else:
-                    pass
-
-            # Return All Saved Values
-            ret_type = self.backend.settings[sensor_node][component][get_index][0]
-            ret_uid = self.backend.settings[sensor_node][component][get_index][1]
-            ret_radio_name = self.backend.settings[sensor_node][component][get_index][2]
-            ret_serial = self.backend.settings[sensor_node][component][get_index][3]
-            ret_interface = self.backend.settings[sensor_node][component][get_index][4]
-            ret_ip = self.backend.settings[sensor_node][component][get_index][5]
-            ret_daughterboard = self.backend.settings[sensor_node][component][get_index][6]
-
-            return [ret_type, ret_uid, ret_radio_name, ret_serial, ret_interface, ret_ip, ret_daughterboard]
-
-        else:
-            return ["", "", "", "", "", "", ""]
-
-
     def configureTSI_Hardware(self, node_number):
         """
         Configures TSI after new sensor node selection.
@@ -1238,7 +1046,7 @@ class Dashboard(QtWidgets.QMainWindow):
             get_sensor_node = ["sensor_node1", "sensor_node2", "sensor_node3", "sensor_node4", "sensor_node5"]
             for n in range(0, len(self.backend.settings[get_sensor_node[node_number]]["tsi"])):
                 get_type = self.backend.settings[get_sensor_node[node_number]]["tsi"][n][0]
-                get_hardware_name = self.hardwareDisplayName(get_type, get_sensor_node[node_number], "tsi", n)
+                get_hardware_name = fissure.utils.hardware.hardwareDisplayName(self, get_type, get_sensor_node[node_number], "tsi", n)
                 get_sensor_node_hardware.append(get_hardware_name)
             self.ui.comboBox_tsi_detector_sweep_hardware.addItems(get_sensor_node_hardware)
             self.ui.comboBox_tsi_detector_fixed_hardware.addItems(get_sensor_node_hardware)
@@ -1259,7 +1067,7 @@ class Dashboard(QtWidgets.QMainWindow):
             get_sensor_node = ["sensor_node1", "sensor_node2", "sensor_node3", "sensor_node4", "sensor_node5"]
             for n in range(0, len(self.backend.settings[get_sensor_node[node_number]]["pd"])):
                 get_type = self.backend.settings[get_sensor_node[node_number]]["pd"][n][0]
-                get_hardware_name = self.hardwareDisplayName(get_type, get_sensor_node[node_number], "pd", n)
+                get_hardware_name = fissure.utils.hardware.hardwareDisplayName(self, get_type, get_sensor_node[node_number], "pd", n)
                 get_sensor_node_hardware.append(get_hardware_name)
             self.ui.comboBox_pd_demod_hardware.addItems(get_sensor_node_hardware)
 
@@ -1279,7 +1087,7 @@ class Dashboard(QtWidgets.QMainWindow):
             get_sensor_node = ["sensor_node1", "sensor_node2", "sensor_node3", "sensor_node4", "sensor_node5"]
             for n in range(0, len(self.backend.settings[get_sensor_node[node_number]]["attack"])):
                 get_type = self.backend.settings[get_sensor_node[node_number]]["attack"][n][0]
-                get_hardware_name = self.hardwareDisplayName(get_type, get_sensor_node[node_number], "attack", n)
+                get_hardware_name = fissure.utils.hardware.hardwareDisplayName(self, get_type, get_sensor_node[node_number], "attack", n)
                 get_sensor_node_hardware.append(get_hardware_name)
             self.ui.comboBox_attack_hardware.addItems(get_sensor_node_hardware)
             if len(get_sensor_node_hardware) > 0:
@@ -1300,7 +1108,7 @@ class Dashboard(QtWidgets.QMainWindow):
             get_sensor_node = ["sensor_node1", "sensor_node2", "sensor_node3", "sensor_node4", "sensor_node5"]
             for n in range(0, len(self.backend.settings[get_sensor_node[node_number]]["archive"])):
                 get_type = self.backend.settings[get_sensor_node[node_number]]["archive"][n][0]
-                get_hardware_name = self.hardwareDisplayName(get_type, get_sensor_node[node_number], "archive", n)
+                get_hardware_name = fissure.utils.hardware.hardwareDisplayName(self, get_type, get_sensor_node[node_number], "archive", n)
                 get_sensor_node_hardware.append(get_hardware_name)
             self.ui.comboBox_iq_record_hardware.addItems(get_sensor_node_hardware)
             self.ui.comboBox_iq_playback_hardware.addItems(get_sensor_node_hardware)
@@ -1319,7 +1127,7 @@ class Dashboard(QtWidgets.QMainWindow):
             get_sensor_node = ["sensor_node1", "sensor_node2", "sensor_node3", "sensor_node4", "sensor_node5"]
             for n in range(0, len(self.backend.settings[get_sensor_node[node_number]]["archive"])):
                 get_type = self.backend.settings[get_sensor_node[node_number]]["archive"][n][0]
-                get_hardware_name = self.hardwareDisplayName(get_type, get_sensor_node[node_number], "archive", n)
+                get_hardware_name = fissure.utils.hardware.hardwareDisplayName(self, get_type, get_sensor_node[node_number], "archive", n)
                 get_sensor_node_hardware.append(get_hardware_name)
             self.ui.comboBox_archive_replay_hardware.addItems(get_sensor_node_hardware)
 
@@ -1530,18 +1338,6 @@ class Dashboard(QtWidgets.QMainWindow):
         #     QtCore.Qt.AlignCenter | QtCore.Qt.AlignVCenter
         # )  # Centering item text is difficult
 
-
-    def errorMessage(self, message_text):
-        """
-        Creates a popup window with an error message.
-        """
-        # Create the Message Box
-        msgBox = QtWidgets.QMessageBox()
-        msgBox.setText(message_text)
-        msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
-        msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
-        msgBox.exec_()
-
     
     def colnum_string(self, n):
         """ 
@@ -1649,194 +1445,6 @@ class Dashboard(QtWidgets.QMainWindow):
                 crc_acc = (crc_acc >> 1) ^ (crc_poly & mask)
 
         return crc_acc
-
-
-    def checkFrequencyBounds(self, get_frequency, get_hardware, get_daughterboard):
-        """ Returns True or False if the frequency is within the bounds of the hardware. Move to utils?
-        """
-        if get_hardware == "Computer":
-            # Frequency Limits
-            if (get_frequency >= 1) and (get_frequency <= 6000):
-                return True
-
-        elif get_hardware == "USRP X3x0":
-            # Frequency Limits
-            if get_daughterboard == "CBX-120":
-                if (get_frequency >= 1200) and (get_frequency <= 6000):
-                    return True
-            elif get_daughterboard == "SBX-120":
-                if (get_frequency >= 400) and (get_frequency <= 4400):
-                    return True
-            elif get_daughterboard == "UBX-160":
-                if (get_frequency >= 10) and (get_frequency <= 6000):
-                    return True
-            elif get_daughterboard == "WBX-120":
-                if (get_frequency >= 25) and (get_frequency <= 2200):
-                    return True
-            elif get_daughterboard == "TwinRX":
-                if (get_frequency >= 10) and (get_frequency <= 6000):
-                    return True
-
-        elif get_hardware == "USRP B2x0":
-            # Frequency Limits
-            if (get_frequency >= 70) and (get_frequency <= 6000):
-                return True
-
-        elif get_hardware == "HackRF":
-            # Frequency Limits
-            if (get_frequency >= 1) and (get_frequency <= 6000):
-                return True
-
-        elif get_hardware == "RTL2832U":
-            # Frequency Limits
-            if (get_frequency >= 64) and (get_frequency <= 1700):
-                return True
-
-        elif get_hardware == "802.11x Adapter":
-            # Frequency Limits
-            if (get_frequency >= 1) and (get_frequency <= 6000):
-                return True
-
-        elif get_hardware == "USRP B20xmini":
-            # Frequency Limits
-            if (get_frequency >= 70) and (get_frequency <= 6000):
-                return True
-
-        elif get_hardware == "LimeSDR":
-            # Frequency Limits
-            if (get_frequency >= 1) and (get_frequency <= 3800):
-                return True
-
-        elif get_hardware == "bladeRF":
-            # Frequency Limits
-            if (get_frequency >= 280) and (get_frequency <= 3800):
-                return True
-
-        elif get_hardware == "Open Sniffer":
-            # Frequency Limits
-            if (get_frequency >= 1) and (get_frequency <= 6000):
-                return True
-
-        elif get_hardware == "PlutoSDR":
-            # Frequency Limits
-            if (get_frequency >= 325) and (get_frequency <= 3800):
-                return True
-
-        elif get_hardware == "USRP2":
-            # Frequency Limits
-            if get_daughterboard == "XCVR2450":
-                if (get_frequency >= 2400) and (get_frequency <= 6000):
-                    return True
-            elif get_daughterboard == "DBSRX":
-                if (get_frequency >= 800) and (get_frequency <= 2300):
-                    return True
-            elif get_daughterboard == "SBX-40":
-                if (get_frequency >= 400) and (get_frequency <= 4400):
-                    return True
-            elif get_daughterboard == "UBX-40":
-                if (get_frequency >= 10) and (get_frequency <= 6000):
-                    return True
-            elif get_daughterboard == "WBX-40":
-                if (get_frequency >= 50) and (get_frequency <= 2200):
-                    return True
-            elif get_daughterboard == "CBX-40":
-                if (get_frequency >= 1200) and (get_frequency <= 6000):
-                    return True
-            elif get_daughterboard == "LFRX":
-                if (get_frequency >= 0) and (get_frequency <= 30):
-                    return True
-            elif get_daughterboard == "LFTX":
-                if (get_frequency >= 0) and (get_frequency <= 30):
-                    return True
-            elif get_daughterboard == "BasicRX":
-                if (get_frequency >= 1) and (get_frequency <= 250):
-                    return True
-            elif get_daughterboard == "BasicTX":
-                if (get_frequency >= 1) and (get_frequency <= 250):
-                    return True
-            elif get_daughterboard == "TVRX2":
-                if (get_frequency >= 50) and (get_frequency <= 860):
-                    return True
-            elif get_daughterboard == "RFX400":
-                if (get_frequency >= 400) and (get_frequency <= 500):
-                    return True
-            elif get_daughterboard == "RFX900":
-                if (get_frequency >= 750) and (get_frequency <= 1050):
-                    return True
-            elif get_daughterboard == "RFX1200":
-                if (get_frequency >= 1150) and (get_frequency <= 1450):
-                    return True
-            elif get_daughterboard == "RFX1800":
-                if (get_frequency >= 1500) and (get_frequency <= 2100):
-                    return True
-            elif get_daughterboard == "RFX2400":
-                if (get_frequency >= 2300) and (get_frequency <= 2900):
-                    return True
-
-        elif get_hardware == "USRP N2xx":
-            # Frequency Limits
-            if get_daughterboard == "XCVR2450":
-                if (get_frequency >= 2400) and (get_frequency <= 6000):
-                    return True
-            elif get_daughterboard == "DBSRX":
-                if (get_frequency >= 800) and (get_frequency <= 2300):
-                    return True
-            elif get_daughterboard == "SBX-40":
-                if (get_frequency >= 400) and (get_frequency <= 4400):
-                    return True
-            elif get_daughterboard == "UBX-40":
-                if (get_frequency >= 10) and (get_frequency <= 6000):
-                    return True
-            elif get_daughterboard == "WBX-40":
-                if (get_frequency >= 50) and (get_frequency <= 2200):
-                    return True
-            elif get_daughterboard == "CBX-40":
-                if (get_frequency >= 1200) and (get_frequency <= 6000):
-                    return True
-            elif get_daughterboard == "LFRX":
-                if (get_frequency >= 0) and (get_frequency <= 30):
-                    return True
-            elif get_daughterboard == "LFTX":
-                if (get_frequency >= 0) and (get_frequency <= 30):
-                    return True
-            elif get_daughterboard == "BasicRX":
-                if (get_frequency >= 1) and (get_frequency <= 250):
-                    return True
-            elif get_daughterboard == "BasicTX":
-                if (get_frequency >= 1) and (get_frequency <= 250):
-                    return True
-            elif get_daughterboard == "TVRX2":
-                if (get_frequency >= 50) and (get_frequency <= 860):
-                    return True
-            elif get_daughterboard == "RFX400":
-                if (get_frequency >= 400) and (get_frequency <= 500):
-                    return True
-            elif get_daughterboard == "RFX900":
-                if (get_frequency >= 750) and (get_frequency <= 1050):
-                    return True
-            elif get_daughterboard == "RFX1200":
-                if (get_frequency >= 1150) and (get_frequency <= 1450):
-                    return True
-            elif get_daughterboard == "RFX1800":
-                if (get_frequency >= 1500) and (get_frequency <= 2100):
-                    return True
-            elif get_daughterboard == "RFX2400":
-                if (get_frequency >= 2300) and (get_frequency <= 2900):
-                    return True
-
-        elif get_hardware == "bladeRF 2.0":
-            # Frequency Limits
-            if (get_frequency >= 47) and (get_frequency <= 6000):
-                return True
-
-        elif get_hardware == "USRP X410":
-            # Frequency Limits
-            if get_daughterboard == "ZBX":
-                if (get_frequency >= 1) and (get_frequency <= 7200):
-                    return True
-
-        # Not in Bounds
-        return False
     
 
     def populateAttackTreeWidget(self):
@@ -1889,17 +1497,6 @@ class Dashboard(QtWidgets.QMainWindow):
                     item.setFont(0, QtGui.QFont("Times", 11, QtGui.QFont.Bold))
             iterator += 1
     
-
-    def isFloat(self, x):
-        """
-        Returns "True" if the input is a Float. Returns "False" otherwise. Move this function to another file?
-        """
-        try:
-            float(x)
-        except ValueError:
-            return False
-        return True
-
 
 class DashboardScreen(UI_Types.Dashboard):
     def setupUi(self, dashboardWidget: QtWidgets.QWidget, dashboardFrontend: QtCore.QObject):

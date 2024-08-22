@@ -834,6 +834,16 @@ async def probe(HWSelect: QtCore.QObject):
     ]
     scan_results_labels[tab_index].setVisible(True)
 
+    # Disable Probe Button
+    probe_buttons = [
+        HWSelect.pushButton_scan_results_probe_1,
+        HWSelect.pushButton_scan_results_probe_2,
+        HWSelect.pushButton_scan_results_probe_3,
+        HWSelect.pushButton_scan_results_probe_4,
+        HWSelect.pushButton_scan_results_probe_5
+    ]
+    probe_buttons[tab_index].setEnabled(False)
+
     # Send Message for HIPRFISR to Sensor Node Connections
     await HWSelect.dashboard.backend.probe_sensor_node(str(tab_index), get_row_text)
 
@@ -1699,10 +1709,10 @@ async def ping(HWSelect: QtCore.QObject):
     response = os.system("ping -c 1 " + get_ip)
     if response == 0:
         HWSelect.dashboard.logger.info(get_ip + " is up!")
-        ret = await HWSelect.dashboard.ask_confirmation_ok(get_ip + " is up!")
+        ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(HWSelect.dashboard, get_ip + " is up!")
     else:
         HWSelect.dashboard.logger.info(get_ip + " is down!")
-        ret = await HWSelect.dashboard.ask_confirmation_ok(get_ip + " is down!")
+        ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(HWSelect.dashboard, get_ip + " is down!")
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -1757,7 +1767,7 @@ async def connect(HWSelect: QtCore.QObject):
     get_sensor_node = ["sensor_node1", "sensor_node2", "sensor_node3", "sensor_node4", "sensor_node5"]
     for n in range(0, len(get_sensor_node)):
         if (get_ip == HWSelect.dashboard.backend.settings[get_sensor_node[n]]["ip_address"]) and (n != tab_index):
-            ret = await HWSelect.dashboard.ask_confirmation_ok("IP address already in use.")
+            ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(HWSelect.dashboard, "IP address already in use.")
             return
 
     # Disable Buttons
@@ -1955,24 +1965,24 @@ def apply(HWSelect: QtCore.QObject):
             # Check for Valid Values Before Saving
             if local_button.isChecked() is False:
                 if len(nickname_widget.toPlainText()) == 0:
-                    HWSelect.dashboard.errorMessage("Enter a nickname for the remote sensor node.")
+                    fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a nickname for the remote sensor node.")
                     return
                 if len(ip_addr_widget.toPlainText()) == 0:
-                    HWSelect.dashboard.errorMessage("Enter an IP Address for the remote sensor node.")
+                    fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter an IP Address for the remote sensor node.")
                     return
                 if len(msg_port_widget.toPlainText()) == 0:
-                    HWSelect.dashboard.errorMessage("Enter a message port for the remote sensor node.")
+                    fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a message port for the remote sensor node.")
                     return
                 if len(hb_port_widget.toPlainText()) == 0:
-                    HWSelect.dashboard.errorMessage("Enter a heartbeat port for the remote sensor node.")
+                    fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a heartbeat port for the remote sensor node.")
                     return
                 get_msg_port = msg_port_widget.toPlainText()
                 if not (get_msg_port.isdigit() and 1 <= int(get_msg_port) <= 65535):
-                    HWSelect.dashboard.errorMessage("Enter a valid message port (1-65535).")
+                    fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a valid message port (1-65535).")
                     return
                 get_hb_port = hb_port_widget.toPlainText()
                 if not (get_hb_port.isdigit() and 1 <= int(get_hb_port) <= 65535):
-                    HWSelect.dashboard.errorMessage("Enter a valid heartbeat port (1-65535).")
+                    fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter a valid heartbeat port (1-65535).")
                     return
 
             # TSI Default Hardware Assignments
