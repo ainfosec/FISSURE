@@ -36,7 +36,8 @@ GR_PYTHON_INSTALL(
     UDP_to_Wireshark.py
     UDP_to_Wireshark_Async.py
     adsb_parser.py
-    msg_str_to_PUB.py DESTINATION ${GR_PYTHON_DIR}/ainfosec
+    msg_str_to_PUB.py
+    ook_generator.py DESTINATION ${GR_PYTHON_DIR}/ainfosec
 )
 
 ########################################################################

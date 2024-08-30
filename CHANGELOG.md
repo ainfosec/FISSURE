@@ -1,6 +1,23 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-08-29
+
+Fixing Add to Library button and multi-stage attack buttons.
+
+### Added
+
+- General sleep attack (Computer) for better control in playlists
+- Other attack tree category
+
+### Fixed
+
+- Added Duration and Filename columns to Multi-Stage Up/Down buttons
+- Fixed backend errors in Dashboard callbacks when Add to Library is clicked in Library tab
+- Replaced synchronous error messages with asynchronous messages in LibraryTabSlots.py
+- Parsing Attack tab Hardware combobox no longer breaks on hardware text without identifiers (Computer)
+- Adding missing ook_generator GNU Radio block for maint-3.8/gr-ainfosec (still need to make maint-3.10 block) and General OOK Transmit attack flow graph
+
 ## 2024-08-22
 
 Moving utility functions out of frontend code.

@@ -472,7 +472,7 @@ def _slotAttackImportAttackTypeChanged(dashboard: QtCore.QObject):
     # Add New Items
     dashboard.ui.comboBox_library_attacks_subcategory.clear()
     if dashboard.ui.comboBox_library_attacks_attack_type.currentText() == "Single-Stage":
-        dashboard.ui.comboBox_library_attacks_subcategory.addItems(["Denial of Service","Jamming","Spoofing","Sniffing/Snooping","Probe Attacks","Installation of Malware","Misuse of Resources"])
+        dashboard.ui.comboBox_library_attacks_subcategory.addItems(["Denial of Service", "Jamming", "Spoofing", "Sniffing/Snooping", "Probe Attacks", "Installation of Malware", "Misuse of Resources", "Other"])
         dashboard.ui.label2_library_attacks_new_name.setHidden(False)
         dashboard.ui.label2_library_attacks_new_name2.setHidden(False)
         dashboard.ui.textEdit_library_attacks_new_name.setHidden(False)
@@ -875,7 +875,7 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
 
         # Empty or Duplicate
         if (len(protocol_name) == 0) or (protocol_name in protocols):
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter valid protocol name.")
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Enter valid protocol name.")
             return
     else:
         protocol_name = str(dashboard.ui.comboBox_library_pd_protocol.currentText())
@@ -887,7 +887,7 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
 
         # Empty or Duplicate
         if (len(get_modulation) == 0) or (get_modulation in modulation_types):
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter valid modulation type.")
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Enter valid modulation type.")
             return
 
     # Packet Type
@@ -898,13 +898,13 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
 
         # Empty or Duplicate
         if (len(new_packet_name) == 0) or (new_packet_name in packet_types):
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter valid packet name.")
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Enter valid packet name.")
             return
 
         else:
             # Check for Content
             if dashboard.ui.tableWidget_library_pd_packet.rowCount() == 0:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("The number of fields cannot be zero.")
+                fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "The number of fields cannot be zero.")
                 return
             else:
                 # Get Packet Data
@@ -918,7 +918,7 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
                     if set(check_default_values).issubset({'0','1',' '}) and bool(check_default_values):
                         get_packet_data[row].append(check_default_values)
                     else:
-                        fissure.Dashboard.UI_Components.Qt5.errorMessage("Default values must be binary: 1010 0010 1111...")
+                        fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Default values must be binary: 1010 0010 1111...")
                         return
 
                     get_packet_data[row].append(str(dashboard.ui.tableWidget_library_pd_packet.cellWidget(row,3).currentText()))
@@ -928,7 +928,7 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
     elif dashboard.ui.stackedWidget2_library_pd.currentIndex() == 3:
         # Must Have Subtype/Label
         if len(str(dashboard.ui.textEdit_library_pd_soi_subtype.toPlainText()).replace(" ","")) == 0:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Requires Subtype/Label")
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Requires Subtype/Label")
             return
 
         get_soi_data.append(str(dashboard.ui.textEdit_library_pd_soi_frequency.toPlainText()))
@@ -963,10 +963,10 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
 
         # Invalid Demodulation Flow Graph
         if get_demodulation_fg == "":
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Enter valid demodulation flow graph filepath.")
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Enter valid demodulation flow graph filepath.")
             return
         if get_demodulation_type == "":
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Add modulation type for demodulation flow graph.")
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Add modulation type for demodulation flow graph.")
             return
 
         # Add .py and .grc to "PD Flow Graphs"
@@ -977,7 +977,7 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
             # Check for Duplicate
             demod_fg_exists = os.path.exists(os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "PD Flow Graphs", get_demodulation_fg))
             if demod_fg_exists:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("Duplicate demodulation flow graph name")
+                fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Duplicate demodulation flow graph name")
                 return
 
             shutil.copy(demod_py_filepath, os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "PD Flow Graphs", get_demodulation_fg))
@@ -987,7 +987,7 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
             demod_grc_filepath = demod_py_filepath.replace('.py','.grc')
             shutil.copy(demod_grc_filepath, os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "PD Flow Graphs", demod_grc_file))
         except:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("New demodulation flow graph requires a valid .py and .grc file with the same name.")
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "New demodulation flow graph requires a valid .py and .grc file with the same name.")
             return
 
     # Attack
@@ -1004,17 +1004,17 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
 
         # Invalid Filepath
         if len(get_filepath) == 0:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage('Select attack file.')
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, 'Select attack file.')
             return
 
         # Invalid Attack Template Name
         if len(get_attack_name) == 0:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage('Enter new attack template name.')
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, 'Enter new attack template name.')
             return
 
         # Invalid Attack Name
         if len(get_new_filename) == 0:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage('Enter new attack name.')
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, 'Enter new attack name.')
             return
 
         # Format Filepath
@@ -1030,7 +1030,7 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
             get_new_filename = get_filepath.rsplit("/",1)[-1]
             attack_type = "Multi-Stage"
         else:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage('Attack needs to end with ".py" or ".msa"')
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, 'Attack needs to end with ".py" or ".msa"')
             return
 
         # Get Protocols and Modulation Types
@@ -1042,7 +1042,7 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
 
             # No Modulation Type
             if len(get_modulation[0]) == 0:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage('Requires modulation type.')
+                fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, 'Requires modulation type.')
                 return
 
         # elif attack_type == "Multi-Stage":
@@ -1059,7 +1059,7 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
 
         # Check if File Already Exists
         if os.path.isfile(os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "Single-Stage Flow Graphs", get_new_filename)):
-            fissure.Dashboard.UI_Components.Qt5.errorMessage('File already exists in "Single-Stage Flow Graphs" folder.')
+            fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, 'File already exists in "Single-Stage Flow Graphs" folder.')
             return
         else:
             # Check if Attack Already Exists for the Protocol, Modulation, and Hardware Combination
@@ -1097,7 +1097,7 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
                     #if n.split(",")[0] == get_attack_name.replace("_"," "):
                         #tree_widget_attack_exists = True
                 #if tree_widget_attack_exists == True:
-                        #fissure.Dashboard.UI_Components.Qt5.errorMessage("Warning: Attack already exists in Tree Widget")
+                        #fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Warning: Attack already exists in Tree Widget")
                         #no_errors = False
 
                 # Send Message to Protocol Discovery to Update Library
@@ -1112,14 +1112,14 @@ async def _slotLibraryAddAddToLibrary_Clicked(dashboard: QtCore.QObject):
                     shutil.copy(get_filepath.replace(".py",".grc"), os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "Single-Stage Flow Graphs", get_new_filename.replace(".py",".grc")))
 
                 # Success Message and Reset Fields
-                #fissure.Dashboard.UI_Components.Qt5.errorMessage("Imported Successfully!")  # Needs to happen on component return message
+                #fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Imported Successfully!")  # Needs to happen on component return message
                 dashboard.ui.label_library_attacks_filepath.setText("")
                 dashboard.ui.textEdit_library_attacks_name.setText("")
                 dashboard.ui.textEdit_library_attacks_new_name.setText("")
 
             # Attack Already Exists for the Protocol
             else:
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("Attack name already exists for this protocol/modulation/hardware combination.")
+                fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Attack name already exists for this protocol/modulation/hardware combination.")
                 return
         return
 

@@ -1190,6 +1190,7 @@ Attack Categories:
 - Installation of Malware
 - Misuse of Resources
 - File
+- Other
 Attacks:
      Fuzzing Attacks:
      - Fuzzing,0
@@ -1287,6 +1288,7 @@ Attacks:
      - SimpliciTI - Add Node,2
      - SimpliciTI - Unlink Node,2
      - Sniffing/Snooping,1
+     - Mode S - gr-adsb To Webserver,2
      - Mode S - gr-adsb Webserver,2
      - Mode S - gr-adsb Verbose,2
      - Mode S - gr-adsb Brief,2
@@ -4373,6 +4375,11 @@ Protocols:
                          Hardware:
                               USRP B2x0:
                                    Flow Graph: General_OOK_USRPB210_OOK_Transmit.py
+               General - Sleep:
+                    General:
+                         Hardware:
+                              Computer:
+                                   Python3 Script: General_General_Computer_Sleep.py
           Modulation Types:
           - General
           - OOK
@@ -4449,6 +4456,11 @@ Protocols:
                                    Python3 Script: Mode_S_PPM_Computer_stdout_brief_script.py
                               USRP B2x0:
                                    Python3 Script: Mode_S_PPM_USRPB210_stdout_brief_script.py
+               Mode S - gr-adsb To Webserver:
+                    PPM:
+                         Hardware:
+                              USRP B2x0:
+                                   Python3 Script: Mode_S_PPM_USRPB210_stdout_webserver_script.py
                Mode S - gr-adsb Verbose:
                     PPM:
                          Hardware:

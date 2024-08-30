@@ -1190,6 +1190,7 @@ Attack Categories:
 - Installation of Malware
 - Misuse of Resources
 - File
+- Other
 Attacks:
      Fuzzing Attacks:
      - Fuzzing,0
@@ -1324,6 +1325,8 @@ Attacks:
      - 802.11x - TP-Link Archer A7 Exploit,2
      - SQL Injection,2
      - Misuse of Resources,1
+     - Other,1
+     - General - Sleep,2
 Inspection Flow Graphs:
      802.11x Adapter:
      - None
@@ -4367,6 +4370,11 @@ Protocols:
                          Hardware:
                               USRP B2x0:
                                    Flow Graph - GUI: General_General_USRPB210_IF.py
+               General - Sleep:
+                    General:
+                         Hardware:
+                              Computer:
+                                   Python3 Script: General_General_Computer_Sleep.py                                   
           Modulation Types:
           - General
           Null Placeholder: null

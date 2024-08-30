@@ -1677,7 +1677,9 @@ def _slotAttackProtocols(dashboard: QtCore.QObject):
 
         # Enable the Selections
         get_attacks = dashboard.backend.library["Protocols"][current_protocol]["Attacks"]
-        get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText()).split(' - ')[0]
+        get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText())
+        if ' - ' in get_hardware:
+            get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText()).split(' - ')[0]
         for n in get_attacks:
             if current_modulation in dashboard.backend.library["Protocols"][current_protocol]["Attacks"][n]:
                 if get_hardware in dashboard.backend.library["Protocols"][current_protocol]["Attacks"][n][current_modulation]["Hardware"]:
@@ -1821,7 +1823,9 @@ def _slotAttackModulationChanged(dashboard: QtCore.QObject):
 
             # Enable the Selections
             get_attacks = dashboard.backend.library["Protocols"][current_protocol]["Attacks"]
-            get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText()).split(' - ')[0]
+            get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText())
+            if ' - ' in get_hardware:
+                get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText()).split(' - ')[0]
 
             for n in get_attacks:
                 if current_modulation in dashboard.backend.library["Protocols"][current_protocol]["Attacks"][n]:
@@ -2105,7 +2109,7 @@ def _slotAttackMultiStageAdd(dashboard: QtCore.QObject):
     ignored_attacks = []
     for n in dashboard.backend.library["Attacks"]["Multi-Stage Attacks"] + dashboard.backend.library["Attacks"]["Fuzzing Attacks"]:
         ignored_attacks.append(n)
-    categories = ["Single-Stage","Denial of Service","Jamming","Spoofing","Sniffing/Snooping","Probe Attacks","File","Installation of Malware"]  # Might need a way to detect categories
+    categories = ["Single-Stage", "Denial of Service", "Jamming", "Spoofing", "Sniffing/Snooping", "Probe Attacks", "File", "Installation of Malware", "Other"]  # Might need a way to detect categories
     ignored_attacks += categories
     if any(str(new_attack) in x for x in ignored_attacks):
         pass
@@ -2137,7 +2141,9 @@ def _slotAttackMultiStageAdd(dashboard: QtCore.QObject):
 
             # Hardware
             get_hardware_full = str(dashboard.ui.comboBox_attack_hardware.currentText())
-            get_hardware = get_hardware_full.split(' - ')[0]
+            get_hardware = get_hardware_full
+            if ' - ' in get_hardware:
+                get_hardware = get_hardware_full.split(' - ')[0]
             hardware_item = QtWidgets.QTableWidgetItem(get_hardware_full)
             hardware_item.setTextAlignment(QtCore.Qt.AlignCenter)
             hardware_item.setFlags(hardware_item.flags() & ~QtCore.Qt.ItemIsEditable)
@@ -2202,6 +2208,8 @@ def _slotAttackMultiStageUpClicked(dashboard: QtCore.QObject):
         above_item2 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,2)
         above_item3 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,3)
         above_item4 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,4)
+        above_item5 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,5)
+        above_item6 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,6)
 
         # Take the Current Row
         current_item0 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),0)
@@ -2209,6 +2217,8 @@ def _slotAttackMultiStageUpClicked(dashboard: QtCore.QObject):
         current_item2 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),2)
         current_item3 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),3)
         current_item4 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),4)
+        current_item5 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),5)
+        current_item6 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),6)
 
         # Set the Current Row
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),0,above_item0)
@@ -2216,6 +2226,8 @@ def _slotAttackMultiStageUpClicked(dashboard: QtCore.QObject):
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),2,above_item2)
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),3,above_item3)
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),4,above_item4)
+        dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),5,above_item5)
+        dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),6,above_item6)
 
         # Set the Row Above
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,0,current_item0)
@@ -2223,6 +2235,8 @@ def _slotAttackMultiStageUpClicked(dashboard: QtCore.QObject):
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,2,current_item2)
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,3,current_item3)
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,4,current_item4)
+        dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,5,current_item5)
+        dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,6,current_item6)
 
         # Change the Selected Row
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setCurrentCell(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()-1,0)
@@ -2247,6 +2261,8 @@ def _slotAttackMultiStageDownClicked(dashboard: QtCore.QObject):
         below_item2 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,2)
         below_item3 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,3)
         below_item4 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,4)
+        below_item5 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,5)
+        below_item6 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,6)
 
         # Take the Current Row
         current_item0 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),0)
@@ -2254,6 +2270,8 @@ def _slotAttackMultiStageDownClicked(dashboard: QtCore.QObject):
         current_item2 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),2)
         current_item3 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),3)
         current_item4 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),4)
+        current_item5 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),5)
+        current_item6 = dashboard.ui.tableWidget_attack_multi_stage_attacks.takeItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),6)
 
         # Set the Current Row
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),0,below_item0)
@@ -2261,6 +2279,8 @@ def _slotAttackMultiStageDownClicked(dashboard: QtCore.QObject):
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),2,below_item2)
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),3,below_item3)
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),4,below_item4)
+        dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),5,below_item5)
+        dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow(),6,below_item6)
 
         # Set the Row Above
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,0,current_item0)
@@ -2268,6 +2288,8 @@ def _slotAttackMultiStageDownClicked(dashboard: QtCore.QObject):
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,2,current_item2)
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,3,current_item3)
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,4,current_item4)
+        dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,5,current_item5)
+        dashboard.ui.tableWidget_attack_multi_stage_attacks.setItem(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,6,current_item6)
 
         # Change the Selected Row
         dashboard.ui.tableWidget_attack_multi_stage_attacks.setCurrentCell(dashboard.ui.tableWidget_attack_multi_stage_attacks.currentRow()+1,0)
@@ -4033,7 +4055,7 @@ def _slotAttackLoadTemplateClicked(dashboard: QtCore.QObject):
         current_item = dashboard.ui.treeWidget_attack_attacks.currentItem()
 
         # Ignore "No Selection" and Expand Selected Categories
-        categories = ["Single-Stage","Denial of Service","Jamming","Spoofing","Sniffing/Snooping","Probe Attacks","Fuzzing","File","Installation of Malware","Misuse of Resources","Multi-Stage"]
+        categories = ["Single-Stage", "Denial of Service", "Jamming", "Spoofing", "Sniffing/Snooping", "Probe Attacks", "Fuzzing", "File", "Installation of Malware", "Misuse of Resources",  "Other", "Multi-Stage"]
         if any(x == current_item.text(0) for x in categories):
             #dashboard.ui.treeWidget_attack_attacks.expandItem(current_item)  # Disabled to allow double clicking
             pass
@@ -4071,7 +4093,9 @@ def _slotAttackLoadTemplateClicked(dashboard: QtCore.QObject):
                 dashboard.ui.label1_selected_attack.setText(current_item.text(0))
 
                 # Get Filename from the Library
-                get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText()).split(' - ')[0]
+                get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText())
+                if ' - ' in get_hardware:
+                    get_hardware = get_hardware.split(' - ')[0]
                 get_file_type = list(dashboard.backend.library['Protocols'][str(dashboard.ui.comboBox_attack_protocols.currentText())]['Attacks'][str(current_item.text(0))][str(dashboard.ui.comboBox_attack_modulation.currentText())]['Hardware'][get_hardware].keys())[0]
                 fname = dashboard.backend.library['Protocols'][str(dashboard.ui.comboBox_attack_protocols.currentText())]['Attacks'][str(current_item.text(0))][str(dashboard.ui.comboBox_attack_modulation.currentText())]['Hardware'][get_hardware][get_file_type]
 
@@ -4120,7 +4144,9 @@ def _slotAttackLoadTemplateClicked(dashboard: QtCore.QObject):
                 # Saved Multi-Stage Attack
                 else:
                     # Get Filename from the Library
-                    get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText()).split(' - ')[0]
+                    get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText())
+                    if ' - ' in get_hardware:
+                        get_hardware = get_hardware.split(' - ')[0]
                     get_file_type = list(dashboard.backend.library["Protocols"][str(dashboard.ui.comboBox_attack_protocols.currentText())]["Attacks"][str(current_item.text(0))][str(dashboard.ui.comboBox_attack_modulation.currentText())]["Hardware"][get_hardware].keys())[0]
                     fname = dashboard.backend.library["Protocols"][str(dashboard.ui.comboBox_attack_protocols.currentText())]["Attacks"][str(current_item.text(0))][str(dashboard.ui.comboBox_attack_modulation.currentText())]["Hardware"][get_hardware][get_file_type]
                     filepath = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "Single-Stage Flow Graphs", fname)
@@ -4187,7 +4213,9 @@ def _slotAttackLoadTemplateClicked(dashboard: QtCore.QObject):
                     dashboard.ui.label2_attack_fuzzing_selected_attack.setText(current_item.text(0))
 
                     # Get Filename from the Library
-                    get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText()).split(' - ')[0]
+                    get_hardware = str(dashboard.ui.comboBox_attack_hardware.currentText())
+                    if ' - ' in get_hardware:
+                        get_hardware = get_hardware.split(' - ')[0]
                     get_file_type = list(dashboard.backend.library["Protocols"][str(dashboard.ui.comboBox_attack_protocols.currentText())]["Attacks"][str(current_item.text(0))][str(dashboard.ui.comboBox_attack_modulation.currentText())]["Hardware"][get_hardware].keys())[0]
                     fname = dashboard.backend.library["Protocols"][str(dashboard.ui.comboBox_attack_protocols.currentText())]["Attacks"][str(current_item.text(0))][str(dashboard.ui.comboBox_attack_modulation.currentText())]["Hardware"][get_hardware][get_file_type]
 

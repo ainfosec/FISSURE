@@ -762,6 +762,7 @@ class Dashboard(QtWidgets.QMainWindow):
                 "Probe Attacks",
                 "Installation of Malware",
                 "Misuse of Resources",
+                "Other"
             ]
         )
 

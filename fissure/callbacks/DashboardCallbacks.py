@@ -1033,16 +1033,16 @@ async def setFullLibrary(component: object, message=[]):
     Updates the FISSURE library and widgets with the latest library information.
     """
     # Save the Library to the Library Backend
-    component.backend.library = fissure.utils.load_library(component.backend.os_info)
+    component.library = fissure.utils.load_library(component.os_info)
 
     # Refresh Library-Dependent Features
-    protocols = fissure.utils.library.getProtocols(component.backend.library)
+    protocols = fissure.utils.library.getProtocols(component.library)
 
     # Packet Crafter Protocols
     component.frontend.ui.comboBox_packet_protocols.clear()
     protocols_with_packet_types = []
     for p in protocols:
-        if len(fissure.utils.library.getPacketTypes(component.backend.library,p)) > 0:
+        if len(fissure.utils.library.getPacketTypes(component.library,p)) > 0:
             protocols_with_packet_types.append(p)
     component.frontend.ui.comboBox_packet_protocols.addItems(sorted(protocols_with_packet_types))
 
@@ -1059,7 +1059,7 @@ async def setFullLibrary(component: object, message=[]):
     component.frontend.ui.comboBox_attack_protocols.clear()
     protocols_with_attacks = []
     for p in protocols:
-        if len(fissure.utils.library.getAttacks(component.backend.library,p)) > 0:
+        if len(fissure.utils.library.getAttacks(component.library,p)) > 0:
             protocols_with_attacks.append(p)
     component.frontend.ui.comboBox_attack_protocols.addItems(sorted(protocols_with_attacks))
 
@@ -1084,7 +1084,7 @@ async def setFullLibrary(component: object, message=[]):
     component.frontend.ui.comboBox_pd_sniffer_protocols.clear()
     protocols_with_demod_fgs = []
     for p in protocols:
-        if len(fissure.utils.library.getDemodulationFlowGraphs(component.backend.library, p, '', '')) > 0:
+        if len(fissure.utils.library.getDemodulationFlowGraphs(component.library, p, '', '')) > 0:
             protocols_with_demod_fgs.append(p)
     component.frontend.ui.comboBox_pd_sniffer_protocols.addItems(sorted(protocols_with_demod_fgs))
 
