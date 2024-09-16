@@ -101,7 +101,7 @@ then
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 fi
-/bin/echo -e "cd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
+/bin/echo -e "export PYTHONPATH=$PYTHONPATH:""" + fissure_directory + """ \ncd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=__main__.py\\nName=FISSURE\\nTerminal=false\\nType=Application\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
@@ -2197,7 +2197,7 @@ then
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 fi
-/bin/echo -e "cd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
+/bin/echo -e "export PYTHONPATH=$PYTHONPATH:""" + fissure_directory + """ \ncd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=__main__.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
@@ -2866,6 +2866,25 @@ else
 fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/rds
+""",True,'Out-of-Tree Modules'))
+
+# gr-sdrplay3
+programs_parrot_os_6_1.append(('gr-sdrplay3',
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/)" ];  # Requires SDRplay API before building: https://www.sdrplay.com/api
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
+########## Verify ##########
+ls /usr/local/lib/python*/*/*/sdrplay3
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
@@ -4242,7 +4261,7 @@ then
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 fi
-/bin/echo -e "cd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
+/bin/echo -e "export PYTHONPATH=$PYTHONPATH:""" + fissure_directory + """ \ncd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=__main__.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
@@ -4910,6 +4929,25 @@ else
 fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/rds
+""",True,'Out-of-Tree Modules'))
+
+# gr-sdrplay3
+programs_ubuntu22_04.append(('gr-sdrplay3',
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/)" ];  # Requires SDRplay API before building: https://www.sdrplay.com/api
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
+########## Verify ##########
+ls /usr/local/lib/python*/*/*/sdrplay3
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
@@ -6276,7 +6314,7 @@ then
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 fi
-/bin/echo -e "export PYTHONPATH='""" + fissure_directory + """' \ncd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
+/bin/echo -e "export PYTHONPATH=$PYTHONPATH:""" + fissure_directory + """ \ncd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=__main__.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
@@ -6946,6 +6984,25 @@ ls /usr/local/lib/python*/*/nrsc5
 # ########## Verify ##########
 # ls /usr/local/lib/python*/*/rds
 # """,True,'Out-of-Tree Modules'))
+
+# gr-sdrplay3
+programs_dragonOS_focalx.append(('gr-sdrplay3',
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/)" ];  # Requires SDRplay API before building: https://www.sdrplay.com/api
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
+########## Verify ##########
+ls /usr/local/lib/python*/*/*/sdrplay3
+""",True,'Out-of-Tree Modules'))
 
 # gr-tpms
 programs_dragonOS_focalx.append(('gr-tpms',
@@ -8322,7 +8379,7 @@ then
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.zshrc
 fi
-/bin/echo -e "cd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
+/bin/echo -e "export PYTHONPATH=$PYTHONPATH:""" + fissure_directory + """ \ncd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=__main__.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
@@ -8990,6 +9047,25 @@ else
 fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/rds
+""",True,'Out-of-Tree Modules'))
+
+# gr-sdrplay3
+programs_kali2023_1.append(('gr-sdrplay3',
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/)" ];  # Requires SDRplay API before building: https://www.sdrplay.com/api
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
+########## Verify ##########
+ls /usr/local/lib/python*/*/*/sdrplay3
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
@@ -10365,7 +10441,7 @@ then
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 fi
-/bin/echo -e "cd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
+/bin/echo -e "export PYTHONPATH=$PYTHONPATH:""" + fissure_directory + """ \ncd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=__main__.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
@@ -11032,6 +11108,25 @@ else
 fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/rds
+""",True,'Out-of-Tree Modules'))
+
+# gr-sdrplay3
+programs_backbox_linux_8.append(('gr-sdrplay3',
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/)" ];  # Requires SDRplay API before building: https://www.sdrplay.com/api
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
+########## Verify ##########
+ls /usr/local/lib/python*/*/*/sdrplay3
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
@@ -12399,7 +12494,7 @@ then
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 fi
-/bin/echo -e "cd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
+/bin/echo -e "export PYTHONPATH=$PYTHONPATH:""" + fissure_directory + """ \ncd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=__main__.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
@@ -13067,6 +13162,25 @@ else
 fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/rds
+""",True,'Out-of-Tree Modules'))
+
+# gr-sdrplay3
+programs_raspberry_pi_os.append(('gr-sdrplay3',
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/)" ];  # Requires SDRplay API before building: https://www.sdrplay.com/api
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
+########## Verify ##########
+ls /usr/local/lib/python*/*/*/sdrplay3
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
@@ -14435,7 +14549,7 @@ then
 else
   printf "\\n%s\\n" "export PATH=~/.local/bin:$PATH" >> ~/.bashrc
 fi
-/bin/echo -e "cd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
+/bin/echo -e "export PYTHONPATH=$PYTHONPATH:""" + fissure_directory + """ \ncd """ + fissure_directory + """ \npython3 """ + fissure_directory + """/fissure/Dashboard/__main__.py" > ~/.local/bin/fissure
 sudo chmod +x ~/.local/bin/fissure
 echo "[Desktop Entry]\\nStartupWMClass=__main__.py\\nName=FISSURE\\nTerminal=false\\nType=Application\\nCategories=Qt;Science;DataVisualization;Electricity;HamRadio;" > """ + fissure_directory + """/Installer/fissure.desktop
 echo "Exec=/home/$USER/.local/bin/fissure" >> """ + fissure_directory + """/Installer/fissure.desktop
@@ -15104,6 +15218,25 @@ else
 fi
 ########## Verify ##########
 ls /usr/local/lib/python*/*/rds
+""",True,'Out-of-Tree Modules'))
+
+# gr-sdrplay3
+programs_ubuntu22_04_arm.append(('gr-sdrplay3',
+"""if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/)" ];  # Requires SDRplay API before building: https://www.sdrplay.com/api
+then
+  cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/
+  sudo rm -Rf build
+  mkdir build
+  cd build
+  cmake ..
+  make
+  sudo make install
+  sudo ldconfig
+else
+  echo "Folder is empty. Execute 'git submodule update --init' from FISSURE directory."
+fi
+########## Verify ##########
+ls /usr/local/lib/python*/*/*/sdrplay3
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms

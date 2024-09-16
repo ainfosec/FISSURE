@@ -38,11 +38,11 @@ The deployment of multiple sensor nodes on the same network unlocks many geospat
 
 ### Upcoming/Recent Events
 
-![Conference](https://img.shields.io/badge/Event-Conference-darkgray) **Sat. August 10, 2024**: DEF CON 32 - RF Village - 1400-1500 PST. Videos coming soon!
+![Conference](https://img.shields.io/badge/Event-Conference-darkgray) **Sat. August 10, 2024**: DEF CON 32 - RF Village - 1400-1500 PST. [Prerecorded Video](https://www.youtube.com/watch?v=5nYiVR-PsOc), [Live Recording](https://www.youtube.com/watch?app=desktop&v=mhbJHOGrCik)
 
-![Career Fair](https://img.shields.io/badge/Event-Career%20Fair-orange) **Thu. September 5, 2024**: Binghamton University STEM Job and Internship Fair - 1100-1530 EST
+![Career Fair](https://img.shields.io/badge/Event-Career%20Fair-darkgray) **Thu. September 5, 2024**: Binghamton University STEM Job and Internship Fair - 1100-1530 EST
 
-![Conference](https://img.shields.io/badge/Event-Conference-blue) **Tue. September 17, 2024**: GNU Radio Conference 2024 - 1605-1635 EST
+![Conference](https://img.shields.io/badge/Event-Conference-blue) **Tue. September 17, 2024**: GNU Radio Conference 2024 - 1605-1635 EST (Tune in live!) [Description](https://events.gnuradio.org/event/24/contributions/649/)
 
 ## Documentation
 
@@ -152,7 +152,12 @@ The deployment of multiple sensor nodes on the same network unlocks many geospat
     <td><a href="https://www.youtube.com/watch?v=iJuMXupZkPY&list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_"><img src="/docs/Icons/README/youtube_attack.png" align="center" width="250" height="140"><dt align="center"><small><i><b>Attack</b></i></small></dt></td>
     <td><a href="https://www.youtube.com/watch?v=fK5h9FScwjc&list=PLs4a-ctXntfjpmc_hrvI0ngj4ZOe_5xm_"><img src="/docs/Icons/README/youtube_library.png" align="center" width="250" height="140"><dt align="center"><small><i><b>Library</b></i></small></dt></td>
     <td><a href="https://www.youtube.com/watch?v=1f2umEKhJvE"><img src="/docs/Icons/README/GRCon22_Video.png" align="center" width="250" height="140"><dt align="center"><small><i><b>GRCon22</b></i></small></dt></td>
-  </tr>      
+  </tr>
+  <tr>
+    <td><a href="https://www.youtube.com/watch?v=5nYiVR-PsOc"><img src="/docs/Icons/README/youtube_dc32_rf_village_prerecorded.png" align="center" width="250" height="140"><dt align="center"><small><i><b>DC32 RF Village Prerecorded Talk</b></i></small></dt></td>
+    <td></td>
+    <td></td>
+  </tr>   
 </table>
 
 ## Hardware
@@ -166,6 +171,7 @@ The following is a list of "supported" hardware with varying levels of integrati
 - bladeRF, bladeRF 2.0 micro
 - Open Sniffer
 - PlutoSDR
+- SDRplay: RSPduo, RSPdx
 
 ## Getting Started
 

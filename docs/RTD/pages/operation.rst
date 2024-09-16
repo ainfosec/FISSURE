@@ -612,3 +612,205 @@ The following is a list of triggers integrated into FISSURE. To create new trigg
      - motion_detector.py
      - Camera
      - Checks for motion using the default camera
+
+Attack List
+===========
+
+The following is a list of attacks in the FISSURE library and displayed in the Attack tab. Attacks are hardware dependent and may not be present for all hardware types. The developers welcome new scripts/flow graphs for converting existing attacks to the missing hardware types.
+
+.. list-table:: 
+   :widths: 25 35
+   :header-rows: 1
+
+   * - Attack Name
+     - Description
+   * - 802.11x - ARP Poisoning
+     - Generates Scapy ARP messages that continuously cycle through the last octet of the source IP address.
+   * - 802.11x - Beacon Flood
+     - Generates Scapy beacons with unqiue MAC addresses that increase sequentially.
+   * - 802.11x - Beacon Frame
+     - Generates the same Scapy beacon continuously.
+   * - 802.11x - CTS Frame
+     - Generates Scapy CTS frames.
+   * - 802.11x - DIR-815 Exploit
+     - While in monitor mode, injects a command via SSDP to a vulnerable UPnP device. Same as "UDP to AP QoS" in Packet Crafter.
+   * - 802.11x - Deauthentication Frame
+     - Generates Scapy deauthentication frames with reason=7.
+   * - 802.11x - ICMP
+     - Generates a Scapy ICMP packet and transmits it periodically.
+   * - 802.11x - LAND
+     - Transmits a Scapy TCP SYN spoofed packet where the source and destination IPs and ports are identical. This can cause the target to repeatedly send replies to itself and possibly lead to a crash. (Local Area Network Denial)
+   * - 802.11x - Probe Request Frame
+     - Transmits a Scapy probe request on repeat.
+   * - 802.11x - Relay
+     - Relays Wifi signals from one frequency to another.
+   * - 802.11x - SYN Flood
+     - Transmits Scapy TCP SYN messages with random source IP addresses to consume resources on the target.
+   * - 802.11x - Smurf
+     - Transmits Scapy ICMP request messages to all network hosts to make their responses overwhelm the target server.
+   * - 802.11x - TP-Link Archer A7 Exploit
+     - While joined to the network, executes a command placed in a file on the device using a UDP exploit. Use quotes with spaces. Single-use, requires reboot.
+   * - 802.11x - TP-Link Archer A7 Reboot
+     - While joined to the network, executes a reboot command on the device using a single UDP message.
+   * - 802.11x - UDP Hole Punch Server
+     - Responds to UDP messages containing the magic string. Observe the responses in Wireshark to map IP addresses and ports. See wifi_tx UDP Mapper.
+   * - 802.11x - UDP Replay PCAP
+     - Replays the UDP from a .pcap file with udpreplay while connected to a network.
+   * - 802.11x - wifi_tx ARP Poisoning
+     - Generates ARP messages that continuously cycle through the last octet of the source IP address. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.
+   * - 802.11x - wifi_tx Beacon
+     - Generates Beacon frames with a custom SSID and MAC address. Beacon data is sent to the wifi_tx.py UDP port which needs to be connected to the mac_in of the WiFi PHY Hier block.
+   * - 802.11x - wifi_tx ICMP
+     - Generates ICMP messages. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.
+   * - 802.11x - wifi_tx LAND
+     - Transmits a TCP SYN spoofed packet where the source and destination IPs and ports are identical. This can cause the target to repeatedly send replies to itself and possibly lead to a crash. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.
+   * - 802.11x - wifi_tx SYN Flood
+     - Generates TCP SYN messages with random source IP addresses to consume resources on the target. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.
+   * - 802.11x - wifi_tx Smurf
+     - Transmits Scapy ICMP request messages to all network hosts to make their responses overwhelm the target server.
+   * - 802.11x - wifi_tx UDP ARP Poisoning
+     - Generates UDP messages with different source addresses to fill up the target ARP table. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.
+   * - 802.11x - wifi_tx UDP Crafter
+     - Generates UDP messages. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.
+   * - 802.11x - wifi_tx UDP Crafter QoS
+     - Generates UDP messages. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.
+   * - 802.11x - wifi_tx UDP File
+     - Reads in bytes of data and puts it in a UDP payload. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.
+   * - 802.11x - wifi_tx UDP Mapper
+     - Transmits LLC/SNAP/IP/UDP data to wifi_tx with the server as the source to map a network for IP addresses and ports.
+   * - 802.11x - wifi_tx UDP PCAP
+     - Reads in a .pcap file, not .pcapng, and transmits UDP data line by line to a wifi_tx port with altered UDP addresses.
+   * - Bluetooth Classic - btrx
+     - Executes the btrx command for monitoring Bluetooth at a specified frequency and sample rate.
+   * - Bluetooth Low Energy - ble_dump
+     - Runs ble_dump.py and creates a pipe to Wireshark for dumping BLE packets.
+   * - Bluetooth Low Energy - btrx
+     - Executes the btrx command for monitoring Bluetooth at a specified frequency, gain, and sample rate.
+   * - Clapper Plus - Transmit
+     - Generates a signal that is similar to one of two buttons on a Clapper Plus remote control.
+   * - DECT - Audio Sink
+     - Plays DECT audio using gr-dect2 blocks.
+   * - DECT - CW
+     - Jams DECT with a CW signal.
+   * - DECT - File Sink
+     - Records a DECT payload to a file.
+   * - DECT - File Sink IQ
+     - Records DECT IQ signals captured through a power squelch to a file.
+   * - DECT - From File
+     - Modulates a previously-recorded DECT packet.
+   * - DECT - Gaussian
+     - Jams DECT with a Gaussian noise source.
+   * - DECT - Simple Replay
+     - Relays a DECT signal to another frequency.
+   * - DECT - Wireshark
+     - Captures DECT signals and pipes the messages to Wireshark.
+   * - DSRC - From File
+     - Sends raw binary data to wifi_tx UDP port.
+   * - DSRC - wifi_tx Generator
+     - Generates DSRC messages using a coordinate file and a key file. Messages are sent to a wifi_tx UDP port.
+   * - Ethernet - DIR-815 Exploit
+     - While in monitor mode, injects a command via SSDP to a vulnerable UPnP device. Same as "UDP to AP QoS" in Packet Crafter.
+   * - Ethernet - MAC Flooding
+     - Floods the local network with random MAC addresses causing some switches to fail and potentially facilitate hub style sniffing.
+   * - Ethernet - TP-Link Archer A7 Exploit
+     - While joined to the network, executes a command placed in a file on the device using a UDP exploit. Use quotes with spaces. Single-use, requires reboot.
+   * - FM Radio - Audio Sink
+     - Plays FM radio audio.
+   * - FM Radio - CW
+     - Jams FM radio stations with a CW signal.
+   * - FM Radio - File Sink
+     - Records a set amount of FM data to a file while playing the audio.
+   * - FM Radio - From File
+     - Transmits FM data from a file on a loop.
+   * - FM Radio - From Wav File
+     - Converts a .wav file to an FM signal.
+   * - FM Radio - Gaussian
+     - Jams FM with a Gaussian noise source.
+   * - FM Radio - Simple Replay
+     - Relays filtered FM signals to another frequency.
+   * - Garage Door - Cycle
+     - Cycles through DIP switch combinations sequentially.
+   * - Garage Door - Transmit
+     - Simulates a remote control button press for one DIP switch value.
+   * - General - IQ Playback Repeat
+     - Replays an IQ file on repeat.
+   * - General - IQ Playback Single
+     - Replays an IQ file once.
+   * - General - IQ Record
+     - Records an IQ file for a specified number of samples.
+   * - General - IQ Record Squelch
+     - Records an IQ file for a specified number of samples following a power squelch.
+   * - General - Instantaneous Frequency
+     - Test attack for flow graphs with GUIs.
+   * - General - OOK Transmit
+     - Generates custom on-off keying signals with repeating bursts at regular intervals.
+   * - General - Sleep
+     - Sleeps for a duration.
+   * - HD Radio - Naughty String Injection
+     - Inject naughty strings into the artist or song title in HD Radio from a JSON file. Specify 'title' or 'artist' to direct the injection process.
+   * - Mode S - Dump1090 Interactive
+     - Runs dump1090 in interactive mode. Go to: http://127.0.0.1:8081
+   * - Mode S - Dump1090 Raw File
+     - Executes the "./dump1090 --raw > ascii_file.txt" command to save ASCII data (\*8dc051daf82300020049b8c711c4) to a file.
+   * - Mode S - Dump1090 Raw Network
+     - Executes the "./dump1090 --raw | nc 127.0.0.1 55555" command to transfer ASCII data (\*8dc051daf82300020049b8c711c4) over a network.
+   * - Mode S - Fields
+     - Flow graph for fuzzing fields in Mode S messages at a regular interval.
+   * - Mode S  - From File
+     - Transmits ADSB binary data supplied from a file.
+   * - Mode S - dump978 uat2text
+     - Executes the "rtl_sdr -d 0 -f 978000000 -s 2083334 -g 48 - | ./dump978 | ./uat2text" command to decode 978 MHz UAT messages into a readable format.
+   * - Mode S - gr-adsb Brief
+     - Prints formatted decoded ADSB data (gr-adsb) originating from an SDR (2 MS/s) to stdout with the brief option selected.
+   * - Mode S - gr-adsb To Webserver
+     - Forwards formatted decoded ADSB data (gr-adsb) originating from an SDR (2 MS/s) to a webserver (tcp://127.0.0.1:5001) over ZMQ.
+   * - Mode S - gr-adsb Verbose
+     - Prints formatted decoded ADSB data (gr-adsb) originating from an SDR (2 MS/s) to stdout with the verbose option selected.
+   * - Mode S - gr-adsb Webserver
+     - Forwards formatted decoded ADSB data (gr-adsb) originating from an IQ file to a webserver (tcp://127.0.0.1:5001) over ZMQ.
+   * - Morse Code - File
+     - Generates Morse Code for one user-provided message and writes the IQ samples to file. The audio will stop when the message is complete.
+   * - Morse Code - Transmit
+     - Generates Morse Code for one user-provided message and transmits the signal. The audio will stop when the message done transmitting.
+   * - RDS - Fields
+     - Flow graph for fuzzing fields in RDS messages at a regular interval.
+   * - RDS - File Source
+     - Replays RDS data on repeat supplied from a file. No audio is added.
+   * - SimpliciTI - Access Point DoS
+     - Replays data that will create a denial of service at the access point.
+   * - SimpliciTI - Add Node
+     - Replays data from an add node message.
+   * - SimpliciTI - CW
+     - Jams SimpliciTI with a CW signal.
+   * - SimpliciTI - Fields
+     - Flow graph for fuzzing SimpliciTI message fields at a regular interval.
+   * - SimpliciTI - From File
+     - Replays message data supplied from a file.
+   * - SimpliciTI - Gaussian
+     - Jams SimpliciTI with a Gaussian noise source.
+   * - SimpliciTI - Unlink Node
+     - Replays an unlink node message supplied from a file.
+   * - TPMS - Receive
+     - Decodes TPMS signals (only one format) and prints the output.
+   * - TPMS - Transmit
+     - Transmits TPMS signals periodically.
+   * - X10 - Decode
+     - Decodes X10 signals and prints the output.
+   * - X10 - Fields
+     - Flow graph for fuzzing X10 message fields at a regular interval.
+   * - X10 - Off
+     - Transmits an off message for a RadioShack Plug'n power outlet switch.
+   * - X10 - On
+     - Transmits an on message for a RadioShack Plug'n power outlet switch.
+   * - ZWAVE - Color List
+     - Cycles through a list of colors built into the message_generator_pdu block. Tested against a Monoprice Z-Wave Plus RGB Smart Bulb.
+   * - ZWAVE - Off
+     - Transmits an off message for a Monoprice Z-Wave Plus RGB Smart Bulb.
+   * - ZWAVE - On
+     - Transmits an on message for a Monoprice Z-Wave Plus RGB Smart Bulb.
+   * - ZWAVE - Random Colors
+     - Randomly generates a new RGB value for each message. Tested against a Monoprice Z-Wave Plus RGB Smart Bulb.
+   * - ZWAVE - Receive
+     - Decodes Z-Wave messages and prints the output. Tested against a Monoprice Z-Wave Plus RGB Smart Bulb.
+   * - ZWAVE - Transmit
+     - Transmits a Z-Wave message (default is a red light). Tested against a Monoprice Z-Wave Plus RGB Smart Bulb.

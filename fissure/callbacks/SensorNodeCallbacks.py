@@ -670,6 +670,10 @@ async def startTSI_Detector(component: object, sensor_node_id=0, detector="", va
             flow_graph_filename = "wideband_bladerf2.py"
         elif detector == "wideband_usrp_x410.py":
             flow_graph_filename = "wideband_usrp_x410.py"
+        elif detector == "wideband_rspduo.py":
+            flow_graph_filename = "wideband_rspduo.py"
+        elif detector == "wideband_rspdx.py":
+            flow_graph_filename = "wideband_rspdx.py"                        
         elif detector == "IQ File":
             flow_graph_filename = "iq_file.py"
         elif "fixed_threshold" in detector:
@@ -697,6 +701,10 @@ async def startTSI_Detector(component: object, sensor_node_id=0, detector="", va
                 flow_graph_filename = "fixed_threshold_bladerf2.py"
             elif detector == "fixed_threshold_usrp_x410.py":
                 flow_graph_filename = "fixed_threshold_usrp_x410.py"
+            elif detector == "fixed_threshold_rspduo.py":
+                flow_graph_filename = "fixed_threshold_rspduo.py"
+            elif detector == "fixed_threshold_rspdx.py":
+                flow_graph_filename = "fixed_threshold_rspdx.py"                                
             elif detector == "fixed_threshold_simulator.py":
                 flow_graph_filename = "fixed_threshold_simulator.py"
 
@@ -974,6 +982,38 @@ async def probeHardware(component: object, tab_index=0, table_row_text=[]):
         except Exception as e:
             output = f"Error: {str(e)}"
 
+    elif get_hardware == "RSPduo":
+        # Probe
+        try:
+            proc = await asyncio.create_subprocess_shell(
+                "lsusb &", 
+                shell=True, 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.PIPE
+            )  # Return text is in stderr
+            output, _ = await proc.communicate()
+            output = output.decode()
+
+            height_width = [300, 500]
+        except Exception as e:
+            output = f"Error: {str(e)}"
+
+    elif get_hardware == "RSPdx":
+        # Probe
+        try:
+            proc = await asyncio.create_subprocess_shell(
+                "lsusb &", 
+                shell=True, 
+                stdout=subprocess.PIPE, 
+                stderr=subprocess.PIPE
+            )  # Return text is in stderr
+            output, _ = await proc.communicate()
+            output = output.decode()
+
+            height_width = [300, 500]
+        except Exception as e:
+            output = f"Error: {str(e)}"
+
     # Return the Text
     PARAMETERS = {"tab_index": tab_index, "output": output, "height_width": height_width}
     msg = {
@@ -1022,6 +1062,10 @@ async def scanHardware(component: object, tab_index=0, hardware_list=[]):
             all_scan_results.append(fissure.utils.hardware.find_bladeRF2()[0])
         elif get_hardware == "USRP X410":
             all_scan_results.append(fissure.utils.hardware.findX410())
+        elif get_hardware == "RSPduo":
+            all_scan_results.append(fissure.utils.hardware.findRSPduo()[0])
+        elif get_hardware == "RSPdx":
+            all_scan_results.append(fissure.utils.hardware.findRSPdx()[0])
 
     # Return Scan Results
     PARAMETERS = {"tab_index": tab_index, "hardware_scan_results": all_scan_results}
@@ -1093,6 +1137,14 @@ async def guessHardware(component: object, tab_index=0, table_row=[], table_row_
     elif get_hardware == "RTL2832U":
         get_serial = str(table_row_text[3])
         scan_results, new_guess_index = fissure.utils.hardware.findRTL2832U(get_serial, guess_index)
+
+    elif get_hardware == "RSPduo":
+        get_serial = str(table_row_text[3])
+        scan_results, new_guess_index = fissure.utils.hardware.findRSPduo(get_serial, guess_index)
+
+    elif get_hardware == "RSPdx":
+        get_serial = str(table_row_text[3])
+        scan_results, new_guess_index = fissure.utils.hardware.findRSPdx(get_serial, guess_index)        
 
     # Return Guess Results
     PARAMETERS = {

@@ -282,6 +282,31 @@ def _slotTSI_DetectorChanged(dashboard: QtCore.QObject):
             dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
         dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
 
+    elif get_detector == 'wideband_rspduo.py':
+        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
+        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
+        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(60)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(0)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(50)
+        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("1")
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("2")
+
+    elif get_detector == 'wideband_rspdx.py':
+        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
+        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
+        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(60)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(0)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(50)
+        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("A")
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("B")
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("C")        
+
     elif get_detector == 'Simulator':
         dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(2)
 
@@ -605,7 +630,7 @@ def _slotTSI_DetectorFixedChanged(dashboard: QtCore.QObject):
         dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
         dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
 
-    if get_detector == 'fixed_threshold_usrp_x410.py':
+    elif get_detector == 'fixed_threshold_usrp_x410.py':
         dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("500e6")
@@ -640,6 +665,41 @@ def _slotTSI_DetectorFixedChanged(dashboard: QtCore.QObject):
         else:
             dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
         dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
+
+    elif get_detector == 'fixed_threshold_rspduo.py':
+        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(6)
+        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(60)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(50)
+        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
+        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
+        dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("1")
+        dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("2")
+
+    elif get_detector == 'fixed_threshold_usrp_rspdx.py':
+        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(6)
+        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(60)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(50)
+        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
+        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
+        dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("A")
+        dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("B")
+        dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("C")
 
     elif get_detector == 'fixed_threshold_simulator.py':
         dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")

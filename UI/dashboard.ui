@@ -1417,6 +1417,16 @@
          </item>
          <item>
           <property name="text">
+           <string>wideband_rspduo.py</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>wideband_rspdx.py</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Simulator</string>
           </property>
          </item>
@@ -3248,6 +3258,16 @@ p, li { white-space: pre-wrap; }
           <item>
            <property name="text">
             <string>fixed_threshold_usrp_x410.py</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>fixed_threshold_rspduo.py</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>fixed_threshold_rspdx.py</string>
            </property>
           </item>
           <item>
@@ -11937,6 +11957,16 @@ p, li { white-space: pre-wrap; }
          <item>
           <property name="text">
            <string>USRP X410</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RSPduo</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RSPdx</string>
           </property>
          </item>
         </widget>
@@ -21517,6 +21547,16 @@ p, li { white-space: pre-wrap; }
      <item>
       <property name="text">
        <string>USRP X410</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>RSPduo</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>RSPdx</string>
       </property>
      </item>
     </widget>
@@ -35479,6 +35519,16 @@ Flow Graphs</string>
            <string>USRP X410</string>
           </property>
          </item>
+         <item>
+          <property name="text">
+           <string>RSPduo</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RSPdx</string>
+          </property>
+         </item>
         </widget>
         <widget class="QComboBox" name="comboBox_library_pd_modulation_types">
          <property name="geometry">
@@ -36146,6 +36196,16 @@ p, li { white-space: pre-wrap; }
          <item>
           <property name="text">
            <string>USRP X410</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RSPduo</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>RSPdx</string>
           </property>
          </item>
         </widget>

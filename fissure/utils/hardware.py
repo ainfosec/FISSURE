@@ -35,6 +35,10 @@ def hardwareDisplayName(dashboard, hardware_type, sensor_node, component, index)
         get_hardware_name = hardware_type + " - " + dashboard.backend.settings[sensor_node][component][index][3]
     elif hardware_type == "USRP X410":
         get_hardware_name = hardware_type + " - " + dashboard.backend.settings[sensor_node][component][index][5]
+    elif hardware_type == "RSPduo":
+        get_hardware_name = hardware_type + " - " + dashboard.backend.settings[sensor_node][component][index][3]
+    elif hardware_type == "RSPdx":
+        get_hardware_name = hardware_type + " - " + dashboard.backend.settings[sensor_node][component][index][3]                
     else:
         get_hardware_name = "UNKNOWN HARDWARE"
 
@@ -117,6 +121,14 @@ def hardwareDisplayNameLookup(dashboard, display_name, component):
                 if second_value == dashboard.backend.settings[sensor_node][component][n][5]:
                     get_index = n
                     break
+            elif hardware_type == "RSPduo":
+                if second_value == dashboard.backend.settings[sensor_node][component][n][3]:
+                    get_index = n
+                    break
+            elif hardware_type == "RSPdx":
+                if second_value == dashboard.backend.settings[sensor_node][component][n][3]:
+                    get_index = n
+                    break                                
             else:
                 pass
 
@@ -318,6 +330,16 @@ def checkFrequencyBounds(get_frequency, get_hardware, get_daughterboard):
         if get_daughterboard == "ZBX":
             if (get_frequency >= 1) and (get_frequency <= 7200):
                 return True
+
+    elif get_hardware == "RSPduo":
+        # Frequency Limits
+        if (get_frequency >= 0.001) and (get_frequency <= 2000):
+            return True
+        
+    elif get_hardware == "RSPdx":
+        # Frequency Limits
+        if (get_frequency >= 0.001) and (get_frequency <= 2000):
+            return True
 
     # Not in Bounds
     return False
@@ -940,6 +962,85 @@ def findRTL2832U(guess_serial="", guess_index=0):
     try:
         m = device_dict[guess_index][0]
         scan_results[3] = m[1]
+    except:
+        pass
+        
+    return scan_results, guess_index
+
+
+def findRSPduo(guess_serial="", guess_index=0):
+    """ 
+    Parses the results of 'lsusb' and returns an integer based on the guess index and number of RSPduos.
+    """
+    # Scan Results
+    scan_results = ['RSPduo','','','','','','']  # Type, UID, Radio Name, Serial, Net. Interface, IP Address, Daughterboard
+    
+    # Get the Text
+    proc = subprocess.Popen("lsusb | grep RSPduo &", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, output_error = proc.communicate()
+    output = output.decode()
+
+    # Reset Guess Index
+    get_text = guess_serial
+    if len(get_text) == 0:
+        guess_index = 0
+    else:
+        guess_index = guess_index + 1
+
+    # Get the Variables and Values
+    device_index = -1
+    for line in output.splitlines():
+        if "RSPduo" in line:
+            device_index = device_index + 1
+
+    # Check Interface Index
+    if guess_index > device_index:
+        guess_index = 0
+
+    # Update GUI
+    try:
+        scan_results[3] = str(guess_index)
+    except:
+        pass
+        
+    return scan_results, guess_index
+
+
+def findRSPdx(guess_serial="", guess_index=0):
+    """ 
+    Parses the results of 'lsusb' and returns an integer based on the guess index and number of RSPdxs.
+    """
+    # Scan Results
+    scan_results = ['RSPdx','','','','','','']  # Type, UID, Radio Name, Serial, Net. Interface, IP Address, Daughterboard
+    
+    # Get the Text
+    proc = subprocess.Popen("lsusb | grep RSPdx &", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    output, output_error = proc.communicate()
+    output = output.decode()
+
+    # Reset Guess Index
+    get_text = guess_serial
+    if len(get_text) == 0:
+        guess_index = 0
+    else:
+        guess_index = guess_index + 1
+
+    # Get the Variables and Values
+    device_index = -1
+    for line in output.splitlines():
+        if "RSPdx" in line:
+            device_index = device_index + 1
+
+    # Check Interface Index
+    if guess_index > device_index:
+        guess_index = 0
+
+    # Update GUI
+    try:
+        if device_index == -1:
+            scan_results[3] = ""
+        else:
+            scan_results[3] = str(guess_index)
     except:
         pass
         

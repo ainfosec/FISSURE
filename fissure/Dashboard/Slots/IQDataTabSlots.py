@@ -519,6 +519,59 @@ def _slotIQ_RecordHardwareChanged(dashboard: QtCore.QObject):
 
         dashboard.ui.frame_iq_record.setEnabled(True)
 
+    elif get_hardware_type == "RSPduo":
+        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
+        spinbox_frequency.setMaximum(2000)
+        spinbox_frequency.setMinimum(1)
+        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
+        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
+        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
+        comboBox_antenna.addItem("1")
+        comboBox_antenna.addItem("2")
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
+        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
+        spinbox_gain.setMaximum(60)
+        spinbox_gain.setMinimum(0)
+        spinbox_gain.setValue(50)
+        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
+        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
+        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
+        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
+        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
+
+        dashboard.ui.frame_iq_record.setEnabled(True)
+
+    elif get_hardware_type == "RSPdx":
+        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
+        spinbox_frequency.setMaximum(2000)
+        spinbox_frequency.setMinimum(1)
+        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
+        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
+        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
+        comboBox_antenna.addItem("A")
+        comboBox_antenna.addItem("B")
+        comboBox_antenna.addItem("C")
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
+        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
+        spinbox_gain.setMaximum(60)
+        spinbox_gain.setMinimum(0)
+        spinbox_gain.setValue(50)
+        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
+        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
+        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
+        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
+        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
+
+        dashboard.ui.frame_iq_record.setEnabled(True)
+
     # Enable Recording
     dashboard.ui.pushButton_iq_record.setEnabled(True)
     dashboard.ui.label2_iq_status_files.setEnabled(True)
@@ -6373,6 +6426,10 @@ async def _slotIQ_RecordClicked(dashboard: QtCore.QObject, called_from_thread=Fa
                 fname = "iq_recorder_bladerf2"
             elif get_hardware_type == "USRP X410":
                 fname = "iq_recorder_usrp_x410"
+            elif get_hardware_type == "RSPduo":
+                fname = "iq_recorder_rspduo"
+            elif get_hardware_type == "RSPdx":
+                fname = "iq_recorder_rspdx"                                
 
             # LimeSDR Channel
             if get_hardware_type == "LimeSDR":

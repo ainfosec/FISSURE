@@ -56,6 +56,19 @@ blocks:
     coordinate: [16, 100.0]
     rotation: 0
     state: enabled
+- name: notes
+  id: variable
+  parameters:
+    comment: ''
+    value: '"Records an IQ file for a specified number of samples following a power
+      squelch."'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 612.0]
+    rotation: 0
+    state: enabled
 - name: rx_antenna
   id: variable
   parameters:

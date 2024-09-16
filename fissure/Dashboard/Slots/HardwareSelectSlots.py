@@ -438,6 +438,7 @@ def importClicked(HWSelect, settings_dict=""):
         if (local_assigned is True) and (remote_widgets[k].isChecked() is True):
             local_widgets[k].setEnabled(False)
 
+
 @QtCore.pyqtSlot(QtCore.QObject)
 def export(HWSelect: QtCore.QObject):
     """
@@ -784,6 +785,7 @@ def export(HWSelect: QtCore.QObject):
         stream = open(get_path, "w")
         yaml.dump(settings_dict, stream, default_flow_style=False, indent=5)
 
+
 @qasync.asyncSlot(QtCore.QObject)
 async def guess(HWSelect: QtCore.QObject):
     """
@@ -804,6 +806,7 @@ async def guess(HWSelect: QtCore.QObject):
 
     # Send Message for HIPRFISR to Sensor Node Connections
     await HWSelect.dashboard.backend.guess_sensor_node(str(tab_index), get_row, get_row_text, HWSelect.guess_index)
+
 
 @qasync.asyncSlot(QtCore.QObject)
 async def probe(HWSelect: QtCore.QObject):
@@ -847,6 +850,7 @@ async def probe(HWSelect: QtCore.QObject):
     # Send Message for HIPRFISR to Sensor Node Connections
     await HWSelect.dashboard.backend.probe_sensor_node(str(tab_index), get_row_text)
 
+
 @qasync.asyncSlot(QtCore.QObject)
 async def scan(HWSelect: QtCore.QObject):
     """
@@ -869,6 +873,7 @@ async def scan(HWSelect: QtCore.QObject):
 
     # Send Message for HIPRFISR to Sensor Node Connections
     await HWSelect.dashboard.backend.scan_sensor_node(str(tab_index), hardware_list)
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def tsi(HWSelect: QtCore.QObject):
@@ -911,6 +916,7 @@ def tsi(HWSelect: QtCore.QObject):
     hardware_tsi_widgets[tab_index].horizontalHeader().setStretchLastSection(True)
     hardware_tabs_widgets[tab_index].setCurrentIndex(0)
 
+
 @QtCore.pyqtSlot(QtCore.QObject)
 def pd(HWSelect: QtCore.QObject):
     """
@@ -951,6 +957,7 @@ def pd(HWSelect: QtCore.QObject):
     hardware_pd_widgets[tab_index].horizontalHeader().setStretchLastSection(False)
     hardware_pd_widgets[tab_index].horizontalHeader().setStretchLastSection(True)
     hardware_tabs_widgets[tab_index].setCurrentIndex(1)
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def attack(HWSelect: QtCore.QObject):
@@ -995,6 +1002,7 @@ def attack(HWSelect: QtCore.QObject):
     hardware_attack_widgets[tab_index].horizontalHeader().setStretchLastSection(True)
     hardware_tabs_widgets[tab_index].setCurrentIndex(2)
 
+
 @QtCore.pyqtSlot(QtCore.QObject)
 def iq(HWSelect: QtCore.QObject):
     """
@@ -1035,6 +1043,7 @@ def iq(HWSelect: QtCore.QObject):
     hardware_iq_widgets[tab_index].horizontalHeader().setStretchLastSection(False)
     hardware_iq_widgets[tab_index].horizontalHeader().setStretchLastSection(True)
     hardware_tabs_widgets[tab_index].setCurrentIndex(3)
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def archive(HWSelect: QtCore.QObject):
@@ -1079,6 +1088,7 @@ def archive(HWSelect: QtCore.QObject):
     hardware_archive_widgets[tab_index].horizontalHeader().setStretchLastSection(True)
     hardware_tabs_widgets[tab_index].setCurrentIndex(4)
 
+
 @QtCore.pyqtSlot(QtCore.QObject)
 def remove_tsi(HWSelect: QtCore.QObject):
     """
@@ -1099,6 +1109,7 @@ def remove_tsi(HWSelect: QtCore.QObject):
         tsi_tables[tab_index].setCurrentCell(tsi_tables[tab_index].rowCount() - 1, 0)
     elif get_row >= 0:
         tsi_tables[tab_index].setCurrentCell(get_row, 0)
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def remove_pd(HWSelect: QtCore.QObject):
@@ -1121,6 +1132,7 @@ def remove_pd(HWSelect: QtCore.QObject):
     elif get_row >= 0:
         pd_tables[tab_index].setCurrentCell(get_row, 0)
 
+
 @QtCore.pyqtSlot(QtCore.QObject)
 def remove_attack(HWSelect: QtCore.QObject):
     """
@@ -1141,6 +1153,7 @@ def remove_attack(HWSelect: QtCore.QObject):
         attack_tables[tab_index].setCurrentCell(attack_tables[tab_index].rowCount() - 1, 0)
     elif get_row >= 0:
         attack_tables[tab_index].setCurrentCell(get_row, 0)
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def remove_iq(HWSelect: QtCore.QObject):
@@ -1163,6 +1176,7 @@ def remove_iq(HWSelect: QtCore.QObject):
     elif get_row >= 0:
         iq_tables[tab_index].setCurrentCell(get_row, 0)
 
+
 @QtCore.pyqtSlot(QtCore.QObject)
 def remove_archive(HWSelect: QtCore.QObject):
     """
@@ -1184,6 +1198,7 @@ def remove_archive(HWSelect: QtCore.QObject):
     elif get_row >= 0:
         archive_tables[tab_index].setCurrentCell(get_row, 0)
 
+
 @QtCore.pyqtSlot(QtCore.QObject)
 def add_to_all(HWSelect: QtCore.QObject):
     """
@@ -1194,6 +1209,7 @@ def add_to_all(HWSelect: QtCore.QObject):
     attack(HWSelect)
     iq(HWSelect)
     archive(HWSelect)
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def scan_results_remove(HWSelect: QtCore.QObject):
@@ -1300,6 +1316,7 @@ def scan_results_remove(HWSelect: QtCore.QObject):
         scan_results_guess_buttons[tab_index].setEnabled(False)
         scan_results_tables[tab_index].setEnabled(False)
         scan_results_lines[tab_index].setEnabled(False)
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def manual(HWSelect: QtCore.QObject):
@@ -1409,6 +1426,7 @@ def manual(HWSelect: QtCore.QObject):
         get_pushButton_scan_results_guess.setEnabled(True)
         get_tableWidget_scan_results.setEnabled(True)
         get_line3_scan_results.setEnabled(True)
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def more(HWSelect: QtCore.QObject):
@@ -1911,6 +1929,7 @@ async def disconnect(HWSelect: QtCore.QObject, delete_node=False):
         # Send Message for HIPRFISR to Sensor Node Connections
         await HWSelect.dashboard.backend.disconnect_remote_sensor_node(str(tab_index), get_ip, get_msg_port, get_hb_port, delete_node)
 
+
 @QtCore.pyqtSlot(QtCore.QObject)
 def remove_all(HWSelect: QtCore.QObject):
     """
@@ -1921,6 +1940,7 @@ def remove_all(HWSelect: QtCore.QObject):
     for table in ["tsi", "pd", "attack", "iq", "archive"]:
         table_widget = getattr(HWSelect, f"tableWidget_{table}_{node_idx}")
         table_widget.setRowCount(0)
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def apply(HWSelect: QtCore.QObject):
@@ -2101,6 +2121,7 @@ def apply(HWSelect: QtCore.QObject):
 
     # Close Window
     HWSelect.accept()
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def cancel(HWSelect: QtCore.QObject):

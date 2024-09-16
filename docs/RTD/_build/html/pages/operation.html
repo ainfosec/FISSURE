@@ -139,6 +139,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#trigger-list">Trigger List</a></li>
 </ul>
 </li>
+<li class="toctree-l2"><a class="reference internal" href="#attack-list">Attack List</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="development.html">Development</a></li>
@@ -823,6 +824,308 @@
 </tbody>
 </table>
 </section>
+</section>
+<section id="attack-list">
+<h2>Attack List<a class="headerlink" href="#attack-list" title="Permalink to this heading">¶</a></h2>
+<p>The following is a list of attacks in the FISSURE library and displayed in the Attack tab. Attacks are hardware dependent and may not be present for all hardware types. The developers welcome new scripts/flow graphs for converting existing attacks to the missing hardware types.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 41.7%" />
+<col style="width: 58.3%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Attack Name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>802.11x - ARP Poisoning</p></td>
+<td><p>Generates Scapy ARP messages that continuously cycle through the last octet of the source IP address.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - Beacon Flood</p></td>
+<td><p>Generates Scapy beacons with unqiue MAC addresses that increase sequentially.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - Beacon Frame</p></td>
+<td><p>Generates the same Scapy beacon continuously.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - CTS Frame</p></td>
+<td><p>Generates Scapy CTS frames.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - DIR-815 Exploit</p></td>
+<td><p>While in monitor mode, injects a command via SSDP to a vulnerable UPnP device. Same as “UDP to AP QoS” in Packet Crafter.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - Deauthentication Frame</p></td>
+<td><p>Generates Scapy deauthentication frames with reason=7.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - ICMP</p></td>
+<td><p>Generates a Scapy ICMP packet and transmits it periodically.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - LAND</p></td>
+<td><p>Transmits a Scapy TCP SYN spoofed packet where the source and destination IPs and ports are identical. This can cause the target to repeatedly send replies to itself and possibly lead to a crash. (Local Area Network Denial)</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - Probe Request Frame</p></td>
+<td><p>Transmits a Scapy probe request on repeat.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - Relay</p></td>
+<td><p>Relays Wifi signals from one frequency to another.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - SYN Flood</p></td>
+<td><p>Transmits Scapy TCP SYN messages with random source IP addresses to consume resources on the target.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - Smurf</p></td>
+<td><p>Transmits Scapy ICMP request messages to all network hosts to make their responses overwhelm the target server.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - TP-Link Archer A7 Exploit</p></td>
+<td><p>While joined to the network, executes a command placed in a file on the device using a UDP exploit. Use quotes with spaces. Single-use, requires reboot.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - TP-Link Archer A7 Reboot</p></td>
+<td><p>While joined to the network, executes a reboot command on the device using a single UDP message.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - UDP Hole Punch Server</p></td>
+<td><p>Responds to UDP messages containing the magic string. Observe the responses in Wireshark to map IP addresses and ports. See wifi_tx UDP Mapper.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - UDP Replay PCAP</p></td>
+<td><p>Replays the UDP from a .pcap file with udpreplay while connected to a network.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - wifi_tx ARP Poisoning</p></td>
+<td><p>Generates ARP messages that continuously cycle through the last octet of the source IP address. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - wifi_tx Beacon</p></td>
+<td><p>Generates Beacon frames with a custom SSID and MAC address. Beacon data is sent to the wifi_tx.py UDP port which needs to be connected to the mac_in of the WiFi PHY Hier block.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - wifi_tx ICMP</p></td>
+<td><p>Generates ICMP messages. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - wifi_tx LAND</p></td>
+<td><p>Transmits a TCP SYN spoofed packet where the source and destination IPs and ports are identical. This can cause the target to repeatedly send replies to itself and possibly lead to a crash. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - wifi_tx SYN Flood</p></td>
+<td><p>Generates TCP SYN messages with random source IP addresses to consume resources on the target. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - wifi_tx Smurf</p></td>
+<td><p>Transmits Scapy ICMP request messages to all network hosts to make their responses overwhelm the target server.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - wifi_tx UDP ARP Poisoning</p></td>
+<td><p>Generates UDP messages with different source addresses to fill up the target ARP table. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - wifi_tx UDP Crafter</p></td>
+<td><p>Generates UDP messages. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - wifi_tx UDP Crafter QoS</p></td>
+<td><p>Generates UDP messages. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - wifi_tx UDP File</p></td>
+<td><p>Reads in bytes of data and puts it in a UDP payload. Messages are placed in UDP data and sent to a wifi_tx.py UDP port.</p></td>
+</tr>
+<tr class="row-even"><td><p>802.11x - wifi_tx UDP Mapper</p></td>
+<td><p>Transmits LLC/SNAP/IP/UDP data to wifi_tx with the server as the source to map a network for IP addresses and ports.</p></td>
+</tr>
+<tr class="row-odd"><td><p>802.11x - wifi_tx UDP PCAP</p></td>
+<td><p>Reads in a .pcap file, not .pcapng, and transmits UDP data line by line to a wifi_tx port with altered UDP addresses.</p></td>
+</tr>
+<tr class="row-even"><td><p>Bluetooth Classic - btrx</p></td>
+<td><p>Executes the btrx command for monitoring Bluetooth at a specified frequency and sample rate.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Bluetooth Low Energy - ble_dump</p></td>
+<td><p>Runs ble_dump.py and creates a pipe to Wireshark for dumping BLE packets.</p></td>
+</tr>
+<tr class="row-even"><td><p>Bluetooth Low Energy - btrx</p></td>
+<td><p>Executes the btrx command for monitoring Bluetooth at a specified frequency, gain, and sample rate.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Clapper Plus - Transmit</p></td>
+<td><p>Generates a signal that is similar to one of two buttons on a Clapper Plus remote control.</p></td>
+</tr>
+<tr class="row-even"><td><p>DECT - Audio Sink</p></td>
+<td><p>Plays DECT audio using gr-dect2 blocks.</p></td>
+</tr>
+<tr class="row-odd"><td><p>DECT - CW</p></td>
+<td><p>Jams DECT with a CW signal.</p></td>
+</tr>
+<tr class="row-even"><td><p>DECT - File Sink</p></td>
+<td><p>Records a DECT payload to a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p>DECT - File Sink IQ</p></td>
+<td><p>Records DECT IQ signals captured through a power squelch to a file.</p></td>
+</tr>
+<tr class="row-even"><td><p>DECT - From File</p></td>
+<td><p>Modulates a previously-recorded DECT packet.</p></td>
+</tr>
+<tr class="row-odd"><td><p>DECT - Gaussian</p></td>
+<td><p>Jams DECT with a Gaussian noise source.</p></td>
+</tr>
+<tr class="row-even"><td><p>DECT - Simple Replay</p></td>
+<td><p>Relays a DECT signal to another frequency.</p></td>
+</tr>
+<tr class="row-odd"><td><p>DECT - Wireshark</p></td>
+<td><p>Captures DECT signals and pipes the messages to Wireshark.</p></td>
+</tr>
+<tr class="row-even"><td><p>DSRC - From File</p></td>
+<td><p>Sends raw binary data to wifi_tx UDP port.</p></td>
+</tr>
+<tr class="row-odd"><td><p>DSRC - wifi_tx Generator</p></td>
+<td><p>Generates DSRC messages using a coordinate file and a key file. Messages are sent to a wifi_tx UDP port.</p></td>
+</tr>
+<tr class="row-even"><td><p>Ethernet - DIR-815 Exploit</p></td>
+<td><p>While in monitor mode, injects a command via SSDP to a vulnerable UPnP device. Same as “UDP to AP QoS” in Packet Crafter.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Ethernet - MAC Flooding</p></td>
+<td><p>Floods the local network with random MAC addresses causing some switches to fail and potentially facilitate hub style sniffing.</p></td>
+</tr>
+<tr class="row-even"><td><p>Ethernet - TP-Link Archer A7 Exploit</p></td>
+<td><p>While joined to the network, executes a command placed in a file on the device using a UDP exploit. Use quotes with spaces. Single-use, requires reboot.</p></td>
+</tr>
+<tr class="row-odd"><td><p>FM Radio - Audio Sink</p></td>
+<td><p>Plays FM radio audio.</p></td>
+</tr>
+<tr class="row-even"><td><p>FM Radio - CW</p></td>
+<td><p>Jams FM radio stations with a CW signal.</p></td>
+</tr>
+<tr class="row-odd"><td><p>FM Radio - File Sink</p></td>
+<td><p>Records a set amount of FM data to a file while playing the audio.</p></td>
+</tr>
+<tr class="row-even"><td><p>FM Radio - From File</p></td>
+<td><p>Transmits FM data from a file on a loop.</p></td>
+</tr>
+<tr class="row-odd"><td><p>FM Radio - From Wav File</p></td>
+<td><p>Converts a .wav file to an FM signal.</p></td>
+</tr>
+<tr class="row-even"><td><p>FM Radio - Gaussian</p></td>
+<td><p>Jams FM with a Gaussian noise source.</p></td>
+</tr>
+<tr class="row-odd"><td><p>FM Radio - Simple Replay</p></td>
+<td><p>Relays filtered FM signals to another frequency.</p></td>
+</tr>
+<tr class="row-even"><td><p>Garage Door - Cycle</p></td>
+<td><p>Cycles through DIP switch combinations sequentially.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Garage Door - Transmit</p></td>
+<td><p>Simulates a remote control button press for one DIP switch value.</p></td>
+</tr>
+<tr class="row-even"><td><p>General - IQ Playback Repeat</p></td>
+<td><p>Replays an IQ file on repeat.</p></td>
+</tr>
+<tr class="row-odd"><td><p>General - IQ Playback Single</p></td>
+<td><p>Replays an IQ file once.</p></td>
+</tr>
+<tr class="row-even"><td><p>General - IQ Record</p></td>
+<td><p>Records an IQ file for a specified number of samples.</p></td>
+</tr>
+<tr class="row-odd"><td><p>General - IQ Record Squelch</p></td>
+<td><p>Records an IQ file for a specified number of samples following a power squelch.</p></td>
+</tr>
+<tr class="row-even"><td><p>General - Instantaneous Frequency</p></td>
+<td><p>Test attack for flow graphs with GUIs.</p></td>
+</tr>
+<tr class="row-odd"><td><p>General - OOK Transmit</p></td>
+<td><p>Generates custom on-off keying signals with repeating bursts at regular intervals.</p></td>
+</tr>
+<tr class="row-even"><td><p>General - Sleep</p></td>
+<td><p>Sleeps for a duration.</p></td>
+</tr>
+<tr class="row-odd"><td><p>HD Radio - Naughty String Injection</p></td>
+<td><p>Inject naughty strings into the artist or song title in HD Radio from a JSON file. Specify ‘title’ or ‘artist’ to direct the injection process.</p></td>
+</tr>
+<tr class="row-even"><td><p>Mode S - Dump1090 Interactive</p></td>
+<td><p>Runs dump1090 in interactive mode. Go to: <a class="reference external" href="http://127.0.0.1:8081">http://127.0.0.1:8081</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>Mode S - Dump1090 Raw File</p></td>
+<td><p>Executes the “./dump1090 –raw &gt; ascii_file.txt” command to save ASCII data (*8dc051daf82300020049b8c711c4) to a file.</p></td>
+</tr>
+<tr class="row-even"><td><p>Mode S - Dump1090 Raw Network</p></td>
+<td><p>Executes the “./dump1090 –raw | nc 127.0.0.1 55555” command to transfer ASCII data (*8dc051daf82300020049b8c711c4) over a network.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mode S - Fields</p></td>
+<td><p>Flow graph for fuzzing fields in Mode S messages at a regular interval.</p></td>
+</tr>
+<tr class="row-even"><td><p>Mode S  - From File</p></td>
+<td><p>Transmits ADSB binary data supplied from a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mode S - dump978 uat2text</p></td>
+<td><p>Executes the “rtl_sdr -d 0 -f 978000000 -s 2083334 -g 48 - | ./dump978 | ./uat2text” command to decode 978 MHz UAT messages into a readable format.</p></td>
+</tr>
+<tr class="row-even"><td><p>Mode S - gr-adsb Brief</p></td>
+<td><p>Prints formatted decoded ADSB data (gr-adsb) originating from an SDR (2 MS/s) to stdout with the brief option selected.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mode S - gr-adsb To Webserver</p></td>
+<td><p>Forwards formatted decoded ADSB data (gr-adsb) originating from an SDR (2 MS/s) to a webserver (<a class="reference external" href="tcp://127.0.0.1:5001">tcp://127.0.0.1:5001</a>) over ZMQ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Mode S - gr-adsb Verbose</p></td>
+<td><p>Prints formatted decoded ADSB data (gr-adsb) originating from an SDR (2 MS/s) to stdout with the verbose option selected.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Mode S - gr-adsb Webserver</p></td>
+<td><p>Forwards formatted decoded ADSB data (gr-adsb) originating from an IQ file to a webserver (<a class="reference external" href="tcp://127.0.0.1:5001">tcp://127.0.0.1:5001</a>) over ZMQ.</p></td>
+</tr>
+<tr class="row-even"><td><p>Morse Code - File</p></td>
+<td><p>Generates Morse Code for one user-provided message and writes the IQ samples to file. The audio will stop when the message is complete.</p></td>
+</tr>
+<tr class="row-odd"><td><p>Morse Code - Transmit</p></td>
+<td><p>Generates Morse Code for one user-provided message and transmits the signal. The audio will stop when the message done transmitting.</p></td>
+</tr>
+<tr class="row-even"><td><p>RDS - Fields</p></td>
+<td><p>Flow graph for fuzzing fields in RDS messages at a regular interval.</p></td>
+</tr>
+<tr class="row-odd"><td><p>RDS - File Source</p></td>
+<td><p>Replays RDS data on repeat supplied from a file. No audio is added.</p></td>
+</tr>
+<tr class="row-even"><td><p>SimpliciTI - Access Point DoS</p></td>
+<td><p>Replays data that will create a denial of service at the access point.</p></td>
+</tr>
+<tr class="row-odd"><td><p>SimpliciTI - Add Node</p></td>
+<td><p>Replays data from an add node message.</p></td>
+</tr>
+<tr class="row-even"><td><p>SimpliciTI - CW</p></td>
+<td><p>Jams SimpliciTI with a CW signal.</p></td>
+</tr>
+<tr class="row-odd"><td><p>SimpliciTI - Fields</p></td>
+<td><p>Flow graph for fuzzing SimpliciTI message fields at a regular interval.</p></td>
+</tr>
+<tr class="row-even"><td><p>SimpliciTI - From File</p></td>
+<td><p>Replays message data supplied from a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p>SimpliciTI - Gaussian</p></td>
+<td><p>Jams SimpliciTI with a Gaussian noise source.</p></td>
+</tr>
+<tr class="row-even"><td><p>SimpliciTI - Unlink Node</p></td>
+<td><p>Replays an unlink node message supplied from a file.</p></td>
+</tr>
+<tr class="row-odd"><td><p>TPMS - Receive</p></td>
+<td><p>Decodes TPMS signals (only one format) and prints the output.</p></td>
+</tr>
+<tr class="row-even"><td><p>TPMS - Transmit</p></td>
+<td><p>Transmits TPMS signals periodically.</p></td>
+</tr>
+<tr class="row-odd"><td><p>X10 - Decode</p></td>
+<td><p>Decodes X10 signals and prints the output.</p></td>
+</tr>
+<tr class="row-even"><td><p>X10 - Fields</p></td>
+<td><p>Flow graph for fuzzing X10 message fields at a regular interval.</p></td>
+</tr>
+<tr class="row-odd"><td><p>X10 - Off</p></td>
+<td><p>Transmits an off message for a RadioShack Plug’n power outlet switch.</p></td>
+</tr>
+<tr class="row-even"><td><p>X10 - On</p></td>
+<td><p>Transmits an on message for a RadioShack Plug’n power outlet switch.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ZWAVE - Color List</p></td>
+<td><p>Cycles through a list of colors built into the message_generator_pdu block. Tested against a Monoprice Z-Wave Plus RGB Smart Bulb.</p></td>
+</tr>
+<tr class="row-even"><td><p>ZWAVE - Off</p></td>
+<td><p>Transmits an off message for a Monoprice Z-Wave Plus RGB Smart Bulb.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ZWAVE - On</p></td>
+<td><p>Transmits an on message for a Monoprice Z-Wave Plus RGB Smart Bulb.</p></td>
+</tr>
+<tr class="row-even"><td><p>ZWAVE - Random Colors</p></td>
+<td><p>Randomly generates a new RGB value for each message. Tested against a Monoprice Z-Wave Plus RGB Smart Bulb.</p></td>
+</tr>
+<tr class="row-odd"><td><p>ZWAVE - Receive</p></td>
+<td><p>Decodes Z-Wave messages and prints the output. Tested against a Monoprice Z-Wave Plus RGB Smart Bulb.</p></td>
+</tr>
+<tr class="row-even"><td><p>ZWAVE - Transmit</p></td>
+<td><p>Transmits a Z-Wave message (default is a red light). Tested against a Monoprice Z-Wave Plus RGB Smart Bulb.</p></td>
+</tr>
+</tbody>
+</table>
 </section>
 </section>
 

@@ -606,6 +606,18 @@ class HardwareSelectDialog(QtWidgets.QDialog, UI_Types.HW_Select):
             table_item.setTextAlignment(QtCore.Qt.AlignCenter)
             scan_results_tables[tab_index].setItem(get_row, 3, table_item)
 
+        elif get_hardware == "RSPduo":
+            new_serial = str(get_row_text[3])
+            table_item = QtWidgets.QTableWidgetItem(new_serial)
+            table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+            scan_results_tables[tab_index].setItem(get_row, 3, table_item)
+
+        elif get_hardware == "RSPdx":
+            new_serial = str(get_row_text[3])
+            table_item = QtWidgets.QTableWidgetItem(new_serial)
+            table_item.setTextAlignment(QtCore.Qt.AlignCenter)
+            scan_results_tables[tab_index].setItem(get_row, 3, table_item)
+            
         # Resize the Scan Results Table
         scan_results_tables[tab_index].resizeColumnsToContents()
         scan_results_tables[tab_index].resizeRowsToContents()

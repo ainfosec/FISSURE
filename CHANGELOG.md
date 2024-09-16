@@ -1,6 +1,25 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-09-16
+
+Support for RSPduo and RSPdx: part 1 of 2.
+
+### Added
+
+- Support for SDRplay RSPduo and RSPdx in Dashboard widgets (no flow graphs yet)
+- gr-sdrplay3 OOT module to the installer for 3.10 operating systems (requires SDRplay API)
+- DEF CON 32 RF Village prerecorded and live talk links to README
+- GRCon24 link to README
+
+### Fixed
+
+- Exporting fissure Python module/directory to the PYTHONPATH as part of the fissure command in case the module is not recognized
+
+### Documentation
+
+- Added attack list to Operation section
+
 ## 2024-08-29
 
 Fixing Add to Library button and multi-stage attack buttons.

@@ -34,6 +34,7 @@ class General_General_USRPB2x0_IQ_Record(gr.top_block):
         self.rx_frequency = rx_frequency = 2412e6
         self.rx_channel = rx_channel = "A:A"
         self.rx_antenna = rx_antenna = "TX/RX"
+        self.notes = notes = "Records an IQ file for a specified number of samples."
         self.filepath = filepath = ""
         self.file_length = file_length = 100000
 
@@ -107,6 +108,12 @@ class General_General_USRPB2x0_IQ_Record(gr.top_block):
     def set_rx_antenna(self, rx_antenna):
         self.rx_antenna = rx_antenna
         self.uhd_usrp_source_0.set_antenna(self.rx_antenna, 0)
+
+    def get_notes(self):
+        return self.notes
+
+    def set_notes(self, notes):
+        self.notes = notes
 
     def get_filepath(self):
         return self.filepath
