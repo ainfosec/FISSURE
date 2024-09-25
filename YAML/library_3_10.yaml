@@ -1238,6 +1238,7 @@ Attacks:
      - Mail Bomb,2
      - DECT - Null Flow Graph,1
      - Spoofing,1
+     - General - OOK Transmit,2
      - DECT - From File,2
      - FM Radio - From File,2
      - FM Radio - From Wav File,2
@@ -4388,13 +4389,19 @@ Protocols:
                          Hardware:
                               USRP B2x0:
                                    Flow Graph - GUI: General_General_USRPB210_IF.py
+               General - OOK Transmit:
+                    OOK:
+                         Hardware:
+                              USRP B2x0:
+                                   Flow Graph: General_OOK_USRPB210_OOK_Transmit.py
                General - Sleep:
                     General:
                          Hardware:
                               Computer:
-                                   Python3 Script: General_General_Computer_Sleep.py                                   
+                                   Python3 Script: General_General_Computer_Sleep.py
           Modulation Types:
           - General
+          - OOK
           Null Placeholder: null
      HD Radio:
           Attacks:
@@ -6292,4 +6299,4 @@ Triggers:
           Motion Detector:
                Default Settings: None
                File: motion_detector.py
-               Type: Python3 Script                    
+               Type: Python3 Script

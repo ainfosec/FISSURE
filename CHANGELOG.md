@@ -1,6 +1,20 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-09-25
+
+3.10 OOK Generator block and GRCon24 video.
+
+### Added
+
+- ook_generator block to maint-3.10 gr-ainfosec
+- General OOK Transmit attack for maint-3.10
+- GRCon24 video link to the README
+
+### Changed
+
+- Grayed out GRCon24 event in README
+
 ## 2024-09-24
 
 Support for RSPduo, RSPdx, and RSPdx R2: part 2 of 2.

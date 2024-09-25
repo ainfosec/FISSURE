@@ -1238,20 +1238,19 @@ Attacks:
      - Mail Bomb,2
      - DECT - Null Flow Graph,1
      - Spoofing,1
-     - General - OOK Transmit,2
-     - General - IQ Playback Repeat,2
-     - General - IQ Playback Single,2
      - DECT - From File,2
      - FM Radio - From File,2
      - FM Radio - From Wav File,2
      - FM Radio - Simple Replay,2
+     - General - IQ Playback Single,2
+     - General - IQ Playback Repeat,2
      - HD Radio - Naughty String Injection,2
      - 802.11x - wifi_tx Beacon,2
      - Ethernet - MAC Flooding,2
      - 802.11x - wifi_tx UDP Crafter QoS,2
      - Morse Code - File,2
      - Morse Code - Transmit,2
-     - Mode S  - From File,2
+     - Mode S - From File,2
      - SimpliciTI - From File,2
      - ZWAVE - Random Colors,2
      - ZWAVE - Color List,2
@@ -1288,16 +1287,11 @@ Attacks:
      - SimpliciTI - Add Node,2
      - SimpliciTI - Unlink Node,2
      - Sniffing/Snooping,1
-     - Mode S - gr-adsb To Webserver,2
-     - Mode S - gr-adsb Webserver,2
-     - Mode S - gr-adsb Verbose,2
-     - Mode S - gr-adsb Brief,2
-     - Mode S - Dump1090 Interactive,2
-     - Mode S - Dump1090 Raw Network,2
+     - General - IQ Record Squelch,2
+     - General - IQ Record,2
      - Mode S - dump978 uat2text,2
      - Mode S - Dump1090 Raw File,2
-     - General - IQ Record,2
-     - General - IQ Record Squelch,2
+     - Mode S - Dump1090 Raw Network,2
      - General - Instantaneous Frequency,2
      - FM Radio - File_Sink,2
      - FM Radio - Audio_Sink,2
@@ -1307,6 +1301,10 @@ Attacks:
      - Bluetooth Low Energy - btrx,2
      - Bluetooth Classic - btrx,2
      - X10 - Decode,2
+     - Mode S - Dump1090 Interactive,2
+     - Mode S - gr-adsb To Webserver,2
+     - Mode S - gr-adsb Verbose,2
+     - Mode S - gr-adsb Brief,2
      - DECT - Audio Sink,2
      - FM Radio - Audio Sink,2
      - DECT - File Sink,2
@@ -1327,6 +1325,8 @@ Attacks:
      - 802.11x - TP-Link Archer A7 Exploit,2
      - SQL Injection,2
      - Misuse of Resources,1
+     - Other,1
+     - General - Sleep,2
 Inspection Flow Graphs:
      802.11x Adapter:
      - None
@@ -1356,6 +1356,24 @@ Inspection Flow Graphs:
      - time_sink_plutosdr.py
      - time_sink_1_10_100_plutosdr.py
      - waterfall_plutosdr.py
+     RSPduo:
+     - instantaneous_frequency_rspduo.py
+     - signal_envelope_rspduo.py
+     - time_sink_rspduo.py
+     - time_sink_1_10_100_rspduo.py
+     - waterfall_rspduo.py
+     RSPdx:
+     - instantaneous_frequency_rspdx.py
+     - signal_envelope_rspdx.py
+     - time_sink_rspdx.py
+     - time_sink_1_10_100_rspdx.py
+     - waterfall_rspdx.py
+     RSPdx R2:
+     - instantaneous_frequency_rspdx_r2.py
+     - signal_envelope_rspdx_r2.py
+     - time_sink_rspdx_r2.py
+     - time_sink_1_10_100_rspdx_r2.py
+     - waterfall_rspdx_r2.py
      RTL2832U:
      - instantaneous_frequency_rtl2832u.py
      - signal_envelope_rtl2832u.py
@@ -1409,7 +1427,7 @@ Inspection Flow Graphs:
      - signal_envelope_bladerf2.py
      - time_sink_bladerf2.py
      - time_sink_1_10_100_bladerf2.py
-     - waterfall_blader2f.py
+     - waterfall_bladerf2.py
 Protocols:
      802.11x:
           Attacks:
@@ -4370,11 +4388,6 @@ Protocols:
                          Hardware:
                               USRP B2x0:
                                    Flow Graph - GUI: General_General_USRPB210_IF.py
-               General - OOK Transmit:
-                    OOK:
-                         Hardware:
-                              USRP B2x0:
-                                   Flow Graph: General_OOK_USRPB210_OOK_Transmit.py
                General - Sleep:
                     General:
                          Hardware:
@@ -4396,16 +4409,11 @@ Protocols:
           Null Placeholder: null
      Mode S:
           Attacks:
-               Mode S  - From File:
-                    PPM:
-                         Hardware:
-                              LimeSDR:
-                                   Flow Graph: Mode_S_PPM_LimeSDR_From_File.py
                Mode S - Dump1090 Interactive:
                     DPSK:
                          Hardware:
                               RTL2832U:
-                                   Python2 Script: Mode_S_DPSK_RTL2832U_dump1090_interactive.py
+                                   Python2 Script: Mode_S_PPM_RTL2832U_dump1090_interactive.py
                     PPM:
                          Hardware:
                               RTL2832U:
@@ -4459,6 +4467,8 @@ Protocols:
                Mode S - gr-adsb To Webserver:
                     PPM:
                          Hardware:
+                              Computer:
+                                   Python3 Script: Mode_S_PPM_Computer_stdout_webserver_script.py
                               USRP B2x0:
                                    Python3 Script: Mode_S_PPM_USRPB210_stdout_webserver_script.py
                Mode S - gr-adsb Verbose:
@@ -4468,11 +4478,6 @@ Protocols:
                                    Python3 Script: Mode_S_PPM_Computer_stdout_verbose_script.py
                               USRP B2x0:
                                    Python3 Script: Mode_S_PPM_USRPB210_stdout_verbose_script.py
-               Mode S - gr-adsb Webserver:
-                    PPM:
-                         Hardware:
-                              Computer:
-                                   Python3 Script: Mode_S_PPM_Computer_stdout_webserver_script.py
           Demodulation Flow Graphs:
                PPM:
                     HackRF:

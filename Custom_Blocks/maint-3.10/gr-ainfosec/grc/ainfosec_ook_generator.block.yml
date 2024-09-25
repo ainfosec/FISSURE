@@ -1,0 +1,71 @@
+id: ainfosec_ook_generator
+label: ook_generator
+category: '[ainfosec]'
+
+templates:
+  imports: from gnuradio import ainfosec
+  make: ainfosec.ook_generator(${chip0_pattern},${chip1_pattern},${burst_interval},${sample_rate},${chip0_duration},${chip1_duration},${number_of_bursts},${sequence},${repetition_interval})
+  callbacks:
+  - set_chip0_pattern(${chip0_pattern})
+  - set_chip1_pattern(${chip1_pattern})
+  - set_burst_interval(${burst_interval})
+  - set_sample_rate(${sample_rate})
+  - set_chip0_duration(${chip0_duration})
+  - set_chip1_duration(${chip1_duration})
+  - set_number_of_bursts(${number_of_bursts})
+  - set_sequence(${sequence})
+  - set_repetition_interval(${repetition_interval})
+  
+parameters:
+- id: chip0_pattern
+  label: Chip 0 Pattern
+  dtype: string
+  default: "0"
+- id: chip1_pattern
+  label: Chip 1 Pattern
+  dtype: string
+  default: "1"
+- id: burst_interval
+  label: Burst Interval (us)
+  dtype: float
+  default: 100
+- id: sample_rate
+  label: Sample Rate
+  dtype: float
+- id: chip0_duration
+  label: Chip 0 Duration (us)
+  dtype: float
+  default: 5
+- id: chip1_duration
+  label: Chip 1 Duration (us)
+  dtype: float
+  default: 5
+- id: number_of_bursts
+  label: Number of Bursts
+  dtype: int
+  default: 5
+- id: sequence
+  label: Chip/Bit Sequence
+  dtype: string
+  default: "10101010"
+- id: repetition_interval
+  label: Repetition Interval (s)
+  dtype: float
+  default: 3
+
+
+inputs:
+- label: in
+  domain: stream
+  dtype: complex
+  vlen: 1
+  optional: 0
+
+outputs:
+- label: out
+  domain: stream
+  dtype: complex
+  vlen: 1
+  optional: 0
+
+file_format: 1

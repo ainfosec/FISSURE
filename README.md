@@ -42,7 +42,7 @@ The deployment of multiple sensor nodes on the same network unlocks many geospat
 
 ![Career Fair](https://img.shields.io/badge/Event-Career%20Fair-darkgray) **Thu. September 5, 2024**: Binghamton University STEM Job and Internship Fair - 1100-1530 EST
 
-![Conference](https://img.shields.io/badge/Event-Conference-blue) **Tue. September 17, 2024**: GNU Radio Conference 2024 - 1605-1635 EST (Tune in live!) [Description](https://events.gnuradio.org/event/24/contributions/649/)
+![Conference](https://img.shields.io/badge/Event-Conference-darkgray) **Tue. September 17, 2024**: GNU Radio Conference 2024 - 1605-1635 EST [Description/Slides](https://events.gnuradio.org/event/24/contributions/649/), [Live Recording](https://youtu.be/5UYhUi8SiK4?t=27282)
 
 ## Documentation
 
@@ -155,7 +155,7 @@ The deployment of multiple sensor nodes on the same network unlocks many geospat
   </tr>
   <tr>
     <td><a href="https://www.youtube.com/watch?v=5nYiVR-PsOc"><img src="/docs/Icons/README/youtube_dc32_rf_village_prerecorded.png" align="center" width="250" height="140"><dt align="center"><small><i><b>DC32 RF Village Prerecorded Talk</b></i></small></dt></td>
-    <td></td>
+    <td><a href="https://youtu.be/5UYhUi8SiK4?t=27282"><img src="/docs/Icons/README/youtube_GRCon24.png" align="center" width="250" height="140"><dt align="center"><small><i><b>GRCon24</b></i></small></dt></td>
     <td></td>
   </tr>   
 </table>
