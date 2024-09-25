@@ -20,7 +20,7 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import uhd
 import time
-import gnuradio.fuzzer as fuzzer
+import fuzzer
 
 
 

@@ -19,7 +19,7 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio import soapy
+from gnuradio import sdrplay3
 import gnuradio.ainfosec as ainfosec
 
 
@@ -34,11 +34,11 @@ class wideband_rtl2832u(gr.top_block):
         # Variables
         ##################################################
         self.threshold = threshold = -70
-        self.serial = serial = "False"
-        self.sample_rate = sample_rate = 2560000
+        self.serial = serial = "0"
+        self.sample_rate = sample_rate = 2000000
         self.rx_freq = rx_freq = 1200e6
         self.ip_address = ip_address = "N/A"
-        self.gain = gain = 10
+        self.gain = gain = 0
         self.fft_size = fft_size = 512*1
         self.channel = channel = "N/A"
         self.antenna = antenna = "N/A"
@@ -47,41 +47,33 @@ class wideband_rtl2832u(gr.top_block):
         # Blocks
         ##################################################
 
-        self.soapy_rtlsdr_source_0 = None
-        dev = 'driver=rtlsdr'
-        stream_args = ''
-        tune_args = ['']
-        settings = ['']
-
-        def _set_soapy_rtlsdr_source_0_gain_mode(channel, agc):
-            self.soapy_rtlsdr_source_0.set_gain_mode(channel, agc)
-            if not agc:
-                  self.soapy_rtlsdr_source_0.set_gain(channel, self._soapy_rtlsdr_source_0_gain_value)
-        self.set_soapy_rtlsdr_source_0_gain_mode = _set_soapy_rtlsdr_source_0_gain_mode
-
-        def _set_soapy_rtlsdr_source_0_gain(channel, name, gain):
-            self._soapy_rtlsdr_source_0_gain_value = gain
-            if not self.soapy_rtlsdr_source_0.get_gain_mode(channel):
-                self.soapy_rtlsdr_source_0.set_gain(channel, gain)
-        self.set_soapy_rtlsdr_source_0_gain = _set_soapy_rtlsdr_source_0_gain
-
-        def _set_soapy_rtlsdr_source_0_bias(bias):
-            if 'biastee' in self._soapy_rtlsdr_source_0_setting_keys:
-                self.soapy_rtlsdr_source_0.write_setting('biastee', bias)
-        self.set_soapy_rtlsdr_source_0_bias = _set_soapy_rtlsdr_source_0_bias
-
-        self.soapy_rtlsdr_source_0 = soapy.source(dev, "fc32", 1, '',
-                                  stream_args, tune_args, settings)
-
-        self._soapy_rtlsdr_source_0_setting_keys = [a.key for a in self.soapy_rtlsdr_source_0.get_setting_info()]
-
-        self.soapy_rtlsdr_source_0.set_sample_rate(0, float(sample_rate))
-        self.soapy_rtlsdr_source_0.set_frequency(0, float(rx_freq))
-        self.soapy_rtlsdr_source_0.set_frequency_correction(0, 0)
-        self.set_soapy_rtlsdr_source_0_bias(bool(False))
-        self._soapy_rtlsdr_source_0_gain_value = float(gain)
-        self.set_soapy_rtlsdr_source_0_gain_mode(0, bool(False))
-        self.set_soapy_rtlsdr_source_0_gain(0, 'TUNER', float(gain))
+        self.sdrplay3_rspduo_0 = sdrplay3.rspduo(
+            str(serial),
+            rspduo_mode="Single Tuner",
+            antenna="Tuner 1 50 ohm",
+            stream_args=sdrplay3.stream_args(
+                output_type='fc32',
+                channels_size=1
+            ),
+        )
+        self.sdrplay3_rspduo_0.set_sample_rate(float(sample_rate), False)
+        self.sdrplay3_rspduo_0.set_center_freq(float(rx_freq), False)
+        self.sdrplay3_rspduo_0.set_bandwidth(0)
+        self.sdrplay3_rspduo_0.set_antenna("Tuner 1 50 ohm")
+        self.sdrplay3_rspduo_0.set_gain_mode(False)
+        self.sdrplay3_rspduo_0.set_gain(-((59-float(gain))), 'IF', False)
+        self.sdrplay3_rspduo_0.set_gain(-(0), 'RF', False)
+        self.sdrplay3_rspduo_0.set_freq_corr(0)
+        self.sdrplay3_rspduo_0.set_dc_offset_mode(False)
+        self.sdrplay3_rspduo_0.set_iq_balance_mode(False)
+        self.sdrplay3_rspduo_0.set_agc_setpoint((-30))
+        self.sdrplay3_rspduo_0.set_rf_notch_filter(False)
+        self.sdrplay3_rspduo_0.set_dab_notch_filter(False)
+        self.sdrplay3_rspduo_0.set_am_notch_filter(False)
+        self.sdrplay3_rspduo_0.set_biasT(False)
+        self.sdrplay3_rspduo_0.set_debug_mode(False)
+        self.sdrplay3_rspduo_0.set_sample_sequence_gaps_check(False)
+        self.sdrplay3_rspduo_0.set_show_gain_changes(False)
         self.fft_vxx_0 = fft.fft_vcc(fft_size, True, window.blackmanharris(fft_size), True, 1)
         self.blocks_vector_to_stream_0 = blocks.vector_to_stream(gr.sizeof_gr_complex*1, fft_size)
         self.blocks_stream_to_vector_1 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, fft_size)
@@ -100,7 +92,7 @@ class wideband_rtl2832u(gr.top_block):
         self.connect((self.blocks_stream_to_vector_1, 0), (self.fft_vxx_0, 0))
         self.connect((self.blocks_vector_to_stream_0, 0), (self.blocks_complex_to_mag_squared_0, 0))
         self.connect((self.fft_vxx_0, 0), (self.blocks_vector_to_stream_0, 0))
-        self.connect((self.soapy_rtlsdr_source_0, 0), (self.analog_pwr_squelch_xx_0, 0))
+        self.connect((self.sdrplay3_rspduo_0, 0), (self.analog_pwr_squelch_xx_0, 0))
 
 
     def get_threshold(self):
@@ -121,7 +113,7 @@ class wideband_rtl2832u(gr.top_block):
     def set_sample_rate(self, sample_rate):
         self.sample_rate = sample_rate
         self.ainfosec_wideband_detector1_0.set_sample_rate(self.sample_rate)
-        self.soapy_rtlsdr_source_0.set_sample_rate(0, float(self.sample_rate))
+        self.sdrplay3_rspduo_0.set_sample_rate(float(self.sample_rate), False)
 
     def get_rx_freq(self):
         return self.rx_freq
@@ -129,7 +121,7 @@ class wideband_rtl2832u(gr.top_block):
     def set_rx_freq(self, rx_freq):
         self.rx_freq = rx_freq
         self.ainfosec_wideband_detector1_0.set_rx_freq(self.rx_freq)
-        self.soapy_rtlsdr_source_0.set_frequency(0, float(self.rx_freq))
+        self.sdrplay3_rspduo_0.set_center_freq(float(self.rx_freq), False)
 
     def get_ip_address(self):
         return self.ip_address
@@ -142,7 +134,7 @@ class wideband_rtl2832u(gr.top_block):
 
     def set_gain(self, gain):
         self.gain = gain
-        self.set_soapy_rtlsdr_source_0_gain(0, 'TUNER', float(self.gain))
+        self.sdrplay3_rspduo_0.set_gain(-((59-float(self.gain))), 'IF', False)
 
     def get_fft_size(self):
         return self.fft_size

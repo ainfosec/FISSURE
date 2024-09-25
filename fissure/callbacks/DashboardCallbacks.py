@@ -6,6 +6,7 @@ import os
 import subprocess
 import threading
 import ast
+import asyncio
 
 from fissure.Dashboard.UI_Components.Qt5 import MyMessageBox
 # from ..Dashboard.Slots import StatusBarSlots  # how do you go from callbacks to slots?
@@ -496,7 +497,10 @@ async def flowGraphStartedIQ(component: object, sensor_node_id=0):
     """        
     # Update the Pushbutton and Label
     component.frontend.ui.pushButton_iq_record.setEnabled(True)
-    get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.item(0,5).text())
+    try:
+        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.cellWidget(0,5).value())  # Save value from operation start?
+    except:
+        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.item(0,5).text())
     component.frontend.ui.label2_iq_status_files.setText("Recording File " + str(component.frontend.iq_file_counter) + " of " + get_number_of_files)
 
     # Update the Status Dialog
@@ -577,7 +581,10 @@ async def flowGraphFinishedIQ(component: object, sensor_node_id=0):
         IQDataTabSlots._slotIQ_PlotAllClicked(component.frontend)
 
     # More than One Number of Files
-    get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.item(0,5).text())
+    try:
+        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.cellWidget(0,5).value())  # Save value from operation start?
+    except:
+        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.item(0,5).text())
     if int(get_number_of_files) > 1:
 
         # Update the Counter
@@ -610,7 +617,7 @@ async def flowGraphFinishedIQ(component: object, sensor_node_id=0):
             component.frontend.iq_file_counter = int(get_number_of_files) + 1
         if component.frontend.iq_file_counter <= int(get_number_of_files):
             get_delay = float(str(component.frontend.ui.tableWidget_iq_record.item(0,9).text()))
-            next_record_thread = threading.Timer(get_delay, IQDataTabSlots._slotIQ_RecordClicked, [True])
+            next_record_thread = threading.Timer(get_delay, call_async_function, [component.frontend])
             next_record_thread.start()
             #IQDataTabSlots._slotIQ_RecordClicked()
 
@@ -635,6 +642,15 @@ async def flowGraphFinishedIQ(component: object, sensor_node_id=0):
             metadata_filepath = str(component.frontend.ui.textEdit_iq_record_dir.toPlainText()) + '/' + get_file.replace(".sigmf-data",".sigmf-meta")
             component.frontend.writeSigMF(metadata_filepath,component.frontend.sigmf_dict)
 
+
+# Function to wrap the async function call
+def call_async_function(component: object):
+    # Create a new event loop for this thread
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(IQDataTabSlots._slotIQ_RecordClicked(component, True))
+    loop.close()  # Close the loop when done
+    
 
 async def flowGraphFinishedIQ_Inspection(component: object, sensor_node_id=0):
     """

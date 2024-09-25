@@ -530,11 +530,13 @@ def _slotIQ_RecordHardwareChanged(dashboard: QtCore.QObject):
         comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
         comboBox_antenna.addItem("1")
         comboBox_antenna.addItem("2")
+        item1 = comboBox_antenna.model().item(1)
+        item1.setFlags(item1.flags() & ~QtCore.Qt.ItemIsEnabled)
         dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
         spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(60)
+        spinbox_gain.setMaximum(59)
         spinbox_gain.setMinimum(0)
-        spinbox_gain.setValue(50)
+        spinbox_gain.setValue(0)
         spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
         dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
         dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
@@ -557,11 +559,46 @@ def _slotIQ_RecordHardwareChanged(dashboard: QtCore.QObject):
         comboBox_antenna.addItem("A")
         comboBox_antenna.addItem("B")
         comboBox_antenna.addItem("C")
+        itemB = comboBox_antenna.model().item(1)
+        itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
+        itemC = comboBox_antenna.model().item(2)
+        itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)  
         dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
         spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(60)
+        spinbox_gain.setMaximum(59)
         spinbox_gain.setMinimum(0)
-        spinbox_gain.setValue(50)
+        spinbox_gain.setValue(0)
+        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
+        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
+        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
+        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
+        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
+        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
+
+        dashboard.ui.frame_iq_record.setEnabled(True)
+
+    elif get_hardware_type == "RSPdx R2":
+        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
+        spinbox_frequency.setMaximum(2000)
+        spinbox_frequency.setMinimum(1)
+        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
+        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
+        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
+        comboBox_antenna.addItem("A")
+        comboBox_antenna.addItem("B")
+        comboBox_antenna.addItem("C")
+        itemB = comboBox_antenna.model().item(1)
+        itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
+        itemC = comboBox_antenna.model().item(2)
+        itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)  
+        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
+        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
+        spinbox_gain.setMaximum(59)
+        spinbox_gain.setMinimum(0)
+        spinbox_gain.setValue(0)
         spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
         dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
         dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
@@ -1055,6 +1092,12 @@ def _slotIQ_InspectionFlowGraphClicked(dashboard: QtCore.QObject):
                                 parameter_value = get_hardware_serial
                             elif get_hardware_type == "RTL2832U":
                                 parameter_value = get_hardware_serial
+                            elif get_hardware_type == "RSPduo":
+                                parameter_value = get_hardware_serial
+                            elif get_hardware_type == "RSPdx":
+                                parameter_value = get_hardware_serial
+                            elif get_hardware_type == "RSPdx R2":
+                                parameter_value = get_hardware_serial
                             else:
                                 parameter_value = 'serial=' + get_hardware_serial
                         else:
@@ -1065,6 +1108,12 @@ def _slotIQ_InspectionFlowGraphClicked(dashboard: QtCore.QObject):
                             elif get_hardware_type == "bladeRF 2.0":
                                 parameter_value = "0"
                             elif get_hardware_type == "RTL2832U":
+                                parameter_value = "0"
+                            elif get_hardware_type == "RSPduo":
+                                parameter_value = "0"
+                            elif get_hardware_type == "RSPdx":
+                                parameter_value = "0"
+                            elif get_hardware_type == "RSPdx R2":
                                 parameter_value = "0"
                             else:
                                 parameter_value = "False"
@@ -6356,7 +6405,10 @@ async def _slotIQ_RecordClicked(dashboard: QtCore.QObject, called_from_thread=Fa
                     get_gain = str(dashboard.ui.tableWidget_iq_record.cellWidget(0,4).value())
                 except:
                     get_gain = str(dashboard.ui.tableWidget_iq_record.item(0,4).text())
-                get_number_of_files = str(dashboard.ui.tableWidget_iq_record.item(0,5).text())
+                try:
+                    get_number_of_files = str(dashboard.ui.tableWidget_iq_record.cellWidget(0,5).value())
+                except:
+                    get_number_of_files = str(dashboard.ui.tableWidget_iq_record.item(0,5).text())
                 get_file_length = str(dashboard.ui.tableWidget_iq_record.item(0,6).text())
                 try:
                     get_sample_rate = str(dashboard.ui.tableWidget_iq_record.cellWidget(0,7).currentText())
@@ -6430,6 +6482,8 @@ async def _slotIQ_RecordClicked(dashboard: QtCore.QObject, called_from_thread=Fa
                 fname = "iq_recorder_rspduo"
             elif get_hardware_type == "RSPdx":
                 fname = "iq_recorder_rspdx"                                
+            elif get_hardware_type == "RSPdx R2":
+                fname = "iq_recorder_rspdx_r2"                                
 
             # LimeSDR Channel
             if get_hardware_type == "LimeSDR":
@@ -6446,6 +6500,12 @@ async def _slotIQ_RecordClicked(dashboard: QtCore.QObject, called_from_thread=Fa
                     get_serial = get_hardware_serial
                 elif get_hardware_type == "bladeRF 2.0":
                     get_serial = get_hardware_serial
+                elif get_hardware_type == "RSPduo":
+                    get_serial = get_hardware_serial
+                elif get_hardware_type == "RSPdx":
+                    get_serial = get_hardware_serial
+                elif get_hardware_type == "RSPdx R2":
+                    get_serial = get_hardware_serial
                 else:
                     get_serial = 'serial=' + get_hardware_serial
             else:
@@ -6454,6 +6514,12 @@ async def _slotIQ_RecordClicked(dashboard: QtCore.QObject, called_from_thread=Fa
                 elif get_hardware_type == "bladeRF":
                     get_serial = "0"
                 elif get_hardware_type == "bladeRF 2.0":
+                    get_serial = "0"
+                elif get_hardware_type == "RSPduo":
+                    get_serial = "0"
+                elif get_hardware_type == "RSPdx":
+                    get_serial = "0"
+                elif get_hardware_type == "RSPdx R2":
                     get_serial = "0"
                 else:
                     get_serial = "False"
@@ -6634,6 +6700,12 @@ async def _slotIQ_PlaybackClicked(dashboard: QtCore.QObject):
                 get_serial = get_hardware_serial
             elif get_hardware_type == "bladeRF 2.0":
                 get_serial = get_hardware_serial
+            elif get_hardware_type == "RSPduo":
+                get_serial = get_hardware_serial
+            elif get_hardware_type == "RSPdx":
+                get_serial = get_hardware_serial
+            elif get_hardware_type == "RSPdx R2":
+                get_serial = get_hardware_serial
             else:
                 get_serial = 'serial=' + get_hardware_serial
         else:
@@ -6642,6 +6714,12 @@ async def _slotIQ_PlaybackClicked(dashboard: QtCore.QObject):
             elif get_hardware_type == "bladeRF":
                 get_serial = "0"
             elif get_hardware_type == "bladeRF 2.0":
+                get_serial = "0"
+            elif get_hardware_type == "RSPduo":
+                get_serial = "0"
+            elif get_hardware_type == "RSPdx":
+                get_serial = "0"
+            elif get_hardware_type == "RSPdx R2":
                 get_serial = "0"
             else:
                 get_serial = "False"

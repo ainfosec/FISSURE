@@ -24,12 +24,10 @@ from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import gr, pdu
-from gnuradio import network
 from gnuradio import uhd
 import time
 from gnuradio.qtgui import Range, RangeWidget
 from PyQt5 import QtCore
-import foo
 import ieee802_11
 import sip
 
@@ -74,8 +72,8 @@ class wifi_rx(gr.top_block, Qt.QWidget):
         self.window_size = window_size = 48
         self.sync_length = sync_length = 320
         self.samp_rate = samp_rate = 10e6
-        self.lo_offset = lo_offset = 11e6
-        self.gain = gain = 0.8
+        self.lo_offset = lo_offset = 0
+        self.gain = gain = 0.75
         self.freq = freq = 5890000000
         self.chan_est = chan_est = 0
 
@@ -84,9 +82,9 @@ class wifi_rx(gr.top_block, Qt.QWidget):
         ##################################################
 
         # Create the options list
-        self._samp_rate_options = [1000000.0, 5000000.0, 10000000.0, 20000000.0]
+        self._samp_rate_options = [5000000.0, 10000000.0, 20000000.0]
         # Create the labels list
-        self._samp_rate_labels = ['1 MHz', '5 MHz', '10 MHz', '20 MHz']
+        self._samp_rate_labels = ['5 MHz', '10 MHz', '20 MHz']
         # Create the combo box
         self._samp_rate_tool_bar = Qt.QToolBar(self)
         self._samp_rate_tool_bar.addWidget(Qt.QLabel("'samp_rate'" + ": "))
@@ -115,7 +113,7 @@ class wifi_rx(gr.top_block, Qt.QWidget):
             lambda i: self.set_lo_offset(self._lo_offset_options[i]))
         # Create the radio buttons
         self.top_layout.addWidget(self._lo_offset_tool_bar)
-        self._gain_range = Range(0, 1, 0.01, 0.8, 200)
+        self._gain_range = Range(0, 1, 0.01, 0.75, 200)
         self._gain_win = RangeWidget(self._gain_range, self.set_gain, "'gain'", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_layout.addWidget(self._gain_win)
         # Create the options list
@@ -171,7 +169,6 @@ class wifi_rx(gr.top_block, Qt.QWidget):
         self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec(0))
 
         self.uhd_usrp_source_0.set_center_freq(uhd.tune_request(freq, rf_freq = freq - lo_offset, rf_freq_policy=uhd.tune_request.POLICY_MANUAL), 0)
-        self.uhd_usrp_source_0.set_antenna('TX/RX', 0)
         self.uhd_usrp_source_0.set_gain(gain, 0)
         self.qtgui_time_sink_x_0 = qtgui.time_sink_f(
             1024, #size
@@ -263,20 +260,16 @@ class wifi_rx(gr.top_block, Qt.QWidget):
         self._qtgui_const_sink_x_0_win = sip.wrapinstance(self.qtgui_const_sink_x_0.qwidget(), Qt.QWidget)
         self.top_layout.addWidget(self._qtgui_const_sink_x_0_win)
         self.pdu_pdu_to_tagged_stream_0 = pdu.pdu_to_tagged_stream(gr.types.complex_t, 'packet_len')
-        self.network_udp_sink_0 = network.udp_sink(gr.sizeof_char, 1, 'localhost', 4444, 0, 1472, False)
         self.ieee802_11_sync_short_0 = ieee802_11.sync_short(0.56, 2, False, False)
         self.ieee802_11_sync_long_0 = ieee802_11.sync_long(sync_length, True, False)
         self.ieee802_11_parse_mac_0 = ieee802_11.parse_mac(True, True)
         self.ieee802_11_frame_equalizer_0 = ieee802_11.frame_equalizer(chan_est, freq, samp_rate, False, False)
         self.ieee802_11_decode_mac_0 = ieee802_11.decode_mac(True, False)
-        self.foo_wireshark_connector_0 = foo.wireshark_connector(127, False)
         self.fft_vxx_0 = fft.fft_vcc(64, True, window.rectangular(64), True, 1)
         self.blocks_stream_to_vector_0 = blocks.stream_to_vector(gr.sizeof_gr_complex*1, 64)
         self.blocks_multiply_xx_0 = blocks.multiply_vcc(1)
         self.blocks_moving_average_xx_1 = blocks.moving_average_cc(window_size, 1, 4000, 1)
         self.blocks_moving_average_xx_0 = blocks.moving_average_ff((window_size  + 16), 1, 4000, 1)
-        self.blocks_file_sink_0 = blocks.file_sink(gr.sizeof_char*1, '/tmp/out.pcap', False)
-        self.blocks_file_sink_0.set_unbuffered(False)
         self.blocks_divide_xx_0 = blocks.divide_ff(1)
         self.blocks_delay_0_0 = blocks.delay(gr.sizeof_gr_complex*1, 16)
         self.blocks_delay_0 = blocks.delay(gr.sizeof_gr_complex*1, sync_length)
@@ -288,7 +281,6 @@ class wifi_rx(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.ieee802_11_decode_mac_0, 'out'), (self.foo_wireshark_connector_0, 'in'))
         self.msg_connect((self.ieee802_11_decode_mac_0, 'out'), (self.ieee802_11_parse_mac_0, 'in'))
         self.msg_connect((self.ieee802_11_frame_equalizer_0, 'symbols'), (self.pdu_pdu_to_tagged_stream_0, 'pdus'))
         self.connect((self.blocks_complex_to_mag_0, 0), (self.blocks_divide_xx_0, 0))
@@ -305,8 +297,6 @@ class wifi_rx(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_multiply_xx_0, 0), (self.blocks_moving_average_xx_1, 0))
         self.connect((self.blocks_stream_to_vector_0, 0), (self.fft_vxx_0, 0))
         self.connect((self.fft_vxx_0, 0), (self.ieee802_11_frame_equalizer_0, 0))
-        self.connect((self.foo_wireshark_connector_0, 0), (self.blocks_file_sink_0, 0))
-        self.connect((self.foo_wireshark_connector_0, 0), (self.network_udp_sink_0, 0))
         self.connect((self.ieee802_11_frame_equalizer_0, 0), (self.ieee802_11_decode_mac_0, 0))
         self.connect((self.ieee802_11_sync_long_0, 0), (self.blocks_stream_to_vector_0, 0))
         self.connect((self.ieee802_11_sync_short_0, 0), (self.blocks_delay_0, 0))

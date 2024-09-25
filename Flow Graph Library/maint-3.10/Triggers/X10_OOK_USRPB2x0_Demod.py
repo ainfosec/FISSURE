@@ -7,13 +7,15 @@
 # GNU Radio Python Flow Graph
 # Title: X10 Ook Usrpb2X0 Demod
 # Description: Decodes X10 signals and prints the output.
-# GNU Radio version: 3.8.5.0
+# GNU Radio version: 3.10.7.0
 
 from gnuradio import blocks
+from gnuradio import blocks, gr
 from gnuradio import digital
 from gnuradio import filter
 from gnuradio.filter import firdes
 from gnuradio import gr
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -21,13 +23,15 @@ from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
 from gnuradio import uhd
 import time
-import X10
+import gnuradio.X10 as X10
+
+
 
 
 class X10_OOK_USRPB2x0_Demod(gr.top_block):
 
     def __init__(self):
-        gr.top_block.__init__(self, "X10 Ook Usrpb2X0 Demod")
+        gr.top_block.__init__(self, "X10 Ook Usrpb2X0 Demod", catch_exceptions=True)
 
         ##################################################
         # Variables
@@ -43,6 +47,7 @@ class X10_OOK_USRPB2x0_Demod(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
+
         self.uhd_usrp_source_0 = uhd.usrp_source(
             ",".join((serial, "")),
             uhd.stream_args(
@@ -52,17 +57,18 @@ class X10_OOK_USRPB2x0_Demod(gr.top_block):
             ),
         )
         self.uhd_usrp_source_0.set_subdev_spec(rx_usrp_channel, 0)
-        self.uhd_usrp_source_0.set_center_freq(rx_usrp_frequency, 0)
-        self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
-        self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
         self.uhd_usrp_source_0.set_samp_rate(sample_rate)
-        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_source_0.set_center_freq(rx_usrp_frequency, 0)
+        self.uhd_usrp_source_0.set_antenna(rx_usrp_antenna, 0)
+        self.uhd_usrp_source_0.set_gain(rx_usrp_gain, 0)
         self.fir_filter_xxx_0_0 = filter.fir_filter_fff(1, [0.125]*8)
         self.fir_filter_xxx_0_0.declare_sample_delay(0)
         self.digital_correlate_access_code_tag_xx_0 = digital.correlate_access_code_tag_bb('111111111111111111111111111111111111111100000000000000000000', 0, 'Start')
         self.blocks_threshold_ff_0_0 = blocks.threshold_ff(.05, .05, 0)
         self.blocks_multiply_const_vxx_0 = blocks.multiply_const_ff(1000)
-        self.blocks_message_debug_0 = blocks.message_debug()
+        self.blocks_message_debug_0 = blocks.message_debug(True, gr.log_levels.info)
         self.blocks_keep_one_in_n_0_0 = blocks.keep_one_in_n(gr.sizeof_float*1, 125)
         self.blocks_float_to_uchar_0 = blocks.float_to_uchar()
         self.blocks_complex_to_mag_squared_0 = blocks.complex_to_mag_squared(1)
@@ -130,7 +136,6 @@ class X10_OOK_USRPB2x0_Demod(gr.top_block):
 
     def set_notes(self, notes):
         self.notes = notes
-
 
 
 

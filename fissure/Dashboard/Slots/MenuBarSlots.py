@@ -4908,4 +4908,52 @@ def _slotMenuHelpOperationStartUpProceduresClicked():
     os.system(
         f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'pages', 'operation.html#start-up-procedures')}"
     )
+
+@QtCore.pyqtSlot()
+def _slotMenuLessonTheSignalPathClicked():
+    """
+    Opens The Signal Path in a browser.
+    """
+    # Open a Browser
+    os.system("xdg-open https://thesignalpath.com/")
+
+@QtCore.pyqtSlot()
+def _slotMenuFieldSpotterClicked():
+    """
+    Opens fieldspotter.radio in a browser.
+    """
+    # Open a Browser
+    os.system("xdg-open https://fieldspotter.radio/")
+
+@QtCore.pyqtSlot()
+def _slotMenuPlaneSailingClicked():
+    """
+    Opens Plane/Sailing map in a browser.
+    """
+    # Open a Browser
+    os.system("xdg-open https://planesailing.ianrenton.com/")
+    
+@QtCore.pyqtSlot()
+def _slotMenuUK_PortableHamMapClicked():
+    """
+    Opens UK Portable Ham Map in a browser.
+    """
+    # Open a Browser
+    os.system("xdg-open https://kwirk.github.io/pota-gb-map/")
+    
+@QtCore.pyqtSlot()
+def _slotMenuSatelliteMapSpaceClicked():
+    """
+    Opens satellitemap.space in a browser.
+    """
+    # Open a Browser
+    os.system("xdg-open https://satellitemap.space/")
+    
+@QtCore.pyqtSlot()
+def _slotMenuLessonHamSCI_ResourcesClicked():
+    """
+    Opens HamSCI Resources in a browser.
+    """
+    # Open a Browser
+    os.system("xdg-open https://hamsci.org/resources")
     

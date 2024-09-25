@@ -7,11 +7,13 @@
 # GNU Radio Python Flow Graph
 # Title: Not titled yet
 # Author: user
-# GNU Radio version: 3.8.5.0
+# GNU Radio version: 3.10.7.0
 
 from gnuradio import blocks
+from gnuradio import blocks, gr
 from gnuradio import gr
 from gnuradio.filter import firdes
+from gnuradio.fft import window
 import sys
 import signal
 from argparse import ArgumentParser
@@ -20,15 +22,17 @@ from gnuradio import eng_notation
 from gnuradio import uhd
 import time
 from gnuradio.fft import logpwrfft
-import epy_block_0
+import Power_Threshold_USRPB2x0_epy_block_0 as epy_block_0  # embedded python block
 import numpy as np
 import random
+
+
 
 
 class Power_Threshold_USRPB2x0(gr.top_block):
 
     def __init__(self, rx_freq_default='2412', sample_rate_default='20e6', threshold_default='0'):
-        gr.top_block.__init__(self, "Not titled yet")
+        gr.top_block.__init__(self, "Not titled yet", catch_exceptions=True)
 
         ##################################################
         # Parameters
@@ -62,6 +66,7 @@ class Power_Threshold_USRPB2x0(gr.top_block):
         ##################################################
         # Blocks
         ##################################################
+
         self.uhd_usrp_source_0 = uhd.usrp_source(
             ",".join(('', "")),
             uhd.stream_args(
@@ -71,11 +76,12 @@ class Power_Threshold_USRPB2x0(gr.top_block):
             ),
         )
         self.uhd_usrp_source_0.set_subdev_spec(channel_default, 0)
-        self.uhd_usrp_source_0.set_center_freq(rx_freq*1e6, 0)
-        self.uhd_usrp_source_0.set_gain(rx_gain, 0)
-        self.uhd_usrp_source_0.set_antenna(rx_antenna, 0)
         self.uhd_usrp_source_0.set_samp_rate(samp_rate)
-        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec())
+        self.uhd_usrp_source_0.set_time_unknown_pps(uhd.time_spec(0))
+
+        self.uhd_usrp_source_0.set_center_freq(rx_freq*1e6, 0)
+        self.uhd_usrp_source_0.set_antenna(rx_antenna, 0)
+        self.uhd_usrp_source_0.set_gain(rx_gain, 0)
         self.logpwrfft_x_0 = logpwrfft.logpwrfft_c(
             sample_rate=samp_rate,
             fft_size=fft_size,
@@ -86,7 +92,7 @@ class Power_Threshold_USRPB2x0(gr.top_block):
             shift=True)
         self.epy_block_0 = epy_block_0.blk(vec_len=fft_size, sample_rate=samp_rate, rx_freq_mhz=rx_freq)
         self.blocks_vector_source_x_0 = blocks.vector_source_f((thresh_adj,)*full_band_size, True, fft_size, [])
-        self.blocks_message_debug_0 = blocks.message_debug()
+        self.blocks_message_debug_0 = blocks.message_debug(True, gr.log_levels.info)
         self.blocks_max_xx_0 = blocks.max_ff(fft_size, fft_size)
         self.blocks_add_const_vxx_0 = blocks.add_const_vff(((below_zero*10),)*(low_line_adj)+(0,)*in_box_spec_len+((below_zero*10),)*(fft_size-up_line_adj))
 
@@ -258,7 +264,6 @@ class Power_Threshold_USRPB2x0(gr.top_block):
 
     def set_channel_default(self, channel_default):
         self.channel_default = channel_default
-
 
 
 

@@ -527,6 +527,7 @@
       <addaction name="actionADS_B_Exchange"/>
       <addaction name="actionacars_adsbexchange"/>
       <addaction name="actionAirframes"/>
+      <addaction name="actionPlane_Sailing"/>
      </widget>
      <addaction name="actionDump1090"/>
      <addaction name="actionGr_air_modes"/>
@@ -579,6 +580,7 @@
      <addaction name="menuExam"/>
      <addaction name="actionEchoLink_Link_Status"/>
      <addaction name="actionEvery_Time_Zone"/>
+     <addaction name="actionField_Spotter_Map"/>
      <addaction name="actionFldigi"/>
      <addaction name="actionham2mon"/>
      <addaction name="actionHamClock"/>
@@ -590,6 +592,7 @@
      <addaction name="actionPSK_Reporter"/>
      <addaction name="actionQSSTV"/>
      <addaction name="actionSolarHam"/>
+     <addaction name="actionUK_Portable_Ham_Map"/>
      <addaction name="actionWSJT_X"/>
      <addaction name="actionWSPRnet_Map"/>
      <addaction name="actionWSPR_Rocks"/>
@@ -692,6 +695,7 @@
      <addaction name="actionAGSatTrack"/>
      <addaction name="actionCelestrak"/>
      <addaction name="actionSpot_The_Station"/>
+     <addaction name="actionSatelliteMapSpace"/>
     </widget>
     <widget class="QMenu" name="menu433_MHz">
      <property name="title">
@@ -899,6 +903,8 @@
     <addaction name="actioncemaxecuter_YouTube"/>
     <addaction name="actionIceman_YouTube"/>
     <addaction name="actionHideo_Okawara"/>
+    <addaction name="actionThe_Signal_Path"/>
+    <addaction name="actionHamSCI_Resources"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuView"/>
@@ -2874,6 +2880,36 @@
   <action name="actionMenuHelpOperationStartUpProcedures">
    <property name="text">
     <string>Start-Up Procedures</string>
+   </property>
+  </action>
+  <action name="actionThe_Signal_Path">
+   <property name="text">
+    <string>The Signal Path</string>
+   </property>
+  </action>
+  <action name="actionField_Spotter_Map">
+   <property name="text">
+    <string>Field Spotter Map</string>
+   </property>
+  </action>
+  <action name="actionPlane_Sailing">
+   <property name="text">
+    <string>Plane/Sailing</string>
+   </property>
+  </action>
+  <action name="actionUK_Portable_Ham_Map">
+   <property name="text">
+    <string>UK Portable Ham Map</string>
+   </property>
+  </action>
+  <action name="actionSatelliteMapSpace">
+   <property name="text">
+    <string>satellitemap.space</string>
+   </property>
+  </action>
+  <action name="actionHamSCI_Resources">
+   <property name="text">
+    <string>HamSCI Resources</string>
    </property>
   </action>
  </widget>

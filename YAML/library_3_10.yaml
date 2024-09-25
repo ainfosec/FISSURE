@@ -1356,6 +1356,24 @@ Inspection Flow Graphs:
      - time_sink_plutosdr.py
      - time_sink_1_10_100_plutosdr.py
      - waterfall_plutosdr.py
+     RSPduo:
+     - instantaneous_frequency_rspduo.py
+     - signal_envelope_rspduo.py
+     - time_sink_rspduo.py
+     - time_sink_1_10_100_rspduo.py
+     - waterfall_rspduo.py
+     RSPdx:
+     - instantaneous_frequency_rspdx.py
+     - signal_envelope_rspdx.py
+     - time_sink_rspdx.py
+     - time_sink_1_10_100_rspdx.py
+     - waterfall_rspdx.py
+     RSPdx R2:
+     - instantaneous_frequency_rspdx_r2.py
+     - signal_envelope_rspdx_r2.py
+     - time_sink_rspdx_r2.py
+     - time_sink_1_10_100_rspdx_r2.py
+     - waterfall_rspdx_r2.py
      RTL2832U:
      - instantaneous_frequency_rtl2832u.py
      - signal_envelope_rtl2832u.py

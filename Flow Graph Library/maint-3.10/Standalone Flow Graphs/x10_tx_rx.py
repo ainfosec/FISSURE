@@ -133,8 +133,8 @@ class x10_tx_rx(gr.top_block, Qt.QWidget):
         ##################################################
         # Connections
         ##################################################
-        self.msg_connect((self.X10_x10_decoder_1, 'bytes'), (self.blocks_message_debug_0, 'print'))
         self.msg_connect((self.X10_x10_decoder_1, 'out'), (self.blocks_message_debug_0, 'print'))
+        self.msg_connect((self.X10_x10_decoder_1, 'bytes'), (self.blocks_message_debug_0, 'print'))
         self.connect((self.X10_message_generator_0, 0), (self.blocks_multiply_const_vxx_0, 0))
         self.connect((self.blocks_char_to_float_0, 0), (self.X10_x10_decoder_1, 0))
         self.connect((self.blocks_complex_to_mag_squared_0, 0), (self.fir_filter_xxx_0_0, 0))

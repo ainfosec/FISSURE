@@ -17,8 +17,8 @@ import signal
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
+import fuzzer
 import gnuradio.ainfosec as ainfosec
-import gnuradio.fuzzer as fuzzer
 import osmosdr
 import time
 

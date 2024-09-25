@@ -1,6 +1,36 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-09-24
+
+Support for RSPduo, RSPdx, and RSPdx R2: part 2 of 2.
+
+### Added
+
+- Flow graphs for RSPduo, RSPdx, and RSPdx R2
+- Support for RSPdx and RSPdx R2 hardware (they require different GNU Radio source blocks)
+- Link to "The Signal Path" under Lessons
+- Added link to fieldspotter.radio in the menu
+- Added link to plainsailing.ianrenton.com in the menu
+- Added link to satellitemap.space in the menu
+- Added link to HamSCI Resources under Lessons
+- Added sphinx and sphinx_rtd_theme to the installer for building Read the Docs
+
+### Changed
+
+- Turned "Number of Files" table item into a spinbox in the IQ Data>Recording tab
+- Removed example USRP and serial number saved in sensor node configuration file (default.yaml)
+- Renamed example sensor node config files
+
+### Fixed
+
+- Removed errors when recording more than one file in the IQ Data tab
+- Added more --break-system-packages to Raspberry Pi OS install
+
+### Documentation
+
+- Adding RSPdx, RSPdx R2 as supported hardware to README and user manual
+
 ## 2024-09-16
 
 Support for RSPduo and RSPdx: part 1 of 2.

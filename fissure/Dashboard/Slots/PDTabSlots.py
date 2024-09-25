@@ -1961,6 +1961,12 @@ def _slotPD_DemodulationLoadFlowGraphClicked(dashboard: QtCore.QObject, fname=''
                                     value_text = get_hardware_serial
                                 elif get_hardware_type == 'RTL2832U':
                                     value_text = get_hardware_serial
+                                elif get_hardware_type == "RSPduo":
+                                    value_text = get_hardware_serial
+                                elif get_hardware_type == "RSPdx":
+                                    value_text = get_hardware_serial
+                                elif get_hardware_type == "RSPdx R2":
+                                    value_text = get_hardware_serial
                                 else:
                                     value_text = 'serial=' + get_hardware_serial
                             else:
@@ -1971,6 +1977,12 @@ def _slotPD_DemodulationLoadFlowGraphClicked(dashboard: QtCore.QObject, fname=''
                                 elif get_hardware_type == 'bladeRF 2.0':
                                     value_text = '0'
                                 elif get_hardware_type == 'RTL2832U':
+                                    value_text = '0'
+                                elif get_hardware_type == "RSPduo":
+                                    value_text = '0'
+                                elif get_hardware_type == "RSPdx":
+                                    value_text = '0'
+                                elif get_hardware_type == "RSPdx R2":
                                     value_text = '0'
                                 else:
                                     value_text = 'False'

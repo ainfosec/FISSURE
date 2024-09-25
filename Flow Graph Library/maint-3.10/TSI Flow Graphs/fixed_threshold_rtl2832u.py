@@ -24,7 +24,7 @@ from PyQt5 import Qt
 from argparse import ArgumentParser
 from gnuradio.eng_arg import eng_float, intx
 from gnuradio import eng_notation
-from gnuradio import soapy
+from gnuradio import sdrplay3
 from gnuradio.fft import logpwrfft
 from gnuradio.qtgui import Range, RangeWidget
 from PyQt5 import QtCore
@@ -38,7 +38,7 @@ import time
 
 class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
 
-    def __init__(self, antenna_default='', channel_default='', gain_default='20', ip_address='', rx_freq_default='102.4', sample_rate_default='2.56e6', serial='', threshold_default='0'):
+    def __init__(self, antenna_default='', channel_default='', gain_default='20', ip_address='', rx_freq_default='102.4', sample_rate_default='2e6', serial='', threshold_default='0'):
         gr.top_block.__init__(self, "Not titled yet", catch_exceptions=True)
         Qt.QWidget.__init__(self)
         self.setWindowTitle("Not titled yet")
@@ -119,9 +119,9 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
         # Create the options list
-        self._samp_rate_options = [250000.0, 1024000.0, 1536000.0, 1792000.0, 1920000.0, 2048000.0, 2160000.0, 2560000.0, 2880000.0, 3200000.0]
+        self._samp_rate_options = [1000000.0, 2000000.0, 5000000.0, 10000000.0, 20000000.0]
         # Create the labels list
-        self._samp_rate_labels = ['0.25 MS/s', '1.024 MS/s', '1.536 MS/s', '1.792 MS/s', '1.92 MS/s', '2.048 MS/s', '2.16 MS/s', '2.56 MS/s', '2.88 MS/s', '3.2 MS/s']
+        self._samp_rate_labels = ['1 MS/s', '2 MS/s', '5 MS/s', '10 MS/s', '20 MS/s']
         # Create the combo box
         self._samp_rate_tool_bar = Qt.QToolBar(self)
         self._samp_rate_tool_bar.addWidget(Qt.QLabel("Sample Rate" + ": "))
@@ -138,13 +138,6 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 1):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self._rx_gain_range = Range(0, 50, 1, float(gain_default), 200)
-        self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal)
-        self.top_grid_layout.addWidget(self._rx_gain_win, 2, 0, 1, 4)
-        for r in range(2, 3):
-            self.top_grid_layout.setRowStretch(r, 1)
-        for c in range(0, 4):
-            self.top_grid_layout.setColumnStretch(c, 1)
         self._rx_freq_range = Range(50, 2200, .1, float(rx_freq_default), 200)
         self._rx_freq_win = RangeWidget(self._rx_freq_range, self.set_rx_freq, " Freq. (MHz):", "counter_slider", float, QtCore.Qt.Horizontal)
         self.top_grid_layout.addWidget(self._rx_freq_win, 1, 0, 1, 4)
@@ -159,41 +152,38 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
             self.top_grid_layout.setRowStretch(r, 1)
         for c in range(0, 4):
             self.top_grid_layout.setColumnStretch(c, 1)
-        self.soapy_rtlsdr_source_0 = None
-        dev = 'driver=rtlsdr'
-        stream_args = ''
-        tune_args = ['']
-        settings = ['']
-
-        def _set_soapy_rtlsdr_source_0_gain_mode(channel, agc):
-            self.soapy_rtlsdr_source_0.set_gain_mode(channel, agc)
-            if not agc:
-                  self.soapy_rtlsdr_source_0.set_gain(channel, self._soapy_rtlsdr_source_0_gain_value)
-        self.set_soapy_rtlsdr_source_0_gain_mode = _set_soapy_rtlsdr_source_0_gain_mode
-
-        def _set_soapy_rtlsdr_source_0_gain(channel, name, gain):
-            self._soapy_rtlsdr_source_0_gain_value = gain
-            if not self.soapy_rtlsdr_source_0.get_gain_mode(channel):
-                self.soapy_rtlsdr_source_0.set_gain(channel, gain)
-        self.set_soapy_rtlsdr_source_0_gain = _set_soapy_rtlsdr_source_0_gain
-
-        def _set_soapy_rtlsdr_source_0_bias(bias):
-            if 'biastee' in self._soapy_rtlsdr_source_0_setting_keys:
-                self.soapy_rtlsdr_source_0.write_setting('biastee', bias)
-        self.set_soapy_rtlsdr_source_0_bias = _set_soapy_rtlsdr_source_0_bias
-
-        self.soapy_rtlsdr_source_0 = soapy.source(dev, "fc32", 1, '',
-                                  stream_args, tune_args, settings)
-
-        self._soapy_rtlsdr_source_0_setting_keys = [a.key for a in self.soapy_rtlsdr_source_0.get_setting_info()]
-
-        self.soapy_rtlsdr_source_0.set_sample_rate(0, float(samp_rate))
-        self.soapy_rtlsdr_source_0.set_frequency(0, (float(rx_freq)*1e6))
-        self.soapy_rtlsdr_source_0.set_frequency_correction(0, 0)
-        self.set_soapy_rtlsdr_source_0_bias(bool(False))
-        self._soapy_rtlsdr_source_0_gain_value = float(rx_gain)
-        self.set_soapy_rtlsdr_source_0_gain_mode(0, bool(False))
-        self.set_soapy_rtlsdr_source_0_gain(0, 'TUNER', float(rx_gain))
+        self.sdrplay3_rspdx_0 = sdrplay3.rspdx(
+            str(serial),
+            stream_args=sdrplay3.stream_args(
+                output_type='fc32',
+                channels_size=1
+            ),
+        )
+        self.sdrplay3_rspdx_0.set_sample_rate(float(samp_rate), False)
+        self.sdrplay3_rspdx_0.set_center_freq(float(rx_freq), False)
+        self.sdrplay3_rspdx_0.set_bandwidth(0)
+        self.sdrplay3_rspdx_0.set_antenna('Antenna A')
+        self.sdrplay3_rspdx_0.set_gain_mode(False)
+        self.sdrplay3_rspdx_0.set_gain(-(40), 'IF', False)
+        self.sdrplay3_rspdx_0.set_gain(-(0), 'RF', False)
+        self.sdrplay3_rspdx_0.set_freq_corr(0)
+        self.sdrplay3_rspdx_0.set_dc_offset_mode(False)
+        self.sdrplay3_rspdx_0.set_iq_balance_mode(False)
+        self.sdrplay3_rspdx_0.set_agc_setpoint((-30))
+        self.sdrplay3_rspdx_0.set_hdr_mode(False)
+        self.sdrplay3_rspdx_0.set_rf_notch_filter(False)
+        self.sdrplay3_rspdx_0.set_dab_notch_filter(False)
+        self.sdrplay3_rspdx_0.set_biasT(False)
+        self.sdrplay3_rspdx_0.set_debug_mode(False)
+        self.sdrplay3_rspdx_0.set_sample_sequence_gaps_check(False)
+        self.sdrplay3_rspdx_0.set_show_gain_changes(False)
+        self._rx_gain_range = Range(0, 50, 1, float(gain_default), 200)
+        self._rx_gain_win = RangeWidget(self._rx_gain_range, self.set_rx_gain, "              Gain:", "counter_slider", float, QtCore.Qt.Horizontal)
+        self.top_grid_layout.addWidget(self._rx_gain_win, 2, 0, 1, 4)
+        for r in range(2, 3):
+            self.top_grid_layout.setRowStretch(r, 1)
+        for c in range(0, 4):
+            self.top_grid_layout.setColumnStretch(c, 1)
         self.qtgui_vector_sink_f_0 = qtgui.vector_sink_f(
             fft_size,
             0,
@@ -263,7 +253,7 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
         self.connect((self.blocks_vector_source_x_0_1, 0), (self.qtgui_vector_sink_f_0, 2))
         self.connect((self.logpwrfft_x_0, 0), (self.blocks_add_const_vxx_0, 0))
         self.connect((self.logpwrfft_x_0, 0), (self.qtgui_vector_sink_f_0, 0))
-        self.connect((self.soapy_rtlsdr_source_0, 0), (self.logpwrfft_x_0, 0))
+        self.connect((self.sdrplay3_rspdx_0, 0), (self.logpwrfft_x_0, 0))
 
 
     def closeEvent(self, event):
@@ -403,14 +393,13 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
         self._samp_rate_callback(self.samp_rate)
         self.epy_block_0.sample_rate = self.samp_rate
         self.logpwrfft_x_0.set_sample_rate(self.samp_rate)
-        self.soapy_rtlsdr_source_0.set_sample_rate(0, float(self.samp_rate))
+        self.sdrplay3_rspdx_0.set_sample_rate(float(self.samp_rate), False)
 
     def get_rx_gain(self):
         return self.rx_gain
 
     def set_rx_gain(self, rx_gain):
         self.rx_gain = rx_gain
-        self.set_soapy_rtlsdr_source_0_gain(0, 'TUNER', float(self.rx_gain))
 
     def get_rx_freq(self):
         return self.rx_freq
@@ -418,7 +407,7 @@ class fixed_threshold_rtl2832u(gr.top_block, Qt.QWidget):
     def set_rx_freq(self, rx_freq):
         self.rx_freq = rx_freq
         self.epy_block_0.rx_freq_mhz = self.rx_freq
-        self.soapy_rtlsdr_source_0.set_frequency(0, (float(self.rx_freq)*1e6))
+        self.sdrplay3_rspdx_0.set_center_freq(float(self.rx_freq), False)
 
     def get_low_bound_vec_top_half(self):
         return self.low_bound_vec_top_half
@@ -468,8 +457,8 @@ def argument_parser():
         "--rx-freq-default", dest="rx_freq_default", type=str, default='102.4',
         help="Set 102.4 [default=%(default)r]")
     parser.add_argument(
-        "--sample-rate-default", dest="sample_rate_default", type=str, default='2.56e6',
-        help="Set 2.56e6 [default=%(default)r]")
+        "--sample-rate-default", dest="sample_rate_default", type=str, default='2e6',
+        help="Set 2e6 [default=%(default)r]")
     parser.add_argument(
         "--serial", dest="serial", type=str, default='',
         help="Set serial [default=%(default)r]")

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Components &mdash; FISSURE  documentation</title>
@@ -13,9 +13,9 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -103,21 +103,21 @@
            <div itemprop="articleBody">
              
   <section id="components">
-<h1>Components<a class="headerlink" href="#components" title="Permalink to this heading">¶</a></h1>
+<h1>Components<a class="headerlink" href="#components" title="Link to this heading">¶</a></h1>
 <p>FISSURE is a tool suite and RF framework consisting of dedicated Python components networked together for the purpose of RF device assessment and vulnerability analysis.</p>
 <section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
+<h2>Overview<a class="headerlink" href="#overview" title="Link to this heading">¶</a></h2>
 <p>FISSURE stemmed from the need to quickly identify and react to unknown devices or devices operating in unidentified modes in a congested RF environment. Over the years it has grown into an in-house laboratory tool used by AIS for nearly all things RF.</p>
 <section id="communications">
-<h3>Communications<a class="headerlink" href="#communications" title="Permalink to this heading">¶</a></h3>
+<h3>Communications<a class="headerlink" href="#communications" title="Link to this heading">¶</a></h3>
 <p>(Updates coming soon)</p>
 </section>
 <section id="library">
-<h3>Library<a class="headerlink" href="#library" title="Permalink to this heading">¶</a></h3>
+<h3>Library<a class="headerlink" href="#library" title="Link to this heading">¶</a></h3>
 <p>Library utilities for browsing; searching; uploading images; adding/removing modulation types, packet types, signals of interest, statistics, demodulation flow graphs, and attacks.</p>
 </section>
 <section id="file-structure">
-<h3>File Structure<a class="headerlink" href="#file-structure" title="Permalink to this heading">¶</a></h3>
+<h3>File Structure<a class="headerlink" href="#file-structure" title="Link to this heading">¶</a></h3>
 <p>(Updates coming soon)</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>FISSURE
 ├── Archive
@@ -243,7 +243,7 @@
 </dl>
 </section>
 <section id="supported-protocols">
-<h3>Supported Protocols<a class="headerlink" href="#supported-protocols" title="Permalink to this heading">¶</a></h3>
+<h3>Supported Protocols<a class="headerlink" href="#supported-protocols" title="Link to this heading">¶</a></h3>
 <p><strong>Tools, Scripts, FISSURE Library Data</strong></p>
 <ul class="simple">
 <li><p>802.11</p></li>
@@ -281,9 +281,9 @@
 </section>
 </section>
 <section id="dashboard">
-<h2>Dashboard<a class="headerlink" href="#dashboard" title="Permalink to this heading">¶</a></h2>
+<h2>Dashboard<a class="headerlink" href="#dashboard" title="Link to this heading">¶</a></h2>
 <section id="concepts">
-<span id="dashboard-concepts"></span><h3>Concepts<a class="headerlink" href="#concepts" title="Permalink to this heading">¶</a></h3>
+<span id="dashboard-concepts"></span><h3>Concepts<a class="headerlink" href="#concepts" title="Link to this heading">¶</a></h3>
 <p>The User Dashboard is the means for the operator to configure FISSURE and communicate with and view information from the other components. It offers several other features that do not require their own dedicated component including:</p>
 <ul class="simple">
 <li><p>A packet crafter for protocols found the FISSURE library. It includes Scapy integration for transmitting different types of 802.11 packets while in monitor mode.</p></li>
@@ -296,14 +296,14 @@
 </ul>
 </section>
 <section id="communication">
-<h3>Communication<a class="headerlink" href="#communication" title="Permalink to this heading">¶</a></h3>
+<h3>Communication<a class="headerlink" href="#communication" title="Link to this heading">¶</a></h3>
 </section>
 <section id="modification">
-<h3>Modification<a class="headerlink" href="#modification" title="Permalink to this heading">¶</a></h3>
+<h3>Modification<a class="headerlink" href="#modification" title="Link to this heading">¶</a></h3>
 </section>
 </section>
 <section id="target-signal-identification">
-<h2>Target Signal Identification<a class="headerlink" href="#target-signal-identification" title="Permalink to this heading">¶</a></h2>
+<h2>Target Signal Identification<a class="headerlink" href="#target-signal-identification" title="Link to this heading">¶</a></h2>
 <p>The Target Signal Identification (TSI) component runs four subcomponents: a detector, a signal conditioner, a feature extractor, and a classifier.</p>
 <p>The Detector subcomponent allows the operator to configure scan parameters for multiple search bands with the goal of reporting the power, frequency, and time of observed signals.</p>
 <p>The Signal Conditioner subcomponent will be responsible for isolating and conditioning signals from a stream of raw I/Q data for more detailed analysis.</p>
@@ -311,31 +311,31 @@
 <p>The Signal Classifier subcomponent will interpret the feature sets and make specific conclusions such as the confidence levels for protocol and emitter classification.</p>
 </section>
 <section id="protocol-discovery">
-<h2>Protocol Discovery<a class="headerlink" href="#protocol-discovery" title="Permalink to this heading">¶</a></h2>
+<h2>Protocol Discovery<a class="headerlink" href="#protocol-discovery" title="Link to this heading">¶</a></h2>
 <p>The Protocol Discovery component is responsible for identifying and reversing RF protocols to help extract meaningful data from unknown signals. It is designed to: accept signal of interest information, iterate flow graphs to perform recursive demodulation techniques, deduce protocol methods, assign confidence levels, analyze a bitstream, calculate CRC polynomials, and create custom Wireshark dissectors.</p>
 </section>
 <section id="hiprfisr">
-<h2>HIPRFISR<a class="headerlink" href="#hiprfisr" title="Permalink to this heading">¶</a></h2>
+<h2>HIPRFISR<a class="headerlink" href="#hiprfisr" title="Link to this heading">¶</a></h2>
 <p>The Central Hub receives commands from the User Dashboard to distribute to other components, manages automation and editing of the main library - which contains RF protocol information, script and flow graph mappings, and observation data.</p>
 </section>
 <section id="sensor-nodes">
-<h2>Sensor Nodes<a class="headerlink" href="#sensor-nodes" title="Permalink to this heading">¶</a></h2>
+<h2>Sensor Nodes<a class="headerlink" href="#sensor-nodes" title="Link to this heading">¶</a></h2>
 <section id="sensor-node-description">
-<h3>Sensor Node Description<a class="headerlink" href="#sensor-node-description" title="Permalink to this heading">¶</a></h3>
+<h3>Sensor Node Description<a class="headerlink" href="#sensor-node-description" title="Link to this heading">¶</a></h3>
 <p>FISSURE transitioned to a sensor node deployment scheme capable of connecting multiple computers with their own radios and peripherals that can be controlled remotely or run autonomously. This will facilitate many geospatial scenarios such as direction finding, tracking, perimeter defense, remote access for employees who need to do RF testing, and providing a global gateway for advanced laboratory environments. The automated scripts combined with lightweight, compact computing options will unlock several more possibilities for subjects like wardriving, warshipping, UAS payloads, and logging/tracking at key locations of interest.</p>
 <p>The Sensor Node component is responsible for interacting with the radio peripherals, receiving commands from the Dashboard/HIPRFISR, and returning status messages and data. Sensor nodes consist of the sensor_node.py code running any type on computing hardware. Each sensor node has a copy of the entire FISSURE flow graph library. Sensor nodes can be run remotely or locally on the same computer as the rest of the FISSURE components. Only one local sensor node can be run at a time and up to five remote sensor nodes can be deployed. Actions within the Dashboard tabs will usually only impact one sensor node at a time dictated by selection (through right-clicking) of one of the sensor node buttons at the top of the Dashboard. Additionally, sensor nodes can be configured with autorun playlists (created through the Dashboard) that run scripts independently of the FISSURE Dashboard.</p>
 </section>
 <section id="sensor-node-networking">
-<h3>Sensor Node Networking<a class="headerlink" href="#sensor-node-networking" title="Permalink to this heading">¶</a></h3>
+<h3>Sensor Node Networking<a class="headerlink" href="#sensor-node-networking" title="Link to this heading">¶</a></h3>
 </section>
 <section id="sensor-node-inner-workings">
-<h3>Sensor Node Inner Workings<a class="headerlink" href="#sensor-node-inner-workings" title="Permalink to this heading">¶</a></h3>
+<h3>Sensor Node Inner Workings<a class="headerlink" href="#sensor-node-inner-workings" title="Link to this heading">¶</a></h3>
 <p>Upon starting the sensor_node.py file, it reads the default.yaml file and then creates the ZMQ sockets. It continuously enters a loop where it checks for messages from the HIPRFISR and sends heartbeats to the rest of the FISSURE components. If the autorun feature is set to “True” in the sensor node configuration file, it will begin running the default playlist after the specified timeout has been surpassed. Otherwise, the sensor node will be idle and wait for the Dashboard to initiate a playlist. The autorun playlists can be configured to run once or at regular intervals (in seconds).</p>
 <p>To take advantage of multiple radio peripherals connected to a sensor node, the autorun playlist items are run in their own threads at the same time. There are two types of playlist items: single-stage and multi-stage. Single-stage items only have one file that is executed. Multi-stage items contain multiple files that are run in succession. For both item types there are options to specify a timeout, to choose whether to repeat the operation if completed before the timeout, and to have a delayed start time.</p>
 <p>The sensor node also run commands from the Dashboard beyond the autorun playlists. There are several tabs within the Dashboard that require the user to choose a hardware option among those assigned to the active sensor node. Such examples include: Target Signal Identification detector scripts, Protocol Discovery demodulation flow graphs, Attack scripts, IQ recording, IQ playback, IQ inspection, and Archive playlists. Archive playlists are a more on-demand and simplified solution compared to the autorun playlists.</p>
 </section>
 <section id="sensor-node-config-file">
-<h3>Sensor Node Config File<a class="headerlink" href="#sensor-node-config-file" title="Permalink to this heading">¶</a></h3>
+<h3>Sensor Node Config File<a class="headerlink" href="#sensor-node-config-file" title="Link to this heading">¶</a></h3>
 <p>The sensor node config file is comprised of sensor node descriptors (nickname, location, notes), autorun settings, networking settings, and default hardware assignments for all the FISSURE components. The user has the option to recall the default hardware assignments upon establishing a connection from the Dashboard and do not impact the sensor_node.py file directly. The following is a sample sensor node configuration file:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">Sensor Node:</span>
 <span class="go">    archive:</span>
@@ -400,7 +400,7 @@
 </div>
 </section>
 <section id="autorun-playlist-format">
-<h3>Autorun Playlist Format<a class="headerlink" href="#autorun-playlist-format" title="Permalink to this heading">¶</a></h3>
+<h3>Autorun Playlist Format<a class="headerlink" href="#autorun-playlist-format" title="Link to this heading">¶</a></h3>
 <p>Autorun playlists can be imported and exported from the Dashboard. Upon building a new playlist and clicking the “Start” button in the Autorun tab, the table contents will be converted to a dictionary with the same format as those found in the import/export YAML files. Autorun playlist files can be edited outside of the Dashboard in any text editor. The following is an example of an autorun playlist YAML file:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">delay_start: &#39;False&#39;</span>
 <span class="go">delay_start_time: &#39;2024-07-31 12:26:58&#39;</span>

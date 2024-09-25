@@ -27,7 +27,7 @@ The following is a list of "supported" peripheral hardware with varying levels o
 - bladeRF, bladeRF 2.0 micro
 - Open Sniffer
 - PlutoSDR
-- SDRplay: RSPduo, RSPdx
+- SDRplay: RSPduo, RSPdx, RSPdx R2
 
 Supported Sensor Node Hardware
 ==============================

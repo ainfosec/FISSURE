@@ -286,6 +286,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     num_ports: '1'
+    showports: 'False'
     type: complex
     vlen: '1'
   states:
@@ -305,6 +306,7 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     num_ports: '1'
+    showports: 'False'
     type: complex
     vlen: '1'
   states:
@@ -349,6 +351,28 @@ blocks:
     bus_structure: null
     coordinate: [768, 908]
     rotation: 180
+    state: disabled
+- name: blocks_file_source_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: ''
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'True'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [288, 140.0]
+    rotation: 0
     state: disabled
 - name: blocks_moving_average_xx_0
   id: blocks_moving_average_xx
@@ -1207,6 +1231,9 @@ connections:
 - [blocks_delay_0_0, '0', ieee802_11_sync_short_0, '0']
 - [blocks_divide_xx_0, '0', ieee802_11_sync_short_0, '2']
 - [blocks_divide_xx_0, '0', qtgui_time_sink_x_0, '0']
+- [blocks_file_source_0, '0', blocks_complex_to_mag_squared_0, '0']
+- [blocks_file_source_0, '0', blocks_delay_0_0, '0']
+- [blocks_file_source_0, '0', blocks_multiply_xx_0, '0']
 - [blocks_moving_average_xx_0, '0', blocks_divide_xx_0, '1']
 - [blocks_moving_average_xx_1, '0', blocks_complex_to_mag_0, '0']
 - [blocks_moving_average_xx_1, '0', ieee802_11_sync_short_0, '1']
@@ -1228,3 +1255,4 @@ connections:
 
 metadata:
   file_format: 1
+  grc_version: 3.10.7.0

@@ -286,26 +286,49 @@ def _slotTSI_DetectorChanged(dashboard: QtCore.QObject):
         dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
         dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
         dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(60)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(59)
         dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(0)
-        dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(50)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(20)
         dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
         dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
         dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("1")
         dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("2")
+        item1 = dashboard.ui.comboBox_tsi_detector_fg_antenna.model().item(1)
+        item1.setFlags(item1.flags() & ~QtCore.Qt.ItemIsEnabled)       
 
     elif get_detector == 'wideband_rspdx.py':
         dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
         dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
         dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(60)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(59)
         dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(0)
-        dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(50)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(20)
         dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
         dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
         dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("A")
         dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("B")
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("C")        
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("C")     
+        itemB = dashboard.ui.comboBox_tsi_detector_fg_antenna.model().item(1)
+        itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
+        itemC = dashboard.ui.comboBox_tsi_detector_fg_antenna.model().item(2)
+        itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)    
+
+    elif get_detector == 'wideband_rspdx_r2.py':
+        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
+        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
+        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(59)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(0)
+        dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(20)
+        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("A")
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("B")
+        dashboard.ui.comboBox_tsi_detector_fg_antenna.addItem("C")    
+        itemB = dashboard.ui.comboBox_tsi_detector_fg_antenna.model().item(1)
+        itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
+        itemC = dashboard.ui.comboBox_tsi_detector_fg_antenna.model().item(2)
+        itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)      
 
     elif get_detector == 'Simulator':
         dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(2)
@@ -667,42 +690,73 @@ def _slotTSI_DetectorFixedChanged(dashboard: QtCore.QObject):
         dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
 
     elif get_detector == 'fixed_threshold_rspduo.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("102")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(6)
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(2)
         dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(60)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(59)
         dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(0)
-        dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(50)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(0)
         dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
         dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
         dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("1")
         dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("2")
+        item1 = dashboard.ui.comboBox_tsi_detector_fixed_antenna.model().item(1)
+        item1.setFlags(item1.flags() & ~QtCore.Qt.ItemIsEnabled)
 
-    elif get_detector == 'fixed_threshold_usrp_rspdx.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+    elif get_detector == 'fixed_threshold_rspdx.py':
+        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("102")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(6)
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(2)
         dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(60)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(59)
         dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(0)
-        dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(50)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(0)
         dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
         dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
         dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("A")
         dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("B")
         dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("C")
+        itemB = dashboard.ui.comboBox_tsi_detector_fixed_antenna.model().item(1)
+        itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
+        itemC = dashboard.ui.comboBox_tsi_detector_fixed_antenna.model().item(2)
+        itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)
+
+    elif get_detector == 'fixed_threshold_rspdx_r2.py':
+        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("102")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
+        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(2)
+        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(59)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(0)
+        dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(0)
+        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
+        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
+        dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("A")
+        dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("B")
+        dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("C")
+        itemB = dashboard.ui.comboBox_tsi_detector_fixed_antenna.model().item(1)
+        itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
+        itemC = dashboard.ui.comboBox_tsi_detector_fixed_antenna.model().item(2)
+        itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)
 
     elif get_detector == 'fixed_threshold_simulator.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("102")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
         dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
@@ -1235,6 +1289,20 @@ def _slotTSI_DetectorSweepHardwareChanged(dashboard: QtCore.QObject):
         if get_hardware_daughterboard == "ZBX":
             dashboard.tuning_widget.freq_start_limit = 1
             dashboard.tuning_widget.freq_end_limit = 7200
+            
+    elif get_hardware_type == "RSPduo":
+        dashboard.ui.comboBox_tsi_detector.addItems(['wideband_rspduo.py', 'Simulator', 'IQ File'])
+
+        # Tuning Widget Limits
+        dashboard.tuning_widget.freq_start_limit = .001
+        dashboard.tuning_widget.freq_end_limit = 2000
+        
+    elif get_hardware_type == "RSPdx R2":
+        dashboard.ui.comboBox_tsi_detector.addItems(['wideband_rspdx_r2.py', 'Simulator', 'IQ File'])
+
+        # Tuning Widget Limits
+        dashboard.tuning_widget.freq_start_limit = .001
+        dashboard.tuning_widget.freq_end_limit = 2000
     
     dashboard.ui.comboBox_tsi_detector.setCurrentIndex(0)
 
@@ -1280,6 +1348,10 @@ def _slotTSI_DetectorFixedHardwareChanged(dashboard: QtCore.QObject):
         dashboard.ui.comboBox_tsi_detector_fixed.addItems(['fixed_threshold_bladerf2.py', 'fixed_threshold_simulator.py'])
     elif get_hardware_type == "USRP X410":
         dashboard.ui.comboBox_tsi_detector_fixed.addItems(['fixed_threshold_usrp_x410.py', 'fixed_threshold_simulator.py'])
+    elif get_hardware_type == "RSPduo":
+        dashboard.ui.comboBox_tsi_detector_fixed.addItems(['fixed_threshold_rspduo.py', 'fixed_threshold_simulator.py'])
+    elif get_hardware_type == "RSPdx R2":
+        dashboard.ui.comboBox_tsi_detector_fixed.addItems(['fixed_threshold_rspdx_r2.py', 'fixed_threshold_simulator.py'])
     
     dashboard.ui.comboBox_tsi_detector_fixed.setCurrentIndex(0)
 
@@ -1723,7 +1795,23 @@ def _slotTSI_AdvancedSettingsClicked(dashboard: QtCore.QObject):
     Displays the advanced settings for the currently selected TSI detector.
     """
     # Switch to Advanced Settings
-    fg_detectors = ['wideband_x3x0.py','wideband_b2x0.py','wideband_hackrf.py','wideband_b20xmini.py','wideband_rtl2832u.py','wideband_limesdr.py','wideband_bladerf.py','wideband_plutosdr.py','wideband_usrp2.py','wideband_usrp_n2xx.py','wideband_bladerf2.py','wideband_usrp_x410.py']
+    fg_detectors = [
+        'wideband_x3x0.py',
+        'wideband_b2x0.py',
+        'wideband_hackrf.py',
+        'wideband_b20xmini.py',
+        'wideband_rtl2832u.py',
+        'wideband_limesdr.py',
+        'wideband_bladerf.py',
+        'wideband_plutosdr.py',
+        'wideband_usrp2.py',
+        'wideband_usrp_n2xx.py',
+        'wideband_bladerf2.py',
+        'wideband_usrp_x410.py',
+        'wideband_rspduo.py',
+        'wideband_rspdx.py',
+        'wideband_rspdx_r2.py'
+    ]
 
     # Flow Graph Detectors
     if str(dashboard.ui.comboBox_tsi_detector.currentText()) in fg_detectors:
@@ -3654,6 +3742,12 @@ async def _slotTSI_DetectorStartClicked(dashboard: QtCore.QObject):
                         get_serial = get_hardware_serial
                     elif get_hardware_type == "bladeRF 2.0":
                         get_serial = get_hardware_serial
+                    elif get_hardware_type == "RSPduo":
+                        get_serial = get_hardware_serial
+                    elif get_hardware_type == "RSPdx":
+                        get_serial = get_hardware_serial
+                    elif get_hardware_type == "RSPdx R2":
+                        get_serial = get_hardware_serial
                     else:
                         get_serial = 'serial=' + get_hardware_serial
                 else:
@@ -3662,6 +3756,12 @@ async def _slotTSI_DetectorStartClicked(dashboard: QtCore.QObject):
                     elif get_hardware_type == "bladeRF":
                         get_serial = "0"
                     elif get_hardware_type == "bladeRF 2.0":
+                        get_serial = "0"
+                    elif get_hardware_type == "RSPduo":
+                        get_serial = "0"
+                    elif get_hardware_type == "RSPdx":
+                        get_serial = "0"
+                    elif get_hardware_type == "RSPdx R2":
                         get_serial = "0"
                     else:
                         get_serial = "False"
@@ -3841,6 +3941,12 @@ async def _slotTSI_DetectorFixedStartClicked(dashboard: QtCore.QObject):
                     get_serial = get_hardware_serial
                 elif get_hardware_type == "bladeRF 2.0":
                     get_serial = get_hardware_serial
+                elif get_hardware_type == "RSPduo":
+                        get_serial = get_hardware_serial
+                elif get_hardware_type == "RSPdx":
+                    get_serial = get_hardware_serial
+                elif get_hardware_type == "RSPdx R2":
+                    get_serial = get_hardware_serial
                 else:
                     get_serial = 'serial=' + get_hardware_serial
             else:
@@ -3849,6 +3955,12 @@ async def _slotTSI_DetectorFixedStartClicked(dashboard: QtCore.QObject):
                 elif get_hardware_type == "bladeRF":
                     get_serial = "0"
                 elif get_hardware_type == "bladeRF 2.0":
+                    get_serial = "0"
+                elif get_hardware_type == "RSPduo":
+                        get_serial = "0"
+                elif get_hardware_type == "RSPdx":
+                    get_serial = "0"
+                elif get_hardware_type == "RSPdx R2":
                     get_serial = "0"
                 else:
                     get_serial = "False"

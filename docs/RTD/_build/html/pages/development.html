@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html class="writer-html5" lang="en">
+<html class="writer-html5" lang="en" data-content_root="../">
 <head>
-  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Development &mdash; FISSURE  documentation</title>
@@ -13,9 +13,9 @@
     <script src="../_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js?v=b3ba4146"></script>
-        <script src="../_static/doctools.js?v=888ff710"></script>
-        <script src="../_static/sphinx_highlight.js?v=4825356b"></script>
+        <script src="../_static/documentation_options.js?v=5929fcd5"></script>
+        <script src="../_static/doctools.js?v=9a2dae69"></script>
+        <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="../_static/js/theme.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -96,10 +96,10 @@
            <div itemprop="articleBody">
              
   <section id="development">
-<h1>Development<a class="headerlink" href="#development" title="Permalink to this heading">¶</a></h1>
+<h1>Development<a class="headerlink" href="#development" title="Link to this heading">¶</a></h1>
 <p>This section will explain what it takes to edit the code for FISSURE so you can make your own improvements. FISSURE is intended to make edits easy for the user and the developers want to hear improvement ideas to the interface as well as any new code that you want to share for the project.</p>
 <section id="built-with">
-<h2>Built With<a class="headerlink" href="#built-with" title="Permalink to this heading">¶</a></h2>
+<h2>Built With<a class="headerlink" href="#built-with" title="Link to this heading">¶</a></h2>
 <p>The following software tools are used to edit the different aspects of FISSURE.</p>
 <p><strong>Read the Docs</strong></p>
 <p>To regenerate the offline HTML RTD documentation:</p>
@@ -152,7 +152,7 @@
 </div>
 </section>
 <section id="modifying-dashboard">
-<h2>Modifying Dashboard<a class="headerlink" href="#modifying-dashboard" title="Permalink to this heading">¶</a></h2>
+<h2>Modifying Dashboard<a class="headerlink" href="#modifying-dashboard" title="Link to this heading">¶</a></h2>
 <p>This guide will provide examples on how to add GUI elements to the FISSURE Dashboard and interact with those elements within the FISSURE code. The process for editing FISSURE is as follows:</p>
 <ol class="arabic simple">
 <li><p>Add new widgets to .ui files with Qt Designer</p></li>
@@ -165,7 +165,7 @@
 <li><p>The Dashboard callbacks update the frontend GUI components</p></li>
 </ol>
 <section id="qtdesigner">
-<h3>QtDesigner<a class="headerlink" href="#qtdesigner" title="Permalink to this heading">¶</a></h3>
+<h3>QtDesigner<a class="headerlink" href="#qtdesigner" title="Link to this heading">¶</a></h3>
 <p>Launch QtDesigner with the <cite>designer</cite> command and open the <code class="docutils literal notranslate"><span class="pre">./UI/dashboard.ui</span></code> file to edit the Dashboard. Menu items are stored in the <code class="docutils literal notranslate"><span class="pre">./UI/FissureDashboard.ui</span></code> file and other supporting files can also be found in the same folder.</p>
 <img alt="../_images/qtdesigner.png" src="../_images/qtdesigner.png" />
 <p><strong>Creating New Widgets</strong></p>
@@ -193,11 +193,11 @@
 <p>Menu items can be added by clicking “Type Here” in any of the menus/submenus and entering text. Separators can be added by clicking “Add Separator” and then dragged or by right clicking and clicking “Insert Separator”. Submenus can be added by clicking the right side of any menu item. There is an issue with Qt Designer adding new menu items after too many have been added. The screen will cut off the bottom of the menu but you can still navigate with the arrow keys and type in new items. To rearrange the items, close Qt Designer and open the .ui file in a text editor to readjust their positions.</p>
 </section>
 <section id="dashboard-frontend">
-<h3>Dashboard Frontend<a class="headerlink" href="#dashboard-frontend" title="Permalink to this heading">¶</a></h3>
+<h3>Dashboard Frontend<a class="headerlink" href="#dashboard-frontend" title="Link to this heading">¶</a></h3>
 <p>The Dashboard code is separated by Frontend, Backend, UI Components, and Slots. The Frontend code is responsible for the initializing the GUI elements and connecting signals to slots. Each tab has their own initialization function that is called for setting default values and initializing variables. The Frontend also recalls FISSURE settings and launches the Backend code.</p>
 </section>
 <section id="signals-and-slots">
-<h3>Signals and Slots<a class="headerlink" href="#signals-and-slots" title="Permalink to this heading">¶</a></h3>
+<h3>Signals and Slots<a class="headerlink" href="#signals-and-slots" title="Link to this heading">¶</a></h3>
 <p>When an action is performed on a Qt widget the function that gets called is assigned through connect functions. The <code class="docutils literal notranslate"><span class="pre">connect_slots()</span></code> function calls other connect functions grouped by the different FISSURE tabs and menus. The following is an example of how to connect a widget to a function:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">connect_attack_slots</span><span class="p">(</span><span class="n">dashboard</span><span class="p">:</span> <span class="n">Dashboard</span><span class="p">):</span>
     <span class="c1"># Check Box</span>
@@ -245,7 +245,7 @@
 </div>
 </section>
 <section id="dashboard-backend">
-<h3>Dashboard Backend<a class="headerlink" href="#dashboard-backend" title="Permalink to this heading">¶</a></h3>
+<h3>Dashboard Backend<a class="headerlink" href="#dashboard-backend" title="Link to this heading">¶</a></h3>
 <p>The Dashboard Backend is responsible for network communications to the HIPRFISR (the central hub). It keeps track of heartbeats and incoming messages and also issues outgoing messages. An example of an outgoing message called from the Frontend is shown below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">attackFlowGraphStop</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sensor_node_id</span><span class="p">,</span> <span class="n">parameter</span><span class="p">,</span> <span class="n">autorun_index</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -264,7 +264,7 @@
 </div>
 </section>
 <section id="callbacks">
-<h3>Callbacks<a class="headerlink" href="#callbacks" title="Permalink to this heading">¶</a></h3>
+<h3>Callbacks<a class="headerlink" href="#callbacks" title="Link to this heading">¶</a></h3>
 <p>Callbacks are the functions that are executed when a message is received over the network. The callback files are grouped by FISSURE component and are located in <code class="docutils literal notranslate"><span class="pre">./fissure/callbacks/</span></code>. The HIPRFISR callbacks mainly forward the messages to their intended destinations as shown in the example below:</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">async</span> <span class="k">def</span> <span class="nf">attackFlowGraphStop</span><span class="p">(</span><span class="n">component</span><span class="p">:</span> <span class="nb">object</span><span class="p">,</span> <span class="n">sensor_node_id</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">parameter</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">autorun_index</span><span class="o">=</span><span class="mi">0</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
@@ -308,7 +308,7 @@
 </div>
 </section>
 <section id="common-qt-widget-operations">
-<h3>Common Qt Widget Operations<a class="headerlink" href="#common-qt-widget-operations" title="Permalink to this heading">¶</a></h3>
+<h3>Common Qt Widget Operations<a class="headerlink" href="#common-qt-widget-operations" title="Link to this heading">¶</a></h3>
 <p>Any widget in the Dashboard can be referenced with <code class="docutils literal notranslate"><span class="pre">dashboard.ui.objectName</span></code> or <code class="docutils literal notranslate"><span class="pre">component.frontend.ui.objectName</span></code>.</p>
 <p>The following are frequently called public functions for the widgets in FISSURE. They are listed as <code class="docutils literal notranslate"><span class="pre">self.objectName</span></code> for simplicity:</p>
 <div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp"># </span>Push<span class="w"> </span>Button
@@ -516,7 +516,7 @@
 </div>
 </section>
 <section id="generic-input-dialogs">
-<h3>Generic Input Dialogs<a class="headerlink" href="#generic-input-dialogs" title="Permalink to this heading">¶</a></h3>
+<h3>Generic Input Dialogs<a class="headerlink" href="#generic-input-dialogs" title="Link to this heading">¶</a></h3>
 <p>The generic input dialogs are located in <code class="docutils literal notranslate"><span class="pre">./fissure/Dashboard/UI_Components/Qt5.py</span></code>. There are synchronous and asynchronous versions available for most types of dialog. If a message box dialog is part of an asynchronous function, it must have an asynchronous version to prevent errors when launched.</p>
 <p>The following are examples of input dialogs:</p>
 <p><strong>Asynchronous Yes/No Dialog:</strong></p>
@@ -603,7 +603,7 @@
 </section>
 </section>
 <section id="style-sheets">
-<h2>Style Sheets<a class="headerlink" href="#style-sheets" title="Permalink to this heading">¶</a></h2>
+<h2>Style Sheets<a class="headerlink" href="#style-sheets" title="Link to this heading">¶</a></h2>
 <p>Style sheets are applied to the Dashboard and its child windows using the style sheets found in the <code class="docutils literal notranslate"><span class="pre">./UI/Style_Sheets/</span></code> folder. There are three files: light, dark, and custom. Each file contains a similar structure where settings can be applied to all widgets of the same type or for specific widgets using their object IDs. Many of the styles are applied to widgets that have object names starting with a specific naming convention. This allows commonly used widget subcategories to have their own styles. Each type of widget has their own unique properties that can be customized.</p>
 <p>If possible, avoid hard-coding styling values in the Python code to better manage and organize the styling for FISSURE. Desktop environments will have different appearances for default settings and Qt versions can also have differences. Any style sheet adjustments that need to be made based on operating system will be inserted into the <code class="docutils literal notranslate"><span class="pre">./fissure/Dashboard/Slots/MenuBarSlots.py</span></code> file.</p>
 <p>Colors schemes are assigned to the widgets in the style sheets using temporary variables that later get populated with the RGB values for light, dark, and custom modes. The following mappings are used throughout the style sheets:</p>
@@ -728,7 +728,7 @@
 </div>
 </section>
 <section id="adding-custom-options">
-<h2>Adding Custom Options<a class="headerlink" href="#adding-custom-options" title="Permalink to this heading">¶</a></h2>
+<h2>Adding Custom Options<a class="headerlink" href="#adding-custom-options" title="Link to this heading">¶</a></h2>
 <p><strong>Options Dialog</strong></p>
 <p>Bring up the options dialog in Qt Designer using the <cite>designer</cite> command and then open the <code class="docutils literal notranslate"><span class="pre">FISSURE/UI/options.ui</span></code> file. Click the arrows for the stacked widget (top right) to locate the table where the custom option will be inserted. Double-click on the table and add a new row with the name of the variable. Set the font size to match the other rows with the “Properties&lt;&lt;” button.</p>
 <img alt="../_images/options.png" src="../_images/options.png" />
@@ -738,7 +738,7 @@
 <p>Access the variables throughout the FISSURE code from the backend or other local settings locations such as: <cite>dashboard.backend.settings[‘fft_size’]</cite> or <cite>self.settings[‘fft_size’]</cite>.</p>
 </section>
 <section id="attack-flow-graphs">
-<h2>Attack Flow Graphs<a class="headerlink" href="#attack-flow-graphs" title="Permalink to this heading">¶</a></h2>
+<h2>Attack Flow Graphs<a class="headerlink" href="#attack-flow-graphs" title="Link to this heading">¶</a></h2>
 <p><strong>Flow Graph Configuration</strong></p>
 <p>A new Python file is generated each time a .grc file is executed in GNU Radio Companion. The format of this auto-generated Python file is used by FISSURE to perform actions like: displaying variable names, starting attacks, changing values for a running flow graph, etc. Editing the Python file may cause FISSURE to not function properly.</p>
 <p><em>GUI vs. No GUI</em></p>
@@ -760,7 +760,7 @@
 <p>Attack flow graphs can be added to FISSURE within the <em>Library&gt;Add</em> tab by selecting a protocol and choosing “Attack”. Attacks will be visible within the Attack tree if the “Attack Template Name” is entered properly.</p>
 </section>
 <section id="attack-python-scripts">
-<h2>Attack Python Scripts<a class="headerlink" href="#attack-python-scripts" title="Permalink to this heading">¶</a></h2>
+<h2>Attack Python Scripts<a class="headerlink" href="#attack-python-scripts" title="Link to this heading">¶</a></h2>
 <p><strong>Creating Python Scripts</strong></p>
 <p>Non-GNU Radio attacks can be added to the FISSURE library by uploading specially configured Python (.py) files. A function is needed within the Python script to identify which variables can be modified in the FISSURE Dashboard (<cite>getArguments()</cite>). Those variables are used by the system as command line arguments during execution of the script. All FISSURE branches accept both Python2 and Python3 attack scripts.</p>
 <p>FISSURE will parse a variable named “run_with_sudo” set to True or False and set the “Run with sudo” checkbox upon loading the attack in the Single-Stage Attack tab. For multi-stage attacks, this variable is listed in the generated tables and its value is used to run the script with or without sudo. If no variable is found, then Python scripts will rely on the checkbox for single-stage attacks and be run with sudo for multi-stage attacks.</p>
@@ -823,7 +823,7 @@
 <p>Python files can be uploaded to FISSURE within the <em>Library&gt;&gt;Add</em> tab by choosing a protocol and selecting “Attack”. The file type must be set to “Python2 Script” or “Python3 Script” and the file must have a valid .py extension. Attacks added to the library and named with a proper “Attack Template Name” will immediately show up in the Attack tree widget.</p>
 </section>
 <section id="inspection-flow-graphs">
-<h2>Inspection Flow Graphs<a class="headerlink" href="#inspection-flow-graphs" title="Permalink to this heading">¶</a></h2>
+<h2>Inspection Flow Graphs<a class="headerlink" href="#inspection-flow-graphs" title="Link to this heading">¶</a></h2>
 <p>Inspection flow graphs can be added to FISSURE to perform frequently used analysis on live streams from SDRs or directly on prerecorded data files. Flow graph Python files (.py) are called directly with Python2/3 and use the GNU Radio “parameter” block as arguments to the Python call. This enables variables found in blocks that do not utilize callbacks (like IP address or serial number) to be changed prior to runtime. The following are instructions for creating a new inspection flow graph within the <em>IQ Data&gt;&gt;Inspection</em> tab.</p>
 <img alt="../_images/inspection1.png" src="../_images/inspection1.png" />
 <p><strong>Location</strong></p>
@@ -861,7 +861,7 @@
 <p>Double-click/load an IQ file in the IQ Data tab Data Viewer and enter sample rate and frequency information prior to loading a file-based inspection flow graph. These values will automatically copy over to the table if available.</p>
 </section>
 <section id="creating-triggers">
-<h2>Creating Triggers<a class="headerlink" href="#creating-triggers" title="Permalink to this heading">¶</a></h2>
+<h2>Creating Triggers<a class="headerlink" href="#creating-triggers" title="Link to this heading">¶</a></h2>
 <p>There are four major steps in creating a new trigger for use in single-stage attacks, multi-stage attacks, archive replay, and autorun playlists: building the Python script, adding widgets to .ui file in QtDesigner, updating the Triggers Dialog slots, and adding information to the FISSURE library.yaml file.</p>
 <p><strong>Scripting</strong></p>
 <p>Triggers consist of a Python3 file that accepts input arguments provided by the FISSURE Dashboard and loops until a condition is satisfied. The trigger files are stored in the <code class="docutils literal notranslate"><span class="pre">./Flow</span> <span class="pre">Graph</span> <span class="pre">Library/maint-3.10/Triggers/</span></code> directory. Trigger scripts can call secondary programs like GNU Radio flow graphs and monitor output such as text printed to stdout. A value of 0 is returned if the trigger is successful and -1 if an error was caught. Two examples of trigger scripts are provided below. The first waits until a specific time and the second reads text produced from a flow graph.</p>

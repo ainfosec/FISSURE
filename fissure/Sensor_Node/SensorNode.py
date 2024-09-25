@@ -1959,6 +1959,9 @@ class SensorNode():
         loadedmod, class_name = self.overwriteFlowGraphVariables(flow_graph_filename, variable_names, variable_values)
 
         # Call the "__init__" Function
+        print("AAAAAAAAAAA")
+        print(loadedmod)
+        print(class_name)
         self.wideband_flowtoexec = getattr(loadedmod,class_name)()
 
         # Start it

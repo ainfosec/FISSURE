@@ -592,6 +592,13 @@ class Dashboard(QtWidgets.QMainWindow):
         # new_iq_combobox4.addItem("Byte/Int 8")
         new_iq_combobox4.setFixedSize(150, 49)
         new_iq_combobox4.setCurrentIndex(0)
+        
+        spinbox_num_files = QtWidgets.QSpinBox(self, objectName="spinBox_")
+        spinbox_num_files.setMaximum(999)
+        spinbox_num_files.setMinimum(1)
+        spinbox_num_files.setValue(1)
+        spinbox_num_files.setAlignment(QtCore.Qt.AlignCenter)
+        self.ui.tableWidget_iq_record.setCellWidget(0,5,spinbox_num_files)
 
         self.ui.tableWidget_iq_record.resizeColumnsToContents()
         self.ui.tableWidget_iq_record.setColumnWidth(0, 300)
@@ -1955,6 +1962,12 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actioncemaxecuter_YouTube.triggered.connect(MenuBarSlots._slotMenuCemaxecuterYouTubeClicked)
     dashboard.window.actionIceman_YouTube.triggered.connect(MenuBarSlots._slotMenuIcemanYouTubeClicked)
     dashboard.window.actionHideo_Okawara.triggered.connect(MenuBarSlots._slotMenuLessonHideoOkawaraClicked)
+    dashboard.window.actionThe_Signal_Path.triggered.connect(MenuBarSlots._slotMenuLessonTheSignalPathClicked)
+    dashboard.window.actionField_Spotter_Map.triggered.connect(MenuBarSlots._slotMenuFieldSpotterClicked)
+    dashboard.window.actionPlane_Sailing.triggered.connect(MenuBarSlots._slotMenuPlaneSailingClicked)
+    dashboard.window.actionUK_Portable_Ham_Map.triggered.connect(MenuBarSlots._slotMenuUK_PortableHamMapClicked)
+    dashboard.window.actionSatelliteMapSpace.triggered.connect(MenuBarSlots._slotMenuSatelliteMapSpaceClicked)
+    dashboard.window.actionHamSCI_Resources.triggered.connect(MenuBarSlots._slotMenuLessonHamSCI_ResourcesClicked)
 
     # Help Menu
     dashboard.window.actionUser_Manual.triggered.connect(MenuBarSlots.openUserManual)

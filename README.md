@@ -171,7 +171,7 @@ The following is a list of "supported" hardware with varying levels of integrati
 - bladeRF, bladeRF 2.0 micro
 - Open Sniffer
 - PlutoSDR
-- SDRplay: RSPduo, RSPdx
+- SDRplay: RSPduo, RSPdx, RSPdx R2
 
 ## Getting Started
 

@@ -2097,6 +2097,14 @@ programs_ubuntu20_04.append(('Binwalk',
 ls /usr/bin/binwalk
 """,True,'Data'))
 
+# Read the Docs
+programs_ubuntu20_04.append(('Read the Docs',
+"""sudo python3 -m pip install sphinx
+sudo python3 -m pip install sphinx_rtd_theme
+########## Verify ##########
+sudo python3 -m pip show sphinx_rtd_theme
+""",True,'Development'))
+
 
 ########################################################################
 ####################### Parrot Security/OS 6.1 #########################
@@ -4182,6 +4190,14 @@ programs_parrot_os_6_1.append(('Binwalk',
 ls /usr/bin/binwalk
 """,True,'Data'))
 
+# Read the Docs
+programs_parrot_os_6_1.append(('Read the Docs',
+"""sudo python3 -m pip install sphinx
+sudo python3 -m pip install sphinx_rtd_theme
+########## Verify ##########
+sudo python3 -m pip show sphinx_rtd_theme
+""",True,'Development'))
+
 
 ########################################################################
 ########################## Ubuntu 22.04 ################################
@@ -6235,6 +6251,13 @@ programs_ubuntu22_04.append(('Binwalk',
 ls /usr/bin/binwalk
 """,False,'Data'))
 
+# Read the Docs
+programs_ubuntu22_04.append(('Read the Docs',
+"""sudo python3 -m pip install sphinx
+sudo python3 -m pip install sphinx_rtd_theme
+########## Verify ##########
+sudo python3 -m pip show sphinx_rtd_theme
+""",True,'Development'))
 
 
 ########################################################################
@@ -8297,6 +8320,13 @@ programs_dragonOS_focalx.append(('Binwalk',
 ls /usr/bin/binwalk
 """,True,'Data'))
 
+# Read the Docs
+programs_dragonOS_focalx.append(('Read the Docs',
+"""sudo python3 -m pip install sphinx
+sudo python3 -m pip install sphinx_rtd_theme
+########## Verify ##########
+sudo python3 -m pip show sphinx_rtd_theme
+""",True,'Development'))
 
 
 ########################################################################
@@ -10361,6 +10391,13 @@ programs_kali2023_1.append(('Binwalk',
 ls /usr/bin/binwalk
 """,True,'Data'))
 
+# Read the Docs
+programs_kali2023_1.append(('Read the Docs',
+"""sudo python3 -m pip install sphinx
+sudo python3 -m pip install sphinx_rtd_theme
+########## Verify ##########
+sudo python3 -m pip show sphinx_rtd_theme
+""",True,'Development'))
 
 
 ########################################################################
@@ -12414,6 +12451,13 @@ programs_backbox_linux_8.append(('Binwalk',
 ls /usr/bin/binwalk
 """,True,'Data'))
 
+# Read the Docs
+programs_backbox_linux_8.append(('Read the Docs',
+"""sudo python3 -m pip install sphinx
+sudo python3 -m pip install sphinx_rtd_theme
+########## Verify ##########
+sudo python3 -m pip show sphinx_rtd_theme
+""",True,'Development'))
 
 
 ########################################################################
@@ -12479,9 +12523,9 @@ sudo python3 -m pip install pydotplus --break-system-packages
 sudo python3 -m pip install tensorflow --break-system-packages
 sudo apt-get install -y snapd
 sudo snap install netron
-sudo python3 -m pip install ipython
-sudo python3 -m pip install scikit-learn==1.3.2
-sudo python3 -m pip install opencv-python
+sudo python3 -m pip install ipython --break-system-packages
+sudo python3 -m pip install scikit-learn==1.3.2 --break-system-packages
+sudo python3 -m pip install opencv-python --break-system-packages
 . ~/.bashrc
 """,True,"Minimum Install"))
 
@@ -14468,6 +14512,13 @@ programs_raspberry_pi_os.append(('Binwalk',
 ls /usr/bin/binwalk
 """,True,'Data'))
 
+# Read the Docs
+programs_raspberry_pi_os.append(('Read the Docs',
+"""sudo python3 -m pip install sphinx --break-system-packages
+sudo python3 -m pip install sphinx_rtd_theme --break-system-packages
+########## Verify ##########
+sudo python3 -m pip show sphinx_rtd_theme
+""",True,'Development'))
 
 
 ########################################################################
@@ -16523,6 +16574,14 @@ programs_ubuntu22_04_arm.append(('Binwalk',
 ########## Verify ##########
 ls /usr/bin/binwalk
 """,True,'Data'))
+
+# Read the Docs
+programs_ubuntu22_04_arm.append(('Read the Docs',
+"""sudo python3 -m pip install sphinx
+sudo python3 -m pip install sphinx_rtd_theme
+########## Verify ##########
+sudo python3 -m pip show sphinx_rtd_theme
+""",True,'Development'))
 
 
 ########################################################################

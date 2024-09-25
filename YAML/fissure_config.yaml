@@ -38,7 +38,7 @@ disabled_running_flow_graph_variables:
 - rx_usrp_antenna
 - filepath
 failure_multiple: '5'
-fft_size: '8192'
+fft_size: '16000'
 file_logging_level: DEBUG
 heartbeat_interval: '5'
 hiprfisr:
@@ -53,28 +53,67 @@ hiprfisr:
 hiprfisr_pub_port: '5055'
 icon_style: Light
 morse_code_amplitude_threshold: '0.5'
-morse_code_between_letter_spacing: '1.96'
-morse_code_between_word_spacing: '5.92'
-morse_code_error_tolerance: '0.1'
+morse_code_between_letter_spacing: '3'
+morse_code_between_word_spacing: '7'
+morse_code_error_tolerance: '0.05'
 morse_code_same_letter_spacing: '1'
-moving_avg_points: '20'
+moving_avg_points: '5'
 pd_bits_port: '5066'
 pd_hiprfisr_dealer_port: '5054'
 pd_pub_port: '5063'
 remember_configuration: false
 sensor_node1:
-     archive: ''
-     attack: ''
-     hb_port: ''
-     ip_address: ''
-     iq: ''
-     local_remote: ''
-     location: ''
-     msg_port: ''
-     nickname: ''
-     notes: ''
-     pd: ''
-     tsi: ''
+     archive:
+     -    - USRP B2x0
+          - ''
+          - ''
+          - 30AD2E1
+          - ''
+          - ''
+          - ''
+     attack:
+     -    - USRP B2x0
+          - ''
+          - ''
+          - 30AD2E1
+          - ''
+          - ''
+          - ''
+     autorun: 'False'
+     autorun_delay_seconds: '3'
+     console_logging_level: INFO
+     file_logging_level: DEBUG
+     hb_port: '5051'
+     ip_address: 127.0.0.1
+     iq:
+     -    - USRP B2x0
+          - ''
+          - ''
+          - 30AD2E1
+          - ''
+          - ''
+          - ''
+     local_remote: local
+     location: fgh
+     msg_port: '5052'
+     nickname: Local Sensor Node
+     notes: fdh
+     pd:
+     -    - USRP B2x0
+          - ''
+          - ''
+          - 30AD2E1
+          - ''
+          - ''
+          - ''
+     tsi:
+     -    - USRP B2x0
+          - ''
+          - ''
+          - 30AD2E1
+          - ''
+          - ''
+          - ''
 sensor_node2:
      archive: ''
      attack: ''

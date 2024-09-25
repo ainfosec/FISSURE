@@ -64,6 +64,6 @@ templates:
     - set_sensitivity(${ sensitivity })
 
 documentation: ./wifi_phy_hier.py
-grc_source: /home/laptop1/FISSURE/Flow Graph Library/Standalone Flow Graphs/wifi_phy_hier.grc
+grc_source: /home/user/FISSURE/Flow Graph Library/maint-3.10/Standalone Flow Graphs/wifi_phy_hier.grc
 
 file_format: 1

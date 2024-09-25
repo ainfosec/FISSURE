@@ -1191,7 +1191,7 @@ p, li { white-space: pre-wrap; }
         </item>
         <item>
          <property name="text">
-          <string>RSPdx</string>
+          <string>RSPdx R2</string>
          </property>
          <property name="checkState">
           <enum>Unchecked</enum>
