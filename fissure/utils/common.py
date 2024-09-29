@@ -1,6 +1,6 @@
 from typing import Any, Dict, Optional, Tuple
 
-import distro
+#import distro
 import logging
 import logging.config
 import os
@@ -34,11 +34,11 @@ FISSURE_CONFIG_DEFAULT = os.path.join("User Configs", "default.yaml")
 LOG_CONFIG_FILE = "logging.yaml"
 
 OS_3_8_KEYWORDS = ["DragonOS Focal", "Ubuntu 20.04"]
-OS_3_10_KEYWORDS = ["Ubuntu 22.04", "Kali", "DragonOS FocalX", "Raspberry Pi OS", "Parrot"]
+OS_3_10_KEYWORDS = ["Ubuntu 22.04", "Kali", "DragonOS FocalX", "Raspberry Pi OS", "Parrot", "Ubuntu 24.04"]
 
 QTERMINAL_LIST = ["DragonOS Focal", "DragonOS FocalX", "Kali"]
 LXTERMINAL_LIST = ["Raspberry Pi OS"]
-GNOME_TERMINAL_LIST = ["Ubuntu 20.04", "Ubuntu 22.04", "Parrot"]
+GNOME_TERMINAL_LIST = ["Ubuntu 20.04", "Ubuntu 22.04", "Parrot", "Ubuntu 24.04"]
 
 
 class FissureUtilObjects:
@@ -299,6 +299,12 @@ def get_os_info() -> Tuple[str, str, str]:
     # This method contains previously gathered values
     # Detect Operating System
 
+    # Ubuntu 24.04
+    proc = subprocess.Popen("lsb_release -d 2>&1 | grep 'Ubuntu 24.04'", shell=True, stdout=subprocess.PIPE, )
+    output = proc.communicate()[0].decode()
+    if len(output) > 0:
+        return "Ubuntu 24.04"
+    
     # Ubuntu 22.04
     proc = subprocess.Popen("lsb_release -d 2>&1 | grep 'Ubuntu 22.04'", shell=True, stdout=subprocess.PIPE, )
     output = proc.communicate()[0].decode()
@@ -364,3 +370,52 @@ def isFloat(x):
     except ValueError:
         return False
     return True
+
+
+def updateCRC(crc_poly, crc_acc, crc_input, crc_length):
+    """
+    Calculates CRC for bytes. Used in multiple tabs. Move this function somewhere else?
+    """
+    # 8-bit CRC
+    if crc_length == 8:
+        # Convert Hex Byte String to int
+        crc_input_int = int(crc_input, 16)
+        crc_acc_int = int(crc_acc, 16)
+        crc_acc_int = crc_acc_int ^ crc_input_int
+        for _ in range(8):
+            crc_acc_int <<= 1
+            if crc_acc_int & 0x0100:
+                crc_acc_int ^= crc_poly
+            # crc &= 0xFF
+
+        # Convert to Hex String
+        crc_acc = ("%0.2X" % crc_acc_int)[-2:]
+
+    # 16-bit CRC
+    elif crc_length == 16:
+        # Convert Hex Byte String to int
+        crc_input_int = int(crc_input, 16)
+        crc_acc_int = int(crc_acc, 16)
+        crc_acc_int = crc_acc_int ^ (crc_input_int << 8)
+        for i in range(0, 8):
+            if (crc_acc_int & 32768) == 32768:
+                crc_acc_int = crc_acc_int << 1
+                crc_acc_int = crc_acc_int ^ crc_poly
+            else:
+                crc_acc_int = crc_acc_int << 1
+
+        # Convert to Hex String
+        crc_acc = "%0.4X" % crc_acc_int
+
+        # Keep Only the Last 2 Bytes
+        crc_acc = crc_acc[-4:]
+
+    # 32-bit CRC
+    elif crc_length == 32:
+        crc_input_int = int(crc_input, 16)
+        crc_acc = crc_acc ^ crc_input_int
+        for _ in range(0, 8):
+            mask = -(crc_acc & 1)
+            crc_acc = (crc_acc >> 1) ^ (crc_poly & mask)
+
+    return crc_acc

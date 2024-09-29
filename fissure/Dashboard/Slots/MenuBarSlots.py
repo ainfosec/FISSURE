@@ -3835,10 +3835,63 @@ def _slotMenu_dump978_Clicked(dashboard: QtWidgets.QMainWindow):
 
 
 @QtCore.pyqtSlot()
-def _slotMenuIQEngineClicked():
+def _slotMenuIQEngineOnlineClicked():
     """Opens IQEngine in a browser."""
     # Open a Browser
     os.system("xdg-open https://iqengine.org/")
+
+
+@QtCore.pyqtSlot()
+def _slotMenuIQEngineLocalClicked(dashboard: QtWidgets.QMainWindow):
+    """Opens the IQEngine docker container and opens a browser."""
+    # Check if Docker Container is Running
+    try:
+        # Detect IQ Engine Docker Container
+        image_name = "ghcr.io/iqengine/iqengine:pre"
+        result = subprocess.run(
+            ['docker', 'ps', '--filter', f'ancestor={image_name}', '--format', '{{.Image}}'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        )
+
+        # Container Running
+        if image_name in result.stdout.strip():
+            dashboard.logger.info("IQEngine docker container found!")
+            dashboard.logger.info("Click Refresh in the top right of the browser to view new files in the IQ Recordings folder.")
+
+        # Container Not Running
+        else:
+            dashboard.logger.info("IQEngine docker container not found!")
+
+            # Start the Container
+            expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
+            start_command = """docker run --env-file .env -v \\\"""" + os.path.join(fissure.utils.FISSURE_ROOT, 'IQ Recordings') + """\\\":/tmp/myrecordings -p 3000:3000 --pull=always -d ghcr.io/iqengine/iqengine:pre"""
+            iq_engine_directory = os.path.expanduser("~/Installed_by_FISSURE/IQEngine/")
+            if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
+                proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "' + start_command + '"', shell=True, cwd=iq_engine_directory)
+            elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "qterminal":
+                proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "' + start_command + '"', shell=True, cwd=iq_engine_directory)
+            elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
+                proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "' + start_command + '"', shell=True, cwd=iq_engine_directory)
+
+        # Open a Browser
+        os.system("xdg-open http://localhost:3000/browser")
+
+    except Exception as e:
+        dashboard.logger.error(f"Error: {e}")
+
+
+@QtCore.pyqtSlot()
+def _slotMenuIQEngineStopDockerClicked(dashboard: QtWidgets.QMainWindow):
+    """Stops the local IQEngine docker container."""
+    # Stop the Container
+    expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
+    stop_command = "docker stop \$(docker ps -q --filter ancestor=ghcr.io/iqengine/iqengine:pre)"
+    if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
+        proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "' + stop_command + '"', shell=True)
+    elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "qterminal":
+        proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "' + stop_command + '"', shell=True)
+    elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
+        proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "' + stop_command + '"', shell=True)
 
 
 @QtCore.pyqtSlot()

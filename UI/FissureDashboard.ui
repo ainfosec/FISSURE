@@ -441,6 +441,14 @@
      <property name="title">
       <string>Data</string>
      </property>
+     <widget class="QMenu" name="menuIQEngine">
+      <property name="title">
+       <string>IQEngine</string>
+      </property>
+      <addaction name="actionIQEngine_Online"/>
+      <addaction name="actionIQEngine_Local"/>
+      <addaction name="actionStop_Local_Docker_Container"/>
+     </widget>
      <addaction name="actionCyberChef"/>
      <addaction name="actionCyberChef_Recipes"/>
      <addaction name="actionRehex"/>
@@ -454,7 +462,7 @@
      <addaction name="actionMeld"/>
      <addaction name="actionWaveDrom"/>
      <addaction name="actionPacket_Diagram"/>
-     <addaction name="actionIQEngine"/>
+     <addaction name="menuIQEngine"/>
      <addaction name="actionSolve_Crypto_with_Force"/>
      <addaction name="actionCrackStation"/>
      <addaction name="actionGHex"/>
@@ -2342,11 +2350,6 @@
     <string>dump978</string>
    </property>
   </action>
-  <action name="actionIQEngine">
-   <property name="text">
-    <string>IQEngine</string>
-   </property>
-  </action>
   <action name="actionrfidpics">
    <property name="text">
     <string>rfidpics</string>
@@ -2910,6 +2913,21 @@
   <action name="actionHamSCI_Resources">
    <property name="text">
     <string>HamSCI Resources</string>
+   </property>
+  </action>
+  <action name="actionIQEngine_Online">
+   <property name="text">
+    <string>IQEngine - Online</string>
+   </property>
+  </action>
+  <action name="actionIQEngine_Local">
+   <property name="text">
+    <string>IQEngine - Local</string>
+   </property>
+  </action>
+  <action name="actionStop_Local_Docker_Container">
+   <property name="text">
+    <string>Stop Local Docker Container</string>
    </property>
   </action>
  </widget>

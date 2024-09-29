@@ -9826,7 +9826,7 @@ p, li { white-space: pre-wrap; }
           </rect>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>1</number>
          </property>
          <widget class="QWidget" name="tab_16">
           <attribute name="title">
@@ -10063,6 +10063,522 @@ p, li { white-space: pre-wrap; }
       <attribute name="title">
        <string>Direction Finding</string>
       </attribute>
+     </widget>
+     <widget class="QWidget" name="tab_tsi_soi_aggregator">
+      <attribute name="title">
+       <string>SOI Aggregator</string>
+      </attribute>
+      <widget class="QTableWidget" name="tableWidget_tsi_soi_sois">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>200</y>
+         <width>1195</width>
+         <height>570</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>10</pointsize>
+        </font>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SingleSelection</enum>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+       <property name="wordWrap">
+        <bool>false</bool>
+       </property>
+       <attribute name="horizontalHeaderDefaultSectionSize">
+        <number>150</number>
+       </attribute>
+       <attribute name="horizontalHeaderStretchLastSection">
+        <bool>true</bool>
+       </attribute>
+       <attribute name="verticalHeaderDefaultSectionSize">
+        <number>21</number>
+       </attribute>
+       <column>
+        <property name="text">
+         <string>SOI Name</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+          <weight>50</weight>
+          <bold>false</bold>
+         </font>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>IQ Filepath</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Classification</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+       </column>
+       <column>
+        <property name="text">
+         <string>Statistics</string>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+       </column>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tsi_soi_pd_list">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>445</x>
+         <y>775</y>
+         <width>130</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Add to PD List</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tsi_soi_library">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>750</x>
+         <y>775</y>
+         <width>130</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Add to Library</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tsi_soi_pd_list_all">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>580</x>
+         <y>775</y>
+         <width>130</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Add All to PD List</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tsi_soi_library_all">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>885</x>
+         <y>775</y>
+         <width>130</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Add All to Library</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tsi_soi_remove">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>775</y>
+         <width>105</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Remove</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tsi_soi_remove_all">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>120</x>
+         <y>775</y>
+         <width>105</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Remove All</string>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label1_42">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>10</y>
+         <width>1195</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Ubuntu</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>SOI Aggregator Settings</string>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+      </widget>
+      <widget class="QLabel" name="label1_43">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>180</y>
+         <width>1195</width>
+         <height>20</height>
+        </rect>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>16777215</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="font">
+        <font>
+         <family>Ubuntu</family>
+         <pointsize>10</pointsize>
+         <weight>75</weight>
+         <italic>false</italic>
+         <bold>true</bold>
+        </font>
+       </property>
+       <property name="text">
+        <string>SOI Editor</string>
+       </property>
+       <property name="scaledContents">
+        <bool>false</bool>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignCenter</set>
+       </property>
+       <property name="margin">
+        <number>0</number>
+       </property>
+      </widget>
+      <widget class="QFrame" name="frame1_26">
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>30</y>
+         <width>1195</width>
+         <height>105</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QCheckBox" name="checkBox_tsi_soi_settings_direction">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="geometry">
+         <rect>
+          <x>25</x>
+          <y>70</y>
+          <width>200</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Include D.F. Results</string>
+        </property>
+        <property name="checked">
+         <bool>false</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="checkBox_tsi_soi_settings_statistics">
+        <property name="geometry">
+         <rect>
+          <x>25</x>
+          <y>30</y>
+          <width>200</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Include F.E. Statistics</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="checkBox_tsi_soi_settings_iq_files">
+        <property name="geometry">
+         <rect>
+          <x>25</x>
+          <y>10</y>
+          <width>200</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Include IQ Files</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QCheckBox" name="checkBox_tsi_soi_settings_classification">
+        <property name="geometry">
+         <rect>
+          <x>25</x>
+          <y>50</y>
+          <width>200</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>Include Classifier Results</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QTextEdit" name="textEdit_tsi_soi_browse">
+        <property name="geometry">
+         <rect>
+          <x>430</x>
+          <y>5</y>
+          <width>755</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="tabChangesFocus">
+         <bool>true</bool>
+        </property>
+        <property name="html">
+         <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_tsi_soi_browse">
+        <property name="geometry">
+         <rect>
+          <x>360</x>
+          <y>5</y>
+          <width>66</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>11</pointsize>
+          <strikeout>false</strikeout>
+         </font>
+        </property>
+        <property name="text">
+         <string>Browse</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="radioButton_tsi_soi_iq_directory">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>40</y>
+          <width>250</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>All IQ Files in IQ File Directory</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="radioButton_tsi_soi_iq_fe_results">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>60</y>
+          <width>250</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Only IQ Files in F.E. Results</string>
+        </property>
+       </widget>
+       <widget class="QRadioButton" name="radioButton_tsi_soi_iq_classifier_results">
+        <property name="geometry">
+         <rect>
+          <x>240</x>
+          <y>80</y>
+          <width>250</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Only IQ Files in Classifier Results</string>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label2_tsi_soi_iq_directory">
+        <property name="geometry">
+         <rect>
+          <x>245</x>
+          <y>5</y>
+          <width>110</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>10</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>IQ File Directory:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+       <widget class="Line" name="line_5">
+        <property name="geometry">
+         <rect>
+          <x>225</x>
+          <y>1</y>
+          <width>3</width>
+          <height>103</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Vertical</enum>
+        </property>
+       </widget>
+       <widget class="Line" name="line_12">
+        <property name="geometry">
+         <rect>
+          <x>226</x>
+          <y>35</y>
+          <width>968</width>
+          <height>2</height>
+         </rect>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tsi_soi_aggregate">
+       <property name="geometry">
+        <rect>
+         <x>555</x>
+         <y>140</y>
+         <width>100</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Aggregate</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tsi_soi_edit_statistics">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>775</y>
+         <width>130</width>
+         <height>27</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Edit Statistics</string>
+       </property>
+      </widget>
      </widget>
     </widget>
    </widget>
@@ -22745,6 +23261,21 @@ p, li { white-space: pre-wrap; }
         </property>
         <property name="text">
          <string>Inspectrum</string>
+        </property>
+       </widget>
+      </widget>
+      <widget class="QWidget" name="page_25">
+       <widget class="QPushButton" name="pushButton_iq_iqengine">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>5</y>
+          <width>112</width>
+          <height>27</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>IQEngine</string>
         </property>
        </widget>
       </widget>

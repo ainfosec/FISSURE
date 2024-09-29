@@ -14,6 +14,7 @@ ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
 kali23_1=$(lsb_release -d 2>&1 | grep "Kali")
 backbox=$(cat /etc/issue -d 2>&1 | grep "BackBox")
 raspberry_pi_os=$(lsb_release -d 2>&1 | grep "bookworm")
+ubuntu24_04=$(lsb_release -d 2>&1 | grep "Ubuntu 24.04")
 
 ########################################
 #            Print Detected            #
@@ -82,6 +83,12 @@ then
     echo "Parrot OS detected"
 fi
 
+# Ubuntu 24.04
+if [[ -n "$ubuntu24_04" ]]
+then
+    echo "Ubuntu 24.04 detected"
+fi
+
 # Python2-maint_3.7, Ubuntu 18.04
 if [[ -n "$ubuntu18_04" ]]
 then    
@@ -121,8 +128,8 @@ then
                 fi                            
             fi
               
-            # Ubuntu 22.04, Kali 23.1, BackBox
-            if [[ -n "$ubuntu22_04" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]] || [[ -n "$raspberry_pi_os" ]] || [[ -n "$parrot_os" ]]
+            # Ubuntu 22.04, Kali 23.1, BackBox, Ubuntu 24.04
+            if [[ -n "$ubuntu22_04" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]] || [[ -n "$raspberry_pi_os" ]] || [[ -n "$parrot_os" ]] || [[ -n "$ubuntu24_04" ]]
             then
                 sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools python3-pyqt5
                 if [[ -n "$kali23_1" ]] || [[ -n "$raspberry_pi_os" ]] || [[ -n "$parrot_os" ]]

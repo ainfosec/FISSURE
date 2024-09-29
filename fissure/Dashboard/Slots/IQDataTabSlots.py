@@ -6837,3 +6837,53 @@ async def _slotIQ_InspectionFG_FileStartClicked(dashboard: QtCore.QObject):
         # Disable Attack Switching
         dashboard.ui.listWidget_iq_inspection_fg_file.setEnabled(False)
         dashboard.ui.pushButton_iq_inspection_fg_file_load.setEnabled(False)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_IQEngineClicked(dashboard: QtCore.QObject):
+    """ 
+    Opens the selected IQ file in IQEngine or opens the IQEngine browser page if not found.
+    """
+    # Check if Docker Container is Running
+    try:
+        # Detect IQ Engine Docker Container
+        image_name = "ghcr.io/iqengine/iqengine:pre"
+        result = subprocess.run(
+            ['docker', 'ps', '--filter', f'ancestor={image_name}', '--format', '{{.Image}}'],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        )
+
+        # Container Running
+        if image_name in result.stdout.strip():
+            dashboard.logger.info("IQEngine docker container found!")
+            dashboard.logger.info("Click Refresh in the top right of the browser to view new files in the IQ Recordings folder.")
+
+        # Container Not Running
+        else:
+            dashboard.logger.info("IQEngine docker container not found!")
+
+            # Start the Container
+            expect_script_filepath = os.path.join(fissure.utils.TOOLS_DIR, "expect_script")
+            start_command = """docker run --env-file .env -v \\\"""" + os.path.join(fissure.utils.FISSURE_ROOT, 'IQ Recordings') + """\\\":/tmp/myrecordings -p 3000:3000 --pull=always -d ghcr.io/iqengine/iqengine:pre"""
+            iq_engine_directory = os.path.expanduser("~/Installed_by_FISSURE/IQEngine/")
+            if fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "gnome-terminal":
+                proc = subprocess.Popen("gnome-terminal -- " + expect_script_filepath + ' "' + start_command + '"', shell=True, cwd=iq_engine_directory)
+            elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "qterminal":
+                proc = subprocess.Popen("qterminal -e " + expect_script_filepath + ' "' + start_command + '"', shell=True, cwd=iq_engine_directory)
+            elif fissure.utils.get_default_expect_terminal(dashboard.backend.os_info) == "lxterminal":
+                proc = subprocess.Popen('lxterminal -e ' + expect_script_filepath + ' "' + start_command + '"', shell=True, cwd=iq_engine_directory)
+
+        # Read Loaded File
+        get_iq_filename = str(dashboard.ui.listWidget_iq_files.currentItem().text())
+        get_iq_directory = str(dashboard.ui.comboBox3_iq_folders.currentText())
+        if ("IQ Recordings" in get_iq_directory.split("/")[-1]) and (".sigmf-data" in get_iq_filename):
+            # Open a Browser to the File
+            os.system("xdg-open http://localhost:3000/view/api/local/local/" + get_iq_filename.split(".sigmf-data")[0])
+
+        else:
+            # Open a Browser to the IQ Recordings Folder
+            os.system("xdg-open http://localhost:3000/browser")
+            dashboard.logger.info("SigMF file not found in IQ Recordings folder. Click Refresh in the top right of the page to see new IQ files in the IQ Recordings folder.")
+
+    except Exception as e:
+        dashboard.logger.error(f"Error: {e}")

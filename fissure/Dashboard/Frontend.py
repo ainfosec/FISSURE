@@ -289,6 +289,11 @@ class Dashboard(QtWidgets.QMainWindow):
             "Relative Spectral Peak per Band",
         ]
 
+        # SOI Aggregator Defaults
+        self.ui.textEdit_tsi_soi_browse.setPlainText(
+            str(os.path.join(fissure.utils.FISSURE_ROOT, "Conditioner Data", "Output"))
+        )
+
         # Defaults
         TSITabSlots._slotTSI_FE_SettingsCategoryChanged(self)
         TSITabSlots._slotTSI_FE_SettingsClassificationChanged(self)
@@ -1404,55 +1409,6 @@ class Dashboard(QtWidgets.QMainWindow):
             child = QtWidgets.QTreeWidgetItem()
             child.setText(0, str(value))
             item.addChild(child)
-
-
-    def updateCRC(self, crc_poly, crc_acc, crc_input, crc_length):
-        """
-        Calculates CRC for bytes. Used in multiple tabs. Move this function somewhere else?
-        """
-        # 8-bit CRC
-        if crc_length == 8:
-            # Convert Hex Byte String to int
-            crc_input_int = int(crc_input, 16)
-            crc_acc_int = int(crc_acc, 16)
-            crc_acc_int = crc_acc_int ^ crc_input_int
-            for _ in range(8):
-                crc_acc_int <<= 1
-                if crc_acc_int & 0x0100:
-                    crc_acc_int ^= crc_poly
-                # crc &= 0xFF
-
-            # Convert to Hex String
-            crc_acc = ("%0.2X" % crc_acc_int)[-2:]
-
-        # 16-bit CRC
-        elif crc_length == 16:
-            # Convert Hex Byte String to int
-            crc_input_int = int(crc_input, 16)
-            crc_acc_int = int(crc_acc, 16)
-            crc_acc_int = crc_acc_int ^ (crc_input_int << 8)
-            for i in range(0, 8):
-                if (crc_acc_int & 32768) == 32768:
-                    crc_acc_int = crc_acc_int << 1
-                    crc_acc_int = crc_acc_int ^ crc_poly
-                else:
-                    crc_acc_int = crc_acc_int << 1
-
-            # Convert to Hex String
-            crc_acc = "%0.4X" % crc_acc_int
-
-            # Keep Only the Last 2 Bytes
-            crc_acc = crc_acc[-4:]
-
-        # 32-bit CRC
-        elif crc_length == 32:
-            crc_input_int = int(crc_input, 16)
-            crc_acc = crc_acc ^ crc_input_int
-            for _ in range(0, 8):
-                mask = -(crc_acc & 1)
-                crc_acc = (crc_acc >> 1) ^ (crc_poly & mask)
-
-        return crc_acc
     
 
     def populateAttackTreeWidget(self):
@@ -1889,7 +1845,9 @@ def connect_menuBar_slots(dashboard: Dashboard):
         lambda: MenuBarSlots._slotMenuICE9_BluetoothSnifferClicked(dashboard)
     )
     dashboard.window.actiondump978.triggered.connect(lambda: MenuBarSlots._slotMenu_dump978_Clicked(dashboard))
-    dashboard.window.actionIQEngine.triggered.connect(MenuBarSlots._slotMenuIQEngineClicked)
+    dashboard.window.actionIQEngine_Online.triggered.connect(MenuBarSlots._slotMenuIQEngineOnlineClicked)
+    dashboard.window.actionIQEngine_Local.triggered.connect(lambda: MenuBarSlots._slotMenuIQEngineLocalClicked(dashboard))
+    dashboard.window.actionStop_Local_Docker_Container.triggered.connect(lambda: MenuBarSlots._slotMenuIQEngineStopDockerClicked(dashboard))
     dashboard.window.actionrfidpics.triggered.connect(MenuBarSlots._slotMenu_rfidpicsClicked)
     dashboard.window.actionacars_adsbexchange.triggered.connect(MenuBarSlots._slotMenu_acars_adsbexchangeClicked)
     dashboard.window.actionAirframes.triggered.connect(MenuBarSlots._slotMenuAirframesClicked)
@@ -2149,6 +2107,9 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.checkBox_tsi_classifier_training_retrain2_manual.clicked.connect(
         lambda: TSITabSlots._slotTSI_ClassifierTrainingRetrain2_ManualChecked(dashboard)
     )
+    dashboard.ui.checkBox_tsi_soi_settings_iq_files.clicked.connect(
+        lambda: TSITabSlots._slotTSI_SOI_SettingsIncludeIQ_FilesChecked(dashboard)
+    )    
 
     # Combo Box
     dashboard.ui.comboBox_tsi_detector.currentIndexChanged.connect(
@@ -2529,6 +2490,33 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tsi_classifier_classification_results_export.clicked.connect(
         lambda: TSITabSlots._slotTSI_ClassifierClassificationResultsExportClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_soi_aggregate.clicked.connect(
+        lambda: TSITabSlots._slotTSI_SOI_AggregateClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_soi_remove.clicked.connect(
+        lambda: TSITabSlots._slotTSI_SOI_RemoveClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_soi_remove_all.clicked.connect(
+        lambda: TSITabSlots._slotTSI_SOI_RemoveAllClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_soi_edit_statistics.clicked.connect(
+        lambda: TSITabSlots._slotTSI_SOI_EditStatistics(dashboard)
+    )    
+    dashboard.ui.pushButton_tsi_soi_pd_list.clicked.connect(
+        lambda: TSITabSlots._slotTSI_SOI_PD_ListClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_soi_pd_list_all.clicked.connect(
+        lambda: TSITabSlots._slotTSI_SOI_PD_ListAllClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_soi_library.clicked.connect(
+        lambda: TSITabSlots._slotTSI_SOI_LibraryClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_soi_library_all.clicked.connect(
+        lambda: TSITabSlots._slotTSI_SOI_LibraryAllClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_soi_browse.clicked.connect(
+        lambda: TSITabSlots._slotTSI_SOI_BrowseClicked(dashboard)
     )
 
     # Radio Buttons
@@ -3178,6 +3166,7 @@ def connect_iq_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_iq_playback.clicked.connect(lambda: IQDataTabSlots._slotIQ_PlaybackClicked(dashboard))
     dashboard.ui.pushButton_iq_inspection_fg_start.clicked.connect(lambda: IQDataTabSlots._slotIQ_InspectionFG_StartClicked(dashboard))
     dashboard.ui.pushButton_iq_inspection_fg_file_start.clicked.connect(lambda: IQDataTabSlots._slotIQ_InspectionFG_FileStartClicked(dashboard))
+    dashboard.ui.pushButton_iq_iqengine.clicked.connect(lambda: IQDataTabSlots._slotIQ_IQEngineClicked(dashboard))
     
     # Table Widget
     dashboard.ui.tableWidget_iq_append.horizontalHeader().sectionClicked.connect(

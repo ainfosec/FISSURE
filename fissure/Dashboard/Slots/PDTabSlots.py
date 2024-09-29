@@ -3421,7 +3421,7 @@ def _slotPD_CRC_StartClicked(dashboard: QtCore.QObject):
             else:
                 new_byte = get_input1[2*n:2*n+2]
 
-            acc = updateCRC(p1, acc, new_byte, int(get_width))
+            acc = fissure.utils.updateCRC(p1, acc, new_byte, int(get_width))
 
         # Reverse Output
         if get_reverse_output == True:
@@ -3466,7 +3466,7 @@ def _slotPD_CRC_StartClicked(dashboard: QtCore.QObject):
                 else:
                     new_byte = get_input2[2*n:2*n+2]
 
-                acc = updateCRC(p1, acc, new_byte, int(get_width))
+                acc = fissure.utils.updateCRC(p1, acc, new_byte, int(get_width))
 
             # Reverse Output
             if get_reverse_output == True:
@@ -3513,54 +3513,6 @@ def _slotPD_CRC_StartClicked(dashboard: QtCore.QObject):
 
     # Set the Progress Bar
     dashboard.ui.progressBar_pd_crc_progress.setValue(100)
-
-
-def updateCRC(crc_poly, crc_acc, crc_input, crc_length):
-    """ Calculates CRC for bytes. Not a slot.
-    """
-    # 8-bit CRC
-    if crc_length == 8:
-        # Convert Hex Byte String to int
-        crc_input_int = int(crc_input,16)
-        crc_acc_int = int(crc_acc,16)
-        crc_acc_int = crc_acc_int ^ crc_input_int
-        for _ in range(8):
-            crc_acc_int <<= 1
-            if crc_acc_int & 0x0100:
-                crc_acc_int ^= crc_poly
-            #crc &= 0xFF
-
-        # Convert to Hex String
-        crc_acc = ("%0.2X" % crc_acc_int)[-2:]
-
-    # 16-bit CRC
-    elif crc_length == 16:
-        # Convert Hex Byte String to int
-        crc_input_int = int(crc_input,16)
-        crc_acc_int = int(crc_acc,16)
-        crc_acc_int = crc_acc_int ^ (crc_input_int << 8)
-        for i in range(0,8):
-            if (crc_acc_int & 32768) == 32768:
-                crc_acc_int = crc_acc_int << 1
-                crc_acc_int = crc_acc_int^crc_poly
-            else:
-                crc_acc_int = crc_acc_int << 1
-
-        # Convert to Hex String
-        crc_acc = "%0.4X" % crc_acc_int
-
-        # Keep Only the Last 2 Bytes
-        crc_acc = crc_acc[-4:]
-
-    # 32-bit CRC
-    elif crc_length == 32:
-        crc_input_int = int(crc_input,16)
-        crc_acc = crc_acc ^ crc_input_int
-        for _ in range(0,8):
-            mask = -(crc_acc & 1)
-            crc_acc = (crc_acc >> 1) ^ (crc_poly & mask)
-
-    return crc_acc
     
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -3603,7 +3555,7 @@ def _slotPD_CRC_CalculateClicked(dashboard: QtCore.QObject):
             new_byte = get_input[2*n:2*n+2]
 
         # Do CRC
-        acc = updateCRC(get_poly, acc, new_byte, int(get_width))
+        acc = fissure.utils.updateCRC(get_poly, acc, new_byte, int(get_width))
 
     # This sort of works, but only if get_rev_input and get_rev_output are the same (which is typical). Also, half of the CRC32 defaults are wrong.
     #crc8class = crcmod.Crc(get_poly, initCrc=get_seed, rev=get_rev_input,xorOut=get_final_xor)

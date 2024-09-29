@@ -1,6 +1,26 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-09-29
+
+Local IQEngine, SOI Aggregator tab, and Ubuntu 24.04 (beta) support.
+
+### Added
+
+- IQEngine button to IQ Data tab functions
+- Menu buttons for IQEngine: IQEngine - Online, IQEngine - Local, Stop Local Docker Container
+- IQEngine installer item under Data category
+- SOI Aggregator tab in TSI tab (no PD/library integration yet)
+- Ubuntu 24.04 (beta) installer support
+
+### Changed
+
+- Moved updateCRC function to common.py
+
+### Fixed
+
+- Removed unused distro Python package from common.py
+
 ## 2024-09-25
 
 3.10 OOK Generator block and GRCon24 video.

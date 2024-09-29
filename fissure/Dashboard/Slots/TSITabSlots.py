@@ -6361,3 +6361,270 @@ def _slotTSI_ClassifierClassificationModelChanged(dashboard: QtCore.QObject):
             # if n not in get_table_features:
                 # item.setForeground(QtGui.QColor(255,0,0))
             # dashboard.ui.listWidget_tsi_classifier_classification_features.addItem(item)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_SOI_AggregateClicked(dashboard: QtCore.QObject):
+    """ 
+    Collects information from the TSI Conditioner, Feature Extractor, and Classifier tabs and puts the results in a table.
+    """
+    print("START AGGREGATING")
+    # Get IQ File Directory
+    get_iq_dir = str(dashboard.ui.textEdit_tsi_soi_browse.toPlainText())
+    if len(get_iq_dir) == 0:
+        dashboard.logger.error("Enter a valid IQ file directory. Use the browse button to select a folder.")
+        return
+    if os.path.isdir(get_iq_dir) == False:
+        dashboard.logger.error("Directory not found. Enter a valid IQ file directory.")
+        return
+    
+    # Read Radiobuttons
+    get_radiobutton_option = 0
+    if dashboard.ui.radioButton_tsi_soi_iq_directory.isChecked():
+        get_radiobutton_option = 0
+    elif dashboard.ui.radioButton_tsi_soi_iq_fe_results.isChecked():
+        get_radiobutton_option = 1
+    elif dashboard.ui.radioButton_tsi_soi_iq_classifier_results.isChecked():
+        get_radiobutton_option = 2 
+
+    # Check for Files
+    file_count = len([f for f in os.listdir(get_iq_dir) if os.path.isfile(os.path.join(get_iq_dir, f))])
+    if file_count <= 0:
+        dashboard.logger.warning("No IQ files found.")
+        return
+
+    # All Files
+    get_filenames = []
+    get_filepaths = []
+    if get_radiobutton_option == 0:
+        if file_count > 0:
+            for filename in os.listdir(get_iq_dir):
+                if os.path.isfile(os.path.join(get_iq_dir, filename)):
+                    get_filenames.append(filename)
+                    get_filepaths.append(os.path.join(get_iq_dir, filename))
+
+    # Only F.E. Results Files
+    elif get_radiobutton_option == 1:
+        if file_count > 0:
+            for filename in os.listdir(get_iq_dir):
+                if os.path.isfile(os.path.join(get_iq_dir, filename)):
+                    for m in range(0, dashboard.ui.tableWidget_tsi_fe_results.rowCount()):
+                        get_table_filename_value = str(dashboard.ui.tableWidget_tsi_fe_results.verticalHeaderItem(m).text())
+                        if get_table_filename_value == filename:
+                            get_filenames.append(filename)
+                            get_filepaths.append(os.path.join(get_iq_dir, filename))
+                            break
+
+    # Only Classifier Results Files
+    elif get_radiobutton_option == 2:
+        if file_count > 0:
+            for filename in os.listdir(get_iq_dir):
+                if os.path.isfile(os.path.join(get_iq_dir, filename)):
+                    for m in range(0, dashboard.ui.tableWidget_tsi_classifier_classification_confidence.rowCount()):
+                        get_table_filename_value = str(dashboard.ui.tableWidget_tsi_classifier_classification_confidence.verticalHeaderItem(m).text())
+                        if get_table_filename_value == filename:
+                            get_filenames.append(filename)
+                            get_filepaths.append(os.path.join(get_iq_dir, filename))
+                            break
+
+    # Sort Based on Filepath
+    sorted_indices = sorted(range(len(get_filepaths)), key=lambda i: get_filepaths[i].lower())
+    get_filenames = [get_filenames[i] for i in sorted_indices]
+    get_filepaths = sorted(get_filepaths, key=str.lower)
+
+    # Feature Extractor Results
+    get_statistics = [""] * len(get_filenames)
+    if dashboard.ui.checkBox_tsi_soi_settings_statistics.isChecked():
+        for n in range(0, len(get_filenames)):
+            for m in range(0, dashboard.ui.tableWidget_tsi_fe_results.rowCount()):
+                get_table_filename_value = str(dashboard.ui.tableWidget_tsi_fe_results.verticalHeaderItem(m).text())
+                if get_table_filename_value == get_filenames[n]:
+                    statistics_item = {}
+                    for k in range(0, dashboard.ui.tableWidget_tsi_fe_results.columnCount()):
+                        get_header_text = str(dashboard.ui.tableWidget_tsi_fe_results.horizontalHeaderItem(k).text())
+                        get_item_text = str(dashboard.ui.tableWidget_tsi_fe_results.item(m,k).text())
+                        statistics_item[get_header_text] = get_item_text
+                    get_statistics[n] = str(statistics_item)
+                    break
+
+    # Classifier Results
+    get_classifications = [""] * len(get_filenames)
+    if dashboard.ui.checkBox_tsi_soi_settings_classification.isChecked():
+        for n in range(0, len(get_filenames)):
+            for m in range(0, dashboard.ui.tableWidget_tsi_classifier_classification_confidence.rowCount()):
+                get_table_filename_value = str(dashboard.ui.tableWidget_tsi_classifier_classification_confidence.verticalHeaderItem(m).text())
+                if get_table_filename_value == get_filenames[n]:
+                    classification_item = {}
+                    for k in range(0, dashboard.ui.tableWidget_tsi_classifier_classification_confidence.columnCount()):
+                        get_header_text = str(dashboard.ui.tableWidget_tsi_classifier_classification_confidence.horizontalHeaderItem(k).text())
+                        get_item_text = str(dashboard.ui.tableWidget_tsi_classifier_classification_confidence.item(m,k).text())
+                        classification_item[get_header_text] = get_item_text
+                    get_classifications[n] = str(classification_item)
+                    break
+
+    # Populate the Table
+    dashboard.ui.tableWidget_tsi_soi_sois.setRowCount(0)
+    for n in range(0, len(get_filenames)):
+        # Add Row
+        dashboard.ui.tableWidget_tsi_soi_sois.setRowCount(dashboard.ui.tableWidget_tsi_soi_sois.rowCount() + 1)
+        
+        # SOI Name
+        soi_name_item = QtWidgets.QTableWidgetItem(get_filenames[n])
+        soi_name_item.setTextAlignment(QtCore.Qt.AlignCenter)
+        dashboard.ui.tableWidget_tsi_soi_sois.setItem(n,0,soi_name_item)
+
+        # IQ Filepath
+        if dashboard.ui.checkBox_tsi_soi_settings_iq_files.isChecked():
+            iq_filepath_item = QtWidgets.QTableWidgetItem(get_filepaths[n])
+        else:
+            iq_filepath_item = QtWidgets.QTableWidgetItem("")
+        dashboard.ui.tableWidget_tsi_soi_sois.setItem(n,1,iq_filepath_item)
+
+        # Classification
+        classification_table_item = QtWidgets.QTableWidgetItem(get_classifications[n])
+        dashboard.ui.tableWidget_tsi_soi_sois.setItem(n,2,classification_table_item)
+
+        # Statistics
+        statistics_table_item = QtWidgets.QTableWidgetItem(get_statistics[n])
+        dashboard.ui.tableWidget_tsi_soi_sois.setItem(n,3,statistics_table_item)
+
+    # Enable PushButtons
+    if dashboard.ui.tableWidget_tsi_soi_sois.rowCount() > 0:
+        dashboard.ui.pushButton_tsi_soi_remove.setEnabled(True)
+        dashboard.ui.pushButton_tsi_soi_remove_all.setEnabled(True)
+        dashboard.ui.pushButton_tsi_soi_edit_statistics.setEnabled(True)
+        dashboard.ui.pushButton_tsi_soi_pd_list.setEnabled(True)
+        dashboard.ui.pushButton_tsi_soi_pd_list_all.setEnabled(True)
+        dashboard.ui.pushButton_tsi_soi_library.setEnabled(True)
+        dashboard.ui.pushButton_tsi_soi_library_all.setEnabled(True)
+
+        # Resize Table Columns and Rows
+        dashboard.ui.tableWidget_tsi_soi_sois.resizeColumnsToContents()
+        dashboard.ui.tableWidget_tsi_soi_sois.resizeRowsToContents()
+        dashboard.ui.tableWidget_tsi_soi_sois.horizontalHeader().setStretchLastSection(False)
+        dashboard.ui.tableWidget_tsi_soi_sois.horizontalHeader().setStretchLastSection(True)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_SOI_RemoveClicked(dashboard: QtCore.QObject):
+    """ 
+    Removes a row from the SOI Editor table.
+    """
+    # Remove from the TableWidget
+    get_current_row = dashboard.ui.tableWidget_tsi_soi_sois.currentRow()
+    dashboard.ui.tableWidget_tsi_soi_sois.removeRow(get_current_row)
+    if get_current_row == 0:
+        dashboard.ui.tableWidget_tsi_soi_sois.setCurrentCell(0,0)
+    else:
+        dashboard.ui.tableWidget_tsi_soi_sois.setCurrentCell(get_current_row-1,0)
+
+    # Disable PushButtons
+    if dashboard.ui.tableWidget_tsi_soi_sois.rowCount() < 1:
+        dashboard.ui.pushButton_tsi_soi_remove.setEnabled(False)
+        dashboard.ui.pushButton_tsi_soi_remove_all.setEnabled(False)
+        dashboard.ui.pushButton_tsi_soi_edit_statistics.setEnabled(False)
+        dashboard.ui.pushButton_tsi_soi_pd_list.setEnabled(False)
+        dashboard.ui.pushButton_tsi_soi_pd_list_all.setEnabled(False)
+        dashboard.ui.pushButton_tsi_soi_library.setEnabled(False)
+        dashboard.ui.pushButton_tsi_soi_library_all.setEnabled(False)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_SOI_RemoveAllClicked(dashboard: QtCore.QObject):
+    """ 
+    Removes all rows from the SOI Editor table.
+    """
+    # Remove all Rows
+    dashboard.ui.tableWidget_tsi_soi_sois.setRowCount(0)
+
+    # Disable PushButtons
+    dashboard.ui.pushButton_tsi_soi_remove.setEnabled(False)
+    dashboard.ui.pushButton_tsi_soi_remove_all.setEnabled(False)
+    dashboard.ui.pushButton_tsi_soi_edit_statistics.setEnabled(False)
+    dashboard.ui.pushButton_tsi_soi_pd_list.setEnabled(False)
+    dashboard.ui.pushButton_tsi_soi_pd_list_all.setEnabled(False)
+    dashboard.ui.pushButton_tsi_soi_library.setEnabled(False)
+    dashboard.ui.pushButton_tsi_soi_library_all.setEnabled(False)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_SOI_EditStatistics(dashboard: QtCore.QObject):
+    """ 
+    Opens a window to edit each statistical item individually.
+    """
+    pass
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_SOI_PD_ListClicked(dashboard: QtCore.QObject):
+    """ 
+    Adds a single SOI to the Protocol Discovery SOI list.
+    """
+    pass
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_SOI_PD_ListAllClicked(dashboard: QtCore.QObject):
+    """ 
+    Adds all SOIs in the SOI Editor table to the Protocol Discovery SOI list.
+    """
+    pass
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_SOI_LibraryClicked(dashboard: QtCore.QObject):
+    """ 
+    Saves a single SOI to the FISSURE library.
+    """
+    pass
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_SOI_LibraryAllClicked(dashboard: QtCore.QObject):
+    """ 
+    Saves all SOIs in the SOI Editor table to the FISSURE library.
+    """
+    pass
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_SOI_SettingsIncludeIQ_FilesChecked(dashboard: QtCore.QObject):
+    """ 
+    Disables/enables widgets relating to including IQ files in the SOI Aggregator settings.
+    """
+    # Enabled
+    if dashboard.ui.checkBox_tsi_soi_settings_iq_files.isChecked():
+        dashboard.ui.label2_tsi_soi_iq_directory.setEnabled(True)
+        dashboard.ui.pushButton_tsi_soi_browse.setEnabled(True)
+        dashboard.ui.textEdit_tsi_soi_browse.setEnabled(True)
+        dashboard.ui.radioButton_tsi_soi_iq_directory.setEnabled(True)
+        dashboard.ui.radioButton_tsi_soi_iq_fe_results.setEnabled(True)
+        dashboard.ui.radioButton_tsi_soi_iq_classifier_results.setEnabled(True)
+        
+    # Disabled
+    else:
+        dashboard.ui.label2_tsi_soi_iq_directory.setEnabled(False)
+        dashboard.ui.pushButton_tsi_soi_browse.setEnabled(False)
+        dashboard.ui.textEdit_tsi_soi_browse.setEnabled(False)
+        dashboard.ui.radioButton_tsi_soi_iq_directory.setEnabled(False)
+        dashboard.ui.radioButton_tsi_soi_iq_fe_results.setEnabled(False)
+        dashboard.ui.radioButton_tsi_soi_iq_classifier_results.setEnabled(False)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_SOI_BrowseClicked(dashboard: QtCore.QObject):
+    """ 
+    Opens a dialog to choose an IQ file directory.
+    """
+    # Select a Directory
+    dialog = QtWidgets.QFileDialog(dashboard)
+    dialog.setFileMode(QtWidgets.QFileDialog.Directory)
+    dialog.setOption(QtWidgets.QFileDialog.ShowDirsOnly, True)
+
+    if dialog.exec_():
+        for d in dialog.selectedFiles():
+            folder = d
+    try:
+        dashboard.ui.textEdit_tsi_soi_browse.setText(folder)           
+    except:
+        pass

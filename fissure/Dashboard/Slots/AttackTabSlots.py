@@ -978,7 +978,7 @@ def _slotPacketCalculateCRCsClicked(dashboard: QtCore.QObject):  # Somehow use t
                 acc = get_seed
                 for n in range(0,int(len(crc_data_bytes)/2)):
                     new_byte = crc_data_bytes[2*n:2*n+2]
-                    acc = dashboard.updateCRC(get_poly, acc, new_byte, 16)  # Poly: 0x1021, Seed: 0x1DOF
+                    acc = fissure.utils.updateCRC(get_poly, acc, new_byte, 16)  # Poly: 0x1021, Seed: 0x1DOF
 
                 hex_len = len(acc)
                 bin_str = bin(int(acc, 16))[2:].zfill(int(hex_len*4))
