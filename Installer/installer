@@ -2118,6 +2118,7 @@ else
   #newgrp docker
 fi
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
 git clone https://github.com/IQEngine/IQEngine.git
 cd ~/Installed_by_FISSURE/IQEngine
 cp example.env .env
@@ -4232,6 +4233,7 @@ else
   #newgrp docker
 fi
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
 git clone https://github.com/IQEngine/IQEngine.git
 cd ~/Installed_by_FISSURE/IQEngine
 cp example.env .env
@@ -6315,6 +6317,7 @@ else
   #newgrp docker
 fi
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
 git clone https://github.com/IQEngine/IQEngine.git
 cd ~/Installed_by_FISSURE/IQEngine
 cp example.env .env
@@ -8406,6 +8409,7 @@ else
   #newgrp docker
 fi
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
 git clone https://github.com/IQEngine/IQEngine.git
 cd ~/Installed_by_FISSURE/IQEngine
 cp example.env .env
@@ -10499,6 +10503,7 @@ else
   #newgrp docker
 fi
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
 git clone https://github.com/IQEngine/IQEngine.git
 cd ~/Installed_by_FISSURE/IQEngine
 cp example.env .env
@@ -12581,6 +12586,7 @@ else
   #newgrp docker
 fi
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
 git clone https://github.com/IQEngine/IQEngine.git
 cd ~/Installed_by_FISSURE/IQEngine
 cp example.env .env
@@ -14664,6 +14670,7 @@ else
   #newgrp docker
 fi
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
 git clone https://github.com/IQEngine/IQEngine.git
 cd ~/Installed_by_FISSURE/IQEngine
 cp example.env .env
@@ -16749,6 +16756,7 @@ else
   #newgrp docker
 fi
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
 git clone https://github.com/IQEngine/IQEngine.git
 cd ~/Installed_by_FISSURE/IQEngine
 cp example.env .env
@@ -18832,6 +18840,7 @@ else
   #newgrp docker
 fi
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
 git clone https://github.com/IQEngine/IQEngine.git
 cd ~/Installed_by_FISSURE/IQEngine
 cp example.env .env

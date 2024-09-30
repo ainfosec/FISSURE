@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-09-30
+
+Fixing IQEngine install.
+
+### Fixed
+
+- Fixing directory for local IQEngine installation
+
 ## 2024-09-29
 
 Local IQEngine, SOI Aggregator tab, and Ubuntu 24.04 (beta) support.

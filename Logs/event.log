@@ -26698,3 +26698,1192 @@
 09/29/2024 01:25:51 PM - fissure.dashboard: [DEBUG] [backend] sent message: {'Identifier': 'Dashboard', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['HiprFisr']}, 'Type': 'Commands'}
 09/29/2024 01:25:56 PM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-29T17:25:56Z)
 09/29/2024 01:26:01 PM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-29T17:26:01Z)
+09/30/2024 11:08:36 AM - asyncio: [DEBUG] Using selector: _Selector
+09/30/2024 11:08:36 AM - fissure.dashboard.frontend: [INFO] === INITIALIZING ===
+09/30/2024 11:08:36 AM - fissure.dashboard.backend: [INFO] === INITIALIZING ===
+09/30/2024 11:08:36 AM - fissure: [DEBUG] loaded default config (User Configs/default.yaml)
+09/30/2024 11:08:36 AM - fissure.dashboard: [DEBUG] [backend] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:08:36 AM - fissure.dashboard: [DEBUG] [backend] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:08:36 AM - fissure.dashboard: [DEBUG] [backend] initialized
+09/30/2024 11:08:38 AM - fissure.dashboard.backend: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+09/30/2024 11:08:38 AM - fissure.dashboard.backend: [DEBUG] registered 42 callbacks from fissure.callbacks.DashboardCallbacks
+09/30/2024 11:08:38 AM - fissure.dashboard.backend: [INFO] === READY ===
+09/30/2024 11:08:41 AM - fissure.dashboard.frontend: [INFO] === READY ===
+09/30/2024 11:08:43 AM - fissure.dashboard.frontend: [INFO] [GUI] Connecting to HIPRFISR @ ipc://fissure [-hb (hb), -msg (msg)] ...
+09/30/2024 11:08:43 AM - fissure.dashboard: [DEBUG] [backend] sent message: {'Identifier': 'Dashboard', 'MessageName': 'Connected', 'Type': 'Status'}
+09/30/2024 11:08:43 AM - fissure.dashboard: [DEBUG] [backend] connected to ipc://fissure [-hb (hb), -msg (msg)]
+09/30/2024 11:08:43 AM - fissure.dashboard.backend: [INFO] connected to HiprFisr @ ipc://fissure [-hb (hb), -msg (msg)]
+09/30/2024 11:08:43 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:08:43Z)
+09/30/2024 11:08:43 AM - fissure.dashboard.frontend: [INFO] [GUI] Connected
+09/30/2024 11:08:47 AM - fissure.hiprfisr: [INFO] === INITIALIZING ===
+09/30/2024 11:08:47 AM - fissure: [DEBUG] loaded default config (User Configs/default.yaml)
+09/30/2024 11:08:48 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:08:48Z)
+09/30/2024 11:08:48 AM - zmq.auth: [DEBUG] Starting
+09/30/2024 11:08:48 AM - zmq.auth: [DEBUG] Allowing 
+09/30/2024 11:08:48 AM - zmq.auth: [DEBUG] Configure curve: *[/home/user/FISSURE/certificates/clients]
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [frontend] initialized
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [frontend] started at ipc://fissure [-hb (hb), -msg (msg)]
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [backend] initialized
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [backend] started at ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [DEBUG] registered 110 callbacks from fissure.callbacks.HiprFisrCallbacks
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [INFO] === READY ===
+09/30/2024 11:08:48 AM - fissure.hiprfisr: [INFO] Server listening @ ipc://fissure [-hb (hb), -msg (msg)]
+09/30/2024 11:08:48 AM - fissure.pd: [DEBUG] === INITIALIZING ===
+09/30/2024 11:08:49 AM - fissure.pd: [DEBUG] [backend] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:08:49 AM - fissure.pd: [DEBUG] [backend] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:08:49 AM - fissure.pd: [DEBUG] [backend] initialized
+09/30/2024 11:08:49 AM - fissure.pd: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+09/30/2024 11:08:49 AM - fissure.pd: [DEBUG] registered 15 callbacks from fissure.callbacks.ProtocolDiscoveryCallbacks
+09/30/2024 11:08:49 AM - fissure.pd: [DEBUG] === READY ===
+09/30/2024 11:08:49 AM - fissure.tsi: [DEBUG] === INITIALIZING ===
+09/30/2024 11:08:49 AM - fissure.tsi: [DEBUG] [backend] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:08:49 AM - fissure.tsi: [DEBUG] [backend] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:08:49 AM - fissure.tsi: [DEBUG] [backend] initialized
+09/30/2024 11:08:49 AM - fissure.tsi: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+09/30/2024 11:08:49 AM - fissure.tsi: [DEBUG] registered 8 callbacks from fissure.callbacks.TargetSignalIdentificationCallbacks
+09/30/2024 11:08:49 AM - fissure.tsi: [DEBUG] === READY ===
+09/30/2024 11:08:49 AM - fissure.hiprfisr: [INFO] === STARTING HIPRFISR ===
+09/30/2024 11:08:49 AM - fissure.hiprfisr: [DEBUG] entering connect loop
+09/30/2024 11:08:49 AM - fissure.pd: [INFO] === STARTING PROTOCOL DISCOVERY COMPONENT ===
+09/30/2024 11:08:49 AM - fissure.pd: [DEBUG] [backend] sent message: {'Identifier': 'PD', 'MessageName': 'Connected', 'Type': 'Status'}
+09/30/2024 11:08:49 AM - fissure.pd: [DEBUG] [backend] connected to ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:08:49 AM - fissure.pd: [INFO] connected to HiprFisr @ ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:08:49 AM - fissure.tsi: [INFO] === STARTING TARGET SIGNAL IDENTIFICATION COMPONENT ===
+09/30/2024 11:08:49 AM - fissure.tsi: [DEBUG] [backend] sent message: {'Identifier': 'TSI', 'MessageName': 'Connected', 'Type': 'Status'}
+09/30/2024 11:08:49 AM - fissure.tsi: [DEBUG] [backend] connected to ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:08:49 AM - fissure.tsi: [INFO] connected to HiprFisr @ ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:08:49 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:08:49Z)
+09/30/2024 11:08:49 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:08:49Z
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11059', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11059', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11185', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11185', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11185', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:11185', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:08:49 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:08:43Z)
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:08:49Z)
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:08:49Z)
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'Dashboard', 'Type': 'Commands'}
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'PD', 'Type': 'Commands'}
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'TSI', 'Type': 'Commands'}
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] [frontend] received message: {'Identifier': 'Dashboard', 'MessageName': 'Connected', 'Type': 'Status'}
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'PD', 'MessageName': 'Connected', 'Type': 'Status', 'SenderID': 'PD-764a282b-1f5f-4cae-8609-c7b45efbc4f2'}
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'TSI', 'MessageName': 'Connected', 'Type': 'Status', 'SenderID': 'TSI-1dcddf26-1420-4093-83d9-e238066a3101'}
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'Connected', 'Parameters': ['PD', 'TSI'], 'Type': 'Status'}
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] exiting connect loop
+09/30/2024 11:08:50 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'Dashboard', 'Type': 'Commands', 'callback': 'componentConnected'}
+09/30/2024 11:08:50 AM - fissure.dashboard: [DEBUG] executing callback: componentConnected with parameters: Dashboard
+09/30/2024 11:08:50 AM - fissure.pd: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:08:50 AM - fissure.tsi: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:08:50 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'PD', 'Type': 'Commands', 'callback': 'componentConnected'}
+09/30/2024 11:08:50 AM - fissure.dashboard: [DEBUG] executing callback: componentConnected with parameters: PD
+09/30/2024 11:08:50 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'TSI', 'Type': 'Commands', 'callback': 'componentConnected'}
+09/30/2024 11:08:50 AM - fissure.dashboard: [DEBUG] executing callback: componentConnected with parameters: TSI
+09/30/2024 11:08:50 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:08:48Z)
+09/30/2024 11:08:50 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:08:51 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'Connected', 'Parameters': ['PD', 'TSI'], 'Type': 'Status'}
+09/30/2024 11:08:52 AM - fissure.dashboard.frontend: [INFO] [Start] Clicked
+09/30/2024 11:08:53 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:08:53Z)
+09/30/2024 11:08:54 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:08:53Z)
+09/30/2024 11:08:54 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:08:54Z)
+09/30/2024 11:08:54 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:08:54Z
+09/30/2024 11:08:55 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:08:54Z)
+09/30/2024 11:08:55 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:08:54Z)
+09/30/2024 11:08:55 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:08:55Z)
+09/30/2024 11:08:55 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:08:55Z)
+09/30/2024 11:08:55 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:08:55Z)
+09/30/2024 11:08:55 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:08:55Z)
+09/30/2024 11:08:55 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:08:55Z)
+09/30/2024 11:08:59 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:08:59Z)
+09/30/2024 11:08:59 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:08:59Z)
+09/30/2024 11:09:00 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:00Z)
+09/30/2024 11:09:00 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:00Z
+09/30/2024 11:09:00 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:00Z)
+09/30/2024 11:09:00 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:00Z)
+09/30/2024 11:09:00 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:00Z)
+09/30/2024 11:09:00 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:00Z)
+09/30/2024 11:09:00 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:00Z)
+09/30/2024 11:09:00 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:00Z)
+09/30/2024 11:09:00 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:00Z)
+09/30/2024 11:09:04 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:09:04Z)
+09/30/2024 11:09:04 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:09:04Z)
+09/30/2024 11:09:05 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:05Z)
+09/30/2024 11:09:05 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:05Z
+09/30/2024 11:09:05 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:05Z)
+09/30/2024 11:09:05 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:05Z)
+09/30/2024 11:09:06 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:06Z)
+09/30/2024 11:09:06 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:06Z)
+09/30/2024 11:09:06 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:06Z)
+09/30/2024 11:09:06 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:06Z)
+09/30/2024 11:09:06 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:06Z)
+09/30/2024 11:09:09 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:09:09Z)
+09/30/2024 11:09:09 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:09:09Z)
+09/30/2024 11:09:10 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:10Z)
+09/30/2024 11:09:10 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:10Z
+09/30/2024 11:09:10 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:10Z)
+09/30/2024 11:09:10 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:10Z)
+09/30/2024 11:09:11 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:11Z)
+09/30/2024 11:09:11 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:11Z)
+09/30/2024 11:09:11 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:11Z)
+09/30/2024 11:09:11 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:11Z)
+09/30/2024 11:09:11 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:11Z)
+09/30/2024 11:09:14 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:09:14Z)
+09/30/2024 11:09:14 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:09:14Z)
+09/30/2024 11:09:15 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:15Z)
+09/30/2024 11:09:15 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:15Z
+09/30/2024 11:09:16 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:15Z)
+09/30/2024 11:09:16 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:15Z)
+09/30/2024 11:09:17 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:17Z)
+09/30/2024 11:09:17 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:17Z)
+09/30/2024 11:09:17 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:17Z)
+09/30/2024 11:09:17 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:17Z)
+09/30/2024 11:09:17 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:17Z)
+09/30/2024 11:09:19 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:09:19Z)
+09/30/2024 11:09:20 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:09:19Z)
+09/30/2024 11:09:20 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:20Z)
+09/30/2024 11:09:20 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:20Z
+09/30/2024 11:09:21 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:20Z)
+09/30/2024 11:09:21 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:20Z)
+09/30/2024 11:09:22 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:22Z)
+09/30/2024 11:09:22 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:22Z)
+09/30/2024 11:09:22 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:22Z)
+09/30/2024 11:09:22 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:22Z)
+09/30/2024 11:09:22 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:22Z)
+09/30/2024 11:09:24 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:09:24Z)
+09/30/2024 11:09:25 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:09:24Z)
+09/30/2024 11:09:25 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:25Z)
+09/30/2024 11:09:25 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:25Z
+09/30/2024 11:09:26 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:25Z)
+09/30/2024 11:09:26 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:25Z)
+09/30/2024 11:09:28 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:28Z)
+09/30/2024 11:09:28 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:28Z)
+09/30/2024 11:09:28 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:28Z)
+09/30/2024 11:09:28 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:28Z)
+09/30/2024 11:09:28 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:28Z)
+09/30/2024 11:09:29 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:09:29Z)
+09/30/2024 11:09:30 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:09:29Z)
+09/30/2024 11:09:30 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:30Z)
+09/30/2024 11:09:30 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:30Z
+09/30/2024 11:09:31 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:30Z)
+09/30/2024 11:09:31 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:30Z)
+09/30/2024 11:09:33 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:33Z)
+09/30/2024 11:09:33 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:33Z)
+09/30/2024 11:09:33 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:33Z)
+09/30/2024 11:09:33 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:33Z)
+09/30/2024 11:09:33 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:33Z)
+09/30/2024 11:09:34 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:09:34Z)
+09/30/2024 11:09:35 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:09:34Z)
+09/30/2024 11:09:35 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:35Z)
+09/30/2024 11:09:35 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:35Z
+09/30/2024 11:09:36 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:35Z)
+09/30/2024 11:09:36 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:35Z)
+09/30/2024 11:09:38 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:38Z)
+09/30/2024 11:09:38 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:38Z)
+09/30/2024 11:09:38 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:38Z)
+09/30/2024 11:09:38 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:38Z)
+09/30/2024 11:09:38 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:38Z)
+09/30/2024 11:09:40 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:09:40Z)
+09/30/2024 11:09:40 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:09:40Z)
+09/30/2024 11:09:40 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:40Z)
+09/30/2024 11:09:40 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:40Z
+09/30/2024 11:09:41 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:40Z)
+09/30/2024 11:09:41 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:40Z)
+09/30/2024 11:09:43 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:43Z)
+09/30/2024 11:09:43 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:43Z)
+09/30/2024 11:09:43 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:43Z)
+09/30/2024 11:09:43 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:43Z)
+09/30/2024 11:09:43 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:43Z)
+09/30/2024 11:09:45 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:09:45Z)
+09/30/2024 11:09:45 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:09:45Z)
+09/30/2024 11:09:45 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:45Z)
+09/30/2024 11:09:45 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:45Z
+09/30/2024 11:09:46 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:45Z)
+09/30/2024 11:09:46 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:45Z)
+09/30/2024 11:09:48 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:48Z)
+09/30/2024 11:09:48 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:48Z)
+09/30/2024 11:09:48 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:48Z)
+09/30/2024 11:09:48 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:48Z)
+09/30/2024 11:09:48 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:48Z)
+09/30/2024 11:09:50 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:09:50Z)
+09/30/2024 11:09:50 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:09:50Z)
+09/30/2024 11:09:51 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:51Z)
+09/30/2024 11:09:51 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:51Z
+09/30/2024 11:09:51 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:51Z)
+09/30/2024 11:09:51 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:51Z)
+09/30/2024 11:09:54 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:54Z)
+09/30/2024 11:09:54 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:54Z)
+09/30/2024 11:09:54 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:54Z)
+09/30/2024 11:09:54 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:54Z)
+09/30/2024 11:09:54 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:54Z)
+09/30/2024 11:09:55 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:09:55Z)
+09/30/2024 11:09:56 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:09:55Z)
+09/30/2024 11:09:56 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:09:56Z)
+09/30/2024 11:09:56 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:09:56Z
+09/30/2024 11:09:56 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:09:56Z)
+09/30/2024 11:09:56 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:09:56Z)
+09/30/2024 11:09:59 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:09:59Z)
+09/30/2024 11:09:59 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:09:59Z)
+09/30/2024 11:09:59 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:59Z)
+09/30/2024 11:09:59 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:59Z)
+09/30/2024 11:09:59 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:09:59Z)
+09/30/2024 11:10:00 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:00Z)
+09/30/2024 11:10:01 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:00Z)
+09/30/2024 11:10:01 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:01Z)
+09/30/2024 11:10:01 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:01Z
+09/30/2024 11:10:02 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:01Z)
+09/30/2024 11:10:02 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:01Z)
+09/30/2024 11:10:05 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:10:05Z)
+09/30/2024 11:10:05 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:10:05Z)
+09/30/2024 11:10:05 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:05Z)
+09/30/2024 11:10:05 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:05Z)
+09/30/2024 11:10:05 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:05Z)
+09/30/2024 11:10:05 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:05Z)
+09/30/2024 11:10:06 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:05Z)
+09/30/2024 11:10:06 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:06Z)
+09/30/2024 11:10:06 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:06Z
+09/30/2024 11:10:07 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:06Z)
+09/30/2024 11:10:07 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:06Z)
+09/30/2024 11:10:07 AM - fissure.dashboard.frontend: [INFO] IQEngine docker container not found!
+09/30/2024 11:10:08 AM - fissure.dashboard.frontend: [ERROR] Error: [Errno 2] No such file or directory: '/home/user/Installed_by_FISSURE/IQEngine/'
+09/30/2024 11:10:10 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:10:10Z)
+09/30/2024 11:10:10 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:10:10Z)
+09/30/2024 11:10:10 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:10Z)
+09/30/2024 11:10:10 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:10Z)
+09/30/2024 11:10:10 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:10Z)
+09/30/2024 11:10:10 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:10Z)
+09/30/2024 11:10:11 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:11Z)
+09/30/2024 11:10:11 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:11Z
+09/30/2024 11:10:11 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:10Z)
+09/30/2024 11:10:12 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:11Z)
+09/30/2024 11:10:12 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:11Z)
+09/30/2024 11:10:16 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:16Z)
+09/30/2024 11:10:16 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:10:16Z)
+09/30/2024 11:10:16 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:10:16Z)
+09/30/2024 11:10:16 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:16Z)
+09/30/2024 11:10:16 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:16Z)
+09/30/2024 11:10:16 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:16Z)
+09/30/2024 11:10:16 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:16Z)
+09/30/2024 11:10:16 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:16Z)
+09/30/2024 11:10:16 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:16Z
+09/30/2024 11:10:17 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:16Z)
+09/30/2024 11:10:17 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:16Z)
+09/30/2024 11:10:21 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:21Z)
+09/30/2024 11:10:21 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:21Z)
+09/30/2024 11:10:21 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:10:21Z)
+09/30/2024 11:10:21 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:10:21Z)
+09/30/2024 11:10:21 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:21Z)
+09/30/2024 11:10:21 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:21Z)
+09/30/2024 11:10:21 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:21Z
+09/30/2024 11:10:21 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:21Z)
+09/30/2024 11:10:21 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:21Z)
+09/30/2024 11:10:22 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:21Z)
+09/30/2024 11:10:22 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:21Z)
+09/30/2024 11:10:26 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:26Z)
+09/30/2024 11:10:26 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:26Z)
+09/30/2024 11:10:26 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:26Z)
+09/30/2024 11:10:26 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:26Z
+09/30/2024 11:10:27 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:10:27Z)
+09/30/2024 11:10:27 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:10:27Z)
+09/30/2024 11:10:27 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:27Z)
+09/30/2024 11:10:27 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:27Z)
+09/30/2024 11:10:27 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:27Z)
+09/30/2024 11:10:27 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:26Z)
+09/30/2024 11:10:27 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:26Z)
+09/30/2024 11:10:31 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:31Z)
+09/30/2024 11:10:31 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:31Z)
+09/30/2024 11:10:31 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:31Z)
+09/30/2024 11:10:31 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:31Z
+09/30/2024 11:10:32 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:10:32Z)
+09/30/2024 11:10:32 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:10:32Z)
+09/30/2024 11:10:32 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:32Z)
+09/30/2024 11:10:32 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:32Z)
+09/30/2024 11:10:32 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:32Z)
+09/30/2024 11:10:32 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:31Z)
+09/30/2024 11:10:32 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:31Z)
+09/30/2024 11:10:36 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:36Z)
+09/30/2024 11:10:36 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:36Z)
+09/30/2024 11:10:36 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:36Z
+09/30/2024 11:10:37 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:36Z)
+09/30/2024 11:10:37 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:36Z)
+09/30/2024 11:10:37 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:36Z)
+09/30/2024 11:10:37 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:10:37Z)
+09/30/2024 11:10:37 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:10:37Z)
+09/30/2024 11:10:37 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:37Z)
+09/30/2024 11:10:37 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:37Z)
+09/30/2024 11:10:37 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:37Z)
+09/30/2024 11:10:41 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:41Z)
+09/30/2024 11:10:41 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:41Z)
+09/30/2024 11:10:41 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:41Z
+09/30/2024 11:10:42 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:41Z)
+09/30/2024 11:10:42 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:41Z)
+09/30/2024 11:10:42 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:41Z)
+09/30/2024 11:10:43 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:10:43Z)
+09/30/2024 11:10:43 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:10:43Z)
+09/30/2024 11:10:43 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:43Z)
+09/30/2024 11:10:43 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:43Z)
+09/30/2024 11:10:43 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:43Z)
+09/30/2024 11:10:46 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:46Z)
+09/30/2024 11:10:46 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:46Z)
+09/30/2024 11:10:47 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:47Z)
+09/30/2024 11:10:47 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:47Z
+09/30/2024 11:10:47 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:47Z)
+09/30/2024 11:10:47 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:47Z)
+09/30/2024 11:10:48 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:10:48Z)
+09/30/2024 11:10:48 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:10:48Z)
+09/30/2024 11:10:48 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:48Z)
+09/30/2024 11:10:48 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:48Z)
+09/30/2024 11:10:48 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:48Z)
+09/30/2024 11:10:51 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:51Z)
+09/30/2024 11:10:52 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:52Z)
+09/30/2024 11:10:52 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:52Z
+09/30/2024 11:10:52 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:51Z)
+09/30/2024 11:10:52 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:52Z)
+09/30/2024 11:10:52 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:52Z)
+09/30/2024 11:10:53 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:10:53Z)
+09/30/2024 11:10:53 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:10:53Z)
+09/30/2024 11:10:53 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:53Z)
+09/30/2024 11:10:53 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:53Z)
+09/30/2024 11:10:54 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:53Z)
+09/30/2024 11:10:56 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:10:56Z)
+09/30/2024 11:10:57 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:10:57Z)
+09/30/2024 11:10:57 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:10:57Z
+09/30/2024 11:10:57 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:10:56Z)
+09/30/2024 11:10:57 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:10:57Z)
+09/30/2024 11:10:57 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:10:57Z)
+09/30/2024 11:10:59 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:10:59Z)
+09/30/2024 11:10:59 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:10:59Z)
+09/30/2024 11:10:59 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:59Z)
+09/30/2024 11:10:59 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:59Z)
+09/30/2024 11:10:59 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:10:59Z)
+09/30/2024 11:11:01 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:01Z)
+09/30/2024 11:11:02 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:01Z)
+09/30/2024 11:11:02 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:02Z)
+09/30/2024 11:11:02 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:02Z
+09/30/2024 11:11:02 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:02Z)
+09/30/2024 11:11:02 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:02Z)
+09/30/2024 11:11:04 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:11:04Z)
+09/30/2024 11:11:04 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:11:04Z)
+09/30/2024 11:11:04 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:04Z)
+09/30/2024 11:11:04 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:04Z)
+09/30/2024 11:11:04 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:04Z)
+09/30/2024 11:11:07 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:07Z)
+09/30/2024 11:11:07 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:07Z)
+09/30/2024 11:11:07 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:07Z)
+09/30/2024 11:11:07 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:07Z
+09/30/2024 11:11:07 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:07Z)
+09/30/2024 11:11:07 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:07Z)
+09/30/2024 11:11:09 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:11:09Z)
+09/30/2024 11:11:09 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:11:09Z)
+09/30/2024 11:11:09 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:09Z)
+09/30/2024 11:11:09 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:09Z)
+09/30/2024 11:11:09 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:09Z)
+09/30/2024 11:11:12 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:12Z)
+09/30/2024 11:11:12 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:12Z)
+09/30/2024 11:11:12 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:12Z
+09/30/2024 11:11:12 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:12Z)
+09/30/2024 11:11:13 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:12Z)
+09/30/2024 11:11:13 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:12Z)
+09/30/2024 11:11:15 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:11:15Z)
+09/30/2024 11:11:15 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:11:15Z)
+09/30/2024 11:11:15 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:15Z)
+09/30/2024 11:11:15 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:15Z)
+09/30/2024 11:11:15 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:15Z)
+09/30/2024 11:11:17 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:17Z)
+09/30/2024 11:11:17 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:17Z)
+09/30/2024 11:11:17 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:17Z
+09/30/2024 11:11:17 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:17Z)
+09/30/2024 11:11:18 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:17Z)
+09/30/2024 11:11:18 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:17Z)
+09/30/2024 11:11:20 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:11:20Z)
+09/30/2024 11:11:20 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:11:20Z)
+09/30/2024 11:11:20 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:20Z)
+09/30/2024 11:11:20 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:20Z)
+09/30/2024 11:11:20 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:20Z)
+09/30/2024 11:11:22 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:22Z)
+09/30/2024 11:11:22 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:22Z)
+09/30/2024 11:11:22 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:22Z
+09/30/2024 11:11:22 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:22Z)
+09/30/2024 11:11:23 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:22Z)
+09/30/2024 11:11:23 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:22Z)
+09/30/2024 11:11:25 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:11:25Z)
+09/30/2024 11:11:25 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:11:25Z)
+09/30/2024 11:11:25 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:25Z)
+09/30/2024 11:11:25 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:25Z)
+09/30/2024 11:11:25 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:25Z)
+09/30/2024 11:11:27 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:27Z)
+09/30/2024 11:11:27 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:27Z)
+09/30/2024 11:11:27 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:27Z)
+09/30/2024 11:11:27 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:27Z
+09/30/2024 11:11:28 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:27Z)
+09/30/2024 11:11:28 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:27Z)
+09/30/2024 11:11:31 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:11:31Z)
+09/30/2024 11:11:31 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:11:31Z)
+09/30/2024 11:11:31 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:31Z)
+09/30/2024 11:11:31 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:31Z)
+09/30/2024 11:11:31 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:31Z)
+09/30/2024 11:11:32 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:32Z)
+09/30/2024 11:11:33 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:33Z)
+09/30/2024 11:11:33 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:33Z
+09/30/2024 11:11:33 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:32Z)
+09/30/2024 11:11:33 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:33Z)
+09/30/2024 11:11:33 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:33Z)
+09/30/2024 11:11:36 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:11:36Z)
+09/30/2024 11:11:36 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:11:36Z)
+09/30/2024 11:11:36 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:36Z)
+09/30/2024 11:11:36 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:36Z)
+09/30/2024 11:11:36 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:36Z)
+09/30/2024 11:11:37 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:37Z)
+09/30/2024 11:11:38 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:38Z)
+09/30/2024 11:11:38 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:38Z
+09/30/2024 11:11:38 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:37Z)
+09/30/2024 11:11:38 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:38Z)
+09/30/2024 11:11:38 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:38Z)
+09/30/2024 11:11:40 AM - fissure.dashboard.frontend: [INFO] IQEngine docker container not found!
+09/30/2024 11:11:40 AM - fissure.dashboard.frontend: [ERROR] Error: [Errno 2] No such file or directory: '/home/user/Installed_by_FISSURE/IQEngine/'
+09/30/2024 11:11:42 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:11:42Z)
+09/30/2024 11:11:42 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:11:42Z)
+09/30/2024 11:11:42 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:42Z)
+09/30/2024 11:11:42 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:42Z)
+09/30/2024 11:11:42 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:42Z)
+09/30/2024 11:11:42 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:42Z)
+09/30/2024 11:11:43 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:43Z)
+09/30/2024 11:11:43 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:43Z
+09/30/2024 11:11:43 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:42Z)
+09/30/2024 11:11:43 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:43Z)
+09/30/2024 11:11:43 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:43Z)
+09/30/2024 11:11:47 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:11:47Z)
+09/30/2024 11:11:47 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:11:47Z)
+09/30/2024 11:11:47 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:47Z)
+09/30/2024 11:11:47 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:47Z)
+09/30/2024 11:11:47 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:47Z)
+09/30/2024 11:11:48 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:48Z)
+09/30/2024 11:11:48 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:48Z)
+09/30/2024 11:11:48 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:48Z
+09/30/2024 11:11:48 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:48Z)
+09/30/2024 11:11:48 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:48Z)
+09/30/2024 11:11:48 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:48Z)
+09/30/2024 11:11:52 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:11:52Z)
+09/30/2024 11:11:52 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:11:52Z)
+09/30/2024 11:11:52 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:52Z)
+09/30/2024 11:11:52 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:52Z)
+09/30/2024 11:11:52 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:52Z)
+09/30/2024 11:11:53 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:53Z)
+09/30/2024 11:11:53 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:53Z)
+09/30/2024 11:11:53 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:53Z
+09/30/2024 11:11:53 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:53Z)
+09/30/2024 11:11:53 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:53Z)
+09/30/2024 11:11:53 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:53Z)
+09/30/2024 11:11:57 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:11:57Z)
+09/30/2024 11:11:57 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:11:57Z)
+09/30/2024 11:11:57 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:57Z)
+09/30/2024 11:11:57 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:57Z)
+09/30/2024 11:11:57 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:11:57Z)
+09/30/2024 11:11:58 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:11:58Z)
+09/30/2024 11:11:58 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:11:58Z
+09/30/2024 11:11:58 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:11:58Z)
+09/30/2024 11:11:58 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:11:58Z)
+09/30/2024 11:11:58 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:11:58Z)
+09/30/2024 11:11:59 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:11:58Z)
+09/30/2024 11:12:02 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:12:02Z)
+09/30/2024 11:12:02 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:12:02Z)
+09/30/2024 11:12:02 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:02Z)
+09/30/2024 11:12:03 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:02Z)
+09/30/2024 11:12:03 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:02Z)
+09/30/2024 11:12:03 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:03Z)
+09/30/2024 11:12:03 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:03Z)
+09/30/2024 11:12:03 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:03Z
+09/30/2024 11:12:04 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:03Z)
+09/30/2024 11:12:04 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:03Z)
+09/30/2024 11:12:04 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:03Z)
+09/30/2024 11:12:08 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:12:08Z)
+09/30/2024 11:12:08 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:12:08Z)
+09/30/2024 11:12:08 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:08Z)
+09/30/2024 11:12:08 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:08Z)
+09/30/2024 11:12:08 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:08Z)
+09/30/2024 11:12:08 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:08Z)
+09/30/2024 11:12:08 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:08Z)
+09/30/2024 11:12:08 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:08Z
+09/30/2024 11:12:09 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:08Z)
+09/30/2024 11:12:09 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:08Z)
+09/30/2024 11:12:09 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:08Z)
+09/30/2024 11:12:13 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:13Z)
+09/30/2024 11:12:13 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:13Z)
+09/30/2024 11:12:13 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:13Z
+09/30/2024 11:12:13 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:12:13Z)
+09/30/2024 11:12:13 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:12:13Z)
+09/30/2024 11:12:13 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:13Z)
+09/30/2024 11:12:13 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:13Z)
+09/30/2024 11:12:13 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:13Z)
+09/30/2024 11:12:14 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:13Z)
+09/30/2024 11:12:14 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:13Z)
+09/30/2024 11:12:14 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:13Z)
+09/30/2024 11:12:18 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:18Z)
+09/30/2024 11:12:18 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:18Z
+09/30/2024 11:12:18 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:18Z)
+09/30/2024 11:12:19 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:18Z)
+09/30/2024 11:12:19 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:18Z)
+09/30/2024 11:12:19 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:12:19Z)
+09/30/2024 11:12:19 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:12:19Z)
+09/30/2024 11:12:19 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:19Z)
+09/30/2024 11:12:19 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:19Z)
+09/30/2024 11:12:19 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:19Z)
+09/30/2024 11:12:19 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:18Z)
+09/30/2024 11:12:23 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:23Z)
+09/30/2024 11:12:23 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:23Z)
+09/30/2024 11:12:23 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:23Z
+09/30/2024 11:12:24 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:23Z)
+09/30/2024 11:12:24 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:23Z)
+09/30/2024 11:12:24 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:23Z)
+09/30/2024 11:12:24 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:12:24Z)
+09/30/2024 11:12:24 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:12:24Z)
+09/30/2024 11:12:24 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:24Z)
+09/30/2024 11:12:24 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:24Z)
+09/30/2024 11:12:24 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:24Z)
+09/30/2024 11:12:29 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:29Z)
+09/30/2024 11:12:29 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:29Z
+09/30/2024 11:12:29 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:29Z)
+09/30/2024 11:12:29 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:29Z)
+09/30/2024 11:12:29 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:29Z)
+09/30/2024 11:12:29 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:29Z)
+09/30/2024 11:12:30 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:12:30Z)
+09/30/2024 11:12:30 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:12:30Z)
+09/30/2024 11:12:30 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:30Z)
+09/30/2024 11:12:30 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:30Z)
+09/30/2024 11:12:30 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:30Z)
+09/30/2024 11:12:34 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:34Z)
+09/30/2024 11:12:34 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:34Z)
+09/30/2024 11:12:34 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:34Z
+09/30/2024 11:12:34 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:34Z)
+09/30/2024 11:12:34 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:34Z)
+09/30/2024 11:12:34 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:34Z)
+09/30/2024 11:12:35 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:12:35Z)
+09/30/2024 11:12:35 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:12:35Z)
+09/30/2024 11:12:35 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:35Z)
+09/30/2024 11:12:35 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:35Z)
+09/30/2024 11:12:35 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:35Z)
+09/30/2024 11:12:39 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:39Z)
+09/30/2024 11:12:39 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:39Z
+09/30/2024 11:12:39 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:39Z)
+09/30/2024 11:12:39 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:39Z)
+09/30/2024 11:12:39 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:39Z)
+09/30/2024 11:12:39 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:39Z)
+09/30/2024 11:12:40 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:12:40Z)
+09/30/2024 11:12:40 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:12:40Z)
+09/30/2024 11:12:40 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:40Z)
+09/30/2024 11:12:40 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:40Z)
+09/30/2024 11:12:40 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:40Z)
+09/30/2024 11:12:44 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:44Z)
+09/30/2024 11:12:44 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:44Z)
+09/30/2024 11:12:44 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:44Z
+09/30/2024 11:12:44 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:44Z)
+09/30/2024 11:12:44 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:44Z)
+09/30/2024 11:12:44 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:44Z)
+09/30/2024 11:12:46 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:12:46Z)
+09/30/2024 11:12:46 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:12:46Z)
+09/30/2024 11:12:46 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:46Z)
+09/30/2024 11:12:46 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:46Z)
+09/30/2024 11:12:46 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:46Z)
+09/30/2024 11:12:49 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:49Z)
+09/30/2024 11:12:49 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:49Z)
+09/30/2024 11:12:49 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:49Z
+09/30/2024 11:12:49 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:49Z)
+09/30/2024 11:12:49 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:49Z)
+09/30/2024 11:12:49 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:49Z)
+09/30/2024 11:12:51 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:12:51Z)
+09/30/2024 11:12:51 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:12:51Z)
+09/30/2024 11:12:51 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:51Z)
+09/30/2024 11:12:51 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:51Z)
+09/30/2024 11:12:51 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:51Z)
+09/30/2024 11:12:54 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:54Z)
+09/30/2024 11:12:54 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:54Z)
+09/30/2024 11:12:54 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:54Z
+09/30/2024 11:12:54 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:54Z)
+09/30/2024 11:12:55 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:54Z)
+09/30/2024 11:12:55 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:54Z)
+09/30/2024 11:12:57 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:12:57Z)
+09/30/2024 11:12:57 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:12:57Z)
+09/30/2024 11:12:57 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:57Z)
+09/30/2024 11:12:57 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:57Z)
+09/30/2024 11:12:57 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:12:57Z)
+09/30/2024 11:12:59 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:12:59Z)
+09/30/2024 11:12:59 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:12:59Z)
+09/30/2024 11:12:59 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:12:59Z
+09/30/2024 11:13:00 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:12:59Z)
+09/30/2024 11:13:00 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:12:59Z)
+09/30/2024 11:13:00 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:12:59Z)
+09/30/2024 11:13:02 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:13:02Z)
+09/30/2024 11:13:02 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:13:02Z)
+09/30/2024 11:13:02 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:02Z)
+09/30/2024 11:13:02 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:02Z)
+09/30/2024 11:13:02 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:02Z)
+09/30/2024 11:13:04 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:13:04Z)
+09/30/2024 11:13:04 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:13:04Z
+09/30/2024 11:13:04 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:13:04Z)
+09/30/2024 11:13:05 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:13:04Z)
+09/30/2024 11:13:05 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:13:04Z)
+09/30/2024 11:13:05 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:13:04Z)
+09/30/2024 11:13:07 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:13:07Z)
+09/30/2024 11:13:07 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:13:07Z)
+09/30/2024 11:13:07 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:07Z)
+09/30/2024 11:13:07 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:07Z)
+09/30/2024 11:13:07 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:07Z)
+09/30/2024 11:13:09 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:13:09Z)
+09/30/2024 11:13:09 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:13:09Z)
+09/30/2024 11:13:09 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:13:09Z
+09/30/2024 11:13:10 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:13:09Z)
+09/30/2024 11:13:10 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:13:09Z)
+09/30/2024 11:13:10 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:13:09Z)
+09/30/2024 11:13:13 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:13:13Z)
+09/30/2024 11:13:13 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:13:13Z)
+09/30/2024 11:13:13 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:13Z)
+09/30/2024 11:13:13 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:13Z)
+09/30/2024 11:13:13 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:13Z)
+09/30/2024 11:13:15 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:13:15Z)
+09/30/2024 11:13:15 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:13:15Z)
+09/30/2024 11:13:15 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:13:15Z
+09/30/2024 11:13:15 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:13:15Z)
+09/30/2024 11:13:15 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:13:15Z)
+09/30/2024 11:13:15 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:13:15Z)
+09/30/2024 11:13:18 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:13:18Z)
+09/30/2024 11:13:18 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:13:18Z)
+09/30/2024 11:13:18 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:18Z)
+09/30/2024 11:13:18 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:18Z)
+09/30/2024 11:13:18 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:18Z)
+09/30/2024 11:13:20 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:13:20Z)
+09/30/2024 11:13:20 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:13:20Z)
+09/30/2024 11:13:20 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:13:20Z
+09/30/2024 11:13:20 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:13:20Z)
+09/30/2024 11:13:20 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:13:20Z)
+09/30/2024 11:13:20 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:13:20Z)
+09/30/2024 11:13:23 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:13:23Z)
+09/30/2024 11:13:23 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:13:23Z)
+09/30/2024 11:13:23 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:23Z)
+09/30/2024 11:13:23 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:23Z)
+09/30/2024 11:13:23 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:23Z)
+09/30/2024 11:13:25 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:13:25Z)
+09/30/2024 11:13:25 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:13:25Z)
+09/30/2024 11:13:25 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:13:25Z
+09/30/2024 11:13:25 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:13:25Z)
+09/30/2024 11:13:25 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:13:25Z)
+09/30/2024 11:13:25 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:13:25Z)
+09/30/2024 11:13:28 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:13:28Z)
+09/30/2024 11:13:28 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:13:28Z)
+09/30/2024 11:13:28 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:28Z)
+09/30/2024 11:13:28 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:28Z)
+09/30/2024 11:13:28 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:28Z)
+09/30/2024 11:13:30 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:13:30Z)
+09/30/2024 11:13:30 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:13:30Z)
+09/30/2024 11:13:30 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:13:30Z
+09/30/2024 11:13:30 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:13:30Z)
+09/30/2024 11:13:30 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:13:30Z)
+09/30/2024 11:13:30 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:13:30Z)
+09/30/2024 11:13:33 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:13:33Z)
+09/30/2024 11:13:33 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:13:33Z)
+09/30/2024 11:13:33 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:33Z)
+09/30/2024 11:13:33 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:33Z)
+09/30/2024 11:13:33 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:13:33Z)
+09/30/2024 11:13:34 AM - fissure.dashboard.frontend: [CRITICAL] [GUI] Shutting Down HIPRFISR
+09/30/2024 11:13:34 AM - fissure.dashboard: [DEBUG] [backend] sent message: {'Identifier': 'Dashboard', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['HiprFisr']}, 'Type': 'Commands'}
+09/30/2024 11:13:34 AM - fissure.hiprfisr: [DEBUG] [frontend] received message: {'Identifier': 'Dashboard', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['HiprFisr']}, 'Type': 'Commands', 'callback': 'shutdown'}
+09/30/2024 11:13:34 AM - fissure.hiprfisr: [DEBUG] executing callback: shutdown with parameters: {'identifiers': ['HiprFisr']}
+09/30/2024 11:13:34 AM - fissure.hiprfisr: [INFO] received shutdown command for ['HiprFisr']
+09/30/2024 11:13:34 AM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands'}
+09/30/2024 11:13:34 AM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands'}
+09/30/2024 11:13:34 AM - fissure.pd: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands', 'callback': 'shutdown'}
+09/30/2024 11:13:34 AM - fissure.pd: [DEBUG] executing callback: shutdown with parameters: {'identifiers': ['PD', 'TSI']}
+09/30/2024 11:13:34 AM - fissure.pd: [INFO] recieved shutdown command
+09/30/2024 11:13:34 AM - fissure.tsi: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands', 'callback': 'shutdown'}
+09/30/2024 11:13:34 AM - fissure.tsi: [DEBUG] executing callback: shutdown with parameters: {'identifiers': ['PD', 'TSI']}
+09/30/2024 11:13:34 AM - fissure.tsi: [INFO] recieved shutdown command
+09/30/2024 11:13:34 AM - fissure.pd: [INFO] PD: Stopping PD bit listener...
+09/30/2024 11:13:34 AM - fissure.pd: [DEBUG] [backend] sent message: {'Identifier': 'PD', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+09/30/2024 11:13:34 AM - fissure.pd: [DEBUG] [backend] disconnected from ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:13:34 AM - fissure.pd: [DEBUG] [backend] shutdown
+09/30/2024 11:13:34 AM - fissure.pd: [INFO] === SHUTDOWN ===
+09/30/2024 11:13:34 AM - fissure.tsi: [DEBUG] [backend] sent message: {'Identifier': 'TSI', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+09/30/2024 11:13:34 AM - fissure.tsi: [DEBUG] [backend] disconnected from ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:13:34 AM - fissure.tsi: [DEBUG] [backend] shutdown
+09/30/2024 11:13:34 AM - fissure.tsi: [INFO] === SHUTDOWN ===
+09/30/2024 11:13:34 AM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'PD', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status', 'SenderID': 'PD-764a282b-1f5f-4cae-8609-c7b45efbc4f2'}
+09/30/2024 11:13:34 AM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'TSI', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status', 'SenderID': 'TSI-1dcddf26-1420-4093-83d9-e238066a3101'}
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [frontend] shutdown (ipc://fissure [-hb (hb), -msg (msg)])
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [frontend] removing ipc socket: fissure-hb
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [frontend] removing ipc socket: fissure-msg
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [backend] shutdown (ipc://fissure-backend [-hb (hb), -msg (msg)])
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [backend] removing ipc socket: fissure-backend-hb
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [backend] removing ipc socket: fissure-backend-msg
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [INFO] === SHUTDOWN ===
+09/30/2024 11:13:35 AM - fissure: [DEBUG] Cleaning Up ZMQ Context
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+09/30/2024 11:13:35 AM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+09/30/2024 11:13:35 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+09/30/2024 11:13:35 AM - fissure.dashboard.backend: [WARNING] received shutdown notice from HiprFisr
+09/30/2024 11:13:35 AM - fissure.dashboard: [DEBUG] [backend] disconnected from ipc://fissure [-hb (hb), -msg (msg)]
+09/30/2024 11:13:35 AM - qasync._unix._Selector: [DEBUG] Closing
+09/30/2024 11:18:08 AM - asyncio: [DEBUG] Using selector: _Selector
+09/30/2024 11:18:08 AM - fissure.dashboard.frontend: [INFO] === INITIALIZING ===
+09/30/2024 11:18:09 AM - fissure.dashboard.backend: [INFO] === INITIALIZING ===
+09/30/2024 11:18:09 AM - fissure: [DEBUG] loaded default config (User Configs/default.yaml)
+09/30/2024 11:18:09 AM - fissure.dashboard: [DEBUG] [backend] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:18:09 AM - fissure.dashboard: [DEBUG] [backend] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:18:09 AM - fissure.dashboard: [DEBUG] [backend] initialized
+09/30/2024 11:18:10 AM - fissure.dashboard.backend: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+09/30/2024 11:18:10 AM - fissure.dashboard.backend: [DEBUG] registered 42 callbacks from fissure.callbacks.DashboardCallbacks
+09/30/2024 11:18:10 AM - fissure.dashboard.backend: [INFO] === READY ===
+09/30/2024 11:18:12 AM - fissure.dashboard.frontend: [INFO] === READY ===
+09/30/2024 11:18:13 AM - fissure.dashboard.frontend: [INFO] [GUI] Connecting to HIPRFISR @ ipc://fissure [-hb (hb), -msg (msg)] ...
+09/30/2024 11:18:13 AM - fissure.dashboard: [DEBUG] [backend] sent message: {'Identifier': 'Dashboard', 'MessageName': 'Connected', 'Type': 'Status'}
+09/30/2024 11:18:13 AM - fissure.dashboard: [DEBUG] [backend] connected to ipc://fissure [-hb (hb), -msg (msg)]
+09/30/2024 11:18:13 AM - fissure.dashboard.backend: [INFO] connected to HiprFisr @ ipc://fissure [-hb (hb), -msg (msg)]
+09/30/2024 11:18:13 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:18:13Z)
+09/30/2024 11:18:13 AM - fissure.dashboard.frontend: [INFO] [GUI] Connected
+09/30/2024 11:18:15 AM - fissure.dashboard.frontend: [INFO] [Start] Clicked
+09/30/2024 11:18:18 AM - fissure.hiprfisr: [INFO] === INITIALIZING ===
+09/30/2024 11:18:18 AM - fissure: [DEBUG] loaded default config (User Configs/default.yaml)
+09/30/2024 11:18:18 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:18:18Z)
+09/30/2024 11:18:19 AM - zmq.auth: [DEBUG] Starting
+09/30/2024 11:18:19 AM - zmq.auth: [DEBUG] Allowing 
+09/30/2024 11:18:19 AM - zmq.auth: [DEBUG] Configure curve: *[/home/user/FISSURE/certificates/clients]
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [frontend] initialized
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [frontend] started at ipc://fissure [-hb (hb), -msg (msg)]
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [backend] initialized
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [backend] started at ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] [sensor_node] initialized
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [DEBUG] registered 110 callbacks from fissure.callbacks.HiprFisrCallbacks
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [INFO] === READY ===
+09/30/2024 11:18:19 AM - fissure.hiprfisr: [INFO] Server listening @ ipc://fissure [-hb (hb), -msg (msg)]
+09/30/2024 11:18:19 AM - fissure.pd: [DEBUG] === INITIALIZING ===
+09/30/2024 11:18:19 AM - fissure.pd: [DEBUG] [backend] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:18:19 AM - fissure.pd: [DEBUG] [backend] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:18:19 AM - fissure.pd: [DEBUG] [backend] initialized
+09/30/2024 11:18:19 AM - fissure.pd: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+09/30/2024 11:18:19 AM - fissure.pd: [DEBUG] registered 15 callbacks from fissure.callbacks.ProtocolDiscoveryCallbacks
+09/30/2024 11:18:19 AM - fissure.pd: [DEBUG] === READY ===
+09/30/2024 11:18:19 AM - fissure.tsi: [DEBUG] === INITIALIZING ===
+09/30/2024 11:18:20 AM - fissure.tsi: [DEBUG] [backend] loaded client private key = /home/user/FISSURE/certificates/clients/client_0.key_secret
+09/30/2024 11:18:20 AM - fissure.tsi: [DEBUG] [backend] loaded server public key = /home/user/FISSURE/certificates/server/server.key
+09/30/2024 11:18:20 AM - fissure.tsi: [DEBUG] [backend] initialized
+09/30/2024 11:18:20 AM - fissure.tsi: [DEBUG] registered 1 callbacks from fissure.callbacks.GenericCallbacks
+09/30/2024 11:18:20 AM - fissure.tsi: [DEBUG] registered 8 callbacks from fissure.callbacks.TargetSignalIdentificationCallbacks
+09/30/2024 11:18:20 AM - fissure.tsi: [DEBUG] === READY ===
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [INFO] === STARTING HIPRFISR ===
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] entering connect loop
+09/30/2024 11:18:20 AM - fissure.pd: [INFO] === STARTING PROTOCOL DISCOVERY COMPONENT ===
+09/30/2024 11:18:20 AM - fissure.pd: [DEBUG] [backend] sent message: {'Identifier': 'PD', 'MessageName': 'Connected', 'Type': 'Status'}
+09/30/2024 11:18:20 AM - fissure.pd: [DEBUG] [backend] connected to ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:18:20 AM - fissure.pd: [INFO] connected to HiprFisr @ ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:18:20 AM - fissure.tsi: [INFO] === STARTING TARGET SIGNAL IDENTIFICATION COMPONENT ===
+09/30/2024 11:18:20 AM - fissure.tsi: [DEBUG] [backend] sent message: {'Identifier': 'TSI', 'MessageName': 'Connected', 'Type': 'Status'}
+09/30/2024 11:18:20 AM - fissure.tsi: [DEBUG] [backend] connected to ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:18:20 AM - fissure.tsi: [INFO] connected to HiprFisr @ ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:18:20 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:18:20Z)
+09/30/2024 11:18:20 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:18:20Z
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:13247', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:13247', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:13366', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:13366', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:13366', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] version: b'1.0', request_id: b'1', domain: '', address: 'localhost:1000:1000:13366', identity: b'', mechanism: b'CURVE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ALLOWED (CURVE) domain=* client_key=b'pQ(zZL&8jdhpr5h3CdU-3cL[D%0PSGOJdvnb7*jE'
+09/30/2024 11:18:20 AM - zmq.auth: [DEBUG] ZAP reply code=b'200' text=b'OK'
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:18:13Z)
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:18:20Z)
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:18:20Z)
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'Dashboard', 'Type': 'Commands'}
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'PD', 'Type': 'Commands'}
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'TSI', 'Type': 'Commands'}
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] [frontend] received message: {'Identifier': 'Dashboard', 'MessageName': 'Connected', 'Type': 'Status'}
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'PD', 'MessageName': 'Connected', 'Type': 'Status', 'SenderID': 'PD-7d55a090-c2ff-4069-8472-50215e3a42b0'}
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'TSI', 'MessageName': 'Connected', 'Type': 'Status', 'SenderID': 'TSI-15d28066-4b6f-4817-8335-318031754a66'}
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:18:20 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'Dashboard', 'Type': 'Commands', 'callback': 'componentConnected'}
+09/30/2024 11:18:20 AM - fissure.dashboard: [DEBUG] executing callback: componentConnected with parameters: Dashboard
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'Connected', 'Parameters': ['PD', 'TSI'], 'Type': 'Status'}
+09/30/2024 11:18:20 AM - fissure.hiprfisr: [DEBUG] exiting connect loop
+09/30/2024 11:18:20 AM - fissure.pd: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:18:20 AM - fissure.tsi: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:18:20 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'PD', 'Type': 'Commands', 'callback': 'componentConnected'}
+09/30/2024 11:18:20 AM - fissure.dashboard: [DEBUG] executing callback: componentConnected with parameters: PD
+09/30/2024 11:18:20 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'componentConnected', 'Parameters': 'TSI', 'Type': 'Commands', 'callback': 'componentConnected'}
+09/30/2024 11:18:20 AM - fissure.dashboard: [DEBUG] executing callback: componentConnected with parameters: TSI
+09/30/2024 11:18:21 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:18:18Z)
+09/30/2024 11:18:21 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'OK', 'Type': 'Status'}
+09/30/2024 11:18:21 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'Connected', 'Parameters': ['PD', 'TSI'], 'Type': 'Status'}
+09/30/2024 11:18:23 AM - fissure.dashboard.frontend: [INFO] IQEngine docker container not found!
+09/30/2024 11:18:24 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:18:24Z)
+09/30/2024 11:18:24 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:18:24Z)
+09/30/2024 11:18:25 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:18:25Z)
+09/30/2024 11:18:25 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:18:25Z
+09/30/2024 11:18:25 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:18:25Z)
+09/30/2024 11:18:25 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:18:25Z)
+09/30/2024 11:18:25 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:18:25Z)
+09/30/2024 11:18:25 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:18:25Z)
+09/30/2024 11:18:25 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:25Z)
+09/30/2024 11:18:25 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:25Z)
+09/30/2024 11:18:25 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:25Z)
+09/30/2024 11:18:29 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:18:29Z)
+09/30/2024 11:18:29 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:18:29Z)
+09/30/2024 11:18:30 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:18:30Z)
+09/30/2024 11:18:30 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:18:30Z
+09/30/2024 11:18:30 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:18:30Z)
+09/30/2024 11:18:30 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:18:30Z)
+09/30/2024 11:18:30 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:30Z)
+09/30/2024 11:18:30 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:30Z)
+09/30/2024 11:18:30 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:30Z)
+09/30/2024 11:18:31 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:18:30Z)
+09/30/2024 11:18:31 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:18:30Z)
+09/30/2024 11:18:34 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:18:34Z)
+09/30/2024 11:18:34 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:18:34Z)
+09/30/2024 11:18:35 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:18:35Z)
+09/30/2024 11:18:35 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:18:35Z
+09/30/2024 11:18:36 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:18:35Z)
+09/30/2024 11:18:36 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:18:35Z)
+09/30/2024 11:18:36 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:18:36Z)
+09/30/2024 11:18:36 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:18:36Z)
+09/30/2024 11:18:36 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:36Z)
+09/30/2024 11:18:36 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:36Z)
+09/30/2024 11:18:36 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:36Z)
+09/30/2024 11:18:39 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:18:39Z)
+09/30/2024 11:18:39 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:18:39Z)
+09/30/2024 11:18:40 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:18:40Z)
+09/30/2024 11:18:40 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:18:40Z
+09/30/2024 11:18:41 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:18:40Z)
+09/30/2024 11:18:41 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:18:40Z)
+09/30/2024 11:18:41 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:18:41Z)
+09/30/2024 11:18:41 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:18:41Z)
+09/30/2024 11:18:41 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:41Z)
+09/30/2024 11:18:41 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:41Z)
+09/30/2024 11:18:41 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:41Z)
+09/30/2024 11:18:44 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:18:44Z)
+09/30/2024 11:18:45 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:18:44Z)
+09/30/2024 11:18:45 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:18:45Z)
+09/30/2024 11:18:45 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:18:45Z
+09/30/2024 11:18:46 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:18:45Z)
+09/30/2024 11:18:46 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:18:45Z)
+09/30/2024 11:18:46 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:18:46Z)
+09/30/2024 11:18:46 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:18:46Z)
+09/30/2024 11:18:46 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:46Z)
+09/30/2024 11:18:46 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:46Z)
+09/30/2024 11:18:46 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:46Z)
+09/30/2024 11:18:49 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:18:49Z)
+09/30/2024 11:18:50 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:18:49Z)
+09/30/2024 11:18:50 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:18:50Z)
+09/30/2024 11:18:50 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:18:50Z
+09/30/2024 11:18:50 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:18:50Z)
+09/30/2024 11:18:51 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:18:50Z)
+09/30/2024 11:18:52 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:18:52Z)
+09/30/2024 11:18:52 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:18:52Z)
+09/30/2024 11:18:52 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:52Z)
+09/30/2024 11:18:52 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:52Z)
+09/30/2024 11:18:52 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:52Z)
+09/30/2024 11:18:54 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:18:54Z)
+09/30/2024 11:18:55 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:18:54Z)
+09/30/2024 11:18:55 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:18:55Z)
+09/30/2024 11:18:55 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:18:55Z
+09/30/2024 11:18:56 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:18:55Z)
+09/30/2024 11:18:56 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:18:55Z)
+09/30/2024 11:18:57 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:18:57Z)
+09/30/2024 11:18:57 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:18:57Z)
+09/30/2024 11:18:57 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:57Z)
+09/30/2024 11:18:57 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:57Z)
+09/30/2024 11:18:57 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:18:57Z)
+09/30/2024 11:18:59 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:18:59Z)
+09/30/2024 11:19:00 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:18:59Z)
+09/30/2024 11:19:00 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:00Z)
+09/30/2024 11:19:01 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:01Z
+09/30/2024 11:19:01 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:00Z)
+09/30/2024 11:19:01 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:01Z)
+09/30/2024 11:19:02 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:19:02Z)
+09/30/2024 11:19:02 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:19:02Z)
+09/30/2024 11:19:02 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:02Z)
+09/30/2024 11:19:02 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:02Z)
+09/30/2024 11:19:02 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:02Z)
+09/30/2024 11:19:04 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:19:04Z)
+09/30/2024 11:19:05 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:19:04Z)
+09/30/2024 11:19:05 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:05Z)
+09/30/2024 11:19:06 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:06Z
+09/30/2024 11:19:06 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:05Z)
+09/30/2024 11:19:06 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:06Z)
+09/30/2024 11:19:08 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:19:08Z)
+09/30/2024 11:19:08 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:19:08Z)
+09/30/2024 11:19:08 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:08Z)
+09/30/2024 11:19:08 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:08Z)
+09/30/2024 11:19:08 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:08Z)
+09/30/2024 11:19:10 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:19:10Z)
+09/30/2024 11:19:10 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:19:10Z)
+09/30/2024 11:19:11 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:11Z)
+09/30/2024 11:19:11 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:11Z
+09/30/2024 11:19:11 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:11Z)
+09/30/2024 11:19:11 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:11Z)
+09/30/2024 11:19:13 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:19:13Z)
+09/30/2024 11:19:13 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:19:13Z)
+09/30/2024 11:19:13 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:13Z)
+09/30/2024 11:19:13 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:13Z)
+09/30/2024 11:19:13 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:13Z)
+09/30/2024 11:19:15 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:19:15Z)
+09/30/2024 11:19:15 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:19:15Z)
+09/30/2024 11:19:16 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:16Z)
+09/30/2024 11:19:16 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:16Z
+09/30/2024 11:19:16 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:16Z)
+09/30/2024 11:19:16 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:16Z)
+09/30/2024 11:19:18 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:19:18Z)
+09/30/2024 11:19:18 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:19:18Z)
+09/30/2024 11:19:18 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:18Z)
+09/30/2024 11:19:18 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:18Z)
+09/30/2024 11:19:18 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:18Z)
+09/30/2024 11:19:20 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:19:20Z)
+09/30/2024 11:19:20 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:19:20Z)
+09/30/2024 11:19:21 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:21Z)
+09/30/2024 11:19:21 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:21Z
+09/30/2024 11:19:21 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:21Z)
+09/30/2024 11:19:21 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:21Z)
+09/30/2024 11:19:24 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:19:24Z)
+09/30/2024 11:19:24 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:19:24Z)
+09/30/2024 11:19:24 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:24Z)
+09/30/2024 11:19:24 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:24Z)
+09/30/2024 11:19:24 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:24Z)
+09/30/2024 11:19:25 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:19:25Z)
+09/30/2024 11:19:25 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:19:25Z)
+09/30/2024 11:19:26 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:26Z)
+09/30/2024 11:19:26 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:26Z
+09/30/2024 11:19:26 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:26Z)
+09/30/2024 11:19:26 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:26Z)
+09/30/2024 11:19:29 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:19:29Z)
+09/30/2024 11:19:29 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:19:29Z)
+09/30/2024 11:19:29 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:29Z)
+09/30/2024 11:19:29 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:29Z)
+09/30/2024 11:19:29 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:29Z)
+09/30/2024 11:19:30 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:19:30Z)
+09/30/2024 11:19:30 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:19:30Z)
+09/30/2024 11:19:31 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:31Z)
+09/30/2024 11:19:31 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:31Z
+09/30/2024 11:19:31 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:31Z)
+09/30/2024 11:19:31 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:31Z)
+09/30/2024 11:19:34 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:19:34Z)
+09/30/2024 11:19:34 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:19:34Z)
+09/30/2024 11:19:34 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:34Z)
+09/30/2024 11:19:34 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:34Z)
+09/30/2024 11:19:34 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:34Z)
+09/30/2024 11:19:35 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:19:35Z)
+09/30/2024 11:19:35 AM - fissure.dashboard.frontend: [INFO] IQEngine docker container found!
+09/30/2024 11:19:35 AM - fissure.dashboard.frontend: [INFO] Click Refresh in the top right of the browser to view new files in the IQ Recordings folder.
+09/30/2024 11:19:36 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:19:35Z)
+09/30/2024 11:19:36 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:36Z)
+09/30/2024 11:19:36 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:36Z
+09/30/2024 11:19:36 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:36Z)
+09/30/2024 11:19:36 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:36Z)
+09/30/2024 11:19:39 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:19:39Z)
+09/30/2024 11:19:39 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:19:39Z)
+09/30/2024 11:19:39 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:39Z)
+09/30/2024 11:19:39 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:39Z)
+09/30/2024 11:19:39 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:39Z)
+09/30/2024 11:19:40 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:19:40Z)
+09/30/2024 11:19:41 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:19:40Z)
+09/30/2024 11:19:41 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:41Z)
+09/30/2024 11:19:41 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:41Z
+09/30/2024 11:19:42 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:41Z)
+09/30/2024 11:19:42 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:41Z)
+09/30/2024 11:19:44 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:19:44Z)
+09/30/2024 11:19:44 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:19:44Z)
+09/30/2024 11:19:44 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:44Z)
+09/30/2024 11:19:44 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:44Z)
+09/30/2024 11:19:44 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:44Z)
+09/30/2024 11:19:45 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:19:45Z)
+09/30/2024 11:19:46 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:19:45Z)
+09/30/2024 11:19:46 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:46Z)
+09/30/2024 11:19:46 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:46Z
+09/30/2024 11:19:46 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:46Z)
+09/30/2024 11:19:47 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:46Z)
+09/30/2024 11:19:50 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:19:50Z)
+09/30/2024 11:19:50 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:19:50Z)
+09/30/2024 11:19:50 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:50Z)
+09/30/2024 11:19:50 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:50Z)
+09/30/2024 11:19:50 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:50Z)
+09/30/2024 11:19:51 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:19:51Z)
+09/30/2024 11:19:51 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:19:51Z)
+09/30/2024 11:19:51 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:51Z)
+09/30/2024 11:19:51 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:51Z
+09/30/2024 11:19:52 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:51Z)
+09/30/2024 11:19:52 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:51Z)
+09/30/2024 11:19:55 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:19:55Z)
+09/30/2024 11:19:55 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:19:55Z)
+09/30/2024 11:19:55 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:55Z)
+09/30/2024 11:19:55 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:55Z)
+09/30/2024 11:19:55 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:19:55Z)
+09/30/2024 11:19:56 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:19:56Z)
+09/30/2024 11:19:56 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:19:56Z)
+09/30/2024 11:19:56 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:19:56Z)
+09/30/2024 11:19:57 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:19:57Z
+09/30/2024 11:19:57 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:19:56Z)
+09/30/2024 11:19:57 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:19:57Z)
+09/30/2024 11:20:01 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:20:01Z)
+09/30/2024 11:20:01 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:20:01Z)
+09/30/2024 11:20:01 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:01Z)
+09/30/2024 11:20:01 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:01Z)
+09/30/2024 11:20:01 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:20:01Z)
+09/30/2024 11:20:01 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:01Z)
+09/30/2024 11:20:01 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:20:01Z)
+09/30/2024 11:20:02 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:20:02Z)
+09/30/2024 11:20:02 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:20:02Z
+09/30/2024 11:20:02 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:20:02Z)
+09/30/2024 11:20:02 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:20:02Z)
+09/30/2024 11:20:03 AM - fissure.dashboard.frontend: [INFO] IQEngine docker container found!
+09/30/2024 11:20:03 AM - fissure.dashboard.frontend: [INFO] Click Refresh in the top right of the browser to view new files in the IQ Recordings folder.
+09/30/2024 11:20:06 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:20:06Z)
+09/30/2024 11:20:06 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:20:06Z)
+09/30/2024 11:20:06 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:20:06Z)
+09/30/2024 11:20:06 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:06Z)
+09/30/2024 11:20:06 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:06Z)
+09/30/2024 11:20:06 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:06Z)
+09/30/2024 11:20:06 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:20:06Z)
+09/30/2024 11:20:07 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:20:07Z)
+09/30/2024 11:20:07 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:20:07Z
+09/30/2024 11:20:07 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:20:07Z)
+09/30/2024 11:20:07 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:20:07Z)
+09/30/2024 11:20:11 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:20:11Z)
+09/30/2024 11:20:11 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:20:11Z)
+09/30/2024 11:20:12 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:20:12Z)
+09/30/2024 11:20:12 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:20:12Z)
+09/30/2024 11:20:12 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:12Z)
+09/30/2024 11:20:12 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:12Z)
+09/30/2024 11:20:12 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:12Z)
+09/30/2024 11:20:12 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:20:12Z)
+09/30/2024 11:20:12 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:20:12Z
+09/30/2024 11:20:12 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:20:12Z)
+09/30/2024 11:20:12 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:20:12Z)
+09/30/2024 11:20:16 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:20:16Z)
+09/30/2024 11:20:17 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:20:17Z)
+09/30/2024 11:20:17 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:20:17Z)
+09/30/2024 11:20:17 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:17Z)
+09/30/2024 11:20:17 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:17Z)
+09/30/2024 11:20:17 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:17Z)
+09/30/2024 11:20:17 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:20:16Z)
+09/30/2024 11:20:17 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:20:17Z)
+09/30/2024 11:20:17 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:20:17Z
+09/30/2024 11:20:17 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:20:17Z)
+09/30/2024 11:20:17 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:20:17Z)
+09/30/2024 11:20:21 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:20:21Z)
+09/30/2024 11:20:22 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:20:22Z)
+09/30/2024 11:20:22 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:20:22Z)
+09/30/2024 11:20:22 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:22Z)
+09/30/2024 11:20:22 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:22Z)
+09/30/2024 11:20:22 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:22Z)
+09/30/2024 11:20:22 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:20:21Z)
+09/30/2024 11:20:22 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:20:22Z)
+09/30/2024 11:20:22 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:20:22Z
+09/30/2024 11:20:22 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:20:22Z)
+09/30/2024 11:20:23 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from TSI (2024-09-30T15:20:22Z)
+09/30/2024 11:20:26 AM - fissure.dashboard.backend: [DEBUG] sent heartbeat (2024-09-30T15:20:26Z)
+09/30/2024 11:20:27 AM - fissure.hiprfisr: [DEBUG] received Dashboard heartbeat (2024-09-30T15:20:26Z)
+09/30/2024 11:20:27 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to dashboard (2024-09-30T15:20:27Z)
+09/30/2024 11:20:27 AM - fissure.hiprfisr: [DEBUG] sent heartbeat to backend (2024-09-30T15:20:27Z)
+09/30/2024 11:20:27 AM - fissure.dashboard.backend: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:27Z)
+09/30/2024 11:20:27 AM - fissure.pd: [DEBUG] sent heartbeat (2024-09-30T15:20:27Z)
+09/30/2024 11:20:27 AM - fissure.pd: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:27Z)
+09/30/2024 11:20:27 AM - fissure.tsi: [DEBUG] received HiprFisr heartbeat (2024-09-30T15:20:27Z)
+09/30/2024 11:20:27 AM - fissure.tsi: [DEBUG] sent heartbeat 2024-09-30T15:20:27Z
+09/30/2024 11:20:27 AM - fissure.dashboard.frontend: [CRITICAL] [GUI] Shutting Down HIPRFISR
+09/30/2024 11:20:27 AM - fissure.dashboard: [DEBUG] [backend] sent message: {'Identifier': 'Dashboard', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['HiprFisr']}, 'Type': 'Commands'}
+09/30/2024 11:20:27 AM - fissure.hiprfisr: [DEBUG] received backend heartbeat from PD (2024-09-30T15:20:27Z)
+09/30/2024 11:20:27 AM - fissure.hiprfisr: [DEBUG] [frontend] received message: {'Identifier': 'Dashboard', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['HiprFisr']}, 'Type': 'Commands', 'callback': 'shutdown'}
+09/30/2024 11:20:27 AM - fissure.hiprfisr: [DEBUG] executing callback: shutdown with parameters: {'identifiers': ['HiprFisr']}
+09/30/2024 11:20:27 AM - fissure.hiprfisr: [INFO] received shutdown command for ['HiprFisr']
+09/30/2024 11:20:27 AM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands'}
+09/30/2024 11:20:27 AM - fissure.hiprfisr: [DEBUG] [backend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands'}
+09/30/2024 11:20:27 AM - fissure.pd: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands', 'callback': 'shutdown'}
+09/30/2024 11:20:27 AM - fissure.pd: [DEBUG] executing callback: shutdown with parameters: {'identifiers': ['PD', 'TSI']}
+09/30/2024 11:20:27 AM - fissure.pd: [INFO] recieved shutdown command
+09/30/2024 11:20:27 AM - fissure.tsi: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'shutdown', 'Parameters': {'identifiers': ['PD', 'TSI']}, 'Type': 'Commands', 'callback': 'shutdown'}
+09/30/2024 11:20:27 AM - fissure.tsi: [DEBUG] executing callback: shutdown with parameters: {'identifiers': ['PD', 'TSI']}
+09/30/2024 11:20:27 AM - fissure.tsi: [INFO] recieved shutdown command
+09/30/2024 11:20:28 AM - fissure.pd: [INFO] PD: Stopping PD bit listener...
+09/30/2024 11:20:28 AM - fissure.pd: [DEBUG] [backend] sent message: {'Identifier': 'PD', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+09/30/2024 11:20:28 AM - fissure.pd: [DEBUG] [backend] disconnected from ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:20:28 AM - fissure.pd: [DEBUG] [backend] shutdown
+09/30/2024 11:20:28 AM - fissure.pd: [INFO] === SHUTDOWN ===
+09/30/2024 11:20:28 AM - fissure.tsi: [DEBUG] [backend] sent message: {'Identifier': 'TSI', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+09/30/2024 11:20:28 AM - fissure.tsi: [DEBUG] [backend] disconnected from ipc://fissure-backend [-hb (hb), -msg (msg)]
+09/30/2024 11:20:28 AM - fissure.tsi: [DEBUG] [backend] shutdown
+09/30/2024 11:20:28 AM - fissure.tsi: [INFO] === SHUTDOWN ===
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'PD', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status', 'SenderID': 'PD-7d55a090-c2ff-4069-8472-50215e3a42b0'}
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [backend] received message: {'Identifier': 'TSI', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status', 'SenderID': 'TSI-15d28066-4b6f-4817-8335-318031754a66'}
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [frontend] sent message: {'Identifier': 'HiprFisr', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [frontend] shutdown (ipc://fissure [-hb (hb), -msg (msg)])
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [frontend] removing ipc socket: fissure-hb
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [frontend] removing ipc socket: fissure-msg
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [backend] shutdown (ipc://fissure-backend [-hb (hb), -msg (msg)])
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [backend] removing ipc socket: fissure-backend-hb
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [backend] removing ipc socket: fissure-backend-msg
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [INFO] === SHUTDOWN ===
+09/30/2024 11:20:28 AM - fissure: [DEBUG] Cleaning Up ZMQ Context
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+09/30/2024 11:20:28 AM - fissure.hiprfisr: [DEBUG] [sensor_node] shutdown
+09/30/2024 11:20:28 AM - fissure.dashboard: [DEBUG] [backend] received message: {'Identifier': 'HiprFisr', 'MessageName': 'Shutting Down', 'Parameters': '', 'Type': 'Status'}
+09/30/2024 11:20:28 AM - fissure.dashboard.backend: [WARNING] received shutdown notice from HiprFisr
+09/30/2024 11:20:28 AM - fissure.dashboard: [DEBUG] [backend] disconnected from ipc://fissure [-hb (hb), -msg (msg)]
+09/30/2024 11:20:28 AM - qasync._unix._Selector: [DEBUG] Closing
