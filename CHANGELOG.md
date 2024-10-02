@@ -1,6 +1,14 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-10-02
+
+Writing disk usage to a file during installation.
+
+### Added
+
+- Modified installer to record software disk usage to `./Installer/disk_usage.txt`
+
 ## 2024-09-30
 
 Fixing IQEngine install.

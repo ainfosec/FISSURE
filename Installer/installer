@@ -19003,6 +19003,10 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         QtWidgets.QApplication.processEvents()
         self.pushButton_ok.setEnabled(False)
 
+        # Clear the Output File
+        with open(this_file_directory + "/disk_usage.txt", "w") as file:
+            file.write("")
+
         # Iterate the Checked Items
         self.checked_index = 0
         for n in range(0,len(self.checked_items)):            
@@ -19010,6 +19014,12 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
             for p in range(0,len(self.programs)):
                 if self.checked_items[n] == self.programs[p][0]:
                     self.loop = True
+
+                    # Calculate Disk Usage - Before
+                    statvfs_before = os.statvfs('/')
+                    total_before = statvfs_before.f_frsize * statvfs_before.f_blocks
+                    free_before = statvfs_before.f_frsize * statvfs_before.f_bfree
+                    used_before = total_before - free_before
                     
                     # Update the Label
                     self.label2_current_item.setText(str(self.checked_items[n]))
@@ -19033,6 +19043,26 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
                     while self.loop == True:
                         QtWidgets.QApplication.processEvents()
                         time.sleep(0.1)
+
+                    # Calculate Disk Usage - After
+                    statvfs_after = os.statvfs('/')
+                    total_after = statvfs_after.f_frsize * statvfs_after.f_blocks
+                    free_after = statvfs_after.f_frsize * statvfs_after.f_bfree
+                    used_after = total_after - free_after
+
+                    # Write to File
+                    used = used_after - used_before
+                    used_gb = used / (1024 ** 3)
+                    used_mb = used / (1024 ** 2)
+                    used_kb = used / 1024
+                    if int(used_gb) > 0:
+                        text_output = str(self.checked_items[n]).split('(')[0].strip() + f" ({used_gb:.2f} GB)"
+                    elif int(used_mb) > 0:
+                        text_output = str(self.checked_items[n]).split('(')[0].strip() + f" ({used_mb:.2f} MB)"
+                    else:
+                        text_output = str(self.checked_items[n]).split('(')[0].strip() + f" ({used_kb:.2f} kB)"
+                    with open(this_file_directory + "/disk_usage.txt", "a") as file:
+                        file.write(text_output + "\n")
 
         # Finished
         self.progressBar1.setValue(self.checked_index+1)
