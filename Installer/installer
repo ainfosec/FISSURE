@@ -983,7 +983,7 @@ programs_ubuntu20_04.append(('srsRAN (805.2 MB)',
 sudo apt-get install -y libboost-system-dev libboost-test-dev libboost-thread-dev libqwt-qt5-dev qtbase5-dev  # srsGUI
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
-git clone https://github.com/srsLTE/srsGUI.git
+git clone https://github.com/srsLTE/srsGUI.git  # Does not install
 cd srsGUI
 mkdir build
 cd build 
@@ -1013,7 +1013,7 @@ sudo apt-get install -y fortune cowsay lolcat  # IMSI-Catcher 4G
 # gnome-terminal --tab --title="srsENB" -- /bin/sh -c 'sudo srsenb; $SHELL'
 ########## Verify ##########
 srsenb --help
-""",True,'LTE'))
+""",False,'LTE'))
 
 # FALCON
 programs_ubuntu20_04.append(('FALCON (985.6 MB)',
@@ -1032,7 +1032,7 @@ sudo make install
 #make clean
 ########## Verify ##########
 ls /usr/bin/FalconGUI
-""",True,'LTE'))
+""",False,'LTE'))
 
 # LTE-ciphercheck
 programs_ubuntu20_04.append(('LTE-ciphercheck (156.8 MB)',
@@ -1047,7 +1047,7 @@ cmake ..
 make srsue
 sudo ldconfig
 cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue/ciphercheck.conf 
-""",True,'LTE'))
+""",False,'LTE'))
 
 # Aircrack-ng
 programs_ubuntu20_04.append(('Aircrack-ng (16.7 MB)',
@@ -1338,7 +1338,7 @@ ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 
 # rehex
 programs_ubuntu20_04.append(('rehex (208.0 MB)',
-"""sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted libbotan-2-dev
+"""sudo apt-get install -y build-essential git libwxgtk3.2-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted libbotan-2-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/solemnwarning/rehex.git
@@ -17163,6 +17163,8 @@ programs_ubuntu24_04.append(('gr-ais (1.36 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/
+  sed -i 's/VERSION 3.8/VERSION 3.10/g' ./CMakeLists.txt
+  sed -i 's/project(gr-ais CXX C)/project(gr-ais CXX C)\nset(CMAKE_CXX_STANDARD 17)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)/g' ./CMakeLists.txt
   sudo rm -Rf build
   mkdir build
   cd build
@@ -17793,7 +17795,7 @@ programs_ubuntu24_04.append(('Geany (16.4 MB)',
 """sudo apt-get install -y geany
 ########## Verify ##########
 geany --help
-""",False,'Development'))
+""",True,'Development'))
 
 # Arduino IDE
 programs_ubuntu24_04.append(('Arduino IDE (601.26 MB)',
@@ -18185,7 +18187,8 @@ make
 sudo make install
 sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
 #sudo apt-get install -y tshark
-""",False,'802.11'))
+sudo sed -i 's/python/python3/g' ~/Installed_by_FISSURE/wifite2/Wifite.py
+""",True,'802.11'))
 
 # rtl_433
 programs_ubuntu24_04.append(('rtl_433 (28.35 MB)',
@@ -18447,10 +18450,10 @@ anki -h
 
 # Bless
 programs_ubuntu24_04.append(('Bless (4.00 kB)',
-"""sudo apt-get install -y bless
+"""sudo apt-get install -y bless  # Too much wrong with it to build from source
 ########## Verify ##########
 ls /usr/bin/bless
-""",True,'Data'))
+""",False,'Data'))
 
 # trackerjacker - Fix (needs newer scapy version, something else (netattack2?) resets it, some pieces don't work while running it)
 programs_ubuntu24_04.append(('trackerjacker (4.00 kB)',
@@ -18506,31 +18509,31 @@ ls /usr/bin/enscribe
 
 # ESP32 Bluetooth Classic Sniffer
 programs_ubuntu24_04.append(('ESP32 BT Classic Sniffer (380.09 MB)',
-"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5, 4.0.3, 4.2.5
+"""mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5, 4.0.3, 4.2.5, 4.4.0
 cd ~/Installed_by_FISSURE
 git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
 cd esp32_bluetooth_classic_sniffer
 #rm ./dissectors/config.h  # Produces errors if missing
-sed -i 's/VERSION "3.4.0"/VERSION "4.2.5"/g' ./dissectors/config.h
+sed -i 's/VERSION "3.4.0"/VERSION "4.4.0"/g' ./dissectors/config.h
 sed -i 's/VERSION_MAJOR 3/VERSION_MAJOR 4/g' ./dissectors/config.h
-sed -i 's/VERSION_MINOR 4/VERSION_MINOR 2/g' ./dissectors/config.h
-sed -i 's/VERSION_MICRO 0/VERSION_MICRO 5/g' ./dissectors/config.h
-sed -i 's/PLUGIN_PATH_ID "3.4"/PLUGIN_PATH_ID "4.2"/g' ./dissectors/config.h
+sed -i 's/VERSION_MINOR 4/VERSION_MINOR 4/g' ./dissectors/config.h
+sed -i 's/VERSION_MICRO 0/VERSION_MICRO 0/g' ./dissectors/config.h
+sed -i 's/PLUGIN_PATH_ID "3.4"/PLUGIN_PATH_ID "4.4"/g' ./dissectors/config.h
 sed -i 's/Bluetooth Link Manager Protocol/ESP32 Bluetooth Link Manager Protocol/g' ./dissectors/packet-btbrlmp.c
 sed -i 's/btlmp/esp32_btlmp/g' ./dissectors/packet-btbrlmp.c
-sed -i 's/3.4/4.2/g' ./dissectors/build.sh
+sed -i 's/3.4/4.4/g' ./dissectors/build.sh
 sudo ./requirements.sh
 ./build.sh
-sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.2/epan/  # Placing it where "sudo Wireshark" dissectors are located
-rm ~/.local/lib/wireshark/plugins/4.2/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
+sudo cp dissectors/h4bcm.so /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.4/epan/  # Placing it where "sudo Wireshark" dissectors are located
+rm ~/.local/lib/wireshark/plugins/4.4/epan/h4bcm.so  # To avoid "plugin 'h4bcm.so' was found in multiple directories" warning
 ########## Verify ##########
-ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.2/epan/h4bcm.so
+ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.4/epan/h4bcm.so
 """,True,'Bluetooth'))
 
 # SigDigger
 programs_ubuntu24_04.append(('SigDigger (48.00 kB)',
 """#sigutils
-sudo apt-get install -y libsndfile1-dev libfftw3-3 qmake6 soapysdr-tools libsoapysdr-dev
+sudo apt-get install -y libsndfile1-dev libfftw3-dev qmake6 soapysdr-tools libsoapysdr-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://actinid.org/blsd  # Needs newer version of QMake. Above 5.12.8, 5.14?
@@ -18571,7 +18574,7 @@ chmod a+x blsd
 # sudo make install
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/blsd-dir/SigDigger/SigDigger
-""",True,'SDR'))
+""",False,'SDR'))
 
 # QSSTV
 programs_ubuntu24_04.append(('QSSTV (2.77 MB)',
@@ -18584,6 +18587,11 @@ ls /usr/bin/qsstv
 programs_ubuntu24_04.append(('m17-cxx-demod (8.61 MB)',
 """sudo apt-get install -y libcodec2-dev libboost-dev libgtest-dev
 mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE
+git clone https://bitbucket.org/blaze-lib/blaze.git
+cd blaze
+sudo cp -r blaze /usr/local/include/
+cmake -DBLAZE_INCLUDE_DIR=/usr/local/include/blaze
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mobilinkd/m17-cxx-demod.git
 cd m17-cxx-demod/
@@ -18713,7 +18721,7 @@ sudo systemctl stop openwebrx
 sudo systemctl disable openwebrx  # Prevents starting on boot
 ########## Verify ##########
 ls /usr/bin/openwebrx
-""",True,'SDR'))
+""",False,'SDR'))
 
 # CRC RevEng
 programs_ubuntu24_04.append(('CRC RevEng (884.00 kB)',
@@ -18823,10 +18831,10 @@ ls ~/Installed_by_FISSURE/HAMRS/hamrs*
 
 # Binwalk
 programs_ubuntu24_04.append(('Binwalk',
-"""sudo apt-get install -y python3-binwalk binwalk
+"""sudo apt-get install -y python3-binwalk binwalk  # prone to nfqueue issue, use: sudo apt --fix-broken
 ########## Verify ##########
 ls /usr/bin/binwalk
-""",False,'Data'))
+""",True,'Data'))
 
 # Read the Docs
 programs_ubuntu24_04.append(('Read the Docs (0.00 kB)',
@@ -19348,7 +19356,7 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
         elif self.radioButton_ubuntu22_04_arm.isChecked():
             self.get_os = "Ubuntu 22.04 ARM"
         elif self.radioButton_ubuntu24_04.isChecked():
-            self.get_os = "Ubuntu 24.04 (beta)"
+            self.get_os = "Ubuntu 24.04"
             
         self.accept()
         
@@ -19388,7 +19396,7 @@ def main(argv):
             install_dlg2 = InstallDialog2(programs_raspberry_pi_os)
         elif install_dlg1.get_os == "Ubuntu 22.04 ARM":
             install_dlg2 = InstallDialog2(programs_ubuntu22_04_arm)
-        elif install_dlg1.get_os == "Ubuntu 24.04 (beta)":
+        elif install_dlg1.get_os == "Ubuntu 24.04":
             install_dlg2 = InstallDialog2(programs_ubuntu24_04)
         install_dlg2.show() 
         

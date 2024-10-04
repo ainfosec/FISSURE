@@ -852,6 +852,16 @@ class Dashboard(QtWidgets.QMainWindow):
             self.window.actionICE9_Bluetooth_Sniffer.setEnabled(False)
             self.window.actionOpenWebRX.setEnabled(False)
             self.window.actionRadiosonde_auto_rx.setEnabled(False)
+        elif get_os == 'Ubuntu 24.04':
+            self.window.actionSrsLTE.setEnabled(False)
+            self.window.action4G_IMSI_Catcher.setEnabled(False)
+            self.window.actionSdrGlut.setEnabled(False)
+            self.window.actionFALCON.setEnabled(False)
+            self.window.actionNETATTACK2.setEnabled(False)
+            self.window.actionSigDigger.setEnabled(False)
+            self.window.actionOpenWebRX.setEnabled(False)
+            self.window.actionTower_Search.setEnabled(False)
+            self.window.actionTower_Search_Part_2.setEnabled(False)
 
         # Disable Menu Items for all maint-3.8 Operating Systems
         if any(keyword == get_os for keyword in fissure.utils.OS_3_8_KEYWORDS):

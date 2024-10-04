@@ -3,6 +3,19 @@ All notable changes to this project will be documented in this file.
 
 ## 2024-10-04
 
+Fixing Ubuntu 24.04 install, removing beta designation.
+
+### Changed
+
+- Removed beta designation from Ubuntu 24.04 in installer GUI
+- Updated installer image and OS table in README for Ubuntu 24.04
+
+### Fixed
+
+- Fixed several Ubuntu 24.04 installation errors for software tools
+
+## 2024-10-04
+
 Fixing some Ubuntu 24.04 installation errors.
 
 ### Fixed

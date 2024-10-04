@@ -191,6 +191,7 @@ Operating System | FISSURE Branch | Default GNU Radio Version
 | Ubuntu 20.04 (x64) | Python3 | maint-3.8 |
 | Ubuntu 22.04 (x64) | Python3 | maint-3.10 |
 | Ubuntu 22.04 (ARM/Orange Pi) | Python3 | maint-3.10 |
+| Ubuntu 24.04 (x86) | Python3 | maint-3.10 |
 
 **In-Progress (beta)**
 
@@ -198,7 +199,7 @@ These operating systems are still in beta status. They are under development and
 
 Operating System | FISSURE Branch | Default GNU Radio Version
 :-------------------------:|:-------------------------:|:-------------------------:
-| Ubuntu 24.04 (x64) | Python3 | maint-3.10 |
+| None |  |  |
 
 Note: Certain software tools do not work for every OS. Refer to [Known Conflicts and Third-Party Software](https://fissure.readthedocs.io/en/latest/pages/installation.html#known-conflicts)
 
