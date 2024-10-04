@@ -1649,14 +1649,14 @@ ls /usr/local/bin/CellSearch
 """,True,'LTE'))
 
 # btscanner
-programs_ubuntu20_04.append(('btscanner (942.1 kB)',
+programs_ubuntu20_04.append(('btscanner (1.13 MB)',
 """sudo apt-get install -y btscanner
 ########## Verify ##########
 btscanner --help
 """,True,'Bluetooth'))
 
 # hcidump
-programs_ubuntu20_04.append(('hcidump (634.9 kB)',
+programs_ubuntu20_04.append(('hcidump (560.00 kB)',
 """sudo apt-get install -y bluez-hcidump
 ########## Verify ##########
 hcidump --help
@@ -16774,20 +16774,29 @@ sudo docker run hello-world
 programs_ubuntu24_04 = []
 
 # Misc. Dependencies
-programs_ubuntu24_04.append(('Misc. Dependencies (1.4 GB)',
+programs_ubuntu24_04.append(('Misc. Dependencies (1.11 GB)',
 """sudo apt-get -y update
 sudo apt-get -y install cmake
 sudo apt-get install -y python-setuptools python-dev-is-python3 build-essential
 sudo apt-get install -y curl
+sudo apt-get install -y libssl-dev libffi-dev libsqlite3-dev tk-dev
+mkdir -p ~/Installed_by_FISSURE
+cd ~/Installed_by_FISSURE/
+wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
+tar xzf Python-2.7.18.tgz
+cd Python-2.7.18
+./configure --enable-optimizations
+sudo make altinstall
+sudo ln -s /usr/local/bin/python2.7 /usr/bin/python2
 curl https://bootstrap.pypa.io./pip/2.7/get-pip.py | sudo python2  # Installs pip 20.3.4
 sudo apt-get install -y python3-pip
-sudo python3 -m pip install cmake --upgrade
+sudo python3 -m pip install cmake --upgrade --break-system-packages
 sudo apt install -y python3-testresources
-sudo python3 -m pip install --upgrade setuptools
-sudo python3 -m pip install --upgrade virtualenv
-#sudo python3 -m pip install matplotlib  # This version conflicts with yellowbrick
-sudo python3 -m pip install PyYAML==5.1
-sudo python3 -m pip install pyyaml
+sudo python3 -m pip install --upgrade setuptools --break-system-packages
+sudo python3 -m pip install --upgrade virtualenv --break-system-packages
+#sudo python3 -m pip install matplotlib --break-system-packages  # This version conflicts with yellowbrick
+sudo python3 -m pip install PyYAML==5.1 --break-system-packages
+sudo python3 -m pip install pyyaml --break-system-packages
 wget http://archive.ubuntu.com/ubuntu/pool/universe/p/python-scipy/python-scipy_0.19.1-2ubuntu1_amd64.deb
 sudo apt-get install -y ./python-scipy_0.19.1-2ubuntu1_amd64.deb  # FIX?
 rm python-scipy_0.19.1-2ubuntu1_amd64.deb
@@ -16797,47 +16806,47 @@ sudo add-apt-repository -y ppa:git-core/ppa
 sudo apt-get -y update
 sudo apt-get install -y git 
 sudo apt-get install -y libcanberra-gtk-module
-sudo python3 -m pip install bitarray
+sudo python3 -m pip install bitarray --break-system-packages
 sudo apt install net-tools
-sudo python3 -m pip install crcmod
-sudo python3 -m pip install pycrypto
+sudo python3 -m pip install crcmod --break-system-packages
+sudo python3 -m pip install pycrypto --break-system-packages
 sudo apt-get install -y python-tk
-sudo python3 -m pip install pyzmq
+sudo python3 -m pip install pyzmq --break-system-packages
 sudo apt-get install -y libosmocore-dev
 sudo apt-get install -y liborc-0.4-dev
 sudo apt-get install -y expect
 sudo add-apt-repository --y ppa:wireshark-dev/stable  # Latest Wireshark
 sudo apt-get update
-sudo python3 -m pip install pyshark
+sudo python3 -m pip install pyshark --break-system-packages
 sudo apt-get install -y tshark  # Installs Wireshark, launching without sudo permissions and copying FISSURE dissectors happens later
-sudo python3 -m pip install pypcapfile
+sudo python3 -m pip install pypcapfile --break-system-packages
 sudo python2 -m pip install pypcapfile
 sudo python2 -m pip install netaddr
-sudo python3 -m pip install psutil
-sudo python3 -m pip install pyserial
+sudo python3 -m pip install psutil --break-system-packages
+sudo python3 -m pip install pyserial --break-system-packages
 sudo apt-get install -y gpsd-clients python3-gi-cairo
-sudo python3 -m pip install pandas
+sudo python3 -m pip install pandas --break-system-packages
 sudo apt-get install -y dsniff
 sudo apt-get install -y ncurses-term
-sudo python3 -m pip install yellowbrick
-sudo python3 -m pip install seaborn
+sudo python3 -m pip install yellowbrick --break-system-packages
+sudo python3 -m pip install seaborn --break-system-packages
 sudo apt-get install -y rtl-sdr
-sudo python3 -m pip install gpsd-py3
-sudo python3 -m pip install geopy
-sudo python3 -m pip install sounddevice
-sudo python3 -m pip install qasync
-sudo python3 -m pip install pydotplus
-sudo python3 -m pip install tensorflow
+sudo python3 -m pip install gpsd-py3 --break-system-packages
+sudo python3 -m pip install geopy --break-system-packages
+sudo python3 -m pip install sounddevice --break-system-packages
+sudo python3 -m pip install qasync --break-system-packages
+sudo python3 -m pip install pydotplus --break-system-packages
+sudo python3 -m pip install tensorflow --break-system-packages
 sudo apt-get install -y snapd
 sudo snap install netron
-sudo python3 -m pip install ipython
-sudo python3 -m pip install scikit-learn==1.3.2
-sudo python3 -m pip install opencv-python
+sudo python3 -m pip install ipython --break-system-packages
+sudo python3 -m pip install scikit-learn==1.3.2 --break-system-packages
+sudo python3 -m pip install opencv-python --break-system-packages
 . ~/.bashrc
 """,True,"Minimum Install"))
 
 # fissure Command 
-programs_ubuntu24_04.append(('fissure Command (450.6 kB)',
+programs_ubuntu24_04.append(('fissure Command (16.0 kB)',
 """mkdir -p ~/.local/bin
 if grep -Fq "~/.local/bin" ~/.bashrc
 then
@@ -16857,7 +16866,7 @@ ls ~/.local/bin/fissure
 """,True,"Minimum Install"))
 
 # GNU Radio
-programs_ubuntu24_04.append(('GNU Radio (1.3 GB)',
+programs_ubuntu24_04.append(('GNU Radio (1.40 GB)',
 """sudo add-apt-repository -y ppa:gnuradio/gnuradio-releases
 sudo apt-get update
 sudo apt-get install -y gnuradio  # =3.10.5.1-0~gnuradio~jammy-2  # Check for changes here: https://launchpad.net/~gnuradio/+archive/ubuntu/gnuradio-releases
@@ -16887,9 +16896,9 @@ gnuradio-companion --help
 """,True,"Minimum Install"))
 
 # Scapy
-programs_ubuntu24_04.append(('Scapy (80.1 MB)',
+programs_ubuntu24_04.append(('Scapy (67.1 MB)',
 """sudo apt-get install -y python3-scapy
-#sudo python3 -m pip install scapy  # Causes errors
+#sudo python3 -m pip install scapy --break-system-packages  # Causes errors
 sudo python2 -m pip install scapy==2.4.5
 sudo sed -i 's/tostring/tobytes/g' /usr/local/lib/python3.10/dist-packages/scapy/arch/linux.py
 ########## Verify ##########
@@ -16897,7 +16906,7 @@ python2 -c "import scapy" && python3 -c "import scapy"
 """,True,"Minimum Install"))
 
 # Wireshark
-programs_ubuntu24_04.append(('Wireshark (49.9 MB)',
+programs_ubuntu24_04.append(('Wireshark (161.09 MB)',
 """sudo add-apt-repository --y ppa:wireshark-dev/stable  # Gets installed with Misc. Dependencies (tshark), ESP32 Bluetooth Classic Sniffer
 sudo apt-get update
 sudo apt install -y wireshark wireshark-dev  # Yes
@@ -16914,7 +16923,7 @@ wireshark --help
 """,True,"Minimum Install"))
 
 # Network Certificates 
-programs_ubuntu24_04.append(('Network Certificates',
+programs_ubuntu24_04.append(('Network Certificates (716.00 kB)',
 """cd '""" + fissure_directory + """'
 export PYTHONPATH='""" + fissure_directory + """':$PYTHONPATH
 python3 ./fissure/cli.py
@@ -16923,7 +16932,7 @@ ls '""" + fissure_directory + """/certificates'
 """,True,'Minimum Install'))
 
 # LimeSDR
-programs_ubuntu24_04.append(('LimeSDR (288.7 MB)',
+programs_ubuntu24_04.append(('LimeSDR (417.03 MB)',
 """#sudo add-apt-repository -y ppa:myriadrf/drivers  # doesn't work
 #sudo apt-get update
 sudo apt-get install -y limesuite liblimesuite-dev limesuite-udev  # No limesuite-images on 22.04
@@ -16934,7 +16943,7 @@ ls /usr/bin/LimeSuiteGUI
 """,True,'Hardware'))
 
 # BladeRF
-programs_ubuntu24_04.append(('BladeRF (23.1 MB)',
+programs_ubuntu24_04.append(('BladeRF (22.03 MB)',
 """sudo apt-get install -y libusb-1.0-0-dev libusb-1.0-0 build-essential cmake libncurses5-dev libtecla1 pkg-config git wget  # no package: libtecla1-dev       
 sudo apt-get install -y bladerf
 sudo apt-get install -y bladerf-fpga-hostedx115
@@ -16946,7 +16955,7 @@ bladeRF-cli --help
 """,True,'Hardware'))
 
 # USRP X300 Series - FIX
-programs_ubuntu24_04.append(('USRP X300 Series (499.7 kB)',
+programs_ubuntu24_04.append(('USRP X300 Series (160.00 kB)',
 """mkdir -p ~/Installed_by_FISSURE  # Set MTU to 9000 and run uhd_image_loader command
 cd ~/Installed_by_FISSURE
 #wget https://codeload.github.com/EttusResearch/uhd/zip/release_003_010_003_000 -O uhd.zip
@@ -16960,7 +16969,7 @@ sudo sysctl -w net.core.wmem_max=24862979
 """,True,'Hardware'))
 
 # HackRF, gr-osmosdr
-programs_ubuntu24_04.append(('HackRF, gr-osmosdr',
+programs_ubuntu24_04.append(('HackRF, gr-osmosdr (73.36 MB)',
 """sudo apt-get install -y libusb-1.0-0-dev
 
 # HackRF
@@ -16995,7 +17004,7 @@ hackrf_sweep -h #&& ls /usr/local/bin/osmocom_fft
 """,True,'Hardware'))
 
 # 8812au Driver
-programs_ubuntu24_04.append(('8812au Driver (810.8 MB)',
+programs_ubuntu24_04.append(('8812au Driver (201.14 MB)',
 """# Still Broken, Needs Replacement Driver
 sudo apt-get -y install dkms
 mkdir -p ~/Installed_by_FISSURE
@@ -17006,7 +17015,7 @@ sudo make dkms_install
 """,True,'Hardware'))
 
 # Zigbee Sniffer
-programs_ubuntu24_04.append(('Zigbee Sniffer (10.1 MB)',
+programs_ubuntu24_04.append(('Zigbee Sniffer (1.02 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cp -R """ + fissure_directory + """/Tools/OpenSniffer-0.1/ ~/Installed_by_FISSURE/
 cd ~/Installed_by_FISSURE/OpenSniffer-0.1/
@@ -17044,7 +17053,7 @@ ls /usr/local/bin/fl2k_test
 """,True,'Hardware'))
 
 # Proxmark3
-programs_ubuntu24_04.append(('Proxmark3 (3.1 GB)',
+programs_ubuntu24_04.append(('Proxmark3 (3.52 GB)',
 """sudo apt-get install -y p7zip git build-essential libreadline8 libreadline-dev libusb-0.1-4 libusb-dev perl pkg-config wget libncurses5-dev gcc-arm-none-eabi libreadline-dev libpcsclite-dev gcc-arm-none-eabi
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -17056,7 +17065,7 @@ ls ~/Installed_by_FISSURE/proxmark3/client/proxmark3
 """,True,'Hardware'))
 
 # PlutoSDR
-programs_ubuntu24_04.append(('PlutoSDR (194.4 MB)',
+programs_ubuntu24_04.append(('PlutoSDR (219.28 MB)',
 """sudo apt-get install -y libglib2.0-dev libgtk2.0-dev libgtkdatabox-dev libmatio-dev libfftw3-dev libxml2 libxml2-dev bison flex libavahi-common-dev libavahi-client-dev libcurl4-openssl-dev libjansson-dev cmake libaio-dev libserialport-dev libcdk5-dev libusb-1.0-0-dev doxygen graphviz git libgmp-dev swig liborc-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -17093,7 +17102,7 @@ ls /usr/lib/python*/*/gnuradio/iio
 """,True,'Hardware'))
 
 # qFlipper
-programs_ubuntu24_04.append(('qFlipper',
+programs_ubuntu24_04.append(('qFlipper (26.40 MB)',
 """mkdir -p ~/Installed_by_FISSURE/qFlipper
 cd ~/Installed_by_FISSURE/qFlipper
 wget -r -np -nd -A "qFlipper-x86_64-dev*.AppImage" https://update.flipperzero.one/builds/qFlipper/dev/
@@ -17103,7 +17112,7 @@ ls ~/Installed_by_FISSURE/qFlipper/qFlipper*
 """,True,'Hardware'))
 
 # gr-acars-3.10ng
-programs_ubuntu24_04.append(('gr-acars-3.10ng (7.1 MB)',
+programs_ubuntu24_04.append(('gr-acars-3.10ng (7.85 MB)',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-acars-3.10ng/
 sudo rm -Rf build
 mkdir build
@@ -17117,7 +17126,7 @@ ls /usr/local/lib/python*/*/acars
 """,True,'Out-of-Tree Modules'))
 
 # gr-adsb
-programs_ubuntu24_04.append(('gr-adsb (2.7 MB)',
+programs_ubuntu24_04.append(('gr-adsb (3.10 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-adsb/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-adsb/
@@ -17150,7 +17159,7 @@ ls /usr/local/lib/python*/*/gnuradio/ainfosec
 """,True,'Minimum Install'))
 
 # gr-ais
-programs_ubuntu24_04.append(('gr-ais (9.2 MB)',
+programs_ubuntu24_04.append(('gr-ais (1.36 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/
@@ -17169,7 +17178,7 @@ ls /usr/local/lib/python*/*/gnuradio/ais
 """,True,'Out-of-Tree Modules'))
 
 # gr-aistx
-programs_ubuntu24_04.append(('gr-aistx',
+programs_ubuntu24_04.append(('gr-aistx (18.26 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/ais/gr-aistx/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/ais/gr-aistx/
@@ -17218,7 +17227,7 @@ ls /usr/local/bin/btrx
 """,False,'Out-of-Tree Modules'))
 
 # gr-clapper_plus
-programs_ubuntu24_04.append(('gr-clapper_plus (2.4 MB)',
+programs_ubuntu24_04.append(('gr-clapper_plus (2.70 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-clapper_plus/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-clapper_plus/
@@ -17237,7 +17246,7 @@ ls /usr/local/lib/python*/*/gnuradio/clapper_plus
 """,True,'Out-of-Tree Modules'))
 
 # gr-dect2
-programs_ubuntu24_04.append(('gr-dect2 (11.9 MB)',
+programs_ubuntu24_04.append(('gr-dect2 (12.81 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-dect2/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-dect2/
@@ -17256,7 +17265,7 @@ ls /usr/local/lib/python*/*/gnuradio/dect2
 """,True,'Out-of-Tree Modules'))
 
 # gr-foo
-programs_ubuntu24_04.append(('gr-foo (37.6 MB)',
+programs_ubuntu24_04.append(('gr-foo (38.39 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-foo/)" ]; 
 then
   sudo apt-get install -y libsndfile1-dev
@@ -17276,7 +17285,7 @@ ls /usr/local/lib/python*/*/foo
 """,True,'Out-of-Tree Modules'))
 
 # gr-fuzzer
-programs_ubuntu24_04.append(('gr-fuzzer (7.4 MB)',
+programs_ubuntu24_04.append(('gr-fuzzer (8.23 MB)',
 """cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-fuzzer/
 sudo rm -Rf build
 mkdir build
@@ -17290,7 +17299,7 @@ ls /usr/local/lib/python*/*/gnuradio/fuzzer
 """,True,'Out-of-Tree Modules'))
 
 # gr-garage_door
-programs_ubuntu24_04.append(('gr-garage_door (2.4 MB)',
+programs_ubuntu24_04.append(('gr-garage_door (2.80 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-garage_door/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-garage_door/
@@ -17309,7 +17318,7 @@ ls /usr/local/lib/python*/*/gnuradio/garage_door
 """,True,'Out-of-Tree Modules'))
 
 # gr-gsm
-programs_ubuntu24_04.append(('gr-gsm (156.8 MB)',
+programs_ubuntu24_04.append(('gr-gsm (155.65 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-gsm/
@@ -17333,7 +17342,7 @@ ls /usr/local/lib/python*/*/gnuradio/gsm
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-11
-programs_ubuntu24_04.append(('gr-ieee802-11 (37.9 MB)',
+programs_ubuntu24_04.append(('gr-ieee802-11 (39.36 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-11/)" ]; 
 then
   sudo apt-get install -y libsndfile1-dev
@@ -17353,7 +17362,7 @@ ls /usr/local/lib/python*/*/ieee802_11
 """,True,'Out-of-Tree Modules'))
 
 # gr-ieee802-15-4
-programs_ubuntu24_04.append(('gr-ieee802-15-4 (63.3 MB)',
+programs_ubuntu24_04.append(('gr-ieee802-15-4 (64.75 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ieee802-15-4/)" ]; 
 then
   sudo apt-get install -y libsndfile1-dev
@@ -17375,7 +17384,7 @@ ls /usr/local/lib/python*/*/ieee802_15_4
 """,True,'Out-of-Tree Modules'))
 
 # gr-iridium
-programs_ubuntu24_04.append(('gr-iridium (29.5 MB)',
+programs_ubuntu24_04.append(('gr-iridium (31.05 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-iridium/)" ]; 
 then
   sudo apt-get install -y libsndfile1-dev
@@ -17395,7 +17404,7 @@ ls /usr/local/lib/python*/*/iridium
 """,True,'Out-of-Tree Modules'))
 
 # gr-j2497
-programs_ubuntu24_04.append(('gr-j2497 (2.6 MB)',
+programs_ubuntu24_04.append(('gr-j2497 (2.99 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-j2497/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-j2497/
@@ -17414,7 +17423,7 @@ ls /usr/local/lib/python*/*/gnuradio/j2497
 """,True,'Out-of-Tree Modules'))
 
 # gr-limesdr
-programs_ubuntu24_04.append(('gr-limesdr (12.0 MB)',
+programs_ubuntu24_04.append(('gr-limesdr (13.16 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-limesdr/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-limesdr/
@@ -17433,7 +17442,7 @@ ls /usr/local/lib/python*/*/gnuradio/limesdr
 """,True,'Out-of-Tree Modules'))
 
 # gr-mixalot
-programs_ubuntu24_04.append(('gr-mixalot (19.1 MB)',
+programs_ubuntu24_04.append(('gr-mixalot (19.86 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-mixalot/)" ]; 
 then
   sudo apt-get install -y libitpp-dev
@@ -17453,7 +17462,7 @@ ls /usr/local/lib/python*/*/gnuradio/mixalot
 """,True,'Out-of-Tree Modules'))
 
 # gr-nrsc5
-programs_ubuntu24_04.append(('gr-nrsc5 (53.8 MB)',
+programs_ubuntu24_04.append(('gr-nrsc5 (52.93 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-nrsc5/)" ]; 
 then
   sudo apt-get install -y libsndfile1-dev
@@ -17474,7 +17483,7 @@ ls /usr/local/lib/python*/*/nrsc5
 """,True,'Out-of-Tree Modules'))
 
 # gr-paint
-programs_ubuntu24_04.append(('gr-paint (9.0 MB)',
+programs_ubuntu24_04.append(('gr-paint (9.98 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-paint/
@@ -17497,7 +17506,7 @@ ls /usr/local/lib/python*/*/paint
 """,True,'Out-of-Tree Modules'))
 
 # gr-rds
-programs_ubuntu24_04.append(('gr-rds (20.5 MB)',
+programs_ubuntu24_04.append(('gr-rds (21.00 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-rds/
@@ -17516,7 +17525,7 @@ ls /usr/local/lib/python*/*/rds
 """,True,'Out-of-Tree Modules'))
 
 # gr-sdrplay3
-programs_ubuntu24_04.append(('gr-sdrplay3',
+programs_ubuntu24_04.append(('gr-sdrplay3 (340.00 kB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/)" ];  # Requires SDRplay API before building: https://www.sdrplay.com/api
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-sdrplay3/
@@ -17535,7 +17544,7 @@ ls /usr/local/lib/python*/*/*/sdrplay3
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms
-programs_ubuntu24_04.append(('gr-tpms (11.8 MB)',
+programs_ubuntu24_04.append(('gr-tpms (13.04 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms/)" ]; 
 then
   sudo apt-get install -y libsndfile1-dev
@@ -17555,7 +17564,7 @@ ls /usr/local/lib/python*/*/gnuradio/tpms
 """,True,'Out-of-Tree Modules'))
 
 # gr-tpms_poore
-programs_ubuntu24_04.append(('gr-tpms_poore (2.5 MB)',
+programs_ubuntu24_04.append(('gr-tpms_poore (2.79 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms_poore/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-tpms_poore/
@@ -17574,7 +17583,7 @@ ls /usr/local/lib/python*/*/gnuradio/tpms_poore
 """,True,'Out-of-Tree Modules'))
 
 # gr-X10
-programs_ubuntu24_04.append(('gr-X10 (2.4 MB)',
+programs_ubuntu24_04.append(('gr-X10 (2.81 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-X10/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-X10/
@@ -17593,7 +17602,7 @@ ls /usr/local/lib/python*/*/gnuradio/X10
 """,True,'Out-of-Tree Modules'))
 
 # gr-zwave_poore
-programs_ubuntu24_04.append(('gr-zwave_poore (2.5 MB)',
+programs_ubuntu24_04.append(('gr-zwave_poore (2.79 MB)',
 """if [ "$(ls -A """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-zwave_poore/)" ]; 
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-zwave_poore/
@@ -17612,12 +17621,12 @@ ls /usr/local/lib/python*/*/gnuradio/zwave_poore
 """,True,'Out-of-Tree Modules'))
 
 # QSpectrumAnalyzer
-programs_ubuntu24_04.append(('QSpectrumAnalyzer (9.6 MB)',
+programs_ubuntu24_04.append(('QSpectrumAnalyzer (36.00 kB)',
 """#sudo add-apt-repository -y ppa:myriadrf/drivers
 #sudo apt-get -y update
 sudo apt-get install -y python3-pip python3-pyqt5 python3-numpy python3-scipy python3-soapysdr  # No package: soapysdr
 sudo apt-get install -y soapysdr-module-rtlsdr soapysdr-module-airspy soapysdr-module-hackrf soapysdr-module-lms7
-python3 -m pip install --user qspectrumanalyzer  # log in again, run without sudo
+python3 -m pip install --user qspectrumanalyzer --break-system-packages  # log in again, run without sudo
 ########## Verify ##########
 ls ~/.local/bin/qspectrumanalyzer
 """,True,'SDR'))
@@ -17639,7 +17648,7 @@ ls /usr/local/bin/gqrx
 """,True,'SDR'))
 
 # Dump1090
-programs_ubuntu24_04.append(('Dump1090 (3.4 MB)',
+programs_ubuntu24_04.append(('Dump1090 (2.09 MB)',
 """sudo apt-get install -y libusb-1.0-0-dev
 sudo apt-get install -y librtlsdr-dev
 mkdir -p ~/Installed_by_FISSURE
@@ -17652,21 +17661,21 @@ make
 """,True,'Aircraft'))
 
 # QtDesigner
-programs_ubuntu24_04.append(('QtDesigner',
+programs_ubuntu24_04.append(('QtDesigner (4.00 kB)',
 """sudo apt-get install -y build-essential qtcreator qtbase5-dev qtchooser qt5-qmake qtbase5-dev-tools
 ########## Verify ##########
 ls /usr/bin/designer
 """,True,'Development'))
 
 # Grip
-programs_ubuntu24_04.append(('Grip (6.4 MB)',
-"""sudo python3 -m pip install grip
+programs_ubuntu24_04.append(('Grip (0.00 MB)',
+"""sudo python3 -m pip install grip --break-system-packages
 ########## Verify ##########
 ls /usr/local/bin/grip
 """,True,'Development'))
 
 # Kismet
-programs_ubuntu24_04.append(('Kismet (106.4 MB)',
+programs_ubuntu24_04.append(('Kismet (148.00 kB)',
 """wget -O - https://www.kismetwireless.net/repos/kismet-release.gpg.key | sudo apt-key add -
 echo 'deb https://www.kismetwireless.net/repos/apt/release/jammy jammy main' | sudo tee /etc/apt/sources.list.d/kismet.list
 sudo cp /etc/apt/trusted.gpg /etc/apt/trusted.gpg.d  # Removes "sudo apt update" warnings
@@ -17675,7 +17684,7 @@ sudo apt-get install -y kismet
 """,True,'802.11'))
 
 # UDP Replay
-programs_ubuntu24_04.append(('UDP Replay (1.1 MB)',
+programs_ubuntu24_04.append(('UDP Replay (696.00 kB)',
 """sudo apt-get install -y libpcap-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -17691,17 +17700,17 @@ ls /usr/local/bin/udpreplay
 """,True,'802.11'))
 
 # V2Verifier
-programs_ubuntu24_04.append(('V2Verifier (3.8 MB)',
+programs_ubuntu24_04.append(('V2Verifier (36.00 kB)',
 """sudo apt-get install -y libgmp3-dev python3-tk python3-pil.imagetk
-sudo python3 -m pip install fastecdsa
-sudo python3 -m pip install -U pyyaml
+sudo python3 -m pip install fastecdsa --break-system-packages
+sudo python3 -m pip install -U pyyaml --break-system-packages
 #sudo apt install -y git cmake libuhd-dev uhd-host swig libgmp3-dev python3-pip python3-tk python3-pil 
 #python3-pil.imagetk gnuradio
 #Needs gr-foo and gr-ieee802-11
 """,True,'V2V'))
 
 # srsRAN/srsLTE
-programs_ubuntu24_04.append(('srsRAN (795.5 MB)',
+programs_ubuntu24_04.append(('srsRAN (362.31 MB)',
 """sudo apt-get install -y build-essential cmake net-tools libfftw3-dev libmbedtls-dev libboost-program-options-dev libconfig++-dev libsctp-dev
 sudo apt-get install -y libboost-system-dev libboost-test-dev libboost-thread-dev libqwt-qt5-dev qtbase5-dev  # srsGUI
 mkdir -p ~/Installed_by_FISSURE
@@ -17773,7 +17782,7 @@ cp """ + fissure_directory + """/Tools/LTE-ciphercheck/ciphercheck.conf ../srsue
 """,False,'LTE'))
 
 # Aircrack-ng
-programs_ubuntu24_04.append(('Aircrack-ng (20.4 MB)',
+programs_ubuntu24_04.append(('Aircrack-ng (4.08 MB)',
 """sudo apt-get install -y aircrack-ng
 ########## Verify ##########
 aircrack-ng --help
@@ -17787,7 +17796,7 @@ geany --help
 """,False,'Development'))
 
 # Arduino IDE
-programs_ubuntu24_04.append(('Arduino IDE (630.3 MB)',
+programs_ubuntu24_04.append(('Arduino IDE (601.26 MB)',
 """wget -P ~/Installed_by_FISSURE/ https://downloads.arduino.cc/arduino-1.8.15-linux64.tar.xz
 cd ~/Installed_by_FISSURE
 tar -xf arduino-1.8.15-linux64.tar.xz
@@ -17814,7 +17823,7 @@ putty --help
 """,True,'Hardware'))
 
 # openHAB - FIX
-programs_ubuntu24_04.append(('openHAB (616.9 MB)',
+programs_ubuntu24_04.append(('openHAB (597.23 MB)',
 """sudo apt-get -yq install gnupg curl
 sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
 cd ~/Downloads
@@ -17833,7 +17842,7 @@ ls /usr/bin/openhab-cli
 """,True,'Z-Wave'))
 
 # rtl-zwave
-programs_ubuntu24_04.append(('rtl-zwave (106.5 kB)',
+programs_ubuntu24_04.append(('rtl-zwave (112.00 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 sudo apt-get install -y libpcap-dev
 cp -R """ + fissure_directory + """/Tools/rtl-zwave-master ~/Installed_by_FISSURE/
@@ -17844,7 +17853,7 @@ ls ~/Installed_by_FISSURE/rtl-zwave-master/rtl_zwave
 """,True,'Z-Wave'))
 
 # waving-z
-programs_ubuntu24_04.append(('waving-z (2.3 MB)',
+programs_ubuntu24_04.append(('waving-z (2.14 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE/
 git clone https://github.com/baol/waving-z.git
@@ -17870,21 +17879,21 @@ rm baudline_1.08_linux_x86_64.tar.gz
 
 # Universal Radio Hacker
 programs_ubuntu24_04.append(('Universal Radio Hacker (129.2 MB)',
-"""sudo python3 -m pip install cython
-sudo python3 -m pip install urh
+"""sudo python3 -m pip install cython --break-system-packages
+sudo python3 -m pip install urh --break-system-packages
 ########## Verify ##########
 urh --version
 """,True,'SDR'))
 
 # Inspectrum
-programs_ubuntu24_04.append(('Inspectrum (1.8 MB)',
+programs_ubuntu24_04.append(('Inspectrum (416.00 kB)',
 """sudo apt-get install -y inspectrum
 ########## Verify ##########
 inspectrum --help
 """,True,'SDR'))
 
 # OpenCPN
-programs_ubuntu24_04.append(('OpenCPN (209.3 MB)',
+programs_ubuntu24_04.append(('OpenCPN (98.53 MB)',
 """sudo add-apt-repository -y ppa:opencpn/opencpn
 sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys C865EB40  # FIX
 sudo apt-get update
@@ -17894,7 +17903,7 @@ ls /usr/bin/opencpn
 """,True,'AIS'))
 
 # Kalibrate
-programs_ubuntu24_04.append(('Kalibrate (2.1 MB)',
+programs_ubuntu24_04.append(('Kalibrate (1.97 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/steve-m/kalibrate-rtl.git
@@ -17905,7 +17914,7 @@ ls ~/Installed_by_FISSURE/kalibrate-rtl/src/kal
 """,True,'GSM'))
 
 # retrogram-rtlsdr
-programs_ubuntu24_04.append(('retrogram-rtlsdr (1.7 MB)',
+programs_ubuntu24_04.append(('retrogram-rtlsdr (1.62 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 sudo apt-get install -y librtlsdr-dev libncurses5-dev libboost-program-options-dev
 cp -R """ + fissure_directory + """/Tools/retrogram-rtlsdr-master ~/Installed_by_FISSURE/
@@ -17916,7 +17925,7 @@ ls ~/Installed_by_FISSURE/retrogram-rtlsdr-master/retrogram-rtlsdr
 """,True,'SDR'))
 
 # RTLSDR-Airband
-programs_ubuntu24_04.append(('RTLSDR-Airband (7.0 MB)',
+programs_ubuntu24_04.append(('RTLSDR-Airband (6.86 MB)',
 """sudo apt-get install -y build-essential cmake pkg-config libmp3lame-dev libshout3-dev libconfig++-dev libfftw3-dev libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -17932,7 +17941,7 @@ rtl_airband -h
 """,True,'SDR'))
 
 # Spektrum
-programs_ubuntu24_04.append(('Spektrum (241.9 MB)',
+programs_ubuntu24_04.append(('Spektrum (230.65 MB)',
 """echo 'blacklist dvb_usb_rtl28xxu' | sudo tee /etc/modprobe.d/rtl-sdr.conf  # Restart computer to use RTL device
 echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", GROUP="adm", MODE="0666"' | sudo tee /etc/udev/rules.d/20.rtlsdr.rules
 mkdir -p ~/Installed_by_FISSURE
@@ -17945,7 +17954,7 @@ ls ~/Installed_by_FISSURE/spektrum/spektrum
 """,True,'SDR'))
 
 # SDRTrunk
-programs_ubuntu24_04.append(('SDRTrunk (106.9 MB)',
+programs_ubuntu24_04.append(('SDRTrunk (101.92 MB)',
 """#sudo apt-get -yq install gnupg curl  # Java (if needed)
 #sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 0xB1998361219BD9C9
 #cd ~/Downloads
@@ -17964,49 +17973,49 @@ ls ~/Installed_by_FISSURE/sdr-trunk-linux-x86_64-v0.5.0-alpha6/bin/sdr-trunk
 """,True,'Trunked Radio'))
 
 # Audacity
-programs_ubuntu24_04.append(('Audacity (38.8 MB)',
+programs_ubuntu24_04.append(('Audacity (48.04 MB)',
 """sudo apt-get install -y audacity
 ########## Verify ##########
 audacity --version
 """,True,'Audio'))
 
 # Sound eXchange
-programs_ubuntu24_04.append(('Sound eXchange (2.3 MB)',
+programs_ubuntu24_04.append(('Sound eXchange (1.78 MB)',
 """sudo apt-get install -y sox
 ########## Verify ##########
 sox --version
 """,True,'Audio'))
 
 # LAME
-programs_ubuntu24_04.append(('LAME (286.8 kB)',
+programs_ubuntu24_04.append(('LAME (188.00 kB)',
 """sudo apt-get install -y lame
 ########## Verify ##########
 lame --version
 """,True,'Audio'))
 
 # mpv
-programs_ubuntu24_04.append(('mpv (174.7 MB)',
+programs_ubuntu24_04.append(('mpv (186.78 MB)',
 """sudo apt-get install -y mpv
 ########## Verify ##########
 mpv --version
 """,True,'Audio'))
 
 # FFmpeg
-programs_ubuntu24_04.append(('FFmpeg (114.7 kB)',
+programs_ubuntu24_04.append(('FFmpeg (0.00 kB)',
 """sudo apt-get install -y ffmpeg 
 ########## Verify ##########
 ffmpeg --help
 """,True,'Audio'))
 
 # MPlayer
-programs_ubuntu24_04.append(('MPlayer (10.4 MB)',
+programs_ubuntu24_04.append(('MPlayer (9.66 MB)',
 """sudo apt-get install -y mplayer
 ########## Verify ##########
 ls /usr/bin/mplayer
 """,True,'Audio'))
 
 # VLC
-programs_ubuntu24_04.append(('VLC (402.1 MB)',
+programs_ubuntu24_04.append(('VLC (328.04 MB)',
 """sudo apt-get install -y snapd
 sudo snap install vlc
 ########## Verify ##########
@@ -18021,7 +18030,7 @@ simplescreenrecorder --help
 """,False,'Video'))
 
 # radiosonde_auto_rx
-programs_ubuntu24_04.append(('radiosonde_auto_rx (82.4 MB)',
+programs_ubuntu24_04.append(('radiosonde_auto_rx (43.51 MB)',
 """sudo apt-get install -y python3 python3-numpy python3-setuptools python3-crcmod python3-requests python3-dateutil python3-pip python3-flask sox git build-essential libtool cmake usbutils libusb-1.0-0-dev rng-tools libsamplerate-dev libatlas3-base libgfortran5
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -18029,7 +18038,7 @@ git clone https://github.com/projecthorus/radiosonde_auto_rx.git
 cd radiosonde_auto_rx/auto_rx
 ./build.sh
 cp station.cfg.example station.cfg
-sudo python3 -m pip install -r requirements.txt
+sudo python3 -m pip install -r requirements.txt --break-system-packages
 ########## Verify ##########
 ls ~/Installed_by_FISSURE/radiosonde_auto_rx/auto_rx/auto_rx.py
 """,True,'Radiosonde'))
@@ -18058,7 +18067,7 @@ ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 """,False,'SDR'))
 
 # rehex
-programs_ubuntu24_04.append(('rehex (197.1 MB)',
+programs_ubuntu24_04.append(('rehex (76.91 MB)',
 """sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted libbotan-2-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -18072,7 +18081,7 @@ ls /usr/local/bin/rehex
 """,True,'Data'))
 
 # ZEPASSD
-programs_ubuntu24_04.append(('ZEPASSD (11.6 MB)',
+programs_ubuntu24_04.append(('ZEPASSD (8.68 MB)',
 """#sudo apt-get install -y # boost.program-options, boost.crc, boost.circular-buffer, libfftw3, libuhd 3.9.5 or later
 sudo apt-get install -y libuhd-dev
 mkdir -p ~/Installed_by_FISSURE
@@ -18085,7 +18094,7 @@ ls ~/Installed_by_FISSURE/zepassd/zepassd
 """,True,'RFID'))
 
 # iridium-toolkit
-programs_ubuntu24_04.append(('iridium-toolkit (3.3 MB)',
+programs_ubuntu24_04.append(('iridium-toolkit (3.46 MB)',
 """#Python (2.7), NumPy (scipy), crcmod
 sudo apt-get install -y mplayer
 mkdir -p ~/Installed_by_FISSURE
@@ -18100,7 +18109,7 @@ ls ~/Installed_by_FISSURE/osmo-ir77/codec/ir77_ambe_decode
 """,True,'Satellite'))
 
 # IridiumLive
-programs_ubuntu24_04.append(('IridiumLive (97.2 MB)',
+programs_ubuntu24_04.append(('IridiumLive (92.71 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/microp11/iridiumlive.git
@@ -18133,7 +18142,7 @@ sudo dpkg -i python-nfqueue_0.6-1build2_amd64.deb
 programs_ubuntu24_04.append(('Wifite (797.5 MB)',
 """# python, iwconfig, ifconfig, Aircrack-ng, tshark, reaver, bully, coWPAtty, pyrit, hashcat, hcxdumptool, hcxpcaptool
 sudo apt-get install -y build-essential libpcap-dev aircrack-ng pixiewps libssl-dev hashcat libcurl4-openssl-dev pkg-config macchanger python-is-python3
-sudo python3 -m pip install psycopg2-binary #scapy (python3 scapy with pip causes errors)
+sudo python3 -m pip install psycopg2-binary --break-system-packages  #scapy (python3 scapy with pip causes errors)
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/derv82/wifite2.git
@@ -18179,7 +18188,7 @@ sudo ln -s /usr/bin/hcxpcapngtool /usr/bin/hcxpcaptool
 """,False,'802.11'))
 
 # rtl_433
-programs_ubuntu24_04.append(('rtl_433 (27.8 MB)',
+programs_ubuntu24_04.append(('rtl_433 (28.35 MB)',
 """#sudo apt-get install -y rtl-433
 sudo apt-get install -y libtool libusb-1.0-0-dev librtlsdr-dev rtl-sdr build-essential cmake pkg-config
 mkdir -p ~/Installed_by_FISSURE
@@ -18196,22 +18205,22 @@ rtl_433 -help
 """,True,'433 MHz'))
 
 # RouterSploit
-programs_ubuntu24_04.append(('RouterSploit (369.3 MB)',
+programs_ubuntu24_04.append(('RouterSploit (329.48 MB)',
 """sudo apt-get install -y python3-pip libglib2.0-dev rustc
-sudo python3 -m pip install setuptools-rust
+sudo python3 -m pip install setuptools-rust --break-system-packages
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://www.github.com/threat9/routersploit
 cd routersploit
-python3 -m pip install setuptools
-python3 -m pip install -r requirements.txt
-python3 -m pip install bluepy
+python3 -m pip install setuptools --break-system-packages
+python3 -m pip install -r requirements.txt --break-system-packages
+python3 -m pip install bluepy --break-system-packages
 ########## Verify ##########
 ~/Installed_by_FISSURE/routersploit/rsf.py --help
 """,True,'802.11'))
 
 # Metasploit
-programs_ubuntu24_04.append(('Metasploit (1.1 GB)',
+programs_ubuntu24_04.append(('Metasploit (1.21 GB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 mkdir metasploit
@@ -18222,20 +18231,20 @@ ls /usr/bin/msfconsole
 """,True,'802.11'))
 
 # monitor_rtl433
-programs_ubuntu24_04.append(('monitor_rtl433 (54.6 MB)',
+programs_ubuntu24_04.append(('monitor_rtl433 (520.00 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mcbridejc/monitor_rtl433.git
 cd monitor_rtl433
-sudo python3 -m pip install .
-sudo python3 -m pip install python-dateutil
-sudo python3 -m pip install flask_table
+sudo python3 -m pip install . --break-system-packages
+sudo python3 -m pip install python-dateutil --break-system-packages
+sudo python3 -m pip install flask_table --break-system-packages
 ########## Verify ##########
 ls /usr/local/bin/monitor_rtl433
 """,True,'433 MHz'))
 
 # scan-ssid
-programs_ubuntu24_04.append(('scan-ssid (585.8 kB)',
+programs_ubuntu24_04.append(('scan-ssid (232.00 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 sudo apt-get install -y iw
@@ -18248,21 +18257,21 @@ scan-ssid --help
 """,True,'802.11'))
 
 # minimodem
-programs_ubuntu24_04.append(('minimodem (217.1 kB)',
+programs_ubuntu24_04.append(('minimodem (108.00 kB)',
 """sudo apt-get install -y minimodem
 ########## Verify ##########
 minimodem --version
 """,True,'Audio'))
 
 # WSJT-X
-programs_ubuntu24_04.append(('WSJT-X (35.2 MB)',
+programs_ubuntu24_04.append(('WSJT-X (41.40 MB)',
 """sudo apt-get install -y wsjtx
 ########## Verify ##########
 ls /usr/bin/wsjtx
 """,True,'Ham Radio'))
 
 # Google Earth Pro
-programs_ubuntu24_04.append(('Google Earth Pro (314.6 MB)',
+programs_ubuntu24_04.append(('Google Earth Pro (300.06 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://dl.google.com/dl/earth/client/current/google-earth-pro-stable_current_amd64.deb
@@ -18272,7 +18281,7 @@ ls /usr/bin/google-earth-pro
 """,True,'Mapping'))
 
 # gr-air-modes
-programs_ubuntu24_04.append(('gr-air-modes (1.3 MB)',
+programs_ubuntu24_04.append(('gr-air-modes (928.00 kB)',
 """sudo apt-get install -y gr-air-modes
 sudo sed -i 's/numpy.float)/numpy.float32)/g' /usr/lib/python3/dist-packages/air_modes/mlat.py  # Deprecated numpy type: np.float->np.float32 or np.float64
 ########## Verify ##########
@@ -18280,7 +18289,7 @@ modes_rx --help
 """,True,'Aircraft'))
 
 # ESP8266 Deauther v2
-programs_ubuntu24_04.append(('ESP8266 Deauther v2 (6.6 MB)',
+programs_ubuntu24_04.append(('ESP8266 Deauther v2 (5.90 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://github.com/SpacehuhnTech/esp8266_deauther/archive/v2.zip
@@ -18289,7 +18298,7 @@ rm v2.zip
 """,True,'802.11'))
 
 # Viking
-programs_ubuntu24_04.append(('Viking (531.5 MB)',
+programs_ubuntu24_04.append(('Viking (392.30 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone git://git.code.sf.net/p/viking/code viking
@@ -18307,29 +18316,29 @@ viking --help
 """,True,'Mapping'))
 
 # PyGPSClient
-programs_ubuntu24_04.append(('PyGPSClient (27.3 MB)',
+programs_ubuntu24_04.append(('PyGPSClient (0.00 kB)',
 """sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk
-sudo python3 -m pip install --upgrade PyGPSClient
+sudo python3 -m pip install --upgrade PyGPSClient --break-system-packages
 ########## Verify ##########
 ls /usr/local/bin/pygpsclient
 """,True,'GPS'))
 
 # Gpredict
-programs_ubuntu24_04.append(('Gpredict (17.6 MB)',
+programs_ubuntu24_04.append(('Gpredict (16.53 MB)',
 """sudo apt-get install -y gpredict
 ########## Verify ##########
 gpredict --help
 """,True,'GPS'))
 
 # FoxtrotGPS
-programs_ubuntu24_04.append(('FoxtrotGPS (2.8 MB)',
+programs_ubuntu24_04.append(('FoxtrotGPS (2.13 MB)',
 """sudo apt-get install -y foxtrotgps
 ########## Verify ##########
 foxtrotgps --help
 """,True,'GPS'))
 
 # multimon-ng
-programs_ubuntu24_04.append(('multimon-ng (13.6 MB)',
+programs_ubuntu24_04.append(('multimon-ng (8.42 MB)',
 """sudo apt-get install -y libpulse-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -18345,14 +18354,14 @@ ls /usr/local/bin/multimon-ng
 """,True,'POCSAG'))
 
 # Xastir
-programs_ubuntu24_04.append(('Xastir (53.3 MB)',
+programs_ubuntu24_04.append(('Xastir (77.42 MB)',
 """sudo apt-get install -y xastir  # should non-superusers be allowed? sure, why not.
 ########## Verify ##########
 sudo xastir -V
 """,True,'Ham Radio'))
 
 # LTE-Cell-Scanner
-programs_ubuntu24_04.append(('LTE-Cell-Scanner (168.1 MB)',
+programs_ubuntu24_04.append(('LTE-Cell-Scanner (149.00 MB)',
 """sudo apt-get install -y cmake libncurses5-dev liblapack-dev libblas-dev libboost-thread-dev libboost-system-dev libitpp-dev librtlsdr-dev libfftw3-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -18382,24 +18391,24 @@ hcidump --help
 """,True,'Bluetooth'))
 
 # GraphicsMagick
-programs_ubuntu24_04.append(('GraphicsMagick (6.0 MB)',
+programs_ubuntu24_04.append(('GraphicsMagick (5.91 MB)',
 """sudo apt-get install -y graphicsmagick-imagemagick-compat
 ########## Verify ##########
 gm -help
 """,True,'SDR'))
 
 # Spectrum Painter
-programs_ubuntu24_04.append(('Spectrum Painter (13.8 MB)',
-"""sudo python3 -m pip install numpy imageio 
+programs_ubuntu24_04.append(('Spectrum Painter (4.40 MB)',
+"""sudo python3 -m pip install numpy imageio --break-system-packages 
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/polygon/spectrum_painter.git
 #cd spectrum_painter/
-#pip3 install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream"
+#pip3 install --user -e .  # call with "python3 -m spectrum_painter.img2iqstream --break-system-packages"
 """,True,'SDR'))
 
 # nrsc5 and nrsc5-gui
-programs_ubuntu24_04.append(('nrsc5 (116.2 MB)',
+programs_ubuntu24_04.append(('nrsc5 (94.96 MB)',
 """sudo apt install -y git build-essential cmake autoconf libtool libao-dev libfftw3-dev librtlsdr-dev libgsl-dev python3-pyaudio
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -18412,8 +18421,8 @@ make
 sudo make install
 sudo ldconfig
 # nrsc5-gui
-python3 -m pip install --upgrade Pillow
-python3 -m pip install pyaudio
+python3 -m pip install --upgrade Pillow --break-system-packages
+python3 -m pip install pyaudio --break-system-packages
 sudo apt-get install -y python-gobject
 cd ~/Installed_by_FISSURE
 git clone https://github.com/cmnybo/nrsc5-gui.git
@@ -18422,7 +18431,7 @@ nrsc5 -v
 """,True,'HD Radio'))
 
 # HAM2MON
-programs_ubuntu24_04.append(('HAM2MON (901.1 kB)',
+programs_ubuntu24_04.append(('HAM2MON (880.00 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/bkerler/ham2mon.git
@@ -18430,30 +18439,30 @@ cp -f """ + fissure_directory + """/Tools/ham2mon/cursesgui.py ~/Installed_by_FI
 """,True,'Ham Radio'))
 
 # Anki
-programs_ubuntu24_04.append(('Anki (223.5 MB)',
+programs_ubuntu24_04.append(('Anki (214.28 MB)',
 """sudo apt-get install -y anki
 ########## Verify ##########
 anki -h
 """,True,'Ham Radio'))
 
 # Bless
-programs_ubuntu24_04.append(('Bless (60.0 MB)',
+programs_ubuntu24_04.append(('Bless (4.00 kB)',
 """sudo apt-get install -y bless
 ########## Verify ##########
 ls /usr/bin/bless
 """,True,'Data'))
 
 # trackerjacker - Fix (needs newer scapy version, something else (netattack2?) resets it, some pieces don't work while running it)
-programs_ubuntu24_04.append(('trackerjacker',
+programs_ubuntu24_04.append(('trackerjacker (4.00 kB)',
 """sudo ln -s -f /usr/lib/x86_64-linux-gnu/libc.a /usr/lib/x86_64-linux-gnu/liblibc.a  # Python3.9 missing file
 sudo sed -i 's/tostring/tobytes/g' /usr/local/lib/python3.10/dist-packages/scapy/arch/linux.py
-sudo python3 -m pip install trackerjacker
+sudo python3 -m pip install trackerjacker --break-system-packages
 ########## Verify ##########
 sudo trackerjacker --help
 """,True,'802.11'))
 
 # airgeddon
-programs_ubuntu24_04.append(('airgeddon (222.1 MB)',
+programs_ubuntu24_04.append(('airgeddon (251.95 MB)',
 """sudo apt-get install -y crunch mdk3 hostapd lighttpd ruby-dev xterm isc-dhcp-server ettercap-text-only john
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -18482,21 +18491,21 @@ sudo make install
 """,True,'802.11'))
 
 # Hydra
-programs_ubuntu24_04.append(('Hydra (13.3 MB)',
+programs_ubuntu24_04.append(('Hydra (20.30 MB)',
 """sudo apt-get install -y hydra
 ########## Verify ##########
 ls /usr/bin/hydra
 """,True,'SSH'))
 
 # Enscribe
-programs_ubuntu24_04.append(('Enscribe (90.1 MB)',
+programs_ubuntu24_04.append(('Enscribe (84.00 kB)',
 """sudo apt-get install -y enscribe
 ########## Verify ##########
 ls /usr/bin/enscribe
 """,True,'Audio'))
 
 # ESP32 Bluetooth Classic Sniffer
-programs_ubuntu24_04.append(('ESP32 BT Classic Sniffer (400.0 MB)',
+programs_ubuntu24_04.append(('ESP32 BT Classic Sniffer (380.09 MB)',
 """mkdir -p ~/Installed_by_FISSURE  # Requires Wireshark 3.4 by default, modifying it for 3.6.5, 4.0.3, 4.2.5
 cd ~/Installed_by_FISSURE
 git clone https://github.com/Matheus-Garbelini/esp32_bluetooth_classic_sniffer
@@ -18519,7 +18528,7 @@ ls /usr/lib/x86_64-linux-gnu/wireshark/plugins/4.2/epan/h4bcm.so
 """,True,'Bluetooth'))
 
 # SigDigger
-programs_ubuntu24_04.append(('SigDigger (169.3 MB)',
+programs_ubuntu24_04.append(('SigDigger (48.00 kB)',
 """#sigutils
 sudo apt-get install -y libsndfile1-dev libfftw3-3 qmake6 soapysdr-tools libsoapysdr-dev
 mkdir -p ~/Installed_by_FISSURE
@@ -18565,14 +18574,14 @@ ls ~/Installed_by_FISSURE/blsd-dir/SigDigger/SigDigger
 """,True,'SDR'))
 
 # QSSTV
-programs_ubuntu24_04.append(('QSSTV (2.8 MB)',
+programs_ubuntu24_04.append(('QSSTV (2.77 MB)',
 """sudo apt-get install -y qsstv
 ########## Verify ##########
 ls /usr/bin/qsstv
 """,True,'Ham Radio'))
 
 # m17-cxx-demod
-programs_ubuntu24_04.append(('m17-cxx-demod (21.8 MB)',
+programs_ubuntu24_04.append(('m17-cxx-demod (8.61 MB)',
 """sudo apt-get install -y libcodec2-dev libboost-dev libgtest-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -18588,21 +18597,21 @@ ls /usr/local/bin/m17-demod
 """,True,'M17'))
 
 # Fldigi
-programs_ubuntu24_04.append(('Fldigi (15.1 MB)',
+programs_ubuntu24_04.append(('Fldigi (13.98 MB)',
 """sudo apt-get install -y fldigi
 ########## Verify ##########
 ls /usr/bin/fldigi
 """,True,'Ham Radio'))
 
 # pyFDA
-programs_ubuntu24_04.append(('pyFDA (11.7 MB)',
-"""sudo python3 -m pip install pyfda --use-pep517  # Has PEP issues with Python 3.10
+programs_ubuntu24_04.append(('pyFDA (0.00 kB)',
+"""sudo python3 -m pip install pyfda --use-pep517 --break-system-packages  # Has PEP issues with Python 3.10
 ########## Verify ##########
 pyfdax -h
 """,True,'Filters'))
 
 # Bootable USB
-programs_ubuntu24_04.append(('Bootable USB (107.4 MB)',
+programs_ubuntu24_04.append(('Bootable USB (89.96 MB)',
 """sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 382003C2C8B7B4AB813E915B14E4942973C62A1B
 sudo add-apt-repository -y "deb http://ppa.launchpad.net/nemh/systemback/ubuntu xenial main"
 sudo apt update
@@ -18615,7 +18624,7 @@ ls /usr/bin/systemback && ls /usr/bin/guidus
 """,True,'Development'))
 
 # Dire Wolf
-programs_ubuntu24_04.append(('Dire Wolf (207.8 MB)',
+programs_ubuntu24_04.append(('Dire Wolf (198.75 MB)',
 """sudo apt-get -y install git gcc g++ make cmake libasound2-dev libudev-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
@@ -18632,21 +18641,21 @@ ls /usr/local/bin/direwolf
 """,True,'Ham Radio'))
 
 # Meld
-programs_ubuntu24_04.append(('Meld (9.4 MB)',
+programs_ubuntu24_04.append(('Meld (11.70 MB)',
 """sudo apt-get -y install meld
 ########## Verify ##########
 ls /usr/bin/meld
 """,True,'Data'))
 
 # nwdiag
-programs_ubuntu24_04.append(('nwdiag (30.3 MB)',
-"""sudo python3 -m pip install nwdiag
+programs_ubuntu24_04.append(('nwdiag (0.00 kB)',
+"""sudo python3 -m pip install nwdiag --break-system-packages
 ########## Verify ##########
 packetdiag -h
 """,True,'Data'))
 
 # HamClock
-programs_ubuntu24_04.append(('HamClock (41.2 MB)',
+programs_ubuntu24_04.append(('HamClock (44.29 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget https://www.clearskyinstitute.com/ham/HamClock/ESPHamClock.zip
@@ -18660,7 +18669,7 @@ ls /usr/local/bin/hamclock
 """,True,'Ham Radio'))
 
 # ICE9 Bluetooth Sniffer
-programs_ubuntu24_04.append(('ICE9 Bluetooth Sniffer (10.4 MB)',
+programs_ubuntu24_04.append(('ICE9 Bluetooth Sniffer (14.63 MB)',
 """sudo apt install -y libliquid-dev libbtbb-dev libuhd-dev
 sudo apt-get install -y libhackrf-dev libbladerf-dev  # Separating in case there are conflicts with Hardware install
 mkdir -p ~/Installed_by_FISSURE
@@ -18677,7 +18686,7 @@ ls ~/Installed_by_FISSURE/ice9-bluetooth-sniffer/build/ice9-bluetooth
 """,True,'Bluetooth'))
 
 # dump978
-programs_ubuntu24_04.append(('dump978 (2.0 MB)',
+programs_ubuntu24_04.append(('dump978 (1.15 MB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/mutability/dump978.git
@@ -18688,14 +18697,14 @@ ls ~/Installed_by_FISSURE/dump978/dump978
 """,True,'Aircraft'))
 
 # htop
-programs_ubuntu24_04.append(('htop (782.4 kB)',
+programs_ubuntu24_04.append(('htop (596.00 kB)',
 """sudo apt-get install -y htop
 ########## Verify ##########
 ls /usr/bin/htop
 """,True,'Development'))
 
 # OpenWebRX
-programs_ubuntu24_04.append(('OpenWebRX (50.4 MB)',
+programs_ubuntu24_04.append(('OpenWebRX (104.00 kB)',
 """wget -O - https://repo.openwebrx.de/debian/key.gpg.txt | sudo apt-key add
 echo 'deb https://repo.openwebrx.de/ubuntu/ jammy main' | sudo tee /etc/apt/sources.list.d/openwebrx.list
 sudo apt-get update
@@ -18707,7 +18716,7 @@ ls /usr/bin/openwebrx
 """,True,'SDR'))
 
 # CRC RevEng
-programs_ubuntu24_04.append(('CRC RevEng (905.3 kB)',
+programs_ubuntu24_04.append(('CRC RevEng (884.00 kB)',
 """mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 wget -T 10 https://sourceforge.net/projects/reveng/files/3.0.5/reveng-3.0.5.zip/download
@@ -18720,7 +18729,7 @@ ls ~/Installed_by_FISSURE/reveng-3.0.5/bin/i386-linux/reveng
 """,True,'Data'))
 
 # wl-color-picker
-programs_ubuntu24_04.append(('wl-color-picker (643.1 kB)',
+programs_ubuntu24_04.append(('wl-color-picker (660.00 kB)',
 """sudo apt-get install -y slurp grim wl-clipboard
 cd ~/Installed_by_FISSURE
 git clone https://github.com/jgmdev/wl-color-picker.git
@@ -18729,7 +18738,7 @@ ls ~/Installed_by_FISSURE/wl-color-picker/wl-color-picker.sh
 """,True,'Development'))
 
 # GHex
-programs_ubuntu24_04.append(('GHex',
+programs_ubuntu24_04.append(('GHex (3.38 MB)',
 """sudo apt-get install -y ghex
 ########## Verify ##########
 ls /usr/bin/ghex
@@ -18796,14 +18805,14 @@ find . -name '*.grc' -exec grcc {} \;
 """,True,'Compile Flow Graphs'))
 
 # pyais
-programs_ubuntu24_04.append(('pyais',
-"""sudo python3 -m pip install pyais
+programs_ubuntu24_04.append(('pyais (0.00 kB)',
+"""sudo python3 -m pip install pyais --break-system-packages
 ########## Verify ##########
 ls /usr/local/lib/python3*/dist-packages/pyais
 """,True,'AIS'))
 
 # HAMRS
-programs_ubuntu24_04.append(('HAMRS (105.8 MB)',
+programs_ubuntu24_04.append(('HAMRS (100.91 MB)',
 """mkdir -p ~/Installed_by_FISSURE/HAMRS
 cd ~/Installed_by_FISSURE/HAMRS
 wget https://hamrs-releases.s3.us-east-2.amazonaws.com/1.0.6/hamrs-1.0.6-linux-x86_64.AppImage
@@ -18820,15 +18829,15 @@ ls /usr/bin/binwalk
 """,False,'Data'))
 
 # Read the Docs
-programs_ubuntu24_04.append(('Read the Docs',
-"""sudo python3 -m pip install sphinx
-sudo python3 -m pip install sphinx_rtd_theme
+programs_ubuntu24_04.append(('Read the Docs (0.00 kB)',
+"""sudo python3 -m pip install sphinx --break-system-packages
+sudo python3 -m pip install sphinx_rtd_theme --break-system-packages
 ########## Verify ##########
 sudo python3 -m pip show sphinx_rtd_theme
 """,True,'Development'))
 
 # IQEngine
-programs_ubuntu24_04.append(('IQEngine',
+programs_ubuntu24_04.append(('IQEngine (393.81 MB)',
 """if command -v docker > /dev/null 2>&1; then
   echo "Docker is installed."
 else

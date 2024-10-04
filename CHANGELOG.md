@@ -1,6 +1,16 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-10-04
+
+Fixing some Ubuntu 24.04 installation errors.
+
+### Fixed
+
+- Installing Python2 for Ubuntu 24.04
+- Adding --break-system-packages to pip commands for Ubuntu 24.04 (until a virtual environment is implemented)
+- Updating some of the software sizes for Ubuntu 24.04 programs (will not be complete until the rest of the install is fixed)
+
 ## 2024-10-02
 
 Writing disk usage to a file during installation.
