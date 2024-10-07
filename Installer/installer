@@ -1338,7 +1338,7 @@ ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 
 # rehex
 programs_ubuntu20_04.append(('rehex (208.0 MB)',
-"""sudo apt-get install -y build-essential git libwxgtk3.2-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted libbotan-2-dev
+"""sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted libbotan-2-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/solemnwarning/rehex.git
@@ -18070,7 +18070,7 @@ ls ~/Installed_by_FISSURE/SdrGlut/sdrglut.x
 
 # rehex
 programs_ubuntu24_04.append(('rehex (76.98 MB)',
-"""sudo apt-get install -y build-essential git libwxgtk3.0-gtk3-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted libbotan-2-dev
+"""sudo apt-get install -y build-essential git libwxgtk3.2-dev libjansson-dev libcapstone-dev liblua5.3-dev lua5.3 lua5.2 libunistring-dev libgtk-3-dev lua-busted libbotan-2-dev
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE
 git clone https://github.com/solemnwarning/rehex.git

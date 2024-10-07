@@ -12,6 +12,7 @@ Updating Ubuntu 24.04 installer.
 ### Fixed
 
 - Re-enabled Ubuntu 20.04 LTE programs and disabled Ubuntu 24.04 LTE program in installer
+- Fixed rehex install on Ubuntu 20.04/24.04
 
 ## 2024-10-04
 
