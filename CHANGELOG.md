@@ -1,6 +1,18 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-10-06
+
+Updating Ubuntu 24.04 installer.
+
+### Changed
+
+- Updated disk usage for Ubuntu 24.04 software programs in instalelr
+
+### Fixed
+
+- Re-enabled Ubuntu 20.04 LTE programs and disabled Ubuntu 24.04 LTE program in installer
+
 ## 2024-10-04
 
 Fixing Ubuntu 24.04 install, removing beta designation.
