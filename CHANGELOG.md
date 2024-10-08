@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-10-07
+
+Updating Kali 2024.3 installer.
+
+### Changed
+
+- Replaced Kali references from 2023.1 to 2024.3 or removed version altogether
+
+### Fixed
+
+- Applying style sheets to the two installer Dialog objects to fix background color
+- Fixed several Kali installer errors
+
 ## 2024-10-06
 
 Updating Ubuntu 24.04 installer.

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>Dialog</class>
- <widget class="QDialog" name="Dialog">
+ <class>Dialog_install</class>
+ <widget class="QDialog" name="Dialog_install">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -122,7 +122,7 @@
      <string>Parrot OS 6.1</string>
     </property>
    </widget>
-   <widget class="QRadioButton" name="radioButton_kali_2023_1">
+   <widget class="QRadioButton" name="radioButton_kali">
     <property name="enabled">
      <bool>true</bool>
     </property>
@@ -135,7 +135,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Kali 2023.1</string>
+     <string>Kali 2024.3</string>
     </property>
    </widget>
    <widget class="QRadioButton" name="radioButton_backbox_linux_8">

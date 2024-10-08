@@ -820,6 +820,7 @@ class Dashboard(QtWidgets.QMainWindow):
             self.window.actionSystemback.setEnabled(False)
             self.window.actiondump978.setEnabled(False)
             self.window.actionOpenWebRX.setEnabled(False)
+            self.window.actionSigDigger.setEnabled(False)
         elif get_os == 'Raspberry Pi OS':
             self.window.actionZigbeeOpen_Sniffer.setEnabled(False)
             self.window.actionProxmark3.setEnabled(False)
