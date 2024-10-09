@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-10-09
+
+Fixing Kali installer errors and updating disk usage.
+
+### Added
+
+- Added installer option for Arch Linux (no support yet)
+
+### Changed
+
+- Disabling Bless, Arduino IDE, srsRAN, FoxtrotGPS for Kali in the installer and menu items
+- Updated software disk usage in the installer for Kali
+
+### Fixed
+
+- Fixed error when starting second installer dialog for Kali
+- Removed fromfile, complex64 imports from IQDataTabSlots.py which caused errors in Kali
+
 ## 2024-10-07
 
 Updating Kali 2024.3 installer.

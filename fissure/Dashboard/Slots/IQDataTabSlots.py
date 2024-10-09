@@ -9,7 +9,6 @@ from fissure.Dashboard.UI_Components.Qt5 import MyMessageBox
 import subprocess
 from scipy import signal as signal2
 import struct
-from scipy import fromfile, complex64
 import warnings
 import matplotlib.pyplot as plt
 import time
@@ -2279,7 +2278,7 @@ def _slotIQ_TimeslotPadClicked(dashboard: QtCore.QObject):
         find_start = False
         find_end = True
 
-        old_file = fromfile(open(filepath), dtype=complex64)  # scipy.fromfile, scipy.complex64
+        old_file = np.fromfile(open(filepath), dtype=np.complex64)
 
         # Find Start and End of Each Message
         for n in range(2,len(old_file)):

@@ -3,18 +3,25 @@
 ########################################
 #        Check Operating System        #
 ########################################
-ubuntu20_04=$(lsb_release -d 2>&1 | grep "Ubuntu 20.04")
-parrot_os=$(lsb_release -d 2>&1 | grep "Parrot")
-dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal$")
-#dragonOS_focalx=$(lsb_release -d 2>&1 | grep "DragonOS FocalX")  # May print old version after upgrade to FocalX
-dragonOS_focalx=$(cat /etc/os-dragonos 2>&1 | grep "DragonOS FocalX")
-kde_neon=$(lsb_release -d 2>&1 | grep "KDE neon")
-ubuntu18_04=$(lsb_release -d 2>&1 | grep "Ubuntu 18.04")
-ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
-kali23_1=$(lsb_release -d 2>&1 | grep "Kali")
-backbox=$(cat /etc/issue -d 2>&1 | grep "BackBox")
-raspberry_pi_os=$(lsb_release -d 2>&1 | grep "bookworm")
-ubuntu24_04=$(lsb_release -d 2>&1 | grep "Ubuntu 24.04")
+arch_linux=$(cat /etc/os-release 2>&1 | grep "arch")  # Arch Linux does not come with lsb_release command
+if [[ -n "$arch_linux" ]]
+then
+    echo "Arch Linux detected"
+    sudo pacman -S lsb-release
+else
+    ubuntu20_04=$(lsb_release -d 2>&1 | grep "Ubuntu 20.04")
+    parrot_os=$(lsb_release -d 2>&1 | grep "Parrot")
+    dragonOS_focal=$(lsb_release -d 2>&1 | grep "DragonOS Focal$")
+    #dragonOS_focalx=$(lsb_release -d 2>&1 | grep "DragonOS FocalX")  # May print old version after upgrade to FocalX
+    dragonOS_focalx=$(cat /etc/os-dragonos 2>&1 | grep "DragonOS FocalX")
+    kde_neon=$(lsb_release -d 2>&1 | grep "KDE neon")
+    ubuntu18_04=$(lsb_release -d 2>&1 | grep "Ubuntu 18.04")
+    ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
+    kali23_1=$(lsb_release -d 2>&1 | grep "Kali")
+    backbox=$(cat /etc/issue -d 2>&1 | grep "BackBox")
+    raspberry_pi_os=$(lsb_release -d 2>&1 | grep "bookworm")
+    ubuntu24_04=$(lsb_release -d 2>&1 | grep "Ubuntu 24.04")
+fi
 
 ########################################
 #            Print Detected            #

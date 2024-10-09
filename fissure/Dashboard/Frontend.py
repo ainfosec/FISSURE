@@ -813,6 +813,7 @@ class Dashboard(QtWidgets.QMainWindow):
         elif get_os == 'Kali':
             self.window.actionZigbeeOpen_Sniffer.setEnabled(False)
             self.window.actionFALCON.setEnabled(False)
+            self.window.actionSrsLTE.setEnabled(False)
             #self.window.actionLTE_ciphercheck.setEnabled(False)
             self.window.actionOpenCPN.setEnabled(False)
             self.window.actionRTLSDR_Airband.setEnabled(False)
@@ -821,6 +822,9 @@ class Dashboard(QtWidgets.QMainWindow):
             self.window.actiondump978.setEnabled(False)
             self.window.actionOpenWebRX.setEnabled(False)
             self.window.actionSigDigger.setEnabled(False)
+            self.window.actionFoxtrotGPS.setEnabled(False)
+            self.window.actionArduino.setEnabled(False)
+            self.window.actionBless.setEnabled(False)
         elif get_os == 'Raspberry Pi OS':
             self.window.actionZigbeeOpen_Sniffer.setEnabled(False)
             self.window.actionProxmark3.setEnabled(False)

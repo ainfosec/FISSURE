@@ -234,6 +234,22 @@
      <string>Ubuntu 24.04</string>
     </property>
    </widget>
+   <widget class="QRadioButton" name="radioButton_arch_linux">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>255</y>
+      <width>180</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Arch Linux 2024.10.01</string>
+    </property>
+   </widget>
   </widget>
  </widget>
  <resources/>
