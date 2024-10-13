@@ -52,7 +52,7 @@ The deployment of multiple sensor nodes on the same network unlocks many geospat
 
 ![Conference](https://img.shields.io/badge/Event-Conference-darkgray) **Tue. September 17, 2024**: GNU Radio Conference 2024 - 1605-1635 EST [Description/Slides](https://events.gnuradio.org/event/24/contributions/649/), [Live Recording](https://youtu.be/5UYhUi8SiK4?t=27282)
 
-![CTF](https://img.shields.io/badge/CTF-purple) **December 2024 (Final dates coming soon!)**: 2024 FISSURE Challenge [Link (Coming Soon)](https://fissure.ainfosec.com/)
+![CTF](https://img.shields.io/badge/Event-CTF-purple) **December 2024 (Final dates coming soon!)**: 2024 FISSURE Challenge. [Link](https://fissure.ainfosec.com/) (Coming Soon)
 
 ## Documentation
 
