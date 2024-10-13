@@ -1905,6 +1905,7 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionSpot_The_Station.triggered.connect(MenuBarSlots._slotMenuSpotTheStationClicked)
     dashboard.window.actionwl_color_picker.triggered.connect(MenuBarSlots._slotMenuWlColorPickerClicked)
     dashboard.window.actiontpms_rx.triggered.connect(MenuBarSlots._slotMenuTpmsRxClicked)
+    dashboard.window.actionGraphing_Calculator.triggered.connect(MenuBarSlots._slotMenuGraphingCalculatorClicked)
     
     # Lessons
     dashboard.window.actionLessonOpenBTS.triggered.connect(MenuBarSlots._slotMenuLessonOpenBTS_Clicked)
@@ -1943,9 +1944,7 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionHamSCI_Resources.triggered.connect(MenuBarSlots._slotMenuLessonHamSCI_ResourcesClicked)
 
     # Help Menu
-    dashboard.window.actionUser_Manual.triggered.connect(MenuBarSlots.openUserManual)
-    ##################
-    # dashboard.window.actionUser_Manual.triggered.connect(MenuBarSlots._slotMenuHelpUserManualClicked)
+    dashboard.window.actionUser_Manual.triggered.connect(MenuBarSlots._slotMenuHelpUserManualClicked)
     dashboard.window.actionProtocol_Spreadsheet.triggered.connect(MenuBarSlots._slotMenuProtocolSpreadsheetClicked)
     dashboard.window.actionSignal_Identification_Guide.triggered.connect(
         MenuBarSlots._slotMenuSignalIdentificationGuideClicked
@@ -2061,7 +2060,6 @@ def connect_menuBar_slots(dashboard: Dashboard):
     dashboard.window.actionMenuHelpOperationStartUpProcedures.triggered.connect(
         MenuBarSlots._slotMenuHelpOperationStartUpProceduresClicked
     )
-
 
 
 def connect_automation_slots(dashboard: Dashboard):

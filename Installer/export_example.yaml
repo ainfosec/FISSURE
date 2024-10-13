@@ -1,0 +1,53 @@
+checked_items:
+  - Misc. Dependencies
+  - fissure Command
+  - GNU Radio
+  - Scapy
+  - Wireshark
+  - Network Certificates
+  - gr-ainfosec
+  - LimeSDR
+  - HackRF, RTL-SDR, gr-osmosdr
+  - BladeRF
+  - USRP X300 Series
+  - 8812au Driver
+  - Zigbee Sniffer
+  - fl2k
+  - Proxmark3
+  - PlutoSDR
+  - qFlipper
+  - Minicom
+  - PuTTY
+  - gr-acars
+  - gr-adsb
+  - gr-ais
+  - gr-aistx
+  - gr-bluetooth-maint-3.8
+  - gr-clapper_plus
+  - gr-dect2
+  - gr-foo
+  - gr-fuzzer
+  - gr-garage_door
+  - gr-gsm
+  - gr-ieee802-11
+  - gr-ieee802-15-4
+  - gr-iridium
+  - gr-j2497
+  - gr-limesdr
+  - gr-mixalot
+  - gr-nrsc5
+  - gr-paint
+  - gr-rds
+  - gr-tpms_poore
+  - gr-X10
+  - gr-zwave_poore
+  - Archive Flow Graphs
+  - Fuzzing Flow Graphs
+  - Inspection Flow Graphs
+  - IQ Flow Graphs
+  - PD Flow Graphs
+  - Single-Stage Flow Graphs
+  - Sniffer Flow Graphs
+  - Standalone Flow Graphs
+  - TSI Flow Graphs
+  - Trigger Flow Graphs

@@ -467,6 +467,7 @@
      <addaction name="actionCrackStation"/>
      <addaction name="actionGHex"/>
      <addaction name="actionBinwalk"/>
+     <addaction name="actionGraphing_Calculator"/>
     </widget>
     <widget class="QMenu" name="menuBluetooth">
      <property name="title">
@@ -2928,6 +2929,11 @@
   <action name="actionStop_Local_Docker_Container">
    <property name="text">
     <string>Stop Local Docker Container</string>
+   </property>
+  </action>
+  <action name="actionGraphing_Calculator">
+   <property name="text">
+    <string>Graphing Calculator</string>
    </property>
   </action>
  </widget>

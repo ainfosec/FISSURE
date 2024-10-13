@@ -19,6 +19,14 @@ The friendly Python codebase and user interface allows beginners to quickly lear
 
 ![NEW](https://img.shields.io/badge/NEW-Feature-brightgreen) 
 
+**Recall Installer Setups** Export and import checked software items in the FISSURE installer using the Export and Import buttons. Quickly install only the programs you need.
+
+![NEW](https://img.shields.io/badge/NEW-Feature-brightgreen) 
+
+**Local IQEngine Support** in the IQ Data tab and menu for loading in SigMF files with one click for files in the "/IQ Recordings" folder. Stop the IQEngine docker container using the Tools>Data>IQEngine menu.
+
+![NEW](https://img.shields.io/badge/NEW-Feature-brightgreen) 
+
 **Deployable remote sensor nodes** for general-purpose computers (SBCs, mini PCs, laptops, desktops) that support any type of peripheral that can be controlled by a computer. These remote sensor nodes run a small subset of code that can be controlled over a network through the FISSURE Dashboard GUI to perform traditional FISSURE operations and also execute new types of scripted actions that can be run autonomously on startup or semi-autonomously through user interaction (autorun playlists). 
 
 The deployment of multiple sensor nodes on the same network unlocks many geospatial applications for future development of FISSURE. Such applications include direction finding, tracking, intrusion detection, mobile deployment, and perimeter defense. A small form factor and autonomous capabilities grant unique opportunities for stealth deployment and packaging onto existing platforms. These updates can also provide a low-cost mechanism for remote workers to conduct combined RF-cybersecurity testing and access specialized RF environments like international localities of interest, laboratories, and test sites.
@@ -43,6 +51,8 @@ The deployment of multiple sensor nodes on the same network unlocks many geospat
 ![Career Fair](https://img.shields.io/badge/Event-Career%20Fair-darkgray) **Thu. September 5, 2024**: Binghamton University STEM Job and Internship Fair - 1100-1530 EST
 
 ![Conference](https://img.shields.io/badge/Event-Conference-darkgray) **Tue. September 17, 2024**: GNU Radio Conference 2024 - 1605-1635 EST [Description/Slides](https://events.gnuradio.org/event/24/contributions/649/), [Live Recording](https://youtu.be/5UYhUi8SiK4?t=27282)
+
+![CTF](https://img.shields.io/badge/CTF-purple) **December 2024 (Final dates coming soon!)**: 2024 FISSURE Challenge [Link (Coming Soon)](https://fissure.ainfosec.com/)
 
 ## Documentation
 
@@ -369,6 +379,12 @@ FISSURE comes with several helpful guides to become familiar with different tech
 - [ ] Update the project idea list every year
 
 ## FISSURE Challenge
+
+<p align="center">
+  <a href="https://www.ainfosec.com/">
+    <img src="/docs/Icons/README/fissure_challenge.jpeg" alt="fissure_challenge" height="150" />
+  </a>
+</p>
 
 The annual "FISSURE Challenge" capture-the-flag contest to showcase new additions to FISSURE is held in December each year. Past challenges are archived and can be solved all year round! Gain hands-on experience and view solutions at: [FISSURE Challenge](https://fissure.ainfosec.com/).
 

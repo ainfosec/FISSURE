@@ -307,7 +307,8 @@ def refreshCustomWidgets(dashboard: QtWidgets.QMainWindow):
 
 
 @QtCore.pyqtSlot()
-def openUserManual():
+def _slotMenuHelpUserManualClicked():
+    """ Opens the local user manual in a browser."""
     os.system(f"xdg-open file://{os.path.join(fissure.utils.FISSURE_ROOT, 'docs', 'RTD', '_build', 'html', 'index.html')}")
 
 
@@ -5009,4 +5010,13 @@ def _slotMenuLessonHamSCI_ResourcesClicked():
     """
     # Open a Browser
     os.system("xdg-open https://hamsci.org/resources")
-    
+
+
+@QtCore.pyqtSlot()
+def _slotMenuGraphingCalculatorClicked():
+    """
+    Opens desmos graphing calculator in a browser.
+    """
+    # Open a Browser
+    os.system("xdg-open https://www.desmos.com/calculator")
+

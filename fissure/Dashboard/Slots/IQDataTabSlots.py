@@ -5274,8 +5274,8 @@ def _slotIQ_SpectrogramClicked(dashboard: QtCore.QObject):
             warnings.simplefilter("ignore")
             warnings.filterwarnings("ignore", module="matplotlib")
 
-            NFFT = 1024
-            dashboard.iq_matplotlib_widget.axes.specgram(y_data, NFFT=NFFT, Fs=1, noverlap=900,zorder=2)
+            NFFT = 2048
+            dashboard.iq_matplotlib_widget.axes.specgram(y_data, NFFT=NFFT, Fs=1, noverlap=900,zorder=2, cmap='viridis')
 
         dashboard.iq_matplotlib_widget.applyLabels("Spectrogram",'Samples','Amplitude (LSB)',None,None,text_color=dashboard.backend.settings['color4'])
         dashboard.ui.pushButton_iq_cursor1.setChecked(False)
@@ -5297,8 +5297,8 @@ def _slotIQ_SpectrogramClicked(dashboard: QtCore.QObject):
             warnings.simplefilter("ignore")
             warnings.filterwarnings("ignore", module="matplotlib")
 
-            NFFT = 1024
-            dashboard.iq_matplotlib_widget.axes.specgram(complex_data, NFFT=NFFT, Fs=1, noverlap=900,zorder=2)
+            NFFT = 2048
+            dashboard.iq_matplotlib_widget.axes.specgram(complex_data, NFFT=NFFT, Fs=1, noverlap=900, zorder=2, cmap='viridis')
 
         dashboard.iq_matplotlib_widget.applyLabels("Spectrogram",'Samples','Amplitude (LSB)',None,None,text_color=dashboard.backend.settings['color4'])
         dashboard.ui.pushButton_iq_cursor1.setChecked(False)

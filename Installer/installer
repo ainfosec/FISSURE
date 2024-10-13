@@ -8810,7 +8810,8 @@ programs_kali.append(('gr-ais (1.34 MB)',
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/
   sed -i 's/VERSION 3.8/VERSION 3.10/g' ./CMakeLists.txt
-  sed -i 's/project(gr-ais CXX C)/project(gr-ais CXX C)\nset(CMAKE_CXX_STANDARD 17)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)/g' ./CMakeLists.txt
+  sed '/project(gr-ais CXX C)/a\set(CMAKE_CXX_STANDARD 17)' ./CMakeLists.txt
+  sed -i 's/add_compile_options(-std=c++11)/set(CMAKE_CXX_STANDARD_REQUIRED ON)/g' ./CMakeLists.txt
   sudo rm -Rf build
   mkdir build
   cd build
@@ -17171,7 +17172,8 @@ programs_ubuntu24_04.append(('gr-ais (1.38 MB)',
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/
   sed -i 's/VERSION 3.8/VERSION 3.10/g' ./CMakeLists.txt
-  sed -i 's/project(gr-ais CXX C)/project(gr-ais CXX C)\nset(CMAKE_CXX_STANDARD 17)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)/g' ./CMakeLists.txt
+  sed '/project(gr-ais CXX C)/a\set(CMAKE_CXX_STANDARD 17)' ./CMakeLists.txt
+  sed -i 's/add_compile_options(-std=c++11)/set(CMAKE_CXX_STANDARD_REQUIRED ON)/g' ./CMakeLists.txt
   sudo rm -Rf build
   mkdir build
   cd build
@@ -19272,7 +19274,8 @@ programs_arch_linux.append(('gr-ais (1.38 MB)',
 then
   cd """ + fissure_directory + """/Custom_Blocks/maint-3.10/gr-ais/
   sed -i 's/VERSION 3.8/VERSION 3.10/g' ./CMakeLists.txt
-  sed -i 's/project(gr-ais CXX C)/project(gr-ais CXX C)\nset(CMAKE_CXX_STANDARD 17)\nset(CMAKE_CXX_STANDARD_REQUIRED ON)/g' ./CMakeLists.txt
+  sed '/project(gr-ais CXX C)/a\set(CMAKE_CXX_STANDARD 17)' ./CMakeLists.txt
+  sed -i 's/add_compile_options(-std=c++11)/set(CMAKE_CXX_STANDARD_REQUIRED ON)/g' ./CMakeLists.txt
   sudo rm -Rf build
   mkdir build
   cd build
@@ -21092,8 +21095,11 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         self.pushButton_deselect.clicked.connect(self._slotDeselectClicked)
         self.pushButton_default.clicked.connect(self._slotDefaultClicked)
         self.pushButton_rankings.clicked.connect(self._slotRankingsClicked)
+        self.pushButton_needs_help.clicked.connect(self._slotNeedsHelpClicked)
         self.pushButton_expand_all.clicked.connect(self._slotExpandAllClicked)
         self.pushButton_collapse_all.clicked.connect(self._slotCollapseAllClicked)
+        self.pushButton_import.clicked.connect(self._slotImportClicked)
+        self.pushButton_export.clicked.connect(self._slotExportClicked)
         
         # Tables
         self.treeWidget_software.clicked.connect(self._slotTableItemClicked)
@@ -21315,6 +21321,34 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
         msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
         ret = msgBox.exec_()
+
+    
+    def _slotNeedsHelpClicked(self):
+        """ Opens a window with a list of installer items that are not checked by default.
+        """
+        # Get Unchecked Items
+        unchecked_items = []        
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
+        while iterator.value():
+            item = iterator.value()            
+            for p in range(0,len(self.programs)):
+                if item.text(0) == self.programs[p][0]:
+                    if self.programs[p][2] == False:
+                        unchecked_items.append(item.text(0))
+                    break
+            iterator+=1  
+        
+        # Build the Message
+        msg_text = "These programs need help with installation. \nPlease suggest fixes on GitHub or Discord.\n\n"
+        for n in unchecked_items:
+            msg_text = msg_text + "\t" + n + "\n"
+            
+        # Create the Message Box
+        msgBox = QtWidgets.QMessageBox()
+        msgBox.setText(msg_text)
+        msgBox.setStandardButtons(QtWidgets.QMessageBox.Ok)
+        msgBox.setDefaultButton(QtWidgets.QMessageBox.Ok)
+        ret = msgBox.exec_()
         
 
     def _slotExpandAllClicked(self):
@@ -21330,6 +21364,63 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         # Collapse
         self.treeWidget_software.collapseAll()
         
+
+    def _slotImportClicked(self):
+        """ Imports a yaml file for checking installer items.
+        """
+        # Open the File
+        path = QtWidgets.QFileDialog.getOpenFileName(self, 'Open YAML File', this_file_directory, filter='YAML (*.yaml)')
+        lines = []
+        if len(path[0]) > 0:
+            with open(path[0], 'r') as file:
+                lines = file.readlines()
+        else:
+            return
+
+        # Convert to List
+        checked_items = []
+        for line in lines:
+            if line.strip().startswith('-'):
+                checked_items.append(line.strip().lstrip('- ').strip())
+
+        # Uncheck all Items
+        self._slotDeselectClicked()
+
+        # Iterate the Tree
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
+        while iterator.value():
+            item = iterator.value()            
+            for p in range(0,len(checked_items)):
+                if item.text(0).split('(')[0].strip() == checked_items[p]:
+                    item.setCheckState(0, QtCore.Qt.Checked)
+                    break
+            iterator+=1  
+
+
+    def _slotExportClicked(self):
+        """ Saves checked items to a yaml file to be imported.
+        """
+        # Get Checked Items
+        checked_items = []        
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
+        while iterator.value():
+            item = iterator.value()
+            if item.checkState(0) == 2:    
+                # Ignore Categories
+                if item.text(0) not in larger_categories:       
+                    checked_items.append(item.text(0).split('(')[0].strip())
+            iterator+=1   
+
+        # Save List to YAML
+        path = QtWidgets.QFileDialog.getSaveFileName(self, 'Save YAML File', this_file_directory, filter='YAML (*.yaml)')
+        if len(path[0]) > 0:
+            if path[0].endswith(".yaml") == False:
+                path[0] = path[0] + ".yaml"
+            with open(path[0], 'w') as file:
+                file.write("checked_items:\n")
+                for item in checked_items:
+                    file.write(f"  - {item}\n")
+    
         
 class MyThread(QtCore.QThread):
     def __init__(self, n, parent=None):

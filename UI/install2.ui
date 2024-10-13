@@ -235,6 +235,45 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
+  <widget class="QPushButton" name="pushButton_needs_help">
+   <property name="geometry">
+    <rect>
+     <x>245</x>
+     <y>520</y>
+     <width>100</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Needs Help</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_import">
+   <property name="geometry">
+    <rect>
+     <x>355</x>
+     <y>490</y>
+     <width>100</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Import</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_export">
+   <property name="geometry">
+    <rect>
+     <x>355</x>
+     <y>520</y>
+     <width>100</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Export</string>
+   </property>
+  </widget>
   <zorder>treeWidget_software</zorder>
   <zorder>pushButton_ok</zorder>
   <zorder>pushButton_cancel</zorder>
@@ -248,6 +287,9 @@
   <zorder>pushButton_expand_all</zorder>
   <zorder>pushButton_collapse_all</zorder>
   <zorder>label2_current_item</zorder>
+  <zorder>pushButton_needs_help</zorder>
+  <zorder>pushButton_import</zorder>
+  <zorder>pushButton_export</zorder>
  </widget>
  <resources/>
  <connections/>

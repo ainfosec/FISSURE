@@ -1,6 +1,29 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2024-10-13
+
+Import/Export installer software setups.
+
+### Added
+
+- Added Desmos graphing calculator to the Tools menu
+- Added Needs Help button to the installer for listing unchecked (by default) tree items
+- Added Import/Export buttons to the installer for recalling setups
+- FISSURE Challenge image in README
+- Local IQEngine support in README news
+- Recall Installer Setups in README news
+- 2024 FISSURE Challenge event in README
+
+### Changed
+
+- Added viridis colormap to IQ Data spectrogram to replace the black and white 
+- Increase spectrogram NFFT from 1024 to 2048 
+
+### Fixed
+
+- Updated sed commands for gr-ais installer item in Kali and Ubuntu 24.04
+
 ## 2024-10-09
 
 Fixing Kali installer errors and updating disk usage.
