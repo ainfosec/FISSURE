@@ -68,8 +68,9 @@ class FissureMeshtasticNode:
             # self.logger.debug(f"Process task running: {self.process_task and not self.process_task.done()}")
 
             if not self.process_task.done():
-                msg = await self.recv_msg()
+                msg = await self.message_queue.get()
                 if msg:
+                    self.logger.info("got message")
                     # self.logger.info(f"Preparing to execute callback for message: {msg}")
                     await self.run_callback(self.context, msg)
                 else:
@@ -78,7 +79,7 @@ class FissureMeshtasticNode:
             else:
                 self.logger.error("Process task is not running as expected!")
             
-            await asyncio.sleep(0.2)
+            #await asyncio.sleep(0.2)
 
     def generate_short_uuid(self, length: int = 4) -> str:
         """Generate a short, random hexadecimal UUID."""
