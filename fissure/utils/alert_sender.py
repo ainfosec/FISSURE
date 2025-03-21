@@ -82,6 +82,7 @@ def _alert_sender(cmd: str, c2: Connection, identifier: str, sensor_node_id: any
                         asyncio.run(hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg))
 
                 elif data.get('msg') == 'tak':
+                    print("got ak message")
                     if network_type == "IP":
                         PARAMETERS = {
                             "uid": data.get('uid'),
@@ -118,12 +119,21 @@ def _alert_sender(cmd: str, c2: Connection, identifier: str, sensor_node_id: any
                                 data.get('remarks')[:20] if data.get('remarks') else None
                             ]
                         }
-                        msg = {
+                        if data.get('remarks') == "GPS UPDATE":
+                            msg = {
                             fissure.comms.MessageFields.SOURCE: identifier,
                             fissure.comms.MessageFields.DESTINATION: fissure.comms.Identifiers.HIPRFISR_LT,
-                            fissure.comms.MessageFields.MESSAGE_NAME: "takPlotLT",
+                            fissure.comms.MessageFields.MESSAGE_NAME: "takPlotGpsUpdateLT",
                             fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
                         }
+                        else:
+                            msg = {
+                                fissure.comms.MessageFields.SOURCE: identifier,
+                                fissure.comms.MessageFields.DESTINATION: fissure.comms.Identifiers.HIPRFISR_LT,
+                                fissure.comms.MessageFields.MESSAGE_NAME: "takPlotLT",
+                                fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+                            }
+                        self.logger.info(f"about to send message: {msg}")
                         asyncio.run(hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg))
                 elif data.get('msg') == 'exploit':
                     if network_type == "IP":
