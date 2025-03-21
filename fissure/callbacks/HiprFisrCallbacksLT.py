@@ -324,6 +324,21 @@ async def takPlotLT(component: object, msg=[]):
     time = time.replace(" ", "T")
     
     await tak_send.send_cot(uid, lat, lon, alt, time, remarks)
+
+async def takPlotGpsUpdateLT(component: object, msg=[]):
+    """
+    Forwards the GPS coordinate results message to Tak.
+    """
+    uid = str(msg[0])
+    lat = float(msg[1])
+    lon = float(msg[2])
+    alt = float(msg[3])
+    time = str(msg[4])
+    remarks = str(msg[5])
+
+    time = time.replace(" ", "T")
+    
+    await tak_send.send_cot_gps_update(uid, lat, lon, alt, time, remarks)
     
 
 async def exploitLT(component: object, msg=[]):
