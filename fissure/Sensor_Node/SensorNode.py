@@ -2,6 +2,7 @@
 
 import argparse
 import time
+from datetime import datetime, timezone
 import random
 import yaml
 import zmq
@@ -27,6 +28,7 @@ import asyncio
 import fissure.callbacks
 import fissure.comms
 import fissure.utils
+
 
 import uuid
 import logging
@@ -2482,12 +2484,29 @@ class SensorNode():
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-    def gpsUpdate(self, gps_data):
+    async def gpsUpdate(self, gps_data):
         """
         Callback function to save GPS updates from Meshtastic node.
         """
         self.logger.info(f"Updated GPS Position: {gps_data}")
         self.gps_position = gps_data
+        PARAMETERS = {
+                            "msg": [
+                                self.identifier,
+                                self.gps_position['latitude'],
+                                self.gps_position['longitude'],
+                                self.gps_position['altitude'],
+                                datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%S.%fZ'),
+                                'GPS UPDATE'
+                            ]
+                        }
+        msg = {
+                        fissure.comms.MessageFields.IDENTIFIER: self.identifier,
+                        fissure.comms.MessageFields.MESSAGE_NAME: "takPlotGpsUpdateLT",
+                        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+             }
+        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
 
     ########################################################################
 
@@ -2572,7 +2591,7 @@ class GPSManager:
                     value = gps_data.get(key)
                     if not value is None:
                         self.gps_data[key] = value
-                self.gps_callback(self.gps_data)
+                await self.gps_callback(self.gps_data)
 
             await asyncio.sleep(self.gps_update_interval_seconds)
 
