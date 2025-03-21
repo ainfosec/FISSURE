@@ -19,6 +19,7 @@ MESSAGE_CODE_MAP = {
     "I1": "alertReturnLT",
     "J1": "takPlotLT",
     "K1": "exploitLT",
+    "L1": "takPlotGpsUpdateLT",
 }
 
 # Reverse mapping for sending messages
