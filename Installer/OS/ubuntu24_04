@@ -310,7 +310,8 @@ python3 -c "import meshtastic"
 programs_ubuntu24_04.append(('Network Certificates (3.51 kB)',
 """cd '""" + fissure_directory + """'
 export PYTHONPATH='""" + fissure_directory + """':$PYTHONPATH
-python3 -m pip install tensorflow_cpu --break-system-packages
+output=$(uname -a); if echo "$output" | grep -qi "raspi"; then python3 -m pip install tensorflow --break-system-packages; else python3 -m pip install tensorflow_cpu --break-system-packages
+; fi
 python3 ./fissure/generate_certificates.py
 ########## Verify ##########
 ls '""" + fissure_directory + """/certificates'
