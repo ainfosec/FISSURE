@@ -1,0 +1,229 @@
+[*] Starting installer at Thu 09 Oct 2025 10:29:21 AM EDT
+[*] Finished at Thu 09 Oct 2025 10:30:09 AM EDT
+[*] Starting installer at Thu 09 Oct 2025 10:30:42 AM EDT
+Traceback (most recent call last):
+  File "/usr/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.8/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/usr/lib/python3/dist-packages/pip/__main__.py", line 16, in <module>
+    from pip._internal.cli.main import main as _main  # isort:skip # noqa
+  File "/usr/lib/python3/dist-packages/pip/_internal/cli/main.py", line 10, in <module>
+    from pip._internal.cli.autocompletion import autocomplete
+  File "/usr/lib/python3/dist-packages/pip/_internal/cli/autocompletion.py", line 9, in <module>
+    from pip._internal.cli.main_parser import create_main_parser
+  File "/usr/lib/python3/dist-packages/pip/_internal/cli/main_parser.py", line 7, in <module>
+    from pip._internal.cli import cmdoptions
+  File "/usr/lib/python3/dist-packages/pip/_internal/cli/cmdoptions.py", line 24, in <module>
+    from pip._internal.exceptions import CommandError
+  File "/usr/lib/python3/dist-packages/pip/_internal/exceptions.py", line 10, in <module>
+    from pip._vendor.six import iteritems
+  File "/usr/lib/python3/dist-packages/pip/_vendor/__init__.py", line 65, in <module>
+    vendored("cachecontrol")
+  File "/usr/lib/python3/dist-packages/pip/_vendor/__init__.py", line 36, in vendored
+    __import__(modulename, globals(), locals(), level=0)
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/CacheControl-0.12.6-py2.py3-none-any.whl/cachecontrol/__init__.py", line 9, in <module>
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/CacheControl-0.12.6-py2.py3-none-any.whl/cachecontrol/wrapper.py", line 1, in <module>
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/CacheControl-0.12.6-py2.py3-none-any.whl/cachecontrol/adapter.py", line 5, in <module>
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/requests-2.22.0-py2.py3-none-any.whl/requests/__init__.py", line 95, in <module>
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/urllib3-1.25.8-py2.py3-none-any.whl/urllib3/contrib/pyopenssl.py", line 46, in <module>
+  File "/usr/lib/python3/dist-packages/OpenSSL/__init__.py", line 8, in <module>
+    from OpenSSL import crypto, SSL
+  File "/usr/lib/python3/dist-packages/OpenSSL/crypto.py", line 1553, in <module>
+    class X509StoreFlags(object):
+  File "/usr/lib/python3/dist-packages/OpenSSL/crypto.py", line 1571, in X509StoreFlags
+    NOTIFY_POLICY = _lib.X509_V_FLAG_NOTIFY_POLICY
+AttributeError: module 'lib' has no attribute 'X509_V_FLAG_NOTIFY_POLICY'
+Error in sys.excepthook:
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/apport_python_hook.py", line 72, in apport_excepthook
+    from apport.fileutils import likely_packaged, get_recent_crashes
+  File "/usr/lib/python3/dist-packages/apport/__init__.py", line 5, in <module>
+    from apport.report import Report
+  File "/usr/lib/python3/dist-packages/apport/report.py", line 32, in <module>
+    import apport.fileutils
+  File "/usr/lib/python3/dist-packages/apport/fileutils.py", line 12, in <module>
+    import os, glob, subprocess, os.path, time, pwd, sys, requests_unixsocket
+  File "/usr/lib/python3/dist-packages/requests_unixsocket/__init__.py", line 1, in <module>
+    import requests
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/requests-2.22.0-py2.py3-none-any.whl/requests/__init__.py", line 95, in <module>
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/urllib3-1.25.8-py2.py3-none-any.whl/urllib3/contrib/pyopenssl.py", line 46, in <module>
+  File "/usr/lib/python3/dist-packages/OpenSSL/__init__.py", line 8, in <module>
+    from OpenSSL import crypto, SSL
+  File "/usr/lib/python3/dist-packages/OpenSSL/crypto.py", line 1553, in <module>
+    class X509StoreFlags(object):
+  File "/usr/lib/python3/dist-packages/OpenSSL/crypto.py", line 1571, in X509StoreFlags
+    NOTIFY_POLICY = _lib.X509_V_FLAG_NOTIFY_POLICY
+AttributeError: module 'lib' has no attribute 'X509_V_FLAG_NOTIFY_POLICY'
+
+Original exception was:
+Traceback (most recent call last):
+  File "/usr/lib/python3.8/runpy.py", line 194, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "/usr/lib/python3.8/runpy.py", line 87, in _run_code
+    exec(code, run_globals)
+  File "/usr/lib/python3/dist-packages/pip/__main__.py", line 16, in <module>
+    from pip._internal.cli.main import main as _main  # isort:skip # noqa
+  File "/usr/lib/python3/dist-packages/pip/_internal/cli/main.py", line 10, in <module>
+    from pip._internal.cli.autocompletion import autocomplete
+  File "/usr/lib/python3/dist-packages/pip/_internal/cli/autocompletion.py", line 9, in <module>
+    from pip._internal.cli.main_parser import create_main_parser
+  File "/usr/lib/python3/dist-packages/pip/_internal/cli/main_parser.py", line 7, in <module>
+    from pip._internal.cli import cmdoptions
+  File "/usr/lib/python3/dist-packages/pip/_internal/cli/cmdoptions.py", line 24, in <module>
+    from pip._internal.exceptions import CommandError
+  File "/usr/lib/python3/dist-packages/pip/_internal/exceptions.py", line 10, in <module>
+    from pip._vendor.six import iteritems
+  File "/usr/lib/python3/dist-packages/pip/_vendor/__init__.py", line 65, in <module>
+    vendored("cachecontrol")
+  File "/usr/lib/python3/dist-packages/pip/_vendor/__init__.py", line 36, in vendored
+    __import__(modulename, globals(), locals(), level=0)
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/CacheControl-0.12.6-py2.py3-none-any.whl/cachecontrol/__init__.py", line 9, in <module>
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/CacheControl-0.12.6-py2.py3-none-any.whl/cachecontrol/wrapper.py", line 1, in <module>
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/CacheControl-0.12.6-py2.py3-none-any.whl/cachecontrol/adapter.py", line 5, in <module>
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/requests-2.22.0-py2.py3-none-any.whl/requests/__init__.py", line 95, in <module>
+  File "<frozen importlib._bootstrap>", line 991, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 975, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 655, in _load_unlocked
+  File "<frozen importlib._bootstrap>", line 618, in _load_backward_compatible
+  File "<frozen zipimport>", line 259, in load_module
+  File "/usr/share/python-wheels/urllib3-1.25.8-py2.py3-none-any.whl/urllib3/contrib/pyopenssl.py", line 46, in <module>
+  File "/usr/lib/python3/dist-packages/OpenSSL/__init__.py", line 8, in <module>
+    from OpenSSL import crypto, SSL
+  File "/usr/lib/python3/dist-packages/OpenSSL/crypto.py", line 1553, in <module>
+    class X509StoreFlags(object):
+  File "/usr/lib/python3/dist-packages/OpenSSL/crypto.py", line 1571, in X509StoreFlags
+    NOTIFY_POLICY = _lib.X509_V_FLAG_NOTIFY_POLICY
+AttributeError: module 'lib' has no attribute 'X509_V_FLAG_NOTIFY_POLICY'
+/usr/local/bin/grip
+Reading package lists...
+Building dependency tree...
+Reading state information...
+anki is already the newest version (2.1.15+dfsg-1).
+The following packages were automatically installed and are no longer required:
+  gir1.2-goa-1.0 libglfw3 libgnuradio-channels3.8.1 libgnuradio-dtv3.8.1
+  libgnuradio-fec3.8.1 libgnuradio-fosphor3.8.0 libgnuradio-qtgui3.8.1
+  libgnuradio-trellis3.8.1 libgnuradio-video-sdl3.8.1 libgnuradio-vocoder3.8.1
+  libgnuradio-wavelet3.8.1 libgnuradio-zeromq3.8.1
+Use 'sudo apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 172 not upgraded.
+usage: anki [OPTIONS] [file to import]
+
+Anki 2.1.15
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -b BASE, --base BASE  path to base folder
+  -p PROFILE, --profile PROFILE
+                        profile name to load
+  -l LANG, --lang LANG  interface language (en, de, etc)
+Reading package lists...
+Building dependency tree...
+Reading state information...
+anki is already the newest version (2.1.15+dfsg-1).
+The following packages were automatically installed and are no longer required:
+  gir1.2-goa-1.0 libglfw3 libgnuradio-channels3.8.1 libgnuradio-dtv3.8.1
+  libgnuradio-fec3.8.1 libgnuradio-fosphor3.8.0 libgnuradio-qtgui3.8.1
+  libgnuradio-trellis3.8.1 libgnuradio-video-sdl3.8.1 libgnuradio-vocoder3.8.1
+  libgnuradio-wavelet3.8.1 libgnuradio-zeromq3.8.1
+Use 'sudo apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 172 not upgraded.
+usage: anki [OPTIONS] [file to import]
+
+Anki 2.1.15
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -b BASE, --base BASE  path to base folder
+  -p PROFILE, --profile PROFILE
+                        profile name to load
+  -l LANG, --lang LANG  interface language (en, de, etc)
+Reading package lists...
+Building dependency tree...
+Reading state information...
+anki is already the newest version (2.1.15+dfsg-1).
+The following packages were automatically installed and are no longer required:
+  gir1.2-goa-1.0 libglfw3 libgnuradio-channels3.8.1 libgnuradio-dtv3.8.1
+  libgnuradio-fec3.8.1 libgnuradio-fosphor3.8.0 libgnuradio-qtgui3.8.1
+  libgnuradio-trellis3.8.1 libgnuradio-video-sdl3.8.1 libgnuradio-vocoder3.8.1
+  libgnuradio-wavelet3.8.1 libgnuradio-zeromq3.8.1
+Use 'sudo apt autoremove' to remove them.
+0 upgraded, 0 newly installed, 0 to remove and 172 not upgraded.
+usage: anki [OPTIONS] [file to import]
+
+Anki 2.1.15
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -b BASE, --base BASE  path to base folder
+  -p PROFILE, --profile PROFILE
+                        profile name to load
+  -l LANG, --lang LANG  interface language (en, de, etc)
+VERIFY SUCCESS
+
+Install Complete
+VERIFY SUCCESS
+
+Install Complete
+VERIFY SUCCESS
+
+Install Complete
+VERIFY SUCCESS
+
+Install Complete
+[*] Finished at Thu 09 Oct 2025 10:36:53 AM EDT

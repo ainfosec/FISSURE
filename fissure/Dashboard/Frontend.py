@@ -149,6 +149,17 @@ class Dashboard(QtWidgets.QMainWindow):
         self.ui.pushButton_demo.setVisible(False)
         self.stop_demo_flag = False
 
+        # Set Initial Tab Positions
+        self.ui.tabWidget.setCurrentIndex(0)
+        self.ui.tabWidget_tsi.setCurrentIndex(1)
+        self.ui.tabWidget_tsi_configuration.setCurrentIndex(0)
+        self.ui.tabWidget_protocol.setCurrentIndex(0)
+        self.ui.tabWidget_attack_attack.setCurrentIndex(0)
+        self.ui.tabWidget_archive.setCurrentIndex(0)
+        self.ui.tabWidget_archive_download.setCurrentIndex(0)
+        self.ui.tabWidget_sensor_nodes.setCurrentIndex(0)
+        self.ui.tabWidget_library.setCurrentIndex(0)
+
         # Auto Connect HIPRFISR
         self.active_sensor_node = -1  # Needed for Plugin Loading
         if self.backend.settings["auto_connect_hiprfisr"] == True:
@@ -3421,7 +3432,6 @@ def connect_iq_slots(dashboard: Dashboard):
         lambda: IQDataTabSlots._slotIQ_EndiannessChooseClicked(dashboard)
     )
     dashboard.ui.pushButton_iq_endianness.clicked.connect(lambda: IQDataTabSlots._slotIQ_EndiannessClicked(dashboard))
-    ###########################
     dashboard.ui.pushButton_iq_convert_clear.clicked.connect(lambda: IQDataTabSlots._slotIQ_ConvertClearClicked(dashboard))
     dashboard.ui.pushButton_iq_convert_select.clicked.connect(
         lambda: IQDataTabSlots._slotIQ_ConvertSelectClicked(dashboard)
@@ -3434,6 +3444,7 @@ def connect_iq_slots(dashboard: Dashboard):
         lambda: IQDataTabSlots._slotIQ_ConvertChooseClicked(dashboard)
     )
     dashboard.ui.pushButton_iq_convert.clicked.connect(lambda: IQDataTabSlots._slotIQ_ConvertClicked(dashboard))
+    dashboard.ui.pushButton_iq_demod.clicked.connect(lambda: IQDataTabSlots._slotIQ_DemodClicked(dashboard))
 
     # Table Widget
     dashboard.ui.tableWidget_iq_append.horizontalHeader().sectionClicked.connect(

@@ -15,6 +15,8 @@ import time
 from scipy.signal import hilbert, lfilter, butter, filtfilt, sosfilt
 import datetime
 import qasync
+from ..UI_Components import DemodDialog
+from typing import List
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -6975,4 +6977,45 @@ def _slotIQ_ConvertClicked(dashboard: QtCore.QObject):
     dashboard.logger.info("Convert Complete")
 
 
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_DemodClicked(dashboard: QtCore.QObject):
+    """ 
+    Opens a window with the currently loaded signal for applying simple demodulation techniques for viewing bits.
+    """
+    # File Loaded
+    if len(dashboard.ui.label2_iq_file_name.text().split('File:')[-1]) == 0:
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Load an IQ file before plotting by double-clicking the filename or clicking the Load File button.")
+        return
+    
+    # Obtain Signal Information
+    get_filepath = dashboard.ui.label_iq_folder.text() + "/" + dashboard.ui.label2_iq_file_name.text().replace("File: ","")
+    try:
+        get_sample_rate = float(dashboard.ui.textEdit_iq_sample_rate.toPlainText())
+    except:
+        dashboard.logger.error("Invalid sample rate. Provide float value under File Information.")
+        get_sample_rate = 1
+    
+    num_lines = dashboard.iq_matplotlib_widget.axes.lines
+    signal_data = []
+    if len(num_lines) == 1:
+        signal_data = dashboard.iq_matplotlib_widget.axes.lines[0].get_ydata()
+    elif len(num_lines) == 2:
+        I = dashboard.iq_matplotlib_widget.axes.lines[0].get_ydata()
+        Q = dashboard.iq_matplotlib_widget.axes.lines[1].get_ydata()
+        signal_data = [complex(I[x],Q[x]) for x in range(len(I))]
 
+    # Open the Dialog
+    get_value = dashboard.openPopUp("DemodDialog", DemodDialog, get_filepath, get_sample_rate, signal_data)
+
+    # Cancel Clicked
+    if get_value == None:
+        pass
+        
+    # OK Clicked
+    elif len(get_value) > 0:
+        dashboard.ui.plainTextEdit_pd_bit_viewer_bits.setPlainText(get_value)
+        dashboard.ui.tabWidget.setCurrentIndex(2)
+        dashboard.ui.tabWidget_protocol.setCurrentIndex(3)
+        
+    else:
+        pass

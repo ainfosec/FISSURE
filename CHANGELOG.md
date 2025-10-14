@@ -1,6 +1,15 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2025-10-13
+
+Adding simple FM demodulation tool in IQ Data tab.
+
+### Added
+
+- Demod button and dialog in IQ Data tab for obtaining bits from signals
+- Function for initializing tab indices on Dashboard launch
+
 ## 2025-10-06
 
 Updating README roadmap and white papers.
