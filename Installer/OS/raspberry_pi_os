@@ -3175,7 +3175,7 @@ class InstallDialog1(QtWidgets.QDialog, form_class):
             self.radioButton_kali.setChecked(True)
         elif "BackBox" in stdout:  # Check this again
             self.radioButton_backbox_linux_8.setChecked(True)            
-        elif "bookworm" in stdout:
+        elif "bookworm" in stdout or "pixie" in stdout:
             self.radioButton_raspberry_pi_os.setChecked(True)
         elif "Ubuntu 24.04" in stdout:
             self.radioButton_ubuntu24_04.setChecked(True) 
