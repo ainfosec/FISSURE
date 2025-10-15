@@ -313,6 +313,7 @@ programs_raspberry_pi_os.append(('Network Certificates',
 """cd '""" + fissure_directory + """'
 export PYTHONPATH='""" + fissure_directory + """':$PYTHONPATH
 python3 -m pip install tensorflow --break-system-packages
+python3 -m pip install pytak --break-system-packages
 python3 ./fissure/generate_certificates.py
 ########## Verify ##########
 ls '""" + fissure_directory + """/certificates'
