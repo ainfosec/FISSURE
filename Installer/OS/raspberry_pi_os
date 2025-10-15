@@ -298,7 +298,7 @@ bash -c '
 programs_raspberry_pi_os.append(('Meshtastic',
 """sudo apt-get install -y python3-serial
 sudo apt-get install -y python3-protobuf
-sudo apt-get install -y python3-pyserial
+sudo apt-get install -y python3-serial
 sudo python3 -m pip install meshtastic --break-system-packages
 sudo usermod -aG dialout $USER  # log out & in/reboot
 sudo usermod -aG tty $USER
