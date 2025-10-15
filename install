@@ -20,7 +20,8 @@ else
     ubuntu22_04=$(lsb_release -d 2>&1 | grep "Ubuntu 22.04")
     kali23_1=$(lsb_release -d 2>&1 | grep "Kali")
     backbox=$(cat /etc/issue -d 2>&1 | grep "BackBox")
-    raspberry_pi_os=$(lsb_release -d 2>&1 | grep "bookworm")
+    raspberry_pi_os_bookworm=$(lsb_release -d 2>&1 | grep "bookworm")
+    raspberry_pi_os_trixie=$(lsb_release -d 2>&1 | grep "trixie")
     ubuntu24_04=$(lsb_release -d 2>&1 | grep "Ubuntu 24.04")
 fi
 
@@ -94,10 +95,17 @@ then
     installer_file="backbox"
 fi
 
-# Raspberry Pi OS
+# Raspberry Pi OS Bookworm
 if [[ -n "$raspberry_pi_os" ]]
 then
     echo "Raspberry Pi OS (bookworm) detected"
+    installer_file="raspberry_pi_os"
+fi
+
+# Raspberry Pi OS Trixie
+if [[ -n "$raspberry_pi_os_trixie" ]]
+then
+    echo "Raspberry Pi OS (trixie) detected"
     installer_file="raspberry_pi_os"
 fi
 
@@ -166,7 +174,7 @@ then
             fi
               
             # Ubuntu 22.04, Kali 23.1, BackBox, Ubuntu 24.04
-            if [[ -n "$ubuntu22_04" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]] || [[ -n "$raspberry_pi_os" ]] || [[ -n "$parrot_os" ]] || [[ -n "$ubuntu24_04" ]]
+            if [[ -n "$ubuntu22_04" ]] || [[ -n "$kali23_1" ]] || [[ -n "$backbox" ]] || [[ -n "$raspberry_pi_os_bookworm" ]] || [[ -n "$raspberry_pi_os_trixie" ]] || [[ -n "$parrot_os" ]] || [[ -n "$ubuntu24_04" ]]
             then
                 sudo apt-get update
                 sudo apt-get install -y build-essential
