@@ -393,11 +393,21 @@ class SensorNode(object):
             "sensor_node_id": sensor_node_id,
             "alert_text": message
         }
-        msg = {
-            fissure.comms.MessageFields.IDENTIFIER if self.network_type == "IP" else fissure.comms.MessageFields.SOURCE: self.assigned_id,
-            fissure.comms.MessageFields.MESSAGE_NAME: "alertReturn" if self.network_type == "IP" else "alertReturnLT",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS if self.network_type == "IP" else { "sensor_node_id": sensor_node_id, "alert_text": PARAMETERS["alert_text"][:100] },
-        }
+        if self.network_type == "IP":
+            msg = {
+                fissure.comms.MessageFields.IDENTIFIER: self.identifier,
+                fissure.comms.MessageFields.MESSAGE_NAME: "alertReturn",
+                fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+            }
+        elif self.network_type == "Meshtastic":
+            msg = {
+                fissure.comms.MessageFields.SOURCE: self.assigned_id,
+                fissure.comms.MessageFields.MESSAGE_NAME: "alertReturnLT",
+                fissure.comms.MessageFields.PARAMETERS: {
+                    "sensor_node_id": sensor_node_id,
+                    "alert_text": PARAMETERS["alert_text"][:100]
+                }
+            }
         await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
