@@ -19,6 +19,7 @@ sudo apt-get -y install cmake
 sudo apt-get install -y python-setuptools python-dev-is-python3 build-essential
 sudo apt-get install -y curl
 sudo apt-get install -y libssl-dev libffi-dev libsqlite3-dev tk-dev
+sudo apt-get install -y iw
 mkdir -p ~/Installed_by_FISSURE
 cd ~/Installed_by_FISSURE/
 wget https://www.python.org/ftp/python/2.7.18/Python-2.7.18.tgz
