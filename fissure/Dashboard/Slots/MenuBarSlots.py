@@ -309,7 +309,10 @@ def refreshCustomWidgets(dashboard: QtWidgets.QMainWindow):
     dashboard.iq_matplotlib_widget.draw()
     dashboard.mpl_toolbar.setStyleSheet("color:" + dashboard.backend.settings['color4'])
 
-    TSITabSlots._slotTSI_RefreshPlotClicked(dashboard)
+    try:
+        TSITabSlots._tsi_detector_plot_refresh(dashboard, force=True)
+    except Exception:
+        pass
 
 
 @QtCore.pyqtSlot()

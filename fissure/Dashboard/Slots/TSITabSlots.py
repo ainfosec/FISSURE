@@ -49,322 +49,22 @@ from collections import deque
 from matplotlib.collections import LineCollection
 
 
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_DetectorChanged(dashboard: QtCore.QObject):
-    """ 
-    Adjusts default settings for the current detector. FIX: Pull these values from the database
-    """
-    # Sensor Node Hardware Information
-    get_current_hardware = str(dashboard.ui.comboBox_tsi_detector_sweep_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'tsi')
+TSI_DETECTOR_TYPES = [
+    ("rf", "RF"),
+    ("wifi", "Wi-Fi"),
+    ("bluetooth", "Bluetooth"),
+    ("protocol", "Protocol"),
+    ("ml", "ML"),
+]
 
-    # Hardware Utility Functions
-    get_gain = fissure.utils.hardware.getHardwareGain(get_hardware_type, "RX")
-    get_antennas = fissure.utils.hardware.getHardwareAntennas(get_hardware_type, "RX")
-    get_channels = fissure.utils.hardware.getHardwareChannels(get_hardware_type, "RX")
-
-    # Change Settings
-    get_detector = str(dashboard.ui.comboBox_tsi_detector.currentText())
-    if get_detector == 'wideband_x3x0.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-
-            # Select Antenna
-            get_daughterboard = get_hardware_daughterboard
-            if "CBX-120" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-            elif "SBX-120" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-            elif "UBX-160" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-            elif "WBX-120" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-            elif "TwinRX" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(1)
-            else:
-                dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_b2x0.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_hackrf.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_b20xmini.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_rtl2832u.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("2.56e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_limesdr.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_bladerf.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_plutosdr.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_usrp2.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_usrp_n2xx.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_bladerf2.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_usrp_x410.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("20e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-
-            # Select Antenna
-            get_daughterboard = get_hardware_daughterboard
-            if "ZBX" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fg_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_rspduo.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)
-            item1 = dashboard.ui.comboBox_tsi_detector_fg_antenna.model().item(1)
-            item1.setFlags(item1.flags() & ~QtCore.Qt.ItemIsEnabled)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)     
-
-    elif get_detector == 'wideband_rspdx.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)    
-            itemB = dashboard.ui.comboBox_tsi_detector_fg_antenna.model().item(1)
-            itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
-            itemC = dashboard.ui.comboBox_tsi_detector_fg_antenna.model().item(2)
-            itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'wideband_rspdx_r2.py':
-        dashboard.ui.textEdit_tsi_detector_fg_sample_rate.setPlainText("10e6")
-        dashboard.ui.spinBox_tsi_detector_fg_threshold.setValue(-70)
-        dashboard.ui.comboBox_tsi_detector_fg_fft_size.setCurrentIndex(1)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fg_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fg_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fg_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fg_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fg_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fg_antenna.addItems(get_antennas)   
-            itemB = dashboard.ui.comboBox_tsi_detector_fg_antenna.model().item(1)
-            itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
-            itemC = dashboard.ui.comboBox_tsi_detector_fg_antenna.model().item(2)
-            itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-    elif get_detector == 'Simulator':
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(2)
-
-    elif get_detector == 'IQ File':
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(3)
+TSI_DETECTOR_MODES = [
+    ("fixed", "Fixed"),
+    ("sweep", "Sweep"),
+    ("channel_hop", "Channel Hop"),
+    ("lock", "Lock"),
+    ("passive", "Passive"),
+    ("file", "File"),
+]
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -391,442 +91,6 @@ def _slotTSI_ConditionerSettingsSaturationChecked(dashboard: QtCore.QObject):
     # Disable
     else:
         dashboard.ui.comboBox_tsi_conditioner_settings_saturation.setEnabled(False)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_DetectorFixedChanged(dashboard: QtCore.QObject):
-    """ 
-    Adjusts default settings for the current detector.
-    """
-    # Sensor Node Hardware Information
-    get_current_hardware = str(dashboard.ui.comboBox_tsi_detector_fixed_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'tsi')
-    
-    # Hardware Utility Functions
-    get_gain = fissure.utils.hardware.getHardwareGain(get_hardware_type, "RX")
-    get_antennas = fissure.utils.hardware.getHardwareAntennas(get_hardware_type, "RX")
-    get_channels = fissure.utils.hardware.getHardwareChannels(get_hardware_type, "RX")
-
-    # Change Settings
-    get_detector = str(dashboard.ui.comboBox_tsi_detector_fixed.currentText())
-    if get_detector == 'fixed_threshold_x3x0.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentText("1e6")
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-
-            # Select Antenna
-            get_daughterboard = get_hardware_daughterboard
-            if "CBX-120" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-            elif "SBX-120" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-            elif "UBX-160" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-            elif "WBX-120" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-            elif "TwinRX" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(1)
-            else:
-                dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_b2x0.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentText("1e6")
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_hackrf.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentText("1e6")
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_b20xmini.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentText("1e6")
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_rtl2832u.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("102.4")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("0.25e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1.024e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1.536e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1.792e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1.92e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2.048e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2.16e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2.56e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2.88e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("3.2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(7)
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_limesdr.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentText("1e6")
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_bladerf.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentText("1e6")
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_plutosdr.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentText("1e6")
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_usrp2.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentText("1e6")
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_usrp_n2xx.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentText("1e6")
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_bladerf2.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentText("1e6")
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_usrp_x410.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("500e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("400e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("300e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("200e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("100e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("50e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(6)
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-
-            # Select Antenna
-            get_daughterboard = get_hardware_daughterboard
-            if "ZBX" in get_daughterboard:
-                dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-            else:
-                dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_rspduo.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("102")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(2)
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            item1 = dashboard.ui.comboBox_tsi_detector_fixed_antenna.model().item(1)
-            item1.setFlags(item1.flags() & ~QtCore.Qt.ItemIsEnabled)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_rspdx.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("102")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(2)
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            itemB = dashboard.ui.comboBox_tsi_detector_fixed_antenna.model().item(1)
-            itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
-            itemC = dashboard.ui.comboBox_tsi_detector_fixed_antenna.model().item(2)
-            itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_rspdx_r2.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("102")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentIndex(2)
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        if get_gain:
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(get_gain[1])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(get_gain[0])
-            dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(get_gain[2])
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        if get_channels:
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.addItems(get_channels)
-            dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        if get_antennas:
-            dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItems(get_antennas)
-            itemB = dashboard.ui.comboBox_tsi_detector_fixed_antenna.model().item(1)
-            itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
-            itemC = dashboard.ui.comboBox_tsi_detector_fixed_antenna.model().item(2)
-            itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
-
-    elif get_detector == 'fixed_threshold_simulator.py':
-        dashboard.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("102")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("20e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("10e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("5e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("2e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.addItem("1e6")
-        dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.setCurrentText("1e6")
-        dashboard.ui.spinBox_tsi_detector_fixed_threshold.setValue(0)
-        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMaximum(10)
-        dashboard.ui.spinBox_tsi_detector_fixed_gain.setMinimum(0)
-        dashboard.ui.spinBox_tsi_detector_fixed_gain.setValue(2)
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.addItem("N/A")
-        dashboard.ui.comboBox_tsi_detector_fixed_channel.setCurrentIndex(0)
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.clear()
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.addItem("N/A")
-        dashboard.ui.comboBox_tsi_detector_fixed_antenna.setCurrentIndex(0)
-        dashboard.ui.stackedWidget2_tsi_detector_fixed.setCurrentIndex(0)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1198,248 +462,6 @@ def _slotTSI_FE_SettingsCategoryChanged(dashboard: QtCore.QObject):
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_DetectorSweepHardwareChanged(dashboard: QtCore.QObject):
-    """ 
-    Changes TSI sweep detector hardware settings.
-    """
-    # Sensor Node Hardware Information
-    get_current_hardware = str(dashboard.ui.comboBox_tsi_detector_sweep_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'tsi')
-    
-    # Change Settings
-    dashboard.ui.comboBox_tsi_detector.clear()
-
-    # Populate Detector Combobox
-    detector_fgs = fissure.utils.library.getDetectorFlowGraphsFilename(
-        dashboard.backend.library, 
-        "Sweep", 
-        get_hardware_type, 
-        fissure.utils.get_library_version()
-    )
-    dashboard.ui.comboBox_tsi_detector.addItems(detector_fgs)
-    dashboard.ui.comboBox_tsi_detector.addItems(['Simulator', 'IQ File'])
-
-    if get_hardware_type == "Computer":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = 1
-        dashboard.tuning_widget.freq_end_limit = 6000
-
-    elif get_hardware_type == "USRP X3x0":
-        # Tuning Widget Limits
-        if get_hardware_daughterboard == "CBX-120":
-            dashboard.tuning_widget.freq_start_limit = 1200
-            dashboard.tuning_widget.freq_end_limit = 6000
-        elif get_hardware_daughterboard == "SBX-120":
-            dashboard.tuning_widget.freq_start_limit = 400
-            dashboard.tuning_widget.freq_end_limit = 4400
-        elif get_hardware_daughterboard == "UBX-160":
-            dashboard.tuning_widget.freq_start_limit = 10
-            dashboard.tuning_widget.freq_end_limit = 6000
-        elif get_hardware_daughterboard == "WBX-120":
-            dashboard.tuning_widget.freq_start_limit = 25
-            dashboard.tuning_widget.freq_end_limit = 2200
-        elif get_hardware_daughterboard == "TwinRX":
-            dashboard.tuning_widget.freq_start_limit = 10
-            dashboard.tuning_widget.freq_end_limit = 6000
-
-    elif get_hardware_type == "USRP B2x0":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = 70
-        dashboard.tuning_widget.freq_end_limit = 6000
-
-    elif get_hardware_type == "HackRF":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = 1
-        dashboard.tuning_widget.freq_end_limit = 6000
-
-    elif get_hardware_type == "RTL2832U":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = 64
-        dashboard.tuning_widget.freq_end_limit = 1700
-
-    elif get_hardware_type == "802.11x Adapter":
-        dashboard.ui.comboBox_tsi_detector.setCurrentIndex(0)
-
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = 1
-        dashboard.tuning_widget.freq_end_limit = 6000
-
-    elif get_hardware_type == "USRP B20xmini":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = 70
-        dashboard.tuning_widget.freq_end_limit = 6000
-
-    elif get_hardware_type == "LimeSDR":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = 1
-        dashboard.tuning_widget.freq_end_limit = 3800
-
-    elif get_hardware_type == "bladeRF":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = 280
-        dashboard.tuning_widget.freq_end_limit = 3800
-
-    elif get_hardware_type == "Open Sniffer":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = 1
-        dashboard.tuning_widget.freq_end_limit = 6000
-
-    elif get_hardware_type == "PlutoSDR":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = 325
-        dashboard.tuning_widget.freq_end_limit = 3800
-
-    elif get_hardware_type == "USRP2":
-        # Tuning Widget Limits
-        if get_hardware_daughterboard == "XCVR2450":
-            dashboard.tuning_widget.freq_start_limit = 2400
-            dashboard.tuning_widget.freq_end_limit = 6000
-        elif get_hardware_daughterboard == "DBSRX":
-            dashboard.tuning_widget.freq_start_limit = 800
-            dashboard.tuning_widget.freq_end_limit = 2300
-        elif get_hardware_daughterboard == "SBX-40":
-            dashboard.tuning_widget.freq_start_limit = 400
-            dashboard.tuning_widget.freq_end_limit = 4400
-        elif get_hardware_daughterboard == "UBX-40":
-            dashboard.tuning_widget.freq_start_limit = 10
-            dashboard.tuning_widget.freq_end_limit = 6000
-        elif get_hardware_daughterboard == "WBX-40":
-            dashboard.tuning_widget.freq_start_limit = 50
-            dashboard.tuning_widget.freq_end_limit = 2200
-        elif get_hardware_daughterboard == "CBX-40":
-            dashboard.tuning_widget.freq_start_limit = 1200
-            dashboard.tuning_widget.freq_end_limit = 6000
-        elif get_hardware_daughterboard == "LFRX":
-            dashboard.tuning_widget.freq_start_limit = 0
-            dashboard.tuning_widget.freq_end_limit = 30
-        elif get_hardware_daughterboard == "LFTX":
-            dashboard.tuning_widget.freq_start_limit = 0
-            dashboard.tuning_widget.freq_end_limit = 30
-        elif get_hardware_daughterboard == "BasicRX":
-            dashboard.tuning_widget.freq_start_limit = 1
-            dashboard.tuning_widget.freq_end_limit = 250
-        elif get_hardware_daughterboard == "BasicTX":
-            dashboard.tuning_widget.freq_start_limit = 1
-            dashboard.tuning_widget.freq_end_limit = 250
-        elif get_hardware_daughterboard == "TVRX2":
-            dashboard.tuning_widget.freq_start_limit = 50
-            dashboard.tuning_widget.freq_end_limit = 860
-        elif get_hardware_daughterboard == "RFX400":
-            dashboard.tuning_widget.freq_start_limit = 400
-            dashboard.tuning_widget.freq_end_limit = 500
-        elif get_hardware_daughterboard == "RFX900":
-            dashboard.tuning_widget.freq_start_limit = 750
-            dashboard.tuning_widget.freq_end_limit = 1050
-        elif get_hardware_daughterboard == "RFX1200":
-            dashboard.tuning_widget.freq_start_limit = 1150
-            dashboard.tuning_widget.freq_end_limit = 1450
-        elif get_hardware_daughterboard == "RFX1800":
-            dashboard.tuning_widget.freq_start_limit = 1500
-            dashboard.tuning_widget.freq_end_limit = 2100
-        elif get_hardware_daughterboard == "RFX2400":
-            dashboard.tuning_widget.freq_start_limit = 2300
-            dashboard.tuning_widget.freq_end_limit = 2900
-
-    elif get_hardware_type == "USRP N2xx":
-        # Tuning Widget Limits
-        if get_hardware_daughterboard == "XCVR2450":
-            dashboard.tuning_widget.freq_start_limit = 2400
-            dashboard.tuning_widget.freq_end_limit = 6000
-        elif get_hardware_daughterboard == "DBSRX":
-            dashboard.tuning_widget.freq_start_limit = 800
-            dashboard.tuning_widget.freq_end_limit = 2300
-        elif get_hardware_daughterboard == "SBX-40":
-            dashboard.tuning_widget.freq_start_limit = 400
-            dashboard.tuning_widget.freq_end_limit = 4400
-        elif get_hardware_daughterboard == "UBX-40":
-            dashboard.tuning_widget.freq_start_limit = 10
-            dashboard.tuning_widget.freq_end_limit = 6000
-        elif get_hardware_daughterboard == "WBX-40":
-            dashboard.tuning_widget.freq_start_limit = 50
-            dashboard.tuning_widget.freq_end_limit = 2200
-        elif get_hardware_daughterboard == "CBX-40":
-            dashboard.tuning_widget.freq_start_limit = 1200
-            dashboard.tuning_widget.freq_end_limit = 6000
-        elif get_hardware_daughterboard == "LFRX":
-            dashboard.tuning_widget.freq_start_limit = 0
-            dashboard.tuning_widget.freq_end_limit = 30
-        elif get_hardware_daughterboard == "LFTX":
-            dashboard.tuning_widget.freq_start_limit = 0
-            dashboard.tuning_widget.freq_end_limit = 30
-        elif get_hardware_daughterboard == "BasicRX":
-            dashboard.tuning_widget.freq_start_limit = 1
-            dashboard.tuning_widget.freq_end_limit = 250
-        elif get_hardware_daughterboard == "BasicTX":
-            dashboard.tuning_widget.freq_start_limit = 1
-            dashboard.tuning_widget.freq_end_limit = 250
-        elif get_hardware_daughterboard == "TVRX2":
-            dashboard.tuning_widget.freq_start_limit = 50
-            dashboard.tuning_widget.freq_end_limit = 860
-        elif get_hardware_daughterboard == "RFX400":
-            dashboard.tuning_widget.freq_start_limit = 400
-            dashboard.tuning_widget.freq_end_limit = 500
-        elif get_hardware_daughterboard == "RFX900":
-            dashboard.tuning_widget.freq_start_limit = 750
-            dashboard.tuning_widget.freq_end_limit = 1050
-        elif get_hardware_daughterboard == "RFX1200":
-            dashboard.tuning_widget.freq_start_limit = 1150
-            dashboard.tuning_widget.freq_end_limit = 1450
-        elif get_hardware_daughterboard == "RFX1800":
-            dashboard.tuning_widget.freq_start_limit = 1500
-            dashboard.tuning_widget.freq_end_limit = 2100
-        elif get_hardware_daughterboard == "RFX2400":
-            dashboard.tuning_widget.freq_start_limit = 2300
-            dashboard.tuning_widget.freq_end_limit = 2900
-
-    elif get_hardware_type == "bladeRF 2.0":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = 47
-        dashboard.tuning_widget.freq_end_limit = 6000
-
-    elif get_hardware_type == "USRP X410":
-        # Tuning Widget Limits
-        if get_hardware_daughterboard == "ZBX":
-            dashboard.tuning_widget.freq_start_limit = 1
-            dashboard.tuning_widget.freq_end_limit = 7200
-            
-    elif get_hardware_type == "RSPduo":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = .001
-        dashboard.tuning_widget.freq_end_limit = 2000
-        
-    elif get_hardware_type == "RSPdx R2":
-        # Tuning Widget Limits
-        dashboard.tuning_widget.freq_start_limit = .001
-        dashboard.tuning_widget.freq_end_limit = 2000
-    
-    dashboard.ui.comboBox_tsi_detector.setCurrentIndex(0)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_DetectorFixedHardwareChanged(dashboard: QtCore.QObject):
-    """ 
-    Populates fixed detector combobox from database.
-    """
-    # Sensor Node Hardware Information
-    get_current_hardware = str(dashboard.ui.comboBox_tsi_detector_fixed_hardware.currentText())
-    get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'tsi')
-    
-    # Change Settings
-    dashboard.ui.comboBox_tsi_detector_fixed.clear()
-
-    # Populate Detector Combobox
-    detector_fgs = fissure.utils.library.getDetectorFlowGraphsFilename(
-        dashboard.backend.library, 
-        "Fixed", 
-        get_hardware_type, 
-        fissure.utils.get_library_version()
-    )
-    dashboard.ui.comboBox_tsi_detector_fixed.addItems(detector_fgs)
-    dashboard.ui.comboBox_tsi_detector_fixed.addItems(['fixed_threshold_simulator.py'])
-    dashboard.ui.comboBox_tsi_detector_fixed.setCurrentIndex(0)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
 def _slotTSI_ConditionerInputExtensionsAllClicked(dashboard: QtCore.QObject):
     """ 
     Disables the Custom text edit box.
@@ -1455,72 +477,6 @@ def _slotTSI_ConditionerInputExtensionsCustomClicked(dashboard: QtCore.QObject):
     """
     # Enable
     dashboard.ui.textEdit_tsi_conditioner_input_extensions.setEnabled(True)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_ScanPresetItemChanged(dashboard: QtCore.QObject):
-    """ 
-    Changes the values in the scan options table whenever the preset item is changed
-    """
-    if dashboard.ui.listWidget_tsi_scan_presets.count() > 1:  # Don't delete last preset settings
-
-        dashboard.tuning_widget.axes.cla()  # TEST
-
-        # Clear the Table
-        dashboard.ui.tableWidget_tsi_scan_options.clearContents()
-        dashboard.ui.tableWidget_tsi_scan_options.setColumnCount(0)
-
-        # Delete the Text Labels
-        for txt in reversed(dashboard.tuning_widget.axes.texts):
-            if txt.get_position()[1] < 500:
-                txt.remove()
-
-        # Delete the Bands
-        for col in reversed(range(0,len(dashboard.tuning_widget.bands))):
-            dashboard.tuning_widget.bands[col].remove()
-            del dashboard.tuning_widget.bands[col]
-
-        # Add the Values to the Table
-        preset_name = str(dashboard.ui.listWidget_tsi_scan_presets.currentItem().text())
-        values = dashboard.preset_dictionary[preset_name]
-        for col in range(0,len(values[0])):
-            if values[0][col] != 0:
-                # Header
-                dashboard.ui.tableWidget_tsi_scan_options.setColumnCount(dashboard.ui.tableWidget_tsi_scan_options.columnCount()+1)
-                header_item = QtWidgets.QTableWidgetItem("Band " + str(dashboard.ui.tableWidget_tsi_scan_options.columnCount()))
-                header_item.setTextAlignment(QtCore.Qt.AlignCenter)
-                dashboard.ui.tableWidget_tsi_scan_options.setHorizontalHeaderItem(dashboard.ui.tableWidget_tsi_scan_options.columnCount()-1,header_item)
-
-                for row in range(0,len(values)):
-                    # Other Items
-                    new_item = QtWidgets.QTableWidgetItem(values[row][col])
-                    new_item.setTextAlignment(QtCore.Qt.AlignCenter)
-                    dashboard.ui.tableWidget_tsi_scan_options.setItem(row,col,new_item)
-
-                # Draw New Rectangle
-                h = dashboard.tuning_widget.axes.add_patch(patches.Rectangle((float(values[0][col])/10,
-                    (dashboard.tuning_widget.band_height*(len(dashboard.tuning_widget.bands)+1))),
-                        float(values[1][col])/10-float(values[0][col])/10,dashboard.tuning_widget.band_height,facecolor='blue',edgecolor='Black'))
-                dashboard.tuning_widget.bands.append(h)
-
-                # Draw Text Label
-                x_offset = 10
-                band_number = str(dashboard.ui.tableWidget_tsi_scan_options.columnCount())
-                if band_number == "10":
-                    x_offset = 15
-                dashboard.tuning_widget.axes.text(float(values[0][col])/10 - x_offset,(dashboard.tuning_widget.band_height*(len(dashboard.tuning_widget.bands)+1)) - 5,band_number,fontsize=10)
-
-        # Redraw the Plot
-        dashboard.tuning_widget.draw()
-
-        # Resize Table Columns and Rows
-        dashboard.ui.tableWidget_tsi_scan_options.resizeColumnsToContents()
-        dashboard.ui.tableWidget_tsi_scan_options.resizeRowsToContents()
-        dashboard.ui.tableWidget_tsi_scan_options.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_tsi_scan_options.horizontalHeader().setStretchLastSection(True)
-
-        # Enable Remove Band Pushbutton
-        dashboard.ui.pushButton_tsi_remove_band.setEnabled(True)    
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1605,326 +561,6 @@ def _slotTSI_FE_InputLoadFileClicked(dashboard: QtCore.QObject):
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_AddBandClicked(dashboard: QtCore.QObject):
-    """ 
-    Copies the data entered into the Wideband edit boxes to the configuration table and edits the plot
-    """
-    # No More than 10 Bands
-    if dashboard.ui.tableWidget_tsi_scan_options.columnCount() < 10:
-        # Add it to the Table
-        # Header
-        dashboard.ui.tableWidget_tsi_scan_options.setColumnCount(dashboard.ui.tableWidget_tsi_scan_options.columnCount()+1)
-        header_item = QtWidgets.QTableWidgetItem("Band " + str(dashboard.ui.tableWidget_tsi_scan_options.columnCount()))
-        header_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_tsi_scan_options.setHorizontalHeaderItem(dashboard.ui.tableWidget_tsi_scan_options.columnCount()-1,header_item)
-
-        # Start
-        start_value = dashboard.ui.spinBox_tsi_sdr_start.value()
-        #if start_value < 1200:  # Temporary Fix
-        #    start_value = 1200
-        start_item = QtWidgets.QTableWidgetItem(str(start_value))
-        start_item.setTextAlignment(QtCore.Qt.AlignCenter)
-
-        # End
-        end_value = dashboard.ui.spinBox_tsi_sdr_end.value()
-        #if end_value < 1200:  # Temporary Fix
-        #    end_value = 1200
-        end_item = QtWidgets.QTableWidgetItem(str(end_value))
-        end_item.setTextAlignment(QtCore.Qt.AlignCenter)
-
-        # Compare Start and End Frequencies
-        if start_value <= end_value:
-            dashboard.ui.tableWidget_tsi_scan_options.setItem(0,dashboard.ui.tableWidget_tsi_scan_options.columnCount()-1,start_item)
-            dashboard.ui.tableWidget_tsi_scan_options.setItem(1,dashboard.ui.tableWidget_tsi_scan_options.columnCount()-1,end_item)
-        else:
-            dashboard.ui.tableWidget_tsi_scan_options.setItem(0,dashboard.ui.tableWidget_tsi_scan_options.columnCount()-1,end_item)
-            dashboard.ui.tableWidget_tsi_scan_options.setItem(1,dashboard.ui.tableWidget_tsi_scan_options.columnCount()-1,start_item)
-
-        # Step Size
-        step_size_value = dashboard.ui.spinBox_tsi_sdr_step.value()
-        step_size_item = QtWidgets.QTableWidgetItem(str(step_size_value))
-        step_size_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_tsi_scan_options.setItem(2,dashboard.ui.tableWidget_tsi_scan_options.columnCount()-1,step_size_item)
-
-        # Dwell
-        dwell_item = QtWidgets.QTableWidgetItem(str(dashboard.ui.doubleSpinBox_tsi_sdr_dwell.value()))
-        dwell_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_tsi_scan_options.setItem(3,dashboard.ui.tableWidget_tsi_scan_options.columnCount()-1,dwell_item)
-
-        # Resize Table Columns and Rows
-        dashboard.ui.tableWidget_tsi_scan_options.resizeColumnsToContents()
-        dashboard.ui.tableWidget_tsi_scan_options.resizeRowsToContents()
-        dashboard.ui.tableWidget_tsi_scan_options.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_tsi_scan_options.horizontalHeader().setStretchLastSection(True)
-
-        # Set Selection to the Last Column
-        dashboard.ui.tableWidget_tsi_scan_options.setCurrentItem(start_item)
-
-        # Enable Remove Band Pushbutton
-        dashboard.ui.pushButton_tsi_remove_band.setEnabled(True)
-
-        # Refresh Bands
-        _slotTSI_RefreshPlotClicked(dashboard)
-
-        # Enable Zoom
-        dashboard.ui.pushButton_tsi_zoom_in.setEnabled(True)
-
-        # Enable Update TSI Configuration Pushbutton
-        if dashboard.ui.pushButton_tsi_detector_start.text() == "Stop":
-            dashboard.ui.pushButton_tsi_update.setEnabled(True)
-            dashboard.ui.pushButton_tsi_update.setStyleSheet("border: 1px solid darkGray; border-radius: 6px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #ffff00, stop: 1 #d8d800); min-width: 80px;")
-            dashboard.ui.label2_tsi_update_configuration.setVisible(True)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_RemoveBandClicked(dashboard: QtCore.QObject):
-    """ 
-    Removes the selected column from the Wideband SDR Configuration table and edits the plot
-    """
-    # At Least One Band
-    if dashboard.ui.tableWidget_tsi_scan_options.columnCount() > 0:
-        # Delete Column from Table
-        get_column = dashboard.ui.tableWidget_tsi_scan_options.currentColumn()
-        dashboard.ui.tableWidget_tsi_scan_options.removeColumn(get_column)
-
-        # Renumber the Bands in the Table
-        for col in range(get_column,dashboard.ui.tableWidget_tsi_scan_options.columnCount()):
-            header_item = QtWidgets.QTableWidgetItem("Band " + str(col+1))
-            header_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            dashboard.ui.tableWidget_tsi_scan_options.setHorizontalHeaderItem(col,header_item)
-
-        # Resize Table Columns and Rows
-        dashboard.ui.tableWidget_tsi_scan_options.resizeColumnsToContents()
-        dashboard.ui.tableWidget_tsi_scan_options.resizeRowsToContents()
-        dashboard.ui.tableWidget_tsi_scan_options.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_tsi_scan_options.horizontalHeader().setStretchLastSection(True)
-
-        # Refresh the Plot
-        _slotTSI_RefreshPlotClicked(dashboard)
-
-        # Disable the Pushbuttons
-        if dashboard.ui.tableWidget_tsi_scan_options.columnCount() == 0:
-            dashboard.ui.pushButton_tsi_remove_band.setEnabled(False)
-            dashboard.ui.pushButton_tsi_update.setEnabled(False)
-            dashboard.ui.pushButton_tsi_zoom_in.setEnabled(False)
-
-        # Update TSI Configuration Pushbutton Color
-        if dashboard.ui.pushButton_tsi_detector_start.text() == "Stop":
-            dashboard.ui.pushButton_tsi_update.setStyleSheet("border: 1px solid darkGray; border-radius: 6px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #ffff00, stop: 1 #d8d800); min-width: 80px;")
-            dashboard.ui.label2_tsi_update_configuration.setVisible(True)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_SavePresetClicked(dashboard: QtCore.QObject):
-    """ 
-    Creates a new preset from the table contents and adds it to the preset list
-    """
-    # Create an Empty 2D Array
-    value_matrix = [[0 for x in range(10)] for x in range(dashboard.ui.tableWidget_tsi_scan_options.rowCount())]
-
-    # Get the Values from the Table
-    for col in range(0,dashboard.ui.tableWidget_tsi_scan_options.columnCount()):
-        for row in range(0,dashboard.ui.tableWidget_tsi_scan_options.rowCount()):
-            value_matrix[row][col] = dashboard.ui.tableWidget_tsi_scan_options.item(row,col).text()
-
-    # Add the Values to the Dictionary and Table
-    dashboard.preset_count = dashboard.preset_count + 1
-    preset_name = "Preset " + str(dashboard.preset_count)
-    dashboard.preset_dictionary[preset_name] = value_matrix  # Dictionary
-    dashboard.ui.listWidget_tsi_scan_presets.addItem(preset_name)  # Table
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_DeletePresetClicked(dashboard: QtCore.QObject):
-    """ 
-    Deletes the currently selected preset from the list
-    """
-    # Delete from the Table
-    for item in dashboard.ui.listWidget_tsi_scan_presets.selectedItems():
-        dashboard.ui.listWidget_tsi_scan_presets.takeItem(dashboard.ui.listWidget_tsi_scan_presets.row(item))
-
-        # Delete from Memory
-        del dashboard.preset_dictionary[str(item.text())]
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_ClearDetectorPlotClicked(dashboard: QtCore.QObject):
-    """ 
-    Clears the points on the detector plot.
-    """
-    # Clear the Narrowband Array
-    rgb = tuple(int(dashboard.backend.settings['color2'].lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
-    background_color = (float(rgb[0])/255, float(rgb[1])/255, float(rgb[2])/255)
-    dashboard.wideband_data = np.ones((dashboard.wideband_height,dashboard.wideband_width,3))*(background_color)
-
-    # Plot and Draw Incoming Wideband Signals
-    dashboard.matplotlib_widget.axes.cla()
-    dashboard.matplotlib_widget.axes.imshow(dashboard.wideband_data, cmap='rainbow', clim=(-100,30))
-    dashboard.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=dashboard.wideband_height,background_color=dashboard.backend.settings['color1'],face_color=dashboard.backend.settings['color5'],text_color=dashboard.backend.settings['color4'])
-    dashboard.matplotlib_widget.draw()
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_RefreshPlotClicked(dashboard: QtCore.QObject):
-    """ 
-    Redraws the search band plot based on values from the table.
-    """
-    # Configure Detector Axes
-    dashboard.wideband_zoom_start = 0
-    dashboard.wideband_zoom_end = 6000e6
-    _slotTSI_ClearDetectorPlotClicked(dashboard)
-    dashboard.wideband_zoom = False
-    dashboard.matplotlib_widget.configureAxes(title='Detector History',xlabel='Frequency (MHz)',ylabel='Time Elapsed (s)', xlabels=['0', '','1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],ylim=dashboard.wideband_height,background_color=dashboard.backend.settings['color1'],face_color=dashboard.backend.settings['color5'],text_color=dashboard.backend.settings['color4'])
-    dashboard.matplotlib_widget.draw()
-
-    # Delete the Bands
-    for n in reversed(range(0,len(dashboard.tuning_widget.bands))):
-        dashboard.tuning_widget.bands[n].remove()
-        del dashboard.tuning_widget.bands[n]
-
-    # Delete the Labels
-    for n in reversed(range(0,len(dashboard.tuning_widget.axes.texts))):
-        dashboard.tuning_widget.axes.texts[n].remove()
-
-    # Redraw the Bands in the Table
-    for col in range(0,dashboard.ui.tableWidget_tsi_scan_options.columnCount()):
-
-        # Draw Band Rectangle
-        start_value = float(str(dashboard.ui.tableWidget_tsi_scan_options.item(0,col).text()))
-        end_value = float(str(dashboard.ui.tableWidget_tsi_scan_options.item(1,col).text()))
-
-        h = dashboard.tuning_widget.axes.add_patch(patches.Rectangle((start_value/10,
-            (dashboard.tuning_widget.band_height*(len(dashboard.tuning_widget.bands)+1))),
-                end_value/10-start_value/10,dashboard.tuning_widget.band_height,facecolor="blue",edgecolor="Black"))
-        dashboard.tuning_widget.bands.append(h)
-
-        # Draw Text Label
-        x_offset = 10
-        band_number = str(col+1)
-        if band_number == "10":
-            x_offset = 15
-
-        if start_value <= end_value:  # Makes it appear next to the left-most value
-            x_pos = start_value
-        else:
-            x_pos = end_value
-
-        dashboard.tuning_widget.axes.text(x_pos/10 - x_offset,(dashboard.tuning_widget.band_height*(len(dashboard.tuning_widget.bands)+1)) - 5,band_number,fontsize=10)
-        #dashboard.tuning_widget.axes.text(-10,(dashboard.tuning_widget.band_height*(len(dashboard.tuning_widget.bands)+1)) - 5,band_number,fontsize=10)
-
-    dashboard.tuning_widget.configureAxes(title='Tuning',xlabel='Frequency (MHz)',ylabel='',ylabels='',ylim=400,background_color=dashboard.backend.settings['color2'],face_color=dashboard.backend.settings['color5'],text_color=dashboard.backend.settings['color4'])
-    dashboard.tuning_widget.draw()
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_ZoomInClicked(dashboard: QtCore.QObject):
-    """ 
-    Zooms in on the currently configured SDR bands.
-    """
-    # Get Min and Max Frequency
-    start_frequency = []
-    end_frequency = []
-
-    for col in range(0,dashboard.ui.tableWidget_tsi_scan_options.columnCount()):
-        start_frequency.append(int(int(dashboard.ui.tableWidget_tsi_scan_options.item(0,col).text())*1e6))
-        end_frequency.append(int(int(dashboard.ui.tableWidget_tsi_scan_options.item(1,col).text())*1e6))
-
-    min_freq = min(start_frequency)
-    max_freq = float(max(end_frequency))
-
-    # Round Frequencies by 100 MHz
-    min_freq = min_freq - (min_freq%100e6)
-    if (max_freq%100e6) != 0:
-        max_freq = max_freq + 100e6 - (max_freq%100e6)
-
-    # Resize the Plot Window
-    dashboard.tuning_widget.configureAxesZoom(xmin=min_freq,xmax=max_freq)
-
-    # Resize the Detector Window
-    _slotTSI_ClearDetectorPlotClicked(dashboard)
-    dashboard.wideband_zoom_start = min_freq
-    dashboard.wideband_zoom_end = max_freq
-    dashboard.wideband_zoom = True
-    dashboard.matplotlib_widget.configureAxesZoom1(dashboard.wideband_zoom_start, dashboard.wideband_zoom_end, dashboard.wideband_height)
-
-    #dashboard.matplotlib_widget.configureAxesZoom1(xmin=min_freq,xmax=max_freq)
-    dashboard.matplotlib_widget.draw()
-
-    # Delete the Band Labels
-    for n in reversed(range(0,len(dashboard.tuning_widget.axes.texts))):
-        dashboard.tuning_widget.axes.texts[n].remove()
-
-    # Draw Text Label
-    axis_scale = (dashboard.tuning_widget.axes.get_xlim()[1] - dashboard.tuning_widget.axes.get_xlim()[0])/600
-    x_offset = 10 * (1*axis_scale)
-
-    for col in range(0,dashboard.ui.tableWidget_tsi_scan_options.columnCount()):
-        band_number = str(col+1)
-        if band_number == "10":
-            x_offset = 15
-        if min_freq <= max_freq:  # Makes it appear next to the left-most value
-            x_pos = start_frequency[col]/1e6
-        else:
-            x_pos = end_frequency[col]/1e6
-
-        dashboard.tuning_widget.axes.text(x_pos/10 - x_offset,(dashboard.tuning_widget.band_height*(col+2)) - 5,band_number,fontsize=10)
-
-    dashboard.tuning_widget.draw()
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_AdvancedSettingsClicked(dashboard: QtCore.QObject):
-    """ 
-    Displays the advanced settings for the currently selected TSI detector.
-    """
-    # Switch to Advanced Settings
-    fg_detectors = [
-        'wideband_x3x0.py',
-        'wideband_b2x0.py',
-        'wideband_hackrf.py',
-        'wideband_b20xmini.py',
-        'wideband_rtl2832u.py',
-        'wideband_limesdr.py',
-        'wideband_bladerf.py',
-        'wideband_plutosdr.py',
-        'wideband_usrp2.py',
-        'wideband_usrp_n2xx.py',
-        'wideband_bladerf2.py',
-        'wideband_usrp_x410.py',
-        'wideband_rspduo.py',
-        'wideband_rspdx.py',
-        'wideband_rspdx_r2.py'
-    ]
-
-    # Flow Graph Detectors
-    if str(dashboard.ui.comboBox_tsi_detector.currentText()) in fg_detectors:
-        dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(1)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_Back1_Clicked(dashboard: QtCore.QObject):
-    """ 
-    Goes back to the TSI search band settings.
-    """
-    # Go Back
-    dashboard.ui.stackedWidget1_tsi_detector.setCurrentIndex(0)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_DetectorIQ_FileBrowseClicked(dashboard: QtCore.QObject):
-    """ 
-    Chooses an IQ file for detection.
-    """
-    # Look for a File
-    default_directory = fissure.utils.IQ_RECORDINGS_DIR
-    fname = QtWidgets.QFileDialog.getOpenFileName(None,"Select IQ File...", default_directory, filter="All Files (*)")[0]
-
-    # Valid File
-    if fname != "":
-        dashboard.ui.textEdit_tsi_detector_iq_file_file.setPlainText(fname)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
 def _slotTSI_DetectorSearchClicked(dashboard: QtCore.QObject):
     """ 
     Switches to the Search tab and copies the selected frequency.
@@ -1947,32 +583,6 @@ def _slotTSI_DetectorSearchClicked(dashboard: QtCore.QObject):
         # Change Tabs
         dashboard.ui.tabWidget_library.setCurrentIndex(2)  # Search
         dashboard.ui.tabWidget.setCurrentIndex(7)  # Library
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_DetectorCSV_FileBrowseClicked(dashboard: QtCore.QObject):
-    """ 
-    Selects a CSV file for the TSI detector simulator.
-    """
-    # Look for a File
-    default_directory = os.path.join(fissure.utils.TOOLS_DIR, "TSI_Detector_Sim_Data")
-    fname = QtWidgets.QFileDialog.getOpenFileName(None,"Select CSV File...", default_directory, filter="CSV Files (*.csv)")[0]
-
-    # Valid File
-    if fname != "":
-        dashboard.ui.textEdit_tsi_detector_csv_file.setPlainText(fname)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_DetectorCSV_FileEditClicked(dashboard: QtCore.QObject):
-    """ 
-    Opens the CSV file selected for the TSI detector simulator.
-    """
-    # Issue the Command
-    csv_filepath = str(dashboard.ui.textEdit_tsi_detector_csv_file.toPlainText())
-    if len(csv_filepath) > 0:
-        command_text = 'libreoffice ' + csv_filepath + ' &'
-        proc = subprocess.Popen(command_text, shell=True)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -2936,52 +1546,14 @@ def _slotTSI_FE_ResultsRemoveColClicked(dashboard: QtCore.QObject):
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTSI_ClearWidebandListClicked(dashboard: QtCore.QObject):
     """
-    Clears the TSI detector results list.
-
-    In Fixed detector mode, also clears the raster points without resetting
-    elapsed operation time. In Sweep mode, preserves the existing backend
-    wideband-list clear behavior.
+    Clears the unified TSI detector results list and detector plot points.
     """
-    for table in _tsi_fixed_results_tables(dashboard):
+    for table in _tsi_detector_results_tables(dashboard):
         table.clearContents()
         table.setRowCount(0)
 
-    if getattr(dashboard, "tsi_fixed_detector_running", False) or hasattr(dashboard, "tsi_fixed_plot_events"):
-        _tsi_fixed_plot_clear_points(dashboard)
-
-    await dashboard.backend.clearWidebandList()
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotTSI_UpdateTSI_Clicked(dashboard: QtCore.QObject):
-    """ 
-    Signals to HIPRFISR to update the TSI settings
-    """
-    # Hide Update Configuration Label
-    dashboard.ui.label2_tsi_update_configuration.setVisible(False)
-    dashboard.ui.pushButton_tsi_update.setStyleSheet("")
-
-    # Refresh the Plot
-    _slotTSI_RefreshPlotClicked(dashboard)
-
-    # Zoom In
-    _slotTSI_ZoomInClicked(dashboard)
-
-    # Gather the Information
-    start_frequency = []
-    end_frequency = []
-    step_size = []
-    dwell_time = []
-    detector_port = dashboard.backend.settings["tsi_pub_port_id"]
-
-    for col in range(0,dashboard.ui.tableWidget_tsi_scan_options.columnCount()):
-        start_frequency.append(str(int(int(dashboard.ui.tableWidget_tsi_scan_options.item(0,col).text())*1e6)))
-        end_frequency.append(str(int(int(dashboard.ui.tableWidget_tsi_scan_options.item(1,col).text())*1e6)))
-        step_size.append(str(int(int(dashboard.ui.tableWidget_tsi_scan_options.item(2,col).text())*1e6)))
-        dwell_time.append(str(dashboard.ui.tableWidget_tsi_scan_options.item(3,col).text()))
-
-    # Send the Message
-    await dashboard.backend.updateConfiguration(dashboard.selected_node_uid, start_frequency, end_frequency, step_size, dwell_time, detector_port)
+    if hasattr(dashboard, "tsi_detector_plot_events"):
+        _tsi_detector_plot_clear_points(dashboard)
 
 
 def _tsi_blacklist_ranges_mhz(dashboard: QtCore.QObject):
@@ -3087,7 +1659,6 @@ async def _slotTSI_BlacklistRemoveClicked(dashboard: QtCore.QObject):
 
         if dashboard.ui.listWidget_tsi_blacklist.count() == 0:
             dashboard.ui.pushButton_tsi_blacklist_remove.setEnabled(False)
-            dashboard.ui.pushButton_tsi_update.setEnabled(False)
 
         return
 
@@ -3097,1107 +1668,6 @@ async def _slotTSI_BlacklistRemoveClicked(dashboard: QtCore.QObject):
 
     if dashboard.ui.listWidget_tsi_blacklist.count() == 0:
         dashboard.ui.pushButton_tsi_blacklist_remove.setEnabled(False)
-        dashboard.ui.pushButton_tsi_update.setEnabled(False)
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotTSI_DetectorStartClicked(dashboard: QtCore.QObject):
-    """ 
-    Toggles the TSI sweep detector on and off.
-    """
-    # Turn off TSI Detector
-    if dashboard.ui.pushButton_tsi_detector_start.text() == "Stop":
-        # Send the Message
-        await dashboard.backend.stopTSI_Detector(dashboard.selected_node_uid)
-        if dashboard.selected_node_uid:
-            # dashboard.statusbar_text[dashboard.selected_node_uid][1] = "Not Running"  # TODO
-            dashboard.refreshStatusBarText()
-        dashboard.ui.label2_tsi_detector.setText("Detector - Not Running")
-        dashboard.ui.label2_tsi_detector.raise_()
-
-        # Change the Button Text
-        dashboard.ui.pushButton_tsi_detector_start.setText("Start")
-
-        # Update the Labels
-        dashboard.ui.label2_tsi_current_band.setText("")
-        dashboard.ui.label2_tsi_current_frequency.setText("")
-
-        # Disable Update TSI Configuration Pushbutton
-        dashboard.ui.pushButton_tsi_update.setEnabled(False)
-        dashboard.ui.pushButton_tsi_update.setStyleSheet("")
-
-        # Enable Comboboxes
-        dashboard.ui.comboBox_tsi_detector_sweep_hardware.setEnabled(True)
-        dashboard.ui.comboBox_tsi_detector.setEnabled(True)
-
-        # Hide Update Configuration Label
-        dashboard.ui.label2_tsi_update_configuration.setVisible(False)
-
-        # Refresh Axes
-        #_slotTSI_RefreshPlotClicked(dashboard)
-
-        # Enable the Advanced Options
-        dashboard.ui.frame_tsi_detector_settings1.setEnabled(True)
-
-    # Turn on TSI Detector
-    elif dashboard.ui.pushButton_tsi_detector_start.text() == "Start":
-        # Get Sensor Node IP Address
-        get_sensor_node_ip = dashboard.selected_node_ip
-        
-        # Sensor Node Hardware Information
-        get_current_hardware = str(dashboard.ui.comboBox_tsi_detector_sweep_hardware.currentText())
-        get_hardware_type, get_hardware_uid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'tsi')
-    
-        # Get Detector
-        get_detector = str(dashboard.ui.comboBox_tsi_detector.currentText())
-        detector_port = dashboard.backend.settings["tsi_pub_port_id"]
-
-        # IQ File is Different
-        if get_detector == "IQ File":
-            # Get Variable Names and Values
-            variable_names = ['rx_freq','sample_rate', 'threshold', 'fft_size','filepath']
-            get_sample_rate = str(dashboard.ui.textEdit_tsi_detector_iq_file_sample_rate.toPlainText())
-            get_frequency = str(dashboard.ui.textEdit_tsi_detector_iq_file_frequency.toPlainText())
-            get_threshold = str(dashboard.ui.spinBox_tsi_detector_iq_file_threshold.value())
-            get_fft_size = str(dashboard.ui.comboBox_tsi_detector_iq_file_fft_size.currentText())
-            get_filepath = str(dashboard.ui.textEdit_tsi_detector_iq_file_file.toPlainText())
-            variable_values = [get_frequency, get_sample_rate, get_threshold, get_fft_size, get_filepath]
-            
-            # Sensor Node IP Address
-            variable_names.append('sensor_node_ip_address')
-            variable_values.append(get_sensor_node_ip)
-
-            # Valid Filepath
-            if get_filepath == "":
-                # msgBox = MyMessageBox(my_text = " Choose an IQ file.", height = 75, width = 140)
-                # msgBox.exec_()
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Choose an IQ file.")
-                return
-
-        elif get_detector == "Simulator":
-            # Get Variable Names and Values
-            variable_names = ['filepath']
-            get_filepath = str(dashboard.ui.textEdit_tsi_detector_csv_file.toPlainText())
-            variable_values = [get_filepath]
-            
-            # Sensor Node IP Address
-            variable_names.append('sensor_node_ip_address')
-            variable_values.append(get_sensor_node_ip)
-
-            # Valid Filepath
-            if get_filepath == "":
-                # msgBox = MyMessageBox(my_text = " Choose a CSV file.", height = 75, width = 140)
-                # msgBox.exec_()
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Choose a CSV file.")
-                return
-
-        else:
-            # No Hardware Selected
-            if len(get_hardware_ip) == 0 and len(get_hardware_serial) == 0 \
-                and (('x3x0' in get_detector) or ('b2x0' in get_detector) or ('x410' in get_detector)):
-
-                error_text = " Fill out the IP address or serial number by clicking the TSI hardware button."
-
-                # Create a Dialog Window
-                # msgBox = MyMessageBox(my_text = error_text, height = 100, width = 510)
-                # msgBox.exec_()
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, error_text)
-                return
-
-            # Valid Hardware
-            else:
-                # Get Variable Names and Values
-                variable_names = ['rx_freq','sample_rate', 'threshold', 'fft_size','gain','channel','antenna']
-                get_sample_rate = str(dashboard.ui.textEdit_tsi_detector_fg_sample_rate.toPlainText())
-                get_threshold = str(dashboard.ui.spinBox_tsi_detector_fg_threshold.value())
-                get_fft_size = str(dashboard.ui.comboBox_tsi_detector_fg_fft_size.currentText())
-                get_gain = str(dashboard.ui.spinBox_tsi_detector_fg_gain.value())
-                get_channel = str(dashboard.ui.comboBox_tsi_detector_fg_channel.currentText())
-                get_antenna = str(dashboard.ui.comboBox_tsi_detector_fg_antenna.currentText())
-                variable_values = ['1.2e9',get_sample_rate, get_threshold, get_fft_size, get_gain, get_channel, get_antenna]
-
-                # Hardware IP Address
-                variable_names.append('ip_address')
-                variable_values.append(get_hardware_ip)
-                
-                # Sensor Node IP Address
-                variable_names.append('sensor_node_ip_address')
-                variable_values.append(get_sensor_node_ip)
-
-                # Hardware Serial
-                if len(get_hardware_serial) > 0:
-                    if get_hardware_type == "HackRF":
-                        get_serial = get_hardware_serial
-                    elif get_hardware_type == "bladeRF":
-                        get_serial = get_hardware_serial
-                    elif get_hardware_type == "bladeRF 2.0":
-                        get_serial = get_hardware_serial
-                    elif get_hardware_type == "RSPduo":
-                        get_serial = get_hardware_serial
-                    elif get_hardware_type == "RSPdx":
-                        get_serial = get_hardware_serial
-                    elif get_hardware_type == "RSPdx R2":
-                        get_serial = get_hardware_serial
-                    else:
-                        get_serial = 'serial=' + get_hardware_serial
-                else:
-                    if get_hardware_type == "HackRF":
-                        get_serial = ""
-                    elif get_hardware_type == "bladeRF":
-                        get_serial = "0"
-                    elif get_hardware_type == "bladeRF 2.0":
-                        get_serial = "0"
-                    elif get_hardware_type == "RSPduo":
-                        get_serial = "0"
-                    elif get_hardware_type == "RSPdx":
-                        get_serial = "0"
-                    elif get_hardware_type == "RSPdx R2":
-                        get_serial = "0"
-                    else:
-                        get_serial = "False"
-                variable_names.append('serial')
-                variable_values.append(get_serial)
-
-        # Disable Comboboxes
-        dashboard.ui.comboBox_tsi_detector_sweep_hardware.setEnabled(False)
-        dashboard.ui.comboBox_tsi_detector.setEnabled(False)
-
-        # Send the Message
-        await dashboard.backend.startTSI_Detector(dashboard.selected_node_uid, get_detector, variable_names, variable_values, detector_port)
-        if dashboard.selected_node_uid:
-            # dashboard.statusbar_text[dashboard.selected_node_uid][1] = "Running TSI"  # TODO
-            dashboard.refreshStatusBarText()
-        dashboard.ui.label2_tsi_detector.setText("Detector - Running")
-        dashboard.ui.label2_tsi_detector.raise_()
-
-        # Change the Button Text
-        dashboard.ui.pushButton_tsi_detector_start.setText("Stop")
-
-        # Enable Update TSI Configuration Pushbutton
-        if dashboard.ui.tableWidget_tsi_scan_options.columnCount() > 0:
-            # Keep Update Button Disabled for Simulator and IQ File
-            if not ((str(dashboard.ui.comboBox_tsi_detector.currentText()) == "Simulator") or (str(dashboard.ui.comboBox_tsi_detector.currentText()) == "IQ File")):
-                dashboard.ui.pushButton_tsi_update.setEnabled(True)
-                dashboard.ui.pushButton_tsi_update.setStyleSheet("border: 1px solid darkGray; border-radius: 6px; background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,stop: 0 #ffff00, stop: 1 #d8d800); min-width: 80px;")
-
-        # Show Update Configuration Label
-        if (str(dashboard.ui.comboBox_tsi_detector.currentText()) == "Simulator") or (str(dashboard.ui.comboBox_tsi_detector.currentText()) == "IQ File"):
-            dashboard.ui.label2_tsi_update_configuration.setVisible(False)
-        else:
-            dashboard.ui.label2_tsi_update_configuration.setVisible(True)
-
-        # Disable the Advanced Options
-        dashboard.ui.frame_tsi_detector_settings1.setEnabled(False)
-
-        # Start Plotting
-        loop = asyncio.get_event_loop()
-        loop.run_in_executor(None, detectorPlotLoop, dashboard)
-
-
-def detectorPlotLoop(dashboard: QtCore.QObject):
-    """
-    Continously loops to plot the detector waterfall plot when the sweep detector is active.
-
-    Fixed detector plotting is handled separately by the fixed detector raster helpers.
-    """
-    # Plot and Draw Incoming Wideband Signals When Running Detector
-    total_time = 0
-    loop_time_interval = 1  # in seconds
-    wideband_time_interval = 1
-
-    while (
-        dashboard.ui.pushButton_tsi_detector_start.text() == "Stop"
-        and dashboard.all_closed_down == False
-    ):
-        # Single Loop Start Time
-        start_time = time.time()
-
-        # Update Start/End Frequency Spin Boxes
-        if dashboard.tuning_widget.needs_update == True:
-            dashboard.ui.spinBox_tsi_sdr_start.setValue(int(dashboard.tuning_widget.first_click))
-            dashboard.ui.spinBox_tsi_sdr_end.setValue(int(dashboard.tuning_widget.second_click))
-            dashboard.tuning_widget.needs_update = False
-
-        # Plot
-        dashboard.matplotlib_widget.axes.cla()
-        dashboard.matplotlib_widget.axes.imshow(
-            dashboard.wideband_data,
-            cmap='rainbow',
-            clim=(-100, 30),
-            extent=[0, 1201, 801, 0],
-        )
-
-        if dashboard.wideband_zoom == True:
-            dashboard.matplotlib_widget.configureAxesZoom1(
-                dashboard.wideband_zoom_start,
-                dashboard.wideband_zoom_end,
-                dashboard.wideband_height,
-            )
-        else:
-            dashboard.matplotlib_widget.configureAxes(
-                title='Detector History',
-                xlabel='Frequency (MHz)',
-                ylabel='Time Elapsed (s)',
-                xlabels=['0', '', '1000', '', '2000', '', '3000', '', '4000', '', '5000', '', '6000'],
-                ylabels=['0', '5', '10', '15', '20', '25', '30', '35', '40'],
-                ylim=dashboard.wideband_height,
-                background_color=dashboard.backend.settings['color1'],
-                face_color=dashboard.backend.settings['color5'],
-                text_color=dashboard.backend.settings['color4'],
-            )
-
-        dashboard.matplotlib_widget.draw()
-
-        # Shift Wideband Rows Down
-        if (total_time % wideband_time_interval == 0) and (total_time != 0):
-            # Wideband Detector Background Color
-            rgb = tuple(
-                int(dashboard.backend.settings['color2'].lstrip('#')[i:i + 2], 16)
-                for i in (0, 2, 4)
-            )
-            background_color = (
-                float(rgb[0]) / 255,
-                float(rgb[1]) / 255,
-                float(rgb[2]) / 255,
-            )
-
-            shift = 20
-            dashboard.wideband_data[
-                shift:dashboard.wideband_height - 1,
-                0:dashboard.wideband_width - 1,
-            ] = dashboard.wideband_data[
-                0:dashboard.wideband_height - 1 - shift,
-                0:dashboard.wideband_width - 1,
-            ]
-
-            dashboard.wideband_data[
-                0:shift,
-                0:dashboard.wideband_width - 1,
-            ] = background_color
-
-        # Update the Total Time
-        total_time = total_time + loop_time_interval
-
-        # Sleep the Remainder of the Time Interval
-        time_difference = loop_time_interval - (time.time() - start_time)
-        if time_difference > 0:
-            time.sleep(time_difference)
-
-        time.sleep(1)
-
-
-def _tsi_fixed_results_tables(dashboard: QtCore.QObject):
-    return [
-        dashboard.ui.tableWidget1_tsi_wideband,
-        dashboard.ui.tableWidget_tsi_conditioner_input_detector,
-    ]
-
-
-def _tsi_fixed_min_interval(dashboard: QtCore.QObject) -> float:
-    widget = getattr(
-        dashboard.ui,
-        "doubleSpinBox_tsi_detector_fixed_min_interval",
-        None,
-    )
-
-    if widget is None:
-        return 1.0
-
-    try:
-        return max(1.0, float(widget.value()))
-    except Exception:
-        return 1.0
-
-
-def _tsi_fixed_run_mode(dashboard: QtCore.QObject) -> str:
-    checkbox = getattr(dashboard.ui, "checkBox_tsi_detector_fixed_gui", None)
-
-    if selected_node_is_local(dashboard):
-        if checkbox is not None and checkbox.isChecked():
-            return "gui"
-
-    return "headless"
-
-
-def update_tsi_fixed_detector_node_gate(dashboard: QtCore.QObject):
-    """
-    Shows the Fixed detector controls only when a selected Sensor Node exists
-    and is currently connected.
-
-    stackedWidget_tsi_detector_fixed:
-        page 0 = normal Fixed detector controls
-        page 1 = no Sensor Node selected / unavailable empty-state page
-    """
-    selected_uid = getattr(dashboard, "selected_node_uid", "") or ""
-    has_selected_node = bool(selected_uid)
-
-    if has_selected_node:
-        node_states = getattr(dashboard, "node_states", {}) or {}
-        node_state = node_states.get(selected_uid)
-
-        # If we have a state record and it explicitly says disconnected,
-        # treat the node as unavailable. If there is no state yet, allow it:
-        # recallSettingsReturn just selected it and populated settings.
-        if isinstance(node_state, dict) and node_state.get("connected") is False:
-            has_selected_node = False
-
-    stack = getattr(dashboard.ui, "stackedWidget_tsi_detector_fixed", None)
-    if stack is not None:
-        stack.setCurrentIndex(0 if has_selected_node else 1)
-
-    # If the detector is already running, leave Stop/control state alone.
-    if getattr(dashboard, "tsi_fixed_detector_running", False):
-        return
-
-    start_button = getattr(dashboard.ui, "pushButton_tsi_detector_fixed_start", None)
-    if start_button is not None:
-        start_button.setEnabled(has_selected_node)
-        start_button.setText("Start")
-
-    settings_frame = getattr(dashboard.ui, "frame_tsi_detector_fixed_settings1", None)
-    if settings_frame is not None:
-        settings_frame.setEnabled(has_selected_node)
-
-    hardware_combo = getattr(dashboard.ui, "comboBox_tsi_detector_fixed_hardware", None)
-    if hardware_combo is not None:
-        hardware_combo.setEnabled(has_selected_node)
-
-    detector_combo = getattr(dashboard.ui, "comboBox_tsi_detector_fixed", None)
-    if detector_combo is not None:
-        detector_combo.setEnabled(has_selected_node)
-
-    gui_checkbox = getattr(dashboard.ui, "checkBox_tsi_detector_fixed_gui", None)
-    if gui_checkbox is not None and not has_selected_node:
-        gui_checkbox.setEnabled(False)
-        gui_checkbox.setChecked(False)
-   
-
-def _tsi_fixed_plot_color_settings(dashboard: QtCore.QObject):
-    """
-    Returns plot colors tuned for the current Dashboard color mode.
-
-    The light-mode plot intentionally uses a neutral gray plotting area so the
-    detector raster does not clash with the existing light UI.
-    """
-    settings = getattr(dashboard.backend, "settings", {}) or {}
-    color_mode = str(settings.get("color_mode", "") or "")
-
-    text_color = settings.get("color4", "#000000")
-    fig_face = settings.get("color1", "#f4f4f4")
-
-    if "Dark" in color_mode:
-        plot_face = "#1f2933"
-        grid_color = "#56616f"
-    else:
-        plot_face = "#e9ecef"
-        grid_color = "#b8c0ca"
-
-    return fig_face, plot_face, grid_color, text_color
-
-
-def _tsi_fixed_plot_frequency_range(dashboard: QtCore.QObject, events=None):
-    """
-    Returns a stable x-axis range for the Fixed detector raster.
-
-    Behavior:
-      - No detections: use Dashboard configured frequency/sample rate.
-      - Detections present: use min/max frequency from the current raster buffer.
-      - Add padding before/after the observed frequency span.
-      - Expand when new detections fall outside the current range.
-      - Do not recenter/shrink during a run, which prevents jumpy scaling.
-      - Start/clear resets the stored x-axis range.
-    """
-    _tsi_fixed_plot_ensure_state(dashboard)
-
-    events = events or []
-
-    min_span_mhz = 1.0
-    padding_fraction = 0.12
-    min_padding_mhz = 0.05
-
-    #
-    # Fallback range from Dashboard fields.
-    #
-    try:
-        configured_center_mhz = float(
-            dashboard.ui.textEdit_tsi_detector_fixed_frequency.toPlainText()
-        )
-    except Exception:
-        configured_center_mhz = None
-
-    try:
-        configured_sample_rate_hz = float(
-            dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.currentText()
-        )
-    except Exception:
-        configured_sample_rate_hz = 1_000_000.0
-
-    configured_span_mhz = max(float(configured_sample_rate_hz) / 1e6, min_span_mhz)
-
-    if configured_center_mhz is None:
-        fallback_xmin = 0.0
-        fallback_xmax = min_span_mhz
-    else:
-        fallback_xmin = configured_center_mhz - (configured_span_mhz / 2.0)
-        fallback_xmax = configured_center_mhz + (configured_span_mhz / 2.0)
-
-    #
-    # No detections yet: use configured span and store it.
-    #
-    if not events:
-        if getattr(dashboard, "tsi_fixed_plot_xlim", None) is None:
-            dashboard.tsi_fixed_plot_xlim = (fallback_xmin, fallback_xmax)
-
-        return dashboard.tsi_fixed_plot_xlim
-
-    #
-    # Use the current plotted/raster-buffer events, not a moving median.
-    #
-    freqs = []
-    for event in events:
-        try:
-            freqs.append(float(event["frequency_mhz"]))
-        except Exception:
-            pass
-
-    if not freqs:
-        if getattr(dashboard, "tsi_fixed_plot_xlim", None) is None:
-            dashboard.tsi_fixed_plot_xlim = (fallback_xmin, fallback_xmax)
-
-        return dashboard.tsi_fixed_plot_xlim
-
-    freq_min = min(freqs)
-    freq_max = max(freqs)
-
-    observed_span = max(freq_max - freq_min, 0.0)
-    target_span = max(observed_span, min_span_mhz)
-
-    padding_mhz = max(target_span * padding_fraction, min_padding_mhz)
-
-    proposed_xmin = freq_min - padding_mhz
-    proposed_xmax = freq_max + padding_mhz
-
-    #
-    # Keep the configured sample-rate span initially if the results are inside it.
-    # This gives a nice fixed-detector view for ordinary single-frequency runs.
-    #
-    configured_contains_results = (
-        freq_min >= fallback_xmin and freq_max <= fallback_xmax
-    )
-
-    if configured_contains_results and configured_span_mhz <= 25.0:
-        proposed_xmin = min(proposed_xmin, fallback_xmin)
-        proposed_xmax = max(proposed_xmax, fallback_xmax)
-
-    #
-    # Guarantee minimum readable span.
-    #
-    proposed_span = proposed_xmax - proposed_xmin
-    if proposed_span < min_span_mhz:
-        midpoint = (proposed_xmin + proposed_xmax) / 2.0
-        proposed_xmin = midpoint - (min_span_mhz / 2.0)
-        proposed_xmax = midpoint + (min_span_mhz / 2.0)
-
-    current_xlim = getattr(dashboard, "tsi_fixed_plot_xlim", None)
-
-    #
-    # First range after start/clear: adopt proposed range.
-    #
-    if current_xlim is None:
-        dashboard.tsi_fixed_plot_xlim = (proposed_xmin, proposed_xmax)
-        return dashboard.tsi_fixed_plot_xlim
-
-    current_xmin, current_xmax = current_xlim
-
-    #
-    # Sticky behavior:
-    #   - expand to include new observed min/max
-    #   - never shrink/recenter during the run
-    #
-    new_xmin = min(current_xmin, proposed_xmin)
-    new_xmax = max(current_xmax, proposed_xmax)
-
-    #
-    # If the GUI retunes far away, this will expand to include both old and new
-    # clusters. The table X / clear button resets the extent when the operator
-    # wants to focus on the new cluster.
-    #
-    dashboard.tsi_fixed_plot_xlim = (new_xmin, new_xmax)
-
-    return dashboard.tsi_fixed_plot_xlim
-
-
-def _tsi_fixed_plot_ensure_state(dashboard: QtCore.QObject):
-    """
-    Lazily initializes Fixed detector raster state.
-    """
-    if not hasattr(dashboard, "tsi_fixed_plot_events"):
-        dashboard.tsi_fixed_plot_events = deque(maxlen=2000)
-
-    if not hasattr(dashboard, "tsi_fixed_plot_start_time"):
-        dashboard.tsi_fixed_plot_start_time = None
-
-    if not hasattr(dashboard, "tsi_fixed_plot_dirty"):
-        dashboard.tsi_fixed_plot_dirty = False
-
-    if not hasattr(dashboard, "tsi_fixed_plot_timer"):
-        dashboard.tsi_fixed_plot_timer = None
-
-    if not hasattr(dashboard, "tsi_fixed_plot_window_s"):
-        dashboard.tsi_fixed_plot_window_s = 60.0
-
-    # Smoothed x-axis range for the Fixed detector raster.
-    # This prevents jitter while still allowing GUI retunes to be followed.
-    if not hasattr(dashboard, "tsi_fixed_plot_xlim"):
-        dashboard.tsi_fixed_plot_xlim = None
-
-
-def _tsi_fixed_plot_reset(dashboard: QtCore.QObject):
-    """
-    Clears current Fixed detector plot state and draws an empty raster.
-    """
-    _tsi_fixed_plot_ensure_state(dashboard)
-
-    dashboard.tsi_fixed_plot_events.clear()
-    dashboard.tsi_fixed_plot_start_time = time.time()
-    dashboard.tsi_fixed_plot_dirty = True
-    dashboard.tsi_fixed_plot_xlim = None
-
-    _tsi_fixed_plot_refresh(dashboard, force=True, running=True)
-
-
-def _tsi_fixed_plot_clear_points(dashboard: QtCore.QObject):
-    """
-    Clears Fixed detector raster points without resetting operation elapsed time.
-
-    This is used by the Detector Results clear button so the table and plot
-    stay synchronized while the detector may continue running.
-    """
-    _tsi_fixed_plot_ensure_state(dashboard)
-
-    dashboard.tsi_fixed_plot_events.clear()
-    dashboard.tsi_fixed_plot_dirty = True
-    dashboard.tsi_fixed_plot_xlim = None
-
-    _tsi_fixed_plot_refresh(
-        dashboard,
-        force=True,
-        running=getattr(dashboard, "tsi_fixed_detector_running", False),
-    )
-
-
-def _tsi_fixed_plot_start(dashboard: QtCore.QObject):
-    """
-    Starts the Fixed detector raster update timer.
-    """
-    _tsi_fixed_plot_reset(dashboard)
-
-    old_timer = getattr(dashboard, "tsi_fixed_plot_timer", None)
-    if old_timer is not None:
-        try:
-            old_timer.stop()
-            old_timer.timeout.disconnect()
-        except Exception:
-            pass
-
-    timer = QtCore.QTimer(dashboard)
-    timer.setInterval(250)
-    timer.timeout.connect(lambda: _tsi_fixed_plot_refresh(dashboard))
-    dashboard.tsi_fixed_plot_timer = timer
-    timer.start()
-
-
-def _tsi_fixed_plot_stop(dashboard: QtCore.QObject):
-    """
-    Stops the Fixed detector raster update timer and leaves the last run visible.
-    """
-    _tsi_fixed_plot_ensure_state(dashboard)
-
-    timer = getattr(dashboard, "tsi_fixed_plot_timer", None)
-    if timer is not None:
-        try:
-            timer.stop()
-        except Exception:
-            pass
-
-    _tsi_fixed_plot_refresh(dashboard, force=True, running=False)
-
-
-def _tsi_fixed_plot_add_detection(
-    dashboard: QtCore.QObject,
-    frequency_mhz: float,
-    power_dbm: float,
-    timestamp_s: float = None,
-):
-    """
-    Adds one reported Fixed detector event to the raster buffer.
-
-    This stores reported detections only. It does not attempt to infer missed
-    short-burst activity between min-interval reports.
-    """
-    _tsi_fixed_plot_ensure_state(dashboard)
-
-    if timestamp_s is None:
-        timestamp_s = time.time()
-
-    if dashboard.tsi_fixed_plot_start_time is None:
-        dashboard.tsi_fixed_plot_start_time = timestamp_s
-
-    elapsed_s = max(0.0, float(timestamp_s) - float(dashboard.tsi_fixed_plot_start_time))
-
-    dashboard.tsi_fixed_plot_events.append(
-        {
-            "frequency_mhz": float(frequency_mhz),
-            "power_dbm": float(power_dbm),
-            "timestamp_s": float(timestamp_s),
-            "elapsed_s": elapsed_s,
-        }
-    )
-
-    dashboard.tsi_fixed_plot_dirty = True
-
-
-def _tsi_fixed_plot_refresh(
-    dashboard: QtCore.QObject,
-    force: bool = False,
-    running: bool = None,
-):
-    """
-    Redraws the Fixed detector raster when there are new events.
-
-    This function intentionally rebuilds the Matplotlib figure contents for
-    the Fixed detector view because the shared TSI canvas is normally used as
-    an image/waterfall canvas. Rebuilding prevents old imshow/colorbar state
-    from forcing an equal-aspect, vertically squished plot.
-    """
-    _tsi_fixed_plot_ensure_state(dashboard)
-
-    if not force and not getattr(dashboard, "tsi_fixed_plot_dirty", False):
-        return
-
-    canvas = getattr(dashboard, "matplotlib_widget", None)
-    if canvas is None:
-        return
-
-    try:
-        fig = canvas.fig
-
-        fig_face, plot_face, grid_color, text_color = _tsi_fixed_plot_color_settings(dashboard)
-
-        events_all = list(dashboard.tsi_fixed_plot_events)
-        window_s = float(getattr(dashboard, "tsi_fixed_plot_window_s", 60.0) or 60.0)
-
-        if events_all:
-            latest_elapsed = max(float(e["elapsed_s"]) for e in events_all)
-        else:
-            latest_elapsed = 0.0
-
-        y_min = max(0.0, latest_elapsed - window_s)
-        y_max = max(window_s, latest_elapsed + 1.0)
-
-        events = [
-            e for e in events_all
-            if float(e["elapsed_s"]) >= y_min
-        ]
-
-        x_min, x_max = _tsi_fixed_plot_frequency_range(dashboard, events)
-
-        #
-        # Rebuild the figure for fixed-raster mode.
-        # This prevents the original MPLCanvas imshow state from carrying over.
-        #
-        fig.clear()
-        fig.set_facecolor(fig_face)
-
-        ax = fig.add_subplot(111)
-        canvas.axes = ax
-
-        # Critical: do not let imshow/equal aspect behavior squeeze the raster.
-        ax.set_aspect("auto", adjustable="box")
-
-        # Leave room for the colorbar while still using most of the frame width.
-        fig.subplots_adjust(
-            left=0.085,
-            right=0.895,
-            bottom=0.125,
-            top=0.94,
-            wspace=0.0,
-            hspace=0.0,
-        )
-
-        ax.set_facecolor(plot_face)
-
-        title_state = "Running"
-        if running is False:
-            title_state = "Stopped"
-        elif running is None and not getattr(dashboard, "tsi_fixed_detector_running", False):
-            title_state = "Stopped"
-
-        ax.set_title(
-            f"Fixed Detector Activity - {title_state}",
-            color=text_color,
-            fontsize=10,
-            pad=8,
-        )
-        ax.set_xlabel("Frequency (MHz)", color=text_color, fontsize=9, labelpad=7)
-        ax.set_ylabel("Time Elapsed (s)", color=text_color, fontsize=9, labelpad=7)
-
-        ax.set_xlim(x_min, x_max)
-        ax.set_ylim(y_min, y_max)
-
-        try:
-            ax.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=6))
-            ax.xaxis.set_major_formatter(matplotlib.ticker.FormatStrFormatter("%.3f"))
-        except Exception:
-            pass
-
-        ax.grid(True, color=grid_color, linestyle="--", linewidth=0.6, alpha=0.75)
-        ax.set_axisbelow(True)
-
-        ax.tick_params(axis="x", colors=text_color, labelsize=8)
-        ax.tick_params(axis="y", colors=text_color, labelsize=8)
-
-        for spine in ax.spines.values():
-            spine.set_color(grid_color)
-
-        try:
-            cmap = matplotlib.cm.get_cmap("turbo")
-        except Exception:
-            cmap = matplotlib.cm.get_cmap("rainbow")
-
-        norm = matplotlib.colors.Normalize(vmin=-60.0, vmax=40.0)
-
-        if events:
-            tick_height = max(0.35, (y_max - y_min) * 0.012)
-
-            segments = []
-            powers = []
-
-            for event in events:
-                x = float(event["frequency_mhz"])
-                y = float(event["elapsed_s"])
-
-                segments.append(
-                    [
-                        (x, max(y_min, y - tick_height)),
-                        (x, min(y_max, y + tick_height)),
-                    ]
-                )
-                powers.append(float(event["power_dbm"]))
-
-            line_collection = LineCollection(
-                segments,
-                cmap=cmap,
-                norm=norm,
-                linewidths=2.8,
-                alpha=0.95,
-            )
-            line_collection.set_array(np.array(powers))
-            ax.add_collection(line_collection)
-        else:
-            message = "Waiting for fixed detector reports..."
-            if running is False:
-                message = "No fixed detector data"
-
-            ax.text(
-                0.5,
-                0.5,
-                message,
-                transform=ax.transAxes,
-                ha="center",
-                va="center",
-                color=text_color,
-                alpha=0.75,
-                fontsize=10,
-            )
-
-        sm = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
-        sm.set_array([])
-
-        cbar = fig.colorbar(
-            sm,
-            ax=ax,
-            fraction=0.035,
-            pad=0.025,
-        )
-        canvas.cbar = cbar
-
-        cbar.set_label(label="Power (dB)", color=text_color, fontsize=9)
-        cbar.ax.tick_params(labelsize=8, color=text_color)
-        matplotlib.pyplot.setp(
-            matplotlib.pyplot.getp(cbar.ax.axes, "yticklabels"),
-            color=text_color,
-        )
-
-        canvas.draw_idle()
-        dashboard.tsi_fixed_plot_dirty = False
-
-    except Exception as e:
-        dashboard.logger.debug(f"Failed to refresh TSI Fixed detector raster: {e}")
-
-
-def _tsi_fixed_set_running(dashboard: QtCore.QObject, node_uid: str):
-    dashboard.tsi_fixed_detector_running = True
-    dashboard.tsi_fixed_detector_node_uid = node_uid or ""
-    dashboard.tsi_fixed_detector_opid = ""
-    dashboard.tsi_fixed_detector_waiting_for_opid = True
-
-    stack = getattr(dashboard.ui, "stackedWidget_tsi_detector_fixed", None)
-    if stack is not None:
-        stack.setCurrentIndex(0)
-
-    for table in _tsi_fixed_results_tables(dashboard):
-        table.clearContents()
-        table.setRowCount(0)
-
-    _tsi_fixed_plot_start(dashboard)
-
-    dashboard.ui.label2_tsi_detector.setVisible(False)
-
-    dashboard.ui.pushButton_tsi_detector_fixed_start.setEnabled(True)
-    dashboard.ui.pushButton_tsi_detector_fixed_start.setText("Stop")
-    dashboard.ui.frame_tsi_detector_fixed_settings1.setEnabled(False)
-    dashboard.ui.comboBox_tsi_detector_fixed_hardware.setEnabled(False)
-    dashboard.ui.comboBox_tsi_detector_fixed.setEnabled(False)
-
-
-def _tsi_fixed_set_stopped(dashboard: QtCore.QObject):
-    _tsi_fixed_plot_stop(dashboard)
-
-    dashboard.tsi_fixed_detector_running = False
-    dashboard.tsi_fixed_detector_node_uid = ""
-    dashboard.tsi_fixed_detector_opid = ""
-    dashboard.tsi_fixed_detector_waiting_for_opid = False
-
-    dashboard.ui.label2_tsi_detector.setVisible(False)
-
-    dashboard.ui.pushButton_tsi_detector_fixed_start.setText("Start")
-
-    # Re-apply selected-node gate so controls are only enabled if a node
-    # is still selected.
-    update_tsi_fixed_detector_node_gate(dashboard)
-
-
-def append_tsi_fixed_detection_from_cot(
-    dashboard: QtCore.QObject,
-    cot_message: dict,
-):
-    if not getattr(dashboard, "tsi_fixed_detector_running", False):
-        return
-
-    if not cot_message:
-        return
-
-    if cot_message.get("kind") != "detection":
-        return
-
-    if cot_message.get("detection_detector") != "fixed_detection":
-        return
-
-    fixed_node_uid = getattr(dashboard, "tsi_fixed_detector_node_uid", "") or ""
-    detection_node_uid = cot_message.get("detection_node_uid") or ""
-
-    if fixed_node_uid and detection_node_uid and detection_node_uid != fixed_node_uid:
-        return
-
-    detection_opid = cot_message.get("detection_opid") or ""
-    fixed_opid = getattr(dashboard, "tsi_fixed_detector_opid", "") or ""
-
-    if not detection_opid:
-        return
-
-    if fixed_opid:
-        if detection_opid != fixed_opid:
-            return
-    else:
-        dashboard.tsi_fixed_detector_opid = detection_opid
-        dashboard.tsi_fixed_detector_waiting_for_opid = False
-
-    try:
-        frequency_hz = float(cot_message.get("detection_frequency_hz"))
-        frequency_mhz = frequency_hz / 1e6
-    except Exception:
-        return
-
-    if _tsi_frequency_is_blacklisted(dashboard, frequency_mhz):
-        dashboard.logger.debug(
-            f"Ignoring blacklisted Fixed detection: {frequency_mhz} MHz"
-        )
-        return
-
-    try:
-        power_value = float(cot_message.get("detection_power_dbm"))
-    except Exception:
-        power_value = 0.0
-
-    try:
-        time_value = float(cot_message.get("detection_timestamp"))
-    except Exception:
-        time_value = time.time()
-
-    _tsi_fixed_plot_add_detection(
-        dashboard,
-        frequency_mhz=frequency_mhz,
-        power_dbm=power_value,
-        timestamp_s=time_value,
-    )
-
-    get_time = time.strftime("%H:%M:%S", time.localtime(time_value))
-    time_obj = QtCore.QTime.fromString(get_time, "HH:mm:ss")
-
-    for table in _tsi_fixed_results_tables(dashboard):
-        row = table.rowCount()
-        table.setRowCount(row + 1)
-
-        frequency_item = QtWidgets.QTableWidgetItem(f"{frequency_mhz:.6f}")
-        frequency_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        frequency_item.setData(QtCore.Qt.UserRole, cot_message)
-        frequency_item.setData(QtCore.Qt.UserRole + 1, detection_opid)
-        table.setItem(row, 0, frequency_item)
-
-        power_item = QtWidgets.QTableWidgetItem(f"{power_value:.1f}")
-        power_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        power_item.setData(QtCore.Qt.UserRole, cot_message)
-        power_item.setData(QtCore.Qt.UserRole + 1, detection_opid)
-        table.setItem(row, 1, power_item)
-
-        time_item = QtWidgets.QTableWidgetItem(get_time)
-        time_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        time_item.setData(QtCore.Qt.UserRole, time_obj.msecsSinceStartOfDay())
-        time_item.setData(QtCore.Qt.UserRole + 1, detection_opid)
-        time_item.setData(QtCore.Qt.UserRole + 2, cot_message)
-        table.setItem(row, 2, time_item)
-
-        table.sortItems(2, order=QtCore.Qt.DescendingOrder)
-        table.resizeColumnsToContents()
-        table.resizeRowsToContents()
-        table.horizontalHeader().setStretchLastSection(False)
-        table.horizontalHeader().setStretchLastSection(True)
-
-
-def reconcile_tsi_fixed_detector_state(
-    dashboard: QtCore.QObject,
-    node_uid: str = "",
-    status: str = "",
-):
-    if not getattr(dashboard, "tsi_fixed_detector_running", False):
-        return
-
-    fixed_node_uid = getattr(dashboard, "tsi_fixed_detector_node_uid", "") or ""
-
-    if fixed_node_uid and node_uid and node_uid != fixed_node_uid:
-        return
-
-    status_l = str(status or "").strip().lower()
-
-    if status_l in (
-        "idle",
-        "stopped",
-        "complete",
-        "completed",
-        "failed",
-        "cancelled",
-        "canceled",
-        "unknown",
-    ):
-        _tsi_fixed_set_stopped(dashboard)
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotTSI_DetectorFixedStartClicked(dashboard: QtCore.QObject):
-    uid = getattr(dashboard, "selected_node_uid", "") or ""
-
-    if not uid:
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            "Select a Sensor Node before starting the Fixed detector.",
-        )
-        return
-
-    if dashboard.ui.pushButton_tsi_detector_fixed_start.text() == "Stop":
-        await dashboard.backend.tacticalNodeStop([uid])
-        _tsi_fixed_set_stopped(dashboard)
-        dashboard.refreshStatusBarText()
-        return
-
-    if dashboard.ui.pushButton_tsi_detector_fixed_start.text() != "Start":
-        return
-
-    get_current_hardware = str(
-        dashboard.ui.comboBox_tsi_detector_fixed_hardware.currentText()
-    )
-
-    (
-        get_hardware_type,
-        get_hardware_uid,
-        get_hardware_radio_name,
-        get_hardware_serial,
-        get_hardware_interface,
-        get_hardware_ip,
-        get_hardware_daughterboard,
-    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
-        dashboard,
-        get_current_hardware,
-        "tsi",
-    )
-
-    get_detector = str(dashboard.ui.comboBox_tsi_detector_fixed.currentText())
-
-    if (
-        len(get_hardware_ip) == 0
-        and len(get_hardware_serial) == 0
-        and (
-            "x3x0" in get_detector
-            or "b2x0" in get_detector
-            or "x410" in get_detector
-        )
-    ):
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            "Fill out the IP address or serial number by clicking the TSI hardware button.",
-        )
-        return
-
-    try:
-        freq_mhz = float(
-            dashboard.ui.textEdit_tsi_detector_fixed_frequency.toPlainText()
-        )
-    except Exception:
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            "Enter a valid Fixed detector frequency in MHz.",
-        )
-        return
-
-    try:
-        sample_rate = float(
-            dashboard.ui.comboBox_tsi_detector_fixed_sample_rate.currentText()
-        )
-    except Exception:
-        sample_rate = 1000000.0
-
-    parameters = {
-        "freq_mhz": freq_mhz,
-        "sample_rate": sample_rate,
-        "threshold": float(dashboard.ui.spinBox_tsi_detector_fixed_threshold.value()),
-        "gain": float(dashboard.ui.spinBox_tsi_detector_fixed_gain.value()),
-        "channel": str(dashboard.ui.comboBox_tsi_detector_fixed_channel.currentText()),
-        "antenna": str(dashboard.ui.comboBox_tsi_detector_fixed_antenna.currentText()),
-        "min_detection_interval_s": _tsi_fixed_min_interval(dashboard),
-        "description": "Fixed detector workbench",
-        "run_mode": _tsi_fixed_run_mode(dashboard),
-    }
-
-    _tsi_fixed_set_running(dashboard, uid)
-
-    await dashboard.backend.tacticalNodeExecute(
-        [uid],
-        "Base",
-        "fixed_detection",
-        parameters,
-    )
-
-    dashboard.refreshStatusBarText()
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -7156,3 +4626,1956 @@ def _slotTSI_ConditionerSettingsIsolationFrequenciesHardwareChanged(dashboard: Q
 
     # Update Methods
     _slotTSI_ConditionerSettingsIsolationFrequenciesCategoryChanged(dashboard)
+
+
+def _set_spinbox_value_blocked(widget, value):
+    widget.blockSignals(True)
+    widget.setValue(float(value))
+    widget.blockSignals(False)
+
+
+def append_tsi_active_detector_detection_from_cot(
+    dashboard: QtCore.QObject,
+    cot_message: dict,
+):
+    """
+    Routes CoT detections into the shared TSI detector workbench.
+
+    Unified, Sweep, and Fixed share:
+        - detector results table
+        - conditioner detector input table
+        - detector plot/raster area
+        - blacklist filtering
+
+    Unified detector mode is plugin/action generic. It does not maintain a
+    Dashboard-side detector allowlist.
+    """
+    if not cot_message:
+        return
+
+    if cot_message.get("kind") != "detection":
+        return
+
+    unified_running = bool(
+        getattr(dashboard, "tsi_detector_running", False)
+    )
+
+    if not unified_running:
+        return
+
+    _append_tsi_detector_detection_from_cot(
+        dashboard,
+        cot_message,
+        allowed_detectors=None,
+        active_node_uid=getattr(dashboard, "tsi_detector_node_uid", ""),
+        active_opid_attr="tsi_detector_opid",
+        waiting_opid_attr="tsi_detector_waiting_for_opid",
+    )
+
+
+def _append_tsi_detector_detection_from_cot(
+    dashboard: QtCore.QObject,
+    cot_message: dict,
+    allowed_detectors: set = None,
+    active_node_uid: str = "",
+    active_opid_attr: str = "",
+    waiting_opid_attr: str = "",
+):
+    """
+    Append one parsed CoT detection into the shared TSI detector table/plot.
+
+    If allowed_detectors is None or empty, detector-name filtering is skipped.
+    That is required for the unified detector workflow.
+    """
+    allowed_detectors = allowed_detectors or set()
+
+    detector_name = str(
+        cot_message.get("detection_detector") or ""
+    ).strip()
+
+    if allowed_detectors and detector_name not in allowed_detectors:
+        return
+
+    detection_node_uid = str(
+        cot_message.get("detection_node_uid") or ""
+    ).strip()
+
+    active_node_uid = str(active_node_uid or "").strip()
+
+    if active_node_uid and detection_node_uid and detection_node_uid != active_node_uid:
+        return
+
+    detection_opid = str(
+        cot_message.get("detection_opid") or ""
+    ).strip()
+
+    if not detection_opid:
+        return
+
+    active_opid = str(
+        getattr(dashboard, active_opid_attr, "") or ""
+    ).strip()
+
+    if active_opid:
+        if detection_opid != active_opid:
+            return
+    else:
+        setattr(dashboard, active_opid_attr, detection_opid)
+        setattr(dashboard, waiting_opid_attr, False)
+
+    try:
+        frequency_hz = float(cot_message.get("detection_frequency_hz"))
+        frequency_mhz = frequency_hz / 1e6
+    except Exception:
+        dashboard.logger.debug(
+            f"[TSI Detector] Ignoring detection with invalid frequency: {cot_message}"
+        )
+        return
+
+    if _tsi_frequency_is_blacklisted(dashboard, frequency_mhz):
+        dashboard.logger.debug(
+            f"Ignoring blacklisted TSI detection: {frequency_mhz} MHz"
+        )
+        return
+
+    try:
+        power_value = float(cot_message.get("detection_power_dbm"))
+    except Exception:
+        power_value = 0.0
+
+    try:
+        time_value = float(cot_message.get("detection_timestamp"))
+    except Exception:
+        time_value = time.time()
+
+    try:
+        _tsi_detector_plot_add_detection(
+            dashboard,
+            frequency_mhz=frequency_mhz,
+            power_dbm=power_value,
+            timestamp_s=time_value,
+        )
+    except Exception as e:
+        dashboard.logger.debug(
+            f"Could not add TSI detection to shared plot: {e}"
+        )
+
+    get_time = time.strftime("%H:%M:%S", time.localtime(time_value))
+    time_obj = QtCore.QTime.fromString(get_time, "HH:mm:ss")
+
+    for table in _tsi_detector_results_tables(dashboard):
+        row = table.rowCount()
+        table.setRowCount(row + 1)
+
+        frequency_item = QtWidgets.QTableWidgetItem(f"{frequency_mhz:.6f}")
+        frequency_item.setTextAlignment(QtCore.Qt.AlignCenter)
+        frequency_item.setData(QtCore.Qt.UserRole, cot_message)
+        frequency_item.setData(QtCore.Qt.UserRole + 1, detection_opid)
+        table.setItem(row, 0, frequency_item)
+
+        power_item = QtWidgets.QTableWidgetItem(f"{power_value:.1f}")
+        power_item.setTextAlignment(QtCore.Qt.AlignCenter)
+        power_item.setData(QtCore.Qt.UserRole, cot_message)
+        power_item.setData(QtCore.Qt.UserRole + 1, detection_opid)
+        table.setItem(row, 1, power_item)
+
+        time_item = QtWidgets.QTableWidgetItem(get_time)
+        time_item.setTextAlignment(QtCore.Qt.AlignCenter)
+        time_item.setData(QtCore.Qt.UserRole, time_obj.msecsSinceStartOfDay())
+        time_item.setData(QtCore.Qt.UserRole + 1, detection_opid)
+        time_item.setData(QtCore.Qt.UserRole + 2, cot_message)
+        table.setItem(row, 2, time_item)
+
+        table.sortItems(2, order=QtCore.Qt.DescendingOrder)
+        table.resizeColumnsToContents()
+        table.resizeRowsToContents()
+        table.horizontalHeader().setStretchLastSection(False)
+        table.horizontalHeader().setStretchLastSection(True)
+
+
+def _tsi_detector_plot_initial_xlim(dashboard: QtCore.QObject):
+    """
+    Returns initial x-axis limits for the unified TSI detector plot.
+
+    Primary method:
+      - infer configured plot range from detector parameter names/values.
+
+    Fallback:
+      - return 0-1 MHz if no useful frequency/range parameters are found.
+        _tsi_detector_plot_data_xlim() will later replace this fallback with
+        data-centered limits once real detections arrive.
+    """
+    params = collect_tsi_detector_parameters(dashboard)
+
+    center_mhz = None
+    sample_rate_hz = None
+    start_mhz = None
+    stop_mhz = None
+
+    center_frequency_keys = {
+        "frequency",
+        "freq",
+        "freq_mhz",
+        "frequency_mhz",
+        "center_frequency",
+        "center_frequency_mhz",
+        "center_freq",
+        "center_freq_mhz",
+        "rx_freq",
+        "rx_frequency",
+        "rx_frequency_mhz",
+        "tuned_freq",
+        "tuned_frequency",
+        "tuned_frequency_mhz",
+    }
+
+    sample_rate_keys = {
+        "sample_rate",
+        "samp_rate",
+        "sample_rate_hz",
+        "rx_sample_rate",
+        "rx_sample_rate_hz",
+    }
+
+    start_frequency_keys = {
+        "start_frequency",
+        "start_frequency_mhz",
+        "start_freq",
+        "start_freq_mhz",
+        "start_mhz",
+        "custom_start_mhz",
+        "frequency_min",
+        "frequency_min_mhz",
+        "min_frequency",
+        "min_frequency_mhz",
+        "low_frequency",
+        "low_frequency_mhz",
+        "low_mhz",
+    }
+
+    stop_frequency_keys = {
+        "stop_frequency",
+        "stop_frequency_mhz",
+        "stop_freq",
+        "stop_freq_mhz",
+        "stop_mhz",
+        "end_frequency",
+        "end_frequency_mhz",
+        "end_freq",
+        "end_freq_mhz",
+        "end_mhz",
+        "custom_end_mhz",
+        "frequency_max",
+        "frequency_max_mhz",
+        "max_frequency",
+        "max_frequency_mhz",
+        "high_frequency",
+        "high_frequency_mhz",
+        "high_mhz",
+    }
+
+    range_keys = {
+        "band_range_mhz",
+        "segment_range_mhz",
+        "range_mhz",
+        "frequency_range_mhz",
+        "scan_range_mhz",
+    }
+
+    for key, value in params.items():
+        key_l = str(key).strip().lower()
+
+        try:
+            numeric_value = float(value)
+        except Exception:
+            numeric_value = None
+
+        if key_l in center_frequency_keys and numeric_value is not None:
+            center_mhz = numeric_value
+
+        elif key_l in sample_rate_keys and numeric_value is not None:
+            sample_rate_hz = numeric_value
+
+        elif key_l in start_frequency_keys and numeric_value is not None:
+            start_mhz = numeric_value
+
+        elif key_l in stop_frequency_keys and numeric_value is not None:
+            stop_mhz = numeric_value
+
+        elif key_l in range_keys:
+            try:
+                text = str(value).strip()
+                text = text.replace("MHz", "").replace("mhz", "")
+                text = text.replace("–", "-").replace("—", "-")
+
+                low_text, high_text = text.split("-", 1)
+                start_mhz = float(low_text.strip())
+                stop_mhz = float(high_text.strip())
+            except Exception:
+                pass
+
+    # Sweep/range-style detector.
+    if start_mhz is not None and stop_mhz is not None:
+        x_low = min(start_mhz, stop_mhz)
+        x_high = max(start_mhz, stop_mhz)
+
+        if abs(x_high - x_low) < 1e-9:
+            return x_low - 0.5, x_high + 0.5
+
+        x_pad = max(0.05, (x_high - x_low) * 0.05)
+        return x_low - x_pad, x_high + x_pad
+
+    # Fixed/center-frequency detector.
+    if center_mhz is not None:
+        if sample_rate_hz is not None:
+            half_bw_mhz = max(0.5, (sample_rate_hz / 1e6) / 2.0)
+        else:
+            half_bw_mhz = 0.5
+
+        return center_mhz - half_bw_mhz, center_mhz + half_bw_mhz
+
+    # Meaningless fallback. Data autoscale will replace this once detections arrive.
+    return 0.0, 1.0
+
+
+def _tsi_detector_plot_data_xlim(
+    dashboard: QtCore.QObject,
+    freqs=None,
+):
+    """
+    Returns x-axis limits for the unified detector plot.
+
+    Data-first behavior:
+      - If detections exist, scale to observed detector data.
+      - If no detections exist, use configured detector parameters.
+      - If no configured detector range is available, use 0-1 MHz fallback.
+
+    This lets the plot follow live retunes, e.g. starting at 915 MHz and later
+    moving to 310 MHz without keeping 915 MHz in view forever.
+    """
+    if freqs is None:
+        freqs = []
+
+    clean_freqs = []
+    for freq in freqs:
+        try:
+            clean_freqs.append(float(freq))
+        except Exception:
+            pass
+
+    if clean_freqs:
+        data_low = min(clean_freqs)
+        data_high = max(clean_freqs)
+
+        if abs(data_high - data_low) < 1e-9:
+            data_pad = 0.5
+        else:
+            data_pad = max(0.05, (data_high - data_low) * 0.08)
+
+        return data_low - data_pad, data_high + data_pad
+
+    initial_low = getattr(
+        dashboard,
+        "tsi_detector_plot_initial_xlim_low",
+        None,
+    )
+    initial_high = getattr(
+        dashboard,
+        "tsi_detector_plot_initial_xlim_high",
+        None,
+    )
+
+    if initial_low is None or initial_high is None:
+        initial_low, initial_high = _tsi_detector_plot_initial_xlim(dashboard)
+        dashboard.tsi_detector_plot_initial_xlim_low = initial_low
+        dashboard.tsi_detector_plot_initial_xlim_high = initial_high
+
+    try:
+        return float(initial_low), float(initial_high)
+    except Exception:
+        return 0.0, 1.0
+
+
+def handle_tsi_detector_action_query_results(
+    dashboard: QtCore.QObject,
+    node_uid: str,
+    context: str,
+    actions: list,
+):
+    """
+    Populate the unified TSI Detector Method combobox from generic
+    filtered plugin-action query results.
+    """
+    combo = dashboard.ui.comboBox_tsi_detector_method
+
+    dashboard.tsi_detector_method_actions = actions or []
+
+    combo.blockSignals(True)
+    combo.clear()
+
+    for action_record in dashboard.tsi_detector_method_actions:
+        plugin_name = str(action_record.get("plugin", "")).strip()
+        action_name = str(action_record.get("action", "")).strip()
+
+        if not plugin_name or not action_name:
+            continue
+
+        combo.addItem(
+            f"{plugin_name}: {action_name}",
+            {
+                "plugin": plugin_name,
+                "action": action_name,
+            },
+        )
+
+    combo.blockSignals(False)
+
+    has_actions = combo.count() > 0
+
+    combo.setEnabled(has_actions)
+    dashboard.ui.pushButton_tsi_detector_customize.setEnabled(has_actions)
+    dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(False)
+
+    if has_actions:
+        combo.setCurrentIndex(0)
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "Customize this method to load its parameters and details."
+        )
+    else:
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "No matching detector actions are available for the selected node, type, mode, and hardware."
+        )
+
+
+def _tsi_detector_current_combo_data(combo, fallback=""):
+    data = combo.currentData()
+
+    if data is not None and str(data).strip():
+        return str(data).strip()
+
+    text = combo.currentText().strip().lower()
+    return text or fallback
+
+
+def _tsi_detector_selected_type(dashboard: QtCore.QObject) -> str:
+    return _tsi_detector_current_combo_data(
+        dashboard.ui.comboBox_tsi_detector_type,
+        "rf",
+    )
+
+
+def _tsi_detector_selected_mode(dashboard: QtCore.QObject) -> str:
+    return _tsi_detector_current_combo_data(
+        dashboard.ui.comboBox_tsi_detector_mode,
+        "sweep",
+    )
+
+
+def _tsi_detector_selected_hardware(dashboard: QtCore.QObject) -> str:
+    return dashboard.ui.comboBox_tsi_detector_hardware.currentText().strip()
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTSI_DetectorQueryClicked(dashboard: QtCore.QObject):
+    uid = getattr(dashboard, "selected_node_uid", "").strip()
+
+    if not uid:
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "Select a sensor node before querying detector methods."
+        )
+        return
+
+    detector_type = _tsi_detector_selected_type(dashboard)
+    detector_mode = _tsi_detector_selected_mode(dashboard)
+    hardware = _tsi_detector_selected_hardware(dashboard)
+
+    include_tags = [
+        "tsi.detector",
+        f"tsi.detector.type.{detector_type}",
+        f"tsi.detector.mode.{detector_mode}",
+    ]
+
+    context = f"tsi.detector.{detector_type}.{detector_mode}"
+
+    dashboard.ui.comboBox_tsi_detector_method.clear()
+    dashboard.ui.comboBox_tsi_detector_method.setEnabled(False)
+    dashboard.ui.pushButton_tsi_detector_customize.setEnabled(False)
+    dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(False)
+    dashboard.ui.label_tsi_detector_setup_info.setText(
+        "Querying selected node for matching detector actions..."
+    )
+
+    await dashboard.backend.queryPluginActions(
+        uid=uid,
+        context=context,
+        scope="all_plugins",
+        plugin_name="",
+        include_tags=include_tags,
+        exclude_tags=[],
+        hardware=hardware,
+    )
+
+
+def initialize_tsi_detector_controls(dashboard: QtCore.QObject):
+    """
+    Initialize the unified TSI Detector controls.
+    Safe to call more than once.
+    """
+    dashboard.tsi_detector_method_actions = []
+    dashboard.tsi_detector_selected_plugin = ""
+    dashboard.tsi_detector_selected_action = ""
+    dashboard.tsi_detector_action_schema_cache = getattr(
+        dashboard,
+        "tsi_detector_action_schema_cache",
+        {},
+    )
+
+    dashboard.tsi_detector_parameter_widgets = {}
+    dashboard.tsi_detector_current_schema = {}
+    dashboard.tsi_detector_customized = False
+
+    dashboard.tsi_detector_running = False
+    dashboard.tsi_detector_node_uid = ""
+    dashboard.tsi_detector_opid = ""
+    dashboard.tsi_detector_waiting_for_opid = False
+
+    # These are static filters. Always populate them regardless of node state.
+    _populate_tsi_detector_type_combo(dashboard)
+    _populate_tsi_detector_mode_combo(dashboard)
+
+    dashboard.ui.comboBox_tsi_detector_type.setEnabled(True)
+    dashboard.ui.comboBox_tsi_detector_mode.setEnabled(True)
+
+    clear_tsi_detector_methods(dashboard)
+    clear_tsi_detector_parameter_controls(dashboard)
+
+    dashboard.ui.pushButton_tsi_detector_query.setText("Query")
+    dashboard.ui.pushButton_tsi_detector_query.setToolTip(
+        "Query the selected node for detector methods matching the selected type, mode, and hardware."
+    )
+
+    dashboard.ui.pushButton_tsi_detector_customize.setText("Customize")
+    dashboard.ui.pushButton_tsi_detector_customize.setEnabled(False)
+    dashboard.ui.pushButton_tsi_detector_customize.setToolTip(
+        "Load and customize parameters for the selected detector method."
+    )
+
+    _tsi_detector_set_start_stop_button(dashboard, False)
+    dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(False)
+
+    dashboard.ui.label_tsi_detector_setup_info.setText(
+        "Select a detector method to view details."
+    )
+    dashboard.ui.label2_tsi_detector_status.setText("Idle")
+
+    dashboard.ui.scrollArea_tsi_detector_parameters.setHorizontalScrollBarPolicy(
+        QtCore.Qt.ScrollBarAlwaysOff
+    )
+    dashboard.ui.scrollArea_tsi_detector_parameters.setVerticalScrollBarPolicy(
+        QtCore.Qt.ScrollBarAsNeeded
+    )
+
+    update_tsi_detector_selected_node_gate(dashboard)
+
+
+def _populate_tsi_detector_type_combo(dashboard: QtCore.QObject):
+    combo = dashboard.ui.comboBox_tsi_detector_type
+    current_data = combo.currentData()
+
+    combo.blockSignals(True)
+    combo.clear()
+
+    for value, label in TSI_DETECTOR_TYPES:
+        combo.addItem(label, value)
+
+    restore_index = combo.findData(current_data)
+    if restore_index >= 0:
+        combo.setCurrentIndex(restore_index)
+    else:
+        combo.setCurrentIndex(combo.findData("rf"))
+
+    combo.blockSignals(False)
+
+
+def _populate_tsi_detector_mode_combo(dashboard: QtCore.QObject):
+    combo = dashboard.ui.comboBox_tsi_detector_mode
+    current_data = combo.currentData()
+
+    combo.blockSignals(True)
+    combo.clear()
+
+    for value, label in TSI_DETECTOR_MODES:
+        combo.addItem(label, value)
+
+    restore_index = combo.findData(current_data)
+    if restore_index >= 0:
+        combo.setCurrentIndex(restore_index)
+    else:
+        combo.setCurrentIndex(combo.findData("sweep"))
+
+    combo.blockSignals(False)
+
+
+def update_tsi_detector_hardware_combo(dashboard: QtCore.QObject):
+    """
+    Populate unified Detector hardware from selected-node TSI hardware.
+    """
+    combo = dashboard.ui.comboBox_tsi_detector_hardware
+    current_hardware = combo.currentText().strip()
+
+    combo.blockSignals(True)
+    combo.clear()
+
+    if getattr(dashboard, "selected_node_uid", ""):
+        try:
+            hardware_names = fissure.utils.hardware.selectedNodeHardwareDisplayNames(
+                dashboard,
+                "tsi",
+            )
+        except Exception as e:
+            dashboard.logger.debug(
+                f"[TSI Detector] Could not get selected-node hardware: {e}"
+            )
+            hardware_names = []
+
+        combo.addItems(hardware_names)
+
+        if current_hardware and combo.findText(current_hardware) >= 0:
+            combo.setCurrentText(current_hardware)
+        elif combo.count() > 0:
+            combo.setCurrentIndex(0)
+
+    combo.blockSignals(False)
+
+    has_node = bool(getattr(dashboard, "selected_node_uid", ""))
+    has_hardware = combo.count() > 0
+
+    combo.setEnabled(has_node and has_hardware)
+    dashboard.ui.comboBox_tsi_detector_type.setEnabled(True)
+    dashboard.ui.comboBox_tsi_detector_mode.setEnabled(True)
+    dashboard.ui.pushButton_tsi_detector_query.setEnabled(has_node and has_hardware)
+
+
+def clear_tsi_detector_methods(dashboard: QtCore.QObject):
+    combo = dashboard.ui.comboBox_tsi_detector_method
+
+    combo.blockSignals(True)
+    combo.clear()
+    combo.blockSignals(False)
+
+    combo.setEnabled(False)
+    dashboard.ui.pushButton_tsi_detector_customize.setEnabled(False)
+
+    dashboard.tsi_detector_method_actions = []
+    dashboard.tsi_detector_selected_plugin = ""
+    dashboard.tsi_detector_selected_action = ""
+
+    clear_tsi_detector_parameter_controls(dashboard)
+
+
+def _slotTSI_DetectorTypeChanged(dashboard: QtCore.QObject):
+    clear_tsi_detector_methods(dashboard)
+    dashboard.ui.label_tsi_detector_setup_info.setText(
+        "Query matching detector methods for the selected type, mode, and hardware."
+    )
+
+
+def _slotTSI_DetectorModeChanged(dashboard: QtCore.QObject):
+    clear_tsi_detector_methods(dashboard)
+    dashboard.ui.label_tsi_detector_setup_info.setText(
+        "Query matching detector methods for the selected type, mode, and hardware."
+    )
+
+
+def _slotTSI_DetectorHardwareChanged(dashboard: QtCore.QObject):
+    clear_tsi_detector_methods(dashboard)
+    dashboard.ui.label_tsi_detector_setup_info.setText(
+        "Query matching detector methods for the selected type, mode, and hardware."
+    )
+
+
+def reset_tsi_detector_customization(dashboard: QtCore.QObject):
+    """
+    Reset Card 2 after method/type/mode/hardware changes.
+    """
+    clear_tsi_detector_parameter_controls(dashboard)
+
+    dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(False)
+
+    if dashboard.ui.comboBox_tsi_detector_method.count() > 0:
+        dashboard.ui.pushButton_tsi_detector_customize.setEnabled(True)
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "Customize this method to load its parameters and details."
+        )
+    else:
+        dashboard.ui.pushButton_tsi_detector_customize.setEnabled(False)
+
+
+def _slotTSI_DetectorMethodChanged(dashboard: QtCore.QObject):
+    record = dashboard.ui.comboBox_tsi_detector_method.currentData()
+
+    clear_tsi_detector_parameter_controls(dashboard)
+
+    if not isinstance(record, dict):
+        dashboard.tsi_detector_selected_plugin = ""
+        dashboard.tsi_detector_selected_action = ""
+        dashboard.ui.pushButton_tsi_detector_customize.setEnabled(False)
+        dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(False)
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "Select a detector method to view details."
+        )
+        return
+
+    plugin_name = str(record.get("plugin", "")).strip()
+    action_name = str(record.get("action", "")).strip()
+
+    dashboard.tsi_detector_selected_plugin = plugin_name
+    dashboard.tsi_detector_selected_action = action_name
+
+    has_method = bool(plugin_name and action_name)
+
+    dashboard.ui.pushButton_tsi_detector_customize.setEnabled(has_method)
+    dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(False)
+
+    if has_method:
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "Customize this method to load its parameters and details."
+        )
+    else:
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "Select a detector method to view details."
+        )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTSI_DetectorCustomizeClicked(dashboard: QtCore.QObject):
+    """
+    Query the selected node for the selected detector action schema and render
+    Card 2 when the result returns.
+    """
+    uid = getattr(dashboard, "selected_node_uid", "").strip()
+    record = dashboard.ui.comboBox_tsi_detector_method.currentData()
+
+    if not uid:
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "Select a sensor node before customizing detector parameters."
+        )
+        return
+
+    if not isinstance(record, dict):
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "Select a detector method before customizing parameters."
+        )
+        return
+
+    plugin_name = str(record.get("plugin", "")).strip()
+    action_name = str(record.get("action", "")).strip()
+
+    if not plugin_name or not action_name:
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "Selected detector method is missing plugin/action information."
+        )
+        return
+
+    dashboard.tsi_detector_customized = False
+    dashboard.tsi_detector_selected_plugin = plugin_name
+    dashboard.tsi_detector_selected_action = action_name
+
+    clear_tsi_detector_parameter_controls(dashboard)
+
+    dashboard.ui.pushButton_tsi_detector_customize.setEnabled(False)
+    dashboard.ui.pushButton_tsi_detector_customize.setText("Loading...")
+    dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(False)
+    dashboard.ui.label_tsi_detector_setup_info.setText(
+        "Loading detector parameters..."
+    )
+
+    await dashboard.backend.queryPluginActionSchema(
+        uid=uid,
+        plugin_name=plugin_name,
+        action_name=action_name,
+        context="tsi.detector",
+    )
+
+
+def handle_tsi_detector_action_schema(
+    dashboard: QtCore.QObject,
+    plugin_name: str,
+    action_name: str,
+    node_uid: str,
+    parameters: list,
+):
+    """
+    Render Card 2 dynamic detector parameters from a Dashboard-only action
+    schema result.
+    """
+    parameters = parameters or []
+
+    selected_record = dashboard.ui.comboBox_tsi_detector_method.currentData()
+
+    selected_plugin = ""
+    selected_action = ""
+
+    if isinstance(selected_record, dict):
+        selected_plugin = str(selected_record.get("plugin", "")).strip()
+        selected_action = str(selected_record.get("action", "")).strip()
+
+    plugin_name = str(plugin_name or "").strip()
+    action_name = str(action_name or "").strip()
+
+    # Ignore stale schema responses after a method change.
+    if selected_plugin != plugin_name or selected_action != action_name:
+        dashboard.logger.debug(
+            f"[TSI Detector] Ignoring stale schema for "
+            f"{plugin_name}.{action_name}; "
+            f"selected={selected_plugin}.{selected_action}"
+        )
+
+        dashboard.tsi_detector_customized = False
+
+        dashboard.ui.pushButton_tsi_detector_customize.setText("Customize")
+        dashboard.ui.pushButton_tsi_detector_customize.setEnabled(
+            bool(selected_plugin and selected_action)
+        )
+
+        _tsi_detector_set_start_stop_button(dashboard, False)
+        dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(False)
+        return
+
+    clear_tsi_detector_parameter_controls(dashboard)
+
+    # These are what the Start slot needs.
+    dashboard.tsi_detector_selected_plugin = plugin_name
+    dashboard.tsi_detector_selected_action = action_name
+
+    dashboard.tsi_detector_current_schema = {
+        "plugin": plugin_name,
+        "action": action_name,
+        "node_uid": node_uid,
+        "params": parameters,
+    }
+
+    dashboard.tsi_detector_parameter_widgets = {}
+
+    _render_tsi_detector_parameter_widgets(
+        dashboard,
+        parameters,
+    )
+
+    dashboard.tsi_detector_customized = True
+
+    description = _tsi_detector_schema_description(parameters)
+
+    if description:
+        dashboard.ui.label_tsi_detector_setup_info.setText(description)
+    else:
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "Detector parameters loaded. Review settings before starting."
+        )
+
+    dashboard.ui.pushButton_tsi_detector_customize.setText("Customize")
+    dashboard.ui.pushButton_tsi_detector_customize.setEnabled(True)
+
+    _tsi_detector_set_start_stop_button(dashboard, False)
+    _tsi_detector_set_card3_enabled(dashboard, True)
+
+    if getattr(dashboard, "selected_node_uid", ""):
+        _tsi_detector_set_status_text(dashboard, "Idle")
+    else:
+        _tsi_detector_set_status_text(dashboard, "Sensor Node Unavailable")
+
+
+def clear_tsi_detector_parameter_controls(dashboard: QtCore.QObject):
+    """
+    Clear Card 2 dynamic parameter widgets.
+    """
+    contents = dashboard.ui.scrollAreaWidgetContents_tsi_detector_parameters
+
+    layout = contents.layout()
+    if layout is None:
+        layout = QtWidgets.QGridLayout(contents)
+        contents.setLayout(layout)
+
+    while layout.count():
+        item = layout.takeAt(0)
+
+        widget = item.widget()
+        if widget is not None:
+            widget.deleteLater()
+
+        child_layout = item.layout()
+        if child_layout is not None:
+            while child_layout.count():
+                child_item = child_layout.takeAt(0)
+                child_widget = child_item.widget()
+                if child_widget is not None:
+                    child_widget.deleteLater()
+
+    layout.setContentsMargins(12, 10, 12, 10)
+    layout.setHorizontalSpacing(8)
+    layout.setVerticalSpacing(7)
+
+    for col in range(0, 8):
+        layout.setColumnStretch(col, 0)
+        layout.setColumnMinimumWidth(col, 0)
+
+    contents.setMinimumWidth(0)
+    contents.setMaximumWidth(390)
+
+    dashboard.ui.scrollArea_tsi_detector_parameters.setWidgetResizable(True)
+    dashboard.ui.scrollArea_tsi_detector_parameters.setAlignment(
+        QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop
+    )
+    dashboard.ui.scrollArea_tsi_detector_parameters.setHorizontalScrollBarPolicy(
+        QtCore.Qt.ScrollBarAlwaysOff
+    )
+    dashboard.ui.scrollArea_tsi_detector_parameters.setVerticalScrollBarPolicy(
+        QtCore.Qt.ScrollBarAsNeeded
+    )
+
+    dashboard.tsi_detector_parameter_widgets = {}
+    dashboard.tsi_detector_current_schema = {}
+    dashboard.tsi_detector_customized = False
+
+    _tsi_detector_set_card3_enabled(dashboard, False)
+
+
+def _render_tsi_detector_parameter_widgets(
+    dashboard: QtCore.QObject,
+    parameters: list,
+):
+    contents = dashboard.ui.scrollAreaWidgetContents_tsi_detector_parameters
+
+    layout = contents.layout()
+    if layout is None:
+        layout = QtWidgets.QGridLayout(contents)
+        contents.setLayout(layout)
+
+    layout.setContentsMargins(12, 10, 12, 10)
+    layout.setHorizontalSpacing(8)
+    layout.setVerticalSpacing(7)
+    layout.setAlignment(QtCore.Qt.AlignTop)
+
+    # Kill leftovers from old layout columns.
+    for col in range(0, 8):
+        layout.setColumnStretch(col, 0)
+        layout.setColumnMinimumWidth(col, 0)
+
+    contents.setAutoFillBackground(False)
+    contents.setMaximumWidth(430)
+
+    dashboard.ui.scrollArea_tsi_detector_parameters.setWidgetResizable(True)
+    dashboard.ui.scrollArea_tsi_detector_parameters.setAlignment(
+        QtCore.Qt.AlignHCenter | QtCore.Qt.AlignTop
+    )
+    dashboard.ui.scrollArea_tsi_detector_parameters.setHorizontalScrollBarPolicy(
+        QtCore.Qt.ScrollBarAlwaysOff
+    )
+    dashboard.ui.scrollArea_tsi_detector_parameters.setVerticalScrollBarPolicy(
+        QtCore.Qt.ScrollBarAsNeeded
+    )
+
+    visible_params = [
+        p for p in parameters
+        if str(p.get("name", "")).strip() != "description"
+    ]
+
+    for row, param in enumerate(visible_params):
+        name = str(param.get("name", "")).strip()
+        if not name:
+            continue
+
+        label_text = str(param.get("label") or name).strip()
+        widget = _create_tsi_detector_parameter_widget(dashboard, param)
+
+        label = QtWidgets.QLabel(label_text + ":", contents)
+        label.setObjectName("label2_tsi_detector_parameter")
+        label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
+        label.setFixedWidth(160)
+
+        layout.addWidget(label, row, 0)
+        layout.addWidget(widget, row, 1)
+
+        dashboard.tsi_detector_parameter_widgets[name] = widget
+
+    layout.setColumnMinimumWidth(0, 160)
+    layout.setColumnMinimumWidth(1, 180)
+    layout.setColumnStretch(0, 0)
+    layout.setColumnStretch(1, 0)
+
+
+def _create_tsi_detector_parameter_widget(
+    dashboard: QtCore.QObject,
+    param: dict,
+):
+    param_name = str(param.get("name", "")).strip()
+    param_type = str(param.get("type", "string") or "string").lower()
+    default = param.get("default", "")
+    options = param.get("options", []) or []
+
+    compact_width = 180
+
+    if param_type in {"int", "integer", "number", "float", "double"}:
+        widget = QtWidgets.QDoubleSpinBox()
+        widget.setObjectName("doubleSpinBox_tsi_detector_parameter")
+
+        widget.setDecimals(_safe_int(param.get("decimals"), 3))
+        widget.setMinimum(_safe_float(param.get("min"), -999999999.0))
+        widget.setMaximum(_safe_float(param.get("max"), 999999999.0))
+        widget.setSingleStep(_safe_float(param.get("step"), 1.0))
+        widget.setValue(_safe_float(default, 0.0))
+
+        if param_type in {"int", "integer"}:
+            widget.setDecimals(0)
+
+        widget.setFixedWidth(compact_width)
+        widget.setButtonSymbols(QtWidgets.QAbstractSpinBox.UpDownArrows)
+        widget.setAlignment(QtCore.Qt.AlignRight)
+        return widget
+
+    if param_type in {"bool", "boolean"}:
+        widget = QtWidgets.QCheckBox()
+        widget.setObjectName("checkBox_tsi_detector_parameter")
+        widget.setChecked(
+            str(default).strip().lower() in {"1", "true", "yes", "on"}
+        )
+        widget.setFixedWidth(compact_width)
+        return widget
+
+    if options:
+        widget = QtWidgets.QComboBox()
+        widget.setObjectName("comboBox_tsi_detector_parameter")
+        widget.addItems([str(option) for option in options])
+
+        default_text = str(default)
+        index = widget.findText(default_text)
+        if index >= 0:
+            widget.setCurrentIndex(index)
+
+        widget.setFixedWidth(compact_width)
+
+        if param_name == "run_mode":
+            widget.setToolTip(
+                "GUI mode is intended for local nodes. Remote nodes should run headless."
+            )
+
+        return widget
+
+    widget = QtWidgets.QLineEdit()
+    widget.setObjectName("lineEdit_tsi_detector_parameter")
+    widget.setText(str(default))
+    widget.setFixedWidth(compact_width)
+    return widget
+
+
+def _safe_float(value, default=0.0):
+    try:
+        return float(value)
+    except Exception:
+        return float(default)
+
+
+def _safe_int(value, default=0):
+    try:
+        return int(float(value))
+    except Exception:
+        return int(default)
+
+
+def _tsi_detector_schema_description(parameters: list) -> str:
+    for param in parameters:
+        if str(param.get("name", "")).strip() == "description":
+            description = str(param.get("default", "") or "").strip()
+            if description:
+                return description
+    return ""
+
+
+def update_tsi_detector_selected_node_gate(dashboard: QtCore.QObject):
+    """
+    Shows the unified detector controls only when a selected Sensor Node exists
+    and is currently connected.
+
+    stackedWidget_tsi_detector:
+        page 0 = normal Detector controls
+        page 1 = no Sensor Node selected / unavailable empty-state page
+    """
+    selected_uid = getattr(dashboard, "selected_node_uid", "") or ""
+    has_selected_node = bool(selected_uid)
+
+    if has_selected_node:
+        node_states = getattr(dashboard, "node_states", {}) or {}
+        node_state = node_states.get(selected_uid)
+
+        if isinstance(node_state, dict) and node_state.get("connected") is False:
+            has_selected_node = False
+
+    stack = getattr(dashboard.ui, "stackedWidget_tsi_detector", None)
+    if stack is not None:
+        stack.setCurrentIndex(0 if has_selected_node else 1)
+
+    # If running, do not re-enable anything. A node status/hardware refresh may
+    # call this gate while the action is active.
+    if getattr(dashboard, "tsi_detector_running", False):
+        _tsi_detector_set_controls_enabled(dashboard, False)
+        _tsi_detector_set_card3_enabled(dashboard, True)
+        update_tsi_detector_status_from_node(
+            dashboard,
+            node_uid=selected_uid,
+        )
+        return
+
+    # Static filters should be enabled only when not running.
+    dashboard.ui.comboBox_tsi_detector_type.setEnabled(True)
+    dashboard.ui.comboBox_tsi_detector_mode.setEnabled(True)
+
+    _tsi_detector_set_start_stop_button(dashboard, False)
+
+    hardware_combo = dashboard.ui.comboBox_tsi_detector_hardware
+    method_combo = dashboard.ui.comboBox_tsi_detector_method
+    query_button = dashboard.ui.pushButton_tsi_detector_query
+    customize_button = dashboard.ui.pushButton_tsi_detector_customize
+
+    if not has_selected_node:
+        clear_tsi_detector_methods(dashboard)
+
+        hardware_combo.blockSignals(True)
+        hardware_combo.clear()
+        hardware_combo.blockSignals(False)
+        hardware_combo.setEnabled(False)
+
+        method_combo.setEnabled(False)
+        query_button.setEnabled(False)
+        customize_button.setEnabled(False)
+
+        _tsi_detector_set_card3_enabled(dashboard, False)
+        _tsi_detector_set_status_text(dashboard, "Sensor Node Unavailable")
+
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "Select a sensor node before querying detector methods."
+        )
+        return
+
+    update_tsi_detector_hardware_combo(dashboard)
+
+    has_hardware = hardware_combo.count() > 0
+    has_method = method_combo.count() > 0
+    is_customized = bool(getattr(dashboard, "tsi_detector_customized", False))
+
+    hardware_combo.setEnabled(has_hardware)
+    method_combo.setEnabled(has_hardware and has_method)
+    query_button.setEnabled(has_hardware)
+    customize_button.setEnabled(has_hardware and has_method)
+
+    _tsi_detector_set_card3_enabled(
+        dashboard,
+        has_selected_node and has_hardware and is_customized,
+    )
+
+    for widget in getattr(dashboard, "tsi_detector_parameter_widgets", {}).values():
+        widget.setEnabled(True)
+
+    _tsi_detector_set_status_text(dashboard, "Idle")
+
+    if has_hardware:
+        if not has_method:
+            dashboard.ui.label_tsi_detector_setup_info.setText(
+                "Query matching detector methods for the selected type, mode, and hardware."
+            )
+    else:
+        clear_tsi_detector_methods(dashboard)
+        _tsi_detector_set_card3_enabled(dashboard, False)
+        dashboard.ui.label_tsi_detector_setup_info.setText(
+            "No detector-compatible hardware is configured for the selected node."
+        )
+
+
+def _tsi_detector_set_start_stop_button(
+    dashboard: QtCore.QObject,
+    running: bool,
+):
+    """
+    Updates the unified detector start/stop button text and dynamic stylesheet state.
+    """
+    button = dashboard.ui.pushButton_tsi_detector_start_stop
+
+    button.setProperty("running", bool(running))
+
+    if running:
+        button.setText("▮▮  Stop Detector")
+    else:
+        button.setText("▶  Start Detector")
+
+    button.style().unpolish(button)
+    button.style().polish(button)
+    button.update()
+
+
+def _tsi_detector_set_status_text(
+    dashboard: QtCore.QObject,
+    text: str,
+):
+    """
+    Sets the unified detector Card 3 status label.
+    """
+    label = getattr(dashboard.ui, "label2_tsi_detector_status", None)
+
+    if label is not None:
+        label.setText(str(text or "").strip())
+
+
+def _tsi_detector_set_controls_enabled(
+    dashboard: QtCore.QObject,
+    enabled: bool,
+):
+    """
+    Enables/disables unified detector setup and parameter controls while running.
+
+    Do not use this for selected-node gating. Type/Mode are static filters and
+    should stay populated.
+    """
+    for widget_name in (
+        "comboBox_tsi_detector_type",
+        "comboBox_tsi_detector_mode",
+        "comboBox_tsi_detector_hardware",
+        "comboBox_tsi_detector_method",
+        "pushButton_tsi_detector_query",
+        "pushButton_tsi_detector_customize",
+    ):
+        widget = getattr(dashboard.ui, widget_name, None)
+
+        if widget is not None:
+            widget.setEnabled(enabled)
+
+    for widget in getattr(dashboard, "tsi_detector_parameter_widgets", {}).values():
+        widget.setEnabled(enabled)
+
+
+def _tsi_detector_set_running(
+    dashboard: QtCore.QObject,
+    node_uid: str,
+):
+    """
+    Marks the unified detector action as running and updates Card 3/UI state.
+
+    Status label follows the selected node action status, same as Fixed/Sweep.
+    """
+    dashboard.tsi_detector_running = True
+    dashboard.tsi_detector_node_uid = node_uid or ""
+    dashboard.tsi_detector_opid = ""
+    dashboard.tsi_detector_waiting_for_opid = True
+
+    stack = getattr(dashboard.ui, "stackedWidget_tsi_detector", None)
+    if stack is not None:
+        stack.setCurrentIndex(0)
+
+    for table in _tsi_detector_results_tables(dashboard):
+        table.clearContents()
+        table.setRowCount(0)
+
+    _tsi_detector_plot_start(dashboard)
+
+    _tsi_detector_set_start_stop_button(dashboard, True)
+    _tsi_detector_set_status_text(dashboard, "Starting...")
+    update_tsi_detector_status_from_node(dashboard, node_uid=node_uid)
+
+    dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(True)
+    _tsi_detector_set_controls_enabled(dashboard, False)
+
+
+def _tsi_detector_set_stopped(dashboard: QtCore.QObject):
+    """
+    Marks the unified detector action as stopped and restores Card 3/UI state.
+    """
+    _tsi_detector_plot_stop(dashboard)
+
+    dashboard.tsi_detector_running = False
+    dashboard.tsi_detector_node_uid = ""
+    dashboard.tsi_detector_opid = ""
+    dashboard.tsi_detector_waiting_for_opid = False
+
+    _tsi_detector_set_start_stop_button(dashboard, False)
+
+    if getattr(dashboard, "selected_node_uid", ""):
+        _tsi_detector_set_status_text(dashboard, "Idle")
+    else:
+        _tsi_detector_set_status_text(dashboard, "Sensor Node Unavailable")
+
+    update_tsi_detector_selected_node_gate(dashboard)
+
+
+def reconcile_tsi_detector_state(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    status: str = "",
+):
+    """
+    Stops the unified detector UI state when the selected node reports a terminal
+    action status.
+    """
+    if not getattr(dashboard, "tsi_detector_running", False):
+        return
+
+    detector_node_uid = getattr(dashboard, "tsi_detector_node_uid", "") or ""
+
+    if detector_node_uid and node_uid and node_uid != detector_node_uid:
+        return
+
+    status_l = str(status or "").strip().lower()
+
+    if status_l in (
+        "idle",
+        "stopped",
+        "complete",
+        "completed",
+        "failed",
+        "cancelled",
+        "canceled",
+        "unknown",
+    ):
+        _tsi_detector_set_stopped(dashboard)
+
+
+def update_tsi_detector_status_from_node(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+):
+    """
+    Mirrors the selected node's operation/status text into the unified detector
+    status label.
+    """
+    selected_uid = getattr(dashboard, "selected_node_uid", "") or ""
+
+    if node_uid and selected_uid and node_uid != selected_uid:
+        return
+
+    if not selected_uid:
+        _tsi_detector_set_status_text(dashboard, "Sensor Node Unavailable")
+        return
+
+    if not getattr(dashboard, "tsi_detector_running", False):
+        _tsi_detector_set_status_text(dashboard, "Idle")
+        return
+
+    node_states = getattr(dashboard, "node_states", {}) or {}
+    node_state = node_states.get(selected_uid, {}) or {}
+
+    status_text = (
+        node_state.get("status")
+        or node_state.get("state")
+        or node_state.get("operation_status")
+        or node_state.get("last_status")
+        or ""
+    )
+
+    status_text = str(status_text).strip()
+
+    if not status_text:
+        status_text = "Running"
+
+    _tsi_detector_set_status_text(dashboard, status_text)
+
+
+def update_tsi_detector_status_from_selected_node(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    status: str = "",
+):
+    """
+    Mirrors the top-panel selected node's operation/status text into the
+    unified detector status label.
+
+    This uses dashboard.selected_node_uid, not selected_tactical_node_uid.
+    """
+    selected_uid = getattr(dashboard, "selected_node_uid", "") or ""
+
+    if not selected_uid:
+        _tsi_detector_set_status_text(dashboard, "Sensor Node Unavailable")
+        return
+
+    if node_uid and node_uid != selected_uid:
+        return
+
+    node_states = getattr(dashboard, "node_states", {}) or {}
+    node_state = node_states.get(selected_uid, {}) or {}
+
+    if isinstance(node_state, dict) and node_state.get("connected") is False:
+        _tsi_detector_set_status_text(dashboard, "Sensor Node Unavailable")
+        return
+
+    status_text = str(
+        status
+        or node_state.get("status", "")
+        or ""
+    ).strip()
+
+    detector_running = bool(
+        getattr(dashboard, "tsi_detector_running", False)
+    )
+
+    if not detector_running:
+        _tsi_detector_set_status_text(dashboard, "Idle")
+        return
+
+    if not status_text:
+        status_text = "Starting..."
+
+    _tsi_detector_set_status_text(dashboard, status_text)
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTSI_DetectorStartStopClicked(dashboard: QtCore.QObject):
+    """
+    Starts/stops the unified TSI Detector action through the plugin action path.
+    """
+    uid = getattr(dashboard, "selected_node_uid", "") or ""
+
+    if not uid:
+        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+            dashboard,
+            "Select a Sensor Node before starting the detector.",
+        )
+        return
+
+    if getattr(dashboard, "tsi_detector_running", False):
+        try:
+            await dashboard.backend.tacticalNodeStop([uid])
+        finally:
+            _tsi_detector_set_stopped(dashboard)
+            dashboard.refreshStatusBarText()
+        return
+
+    plugin_name = getattr(dashboard, "tsi_detector_selected_plugin", "") or ""
+    action_name = getattr(dashboard, "tsi_detector_selected_action", "") or ""
+
+    if not plugin_name or not action_name:
+        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+            dashboard,
+            "Query and customize a detector method before starting.",
+        )
+        return
+
+    if not getattr(dashboard, "tsi_detector_customized", False):
+        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+            dashboard,
+            "Customize detector parameters before starting.",
+        )
+        return
+
+    try:
+        parameters = collect_tsi_detector_parameters(dashboard)
+    except Exception as e:
+        dashboard.logger.error(f"Could not collect TSI Detector parameters: {e}")
+        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
+            dashboard,
+            "Could not collect detector parameters.",
+        )
+        return
+
+    _tsi_detector_set_running(
+        dashboard,
+        node_uid=uid,
+    )
+
+    try:
+        await dashboard.backend.tacticalNodeExecute(
+            [uid],
+            plugin_name,
+            action_name,
+            parameters,
+        )
+    except Exception:
+        _tsi_detector_set_stopped(dashboard)
+        raise
+
+    dashboard.refreshStatusBarText()
+
+
+def collect_tsi_detector_parameters(dashboard: QtCore.QObject) -> dict:
+    """
+    Collect Card 2 dynamic detector parameter widget values into the plugin
+    action parameters dictionary.
+    """
+    parameters = {}
+
+    parameter_widgets = getattr(
+        dashboard,
+        "tsi_detector_parameter_widgets",
+        {},
+    )
+
+    for parameter_name, widget in parameter_widgets.items():
+        parameter_name = str(parameter_name or "").strip()
+
+        if not parameter_name:
+            continue
+
+        if isinstance(widget, QtWidgets.QLineEdit):
+            parameters[parameter_name] = widget.text()
+
+        elif isinstance(widget, QtWidgets.QComboBox):
+            parameters[parameter_name] = widget.currentText()
+
+        elif isinstance(widget, QtWidgets.QDoubleSpinBox):
+            value = widget.value()
+
+            if widget.decimals() == 0:
+                parameters[parameter_name] = int(value)
+            else:
+                parameters[parameter_name] = value
+
+        elif isinstance(widget, QtWidgets.QSpinBox):
+            parameters[parameter_name] = widget.value()
+
+        elif isinstance(widget, QtWidgets.QCheckBox):
+            parameters[parameter_name] = widget.isChecked()
+
+        else:
+            dashboard.logger.warning(
+                f"[TSI Detector] Unsupported parameter widget for "
+                f"{parameter_name}: {type(widget)}"
+            )
+
+    return parameters
+
+
+def _tsi_detector_set_card3_enabled(
+    dashboard: QtCore.QObject,
+    enabled: bool,
+):
+    """
+    Enables/disables Card 3 labels along with the Start/Stop button.
+    """
+    for widget_name in (
+        # "label_tsi_detector_run_title",
+        # "label_tsi_detector_run_subtitle",
+        "label2_detector_status_status",
+        "label2_tsi_detector_status",
+    ):
+        widget = getattr(dashboard.ui, widget_name, None)
+
+        if widget is not None:
+            widget.setEnabled(enabled)
+
+    dashboard.ui.pushButton_tsi_detector_start_stop.setEnabled(enabled)
+
+
+def _tsi_detector_results_tables(dashboard: QtCore.QObject):
+    """
+    Returns all tables that should receive/clear TSI detector result rows.
+    """
+    tables = []
+
+    for name in (
+        "tableWidget1_tsi_wideband",
+        "tableWidget_tsi_conditioner_input_detector",
+    ):
+        table = getattr(dashboard.ui, name, None)
+        if table is not None:
+            tables.append(table)
+
+    return tables
+
+
+def _tsi_detector_plot_color_settings(dashboard: QtCore.QObject):
+    """
+    Returns plot colors tuned for the current Dashboard color mode.
+    """
+    settings = getattr(dashboard.backend, "settings", {}) or {}
+    color_mode = str(settings.get("color_mode", "") or "")
+
+    text_color = settings.get("color4", "#000000")
+    fig_face = settings.get("color1", "#f4f4f4")
+
+    if "Dark" in color_mode:
+        plot_face = "#1f2933"
+        grid_color = "#56616f"
+    else:
+        plot_face = "#e9ecef"
+        grid_color = "#b8c0ca"
+
+    return fig_face, plot_face, grid_color, text_color
+
+
+def _tsi_detector_plot_ensure_state(dashboard: QtCore.QObject):
+    """
+    Lazily initializes the unified TSI detector raster state.
+    """
+    if not hasattr(dashboard, "tsi_detector_plot_events"):
+        dashboard.tsi_detector_plot_events = deque(maxlen=2000)
+
+    if not hasattr(dashboard, "tsi_detector_plot_start_time"):
+        dashboard.tsi_detector_plot_start_time = None
+
+    if not hasattr(dashboard, "tsi_detector_plot_dirty"):
+        dashboard.tsi_detector_plot_dirty = False
+
+    if not hasattr(dashboard, "tsi_detector_plot_timer"):
+        dashboard.tsi_detector_plot_timer = None
+
+    if not hasattr(dashboard, "tsi_detector_plot_window_s"):
+        dashboard.tsi_detector_plot_window_s = 60.0
+
+    if not hasattr(dashboard, "tsi_detector_plot_initial_xlim_low"):
+        dashboard.tsi_detector_plot_initial_xlim_low = None
+
+    if not hasattr(dashboard, "tsi_detector_plot_initial_xlim_high"):
+        dashboard.tsi_detector_plot_initial_xlim_high = None
+
+
+def _tsi_detector_plot_reset(dashboard: QtCore.QObject):
+    """
+    Clears current unified detector plot state and draws an empty raster.
+    """
+    _tsi_detector_plot_ensure_state(dashboard)
+
+    dashboard.tsi_detector_plot_events.clear()
+    dashboard.tsi_detector_plot_start_time = None
+    dashboard.tsi_detector_plot_dirty = True
+
+    x_low, x_high = _tsi_detector_plot_initial_xlim(dashboard)
+    dashboard.tsi_detector_plot_initial_xlim_low = x_low
+    dashboard.tsi_detector_plot_initial_xlim_high = x_high
+
+    _tsi_detector_plot_refresh(dashboard, force=True)
+
+
+def _tsi_detector_plot_clear_points(dashboard: QtCore.QObject):
+    """
+    Clears plotted detector points while preserving the active run state.
+    """
+    _tsi_detector_plot_ensure_state(dashboard)
+
+    dashboard.tsi_detector_plot_events.clear()
+    dashboard.tsi_detector_plot_start_time = None
+    dashboard.tsi_detector_plot_dirty = True
+
+    _tsi_detector_plot_refresh(
+        dashboard,
+        force=True,
+        running=getattr(dashboard, "tsi_detector_running", False),
+    )
+
+
+def _tsi_detector_plot_start(dashboard: QtCore.QObject):
+    """
+    Starts/reset the unified detector plot for a new detector operation.
+    """
+    _tsi_detector_plot_ensure_state(dashboard)
+
+    dashboard.tsi_detector_plot_events.clear()
+    dashboard.tsi_detector_plot_start_time = None
+    dashboard.tsi_detector_plot_dirty = True
+
+    x_low, x_high = _tsi_detector_plot_initial_xlim(dashboard)
+    dashboard.tsi_detector_plot_initial_xlim_low = x_low
+    dashboard.tsi_detector_plot_initial_xlim_high = x_high
+
+    old_timer = getattr(dashboard, "tsi_detector_plot_timer", None)
+    if old_timer is not None:
+        try:
+            old_timer.stop()
+            old_timer.timeout.disconnect()
+        except Exception:
+            pass
+
+    _tsi_detector_plot_refresh(dashboard, force=True, running=True)
+
+    timer = QtCore.QTimer(dashboard)
+    timer.setInterval(250)
+    timer.timeout.connect(lambda: _tsi_detector_plot_refresh(dashboard))
+    dashboard.tsi_detector_plot_timer = timer
+    timer.start()
+
+
+def _tsi_detector_plot_stop(dashboard: QtCore.QObject):
+    """
+    Stops the detector plot timer/refresh behavior but leaves visible points.
+    """
+    timer = getattr(dashboard, "tsi_detector_plot_timer", None)
+    if timer is not None:
+        try:
+            timer.stop()
+        except Exception:
+            pass
+
+    _tsi_detector_plot_refresh(dashboard, force=True, running=False)
+
+
+def _tsi_detector_plot_add_detection(
+    dashboard: QtCore.QObject,
+    frequency_mhz: float,
+    power_dbm: float,
+    timestamp_s: float = None,
+):
+    """
+    Appends one detector event to the unified detector raster.
+    """
+    _tsi_detector_plot_ensure_state(dashboard)
+
+    if timestamp_s is None:
+        timestamp_s = time.time()
+
+    if dashboard.tsi_detector_plot_start_time is None:
+        dashboard.tsi_detector_plot_start_time = timestamp_s
+
+    elapsed_s = max(
+        0.0,
+        float(timestamp_s) - float(dashboard.tsi_detector_plot_start_time),
+    )
+
+    dashboard.tsi_detector_plot_events.append(
+        {
+            "frequency_mhz": float(frequency_mhz),
+            "power_dbm": float(power_dbm),
+            "timestamp_s": float(timestamp_s),
+            "elapsed_s": elapsed_s,
+        }
+    )
+
+    dashboard.tsi_detector_plot_dirty = True
+
+
+def _tsi_detector_plot_refresh(
+    dashboard: QtCore.QObject,
+    force: bool = False,
+    running: bool = None,
+):
+    """
+    Redraws the unified TSI detector raster when there are new events.
+
+    Rebuilds the Matplotlib figure contents because the shared TSI canvas may
+    previously have been used as an image/waterfall canvas. Rebuilding prevents
+    old imshow/colorbar state from forcing an equal-aspect, vertically squished
+    plot.
+    """
+    _tsi_detector_plot_ensure_state(dashboard)
+
+    if not force and not getattr(dashboard, "tsi_detector_plot_dirty", False):
+        return
+
+    canvas = getattr(dashboard, "matplotlib_widget", None)
+    if canvas is None:
+        return
+
+    try:
+        fig = canvas.fig
+
+        fig_face, plot_face, grid_color, text_color = (
+            _tsi_detector_plot_color_settings(dashboard)
+        )
+
+        events_all = list(getattr(dashboard, "tsi_detector_plot_events", []))
+        window_s = float(
+            getattr(dashboard, "tsi_detector_plot_window_s", 60.0) or 60.0
+        )
+
+        if events_all:
+            latest_elapsed = max(float(e["elapsed_s"]) for e in events_all)
+        else:
+            latest_elapsed = 0.0
+
+        y_min = max(0.0, latest_elapsed - window_s)
+        y_max = max(window_s, latest_elapsed + 1.0)
+
+        events = [
+            e for e in events_all
+            if float(e["elapsed_s"]) >= y_min
+        ]
+
+        freqs = [
+            float(e["frequency_mhz"])
+            for e in events_all
+        ]
+
+        x_min, x_max = _tsi_detector_plot_data_xlim(
+            dashboard,
+            freqs=freqs,
+        )
+
+        #
+        # Rebuild the figure for detector-raster mode.
+        #
+        fig.clear()
+        fig.set_facecolor(fig_face)
+
+        ax = fig.add_subplot(111)
+        canvas.axes = ax
+
+        # Critical: do not let old imshow/equal-aspect behavior squeeze this.
+        ax.set_aspect("auto", adjustable="box")
+
+        fig.subplots_adjust(
+            left=0.085,
+            right=0.895,
+            bottom=0.125,
+            top=0.94,
+            wspace=0.0,
+            hspace=0.0,
+        )
+
+        ax.set_facecolor(plot_face)
+
+        if running is None:
+            running = bool(getattr(dashboard, "tsi_detector_running", False))
+
+        if running:
+            title_state = "Running"
+        else:
+            title_state = "Stopped"
+
+        detector_type = ""
+        detector_mode = ""
+
+        try:
+            detector_type = str(
+                dashboard.ui.comboBox_tsi_detector_type.currentText()
+            ).strip()
+        except Exception:
+            detector_type = ""
+
+        try:
+            detector_mode = str(
+                dashboard.ui.comboBox_tsi_detector_mode.currentText()
+            ).strip()
+        except Exception:
+            detector_mode = ""
+
+        title_prefix = "Detector Activity"
+
+        if detector_type or detector_mode:
+            title_parts = [
+                part for part in (detector_type, detector_mode)
+                if part
+            ]
+            title_prefix = " ".join(title_parts) + " Detector Activity"
+
+        ax.set_title(
+            f"{title_prefix} - {title_state}",
+            color=text_color,
+            fontsize=10,
+            pad=8,
+        )
+
+        ax.set_xlabel(
+            "Frequency (MHz)",
+            color=text_color,
+            fontsize=9,
+            labelpad=7,
+        )
+        ax.set_ylabel(
+            "Time Elapsed (s)",
+            color=text_color,
+            fontsize=9,
+            labelpad=7,
+        )
+
+        ax.set_xlim(x_min, x_max)
+        ax.set_ylim(y_min, y_max)
+
+        try:
+            ax.xaxis.set_major_locator(matplotlib.ticker.MaxNLocator(nbins=6))
+            ax.xaxis.set_major_formatter(
+                matplotlib.ticker.FormatStrFormatter("%.3f")
+            )
+        except Exception:
+            pass
+
+        ax.grid(
+            True,
+            color=grid_color,
+            linestyle="--",
+            linewidth=0.6,
+            alpha=0.75,
+        )
+        ax.set_axisbelow(True)
+
+        ax.tick_params(axis="x", colors=text_color, labelsize=8)
+        ax.tick_params(axis="y", colors=text_color, labelsize=8)
+
+        for spine in ax.spines.values():
+            spine.set_color(grid_color)
+
+        try:
+            cmap = matplotlib.cm.get_cmap("turbo")
+        except Exception:
+            cmap = matplotlib.cm.get_cmap("rainbow")
+
+        norm = matplotlib.colors.Normalize(vmin=-60.0, vmax=40.0)
+
+        if events:
+            tick_height = max(0.35, (y_max - y_min) * 0.012)
+
+            segments = []
+            powers = []
+
+            for event in events:
+                x = float(event["frequency_mhz"])
+                y = float(event["elapsed_s"])
+
+                segments.append(
+                    [
+                        (x, max(y_min, y - tick_height)),
+                        (x, min(y_max, y + tick_height)),
+                    ]
+                )
+                powers.append(float(event["power_dbm"]))
+
+            line_collection = LineCollection(
+                segments,
+                cmap=cmap,
+                norm=norm,
+                linewidths=2.8,
+                alpha=0.95,
+            )
+            line_collection.set_array(np.array(powers))
+            ax.add_collection(line_collection)
+
+        else:
+            if running:
+                message = "Waiting for detector reports..."
+            else:
+                message = "No detector data"
+
+            ax.text(
+                0.5,
+                0.5,
+                message,
+                transform=ax.transAxes,
+                ha="center",
+                va="center",
+                color=text_color,
+                alpha=0.75,
+                fontsize=10,
+            )
+
+        sm = matplotlib.cm.ScalarMappable(norm=norm, cmap=cmap)
+        sm.set_array([])
+
+        cbar = fig.colorbar(
+            sm,
+            ax=ax,
+            fraction=0.035,
+            pad=0.025,
+        )
+        canvas.cbar = cbar
+
+        cbar.set_label(
+            label="Power (dB)",
+            color=text_color,
+            fontsize=9,
+        )
+        cbar.ax.tick_params(labelsize=8, color=text_color)
+
+        matplotlib.pyplot.setp(
+            matplotlib.pyplot.getp(cbar.ax.axes, "yticklabels"),
+            color=text_color,
+        )
+
+        canvas.draw_idle()
+        dashboard.tsi_detector_plot_dirty = False
+
+    except Exception as e:
+        dashboard.logger.debug(
+            f"Failed to refresh unified TSI detector raster: {e}"
+        )

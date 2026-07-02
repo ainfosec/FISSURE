@@ -1498,87 +1498,6 @@ class DashboardBackend:
             }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
-
-    async def clearWidebandList(self):
-        """
-        Clears the Wideband List.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "clearWidebandList",
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-    
-    async def updateConfiguration(
-        self, 
-        node_uid="", 
-        start_frequency=0, 
-        end_frequency=0, 
-        step_size=0, 
-        dwell_time=0,
-        detector_port=0
-    ):
-        """
-        Forwards the Update Configuration message to a sensor node.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "start_frequency": start_frequency,
-                "end_frequency": end_frequency,
-                "step_size": step_size,
-                "dwell_time": dwell_time,
-                "detector_port": detector_port,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "updateConfiguration",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-    
-    async def startTSI_Detector(self, node_uid="", detector="", variable_names=[], variable_values=[], detector_port=0):
-        """
-        Signals to sensor node to start TSI detector.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "detector": detector,
-                "variable_names": variable_names,
-                "variable_values": variable_values,
-                "detector_port": detector_port,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "startTSI_Detector",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def stopTSI_Detector(self, node_uid=""):
-        """
-        Signals to sensor node to stop TSI detector.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "stopTSI_Detector",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
     
     async def startTSI_Conditioner(
         self,
@@ -2651,6 +2570,89 @@ class DashboardBackend:
                 fissure.comms.MessageTypes.COMMANDS,
                 msg,
             )
+
+
+    async def queryPluginActions(
+        self,
+        uid,
+        context="",
+        scope="all_plugins",
+        plugin_name="",
+        include_tags=None,
+        exclude_tags=None,
+        hardware="",
+    ):
+        """
+        Query a selected sensor node for plugin actions matching tag/hardware filters.
+
+        This is for specialized Dashboard workflows such as TSI Detector,
+        IQ Record/Playback, Attack, etc. It does not replace the Tactical
+        plugin/action browse flow.
+        """
+        if self.hiprfisr_connected is not True:
+            return
+
+        PARAMETERS = {
+            "requester_uid": self.socket_id,
+            "requester_type": "dashboard",
+            "node_uid": uid,
+            "context": context,
+            "scope": scope,
+            "plugin_name": plugin_name,
+            "include_tags": include_tags or [],
+            "exclude_tags": exclude_tags or [],
+            "hardware": hardware,
+        }
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "queryPluginActions",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+    
+
+    async def queryPluginActionSchema(
+        self,
+        uid,
+        plugin_name,
+        action_name,
+        context="",
+    ):
+        """
+        Query a selected sensor node for one plugin action schema.
+
+        This is for Dashboard-only specialized workflows such as TSI Detector,
+        IQ Record/Playback, Attack, etc. It does not use TAK/CoT and does not
+        replace the Tactical customize flow.
+        """
+        if self.hiprfisr_connected is not True:
+            return
+
+        PARAMETERS = {
+            "requester_uid": self.socket_id,
+            "requester_type": "dashboard",
+            "node_uid": uid,
+            "plugin_name": plugin_name,
+            "action_name": action_name,
+            "context": context,
+        }
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME: "queryPluginActionSchema",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
 
 #######################################################################################
 ############################## Low Throughput Messages ################################

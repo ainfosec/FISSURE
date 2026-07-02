@@ -4,6 +4,7 @@ import xml.etree.ElementTree as ET
 from fissure.Dashboard.Slots import (
     TacticalTabSlots,
     IQDataTabSlots,
+    TSITabSlots,
 )
 
 # ---------------------------------------------------------
@@ -468,6 +469,17 @@ def handle_tactical_node_message(dashboard, cot_message):
         frontend,
         node_record,
     )
+
+    try:
+        TSITabSlots.update_tsi_sweep_detector_status_from_selected_node(
+            frontend,
+            node_uid=uid,
+            status=node_record.get("status", ""),
+        )
+    except Exception as e:
+        frontend.logger.debug(
+            f"Could not update TSI Sweep detector status from CoT node message: {e}"
+        )
 
 
 def handle_tactical_target_message(dashboard, cot_message):

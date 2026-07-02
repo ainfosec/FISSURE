@@ -18,6 +18,7 @@ import zmq
 from typing import List
 import re
 from typing import Optional
+import importlib.util
 
 
 async def updateLoggingLevels(component: object, new_console_level="", new_file_level=""):
@@ -580,8 +581,6 @@ async def setVariable(component: object, flow_graph="", variable="", value=""):
             getattr(component.attackflowtoexec, formatted_name)(float(value))
         elif flow_graph == "Sniffer":
             getattr(component.snifferflowtoexec, formatted_name)(float(value))
-        elif flow_graph == "Wideband":
-            getattr(component.wideband_flowtoexec, formatted_name)(float(value))
     else:
         if flow_graph == "Protocol Discovery":
             getattr(component.pdflowtoexec, formatted_name)(value)
@@ -589,8 +588,6 @@ async def setVariable(component: object, flow_graph="", variable="", value=""):
             getattr(component.attackflowtoexec, formatted_name)(value)
         elif flow_graph == "Sniffer":
             getattr(component.snifferflowtoexec, formatted_name)(value)
-        elif flow_graph == "Wideband":
-            getattr(component.wideband_flowtoexec, formatted_name)(value)
 
 
 async def protocolDiscoveryFG_Start(
@@ -612,152 +609,6 @@ async def protocolDiscoveryFG_Stop(component: object):
     component.pdflowtoexec.stop()
     component.pdflowtoexec.wait()
     del component.pdflowtoexec  # Free up the ports
-
-
-async def updateConfiguration(
-    component: object, start_frequency=0, end_frequency=0, step_size=0, dwell_time=0, detector_port=0
-):
-    """
-    Updates the TSI Configuration with the specified values.
-    """
-    # Stop the Current Sweep
-    # if component.running_TSI_wideband == True:
-    # component.stopWidebandThread()
-
-    # Update the Sweep Variables
-    component.wideband_start_freq = []
-    component.wideband_stop_freq = []
-    component.wideband_step_size = []
-    component.wideband_dwell = []
-    for n in range(0, len(start_frequency)):
-        component.wideband_start_freq.append(float(start_frequency[n]))
-        component.wideband_stop_freq.append(float(end_frequency[n]))
-        component.wideband_step_size.append(float(step_size[n]))
-        component.wideband_dwell.append(float(dwell_time[n]))
-    component.wideband_band = 0
-    component.configuration_updated = True
-
-    # Start a New Sweep
-    if not component.running_TSI_wideband:
-        # Run Event and Do Not Block
-        loop = asyncio.get_event_loop()
-        loop.run_in_executor(None, component.startWidebandThread, detector_port)
-
-
-async def startTSI_Detector(component: object, detector="", variable_names=[], variable_values=[], detector_port=0):
-    """
-    Begins TSI processing of signals after receiving the command from the HIPRFISR.
-    """
-    component.logger.info("TSI: Starting TSI Detector...")
-    component.running_TSI = True
-
-    # Make a New Wideband Thread
-    if len(detector) > 0:
-        if detector == "wideband_x3x0.py":
-            flow_graph_filename = "wideband_x3x0.py"
-        elif detector == "wideband_b2x0.py":
-            flow_graph_filename = "wideband_b2x0.py"
-        elif detector == "wideband_hackrf.py":
-            flow_graph_filename = "wideband_hackrf.py"
-        elif detector == "wideband_b20xmini.py":
-            flow_graph_filename = "wideband_b20xmini.py"
-        elif detector == "wideband_rtl2832u.py":
-            flow_graph_filename = "wideband_rtl2832u.py"
-        elif detector == "wideband_limesdr.py":
-            flow_graph_filename = "wideband_limesdr.py"
-        elif detector == "wideband_bladerf.py":
-            flow_graph_filename = "wideband_bladerf.py"
-        elif detector == "wideband_plutosdr.py":
-            flow_graph_filename = "wideband_plutosdr.py"
-        elif detector == "wideband_usrp2.py":
-            flow_graph_filename = "wideband_usrp2.py"
-        elif detector == "wideband_usrp_n2xx.py":
-            flow_graph_filename = "wideband_usrp_n2xx.py"
-        elif detector == "wideband_bladerf2.py":
-            flow_graph_filename = "wideband_bladerf2.py"
-        elif detector == "wideband_usrp_x410.py":
-            flow_graph_filename = "wideband_usrp_x410.py"
-        elif detector == "wideband_rspduo.py":
-            flow_graph_filename = "wideband_rspduo.py"
-        elif detector == "wideband_rspdx.py":
-            flow_graph_filename = "wideband_rspdx.py"                        
-        elif detector == "wideband_rspdx_r2.py":
-            flow_graph_filename = "wideband_rspdx_r2.py"                        
-        elif detector == "IQ File":
-            flow_graph_filename = "iq_file.py"
-        elif "fixed_threshold" in detector:
-            if detector == "fixed_threshold_x3x0.py":
-                flow_graph_filename = "fixed_threshold_x3x0.py"
-            elif detector == "fixed_threshold_b2x0.py":
-                flow_graph_filename = "fixed_threshold_b2x0.py"
-            elif detector == "fixed_threshold_hackrf.py":
-                flow_graph_filename = "fixed_threshold_hackrf.py"
-            elif detector == "fixed_threshold_b20xmini.py":
-                flow_graph_filename = "fixed_threshold_b20xmini.py"
-            elif detector == "fixed_threshold_rtl2832u.py":
-                flow_graph_filename = "fixed_threshold_rtl2832u.py"
-            elif detector == "fixed_threshold_limesdr.py":
-                flow_graph_filename = "fixed_threshold_limesdr.py"
-            elif detector == "fixed_threshold_bladerf.py":
-                flow_graph_filename = "fixed_threshold_bladerf.py"
-            elif detector == "fixed_threshold_plutosdr.py":
-                flow_graph_filename = "fixed_threshold_plutosdr.py"
-            elif detector == "fixed_threshold_usrp2.py":
-                flow_graph_filename = "fixed_threshold_usrp2.py"
-            elif detector == "fixed_threshold_usrp_n2xx.py":
-                flow_graph_filename = "fixed_threshold_usrp_n2xx.py"
-            elif detector == "fixed_threshold_bladerf2.py":
-                flow_graph_filename = "fixed_threshold_bladerf2.py"
-            elif detector == "fixed_threshold_usrp_x410.py":
-                flow_graph_filename = "fixed_threshold_usrp_x410.py"
-            elif detector == "fixed_threshold_rspduo.py":
-                flow_graph_filename = "fixed_threshold_rspduo.py"
-            elif detector == "fixed_threshold_rspdx.py":
-                flow_graph_filename = "fixed_threshold_rspdx.py"                                
-            elif detector == "fixed_threshold_rspdx_r2.py":
-                flow_graph_filename = "fixed_threshold_rspdx_r2.py"                                
-            elif detector == "fixed_threshold_simulator.py":
-                flow_graph_filename = "fixed_threshold_simulator.py"
-
-            # Run Event and Do Not Block
-            loop = asyncio.get_event_loop()
-            loop.run_in_executor(None, component.detectorFlowGraphGUI_Thread, flow_graph_filename, variable_names, variable_values, detector_port)
-            return
-
-        # Simulator Detector Thread
-        if detector == "Simulator":
-            # Run Event and Do Not Block
-            loop = asyncio.get_event_loop()
-            loop.run_in_executor(None, component.runDetectorSimulatorThread, variable_names, variable_values, detector_port)
-
-            # Create a Temporary ZMQ SUB
-            component.tsi_detector_context = zmq.Context()
-            component.tsi_detector_socket = component.tsi_detector_context.socket(zmq.SUB)
-            component.tsi_detector_socket.connect("tcp://127.0.0.1:" + str(detector_port))
-            component.tsi_detector_socket.setsockopt_string(zmq.SUBSCRIBE, "")
-            
-        # Flow Graph Detector Thread
-        else:
-            # IQ File Detector/No Update Button
-            if detector == "IQ File":
-                # Create the Temporary ZMQ SUB
-                component.tsi_detector_context = zmq.Context()
-                component.tsi_detector_socket = component.tsi_detector_context.socket(zmq.SUB)
-                component.tsi_detector_socket.connect("tcp://127.0.0.1:" + str(detector_port))
-                component.tsi_detector_socket.setsockopt_string(zmq.SUBSCRIBE, "")
-
-            # Run Event and Do Not Block, SUB Created on Update Click
-            class_name = flow_graph_filename.replace(".py", "")
-            loop = asyncio.get_event_loop()
-            loop.run_in_executor(None, component.runWidebandThread, class_name, variable_names, variable_values)
-
-
-async def stopTSI_Detector(component: object):
-    """
-    Pauses TSI processing of signals after receiving the command from the HIPRFISR
-    """
-    # Call the Function used Multiple Times
-    component.stopTSI_Detector()
 
 
 async def startPD(component: object):
@@ -1384,6 +1235,174 @@ async def sendPluginActionNamesTak(
         component.logger.debug(tb)
 
 
+def _load_plugin_actions_module(plugin_name: str, logger=None):
+    """
+    Load <plugin>/actions.py so ACTION_TAGS and ACTION_HARDWARE can be inspected.
+    """
+    actions_path = os.path.join(
+        fissure.utils.PLUGIN_DIR,
+        plugin_name,
+        "actions.py",
+    )
+
+    if not os.path.isfile(actions_path):
+        return None
+
+    module_name = f"fissure_plugin_{plugin_name}_actions"
+
+    try:
+        spec = importlib.util.spec_from_file_location(module_name, actions_path)
+        if spec is None or spec.loader is None:
+            return None
+
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        return module
+
+    except Exception as e:
+        if logger:
+            logger.error(f"Failed loading actions.py for plugin {plugin_name}: {e}")
+            logger.debug(traceback.format_exc())
+        return None
+
+
+def _action_hardware_matches(selected_hardware: str, compatible_hardware) -> bool:
+    """
+    Loose hardware compatibility match for Dashboard display strings.
+
+    Empty ACTION_HARDWARE entry means the action is not hardware-restricted.
+    """
+    if not compatible_hardware:
+        return True
+
+    selected = str(selected_hardware or "").strip().lower()
+    if not selected:
+        return True
+
+    for hw in compatible_hardware:
+        hw_text = str(hw or "").strip().lower()
+
+        if not hw_text:
+            continue
+
+        if hw_text in selected or selected in hw_text:
+            return True
+
+    return False
+
+
+def _action_tags_match(tags, include_tags, exclude_tags) -> bool:
+    tag_set = set(tags or [])
+    include_set = set(include_tags or [])
+    exclude_set = set(exclude_tags or [])
+
+    if include_set and not include_set.issubset(tag_set):
+        return False
+
+    if exclude_set and exclude_set.intersection(tag_set):
+        return False
+
+    return True
+
+
+async def queryPluginActions(
+    component: object,
+    requester_uid: str,
+    requester_type: str,
+    node_uid: str,
+    context: str = "",
+    scope: str = "all_plugins",
+    plugin_name: str = "",
+    include_tags: List[str] = None,
+    exclude_tags: List[str] = None,
+    hardware: str = "",
+):
+    """
+    Return plugin/action pairs matching generic tag and hardware filters.
+    """
+    try:
+        include_tags = include_tags or []
+        exclude_tags = exclude_tags or []
+
+        if scope == "plugin" and plugin_name:
+            plugin_names = [plugin_name]
+        else:
+            plugin_names = plugin.get_local_plugin_names()
+
+        matches = []
+
+        for candidate_plugin in plugin_names:
+            plugin_path = os.path.join(fissure.utils.PLUGIN_DIR, candidate_plugin)
+            if not os.path.isdir(plugin_path):
+                continue
+
+            actions_module = _load_plugin_actions_module(
+                candidate_plugin,
+                component.logger,
+            )
+            if actions_module is None:
+                continue
+
+            action_tags = getattr(actions_module, "ACTION_TAGS", {}) or {}
+            action_hardware = getattr(actions_module, "ACTION_HARDWARE", {}) or {}
+
+            # Use existing utility so disabled/invalid actions stay consistent
+            # with the current plugin action list path.
+            available_actions = plugin.get_plugin_actions(
+                candidate_plugin,
+                component.settings_dict,
+                component.logger,
+            )
+
+            for action_name in available_actions:
+                tags = action_tags.get(action_name, [])
+
+                if not _action_tags_match(tags, include_tags, exclude_tags):
+                    continue
+
+                compatible_hardware = action_hardware.get(action_name, [])
+
+                if not _action_hardware_matches(hardware, compatible_hardware):
+                    continue
+
+                matches.append(
+                    {
+                        "plugin": candidate_plugin,
+                        "action": action_name,
+                    }
+                )
+
+        PARAMETERS = {
+            "requester_uid": requester_uid,
+            "requester_type": requester_type,
+            "node_uid": node_uid,
+            "context": context,
+            "actions": matches,
+        }
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "queryPluginActionsResults",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+
+        component.logger.debug(
+            f"queryPluginActions context={context}, "
+            f"scope={scope}, plugin={plugin_name}, "
+            f"include_tags={include_tags}, hardware={hardware}, "
+            f"matches={matches}"
+        )
+
+        await component.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+    except Exception as e:
+        component.logger.error(f"queryPluginActions failed: {e}")
+        component.logger.debug(traceback.format_exc())
+
+
 async def findGPS_Coordinates(component: object, gps_source="", format=""):
     """
     Find the sensor node GPS coordinates using gpsd and return the information.
@@ -1841,5 +1860,77 @@ async def sendPluginTargetActionsTak(
     except Exception as e:
         component.logger.error(
             f"Error sending target actions for plugin={plugin_name}, target_id={target_id}: {e}"
+        )
+        component.logger.debug(traceback.format_exc())
+
+
+async def queryPluginActionSchema(
+    component: object,
+    requester_uid: str,
+    requester_type: str,
+    plugin_name: str,
+    action_name: str,
+    node_uid: str,
+    context: str = "",
+) -> None:
+    """
+    Node handler for Dashboard-only plugin action schema queries.
+
+    This returns the action schema back to HIPRFISR as a normal command
+    message, not as TAK/CoT.
+    """
+    try:
+        component.logger.info(
+            f"Fetching dashboard schema for {plugin_name}.{action_name} "
+            f"(node_uid={node_uid}, context={context})"
+        )
+
+        plugin_path = os.path.join(fissure.utils.PLUGIN_DIR, plugin_name)
+        if not os.path.exists(plugin_path):
+            component.logger.error(f"Plugin path does not exist: {plugin_path}")
+            return
+
+        schema = plugin.get_action_schema(
+            plugin_name,
+            action_name,
+            component.logger,
+        )
+
+        if not isinstance(schema, dict):
+            schema = {"params": []}
+
+        if "params" not in schema or not isinstance(schema.get("params"), list):
+            schema["params"] = []
+
+        PARAMETERS = {
+            "requester_uid": requester_uid,
+            "requester_type": requester_type,
+            "plugin_name": plugin_name,
+            "action_name": action_name,
+            "node_uid": node_uid,
+            "schema": schema,
+            "context": context,
+        }
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "queryPluginActionSchemaResults",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+
+        component.logger.debug(
+            f"Sending dashboard schema for {plugin_name}.{action_name} "
+            f"with {len(schema.get('params', []))} params "
+            f"(context={context})"
+        )
+
+        await component.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+    except Exception as e:
+        component.logger.error(
+            f"Error sending dashboard schema for {plugin_name}.{action_name}: {e}"
         )
         component.logger.debug(traceback.format_exc())

@@ -227,26 +227,29 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
     """
     Store selected sensor node settings and update the selected node display.
     """
-    # Save selected node state
     component.frontend.selected_node_uid = node_uuid
     component.frontend.selected_node_ip = node_ip_address
     component.frontend.selected_node_settings = settings_dict or {}
 
-    # Get display name
     nickname = (
         settings_dict
         .get("Sensor Node", {})
         .get("nickname", node_uuid)
     )
 
-    # Make Local Node Look Better
-    if node_ip_address == "ipc":
-        node_ip_address = "Local Process"
+    display_ip_address = node_ip_address
+    if display_ip_address == "ipc":
+        display_ip_address = "Local Process"
 
-    # Update third button
-    component.frontend.ui.label_top_configure_node_title.setText(f"{nickname}  (Online)")
-    component.frontend.ui.label_top_configure_node_subtitle.setText(f"{node_ip_address}")
-    component.frontend.ui.label_top_configure_node_subtitle2.setText("Click to view and configure this node")
+    component.frontend.ui.label_top_configure_node_title.setText(
+        f"{nickname}  (Online)"
+    )
+    component.frontend.ui.label_top_configure_node_subtitle.setText(
+        f"{display_ip_address}"
+    )
+    component.frontend.ui.label_top_configure_node_subtitle2.setText(
+        "Click to view and configure this node"
+    )
 
     frame = component.frontend.ui.frame_top_configure_node
 
@@ -258,14 +261,17 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
 
     component.frontend.ui.stackedWidget_top_configure_node.setCurrentIndex(1)
 
-    # Update Tactical selected-node info frame state, if Tactical has been initialized
     if hasattr(component.frontend, "selected_tactical_node_uid"):
         TacticalTabSlots._updateTacticalNodeInfoFrameState(component.frontend)
 
-    # Populate Hardware
     component.frontend.configureSelectedNodeHardware()
 
-    print(settings_dict)
+    try:
+        TSITabSlots.update_tsi_detector_selected_node_gate(component.frontend)
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update unified TSI Detector selected-node gate after recallSettingsReturn: {e}"
+        )
 
 
 async def componentDisconnected(component: object, component_name=""):
@@ -311,112 +317,6 @@ async def hiprfisrConnectedSerial(component: object):
     Keeps track if the Meshtastic serial port at the HIPRFISR is connected.
     """
     component.hiprfisr_serial_connected = True
-
-
-async def bandID_Return(component: object, band_id=0, frequency=0):
-    """ 
-    Updates the search bands plot with the current band and center frequency of the detector.
-    """
-    if component.frontend.ui.pushButton_tsi_detector_start.text() == "Stop":
-
-        #component.frontend.ui.tuning_matplotlib_widget.axes.cla()  # TEST
-
-        # Get the Band and Current Frequency
-        center_freq = frequency
-        center_freq = round(float(center_freq)/1e6,2)  # In MHz, two decimal places
-
-        # Update the Labels
-        component.frontend.ui.label2_tsi_current_band.setText(str(band_id))
-        component.frontend.ui.label2_tsi_current_frequency.setText(str(center_freq) + " MHz")
-
-        # Change the Band Text in the Plot
-        for col in range(0,len(component.frontend.tuning_widget.bands)):
-            ## Get Band Position
-            #start_x,y = component.frontend.tuning_widget.bands[col].get_xy()
-
-            # Change the Band Labels
-            if band_id-1 < len(component.frontend.tuning_widget.axes.texts):
-                if col == band_id-1:
-                    component.frontend.tuning_widget.axes.texts[col].set_color('red')
-                else:
-                    component.frontend.tuning_widget.axes.texts[col].set_color('black')
-
-        # Update Tuner
-        get_bandwidth = int(float(str(component.frontend.ui.textEdit_tsi_detector_fg_sample_rate.toPlainText()))/1000000)
-        if get_bandwidth < 1:
-            get_bandwidth = 1
-        component.frontend.tuning_widget.updateTuned(int(band_id),int(center_freq),get_bandwidth)  # Rectangle width = sample_rate in MS/s rounded down
-
-        # Redraw the Plot
-        component.frontend.tuning_widget.draw()
-
-
-async def detectorReturn(component: object, frequency_value=0, power_value=0, time_value=0.0):
-    """ 
-    Adds a TSI Detector signal to the waterfall plot and the list.
-    """
-    # Plot a Point
-    frequency_value = frequency_value/1e6
-    if component.frontend.wideband_zoom == True:
-        labels = component.frontend.matplotlib_widget.axes.get_xticklabels()
-        try:
-            start_freq = float(str(labels[0]).split("'")[1])
-            end_freq = float(str(labels[-1]).split("'")[1])
-        except:
-            start_freq = 0
-            end_freq = 6000e6
-        plot_x = 600 * (frequency_value-start_freq)/(end_freq-start_freq)
-    else:
-        plot_x = frequency_value/10  # Frequencies: 0 - 6000, X-Values: 0-600
-
-    component.frontend.matplotlib_widget.plotPoint(plot_x, 11, component.frontend.matplotlib_widget.computeColormapValue(power_value), 5, component.frontend.wideband_data)
-
-    # Add it to the Tables (Detector, Conditioner)
-    component.frontend.ui.tableWidget1_tsi_wideband.setRowCount(component.frontend.ui.tableWidget1_tsi_wideband.rowCount()+1)
-    component.frontend.ui.tableWidget_tsi_conditioner_input_detector.setRowCount(component.frontend.ui.tableWidget_tsi_conditioner_input_detector.rowCount()+1)
-
-    # Frequency
-    frequency_item = QtWidgets.QTableWidgetItem(str(frequency_value))
-    frequency_item.setTextAlignment(QtCore.Qt.AlignCenter)
-    component.frontend.ui.tableWidget1_tsi_wideband.setItem(component.frontend.ui.tableWidget1_tsi_wideband.rowCount()-1,0,frequency_item)
-    frequency_item2 = QtWidgets.QTableWidgetItem(str(frequency_value))
-    frequency_item2.setTextAlignment(QtCore.Qt.AlignCenter)
-    component.frontend.ui.tableWidget_tsi_conditioner_input_detector.setItem(component.frontend.ui.tableWidget_tsi_conditioner_input_detector.rowCount()-1,0,frequency_item2)
-
-    # Power
-    power_item = QtWidgets.QTableWidgetItem(str(power_value))
-    power_item.setTextAlignment(QtCore.Qt.AlignCenter)
-    component.frontend.ui.tableWidget1_tsi_wideband.setItem(component.frontend.ui.tableWidget1_tsi_wideband.rowCount()-1,1,power_item)
-    power_item2 = QtWidgets.QTableWidgetItem(str(power_value))
-    power_item2.setTextAlignment(QtCore.Qt.AlignCenter)
-    component.frontend.ui.tableWidget_tsi_conditioner_input_detector.setItem(component.frontend.ui.tableWidget_tsi_conditioner_input_detector.rowCount()-1,1,power_item2)
-
-    # Time
-    get_time = time.strftime('%H:%M:%S', time.localtime(time_value))  # time format?
-    time_item = QtWidgets.QTableWidgetItem(get_time)
-    time_item.setTextAlignment(QtCore.Qt.AlignCenter)
-    time_obj = QtCore.QTime.fromString(get_time, "HH:mm:ss")
-    time_item.setData(QtCore.Qt.UserRole, time_obj.msecsSinceStartOfDay())
-    component.frontend.ui.tableWidget1_tsi_wideband.setItem(component.frontend.ui.tableWidget1_tsi_wideband.rowCount()-1,2,time_item)
-    time_item2 = QtWidgets.QTableWidgetItem(get_time)
-    time_item2.setTextAlignment(QtCore.Qt.AlignCenter)
-    time_obj2 = QtCore.QTime.fromString(get_time, "HH:mm:ss")
-    time_item2.setData(QtCore.Qt.UserRole, time_obj2.msecsSinceStartOfDay())
-    component.frontend.ui.tableWidget_tsi_conditioner_input_detector.setItem(component.frontend.ui.tableWidget_tsi_conditioner_input_detector.rowCount()-1,2,time_item2)
-
-    # Sort by Time
-    component.frontend.ui.tableWidget1_tsi_wideband.sortItems(2,order=QtCore.Qt.DescendingOrder)
-    component.frontend.ui.tableWidget_tsi_conditioner_input_detector.sortItems(2,order=QtCore.Qt.DescendingOrder)
-
-    # Resize Table Columns and Rows
-    component.frontend.ui.tableWidget1_tsi_wideband.resizeColumnsToContents()
-    component.frontend.ui.tableWidget1_tsi_wideband.resizeRowsToContents()
-    component.frontend.ui.tableWidget1_tsi_wideband.horizontalHeader().setStretchLastSection(False)
-    component.frontend.ui.tableWidget1_tsi_wideband.horizontalHeader().setStretchLastSection(True)
-    component.frontend.ui.tableWidget_tsi_conditioner_input_detector.resizeColumnsToContents()
-    component.frontend.ui.tableWidget_tsi_conditioner_input_detector.resizeRowsToContents()
-    component.frontend.ui.tableWidget_tsi_conditioner_input_detector.horizontalHeader().setStretchLastSection(False)
-    component.frontend.ui.tableWidget_tsi_conditioner_input_detector.horizontalHeader().setStretchLastSection(True)
 
 
 async def conditionerProgressBarReturn(component: object, progress=0, file_index=0):
@@ -736,17 +636,6 @@ async def multiStageAttackFinished(component: object):
     # Enable Load/Save
     component.frontend.ui.pushButton_attack_multi_stage_load.setEnabled(True)
     component.frontend.ui.pushButton_attack_multi_stage_save.setEnabled(True)
-
-
-async def detectorFlowGraphError(component: object, error=""):
-    """ 
-    Creates a message box with an error message upon Detector flow graph error.
-    """
-    # Enable Items
-    TSITabSlots._slotTSI_DetectorStartClicked(component.frontend)
-
-    # Open Window
-    fissure.Dashboard.UI_Components.Qt5.errorMessage("Flow Graph Error:\n" + error)
 
 
 async def flowGraphError(component: object, error=""):
@@ -2038,13 +1927,13 @@ async def dashboardCoT_Message(component: object, raw_xml: str):
     fissure.utils.cot_utils.handle_tactical_cot_message(component, cot_message)
 
     try:
-        TSITabSlots.append_tsi_fixed_detection_from_cot(
+        TSITabSlots.append_tsi_active_detector_detection_from_cot(
             component.frontend,
             cot_message,
         )
     except Exception as e:
         component.logger.error(
-            f"Failed to update TSI Fixed detector table: {e}"
+            f"Failed to update TSI detector table: {e}"
         )
 
 
@@ -2093,15 +1982,40 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
                 f"Could not refresh selected-node hardware after node state update: {e}"
             )
 
+        try:
+            TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not update unified TSI Detector selected-node gate after node state update: {e}"
+            )
+
     try:
-        TSITabSlots.reconcile_tsi_fixed_detector_state(
+        TSITabSlots.reconcile_tsi_detector_state(
             frontend,
             node_uid=node_uid,
             status=node.get("status", ""),
         )
     except Exception as e:
         component.logger.debug(
-            f"Could not reconcile TSI Fixed detector state: {e}"
+            f"Could not reconcile unified TSI Detector state: {e}"
+        )
+
+    try:
+        TSITabSlots.update_tsi_detector_status_from_selected_node(
+            frontend,
+            node_uid=node_uid,
+            status=node.get("status", ""),
+        )
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update unified TSI Detector status: {e}"
+        )
+
+    try:
+        TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update unified TSI Detector selected-node gate: {e}"
         )
 
     component.logger.debug(
@@ -2178,12 +2092,10 @@ async def nodeStateRemove(component: object, node_uid=""):
     if getattr(frontend, "selected_tactical_node_uid", None) == node_uid:
         frontend.selected_tactical_node_uid = None
 
-        # Clear node detail panel fields.
         frontend.ui.label2_tactical_node_callsign.setText("")
         frontend.ui.label2_tactical_node_uuid.setText("")
         frontend.ui.label2_node_tactical_status.setText("")
 
-        # Clear node action controls/details.
         TacticalTabSlots.clear_tactical_node_targets(frontend)
         TacticalTabSlots.clear_tactical_detection_details(frontend)
         TacticalTabSlots.clear_tactical_node_soi_details(frontend)
@@ -2195,6 +2107,38 @@ async def nodeStateRemove(component: object, node_uid=""):
             uid for uid in frontend.selected_tactical_node_uids
             if uid != node_uid
         ]
+
+    # ---------------------------------------------------------
+    # Top-bar selected node cleanup
+    # ---------------------------------------------------------
+    if getattr(frontend, "selected_node_uid", "") == node_uid:
+        try:
+            TopBarSlots.clearSelectedNode(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not clear selected node after node removal: {e}"
+            )
+
+        # Ensure selected-node-dependent TSI widgets flip to their no-node page.
+        # clearSelectedNode should clear selected_node_uid, but force the local
+        # state empty here too in case the top-bar helper changes later.
+        frontend.selected_node_uid = ""
+        frontend.selected_node_ip = ""
+        frontend.selected_node_settings = {}
+
+        try:
+            frontend.configureSelectedNodeHardware()
+        except Exception as e:
+            component.logger.debug(
+                f"Could not refresh selected-node hardware after node removal: {e}"
+            )
+
+        try:
+            TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not update unified TSI Detector selected-node gate after node removal: {e}"
+            )
 
     # Recompute ecosystem selected-node labels/buttons after row removal.
     try:
@@ -2212,16 +2156,14 @@ async def nodeStateRemove(component: object, node_uid=""):
             f"Could not refresh Tactical node info frame after removal: {e}"
         )
 
-    # ---------------------------------------------------------
-    # Top-bar selected node cleanup
-    # ---------------------------------------------------------
-    if getattr(frontend, "selected_node_uid", "") == node_uid:
-        try:
-            TopBarSlots.clearSelectedNode(frontend)
-        except Exception as e:
-            component.logger.debug(
-                f"Could not clear selected node after node removal: {e}"
-            )
+    # Final TSI gate pass in case this removal affected node state but did not
+    # clear the top-bar selection above.
+    try:
+        TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
+    except Exception as e:
+        component.logger.debug(
+            f"Could not refresh unified TSI Detector gate after node removal: {e}"
+        )
 
     component.logger.debug(f"nodeStateRemove: {node_uid}")
 
@@ -2299,3 +2241,103 @@ async def sendArtifactsListTakReturn(
             dashboard,
             node_uid,
         )
+
+
+async def queryPluginActionsResults(
+    component: object,
+    requester_uid: str = "",
+    requester_type: str = "",
+    node_uid: str = "",
+    context: str = "",
+    actions: list = None,
+):
+    """
+    Route generic filtered action discovery results to the Dashboard tab
+    that requested them.
+    """
+    actions = actions or []
+
+    frontend = component.frontend
+
+    if context.startswith("tsi.detector"):
+        TSITabSlots.handle_tsi_detector_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+
+    if context.startswith("iq.record") or context.startswith("iq.playback"):
+        # Later:
+        # IQDataTabSlots.handle_iq_action_query_results(...)
+        component.logger.debug(
+            f"Unhandled IQ action query context={context}, actions={actions}"
+        )
+        return
+
+    if context.startswith("tactical."):
+        # Later:
+        # TacticalTabSlots.handle_tactical_filtered_action_query_results(...)
+        component.logger.debug(
+            f"Unhandled Tactical action query context={context}, actions={actions}"
+        )
+        return
+
+    component.logger.debug(
+        f"Unhandled plugin action query context={context}, actions={actions}"
+    )
+
+
+async def queryPluginActionSchemaResults(
+    component: object,
+    requester_uid: str = "",
+    requester_type: str = "",
+    node_uid: str = "",
+    plugin_name: str = "",
+    action_name: str = "",
+    schema: dict = None,
+    context: str = "",
+):
+    """
+    Route Dashboard-only plugin action schema results to the tab/workflow
+    that requested them.
+    """
+    schema = schema or {}
+
+    if not isinstance(schema, dict):
+        schema = {"params": []}
+
+    if "params" not in schema or not isinstance(schema.get("params"), list):
+        schema["params"] = []
+
+    frontend = component.frontend
+
+    if context.startswith("tsi.detector"):
+        TSITabSlots.handle_tsi_detector_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
+
+    if context.startswith("iq.record") or context.startswith("iq.playback"):
+        component.logger.debug(
+            f"Unhandled IQ action schema context={context}, "
+            f"plugin={plugin_name}, action={action_name}"
+        )
+        return
+
+    if context.startswith("tactical."):
+        component.logger.debug(
+            f"Unhandled Tactical filtered action schema context={context}, "
+            f"plugin={plugin_name}, action={action_name}"
+        )
+        return
+
+    component.logger.debug(
+        f"Unhandled plugin action schema context={context}, "
+        f"plugin={plugin_name}, action={action_name}"
+    )

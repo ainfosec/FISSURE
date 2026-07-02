@@ -1,6 +1,37 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-02
+
+Rework TSI detector workflow around consolidated plugin-action controls
+
+### Added
+
+- Added consolidated TSI Detector workflow with Type, Mode, Hardware, and Action selection.
+- Added plugin-action query/customize/start workflow for TSI detector operations.
+- Added dynamic detector parameter controls populated from plugin action schemas.
+- Added unified detector status card with selected-node status mirroring and operation state.
+- Added shared TSI detector results handling for Fixed, Sweep, and future detector modes.
+- Added unified detector raster plotting for live detector results.
+- Added detector plot autoscaling based on active detector settings and observed detection data.
+- Added shared green/red start-stop button styling for detector operations.
+
+### Changed
+
+- Replaced separate TSI Fixed and Sweep detector workflows with one consolidated detector workbench.
+- Reworked detector action selection to use plugin action tags for detector type, mode, and hardware filtering.
+- Updated detector execution to use the selected-node plugin-action path.
+- Updated detector customization to render schema-driven parameters instead of hardcoded Fixed/Sweep controls.
+- Updated detector result routing to use unified detector run state and operation IDs.
+- Updated detector plotting to follow recent detection data while still using configured bounds before data arrives.
+- Updated TSI hardware refresh handling to preserve detector selections during node status and CoT updates.
+- Updated detector status handling to follow the top-panel selected node.
+- Updated detector card stylesheet selectors for the consolidated layout.
+
+### Fixed
+
+- Fixed selected-node hardware refresh handling so TSI detector hardware options update correctly for the selected node.
+
 ## 2026-6-28
 
 Improve TSI Fixed detector plotting and selected-node gating.

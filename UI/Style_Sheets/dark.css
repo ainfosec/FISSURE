@@ -1035,8 +1035,221 @@ QTableWidget#tableWidget_tactical_targets {
     width: 130px;
 }
 
-QLabel#label_tsi_detector_fixed_empty_icon {
+QLabel#label_tsi_detector_empty_icon {
     background-color: @color3;
     border-radius: 24px;
     padding: 6px;
+}
+
+
+
+
+
+/* ==========================================================
+   TSI Detector Step Cards
+   ========================================================== */
+
+QFrame#frame_tsi_detector_setup,
+QFrame#frame_tsi_detector_parameters,
+QFrame#frame_tsi_detector_run {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_tsi_detector_setup_title,
+QLabel#label_tsi_detector_parameters_title,
+QLabel#label_tsi_detector_run_title {
+    color: @color4;
+    background-color: transparent;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_tsi_detector_setup_subtitle,
+QLabel#label_tsi_detector_parameters_subtitle,
+QLabel#label_tsi_detector_run_subtitle {
+    color: @color4;
+    background-color: transparent;
+    font: 8pt "Ubuntu";
+}
+
+QLabel#label_tsi_detector_setup_badge,
+QLabel#label_tsi_detector_parameters_badge,
+QLabel#label_tsi_detector_run_badge {
+    qproperty-alignment: AlignCenter;
+    color: @color4;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_tsi_detector_setup_info {
+    color: @color4;
+    background-color: rgba(80, 150, 220, 25);
+    border: 1px solid rgba(80, 150, 220, 120);
+    border-radius: 4px;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    font: 9pt "Ubuntu";
+}
+
+/* ==========================================================
+   TSI Detector Start / Stop Buttons
+   ========================================================== */
+
+QPushButton#pushButton_tsi_detector_start_stop {
+    color: white;
+    border: 1px solid #006600;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #18b318,
+        stop:0.45 #078f07,
+        stop:1 #056d05
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QPushButton#pushButton_tsi_detector_start_stop:hover {
+    border: 1px solid #008000;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #25c525,
+        stop:0.45 #0ca00c,
+        stop:1 #077707
+    );
+}
+
+QPushButton#pushButton_tsi_detector_start_stop:pressed {
+    border: 1px solid #005800;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #007000,
+        stop:1 #005800
+    );
+}
+
+/* Running / Stop state */
+QPushButton#pushButton_tsi_detector_start_stop[running="true"] {
+    color: white;
+    border: 1px solid #8a0000;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #e64a4a,
+        stop:0.45 #c91f1f,
+        stop:1 #980000
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QPushButton#pushButton_tsi_detector_start_stop[running="true"]:hover {
+    border: 1px solid #b00000;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #ff5a5a,
+        stop:0.45 #dd2b2b,
+        stop:1 #b00000
+    );
+}
+
+QPushButton#pushButton_tsi_detector_start_stop[running="true"]:pressed {
+    border: 1px solid #650000;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #8a0000,
+        stop:1 #650000
+    );
+}
+
+/* Disabled must come after normal/running states */
+QPushButton#pushButton_tsi_detector_start_stop:disabled,
+QPushButton#pushButton_tsi_detector_start_stop[running="true"]:disabled {
+    color: @color13;
+    border: 1px solid @color1;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 @color8,
+        stop:1 @color9
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+
+QPushButton#pushButton_tsi_detector_query,
+QPushButton#pushButton_tsi_detector_customize {
+    color: #FFFFFF;
+    border: 1px solid #1B5A8A;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2F6F9F,
+        stop:0.45 #1E527C,
+        stop:1 #123A5D
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QPushButton#pushButton_tsi_detector_query:hover,
+QPushButton#pushButton_tsi_detector_customize:hover {
+    color: #FFFFFF;
+    border: 1px solid #2A74AA;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #3E84BA,
+        stop:0.45 #28699C,
+        stop:1 #1A4D78
+    );
+}
+
+QPushButton#pushButton_tsi_detector_query:pressed,
+QPushButton#pushButton_tsi_detector_customize:pressed {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #0B2D52,
+        stop:0.45 #123A5D,
+        stop:1 #1E527C
+    );
+}
+
+QPushButton#pushButton_tsi_detector_query:disabled,
+QPushButton#pushButton_tsi_detector_customize:disabled {
+    color: @color13;
+    border: 1px solid @color9;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 @color8,
+        stop:1 @color9
+    );
+}
+
+QScrollArea#scrollArea_tsi_detector_parameters {
+    border: 1px solid @color13;
+    background-color: @color2;
+}
+
+QWidget#scrollAreaWidgetContents_tsi_detector_parameters {
+    background-color: @color2;
+}
+
+QLabel#label2_tsi_detector_status {
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label2_tsi_detector_status:disabled {
+    color: #888888;
 }

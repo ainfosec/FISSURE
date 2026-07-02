@@ -19,16 +19,51 @@ PLUGIN_NAME = "Base"
 ACTION_TAGS = {
     "signal_geolocate": ["All"],
 
-    "fixed_detection": ["All"],
-    "scan_detection": ["All"],
-    "hackrf_sweep_detection": ["All"],
-    "rtl_power_detection": ["All"],
+    "fixed_detection": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.rf",
+        "tsi.detector.mode.fixed",
+        "tsi.detector.view.rf_raster",
+        "tactical.detection",
+    ],
+    "scan_detection": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.rf",
+        "tsi.detector.mode.sweep",
+        "tsi.detector.view.rf_raster",
+        "tactical.detection",
+    ],
+    "hackrf_sweep_detection": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.rf",
+        "tsi.detector.mode.sweep",
+        "tsi.detector.view.rf_raster",
+        "tactical.detection",
+    ],
+    "rtl_power_detection": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.rf",
+        "tsi.detector.mode.sweep",
+        "tsi.detector.view.rf_raster",
+        "tactical.detection",
+    ],
+
     "lfm_beacon_detection": ["All"],
     "lfm_beacon_geolocate": ["All"],
     "usrp_b2x0_geolocate": ["All"],
 
-    "iq_record": ["All"],
-    "iq_playback": ["All"],
+    "iq_record": [
+        "All",
+        "iq.record",
+    ],
+    "iq_playback": [
+        "All",
+        "iq.playback",
+    ],
 
     "promote_to_soi": ["All"],
 
@@ -155,40 +190,153 @@ async def fixed_detection(
 scan_detection_schema = {
     "params": [
         {
+            "name": "band_plan",
+            "label": "Band Plan",
+            "type": "string",
+            "default": "902-928 MHz ISM",
+            "options": [
+                "315 MHz ISM",
+                "433 MHz ISM",
+                "868 MHz ISM",
+                "902-928 MHz ISM",
+                "2.4 GHz Wi-Fi",
+                "Common RF Sweep",
+                "Custom Single Band",
+            ],
+        },
+        {
+            "name": "custom_start_mhz",
+            "label": "Custom Start (MHz)",
+            "type": "number",
+            "default": 2400.0,
+            "min": 0.0,
+            "max": 6000.0,
+            "step": 1.0,
+            "decimals": 3,
+        },
+        {
+            "name": "custom_end_mhz",
+            "label": "Custom End (MHz)",
+            "type": "number",
+            "default": 2500.0,
+            "min": 0.0,
+            "max": 6000.0,
+            "step": 1.0,
+            "decimals": 3,
+        },
+        {
+            "name": "custom_step_mhz",
+            "label": "Custom Step (MHz)",
+            "type": "number",
+            "default": 5.0,
+            "min": 0.001,
+            "max": 1000.0,
+            "step": 1.0,
+            "decimals": 3,
+        },
+        {
             "name": "dwell_s",
             "label": "Dwell (s)",
             "type": "number",
-            "default": 10.0,
+            "default": 3.0,
+            "min": 0.1,
+            "max": 3600.0,
+            "step": 0.5,
+            "decimals": 2,
+        },
+        {
+            "name": "threshold",
+            "label": "Threshold (dB)",
+            "type": "number",
+            "default": -60.0,
+            "min": -150.0,
+            "max": 50.0,
+            "step": 1.0,
+            "decimals": 1,
         },
         {
             "name": "alert_interval_s",
             "label": "Min Alert Interval (s)",
             "type": "number",
-            "default": 10.0,
+            "default": 3.0,
+            "min": 0.0,
+            "max": 3600.0,
+            "step": 1.0,
+            "decimals": 2,
         },
         {
             "name": "description",
             "label": "Description",
             "type": "string",
-            "default": "Scan detection across preset bands",
+            "default": "Sweep scan detection",
         },
     ]
 }
-
 async def scan_detection(
     component: SensorNode,
     parameters: Dict[str, Any],
     node_uid: str = "",
 ) -> None:
+    """
+    Run B2x0 scan/sweep detection.
+
+    The public schema above is intentionally small for TAK/Tactical use.
+
+    The Dashboard TSI Sweep tab may still pass additional parameters directly
+    without exposing them in the schema, including:
+        bands_json
+        blacklist_json
+        sample_rate
+        gain
+        channel
+        antenna
+        run_mode
+        retune_settle_s
+        hardware_type / hardware_uid / serial / interface fields
+
+    The operation owns defaults and parameter normalization.
+    """
     component.logger.info(
         f"Scan Detection action with parameters: {parameters}"
+    )
+
+    op_params = dict(parameters or {})
+
+    if not str(op_params.get("hardware_type", "") or "").strip():
+        compatible_types = ["USRP B20xmini", "USRP B2x0"]
+
+        sdr_uid, sdr_entry = fissure.utils.hardware.get_compatible_sdr(
+            getattr(component, "settings_dict", {}) or {},
+            compatible_types,
+        )
+
+        if not sdr_entry:
+            raise ValueError(
+                "No compatible SDR configured for scan_detection. "
+                f"Compatible types: {compatible_types}"
+            )
+
+        op_params.update(
+            fissure.utils.hardware.sdr_entry_to_operation_parameters(
+                sdr_uid,
+                sdr_entry,
+            )
+        )
+
+    op_params.setdefault(
+        "source_id",
+        node_uid or getattr(component, "uuid", "") or "sensor_node",
+    )
+
+    component.logger.info(
+        f"Scan Detection resolved parameters: {op_params}"
     )
 
     await component.run_plugin_operation(
         component,
         PLUGIN_NAME,
         "scan_detection.py",
-        parameters,
+        op_params,
         node_uid,
     )
 

@@ -23,7 +23,7 @@ Sensor Node:
                0:
                     radio_name: 'USRP B210'
                     type: 'USRP B2x0'
-                    serial: '1E2DA03'
+                    serial: '30AD2E1'
                     daughterboard: ''
                     ip_address: ''
                     network_interface: ''

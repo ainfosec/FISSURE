@@ -3906,2277 +3906,13 @@
       <attribute name="title">
        <string>Detector</string>
       </attribute>
-      <widget class="QTabWidget" name="tabWidget_tsi_configuration">
-       <property name="geometry">
-        <rect>
-         <x>-1</x>
-         <y>0</y>
-         <width>1220</width>
-         <height>335</height>
-        </rect>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>531</width>
-         <height>0</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-        </font>
-       </property>
-       <property name="currentIndex">
-        <number>0</number>
-       </property>
-       <property name="iconSize">
-        <size>
-         <width>16</width>
-         <height>16</height>
-        </size>
-       </property>
-       <property name="usesScrollButtons">
-        <bool>false</bool>
-       </property>
-       <property name="documentMode">
-        <bool>false</bool>
-       </property>
-       <widget class="QWidget" name="tab_tsi_sweep">
-        <attribute name="title">
-         <string>Sweep</string>
-        </attribute>
-        <widget class="QPushButton" name="pushButton_tsi_detector_start">
-         <property name="geometry">
-          <rect>
-           <x>1105</x>
-           <y>5</y>
-           <width>98</width>
-           <height>54</height>
-          </rect>
-         </property>
-         <property name="text">
-          <string>Start</string>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_197">
-         <property name="geometry">
-          <rect>
-           <x>695</x>
-           <y>40</y>
-           <width>60</width>
-           <height>16</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Detector:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="comboBox_tsi_detector">
-         <property name="geometry">
-          <rect>
-           <x>760</x>
-           <y>36</y>
-           <width>225</width>
-           <height>27</height>
-          </rect>
-         </property>
-         <item>
-          <property name="text">
-           <string>wideband_x3x0.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_b2x0.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_hackrf.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_b20xmini.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_rtl2832u.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_limesdr.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_bladerf.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_plutosdr.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_usrp2.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_usrp_n2xx.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_bladerf2.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_usrp_x410.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_rspduo.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_rspdx.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>wideband_rspdx_r2.py</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>Simulator</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
-           <string>IQ File</string>
-          </property>
-         </item>
-        </widget>
-        <widget class="QStackedWidget" name="stackedWidget1_tsi_detector">
-         <property name="geometry">
-          <rect>
-           <x>690</x>
-           <y>65</y>
-           <width>520</width>
-           <height>236</height>
-          </rect>
-         </property>
-         <property name="styleSheet">
-          <string notr="true"/>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="page_9">
-          <widget class="QPushButton" name="pushButton_tsi_delete_preset">
-           <property name="geometry">
-            <rect>
-             <x>455</x>
-             <y>200</y>
-             <width>58</width>
-             <height>27</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Delete</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButton_tsi_add_band">
-           <property name="geometry">
-            <rect>
-             <x>120</x>
-             <y>58</y>
-             <width>100</width>
-             <height>27</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Add Band</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_48">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>175</x>
-             <y>35</y>
-             <width>75</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Dwell (s):</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QSpinBox" name="spinBox_tsi_sdr_end">
-           <property name="geometry">
-            <rect>
-             <x>90</x>
-             <y>31</y>
-             <width>78</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>6000</number>
-           </property>
-           <property name="value">
-            <number>2500</number>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButton_tsi_remove_band">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>225</x>
-             <y>58</y>
-             <width>100</width>
-             <height>27</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Remove Band</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_47">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>35</y>
-             <width>75</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>End (MHz):</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_4">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>395</x>
-             <y>68</y>
-             <width>115</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Presets</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-          <widget class="QListWidget" name="listWidget_tsi_scan_presets">
-           <property name="geometry">
-            <rect>
-             <x>395</x>
-             <y>88</y>
-             <width>115</width>
-             <height>112</height>
-            </rect>
-           </property>
-          </widget>
-          <widget class="QTableWidget" name="tableWidget_tsi_scan_options">
-           <property name="geometry">
-            <rect>
-             <x>5</x>
-             <y>88</y>
-             <width>386</width>
-             <height>112</height>
-            </rect>
-           </property>
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="selectionBehavior">
-            <enum>QAbstractItemView::SelectColumns</enum>
-           </property>
-           <property name="cornerButtonEnabled">
-            <bool>false</bool>
-           </property>
-           <attribute name="horizontalHeaderHighlightSections">
-            <bool>false</bool>
-           </attribute>
-           <attribute name="horizontalHeaderStretchLastSection">
-            <bool>true</bool>
-           </attribute>
-           <attribute name="verticalHeaderMinimumSectionSize">
-            <number>20</number>
-           </attribute>
-           <attribute name="verticalHeaderDefaultSectionSize">
-            <number>20</number>
-           </attribute>
-           <attribute name="verticalHeaderHighlightSections">
-            <bool>false</bool>
-           </attribute>
-           <row>
-            <property name="text">
-             <string>Start (MHz)</string>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="textAlignment">
-             <set>AlignCenter</set>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string>End (MHz)</string>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="textAlignment">
-             <set>AlignCenter</set>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string>Step (MHz)</string>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="textAlignment">
-             <set>AlignCenter</set>
-            </property>
-           </row>
-           <row>
-            <property name="text">
-             <string>Dwell (s)</string>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="textAlignment">
-             <set>AlignCenter</set>
-            </property>
-           </row>
-          </widget>
-          <widget class="QDoubleSpinBox" name="doubleSpinBox_tsi_sdr_dwell">
-           <property name="geometry">
-            <rect>
-             <x>255</x>
-             <y>31</y>
-             <width>78</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="minimum">
-            <double>0.200000000000000</double>
-           </property>
-           <property name="maximum">
-            <double>999.990000000000009</double>
-           </property>
-           <property name="value">
-            <double>3.000000000000000</double>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButton_tsi_save_preset">
-           <property name="geometry">
-            <rect>
-             <x>395</x>
-             <y>200</y>
-             <width>58</width>
-             <height>27</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Save</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_196">
-           <property name="geometry">
-            <rect>
-             <x>175</x>
-             <y>10</y>
-             <width>75</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Step (MHz):</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QSpinBox" name="spinBox_tsi_sdr_step">
-           <property name="geometry">
-            <rect>
-             <x>255</x>
-             <y>6</y>
-             <width>78</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="minimum">
-            <number>0</number>
-           </property>
-           <property name="maximum">
-            <number>5000</number>
-           </property>
-           <property name="value">
-            <number>5</number>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_31">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>75</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>Start (MHz):</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QSpinBox" name="spinBox_tsi_sdr_start">
-           <property name="geometry">
-            <rect>
-             <x>90</x>
-             <y>6</y>
-             <width>78</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="minimum">
-            <number>1</number>
-           </property>
-           <property name="maximum">
-            <number>6000</number>
-           </property>
-           <property name="value">
-            <number>2400</number>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButton_tsi_advanced_settings">
-           <property name="geometry">
-            <rect>
-             <x>385</x>
-             <y>10</y>
-             <width>98</width>
-             <height>54</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Advanced
-Settings</string>
-           </property>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="page_17">
-          <widget class="QFrame" name="frame_tsi_detector_settings1_2">
-           <property name="geometry">
-            <rect>
-             <x>15</x>
-             <y>5</y>
-             <width>226</width>
-             <height>221</height>
-            </rect>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <widget class="QLabel" name="label2_260">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>165</y>
-              <width>90</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Antenna:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QTextEdit" name="textEdit_tsi_detector_fg_sample_rate">
-            <property name="geometry">
-             <rect>
-              <x>105</x>
-              <y>10</y>
-              <width>70</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="html">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-           <widget class="QSpinBox" name="spinBox_tsi_detector_fg_gain">
-            <property name="geometry">
-             <rect>
-              <x>105</x>
-              <y>100</y>
-              <width>70</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="maximum">
-             <number>35</number>
-            </property>
-            <property name="value">
-             <number>30</number>
-            </property>
-           </widget>
-           <widget class="QComboBox" name="comboBox_tsi_detector_fg_channel">
-            <property name="geometry">
-             <rect>
-              <x>105</x>
-              <y>130</y>
-              <width>70</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>3</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>N/A</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>A:A</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>A:B</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>A:0</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>B:0</string>
-             </property>
-            </item>
-           </widget>
-           <widget class="QComboBox" name="comboBox_tsi_detector_fg_antenna">
-            <property name="geometry">
-             <rect>
-              <x>105</x>
-              <y>160</y>
-              <width>70</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>1</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>N/A</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>TX/RX</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>RX2</string>
-             </property>
-            </item>
-           </widget>
-           <widget class="QLabel" name="label2_261">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>75</y>
-              <width>90</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>FFT Size:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_262">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>105</y>
-              <width>90</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Gain:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_263">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>15</y>
-              <width>90</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Sample Rate:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_264">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>45</y>
-              <width>90</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Threshold:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QSpinBox" name="spinBox_tsi_detector_fg_threshold">
-            <property name="geometry">
-             <rect>
-              <x>105</x>
-              <y>40</y>
-              <width>70</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="minimum">
-             <number>-99</number>
-            </property>
-            <property name="maximum">
-             <number>99</number>
-            </property>
-            <property name="value">
-             <number>-70</number>
-            </property>
-           </widget>
-           <widget class="QComboBox" name="comboBox_tsi_detector_fg_fft_size">
-            <property name="geometry">
-             <rect>
-              <x>105</x>
-              <y>70</y>
-              <width>70</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>1</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>256</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>512</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1024</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>2048</string>
-             </property>
-            </item>
-           </widget>
-           <widget class="QLabel" name="label2_265">
-            <property name="geometry">
-             <rect>
-              <x>10</x>
-              <y>135</y>
-              <width>90</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Channel:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </widget>
-          <widget class="QPushButton" name="pushButton_tsi_back1">
-           <property name="geometry">
-            <rect>
-             <x>395</x>
-             <y>10</y>
-             <width>98</width>
-             <height>54</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Back</string>
-           </property>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="page_16">
-          <widget class="QLabel" name="label2_3">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>0</y>
-             <width>520</width>
-             <height>50</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>16</pointsize>
-             <weight>75</weight>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>SIMULATOR</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButton_tsi_detector_csv_file_browse">
-           <property name="geometry">
-            <rect>
-             <x>470</x>
-             <y>105</y>
-             <width>35</width>
-             <height>27</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-          </widget>
-          <widget class="QTextEdit" name="textEdit_tsi_detector_csv_file">
-           <property name="geometry">
-            <rect>
-             <x>65</x>
-             <y>105</y>
-             <width>400</width>
-             <height>25</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="html">
-            <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p align=&quot;center&quot; style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_269">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>110</y>
-             <width>60</width>
-             <height>16</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>9</pointsize>
-            </font>
-           </property>
-           <property name="text">
-            <string>CSV File:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="pushButton_tsi_detector_csv_file_edit">
-           <property name="geometry">
-            <rect>
-             <x>230</x>
-             <y>135</y>
-             <width>70</width>
-             <height>27</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Edit</string>
-           </property>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="page_10">
-          <widget class="QFrame" name="frame_tsi_detector_settings1">
-           <property name="geometry">
-            <rect>
-             <x>5</x>
-             <y>5</y>
-             <width>511</width>
-             <height>221</height>
-            </rect>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <widget class="QTextEdit" name="textEdit_tsi_detector_iq_file_sample_rate">
-            <property name="geometry">
-             <rect>
-              <x>80</x>
-              <y>65</y>
-              <width>70</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="html">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_249">
-            <property name="geometry">
-             <rect>
-              <x>-15</x>
-              <y>130</y>
-              <width>90</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>FFT Size:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_199">
-            <property name="geometry">
-             <rect>
-              <x>-15</x>
-              <y>70</y>
-              <width>90</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Sample Rate:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_200">
-            <property name="geometry">
-             <rect>
-              <x>-15</x>
-              <y>100</y>
-              <width>90</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Threshold:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QSpinBox" name="spinBox_tsi_detector_iq_file_threshold">
-            <property name="geometry">
-             <rect>
-              <x>80</x>
-              <y>95</y>
-              <width>70</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="minimum">
-             <number>-99</number>
-            </property>
-            <property name="maximum">
-             <number>99</number>
-            </property>
-            <property name="value">
-             <number>-70</number>
-            </property>
-           </widget>
-           <widget class="QComboBox" name="comboBox_tsi_detector_iq_file_fft_size">
-            <property name="geometry">
-             <rect>
-              <x>80</x>
-              <y>125</y>
-              <width>70</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="currentIndex">
-             <number>1</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>256</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>512</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>1024</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>2048</string>
-             </property>
-            </item>
-           </widget>
-           <widget class="QLabel" name="label2_251">
-            <property name="geometry">
-             <rect>
-              <x>-15</x>
-              <y>10</y>
-              <width>90</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>IQ File:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QTextEdit" name="textEdit_tsi_detector_iq_file_file">
-            <property name="geometry">
-             <rect>
-              <x>80</x>
-              <y>5</y>
-              <width>386</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="html">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-           <widget class="QPushButton" name="pushButton_tsi_detector_iq_file_browse">
-            <property name="geometry">
-             <rect>
-              <x>470</x>
-              <y>5</y>
-              <width>35</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="text">
-             <string>...</string>
-            </property>
-           </widget>
-           <widget class="QTextEdit" name="textEdit_tsi_detector_iq_file_frequency">
-            <property name="geometry">
-             <rect>
-              <x>80</x>
-              <y>35</y>
-              <width>70</width>
-              <height>25</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="html">
-             <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:9pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_250">
-            <property name="geometry">
-             <rect>
-              <x>-15</x>
-              <y>40</y>
-              <width>90</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>9</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Freq. (MHz):</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-          </widget>
-         </widget>
-        </widget>
-        <widget class="QLabel" name="label1_290">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>10</y>
-           <width>670</width>
-           <height>20</height>
-          </rect>
-         </property>
-         <property name="maximumSize">
-          <size>
-           <width>16777215</width>
-           <height>16777215</height>
-          </size>
-         </property>
-         <property name="font">
-          <font>
-           <family>Ubuntu</family>
-           <pointsize>10</pointsize>
-           <weight>75</weight>
-           <italic>false</italic>
-           <bold>true</bold>
-          </font>
-         </property>
-         <property name="text">
-          <string>Search Bands</string>
-         </property>
-        </widget>
-        <widget class="QFrame" name="frame1_91">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>30</y>
-           <width>670</width>
-           <height>271</height>
-          </rect>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <widget class="QLabel" name="label2_6">
-          <property name="geometry">
-           <rect>
-            <x>235</x>
-            <y>25</y>
-            <width>200</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>9</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>(Click Below)</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_tsi_current_band">
-          <property name="geometry">
-           <rect>
-            <x>65</x>
-            <y>5</y>
-            <width>100</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_tsi_zoom_in">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>515</x>
-            <y>240</y>
-            <width>70</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Zoom In</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_tsi_refresh">
-          <property name="geometry">
-           <rect>
-            <x>590</x>
-            <y>240</y>
-            <width>70</width>
-            <height>27</height>
-           </rect>
-          </property>
-          <property name="text">
-           <string>Refresh</string>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_tsi_current_frequency1">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>20</y>
-            <width>50</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Freq:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_tsi_update_configuration">
-          <property name="geometry">
-           <rect>
-            <x>335</x>
-            <y>-10</y>
-            <width>346</width>
-            <height>46</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>16</pointsize>
-            <weight>75</weight>
-            <italic>false</italic>
-            <bold>true</bold>
-            <underline>true</underline>
-            <strikeout>false</strikeout>
-            <kerning>true</kerning>
-           </font>
-          </property>
-          <property name="autoFillBackground">
-           <bool>false</bool>
-          </property>
-          <property name="text">
-           <string>UPDATE TSI CONFIGURATION</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_tsi_current_band1">
-          <property name="geometry">
-           <rect>
-            <x>10</x>
-            <y>5</y>
-            <width>50</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Band:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_tsi_current_frequency">
-          <property name="geometry">
-           <rect>
-            <x>65</x>
-            <y>20</y>
-            <width>200</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>10</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-        </widget>
-        <widget class="QFrame" name="frame_tsi_search_bands">
-         <property name="geometry">
-          <rect>
-           <x>20</x>
-           <y>75</y>
-           <width>651</width>
-           <height>191</height>
-          </rect>
-         </property>
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-        </widget>
-        <widget class="QPushButton" name="pushButton_tsi_update">
-         <property name="enabled">
-          <bool>false</bool>
-         </property>
-         <property name="geometry">
-          <rect>
-           <x>1000</x>
-           <y>5</y>
-           <width>100</width>
-           <height>54</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>11</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Update</string>
-         </property>
-        </widget>
-        <widget class="QComboBox" name="comboBox_tsi_detector_sweep_hardware">
-         <property name="geometry">
-          <rect>
-           <x>760</x>
-           <y>5</y>
-           <width>225</width>
-           <height>27</height>
-          </rect>
-         </property>
-        </widget>
-        <widget class="QLabel" name="label2_198">
-         <property name="geometry">
-          <rect>
-           <x>685</x>
-           <y>10</y>
-           <width>70</width>
-           <height>16</height>
-          </rect>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-         <property name="text">
-          <string>Hardware:</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-         </property>
-        </widget>
-       </widget>
-       <widget class="QWidget" name="tab_2">
-        <attribute name="title">
-         <string>Fixed</string>
-        </attribute>
-        <widget class="QStackedWidget" name="stackedWidget_tsi_detector_fixed">
-         <property name="geometry">
-          <rect>
-           <x>0</x>
-           <y>0</y>
-           <width>1215</width>
-           <height>305</height>
-          </rect>
-         </property>
-         <property name="currentIndex">
-          <number>0</number>
-         </property>
-         <widget class="QWidget" name="page_33">
-          <widget class="QStackedWidget" name="stackedWidget2_tsi_detector_fixed">
-           <property name="geometry">
-            <rect>
-             <x>625</x>
-             <y>35</y>
-             <width>200</width>
-             <height>250</height>
-            </rect>
-           </property>
-           <property name="currentIndex">
-            <number>0</number>
-           </property>
-           <widget class="QWidget" name="page_fixed_threshold">
-            <widget class="QFrame" name="frame_tsi_detector_fixed_settings1">
-             <property name="geometry">
-              <rect>
-               <x>5</x>
-               <y>0</y>
-               <width>185</width>
-               <height>250</height>
-              </rect>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::NoFrame</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <widget class="QLabel" name="label2_273">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>165</y>
-                <width>100</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>Antenna:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-             <widget class="QSpinBox" name="spinBox_tsi_detector_fixed_gain">
-              <property name="geometry">
-               <rect>
-                <x>105</x>
-                <y>100</y>
-                <width>70</width>
-                <height>25</height>
-               </rect>
-              </property>
-              <property name="maximum">
-               <number>10</number>
-              </property>
-              <property name="value">
-               <number>2</number>
-              </property>
-             </widget>
-             <widget class="QComboBox" name="comboBox_tsi_detector_fixed_channel">
-              <property name="geometry">
-               <rect>
-                <x>105</x>
-                <y>130</y>
-                <width>70</width>
-                <height>25</height>
-               </rect>
-              </property>
-              <property name="currentIndex">
-               <number>0</number>
-              </property>
-              <item>
-               <property name="text">
-                <string>N/A</string>
-               </property>
-              </item>
-             </widget>
-             <widget class="QComboBox" name="comboBox_tsi_detector_fixed_antenna">
-              <property name="geometry">
-               <rect>
-                <x>105</x>
-                <y>160</y>
-                <width>70</width>
-                <height>25</height>
-               </rect>
-              </property>
-              <property name="currentIndex">
-               <number>0</number>
-              </property>
-              <item>
-               <property name="text">
-                <string>N/A</string>
-               </property>
-              </item>
-             </widget>
-             <widget class="QLabel" name="label2_275">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>105</y>
-                <width>100</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>Gain:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label2_276">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>45</y>
-                <width>100</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>Sample Rate:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label2_277">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>75</y>
-                <width>100</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>Threshold:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-             <widget class="QSpinBox" name="spinBox_tsi_detector_fixed_threshold">
-              <property name="geometry">
-               <rect>
-                <x>105</x>
-                <y>70</y>
-                <width>70</width>
-                <height>25</height>
-               </rect>
-              </property>
-              <property name="minimum">
-               <number>-99</number>
-              </property>
-              <property name="maximum">
-               <number>99</number>
-              </property>
-              <property name="value">
-               <number>0</number>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label2_278">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>135</y>
-                <width>100</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>Channel:</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-             <widget class="QLabel" name="label2_279">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>15</y>
-                <width>100</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>Frequency (MHz):</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-             <widget class="QTextEdit" name="textEdit_tsi_detector_fixed_frequency">
-              <property name="geometry">
-               <rect>
-                <x>105</x>
-                <y>10</y>
-                <width>70</width>
-                <height>25</height>
-               </rect>
-              </property>
-              <property name="html">
-               <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
-&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:9pt;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-              </property>
-             </widget>
-             <widget class="QComboBox" name="comboBox_tsi_detector_fixed_sample_rate">
-              <property name="geometry">
-               <rect>
-                <x>105</x>
-                <y>40</y>
-                <width>70</width>
-                <height>25</height>
-               </rect>
-              </property>
-              <property name="currentIndex">
-               <number>4</number>
-              </property>
-              <item>
-               <property name="text">
-                <string>20e6</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>10e6</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>5e6</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>2e6</string>
-               </property>
-              </item>
-              <item>
-               <property name="text">
-                <string>1e6</string>
-               </property>
-              </item>
-             </widget>
-             <widget class="QLabel" name="label2_294">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>195</y>
-                <width>100</width>
-                <height>16</height>
-               </rect>
-              </property>
-              <property name="font">
-               <font>
-                <pointsize>9</pointsize>
-               </font>
-              </property>
-              <property name="text">
-               <string>Min. Interval (s):</string>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-             <widget class="QDoubleSpinBox" name="doubleSpinBox_tsi_detector_fixed_min_interval">
-              <property name="geometry">
-               <rect>
-                <x>105</x>
-                <y>190</y>
-                <width>70</width>
-                <height>25</height>
-               </rect>
-              </property>
-              <property name="decimals">
-               <number>1</number>
-              </property>
-              <property name="minimum">
-               <double>1.000000000000000</double>
-              </property>
-              <property name="maximum">
-               <double>99999.000000000000000</double>
-              </property>
-              <property name="value">
-               <double>1.000000000000000</double>
-              </property>
-             </widget>
-             <widget class="QCheckBox" name="checkBox_tsi_detector_fixed_gui">
-              <property name="geometry">
-               <rect>
-                <x>55</x>
-                <y>220</y>
-                <width>92</width>
-                <height>23</height>
-               </rect>
-              </property>
-              <property name="text">
-               <string>Show GUI</string>
-              </property>
-             </widget>
-            </widget>
-           </widget>
-           <widget class="QWidget" name="page_4"/>
-          </widget>
-          <widget class="QLabel" name="label1_202">
-           <property name="geometry">
-            <rect>
-             <x>290</x>
-             <y>15</y>
-             <width>310</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Ubuntu</family>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <italic>false</italic>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Detector</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label1_198">
-           <property name="geometry">
-            <rect>
-             <x>625</x>
-             <y>15</y>
-             <width>200</width>
-             <height>20</height>
-            </rect>
-           </property>
-           <property name="maximumSize">
-            <size>
-             <width>16777215</width>
-             <height>16777215</height>
-            </size>
-           </property>
-           <property name="font">
-            <font>
-             <family>Ubuntu</family>
-             <pointsize>10</pointsize>
-             <weight>75</weight>
-             <italic>false</italic>
-             <bold>true</bold>
-            </font>
-           </property>
-           <property name="text">
-            <string>Detector Settings</string>
-           </property>
-          </widget>
-          <widget class="QFrame" name="frame1_37">
-           <property name="geometry">
-            <rect>
-             <x>290</x>
-             <y>35</y>
-             <width>310</width>
-             <height>100</height>
-            </rect>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <widget class="QComboBox" name="comboBox_tsi_detector_fixed">
-            <property name="geometry">
-             <rect>
-              <x>75</x>
-              <y>45</y>
-              <width>230</width>
-              <height>27</height>
-             </rect>
-            </property>
-            <property name="currentIndex">
-             <number>0</number>
-            </property>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_x3x0.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_b2x0.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_hackrf.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_b20xmini.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_rtl2832u.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_limesdr.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_bladerf.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_plutosdr.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_usrp2.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_usrp_n2xx.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_bladerf2.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_usrp_x410.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_rspduo.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_rspdx.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_rspdx_r2.py</string>
-             </property>
-            </item>
-            <item>
-             <property name="text">
-              <string>fixed_threshold_simulator.py</string>
-             </property>
-            </item>
-           </widget>
-           <widget class="QLabel" name="label2_206">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>50</y>
-              <width>70</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Detector:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QLabel" name="label2_205">
-            <property name="geometry">
-             <rect>
-              <x>0</x>
-              <y>20</y>
-              <width>70</width>
-              <height>16</height>
-             </rect>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>10</pointsize>
-             </font>
-            </property>
-            <property name="text">
-             <string>Hardware:</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-            </property>
-           </widget>
-           <widget class="QComboBox" name="comboBox_tsi_detector_fixed_hardware">
-            <property name="geometry">
-             <rect>
-              <x>75</x>
-              <y>15</y>
-              <width>230</width>
-              <height>27</height>
-             </rect>
-            </property>
-           </widget>
-          </widget>
-          <widget class="QPushButton" name="pushButton_tsi_detector_fixed_start">
-           <property name="geometry">
-            <rect>
-             <x>850</x>
-             <y>15</y>
-             <width>98</width>
-             <height>54</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Start</string>
-           </property>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="page_34">
-          <widget class="QLabel" name="label2_tsi_detector_fixed_no_node_selected">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>164</y>
-             <width>1215</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Sensor Node Unavailable</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_tsi_detector_fixed_select_a_node">
-           <property name="geometry">
-            <rect>
-             <x>0</x>
-             <y>202</y>
-             <width>1215</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Select an online sensor node to configure fixed detection hardware and run the detector.</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_tsi_detector_fixed_select_sensor_node_image">
-           <property name="geometry">
-            <rect>
-             <x>575</x>
-             <y>94</y>
-             <width>64</width>
-             <height>48</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Image</string>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_tsi_detector_fixed_empty_icon">
-           <property name="geometry">
-            <rect>
-             <x>569</x>
-             <y>88</y>
-             <width>76</width>
-             <height>60</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-          </widget>
-          <zorder>label2_tsi_detector_fixed_no_node_selected</zorder>
-          <zorder>label2_tsi_detector_fixed_select_a_node</zorder>
-          <zorder>label_tsi_detector_fixed_empty_icon</zorder>
-          <zorder>label_tsi_detector_fixed_select_sensor_node_image</zorder>
-         </widget>
-        </widget>
-       </widget>
-      </widget>
-      <widget class="QPushButton" name="pushButton_tsi_clear_detector_plot">
-       <property name="geometry">
-        <rect>
-         <x>790</x>
-         <y>343</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>x</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_tsi_detector">
-       <property name="geometry">
-        <rect>
-         <x>185</x>
-         <y>340</y>
-         <width>350</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>Detector - Not Running</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-      </widget>
       <widget class="QFrame" name="frame1_27">
        <property name="geometry">
         <rect>
          <x>1070</x>
-         <y>360</y>
+         <y>420</y>
          <width>135</width>
-         <height>420</height>
+         <height>355</height>
         </rect>
        </property>
        <property name="frameShape">
@@ -6191,7 +3927,7 @@ p, li { white-space: pre-wrap; }
           <x>10</x>
           <y>135</y>
           <width>115</width>
-          <height>275</height>
+          <height>210</height>
          </rect>
         </property>
         <property name="font">
@@ -6296,7 +4032,7 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>902</x>
-         <y>784</y>
+         <y>780</y>
          <width>70</width>
          <height>27</height>
         </rect>
@@ -6309,7 +4045,7 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>1042</x>
-         <y>343</y>
+         <y>403</y>
          <width>16</width>
          <height>16</height>
         </rect>
@@ -6335,9 +4071,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>-10</x>
-         <y>340</y>
+         <y>405</y>
          <width>800</width>
-         <height>465</height>
+         <height>400</height>
         </rect>
        </property>
        <property name="frameShape">
@@ -6351,9 +4087,9 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>810</x>
-         <y>360</y>
+         <y>420</y>
          <width>255</width>
-         <height>420</height>
+         <height>355</height>
         </rect>
        </property>
        <property name="sizePolicy">
@@ -6435,7 +4171,7 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>810</x>
-         <y>340</y>
+         <y>400</y>
          <width>255</width>
          <height>20</height>
         </rect>
@@ -6463,7 +4199,7 @@ p, li { white-space: pre-wrap; }
        <property name="geometry">
         <rect>
          <x>1070</x>
-         <y>340</y>
+         <y>400</y>
          <width>135</width>
          <height>20</height>
         </rect>
@@ -6487,16 +4223,477 @@ p, li { white-space: pre-wrap; }
         <string>Blacklist</string>
        </property>
       </widget>
+      <widget class="Line" name="line_6">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>385</y>
+         <width>1220</width>
+         <height>3</height>
+        </rect>
+       </property>
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+      </widget>
+      <widget class="QStackedWidget" name="stackedWidget_tsi_detector">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>1220</width>
+         <height>385</height>
+        </rect>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="page_9">
+        <widget class="QFrame" name="frame_tsi_detector_setup">
+         <property name="geometry">
+          <rect>
+           <x>9</x>
+           <y>10</y>
+           <width>393</width>
+           <height>365</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_tsi_detector_setup_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>313</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Detector Setup</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_tsi_detector_setup_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>313</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Choose detector type, mode, hardware and method.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_230">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>79</y>
+            <width>110</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Detector Type:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_231">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>122</y>
+            <width>110</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Detector Mode:</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_233">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>164</y>
+            <width>90</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Hardware:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_tsi_detector_type">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>75</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_tsi_detector_mode">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>118</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_tsi_detector_hardware">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>160</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_tsi_detector_setup_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_246">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>209</y>
+            <width>110</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Action:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_tsi_detector_method">
+          <property name="geometry">
+           <rect>
+            <x>120</x>
+            <y>205</y>
+            <width>240</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_tsi_detector_setup_info">
+          <property name="geometry">
+           <rect>
+            <x>30</x>
+            <y>255</y>
+            <width>315</width>
+            <height>52</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select a detector method to view details.</string>
+          </property>
+          <property name="wordWrap">
+           <bool>true</bool>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_tsi_detector_query">
+          <property name="geometry">
+           <rect>
+            <x>109</x>
+            <y>325</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Query</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_tsi_detector_parameters">
+         <property name="geometry">
+          <rect>
+           <x>412</x>
+           <y>10</y>
+           <width>393</width>
+           <height>365</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_tsi_detector_parameters_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>313</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Detector Parameters</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_tsi_detector_parameters_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>313</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Review and adjust parameters for the selected method.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_tsi_detector_parameters_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+         <widget class="QScrollArea" name="scrollArea_tsi_detector_parameters">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>75</y>
+            <width>383</width>
+            <height>235</height>
+           </rect>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_tsi_detector_parameters">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>381</width>
+             <height>233</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+         <widget class="QPushButton" name="pushButton_tsi_detector_customize">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>109</x>
+            <y>325</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Customize</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_tsi_detector_run">
+         <property name="geometry">
+          <rect>
+           <x>815</x>
+           <y>10</y>
+           <width>393</width>
+           <height>365</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_tsi_detector_run_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>313</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Run Detector</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_tsi_detector_run_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>313</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Run detector on selected node.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_detector_status_status">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>160</y>
+            <width>390</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Status:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_tsi_detector_status">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>195</y>
+            <width>390</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Idle</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_tsi_detector_start_stop">
+          <property name="geometry">
+           <rect>
+            <x>109</x>
+            <y>325</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_tsi_detector_run_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+        </widget>
+       </widget>
+       <widget class="QWidget" name="page_10">
+        <widget class="QLabel" name="label_tsi_detector_select_sensor_node_image">
+         <property name="geometry">
+          <rect>
+           <x>576</x>
+           <y>122</y>
+           <width>64</width>
+           <height>48</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Image</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_tsi_detector_sweep_no_node_selected_2">
+         <property name="geometry">
+          <rect>
+           <x>1</x>
+           <y>192</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Sensor Node Unavailable</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_tsi_detector_sweep_select_a_node_2">
+         <property name="geometry">
+          <rect>
+           <x>1</x>
+           <y>230</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Select an online sensor node to configure sweep detection hardware and run the detector.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_tsi_detector_empty_icon">
+         <property name="geometry">
+          <rect>
+           <x>570</x>
+           <y>116</y>
+           <width>76</width>
+           <height>60</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <zorder>label_tsi_detector_empty_icon</zorder>
+        <zorder>label_tsi_detector_select_sensor_node_image</zorder>
+        <zorder>label2_tsi_detector_sweep_no_node_selected_2</zorder>
+        <zorder>label2_tsi_detector_sweep_select_a_node_2</zorder>
+       </widget>
+      </widget>
+      <zorder>stackedWidget_tsi_detector</zorder>
       <zorder>label1_129</zorder>
-      <zorder>tabWidget_tsi_configuration</zorder>
-      <zorder>pushButton_tsi_clear_detector_plot</zorder>
-      <zorder>label2_tsi_detector</zorder>
       <zorder>frame1_27</zorder>
       <zorder>pushButton_tsi_detector_search</zorder>
       <zorder>frame_tsi_detector</zorder>
       <zorder>tableWidget1_tsi_wideband</zorder>
       <zorder>label1_117</zorder>
       <zorder>pushButton_tsi_clear_wideband_list</zorder>
+      <zorder>line_6</zorder>
      </widget>
      <widget class="QWidget" name="tab_tsi_conditioner">
       <attribute name="title">

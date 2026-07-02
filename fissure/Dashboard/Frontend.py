@@ -19,7 +19,7 @@ from fissure.Dashboard.Slots import (
 )
 
 from fissure.Dashboard.UI_Components import FissureStatusBar, UI_Types
-from fissure.Dashboard.UI_Components.MPL import MPL_IQCanvas, MPLCanvas, MPLTuningCanvas
+from fissure.Dashboard.UI_Components.MPL import MPL_IQCanvas, MPLCanvas
 from fissure.Dashboard.UI_Components.Qt5 import (
     CustomColor,
     JointPlotDialog,
@@ -161,7 +161,6 @@ class Dashboard(QtWidgets.QMainWindow):
         # Set Initial Tab Positions
         self.ui.tabWidget.setCurrentIndex(0)
         self.ui.tabWidget_tsi.setCurrentIndex(0)
-        self.ui.tabWidget_tsi_configuration.setCurrentIndex(0)
         self.ui.tabWidget_protocol.setCurrentIndex(0)
         self.ui.tabWidget_attack_attack.setCurrentIndex(0)
         self.ui.tabWidget_archive.setCurrentIndex(0)
@@ -182,13 +181,6 @@ class Dashboard(QtWidgets.QMainWindow):
         self.ui.frame_top_configure_node.setProperty("pressed", "false")
         self.ui.frame_top_configure_node.style().unpolish(self.ui.frame_top_configure_node)
         self.ui.frame_top_configure_node.style().polish(self.ui.frame_top_configure_node)
-
-        # TSI Fixed detector workbench state
-        self.ui.label_tsi_detector_fixed_select_sensor_node_image.setPixmap(QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "select_node.png")))
-        self.tsi_fixed_detector_running = False
-        self.tsi_fixed_detector_node_uid = ""
-        self.tsi_fixed_detector_opid = ""
-        self.tsi_fixed_detector_waiting_for_opid = False
 
         # Auto Connect HIPRFISR
         self.hiprfisr_serial_connected = False
@@ -659,10 +651,12 @@ class Dashboard(QtWidgets.QMainWindow):
         """
         Initializes TSI Tabs on Dashboard launch.
         """
-        ##### TSI #####
-        self.ui.textEdit_tsi_detector_iq_file_frequency.setPlainText("2400e6")
-        self.ui.textEdit_tsi_detector_iq_file_sample_rate.setPlainText("20e6")
-        self.ui.textEdit_tsi_detector_fixed_frequency.setPlainText("2412")
+        # Detector Tab
+        self.ui.label_tsi_detector_select_sensor_node_image.setPixmap(QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "select_node.png")))
+        try:
+            TSITabSlots.initialize_tsi_detector_controls(self)
+        except Exception as e:
+            self.logger.debug(f"Could not initialize unified TSI detector controls: {e}")
 
         self.target_soi = []
 
@@ -673,47 +667,21 @@ class Dashboard(QtWidgets.QMainWindow):
         # Create SOI Blacklist
         self.soi_blacklist = []
 
-        # Resize Table Columns and Rows for SDR Configuration Tables
-        self.ui.tableWidget_tsi_scan_options.resizeColumnsToContents()
-        self.ui.tableWidget_tsi_scan_options.resizeRowsToContents()
-        self.ui.tableWidget_tsi_scan_options.horizontalHeader().setFixedHeight(20)
-
         # Resize Table Columns for Wideband and Narrowband Tables
         self.ui.tableWidget1_tsi_wideband.resizeColumnsToContents()
-
-        # Put the Labels on Top of the Plots
-        self.ui.label2_tsi_detector.raise_()
-
-        # Hide Update Configuration Label
-        self.ui.label2_tsi_update_configuration.setVisible(False)
-
-        # Tab Width
-        # self.tabWidget_tsi_configuration.setStyleSheet("QTabBar::tab { height: 30px; width: 130px;}")
 
         # Axes Configuration for Detector Widget
         self.wideband_zoom = False
         self.wideband_zoom_start = 0
         self.wideband_zoom_end = 6000e6
 
-        # Under Construction Labels (For Future Reference)
-        # self.ui.label_under_construction.setPixmap(
-        #     QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "under_construction.png"))  
-        # )
-
         # Create Tooltip
         self.ui.tabWidget.setTabToolTip(1, "Target Signal Identification")
 
-        # Update Detector Settings
-        TSITabSlots._slotTSI_DetectorChanged(self)
-        TSITabSlots._slotTSI_DetectorFixedChanged(self)
-
-        # Gate Fixed detector controls until a Sensor Node is selected.
-        TSITabSlots.update_tsi_fixed_detector_node_gate(self)
-
-        # Default Detector Simulator File
-        self.ui.textEdit_tsi_detector_csv_file.setPlainText(
-            os.path.join(fissure.utils.TOOLS_DIR, "TSI_Detector_Sim_Data", "tsi_simulator.csv")
-        )
+        # # Default Detector Simulator File
+        # self.ui.textEdit_tsi_detector_csv_file.setPlainText(
+        #     os.path.join(fissure.utils.TOOLS_DIR, "TSI_Detector_Sim_Data", "tsi_simulator.csv")
+        # )
 
         # Set Conditioner Prefix
         now = datetime.datetime.now()
@@ -1390,19 +1358,6 @@ class Dashboard(QtWidgets.QMainWindow):
 
 
     def load_MPL_components(self):
-        # Create Tuning Matplotlib Widget
-        self.tuning_widget = MPLTuningCanvas(
-            self.ui.tab_tsi_sweep,
-            dpi=100,
-            title="Tuning",
-            ylim=400,
-            bg_color=self.backend.settings["color2"],
-            face_color=self.backend.settings["color5"],
-            text_color=self.backend.settings["color4"],
-        )
-        self.tuning_widget.move(self.ui.frame_tsi_search_bands.pos())
-        self.tuning_widget.setGeometry(self.ui.frame_tsi_search_bands.geometry())
-
         # Create Wideband Matplotlib Widget
         self.wideband_width = 1201
         self.wideband_height = 801
@@ -1578,16 +1533,29 @@ class Dashboard(QtWidgets.QMainWindow):
 
     def configureTSI_Hardware(self):
         """
-        Configures TSI after new selected sensor node selection.
-        """
-        self.ui.comboBox_tsi_detector_sweep_hardware.clear()
-        self.ui.comboBox_tsi_detector_fixed_hardware.clear()
-        self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.clear()
+        Configures TSI after selected Sensor Node changes.
 
+        Only refreshes the unified Detector hardware combo and Conditioner
+        isolation hardware combo. Old Fixed/Sweep detector widgets are no longer
+        part of the consolidated TSI layout.
+        """
         try:
             if not self.selected_node_uid:
-                self.ui.checkBox_tsi_detector_fixed_gui.setEnabled(False)
-                self.ui.checkBox_tsi_detector_fixed_gui.setChecked(False)
+                for combo_name in (
+                    "comboBox_tsi_detector_hardware",
+                    "comboBox_tsi_conditioner_settings_isolation_hardware",
+                ):
+                    combo = getattr(self.ui, combo_name, None)
+                    if combo is not None:
+                        combo.blockSignals(True)
+                        combo.clear()
+                        combo.blockSignals(False)
+
+                self._tsi_last_configured_node_uid = ""
+                self._tsi_last_hardware_display_names = []
+
+                TSITabSlots.clear_tsi_detector_methods(self)
+                TSITabSlots.update_tsi_detector_selected_node_gate(self)
                 return
 
             get_sensor_node_hardware = (
@@ -1597,27 +1565,54 @@ class Dashboard(QtWidgets.QMainWindow):
                 )
             )
 
-            self.ui.comboBox_tsi_detector_sweep_hardware.addItems(get_sensor_node_hardware)
-            self.ui.comboBox_tsi_detector_fixed_hardware.addItems(get_sensor_node_hardware)
-            self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.addItems(get_sensor_node_hardware)
+            previous_node_uid = getattr(self, "_tsi_last_configured_node_uid", "")
+            previous_hardware = getattr(self, "_tsi_last_hardware_display_names", [])
 
-            # Refresh Detector Advanced Settings
-            TSITabSlots._slotTSI_DetectorChanged(self)
-            TSITabSlots._slotTSI_DetectorFixedChanged(self)
+            hardware_changed = (
+                previous_node_uid != self.selected_node_uid
+                or previous_hardware != get_sensor_node_hardware
+            )
 
-            # Fixed Detector Show GUI Checkbox
-            is_local = selected_node_is_local(self)
-            self.ui.checkBox_tsi_detector_fixed_gui.setEnabled(is_local)
+            if hardware_changed:
+                current_detector_hardware = self.ui.comboBox_tsi_detector_hardware.currentText()
+                current_conditioner_hardware = self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.currentText()
 
-            if not is_local:
-                self.ui.checkBox_tsi_detector_fixed_gui.setChecked(False)
+                self.ui.comboBox_tsi_detector_hardware.blockSignals(True)
+                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.blockSignals(True)
+
+                self.ui.comboBox_tsi_detector_hardware.clear()
+                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.clear()
+
+                self.ui.comboBox_tsi_detector_hardware.addItems(get_sensor_node_hardware)
+                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.addItems(get_sensor_node_hardware)
+
+                if (
+                    current_detector_hardware
+                    and self.ui.comboBox_tsi_detector_hardware.findText(current_detector_hardware) >= 0
+                ):
+                    self.ui.comboBox_tsi_detector_hardware.setCurrentText(current_detector_hardware)
+
+                if (
+                    current_conditioner_hardware
+                    and self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.findText(current_conditioner_hardware) >= 0
+                ):
+                    self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.setCurrentText(current_conditioner_hardware)
+
+                self.ui.comboBox_tsi_detector_hardware.blockSignals(False)
+                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.blockSignals(False)
+
+                self._tsi_last_configured_node_uid = self.selected_node_uid
+                self._tsi_last_hardware_display_names = list(get_sensor_node_hardware)
+
+                TSITabSlots.clear_tsi_detector_methods(self)
+                TSITabSlots.reset_tsi_detector_customization(self)
 
         finally:
             try:
-                TSITabSlots.update_tsi_fixed_detector_node_gate(self)
+                TSITabSlots.update_tsi_detector_selected_node_gate(self)
             except Exception as e:
                 self.logger.debug(
-                    f"Could not update TSI Fixed detector selected-node gate: {e}"
+                    f"Could not update unified TSI Detector selected-node gate: {e}"
                 )
 
 
@@ -3045,12 +3040,6 @@ def connect_tsi_slots(dashboard: Dashboard):
     )    
 
     # Combo Box
-    dashboard.ui.comboBox_tsi_detector.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_DetectorChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_detector_fixed.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_DetectorFixedChanged(dashboard)
-    )
     dashboard.ui.comboBox_tsi_conditioner_input_folders.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputFolderChanged(dashboard)
     )
@@ -3077,12 +3066,6 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
     dashboard.ui.comboBox_tsi_fe_settings_category.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_FE_SettingsCategoryChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_detector_sweep_hardware.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_DetectorSweepHardwareChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_detector_fixed_hardware.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_DetectorFixedHardwareChanged(dashboard)
     )
     dashboard.ui.comboBox_tsi_classifier_training_category.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_ClassifierTrainingCategoryChanged(dashboard)
@@ -3111,11 +3094,20 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_tsi_conditioner_settings_isolation_hardware.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_ConditionerSettingsIsolationFrequenciesHardwareChanged(dashboard)
     )
+    dashboard.ui.comboBox_tsi_detector_type.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_DetectorTypeChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_detector_mode.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_DetectorModeChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_detector_hardware.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_DetectorHardwareChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_detector_method.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_DetectorMethodChanged(dashboard)
+    )
 
     # List Widget
-    dashboard.ui.listWidget_tsi_scan_presets.currentItemChanged.connect(
-        lambda: TSITabSlots._slotTSI_ScanPresetItemChanged(dashboard)
-    )
     dashboard.ui.listWidget_tsi_conditioner_input_files.itemDoubleClicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputLoadFileClicked(dashboard)
     )
@@ -3124,44 +3116,8 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
 
     # Push Button
-    dashboard.ui.pushButton_tsi_add_band.clicked.connect(
-        lambda: TSITabSlots._slotTSI_AddBandClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_remove_band.clicked.connect(
-        lambda: TSITabSlots._slotTSI_RemoveBandClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_save_preset.clicked.connect(
-        lambda: TSITabSlots._slotTSI_SavePresetClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_delete_preset.clicked.connect(
-        lambda: TSITabSlots._slotTSI_DeletePresetClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_clear_detector_plot.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ClearDetectorPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_refresh.clicked.connect(
-        lambda: TSITabSlots._slotTSI_RefreshPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_zoom_in.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ZoomInClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_advanced_settings.clicked.connect(
-        lambda: TSITabSlots._slotTSI_AdvancedSettingsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_back1.clicked.connect(
-        lambda: TSITabSlots._slotTSI_Back1_Clicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_detector_iq_file_browse.clicked.connect(
-        lambda: TSITabSlots._slotTSI_DetectorIQ_FileBrowseClicked(dashboard)
-    )
     dashboard.ui.pushButton_tsi_detector_search.clicked.connect(
         lambda: TSITabSlots._slotTSI_DetectorSearchClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_detector_csv_file_browse.clicked.connect(
-        lambda: TSITabSlots._slotTSI_DetectorCSV_FileBrowseClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_detector_csv_file_edit.clicked.connect(
-        lambda: TSITabSlots._slotTSI_DetectorCSV_FileEditClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_conditioner_input_folder.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputFolderClicked(dashboard)
@@ -3274,20 +3230,11 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tsi_clear_wideband_list.clicked.connect(
         lambda: TSITabSlots._slotTSI_ClearWidebandListClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_update.clicked.connect(
-        lambda: TSITabSlots._slotTSI_UpdateTSI_Clicked(dashboard)
-    )
     dashboard.ui.pushButton_tsi_blacklist_add.clicked.connect(
         lambda: TSITabSlots._slotTSI_BlacklistAddClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_blacklist_remove.clicked.connect(
         lambda: TSITabSlots._slotTSI_BlacklistRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_detector_start.clicked.connect(
-        lambda: TSITabSlots._slotTSI_DetectorStartClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_detector_fixed_start.clicked.connect(
-        lambda: TSITabSlots._slotTSI_DetectorFixedStartClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_conditioner_operation_start.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerOperationStartClicked(dashboard)
@@ -3489,7 +3436,16 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tsi_conditioner_input_frequencies_add.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerSettingsFrequenciesAddClicked(dashboard)
-    )    
+    )
+    dashboard.ui.pushButton_tsi_detector_query.clicked.connect(
+        lambda: TSITabSlots._slotTSI_DetectorQueryClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_detector_customize.clicked.connect(
+        lambda: TSITabSlots._slotTSI_DetectorCustomizeClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_detector_start_stop.clicked.connect(
+        lambda: TSITabSlots._slotTSI_DetectorStartStopClicked(dashboard)
+    )
     
     # Radio Buttons
     dashboard.ui.radioButton_tsi_conditioner_input_extensions_all.clicked.connect(
@@ -4738,3 +4694,5 @@ async def wait_for_backend_shutdown(dashboard: QtCore.QObject):
     while dashboard.backend.hiprfisr_connected is True:
         await asyncio.sleep(1)
     dashboard.logger.critical("BACKEND SHUTDOWN COMPLETE")
+
+

@@ -257,14 +257,6 @@ class SensorNode(object):
         self.triggers_running = False
         self.alert_senders = {}
 
-        self.tsi_detector_socket = None
-        self.running_TSI = False
-        self.running_TSI_simulator = False
-        self.blacklist = []
-        self.running_TSI_wideband = False
-        self.configuration_update = False
-        self.detector_script_name = ""
-
         self.running_PD = False
         self.pd_bits_socket = None
 
@@ -1330,13 +1322,6 @@ class SensorNode(object):
     async def shutdown_comms(self):
         """
         """
-        if self.tsi_detector_socket:
-            try:
-                self.stopTSI_Detector(-1)
-                await asyncio.sleep(2)
-            except:
-                pass
-
         if self.pd_bits_socket:
             try:
                 self.stopPD()
@@ -2184,8 +2169,6 @@ class SensorNode(object):
                 getattr(self.attackflowtoexec,formatted_name)(float(value))
             elif flow_graph == "Sniffer":
                 getattr(self.snifferflowtoexec,formatted_name)(float(value))
-            elif flow_graph == "Wideband":
-                getattr(self.wideband_flowtoexec,formatted_name)(float(value))
         else:
             if flow_graph == "Protocol Discovery":
                 getattr(self.pdflowtoexec,formatted_name)(value)
@@ -2193,8 +2176,6 @@ class SensorNode(object):
                 getattr(self.attackflowtoexec,formatted_name)(value)
             elif flow_graph == "Sniffer":
                 getattr(self.snifferflowtoexec,formatted_name)(value)
-            elif flow_graph == "Wideband":
-                getattr(self.wideband_flowtoexec,formatted_name)(value)
 
 
     ######################  Attack Flow Graphs  ########################
@@ -2515,19 +2496,6 @@ class SensorNode(object):
         self.logger.info("PD: Stopping Protocol Discovery...")
         self.running_PD = False
         
-        # if self.running_TSI_simulator:
-        #     self.running_TSI_simulator = False
-        # elif len(self.detector_script_name) > 0:
-        #     self.detectorFlowGraphStop("Flow Graph - GUI")
-        # else:
-        #     try:
-        #         # Stop Flow Graphs
-        #         self.wideband_flowtoexec.stop()
-        #         self.wideband_flowtoexec.wait()
-        #         del self.wideband_flowtoexec  # Free up the ports
-        #     except:
-        #         pass
-
         # Close Temporary SUB Socket
         if self.pd_bits_socket != None:
             self.pd_bits_socket.close()
@@ -3266,263 +3234,6 @@ class SensorNode(object):
         }
         await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
     
-    
-    ##########################  TSI Detector  #############################
-
-    def stopTSI_Detector(self):
-        """
-        Pauses TSI processing of signals after receiving the command from the HIPRFISR
-        """
-        # Stop Operations
-        self.logger.info("TSI: Stopping TSI Detector...")
-        self.running_TSI = False
-        self.running_TSI_wideband = False
-
-        if self.running_TSI_simulator:
-            self.running_TSI_simulator = False
-        elif len(self.detector_script_name) > 0:
-            self.detectorFlowGraphStop("Flow Graph - GUI")
-        else:
-            try:
-                # Stop Flow Graphs
-                self.wideband_flowtoexec.stop()
-                self.wideband_flowtoexec.wait()
-                del self.wideband_flowtoexec  # Free up the ports
-            except:
-                pass
-
-        # Close Temporary SUB Socket
-        if self.tsi_detector_socket != None:
-            self.tsi_detector_socket.close()
-            self.tsi_detector_context.term()
-            self.tsi_detector_socket = None
-            self.tsi_detector_context = None
-
-
-    def startWidebandThread(self, detector_port):
-        """ Begins TSI wideband sweeping
-        """
-        self.running_TSI_wideband = True
-
-        variable_names = []
-        variable_values = []
-        class_name = []
-
-        # Make a New Wideband Update Thread
-        stop_event2 = threading.Event()
-        c_thread2 = threading.Thread(target=self.widebandUpdateThread, args=(stop_event2, class_name, variable_names, variable_values, detector_port))
-        c_thread2.start()
-
-
-    def stopWidebandThread(self):
-        """ Stops TSI wideband sweeping
-        """
-        # Make a New Wideband Update Thread
-        self.running_TSI_wideband = False
-
-
-    def runWidebandThread(self, flow_graph_filename, variable_names, variable_values):
-        """ Runs the flow graph in the new thread.
-        """
-        # Stop Any Running Wideband Flow Graphs
-        try:
-            self.wideband_flowtoexec.stop()
-            self.wideband_flowtoexec.wait()
-            del self.wideband_flowtoexec  # Free up the ports
-        except:
-            pass
-
-        # Overwrite Variables
-        loadedmod, class_name = self.overwriteFlowGraphVariables(flow_graph_filename, variable_names, variable_values)
-
-        # Call the "__init__" Function
-        self.wideband_flowtoexec = getattr(loadedmod,class_name)()
-
-        # Start it
-        self.wideband_flowtoexec.start()
-        self.wideband_flowtoexec.wait()
-
-        # # Error Loading Flow Graph
-        # except Exception as e:
-            # # print("Error: " + str(e))
-            # # self.running_TSI = False
-            # # self.running_wideband = False
-            # PARAMETERS = {error=str(e)}
-            # msg = {
-                        # fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                        # fissure.comms.MessageFields.MESSAGE_NAME: "Detector Flow Graph Error",
-                        # fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            # }
-            # await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    def runDetectorSimulatorThread(self, variable_names, variable_values, detector_port):
-        """ Runs the simulator in the new thread.
-        """
-        self.logger.info("SIMULATOR THREAD STARTED")
-        self.running_TSI_simulator = True
-
-        # Create Temporary ZMQ PUB
-        context = zmq.Context()
-        pub_socket = context.socket(zmq.PUB)
-        pub_socket.bind("tcp://127.0.0.1:" + str(detector_port))
-        
-        try:
-            # Replace Username in Filepaths
-            if self.local_remote == "remote":
-                for n in range(0,len(variable_names)):
-                    if 'filepath' in variable_names[n]:
-                        variable_values[n] = self.replaceUsername(variable_values[n], os.getenv('USER'))
-
-            while self.running_TSI_simulator == True:
-
-                # Open CSV Simulator File
-                with open(variable_values[0], "r") as f:
-                    reader = csv.reader(f, delimiter=",")
-
-                    for i, line in enumerate(reader):
-                        # Skip First Row
-                        if int(i) > 0:
-                            new_message = "TSI:/Signal Found/" + str(int(line[0])) + "/" + str(int(line[1])) + "/" + str(time.time())  # "TSI:/Signal Found/2260000000/-55/1526333364.11"
-                            pub_socket.send_string(new_message)
-                            time.sleep(float(line[2]))
-
-                        if not self.running_TSI_simulator:
-                            break
-
-        finally:
-            pub_socket.close()
-            context.term()
-            self.logger.info("SIMULATOR THREAD TERMINATED")
-
-
-    def widebandUpdateThread(self, stop_event, class_name, variable_names, variable_values, detector_port):
-        """ Updates the wideband flow graph parameters in the new thread.
-        """
-        self.logger.info("WIDEBAND UPDATE THREAD STARTED!!!")
-        # Create the Temporary ZMQ SUB
-        if self.tsi_detector_socket == None:
-            self.tsi_detector_context = zmq.Context()
-            self.tsi_detector_socket = self.tsi_detector_context.socket(zmq.SUB)
-            self.tsi_detector_socket.connect("tcp://127.0.0.1:" + str(detector_port))
-            self.tsi_detector_socket.setsockopt_string(zmq.SUBSCRIBE, "")
-
-        # Wideband Sweep Logic
-        new_freq = self.wideband_start_freq[self.wideband_band]
-        while self.running_TSI_wideband == True:           
-            #try:
-            # Check for Configuration Update
-            if self.configuration_updated == True:
-                new_freq = self.wideband_start_freq[0]
-                self.configuration_updated = False
-
-            # Update Flow Graph
-            self.setVariable("Wideband","rx_freq",new_freq)
-
-            # Send Frequency and Band Status to Dashboard
-            asyncio.run(self.bandID_Return(self.wideband_band+1, new_freq))
-
-            # Step Frequency
-            new_freq = new_freq + self.wideband_step_size[self.wideband_band]
-
-            # Passed Stop Frequency
-            if new_freq > self.wideband_stop_freq[self.wideband_band]:
-                # Increase Band
-                self.wideband_band = self.wideband_band + 1
-
-                # Reset Band
-                if self.wideband_band >= len(self.wideband_start_freq):
-                    self.wideband_band = 0
-
-                # Begin at Start Frequency
-                new_freq = self.wideband_start_freq[self.wideband_band]
-
-            # Check Blacklist
-            not_in_blacklist = False
-            while not_in_blacklist == False:
-                not_in_blacklist = True
-                for n in range(0,len(self.blacklist)):
-                    if self.blacklist[n][0] <= new_freq <= self.blacklist[n][1]:
-                        not_in_blacklist = False
-
-                        # Step Frequency
-                        new_freq = new_freq + self.wideband_step_size[self.wideband_band]
-
-                        # Passed Stop Frequency
-                        if new_freq > self.wideband_stop_freq[self.wideband_band]:
-                            # Increase Band
-                            self.wideband_band = self.wideband_band + 1
-
-                            # Reset Band
-                            if self.wideband_band >= len(self.wideband_start_freq):
-                                self.wideband_band = 0
-
-                            # Begin at Start Frequency
-                            new_freq = self.wideband_start_freq[self.wideband_band]
-            #except:
-            #    pass
-
-            # Dwell on Frequency
-            time.sleep(self.wideband_dwell[self.wideband_band])
-
-
-    async def bandID_Return(self, band_id, frequency):
-        """
-        Sends a Band ID message with current status during a TSI detector sweep to the HIPRFISR/Dashboard.
-        """
-        PARAMETERS = {
-            "band_id": band_id, 
-            "frequency": frequency
-        }
-        msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "bandID_Return",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-        }
-        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    def detectorFlowGraphStop(self, parameter):
-        """ Stop the currently running detector flow graph.
-        """
-        # Only Supports Flow Graphs with GUIs
-        if (parameter == "Flow Graph - GUI") and (len(self.detector_script_name) > 0):
-            os.system("sudo pkill -f " + '"' + self.detector_script_name +'"')
-            self.detector_script_name = ""
-
-
-    def detectorFlowGraphGUI_Thread(self, flow_graph_filename, variable_names, variable_values, detector_port):
-        """ Runs the detector flow graph in the new thread.
-        """
-        try:
-            # Start it
-            filepath = os.path.join(fissure.utils.get_fg_library_dir(self.os_info), "TSI Flow Graphs", "Detectors", flow_graph_filename)
-            arguments = ""
-            for n in range(0,len(variable_names)):
-                arguments = arguments + '--' + variable_names[n] + '="' + variable_values[n] + '" '
-
-            osCommandString = "python3 " + '"' + filepath + '" ' + arguments
-            proc = subprocess.Popen(osCommandString + " &", shell=True)
-
-            #asyncio.run(self.flowGraphStarted("Inspection"))  # Signals to other components
-            self.detector_script_name = flow_graph_filename
-
-            # Create the Temporary ZMQ SUB
-            if self.tsi_detector_socket == None:
-                self.tsi_detector_context = zmq.Context()
-                self.tsi_detector_socket = self.tsi_detector_context.socket(zmq.SUB)
-                self.tsi_detector_socket.connect("tcp://127.0.0.1:" + str(detector_port))
-                self.tsi_detector_socket.setsockopt_string(zmq.SUBSCRIBE, "")
-
-        # Error Loading Flow Graph
-        except Exception as e:
-            self.logger.error(str(e))
-            #print("ERROR")
-            #asyncio.run(self.flowGraphStarted("Inspection"))
-            #asyncio.run(self.flowGraphFinished("Inspection"))
-            asyncio.run(self.flowGraphError(str(e)))
-            #~ #raise e    
-
     
     #######################  Autorun Playlists  ##########################
 

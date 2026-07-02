@@ -277,12 +277,6 @@ async def disconnect(component: object):
     component.connect_loop = True
 
 
-async def clearWidebandList(component: object):
-    """Clears the Wideband List"""
-    component.logger.debug("Executing Callback: Clear Wideband List")
-    component.wideband_list = []
-
-
 async def enableDisableListener(component: object, listener_type="", listener_name="", parameters={}):
     """
     Creates a listener if it does not exist and then toggles its enable/disable status.
@@ -897,6 +891,61 @@ async def tsiFE_Finished(component: object, table_strings=[]):
 ##########################################################################
 ############################ To Sensor Node ##############################
 ##########################################################################
+
+async def queryPluginActions(
+    component: object,
+    requester_uid: str,
+    requester_type: str,
+    node_uid: str,
+    context: str = "",
+    scope: str = "all_plugins",
+    plugin_name: str = "",
+    include_tags: List[str] = None,
+    exclude_tags: List[str] = None,
+    hardware: str = "",
+):
+    """
+    Forward a generic filtered plugin-action query to a selected Sensor Node.
+    """
+    node_record = component.nodes.get(node_uid)
+    if not node_record:
+        component.logger.warning(
+            f"queryPluginActions: unknown node_uid={node_uid}"
+        )
+        return
+
+    identity = node_record.get("identity", None)
+    if identity is None:
+        component.logger.warning(
+            f"queryPluginActions: missing identity for node_uid={node_uid}"
+        )
+        return
+
+    PARAMETERS = {
+        "requester_uid": requester_uid,
+        "requester_type": requester_type,
+        "node_uid": node_uid,
+        "context": context,
+        "scope": scope,
+        "plugin_name": plugin_name,
+        "include_tags": include_tags or [],
+        "exclude_tags": exclude_tags or [],
+        "hardware": hardware,
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "queryPluginActions",
+        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    }
+
+    await component.sensor_node_router.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+        target_ids=[identity],
+    )
+
+
 
 
 async def scanHardware(component: object, node_uid="", hardware_list=[]):
@@ -1840,112 +1889,6 @@ async def protocolDiscoveryFG_Stop(component: object, node_uid=""):
     )
 
 
-async def updateConfiguration(
-    component: object, node_uid="", start_frequency=0, end_frequency=0, step_size=0, dwell_time=0, detector_port=0
-):
-    """Forwards the Update Configuration message to TSI."""
-    # Forward Message to Sensor Node
-    PARAMETERS = {
-        "start_frequency": start_frequency,
-        "end_frequency": end_frequency,
-        "step_size": step_size,
-        "dwell_time": dwell_time,
-        "detector_port": detector_port,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "updateConfiguration",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    # component.tsi_hiprfisr_server.sendmsg(
-    #     'Commands',
-    #     Identifier='HIPRFISR',
-    #     MessageName='Update Configuration',
-    #     Parameters=[start_frequency, end_frequency, step_size, dwell_time]
-    # )
-    # component.backend_router.send_msg(
-    #     fissure.comms.MessageTypes.COMMANDS,
-    #     target_ids=[component.tsi_id],
-    #     msg
-    # )  # Future?
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )    
-
-
-async def startTSI_Detector(component: object, node_uid="", detector="", variable_names=[], variable_values=[], detector_port=0):
-    """
-    Signals to sensor node to start TSI detector.
-    """
-    # Forward Message to Sensor Node
-    PARAMETERS = {
-        "detector": detector,
-        "variable_names": variable_names,
-        "variable_values": variable_values,
-        "detector_port": detector_port,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "startTSI_Detector",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    # component.tsi_hiprfisr_server.sendmsg(
-    #     'Commands',
-    #     Identifier='HIPRFISR',MessageName='Start TSI Detector', Parameters=[detector,variable_names,variable_values]
-    # )
-    # component.backend_router.send_msg(
-    #     fissure.comms.MessageTypes.COMMANDS, target_ids=[component.tsi_id], msg
-    # )  # Future?
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def stopTSI_Detector(component: object, node_uid=""):
-    """
-    Signals to sensor node to stop TSI detector.
-    """
-    # Forward Message to Sensor Node
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "stopTSI_Detector",
-    }
-    # component.tsi_hiprfisr_server.sendmsg('Commands', Identifier='HIPRFISR', MessageName='Stop TSI Detector')
-    # component.backend_router.send_msg(
-    #     fissure.comms.MessageTypes.COMMANDS, msg, target_ids=[component.tsi_id]
-    # )  # Future?
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )    
-
-
 async def terminateSensorNode(component: object, node_uid=""):
     """
     Stops sensor_node.py for local operations.
@@ -2472,9 +2415,131 @@ async def updateNodeSettings(component: object, node_uid: str, settings_dict: di
         target_ids=[identity]
     )    
 
+
+async def queryPluginActionSchema(
+    component: object,
+    requester_uid: str,
+    requester_type: str,
+    node_uid: str,
+    plugin_name: str,
+    action_name: str,
+    context: str = "",
+):
+    """
+    Forward a Dashboard-only plugin action schema query to a selected Sensor Node.
+    """
+    node_record = component.nodes.get(node_uid)
+    if not node_record:
+        component.logger.warning(
+            f"queryPluginActionSchema: unknown node_uid={node_uid}"
+        )
+        return
+
+    identity = node_record.get("identity", None)
+    if identity is None:
+        component.logger.warning(
+            f"queryPluginActionSchema: missing identity for node_uid={node_uid}"
+        )
+        return
+
+    PARAMETERS = {
+        "requester_uid": requester_uid,
+        "requester_type": requester_type,
+        "node_uid": node_uid,
+        "plugin_name": plugin_name,
+        "action_name": action_name,
+        "context": context,
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "queryPluginActionSchema",
+        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    }
+
+    await component.sensor_node_router.send_msg(
+        fissure.comms.MessageTypes.COMMANDS,
+        msg,
+        target_ids=[identity],
+    )    
+
 ##########################################################################
 ########################### From Sensor Node #############################
 ##########################################################################
+
+async def queryPluginActionSchemaResults(
+    component: object,
+    requester_uid: str,
+    requester_type: str,
+    node_uid: str,
+    plugin_name: str,
+    action_name: str,
+    schema: dict,
+    context: str = "",
+):
+    """
+    Forward a Dashboard-only plugin action schema result to the Dashboard.
+    """
+    if not isinstance(schema, dict):
+        schema = {"params": []}
+
+    if "params" not in schema or not isinstance(schema.get("params"), list):
+        schema["params"] = []
+
+    PARAMETERS = {
+        "requester_uid": requester_uid,
+        "requester_type": requester_type,
+        "node_uid": node_uid,
+        "plugin_name": plugin_name,
+        "action_name": action_name,
+        "schema": schema,
+        "context": context,
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "queryPluginActionSchemaResults",
+        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
+async def queryPluginActionsResults(
+    component: object,
+    requester_uid: str,
+    requester_type: str,
+    node_uid: str,
+    context: str = "",
+    actions: List[dict] = None,
+):
+    """
+    Forward filtered plugin-action query results to the Dashboard.
+    """
+    PARAMETERS = {
+        "requester_uid": requester_uid,
+        "requester_type": requester_type,
+        "node_uid": node_uid,
+        "context": context,
+        "actions": actions or [],
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "queryPluginActionsResults",
+        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
 
 async def refreshSensorNodeFilesResults(
     component: object, node_uid="", filepaths=[], file_sizes=[], file_types=[], modified_dates=[]
@@ -2535,23 +2600,6 @@ async def flowGraphError(component: object, node_uid="", error=""):
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphError",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def detectorFlowGraphError(component: object, node_uid="", error=""):
-    """
-    Forwards the detector flow graph error message to the Dashboard.
-    """
-    # Send the Message
-    PARAMETERS = {
-        "error": error
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "detectorFlowGraphError",
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
     }
     if component.dashboard_connected:
@@ -2830,38 +2878,6 @@ async def hardwareGuessResults(
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "hardwareGuessResults",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def bandID_Return(component: object, node_uid="", band_id=0, frequency=0):
-    """
-    Forwards the band ID return message for TSI detectors to the Dashboard.
-    """
-    PARAMETERS = {
-        "band_id": band_id, 
-        "frequency": frequency
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "bandID_Return",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def detectorReturn(component: object, frequency_value=0, power_value=0, time_value=0.0):
-    """
-    Forwards the TSI Detector return message with signals of interest to the Dashboard.
-    """
-    # Send the Message
-    PARAMETERS = {"frequency_value": frequency_value, "power_value": power_value, "time_value": time_value}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "detectorReturn",
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
     }
     if component.dashboard_connected:
