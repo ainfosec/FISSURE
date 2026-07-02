@@ -5904,38 +5904,6 @@ def _tsi_detector_set_stopped(dashboard: QtCore.QObject):
     update_tsi_detector_selected_node_gate(dashboard)
 
 
-def reconcile_tsi_detector_state(
-    dashboard: QtCore.QObject,
-    node_uid: str = "",
-    status: str = "",
-):
-    """
-    Stops the unified detector UI state when the selected node reports a terminal
-    action status.
-    """
-    if not getattr(dashboard, "tsi_detector_running", False):
-        return
-
-    detector_node_uid = getattr(dashboard, "tsi_detector_node_uid", "") or ""
-
-    if detector_node_uid and node_uid and node_uid != detector_node_uid:
-        return
-
-    status_l = str(status or "").strip().lower()
-
-    if status_l in (
-        "idle",
-        "stopped",
-        "complete",
-        "completed",
-        "failed",
-        "cancelled",
-        "canceled",
-        "unknown",
-    ):
-        _tsi_detector_set_stopped(dashboard)
-
-
 def update_tsi_detector_status_from_node(
     dashboard: QtCore.QObject,
     node_uid: str = "",
@@ -6259,17 +6227,22 @@ def _tsi_detector_plot_clear_points(dashboard: QtCore.QObject):
 
 def _tsi_detector_plot_start(dashboard: QtCore.QObject):
     """
-    Starts/reset the unified detector plot for a new detector operation.
+    Starts/resets the unified detector plot for a new detector operation.
+
+    Elapsed time is anchored to the Dashboard Start click, not the first
+    detection timestamp.
     """
     _tsi_detector_plot_ensure_state(dashboard)
 
     dashboard.tsi_detector_plot_events.clear()
-    dashboard.tsi_detector_plot_start_time = None
+    dashboard.tsi_detector_plot_start_time = time.time()
     dashboard.tsi_detector_plot_dirty = True
 
     x_low, x_high = _tsi_detector_plot_initial_xlim(dashboard)
     dashboard.tsi_detector_plot_initial_xlim_low = x_low
     dashboard.tsi_detector_plot_initial_xlim_high = x_high
+
+    _tsi_detector_plot_refresh(dashboard, force=True, running=True)
 
     old_timer = getattr(dashboard, "tsi_detector_plot_timer", None)
     if old_timer is not None:
@@ -6278,8 +6251,6 @@ def _tsi_detector_plot_start(dashboard: QtCore.QObject):
             old_timer.timeout.disconnect()
         except Exception:
             pass
-
-    _tsi_detector_plot_refresh(dashboard, force=True, running=True)
 
     timer = QtCore.QTimer(dashboard)
     timer.setInterval(250)

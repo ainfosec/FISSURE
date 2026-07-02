@@ -1990,17 +1990,6 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
             )
 
     try:
-        TSITabSlots.reconcile_tsi_detector_state(
-            frontend,
-            node_uid=node_uid,
-            status=node.get("status", ""),
-        )
-    except Exception as e:
-        component.logger.debug(
-            f"Could not reconcile unified TSI Detector state: {e}"
-        )
-
-    try:
         TSITabSlots.update_tsi_detector_status_from_selected_node(
             frontend,
             node_uid=node_uid,
