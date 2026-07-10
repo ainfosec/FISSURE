@@ -70,6 +70,28 @@ ACTION_TAGS = {
     "take_photo": ["All"],
     "motion_detector": ["All"],
     "take_video": ["All"],
+
+    "signal_conditioning": [
+        "All",
+        "tsi.conditioner",
+        "tsi.conditioner.category.energy",
+        "tsi.conditioner.method.normal_decay",
+        "tsi.conditioner.source.frequencies",
+    ],
+    "signal_conditioning_file": [
+        "All",
+        "tsi.conditioner",
+        "tsi.conditioner.category.energy",
+        "tsi.conditioner.method.normal",
+        "tsi.conditioner.method.normal_decay",
+        "tsi.conditioner.method.power_squelch",
+        "tsi.conditioner.method.lowpass",
+        "tsi.conditioner.method.power_squelch_lowpass",
+        "tsi.conditioner.method.bandpass",
+        "tsi.conditioner.method.strongest_frequency_bandpass",
+        "tsi.conditioner.source.file",
+        "tsi.conditioner.source.folder",
+    ],
 }
 
 
@@ -84,6 +106,7 @@ ACTION_HARDWARE = {
     "usrp_b2x0_geolocate": ["USRP B20xmini", "USRP B2x0"],
     "iq_record": ["USRP B20xmini", "USRP B2x0"],
     "iq_playback": ["USRP B20xmini", "USRP B2x0"],
+    "signal_conditioning": ["USRP B20xmini", "USRP B2x0"],
 }
 
 
@@ -621,6 +644,278 @@ async def usrp_b2x0_geolocate(
     )
 
 
+signal_conditioning_schema = {
+    "params": [
+        {
+            "name": "frequency_mhz",
+            "label": "Frequency (MHz)",
+            "type": "number",
+            "default": 915.0,
+            "decimals": 6,
+            "min": 0.0,
+            "max": 6000.0,
+            "step": 1.0,
+        },
+        {
+            "name": "dwell_s",
+            "label": "Dwell (s)",
+            "type": "number",
+            "default": 10.0,
+            "min": 0.1,
+            "max": 3600.0,
+            "step": 1.0,
+            "decimals": 1,
+        },
+        {
+            "name": "max_files",
+            "label": "Max Files / Frequency",
+            "type": "int",
+            "default": 5,
+            "min": 1,
+            "max": 999,
+            "step": 1,
+        },
+        {
+            "name": "sample_rate",
+            "label": "Sample Rate (S/s)",
+            "type": "number",
+            "default": 1000000.0,
+            "min": 1.0,
+            "max": 100000000.0,
+            "step": 100000.0,
+            "decimals": 0,
+        },
+        {
+            "name": "threshold",
+            "label": "Threshold",
+            "type": "number",
+            "default": 0.004,
+            "min": 0.0,
+            "max": 1.0,
+            "step": 0.001,
+            "decimals": 6,
+        },
+        {
+            "name": "decay",
+            "label": "Decay",
+            "type": "number",
+            "default": 0.0002,
+            "min": 0.0,
+            "max": 1.0,
+            "step": 0.0001,
+            "decimals": 6,
+        },
+        {
+            "name": "gain",
+            "label": "RX Gain",
+            "type": "number",
+            "default": 60.0,
+            "min": 0.0,
+            "max": 100.0,
+            "step": 1.0,
+            "decimals": 1,
+        },
+        {
+            "name": "channel",
+            "label": "RX Channel",
+            "type": "string",
+            "default": "A:A",
+            "options": ["A:A", "A:B"],
+        },
+        {
+            "name": "antenna",
+            "label": "RX Antenna",
+            "type": "string",
+            "default": "TX/RX",
+            "options": ["TX/RX", "RX2"],
+        },
+        {
+            "name": "emit_alert",
+            "label": "Emit Alert",
+            "type": "string",
+            "default": "false",
+            "options": ["false", "true"],
+        },
+        {
+            "name": "emit_tak",
+            "label": "Emit TAK",
+            "type": "string",
+            "default": "false",
+            "options": ["false", "true"],
+        },
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": "Signal conditioning capture",
+        },
+    ]
+}
+async def signal_conditioning(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+    component.logger.info(
+        f"Signal Conditioning action with parameters: {parameters}"
+    )
+
+    op_params = dict(parameters or {})
+
+    if not str(op_params.get("hardware_type", "") or "").strip():
+        compatible_types = ["USRP B20xmini", "USRP B2x0"]
+
+        sdr_uid, sdr_entry = fissure.utils.hardware.get_compatible_sdr(
+            getattr(component, "settings_dict", {}) or {},
+            compatible_types,
+        )
+
+        if not sdr_entry:
+            raise ValueError(
+                "No compatible SDR configured for signal_conditioning. "
+                f"Compatible types: {compatible_types}"
+            )
+
+        op_params.update(
+            fissure.utils.hardware.sdr_entry_to_operation_parameters(
+                sdr_uid,
+                sdr_entry,
+            )
+        )
+
+    op_params.setdefault(
+        "source_id",
+        node_uid or getattr(component, "uuid", "") or "sensor_node",
+    )
+
+    op_params.setdefault(
+        "serial",
+        op_params.get("hardware_serial_argument", "False"),
+    )
+    op_params.setdefault(
+        "ip_address",
+        op_params.get("hardware_ip", ""),
+    )
+    op_params.setdefault(
+        "channel",
+        op_params.get("rx_channel", "A:A"),
+    )
+    op_params.setdefault(
+        "antenna",
+        op_params.get("rx_antenna", "TX/RX"),
+    )
+    op_params.setdefault(
+        "gain",
+        op_params.get("rx_gain", 60.0),
+    )
+
+    component.logger.info(
+        f"Signal Conditioning resolved parameters: {op_params}"
+    )
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "signal_conditioning.py",
+        op_params,
+        node_uid,
+    )
+
+
+signal_conditioning_file_schema = {
+    "params": [
+        {
+            "name": "data_type",
+            "label": "Data Type",
+            "type": "string",
+            "default": "Complex Float 32",
+            "options": [
+                "Complex Float 32",
+                "Complex Int 16",
+            ],
+        },
+        {
+            "name": "sample_rate",
+            "label": "Sample Rate (S/s)",
+            "type": "number",
+            "default": 1000000.0,
+            "min": 1.0,
+            "max": 100000000.0,
+            "step": 100000.0,
+            "decimals": 0,
+        },
+        {
+            "name": "threshold",
+            "label": "Threshold",
+            "type": "number",
+            "default": 0.004,
+            "min": 0.0,
+            "max": 1.0,
+            "step": 0.001,
+            "decimals": 6,
+        },
+        {
+            "name": "decay",
+            "label": "Decay",
+            "type": "number",
+            "default": 0.0002,
+            "min": 0.0,
+            "max": 1.0,
+            "step": 0.0001,
+            "decimals": 6,
+        },
+        {
+            "name": "max_files",
+            "label": "Max Files",
+            "type": "int",
+            "default": 15,
+            "min": 1,
+            "max": 9999,
+            "step": 1,
+        },
+        {
+            "name": "min_samples",
+            "label": "Min Samples",
+            "type": "int",
+            "default": 1,
+            "min": 0,
+            "max": 100000000,
+            "step": 1,
+        },
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": "Local file/folder signal conditioning using file-source Conditioner flow graphs",
+        },
+    ]
+}
+async def signal_conditioning_file(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+    component.logger.info(
+        f"Signal Conditioning File action with parameters: {parameters}"
+    )
+
+    op_params = dict(parameters or {})
+
+    op_params.setdefault(
+        "source_id",
+        node_uid or getattr(component, "uuid", "") or "sensor_node",
+    )
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "signal_conditioning_file.py",
+        op_params,
+        node_uid,
+        wait=True,
+    )
+
+
 promote_to_soi_schema = {
     "params": [
         {
@@ -637,7 +932,6 @@ promote_to_soi_schema = {
         },
     ]
 }
-
 async def promote_to_soi(
     component: SensorNode,
     parameters: Dict[str, Any],

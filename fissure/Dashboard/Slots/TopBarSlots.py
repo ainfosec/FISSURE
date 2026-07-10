@@ -127,7 +127,7 @@ async def stopLocalSensorNode(dashboard: QtCore.QObject, remove_from_hiprfisr: b
                     or str(getattr(dashboard, "selected_node_ip", "") or "").strip().lower() == "ipc"
                 )
 
-                if selected_is_removed_node or selected_is_local:
+                if selected_is_removed_node:
                     clearSelectedNode(dashboard)
 
         except FileNotFoundError:

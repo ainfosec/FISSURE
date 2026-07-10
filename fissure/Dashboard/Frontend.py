@@ -670,11 +670,6 @@ class Dashboard(QtWidgets.QMainWindow):
         # Resize Table Columns for Wideband and Narrowband Tables
         self.ui.tableWidget1_tsi_wideband.resizeColumnsToContents()
 
-        # Axes Configuration for Detector Widget
-        self.wideband_zoom = False
-        self.wideband_zoom_start = 0
-        self.wideband_zoom_end = 6000e6
-
         # Create Tooltip
         self.ui.tabWidget.setTabToolTip(1, "Target Signal Identification")
 
@@ -683,25 +678,12 @@ class Dashboard(QtWidgets.QMainWindow):
         #     os.path.join(fissure.utils.TOOLS_DIR, "TSI_Detector_Sim_Data", "tsi_simulator.csv")
         # )
 
-        # Set Conditioner Prefix
-        now = datetime.datetime.now()
-        self.ui.textEdit_tsi_conditioner_settings_prefix.setPlainText(
-            now.strftime("%Y-%m-%d %H:%M:%S").replace(" ", "_") + "_"
-        )
-
-        # Set Conditioner Default Directories
-        self.ui.comboBox_tsi_conditioner_input_folders.addItem(
-            str(os.path.join(fissure.utils.FISSURE_ROOT, "Conditioner Data", "Input"))
-        )
-        self.ui.comboBox_tsi_conditioner_settings_folder.addItem(
-            str(os.path.join(fissure.utils.FISSURE_ROOT, "Conditioner Data", "Output"))
-        )
-        self.ui.comboBox_tsi_fe_input_folders.addItem(
-            str(os.path.join(fissure.utils.FISSURE_ROOT, "Conditioner Data", "Output"))
-        )
-
-        # Refresh Conditioner Selections
-        TSITabSlots._slotTSI_ConditionerInputSourceChanged(self)
+        # Conditioner Controls
+        self.ui.label_tsi_conditioner_select_sensor_node_image.setPixmap(QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "select_node.png")))
+        try:
+            TSITabSlots.initialize_tsi_conditioner_controls(self)
+        except Exception as e:
+            self.logger.debug(f"Could not initialize TSI Conditioner controls: {e}")
 
         # Complete Feature List
         self.all_features = [
@@ -1364,6 +1346,7 @@ class Dashboard(QtWidgets.QMainWindow):
         rgb = tuple(int(self.backend.settings["color2"].lstrip("#")[i : i + 2], 16) for i in (0, 2, 4))
         background_color = (float(rgb[0]) / 255, float(rgb[1]) / 255, float(rgb[2]) / 255)
         self.wideband_data = numpy.ones((self.wideband_height, self.wideband_width, 3)) * (background_color)
+
         self.matplotlib_widget = MPLCanvas(
             self.ui.tab_tsi_detector,
             dpi=100,
@@ -1383,7 +1366,10 @@ class Dashboard(QtWidgets.QMainWindow):
         self.matplotlib_widget.setGeometry(self.ui.frame_tsi_detector.geometry())
         self.matplotlib_widget.axes.cla()
         self.matplotlib_widget.axes.imshow(
-            self.wideband_data, cmap="rainbow", clim=(-100, 30), extent=[0, 1201, 801, 0]
+            self.wideband_data,
+            cmap="rainbow",
+            clim=(-100, 30),
+            extent=[0, 1201, 801, 0],
         )
         self.matplotlib_widget.configureAxes(
             title="Detector History",
@@ -1397,6 +1383,37 @@ class Dashboard(QtWidgets.QMainWindow):
             text_color=self.backend.settings["color4"],
         )
         self.matplotlib_widget.draw()
+
+        # Create TSI Conditioner Preview Matplotlib Widget
+        self.tsi_conditioner_preview_widget = MPL_IQCanvas(
+            self.ui.frame_tsi_conditioner_preview_plot,
+            dpi=100,
+            title="",
+            ylim=400,
+            bg_color=self.backend.settings["color2"],
+            face_color=self.backend.settings["color5"],
+            text_color=self.backend.settings["color4"],
+        )
+        self.tsi_conditioner_preview_widget.setGeometry(
+            0,
+            0,
+            self.ui.frame_tsi_conditioner_preview_plot.width(),
+            self.ui.frame_tsi_conditioner_preview_plot.height(),
+        )
+        self.tsi_conditioner_preview_widget.setContentsMargins(0, 0, 0, 0)
+
+        # Blank init state. Do not show fake axes before a file is previewed.
+        self.tsi_conditioner_preview_widget.axes.cla()
+        self.tsi_conditioner_preview_widget.axes.set_axis_off()
+        self.tsi_conditioner_preview_widget.fig.set_facecolor(self.backend.settings["color5"])
+        self.tsi_conditioner_preview_widget.axes.set_facecolor(self.backend.settings["color5"])
+        self.tsi_conditioner_preview_widget.fig.subplots_adjust(
+            left=0.02,
+            right=0.98,
+            bottom=0.02,
+            top=0.98,
+        )
+        self.tsi_conditioner_preview_widget.draw()
 
         # Create IQ Data Matplotlib Widget
         self.iq_matplotlib_widget = MPL_IQCanvas(
@@ -1415,6 +1432,7 @@ class Dashboard(QtWidgets.QMainWindow):
         self.mpl_toolbar = NavigationToolbar2QT(self.iq_matplotlib_widget, self.ui.tab_iq_data)
         self.mpl_toolbar.setStyleSheet("color:" + self.backend.settings["color4"])
         self.mpl_toolbar.setGeometry(QtCore.QRect(375, 277, 525, 35))
+
         icons_buttons = {
             "Home": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "home.png")),
             "Pan": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "move.png")),
@@ -1425,6 +1443,7 @@ class Dashboard(QtWidgets.QMainWindow):
             "Customize": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "qt4_editor_options.png")),
             "Save": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "filesave.png")),
         }
+
         for action in self.mpl_toolbar.actions():
             if action.text() in icons_buttons:
                 action.setIcon(icons_buttons.get(action.text(), QtGui.QIcon()))
@@ -1533,32 +1552,45 @@ class Dashboard(QtWidgets.QMainWindow):
 
     def configureTSI_Hardware(self):
         """
-        Configures TSI after selected Sensor Node changes.
+        Refresh TSI hardware-dependent UI after the selected Sensor Node changes.
 
-        Only refreshes the unified Detector hardware combo and Conditioner
-        isolation hardware combo. Old Fixed/Sweep detector widgets are no longer
-        part of the consolidated TSI layout.
+        Detector hardware is populated directly here because Detector methods are
+        hardware-driven.
+
+        Conditioner hardware is refreshed through TSITabSlots because the current
+        Conditioner source determines whether hardware is required:
+            File / Folder  -> No Hardware Required
+            Frequencies    -> selected-node SDR hardware
+
+        Do not clear Conditioner actions/parameters here. Those should only be
+        cleared when the user changes Conditioner source/category/method/hardware
+        context.
         """
         try:
-            if not self.selected_node_uid:
-                for combo_name in (
-                    "comboBox_tsi_detector_hardware",
-                    "comboBox_tsi_conditioner_settings_isolation_hardware",
-                ):
-                    combo = getattr(self.ui, combo_name, None)
-                    if combo is not None:
-                        combo.blockSignals(True)
-                        combo.clear()
-                        combo.blockSignals(False)
+            selected_node_uid = str(getattr(self, "selected_node_uid", "") or "").strip()
+
+            # ------------------------------------------------------------
+            # No selected node: clear Detector hardware and reset caches.
+            # Conditioner gating/hardware display is handled below/finally.
+            # ------------------------------------------------------------
+            if not selected_node_uid:
+                detector_combo = getattr(self.ui, "comboBox_tsi_detector_hardware", None)
+
+                if detector_combo is not None:
+                    detector_combo.blockSignals(True)
+                    detector_combo.clear()
+                    detector_combo.blockSignals(False)
 
                 self._tsi_last_configured_node_uid = ""
                 self._tsi_last_hardware_display_names = []
 
                 TSITabSlots.clear_tsi_detector_methods(self)
-                TSITabSlots.update_tsi_detector_selected_node_gate(self)
                 return
 
-            get_sensor_node_hardware = (
+            # ------------------------------------------------------------
+            # Load selected-node hardware display names for TSI.
+            # ------------------------------------------------------------
+            hardware_display_names = (
                 fissure.utils.hardware.selectedNodeHardwareDisplayNames(
                     self,
                     "tsi",
@@ -1566,46 +1598,56 @@ class Dashboard(QtWidgets.QMainWindow):
             )
 
             previous_node_uid = getattr(self, "_tsi_last_configured_node_uid", "")
-            previous_hardware = getattr(self, "_tsi_last_hardware_display_names", [])
-
-            hardware_changed = (
-                previous_node_uid != self.selected_node_uid
-                or previous_hardware != get_sensor_node_hardware
+            previous_hardware_display_names = getattr(
+                self,
+                "_tsi_last_hardware_display_names",
+                [],
             )
 
-            if hardware_changed:
-                current_detector_hardware = self.ui.comboBox_tsi_detector_hardware.currentText()
-                current_conditioner_hardware = self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.currentText()
+            hardware_changed = (
+                previous_node_uid != selected_node_uid
+                or previous_hardware_display_names != hardware_display_names
+            )
 
-                self.ui.comboBox_tsi_detector_hardware.blockSignals(True)
-                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.blockSignals(True)
+            if not hardware_changed:
+                return
 
-                self.ui.comboBox_tsi_detector_hardware.clear()
-                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.clear()
+            # ------------------------------------------------------------
+            # Refresh Detector hardware combo while preserving selection
+            # when possible.
+            # ------------------------------------------------------------
+            detector_combo = self.ui.comboBox_tsi_detector_hardware
+            current_detector_hardware = detector_combo.currentText()
 
-                self.ui.comboBox_tsi_detector_hardware.addItems(get_sensor_node_hardware)
-                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.addItems(get_sensor_node_hardware)
+            detector_combo.blockSignals(True)
+            detector_combo.clear()
+            detector_combo.addItems(hardware_display_names)
 
-                if (
-                    current_detector_hardware
-                    and self.ui.comboBox_tsi_detector_hardware.findText(current_detector_hardware) >= 0
-                ):
-                    self.ui.comboBox_tsi_detector_hardware.setCurrentText(current_detector_hardware)
+            if (
+                current_detector_hardware
+                and detector_combo.findText(current_detector_hardware) >= 0
+            ):
+                detector_combo.setCurrentText(current_detector_hardware)
 
-                if (
-                    current_conditioner_hardware
-                    and self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.findText(current_conditioner_hardware) >= 0
-                ):
-                    self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.setCurrentText(current_conditioner_hardware)
+            detector_combo.blockSignals(False)
 
-                self.ui.comboBox_tsi_detector_hardware.blockSignals(False)
-                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.blockSignals(False)
+            # ------------------------------------------------------------
+            # Refresh Conditioner hardware display only.
+            # This must not clear actions/parameters.
+            # ------------------------------------------------------------
+            TSITabSlots.update_tsi_conditioner_method_hardware_combo(self)
 
-                self._tsi_last_configured_node_uid = self.selected_node_uid
-                self._tsi_last_hardware_display_names = list(get_sensor_node_hardware)
+            # ------------------------------------------------------------
+            # Cache current hardware state.
+            # ------------------------------------------------------------
+            self._tsi_last_configured_node_uid = selected_node_uid
+            self._tsi_last_hardware_display_names = list(hardware_display_names)
 
-                TSITabSlots.clear_tsi_detector_methods(self)
-                TSITabSlots.reset_tsi_detector_customization(self)
+            # ------------------------------------------------------------
+            # Detector methods depend on hardware, so reset Detector query state.
+            # ------------------------------------------------------------
+            TSITabSlots.clear_tsi_detector_methods(self)
+            TSITabSlots.reset_tsi_detector_customization(self)
 
         finally:
             try:
@@ -1613,6 +1655,13 @@ class Dashboard(QtWidgets.QMainWindow):
             except Exception as e:
                 self.logger.debug(
                     f"Could not update unified TSI Detector selected-node gate: {e}"
+                )
+
+            try:
+                TSITabSlots.update_tsi_conditioner_selected_node_gate(self)
+            except Exception as e:
+                self.logger.debug(
+                    f"Could not update TSI Conditioner selected-node gate: {e}"
                 )
 
 
@@ -3026,12 +3075,6 @@ def connect_tactical_slots(dashboard: Dashboard):
 
 def connect_tsi_slots(dashboard: Dashboard):
     # Check Box
-    dashboard.ui.checkBox_tsi_conditioner_settings_normalize_output.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsNormalizeChecked(dashboard)
-    )
-    dashboard.ui.checkBox_tsi_conditioner_settings_saturation.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsSaturationChecked(dashboard)
-    )
     dashboard.ui.checkBox_tsi_classifier_training_retrain2_manual.clicked.connect(
         lambda: TSITabSlots._slotTSI_ClassifierTrainingRetrain2_ManualChecked(dashboard)
     )
@@ -3040,17 +3083,29 @@ def connect_tsi_slots(dashboard: Dashboard):
     )    
 
     # Combo Box
-    dashboard.ui.comboBox_tsi_conditioner_input_folders.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputFolderChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_conditioner_settings_isolation_method.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsIsolationMethodChanged(dashboard)
-    )
     dashboard.ui.comboBox_tsi_conditioner_input_source.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputSourceChanged(dashboard)
     )
-    dashboard.ui.comboBox_tsi_conditioner_settings_isolation_category.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsIsolationCategoryChanged(dashboard)
+    dashboard.ui.comboBox_tsi_conditioner_input_data_type.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputDataTypeChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_conditioner_run_output_format.currentIndexChanged.connect(
+        lambda: TSITabSlots._tsi_conditioner_update_workflow_ribbon(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_conditioner_run_output_mode.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerRunOutputModeChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_conditioner_method_category.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodCategoryChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_conditioner_method_method.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodMethodChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_conditioner_method_hardware.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodHardwareChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_conditioner_method_action.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodActionChanged(dashboard)
     )
     dashboard.ui.comboBox_tsi_fe_input_folders.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_FE_InputFolderChanged(dashboard)
@@ -3085,15 +3140,6 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_tsi_classifier_classification_model.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_ClassifierClassificationModelChanged(dashboard)
     )
-    dashboard.ui.comboBox_tsi_conditioner_settings_isolation_frequencies_category.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsIsolationFrequenciesCategoryChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_conditioner_settings_isolation_frequencies_method.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsIsolationFrequenciesMethodChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_conditioner_settings_isolation_hardware.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsIsolationFrequenciesHardwareChanged(dashboard)
-    )
     dashboard.ui.comboBox_tsi_detector_type.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_DetectorTypeChanged(dashboard)
     )
@@ -3108,8 +3154,8 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
 
     # List Widget
-    dashboard.ui.listWidget_tsi_conditioner_input_files.itemDoubleClicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputLoadFileClicked(dashboard)
+    dashboard.ui.listWidget_tsi_conditioner_input_files.itemSelectionChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputSelectionChanged(dashboard)
     )
     dashboard.ui.listWidget_tsi_fe_input_files.itemDoubleClicked.connect(
         lambda: TSITabSlots._slotTSI_FE_InputLoadFileClicked(dashboard)
@@ -3122,56 +3168,35 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tsi_conditioner_input_folder.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputFolderClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_input_load_file.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputLoadFileClicked(dashboard)
-    )
     dashboard.ui.pushButton_tsi_conditioner_input_refresh.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputRefreshClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_remove.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_rename.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputRenameClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_terminal.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputTerminalClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_conditioner_input_preview.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputPreviewClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_settings_browse.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsBrowseClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_apply_to_all.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesApplyToAllClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_settings_now.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsNowClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_add.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesAddClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_results_preview.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsPreviewClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_import_tsi.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesImportTsiClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_results_folder.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsFolderClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_import_tactical.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesImportTacticalClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_results_export.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsExportClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_up.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesUpClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_results_delete.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsDeleteClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_down.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesDownClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_settings_view.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsViewClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_remove.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesRemoveClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_results_strip.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsStripClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_results_strip_all.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsStripAllClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_results_refresh.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsRefreshClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_results_delete_all.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsDeleteAllClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_clear.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesClearClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_fe_input_folder.clicked.connect(
         lambda: TSITabSlots._slotTSI_FE_InputFolderClicked(dashboard)
@@ -3235,9 +3260,6 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tsi_blacklist_remove.clicked.connect(
         lambda: TSITabSlots._slotTSI_BlacklistRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_operation_start.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerOperationStartClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_fe_operation_start.clicked.connect(
         lambda: TSITabSlots._slotTSI_FE_OperationStartClicked(dashboard)
@@ -3406,37 +3428,7 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tsi_soi_browse.clicked.connect(
         lambda: TSITabSlots._slotTSI_SOI_BrowseClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_detector_clear.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputDetectorClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_detector_up.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputDetectorUpClicked(dashboard)
-    )    
-    dashboard.ui.pushButton_tsi_conditioner_input_detector_down.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputDetectorDownClicked(dashboard)
-    )    
-    dashboard.ui.pushButton_tsi_conditioner_input_detector_remove.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputDetectorRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_settings_frequencies_view.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsFrequenciesViewClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_clear.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_up.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesUpClicked(dashboard)
-    )    
-    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_down.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesDownClicked(dashboard)
-    )    
-    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_remove.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_add.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsFrequenciesAddClicked(dashboard)
-    )
+    ) 
     dashboard.ui.pushButton_tsi_detector_query.clicked.connect(
         lambda: TSITabSlots._slotTSI_DetectorQueryClicked(dashboard)
     )
@@ -3446,6 +3438,51 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tsi_detector_start_stop.clicked.connect(
         lambda: TSITabSlots._slotTSI_DetectorStartStopClicked(dashboard)
     )
+    dashboard.ui.pushButton_tsi_conditioner_method_query_actions.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodQueryActionsClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_method_query_parameters.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodQueryParametersClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_run_browse.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerRunBrowseClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_run_now.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerRunNowClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_run_start_stop.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerRunStartStopClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_run_download_artifact.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerRunDownloadArtifactClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_preview.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsPreviewClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_delete.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsDeleteClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_folder.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsFolderClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_delete_all.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsDeleteAllClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_strip.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsStripClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_strip_all.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsStripAllClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_refresh.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsRefreshClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_export.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsExportClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_promote_to_soi.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsPromoteToSoiClicked(dashboard)
+    )
     
     # Radio Buttons
     dashboard.ui.radioButton_tsi_conditioner_input_extensions_all.clicked.connect(
@@ -3453,6 +3490,14 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
     dashboard.ui.radioButton_tsi_conditioner_input_extensions_custom.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputExtensionsCustomClicked(dashboard)
+    )
+
+    # Text Edit
+    dashboard.ui.textEdit_tsi_conditioner_file_path.textChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputPathEdited(dashboard)
+    )
+    dashboard.ui.textEdit_tsi_conditioner_file_sample_rate.textChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputDataTypeChanged(dashboard)
     )
 
 

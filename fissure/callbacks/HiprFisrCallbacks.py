@@ -836,32 +836,6 @@ async def stopTSI_Conditioner(component):
 # ############################# From TSI #################################
 
 
-async def conditionerProgressBarReturn(component: object, progress=0, file_index=0):
-    """."""
-    # Forward Message to Dashboard
-    PARAMETERS = {"progress": progress, "file_index": file_index}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "conditionerProgressBarReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def tsiConditionerFinished(component: object, table_strings=[]):
-    """."""
-    # Forward Message to Dashboard
-    PARAMETERS = {"table_strings": table_strings}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "tsiConditionerFinished",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
 async def feProgressBarReturn(component: object, progress=0, file_index=0):
     """."""
     # Forward Message to Dashboard
@@ -5022,6 +4996,11 @@ async def soiUpdate(component: object,
         "model_classification": model_classification,
         "model_confidence": model_confidence,
         "database_classification": database_classification_result,
+
+        "lat": lat,
+        "lon": lon,
+        "hae_m": alt,
+        "observation_time": observation_time,
     })
 
     if "created_at" not in record:
@@ -5031,16 +5010,24 @@ async def soiUpdate(component: object,
 
 
     # ==============================================================
-    # 5) Forward to Dashboard (future)
+    # 5) Forward to Dashboard
     # ==============================================================
-    # PARAMETERS = {"soi": record}
-    # msg = {
-    #     fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-    #     fissure.comms.MessageFields.MESSAGE_NAME: "soiUpdate",
-    #     fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    # }
-    # if component.dashboard_connected:
-    #     await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+    PARAMETERS = {"soi": record}
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "soiUpdate",
+        fissure.comms.MessageFields.PARAMETERS:
+            PARAMETERS,
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
 
     # ==============================================================

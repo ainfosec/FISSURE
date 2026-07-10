@@ -1027,7 +1027,8 @@ QTableWidget#tableWidget_tactical_targets {
     width: 130px;
 }
 
-QLabel#label_tsi_detector_empty_icon {
+QLabel#label_tsi_detector_empty_icon,
+QLabel#label_tsi_conditioner_empty_icon {
     background-color: @color3;
     border-radius: 24px;
     padding: 6px;
@@ -1094,7 +1095,8 @@ QLabel#label_tsi_detector_setup_info {
    TSI Detector Start / Stop Buttons
    ========================================================== */
 
-QPushButton#pushButton_tsi_detector_start_stop {
+QPushButton#pushButton_tsi_detector_start_stop,
+QPushButton#pushButton_tsi_conditioner_run_start_stop {
     color: white;
     border: 1px solid #006600;
     border-radius: 4px;
@@ -1108,7 +1110,8 @@ QPushButton#pushButton_tsi_detector_start_stop {
     padding-bottom: 1px;
 }
 
-QPushButton#pushButton_tsi_detector_start_stop:hover {
+QPushButton#pushButton_tsi_detector_start_stop:hover,
+QPushButton#pushButton_tsi_conditioner_run_start_stop:hover {
     border: 1px solid #008000;
     background-color: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,
@@ -1118,7 +1121,8 @@ QPushButton#pushButton_tsi_detector_start_stop:hover {
     );
 }
 
-QPushButton#pushButton_tsi_detector_start_stop:pressed {
+QPushButton#pushButton_tsi_detector_start_stop:pressed,
+QPushButton#pushButton_tsi_conditioner_run_start_stop:pressed {
     border: 1px solid #005800;
     background-color: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,
@@ -1128,7 +1132,8 @@ QPushButton#pushButton_tsi_detector_start_stop:pressed {
 }
 
 /* Running / Stop state */
-QPushButton#pushButton_tsi_detector_start_stop[running="true"] {
+QPushButton#pushButton_tsi_detector_start_stop[running="true"],
+QPushButton#pushButton_tsi_conditioner_run_start_stop[running="true"] {
     color: white;
     border: 1px solid #8a0000;
     border-radius: 4px;
@@ -1142,7 +1147,8 @@ QPushButton#pushButton_tsi_detector_start_stop[running="true"] {
     padding-bottom: 1px;
 }
 
-QPushButton#pushButton_tsi_detector_start_stop[running="true"]:hover {
+QPushButton#pushButton_tsi_detector_start_stop[running="true"]:hover,
+QPushButton#pushButton_tsi_conditioner_run_start_stop[running="true"]:hover {
     border: 1px solid #b00000;
     background-color: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,
@@ -1152,7 +1158,8 @@ QPushButton#pushButton_tsi_detector_start_stop[running="true"]:hover {
     );
 }
 
-QPushButton#pushButton_tsi_detector_start_stop[running="true"]:pressed {
+QPushButton#pushButton_tsi_detector_start_stop[running="true"]:pressed,
+QPushButton#pushButton_tsi_conditioner_run_start_stop[running="true"]:pressed {
     border: 1px solid #650000;
     background-color: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,
@@ -1163,7 +1170,9 @@ QPushButton#pushButton_tsi_detector_start_stop[running="true"]:pressed {
 
 /* Disabled must come after normal/running states */
 QPushButton#pushButton_tsi_detector_start_stop:disabled,
-QPushButton#pushButton_tsi_detector_start_stop[running="true"]:disabled {
+QPushButton#pushButton_tsi_detector_start_stop[running="true"]:disabled,
+QPushButton#pushButton_tsi_conditioner_run_start_stop:disabled,
+QPushButton#pushButton_tsi_conditioner_run_start_stop[running="true"]:disabled {
     color: @color13;
     border: 1px solid @color1;
     border-radius: 4px;
@@ -1227,12 +1236,25 @@ QPushButton#pushButton_tsi_detector_customize:disabled {
     );
 }
 
-QScrollArea#scrollArea_tsi_detector_parameters {
+QLabel#label2_tsi_detector_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QDoubleSpinBox#doubleSpinBox_tsi_detector_parameter,
+QComboBox#comboBox_tsi_detector_parameter,
+QLineEdit#lineEdit_tsi_detector_parameter {
+    font: 9pt "Ubuntu";
+}
+
+
+QScrollArea#scrollArea_tsi_detector_parameters,
+QScrollArea#scrollArea_tsi_conditioner_method {
     border: 1px solid @color13;
     background-color: @color2;
 }
 
-QWidget#scrollAreaWidgetContents_tsi_detector_parameters {
+QWidget#scrollAreaWidgetContents_tsi_detector_parameters,
+QWidget#scrollAreaWidgetContents_tsi_conditioner_parameters {
     background-color: @color2;
 }
 
@@ -1243,3 +1265,120 @@ QLabel#label2_tsi_detector_status {
 QLabel#label2_tsi_detector_status:disabled {
     color: #888888;
 }
+
+
+QLabel#label2_tsi_conditioner_method_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QDoubleSpinBox#doubleSpinBox_tsi_conditioner_method_parameter,
+QComboBox#comboBox_tsi_conditioner_method_parameter,
+QLineEdit#lineEdit_tsi_conditioner_method_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QCheckBox#checkBox_tsi_conditioner_method_parameter {
+    font: 9pt "Ubuntu";
+}
+
+
+
+
+
+/* ==========================================================
+   TSI Conditioner Workflow Ribbon
+   Custom Theme
+   ========================================================== */
+
+QFrame#frame_tsi_conditioner_workflow {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 8px;
+}
+
+/* Title */
+
+QLabel#label_tsi_conditioner_workflow_title {
+    color: @color4;
+    background: transparent;
+    font: bold 10pt "Ubuntu";
+}
+
+QLabel#label_tsi_conditioner_workflow_info_icon {
+    color: @color4;
+    background: transparent;
+    font: bold 11pt "Ubuntu";
+    qproperty-alignment: AlignCenter;
+}
+
+/* Icons */
+
+QLabel#label_tsi_conditioner_workflow_source_icon,
+QLabel#label_tsi_conditioner_workflow_node_icon,
+QLabel#label_tsi_conditioner_workflow_method_icon,
+QLabel#label_tsi_conditioner_workflow_action_icon,
+QLabel#label_tsi_conditioner_workflow_format_icon,
+QLabel#label_tsi_conditioner_workflow_count_icon,
+QLabel#label_tsi_conditioner_workflow_artifact_icon,
+QLabel#label_tsi_conditioner_workflow_promoted_icon {
+    color: @color4;
+    background: transparent;
+    font: bold 16pt "Ubuntu";
+    qproperty-alignment: AlignCenter;
+}
+
+/* Field titles */
+
+QLabel#label_tsi_conditioner_workflow_source_title,
+QLabel#label_tsi_conditioner_workflow_node_title,
+QLabel#label_tsi_conditioner_workflow_method_title,
+QLabel#label_tsi_conditioner_workflow_action_title,
+QLabel#label_tsi_conditioner_workflow_format_title,
+QLabel#label_tsi_conditioner_workflow_count_title,
+QLabel#label_tsi_conditioner_workflow_artifact_title,
+QLabel#label_tsi_conditioner_workflow_promoted_title {
+    color: @color4;
+    background: transparent;
+    font: bold 8pt "Ubuntu";
+}
+
+/* Field values */
+
+QLabel#label_tsi_conditioner_workflow_source,
+QLabel#label_tsi_conditioner_workflow_node,
+QLabel#label_tsi_conditioner_workflow_method,
+QLabel#label_tsi_conditioner_workflow_action,
+QLabel#label_tsi_conditioner_workflow_format,
+QLabel#label_tsi_conditioner_workflow_count,
+QLabel#label_tsi_conditioner_workflow_artifact,
+QLabel#label_tsi_conditioner_workflow_promoted {
+    color: @color4;
+    background: transparent;
+    font: 9pt "Ubuntu";
+}
+
+/* Optional value states for later */
+
+QLabel#label_tsi_conditioner_workflow_count[count_empty="true"] {
+    color: @color13;
+}
+
+QLabel#label_tsi_conditioner_workflow_artifact[artifact_available="false"] {
+    color: @color13;
+}
+
+QLabel#label_tsi_conditioner_workflow_artifact[artifact_available="true"] {
+    color: @color4;
+    font: bold 9pt "Ubuntu";
+}
+
+QLabel#label_tsi_conditioner_workflow_promoted[promoted="false"] {
+    color: @color13;
+}
+
+QLabel#label_tsi_conditioner_workflow_promoted[promoted="true"] {
+    color: @color4;
+    font: bold 9pt "Ubuntu";
+}
+
+

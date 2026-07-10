@@ -2654,6 +2654,55 @@ class DashboardBackend:
         )
 
 
+    async def tacticalConditionerPromoteToSoi(
+        self,
+        node_uid,
+        soi_id,
+        frequency_mhz=None,
+        status="EVIDENCE_READY",
+        operation_id="",
+        artifact_id="",
+        summary=None,
+    ):
+        """
+        Promotes existing Conditioner result metadata into a hub-backed SOI.
+
+        This does not start a sensor-node operation. It sends an SOI update directly
+        to HIPRFISR so the hub remains the source of truth.
+        """
+        if summary is None:
+            summary = {}
+
+        if self.hiprfisr_connected is True:
+            PARAMETERS = {
+                "node_uid": node_uid,
+                "soi_id": soi_id,
+                "frequency_mhz": frequency_mhz,
+                "status": status,
+                "operation_id": operation_id or "",
+                "artifact_id": artifact_id or "",
+                "summary": summary,
+                "lat": None,
+                "lon": None,
+                "alt": None,
+                "observation_time": None,
+            }
+
+            msg = {
+                fissure.comms.MessageFields.IDENTIFIER:
+                    fissure.comms.Identifiers.DASHBOARD,
+                fissure.comms.MessageFields.MESSAGE_NAME:
+                    "soiUpdate",
+                fissure.comms.MessageFields.PARAMETERS:
+                    PARAMETERS,
+            }
+
+            await self.hiprfisr_socket.send_msg(
+                fissure.comms.MessageTypes.COMMANDS,
+                msg,
+            )
+
+
 #######################################################################################
 ############################## Low Throughput Messages ################################
 #######################################################################################

@@ -227,6 +227,16 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
     """
     Store selected sensor node settings and update the selected node display.
     """
+    previous_selected_node_uid = str(
+        getattr(component.frontend, "selected_node_uid", "") or ""
+    ).strip()
+    new_selected_node_uid = str(node_uuid or "").strip()
+
+    selected_node_changed = (
+        new_selected_node_uid != ""
+        and new_selected_node_uid != previous_selected_node_uid
+    )
+
     component.frontend.selected_node_uid = node_uuid
     component.frontend.selected_node_ip = node_ip_address
     component.frontend.selected_node_settings = settings_dict or {}
@@ -264,6 +274,16 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
     if hasattr(component.frontend, "selected_tactical_node_uid"):
         TacticalTabSlots._updateTacticalNodeInfoFrameState(component.frontend)
 
+    if selected_node_changed:
+        try:
+            TSITabSlots.reset_tsi_conditioner_method_for_selected_node_change(
+                component.frontend
+            )
+        except Exception as e:
+            component.logger.debug(
+                f"Could not reset TSI Conditioner after selected-node change: {e}"
+            )
+
     component.frontend.configureSelectedNodeHardware()
 
     try:
@@ -271,6 +291,13 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
     except Exception as e:
         component.logger.debug(
             f"Could not update unified TSI Detector selected-node gate after recallSettingsReturn: {e}"
+        )
+
+    try:
+        TSITabSlots.update_tsi_conditioner_selected_node_gate(component.frontend)
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update TSI Conditioner selected-node gate after recallSettingsReturn: {e}"
         )
 
 
@@ -317,54 +344,6 @@ async def hiprfisrConnectedSerial(component: object):
     Keeps track if the Meshtastic serial port at the HIPRFISR is connected.
     """
     component.hiprfisr_serial_connected = True
-
-
-async def conditionerProgressBarReturn(component: object, progress=0, file_index=0):
-    """ 
-    Updates the TSI Conditioner progress bar.
-    """
-    # Update the Progress Bar
-    progress_value = progress
-    if int(progress) < 100:
-        component.frontend.ui.progressBar_tsi_conditioner_operation.setValue(int(progress))
-        if component.frontend.ui.comboBox_tsi_conditioner_input_source.currentText() == "Folder":
-            component.frontend.ui.listWidget_tsi_conditioner_input_files.setCurrentRow(file_index)
-            TSITabSlots._slotTSI_ConditionerInputLoadFileClicked(component.frontend)
-
-
-async def tsiConditionerFinished(component: object, table_strings=[]):
-    """ 
-    Acting on a TSI Conditioner Finished message from the TSI Component.
-    """                
-    # File Count
-    component.frontend.ui.label2_tsi_conditioner_results_file_count.setText("File Count: " + str(len(table_strings)))
-                    
-    # Clear Table
-    for row in reversed(range(0,component.frontend.ui.tableWidget_tsi_conditioner_results.rowCount())):
-        component.frontend.ui.tableWidget_tsi_conditioner_results.removeRow(row)
-            
-    # Row
-    for n in range(0,len(table_strings)):
-        component.frontend.ui.tableWidget_tsi_conditioner_results.setRowCount(component.frontend.ui.tableWidget_tsi_conditioner_results.rowCount()+1)
-        
-        # Column
-        for m in range(0,len(table_strings[0])):            
-            table_item = QtWidgets.QTableWidgetItem(table_strings[n][m])
-            table_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            component.frontend.ui.tableWidget_tsi_conditioner_results.setItem(component.frontend.ui.tableWidget_tsi_conditioner_results.rowCount()-1,m,table_item)
-
-    # Resize Table
-    component.frontend.ui.tableWidget_tsi_conditioner_results.resizeRowsToContents()
-    component.frontend.ui.tableWidget_tsi_conditioner_results.resizeColumnsToContents()
-    component.frontend.ui.tableWidget_tsi_conditioner_results.horizontalHeader().setStretchLastSection(False)
-    component.frontend.ui.tableWidget_tsi_conditioner_results.horizontalHeader().setStretchLastSection(True)
-    
-    # Set Progress Bar
-    component.frontend.ui.progressBar_tsi_conditioner_operation.setValue(100)
-    component.frontend.ui.pushButton_tsi_conditioner_operation_start.setText("Start")
-    
-    # Refresh FE Listbox
-    TSITabSlots._slotTSI_FE_InputRefreshClicked(component.frontend)
 
 
 async def feProgressBarReturn(component: object, progress=0, file_index=0):
@@ -1319,29 +1298,43 @@ async def responsePluginOperationParameters(component: object, plugin: str, oper
     res_table.resizeRowsToContents()
 
 
-async def responsePluginOperationStarted(component: object, node_uid: str, operation_id: str, plugin: str, operation: str, parameters: dict) -> None:
-    """Handle Request for Plugin Operation Started
-
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    operation_id : str
-        Operation ID
-    plugin : str
-        Plugin name
-    operation : str
-        Operation name
-    parameters : dict
-        Parameters for the operation
-    """
-    # Add the operation to the operations list view
+async def responsePluginOperationStarted(
+    component: object,
+    node_uid: str,
+    operation_id: str,
+    plugin: str,
+    operation: str,
+    parameters: dict,
+) -> None:
+    """Handle Request for Plugin Operation Started."""
     operations_list: QtWidgets.QListWidget = component.frontend.ui.listWidget_operations
     operations_list.addItem(f"{plugin} - {operation} (ID: {operation_id})")
     operations_list.setWrapping(True)
     operations_list.scrollToBottom()
+
+    try:
+        operation_name = str(operation or "").strip()
+
+        if operation_name in [
+            "signal_conditioning.py",
+            "signal_conditioning_file.py",
+            "signal_conditioning",
+            "signal_conditioning_file",
+        ]:
+            if bool(getattr(component.frontend, "tsi_conditioner_running", False)):
+                component.frontend.tsi_conditioner_opid = str(operation_id or "")
+                component.frontend.tsi_conditioner_waiting_for_opid = False
+
+                component.logger.debug(
+                    "[Conditioner] Tracked operation_id=%s for %s",
+                    operation_id,
+                    operation_name,
+                )
+
+    except Exception as e:
+        component.logger.debug(
+            f"[Conditioner] Could not track Conditioner operation id: {e}"
+        )
 
 
 async def responsePluginOperationStopped(component: object, node_uid: str, operation_id: str, plugin: str, operation: str) -> None:
@@ -1957,7 +1950,18 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
 
     frontend.node_states[node_uid] = node
 
-    if getattr(frontend, "selected_node_uid", None) == node_uid:
+    selected_uid = str(getattr(frontend, "selected_node_uid", "") or "").strip()
+    node_uid_text = str(node_uid or "").strip()
+
+    selected_node_changed = (
+        selected_uid == node_uid_text
+        or selected_uid.endswith(node_uid_text)
+        or node_uid_text.endswith(selected_uid)
+        or selected_uid in node_uid_text
+        or node_uid_text in selected_uid
+    ) if selected_uid and node_uid_text else False
+
+    if selected_node_changed:
         connected = bool(node.get("connected", False))
 
         frontend.selected_node_ip = (
@@ -1989,6 +1993,13 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
                 f"Could not update unified TSI Detector selected-node gate after node state update: {e}"
             )
 
+        try:
+            TSITabSlots.update_tsi_conditioner_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not update TSI Conditioner selected-node gate after node state update: {e}"
+            )
+
     try:
         TSITabSlots.update_tsi_detector_status_from_selected_node(
             frontend,
@@ -1998,6 +2009,17 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
     except Exception as e:
         component.logger.debug(
             f"Could not update unified TSI Detector status: {e}"
+        )
+
+    try:
+        TSITabSlots.update_tsi_conditioner_status_from_selected_node(
+            frontend,
+            node_uid=node_uid,
+            status=node.get("status", ""),
+        )
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update TSI Conditioner status: {e}"
         )
 
     try:
@@ -2100,7 +2122,22 @@ async def nodeStateRemove(component: object, node_uid=""):
     # ---------------------------------------------------------
     # Top-bar selected node cleanup
     # ---------------------------------------------------------
-    if getattr(frontend, "selected_node_uid", "") == node_uid:
+    selected_uid = str(getattr(frontend, "selected_node_uid", "") or "").strip()
+    removed_uid = str(node_uid or "").strip()
+
+    selected_node_removed = (
+        selected_uid
+        and removed_uid
+        and (
+            selected_uid == removed_uid
+            or selected_uid.endswith(removed_uid)
+            or removed_uid.endswith(selected_uid)
+            or selected_uid in removed_uid
+            or removed_uid in selected_uid
+        )
+    )
+
+    if selected_node_removed:
         try:
             TopBarSlots.clearSelectedNode(frontend)
         except Exception as e:
@@ -2108,9 +2145,6 @@ async def nodeStateRemove(component: object, node_uid=""):
                 f"Could not clear selected node after node removal: {e}"
             )
 
-        # Ensure selected-node-dependent TSI widgets flip to their no-node page.
-        # clearSelectedNode should clear selected_node_uid, but force the local
-        # state empty here too in case the top-bar helper changes later.
         frontend.selected_node_uid = ""
         frontend.selected_node_ip = ""
         frontend.selected_node_settings = {}
@@ -2129,6 +2163,13 @@ async def nodeStateRemove(component: object, node_uid=""):
                 f"Could not update unified TSI Detector selected-node gate after node removal: {e}"
             )
 
+        try:
+            TSITabSlots.update_tsi_conditioner_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not update TSI Conditioner gate after selected node removal: {e}"
+            )
+        
     # Recompute ecosystem selected-node labels/buttons after row removal.
     try:
         TacticalTabSlots.update_selected_tactical_nodes(frontend)
@@ -2145,15 +2186,6 @@ async def nodeStateRemove(component: object, node_uid=""):
             f"Could not refresh Tactical node info frame after removal: {e}"
         )
 
-    # Final TSI gate pass in case this removal affected node state but did not
-    # clear the top-bar selection above.
-    try:
-        TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
-    except Exception as e:
-        component.logger.debug(
-            f"Could not refresh unified TSI Detector gate after node removal: {e}"
-        )
-
     component.logger.debug(f"nodeStateRemove: {node_uid}")
 
 
@@ -2165,6 +2197,10 @@ async def sendArtifactsListTakReturn(
     """
     Receives artifact metadata from HIPRFISR and updates the Tactical
     Node > Artifacts cache/table.
+
+    Also routes the same metadata to the TSI Conditioner so remote artifact
+    runs can populate the Conditioner table from ArtifactTracker metadata
+    without reading sensor-node-local files.
     """
     artifacts = artifacts or []
 
@@ -2172,6 +2208,8 @@ async def sendArtifactsListTakReturn(
 
     if not hasattr(dashboard, "tactical_artifacts"):
         dashboard.tactical_artifacts = {}
+
+    normalized_records = []
 
     for artifact in artifacts:
         if not isinstance(artifact, dict):
@@ -2187,6 +2225,7 @@ async def sendArtifactsListTakReturn(
 
         source_id = (
             artifact.get("source_id")
+            or artifact.get("node_uid")
             or metadata.get("source_id")
             or metadata.get("node_uid")
             or node_uid
@@ -2202,20 +2241,30 @@ async def sendArtifactsListTakReturn(
                 or metadata.get("operation_id")
                 or ""
             ),
-            "name": artifact.get("name", ""),
+            "name": (
+                artifact.get("name")
+                or metadata.get("name")
+                or "Artifact"
+            ),
             "time": (
                 artifact.get("modified_at")
                 or artifact.get("created_at")
+                or metadata.get("created_at")
                 or ""
             ),
             "file_path": artifact.get("file_path", ""),
-            "artifact_type": artifact.get("artifact_type", ""),
+            "artifact_type": (
+                artifact.get("artifact_type")
+                or metadata.get("artifact_type")
+                or ""
+            ),
             "file_size": artifact.get("file_size", 0),
             "checksum": artifact.get("checksum", ""),
             "metadata": metadata,
         }
 
         dashboard.tactical_artifacts[artifact_id] = normalized
+        normalized_records.append(normalized)
 
     selected_node_uid = getattr(
         dashboard,
@@ -2224,11 +2273,25 @@ async def sendArtifactsListTakReturn(
     )
 
     if selected_node_uid == node_uid:
-        from fissure.Dashboard.Slots import TacticalTabSlots
+        try:
+            TacticalTabSlots.rebuild_tactical_node_artifacts(
+                dashboard,
+                node_uid,
+            )
+        except Exception as e:
+            component.logger.debug(
+                f"Could not rebuild Tactical node artifacts: {e}"
+            )
 
-        TacticalTabSlots.rebuild_tactical_node_artifacts(
+    try:
+        TSITabSlots.handle_tsi_conditioner_artifact_metadata(
             dashboard,
-            node_uid,
+            node_uid=node_uid,
+            artifacts=normalized_records,
+        )
+    except Exception as e:
+        component.logger.debug(
+            f"Could not route artifact metadata to TSI Conditioner: {e}"
         )
 
 
@@ -2257,17 +2320,22 @@ async def queryPluginActionsResults(
         )
         return
 
+    if context.startswith("tsi.conditioner"):
+        TSITabSlots.handle_tsi_conditioner_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+
     if context.startswith("iq.record") or context.startswith("iq.playback"):
-        # Later:
-        # IQDataTabSlots.handle_iq_action_query_results(...)
         component.logger.debug(
             f"Unhandled IQ action query context={context}, actions={actions}"
         )
         return
 
     if context.startswith("tactical."):
-        # Later:
-        # TacticalTabSlots.handle_tactical_filtered_action_query_results(...)
         component.logger.debug(
             f"Unhandled Tactical action query context={context}, actions={actions}"
         )
@@ -2311,6 +2379,16 @@ async def queryPluginActionSchemaResults(
             parameters=schema.get("params", []),
         )
         return
+    
+    if context.startswith("tsi.conditioner"):
+        TSITabSlots.handle_tsi_conditioner_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
 
     if context.startswith("iq.record") or context.startswith("iq.playback"):
         component.logger.debug(
@@ -2330,3 +2408,134 @@ async def queryPluginActionSchemaResults(
         f"Unhandled plugin action schema context={context}, "
         f"plugin={plugin_name}, action={action_name}"
     )
+
+
+async def soiUpdate(component: object, soi=None):
+    """
+    Receives a hub-backed SOI record and updates the Dashboard Tactical SOI
+    model/table.
+
+    This is used by Conditioner Promote to SOI and also works for future
+    hub-originated SOI updates.
+    """
+    if soi is None:
+        soi = {}
+
+    if not isinstance(soi, dict):
+        return
+
+    frontend = component.frontend
+
+    if not hasattr(frontend, "tactical_sois"):
+        frontend.tactical_sois = {}
+
+    node_uid = str(soi.get("node_uid", "") or "").strip()
+    soi_id = str(soi.get("soi_id", "") or "").strip()
+
+    if not soi_id:
+        return
+
+    soi_key = str(
+        soi.get("soi_key", "")
+        or f"{node_uid}:{soi_id}"
+    )
+
+    frequency_mhz = soi.get("frequency_mhz")
+
+    frequency_display = ""
+    if frequency_mhz not in [None, "", "None"]:
+        try:
+            frequency_display = f"{float(frequency_mhz):.3f} MHz"
+        except Exception:
+            frequency_display = str(frequency_mhz)
+
+    model_classification = str(
+        soi.get("model_classification", "")
+        or ""
+    )
+
+    model_confidence = soi.get("model_confidence", "")
+
+    model_display = model_classification
+    if model_classification and model_confidence not in [None, "", "None", ""]:
+        model_display = f"{model_classification} ({model_confidence}%)"
+
+    record = {
+        "soi_key": soi_key,
+        "uid": f"fissure-soi-{node_uid}-{soi_id}",
+        "event_id": f"fissure-soi-{node_uid}-{soi_id}",
+
+        "node_uid": node_uid,
+        "soi_id": soi_id,
+        "operation_id": soi.get("operation_id", ""),
+        "artifact_id": soi.get("artifact_id", ""),
+
+        "frequency_mhz": frequency_mhz,
+        "frequency_display": frequency_display,
+        "status": soi.get("status", ""),
+        "time": soi.get("observation_time", "") or "",
+
+        "stage": soi.get("stage", ""),
+        "stage_order": soi.get("stage_order"),
+
+        "model_classification": model_classification,
+        "model_confidence_pct": model_confidence,
+        "model_classification_display": model_display,
+        "database_classification": soi.get("database_classification", ""),
+
+        "lat": soi.get("lat"),
+        "lon": soi.get("lon"),
+        "hae_m": soi.get("hae_m"),
+
+        "summary": soi.get("summary", {}) or {},
+        "raw": soi,
+        "raw_xml": "",
+    }
+
+    existing = frontend.tactical_sois.get(soi_key)
+    if existing:
+        new_stage_order = record.get("stage_order")
+        old_stage_order = existing.get("stage_order")
+
+        try:
+            new_stage_order = (
+                int(new_stage_order)
+                if new_stage_order is not None
+                else None
+            )
+            old_stage_order = (
+                int(old_stage_order)
+                if old_stage_order is not None
+                else None
+            )
+        except Exception:
+            new_stage_order = None
+            old_stage_order = None
+
+        if (
+            new_stage_order is not None
+            and old_stage_order is not None
+            and new_stage_order < old_stage_order
+        ):
+            frontend.logger.info(
+                f"Ignoring out-of-order SOI update: "
+                f"new={new_stage_order} < old={old_stage_order}"
+            )
+            return
+
+    frontend.tactical_sois[soi_key] = record
+
+    selected_node_uid = getattr(frontend, "selected_tactical_node_uid", None)
+
+    if selected_node_uid and selected_node_uid != node_uid:
+        return
+
+    try:
+        TacticalTabSlots.update_tactical_node_soi_row(
+            frontend,
+            record,
+        )
+    except Exception as e:
+        component.logger.error(
+            f"Failed to update Tactical SOI row: {e}"
+        )

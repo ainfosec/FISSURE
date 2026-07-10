@@ -314,6 +314,10 @@ def refreshCustomWidgets(dashboard: QtWidgets.QMainWindow):
     except Exception:
         pass
 
+    try:
+        TSITabSlots.restyle_tsi_conditioner_preview_canvas(dashboard)
+    except Exception as e:
+        pass
 
 @QtCore.pyqtSlot()
 def _slotMenuHelpUserManualClicked():

@@ -16,14 +16,57 @@ class NodeSelectDialog(QtWidgets.QDialog, UI_Types.Node_Select):
         self.dashboard = dashboard
         self.setupUi(self)
 
-        # Prevent Resizing/Maximizing
-        self.parent.setFixedSize(QtCore.QSize(1060, 540))
+        # Prevent resizing/maximizing the dialog.
+        self.setFixedSize(QtCore.QSize(920, 430))
 
         # Connect Signals to Slots
         self.__connect_slots__()
 
         # Refresh
         NodeSelectSlots.refreshClicked(self)
+
+    
+    def showEvent(self, event):
+        """
+        Keep the node selection dialog centered on the Dashboard screen.
+        """
+        super().showEvent(event)
+
+        parent = self.parentWidget()
+
+        if parent is None:
+            parent = getattr(self, "parent", None)
+
+        if parent is None:
+            return
+
+        parent_window = parent.window()
+        parent_center = parent_window.frameGeometry().center()
+
+        dialog_geometry = self.frameGeometry()
+        dialog_geometry.moveCenter(parent_center)
+
+        # Clamp to the same screen as the Dashboard.
+        screen = None
+        if parent_window.windowHandle() is not None:
+            screen = parent_window.windowHandle().screen()
+
+        if screen is not None:
+            available = screen.availableGeometry()
+            top_left = dialog_geometry.topLeft()
+
+            if top_left.x() < available.left():
+                top_left.setX(available.left())
+            if top_left.y() < available.top():
+                top_left.setY(available.top())
+            if dialog_geometry.right() > available.right():
+                top_left.setX(available.right() - dialog_geometry.width())
+            if dialog_geometry.bottom() > available.bottom():
+                top_left.setY(available.bottom() - dialog_geometry.height())
+
+            self.move(top_left)
+        else:
+            self.move(dialog_geometry.topLeft())
 
 
     def __connect_slots__(self):

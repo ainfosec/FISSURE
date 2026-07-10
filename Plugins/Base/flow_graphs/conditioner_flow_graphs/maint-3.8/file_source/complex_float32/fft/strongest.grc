@@ -1,0 +1,350 @@
+options:
+  parameters:
+    author: user
+    category: '[GRC Hier Blocks]'
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: no_gui
+    hier_block_src_path: '.:'
+    id: strongest
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: run
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: Not titled yet
+    window_size: (1000,1000)
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [8, 8]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: blocks_file_source_0_0
+  id: blocks_file_source
+  parameters:
+    affinity: ''
+    alias: ''
+    begin_tag: pmt.PMT_NIL
+    comment: ''
+    file: filepath
+    length: '0'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    offset: '0'
+    repeat: 'True'
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [32, 276.0]
+    rotation: 0
+    state: true
+- name: blocks_head_0
+  id: blocks_head
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    num_items: int(samples)*5
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [240, 308.0]
+    rotation: 0
+    state: true
+- name: blocks_throttle_0
+  id: blocks_throttle
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    ignoretag: 'True'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    samples_per_second: float(sample_rate)
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [440, 308.0]
+    rotation: 0
+    state: true
+- name: epy_block_0
+  id: epy_block
+  parameters:
+    _source_code: "\"\"\"\nEmbedded Python Blocks:\n\nEach time this file is saved,\
+      \ GRC will instantiate the first class it finds\nto get ports and parameters\
+      \ of your block. The arguments to __init__  will\nbe the parameters. All of\
+      \ them are required to have default values!\n\"\"\"\n\nimport numpy as np\n\
+      from gnuradio import gr\nimport time\n\nclass blk(gr.sync_block):  # other base\
+      \ classes are basic_block, decim_block, interp_block\n    \"\"\"Embedded Python\
+      \ Block example - a simple multiply const\"\"\"\n\n    def __init__(self, vec_len=8192,\
+      \ peak_detect_file=\"/tmp/indexes.data\", fft_threshold=-80, sample_rate=1000000):\
+      \  # only default arguments here\n        \"\"\"arguments to this function show\
+      \ up as parameters in GRC\"\"\"\n        gr.sync_block.__init__(\n         \
+      \   self,\n            name='Embedded Python Block',   # will show up in GRC\n\
+      \            in_sig=[(np.float32,vec_len)],\n            out_sig=None\n    \
+      \    )\n        # if an attribute with the same name as a parameter is found,\n\
+      \        # a callback is registered (properties work, too).\n        self.peak_detect_file=peak_detect_file\n\
+      \        self.fft_threshold=fft_threshold\n        self.vec_len=vec_len\n  \
+      \      self.sample_rate=sample_rate\n        self.max_value=-100\n        self.max_index=-1\n\
+      \        print(\"Starting Frequency Detection\")\n\n\n    def work(self, input_items,output_items):\n\
+      \        over_threshold = input_items[0][0][np.nonzero(input_items[0][0] > self.fft_threshold)]\n\
+      \        if len(over_threshold) > 0:\n            if over_threshold.max() >\
+      \ self.max_value:\n                self.max_value = over_threshold.max()\n \
+      \               self.max_index = input_items[0][0].argmax()\n              \
+      \  print(\"Strongest Freq.: \" + str(self.max_value) + ' (dB), ' + str(self.max_index)\
+      \ + ' (bin), ' + str(float(self.max_index/self.vec_len)*self.sample_rate-float(self.sample_rate/2))\
+      \ + \" (Hz)\")\n            \n                with open(self.peak_detect_file,'w')\
+      \ as fobj:\n                    fobj.write(str(float(self.max_index/self.vec_len)*self.sample_rate-float(self.sample_rate/2)))\n\
+      \        return len(input_items[0])\n"
+    affinity: ''
+    alias: ''
+    comment: ''
+    fft_threshold: float(fft_threshold)
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    peak_detect_file: str(peak_file_location)
+    sample_rate: float(sample_rate)
+    vec_len: int(fft_size)
+  states:
+    _io_cache: ('Embedded Python Block', 'blk', [('vec_len', '8192'), ('peak_detect_file',
+      "'/tmp/indexes.data'"), ('fft_threshold', '-80'), ('sample_rate', '1000000')],
+      [('0', 'float', 8192)], [], 'Embedded Python Block example - a simple multiply
+      const', ['fft_threshold', 'peak_detect_file', 'sample_rate', 'vec_len'])
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [920, 284.0]
+    rotation: 0
+    state: enabled
+- name: fft_size
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: fft_size
+    short_id: ''
+    type: str
+    value: '8192'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [304, 12.0]
+    rotation: 0
+    state: true
+- name: fft_threshold
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: fft_threshold
+    short_id: ''
+    type: str
+    value: '-80'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [392, 12.0]
+    rotation: 0
+    state: true
+- name: filepath
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: filepath
+    short_id: ''
+    type: str
+    value: '"/home/user/Conditioner/Data/tpms/four_tires2.iq"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [768, 12.0]
+    rotation: 0
+    state: true
+- name: logpwrfft_x_0
+  id: logpwrfft_x
+  parameters:
+    affinity: ''
+    alias: ''
+    average: 'False'
+    avg_alpha: '1'
+    comment: ''
+    fft_size: int(fft_size)
+    frame_rate: '30'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    ref_scale: '2'
+    sample_rate: float(sample_rate)
+    shift: 'True'
+    type: complex
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [640, 260.0]
+    rotation: 0
+    state: true
+- name: peak_file_location
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: peak_file_location
+    short_id: ''
+    type: str
+    value: '"/home/user/FISSURE/Flow Graph Library/TSI Flow Graphs/Conditioner/peaks.txt"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [600, 12.0]
+    rotation: 0
+    state: true
+- name: qtgui_vector_sink_f_0_0
+  id: qtgui_vector_sink_f
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    average: '1.0'
+    color1: '"blue"'
+    color10: '"dark blue"'
+    color2: '"red"'
+    color3: '"green"'
+    color4: '"black"'
+    color5: '"cyan"'
+    color6: '"magenta"'
+    color7: '"yellow"'
+    color8: '"dark red"'
+    color9: '"dark green"'
+    comment: ''
+    grid: 'False'
+    gui_hint: ''
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    name: '""'
+    nconnections: '1'
+    ref_level: '0'
+    showports: 'False'
+    update_time: '0.10'
+    vlen: int(fft_size)
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    x_axis_label: '"x-Axis"'
+    x_start: '0'
+    x_step: '1.0'
+    x_units: '""'
+    y_axis_label: '"y-Axis"'
+    y_units: '""'
+    ymax: '10'
+    ymin: '-140'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [920, 404.0]
+    rotation: 0
+    state: disabled
+- name: sample_rate
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: sample_rate
+    short_id: ''
+    type: str
+    value: '1000000'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [200, 12.0]
+    rotation: 0
+    state: true
+- name: samples
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: samples
+    short_id: ''
+    type: str
+    value: '4169300'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [496, 12.0]
+    rotation: 0
+    state: true
+
+connections:
+- [blocks_file_source_0_0, '0', blocks_head_0, '0']
+- [blocks_head_0, '0', blocks_throttle_0, '0']
+- [blocks_throttle_0, '0', logpwrfft_x_0, '0']
+- [logpwrfft_x_0, '0', epy_block_0, '0']
+- [logpwrfft_x_0, '0', qtgui_vector_sink_f_0_0, '0']
+
+metadata:
+  file_format: 1

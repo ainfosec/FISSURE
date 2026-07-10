@@ -1,6 +1,36 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-09
+
+Rework TSI Conditioner workflow around plugin actions and artifact-based processing
+
+### Added
+
+- Added consolidated TSI Conditioner workflow for file, folder, detector result, and frequency-based inputs.
+- Added plugin-action query, customization, execution, and stop controls for conditioner operations.
+- Added schema-driven conditioner parameter controls and action details.
+- Added IQ input previewing with configurable sample rate.
+- Added conditioner results display, CSV export, and SOI promotion.
+- Added artifact generation for raw IQ files, SigMF recordings, and ZIP bundles.
+- Added selected-node conditioner status mirroring and progress reporting.
+
+### Changed
+
+- Replaced the previous Conditioner workflow with a unified selected-node workbench.
+- Updated conditioner execution to support local and remote plugin actions.
+- Updated input handling to resolve files, folders, detector results, and generated frequency selections consistently.
+- Updated conditioner outputs to use operation-scoped artifact directories.
+- Updated the Conditioner interface, styling, navigation, and node-selection behavior.
+
+### Fixed
+
+- Fixed raw IQ and SigMF ZIP bundle creation for file and folder inputs.
+- Fixed conditioner status updates so action progress and node messages are reflected in the Dashboard.
+- Fixed Conditioner initialization and reset behavior when selecting, removing, or changing sensor nodes.
+- Fixed SOI promotion state handling after successful promotion.
+
+
 ## 2026-7-02
 
 Rework TSI detector workflow around consolidated plugin-action controls
