@@ -92,6 +92,38 @@ ACTION_TAGS = {
         "tsi.conditioner.source.file",
         "tsi.conditioner.source.folder",
     ],
+    "feature_extract_time_domain": [
+        "All",
+        "tsi.feature_extractor",
+        "tsi.feature_extractor.profile.time_domain",
+        "tsi.feature_extractor.profile.all_available",
+        "tsi.feature_extractor.source.file",
+        "tsi.feature_extractor.source.folder",
+    ],
+    "feature_extract_frequency_domain": [
+        "All",
+        "tsi.feature_extractor",
+        "tsi.feature_extractor.profile.frequency_domain",
+        "tsi.feature_extractor.profile.all_available",
+        "tsi.feature_extractor.source.file",
+        "tsi.feature_extractor.source.folder",
+    ],
+    "feature_extract_time_frequency": [
+        "All",
+        "tsi.feature_extractor",
+        "tsi.feature_extractor.profile.time_frequency",
+        "tsi.feature_extractor.profile.all_available",
+        "tsi.feature_extractor.source.file",
+        "tsi.feature_extractor.source.folder",
+    ],
+    "feature_extract_custom": [
+        "All",
+        "tsi.feature_extractor",
+        "tsi.feature_extractor.profile.custom",
+        "tsi.feature_extractor.profile.all_available",
+        "tsi.feature_extractor.source.file",
+        "tsi.feature_extractor.source.folder",
+    ],
 }
 
 
@@ -910,6 +942,350 @@ async def signal_conditioning_file(
         component,
         PLUGIN_NAME,
         "signal_conditioning_file.py",
+        op_params,
+        node_uid,
+        wait=True,
+    )
+
+
+
+feature_extract_time_domain_schema = {
+    "params": [
+        {
+            "name": "preset",
+            "label": "Feature Preset",
+            "type": "string",
+            "default": "all",
+            "options": [
+                "core",
+                "statistical",
+                "all",
+            ],
+        },
+        {
+            "name": "core_includes",
+            "label": "Core Includes",
+            "type": "label",
+            "default": (
+                "Mean, Max, Peak, RMS, Variance, Standard Deviation, "
+                "Power, Samples"
+            ),
+        },
+        {
+            "name": "statistical_includes",
+            "label": "Statistical Includes",
+            "type": "label",
+            "default": (
+                "Mean, Variance, Standard Deviation, Kurtosis, "
+                "Skewness, Zero Crossings, Samples"
+            ),
+        },
+        {
+            "name": "all_includes",
+            "label": "All Includes",
+            "type": "label",
+            "default": (
+                "Mean, Max, Peak, Peak to Peak, RMS, Variance, "
+                "Standard Deviation, Power, Crest Factor, Pulse Indicator, "
+                "Margin, Kurtosis, Skewness, Zero Crossings, Samples"
+            ),
+        },
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": "Extract time-domain IQ features",
+        },
+    ]
+}
+
+
+async def feature_extract_time_domain(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+    """
+    Run the reusable Feature Extractor operation with the time-domain profile.
+    """
+    op_params = dict(parameters or {})
+    op_params["profile"] = "time_domain"
+
+    op_params.pop("core_includes", None)
+    op_params.pop("statistical_includes", None)
+    op_params.pop("all_includes", None)
+
+    op_params.setdefault(
+        "source_id",
+        node_uid or getattr(component, "uuid", "") or "sensor_node",
+    )
+
+    component.logger.info(
+        f"Feature Extractor time-domain action with parameters: {op_params}"
+    )
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "feature_extraction.py",
+        op_params,
+        node_uid,
+        wait=True,
+    )
+
+
+feature_extract_frequency_domain_schema = {
+    "params": [
+        {
+            "name": "preset",
+            "label": "Feature Preset",
+            "type": "string",
+            "default": "all",
+            "options": [
+                "core",
+                "statistical",
+                "all",
+            ],
+        },
+        {
+            "name": "core_includes",
+            "label": "Core Includes",
+            "type": "label",
+            "default": (
+                "Mean of Band Power Spectrum, Max of Band Power Spectrum, "
+                "Sum of Total Band Power, Peak of Band Power, "
+                "Relative Spectral Peak per Band"
+            ),
+        },
+        {
+            "name": "statistical_includes",
+            "label": "Statistical Includes",
+            "type": "label",
+            "default": (
+                "Mean of Band Power Spectrum, Variance of Band Power, "
+                "Standard Deviation of Band Power, Skewness of Band Power, "
+                "Kurtosis of Band Power"
+            ),
+        },
+        {
+            "name": "all_includes",
+            "label": "All Includes",
+            "type": "label",
+            "default": (
+                "Mean of Band Power Spectrum, Max of Band Power Spectrum, "
+                "Sum of Total Band Power, Peak of Band Power, "
+                "Variance of Band Power, Standard Deviation of Band Power, "
+                "Skewness of Band Power, Kurtosis of Band Power, "
+                "Relative Spectral Peak per Band"
+            ),
+        },
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": "Extract frequency-domain IQ features",
+        },
+    ]
+}
+
+
+async def feature_extract_frequency_domain(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+    """
+    Run the reusable Feature Extractor operation with the frequency-domain profile.
+    """
+    op_params = dict(parameters or {})
+    op_params["profile"] = "frequency_domain"
+
+    op_params.pop("core_includes", None)
+    op_params.pop("statistical_includes", None)
+    op_params.pop("all_includes", None)
+
+    op_params.setdefault(
+        "source_id",
+        node_uid or getattr(component, "uuid", "") or "sensor_node",
+    )
+
+    component.logger.info(
+        f"Feature Extractor frequency-domain action with parameters: {op_params}"
+    )
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "feature_extraction.py",
+        op_params,
+        node_uid,
+        wait=True,
+    )
+
+
+feature_extract_time_frequency_schema = {
+    "params": [
+        {
+            "name": "preset",
+            "label": "Feature Preset",
+            "type": "string",
+            "default": "all",
+            "options": [
+                "balanced",
+                "statistical",
+                "all",
+            ],
+        },
+        {
+            "name": "balanced_includes",
+            "label": "Balanced Includes",
+            "type": "label",
+            "default": (
+                "Mean, Max, Peak, RMS, Variance, Standard Deviation, "
+                "Power, Samples, Mean of Band Power Spectrum, "
+                "Max of Band Power Spectrum, Sum of Total Band Power, "
+                "Peak of Band Power, Relative Spectral Peak per Band"
+            ),
+        },
+        {
+            "name": "statistical_includes",
+            "label": "Statistical Includes",
+            "type": "label",
+            "default": (
+                "Mean, Variance, Standard Deviation, Kurtosis, Skewness, "
+                "Zero Crossings, Samples, Mean of Band Power Spectrum, "
+                "Variance of Band Power, Standard Deviation of Band Power, "
+                "Skewness of Band Power, Kurtosis of Band Power"
+            ),
+        },
+        {
+            "name": "all_includes",
+            "label": "All Includes",
+            "type": "label",
+            "default": (
+                "Mean, Max, Peak, Peak to Peak, RMS, Variance, "
+                "Standard Deviation, Power, Crest Factor, Pulse Indicator, "
+                "Margin, Kurtosis, Skewness, Zero Crossings, Samples, "
+                "Mean of Band Power Spectrum, Max of Band Power Spectrum, "
+                "Sum of Total Band Power, Peak of Band Power, "
+                "Variance of Band Power, Standard Deviation of Band Power, "
+                "Skewness of Band Power, Kurtosis of Band Power, "
+                "Relative Spectral Peak per Band"
+            ),
+        },
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": "Extract time-domain and frequency-domain IQ features",
+        },
+    ]
+}
+
+
+async def feature_extract_time_frequency(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+    """
+    Run the reusable Feature Extractor operation with the combined profile.
+    """
+    op_params = dict(parameters or {})
+    op_params["profile"] = "time_frequency"
+
+    op_params.pop("balanced_includes", None)
+    op_params.pop("statistical_includes", None)
+    op_params.pop("all_includes", None)
+
+    op_params.setdefault(
+        "source_id",
+        node_uid or getattr(component, "uuid", "") or "sensor_node",
+    )
+
+    component.logger.info(
+        f"Feature Extractor time/frequency action with parameters: {op_params}"
+    )
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "feature_extraction.py",
+        op_params,
+        node_uid,
+        wait=True,
+    )
+
+
+feature_extract_custom_schema = {
+    "params": [
+        {
+            "name": "features",
+            "label": "Features",
+            "type": "string",
+            "default": "Mean, RMS, Variance, Power",
+        },
+        {
+            "name": "supported_time_domain",
+            "label": "Time-Domain Options",
+            "type": "label",
+            "default": (
+                "Mean, Max, Peak, Peak to Peak, RMS, Variance, "
+                "Standard Deviation, Power, Crest Factor, Pulse Indicator, "
+                "Margin, Kurtosis, Skewness, Zero Crossings, Samples"
+            ),
+        },
+        {
+            "name": "supported_frequency_domain",
+            "label": "Frequency-Domain Options",
+            "type": "label",
+            "default": (
+                "Mean of Band Power Spectrum, Max of Band Power Spectrum, "
+                "Sum of Total Band Power, Peak of Band Power, "
+                "Variance of Band Power, Standard Deviation of Band Power, "
+                "Skewness of Band Power, Kurtosis of Band Power, "
+                "Relative Spectral Peak per Band"
+            ),
+        },
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": (
+                "Advanced mode: enter supported feature names separated by commas"
+            ),
+        },
+    ]
+}
+
+
+async def feature_extract_custom(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+    """
+    Run the reusable Feature Extractor operation with a custom feature list.
+    """
+    op_params = dict(parameters or {})
+    op_params["profile"] = "custom"
+
+    op_params.pop("supported_time_domain", None)
+    op_params.pop("supported_frequency_domain", None)
+
+    op_params.setdefault(
+        "source_id",
+        node_uid or getattr(component, "uuid", "") or "sensor_node",
+    )
+
+    component.logger.info(
+        f"Feature Extractor custom action with parameters: {op_params}"
+    )
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "feature_extraction.py",
         op_params,
         node_uid,
         wait=True,

@@ -3331,6 +3331,7 @@ async def iwconfigIP_Return(component: object, iwconfig: str):
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg) 
 
 
+
 ##########################################################################
 ####################### Outdated/Incomplete/Unused #######################
 ##########################################################################
@@ -4767,6 +4768,28 @@ async def updateArtifact(component: object, artifact: dict) -> None:
     # Update artifact tracker even if TAK metadata cannot be emitted.
     component.artifact_tracker.update_artifact(artifact)
 
+    # Immediately forward the complete Artifact record to the Dashboard using
+    # the same structured callback used by Tactical artifact refreshes.
+    #
+    # This is still the normal Artifact notification path; it is not a generic
+    # operation-result channel. It lets the Dashboard:
+    #   - upsert the new Tactical Artifact row immediately, and
+    #   - complete remote Feature Extractor runs by matching Artifact metadata.
+    if component.dashboard_connected:
+        dashboard_msg = {
+            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "sendArtifactsListTakReturn",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "node_uid": source_id,
+                "artifacts": [artifact],
+            },
+        }
+
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            dashboard_msg,
+        )
+
     name = artifact.get("name")
     if not name:
         component.logger.error(
@@ -4863,6 +4886,57 @@ async def transferArtifactRequest(component: object, artifact_id: str, destinati
 
         elif destination == 'hiprfisr':
             component.logger.info(f"Artifact {artifact_id} saved to hiprfisr")
+
+
+def _merge_soi_artifact_links(
+    existing_links,
+    incoming_links,
+):
+    """
+    Merges SOI artifact links by artifact_id + role while preserving order.
+    """
+    merged = []
+    index_by_key = {}
+
+    for source in (
+        existing_links,
+        incoming_links,
+    ):
+        if not isinstance(source, list):
+            continue
+
+        for link in source:
+            if not isinstance(link, dict):
+                continue
+
+            artifact_id = str(
+                link.get("artifact_id", "")
+                or ""
+            ).strip()
+
+            role = str(
+                link.get("role", "")
+                or ""
+            ).strip()
+
+            if not artifact_id:
+                continue
+
+            key = (
+                artifact_id,
+                role,
+            )
+
+            if key in index_by_key:
+                merged[
+                    index_by_key[key]
+                ].update(link)
+                continue
+
+            index_by_key[key] = len(merged)
+            merged.append(dict(link))
+
+    return merged
 
 
 async def soiUpdate(component: object,
@@ -4977,6 +5051,75 @@ async def soiUpdate(component: object,
 
     record = dict(existing)
 
+    existing_summary = existing.get(
+        "summary",
+        {},
+    )
+
+    if not isinstance(existing_summary, dict):
+        existing_summary = {}
+
+    merged_summary = dict(existing_summary)
+    merged_summary.update(summary)
+
+    merged_artifact_links = _merge_soi_artifact_links(
+        existing.get(
+            "artifact_links",
+            existing_summary.get(
+                "artifact_links",
+                [],
+            ),
+        ),
+        summary.get(
+            "artifact_links",
+            [],
+        ),
+    )
+
+    if artifact_id:
+        # Backward compatibility for producers that only provide one
+        # artifact_id instead of an artifact_links collection.
+        merged_artifact_links = _merge_soi_artifact_links(
+            merged_artifact_links,
+            [
+                {
+                    "artifact_id": artifact_id,
+                    "role": str(
+                        summary.get(
+                            "artifact_role",
+                            "",
+                        )
+                        or ""
+                    ),
+                    "operation_id": operation_id,
+                }
+            ],
+        )
+
+    merged_summary["artifact_links"] = merged_artifact_links
+
+    artifact_ids = []
+
+    for link in merged_artifact_links:
+        linked_artifact_id = str(
+            link.get("artifact_id", "")
+            or ""
+        ).strip()
+
+        if (
+            linked_artifact_id
+            and linked_artifact_id not in artifact_ids
+        ):
+            artifact_ids.append(linked_artifact_id)
+
+    # artifact_id remains the latest/current artifact for compatibility.
+    # Do not erase the prior value when this update has no artifact.
+    current_artifact_id = str(
+        artifact_id
+        or existing.get("artifact_id", "")
+        or ""
+    ).strip()
+
     record.update({
         "soi_key": soi_key,
         "node_uid": node_uid,
@@ -4984,10 +5127,11 @@ async def soiUpdate(component: object,
         "frequency_mhz": frequency_mhz,
         "status": status,
         "operation_id": operation_id,
-        "artifact_id": artifact_id,
+        "artifact_id": current_artifact_id,
 
-        # keep the raw payload for debugging / future UI
-        "summary": summary,
+        "summary": merged_summary,
+        "artifact_links": merged_artifact_links,
+        "artifact_ids": artifact_ids,
 
         "updated_at": now,
         "stage": stage,
@@ -6554,6 +6698,190 @@ async def geolocate_target_stop(
                     patch={},
                 )
 
+
+async def sendSoisListTak(
+    component: object,
+    requester_uid: str = "",
+    requester_type: str = "tak",
+    node_uid: str = "",
+    request_id: str = "",
+    requester_callsign: str = "",
+) -> None:
+    """
+    Return HIPRFISR's authoritative merged SOI records.
+
+    Dashboard receives one structured list over ZMQ. TAK receives one normal
+    SOI CoT event per record so WinTAK can reuse its existing SOI parser/upsert
+    path.
+    """
+    records = []
+
+    try:
+        soi_store = getattr(component, "sois", {}) or {}
+
+        if isinstance(soi_store, dict):
+            iterable = soi_store.values()
+        elif isinstance(soi_store, list):
+            iterable = soi_store
+        else:
+            iterable = []
+
+        for soi in iterable:
+            if not isinstance(soi, dict):
+                continue
+
+            soi_node_uid = str(
+                soi.get("node_uid", "")
+                or ""
+            ).strip()
+
+            if node_uid and soi_node_uid != str(node_uid).strip():
+                continue
+
+            records.append(dict(soi))
+
+        records.sort(
+            key=lambda record: float(
+                record.get("updated_at")
+                or record.get("created_at")
+                or 0
+            ),
+            reverse=True,
+        )
+
+    except Exception:
+        component.logger.exception("sendSoisListTak failed")
+        records = []
+
+    # -------------------------------------------------------------
+    # Dashboard response: structured list over ZMQ
+    # -------------------------------------------------------------
+    if requester_type == "dashboard":
+        PARAMETERS = {
+            "node_uid": node_uid,
+            "sois": records,
+        }
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "sendSoisListTakReturn",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
+        }
+
+        if component.dashboard_connected:
+            await component.dashboard_socket.send_msg(
+                fissure.comms.MessageTypes.COMMANDS,
+                msg,
+            )
+
+        return
+
+    # -------------------------------------------------------------
+    # TAK response: replay normal SOI CoT events
+    # -------------------------------------------------------------
+    for record in records:
+        try:
+            soi_node_uid = str(
+                record.get("node_uid", "")
+                or node_uid
+                or ""
+            ).strip()
+
+            soi_id = str(
+                record.get("soi_id", "")
+                or ""
+            ).strip()
+
+            operation_id = str(
+                record.get("operation_id", "")
+                or ""
+            ).strip()
+
+            soi_key = str(
+                record.get("soi_key", "")
+                or ""
+            ).strip()
+
+            uid_core = soi_id or operation_id or soi_key
+
+            if not soi_node_uid or not uid_core:
+                component.logger.warning(
+                    "sendSoisListTak: skipping malformed SOI record "
+                    f"node_uid={soi_node_uid!r}, soi_id={soi_id!r}, "
+                    f"operation_id={operation_id!r}"
+                )
+                continue
+
+            tak_uid = (
+                f"fissure-soi-{soi_node_uid}-{uid_core}-"
+                f"refresh-{int(time.time() * 1000)}"
+            )
+
+            summary = record.get("summary") or {}
+
+            if not isinstance(summary, dict):
+                summary = {}
+
+            tak_data = {
+                "event_type": "soi",
+                "node_uid": soi_node_uid,
+                "soi_id": soi_id,
+                "frequency_mhz": record.get("frequency_mhz"),
+                "status": record.get("status", ""),
+                "operation_id": operation_id,
+                "artifact_id": record.get("artifact_id", ""),
+
+                "model_classification":
+                    record.get("model_classification", ""),
+                "model_confidence":
+                    record.get("model_confidence"),
+                "database_classification":
+                    record.get("database_classification", ""),
+
+                "stage": record.get("stage"),
+                "stage_order": record.get("stage_order"),
+
+                "request_id": request_id,
+                "requester_uid": requester_uid,
+                "requester_callsign": requester_callsign,
+            }
+
+            if summary:
+                tak_data["summary"] = summary
+
+            tak_data = {
+                key: value
+                for key, value in tak_data.items()
+                if value is not None
+                and not (
+                    isinstance(value, str)
+                    and value.strip() == ""
+                )
+            }
+
+            await fissure.utils.tak_messages.send(
+                component,
+                {
+                    "msg_type": "event",
+                    "uid": tak_uid,
+                    "data": tak_data,
+                    "tak_icon": "r-x-fissure-soi",
+                    "lat": record.get("lat"),
+                    "lon": record.get("lon"),
+                    "alt": record.get("hae_m"),
+                },
+                requester_type,
+                requester_uid,
+            )
+
+        except Exception:
+            component.logger.exception(
+                "sendSoisListTak: failed emitting SOI refresh event"
+            )
+      
 
 async def sendArtifactsListTak(
     component: object,

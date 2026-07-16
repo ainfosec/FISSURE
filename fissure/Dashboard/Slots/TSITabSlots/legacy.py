@@ -51,6 +51,8 @@ from matplotlib.collections import LineCollection
 import json
 import uuid
 
+import inspect
+
 
 TSI_DETECTOR_TYPES = [
     ("rf", "RF"),
@@ -124,186 +126,7 @@ def _slotTSI_ConditionerInputSourceChanged(dashboard: QtCore.QObject):
     update_tsi_conditioner_file_gate(dashboard)
 
 
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_InputFolderChanged(dashboard: QtCore.QObject):
-    """ 
-    Changes the IQ files in the input listbox.
-    """
-    # Load the Files in the Listbox
-    get_dir = str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText())
-    if get_dir != "":
-        dashboard.ui.listWidget_tsi_fe_input_files.clear()
-        file_names = []
-        for fname in os.listdir(get_dir):
-            if os.path.isfile(os.path.join(get_dir, fname)):
-                file_names.append(fname)
-        file_names = sorted(file_names, key=str.lower)
-        for n in file_names:
-            dashboard.ui.listWidget_tsi_fe_input_files.addItem(n)  
 
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_SettingsClassificationChanged(dashboard: QtCore.QObject):
-    """ 
-    Changes the classification technique options.
-    """
-    # Switch the Models
-    dashboard.ui.comboBox_tsi_fe_settings_technique.clear()
-    decision_tree_directory = os.path.join(fissure.utils.CLASSIFIER_DIR, "Models", "Decision_Tree")
-    dnn_directory = os.path.join(fissure.utils.CLASSIFIER_DIR, "Models", "DNN")
-    get_models = []
-    if str(dashboard.ui.comboBox_tsi_fe_settings_classification.currentText()) == "Decision Tree":
-        for file in os.listdir(decision_tree_directory):
-            if file.endswith('.h5'):
-                get_models.append(str(file).strip('.h5'))
-    elif str(dashboard.ui.comboBox_tsi_fe_settings_classification.currentText()) == "Deep Neural Network":
-        for file in os.listdir(dnn_directory):
-            if file.endswith('.h5'):
-                get_models.append(str(file).strip('.h5'))
-    dashboard.ui.comboBox_tsi_fe_settings_technique.addItems(sorted(get_models, key=str.lower))
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_SettingsTechniqueChanged(dashboard: QtCore.QObject):
-    """ 
-    Changes the checked items to align with each technique.
-    """
-    # Uncheck Everything
-    dashboard.ui.checkBox_tsi_fe_td_mean.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_max.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_peak.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_ptp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_rms.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_variance.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_std_dev.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_power.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_crest.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_pulse.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_margin.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_kurtosis.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_skewness.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_zero_crossings.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_samples.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_mean_bps.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_max_bps.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_sum_tbp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_peak_bp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_var_bp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_std_dev_bp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_skewness_bp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_kurtosis_bp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_rel_spectral_peak_band.setChecked(False)
-            
-    # Load the Model
-    if str(dashboard.ui.comboBox_tsi_fe_settings_classification.currentText()) == "Decision Tree":
-        model_directory = os.path.join(fissure.utils.CLASSIFIER_DIR, "Models", "Decision_Tree")
-    elif str(dashboard.ui.comboBox_tsi_fe_settings_classification.currentText()) == "Deep Neural Network":
-        model_directory = os.path.join(fissure.utils.CLASSIFIER_DIR, "Models", "DNN")
-    else:
-        return
-    get_file = str(dashboard.ui.comboBox_tsi_fe_settings_technique.currentText()) + ".txt"
-    
-    # Features
-    get_features = []                             
-    get_model = str(dashboard.ui.comboBox_tsi_fe_settings_technique.currentText())
-    if len(get_model) > 0:           
-        # Load Details, Features, Image Path from File
-        get_details = ""            
-        with open(os.path.join(model_directory, get_model + ".txt")) as model_details:
-            get_details = model_details.read()
-            model_details.seek(0)
-            for line in model_details:
-                if "Features: " in line:
-                    get_features = ast.literal_eval(line.split('Features: ')[1])
-    
-    # Check the Features
-    if len(get_features) > 0:
-        if "Mean" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_mean.setChecked(True)
-        if "Max" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_max.setChecked(True)
-        if "Peak" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_peak.setChecked(True)
-        if "Peak to Peak" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_ptp.setChecked(True)
-        if "RMS" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_rms.setChecked(True)
-        if "Variance" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_variance.setChecked(True)
-        if "Std. Dev." in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_std_dev.setChecked(True)
-        if "Power" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_power.setChecked(True)
-        if "Crest Factor" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_crest.setChecked(True)
-        if "Pulse Indicator" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_pulse.setChecked(True)
-        if "Margin" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_margin.setChecked(True)
-        if "Kurtosis" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_kurtosis.setChecked(True)
-        if "Skewness" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_skewness.setChecked(True)
-        if "Zero Crossings" in get_features:
-            dashboard.ui.checkBox_tsi_fe_td_zero_crossings.setChecked(True)
-        if "Samples" in get_features:               
-            dashboard.ui.checkBox_tsi_fe_td_samples.setChecked(True)
-        if "Mean of BPS" in get_features:
-            dashboard.ui.checkBox_tsi_fe_mean_bps.setChecked(True)
-        if "Max of BPS" in get_features:
-            dashboard.ui.checkBox_tsi_fe_max_bps.setChecked(True)
-        if "Sum of TBP" in get_features:
-            dashboard.ui.checkBox_tsi_fe_sum_tbp.setChecked(True)
-        if "Peak of BP" in get_features:
-            dashboard.ui.checkBox_tsi_fe_peak_bp.setChecked(True)
-        if "Variance of BP" in get_features:
-            dashboard.ui.checkBox_tsi_fe_var_bp.setChecked(True)
-        if "Std. Dev. of BP" in get_features:
-            dashboard.ui.checkBox_tsi_fe_std_dev_bp.setChecked(True)
-        if "Skewness of BP" in get_features:
-            dashboard.ui.checkBox_tsi_fe_skewness_bp.setChecked(True)
-        if "Kurtosis of BP" in get_features:
-            dashboard.ui.checkBox_tsi_fe_kurtosis_bp.setChecked(True)
-        if "RSPpB" in get_features:
-            dashboard.ui.checkBox_tsi_fe_rel_spectral_peak_band.setChecked(True)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_SettingsInputSourceChanged(dashboard: QtCore.QObject):
-    """ 
-    Enables/disables the Start button if folder or file is selected with no valid filepath.
-    """
-    # File
-    if dashboard.ui.comboBox_tsi_fe_settings_input_source.currentText() == "File":
-        if dashboard.ui.label2_tsi_fe_info_file_name.text() == "File:":
-            dashboard.ui.pushButton_tsi_fe_operation_start.setEnabled(False)
-        else:
-            dashboard.ui.pushButton_tsi_fe_operation_start.setEnabled(True)
-
-    # Folder
-    elif dashboard.ui.comboBox_tsi_fe_settings_input_source.currentText() == "Folder":
-        if dashboard.ui.comboBox_tsi_fe_input_folders.currentText() == "":
-            dashboard.ui.pushButton_tsi_fe_operation_start.setEnabled(False)
-        elif dashboard.ui.listWidget_tsi_fe_input_files.count() == 0:
-            dashboard.ui.pushButton_tsi_fe_operation_start.setEnabled(False)
-        else:
-            dashboard.ui.pushButton_tsi_fe_operation_start.setEnabled(True)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_SettingsCategoryChanged(dashboard: QtCore.QObject):
-    """ 
-    Changes the contents of the classification combobox.
-    """
-    # Switch the Techniques
-    dashboard.ui.comboBox_tsi_fe_settings_classification.clear()
-    if dashboard.ui.comboBox_tsi_fe_settings_category.currentText() == "All":
-        dashboard.ui.comboBox_tsi_fe_settings_classification.addItem("Decision Tree")
-        dashboard.ui.comboBox_tsi_fe_settings_classification.addItem("Deep Neural Network")
-    elif dashboard.ui.comboBox_tsi_fe_settings_category.currentText() == "Supervised Learning":
-        dashboard.ui.comboBox_tsi_fe_settings_classification.addItem("Decision Tree")
-    elif dashboard.ui.comboBox_tsi_fe_settings_category.currentText() == "Artificial Neural Network":
-        dashboard.ui.comboBox_tsi_fe_settings_classification.addItem("Deep Neural Network")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -364,48 +187,6 @@ def _slotTSI_ConditionerInputExtensionsCustomClicked(dashboard: QtCore.QObject):
     """
     dashboard.ui.textEdit_tsi_conditioner_input_extensions.setEnabled(True)
     _tsi_conditioner_refresh_file_list_from_path(dashboard)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_InputLoadFileClicked(dashboard: QtCore.QObject):
-    """ 
-    Loads the currently selected IQ files.
-    """
-    try:
-        # File Name
-        get_file = str(dashboard.ui.listWidget_tsi_fe_input_files.currentItem().text())
-        dashboard.ui.label2_tsi_fe_info_file_name.setText("File: " + get_file)
-        
-        # Number of Bytes & Samples
-        get_type = str(dashboard.ui.comboBox_tsi_fe_input_data_type.currentText())
-        get_bytes = os.path.getsize(os.path.join(str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText()), get_file))
-        get_samples = "-1"
-        if get_bytes > 0:            
-            if get_type == "Complex Float 32":
-                get_samples = str(int(get_bytes/8))
-            elif get_type == "Float/Float 32":
-                get_samples = str(int(get_bytes/4))
-            elif get_type == "Short/Int 16":
-                get_samples = str(int(get_bytes/2))
-            elif get_type == "Int/Int 32":
-                get_samples = str(int(get_bytes/4))
-            elif get_type == "Byte/Int 8":
-                get_samples = str(int(get_bytes/1))
-            elif get_type == "Complex Int 16":
-                get_samples = str(int(get_bytes/4))
-            elif get_type == "Complex Int 8":
-                get_samples = str(int(get_bytes/2))
-            elif get_type == "Complex Float 64":
-                get_samples = str(int(get_bytes/16))
-            elif get_type == "Complex Int 64":
-                get_samples = str(int(get_bytes/16))   
-        dashboard.ui.label2_tsi_fe_info_file_size.setText("Size (MB): " + str(round(get_bytes/1048576,2)))
-        dashboard.ui.label2_tsi_fe_info_samples.setText("Samples: " + get_samples)
-        
-        # Enable Start Button
-        dashboard.ui.pushButton_tsi_fe_operation_start.setEnabled(True)
-    except:
-        dashboard.logger.error("Unable to load Feature Extractor input file.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -837,437 +618,10 @@ def _slotTSI_ConditionerResultsDeleteAllClicked(dashboard: QtCore.QObject):
     _tsi_conditioner_update_workflow_ribbon(dashboard)
     _tsi_conditioner_update_results_action_gate(dashboard)
 
-    try:
-        _slotTSI_FE_InputRefreshClicked(dashboard)
-    except Exception:
-        pass
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_InputFolderClicked(dashboard: QtCore.QObject):
-    """ 
-    Selects a source folder for input data.
-    """
-    # Choose Folder
-    get_pwd = str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText())
-    get_dir = str(QtWidgets.QFileDialog.getExistingDirectory(dashboard, "Select Directory",get_pwd))
-    
-    # Add Directory to the Combobox       
-    if len(get_dir) > 0:   
-            
-        # Load Directory and File
-        folder_index = dashboard.ui.comboBox_tsi_fe_input_folders.findText(get_dir)
-        if folder_index < 0:
-            # New Directory
-            dashboard.ui.comboBox_tsi_fe_input_folders.addItem(get_dir)      
-            dashboard.ui.comboBox_tsi_fe_input_folders.setCurrentIndex(dashboard.ui.comboBox_tsi_fe_input_folders.count()-1)
-        else:
-            # Directory Exists
-            dashboard.ui.comboBox_tsi_fe_input_folders.setCurrentIndex(folder_index)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_InputRefreshClicked(dashboard: QtCore.QObject):
-    """ 
-    Refreshes the files displayed in the input listbox.
-    """
-    try:
-        # Get the Folder Location
-        get_folder = str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText())
-            
-        # Get the Files for the Listbox
-        dashboard.ui.listWidget_tsi_fe_input_files.clear()
-        temp_names = []
-        for fname in os.listdir(get_folder):
-            if os.path.isfile(os.path.join(get_folder, fname)):
-                temp_names.append(fname)
-                
-        # Sort and Add to the Listbox
-        temp_names = sorted(temp_names, key=str.lower)
-        for n in temp_names:
-            dashboard.ui.listWidget_tsi_fe_input_files.addItem(n)
-                
-        # Set the Listbox Selection
-        dashboard.ui.listWidget_tsi_fe_input_files.setCurrentRow(0)
-    except:
-        pass
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_InputRemoveClicked(dashboard: QtCore.QObject):
-    """ 
-    Removes the selected file from the input listbox.
-    """
-    # Get Highlighted File from Listbox
-    if dashboard.ui.listWidget_tsi_fe_input_files.count() > 0:
-        get_index = int(dashboard.ui.listWidget_tsi_fe_input_files.currentRow())
-        
-        # Remove Item
-        for item in dashboard.ui.listWidget_tsi_fe_input_files.selectedItems():
-            dashboard.ui.listWidget_tsi_fe_input_files.takeItem(dashboard.ui.listWidget_tsi_fe_input_files.row(item))
-        
-        # Reset Selected Item 
-        if get_index == dashboard.ui.listWidget_tsi_fe_input_files.count():
-            get_index = get_index -1
-        dashboard.ui.listWidget_tsi_fe_input_files.setCurrentRow(get_index)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_InputRenameClicked(dashboard: QtCore.QObject):
-    """ 
-    Renames the selected file from the input listbox.
-    """
-    # Get the Selected File
-    try:
-        get_file = str(dashboard.ui.listWidget_tsi_fe_input_files.currentItem().text())
-    except:
-        fissure.Dashboard.UI_Components.Qt5.errorMessage("No File Selected.")
-        return        
-    get_file_path = os.path.join(str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText()), get_file)
-    
-    # Open the GUI
-    text, ok = QtWidgets.QInputDialog.getText(dashboard, 'Rename', 'Enter new name:',QtWidgets.QLineEdit.Normal,get_file)
-    
-    # Ok Clicked
-    if ok:
-        os.rename(get_file_path, os.path.join(str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText()), text))
-        _slotTSI_FE_InputRefreshClicked(dashboard)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_InputTerminalClicked(dashboard: QtCore.QObject):
-    """ 
-    Opens a terminal at the location of the input data folder.
-    """
-    # Open the Terminal
-    get_dir = str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText())
-    if len(get_dir) > 0:
-        proc=subprocess.Popen('gnome-terminal', cwd=get_dir, shell=True)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_InputPreviewClicked(dashboard: QtCore.QObject):
-    """ 
-    Plots a zoomed out version of the input file.
-    """       
-    # Get the Filepath
-    get_type = str(dashboard.ui.comboBox_tsi_fe_input_data_type.currentText())
-    get_file = str(dashboard.ui.listWidget_tsi_fe_input_files.currentItem().text())
-    get_filepath = os.path.join(str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText()), get_file)
-
-    # Plot
-    fissure.Dashboard.UI_Components.Qt5.previewIQ_File(get_type, get_filepath)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_ResultsPreviewClicked(dashboard: QtCore.QObject):
-    """ 
-    Plots a zoomed out version of the output file.
-    """
-    # Get the Filepath
-    get_row = dashboard.ui.tableWidget_tsi_fe_results.currentRow()
-    if get_row >= 0:
-        # Get File
-        get_file = str(dashboard.ui.tableWidget_tsi_fe_results.verticalHeaderItem(get_row).text())          
-        get_type = str(dashboard.ui.comboBox_tsi_fe_input_data_type.currentText()) 
-        get_filepath = os.path.join(str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText()), get_file)
-
-        # Plot
-        fissure.Dashboard.UI_Components.Qt5.previewIQ_File(get_type, get_filepath)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_ResultsPlotColumnClicked(dashboard: QtCore.QObject):
-    """ 
-    Plots all column values in the results table.
-    """
-    if (dashboard.ui.tableWidget_tsi_fe_results.columnCount() > 0) and (dashboard.ui.tableWidget_tsi_fe_results.rowCount() > 0):
-        # Get Column Values
-        get_values = []
-        get_col = dashboard.ui.tableWidget_tsi_fe_results.currentColumn()
-        if get_col != -1:
-            for get_row in range(dashboard.ui.tableWidget_tsi_fe_results.rowCount()):             
-                get_value = float(str(dashboard.ui.tableWidget_tsi_fe_results.item(get_row, get_col).text()))
-                get_values.append(get_value)  
-            
-            # Plot
-            plt.ion()
-            plt.close(1) 
-            plt.plot(range(1,len(get_values)+1),get_values[:],'b',linewidth=1,zorder=2)
-            plt.show()
-                
-            # Axes Labels
-            plt.xlabel('Row') 
-            plt.ylabel('Value')
-        else:
-            fissure.Dashboard.UI_Components.Qt5.errorMessage("Select a cell in the Results table.")
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_SettingsDeselectAllClicked(dashboard: QtCore.QObject):
-    """ 
-    Unchecks all the checkboxes in the Feature Extractor settings.
-    """
-    # Uncheck Everything
-    dashboard.ui.checkBox_tsi_fe_td_mean.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_max.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_peak.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_ptp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_rms.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_variance.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_std_dev.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_power.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_crest.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_pulse.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_margin.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_kurtosis.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_skewness.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_zero_crossings.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_td_samples.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_mean_bps.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_max_bps.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_sum_tbp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_peak_bp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_var_bp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_std_dev_bp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_skewness_bp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_kurtosis_bp.setChecked(False)
-    dashboard.ui.checkBox_tsi_fe_rel_spectral_peak_band.setChecked(False)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_SettingsSelectAllClicked(dashboard: QtCore.QObject):
-    """ 
-    Checks all the checkboxes in the Feature Extractor settings.
-    """
-    # Uncheck Everything
-    dashboard.ui.checkBox_tsi_fe_td_mean.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_max.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_peak.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_ptp.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_rms.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_variance.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_std_dev.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_power.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_crest.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_pulse.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_margin.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_kurtosis.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_skewness.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_zero_crossings.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_td_samples.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_mean_bps.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_max_bps.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_sum_tbp.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_peak_bp.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_var_bp.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_std_dev_bp.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_skewness_bp.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_kurtosis_bp.setChecked(True)
-    dashboard.ui.checkBox_tsi_fe_rel_spectral_peak_band.setChecked(True)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_ResultsExportClicked(dashboard: QtCore.QObject):
-    """ 
-    Exports the Feature Extractor Results table to .csv file.
-    """
-    if (dashboard.ui.tableWidget_tsi_fe_results.columnCount() > 0) and (dashboard.ui.tableWidget_tsi_fe_results.rowCount() > 0):
-        # Choose File Location
-        get_results_folder = os.path.expanduser("~/fe_results_no_truth.csv")
-        path, ok = QtWidgets.QFileDialog.getSaveFileName(dashboard, 'Save CSV', get_results_folder, 'CSV(*.csv)')
-        if ok:
-            columns = range(dashboard.ui.tableWidget_tsi_fe_results.columnCount())
-            rows = range(dashboard.ui.tableWidget_tsi_fe_results.rowCount())
-            header = ["File"] + [dashboard.ui.tableWidget_tsi_fe_results.horizontalHeaderItem(column).text() for column in columns]
-            row_header = [dashboard.ui.tableWidget_tsi_fe_results.verticalHeaderItem(row).text() for row in rows]
-            with open(path, 'w') as csvfile:
-                writer = csv.writer(csvfile, dialect='excel', lineterminator='\n')
-                writer.writerow(header)
-                for row in rows:
-                    get_row_items = []
-                    get_row_items = [row_header[row]] + [str(dashboard.ui.tableWidget_tsi_fe_results.item(row, column).text()) for column in columns]
-                    writer.writerow(get_row_items)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_ResultsPlotAvgClicked(dashboard: QtCore.QObject):
-    """ 
-    Creates a bar and strip plot with data from all the columns in the Feature Extractor Results table.
-    """
-    if (dashboard.ui.tableWidget_tsi_fe_results.columnCount() > 0) and (dashboard.ui.tableWidget_tsi_fe_results.rowCount() > 0):
-        # Get Column Values
-        all_values = []
-        col = dashboard.ui.tableWidget_tsi_fe_results.currentColumn()
-        get_label = str(dashboard.ui.tableWidget_tsi_fe_results.horizontalHeaderItem(col).text())
-        for row in range(dashboard.ui.tableWidget_tsi_fe_results.rowCount()):       
-            get_value = float(str(dashboard.ui.tableWidget_tsi_fe_results.item(row, col).text()))
-            all_values.append(get_value)
-        df = pd.DataFrame(all_values, columns=[get_label])
-
-        # Bar Plot for Average
-        plt.figure(figsize=(10,6))
-        ax = sns.barplot(y=get_label, data=df, palette='nipy_spectral', alpha=0.5, errorbar=None)
-
-        # Strip/Scatter Plot
-        ax = sns.stripplot(y=get_label, data=df, palette='nipy_spectral', linewidth=0.5, alpha=0.6)
-        #ax = sns.scatterplot(data=df, palette='nipy_spectral', linewidth=0.5, alpha=0.6)
-
-        # Horizontal Line
-        ax.axhline(y=round(df[get_label].mean(), 2), ls=':', c='k', linewidth=3, label=None)
-
-        # Labels
-        ax.set_xlabel(get_label, fontsize=14, weight='bold')
-        ax.set_ylabel('Value', fontsize=14, weight='bold')
-        ax.set_title('Strip Plot with Average', fontsize=20, weight='bold')
-        #plt.legend(fontsize=14, loc='lower right')
-        plt.show()
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_ResultsTrimClicked(dashboard: QtCore.QObject):
-    """ 
-    Removes rows from the Feature Extractor Results table.
-    """
-    if (dashboard.ui.tableWidget_tsi_fe_results.columnCount() > 0) and (dashboard.ui.tableWidget_tsi_fe_results.rowCount() > 0):
-        # Get the Average
-        col = dashboard.ui.tableWidget_tsi_fe_results.currentColumn()
-        final_sum = 0
-        for row in range(dashboard.ui.tableWidget_tsi_fe_results.rowCount()):       
-            final_sum = final_sum + float(str(dashboard.ui.tableWidget_tsi_fe_results.item(row, col).text()))
-        col_average = round(final_sum/float(dashboard.ui.tableWidget_tsi_fe_results.rowCount()),2)
-                
-        # Open a GUI
-        trim_settings_dlg = TrimSettings(parent=dashboard, default_value=str(col_average))
-        trim_settings_dlg.show()
-        trim_settings_dlg.exec_()  
-        
-        get_rule_value = trim_settings_dlg.return_value
-        if len(get_rule_value) < 2:
-            return
-        
-        # Remove the Rows
-        for row in reversed(range(0,dashboard.ui.tableWidget_tsi_fe_results.rowCount())):
-            get_value = float(str(dashboard.ui.tableWidget_tsi_fe_results.item(row, col).text()))
-            if get_rule_value[0] == 1:
-                if get_value < float(get_rule_value[1]):
-                    dashboard.ui.tableWidget_tsi_fe_results.removeRow(row)
-            else:
-                if get_value > float(get_rule_value[1]):
-                    dashboard.ui.tableWidget_tsi_fe_results.removeRow(row)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_ResultsImportClicked(dashboard: QtCore.QObject):
-    """ 
-    Imports a CSV into the Feature Extractor Results table.
-    """
-    # Choose File
-    get_default_folder = os.path.expanduser("~/")
-    fname = QtWidgets.QFileDialog.getOpenFileName(None,"Select CSV File...", get_default_folder, filter="CSV (*.csv)")
-    if fname != ('', ''):
-        dashboard.ui.tableWidget_tsi_fe_results.setRowCount(0)
-        dashboard.ui.tableWidget_tsi_fe_results.clear()
-        with open(fname[0], "r") as fileInput:
-            skip_first_row = 0
-            for row in csv.reader(fileInput):
-                if skip_first_row > 0:
-                    dashboard.ui.tableWidget_tsi_fe_results.setRowCount(dashboard.ui.tableWidget_tsi_fe_results.rowCount() + 1)
-                    for c in range(0,len(row)):
-                        # File Name
-                        if c == 0:
-                            dashboard.ui.tableWidget_tsi_fe_results.setVerticalHeaderItem(dashboard.ui.tableWidget_tsi_fe_results.rowCount()-1,QtWidgets.QTableWidgetItem(str(row[0])))
-                        else:
-                            get_text = row[c]
-                            table_item = QtWidgets.QTableWidgetItem(str(get_text))
-                            table_item.setTextAlignment(QtCore.Qt.AlignCenter)
-                            dashboard.ui.tableWidget_tsi_fe_results.setItem(dashboard.ui.tableWidget_tsi_fe_results.rowCount()-1,c-1,table_item)
-                else:
-                    skip_first_row = 1
-                    dashboard.ui.tableWidget_tsi_fe_results.setColumnCount(len(row)-1)
-                    
-                    # Column Name
-                    for c in range(1,len(row)):                           
-                        dashboard.ui.tableWidget_tsi_fe_results.setHorizontalHeaderItem(c-1,QtWidgets.QTableWidgetItem(str(row[c])))
-                        
-        # Resize Table
-        dashboard.ui.tableWidget_tsi_fe_results.resizeRowsToContents()
-        dashboard.ui.tableWidget_tsi_fe_results.resizeColumnsToContents()
-        dashboard.ui.tableWidget_tsi_fe_results.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_tsi_fe_results.horizontalHeader().setStretchLastSection(True)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_ResultsJointPlotClicked(dashboard: QtCore.QObject):
-    """ 
-    Compares the values for two features.
-    """
-    if (dashboard.ui.tableWidget_tsi_fe_results.columnCount() > 1) and (dashboard.ui.tableWidget_tsi_fe_results.rowCount() > 0):
-        # Obtain Features from Results Table
-        get_features = []
-        for col in range(dashboard.ui.tableWidget_tsi_fe_results.columnCount()):
-            get_features.append(str(dashboard.ui.tableWidget_tsi_fe_results.horizontalHeaderItem(col).text()))
-            
-        # Load the Dialog
-        joint_plot_dlg = JointPlotDialog(parent=dashboard, feature_list=get_features)
-        joint_plot_dlg.show()
-        joint_plot_dlg.exec_()  
-        
-        get_selected_features = joint_plot_dlg.return_value
-        if len(get_selected_features) != 2:
-            if get_selected_features != "Cancel":
-                fissure.Dashboard.UI_Components.Qt5.errorMessage("Error retrieving two features")
-            return
-                        
-        # Obtain the Features
-        get_column_labels = []            
-        for m in range(0,dashboard.ui.tableWidget_tsi_fe_results.columnCount()):
-            get_column_labels.append(str(dashboard.ui.tableWidget_tsi_fe_results.horizontalHeaderItem(m).text()))
-        df = pd.DataFrame(columns=get_column_labels)
-        for row in range(0,dashboard.ui.tableWidget_tsi_fe_results.rowCount()):
-            get_row = []
-            for col in range(0,dashboard.ui.tableWidget_tsi_fe_results.columnCount()):
-                get_row.append(str(dashboard.ui.tableWidget_tsi_fe_results.item(row,col).text()))
-            df.loc[len(df)] = get_row            
-        X = df[get_selected_features[0]].astype(float)
-        y = df[get_selected_features[1]].astype(float)
-        
-        # Plot
-        visualizer = JointPlotVisualizer(feature=get_selected_features[0], target=get_selected_features[1])
-        visualizer.fit(X, y)
-        visualizer.ax.set_xlabel(get_selected_features[0])
-        visualizer.ax.set_ylabel(get_selected_features[1])
-        visualizer.show()
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_ResultsRemoveRowClicked(dashboard: QtCore.QObject):
-    """ 
-    Removes a row from the Feature Extractor Results table.
-    """
-    # Remove Row
-    if dashboard.ui.tableWidget_tsi_fe_results.rowCount() > 0:
-        row = dashboard.ui.tableWidget_tsi_fe_results.currentRow()
-        dashboard.ui.tableWidget_tsi_fe_results.removeRow(row)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_FE_ResultsRemoveColClicked(dashboard: QtCore.QObject):
-    """ 
-    Removes a column from the Feature Extractor Results table.
-    """
-    # Remove Column
-    row = dashboard.ui.tableWidget_tsi_fe_results.currentRow()
-    col = dashboard.ui.tableWidget_tsi_fe_results.currentColumn()
-    dashboard.ui.tableWidget_tsi_fe_results.removeColumn(col)
-    
-    if dashboard.ui.tableWidget_tsi_fe_results.columnCount() > 0:
-        if col == dashboard.ui.tableWidget_tsi_fe_results.columnCount():
-            dashboard.ui.tableWidget_tsi_fe_results.setCurrentCell(row,col-1)
-        elif col == 0:
-            dashboard.ui.tableWidget_tsi_fe_results.setCurrentCell(row,0)
-        else:
-            dashboard.ui.tableWidget_tsi_fe_results.setCurrentCell(row,col)
+    # try:
+    #     _slotTSI_FE_InputRefreshClicked(dashboard)
+    # except Exception:
+    #     pass
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -1395,135 +749,6 @@ async def _slotTSI_BlacklistRemoveClicked(dashboard: QtCore.QObject):
 
     if dashboard.ui.listWidget_tsi_blacklist.count() == 0:
         dashboard.ui.pushButton_tsi_blacklist_remove.setEnabled(False)
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotTSI_FE_OperationStartClicked(dashboard: QtCore.QObject):
-    """ 
-    Begins extracting features from a file or several files.
-    """
-    # Stop
-    if dashboard.ui.pushButton_tsi_fe_operation_start.text() == "Stop":
-        
-        # Send the Message
-        await dashboard.backend.stopTSI_FE()
-        
-        # Reset Progress Bar
-        dashboard.ui.progressBar_tsi_fe_operation.setValue(0)            
-        
-        # Toggle the Text
-        dashboard.ui.pushButton_tsi_fe_operation_start.setText("Start")
-                    
-    # Start
-    elif dashboard.ui.pushButton_tsi_fe_operation_start.text() == "Start": 
-    
-        # Toggle the Text
-        dashboard.ui.pushButton_tsi_fe_operation_start.setText("Stop")  
-        
-        # Reset Progress Bar
-        dashboard.ui.progressBar_tsi_fe_operation.setValue(0)
-        
-        # Clear Results in Table
-        for row in reversed(range(0,dashboard.ui.tableWidget_tsi_fe_results.rowCount())):
-            dashboard.ui.tableWidget_tsi_fe_results.removeRow(row)
-        for col in reversed(range(0,dashboard.ui.tableWidget_tsi_fe_results.columnCount())):
-            dashboard.ui.tableWidget_tsi_fe_results.removeColumn(col)
-
-        # File
-        get_input_source = str(dashboard.ui.comboBox_tsi_fe_settings_input_source.currentText())
-        if get_input_source == "File":
-            get_all_filepaths = []
-            get_filename = str(dashboard.ui.label2_tsi_fe_info_file_name.text().replace("File: ",""))
-            complete_filepath = os.path.join(str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText()), get_filename)
-            if os.path.isfile(complete_filepath):
-                get_filepath = complete_filepath
-                get_all_filepaths.append(get_filepath)
-            else:
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid input file. Click the Refresh button.")
-                return
-    
-        # Folder
-        else:
-            get_all_filepaths = []
-            if dashboard.ui.listWidget_tsi_fe_input_files.count() > 0:
-                for n in range(0,dashboard.ui.listWidget_tsi_fe_input_files.count()):
-                    complete_filepath = os.path.join(str(dashboard.ui.comboBox_tsi_fe_input_folders.currentText()), str(dashboard.ui.listWidget_tsi_fe_input_files.item(n).text()))
-                    if os.path.isfile(complete_filepath):
-                        get_all_filepaths.append(complete_filepath)
-                    else:
-                        ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "Invalid input file. Click the Refresh button.")
-                        return
-            else:
-                # fissure.Dashboard.UI_Components.Qt5.errorMessage("No input files found.")
-                ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(dashboard, "No input files found.")
-                return
-        
-        # Checked Features
-        get_checkboxes = []
-        if dashboard.ui.checkBox_tsi_fe_td_mean.isChecked():
-            get_checkboxes.append("Mean")
-        if dashboard.ui.checkBox_tsi_fe_td_max.isChecked():
-            get_checkboxes.append("Max")
-        if dashboard.ui.checkBox_tsi_fe_td_peak.isChecked():
-            get_checkboxes.append("Peak")
-        if dashboard.ui.checkBox_tsi_fe_td_ptp.isChecked():
-            get_checkboxes.append("Peak to Peak")
-        if dashboard.ui.checkBox_tsi_fe_td_rms.isChecked():
-            get_checkboxes.append("RMS")
-        if dashboard.ui.checkBox_tsi_fe_td_variance.isChecked():
-            get_checkboxes.append("Variance")
-        if dashboard.ui.checkBox_tsi_fe_td_std_dev.isChecked():
-            get_checkboxes.append("Standard Deviation")
-        if dashboard.ui.checkBox_tsi_fe_td_power.isChecked():
-            get_checkboxes.append("Power")
-        if dashboard.ui.checkBox_tsi_fe_td_crest.isChecked():
-            get_checkboxes.append("Crest Factor")
-        if dashboard.ui.checkBox_tsi_fe_td_pulse.isChecked():
-            get_checkboxes.append("Pulse Indicator")
-        if dashboard.ui.checkBox_tsi_fe_td_margin.isChecked():
-            get_checkboxes.append("Margin")
-        if dashboard.ui.checkBox_tsi_fe_td_kurtosis.isChecked():
-            get_checkboxes.append("Kurtosis")
-        if dashboard.ui.checkBox_tsi_fe_td_skewness.isChecked():
-            get_checkboxes.append("Skewness")
-        if dashboard.ui.checkBox_tsi_fe_td_zero_crossings.isChecked():
-            get_checkboxes.append("Zero Crossings")
-        if dashboard.ui.checkBox_tsi_fe_td_samples.isChecked():
-            get_checkboxes.append("Samples")
-        if dashboard.ui.checkBox_tsi_fe_mean_bps.isChecked():
-            get_checkboxes.append("Mean of Band Power Spectrum")
-        if dashboard.ui.checkBox_tsi_fe_max_bps.isChecked():
-            get_checkboxes.append("Max of Band Power Spectrum")
-        if dashboard.ui.checkBox_tsi_fe_sum_tbp.isChecked():
-            get_checkboxes.append("Sum of Total Band Power")
-        if dashboard.ui.checkBox_tsi_fe_peak_bp.isChecked():
-            get_checkboxes.append("Peak of Band Power")
-        if dashboard.ui.checkBox_tsi_fe_var_bp.isChecked():
-            get_checkboxes.append("Variance of Band Power")
-        if dashboard.ui.checkBox_tsi_fe_std_dev_bp.isChecked():
-            get_checkboxes.append("Standard Deviation of Band Power")
-        if dashboard.ui.checkBox_tsi_fe_skewness_bp.isChecked():
-            get_checkboxes.append("Skewness of Band Power")
-        if dashboard.ui.checkBox_tsi_fe_kurtosis_bp.isChecked():
-            get_checkboxes.append("Kurtosis of Band Power")
-        if dashboard.ui.checkBox_tsi_fe_rel_spectral_peak_band.isChecked():
-            get_checkboxes.append("Relative Spectral Peak per Band")
-            
-        # Data Type
-        get_data_type = str(dashboard.ui.comboBox_tsi_fe_input_data_type.currentText())  
-            
-        # Assemble
-        common_parameter_names = ['checkboxes','data_type','all_filepaths']
-        common_parameter_values = [get_checkboxes, get_data_type, get_all_filepaths]
-
-        if len(get_all_filepaths) > 0:
-            # Start the Progress Bar
-            dashboard.ui.progressBar_tsi_fe_operation.setValue(1)
-            
-            # Send the Message
-            await dashboard.backend.startTSI_FE(common_parameter_names, common_parameter_values)
-        else:
-            dashboard.logger.warning("No valid input files selected.")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -4824,6 +4049,33 @@ def _create_tsi_detector_parameter_widget(
     options = param.get("options", []) or []
 
     compact_width = 180
+
+    if param_type == "label":
+        widget = QtWidgets.QLabel(str(default))
+        widget.setObjectName(
+            "label_tsi_dynamic_parameter_value"
+        )
+        widget.setWordWrap(True)
+        widget.setAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
+        widget.setTextInteractionFlags(
+            QtCore.Qt.TextSelectableByMouse
+        )
+
+        font = widget.font()
+        font.setPointSize(8)
+        widget.setFont(font)
+
+        widget.setMinimumWidth(0)
+        widget.setMaximumWidth(16777215)
+
+        widget.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Minimum,
+        )
+
+        return widget
 
     if param_type in {"int", "integer", "number", "float", "double"}:
         widget = QtWidgets.QDoubleSpinBox()
@@ -8292,6 +7544,33 @@ def _create_tsi_conditioner_method_parameter_widget(
     options = param.get("options", []) or []
 
     compact_width = 170
+
+    if param_type == "label":
+        widget = QtWidgets.QLabel(str(default))
+        widget.setObjectName(
+            "label2_tsi_conditioner_method_parameter_value"
+        )
+        widget.setWordWrap(True)
+        widget.setAlignment(
+            QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        )
+        widget.setTextInteractionFlags(
+            QtCore.Qt.TextSelectableByMouse
+        )
+
+        font = widget.font()
+        font.setPointSize(8)
+        widget.setFont(font)
+
+        widget.setMinimumWidth(0)
+        widget.setMaximumWidth(16777215)
+
+        widget.setSizePolicy(
+            QtWidgets.QSizePolicy.Expanding,
+            QtWidgets.QSizePolicy.Minimum,
+        )
+
+        return widget
 
     if param_type in {"int", "integer", "number", "float", "double"}:
         widget = QtWidgets.QDoubleSpinBox()
@@ -12490,3 +11769,9 @@ def _tsi_conditioner_request_artifact_refresh_for_payload(
         )
 
 
+__all__ = [
+    name
+    for name, value in globals().items()
+    if inspect.isfunction(value)
+    and value.__module__ == __name__
+]

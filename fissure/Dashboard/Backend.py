@@ -2546,6 +2546,36 @@ class DashboardBackend:
             )
 
 
+    async def tacticalNodeSoisRefresh(self, node_uid):
+            """
+            Requests the authoritative SOI record set from HIPRFISR for a node.
+
+            HIPRFISR owns the complete merged SOI lifecycle records. The Dashboard
+            response callback replaces the local cache for this node and refreshes
+            every SOI-dependent widget.
+            """
+            if self.hiprfisr_connected is True:
+                PARAMETERS = {
+                    "requester_uid": self.socket_id,
+                    "requester_type": "dashboard",
+                    "node_uid": node_uid,
+                }
+
+                msg = {
+                    fissure.comms.MessageFields.IDENTIFIER:
+                        fissure.comms.Identifiers.DASHBOARD,
+                    fissure.comms.MessageFields.MESSAGE_NAME:
+                        "sendSoisListTak",
+                    fissure.comms.MessageFields.PARAMETERS:
+                        PARAMETERS,
+                }
+
+                await self.hiprfisr_socket.send_msg(
+                    fissure.comms.MessageTypes.COMMANDS,
+                    msg,
+                )
+
+
     async def tacticalNodeArtifactsRefresh(self, node_uid):
         """
         Requests known artifact metadata from HIPRFISR for a selected node.

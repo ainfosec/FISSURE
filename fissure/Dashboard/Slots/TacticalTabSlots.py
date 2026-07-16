@@ -4246,6 +4246,46 @@ def _slotTacticalNodeArtifactsClearRowsClicked(
 
 
 @qasync.asyncSlot(QtCore.QObject)
+async def _slotTacticalNodeSoisRefreshClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Requests the authoritative SOI set for the selected Tactical node.
+    """
+    node_uid = str(
+        getattr(dashboard, "selected_tactical_node_uid", "")
+        or ""
+    ).strip()
+
+    if not node_uid:
+        dashboard.logger.warning(
+            "[Tactical] No node selected for SOI refresh."
+        )
+        return
+
+    refresh_button = getattr(
+        dashboard.ui,
+        "pushButton_tactical_node_sois_refresh",
+        None,
+    )
+
+    if refresh_button is not None:
+        refresh_button.setEnabled(False)
+
+    try:
+        await dashboard.backend.tacticalNodeSoisRefresh(
+            node_uid
+        )
+    except Exception as error:
+        dashboard.logger.error(
+            f"[Tactical] Failed requesting SOI refresh: {error}"
+        )
+    finally:
+        if refresh_button is not None:
+            refresh_button.setEnabled(True)
+
+            
+@qasync.asyncSlot(QtCore.QObject)
 async def _slotTacticalNodeArtifactsRefreshClicked(
     dashboard: QtCore.QObject,
 ):

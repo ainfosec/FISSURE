@@ -196,314 +196,6 @@ class Dashboard(QtWidgets.QMainWindow):
             self.__init2__()            
 
         self.logger.info("=== READY ===")
-
-
-        # ####################################################
-
-
-        #         ####################################################
-        # # Offline tile map test in Dashboard graphicsView
-
-        # import math
-
-        # TILE_SIZE = 256
-
-        # self.map_scene = QtWidgets.QGraphicsScene(self)
-        # self.ui.graphicsView.setScene(self.map_scene)
-
-        # self.ui.graphicsView.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
-        # self.ui.graphicsView.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
-        # self.ui.graphicsView.setResizeAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
-        # self.ui.graphicsView.setRenderHint(QtGui.QPainter.Antialiasing, True)
-        # self.ui.graphicsView.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, True)
-
-        # # ---- map pack selection ----
-        # # For now, hardcode one pack. Later this can come from a combobox.
-        # self.current_map_name = "elmira_demo"
-
-        # # Expected:
-        # # FISSURE/map_data/elmira_demo/tile_manifest.json
-        # # FISSURE/map_data/elmira_demo/tiles/11/... etc
-        # self.map_pack_dir = os.path.join(fissure.utils.FISSURE_ROOT, "map_data", self.current_map_name)
-        # self.map_manifest_path = os.path.join(self.map_pack_dir, "tile_manifest.json")
-
-        # if not os.path.isfile(self.map_manifest_path):
-        #     print("ERROR: tile manifest not found:", self.map_manifest_path)
-        # else:
-        #     with open(self.map_manifest_path, "r", encoding="utf-8") as f:
-        #         self.map_manifest = json.load(f)
-
-        #     self.map_reference_points = self.map_manifest.get("reference_points", [])
-        #     self.map_available_zooms = sorted(int(z) for z in self.map_manifest["zoom_levels"].keys())
-
-        #     # Pick a default zoom. Prefer 12 if present, otherwise the first available.
-        #     self.map_zoom = 12 if 12 in self.map_available_zooms else self.map_available_zooms[0]
-
-        #     def latlon_to_world(lat, lon, zoom):
-        #         lat_rad = math.radians(lat)
-        #         n = 2 ** zoom
-        #         x = (lon + 180.0) / 360.0 * n * TILE_SIZE
-        #         y = (1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n * TILE_SIZE
-        #         return x, y
-
-        #     def scene_to_latlon(scene_x, scene_y):
-        #         world_x = scene_x + self.map_x_min * TILE_SIZE
-        #         world_y = scene_y + self.map_y_min * TILE_SIZE
-
-        #         n = 2 ** self.map_zoom
-        #         lon = world_x / (n * TILE_SIZE) * 360.0 - 180.0
-        #         merc_y = math.pi * (1.0 - 2.0 * world_y / (n * TILE_SIZE))
-        #         lat = math.degrees(math.atan(math.sinh(merc_y)))
-        #         return lat, lon
-
-        #     def latlon_to_scene(lat, lon):
-        #         world_x, world_y = latlon_to_world(lat, lon, self.map_zoom)
-        #         scene_x = world_x - self.map_x_min * TILE_SIZE
-        #         scene_y = world_y - self.map_y_min * TILE_SIZE
-        #         return scene_x, scene_y
-
-        #     def clear_map_scene():
-        #         self.map_scene.clear()
-
-        #     def load_tiles_for_current_zoom():
-        #         missing = 0
-        #         tile_root = os.path.join(self.map_pack_dir, "tiles", str(self.map_zoom))
-
-        #         for x in range(self.map_x_min, self.map_x_max + 1):
-        #             for y in range(self.map_y_min, self.map_y_max + 1):
-        #                 tile_path = os.path.join(tile_root, str(x), f"{y}.png")
-        #                 scene_x = (x - self.map_x_min) * TILE_SIZE
-        #                 scene_y = (y - self.map_y_min) * TILE_SIZE
-
-        #                 if os.path.isfile(tile_path):
-        #                     pixmap = QtGui.QPixmap(tile_path)
-        #                 else:
-        #                     missing += 1
-        #                     pixmap = QtGui.QPixmap(TILE_SIZE, TILE_SIZE)
-        #                     pixmap.fill(QtGui.QColor("#f0f0f0"))
-        #                     painter = QtGui.QPainter(pixmap)
-        #                     painter.setPen(QtGui.QPen(QtGui.QColor("#999999")))
-        #                     painter.drawRect(0, 0, TILE_SIZE - 1, TILE_SIZE - 1)
-        #                     painter.drawText(20, 30, "missing")
-        #                     painter.drawText(20, 55, f"z={self.map_zoom}")
-        #                     painter.drawText(20, 80, f"x={x}")
-        #                     painter.drawText(20, 105, f"y={y}")
-        #                     painter.end()
-
-        #                 item = self.map_scene.addPixmap(pixmap)
-        #                 item.setPos(scene_x, scene_y)
-        #                 item.setZValue(0)
-
-        #         print("missing tiles:", missing)
-
-        #     def add_reference_points(points):
-        #         colors = {
-        #             "Corning": QtGui.QColor("#1d4ed8"),
-        #             "Horseheads": QtGui.QColor("#dc2626"),
-        #             "Elmira": QtGui.QColor("#16a34a"),
-        #         }
-
-        #         for p in points:
-        #             x, y = latlon_to_scene(p["lat"], p["lon"])
-        #             color = colors.get(p["name"], QtGui.QColor("#000000"))
-
-        #             item = self.map_scene.addEllipse(
-        #                 x - 5, y - 5, 10, 10,
-        #                 QtGui.QPen(QtCore.Qt.black),
-        #                 QtGui.QBrush(color)
-        #             )
-        #             item.setZValue(2)
-
-        #             label = self.map_scene.addText(p["name"])
-        #             label.setDefaultTextColor(QtGui.QColor("#111111"))
-        #             label.setPos(x + 8, y - 18)
-        #             label.setZValue(3)
-
-        #     def load_zoom(zoom, center_lat=None, center_lon=None, fit=False):
-        #         self.map_zoom = zoom
-        #         info = self.map_manifest["zoom_levels"][str(self.map_zoom)]
-        #         self.map_x_min = info["x_min"]
-        #         self.map_x_max = info["x_max"]
-        #         self.map_y_min = info["y_min"]
-        #         self.map_y_max = info["y_max"]
-
-        #         clear_map_scene()
-        #         load_tiles_for_current_zoom()
-
-        #         if self.map_reference_points:
-        #             add_reference_points(self.map_reference_points)
-
-        #         scene_width = (self.map_x_max - self.map_x_min + 1) * TILE_SIZE
-        #         scene_height = (self.map_y_max - self.map_y_min + 1) * TILE_SIZE
-        #         self.map_scene.setSceneRect(0, 0, scene_width, scene_height)
-
-        #         if fit:
-        #             self.ui.graphicsView.fitInView(self.map_scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
-        #         elif center_lat is not None and center_lon is not None:
-        #             scene_x, scene_y = latlon_to_scene(center_lat, center_lon)
-        #             self.ui.graphicsView.resetTransform()
-        #             self.ui.graphicsView.centerOn(scene_x, scene_y)
-
-        #         print("loaded map:", self.current_map_name, "zoom:", self.map_zoom)
-
-        #     def current_view_center_latlon():
-        #         viewport_center = self.ui.graphicsView.viewport().rect().center()
-        #         scene_center = self.ui.graphicsView.mapToScene(viewport_center)
-        #         return scene_to_latlon(scene_center.x(), scene_center.y())
-
-        #     def graphicsview_wheel_event(event):
-        #         direction = +1 if event.angleDelta().y() > 0 else -1
-        #         new_zoom = self.map_zoom + direction
-
-        #         if new_zoom in self.map_available_zooms:
-        #             center_lat, center_lon = current_view_center_latlon()
-        #             load_zoom(new_zoom, center_lat=center_lat, center_lon=center_lon, fit=False)
-
-        #         event.accept()
-
-        #     self.ui.graphicsView.wheelEvent = graphicsview_wheel_event
-
-        #     # Initial center:
-        #     # 1) use bounds center if present
-        #     bounds = self.map_manifest.get("bounds", {})
-        #     if all(k in bounds for k in ("north", "south", "west", "east")):
-        #         center_lat = (bounds["north"] + bounds["south"]) / 2.0
-        #         center_lon = (bounds["west"] + bounds["east"]) / 2.0
-        #     else:
-        #         center_lat = 42.1503
-        #         center_lon = -76.9517
-
-        #     load_zoom(self.map_zoom, center_lat=center_lat, center_lon=center_lon, fit=True)
-
-        # print("Dashboard tile map test loaded")
-
-        # ####################################################
-        # # ####################################################
-        # # # Temporary QGraphicsView real map test
-        # # # Uses the existing Designer widget: self.ui.graphicsView
-        # # # Expected map path: FISSURE/map_data/map.png
-
-        # # scene = QtWidgets.QGraphicsScene(self)
-        # # self.ui.graphicsView.setScene(scene)
-
-        # # # Basic view behavior
-        # # self.ui.graphicsView.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
-        # # self.ui.graphicsView.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
-        # # self.ui.graphicsView.setResizeAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
-        # # self.ui.graphicsView.setRenderHint(QtGui.QPainter.Antialiasing, True)
-        # # self.ui.graphicsView.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, True)
-
-        # # # Load real map image
-        # # map_path = os.path.join(fissure.utils.FISSURE_ROOT, "map_data", "map.png")
-        # # pixmap = QtGui.QPixmap(map_path)
-
-        # # if pixmap.isNull():
-        # #     print("ERROR: Failed to load map:", map_path)
-
-        # #     # Fallback image so the tab still shows something
-        # #     map_width = 1400
-        # #     map_height = 900
-        # #     pixmap = QtGui.QPixmap(map_width, map_height)
-        # #     pixmap.fill(QtGui.QColor("#d9dde3"))
-
-        # #     painter = QtGui.QPainter(pixmap)
-
-        # #     grid_pen = QtGui.QPen(QtGui.QColor("#b5bcc6"))
-        # #     for x in range(0, map_width, 100):
-        # #         painter.setPen(grid_pen)
-        # #         painter.drawLine(x, 0, x, map_height)
-        # #     for y in range(0, map_height, 100):
-        # #         painter.drawLine(0, y, map_width, y)
-
-        # #     painter.setPen(QtGui.QPen(QtGui.QColor("#111111")))
-        # #     painter.setFont(QtGui.QFont("Arial", 16))
-        # #     painter.drawText(20, 30, "ERROR: map_data/map.png not found")
-
-        # #     painter.end()
-        # # else:
-        # #     print("Loaded map:", map_path)
-
-        # # map_width = pixmap.width()
-        # # map_height = pixmap.height()
-        # # print("Map size:", map_width, map_height)
-
-        # # bg_item = scene.addPixmap(pixmap)
-        # # bg_item.setZValue(0)
-
-        # # # Approximate geographic bounds for the exported Corning/Horseheads/Elmira image
-        # # # Adjust later if the markers appear slightly off.
-        # # LAT_MAX = 42.2661
-        # # LAT_MIN = 42.0342
-        # # LON_MIN = -77.2212
-        # # LON_MAX = -76.665 #-76.6822
-
-        # # def latlon_to_xy(lat, lon):
-        # #     x = (lon - LON_MIN) / (LON_MAX - LON_MIN) * map_width
-        # #     y = (LAT_MAX - lat) / (LAT_MAX - LAT_MIN) * map_height
-        # #     return x, y
-
-        # # def add_marker(lat, lon, label, color, radius=5):
-        # #     x, y = latlon_to_xy(lat, lon)
-
-        # #     item = scene.addEllipse(
-        # #         x - radius, y - radius, radius * 2, radius * 2,
-        # #         QtGui.QPen(QtCore.Qt.black),
-        # #         QtGui.QBrush(color)
-        # #     )
-        # #     item.setZValue(2)
-
-        # #     text = scene.addText(label)
-        # #     text.setDefaultTextColor(QtGui.QColor("#111111"))
-        # #     text.setPos(x + 8, y - 18)
-        # #     text.setZValue(3)
-
-        # #     return item, text
-
-        # # # Real sanity-check points
-        # # # Corning should be left-center
-        # # add_marker(42.1429, -77.0547, "Corning", QtGui.QColor("#1d4ed8"), radius=6)
-
-        # # # Horseheads should be upper-right of center
-        # # add_marker(42.1670, -76.8200, "Horseheads", QtGui.QColor("#dc2626"), radius=5)
-
-        # # # Elmira should be lower-right
-        # # elmira_x, elmira_y = latlon_to_xy(42.0898, -76.8077)
-        # # elmira_item = scene.addEllipse(
-        # #     elmira_x - 5, elmira_y - 5, 10, 10,
-        # #     QtGui.QPen(QtCore.Qt.black),
-        # #     QtGui.QBrush(QtGui.QColor("#16a34a"))
-        # # )
-        # # elmira_item.setZValue(2)
-
-        # # elmira_label = scene.addText("Elmira")
-        # # elmira_label.setDefaultTextColor(QtGui.QColor("#111111"))
-        # # elmira_label.setPos(elmira_x + 8, elmira_y - 18)
-        # # elmira_label.setZValue(3)
-
-        # # # Example CE / uncertainty ring around Elmira
-        # # ring_radius_px = 40
-        # # ring_item = scene.addEllipse(
-        # #     elmira_x - ring_radius_px, elmira_y - ring_radius_px,
-        # #     ring_radius_px * 2, ring_radius_px * 2,
-        # #     QtGui.QPen(QtGui.QColor("#444444"), 2, QtCore.Qt.DashLine),
-        # #     QtGui.QBrush(QtCore.Qt.transparent)
-        # # )
-        # # ring_item.setZValue(1)
-
-        # # scene.setSceneRect(0, 0, map_width, map_height)
-        # # self.ui.graphicsView.fitInView(scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
-
-        # # # Temporary wheel zoom handler
-        # # def _graphicsview_wheel_event(event):
-        # #     factor = 1.15 if event.angleDelta().y() > 0 else (1.0 / 1.15)
-        # #     self.ui.graphicsView.scale(factor, factor)
-
-        # # self.ui.graphicsView.wheelEvent = _graphicsview_wheel_event
-
-        # # print("graphicsView real map test loaded")
-
-        # ####################################################
-        # ####################################################
         
     
     def __init2__(self):
@@ -660,10 +352,6 @@ class Dashboard(QtWidgets.QMainWindow):
 
         self.target_soi = []
 
-        # Create Preset Dictionary
-        self.preset_dictionary = {}
-        self.preset_count = 0
-
         # Create SOI Blacklist
         self.soi_blacklist = []
 
@@ -684,6 +372,14 @@ class Dashboard(QtWidgets.QMainWindow):
             TSITabSlots.initialize_tsi_conditioner_controls(self)
         except Exception as e:
             self.logger.debug(f"Could not initialize TSI Conditioner controls: {e}")
+
+        # Feature Extractor Controls
+        try:
+            TSITabSlots.initialize_tsi_feature_extractor_controls(self)
+        except Exception as e:
+            self.logger.debug(
+                f"Could not initialize TSI Feature Extractor controls: {e}"
+            )
 
         # Complete Feature List
         self.all_features = [
@@ -719,8 +415,6 @@ class Dashboard(QtWidgets.QMainWindow):
         )
 
         # Defaults
-        TSITabSlots._slotTSI_FE_SettingsCategoryChanged(self)
-        TSITabSlots._slotTSI_FE_SettingsClassificationChanged(self)
         TSITabSlots._slotTSI_ClassifierTrainingCategoryChanged(self)
         TSITabSlots._slotTSI_ClassifierTrainingTechniqueChanged(self)   
         TSITabSlots._slotTSI_ClassifierClassificationCategoryChanged(self)
@@ -1662,6 +1356,16 @@ class Dashboard(QtWidgets.QMainWindow):
             except Exception as e:
                 self.logger.debug(
                     f"Could not update TSI Conditioner selected-node gate: {e}"
+                )
+
+            try:
+                TSITabSlots.update_tsi_fe_selected_node_gate(self)
+                TSITabSlots.update_tsi_fe_run_node(self)
+                TSITabSlots.update_tsi_fe_locality_controls(self)
+            except Exception as e:
+                self.logger.debug(
+                    "Could not update TSI Feature Extractor "
+                    f"selected-node state: {e}"
                 )
 
 
@@ -3010,6 +2714,9 @@ def connect_tactical_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tactical_node_artifacts_clear_rows.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeArtifactsClearRowsClicked(dashboard)
     )
+    dashboard.ui.pushButton_tactical_node_sois_refresh.clicked.connect(
+        lambda: TacticalTabSlots._slotTacticalNodeSoisRefreshClicked(dashboard)
+    )
 
     # Table Widget
     dashboard.ui.tableWidget_tactical_ecosystem.itemSelectionChanged.connect(
@@ -3107,20 +2814,11 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_tsi_conditioner_method_action.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_ConditionerMethodActionChanged(dashboard)
     )
-    dashboard.ui.comboBox_tsi_fe_input_folders.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputFolderChanged(dashboard)
+    dashboard.ui.comboBox_tsi_fe_input_source.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputSourceChanged(dashboard)
     )
-    dashboard.ui.comboBox_tsi_fe_settings_classification.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsClassificationChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_fe_settings_technique.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsTechniqueChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_fe_settings_input_source.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsInputSourceChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_fe_settings_category.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsCategoryChanged(dashboard)
+    dashboard.ui.comboBox_tsi_fe_run_soi.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunSOIChanged(dashboard)
     )
     dashboard.ui.comboBox_tsi_classifier_training_category.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_ClassifierTrainingCategoryChanged(dashboard)
@@ -3152,13 +2850,28 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_tsi_detector_method.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_DetectorMethodChanged(dashboard)
     )
+    dashboard.ui.comboBox_tsi_fe_method_profile.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_MethodProfileChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_fe_method_action.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_MethodActionChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_fe_run_destination.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunDestinationChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_fe_input_artifact.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputArtifactChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_fe_input_soi.currentIndexChanged.connect(
+            lambda: TSITabSlots._slotTSI_FE_InputSOIChanged(dashboard)
+    )
 
     # List Widget
     dashboard.ui.listWidget_tsi_conditioner_input_files.itemSelectionChanged.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputSelectionChanged(dashboard)
     )
-    dashboard.ui.listWidget_tsi_fe_input_files.itemDoubleClicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputLoadFileClicked(dashboard)
+    dashboard.ui.listWidget_tsi_fe_input_files.itemSelectionChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputSelectionChanged(dashboard)
     )
 
     # Push Button
@@ -3201,56 +2914,26 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tsi_fe_input_folder.clicked.connect(
         lambda: TSITabSlots._slotTSI_FE_InputFolderClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_input_load_file.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputLoadFileClicked(dashboard)
-    )
     dashboard.ui.pushButton_tsi_fe_input_refresh.clicked.connect(
         lambda: TSITabSlots._slotTSI_FE_InputRefreshClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_input_remove.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_input_rename.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputRenameClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_input_terminal.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputTerminalClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_fe_input_preview.clicked.connect(
         lambda: TSITabSlots._slotTSI_FE_InputPreviewClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_results_preview.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsPreviewClicked(dashboard)
+    dashboard.ui.pushButton_tsi_fe_method_query_actions.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_MethodQueryActionsClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_results_plot_column.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsPlotColumnClicked(dashboard)
+    dashboard.ui.pushButton_tsi_fe_method_query_parameters.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_MethodQueryParametersClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_settings_deselect_all.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsDeselectAllClicked(dashboard)
+    dashboard.ui.pushButton_tsi_fe_run_start_stop.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunStartStopClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_settings_select_all.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsSelectAllClicked(dashboard)
+    dashboard.ui.pushButton_tsi_fe_input_artifact_refresh.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputArtifactRefreshClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_results_export.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsExportClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_plot_avg.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsPlotAvgClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_trim.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsTrimClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_import.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsImportClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_joint_plot.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsJointPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_remove_row.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsRemoveRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_remove_col.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsRemoveColClicked(dashboard)
+    dashboard.ui.pushButton_tsi_fe_input_soi_refresh.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputSOIRefreshClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_clear_wideband_list.clicked.connect(
         lambda: TSITabSlots._slotTSI_ClearWidebandListClicked(dashboard)
@@ -3260,9 +2943,6 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tsi_blacklist_remove.clicked.connect(
         lambda: TSITabSlots._slotTSI_BlacklistRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_operation_start.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_OperationStartClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_classifier_training_import_fe.clicked.connect(
         lambda: TSITabSlots._slotTSI_ClassifierTrainingImportFE_Clicked(dashboard)
@@ -3483,6 +3163,28 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tsi_conditioner_results_promote_to_soi.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerResultsPromoteToSoiClicked(dashboard)
     )
+    dashboard.ui.pushButton_tsi_fe_results_open_folder.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsOpenFolderClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_results_preview.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsPreviewClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_results_export_csv.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsExportCSVClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_results_export_json.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsExportJSONClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_results_plot_feature.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsPlotFeatureClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_results_plot_distribution.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsPlotDistributionClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_run_soi_refresh.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunSOIRefreshClicked(dashboard)
+    )
+
     
     # Radio Buttons
     dashboard.ui.radioButton_tsi_conditioner_input_extensions_all.clicked.connect(
@@ -3491,6 +3193,17 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.radioButton_tsi_conditioner_input_extensions_custom.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputExtensionsCustomClicked(dashboard)
     )
+    dashboard.ui.radioButton_tsi_fe_input_extensions_all.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputExtensionsAllClicked(dashboard)
+    )
+    dashboard.ui.radioButton_tsi_fe_input_extensions_custom.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputExtensionsCustomClicked(dashboard)
+    )
+
+    # Table Widget
+    dashboard.ui.tableWidget_tsi_fe_results.itemSelectionChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultSelectionChanged(dashboard)
+    )
 
     # Text Edit
     dashboard.ui.textEdit_tsi_conditioner_file_path.textChanged.connect(
@@ -3498,6 +3211,15 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
     dashboard.ui.textEdit_tsi_conditioner_file_sample_rate.textChanged.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputDataTypeChanged(dashboard)
+    )
+    dashboard.ui.textEdit_tsi_fe_file_path.textChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputPathEdited(dashboard)
+    )
+    dashboard.ui.textEdit_tsi_fe_input_extensions.textChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputExtensionsEdited(dashboard)
+    )
+    dashboard.ui.textEdit_tsi_fe_run_description.textChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunDescriptionChanged(dashboard)
     )
 
 
@@ -4739,5 +4461,4 @@ async def wait_for_backend_shutdown(dashboard: QtCore.QObject):
     while dashboard.backend.hiprfisr_connected is True:
         await asyncio.sleep(1)
     dashboard.logger.critical("BACKEND SHUTDOWN COMPLETE")
-
 

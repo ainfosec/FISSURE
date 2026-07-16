@@ -17,7 +17,10 @@ import inspect
 import json
 import logging
 import os
+import shutil
 import sys
+import time
+import uuid
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import numpy as np
@@ -59,40 +62,26 @@ except ImportError:
 # Defaults
 # -------------------------------------------------------------------
 
-DEFAULTS: Dict[str, Any] = {
-    "checkboxes": [
-        "Mean",
-        "Max",
-        "Peak",
-        "Peak to Peak",
-        "RMS",
-        "Variance",
-        "Standard Deviation",
-        "Power",
-        "Crest Factor",
-        "Pulse Indicator",
-        "Margin",
-        "Kurtosis",
-        "Skewness",
-        "Zero Crossings",
-        "Samples",
-        "Mean of Band Power Spectrum",
-        "Max of Band Power Spectrum",
-        "Sum of Total Band Power",
-        "Peak of Band Power",
-        "Variance of Band Power",
-        "Standard Deviation of Band Power",
-        "Skewness of Band Power",
-        "Kurtosis of Band Power",
-        "Relative Spectral Peak per Band",
-    ],
-    "data_type": "Complex Float 32",
-    "extensions": [".iq", ".bin", ".raw", ".dat"],
-    "selection_sidecar": "selected_files.json",
-}
+TIME_DOMAIN_FEATURES = [
+    "Mean",
+    "Max",
+    "Peak",
+    "Peak to Peak",
+    "RMS",
+    "Variance",
+    "Standard Deviation",
+    "Power",
+    "Crest Factor",
+    "Pulse Indicator",
+    "Margin",
+    "Kurtosis",
+    "Skewness",
+    "Zero Crossings",
+    "Samples",
+]
 
 
-FFT_FEATURES = {
+FREQUENCY_DOMAIN_FEATURES = [
     "Mean of Band Power Spectrum",
     "Max of Band Power Spectrum",
     "Sum of Total Band Power",
@@ -102,7 +91,99 @@ FFT_FEATURES = {
     "Skewness of Band Power",
     "Kurtosis of Band Power",
     "Relative Spectral Peak per Band",
+]
+
+
+ALL_FEATURES = TIME_DOMAIN_FEATURES + FREQUENCY_DOMAIN_FEATURES
+
+
+FEATURE_PROFILE_PRESETS = {
+    "time_domain": {
+        "core": [
+            "Mean",
+            "Max",
+            "Peak",
+            "RMS",
+            "Variance",
+            "Standard Deviation",
+            "Power",
+            "Samples",
+        ],
+        "statistical": [
+            "Mean",
+            "Variance",
+            "Standard Deviation",
+            "Kurtosis",
+            "Skewness",
+            "Zero Crossings",
+            "Samples",
+        ],
+        "all": TIME_DOMAIN_FEATURES,
+    },
+    "frequency_domain": {
+        "core": [
+            "Mean of Band Power Spectrum",
+            "Max of Band Power Spectrum",
+            "Sum of Total Band Power",
+            "Peak of Band Power",
+            "Relative Spectral Peak per Band",
+        ],
+        "statistical": [
+            "Mean of Band Power Spectrum",
+            "Variance of Band Power",
+            "Standard Deviation of Band Power",
+            "Skewness of Band Power",
+            "Kurtosis of Band Power",
+        ],
+        "all": FREQUENCY_DOMAIN_FEATURES,
+    },
+    "time_frequency": {
+        "balanced": [
+            "Mean",
+            "Max",
+            "Peak",
+            "RMS",
+            "Variance",
+            "Standard Deviation",
+            "Power",
+            "Samples",
+            "Mean of Band Power Spectrum",
+            "Max of Band Power Spectrum",
+            "Sum of Total Band Power",
+            "Peak of Band Power",
+            "Relative Spectral Peak per Band",
+        ],
+        "statistical": [
+            "Mean",
+            "Variance",
+            "Standard Deviation",
+            "Kurtosis",
+            "Skewness",
+            "Zero Crossings",
+            "Samples",
+            "Mean of Band Power Spectrum",
+            "Variance of Band Power",
+            "Standard Deviation of Band Power",
+            "Skewness of Band Power",
+            "Kurtosis of Band Power",
+        ],
+        "all": ALL_FEATURES,
+    },
 }
+
+
+DEFAULTS: Dict[str, Any] = {
+    "profile": "all",
+    "preset": "all",
+    "checkboxes": None,
+    "features": "",
+    "data_type": "Complex Float 32",
+    "extensions": [".iq", ".bin", ".raw", ".dat"],
+    "selection_sidecar": "selected_files.json",
+}
+
+
+FFT_FEATURES = set(FREQUENCY_DOMAIN_FEATURES)
 
 
 # -------------------------------------------------------------------
@@ -169,18 +250,6 @@ def _infer_artifact_id(folder: Optional[str], explicit_artifact_id: Optional[str
     return ""
 
 
-async def _call_with_timeout(callback, payload: Dict[str, Any], logger: logging.Logger, name: str) -> None:
-    if callback is None:
-        return
-
-    try:
-        result = callback(payload)
-        if inspect.isawaitable(result):
-            await asyncio.wait_for(result, timeout=2.0)
-    except Exception:
-        logger.exception("%s failed", name)
-
-
 async def _set_status(callback, value: str, logger: logging.Logger) -> None:
     if callback is None:
         return
@@ -191,6 +260,136 @@ async def _set_status(callback, value: str, logger: logging.Logger) -> None:
             await asyncio.wait_for(result, timeout=2.0)
     except Exception:
         logger.exception("status_callback failed")
+
+
+def _normalize_profile_name(value: Any) -> str:
+    text = str(value or "").strip().lower()
+    text = text.replace("+", " ")
+    text = text.replace("-", " ")
+    text = text.replace("_", " ")
+    text = " ".join(text.split())
+
+    aliases = {
+        "time domain": "time_domain",
+        "frequency domain": "frequency_domain",
+        "time frequency": "time_frequency",
+        "time and frequency": "time_frequency",
+        "all": "all",
+        "all available": "all",
+        "custom": "custom",
+    }
+
+    return aliases.get(text, text.replace(" ", "_"))
+
+
+def _normalize_preset_name(value: Any) -> str:
+    text = str(value or "").strip().lower()
+    text = text.replace("+", " ")
+    text = text.replace("-", " ")
+    text = text.replace("_", " ")
+    return "_".join(text.split())
+
+
+def _parse_custom_features(value: Any) -> List[str]:
+    if isinstance(value, list):
+        requested = [
+            str(item or "").strip()
+            for item in value
+            if str(item or "").strip()
+        ]
+    else:
+        requested = [
+            item.strip()
+            for item in str(value or "").split(",")
+            if item.strip()
+        ]
+
+    canonical_by_lower = {
+        feature.lower(): feature
+        for feature in ALL_FEATURES
+    }
+
+    selected: List[str] = []
+
+    for requested_name in requested:
+        canonical_name = canonical_by_lower.get(requested_name.lower())
+
+        if canonical_name and canonical_name not in selected:
+            selected.append(canonical_name)
+
+    return selected
+
+
+def resolve_feature_selection(
+    profile: Any = DEFAULTS["profile"],
+    preset: Any = DEFAULTS["preset"],
+    checkboxes: Optional[List[str]] = None,
+    features: Any = DEFAULTS["features"],
+) -> List[str]:
+    """
+    Resolve the final operation feature list.
+
+    Resolution priority:
+        1. Explicit checkboxes supplied by an orchestrating action/workflow.
+        2. Custom features supplied as a list or comma-separated string.
+        3. Operation-owned profile/preset definitions.
+        4. All supported features for legacy callers.
+    """
+    if checkboxes is not None:
+        selected = _parse_custom_features(checkboxes)
+
+        if not selected:
+            raise ValueError(
+                "No supported features were found in the explicit checkboxes list."
+            )
+
+        return selected
+
+    normalized_profile = _normalize_profile_name(profile)
+
+    if normalized_profile == "custom":
+        selected = _parse_custom_features(features)
+
+        if not selected:
+            raise ValueError(
+                "The custom Feature Extractor profile requires at least one "
+                "supported feature name."
+            )
+
+        return selected
+
+    if normalized_profile in {"", "all"}:
+        return list(ALL_FEATURES)
+
+    profile_presets = FEATURE_PROFILE_PRESETS.get(normalized_profile)
+
+    if profile_presets is None:
+        raise ValueError(
+            f"Unsupported Feature Extractor profile: {profile!r}"
+        )
+
+    normalized_preset = _normalize_preset_name(preset)
+
+    preset_aliases = {
+        "all_time_domain": "all",
+        "all_frequency_domain": "all",
+        "all_time_frequency": "all",
+        "all_available": "all",
+        "core": "core",
+        "balanced": "balanced",
+        "statistical": "statistical",
+        "all": "all",
+    }
+
+    normalized_preset = preset_aliases.get(
+        normalized_preset,
+        normalized_preset,
+    )
+
+    if normalized_preset not in profile_presets:
+        normalized_preset = next(iter(profile_presets))
+
+    return list(profile_presets[normalized_preset])
 
 
 # -------------------------------------------------------------------
@@ -426,13 +625,27 @@ class OperationMain(Operation):
         alert_callback=None,
         tak_cot_callback=None,
         status_callback=None,
+        soi_callback=None,
+        artifact_manager=None,
         source_id: Optional[str] = None,
         artifact_id: Optional[str] = None,
+
+        operation_id: str = "",
+        source_operation_id: str = "",
+        destination: str = "Local Results",
+        description: str = "",
+        soi_id: str = "",
+        soi_key: str = "",
+        frequency_mhz: Any = None,
+        managed_input: Optional[Dict[str, Any]] = None,
 
         folder: Optional[str] = None,
         files: Optional[List[str]] = None,
         data_type: str = DEFAULTS["data_type"],
-        checkboxes: Optional[List[str]] = None,
+        profile: str = DEFAULTS["profile"],
+        preset: str = DEFAULTS["preset"],
+        checkboxes: Optional[List[str]] = DEFAULTS["checkboxes"],
+        features: Any = DEFAULTS["features"],
         extensions: Optional[List[str]] = None,
         selection_sidecar: str = DEFAULTS["selection_sidecar"],
     ):
@@ -442,15 +655,41 @@ class OperationMain(Operation):
             alert_callback=alert_callback,
             tak_cot_callback=tak_cot_callback,
             status_callback=status_callback,
+            soi_callback=soi_callback,
+            artifact_manager=artifact_manager,
         )
 
+
+        if operation_id:
+            self.opid = str(operation_id)
+
         self.source_id = source_id or node_uid or "sensor_node"
-        self.artifact_id = artifact_id or ""
+        self.artifact_id = str(artifact_id or "").strip()
+        self.source_operation_id = str(source_operation_id or "").strip()
+
+        self.destination = str(destination or "Local Results").strip()
+        self.description = str(description or "").strip()
+        self.soi_id = str(soi_id or "").strip()
+        self.soi_key = str(soi_key or "").strip()
+        self.frequency_mhz = frequency_mhz
+        self.managed_input = (
+            dict(managed_input)
+            if isinstance(managed_input, dict)
+            else {}
+        )
+
         self.folder = folder
         self.files = files
         self.data_type = data_type
-        self.checkboxes = checkboxes if checkboxes is not None else list(DEFAULTS["checkboxes"])
-        self.extensions = extensions if extensions is not None else list(DEFAULTS["extensions"])
+        self.profile = profile
+        self.preset = preset
+        self.checkboxes = checkboxes
+        self.features = features
+        self.extensions = (
+            extensions
+            if extensions is not None
+            else list(DEFAULTS["extensions"])
+        )
         self.selection_sidecar = selection_sidecar
 
         self.output_path: str = ""
@@ -458,69 +697,930 @@ class OperationMain(Operation):
         self.feature_results: List[Dict[str, Any]] = []
         self.report_payload: Dict[str, Any] = {}
 
+    @staticmethod
+    def _artifact_id_value(artifact: Any) -> str:
+        """
+        Normalizes ArtifactManager return values.
+
+        ArtifactManager implementations may return an artifact object or the
+        artifact ID directly.
+        """
+        if not artifact:
+            return ""
+
+        return str(
+            getattr(
+                artifact,
+                "id",
+                artifact,
+            )
+            or ""
+        ).strip()
+
+    @staticmethod
+    def _safe_extract_zip(
+        archive_path: str,
+        extraction_folder: str,
+    ) -> None:
+        """
+        Extracts one node-local Artifact ZIP while rejecting path traversal.
+        """
+        import zipfile
+
+        archive_path = os.path.abspath(archive_path)
+        extraction_folder = os.path.abspath(extraction_folder)
+        os.makedirs(extraction_folder, exist_ok=True)
+
+        extraction_root = extraction_folder + os.sep
+
+        with zipfile.ZipFile(archive_path, "r") as archive:
+            for member in archive.infolist():
+                member_path = os.path.abspath(
+                    os.path.join(
+                        extraction_folder,
+                        member.filename,
+                    )
+                )
+
+                if not (
+                    member_path == extraction_folder
+                    or member_path.startswith(extraction_root)
+                ):
+                    raise ValueError(
+                        "Artifact ZIP contains an unsafe path: "
+                        f"{member.filename!r}"
+                    )
+
+            archive.extractall(extraction_folder)
+
+
+    @staticmethod
+    def _managed_artifact_candidate_roots(
+        artifact_id: str,
+        operation_id: str,
+    ) -> List[str]:
+        """
+        Returns node-local candidate directories for one managed Artifact.
+
+        FISSURE Artifact storage has historically used operation IDs for the
+        directory name, while some callers use the Artifact ID directly. Both
+        forms are checked without consulting the Dashboard filesystem.
+        """
+        identifiers: List[str] = []
+
+        for value in (
+            operation_id,
+            artifact_id,
+        ):
+            value = str(value or "").strip()
+
+            if value and value not in identifiers:
+                identifiers.append(value)
+
+        roots: List[str] = []
+
+        for identifier in identifiers:
+            artifact_root = os.path.abspath(
+                os.path.join(
+                    FISSURE_ROOT,
+                    "artifacts",
+                    identifier,
+                )
+            )
+
+            for candidate in (
+                os.path.join(artifact_root, "files"),
+                artifact_root,
+            ):
+                if candidate not in roots:
+                    roots.append(candidate)
+
+        return roots
+
+
+    @staticmethod
+    def _managed_selected_names(
+        artifact_record: Dict[str, Any],
+    ) -> List[str]:
+        """
+        Returns the requested Artifact member names from the control payload.
+        """
+        selected_names: List[str] = []
+
+        selected_files = artifact_record.get(
+            "selected_files",
+            [],
+        )
+
+        if not isinstance(selected_files, list):
+            selected_files = []
+
+        for file_record in selected_files:
+            if isinstance(file_record, dict):
+                name = str(
+                    file_record.get("name")
+                    or file_record.get("filename")
+                    or file_record.get("file_name")
+                    or ""
+                ).strip()
+            else:
+                name = str(file_record or "").strip()
+
+            if name and name not in selected_names:
+                selected_names.append(name)
+
+        return selected_names
+
+
+    def _resolve_node_local_managed_input(
+        self,
+        managed_input: Dict[str, Any],
+    ) -> Tuple[List[str], Optional[str]]:
+        """
+        Resolves an identifier-only Artifact/SOI request against storage on the
+        executing Sensor Node.
+
+        No download, message-embedded data, Dashboard path, or network fallback
+        is used. A missing payload produces a clear RuntimeError.
+        """
+        if not isinstance(managed_input, dict) or not managed_input:
+            return [], None
+
+        source = str(
+            managed_input.get("source", "")
+            or ""
+        ).strip()
+
+        artifact_records = managed_input.get(
+            "artifacts",
+            [],
+        )
+
+        if not isinstance(artifact_records, list):
+            artifact_records = []
+
+        if not artifact_records:
+            artifact_ids = managed_input.get(
+                "artifact_ids",
+                [],
+            )
+
+            if not isinstance(artifact_ids, list):
+                artifact_ids = []
+
+            artifact_records = [
+                {
+                    "artifact_id": artifact_id,
+                    "operation_id": "",
+                    "selected_files": [],
+                }
+                for artifact_id in artifact_ids
+                if str(artifact_id or "").strip()
+            ]
+
+        resolved_files: List[str] = []
+        resolved_seen = set()
+        first_parent: Optional[str] = None
+        missing_artifacts: List[str] = []
+        missing_members: List[str] = []
+
+        def _add_file(path: str) -> None:
+            nonlocal first_parent
+
+            path = os.path.abspath(path)
+
+            if not os.path.isfile(path) or path in resolved_seen:
+                return
+
+            resolved_seen.add(path)
+            resolved_files.append(path)
+
+            if first_parent is None:
+                first_parent = os.path.dirname(path)
+
+        for artifact_record in artifact_records:
+            if not isinstance(artifact_record, dict):
+                continue
+
+            artifact_id = str(
+                artifact_record.get("artifact_id", "")
+                or ""
+            ).strip()
+
+            operation_id = str(
+                artifact_record.get("operation_id", "")
+                or ""
+            ).strip()
+
+            selected_names = self._managed_selected_names(
+                artifact_record
+            )
+
+            candidate_roots = self._managed_artifact_candidate_roots(
+                artifact_id,
+                operation_id,
+            )
+
+            available_files: List[str] = []
+            zip_files: List[str] = []
+
+            for root in candidate_roots:
+                if os.path.isfile(root):
+                    if root.lower().endswith(".zip"):
+                        zip_files.append(root)
+                    else:
+                        available_files.append(root)
+                    continue
+
+                if not os.path.isdir(root):
+                    continue
+
+                for walk_root, _directories, filenames in os.walk(root):
+                    normalized_walk_root = os.path.abspath(walk_root)
+
+                    if "feature_extractor_input" in normalized_walk_root.split(os.sep):
+                        continue
+
+                    for filename in sorted(filenames, key=str.lower):
+                        path = os.path.join(walk_root, filename)
+
+                        if filename.lower().endswith(".zip"):
+                            zip_files.append(path)
+                        else:
+                            available_files.append(path)
+
+            extraction_identifier = (
+                operation_id
+                or artifact_id
+                or uuid.uuid4().hex
+            )
+
+            extraction_root = os.path.abspath(
+                os.path.join(
+                    FISSURE_ROOT,
+                    "artifacts",
+                    extraction_identifier,
+                    "feature_extractor_input",
+                    artifact_id or extraction_identifier,
+                )
+            )
+
+            for zip_path in zip_files:
+                marker_path = os.path.join(
+                    extraction_root,
+                    ".extracted.json",
+                )
+
+                archive_state = {
+                    "path": os.path.abspath(zip_path),
+                    "mtime": os.path.getmtime(zip_path),
+                    "size": os.path.getsize(zip_path),
+                }
+
+                extract_required = True
+
+                if os.path.isfile(marker_path):
+                    try:
+                        with open(
+                            marker_path,
+                            "r",
+                            encoding="utf-8",
+                        ) as marker_file:
+                            extract_required = (
+                                json.load(marker_file)
+                                != archive_state
+                            )
+                    except Exception:
+                        extract_required = True
+
+                if extract_required:
+                    if os.path.isdir(extraction_root):
+                        shutil.rmtree(extraction_root)
+
+                    os.makedirs(extraction_root, exist_ok=True)
+                    self._safe_extract_zip(
+                        zip_path,
+                        extraction_root,
+                    )
+
+                    with open(
+                        marker_path,
+                        "w",
+                        encoding="utf-8",
+                    ) as marker_file:
+                        json.dump(
+                            archive_state,
+                            marker_file,
+                            indent=2,
+                        )
+
+                for walk_root, _directories, filenames in os.walk(
+                    extraction_root
+                ):
+                    for filename in sorted(filenames, key=str.lower):
+                        if filename == ".extracted.json":
+                            continue
+
+                        available_files.append(
+                            os.path.join(walk_root, filename)
+                        )
+
+            if not available_files:
+                missing_artifacts.append(
+                    artifact_id or operation_id or "unknown"
+                )
+                continue
+
+            if selected_names:
+                matched_names = set()
+
+                for path in available_files:
+                    basename = os.path.basename(path)
+                    normalized_path = path.replace(os.sep, "/")
+
+                    for selected_name in selected_names:
+                        normalized_name = selected_name.replace("\\", "/")
+
+                        if (
+                            basename == os.path.basename(normalized_name)
+                            or normalized_path.endswith("/" + normalized_name)
+                        ):
+                            _add_file(path)
+                            matched_names.add(selected_name)
+                            break
+
+                for selected_name in selected_names:
+                    if selected_name not in matched_names:
+                        missing_members.append(
+                            f"{artifact_id or operation_id}:{selected_name}"
+                        )
+
+            else:
+                for path in available_files:
+                    _add_file(path)
+
+        if missing_artifacts:
+            raise RuntimeError(
+                "Source Artifact data is not available on the selected "
+                "Sensor Node. Missing Artifact storage for: "
+                + ", ".join(missing_artifacts)
+                + ". Artifact transfer is not currently supported."
+            )
+
+        if missing_members:
+            raise RuntimeError(
+                "Selected Artifact members are not available on the selected "
+                "Sensor Node: "
+                + ", ".join(missing_members)
+            )
+
+        if not resolved_files:
+            raise RuntimeError(
+                f"No node-local IQ files resolved for managed {source or 'Artifact'} input."
+            )
+
+        return resolved_files, first_parent
+
+
+    def _copy_source_iq_files(
+        self,
+        resolved_files: List[str],
+        source_folder: str,
+    ) -> List[Dict[str, Any]]:
+        """
+        Copies selected IQ files into managed source-artifact storage.
+
+        A matching SigMF metadata sidecar is copied automatically whenever a
+        selected input ends in .sigmf-data.
+        """
+        os.makedirs(source_folder, exist_ok=True)
+
+        copied_records: List[Dict[str, Any]] = []
+        copied_paths = set()
+
+        def _copy_one(source_path: str, role: str) -> None:
+            source_path = os.path.abspath(source_path)
+
+            if (
+                not os.path.isfile(source_path)
+                or source_path in copied_paths
+            ):
+                return
+
+            basename = os.path.basename(source_path)
+            destination_path = os.path.join(
+                source_folder,
+                basename,
+            )
+
+            if (
+                os.path.exists(destination_path)
+                and os.path.abspath(destination_path) != source_path
+            ):
+                root, extension = os.path.splitext(basename)
+                destination_path = os.path.join(
+                    source_folder,
+                    f"{root}_{uuid.uuid4().hex[:8]}{extension}",
+                )
+
+            shutil.copy2(source_path, destination_path)
+            copied_paths.add(source_path)
+
+            copied_records.append(
+                {
+                    "role": role,
+                    "name": os.path.basename(destination_path),
+                    "path": destination_path,
+                    "source_path": source_path,
+                    "size_bytes": os.path.getsize(destination_path),
+                    "sha256": _sha256_file(destination_path),
+                }
+            )
+
+        for input_path in resolved_files:
+            _copy_one(input_path, "source_iq")
+
+            if str(input_path).endswith(".sigmf-data"):
+                sidecar_path = (
+                    str(input_path)[:-len(".sigmf-data")]
+                    + ".sigmf-meta"
+                )
+                _copy_one(
+                    sidecar_path,
+                    "sigmf_metadata",
+                )
+
+        return copied_records
+
+    async def _attach_artifacts_to_soi(
+        self,
+        *,
+        node_uid: str,
+        soi_id: str,
+        frequency_mhz: Any,
+        source_artifact_id: str,
+        analysis_artifact_id: str,
+        report_payload: Dict[str, Any],
+    ) -> None:
+        """
+        Publishes one SOI update containing both durable artifact relationships.
+        """
+        callback = getattr(self, "soi_callback", None)
+
+        if not callback:
+            raise RuntimeError(
+                "Attach to Existing SOI requires soi_callback."
+            )
+
+        try:
+            frequency_value = (
+                float(frequency_mhz)
+                if frequency_mhz not in [None, "", "None"]
+                else 0.0
+            )
+        except Exception:
+            frequency_value = 0.0
+
+        artifact_links = [
+            {
+                "artifact_id": source_artifact_id,
+                "role": "source_iq",
+                "operation_id": self.source_operation_id,
+            },
+            {
+                "artifact_id": analysis_artifact_id,
+                "role": "feature_analysis",
+                "operation_id": self.opid,
+                "source_artifact_id": source_artifact_id,
+            },
+        ]
+
+        result = callback(
+            node_uid=node_uid,
+            soi_id=soi_id,
+            frequency_mhz=frequency_value,
+            status="ANALYSIS_ATTACHED",
+            operation_id=self.opid,
+            artifact_id=analysis_artifact_id,
+            summary={
+                "stage": "feature_analysis_attached",
+                "stage_order": 60,
+                "artifact_links": artifact_links,
+                "source_artifact_id": source_artifact_id,
+                "analysis_artifact_id": analysis_artifact_id,
+                "feature_profile": report_payload.get("profile", ""),
+                "feature_preset": report_payload.get("preset", ""),
+                "feature_count": report_payload.get("feature_count", 0),
+                "result_count": report_payload.get("result_count", 0),
+                "description": report_payload.get("description", ""),
+            },
+            lat=True,
+            lon=True,
+            alt=True,
+            observation_time=True,
+        )
+
+        if inspect.isawaitable(result):
+            await asyncio.wait_for(result, timeout=2.0)
+
+    async def _create_soi_with_artifacts(
+        self,
+        *,
+        node_uid: str,
+        frequency_mhz: Any,
+        source_artifact_id: str,
+        analysis_artifact_id: str,
+        report_payload: Dict[str, Any],
+    ) -> str:
+        """
+        Creates a new SOI after both managed artifacts have been registered.
+
+        Returns:
+            The generated SOI ID.
+        """
+        callback = getattr(
+            self,
+            "soi_callback",
+            None,
+        )
+
+        if not callback:
+            raise RuntimeError(
+                "Create New SOI from Input requires soi_callback."
+            )
+
+        try:
+            frequency_value = float(frequency_mhz)
+        except Exception as error:
+            raise ValueError(
+                "Create New SOI from Input requires a valid frequency."
+            ) from error
+
+        if frequency_value <= 0:
+            raise ValueError(
+                "Create New SOI from Input requires a frequency "
+                "greater than 0 MHz."
+            )
+
+        new_soi_id = str(uuid.uuid4())
+
+        artifact_links = [
+            {
+                "artifact_id": source_artifact_id,
+                "role": "source_iq",
+                "operation_id": self.source_operation_id,
+            },
+            {
+                "artifact_id": analysis_artifact_id,
+                "role": "feature_analysis",
+                "operation_id": self.opid,
+                "source_artifact_id": source_artifact_id,
+            },
+        ]
+
+        result = callback(
+            node_uid=node_uid,
+            soi_id=new_soi_id,
+            frequency_mhz=frequency_value,
+            status="ANALYSIS_ATTACHED",
+            operation_id=self.opid,
+            artifact_id=analysis_artifact_id,
+            summary={
+                "stage": "feature_analysis_attached",
+                "stage_order": 60,
+                "created_by": "feature_extractor",
+                "artifact_links": artifact_links,
+                "source_artifact_id": source_artifact_id,
+                "analysis_artifact_id": analysis_artifact_id,
+                "feature_profile": report_payload.get(
+                    "profile",
+                    "",
+                ),
+                "feature_preset": report_payload.get(
+                    "preset",
+                    "",
+                ),
+                "feature_count": report_payload.get(
+                    "feature_count",
+                    0,
+                ),
+                "result_count": report_payload.get(
+                    "result_count",
+                    0,
+                ),
+                "description": report_payload.get(
+                    "description",
+                    "",
+                ),
+            },
+            lat=True,
+            lon=True,
+            alt=True,
+            observation_time=True,
+        )
+
+        if inspect.isawaitable(result):
+            await asyncio.wait_for(
+                result,
+                timeout=2.0,
+            )
+
+        return new_soi_id
+
     async def run(self) -> None:
         status_callback = getattr(self, "status_callback", None)
         params: Dict[str, Any] = getattr(self, "parameters", {}) or {}
+        started_at = time.time()
 
-        node_uid = str(params.get("node_uid", self.node_uid) or self.node_uid or "")
-        source_id = str(params.get("source_id", self.source_id) or node_uid or "sensor_node")
+        node_uid = str(
+            params.get("node_uid", self.node_uid)
+            or self.node_uid
+            or ""
+        )
 
-        folder = params.get("folder", self.folder)
+        source_id = str(
+            params.get("source_id", self.source_id)
+            or node_uid
+            or "sensor_node"
+        )
+
+
+        input_folder = params.get("folder", self.folder)
         files = params.get("files", self.files)
         data_type = params.get("data_type", self.data_type)
+        profile = params.get("profile", self.profile)
+        preset = params.get("preset", self.preset)
         checkboxes = params.get("checkboxes", self.checkboxes)
+        features = params.get("features", self.features)
         extensions = params.get("extensions", self.extensions)
-        sidecar_name = params.get("selection_sidecar", self.selection_sidecar)
-        artifact_id = str(params.get("artifact_id", self.artifact_id) or "")
+        sidecar_name = params.get(
+            "selection_sidecar",
+            self.selection_sidecar,
+        )
 
-        if checkboxes is None:
-            checkboxes = list(DEFAULTS["checkboxes"])
+        destination = str(
+            params.get("destination", self.destination)
+            or "Local Results"
+        ).strip()
+
+        description = str(
+            params.get("description", self.description)
+            or ""
+        ).strip()
+
+        soi_id = str(
+            params.get("soi_id", self.soi_id)
+            or ""
+        ).strip()
+
+        soi_key = str(
+            params.get("soi_key", self.soi_key)
+            or ""
+        ).strip()
+
+        frequency_mhz = params.get(
+            "frequency_mhz",
+            self.frequency_mhz,
+        )
+
+        managed_input = params.get(
+            "managed_input",
+            self.managed_input,
+        )
+
+        if not isinstance(managed_input, dict):
+            managed_input = {}
+        
+        requested_operation_id = str(
+            params.get("operation_id", "")
+            or ""
+        ).strip()
+
+        if requested_operation_id:
+            self.opid = requested_operation_id
+
+        source_operation_id = str(
+            params.get(
+                "source_operation_id",
+                self.source_operation_id,
+            )
+            or ""
+        ).strip()
+
+        if source_operation_id:
+            self.source_operation_id = source_operation_id
+
+        artifact_id = str(
+            params.get("artifact_id", self.artifact_id)
+            or ""
+        ).strip()
+
+        checkboxes = resolve_feature_selection(
+            profile=profile,
+            preset=preset,
+            checkboxes=checkboxes,
+            features=features,
+        )
+
         if extensions is None:
             extensions = list(DEFAULTS["extensions"])
 
-        folder = os.path.abspath(folder) if isinstance(folder, str) and folder else None
+        input_folder = (
+            os.path.abspath(input_folder)
+            if isinstance(input_folder, str) and input_folder
+            else None
+        )
+
         resolved_files: List[str] = []
         wrote_features = False
 
         try:
-            await _set_status(status_callback, "Running: Feature Extraction", self.logger)
+            await _set_status(
+                status_callback,
+                "Running: Feature Extraction",
+                self.logger,
+            )
 
-            if files and isinstance(files, list):
-                for f in files:
-                    if not isinstance(f, str):
+            if managed_input:
+                (
+                    resolved_files,
+                    managed_parent,
+                ) = self._resolve_node_local_managed_input(
+                    managed_input
+                )
+
+                if managed_parent:
+                    input_folder = managed_parent
+
+                self.logger.info(
+                    "Resolved managed %s input on Sensor Node: "
+                    "artifacts=%r files=%d",
+                    managed_input.get("source", "Artifact"),
+                    managed_input.get("artifact_ids", []),
+                    len(resolved_files),
+                )
+
+            elif files and isinstance(files, list):
+                for filepath in files:
+                    if not isinstance(filepath, str):
                         continue
-                    p = os.path.abspath(f)
-                    if os.path.isfile(p):
-                        resolved_files.append(p)
 
-                if not folder and resolved_files:
-                    folder = os.path.dirname(resolved_files[0])
+                    path = os.path.abspath(filepath)
 
-            elif folder and isinstance(folder, str):
-                sidecar_path = os.path.join(folder, sidecar_name)
+                    if os.path.isfile(path):
+                        resolved_files.append(path)
+
+                if not input_folder and resolved_files:
+                    input_folder = os.path.dirname(
+                        resolved_files[0]
+                    )
+
+            elif input_folder and isinstance(input_folder, str):
+                sidecar_path = os.path.join(
+                    input_folder,
+                    sidecar_name,
+                )
+
                 if os.path.isfile(sidecar_path):
                     try:
-                        resolved_files = _resolve_sidecar_files(sidecar_path)
+                        resolved_files = _resolve_sidecar_files(
+                            sidecar_path
+                        )
                     except Exception as e:
-                        self.logger.warning("Failed reading sidecar %s: %r", sidecar_path, e)
+                        self.logger.warning(
+                            "Failed reading sidecar %s: %r",
+                            sidecar_path,
+                            e,
+                        )
 
                 if not resolved_files:
-                    resolved_files = resolve_files_from_folder(folder, extensions)
+                    resolved_files = resolve_files_from_folder(
+                        input_folder,
+                        extensions,
+                    )
 
             else:
-                default_folder = os.path.join(FISSURE_ROOT, "artifacts", self.opid, "files")
-                folder = os.path.abspath(default_folder)
-                resolved_files = resolve_files_from_folder(folder, extensions)
+                input_folder = os.path.abspath(
+                    os.path.join(
+                        FISSURE_ROOT,
+                        "artifacts",
+                        self.opid,
+                        "files",
+                    )
+                )
 
-            if not artifact_id:
-                artifact_id = _infer_artifact_id(folder)
-            self.artifact_id = artifact_id
+                resolved_files = resolve_files_from_folder(
+                    input_folder,
+                    extensions,
+                )
 
             if not resolved_files:
-                self.logger.warning("No input files resolved (folder=%r).", folder)
+                self.logger.warning(
+                    "No input files resolved "
+                    "(input_folder=%r).",
+                    input_folder,
+                )
                 return
+            
+            input_source = str(
+                params.get("input_source")
+                or managed_input.get("source")
+                or (
+                    "Folder"
+                    if len(resolved_files) > 1
+                    else "File"
+                )
+            ).strip()
 
-            self.logger.info("TSI FE: data_type=%r, files=%d", data_type, len(resolved_files))
+            source_artifact_ids = (
+                params.get("source_artifact_ids")
+                or managed_input.get("artifact_ids")
+                or []
+            )
+
+            if not isinstance(source_artifact_ids, list):
+                source_artifact_ids = [
+                    source_artifact_ids
+                ]
+
+            source_artifact_ids = [
+                str(artifact_id or "").strip()
+                for artifact_id in source_artifact_ids
+                if str(artifact_id or "").strip()
+            ]
+
+            source_artifact_id = str(
+                params.get("source_artifact_id")
+                or (
+                    source_artifact_ids[0]
+                    if len(source_artifact_ids) == 1
+                    else ""
+                )
+                or ""
+            ).strip()
+
+            input_soi_id = str(
+                params.get("input_soi_id")
+                or managed_input.get("input_soi_id")
+                or ""
+            ).strip()
+
+            input_soi_key = str(
+                params.get("input_soi_key")
+                or managed_input.get("input_soi_key")
+                or ""
+            ).strip()
+
+            managed_analysis_destinations = {
+                "New Analysis Artifact",
+                "Attach to Existing SOI",
+                "Create New SOI from Input",
+            }
+
+            if destination in managed_analysis_destinations:
+                if not getattr(self, "artifact_manager", None):
+                    raise RuntimeError(
+                        f"{destination} requires artifact_manager."
+                    )
+
+                output_folder = os.path.abspath(
+                    os.path.join(
+                        FISSURE_ROOT,
+                        "artifacts",
+                        self.opid,
+                        "files",
+                    )
+                )
+
+                artifact_id = ""
+            else:
+                output_folder = input_folder
+
+                if not artifact_id:
+                    artifact_id = _infer_artifact_id(
+                        input_folder
+                    )
+
+            self.artifact_id = artifact_id
+
+            source_artifact_id = ""
+            analysis_artifact_id = ""
+
+            self.logger.info(
+                "TSI FE: destination=%r, profile=%r, preset=%r, "
+                "data_type=%r, features=%d, files=%d, "
+                "input_folder=%r, output_folder=%r, operation_id=%r",
+                destination,
+                profile,
+                preset,
+                data_type,
+                len(checkboxes),
+                len(resolved_files),
+                input_folder,
+                output_folder,
+                self.opid,
+            )
+
             await _set_status(
                 status_callback,
                 f"Running: Feature Extraction ({len(resolved_files)} files)",
@@ -529,15 +1629,27 @@ class OperationMain(Operation):
 
             results: List[Dict[str, Any]] = []
 
-            for index, path in enumerate(resolved_files, start=1):
+            for index, path in enumerate(
+                resolved_files,
+                start=1,
+            ):
                 if self._stop:
-                    self.logger.info("Stop requested; terminating feature extraction early.")
+                    self.logger.info(
+                        "Stop requested; terminating feature extraction early."
+                    )
                     return
 
                 try:
                     st = os.stat(path)
-                    x = read_iq_file(path, data_type=data_type)
-                    feats = compute_features(x, data_type=data_type, checkboxes=checkboxes)
+                    iq_data = read_iq_file(
+                        path,
+                        data_type=data_type,
+                    )
+                    extracted_features = compute_features(
+                        iq_data,
+                        data_type=data_type,
+                        checkboxes=checkboxes,
+                    )
 
                     results.append(
                         {
@@ -547,11 +1659,19 @@ class OperationMain(Operation):
                             "size_bytes": int(st.st_size),
                             "mtime": float(st.st_mtime),
                             "sha256": _sha256_file(path),
-                            "features": _json_safe(feats),
+                            "features": _json_safe(
+                                extracted_features
+                            ),
                         }
                     )
+
                 except Exception as e:
-                    self.logger.error("Feature extraction failed for %s: %r", path, e)
+                    self.logger.error(
+                        "Feature extraction failed for %s: %r",
+                        path,
+                        e,
+                    )
+
                     results.append(
                         {
                             "file": os.path.basename(path),
@@ -565,61 +1685,419 @@ class OperationMain(Operation):
                     await asyncio.sleep(0)
 
             if self._stop:
-                self.logger.info("Stop requested; skipping tsi_features.json write.")
+                self.logger.info(
+                    "Stop requested; skipping tsi_features.json write."
+                )
                 return
 
             self.feature_results = results
 
-            if folder:
-                os.makedirs(folder, exist_ok=True)
-                out_path = os.path.join(folder, "tsi_features.json")
-                with open(out_path, "w", encoding="utf-8") as f:
-                    json.dump(_json_safe(results), f, indent=2, allow_nan=False)
-                self.output_path = out_path
-                wrote_features = True
-                self.logger.info("Wrote feature output: %s", out_path)
+            if not output_folder:
+                raise RuntimeError(
+                    "Feature Extractor output folder could not be resolved."
+                )
 
-                report_payload = {
+            os.makedirs(output_folder, exist_ok=True)
+
+            out_path = os.path.join(
+                output_folder,
+                "tsi_features.json",
+            )
+
+            with open(
+                out_path,
+                "w",
+                encoding="utf-8",
+            ) as feature_file:
+                json.dump(
+                    _json_safe(results),
+                    feature_file,
+                    indent=2,
+                    allow_nan=False,
+                )
+
+            self.output_path = out_path
+            wrote_features = True
+
+            self.logger.info(
+                "Wrote feature output: %s",
+                out_path,
+            )
+
+            source_file_records: List[Dict[str, Any]] = []
+
+            if destination in {
+                "Attach to Existing SOI",
+                "Create New SOI from Input",
+            }:
+                if (
+                    destination == "Attach to Existing SOI"
+                    and not soi_id
+                ):
+                    raise ValueError(
+                        "Attach to Existing SOI requires soi_id."
+                    )
+
+                if not self.source_operation_id:
+                    self.source_operation_id = str(uuid.uuid4())
+
+                source_folder = os.path.join(
+                    FISSURE_ROOT,
+                    "artifacts",
+                    self.source_operation_id,
+                    "files",
+                )
+
+                source_file_records = self._copy_source_iq_files(
+                    resolved_files,
+                    source_folder,
+                )
+
+                if not source_file_records:
+                    raise RuntimeError(
+                        "No source IQ files were copied into "
+                        "managed artifact storage."
+                    )
+
+                source_metadata = {
                     "kind": "artifact",
-                    "event_type": "feature_extraction",
+                    "event_type": "artifact",
+                    "role": "source_iq_v1",
                     "node_uid": node_uid,
                     "source_id": source_id,
-                    "operation_id": getattr(self, "opid", ""),
-                    "artifact_id": artifact_id,
-                    "folder": folder,
-                    "feature_file": out_path,
+                    "operation_id": self.source_operation_id,
+                    "target_soi_id": soi_id,
+                    "target_soi_key": soi_key,
+                    "creates_new_soi": (
+                        destination
+                        == "Create New SOI from Input"
+                    ),
+                    "frequency_mhz": frequency_mhz,
+                    "description": (
+                        description
+                        or "Feature Extractor source IQ"
+                    ),
                     "data_type": data_type,
-                    "input_count": len(resolved_files),
-                    "result_count": len(results),
-                    "errors": [r for r in results if "error" in r],
+                    "file_count": len(source_file_records),
+                    "files": source_file_records,
                 }
-                self.report_payload = report_payload
 
-                report_path = os.path.join(folder, "feature_extraction_report.json")
-                with open(report_path, "w", encoding="utf-8") as f:
-                    json.dump(_json_safe(report_payload), f, indent=2, allow_nan=False)
-                self.report_path = report_path
-                self.logger.info("Wrote feature extraction report: %s", report_path)
+                source_artifact = (
+                    self.artifact_manager
+                    .create_zip_artifact_from_folder(
+                        source_id=source_id,
+                        operation_id=self.source_operation_id,
+                        folder=source_folder,
+                        name=(
+                            "SOI Source IQ"
+                            + (
+                                f" - {description}"
+                                if description
+                                else ""
+                            )
+                        ),
+                        metadata=_json_safe(source_metadata),
+                        arc_prefix=(
+                            "source_iq_"
+                            f"{self.source_operation_id}"
+                        ),
+                    )
+                )
 
-                await _call_with_timeout(
-                    getattr(self, "alert_callback", None),
-                    report_payload,
-                    self.logger,
-                    "alert_callback",
+                source_artifact_id = self._artifact_id_value(
+                    source_artifact
                 )
-                await _call_with_timeout(
-                    getattr(self, "tak_cot_callback", None),
-                    report_payload,
-                    self.logger,
-                    "tak_cot_callback",
+
+                if not source_artifact_id:
+                    raise RuntimeError(
+                        "Source IQ artifact registration did not "
+                        "return an artifact ID."
+                    )
+
+            report_payload = {
+                "kind": "feature_analysis",
+                "event_type": "feature_extraction",
+                "role": "feature_analysis_v1",
+                "node_uid": node_uid,
+                "source_id": source_id,
+                "operation_id": self.opid,
+                "artifact_id": artifact_id,
+                "destination": destination,
+                "description": description,
+                "input_folder": input_folder,
+                "managed_input_source": str(
+                    managed_input.get("source", "")
+                    or ""
+                ).strip(),
+                "source_artifact_ids": list(
+                    managed_input.get("artifact_ids", [])
+                    if isinstance(
+                        managed_input.get("artifact_ids", []),
+                        list,
+                    )
+                    else []
+                ),
+                "input_soi_id": str(
+                    managed_input.get("input_soi_id", "")
+                    or params.get("input_soi_id", "")
+                    or ""
+                ).strip(),
+                "input_soi_key": str(
+                    managed_input.get("input_soi_key", "")
+                    or params.get("input_soi_key", "")
+                    or ""
+                ).strip(),
+                "folder": output_folder,
+                "feature_file": out_path,
+                "data_type": data_type,
+                "profile": _normalize_profile_name(profile),
+                "preset": _normalize_preset_name(preset),
+                "features": list(checkboxes),
+                "feature_count": len(checkboxes),
+                "input_count": len(resolved_files),
+                "result_count": len(results),
+                "error_count": len(
+                    [
+                        result
+                        for result in results
+                        if "error" in result
+                    ]
+                ),
+                "errors": [
+                    result
+                    for result in results
+                    if "error" in result
+                ],
+                "target_soi_id": soi_id,
+                "target_soi_key": soi_key,
+                "source_operation_id": self.source_operation_id,
+                "source_artifact_id": source_artifact_id,
+                "source_files": source_file_records,
+                "artifact_links": (
+                    [
+                        {
+                            "artifact_id": source_artifact_id,
+                            "role": "source_iq",
+                            "operation_id": self.source_operation_id,
+                        }
+                    ]
+                    if source_artifact_id
+                    else []
+                ),
+                "creates_new_soi": (
+                    destination
+                    == "Create New SOI from Input"
+                ),
+                "started_at": started_at,
+                "completed_at": None,
+                "duration_s": None,
+            }
+
+            report_path = os.path.join(
+                output_folder,
+                "feature_extraction_report.json",
+            )
+
+            with open(
+                report_path,
+                "w",
+                encoding="utf-8",
+            ) as report_file:
+                json.dump(
+                    _json_safe(report_payload),
+                    report_file,
+                    indent=2,
+                    allow_nan=False,
                 )
+
+            self.report_path = report_path
+
+            if destination in managed_analysis_destinations:
+                artifact_name = (
+                    description
+                    or "Feature Extraction Analysis"
+                )
+
+                analysis_artifact = (
+                    self.artifact_manager
+                    .create_zip_artifact_from_folder(
+                        source_id=source_id,
+                        operation_id=self.opid,
+                        folder=output_folder,
+                        name=artifact_name,
+                        metadata=_json_safe({
+                            "workflow": "feature_extractor",
+                            "status": "completed",
+                            "operation_id": self.opid,
+                            "destination": destination,
+                            "profile": _normalize_profile_name(profile),
+                            "preset": _normalize_preset_name(preset),
+                            "input_source": input_source,
+                            "source_artifact_id": source_artifact_id,
+                            "source_artifact_ids": source_artifact_ids,
+                            "input_soi_id": input_soi_id,
+                            "input_soi_key": input_soi_key,
+                            "target_soi_id": soi_id,
+                            "result_count": len(results),
+                            "error_count": len([
+                                result
+                                for result in results
+                                if "error" in result
+                            ]),
+                            "feature_count": len(checkboxes),
+                            "feature_file": "tsi_features.json",
+                            "report_file": "feature_extraction_report.json",
+                            "started_at": started_at,
+                            "completed_at": time.time(),
+                        }),
+                        arc_prefix=(
+                            "feature_analysis_"
+                            f"{self.opid}"
+                        ),
+                    )
+                )
+
+                analysis_artifact_id = self._artifact_id_value(
+                    analysis_artifact
+                )
+
+                if not analysis_artifact_id:
+                    analysis_artifact_id = self.opid
+
+                self.artifact_id = analysis_artifact_id
+                report_payload["artifact_id"] = analysis_artifact_id
+
+                if destination in {
+                    "Attach to Existing SOI",
+                    "Create New SOI from Input",
+                }:
+                    report_payload[
+                        "analysis_artifact_id"
+                    ] = analysis_artifact_id
+
+                    report_payload[
+                        "artifact_links"
+                    ].append(
+                        {
+                            "artifact_id":
+                                analysis_artifact_id,
+                            "role":
+                                "feature_analysis",
+                            "operation_id":
+                                self.opid,
+                            "source_artifact_id":
+                                source_artifact_id,
+                        }
+                    )
+
+                with open(
+                    report_path,
+                    "w",
+                    encoding="utf-8",
+                ) as report_file:
+                    json.dump(
+                        _json_safe(report_payload),
+                        report_file,
+                        indent=2,
+                        allow_nan=False,
+                    )
+
+                self.logger.info(
+                    "Registered Feature Analysis artifact: "
+                    "artifact_id=%r, operation_id=%r, folder=%r",
+                    analysis_artifact_id,
+                    self.opid,
+                    output_folder,
+                )
+
+                if destination == "Attach to Existing SOI":
+                    await self._attach_artifacts_to_soi(
+                        node_uid=node_uid,
+                        soi_id=soi_id,
+                        frequency_mhz=frequency_mhz,
+                        source_artifact_id=source_artifact_id,
+                        analysis_artifact_id=analysis_artifact_id,
+                        report_payload=report_payload,
+                    )
+
+                elif destination == "Create New SOI from Input":
+                    soi_id = await self._create_soi_with_artifacts(
+                        node_uid=node_uid,
+                        frequency_mhz=frequency_mhz,
+                        source_artifact_id=source_artifact_id,
+                        analysis_artifact_id=analysis_artifact_id,
+                        report_payload=report_payload,
+                    )
+
+                    report_payload["target_soi_id"] = soi_id
+                    report_payload["created_soi_id"] = soi_id
+
+                    with open(
+                        report_path,
+                        "w",
+                        encoding="utf-8",
+                    ) as report_file:
+                        json.dump(
+                            _json_safe(report_payload),
+                            report_file,
+                            indent=2,
+                            allow_nan=False,
+                        )
+
+                    self.logger.info(
+                        "Created SOI from Feature Extractor input: "
+                        "soi_id=%r, frequency_mhz=%r, "
+                        "source_artifact_id=%r, "
+                        "analysis_artifact_id=%r",
+                        soi_id,
+                        frequency_mhz,
+                        source_artifact_id,
+                        analysis_artifact_id,
+                    )
+
+            completed_at = time.time()
+            report_payload["completed_at"] = completed_at
+            report_payload["duration_s"] = max(
+                0.0,
+                completed_at - started_at,
+            )
+            report_payload["target_soi_id"] = soi_id
+
+            with open(
+                report_path,
+                "w",
+                encoding="utf-8",
+            ) as report_file:
+                json.dump(
+                    _json_safe(report_payload),
+                    report_file,
+                    indent=2,
+                    allow_nan=False,
+                )
+
+            self.report_payload = report_payload
+
+            self.logger.info(
+                "Wrote feature extraction report: %s",
+                report_path,
+            )
+
 
             return
 
         finally:
             if self._stop and not wrote_features:
-                self.logger.info("Feature extraction stopped before output was written.")
-            await _set_status(status_callback, "Idle", self.logger)
+                self.logger.info(
+                    "Feature extraction stopped before output was written."
+                )
+
+            await _set_status(
+                status_callback,
+                "Idle",
+                self.logger,
+            )
+
+
 
 
 if __name__ == "__main__":

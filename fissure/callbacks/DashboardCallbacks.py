@@ -299,6 +299,14 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
         component.logger.debug(
             f"Could not update TSI Conditioner selected-node gate after recallSettingsReturn: {e}"
         )
+    
+    try:
+        TSITabSlots.update_tsi_fe_selected_node_gate(component.frontend)
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update TSI Feature Extractor selected-node gate "
+            f"after recallSettingsReturn: {e}"
+        )
 
 
 async def componentDisconnected(component: object, component_name=""):
@@ -1999,6 +2007,14 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
             component.logger.debug(
                 f"Could not update TSI Conditioner selected-node gate after node state update: {e}"
             )
+        
+        try:
+            TSITabSlots.update_tsi_fe_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not update TSI Feature Extractor selected-node gate "
+                f"after node state update: {e}"
+            )
 
     try:
         TSITabSlots.update_tsi_detector_status_from_selected_node(
@@ -2170,6 +2186,14 @@ async def nodeStateRemove(component: object, node_uid=""):
                 f"Could not update TSI Conditioner gate after selected node removal: {e}"
             )
         
+        try:
+            TSITabSlots.update_tsi_fe_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not update TSI Feature Extractor gate "
+                f"after selected node removal: {e}"
+            )
+        
     # Recompute ecosystem selected-node labels/buttons after row removal.
     try:
         TacticalTabSlots.update_selected_tactical_nodes(frontend)
@@ -2294,7 +2318,101 @@ async def sendArtifactsListTakReturn(
             f"Could not route artifact metadata to TSI Conditioner: {e}"
         )
 
+    try:
+        TSITabSlots.handle_tsi_fe_artifact_metadata(
+            dashboard,
+            node_uid=node_uid,
+            artifacts=normalized_records,
+        )
+    except Exception as e:
+        component.logger.debug(
+            f"Could not route artifact metadata to TSI Feature Extractor: {e}"
+        )
 
+
+async def sendSoisListTakReturn(
+    component: object,
+    node_uid: str = "",
+    sois=None,
+):
+    """
+    Replaces the Dashboard SOI cache for one node with HIPRFISR's
+    authoritative merged SOI records, then refreshes every SOI consumer.
+
+    Linked Artifact metadata is also requested because Feature Extractor SOI
+    inputs resolve their files through the shared Artifact cache.
+    """
+    frontend = component.frontend
+    sois = sois or []
+    node_uid = str(node_uid or "").strip()
+
+    if not hasattr(frontend, "tactical_sois"):
+        frontend.tactical_sois = {}
+
+    stale_keys = [
+        soi_key
+        for soi_key, record in frontend.tactical_sois.items()
+        if isinstance(record, dict)
+        and str(record.get("node_uid", "") or "").strip() == node_uid
+    ]
+
+    for soi_key in stale_keys:
+        frontend.tactical_sois.pop(soi_key, None)
+
+        try:
+            frontend.tactical_map.remove_soi(soi_key)
+        except Exception:
+            pass
+
+    for soi in sois:
+        if not isinstance(soi, dict):
+            continue
+
+        await soiUpdate(
+            component,
+            soi=soi,
+        )
+
+    selected_node_uid = str(
+        getattr(frontend, "selected_tactical_node_uid", "")
+        or ""
+    ).strip()
+
+    if selected_node_uid == node_uid:
+        try:
+            TacticalTabSlots.rebuild_tactical_node_sois(
+                frontend,
+                node_uid,
+            )
+        except Exception as error:
+            component.logger.debug(
+                f"Could not rebuild Tactical SOIs after refresh: {error}"
+            )
+
+    try:
+        TSITabSlots.refresh_tsi_fe_input_sois(
+            frontend
+        )
+        TSITabSlots.refresh_tsi_fe_run_sois(
+            frontend
+        )
+    except Exception as error:
+        component.logger.debug(
+            "Could not refresh Feature Extractor SOI selectors "
+            f"after authoritative SOI refresh: {error}"
+        )
+
+    try:
+        await component.tacticalNodeArtifactsRefresh(
+            node_uid
+        )
+    except Exception as error:
+        component.logger.debug(
+            "Could not refresh linked Artifact metadata after SOI refresh: "
+            f"{error}"
+        )
+
+        
 async def queryPluginActionsResults(
     component: object,
     requester_uid: str = "",
@@ -2328,6 +2446,15 @@ async def queryPluginActionsResults(
             actions=actions,
         )
         return
+
+    if context.startswith("tsi.feature_extractor"):
+        TSITabSlots.handle_tsi_fe_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return    
 
     if context.startswith("iq.record") or context.startswith("iq.playback"):
         component.logger.debug(
@@ -2389,6 +2516,16 @@ async def queryPluginActionSchemaResults(
             parameters=schema.get("params", []),
         )
         return
+
+    if context.startswith("tsi.feature_extractor"):
+        TSITabSlots.handle_tsi_fe_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return    
 
     if context.startswith("iq.record") or context.startswith("iq.playback"):
         component.logger.debug(
@@ -2469,6 +2606,8 @@ async def soiUpdate(component: object, soi=None):
         "soi_id": soi_id,
         "operation_id": soi.get("operation_id", ""),
         "artifact_id": soi.get("artifact_id", ""),
+        "artifact_ids": list(soi.get("artifact_ids", []) or []),
+        "artifact_links": list(soi.get("artifact_links", []) or []),
 
         "frequency_mhz": frequency_mhz,
         "frequency_display": frequency_display,
@@ -2525,6 +2664,19 @@ async def soiUpdate(component: object, soi=None):
 
     frontend.tactical_sois[soi_key] = record
 
+    try:
+        TSITabSlots.refresh_tsi_fe_input_sois(
+            frontend
+        )
+        TSITabSlots.refresh_tsi_fe_run_sois(
+            frontend
+        )
+    except Exception as error:
+        component.logger.debug(
+            "Could not refresh Feature Extractor SOI selectors "
+            f"after SOI update: {error}"
+        )
+
     selected_node_uid = getattr(frontend, "selected_tactical_node_uid", None)
 
     if selected_node_uid and selected_node_uid != node_uid:
@@ -2539,3 +2691,5 @@ async def soiUpdate(component: object, soi=None):
         component.logger.error(
             f"Failed to update Tactical SOI row: {e}"
         )
+
+

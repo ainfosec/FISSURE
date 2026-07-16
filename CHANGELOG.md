@@ -1,6 +1,35 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-16
+
+Rework TSI Feature Extractor workflow around plugin actions, managed artifacts, and SOI analysis
+
+### Added
+
+- Added a consolidated TSI Feature Extractor workflow for Files, Folder, Artifact, and SOI inputs.
+- Added time-domain, frequency-domain, combined, all-available, and custom feature extraction profiles.
+- Added schema-driven plugin-action querying, parameter customization, execution, and stop controls.
+- Added multi-file selection for Files input and filtered batch processing for Folder input.
+- Added IQ preview support for local and managed inputs.
+- Added local and remote Feature Extractor execution through selected Sensor Nodes.
+- Added Local Results, New Analysis Artifact, Attach to Existing SOI, and Create New SOI from Input destinations.
+- Added feature results display, CSV and JSON export, feature plotting, and result-file access.
+- Added managed source-IQ and feature-analysis artifact relationships for SOI workflows.
+- Added SOI refresh controls for the Dashboard Feature Extractor and WinTAK.
+- Added authoritative SOI list retrieval so each client can refresh its own SOI view independently.
+- Added dedicated Feature Extractor slot handling within the reorganized TSI slot package.
+
+### Changed
+
+- Replaced the previous Feature Extractor interface with a selected-node, plugin-driven workbench.
+- Updated feature extraction operations to support explicit file lists, filtered folder batches, managed Artifact and SOI inputs, and operation-scoped outputs.
+- Updated Feature Extractor results and reports to preserve source, operation, profile, and artifact metadata.
+- Updated local input behavior so Files supports explicit multi-selection while Folder processes every filtered file.
+- Updated TSI slot organization by moving legacy handlers into a package and separating Feature Extractor functionality.
+- Updated Dashboard styling, navigation, ribbon state, selected-node gating, and local-versus-remote availability rules.
+- Updated SOI and Artifact callbacks to support authoritative refreshes and durable analysis relationships.
+
 ## 2026-7-09
 
 Rework TSI Conditioner workflow around plugin actions and artifact-based processing
@@ -29,7 +58,6 @@ Rework TSI Conditioner workflow around plugin actions and artifact-based process
 - Fixed conditioner status updates so action progress and node messages are reflected in the Dashboard.
 - Fixed Conditioner initialization and reset behavior when selecting, removing, or changing sensor nodes.
 - Fixed SOI promotion state handling after successful promotion.
-
 
 ## 2026-7-02
 
