@@ -1,6 +1,19 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-17
+
+Separate TSI Detector and Conditioner functionality from legacy slot handling
+
+### Changed
+
+- Moved TSI Detector functionality into a dedicated `detector.py` module.
+- Moved TSI Conditioner functionality into a dedicated `conditioner.py` module.
+- Updated the TSI slot package to expose the Detector, Conditioner, and Feature Extractor modules alongside the remaining legacy handlers.
+- Consolidated shared utility functions to prevent duplicate definitions across wildcard-imported TSI modules.
+- Reduced the remaining legacy TSI slot code to the Classifier, SOI Aggregator, and Direction Finding workflows.
+- Kept Dashboard-level plot construction where required while moving tab-specific control initialization into the corresponding TSI modules.
+
 ## 2026-7-16
 
 Rework TSI Feature Extractor workflow around plugin actions, managed artifacts, and SOI analysis

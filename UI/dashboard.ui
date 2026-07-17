@@ -4678,7 +4678,7 @@
           </rect>
          </property>
          <property name="text">
-          <string>Select an online sensor node to configure sweep detection hardware and run the detector.</string>
+          <string>Select an online sensor node to configure detection hardware and run the detector.</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>

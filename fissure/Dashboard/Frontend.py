@@ -339,49 +339,50 @@ class Dashboard(QtWidgets.QMainWindow):
             lambda: TacticalTabSlots.clear_tactical_map_pins(self)
         )
 
+
     def __init_TSI__(self):
         """
         Initializes TSI Tabs on Dashboard launch.
         """
-        # Detector Tab
-        self.ui.label_tsi_detector_select_sensor_node_image.setPixmap(QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "select_node.png")))
         try:
-            TSITabSlots.initialize_tsi_detector_controls(self)
-        except Exception as e:
-            self.logger.debug(f"Could not initialize unified TSI detector controls: {e}")
-
-        self.target_soi = []
-
-        # Create SOI Blacklist
-        self.soi_blacklist = []
-
-        # Resize Table Columns for Wideband and Narrowband Tables
-        self.ui.tableWidget1_tsi_wideband.resizeColumnsToContents()
-
-        # Create Tooltip
-        self.ui.tabWidget.setTabToolTip(1, "Target Signal Identification")
-
-        # # Default Detector Simulator File
-        # self.ui.textEdit_tsi_detector_csv_file.setPlainText(
-        #     os.path.join(fissure.utils.TOOLS_DIR, "TSI_Detector_Sim_Data", "tsi_simulator.csv")
-        # )
-
-        # Conditioner Controls
-        self.ui.label_tsi_conditioner_select_sensor_node_image.setPixmap(QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "select_node.png")))
-        try:
-            TSITabSlots.initialize_tsi_conditioner_controls(self)
-        except Exception as e:
-            self.logger.debug(f"Could not initialize TSI Conditioner controls: {e}")
-
-        # Feature Extractor Controls
-        try:
-            TSITabSlots.initialize_tsi_feature_extractor_controls(self)
+            TSITabSlots.initialize_tsi_detector_controls(
+                self
+            )
         except Exception as e:
             self.logger.debug(
-                f"Could not initialize TSI Feature Extractor controls: {e}"
+                "Could not initialize unified TSI "
+                f"detector controls: {e}"
             )
 
-        # Complete Feature List
+        self.target_soi = []
+        self.soi_blacklist = []
+
+        self.ui.tabWidget.setTabToolTip(
+            1,
+            "Target Signal Identification",
+        )
+
+        try:
+            TSITabSlots.initialize_tsi_conditioner_controls(
+                self
+            )
+        except Exception as e:
+            self.logger.debug(
+                "Could not initialize TSI Conditioner "
+                f"controls: {e}"
+            )
+
+        try:
+            TSITabSlots.initialize_tsi_feature_extractor_controls(
+                self
+            )
+        except Exception as e:
+            self.logger.debug(
+                "Could not initialize TSI Feature "
+                f"Extractor controls: {e}"
+            )
+
+        # Legacy Classifier feature list.
         self.all_features = [
             "Mean",
             "Max",
@@ -409,16 +410,30 @@ class Dashboard(QtWidgets.QMainWindow):
             "Relative Spectral Peak per Band",
         ]
 
-        # SOI Aggregator Defaults
+        # Legacy SOI Aggregator default.
         self.ui.textEdit_tsi_soi_browse.setPlainText(
-            str(os.path.join(fissure.utils.FISSURE_ROOT, "Conditioner Data", "Output"))
+            str(
+                os.path.join(
+                    fissure.utils.FISSURE_ROOT,
+                    "Conditioner Data",
+                    "Output",
+                )
+            )
         )
 
-        # Defaults
-        TSITabSlots._slotTSI_ClassifierTrainingCategoryChanged(self)
-        TSITabSlots._slotTSI_ClassifierTrainingTechniqueChanged(self)   
-        TSITabSlots._slotTSI_ClassifierClassificationCategoryChanged(self)
-        TSITabSlots._slotTSI_ClassifierClassificationTechniqueChanged(self)
+        # Legacy Classifier defaults.
+        TSITabSlots._slotTSI_ClassifierTrainingCategoryChanged(
+            self
+        )
+        TSITabSlots._slotTSI_ClassifierTrainingTechniqueChanged(
+            self
+        )
+        TSITabSlots._slotTSI_ClassifierClassificationCategoryChanged(
+            self
+        )
+        TSITabSlots._slotTSI_ClassifierClassificationTechniqueChanged(
+            self
+        )
 
 
     def __init_PD__(self):
@@ -1037,9 +1052,28 @@ class Dashboard(QtWidgets.QMainWindow):
         # Create Wideband Matplotlib Widget
         self.wideband_width = 1201
         self.wideband_height = 801
-        rgb = tuple(int(self.backend.settings["color2"].lstrip("#")[i : i + 2], 16) for i in (0, 2, 4))
-        background_color = (float(rgb[0]) / 255, float(rgb[1]) / 255, float(rgb[2]) / 255)
-        self.wideband_data = numpy.ones((self.wideband_height, self.wideband_width, 3)) * (background_color)
+
+        rgb = tuple(
+            int(
+                self.backend.settings["color2"].lstrip("#")[i:i + 2],
+                16,
+            )
+            for i in (0, 2, 4)
+        )
+
+        background_color = (
+            float(rgb[0]) / 255,
+            float(rgb[1]) / 255,
+            float(rgb[2]) / 255,
+        )
+
+        self.wideband_data = numpy.ones(
+            (
+                self.wideband_height,
+                self.wideband_width,
+                3,
+            )
+        ) * background_color
 
         self.matplotlib_widget = MPLCanvas(
             self.ui.tab_tsi_detector,
@@ -1050,14 +1084,45 @@ class Dashboard(QtWidgets.QMainWindow):
             height=self.wideband_height,
             border=[0.08, 0.90, 0.05, 1, 0, 0],
             colorbar_fraction=0.038,
-            xlabels=["0", "", "1000", "", "2000", "", "3000", "", "4000", "", "5000", "", "6000"],
-            ylabels=["0", "5", "10", "15", "20", "25", "30", "35", "40", "45"],
+            xlabels=[
+                "0",
+                "",
+                "1000",
+                "",
+                "2000",
+                "",
+                "3000",
+                "",
+                "4000",
+                "",
+                "5000",
+                "",
+                "6000",
+            ],
+            ylabels=[
+                "0",
+                "5",
+                "10",
+                "15",
+                "20",
+                "25",
+                "30",
+                "35",
+                "40",
+                "45",
+            ],
             bg_color=self.backend.settings["color1"],
             face_color=self.backend.settings["color5"],
             text_color=self.backend.settings["color4"],
         )
-        self.matplotlib_widget.move(self.ui.frame_tsi_detector.pos())
-        self.matplotlib_widget.setGeometry(self.ui.frame_tsi_detector.geometry())
+
+        self.matplotlib_widget.move(
+            self.ui.frame_tsi_detector.pos()
+        )
+        self.matplotlib_widget.setGeometry(
+            self.ui.frame_tsi_detector.geometry()
+        )
+
         self.matplotlib_widget.axes.cla()
         self.matplotlib_widget.axes.imshow(
             self.wideband_data,
@@ -1065,49 +1130,44 @@ class Dashboard(QtWidgets.QMainWindow):
             clim=(-100, 30),
             extent=[0, 1201, 801, 0],
         )
+
         self.matplotlib_widget.configureAxes(
             title="Detector History",
             xlabel="Frequency (MHz)",
             ylabel="Time Elapsed (s)",
-            xlabels=["0", "", "1000", "", "2000", "", "3000", "", "4000", "", "5000", "", "6000"],
-            ylabels=["0", "5", "10", "15", "20", "25", "30", "35", "40"],
+            xlabels=[
+                "0",
+                "",
+                "1000",
+                "",
+                "2000",
+                "",
+                "3000",
+                "",
+                "4000",
+                "",
+                "5000",
+                "",
+                "6000",
+            ],
+            ylabels=[
+                "0",
+                "5",
+                "10",
+                "15",
+                "20",
+                "25",
+                "30",
+                "35",
+                "40",
+            ],
             ylim=self.wideband_height,
             background_color=self.backend.settings["color1"],
             face_color=self.backend.settings["color5"],
             text_color=self.backend.settings["color4"],
         )
+
         self.matplotlib_widget.draw()
-
-        # Create TSI Conditioner Preview Matplotlib Widget
-        self.tsi_conditioner_preview_widget = MPL_IQCanvas(
-            self.ui.frame_tsi_conditioner_preview_plot,
-            dpi=100,
-            title="",
-            ylim=400,
-            bg_color=self.backend.settings["color2"],
-            face_color=self.backend.settings["color5"],
-            text_color=self.backend.settings["color4"],
-        )
-        self.tsi_conditioner_preview_widget.setGeometry(
-            0,
-            0,
-            self.ui.frame_tsi_conditioner_preview_plot.width(),
-            self.ui.frame_tsi_conditioner_preview_plot.height(),
-        )
-        self.tsi_conditioner_preview_widget.setContentsMargins(0, 0, 0, 0)
-
-        # Blank init state. Do not show fake axes before a file is previewed.
-        self.tsi_conditioner_preview_widget.axes.cla()
-        self.tsi_conditioner_preview_widget.axes.set_axis_off()
-        self.tsi_conditioner_preview_widget.fig.set_facecolor(self.backend.settings["color5"])
-        self.tsi_conditioner_preview_widget.axes.set_facecolor(self.backend.settings["color5"])
-        self.tsi_conditioner_preview_widget.fig.subplots_adjust(
-            left=0.02,
-            right=0.98,
-            bottom=0.02,
-            top=0.98,
-        )
-        self.tsi_conditioner_preview_widget.draw()
 
         # Create IQ Data Matplotlib Widget
         self.iq_matplotlib_widget = MPL_IQCanvas(
@@ -1119,28 +1179,99 @@ class Dashboard(QtWidgets.QMainWindow):
             face_color=self.backend.settings["color5"],
             text_color=self.backend.settings["color4"],
         )
-        self.iq_matplotlib_widget.move(self.ui.frame3_iq.pos())
-        self.iq_matplotlib_widget.setGeometry(self.ui.frame3_iq.geometry())
+
+        self.iq_matplotlib_widget.move(
+            self.ui.frame3_iq.pos()
+        )
+        self.iq_matplotlib_widget.setGeometry(
+            self.ui.frame3_iq.geometry()
+        )
 
         # Add a Toolbar
-        self.mpl_toolbar = NavigationToolbar2QT(self.iq_matplotlib_widget, self.ui.tab_iq_data)
-        self.mpl_toolbar.setStyleSheet("color:" + self.backend.settings["color4"])
-        self.mpl_toolbar.setGeometry(QtCore.QRect(375, 277, 525, 35))
+        self.mpl_toolbar = NavigationToolbar2QT(
+            self.iq_matplotlib_widget,
+            self.ui.tab_iq_data,
+        )
+
+        self.mpl_toolbar.setStyleSheet(
+            "color:" + self.backend.settings["color4"]
+        )
+        self.mpl_toolbar.setGeometry(
+            QtCore.QRect(
+                375,
+                277,
+                525,
+                35,
+            )
+        )
 
         icons_buttons = {
-            "Home": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "home.png")),
-            "Pan": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "move.png")),
-            "Zoom": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "zoom_to_rect.png")),
-            "Back": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "back.png")),
-            "Forward": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "forward.png")),
-            "Subplots": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "subplots.png")),
-            "Customize": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "qt4_editor_options.png")),
-            "Save": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "filesave.png")),
+            "Home": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "home.png",
+                )
+            ),
+            "Pan": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "move.png",
+                )
+            ),
+            "Zoom": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "zoom_to_rect.png",
+                )
+            ),
+            "Back": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "back.png",
+                )
+            ),
+            "Forward": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "forward.png",
+                )
+            ),
+            "Subplots": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "subplots.png",
+                )
+            ),
+            "Customize": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "qt4_editor_options.png",
+                )
+            ),
+            "Save": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "filesave.png",
+                )
+            ),
         }
 
         for action in self.mpl_toolbar.actions():
             if action.text() in icons_buttons:
-                action.setIcon(icons_buttons.get(action.text(), QtGui.QIcon()))
+                action.setIcon(
+                    icons_buttons.get(
+                        action.text(),
+                        QtGui.QIcon(),
+                    )
+                )
 
 
     @QtCore.pyqtSlot(QtCore.QObject)
