@@ -442,6 +442,7 @@ def _slotIQ_RecordHardwareChanged(dashboard: QtCore.QObject):
         spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
         spinbox_frequency.setMaximum(6000)
         spinbox_frequency.setMinimum(47)
+        spinbox_frequency.setValue(433.32)
         spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
         dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
         comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')

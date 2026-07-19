@@ -5,8 +5,8 @@ IQ recorder operation for the Base plugin.
 
 Assumptions:
   - Artifact files are local/unpacked under FISSURE/artifacts/<operation_id>/files.
-  - B2x0/B20xmini record flow graph files are under:
-      Plugins/Base/flow_graphs/iq_record_flow_graphs/<maint-version>/b2x0/
+  - Hardware-specific record flow graphs are under:
+      Plugins/Base/flow_graphs/iq_record_flow_graphs/<maint-version>/<hardware>/
   - Zip transfer/download behavior is handled elsewhere.
 """
 
@@ -177,14 +177,21 @@ class OperationMain(Operation):
         if not self.artifact_manager:
             raise RuntimeError("iq_record requires artifact_manager to be passed in")
 
-        if self.flow_graph_name != "iq_recorder_b2x0":
+        supported_recorders = {
+            "iq_recorder_b2x0": {"USRP B20xmini", "USRP B2x0"},
+            "iq_recorder_bladerf2": {"bladeRF 2.0"},
+        }
+
+        compatible_hardware = supported_recorders.get(self.flow_graph_name)
+        if compatible_hardware is None:
             raise RuntimeError(
-                f"Unsupported IQ recorder flow graph for first pass: {self.flow_graph_name}"
+                f"Unsupported IQ recorder flow graph: {self.flow_graph_name}"
             )
 
-        if self.hardware_type not in {"USRP B20xmini", "USRP B2x0"}:
+        if self.hardware_type not in compatible_hardware:
             raise RuntimeError(
-                f"Unsupported IQ recording hardware for first pass: {self.hardware_type}"
+                f"IQ recorder {self.flow_graph_name} does not support "
+                f"hardware type {self.hardware_type}"
             )
 
         data_type_key = str(self.data_type or "").strip().lower()
@@ -379,7 +386,15 @@ class OperationMain(Operation):
 
     def _resolve_flow_graph_path(self) -> str:
         version = get_library_version() or "maint-3.10"
-        hardware_dir = "b2x0"
+        hardware_dirs = {
+            "iq_recorder_b2x0": "b2x0",
+            "iq_recorder_bladerf2": "bladerf2",
+        }
+        hardware_dir = hardware_dirs.get(self.flow_graph_name)
+        if hardware_dir is None:
+            raise RuntimeError(
+                f"No IQ recorder directory configured for {self.flow_graph_name}"
+            )
 
         path = os.path.join(
             PLUGIN_ROOT,

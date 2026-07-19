@@ -82,7 +82,7 @@ ACTION_HARDWARE = {
     "lfm_beacon_detection": ["RTL2832U"],
     "lfm_beacon_geolocate": ["RTL2832U"],
     "usrp_b2x0_geolocate": ["USRP B20xmini", "USRP B2x0"],
-    "iq_record": ["USRP B20xmini", "USRP B2x0"],
+    "iq_record": ["USRP B20xmini", "USRP B2x0", "bladeRF 2.0"],
     "iq_playback": ["USRP B20xmini", "USRP B2x0"],
 }
 
@@ -1149,6 +1149,7 @@ iq_record_schema = {
             "default": "iq_recorder_b2x0",
             "options": [
                 "iq_recorder_b2x0",
+                "iq_recorder_bladerf2",
             ],
         },
         {
