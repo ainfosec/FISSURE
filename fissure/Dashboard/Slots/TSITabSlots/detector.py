@@ -4,6 +4,7 @@ from collections import deque
 import inspect
 import os
 import time
+import html
 
 import matplotlib
 matplotlib.use("Qt5Agg")
@@ -64,41 +65,399 @@ def _slotTSI_DetectorSearchClicked(dashboard: QtCore.QObject):
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTSI_ClearWidebandListClicked(dashboard: QtCore.QObject):
     """
-    Clears the unified TSI detector results list and detector plot points.
+    Clears the unified TSI detector results list, selected details, and plot.
     """
     for table in _tsi_detector_results_tables(dashboard):
+        table.blockSignals(True)
         table.clearContents()
         table.setRowCount(0)
+        table.blockSignals(False)
+
+    _clear_tsi_detector_detection_details(
+        dashboard
+    )
 
     if hasattr(dashboard, "tsi_detector_plot_events"):
         _tsi_detector_plot_clear_points(dashboard)
 
 
-def _tsi_blacklist_ranges_mhz(dashboard: QtCore.QObject):
-    ranges = []
+def _show_tsi_detector_results_context_menu(
+    dashboard: QtCore.QObject,
+    position: QtCore.QPoint,
+):
+    """
+    Shows TSI detector result actions. Right-clicking a row selects it first.
+    """
+    table = dashboard.ui.tableWidget1_tsi_wideband
+    clicked_item = table.itemAt(position)
 
-    list_widget = dashboard.ui.listWidget_tsi_blacklist
+    if clicked_item is not None:
+        table.selectRow(clicked_item.row())
+        table.setCurrentCell(
+            clicked_item.row(),
+            clicked_item.column(),
+        )
 
-    for row in range(list_widget.count()):
-        item = list_widget.item(row)
-        if item is None:
-            continue
+    menu = QtWidgets.QMenu(table)
 
-        text = str(item.text()).strip()
+    action_clear = menu.addAction("Clear Results")
+    action_clear.setEnabled(
+        table.rowCount() > 0
+    )
 
-        try:
-            start_text, end_text = text.split("-", 1)
-            start_mhz = float(start_text.strip())
-            end_mhz = float(end_text.strip())
-        except Exception:
-            continue
+    chosen_action = menu.exec_(
+        table.viewport().mapToGlobal(position)
+    )
 
-        low_mhz = min(start_mhz, end_mhz)
-        high_mhz = max(start_mhz, end_mhz)
+    if chosen_action == action_clear:
+        _slotTSI_ClearWidebandListClicked(
+            dashboard
+        )
 
-        ranges.append((low_mhz, high_mhz))
 
-    return ranges
+def _get_selected_tsi_detector_detection(
+    dashboard: QtCore.QObject,
+):
+    """
+    Returns the full CoT detection dictionary stored on the selected row.
+    """
+    table = dashboard.ui.tableWidget1_tsi_wideband
+    row = table.currentRow()
+
+    if row < 0:
+        return None
+
+    # The current detector code stores the full CoT message on column 0
+    # under Qt.UserRole.
+    item = table.item(row, 0)
+
+    if item is None:
+        return None
+
+    detection = item.data(
+        QtCore.Qt.UserRole
+    )
+
+    if isinstance(detection, dict):
+        return detection
+
+    # Fallback for the time-column storage used by the current implementation.
+    time_item = table.item(row, 2)
+
+    if time_item is not None:
+        detection = time_item.data(
+            QtCore.Qt.UserRole + 2
+        )
+
+        if isinstance(detection, dict):
+            return detection
+
+    return None
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_DetectorResultSelectionChanged(
+    dashboard: QtCore.QObject,
+):
+    detection = _get_selected_tsi_detector_detection(
+        dashboard
+    )
+
+    if not detection:
+        _clear_tsi_detector_detection_details(
+            dashboard
+        )
+        return
+
+    _populate_tsi_detector_detection_details(
+        dashboard,
+        detection,
+    )
+
+    _enable_tsi_detector_detection_details(
+        dashboard,
+        True,
+    )
+
+
+def _clear_tsi_detector_detection_details(
+    dashboard: QtCore.QObject,
+):
+    dashboard.ui.label2_tsi_detector_detection_details.setText(
+        ""
+    )
+
+    _enable_tsi_detector_detection_details(
+        dashboard,
+        False,
+    )
+
+
+def _enable_tsi_detector_detection_details(
+    dashboard: QtCore.QObject,
+    enabled=True,
+):
+    widgets = [
+        dashboard.ui.scrollArea_tsi_detector_detection_details,
+        dashboard.ui.label2_tsi_detector_detection_details,
+        dashboard.ui.pushButton_tsi_detector_promote_to_soi,
+        dashboard.ui.pushButton_tsi_detector_promote_to_target,
+    ]
+
+    for widget in widgets:
+        widget.setEnabled(enabled)
+
+
+def _populate_tsi_detector_detection_details(
+    dashboard: QtCore.QObject,
+    detection: dict,
+):
+    """
+    Displays every non-empty detection value except raw transport payloads.
+    Nested dictionaries and lists are expanded.
+    """
+    hidden_keys = {
+        "raw_xml",
+        "cot_xml",
+        "xml",
+        "raw_message",
+        "raw_payload",
+    }
+
+    def is_empty(value):
+        if value is None:
+            return True
+
+        if isinstance(value, str):
+            return value.strip() in [
+                "",
+                "None",
+            ]
+
+        if isinstance(
+            value,
+            (
+                dict,
+                list,
+                tuple,
+                set,
+            ),
+        ):
+            return len(value) == 0
+
+        return False
+
+    def make_label(key):
+        key_text = str(key).strip()
+
+        # Parsed CoT detection records currently use detection_* names.
+        if key_text.startswith("detection_"):
+            key_text = key_text[len("detection_"):]
+
+        return key_text.replace(
+            "_",
+            " ",
+        ).strip().title()
+
+    def field_label_html(label):
+        return (
+            "<span style='font-weight:500;'>"
+            f"{html.escape(str(label))}:"
+            "</span>"
+        )
+
+    def format_scalar(key, value):
+        key = str(key).strip().lower()
+
+        if key in {
+            "time",
+            "timestamp",
+            "detection_timestamp",
+        }:
+            try:
+                timestamp = float(value)
+                return time.strftime(
+                    "%H:%M:%S",
+                    time.localtime(timestamp),
+                )
+            except Exception:
+                pass
+
+        if key in {
+            "frequency_hz",
+            "detection_frequency_hz",
+        }:
+            try:
+                return f"{float(value) / 1e6:.6f} MHz"
+            except Exception:
+                pass
+
+        if key in {
+            "power_dbm",
+            "detection_power_dbm",
+        }:
+            try:
+                return f"{float(value):.1f} dBm"
+            except Exception:
+                pass
+
+        return str(value)
+
+    def append_value(
+        lines,
+        key,
+        value,
+        depth=0,
+    ):
+        normalized_key = str(
+            key
+        ).strip().lower()
+
+        if normalized_key in hidden_keys:
+            return
+
+        if is_empty(value):
+            return
+
+        label = make_label(key)
+        indent = "&nbsp;" * (
+            depth * 4
+        )
+
+        if isinstance(value, dict):
+            lines.append(
+                f"{indent}{field_label_html(label)}"
+            )
+
+            for nested_key, nested_value in value.items():
+                append_value(
+                    lines,
+                    nested_key,
+                    nested_value,
+                    depth + 1,
+                )
+
+            return
+
+        if isinstance(
+            value,
+            (
+                list,
+                tuple,
+                set,
+            ),
+        ):
+            values = list(value)
+
+            if not values:
+                return
+
+            lines.append(
+                f"{indent}{field_label_html(label)}"
+            )
+
+            for index, item in enumerate(values):
+                if is_empty(item):
+                    continue
+
+                if isinstance(item, dict):
+                    item_label = (
+                        item.get("label")
+                        or item.get("name")
+                        or f"Item {index + 1}"
+                    )
+
+                    item_value = item.get(
+                        "value"
+                    )
+
+                    if (
+                        "value" in item
+                        and not is_empty(item_value)
+                    ):
+                        unit = str(
+                            item.get("unit", "")
+                            or ""
+                        ).strip()
+
+                        display_value = str(
+                            item_value
+                        )
+
+                        if unit:
+                            display_value = (
+                                f"{display_value} {unit}"
+                            )
+
+                        lines.append(
+                            f"{'&nbsp;' * ((depth + 1) * 4)}"
+                            f"{field_label_html(item_label)} "
+                            f"{html.escape(display_value)}"
+                        )
+
+                        remaining = {
+                            nested_key: nested_value
+                            for nested_key, nested_value in item.items()
+                            if nested_key not in {
+                                "label",
+                                "name",
+                                "value",
+                                "unit",
+                            }
+                        }
+
+                        for nested_key, nested_value in remaining.items():
+                            append_value(
+                                lines,
+                                nested_key,
+                                nested_value,
+                                depth + 2,
+                            )
+                    else:
+                        lines.append(
+                            f"{'&nbsp;' * ((depth + 1) * 4)}"
+                            "<span style='font-weight:500;'>"
+                            f"{html.escape(str(item_label))}"
+                            "</span>"
+                        )
+
+                        for nested_key, nested_value in item.items():
+                            append_value(
+                                lines,
+                                nested_key,
+                                nested_value,
+                                depth + 2,
+                            )
+                else:
+                    lines.append(
+                        f"{'&nbsp;' * ((depth + 1) * 4)}"
+                        f"{html.escape(str(item))}"
+                    )
+
+            return
+
+        display_value = format_scalar(
+            normalized_key,
+            value,
+        )
+
+        lines.append(
+            f"{indent}{field_label_html(label)} "
+            f"{html.escape(display_value)}"
+        )
+
+    lines = []
+
+    for key, value in detection.items():
+        append_value(
+            lines,
+            key,
+            value,
+        )
+
+    dashboard.ui.label2_tsi_detector_detection_details.setText(
+        "<br>".join(lines)
+    )
 
 
 def _tsi_frequency_is_blacklisted(
@@ -117,75 +476,318 @@ def _tsi_frequency_is_blacklisted(
     return False
 
 
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotTSI_BlacklistAddClicked(dashboard: QtCore.QObject):
-    """ 
-    Adds frequency range for TSI to ignore to list widget and sends message to TSI.
+def _tsi_blacklist_ranges_mhz(
+    dashboard: QtCore.QObject,
+):
     """
-    start_text = str(dashboard.ui.textEdit_tsi_ignore_start.toPlainText()).strip()
-    end_text = str(dashboard.ui.textEdit_tsi_ignore_end.toPlainText()).strip()
-
-    try:
-        start_freq = float(start_text)
-        end_freq = float(end_text)
-    except Exception:
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            "Enter valid blacklist start and end frequencies in MHz.",
-        )
-        return
-
-    if start_freq == end_freq:
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            "Blacklist start and end frequencies cannot be the same.",
-        )
-        return
-
-    low_freq = min(start_freq, end_freq)
-    high_freq = max(start_freq, end_freq)
-
-    item_text = f"{low_freq:g}-{high_freq:g}"
-
-    for row in range(dashboard.ui.listWidget_tsi_blacklist.count()):
-        existing = dashboard.ui.listWidget_tsi_blacklist.item(row)
-        if existing is not None and existing.text() == item_text:
-            return
-
-    dashboard.ui.listWidget_tsi_blacklist.addItem(item_text)
-    dashboard.ui.pushButton_tsi_blacklist_remove.setEnabled(True)
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotTSI_BlacklistRemoveClicked(dashboard: QtCore.QObject):
-    """ 
-    Removes frequency range item for TSI to ignore from the list widget and sends message to TSI.
+    Returns blacklist ranges stored independently of the popup widgets.
     """
-    current_item = dashboard.ui.listWidget_tsi_blacklist.currentItem()
-
-    if current_item is None:
-        return
-
-    try:
-        start_text, end_text = str(current_item.text()).split("-", 1)
-        start_freq = float(start_text.strip())
-        end_freq = float(end_text.strip())
-    except Exception:
-        dashboard.ui.listWidget_tsi_blacklist.takeItem(
-            dashboard.ui.listWidget_tsi_blacklist.currentRow()
-        )
-
-        if dashboard.ui.listWidget_tsi_blacklist.count() == 0:
-            dashboard.ui.pushButton_tsi_blacklist_remove.setEnabled(False)
-
-        return
-
-    dashboard.ui.listWidget_tsi_blacklist.takeItem(
-        dashboard.ui.listWidget_tsi_blacklist.currentRow()
+    ranges = getattr(
+        dashboard,
+        "tsi_detector_blacklist_ranges",
+        [],
     )
 
-    if dashboard.ui.listWidget_tsi_blacklist.count() == 0:
-        dashboard.ui.pushButton_tsi_blacklist_remove.setEnabled(False)
+    clean_ranges = []
+
+    for entry in ranges:
+        try:
+            start_mhz, end_mhz = entry
+            start_mhz = float(start_mhz)
+            end_mhz = float(end_mhz)
+        except Exception:
+            continue
+
+        clean_ranges.append(
+            (
+                min(start_mhz, end_mhz),
+                max(start_mhz, end_mhz),
+            )
+        )
+
+    return clean_ranges
+
+
+def _refresh_tsi_detector_blacklist_dialog(
+    dashboard: QtCore.QObject,
+):
+    list_widget = getattr(
+        dashboard,
+        "_tsi_detector_blacklist_list",
+        None,
+    )
+
+    remove_button = getattr(
+        dashboard,
+        "_tsi_detector_blacklist_remove_button",
+        None,
+    )
+
+    if list_widget is None:
+        return
+
+    list_widget.clear()
+
+    for start_mhz, end_mhz in _tsi_blacklist_ranges_mhz(
+        dashboard
+    ):
+        list_widget.addItem(
+            f"{start_mhz:g}-{end_mhz:g}"
+        )
+
+    if remove_button is not None:
+        remove_button.setEnabled(
+            list_widget.count() > 0
+            and list_widget.currentRow() >= 0
+        )
+
+
+def _slotTSI_DetectorBlacklistAddClicked(
+    dashboard: QtCore.QObject,
+):
+    start_edit = getattr(
+        dashboard,
+        "_tsi_detector_blacklist_start",
+        None,
+    )
+
+    end_edit = getattr(
+        dashboard,
+        "_tsi_detector_blacklist_end",
+        None,
+    )
+
+    if start_edit is None or end_edit is None:
+        return
+
+    try:
+        start_mhz = float(
+            start_edit.text().strip()
+        )
+
+        end_mhz = float(
+            end_edit.text().strip()
+        )
+    except Exception:
+        QtWidgets.QMessageBox.warning(
+            dashboard,
+            "Invalid Blacklist Range",
+            "Enter valid start and end frequencies in MHz.",
+        )
+        return
+
+    if start_mhz == end_mhz:
+        QtWidgets.QMessageBox.warning(
+            dashboard,
+            "Invalid Blacklist Range",
+            "Start and end frequencies cannot be the same.",
+        )
+        return
+
+    normalized_range = (
+        min(start_mhz, end_mhz),
+        max(start_mhz, end_mhz),
+    )
+
+    ranges = getattr(
+        dashboard,
+        "tsi_detector_blacklist_ranges",
+        [],
+    )
+
+    if normalized_range not in ranges:
+        ranges.append(
+            normalized_range
+        )
+
+        ranges.sort(
+            key=lambda item: (
+                item[0],
+                item[1],
+            )
+        )
+
+    dashboard.tsi_detector_blacklist_ranges = ranges
+
+    start_edit.clear()
+    end_edit.clear()
+
+    _refresh_tsi_detector_blacklist_dialog(
+        dashboard
+    )
+
+
+def _slotTSI_DetectorBlacklistRemoveClicked(
+    dashboard: QtCore.QObject,
+):
+    list_widget = getattr(
+        dashboard,
+        "_tsi_detector_blacklist_list",
+        None,
+    )
+
+    if list_widget is None:
+        return
+
+    row = list_widget.currentRow()
+
+    if row < 0:
+        return
+
+    ranges = _tsi_blacklist_ranges_mhz(
+        dashboard
+    )
+
+    if row < len(ranges):
+        ranges.pop(row)
+
+    dashboard.tsi_detector_blacklist_ranges = ranges
+
+    _refresh_tsi_detector_blacklist_dialog(
+        dashboard
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTSI_DetectorBlacklistClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Opens blacklist management without resetting saved ranges.
+    """
+    dialog = QtWidgets.QDialog(
+        dashboard
+    )
+
+    dialog.setWindowTitle(
+        "TSI Detector Blacklist"
+    )
+
+    dialog.setModal(True)
+    dialog.resize(
+        390,
+        340,
+    )
+
+    main_layout = QtWidgets.QVBoxLayout(
+        dialog
+    )
+
+    form_layout = QtWidgets.QFormLayout()
+
+    start_edit = QtWidgets.QLineEdit(
+        dialog
+    )
+
+    end_edit = QtWidgets.QLineEdit(
+        dialog
+    )
+
+    start_edit.setPlaceholderText(
+        "e.g. 433.90"
+    )
+
+    end_edit.setPlaceholderText(
+        "e.g. 433.95"
+    )
+
+    form_layout.addRow(
+        "Start Frequency (MHz):",
+        start_edit,
+    )
+
+    form_layout.addRow(
+        "End Frequency (MHz):",
+        end_edit,
+    )
+
+    main_layout.addLayout(
+        form_layout
+    )
+
+    button_layout = QtWidgets.QHBoxLayout()
+
+    add_button = QtWidgets.QPushButton(
+        "Add",
+        dialog,
+    )
+
+    remove_button = QtWidgets.QPushButton(
+        "Remove Selected",
+        dialog,
+    )
+
+    button_layout.addWidget(
+        add_button
+    )
+
+    button_layout.addWidget(
+        remove_button
+    )
+
+    main_layout.addLayout(
+        button_layout
+    )
+
+    list_widget = QtWidgets.QListWidget(
+        dialog
+    )
+
+    list_widget.setSelectionMode(
+        QtWidgets.QAbstractItemView.SingleSelection
+    )
+
+    main_layout.addWidget(
+        list_widget,
+        1,
+    )
+
+    close_buttons = QtWidgets.QDialogButtonBox(
+        QtWidgets.QDialogButtonBox.Close,
+        parent=dialog,
+    )
+
+    main_layout.addWidget(
+        close_buttons
+    )
+
+    dashboard._tsi_detector_blacklist_start = start_edit
+    dashboard._tsi_detector_blacklist_end = end_edit
+    dashboard._tsi_detector_blacklist_list = list_widget
+    dashboard._tsi_detector_blacklist_remove_button = remove_button
+
+    add_button.clicked.connect(
+        lambda: _slotTSI_DetectorBlacklistAddClicked(
+            dashboard
+        )
+    )
+
+    remove_button.clicked.connect(
+        lambda: _slotTSI_DetectorBlacklistRemoveClicked(
+            dashboard
+        )
+    )
+
+    list_widget.itemSelectionChanged.connect(
+        lambda: remove_button.setEnabled(
+            list_widget.currentRow() >= 0
+        )
+    )
+
+    close_buttons.rejected.connect(
+        dialog.reject
+    )
+
+    _refresh_tsi_detector_blacklist_dialog(
+        dashboard
+    )
+
+    dialog.exec_()
+
+    dashboard._tsi_detector_blacklist_start = None
+    dashboard._tsi_detector_blacklist_end = None
+    dashboard._tsi_detector_blacklist_list = None
+    dashboard._tsi_detector_blacklist_remove_button = None
 
 
 def _set_spinbox_value_blocked(widget, value):
@@ -324,6 +926,8 @@ def _append_tsi_detector_detection_from_cot(
     time_obj = QtCore.QTime.fromString(get_time, "HH:mm:ss")
 
     for table in _tsi_detector_results_tables(dashboard):
+        was_empty = table.rowCount() == 0
+
         row = table.rowCount()
         table.setRowCount(row + 1)
 
@@ -351,6 +955,10 @@ def _append_tsi_detector_detection_from_cot(
         table.resizeRowsToContents()
         table.horizontalHeader().setStretchLastSection(False)
         table.horizontalHeader().setStretchLastSection(True)
+
+        if was_empty:
+            table.selectRow(row)
+            table.setCurrentCell(row, 0)
 
 
 def _tsi_detector_plot_initial_xlim(dashboard: QtCore.QObject):
@@ -723,6 +1331,13 @@ def initialize_tsi_detector_controls(dashboard: QtCore.QObject):
     dashboard.tsi_detector_opid = ""
     dashboard.tsi_detector_waiting_for_opid = False
 
+    # Persist for the lifetime of the Dashboard, including popup close/reopen.
+    dashboard.tsi_detector_blacklist_ranges = getattr(
+        dashboard,
+        "tsi_detector_blacklist_ranges",
+        [],
+    )
+
     _populate_tsi_detector_type_combo(dashboard)
     _populate_tsi_detector_mode_combo(dashboard)
 
@@ -763,7 +1378,28 @@ def initialize_tsi_detector_controls(dashboard: QtCore.QObject):
         QtCore.Qt.ScrollBarAsNeeded
     )
 
-    dashboard.ui.tableWidget1_tsi_wideband.resizeColumnsToContents()
+    table = dashboard.ui.tableWidget1_tsi_wideband
+    table.resizeColumnsToContents()
+    table.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+
+    details_label = (
+        dashboard.ui.label2_tsi_detector_detection_details
+    )
+    details_label.setAlignment(
+        QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+    )
+    details_label.setWordWrap(True)
+    details_label.setTextInteractionFlags(
+        QtCore.Qt.TextSelectableByMouse
+    )
+
+    dashboard.ui.scrollArea_tsi_detector_detection_details.setHorizontalScrollBarPolicy(
+        QtCore.Qt.ScrollBarAlwaysOff
+    )
+
+    _clear_tsi_detector_detection_details(
+        dashboard
+    )
 
     update_tsi_detector_selected_node_gate(dashboard)
 
@@ -2157,6 +2793,217 @@ def _tsi_detector_plot_refresh(
         dashboard.logger.debug(
             f"Failed to refresh unified TSI detector raster: {e}"
         )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTSI_DetectorPromoteToSoiClicked(
+    dashboard: QtCore.QObject,
+):
+    detection = _get_selected_tsi_detector_detection(
+        dashboard
+    )
+
+    if not detection:
+        return
+
+    frequency_hz = (
+        detection.get("detection_frequency_hz")
+        or detection.get("frequency_hz")
+    )
+
+    frequency_mhz = (
+        detection.get("detection_frequency_mhz")
+        or detection.get("frequency_mhz")
+    )
+
+    if frequency_mhz in [None, "", "None"]:
+        try:
+            frequency_mhz = float(
+                frequency_hz
+            ) / 1e6
+        except Exception:
+            frequency_mhz = None
+
+    if frequency_mhz is None:
+        dashboard.logger.warning(
+            "[TSI Detector] Selected detection has no valid frequency "
+            "for Promote to SOI."
+        )
+        return
+
+    node_uid = str(
+        detection.get("detection_node_uid")
+        or detection.get("node_uid")
+        or getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not node_uid:
+        dashboard.logger.warning(
+            "[TSI Detector] No node UID is available for Promote to SOI."
+        )
+        return
+
+    await dashboard.backend.tacticalNodeExecute(
+        [node_uid],
+        "Base",
+        "promote_to_soi",
+        {
+            "frequency_mhz": float(
+                frequency_mhz
+            ),
+            "description": (
+                detection.get("description")
+                or detection.get("detection_description")
+                or "Promote to SOI"
+            ),
+        },
+    )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTSI_DetectorPromoteToTargetClicked(
+    dashboard: QtCore.QObject,
+):
+    detection = _get_selected_tsi_detector_detection(
+        dashboard
+    )
+
+    if not detection:
+        return
+
+    detection_uid = str(
+        detection.get("uid")
+        or detection.get("event_uid")
+        or detection.get("detection_event_uid")
+        or ""
+    ).strip()
+
+    if not detection_uid:
+        dashboard.logger.warning(
+            "[TSI Detector] Selected detection has no UID for Promote to Target."
+        )
+        return
+
+    node_uid = str(
+        detection.get("detection_node_uid")
+        or detection.get("node_uid")
+        or getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    frequency_hz = (
+        detection.get("detection_frequency_hz")
+        or detection.get("frequency_hz")
+    )
+
+    frequency_mhz = (
+        detection.get("detection_frequency_mhz")
+        or detection.get("frequency_mhz")
+    )
+
+    if frequency_mhz in [None, "", "None"]:
+        try:
+            frequency_mhz = float(
+                frequency_hz
+            ) / 1e6
+        except Exception:
+            frequency_mhz = None
+
+    detector_name = str(
+        detection.get("detection_detector")
+        or detection.get("detector")
+        or "Detection"
+    )
+
+    display_label = str(
+        detection.get("classification")
+        or detection.get("summary")
+        or detector_name
+    )
+
+    target_id = (
+        f"detection-{detection_uid}"
+    )
+
+    artifact_id = str(
+        detection.get("artifact_id", "")
+        or ""
+    )
+
+    lat = (
+        detection.get("lat")
+        or detection.get("detection_lat")
+    )
+
+    lon = (
+        detection.get("lon")
+        or detection.get("detection_lon")
+    )
+
+    patch = {
+        "target_id": target_id,
+        "node_uid": node_uid,
+        "source_detection_id": detection_uid,
+        "frequency_mhz": frequency_mhz,
+        "classification": {
+            "display_label": display_label,
+            "candidates": [
+                {
+                    "source": "detection",
+                    "label": display_label,
+                    "confidence": detection.get(
+                        "confidence",
+                        "",
+                    ),
+                },
+            ],
+        },
+        "location": {
+            "lat": lat,
+            "lon": lon,
+            "hae_m": detection.get(
+                "hae_m"
+            ),
+            "ce_m": detection.get(
+                "ce_m",
+                100,
+            ),
+            "source": "detection",
+        },
+        "state": "observed",
+        "artifact_id": artifact_id,
+    }
+
+    history_entry = {
+        "event": "detection_promoted_to_target",
+        "detection_id": detection_uid,
+        "artifact_id": artifact_id,
+        "operation_id": (
+            detection.get("detection_opid")
+            or detection.get("operation_id")
+            or detection.get("opid")
+            or ""
+        ),
+    }
+
+    await dashboard.backend.tacticalPromoteSoiToTarget(
+        target_id=target_id,
+        patch=patch,
+        history_entry=history_entry,
+        artifact_id=artifact_id,
+    )
+
+
+
 
 
 __all__ = [

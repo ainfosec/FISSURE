@@ -507,233 +507,13 @@
          <attribute name="title">
           <string>Detections</string>
          </attribute>
-         <widget class="QLabel" name="label2_node_detections_frequency2">
-          <property name="geometry">
-           <rect>
-            <x>5</x>
-            <y>270</y>
-            <width>70</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Frequency:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_node_detections_frequency">
-          <property name="geometry">
-           <rect>
-            <x>75</x>
-            <y>270</y>
-            <width>220</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_node_detections_time2">
-          <property name="geometry">
-           <rect>
-            <x>5</x>
-            <y>285</y>
-            <width>70</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Time:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_node_detections_time">
-          <property name="geometry">
-           <rect>
-            <x>75</x>
-            <y>285</y>
-            <width>220</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_node_detections_detector2">
-          <property name="geometry">
-           <rect>
-            <x>5</x>
-            <y>300</y>
-            <width>70</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Detector:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_node_detections_detector">
-          <property name="geometry">
-           <rect>
-            <x>75</x>
-            <y>300</y>
-            <width>220</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_node_detections_op_id2">
-          <property name="geometry">
-           <rect>
-            <x>5</x>
-            <y>315</y>
-            <width>70</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Op ID:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_node_detections_op_id">
-          <property name="geometry">
-           <rect>
-            <x>75</x>
-            <y>315</y>
-            <width>220</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_node_detections_event_id2">
-          <property name="geometry">
-           <rect>
-            <x>5</x>
-            <y>330</y>
-            <width>70</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string>Event ID:</string>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
-         <widget class="QLabel" name="label2_node_detections_event_id">
-          <property name="geometry">
-           <rect>
-            <x>75</x>
-            <y>330</y>
-            <width>220</width>
-            <height>17</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>8</pointsize>
-            <strikeout>false</strikeout>
-           </font>
-          </property>
-          <property name="text">
-           <string/>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-          </property>
-         </widget>
          <widget class="QTableWidget" name="tableWidget_tactical_node_detections">
           <property name="geometry">
            <rect>
             <x>-1</x>
             <y>0</y>
             <width>304</width>
-            <height>265</height>
+            <height>250</height>
            </rect>
           </property>
           <property name="editTriggers">
@@ -768,8 +548,8 @@
           <property name="geometry">
            <rect>
             <x>5</x>
-            <y>360</y>
-            <width>115</width>
+            <y>420</y>
+            <width>143</width>
             <height>25</height>
            </rect>
           </property>
@@ -782,12 +562,12 @@
            <string>Promote to SOI</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="pushButton_tactical_node_detections_plot">
+         <widget class="QPushButton" name="pushButton_tactical_node_detections_promote_to_target">
           <property name="geometry">
            <rect>
-            <x>5</x>
+            <x>153</x>
             <y>420</y>
-            <width>90</width>
+            <width>143</width>
             <height>25</height>
            </rect>
           </property>
@@ -797,80 +577,110 @@
            </font>
           </property>
           <property name="text">
-           <string>Plot</string>
+           <string>Promote to Target</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="pushButton_tactical_node_detections_plot_zoom">
+         <widget class="QScrollArea" name="scrollArea_tactical_node_detection_details">
           <property name="geometry">
            <rect>
-            <x>100</x>
-            <y>420</y>
-            <width>100</width>
-            <height>25</height>
+            <x>0</x>
+            <y>250</y>
+            <width>302</width>
+            <height>163</height>
            </rect>
           </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
           </property>
-          <property name="text">
-           <string>Plot + Zoom</string>
+          <property name="widgetResizable">
+           <bool>true</bool>
           </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_tactical_node_detection_remove_from_map">
-          <property name="geometry">
-           <rect>
-            <x>205</x>
-            <y>420</y>
-            <width>90</width>
-            <height>25</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Remove</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_tactical_node_detections_delete_row">
-          <property name="geometry">
-           <rect>
-            <x>5</x>
-            <y>390</y>
-            <width>90</width>
-            <height>25</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Delete Row</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_tactical_node_detections_clear_rows">
-          <property name="geometry">
-           <rect>
-            <x>100</x>
-            <y>390</y>
-            <width>90</width>
-            <height>25</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Clear Rows</string>
-          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_3">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>300</width>
+             <height>161</height>
+            </rect>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_9">
+            <property name="spacing">
+             <number>2</number>
+            </property>
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
+             <number>2</number>
+            </property>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_8">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label2_tactical_node_detection_details">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::TextSelectableByMouse</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </widget>
         <widget class="QWidget" name="tab_sois">
@@ -3927,10 +3737,10 @@
       <widget class="QFrame" name="frame1_27">
        <property name="geometry">
         <rect>
-         <x>1070</x>
+         <x>895</x>
          <y>420</y>
-         <width>135</width>
-         <height>355</height>
+         <width>315</width>
+         <height>390</height>
         </rect>
        </property>
        <property name="frameShape">
@@ -3939,13 +3749,13 @@
        <property name="frameShadow">
         <enum>QFrame::Raised</enum>
        </property>
-       <widget class="QListWidget" name="listWidget_tsi_blacklist">
+       <widget class="QPushButton" name="pushButton_tsi_detector_promote_to_target">
         <property name="geometry">
          <rect>
-          <x>10</x>
-          <y>135</y>
-          <width>115</width>
-          <height>210</height>
+          <x>160</x>
+          <y>360</y>
+          <width>143</width>
+          <height>25</height>
          </rect>
         </property>
         <property name="font">
@@ -3953,144 +3763,137 @@
           <pointsize>11</pointsize>
          </font>
         </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_tsi_blacklist_add">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>103</y>
-          <width>50</width>
-          <height>27</height>
-         </rect>
-        </property>
         <property name="text">
-         <string>Add</string>
+         <string>Promote to Target</string>
         </property>
        </widget>
-       <widget class="QLabel" name="label2_54">
+       <widget class="QPushButton" name="pushButton_tsi_detector_promote_to_soi">
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>53</y>
-          <width>116</width>
-          <height>17</height>
+          <y>360</y>
+          <width>143</width>
+          <height>25</height>
          </rect>
         </property>
         <property name="font">
          <font>
-          <pointsize>9</pointsize>
+          <pointsize>11</pointsize>
          </font>
         </property>
         <property name="text">
-         <string>End Freq. (MHz):</string>
+         <string>Promote to SOI</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_tsi_blacklist_remove">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
+       <widget class="QScrollArea" name="scrollArea_tsi_detector_detection_details">
         <property name="geometry">
          <rect>
-          <x>65</x>
-          <y>103</y>
-          <width>60</width>
-          <height>27</height>
+          <x>1</x>
+          <y>0</y>
+          <width>313</width>
+          <height>355</height>
          </rect>
         </property>
-        <property name="text">
-         <string>Remove</string>
+        <property name="horizontalScrollBarPolicy">
+         <enum>Qt::ScrollBarAlwaysOff</enum>
         </property>
-       </widget>
-       <widget class="QLabel" name="label2_50">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>5</y>
-          <width>121</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>9</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Start Freq. (MHz):</string>
-        </property>
-       </widget>
-       <widget class="QTextEdit" name="textEdit_tsi_ignore_end">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>71</y>
-          <width>115</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="tabChangesFocus">
+        <property name="widgetResizable">
          <bool>true</bool>
         </property>
+        <widget class="QWidget" name="scrollAreaWidgetContents_4">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>0</y>
+           <width>311</width>
+           <height>353</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <layout class="QVBoxLayout" name="verticalLayout_10">
+          <property name="spacing">
+           <number>2</number>
+          </property>
+          <property name="leftMargin">
+           <number>2</number>
+          </property>
+          <property name="topMargin">
+           <number>2</number>
+          </property>
+          <property name="rightMargin">
+           <number>2</number>
+          </property>
+          <property name="bottomMargin">
+           <number>2</number>
+          </property>
+          <item>
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <property name="spacing">
+             <number>2</number>
+            </property>
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="QLabel" name="label2_tsi_detector_detection_details">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <pointsize>9</pointsize>
+               </font>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+              </property>
+              <property name="wordWrap">
+               <bool>true</bool>
+              </property>
+              <property name="textInteractionFlags">
+               <set>Qt::TextSelectableByMouse</set>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer_2">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>40</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+         </layout>
+        </widget>
        </widget>
-       <widget class="QTextEdit" name="textEdit_tsi_ignore_start">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>23</y>
-          <width>115</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="tabChangesFocus">
-         <bool>true</bool>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QPushButton" name="pushButton_tsi_detector_search">
-       <property name="geometry">
-        <rect>
-         <x>902</x>
-         <y>780</y>
-         <width>70</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="text">
-        <string>Search</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_tsi_clear_wideband_list">
-       <property name="geometry">
-        <rect>
-         <x>1042</x>
-         <y>403</y>
-         <width>16</width>
-         <height>16</height>
-        </rect>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>12</pointsize>
-         <weight>50</weight>
-         <bold>false</bold>
-        </font>
-       </property>
-       <property name="text">
-        <string>x</string>
-       </property>
       </widget>
       <widget class="QFrame" name="frame_tsi_detector">
        <property name="geometry">
         <rect>
          <x>-10</x>
          <y>405</y>
-         <width>800</width>
+         <width>665</width>
          <height>400</height>
         </rect>
        </property>
@@ -4101,96 +3904,12 @@
         <enum>QFrame::Raised</enum>
        </property>
       </widget>
-      <widget class="QTableWidget" name="tableWidget1_tsi_wideband">
-       <property name="geometry">
-        <rect>
-         <x>810</x>
-         <y>420</y>
-         <width>255</width>
-         <height>355</height>
-        </rect>
-       </property>
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>9</pointsize>
-        </font>
-       </property>
-       <property name="editTriggers">
-        <set>QAbstractItemView::NoEditTriggers</set>
-       </property>
-       <property name="selectionMode">
-        <enum>QAbstractItemView::SingleSelection</enum>
-       </property>
-       <property name="selectionBehavior">
-        <enum>QAbstractItemView::SelectRows</enum>
-       </property>
-       <property name="textElideMode">
-        <enum>Qt::ElideRight</enum>
-       </property>
-       <property name="cornerButtonEnabled">
-        <bool>false</bool>
-       </property>
-       <attribute name="horizontalHeaderMinimumSectionSize">
-        <number>5</number>
-       </attribute>
-       <attribute name="horizontalHeaderDefaultSectionSize">
-        <number>50</number>
-       </attribute>
-       <attribute name="horizontalHeaderStretchLastSection">
-        <bool>true</bool>
-       </attribute>
-       <attribute name="verticalHeaderVisible">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderCascadingSectionResizes">
-        <bool>false</bool>
-       </attribute>
-       <attribute name="verticalHeaderStretchLastSection">
-        <bool>false</bool>
-       </attribute>
-       <column>
-        <property name="text">
-         <string>Freq. (MHz)</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Power (dB)</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </column>
-       <column>
-        <property name="text">
-         <string>Time</string>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-         </font>
-        </property>
-       </column>
-      </widget>
       <widget class="QLabel" name="label1_129">
        <property name="geometry">
         <rect>
-         <x>810</x>
+         <x>660</x>
          <y>400</y>
-         <width>255</width>
+         <width>230</width>
          <height>20</height>
         </rect>
        </property>
@@ -4216,9 +3935,9 @@
       <widget class="QLabel" name="label1_117">
        <property name="geometry">
         <rect>
-         <x>1070</x>
+         <x>895</x>
          <y>400</y>
-         <width>135</width>
+         <width>315</width>
          <height>20</height>
         </rect>
        </property>
@@ -4238,7 +3957,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Blacklist</string>
+        <string>Selected Detection</string>
        </property>
       </widget>
       <widget class="Line" name="line3_7">
@@ -4703,15 +4422,139 @@
         <zorder>label2_tsi_detector_select_a_node</zorder>
        </widget>
       </widget>
+      <widget class="QFrame" name="frame1_1">
+       <property name="geometry">
+        <rect>
+         <x>660</x>
+         <y>420</y>
+         <width>230</width>
+         <height>390</height>
+        </rect>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+       <widget class="QTableWidget" name="tableWidget1_tsi_wideband">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>230</width>
+          <height>355</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="selectionMode">
+         <enum>QAbstractItemView::SingleSelection</enum>
+        </property>
+        <property name="selectionBehavior">
+         <enum>QAbstractItemView::SelectRows</enum>
+        </property>
+        <property name="textElideMode">
+         <enum>Qt::ElideRight</enum>
+        </property>
+        <property name="cornerButtonEnabled">
+         <bool>false</bool>
+        </property>
+        <attribute name="horizontalHeaderMinimumSectionSize">
+         <number>5</number>
+        </attribute>
+        <attribute name="horizontalHeaderDefaultSectionSize">
+         <number>50</number>
+        </attribute>
+        <attribute name="horizontalHeaderStretchLastSection">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderVisible">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderCascadingSectionResizes">
+         <bool>false</bool>
+        </attribute>
+        <attribute name="verticalHeaderStretchLastSection">
+         <bool>false</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>Freq. (MHz)</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Power (dB)</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>Time</string>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+        </column>
+       </widget>
+       <widget class="QPushButton" name="pushButton_tsi_detector_search">
+        <property name="geometry">
+         <rect>
+          <x>117</x>
+          <y>360</y>
+          <width>70</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Search</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="pushButton_tsi_detector_blacklist">
+        <property name="geometry">
+         <rect>
+          <x>42</x>
+          <y>360</y>
+          <width>70</width>
+          <height>25</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Blacklist</string>
+        </property>
+       </widget>
+      </widget>
       <zorder>stackedWidget_tsi_detector</zorder>
-      <zorder>label1_129</zorder>
       <zorder>frame1_27</zorder>
-      <zorder>pushButton_tsi_detector_search</zorder>
       <zorder>frame_tsi_detector</zorder>
-      <zorder>tableWidget1_tsi_wideband</zorder>
       <zorder>label1_117</zorder>
-      <zorder>pushButton_tsi_clear_wideband_list</zorder>
       <zorder>line3_7</zorder>
+      <zorder>frame1_1</zorder>
+      <zorder>label1_129</zorder>
      </widget>
      <widget class="QWidget" name="tab_tsi_conditioner">
       <attribute name="title">

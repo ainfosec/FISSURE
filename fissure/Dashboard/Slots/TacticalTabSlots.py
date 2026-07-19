@@ -8,6 +8,7 @@ import qasync
 import subprocess
 import os
 import asyncio
+import html
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -1625,37 +1626,194 @@ def _slotTacticalNodeDetectionRowChanged(dashboard: QtCore.QObject):
 
 
 def clear_tactical_detection_details(dashboard: QtCore.QObject):
-    dashboard.ui.label2_node_detections_frequency.setText("")
-    dashboard.ui.label2_node_detections_time.setText("")
-    dashboard.ui.label2_node_detections_detector.setText("")
-    dashboard.ui.label2_node_detections_op_id.setText("")
-    dashboard.ui.label2_node_detections_event_id.setText("")
+    dashboard.ui.label2_tactical_node_detection_details.setText("")
 
     enable_tactical_node_detection_details(dashboard, False)
 
 
-def populate_tactical_detection_details(dashboard: QtCore.QObject, detection: dict):
-    frequency = detection.get("frequency", "")
+def populate_tactical_detection_details(
+    dashboard: QtCore.QObject,
+    detection: dict,
+):
+    """
+    Displays every non-empty detection value except raw transport payloads
+    that are better shown separately in a future raw-message viewer.
+    """
+    hidden_keys = {
+        "raw_xml",
+        "cot_xml",
+        "xml",
+        "raw_message",
+        "raw_payload",
+    }
 
-    if frequency and "mhz" not in frequency.lower():
-        frequency = f"{frequency} MHz"
+    def is_empty(value):
+        if value is None:
+            return True
 
-    dashboard.ui.label2_node_detections_frequency.setText(frequency)
+        if isinstance(value, str):
+            return value.strip() in ["", "None"]
 
-    dashboard.ui.label2_node_detections_time.setText(
-        format_detection_time(detection.get("time", ""))
+        if isinstance(value, (dict, list, tuple, set)):
+            return len(value) == 0
+
+        return False
+
+    def make_label(key):
+        return str(key).replace("_", " ").strip().title()
+
+    def format_scalar(key, value):
+        if key == "time":
+            formatted_time = format_detection_time(value)
+            if formatted_time:
+                return formatted_time
+
+        return str(value)
+
+    def field_label_html(label):
+        return (
+            "<span style='font-weight:500;'>"
+            f"{html.escape(str(label))}:"
+            "</span>"
+        )
+
+    def append_value(lines, key, value, depth=0):
+        normalized_key = str(key).strip().lower()
+
+        if normalized_key in hidden_keys:
+            return
+
+        if is_empty(value):
+            return
+
+        label = make_label(key)
+        indent = "&nbsp;" * (depth * 4)
+
+        if isinstance(value, dict):
+            lines.append(
+                f"{indent}{field_label_html(label)}"
+            )
+
+            for nested_key, nested_value in value.items():
+                append_value(
+                    lines,
+                    nested_key,
+                    nested_value,
+                    depth + 1,
+                )
+
+            return
+
+        if isinstance(value, (list, tuple, set)):
+            values = list(value)
+
+            if not values:
+                return
+
+            lines.append(
+                f"{indent}{field_label_html(label)}"
+            )
+
+            for index, item in enumerate(values):
+                if is_empty(item):
+                    continue
+
+                if isinstance(item, dict):
+                    item_label = (
+                        item.get("label")
+                        or item.get("name")
+                        or f"Item {index + 1}"
+                    )
+
+                    item_value = item.get("value")
+
+                    if "value" in item and not is_empty(item_value):
+                        unit = str(
+                            item.get("unit", "")
+                            or ""
+                        ).strip()
+
+                        display_value = str(item_value)
+
+                        if unit:
+                            display_value = (
+                                f"{display_value} {unit}"
+                            )
+
+                        lines.append(
+                            f"{'&nbsp;' * ((depth + 1) * 4)}"
+                            f"{field_label_html(item_label)} "
+                            f"{html.escape(display_value)}"
+                        )
+
+                        remaining = {
+                            nested_key: nested_value
+                            for nested_key, nested_value in item.items()
+                            if nested_key not in {
+                                "label",
+                                "name",
+                                "value",
+                                "unit",
+                            }
+                        }
+
+                        for nested_key, nested_value in remaining.items():
+                            append_value(
+                                lines,
+                                nested_key,
+                                nested_value,
+                                depth + 2,
+                            )
+
+                    else:
+                        lines.append(
+                            f"{'&nbsp;' * ((depth + 1) * 4)}"
+                            f"<span style='font-weight:600;'>"
+                            f"{html.escape(str(item_label))}"
+                            f"</span>"
+                        )
+
+                        for nested_key, nested_value in item.items():
+                            append_value(
+                                lines,
+                                nested_key,
+                                nested_value,
+                                depth + 2,
+                            )
+
+                else:
+                    lines.append(
+                        f"{'&nbsp;' * ((depth + 1) * 4)}"
+                        f"{html.escape(str(item))}"
+                    )
+
+            return
+
+        display_value = format_scalar(
+            normalized_key,
+            value,
+        )
+
+        lines.append(
+            f"{indent}{field_label_html(label)} "
+            f"{html.escape(display_value)}"
+        )
+
+    lines = []
+
+    for key, value in detection.items():
+        append_value(
+            lines,
+            key,
+            value,
+        )
+
+    dashboard.ui.label2_tactical_node_detection_details.setText(
+        "<br>".join(lines)
     )
 
-    dashboard.ui.label2_node_detections_detector.setText(
-        detection.get("detector", "")
-    )
-
-    dashboard.ui.label2_node_detections_op_id.setText(
-        detection.get("operation_id", "")
-    )
-
-    dashboard.ui.label2_node_detections_event_id.setText(
-        detection.get("event_uid", "")
+    dashboard.ui.label2_tactical_node_detection_details.setAlignment(
+        QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
     )
 
 
@@ -2977,25 +3135,15 @@ def enable_tactical_node_soi_details(dashboard: QtCore.QObject, enabled=True):
     )
 
 
-def enable_tactical_node_detection_details(dashboard: QtCore.QObject, enabled=True):
+def enable_tactical_node_detection_details(
+    dashboard: QtCore.QObject,
+    enabled=True,
+):
     widgets = [
-        dashboard.ui.label2_node_detections_frequency,
-        dashboard.ui.label2_node_detections_frequency2,
-        dashboard.ui.label2_node_detections_time,
-        dashboard.ui.label2_node_detections_time2,
-        dashboard.ui.label2_node_detections_detector,
-        dashboard.ui.label2_node_detections_detector2,
-        dashboard.ui.label2_node_detections_op_id,
-        dashboard.ui.label2_node_detections_op_id2,
-        dashboard.ui.label2_node_detections_event_id,
-        dashboard.ui.label2_node_detections_event_id2,
-
+        dashboard.ui.scrollArea_tactical_node_detection_details,
+        dashboard.ui.label2_tactical_node_detection_details,
         dashboard.ui.pushButton_tactical_node_detections_promote_to_soi,
-        dashboard.ui.pushButton_tactical_node_detections_delete_row,
-        dashboard.ui.pushButton_tactical_node_detections_clear_rows,
-        dashboard.ui.pushButton_tactical_node_detections_plot,
-        dashboard.ui.pushButton_tactical_node_detections_plot_zoom,
-        dashboard.ui.pushButton_tactical_node_detection_remove_from_map,
+        dashboard.ui.pushButton_tactical_node_detections_promote_to_target,
     ]
 
     for widget in widgets:
@@ -3414,6 +3562,124 @@ async def _slotTacticalNodeDetectionsPromoteToSoiClicked(
     combo.setCurrentIndex(index)
 
     await _slotTacticalNodeCustomizeClicked(dashboard)
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTacticalNodeDetectionsPromoteToTargetClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Creates or updates a Target directly from the selected detection.
+
+    This reuses the existing target upsert path currently used by
+    SOI-to-Target promotion. The deterministic target ID prevents repeated
+    clicks from creating duplicate targets for the same detection.
+    """
+    detection = get_selected_tactical_node_detection(
+        dashboard
+    )
+
+    if not detection:
+        return
+
+    detection_uid = str(
+        detection.get("uid", "")
+        or ""
+    ).strip()
+
+    if not detection_uid:
+        dashboard.logger.warning(
+            "[Tactical] Selected detection has no UID for Promote to Target."
+        )
+        return
+
+    node_uid = str(
+        detection.get("node_uid", "")
+        or getattr(
+            dashboard,
+            "selected_tactical_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    frequency_mhz = detection.get(
+        "frequency"
+    )
+
+    if frequency_mhz not in [None, "", "None"]:
+        try:
+            frequency_mhz = float(
+                str(frequency_mhz)
+                .replace("MHz", "")
+                .strip()
+            )
+        except Exception:
+            dashboard.logger.warning(
+                "[Tactical] Invalid detection frequency for "
+                f"Promote to Target: {frequency_mhz}"
+            )
+            frequency_mhz = None
+
+    display_label = (
+        detection.get("classification")
+        or detection.get("summary")
+        or detection.get("detector")
+        or "Detection"
+    )
+
+    target_id = f"detection-{detection_uid}"
+
+    artifact_id = str(
+        detection.get("artifact_id", "")
+        or ""
+    )
+
+    patch = {
+        "target_id": target_id,
+        "node_uid": node_uid,
+        "source_detection_id": detection_uid,
+        "frequency_mhz": frequency_mhz,
+        "classification": {
+            "display_label": str(display_label),
+            "candidates": [
+                {
+                    "source": "detection",
+                    "label": str(display_label),
+                    "confidence": detection.get(
+                        "confidence",
+                        "",
+                    ),
+                },
+            ],
+        },
+        "location": {
+            "lat": detection.get("lat"),
+            "lon": detection.get("lon"),
+            "hae_m": detection.get("hae_m"),
+            "ce_m": detection.get("ce_m", 100),
+            "source": "detection",
+        },
+        "state": "observed",
+        "artifact_id": artifact_id,
+    }
+
+    history_entry = {
+        "event": "detection_promoted_to_target",
+        "detection_id": detection_uid,
+        "artifact_id": artifact_id,
+        "operation_id": detection.get(
+            "operation_id",
+            "",
+        ),
+    }
+
+    await dashboard.backend.tacticalPromoteSoiToTarget(
+        target_id=target_id,
+        patch=patch,
+        history_entry=history_entry,
+        artifact_id=artifact_id,
+    )
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -4284,7 +4550,7 @@ async def _slotTacticalNodeSoisRefreshClicked(
         if refresh_button is not None:
             refresh_button.setEnabled(True)
 
-            
+
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTacticalNodeArtifactsRefreshClicked(
     dashboard: QtCore.QObject,
@@ -4323,3 +4589,70 @@ def _slotTacticalNodeArtifactsDownloadClicked(
     _slotTacticalNodeArtifactsOpenFolderClicked(dashboard)
 
 
+def initialize_tactical_node_detection_context_menu(
+    dashboard: QtCore.QObject,
+):
+    """
+    Adds secondary selected-node detection actions to the detections table
+    context menu while leaving promotion actions visible in the details panel.
+    """
+    table = dashboard.ui.tableWidget_tactical_node_detections
+
+    table.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+    table.customContextMenuRequested.connect(
+        lambda position: _showTacticalNodeDetectionsContextMenu(
+            dashboard,
+            position,
+        )
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject, QtCore.QPoint)
+def _showTacticalNodeDetectionsContextMenu(
+    dashboard: QtCore.QObject,
+    position: QtCore.QPoint,
+):
+    """
+    Shows row and table management actions for the selected-node detections
+    table. Right-clicking a row selects that row before opening the menu.
+    """
+    table = dashboard.ui.tableWidget_tactical_node_detections
+    clicked_item = table.itemAt(position)
+
+    if clicked_item is not None:
+        table.selectRow(clicked_item.row())
+        table.setCurrentCell(clicked_item.row(), clicked_item.column())
+
+    detection = get_selected_tactical_node_detection(dashboard)
+    has_detection = detection is not None
+    has_rows = table.rowCount() > 0
+
+    menu = QtWidgets.QMenu(table)
+
+    action_plot = menu.addAction("Plot")
+    action_plot_zoom = menu.addAction("Plot + Zoom")
+    action_remove = menu.addAction("Remove from Map")
+
+    menu.addSeparator()
+
+    action_delete = menu.addAction("Delete Row")
+    action_clear = menu.addAction("Clear Rows")
+
+    action_plot.setEnabled(has_detection)
+    action_plot_zoom.setEnabled(has_detection)
+    action_remove.setEnabled(has_detection)
+    action_delete.setEnabled(has_detection)
+    action_clear.setEnabled(has_rows)
+
+    chosen_action = menu.exec_(table.viewport().mapToGlobal(position))
+
+    if chosen_action == action_plot:
+        _slotTacticalNodeDetectionsPlotClicked(dashboard)
+    elif chosen_action == action_plot_zoom:
+        _slotTacticalNodeDetectionsPlotZoomClicked(dashboard)
+    elif chosen_action == action_remove:
+        _slotTacticalNodeDetectionsRemoveClicked(dashboard)
+    elif chosen_action == action_delete:
+        _slotTacticalNodeDetectionsDeleteRowClicked(dashboard)
+    elif chosen_action == action_clear:
+        _slotTacticalNodeDetectionsClearRowsClicked(dashboard)

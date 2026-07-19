@@ -286,6 +286,9 @@ class Dashboard(QtWidgets.QMainWindow):
         # Initialize Clear Toolbutton
         self.__init_tactical_clear_menu__()
 
+        # Initialize selected-node detection table context menu.
+        TacticalTabSlots.initialize_tactical_node_detection_context_menu(self)
+
         # Initialize selected Tactical node frame state
         self.ui.frame5_tactical1.setToolTip(
             "Select a Tactical node pin or ecosystem row first."
@@ -2716,21 +2719,6 @@ def connect_tactical_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tactical_ecosystem_stop.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalEcosystemStopClicked(dashboard)
     )
-    dashboard.ui.pushButton_tactical_node_detections_plot.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeDetectionsPlotClicked(dashboard)
-    ) 
-    dashboard.ui.pushButton_tactical_node_detections_plot_zoom.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeDetectionsPlotZoomClicked(dashboard)
-    ) 
-    dashboard.ui.pushButton_tactical_node_detection_remove_from_map.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeDetectionsRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_detections_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeDetectionsDeleteRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_detections_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeDetectionsClearRowsClicked(dashboard)
-    )
     dashboard.ui.pushButton_tactical_ecosystem_delete_row.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalEcosystemDeleteNodeRowClicked(dashboard)
     ) 
@@ -2796,6 +2784,9 @@ def connect_tactical_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tactical_node_detections_promote_to_soi.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeDetectionsPromoteToSoiClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tactical_node_detections_promote_to_target.clicked.connect(
+        lambda: TacticalTabSlots._slotTacticalNodeDetectionsPromoteToTargetClicked(dashboard)
     )
     dashboard.ui.pushButton_tactical_node_soi_promote_to_target.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeSoiPromoteToTargetClicked(dashboard)
@@ -3066,15 +3057,6 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tsi_fe_input_soi_refresh.clicked.connect(
         lambda: TSITabSlots._slotTSI_FE_InputSOIRefreshClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_clear_wideband_list.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ClearWidebandListClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_blacklist_add.clicked.connect(
-        lambda: TSITabSlots._slotTSI_BlacklistAddClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_blacklist_remove.clicked.connect(
-        lambda: TSITabSlots._slotTSI_BlacklistRemoveClicked(dashboard)
-    )
     dashboard.ui.pushButton_tsi_classifier_training_import_fe.clicked.connect(
         lambda: TSITabSlots._slotTSI_ClassifierTrainingImportFE_Clicked(dashboard)
     )
@@ -3315,7 +3297,15 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tsi_fe_run_soi_refresh.clicked.connect(
         lambda: TSITabSlots._slotTSI_FE_RunSOIRefreshClicked(dashboard)
     )
-
+    dashboard.ui.pushButton_tsi_detector_blacklist.clicked.connect(
+        lambda: TSITabSlots._slotTSI_DetectorBlacklistClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_detector_promote_to_soi.clicked.connect(
+        lambda: TSITabSlots._slotTSI_DetectorPromoteToSoiClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_detector_promote_to_target.clicked.connect(
+        lambda: TSITabSlots._slotTSI_DetectorPromoteToTargetClicked(dashboard)
+    )
     
     # Radio Buttons
     dashboard.ui.radioButton_tsi_conditioner_input_extensions_all.clicked.connect(
@@ -3334,6 +3324,15 @@ def connect_tsi_slots(dashboard: Dashboard):
     # Table Widget
     dashboard.ui.tableWidget_tsi_fe_results.itemSelectionChanged.connect(
         lambda: TSITabSlots._slotTSI_FE_ResultSelectionChanged(dashboard)
+    )
+    dashboard.ui.tableWidget1_tsi_wideband.customContextMenuRequested.connect(
+        lambda position: TSITabSlots._show_tsi_detector_results_context_menu(
+            dashboard,
+            position,
+        )
+    )
+    dashboard.ui.tableWidget1_tsi_wideband.itemSelectionChanged.connect(
+        lambda: TSITabSlots._slotTSI_DetectorResultSelectionChanged(dashboard)
     )
 
     # Text Edit

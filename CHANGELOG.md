@@ -1,6 +1,27 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-19
+
+Improve Tactical and TSI detection review workflows
+
+### Added
+
+- Added scrollable dynamic detection details panels for Tactical and TSI detector results.
+- Added Promote to Target actions for detections in both Tactical and TSI workflows.
+- Added right-click result-table actions for clearing, plotting, zooming, removing, and deleting detections.
+- Added a persistent TSI detector blacklist management dialog.
+- Added automatic first-row selection and selected-detection detail updates for TSI detector results.
+
+### Changed
+
+- Reworked Tactical and TSI detection layouts to prioritize result review and promotion workflows.
+- Moved secondary Tactical detection actions from permanent buttons into a context menu.
+- Moved TSI blacklist controls out of the main detector layout and into a popup dialog.
+- Updated detection details rendering to display all non-empty structured fields, including nested values.
+- Excluded raw XML and raw transport payloads from the primary detection details view.
+- Rebalanced TSI detector plot, results, and selected-detection panel sizing.
+
 ## 2026-7-17
 
 Separate TSI Detector and Conditioner functionality from legacy slot handling
