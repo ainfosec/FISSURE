@@ -289,6 +289,56 @@ class Dashboard(QtWidgets.QMainWindow):
         # Initialize selected-node detection table context menu.
         TacticalTabSlots.initialize_tactical_node_detection_context_menu(self)
 
+        # Tactical selected-detection details panel.
+        details_scroll = (
+            self.ui.scrollArea_tactical_node_detection_details
+        )
+
+        details_widgets = [
+            details_scroll,
+            details_scroll.viewport(),
+            details_scroll.widget(),
+            self.ui.label2_tactical_node_detection_details,
+        ]
+
+        for widget in details_widgets:
+            if widget is None:
+                continue
+
+            widget.setProperty(
+                "uiRole",
+                "detailsPanel",
+            )
+
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
+            widget.update()
+
+
+        # Tactical action-parameter panel.
+        parameter_scroll = (
+            self.ui.scrollArea_tactical_node_action_parameters
+        )
+
+        parameter_widgets = [
+            parameter_scroll,
+            parameter_scroll.viewport(),
+            parameter_scroll.widget(),
+        ]
+
+        for widget in parameter_widgets:
+            if widget is None:
+                continue
+
+            widget.setProperty(
+                "uiRole",
+                "parameterPanel",
+            )
+
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
+            widget.update()
+
         # Initialize selected Tactical node frame state
         self.ui.frame5_tactical1.setToolTip(
             "Select a Tactical node pin or ecosystem row first."

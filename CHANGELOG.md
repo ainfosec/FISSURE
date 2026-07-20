@@ -1,6 +1,31 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-20
+
+Unify detection promotion, simulation, and review styling across Dashboard and WinTAK
+
+### Added
+
+- Added authoritative detection-to-SOI and detection-to-Target promotion paths shared by Tactical, TSI Detector, and WinTAK.
+- Added complete structured detection forwarding during promotion so detector-specific fields are preserved.
+- Added Simulation as a TSI Detector mode.
+- Added Dummy detector discovery in the TSI Detector workflow through RF Simulation tags.
+- Added reusable themed details-panel and parameter-panel styles for Tactical and TSI interfaces.
+- Added theme-aware styling for dynamically generated Tactical action parameter labels.
+
+### Changed
+
+- Replaced Tactical and TSI detection promotion behavior with direct HIPRFISR record promotion instead of plugin-action execution.
+- Updated promoted SOIs and Targets to use generic detection-promotion source metadata.
+- Updated promoted detection normalization to support Tactical, TSI, and WinTAK field aliases consistently.
+- Updated promoted SOI location handling to use detection coordinates, Sensor Node coordinates, or a valid fallback TAK point.
+- Updated Tactical action parameter and selected-detection panels to use neutral structural borders.
+- Kept the TSI selected-detection panel border aligned with the TSI blue accent styling.
+- Updated light, dark, and custom themes so detection details and dynamic parameter panels follow the active color palette.
+- Updated disabled panel states to use recessed backgrounds and disabled text colors.
+- Updated the Dummy detector description to identify it as a simulated RF detector for workflow testing.
+
 ## 2026-7-19
 
 Improve Tactical and TSI detection review workflows

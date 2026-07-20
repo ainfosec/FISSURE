@@ -2455,6 +2455,70 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
+    async def promoteDetection(
+        self,
+        detection,
+        destination,
+    ):
+        """
+        Promote a complete Dashboard detection directly at HIPRFISR.
+
+        destination:
+            "soi"
+            "target"
+        """
+        destination = str(
+            destination or ""
+        ).strip().lower()
+
+        if destination not in {
+            "soi",
+            "target",
+        }:
+            self.logger.warning(
+                f"Unsupported detection promotion destination: {destination}"
+            )
+            return
+
+        if not isinstance(detection, dict) or not detection:
+            self.logger.warning(
+                "Cannot promote an empty detection."
+            )
+            return
+
+        if self.hiprfisr_connected is not True:
+            self.logger.warning(
+                "Cannot promote detection while HIPRFISR is disconnected."
+            )
+            return
+
+        message_name = (
+            "promoteDetectionToSoi"
+            if destination == "soi"
+            else "promoteDetectionToTarget"
+        )
+
+        parameters = {
+            "detection": detection,
+            "requester_uid": self.socket_id,
+            "requester_callsign": "FISSURE Dashboard",
+        }
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                message_name,
+            fissure.comms.MessageFields.PARAMETERS:
+                parameters,
+        }
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+        
+
     async def tacticalPromoteSoiToTarget(
         self,
         target_id,

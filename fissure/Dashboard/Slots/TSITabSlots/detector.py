@@ -34,6 +34,7 @@ TSI_DETECTOR_MODES = [
     ("lock", "Lock"),
     ("passive", "Passive"),
     ("file", "File"),
+    ("simulation", "Simulation"),
 ]
 
 
@@ -1392,6 +1393,30 @@ def initialize_tsi_detector_controls(dashboard: QtCore.QObject):
     details_label.setTextInteractionFlags(
         QtCore.Qt.TextSelectableByMouse
     )
+
+    details_scroll = (
+        dashboard.ui.scrollArea_tsi_detector_detection_details
+    )
+
+    details_widgets = [
+        details_scroll,
+        details_scroll.viewport(),
+        details_scroll.widget(),
+        dashboard.ui.label2_tsi_detector_detection_details,
+    ]
+
+    for widget in details_widgets:
+        if widget is None:
+            continue
+
+        widget.setProperty(
+            "uiRole",
+            "detailsPanel",
+        )
+
+        widget.style().unpolish(widget)
+        widget.style().polish(widget)
+        widget.update()
 
     dashboard.ui.scrollArea_tsi_detector_detection_details.setHorizontalScrollBarPolicy(
         QtCore.Qt.ScrollBarAlwaysOff
@@ -2799,69 +2824,23 @@ def _tsi_detector_plot_refresh(
 async def _slotTSI_DetectorPromoteToSoiClicked(
     dashboard: QtCore.QObject,
 ):
+    """
+    Promote the complete selected TSI detection directly to an
+    authoritative SOI at HIPRFISR.
+    """
     detection = _get_selected_tsi_detector_detection(
         dashboard
     )
 
     if not detection:
-        return
-
-    frequency_hz = (
-        detection.get("detection_frequency_hz")
-        or detection.get("frequency_hz")
-    )
-
-    frequency_mhz = (
-        detection.get("detection_frequency_mhz")
-        or detection.get("frequency_mhz")
-    )
-
-    if frequency_mhz in [None, "", "None"]:
-        try:
-            frequency_mhz = float(
-                frequency_hz
-            ) / 1e6
-        except Exception:
-            frequency_mhz = None
-
-    if frequency_mhz is None:
         dashboard.logger.warning(
-            "[TSI Detector] Selected detection has no valid frequency "
-            "for Promote to SOI."
+            "[TSI Detector] Select a detection before promoting it to an SOI."
         )
         return
 
-    node_uid = str(
-        detection.get("detection_node_uid")
-        or detection.get("node_uid")
-        or getattr(
-            dashboard,
-            "selected_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
-    if not node_uid:
-        dashboard.logger.warning(
-            "[TSI Detector] No node UID is available for Promote to SOI."
-        )
-        return
-
-    await dashboard.backend.tacticalNodeExecute(
-        [node_uid],
-        "Base",
-        "promote_to_soi",
-        {
-            "frequency_mhz": float(
-                frequency_mhz
-            ),
-            "description": (
-                detection.get("description")
-                or detection.get("detection_description")
-                or "Promote to SOI"
-            ),
-        },
+    await dashboard.backend.promoteDetection(
+        detection=dict(detection),
+        destination="soi",
     )
 
 
@@ -2869,137 +2848,23 @@ async def _slotTSI_DetectorPromoteToSoiClicked(
 async def _slotTSI_DetectorPromoteToTargetClicked(
     dashboard: QtCore.QObject,
 ):
+    """
+    Promote the complete selected TSI detection directly to an
+    authoritative Target at HIPRFISR.
+    """
     detection = _get_selected_tsi_detector_detection(
         dashboard
     )
 
     if not detection:
-        return
-
-    detection_uid = str(
-        detection.get("uid")
-        or detection.get("event_uid")
-        or detection.get("detection_event_uid")
-        or ""
-    ).strip()
-
-    if not detection_uid:
         dashboard.logger.warning(
-            "[TSI Detector] Selected detection has no UID for Promote to Target."
+            "[TSI Detector] Select a detection before promoting it to a Target."
         )
         return
 
-    node_uid = str(
-        detection.get("detection_node_uid")
-        or detection.get("node_uid")
-        or getattr(
-            dashboard,
-            "selected_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
-    frequency_hz = (
-        detection.get("detection_frequency_hz")
-        or detection.get("frequency_hz")
-    )
-
-    frequency_mhz = (
-        detection.get("detection_frequency_mhz")
-        or detection.get("frequency_mhz")
-    )
-
-    if frequency_mhz in [None, "", "None"]:
-        try:
-            frequency_mhz = float(
-                frequency_hz
-            ) / 1e6
-        except Exception:
-            frequency_mhz = None
-
-    detector_name = str(
-        detection.get("detection_detector")
-        or detection.get("detector")
-        or "Detection"
-    )
-
-    display_label = str(
-        detection.get("classification")
-        or detection.get("summary")
-        or detector_name
-    )
-
-    target_id = (
-        f"detection-{detection_uid}"
-    )
-
-    artifact_id = str(
-        detection.get("artifact_id", "")
-        or ""
-    )
-
-    lat = (
-        detection.get("lat")
-        or detection.get("detection_lat")
-    )
-
-    lon = (
-        detection.get("lon")
-        or detection.get("detection_lon")
-    )
-
-    patch = {
-        "target_id": target_id,
-        "node_uid": node_uid,
-        "source_detection_id": detection_uid,
-        "frequency_mhz": frequency_mhz,
-        "classification": {
-            "display_label": display_label,
-            "candidates": [
-                {
-                    "source": "detection",
-                    "label": display_label,
-                    "confidence": detection.get(
-                        "confidence",
-                        "",
-                    ),
-                },
-            ],
-        },
-        "location": {
-            "lat": lat,
-            "lon": lon,
-            "hae_m": detection.get(
-                "hae_m"
-            ),
-            "ce_m": detection.get(
-                "ce_m",
-                100,
-            ),
-            "source": "detection",
-        },
-        "state": "observed",
-        "artifact_id": artifact_id,
-    }
-
-    history_entry = {
-        "event": "detection_promoted_to_target",
-        "detection_id": detection_uid,
-        "artifact_id": artifact_id,
-        "operation_id": (
-            detection.get("detection_opid")
-            or detection.get("operation_id")
-            or detection.get("opid")
-            or ""
-        ),
-    }
-
-    await dashboard.backend.tacticalPromoteSoiToTarget(
-        target_id=target_id,
-        patch=patch,
-        history_entry=history_entry,
-        artifact_id=artifact_id,
+    await dashboard.backend.promoteDetection(
+        detection=dict(detection),
+        destination="target",
     )
 
 

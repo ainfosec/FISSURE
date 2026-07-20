@@ -1492,3 +1492,70 @@ QLabel#label_tsi_fe_workflow_output_type {
     background: transparent;
     font: 9pt "Ubuntu";
 }
+
+
+/* ==========================================================
+   Read-only Details Panels
+   ========================================================== */
+
+QScrollArea[uiRole="detailsPanel"],
+QWidget[uiRole="detailsPanel"],
+QLabel[uiRole="detailsPanel"] {
+    background-color: @color2;
+    color: @color4;
+}
+
+QScrollArea[uiRole="detailsPanel"] {
+    border: 1px solid @color13;
+}
+
+/* TSI Detector keeps the blue accent border. */
+QScrollArea#scrollArea_tsi_detector_detection_details {
+    border: 1px solid @color3;
+}
+
+QScrollArea[uiRole="detailsPanel"]:disabled,
+QWidget[uiRole="detailsPanel"]:disabled,
+QLabel[uiRole="detailsPanel"]:disabled {
+    background-color: @color9;
+    color: @color13;
+}
+
+QScrollArea[uiRole="detailsPanel"]:disabled {
+    border: 1px solid @color13;
+}
+
+
+/* ==========================================================
+   Dynamic Parameter Panels
+   ========================================================== */
+
+QScrollArea[uiRole="parameterPanel"],
+QWidget[uiRole="parameterPanel"] {
+    background-color: @color2;
+    color: @color4;
+}
+
+QScrollArea[uiRole="parameterPanel"] {
+    border: 1px solid @color13;
+}
+
+QScrollArea[uiRole="parameterPanel"]:disabled,
+QWidget[uiRole="parameterPanel"]:disabled {
+    background-color: @color9;
+    color: @color13;
+}
+
+QScrollArea[uiRole="parameterPanel"]:disabled {
+    border: 1px solid @color13;
+}
+
+QLabel[uiRole="parameterLabel"] {
+    background-color: transparent;
+    color: @color4;
+}
+
+QLabel[uiRole="parameterLabel"]:disabled {
+    background-color: transparent;
+    color: @color13;
+}

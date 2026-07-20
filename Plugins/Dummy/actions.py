@@ -14,7 +14,14 @@ ACTION_TAGS = {
     "dummy_artifact": ["All"],
     "dummy_alert": ["All"],
     "dummy_alert_burst": ["All"],
-    "dummy_detection": ["All"],
+    "dummy_detection": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.rf",
+        "tsi.detector.mode.simulation",
+        "tsi.detector.view.rf_raster",
+        "tactical.detection",
+    ],
     "dummy_soi": ["All"],
     "dummy_target": ["All"],
     "dummy_status": ["All"],
@@ -113,7 +120,12 @@ dummy_detection_schema = {
         {"name": "period_s", "label": "Period (s)", "type": "number", "default": 60.0},
         {"name": "freq_mhz", "label": "Frequency (MHz)", "type": "number", "default": 915.0},
         {"name": "power_dbm", "label": "Power (dBm)", "type": "number", "default": -40.0},
-        {"name": "description", "label": "Description", "type": "string", "default": "Periodic dummy detection"},
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": "Periodic simulated RF detection for testing detector workflows",
+        },
     ]
 }
 

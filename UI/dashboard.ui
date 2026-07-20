@@ -583,10 +583,10 @@
          <widget class="QScrollArea" name="scrollArea_tactical_node_detection_details">
           <property name="geometry">
            <rect>
-            <x>0</x>
-            <y>250</y>
-            <width>302</width>
-            <height>163</height>
+            <x>-1</x>
+            <y>249</y>
+            <width>304</width>
+            <height>164</height>
            </rect>
           </property>
           <property name="horizontalScrollBarPolicy">
@@ -600,8 +600,8 @@
             <rect>
              <x>0</x>
              <y>0</y>
-             <width>300</width>
-             <height>161</height>
+             <width>302</width>
+             <height>162</height>
             </rect>
            </property>
            <property name="sizePolicy">
@@ -3788,9 +3788,9 @@
        <widget class="QScrollArea" name="scrollArea_tsi_detector_detection_details">
         <property name="geometry">
          <rect>
-          <x>1</x>
+          <x>0</x>
           <y>0</y>
-          <width>313</width>
+          <width>315</width>
           <height>355</height>
          </rect>
         </property>
@@ -3800,12 +3800,12 @@
         <property name="widgetResizable">
          <bool>true</bool>
         </property>
-        <widget class="QWidget" name="scrollAreaWidgetContents_4">
+        <widget class="QWidget" name="scrollAreaWidgetContents_tsi_detector_detection_details">
          <property name="geometry">
           <rect>
            <x>0</x>
            <y>0</y>
-           <width>311</width>
+           <width>313</width>
            <height>353</height>
           </rect>
          </property>

@@ -870,6 +870,10 @@ def update_tactical_node_action_parameters(
 
     if description_text:
         description_label = QtWidgets.QLabel(description_text)
+        description_label.setProperty(
+            "uiRole",
+            "parameterLabel",
+        )
         description_label.setWordWrap(True)
         description_label.setMinimumHeight(18)
         description_label.setMaximumHeight(36)
@@ -901,6 +905,10 @@ def update_tactical_node_action_parameters(
         label_text = param.get("label") or param_name
 
         label = QtWidgets.QLabel(label_text)
+        label.setProperty(
+            "uiRole",
+            "parameterLabel",
+        )
         label.setFixedWidth(125)
         label.setMinimumHeight(20)
         label.setMaximumHeight(24)
@@ -3518,50 +3526,26 @@ async def _slotTacticalTargetsQueryActionsClicked(dashboard: QtCore.QObject):
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTacticalNodeDetectionsPromoteToSoiClicked(
-    dashboard: QtCore.QObject
+    dashboard: QtCore.QObject,
 ):
-    detection = get_selected_tactical_node_detection(dashboard)
+    """
+    Promote the complete selected Tactical detection directly to an
+    authoritative SOI at HIPRFISR.
+    """
+    detection = get_selected_tactical_node_detection(
+        dashboard
+    )
+
     if not detection:
-        return
-
-    frequency_mhz = detection.get("frequency")
-
-    if frequency_mhz in [None, "", "None"]:
         dashboard.logger.warning(
-            "[Tactical] Selected detection has no frequency for Promote to SOI."
+            "[Tactical] Select a detection before promoting it to an SOI."
         )
         return
 
-    try:
-        frequency_mhz = float(str(frequency_mhz).replace("MHz", "").strip())
-    except Exception:
-        dashboard.logger.warning(
-            f"[Tactical] Invalid detection frequency for Promote to SOI: {frequency_mhz}"
-        )
-        return
-
-    action_name = "promote_to_soi"
-
-    combo = dashboard.ui.comboBox_tactical_node_actions
-    index = combo.findText(action_name)
-
-    if index < 0:
-        dashboard.logger.warning(
-            f"[Tactical] Action not available: {action_name}"
-        )
-        return
-
-    dashboard.pending_tactical_customize_defaults = {
-        "action_name": action_name,
-        "values": {
-            "frequency_mhz": frequency_mhz,
-            "description": "Promote to SOI",
-        },
-    }
-
-    combo.setCurrentIndex(index)
-
-    await _slotTacticalNodeCustomizeClicked(dashboard)
+    await dashboard.backend.promoteDetection(
+        detection=dict(detection),
+        destination="soi",
+    )
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -3569,116 +3553,22 @@ async def _slotTacticalNodeDetectionsPromoteToTargetClicked(
     dashboard: QtCore.QObject,
 ):
     """
-    Creates or updates a Target directly from the selected detection.
-
-    This reuses the existing target upsert path currently used by
-    SOI-to-Target promotion. The deterministic target ID prevents repeated
-    clicks from creating duplicate targets for the same detection.
+    Promote the complete selected Tactical detection directly to an
+    authoritative Target at HIPRFISR.
     """
     detection = get_selected_tactical_node_detection(
         dashboard
     )
 
     if not detection:
-        return
-
-    detection_uid = str(
-        detection.get("uid", "")
-        or ""
-    ).strip()
-
-    if not detection_uid:
         dashboard.logger.warning(
-            "[Tactical] Selected detection has no UID for Promote to Target."
+            "[Tactical] Select a detection before promoting it to a Target."
         )
         return
 
-    node_uid = str(
-        detection.get("node_uid", "")
-        or getattr(
-            dashboard,
-            "selected_tactical_node_uid",
-            "",
-        )
-        or ""
-    ).strip()
-
-    frequency_mhz = detection.get(
-        "frequency"
-    )
-
-    if frequency_mhz not in [None, "", "None"]:
-        try:
-            frequency_mhz = float(
-                str(frequency_mhz)
-                .replace("MHz", "")
-                .strip()
-            )
-        except Exception:
-            dashboard.logger.warning(
-                "[Tactical] Invalid detection frequency for "
-                f"Promote to Target: {frequency_mhz}"
-            )
-            frequency_mhz = None
-
-    display_label = (
-        detection.get("classification")
-        or detection.get("summary")
-        or detection.get("detector")
-        or "Detection"
-    )
-
-    target_id = f"detection-{detection_uid}"
-
-    artifact_id = str(
-        detection.get("artifact_id", "")
-        or ""
-    )
-
-    patch = {
-        "target_id": target_id,
-        "node_uid": node_uid,
-        "source_detection_id": detection_uid,
-        "frequency_mhz": frequency_mhz,
-        "classification": {
-            "display_label": str(display_label),
-            "candidates": [
-                {
-                    "source": "detection",
-                    "label": str(display_label),
-                    "confidence": detection.get(
-                        "confidence",
-                        "",
-                    ),
-                },
-            ],
-        },
-        "location": {
-            "lat": detection.get("lat"),
-            "lon": detection.get("lon"),
-            "hae_m": detection.get("hae_m"),
-            "ce_m": detection.get("ce_m", 100),
-            "source": "detection",
-        },
-        "state": "observed",
-        "artifact_id": artifact_id,
-    }
-
-    history_entry = {
-        "event": "detection_promoted_to_target",
-        "detection_id": detection_uid,
-        "artifact_id": artifact_id,
-        "operation_id": detection.get(
-            "operation_id",
-            "",
-        ),
-    }
-
-    await dashboard.backend.tacticalPromoteSoiToTarget(
-        target_id=target_id,
-        patch=patch,
-        history_entry=history_entry,
-        artifact_id=artifact_id,
+    await dashboard.backend.promoteDetection(
+        detection=dict(detection),
+        destination="target",
     )
 
 

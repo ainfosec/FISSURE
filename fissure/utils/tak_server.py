@@ -529,6 +529,52 @@ class TakReceiver(pytak.QueueWorker):
                 )
                 return
             
+            # Promote existing detection directly to authoritative SOI
+            elif request == "promote_detection_to_soi":
+                detection = parameters.get("detection")
+
+                if not isinstance(detection, dict) or not detection:
+                    self._logger.warning(
+                        "promote_detection_to_soi missing detection object "
+                        "(node_uid=%s, request_id=%s)",
+                        node_uid,
+                        request_id,
+                    )
+                    return
+
+                detection.setdefault("node_uid", node_uid)
+
+                await HiprFisrCallbacks.promoteDetectionToSoi(
+                    self.hipfisr,
+                    detection=detection,
+                    requester_uid=requester_uid,
+                    requester_callsign=requester_callsign,
+                )
+                return
+
+            # Promote existing detection directly to authoritative target
+            elif request == "promote_detection_to_target":
+                detection = parameters.get("detection")
+
+                if not isinstance(detection, dict) or not detection:
+                    self._logger.warning(
+                        "promote_detection_to_target missing detection object "
+                        "(node_uid=%s, request_id=%s)",
+                        node_uid,
+                        request_id,
+                    )
+                    return
+
+                detection.setdefault("node_uid", node_uid)
+
+                await HiprFisrCallbacks.promoteDetectionToTarget(
+                    self.hipfisr,
+                    detection=detection,
+                    requester_uid=requester_uid,
+                    requester_callsign=requester_callsign,
+                )
+                return
+            
             # Refresh Status
             elif request in ("refresh_status"):
                 await HiprFisrCallbacks.refresh_status(

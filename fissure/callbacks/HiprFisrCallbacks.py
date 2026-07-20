@@ -27,6 +27,7 @@ import importlib
 import traceback
 import zmq
 from datetime import datetime, timezone
+import uuid
 from fissure.Listeners import (
     MeshtasticListener,
     FilesystemListener,
@@ -6697,6 +6698,448 @@ async def geolocate_target_stop(
                     target_id=target_id,
                     patch={},
                 )
+
+
+def _normalize_promoted_detection(detection):
+    """
+    Normalize structured detections from WinTAK, Tactical, or TSI.
+
+    Every non-empty detector-defined field is retained. Common Dashboard and
+    parsed-CoT aliases are also copied into stable canonical keys so promotion
+    behavior is identical regardless of which interface initiated it.
+    """
+    if not isinstance(detection, dict):
+        return {}
+
+    raw_keys = {
+        "raw_xml",
+        "cot_xml",
+        "xml",
+        "raw_message",
+        "raw_payload",
+    }
+
+    normalized = {}
+
+    for key, value in detection.items():
+        key_text = str(
+            key or ""
+        ).strip()
+
+        if not key_text:
+            continue
+
+        if key_text.lower() in raw_keys:
+            continue
+
+        if value is None:
+            continue
+
+        if isinstance(value, str):
+            value = value.strip()
+
+            if not value or value == "None":
+                continue
+
+        normalized[key_text] = value
+
+        if key_text.startswith("detection_"):
+            canonical_key = key_text[
+                len("detection_"):
+            ]
+
+            if canonical_key:
+                normalized.setdefault(
+                    canonical_key,
+                    value,
+                )
+
+    alias_map = {
+        "uid": "event_uid",
+        "frequency": "frequency_mhz",
+        "lat": "latitude",
+        "lon": "longitude",
+        "hae_m": "hae_meters",
+        "operation_id": "opid",
+    }
+
+    for source_key, canonical_key in alias_map.items():
+        value = normalized.get(
+            source_key
+        )
+
+        if value not in (
+            None,
+            "",
+            "None",
+        ):
+            normalized.setdefault(
+                canonical_key,
+                value,
+            )
+
+    return normalized
+
+
+def _promoted_detection_float(detection, *keys):
+    for key in keys:
+        value = detection.get(key)
+
+        if value in (None, ""):
+            continue
+
+        try:
+            return float(value)
+        except Exception:
+            continue
+
+    return None
+
+
+def _promoted_detection_frequency_mhz(detection):
+    frequency_mhz = _promoted_detection_float(
+        detection,
+        "frequency_mhz",
+        "freq_mhz",
+    )
+
+    if frequency_mhz is not None:
+        return frequency_mhz
+
+    frequency_hz = _promoted_detection_float(
+        detection,
+        "frequency_hz",
+        "freq_hz",
+    )
+
+    if frequency_hz is not None:
+        return frequency_hz / 1e6
+
+    return None
+
+
+def _promoted_detection_label(detection):
+    """Pick a useful initial display label without making the record Wi-Fi-specific."""
+    for key in (
+        "display_label",
+        "classification",
+        "label",
+        "ssid",
+        "bssid",
+        "mac",
+        "detector",
+    ):
+        value = str(detection.get(key) or "").strip()
+        if value:
+            return value
+
+    return "Promoted Detection"
+
+
+def _promoted_detection_location(
+    component,
+    detection,
+    node_uid,
+):
+    """
+    Resolve a valid TAK point for a promoted detection.
+
+    Priority:
+      1. Location carried by the detection
+      2. Latest HIPRFISR node location
+      3. Valid suppressed 0/0/0 point
+    """
+    lat = _promoted_detection_float(
+        detection,
+        "latitude",
+        "lat",
+        "point_lat",
+        "point_latitude",
+    )
+
+    lon = _promoted_detection_float(
+        detection,
+        "longitude",
+        "lon",
+        "point_lon",
+        "point_longitude",
+    )
+
+    alt = _promoted_detection_float(
+        detection,
+        "hae_meters",
+        "hae_m",
+        "hae",
+        "alt",
+        "altitude",
+        "point_hae",
+    )
+
+    node_record = {}
+
+    try:
+        node_record = (
+            getattr(component, "nodes", {})
+            or {}
+        ).get(
+            node_uid,
+            {},
+        ) or {}
+    except Exception:
+        node_record = {}
+
+    if lat is None:
+        lat = _promoted_detection_float(
+            node_record,
+            "lat",
+            "latitude",
+        )
+
+    if lon is None:
+        lon = _promoted_detection_float(
+            node_record,
+            "lon",
+            "longitude",
+        )
+
+    if alt is None:
+        alt = _promoted_detection_float(
+            node_record,
+            "alt",
+            "altitude",
+            "hae_m",
+            "hae",
+        )
+
+    # A CoT event must always contain numeric point values. A zero point with
+    # high uncertainty is preferable to emitting lat="None"/lon="None".
+    if lat is None or lon is None:
+        lat = 0.0
+        lon = 0.0
+
+    if alt is None:
+        alt = 0.0
+
+    return (
+        float(lat),
+        float(lon),
+        float(alt),
+    )
+
+
+async def promoteDetectionToSoi(
+    component: object,
+    detection=None,
+    requester_uid: str = "",
+    requester_callsign: str = "",
+):
+    """
+    Convert an existing structured detection directly into an authoritative SOI.
+    No plugin action or Sensor Node execution is involved.
+    """
+    detection = _normalize_promoted_detection(detection)
+
+    if not detection:
+        component.logger.warning(
+            "promoteDetectionToSoi received an empty detection"
+        )
+        return
+
+    node_uid = str(detection.get("node_uid") or "").strip()
+    frequency_mhz = _promoted_detection_frequency_mhz(detection)
+
+    if not node_uid:
+        component.logger.warning(
+            "promoteDetectionToSoi detection missing node_uid"
+        )
+        return
+
+    if frequency_mhz is None:
+        component.logger.warning(
+            "promoteDetectionToSoi detection missing a valid frequency"
+        )
+        return
+
+    soi_id = str(uuid.uuid4())
+    operation_id = str(
+        detection.get("opid")
+        or detection.get("operation_id")
+        or ""
+    ).strip()
+
+    observation_time = (
+        detection.get("timestamp")
+        or detection.get("observation_time")
+        or datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%S.%fZ"
+        )
+    )
+
+    lat, lon, alt = _promoted_detection_location(
+        component,
+        detection,
+        node_uid,
+    )
+
+    summary = {
+        "source": "detection_promotion",
+        "promoted_by_uid": requester_uid or "",
+        "promoted_by_callsign": requester_callsign or "",
+        "detection_event_uid": str(
+            detection.get("event_uid") or ""
+        ),
+        "attributes": dict(detection),
+        "stage": "PROMOTED",
+        "stage_order": 5,
+    }
+
+    await soiUpdate(
+        component,
+        node_uid=node_uid,
+        soi_id=soi_id,
+        frequency_mhz=frequency_mhz,
+        status="PROMOTED",
+        operation_id=operation_id,
+        artifact_id="",
+        summary=summary,
+        lat=lat,
+        lon=lon,
+        alt=alt,
+        observation_time=observation_time,
+    )
+
+    component.logger.info(
+        f"Promoted detection to SOI "
+        f"soi_id={soi_id}, node_uid={node_uid}"
+    )
+
+
+async def promoteDetectionToTarget(
+    component: object,
+    detection=None,
+    requester_uid: str = "",
+    requester_callsign: str = "",
+):
+    """
+    Convert an existing structured detection directly into an authoritative target.
+    No plugin action or Sensor Node execution is involved.
+    """
+    detection = _normalize_promoted_detection(detection)
+
+    if not detection:
+        component.logger.warning(
+            "promoteDetectionToTarget received an empty detection"
+        )
+        return
+
+    node_uid = str(detection.get("node_uid") or "").strip()
+
+    if not node_uid:
+        component.logger.warning(
+            "promoteDetectionToTarget detection missing node_uid"
+        )
+        return
+
+    target_id = str(uuid.uuid4())
+    frequency_mhz = _promoted_detection_frequency_mhz(detection)
+
+    observation_time = (
+        detection.get("timestamp")
+        or detection.get("observation_time")
+        or datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%S.%fZ"
+        )
+    )
+
+    lat = _promoted_detection_float(
+        detection,
+        "latitude",
+        "lat",
+    )
+
+    lon = _promoted_detection_float(
+        detection,
+        "longitude",
+        "lon",
+    )
+
+    alt = _promoted_detection_float(
+        detection,
+        "hae_meters",
+        "hae_m",
+        "alt",
+    )
+
+    location = {}
+
+    if lat is not None:
+        location["lat"] = lat
+
+    if lon is not None:
+        location["lon"] = lon
+
+    if alt is not None:
+        location["hae_m"] = alt
+
+    if observation_time:
+        location["timestamp"] = observation_time
+
+    location["source"] = "wintak_detection_promotion"
+
+    display_label = _promoted_detection_label(detection)
+
+    classification = {
+        "display_label": display_label,
+        "confidence": None,
+        "source": "promoted_detection",
+        "candidates": [],
+    }
+
+    summary = {
+        "source": "detection_promotion",
+        "promoted_by_uid": requester_uid or "",
+        "promoted_by_callsign": requester_callsign or "",
+        "detection_event_uid": str(
+            detection.get("event_uid") or ""
+        ),
+        "attributes": dict(detection),
+    }
+
+    history_entry = {
+        "event": "promoted_from_detection",
+        "source": "detection_promotion",
+        "requester_uid": requester_uid or "",
+        "requester_callsign": requester_callsign or "",
+        "detection_event_uid": str(
+            detection.get("event_uid") or ""
+        ),
+        "timestamp": datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%S.%fZ"
+        ),
+    }
+
+    await targetUpdate(
+        component,
+        node_uid=node_uid,
+        target_id=target_id,
+        source_soi_id="",
+        frequency_mhz=frequency_mhz,
+        state="detected",
+        artifact_id="",
+        classification=classification,
+        location=location,
+        history_entry=history_entry,
+        summary=summary,
+        lat=lat,
+        lon=lon,
+        alt=alt,
+        observation_time=observation_time,
+    )
+
+    component.logger.info(
+        f"Promoted detection to target "
+        f"target_id={target_id}, node_uid={node_uid}"
+    )
 
 
 async def sendSoisListTak(
