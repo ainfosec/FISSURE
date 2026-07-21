@@ -463,6 +463,40 @@ def _slotTacticalEcosystemNodeRosterDoubleClicked(dashboard, item):
         dashboard.tactical_map.center_on_node(uid)
 
 
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotTacticalEcosystemPanToNodeClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Opens the current Node Roster row in the Node tab and centers the map.
+    """
+    table = dashboard.ui.tableWidget_tactical_ecosystem
+
+    row = table.currentRow()
+    if row < 0:
+        return
+
+    item = table.item(row, 0)
+    if item is None:
+        return
+
+    uid = item.data(QtCore.Qt.UserRole)
+    if not uid:
+        return
+
+    dashboard.selected_tactical_node_uid = uid
+
+    populate_tactical_node_details(
+        dashboard,
+        uid,
+    )
+
+    dashboard.ui.tabWidget_tactical.setCurrentIndex(0)
+
+    if hasattr(dashboard, "tactical_map"):
+        dashboard.tactical_map.center_on_node(uid)
+
+
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTacticalNodeQueryClicked(dashboard):
     """
@@ -1043,7 +1077,14 @@ def update_tactical_ecosystem_action_parameters(
     action_name,
     parameters,
 ):
-    scroll_area = dashboard.ui.scrollArea_tactical_ecosystem_action_parameters
+    scroll_area = (
+        dashboard.ui.scrollArea_tactical_ecosystem_action_parameters
+    )
+
+    scroll_area.setProperty(
+        "uiRole",
+        "parameterPanel",
+    )
 
     content_widget = scroll_area.widget()
 
@@ -1051,6 +1092,11 @@ def update_tactical_ecosystem_action_parameters(
         content_widget = QtWidgets.QWidget()
         scroll_area.setWidget(content_widget)
         scroll_area.setWidgetResizable(True)
+
+    content_widget.setProperty(
+        "uiRole",
+        "parameterPanel",
+    )
 
     layout = content_widget.layout()
 
@@ -1064,6 +1110,7 @@ def update_tactical_ecosystem_action_parameters(
         item = layout.takeAt(0)
 
         widget = item.widget()
+
         if widget:
             widget.deleteLater()
 
@@ -1075,24 +1122,49 @@ def update_tactical_ecosystem_action_parameters(
         param_name = param.get("name", "")
 
         if param_name == "description":
-            description_text = str(param.get("default", ""))
+            description_text = str(
+                param.get(
+                    "default",
+                    "",
+                )
+            )
             continue
 
     if description_text:
-        description_label = QtWidgets.QLabel(description_text)
+        description_label = QtWidgets.QLabel(
+            description_text
+        )
+
+        description_label.setProperty(
+            "uiRole",
+            "parameterLabel",
+        )
+
         description_label.setWordWrap(True)
         description_label.setMinimumHeight(18)
         description_label.setMaximumHeight(36)
 
         description_font = description_label.font()
-        description_font.setPointSize(max(description_font.pointSize() - 1, 8))
+        description_font.setPointSize(
+            max(
+                description_font.pointSize() - 1,
+                8,
+            )
+        )
         description_font.setItalic(True)
-        description_label.setFont(description_font)
+        description_label.setFont(
+            description_font
+        )
 
-        layout.addWidget(description_label)
+        layout.addWidget(
+            description_label
+        )
 
     for param in parameters:
-        param_name = param.get("name", "")
+        param_name = param.get(
+            "name",
+            "",
+        )
 
         if not param_name:
             continue
@@ -1104,96 +1176,262 @@ def update_tactical_ecosystem_action_parameters(
         row_widget.setMinimumHeight(20)
         row_widget.setMaximumHeight(26)
 
-        row_layout = QtWidgets.QHBoxLayout(row_widget)
-        row_layout.setContentsMargins(0, 0, 2, 0)
+        row_layout = QtWidgets.QHBoxLayout(
+            row_widget
+        )
+
+        row_layout.setContentsMargins(
+            0,
+            0,
+            2,
+            0,
+        )
+
         row_layout.setSpacing(3)
 
-        label_text = param.get("label") or param_name
+        label_text = (
+            param.get("label")
+            or param_name
+        )
 
-        label = QtWidgets.QLabel(label_text)
+        label = QtWidgets.QLabel(
+            label_text
+        )
+
+        label.setProperty(
+            "uiRole",
+            "parameterLabel",
+        )
+
         label.setFixedWidth(125)
         label.setMinimumHeight(20)
         label.setMaximumHeight(24)
-        label.setAlignment(QtCore.Qt.AlignRight | QtCore.Qt.AlignVCenter)
-        label.setToolTip(label_text)
+
+        label.setAlignment(
+            QtCore.Qt.AlignRight
+            | QtCore.Qt.AlignVCenter
+        )
+
+        label.setToolTip(
+            label_text
+        )
 
         label_font = label.font()
-        label_font.setPointSize(max(label_font.pointSize() - 1, 8))
-        label.setFont(label_font)
 
-        row_layout.addWidget(label)
-        row_layout.setStretch(0, 0)
+        label_font.setPointSize(
+            max(
+                label_font.pointSize() - 1,
+                8,
+            )
+        )
 
-        param_type = param.get("type", "string")
-        default = str(param.get("default", ""))
-        options = param.get("options", param.get("option", []))
+        label.setFont(
+            label_font
+        )
+
+        row_layout.addWidget(
+            label
+        )
+
+        row_layout.setStretch(
+            0,
+            0,
+        )
+
+        param_type = param.get(
+            "type",
+            "string",
+        )
+
+        default = str(
+            param.get(
+                "default",
+                "",
+            )
+        )
+
+        options = param.get(
+            "options",
+            param.get(
+                "option",
+                [],
+            ),
+        )
 
         if options:
             widget = QtWidgets.QComboBox()
 
-            option_strings = [str(option) for option in options]
-            widget.addItems(option_strings)
+            option_strings = [
+                str(option)
+                for option in options
+            ]
+
+            widget.addItems(
+                option_strings
+            )
 
             if default in option_strings:
-                widget.setCurrentText(default)
+                widget.setCurrentText(
+                    default
+                )
 
         elif param_type == "number":
             widget = QtWidgets.QDoubleSpinBox()
 
-            decimals = int(param.get("decimals", 3))
-            minimum = float(param.get("min", -999999999.0))
-            maximum = float(param.get("max", 999999999.0))
-            step = float(param.get("step", 1.0))
+            decimals = int(
+                param.get(
+                    "decimals",
+                    3,
+                )
+            )
 
-            widget.setDecimals(decimals)
-            widget.setRange(minimum, maximum)
-            widget.setSingleStep(step)
+            minimum = float(
+                param.get(
+                    "min",
+                    -999999999.0,
+                )
+            )
+
+            maximum = float(
+                param.get(
+                    "max",
+                    999999999.0,
+                )
+            )
+
+            step = float(
+                param.get(
+                    "step",
+                    1.0,
+                )
+            )
+
+            widget.setDecimals(
+                decimals
+            )
+
+            widget.setRange(
+                minimum,
+                maximum,
+            )
+
+            widget.setSingleStep(
+                step
+            )
 
             try:
-                widget.setValue(float(default))
+                widget.setValue(
+                    float(default)
+                )
             except Exception:
                 pass
 
         elif param_type == "integer":
             widget = QtWidgets.QSpinBox()
 
-            minimum = int(param.get("min", -999999999))
-            maximum = int(param.get("max", 999999999))
-            step = int(param.get("step", 1))
+            minimum = int(
+                param.get(
+                    "min",
+                    -999999999,
+                )
+            )
 
-            widget.setRange(minimum, maximum)
-            widget.setSingleStep(step)
+            maximum = int(
+                param.get(
+                    "max",
+                    999999999,
+                )
+            )
+
+            step = int(
+                param.get(
+                    "step",
+                    1,
+                )
+            )
+
+            widget.setRange(
+                minimum,
+                maximum,
+            )
+
+            widget.setSingleStep(
+                step
+            )
 
             try:
-                widget.setValue(int(float(default)))
+                widget.setValue(
+                    int(
+                        float(default)
+                    )
+                )
             except Exception:
                 pass
 
         else:
-            widget = QtWidgets.QLineEdit(default)
+            widget = QtWidgets.QLineEdit(
+                default
+            )
 
-        widget.setObjectName(f"tactical_ecosystem_param_{param_name}")
-        widget.setToolTip(param.get("description", ""))
+        widget.setObjectName(
+            f"tactical_ecosystem_param_{param_name}"
+        )
 
-        make_tactical_parameter_widget_compact(widget)
+        widget.setToolTip(
+            param.get(
+                "description",
+                "",
+            )
+        )
 
-        row_layout.addWidget(widget, 1)
+        make_tactical_parameter_widget_compact(
+            widget
+        )
 
-        layout.addWidget(row_widget)
+        row_layout.addWidget(
+            widget,
+            1,
+        )
 
-        dashboard.tactical_ecosystem_action_parameter_widgets[param_name] = widget
+        layout.addWidget(
+            row_widget
+        )
+
+        dashboard.tactical_ecosystem_action_parameter_widgets[
+            param_name
+        ] = widget
 
     layout.addStretch()
 
-    has_parameters = bool(dashboard.tactical_ecosystem_action_parameter_widgets)
+    has_parameters = bool(
+        dashboard.tactical_ecosystem_action_parameter_widgets
+    )
 
-    dashboard.ui.pushButton_tactical_ecosystem_execute.setEnabled(has_parameters)
+    dashboard.ui.pushButton_tactical_ecosystem_execute.setEnabled(
+        has_parameters
+    )
 
     content_widget.adjustSize()
+
+    dashboard.ui.scrollArea_tactical_ecosystem_action_parameters.setEnabled(
+        True
+    )
+
+    for widget in [
+        scroll_area,
+        scroll_area.viewport(),
+        content_widget,
+    ]:
+        widget.style().unpolish(
+            widget
+        )
+        widget.style().polish(
+            widget
+        )
+        widget.update()
+
     scroll_area.update()
-
-    dashboard.ui.scrollArea_tactical_ecosystem_action_parameters.setEnabled(True)
-
+    
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTacticalNodeExecuteClicked(dashboard):
@@ -2148,10 +2386,13 @@ def shorten_target_id(target_id, max_len=24):
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotTacticalTargetsRowSelectionChanged(dashboard: QtCore.QObject):
+def _slotTacticalTargetsRowSelectionChanged(
+    dashboard: QtCore.QObject,
+):
     table = dashboard.ui.tableWidget_tactical_targets
 
     selected_items = table.selectedItems()
+
     if not selected_items:
         clear_tactical_targets_details(dashboard)
         return
@@ -2163,145 +2404,80 @@ def _slotTacticalTargetsRowSelectionChanged(dashboard: QtCore.QObject):
         clear_tactical_targets_details(dashboard)
         return
 
-    target_id = id_item.data(QtCore.Qt.UserRole) or id_item.text()
-    target = dashboard.tactical_targets.get(target_id, {})
+    target_id = (
+        id_item.data(QtCore.Qt.UserRole)
+        or id_item.text()
+    )
+
+    target = dashboard.tactical_targets.get(
+        target_id,
+        {},
+    )
+
+    if not isinstance(target, dict) or not target:
+        clear_tactical_targets_details(dashboard)
+        return
 
     dashboard.selected_tactical_target_id = target_id
 
-    dashboard.ui.label2_tactical_targets_target_id.setText(
-        str(target.get("target_id", target_id))
+    populate_tactical_targets_details(
+        dashboard,
+        target,
     )
 
-    dashboard.ui.label2_tactical_targets_display_label.setText(
-        str(target.get("type", ""))
+    enable_tactical_targets_details(
+        dashboard,
+        True,
     )
 
-    dashboard.ui.label2_tactical_targets_state.setText(
-        str(target.get("state", ""))
+    update_tactical_targets_geolocate_button_state(
+        dashboard,
+        target,
     )
 
-    dashboard.ui.label2_tactical_targets_geolocation.setText(
-        str(target.get("geolocation_status", "idle"))
-    )
 
-    frequency = target.get("target_frequency_mhz", "")
-    if frequency not in [None, "", "None"]:
-        try:
-            frequency = f"{float(frequency):.3f}"
-        except Exception:
-            pass
-    else:
-        frequency = ""
-
-    dashboard.ui.label2_tactical_targets_frequency.setText(str(frequency))
-
-    dashboard.ui.label2_tactical_targets_updated.setText(
-        str(target.get("updated", ""))
-    )
-
-    dashboard.ui.label2_tactical_targets_node_id.setText(
-        str(target.get("node_uid", ""))
-    )
-
-    dashboard.ui.label2_tactical_targets_ssid.setText(
-        str(target.get("ssid", ""))
-    )
-
-    dashboard.ui.label2_tactical_targets_bssid.setText(
-        str(target.get("bssid", ""))
-    )
-
-    dashboard.ui.label2_tactical_targets_source_soi_id.setText(
-        str(target.get("source_soi_id", ""))
-    )
-
-    lat = target.get("lat")
-    lon = target.get("lon")
-    ce_m = target.get("ce_m")
-
-    location_text = ""
-    if lat not in [None, "", "None"] and lon not in [None, "", "None"]:
-        try:
-            location_text = f"{float(lat):.6f}, {float(lon):.6f}"
-        except Exception:
-            location_text = f"{lat}, {lon}"
-
-        if ce_m not in [None, "", "None"]:
-            location_text += f"  CE {ce_m} m"
-
-    dashboard.ui.label2_tactical_targets_location.setText(location_text)
-
-    dashboard.ui.label2_tactical_targets_artifact_id.setText(
-        str(target.get("artifact_id", ""))
-    )
-
-    enable_tactical_targets_details(dashboard, True)
-
-    update_tactical_targets_geolocate_button_state(dashboard, target,)
-
-
-def clear_tactical_targets_details(dashboard: QtCore.QObject):
-
+def clear_tactical_targets_details(
+    dashboard: QtCore.QObject,
+):
     dashboard.selected_tactical_target_id = None
 
-    labels = [
-        dashboard.ui.label2_tactical_targets_display_label,
-        dashboard.ui.label2_tactical_targets_state,
-        dashboard.ui.label2_tactical_targets_geolocation,
-        dashboard.ui.label2_tactical_targets_frequency,
-        dashboard.ui.label2_tactical_targets_updated,
-        dashboard.ui.label2_tactical_targets_node_id,
-        dashboard.ui.label2_tactical_targets_target_id,
-        dashboard.ui.label2_tactical_targets_ssid,
-        dashboard.ui.label2_tactical_targets_bssid,
-        dashboard.ui.label2_tactical_targets_source_soi_id,
-        dashboard.ui.label2_tactical_targets_location,
-        dashboard.ui.label2_tactical_targets_artifact_id,
-    ]
+    dashboard.ui.label2_tactical_targets_details.setText("")
 
-    for label in labels:
-        label.setText("")
+    enable_tactical_targets_details(
+        dashboard,
+        False,
+    )
 
-    enable_tactical_targets_details(dashboard, False)
+    update_tactical_targets_geolocate_button_state(
+        dashboard,
+        None,
+    )
 
 
-def enable_tactical_targets_details(dashboard: QtCore.QObject, enabled=True):
+def enable_tactical_targets_details(
+    dashboard: QtCore.QObject,
+    enabled=True,
+):
+    dashboard.ui.scrollArea_tactical_targets_details.setEnabled(
+        enabled
+    )
 
-    widgets = [
-        dashboard.ui.label2_tactical_targets_target_id2,
-        dashboard.ui.label2_tactical_targets_display_label2,
-        dashboard.ui.label2_tactical_targets_state2,
-        dashboard.ui.label2_tactical_targets_geolocation2,
-        dashboard.ui.label2_tactical_targets_frequency2,
-        dashboard.ui.label2_tactical_targets_updated2,
-        dashboard.ui.label2_tactical_targets_node_id2,
-        dashboard.ui.label2_tactical_targets_target_id,
-        dashboard.ui.label2_tactical_targets_display_label,
-        dashboard.ui.label2_tactical_targets_state,
-        dashboard.ui.label2_tactical_targets_geolocation,
-        dashboard.ui.label2_tactical_targets_frequency,
-        dashboard.ui.label2_tactical_targets_updated,
-        dashboard.ui.label2_tactical_targets_node_id,
-        dashboard.ui.label2_tactical_targets_ssid2,
-        dashboard.ui.label2_tactical_targets_bssid2,
-        dashboard.ui.label2_tactical_targets_source_soi_id2,
-        dashboard.ui.label2_tactical_targets_location2,
-        dashboard.ui.label2_tactical_targets_artifact_id2,
-        dashboard.ui.label2_tactical_targets_ssid,
-        dashboard.ui.label2_tactical_targets_bssid,
-        dashboard.ui.label2_tactical_targets_source_soi_id,
-        dashboard.ui.label2_tactical_targets_location,
-        dashboard.ui.label2_tactical_targets_artifact_id,
-        dashboard.ui.pushButton_tactical_targets_plot,
-        dashboard.ui.pushButton_tactical_targets_plot_and_zoom,
-        dashboard.ui.pushButton_tactical_targets_remove_pin,
-        dashboard.ui.checkBox_tactical_targets_search_similar_targets,
-        dashboard.ui.pushButton_tactical_targets_geolocate,
-        dashboard.ui.pushButton_tactical_targets_query_actions,
-    ]
+    dashboard.ui.label2_tactical_targets_details.setEnabled(
+        enabled
+    )
 
-    for widget in widgets:
-        widget.setEnabled(enabled)
+    dashboard.ui.checkBox_tactical_targets_search_similar_targets.setEnabled(
+        enabled
+    )
+
+    dashboard.ui.pushButton_tactical_targets_query_actions.setEnabled(
+        enabled
+    )
+
+    if not enabled:
+        dashboard.ui.pushButton_tactical_targets_geolocate.setEnabled(
+            False
+        )
 
 
 def clear_tactical_node_artifact_details(dashboard: QtCore.QObject):
@@ -4532,8 +4708,6 @@ def _slotTacticalEcosystemAlertsDeleteRowClicked(
         table.selectRow(next_row)
         table.setCurrentCell(next_row, 0)
 
-    update_tactical_ecosystem_alert_buttons(dashboard)
-
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotTacticalEcosystemAlertsClearRowsClicked(
@@ -4546,8 +4720,6 @@ def _slotTacticalEcosystemAlertsClearRowsClicked(
     dashboard.ui.tableWidget_tactical_ecosystem_alerts.setRowCount(0)
 
     clear_tactical_ecosystem_alert_details(dashboard)
-
-    update_tactical_ecosystem_alert_buttons(dashboard)
 
 
 @QtCore.pyqtSlot(QtCore.QObject, QtWidgets.QTableWidgetItem)
@@ -4576,58 +4748,31 @@ def _slotTacticalEcosystemAlertsDoubleClicked(dashboard, item):
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotTacticalEcosystemAlertsRowSelectionChanged(dashboard: QtCore.QObject):
-    alert = get_selected_tactical_ecosystem_alert(dashboard)
+def _slotTacticalEcosystemAlertsRowSelectionChanged(
+    dashboard: QtCore.QObject,
+):
+    alert = get_selected_tactical_ecosystem_alert(
+        dashboard
+    )
 
     if not alert:
-        clear_tactical_ecosystem_alert_details(dashboard)
-        update_tactical_ecosystem_alert_buttons(dashboard)
+        clear_tactical_ecosystem_alert_details(
+            dashboard
+        )
         return
 
-    uid = alert.get("uid") or alert.get("alert_id")
+    uid = (
+        alert.get("uid")
+        or alert.get("alert_id")
+    )
+
     dashboard.selected_tactical_alert_id = uid
 
-    # If you later add alert detail labels, populate them here.
 
-    update_tactical_ecosystem_alert_buttons(dashboard)
-
-
-def clear_tactical_ecosystem_alert_details(dashboard: QtCore.QObject):
+def clear_tactical_ecosystem_alert_details(
+    dashboard: QtCore.QObject,
+):
     dashboard.selected_tactical_alert_id = None
-
-    # Add label clearing here if you later create alert detail labels.
-    # Example:
-    # dashboard.ui.label2_tactical_ecosystem_alerts_uid.setText("")
-
-    update_tactical_ecosystem_alert_buttons(dashboard)
-
-
-def update_tactical_ecosystem_alert_buttons(dashboard: QtCore.QObject):
-    table = dashboard.ui.tableWidget_tactical_ecosystem_alerts
-    alert = get_selected_tactical_ecosystem_alert(dashboard)
-
-    has_rows = table.rowCount() > 0
-    has_selection = alert is not None
-
-    has_location = False
-    if alert:
-        lat = alert.get("lat")
-        lon = alert.get("lon")
-
-        if lat not in [None, "", "None"] and lon not in [None, "", "None"]:
-            try:
-                float(lat)
-                float(lon)
-                has_location = True
-            except Exception:
-                has_location = False
-
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_plot.setEnabled(has_location)
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_plot_zoom.setEnabled(has_location)
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_remove_from_map.setEnabled(has_location)
-
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_delete_row.setEnabled(has_selection)
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_clear_rows.setEnabled(has_rows)
 
 
 def clear_tactical_node_detections(dashboard: QtCore.QObject):
@@ -5350,3 +5495,756 @@ def _showTacticalNodeDetectionsContextMenu(
         _slotTacticalNodeDetectionsDeleteRowClicked(dashboard)
     elif chosen_action == action_clear:
         _slotTacticalNodeDetectionsClearRowsClicked(dashboard)
+
+
+def initialize_tactical_targets_context_menu(
+    dashboard: QtCore.QObject,
+):
+    """
+    Moves secondary global Target actions into the Target List context menu.
+
+    Refresh Targets, geolocation controls, and Query Actions remain visible.
+    """
+    table = dashboard.ui.tableWidget_tactical_targets
+
+    table.setContextMenuPolicy(
+        QtCore.Qt.CustomContextMenu
+    )
+
+    table.customContextMenuRequested.connect(
+        lambda position: _showTacticalTargetsContextMenu(
+            dashboard,
+            position,
+        )
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject, QtCore.QPoint)
+def _showTacticalTargetsContextMenu(
+    dashboard: QtCore.QObject,
+    position: QtCore.QPoint,
+):
+    """
+    Selects the right-clicked Target row before showing row and map actions.
+    """
+    table = dashboard.ui.tableWidget_tactical_targets
+    clicked_item = table.itemAt(position)
+
+    if clicked_item is not None:
+        table.selectRow(clicked_item.row())
+        table.setCurrentCell(
+            clicked_item.row(),
+            clicked_item.column(),
+        )
+
+    target_id = getattr(
+        dashboard,
+        "selected_tactical_target_id",
+        None,
+    )
+
+    target = (
+        dashboard.tactical_targets.get(target_id)
+        if target_id
+        else None
+    )
+
+    has_selection = bool(target)
+    has_rows = table.rowCount() > 0
+
+    has_location = False
+
+    if target:
+        lat = target.get("lat")
+        lon = target.get("lon")
+
+        if (
+            lat not in [None, "", "None"]
+            and lon not in [None, "", "None"]
+        ):
+            try:
+                float(lat)
+                float(lon)
+                has_location = True
+            except Exception:
+                has_location = False
+
+    menu = QtWidgets.QMenu(table)
+
+    action_plot = menu.addAction("Plot")
+    action_plot_zoom = menu.addAction("Plot + Zoom")
+    action_remove_pin = menu.addAction("Remove Pin")
+
+    action_plot.setEnabled(
+        has_selection and has_location
+    )
+    action_plot_zoom.setEnabled(
+        has_selection and has_location
+    )
+    action_remove_pin.setEnabled(
+        has_selection
+    )
+
+    menu.addSeparator()
+
+    action_plot_all = menu.addAction("Plot All")
+    action_plot_all.setEnabled(has_rows)
+
+    menu.addSeparator()
+
+    action_delete_row = menu.addAction("Delete Row")
+    action_clear_rows = menu.addAction("Clear Rows")
+
+    action_delete_row.setEnabled(has_selection)
+    action_clear_rows.setEnabled(has_rows)
+
+    selected_action = menu.exec_(
+        table.viewport().mapToGlobal(position)
+    )
+
+    if selected_action == action_plot:
+        _slotTacticalTargetsPlotClicked(dashboard)
+
+    elif selected_action == action_plot_zoom:
+        _slotTacticalTargetsPlotZoomClicked(dashboard)
+
+    elif selected_action == action_remove_pin:
+        _slotTacticalTargetsRemovePinClicked(dashboard)
+
+    elif selected_action == action_plot_all:
+        _slotTacticalTargetsPlotAllClicked(dashboard)
+
+    elif selected_action == action_delete_row:
+        _slotTacticalTargetsDeleteRowClicked(dashboard)
+
+    elif selected_action == action_clear_rows:
+        _slotTacticalTargetsClearRowsClicked(dashboard)
+
+
+def initialize_tactical_targets_details_context_menu(
+    dashboard: QtCore.QObject,
+):
+    """
+    Adds Full Details, Copy, and Select All to the dynamic Target details label.
+    """
+    label = dashboard.ui.label2_tactical_targets_details
+
+    label.setContextMenuPolicy(
+        QtCore.Qt.CustomContextMenu
+    )
+
+    label.customContextMenuRequested.connect(
+        lambda position: _showTacticalTargetsDetailsContextMenu(
+            dashboard,
+            position,
+        )
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject, QtCore.QPoint)
+def _showTacticalTargetsDetailsContextMenu(
+    dashboard: QtCore.QObject,
+    position: QtCore.QPoint,
+):
+    label = dashboard.ui.label2_tactical_targets_details
+
+    menu = QtWidgets.QMenu(label)
+
+    action_full_details = menu.addAction(
+        "Full Details"
+    )
+    action_full_details.setCheckable(True)
+    action_full_details.setChecked(
+        bool(
+            getattr(
+                dashboard,
+                "tactical_targets_full_details",
+                False,
+            )
+        )
+    )
+
+    menu.addSeparator()
+
+    action_copy = menu.addAction("Copy")
+    action_select_all = menu.addAction("Select All")
+
+    has_text = bool(label.text().strip())
+    has_selection = bool(label.hasSelectedText())
+
+    action_copy.setEnabled(has_selection)
+    action_select_all.setEnabled(has_text)
+
+    selected_action = menu.exec_(
+        label.mapToGlobal(position)
+    )
+
+    if selected_action == action_full_details:
+        dashboard.tactical_targets_full_details = (
+            action_full_details.isChecked()
+        )
+
+        target_id = getattr(
+            dashboard,
+            "selected_tactical_target_id",
+            None,
+        )
+
+        target = (
+            dashboard.tactical_targets.get(target_id)
+            if target_id
+            else None
+        )
+
+        if isinstance(target, dict) and target:
+            populate_tactical_targets_details(
+                dashboard,
+                target,
+            )
+
+    elif selected_action == action_copy:
+        selected_text = label.selectedText()
+
+        if selected_text:
+            QtWidgets.QApplication.clipboard().setText(
+                selected_text
+            )
+
+    elif selected_action == action_select_all:
+        label.setSelection(
+            0,
+            len(label.text()),
+        )
+
+
+def populate_tactical_targets_details(
+    dashboard: QtCore.QObject,
+    target: dict,
+):
+    """
+    Displays either a curated Target summary or every non-empty structured
+    field except raw transport payloads.
+    """
+    hidden_keys = {
+        "raw_xml",
+        "cot_xml",
+        "xml",
+        "raw_message",
+        "raw_payload",
+    }
+
+    summary_field_groups = [
+        (
+            "Target ID",
+            [
+                "target_id",
+                "uid",
+                "id",
+            ],
+        ),
+        (
+            "Display Label",
+            [
+                "type",
+                "display_label",
+                "target_label",
+                "name",
+            ],
+        ),
+        (
+            "State",
+            [
+                "state",
+                "target_state",
+                "status",
+            ],
+        ),
+        (
+            "Geolocation",
+            [
+                "geolocation_status",
+                "geolocate_status",
+            ],
+        ),
+        (
+            "Location",
+            [
+                "location",
+            ],
+        ),
+        (
+            "Frequency",
+            [
+                "target_frequency_mhz",
+                "frequency_mhz",
+                "frequency_hz",
+                "frequency",
+            ],
+        ),
+        (
+            "Updated",
+            [
+                "updated",
+                "updated_at",
+                "time",
+                "timestamp",
+            ],
+        ),
+        (
+            "Node ID",
+            [
+                "node_uid",
+                "sensor_node_id",
+                "node_id",
+            ],
+        ),
+    ]
+
+    def is_empty(value):
+        if value is None:
+            return True
+
+        if isinstance(value, str):
+            return value.strip() in [
+                "",
+                "None",
+            ]
+
+        if isinstance(
+            value,
+            (
+                dict,
+                list,
+                tuple,
+                set,
+            ),
+        ):
+            return len(value) == 0
+
+        return False
+
+    def make_label(key):
+        return str(key).replace(
+            "_",
+            " ",
+        ).strip().title()
+
+    def field_label_html(label):
+        return (
+            "<span style='font-weight:500;'>"
+            f"{html.escape(str(label))}:"
+            "</span>"
+        )
+
+    def format_scalar(key, value):
+        normalized_key = str(
+            key
+        ).strip().lower()
+
+        if normalized_key in {
+            "updated",
+            "updated_at",
+            "time",
+            "timestamp",
+            "last_observation_time",
+        }:
+            formatted_time = format_detection_time(
+                value
+            )
+
+            if formatted_time:
+                return formatted_time
+
+        if normalized_key in {
+            "target_frequency_mhz",
+            "frequency_mhz",
+        }:
+            try:
+                return f"{float(value):.3f} MHz"
+            except Exception:
+                pass
+
+        if normalized_key == "frequency_hz":
+            try:
+                return f"{float(value) / 1e6:.3f} MHz"
+            except Exception:
+                pass
+
+        if normalized_key in {
+            "rssi",
+            "rssi_dbm",
+            "power",
+            "power_dbm",
+        }:
+            try:
+                return f"{float(value):.1f} dBm"
+            except Exception:
+                pass
+
+        if normalized_key in {
+            "ce",
+            "ce_m",
+            "hae",
+            "hae_m",
+        }:
+            try:
+                return f"{float(value):.1f} m"
+            except Exception:
+                pass
+
+        return str(value)
+
+    def build_location_value(record):
+        lat = (
+            record.get("lat")
+            if record.get("lat") not in [None, "", "None"]
+            else record.get("latitude")
+        )
+
+        lon = (
+            record.get("lon")
+            if record.get("lon") not in [None, "", "None"]
+            else record.get("longitude")
+        )
+
+        if (
+            lat in [None, "", "None"]
+            or lon in [None, "", "None"]
+        ):
+            return ""
+
+        try:
+            location = (
+                f"{float(lat):.6f}, "
+                f"{float(lon):.6f}"
+            )
+        except Exception:
+            location = f"{lat}, {lon}"
+
+        ce_m = (
+            record.get("ce_m")
+            if record.get("ce_m") not in [None, "", "None"]
+            else record.get("ce")
+        )
+
+        if ce_m not in [None, "", "None"]:
+            location += f"  CE {ce_m} m"
+
+        return location
+
+    def first_value(record, keys):
+        for key in keys:
+            if key == "location":
+                value = build_location_value(record)
+            else:
+                value = record.get(key)
+
+            if not is_empty(value):
+                return key, value
+
+        return None, None
+
+    def append_value(lines, key, value, depth=0):
+        normalized_key = str(key).strip().lower()
+
+        if normalized_key in hidden_keys or is_empty(value):
+            return
+
+        label = make_label(key)
+        indent = "&nbsp;" * (depth * 4)
+
+        if isinstance(value, dict):
+            lines.append(
+                f"{indent}{field_label_html(label)}"
+            )
+
+            for nested_key, nested_value in value.items():
+                append_value(
+                    lines,
+                    nested_key,
+                    nested_value,
+                    depth + 1,
+                )
+
+            return
+
+        if isinstance(value, (list, tuple, set)):
+            values = list(value)
+
+            if not values:
+                return
+
+            lines.append(
+                f"{indent}{field_label_html(label)}"
+            )
+
+            for item in values:
+                if is_empty(item):
+                    continue
+
+                if isinstance(item, dict):
+                    for nested_key, nested_value in item.items():
+                        append_value(
+                            lines,
+                            nested_key,
+                            nested_value,
+                            depth + 1,
+                        )
+                else:
+                    lines.append(
+                        f"{'&nbsp;' * ((depth + 1) * 4)}"
+                        f"{html.escape(str(item))}"
+                    )
+
+            return
+
+        display_value = format_scalar(
+            normalized_key,
+            value,
+        )
+
+        lines.append(
+            f"{indent}{field_label_html(label)} "
+            f"{html.escape(display_value)}"
+        )
+
+    lines = []
+
+    full_details = bool(
+        getattr(
+            dashboard,
+            "tactical_targets_full_details",
+            False,
+        )
+    )
+
+    if full_details:
+        for key, value in target.items():
+            append_value(
+                lines,
+                key,
+                value,
+            )
+    else:
+        for label, keys in summary_field_groups:
+            key, value = first_value(
+                target,
+                keys,
+            )
+
+            if is_empty(value):
+                continue
+
+            if key == "location":
+                display_value = str(value)
+            else:
+                display_value = format_scalar(
+                    key,
+                    value,
+                )
+
+            lines.append(
+                f"{field_label_html(label)} "
+                f"{html.escape(display_value)}"
+            )
+
+    dashboard.ui.label2_tactical_targets_details.setText(
+        "<br>".join(lines)
+    )
+
+    dashboard.ui.label2_tactical_targets_details.setAlignment(
+        QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+    )
+
+
+def initialize_tactical_ecosystem_node_context_menu(
+    dashboard: QtCore.QObject,
+):
+    """
+    Adds map and row-management actions to the Ecosystem Node Roster.
+
+    Select All, Unselect, and Refresh Status remain visible because they are
+    primary controls for the multi-node workflow.
+    """
+    table = dashboard.ui.tableWidget_tactical_ecosystem
+
+    table.setContextMenuPolicy(
+        QtCore.Qt.CustomContextMenu
+    )
+
+    table.customContextMenuRequested.connect(
+        lambda position: _showTacticalEcosystemNodeContextMenu(
+            dashboard,
+            position,
+        )
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject, QtCore.QPoint)
+def _showTacticalEcosystemNodeContextMenu(
+    dashboard: QtCore.QObject,
+    position: QtCore.QPoint,
+):
+    table = dashboard.ui.tableWidget_tactical_ecosystem
+    clicked_item = table.itemAt(position)
+
+    if clicked_item is not None:
+        row = clicked_item.row()
+
+        # Preserve Ctrl/Shift multi-selection behavior. A normal right-click
+        # on an unselected row makes that row the active selection.
+        if not table.item(row, 0).isSelected():
+            table.clearSelection()
+            table.selectRow(row)
+
+        table.setCurrentCell(
+            row,
+            clicked_item.column(),
+        )
+
+        update_selected_tactical_nodes(dashboard)
+
+    current_row = table.currentRow()
+    has_selection = current_row >= 0
+    has_rows = table.rowCount() > 0
+
+    menu = QtWidgets.QMenu(table)
+
+    action_pan = menu.addAction("Pan to Node")
+    action_pan.setEnabled(has_selection)
+
+    menu.addSeparator()
+
+    action_delete_row = menu.addAction("Delete Row")
+    action_clear_rows = menu.addAction("Clear Rows")
+
+    action_delete_row.setEnabled(has_selection)
+    action_clear_rows.setEnabled(has_rows)
+
+    selected_action = menu.exec_(
+        table.viewport().mapToGlobal(position)
+    )
+
+    if selected_action == action_pan:
+        _slotTacticalEcosystemPanToNodeClicked(
+            dashboard
+        )
+
+    elif selected_action == action_delete_row:
+        _slotTacticalEcosystemDeleteNodeRowClicked(
+            dashboard
+        )
+
+    elif selected_action == action_clear_rows:
+        _slotTacticalEcosystemClearNodeRowsClicked(
+            dashboard
+        )
+
+
+def initialize_tactical_ecosystem_alert_context_menu(
+    dashboard: QtCore.QObject,
+):
+    """
+    Moves all secondary Alert actions into the Alerts table context menu.
+    """
+    table = dashboard.ui.tableWidget_tactical_ecosystem_alerts
+
+    table.setContextMenuPolicy(
+        QtCore.Qt.CustomContextMenu
+    )
+
+    table.customContextMenuRequested.connect(
+        lambda position: _showTacticalEcosystemAlertContextMenu(
+            dashboard,
+            position,
+        )
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject, QtCore.QPoint)
+def _showTacticalEcosystemAlertContextMenu(
+    dashboard: QtCore.QObject,
+    position: QtCore.QPoint,
+):
+    table = dashboard.ui.tableWidget_tactical_ecosystem_alerts
+    clicked_item = table.itemAt(position)
+
+    if clicked_item is not None:
+        table.selectRow(clicked_item.row())
+        table.setCurrentCell(
+            clicked_item.row(),
+            clicked_item.column(),
+        )
+
+    alert = get_selected_tactical_ecosystem_alert(
+        dashboard
+    )
+
+    has_rows = table.rowCount() > 0
+    has_selection = alert is not None
+
+    has_location = False
+
+    if alert:
+        lat = alert.get("lat")
+        lon = alert.get("lon")
+
+        if (
+            lat not in [None, "", "None"]
+            and lon not in [None, "", "None"]
+        ):
+            try:
+                float(lat)
+                float(lon)
+                has_location = True
+            except Exception:
+                has_location = False
+
+    menu = QtWidgets.QMenu(table)
+
+    action_plot = menu.addAction("Plot")
+    action_plot_zoom = menu.addAction("Plot + Zoom")
+    action_remove = menu.addAction("Remove From Map")
+
+    action_plot.setEnabled(has_location)
+    action_plot_zoom.setEnabled(has_location)
+    action_remove.setEnabled(
+        has_selection
+    )
+
+    menu.addSeparator()
+
+    action_delete_row = menu.addAction("Delete Row")
+    action_clear_rows = menu.addAction("Clear Rows")
+
+    action_delete_row.setEnabled(has_selection)
+    action_clear_rows.setEnabled(has_rows)
+
+    selected_action = menu.exec_(
+        table.viewport().mapToGlobal(position)
+    )
+
+    if selected_action == action_plot:
+        _slotTacticalEcosystemAlertsPlotClicked(
+            dashboard
+        )
+
+    elif selected_action == action_plot_zoom:
+        _slotTacticalEcosystemAlertsPlotZoomClicked(
+            dashboard
+        )
+
+    elif selected_action == action_remove:
+        _slotTacticalEcosystemAlertsRemoveClicked(
+            dashboard
+        )
+
+    elif selected_action == action_delete_row:
+        _slotTacticalEcosystemAlertsDeleteRowClicked(
+            dashboard
+        )
+
+    elif selected_action == action_clear_rows:
+        _slotTacticalEcosystemAlertsClearRowsClicked(
+            dashboard
+        )

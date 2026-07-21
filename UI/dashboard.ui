@@ -1523,111 +1523,13 @@
       <attribute name="title">
        <string>Targets</string>
       </attribute>
-      <widget class="QFrame" name="frame5_tactical_targets2">
-       <property name="geometry">
-        <rect>
-         <x>-1</x>
-         <y>735</y>
-         <width>304</width>
-         <height>71</height>
-        </rect>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QPushButton" name="pushButton_tactical_targets_geolocate">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>10</y>
-          <width>120</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Geolocate</string>
-        </property>
-       </widget>
-       <widget class="QCheckBox" name="checkBox_tactical_targets_search_similar_targets">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>160</width>
-          <height>23</height>
-         </rect>
-        </property>
-        <property name="text">
-         <string>Search Similar Targets</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_tactical_targets_query_actions">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>170</x>
-          <y>40</y>
-          <width>120</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Query Actions</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QLabel" name="label1_335">
-       <property name="geometry">
-        <rect>
-         <x>-1</x>
-         <y>715</y>
-         <width>304</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Actions</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
-      </widget>
       <widget class="QFrame" name="frame">
        <property name="geometry">
         <rect>
          <x>-1</x>
          <y>0</y>
          <width>304</width>
-         <height>440</height>
+         <height>418</height>
         </rect>
        </property>
        <property name="frameShape">
@@ -1640,7 +1542,7 @@
         <property name="geometry">
          <rect>
           <x>30</x>
-          <y>355</y>
+          <y>360</y>
           <width>120</width>
           <height>23</height>
          </rect>
@@ -1658,7 +1560,7 @@
           <x>-1</x>
           <y>25</y>
           <width>304</width>
-          <height>330</height>
+          <height>335</height>
          </rect>
         </property>
         <property name="editTriggers">
@@ -1689,47 +1591,11 @@
          </property>
         </column>
        </widget>
-       <widget class="QPushButton" name="pushButton_tactical_targets_delete_row">
-        <property name="geometry">
-         <rect>
-          <x>105</x>
-          <y>410</y>
-          <width>95</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Delete Row</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_tactical_targets_plot_all">
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>410</y>
-          <width>95</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Plot All</string>
-        </property>
-       </widget>
        <widget class="QPushButton" name="pushButton_tactical_targets_refresh_targets">
         <property name="geometry">
          <rect>
           <x>95</x>
-          <y>380</y>
+          <y>385</y>
           <width>120</width>
           <height>25</height>
          </rect>
@@ -1747,7 +1613,7 @@
         <property name="geometry">
          <rect>
           <x>160</x>
-          <y>355</y>
+          <y>360</y>
           <width>135</width>
           <height>23</height>
          </rect>
@@ -1783,673 +1649,12 @@
          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_tactical_targets_clear_rows">
-        <property name="geometry">
-         <rect>
-          <x>205</x>
-          <y>410</y>
-          <width>95</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Clear Rows</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QFrame" name="frame5_tactical_targets3">
-       <property name="geometry">
-        <rect>
-         <x>-1</x>
-         <y>470</y>
-         <width>304</width>
-         <height>235</height>
-        </rect>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QPushButton" name="pushButton_tactical_targets_remove_pin">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>160</x>
-          <y>205</y>
-          <width>135</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Remove Pin</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_geolocation2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>50</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Geolocation:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_node_id2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>115</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Node ID:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_tactical_targets_plot">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>205</y>
-          <width>55</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Plot</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_artifact_id">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>145</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_location2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>85</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Location:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_frequency2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>100</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Freq. (MHz):</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_updated2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>65</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Updated:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_state2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>35</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>State:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_target_id2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>5</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Target ID:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_bssid2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>180</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>BSSID:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_frequency">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>100</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_artifact_id2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>145</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Artifact ID:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_ssid">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>165</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_tactical_targets_plot_and_zoom">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>65</x>
-          <y>205</y>
-          <width>90</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Plot + Zoom</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_display_label2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>20</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Display Label:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_state">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>35</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_node_id">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>115</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_target_id">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>5</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_updated">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>65</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_source_soi_id2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>130</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Source SOI ID:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_geolocation">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>50</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_source_soi_id">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>130</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_ssid2">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>165</y>
-          <width>70</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>SSID:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_bssid">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>180</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_display_label">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>20</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_tactical_targets_location">
-        <property name="geometry">
-         <rect>
-          <x>80</x>
-          <y>85</y>
-          <width>215</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>8</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string/>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
       </widget>
       <widget class="QLabel" name="label1_337">
        <property name="geometry">
         <rect>
          <x>-1</x>
-         <y>450</y>
+         <y>425</y>
          <width>304</width>
          <height>20</height>
         </rect>
@@ -2467,6 +1672,166 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+       </property>
+      </widget>
+      <widget class="QScrollArea" name="scrollArea_tactical_targets_details">
+       <property name="geometry">
+        <rect>
+         <x>-1</x>
+         <y>445</y>
+         <width>304</width>
+         <height>285</height>
+        </rect>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents_5">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>302</width>
+          <height>283</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_14">
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <property name="leftMargin">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>2</number>
+         </property>
+         <property name="rightMargin">
+          <number>2</number>
+         </property>
+         <property name="bottomMargin">
+          <number>2</number>
+         </property>
+         <item>
+          <layout class="QVBoxLayout" name="verticalLayout_15">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="leftMargin">
+            <number>0</number>
+           </property>
+           <property name="rightMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="label2_tactical_targets_details">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="font">
+              <font>
+               <pointsize>9</pointsize>
+              </font>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+             <property name="alignment">
+              <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+             </property>
+             <property name="wordWrap">
+              <bool>true</bool>
+             </property>
+             <property name="textInteractionFlags">
+              <set>Qt::TextSelectableByMouse</set>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_4">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tactical_targets_query_actions">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>770</y>
+         <width>120</width>
+         <height>25</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Query Actions</string>
+       </property>
+      </widget>
+      <widget class="QCheckBox" name="checkBox_tactical_targets_search_similar_targets">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>10</x>
+         <y>740</y>
+         <width>160</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Search Similar Targets</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tactical_targets_geolocate">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>170</x>
+         <y>740</y>
+         <width>120</width>
+         <height>25</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Geolocate</string>
        </property>
       </widget>
      </widget>
@@ -2528,7 +1893,7 @@
          <x>-1</x>
          <y>605</y>
          <width>304</width>
-         <height>135</height>
+         <height>201</height>
         </rect>
        </property>
        <property name="editTriggers">
@@ -2568,7 +1933,7 @@
          <x>-1</x>
          <y>300</y>
          <width>304</width>
-         <height>275</height>
+         <height>277</height>
         </rect>
        </property>
        <property name="frameShape">
@@ -2849,7 +2214,7 @@
         <property name="geometry">
          <rect>
           <x>10</x>
-          <y>240</y>
+          <y>243</y>
           <width>135</width>
           <height>25</height>
          </rect>
@@ -2870,7 +2235,7 @@
         <property name="geometry">
          <rect>
           <x>155</x>
-          <y>240</y>
+          <y>243</y>
           <width>135</width>
           <height>25</height>
          </rect>
@@ -2915,7 +2280,7 @@
          <x>-1</x>
          <y>25</y>
          <width>304</width>
-         <height>245</height>
+         <height>247</height>
         </rect>
        </property>
        <property name="frameShape">
@@ -2930,7 +2295,7 @@
           <x>-1</x>
           <y>0</y>
           <width>304</width>
-          <height>180</height>
+          <height>210</height>
          </rect>
         </property>
         <property name="editTriggers">
@@ -2973,7 +2338,7 @@
         <property name="geometry">
          <rect>
           <x>5</x>
-          <y>185</y>
+          <y>215</y>
           <width>90</width>
           <height>25</height>
          </rect>
@@ -2991,7 +2356,7 @@
         <property name="geometry">
          <rect>
           <x>100</x>
-          <y>185</y>
+          <y>215</y>
           <width>80</width>
           <height>25</height>
          </rect>
@@ -3009,7 +2374,7 @@
         <property name="geometry">
          <rect>
           <x>185</x>
-          <y>185</y>
+          <y>215</y>
           <width>110</width>
           <height>25</height>
          </rect>
@@ -3023,147 +2388,6 @@
          <string>Refesh Status</string>
         </property>
        </widget>
-       <widget class="QPushButton" name="pushButton_tactical_ecosystem_delete_row">
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>215</y>
-          <width>90</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Delete Row</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_tactical_ecosystem_clear_rows">
-        <property name="geometry">
-         <rect>
-          <x>100</x>
-          <y>215</y>
-          <width>90</width>
-          <height>25</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-         </font>
-        </property>
-        <property name="text">
-         <string>Clear Rows</string>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QPushButton" name="pushButton_tactical_ecosystem_alerts_remove_from_map">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>205</x>
-         <y>775</y>
-         <width>90</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Remove</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_tactical_ecosystem_alerts_plot_zoom">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>775</y>
-         <width>100</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Plot + Zoom</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_tactical_ecosystem_alerts_plot">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>5</x>
-         <y>775</y>
-         <width>90</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Plot</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_tactical_ecosystem_alerts_delete_row">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>5</x>
-         <y>745</y>
-         <width>90</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Delete Row</string>
-       </property>
-      </widget>
-      <widget class="QPushButton" name="pushButton_tactical_ecosystem_alerts_clear_rows">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>100</x>
-         <y>745</y>
-         <width>90</width>
-         <height>25</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-        </font>
-       </property>
-       <property name="text">
-        <string>Clear Rows</string>
-       </property>
       </widget>
      </widget>
     </widget>

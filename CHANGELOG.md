@@ -3,6 +3,27 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-7-21
 
+Streamline Tactical target and ecosystem review workflows
+
+### Added
+
+- Added scrollable compact and full-detail views for Tactical Targets.
+- Added right-click Target actions for plotting, zooming, map removal, row deletion, and clearing.
+- Added right-click Node Roster actions for map navigation and row management.
+- Added right-click Alert actions for plotting, zooming, map removal, row deletion, and clearing.
+- Added theme-aware styling for dynamically generated Tactical multi-node action parameters.
+
+### Changed
+
+- Reworked the Tactical Targets layout to prioritize the target list, dynamic details, geolocation controls, and plugin actions.
+- Moved secondary Target plotting and row-management controls out of the permanent layout and into the Target context menu.
+- Updated Target deletion and clearing to remove corresponding map overlays.
+- Simplified the Tactical Ecosystem Node Roster to keep only Select All, Unselect, and Refresh Status visible.
+- Removed permanent Alert action buttons and expanded the Alerts table into the available space.
+- Updated Tactical multi-node parameter panels and generated labels to follow light, dark, and custom themes.
+
+## 2026-7-21
+
 Streamline Tactical SOI and Node Target review workflows
 
 ### Added

@@ -295,6 +295,13 @@ class Dashboard(QtWidgets.QMainWindow):
         # Initialize selected-node target table context menu.
         TacticalTabSlots.initialize_tactical_node_target_context_menu(self)
 
+        # Initialize global Tactical Targets table context menu.
+        TacticalTabSlots.initialize_tactical_targets_context_menu(self)
+
+        # Initialize Tactical Ecosystem context menus.
+        TacticalTabSlots.initialize_tactical_ecosystem_node_context_menu(self)
+        TacticalTabSlots.initialize_tactical_ecosystem_alert_context_menu(self)
+
         # Tactical selected-detection details panel.
         details_scroll = (
             self.ui.scrollArea_tactical_node_detection_details
@@ -372,6 +379,35 @@ class Dashboard(QtWidgets.QMainWindow):
             widget.style().unpolish(widget)
             widget.style().polish(widget)
             widget.update()
+        
+        # Tactical global Target details panel.
+        target_details_scroll = (
+            self.ui.scrollArea_tactical_targets_details
+        )
+
+        target_details_widgets = [
+            target_details_scroll,
+            target_details_scroll.viewport(),
+            target_details_scroll.widget(),
+            self.ui.label2_tactical_targets_details,
+        ]
+
+        for widget in target_details_widgets:
+            if widget is None:
+                continue
+
+            widget.setProperty(
+                "uiRole",
+                "detailsPanel",
+            )
+
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
+            widget.update()
+
+        # Tactical Target details view mode and context menu.
+        self.tactical_targets_full_details = False
+        TacticalTabSlots.initialize_tactical_targets_details_context_menu(self)
 
         # Initialize selected Tactical node frame state
         self.ui.frame5_tactical1.setToolTip(
@@ -2803,32 +2839,8 @@ def connect_tactical_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tactical_ecosystem_stop.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalEcosystemStopClicked(dashboard)
     )
-    dashboard.ui.pushButton_tactical_ecosystem_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemDeleteNodeRowClicked(dashboard)
-    ) 
-    dashboard.ui.pushButton_tactical_ecosystem_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemClearNodeRowsClicked(dashboard)
-    )
     dashboard.ui.pushButton_tactical_targets_refresh_targets.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalTargetsRefreshTargetsClicked(dashboard)
-    )       
-    dashboard.ui.pushButton_tactical_targets_plot.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_targets_plot_and_zoom.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsPlotZoomClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_targets_remove_pin.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsRemovePinClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_targets_plot_all.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsPlotAllClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_targets_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsDeleteRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_targets_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsClearRowsClicked(dashboard)
     )
     dashboard.ui.pushButton_tactical_node_targets_refresh_targets.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeTargetsRefreshTargetsClicked(dashboard)
@@ -2856,21 +2868,6 @@ def connect_tactical_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tactical_targets_geolocate.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalTargetsGeolocateClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_plot.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemAlertsPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_plot_zoom.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemAlertsPlotZoomClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_remove_from_map.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemAlertsRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemAlertsClearRowsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemAlertsDeleteRowClicked(dashboard)
     )
     dashboard.ui.pushButton_tactical_node_artifacts_refresh.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeArtifactsRefreshClicked(dashboard)
