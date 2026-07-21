@@ -574,6 +574,173 @@ class TakReceiver(pytak.QueueWorker):
                     requester_callsign=requester_callsign,
                 )
                 return
+
+            # Promote existing authoritative SOI directly to authoritative target
+            elif request == "promote_soi_to_target":
+                soi = parameters.get("soi")
+
+                if not isinstance(soi, dict) or not soi:
+                    self._logger.warning(
+                        "promote_soi_to_target missing soi object "
+                        "(node_uid=%s, request_id=%s)",
+                        node_uid,
+                        request_id,
+                    )
+                    return
+
+                soi.setdefault("node_uid", node_uid)
+
+                soi_id = str(
+                    soi.get("soi_id")
+                    or ""
+                ).strip()
+
+                if not soi_id:
+                    self._logger.warning(
+                        "promote_soi_to_target missing soi_id "
+                        "(node_uid=%s, request_id=%s)",
+                        node_uid,
+                        request_id,
+                    )
+                    return
+
+                target_id = f"soi-{soi_id}"
+
+                frequency_mhz = None
+                frequency_value = soi.get("frequency_mhz")
+
+                if frequency_value not in (None, "", "None"):
+                    try:
+                        frequency_mhz = float(frequency_value)
+                    except (TypeError, ValueError):
+                        self._logger.warning(
+                            "promote_soi_to_target invalid frequency_mhz=%r "
+                            "(node_uid=%s, soi_id=%s)",
+                            frequency_value,
+                            node_uid,
+                            soi_id,
+                        )
+
+                model_classification = str(
+                    soi.get("model_classification")
+                    or ""
+                ).strip()
+
+                database_classification = str(
+                    soi.get("database_classification")
+                    or ""
+                ).strip()
+
+                display_label = (
+                    model_classification
+                    or database_classification
+                    or "SOI"
+                )
+
+                model_confidence = soi.get(
+                    "model_confidence"
+                )
+
+                artifact_id = str(
+                    soi.get("artifact_id")
+                    or ""
+                ).strip()
+
+                def _optional_float(value):
+                    if value in (None, "", "None"):
+                        return None
+
+                    try:
+                        return float(value)
+                    except (TypeError, ValueError):
+                        return None
+
+                lat = _optional_float(
+                    soi.get("latitude")
+                    if "latitude" in soi
+                    else soi.get("lat")
+                )
+
+                lon = _optional_float(
+                    soi.get("longitude")
+                    if "longitude" in soi
+                    else soi.get("lon")
+                )
+
+                hae_m = _optional_float(
+                    soi.get("hae_meters")
+                    if "hae_meters" in soi
+                    else soi.get("hae_m")
+                )
+
+                classification_candidates = []
+
+                if model_classification:
+                    classification_candidates.append({
+                        "source": "model",
+                        "label": model_classification,
+                        "confidence": model_confidence,
+                    })
+
+                if database_classification:
+                    classification_candidates.append({
+                        "source": "database",
+                        "label": database_classification,
+                        "confidence": "",
+                    })
+
+                patch = {
+                    "target_id": target_id,
+                    "node_uid": str(
+                        soi.get("node_uid")
+                        or node_uid
+                        or ""
+                    ).strip(),
+                    "source_soi_id": soi_id,
+                    "frequency_mhz": frequency_mhz,
+                    "classification": {
+                        "display_label": display_label,
+                        "candidates": classification_candidates,
+                    },
+                    "location": {
+                        "lat": lat,
+                        "lon": lon,
+                        "hae_m": hae_m,
+                        "ce_m": 100,
+                        "source": "soi",
+                    },
+                    "state": "observed",
+                    "artifact_id": artifact_id,
+                }
+
+                history_entry = {
+                    "event": "soi_promoted_to_target",
+                    "soi_id": soi_id,
+                    "artifact_id": artifact_id,
+                    "operation_id": str(
+                        soi.get("operation_id")
+                        or ""
+                    ).strip(),
+                    "requester_uid": requester_uid,
+                    "requester_callsign": requester_callsign,
+                }
+
+                await HiprFisrCallbacks.targetPatch(
+                    self.hipfisr,
+                    target_id=target_id,
+                    patch=patch,
+                    history_entry=history_entry,
+                    artifact_id=artifact_id,
+                )
+
+                self._logger.info(
+                    "Promoted WinTAK SOI to target "
+                    "(soi_id=%s, target_id=%s, node_uid=%s)",
+                    soi_id,
+                    target_id,
+                    node_uid,
+                )
+                return            
             
             # Refresh Status
             elif request in ("refresh_status"):

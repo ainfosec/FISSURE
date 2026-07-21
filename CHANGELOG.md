@@ -1,6 +1,26 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-21
+
+Streamline Tactical SOI and Node Target review workflows
+
+### Added
+
+- Added scrollable dynamic SOI details with compact and full-detail views.
+- Added right-click SOI actions for refreshing, deleting, clearing, plotting, zooming, and removing map items.
+- Added right-click Node Target actions for details, filtering, plotting, zooming, map removal, and row management.
+- Added target ID shortening with full-value tooltips in the Tactical Node Targets details panel.
+
+### Changed
+
+- Reworked the Tactical SOI layout to prioritize evidence review and promotion actions.
+- Moved secondary SOI controls from permanent buttons into the results-table context menu.
+- Updated Tactical SOI details to show a concise operational summary by default while preserving access to all structured fields.
+- Reworked the Tactical Node Targets layout around permanent Refresh Targets and Query Actions controls.
+- Moved secondary Node Target controls from permanent buttons into the results-table context menu.
+- Kept Node Target refresh behavior manual so displayed distances remain explicit snapshots relative to the selected Sensor Node.
+
 ## 2026-7-20
 
 Unify detection promotion, simulation, and review styling across Dashboard and WinTAK

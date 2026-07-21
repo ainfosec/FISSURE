@@ -289,6 +289,12 @@ class Dashboard(QtWidgets.QMainWindow):
         # Initialize selected-node detection table context menu.
         TacticalTabSlots.initialize_tactical_node_detection_context_menu(self)
 
+        # Initialize selected-node SOI table context menu.
+        TacticalTabSlots.initialize_tactical_node_soi_context_menu(self)
+
+        # Initialize selected-node target table context menu.
+        TacticalTabSlots.initialize_tactical_node_target_context_menu(self)
+
         # Tactical selected-detection details panel.
         details_scroll = (
             self.ui.scrollArea_tactical_node_detection_details
@@ -313,7 +319,35 @@ class Dashboard(QtWidgets.QMainWindow):
             widget.style().unpolish(widget)
             widget.style().polish(widget)
             widget.update()
+        
+        # Tactical selected-SOI details panel.
+        soi_details_scroll = (
+            self.ui.scrollArea_tactical_node_soi_details
+        )
 
+        soi_details_widgets = [
+            soi_details_scroll,
+            soi_details_scroll.viewport(),
+            soi_details_scroll.widget(),
+            self.ui.label2_tactical_node_soi_details,
+        ]
+
+        for widget in soi_details_widgets:
+            if widget is None:
+                continue
+
+            widget.setProperty(
+                "uiRole",
+                "detailsPanel",
+            )
+
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
+            widget.update()
+        
+        # Tactical SOI details view mode and context menu.
+        self.tactical_node_soi_full_details = False
+        TacticalTabSlots.initialize_tactical_node_soi_details_context_menu(self)
 
         # Tactical action-parameter panel.
         parameter_scroll = (
@@ -2799,29 +2833,8 @@ def connect_tactical_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tactical_node_targets_refresh_targets.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeTargetsRefreshTargetsClicked(dashboard)
     )
-    dashboard.ui.pushButton_tactical_node_targets_plot.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_targets_plot_and_zoom.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsPlotZoomClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_targets_remove_from_map.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsRemoveClicked(dashboard)
-    )
     dashboard.ui.pushButton_tactical_node_targets_query_actions.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeTargetsQueryActionsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_targets_more_details.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsMoreDetailsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_soi_plot.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeSoisPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_soi_plot_zoom.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeSoisPlotZoomClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_soi_remove_from_map.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeSoisRemoveClicked(dashboard)
     )
     dashboard.ui.pushButton_tactical_node_soi_download_evidence.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeSoisDownloadEvidenceClicked(dashboard)
@@ -2859,21 +2872,6 @@ def connect_tactical_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tactical_ecosystem_alerts_delete_row.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalEcosystemAlertsDeleteRowClicked(dashboard)
     )
-    dashboard.ui.pushButton_tactical_node_soi_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeSoisDeleteRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_soi_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeSoisClearRowsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_targets_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsDeleteRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_targets_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsClearRowsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_targets_keep_selected.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsKeepSelectedClicked(dashboard)
-    )
     dashboard.ui.pushButton_tactical_node_artifacts_refresh.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeArtifactsRefreshClicked(dashboard)
     )
@@ -2885,9 +2883,6 @@ def connect_tactical_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tactical_node_artifacts_clear_rows.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeArtifactsClearRowsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_sois_refresh.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeSoisRefreshClicked(dashboard)
     )
 
     # Table Widget
