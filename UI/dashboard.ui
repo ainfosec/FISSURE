@@ -1237,7 +1237,7 @@
             <x>-1</x>
             <y>0</y>
             <width>304</width>
-            <height>335</height>
+            <height>260</height>
            </rect>
           </property>
           <property name="editTriggers">
@@ -1266,9 +1266,9 @@
          <widget class="QPushButton" name="pushButton_tactical_node_artifacts_open_folder">
           <property name="geometry">
            <rect>
-            <x>195</x>
+            <x>100</x>
             <y>390</y>
-            <width>100</width>
+            <width>195</width>
             <height>25</height>
            </rect>
           </property>
@@ -1280,166 +1280,6 @@
           <property name="text">
            <string>Open Folder</string>
           </property>
-         </widget>
-         <widget class="QFrame" name="frame5_tactical_node_artifacts_details">
-          <property name="enabled">
-           <bool>false</bool>
-          </property>
-          <property name="geometry">
-           <rect>
-            <x>-1</x>
-            <y>335</y>
-            <width>304</width>
-            <height>45</height>
-           </rect>
-          </property>
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <widget class="QLabel" name="label2_tactical_node_targets_frequency_2">
-           <property name="geometry">
-            <rect>
-             <x>95</x>
-             <y>105</y>
-             <width>195</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-             <strikeout>false</strikeout>
-            </font>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_tactical_node_artifacts_operation_id">
-           <property name="geometry">
-            <rect>
-             <x>75</x>
-             <y>20</y>
-             <width>220</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>8</pointsize>
-             <strikeout>false</strikeout>
-            </font>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_tactical_node_artifacts_artifact_id">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>75</x>
-             <y>5</y>
-             <width>220</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>8</pointsize>
-             <strikeout>false</strikeout>
-            </font>
-           </property>
-           <property name="text">
-            <string/>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_tactical_node_targets_frequency2_2">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>5</x>
-             <y>105</y>
-             <width>90</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>10</pointsize>
-             <strikeout>false</strikeout>
-            </font>
-           </property>
-           <property name="text">
-            <string>Freq. (MHz):</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_tactical_node_artifacts_artifact_id2">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>5</x>
-             <y>5</y>
-             <width>70</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>8</pointsize>
-             <strikeout>false</strikeout>
-            </font>
-           </property>
-           <property name="text">
-            <string>Artifact ID:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label2_tactical_node_artifacts_operation_id2">
-           <property name="geometry">
-            <rect>
-             <x>5</x>
-             <y>20</y>
-             <width>70</width>
-             <height>17</height>
-            </rect>
-           </property>
-           <property name="font">
-            <font>
-             <pointsize>8</pointsize>
-             <strikeout>false</strikeout>
-            </font>
-           </property>
-           <property name="text">
-            <string>Operation ID:</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-           </property>
-          </widget>
          </widget>
          <widget class="QPushButton" name="pushButton_tactical_node_artifacts_refresh">
           <property name="geometry">
@@ -1459,48 +1299,12 @@
            <string>Refresh</string>
           </property>
          </widget>
-         <widget class="QPushButton" name="pushButton_tactical_node_artifacts_delete_row">
+         <widget class="QPushButton" name="pushButton_tactical_node_artifacts_download">
           <property name="geometry">
            <rect>
             <x>5</x>
             <y>420</y>
-            <width>90</width>
-            <height>25</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Delete Row</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_tactical_node_artifacts_clear_rows">
-          <property name="geometry">
-           <rect>
-            <x>100</x>
-            <y>420</y>
-            <width>90</width>
-            <height>25</height>
-           </rect>
-          </property>
-          <property name="font">
-           <font>
-            <pointsize>11</pointsize>
-           </font>
-          </property>
-          <property name="text">
-           <string>Clear Rows</string>
-          </property>
-         </widget>
-         <widget class="QPushButton" name="pushButton_tactical_node_artifacts_download">
-          <property name="geometry">
-           <rect>
-            <x>100</x>
-            <y>390</y>
-            <width>90</width>
+            <width>290</width>
             <height>25</height>
            </rect>
           </property>
@@ -1512,6 +1316,108 @@
           <property name="text">
            <string>Download</string>
           </property>
+         </widget>
+         <widget class="QScrollArea" name="scrollArea_tactical_node_artifact_details">
+          <property name="geometry">
+           <rect>
+            <x>-1</x>
+            <y>259</y>
+            <width>304</width>
+            <height>125</height>
+           </rect>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_tactical_node_artifact_details">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>302</width>
+             <height>123</height>
+            </rect>
+           </property>
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <layout class="QVBoxLayout" name="verticalLayout_16">
+            <property name="spacing">
+             <number>2</number>
+            </property>
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
+             <number>2</number>
+            </property>
+            <item>
+             <layout class="QVBoxLayout" name="verticalLayout_tactical_node_artifact_details">
+              <property name="spacing">
+               <number>2</number>
+              </property>
+              <property name="leftMargin">
+               <number>0</number>
+              </property>
+              <property name="rightMargin">
+               <number>0</number>
+              </property>
+              <item>
+               <widget class="QLabel" name="label2_tactical_node_artifact_details">
+                <property name="sizePolicy">
+                 <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+                  <horstretch>0</horstretch>
+                  <verstretch>0</verstretch>
+                 </sizepolicy>
+                </property>
+                <property name="font">
+                 <font>
+                  <pointsize>9</pointsize>
+                 </font>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="alignment">
+                 <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+                </property>
+                <property name="wordWrap">
+                 <bool>true</bool>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::TextSelectableByMouse</set>
+                </property>
+               </widget>
+              </item>
+              <item>
+               <spacer name="verticalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+             </layout>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </widget>
        </widget>

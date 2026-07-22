@@ -1665,6 +1665,129 @@ async def updateNodeSettings(component: object, settings_dict: dict):
     component.logger.info("Sensor Node settings updated in memory.")
 
 
+async def streamArtifact(
+        component: object,
+        transfer_id: str,
+        artifact_id: str,
+    ) -> None:
+        """Stream one managed artifact over the dedicated binary socket."""
+        logger: logging.Logger = component.logger
+        artifact_manager: ArtifactManager = component.artifact_manager
+        transfer_client = getattr(component, "artifact_transfer_client", None)
+
+        if transfer_client is None:
+            logger.error("Artifact transfer client is unavailable")
+            return
+
+        artifact = artifact_manager.get_artifact(artifact_id)
+        if artifact is None:
+            await transfer_client.send_error(
+                transfer_id,
+                f"Artifact not found: {artifact_id}",
+            )
+            return
+
+        base_path = os.path.realpath(artifact_manager.base_dir)
+        file_path = os.path.realpath(artifact.file_path)
+
+        try:
+            path_is_managed = os.path.commonpath(
+                [base_path, file_path]
+            ) == base_path
+        except ValueError:
+            path_is_managed = False
+
+        if not path_is_managed:
+            await transfer_client.send_error(
+                transfer_id,
+                "Artifact path is outside the managed artifact root",
+            )
+            return
+
+        if not os.path.isfile(file_path):
+            await transfer_client.send_error(
+                transfer_id,
+                "Artifact file does not exist",
+            )
+            return
+
+        actual_size = os.path.getsize(file_path)
+        if artifact.file_size and actual_size != artifact.file_size:
+            await transfer_client.send_error(
+                transfer_id,
+                "Artifact file size no longer matches its metadata",
+            )
+            return
+
+        metadata = {
+            "artifact_id": artifact.id,
+            "source_id": artifact.source_id,
+            "operation_id": artifact.operation_id,
+            "filename": os.path.basename(file_path),
+            "file_size": actual_size,
+            "checksum": artifact.checksum,
+            "artifact_type": artifact.artifact_type,
+            "chunk_size": fissure.comms.ARTIFACT_CHUNK_SIZE,
+        }
+
+        try:
+            await transfer_client.send_start(transfer_id, metadata)
+
+            sequence = 0
+            bytes_sent = 0
+            with open(file_path, "rb") as artifact_file:
+                while True:
+                    chunk = artifact_file.read(
+                        fissure.comms.ARTIFACT_CHUNK_SIZE
+                    )
+                    if not chunk:
+                        break
+
+                    await transfer_client.send_chunk(
+                        transfer_id,
+                        sequence,
+                        chunk,
+                    )
+                    sequence += 1
+                    bytes_sent += len(chunk)
+                    await asyncio.sleep(0)
+
+            await transfer_client.send_complete(
+                transfer_id,
+                {
+                    "artifact_id": artifact.id,
+                    "bytes_sent": bytes_sent,
+                    "chunks_sent": sequence,
+                },
+            )
+            logger.info(
+                "Completed artifact stream transfer_id=%s artifact_id=%s bytes=%s",
+                transfer_id,
+                artifact_id,
+                bytes_sent,
+            )
+        except Exception as exc:
+            logger.error(
+                "Artifact stream failed transfer_id=%s artifact_id=%s: %s",
+                transfer_id,
+                artifact_id,
+                exc,
+            )
+            try:
+                await transfer_client.send_error(transfer_id, str(exc))
+            except Exception:
+                pass
+            
+
+async def streamArtifactToDashboard(
+        component: object,
+        transfer_id: str,
+        artifact_id: str,
+    ) -> None:
+    """Backward-compatible callback for Dashboard transfer requests."""
+    await streamArtifact(component, transfer_id, artifact_id)
+                
+
 async def transferArtifactRequest(component: object, artifact_id: str, destination: str, data: Optional[bytes]) -> None:
     """
     Transfer Artifact Request

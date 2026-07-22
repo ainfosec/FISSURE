@@ -270,6 +270,7 @@ class SensorNode(object):
 
         # ZMQ DEALER/ROUTER fields
         self.listener = None
+        self.artifact_transfer_client = None
         self.connected = False
         self.terminated = False  # TODO: not used?
         self.shutdown = False
@@ -1329,6 +1330,14 @@ class SensorNode(object):
             except:
                 pass
 
+        artifact_client = self.artifact_transfer_client
+        if artifact_client is not None:
+            try:
+                artifact_client.close()
+            except Exception:
+                pass
+        self.artifact_transfer_client = None
+
         if self.hiprfisr_socket:
             if self.network_type == "IP":
                 try:
@@ -1402,6 +1411,20 @@ class SensorNode(object):
                     f"Connected to HIPRFISR @ {self.hiprfisr_address}"
                 )
                 await asyncio.sleep(0.1)  # For ZMQ handshake to complete
+
+                artifact_host = (
+                    "127.0.0.1"
+                    if self.hiprfisr_address.protocol == "ipc"
+                    else self.hiprfisr_address.address
+                )
+                self.artifact_transfer_client = fissure.comms.ArtifactTransferClient(
+                    endpoint=fissure.comms.build_artifact_endpoint(artifact_host),
+                    identity=f"sensor-artifacts-{self.uuid}",
+                    role=fissure.comms.ROLE_SENSOR_NODE,
+                    node_uid=self.uuid,
+                    logger=self.logger,
+                )
+                await self.artifact_transfer_client.connect()
             else:
                 self.logger.error("FAILED connecting to HIPRFISR")
                 return

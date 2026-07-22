@@ -7,6 +7,8 @@ import xml.etree.ElementTree as ET
 
 import base64
 import binascii
+import json
+import re
 import fissure.comms
 import fissure.utils
 import fissure.utils.library
@@ -4813,82 +4815,153 @@ async def updateArtifact(component: object, artifact: dict) -> None:
     msg = {
         "msg_type": "event",
         "uid": event_uid,
-        "data": {
-            "event_type": "artifact_metadata",
-            "name": name,
-            "timestamp": timestamp,
-            "artid": artifact_id,
-            "operation_id": operation_id,
-            "source_id": source_id,
-        },
+        "data": _artifact_tak_data(artifact),
     }
 
     await fissure.utils.tak_messages.send(component, msg)
 
 
-async def transferArtifactRequest(component: object, artifact_id: str, destination: str, data: Optional[bytes]) -> None:
-    """Handle Artifact Transfer Request
+async def requestDashboardArtifactTransfer(
+        component: object,
+        transfer_id: str,
+        artifact_id: str,
+    ) -> None:
+    """Coordinate one Sensor Node-to-Dashboard artifact stream."""
+    artifact = component.artifact_tracker.get_artifact(artifact_id)
+    if artifact is None:
+        await _send_dashboard_artifact_status(
+            component, transfer_id, artifact_id, False, "Artifact metadata not found"
+        )
+        return
 
-    Parameters
-    ----------
-    component : object
-        Component
-    artifact_id : str
-        Artifact ID
-    destination : str
-        Destination path, currently supported: 'tak', 'hiprfisr'
-    data : Optional[bytes]
-        File data if sent from source
+    source_id = artifact.source_id
+    identity = component.nodes.get(source_id, {}).get("identity")
+    if identity is None:
+        await _send_dashboard_artifact_status(
+            component, transfer_id, artifact_id, False, "Source Sensor Node is unavailable"
+        )
+        return
+
+    if not component.artifact_transfer_router.register_transfer(
+        transfer_id, fissure.comms.ROLE_DASHBOARD
+    ):
+        await _send_dashboard_artifact_status(
+            component, transfer_id, artifact_id, False, "Dashboard transfer channel is unavailable"
+        )
+        return
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "streamArtifact",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "transfer_id": transfer_id,
+            "artifact_id": artifact_id,
+        },
+    }
+    try:
+        await component.sensor_node_router.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+            target_ids=[identity],
+        )
+    except Exception as exc:
+        component.artifact_transfer_router.remove_transfer(transfer_id)
+        await _send_dashboard_artifact_status(
+            component, transfer_id, artifact_id, False, f"Unable to request artifact stream: {exc}"
+        )
+
+
+async def _send_dashboard_artifact_status(
+        component: object,
+        transfer_id: str,
+        artifact_id: str,
+        success: bool,
+        message: str,
+    ) -> None:
+    if not component.dashboard_connected:
+        return
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "dashboardArtifactTransferStatus",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "transfer_id": transfer_id,
+            "artifact_id": artifact_id,
+            "success": success,
+            "message": message,
+        },
+    }
+    await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+async def transferArtifactRequest(component: object, artifact_id: str, destination: str, data: Optional[bytes]) -> None:
+    """Retrieve an artifact for HIPRFISR or TAK through the binary data plane.
+
+    ``data`` remains accepted for compatibility with an older Sensor Node, but
+    current nodes must stream artifact bytes over the dedicated transfer socket.
     """
     artifact_tracker: ArtifactTracker = component.artifact_tracker
+    artifact = artifact_tracker.get_artifact(artifact_id)
+    if artifact is None:
+        component.logger.error("Artifact metadata not found: %s", artifact_id)
+        return
 
     if data is not None:
-        # Received file data; save to local artifact path
+        component.logger.warning(
+            "Received legacy inline artifact payload for %s; saving for compatibility",
+            artifact_id,
+        )
         if not artifact_tracker.save_data(artifact_id, data, compressed=True):
-            component.logger.error(f"Failed to save artifact data for artifact ID {artifact_id}")
+            component.logger.error("Failed to save legacy artifact payload: %s", artifact_id)
             return
-    else:
-        # No data received; determine if local data exists
-        data = artifact_tracker.get_data(artifact_id)
 
-        if data is None:
-            # no local data; request transfer from source
-            node_uid = artifact['source_id']
-            PARAMETERS = {
-                "artifact_id": artifact_id,
-                "destination": destination,
-                "data": None
-            }
-            msg = {
-                fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-                fissure.comms.MessageFields.MESSAGE_NAME: "transferArtifactRequest",
-                fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
+    local_data = artifact_tracker.get_data(artifact_id)
+    if local_data is not None:
+        if destination == "tak":
+            artifact = artifact_tracker.get_artifact(artifact_id)
+            await fissure.utils.tak_messages.send_artifact_event(component, artifact, local_data)
+        elif destination == "hiprfisr":
+            component.logger.info("Artifact %s is already cached at HIPRFISR", artifact_id)
+        return
 
-            # Resolve Identity
-            identity = component.nodes[node_uid].get("identity", None)
-            if identity is None:
-                component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-                return
-            
-            # Send through ROUTER
-            await component.sensor_node_router.send_msg(
-                fissure.comms.MessageTypes.COMMANDS,
-                msg,
-                target_ids=[identity]
-            )
+    source_id = artifact.source_id
+    identity = component.nodes.get(source_id, {}).get("identity")
+    if identity is None:
+        component.logger.error("Could not resolve Sensor Node identity for %s", source_id)
+        return
 
-    if data is not None:
-        # Send data to destination
-        if destination == 'tak':
-            # Send artifact via TAK
-            artifact = component.artifact_tracker.get_artifact(artifact_id)
-            await fissure.utils.tak_messages.send_artifact_event(component, artifact, data)
+    transfer_id = str(uuid.uuid4())
+    component.artifact_transfer_controller.register_request(
+        transfer_id=transfer_id,
+        artifact_id=artifact_id,
+        destination=destination,
+    )
+    if not component.artifact_transfer_router.register_transfer(
+        transfer_id, fissure.comms.ROLE_HIPRFISR
+    ):
+        component.artifact_transfer_controller.fail(
+            transfer_id, "Unable to register HIPRFISR artifact receiver"
+        )
+        return
 
-        elif destination == 'hiprfisr':
-            component.logger.info(f"Artifact {artifact_id} saved to hiprfisr")
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "streamArtifact",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "transfer_id": transfer_id,
+            "artifact_id": artifact_id,
+        },
+    }
+    try:
+        await component.sensor_node_router.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+            target_ids=[identity],
+        )
+    except Exception as exc:
+        component.artifact_transfer_router.remove_transfer(transfer_id)
+        component.artifact_transfer_controller.fail(transfer_id, str(exc))
 
-
+        
 def _merge_soi_artifact_links(
     existing_links,
     incoming_links,
@@ -7326,6 +7399,87 @@ async def sendSoisListTak(
             )
       
 
+def _artifact_metadata_for_tak(metadata):
+    """Return XML-safe, display-oriented Artifact metadata for TAK clients."""
+    if not isinstance(metadata, dict):
+        return {}
+
+    normalized = {}
+
+    for raw_key, value in metadata.items():
+        key = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(raw_key)).strip("_.-")
+        if not key:
+            key = "field"
+        if key[0].isdigit():
+            key = "field_" + key
+
+        base_key = key
+        suffix = 2
+        while key in normalized:
+            key = f"{base_key}_{suffix}"
+            suffix += 1
+
+        if isinstance(value, (dict, list, tuple)):
+            try:
+                normalized[key] = json.dumps(value, sort_keys=True, default=str)
+            except Exception:
+                normalized[key] = str(value)
+        elif value is not None:
+            normalized[key] = str(value)
+
+    return normalized
+
+
+def _artifact_tak_data(
+    record,
+    request_id="",
+    requester_uid="",
+    requester_callsign="",
+):
+    """Build the complete Artifact metadata payload shared by live and refresh events."""
+    metadata = record.get("metadata") or {}
+    if not isinstance(metadata, dict):
+        metadata = {}
+
+    source_id = (
+        record.get("source_id")
+        or metadata.get("source_id")
+        or metadata.get("node_uid")
+        or ""
+    )
+
+    timestamp = record.get("modified_at") or record.get("created_at") or ""
+    file_path = str(record.get("file_path") or "")
+    source_uri = file_path if "://" in file_path else ""
+
+    data = {
+        "event_type": "artifact_metadata",
+        "name": record.get("name") or "",
+        "timestamp": timestamp,
+        "artid": record.get("id") or record.get("artifact_id") or "",
+        "operation_id": record.get("operation_id") or "",
+        "source_id": source_id,
+        "artifact_type": record.get("artifact_type") or "",
+        "file_size": record.get("file_size"),
+        "created_at": record.get("created_at") or "",
+        "modified_at": record.get("modified_at") or "",
+        "checksum": record.get("checksum") or "",
+        "source_uri": source_uri,
+        "metadata": _artifact_metadata_for_tak(metadata),
+        "request_id": request_id,
+        "requester_uid": requester_uid,
+        "requester_callsign": requester_callsign,
+    }
+
+    return {
+        key: value
+        for key, value in data.items()
+        if value is not None
+        and value != {}
+        and not (isinstance(value, str) and value.strip() == "")
+    }
+
+
 async def sendArtifactsListTak(
     component: object,
     requester_uid: str = "",
@@ -7588,27 +7742,12 @@ async def sendArtifactsListTak(
                 f"{artifact_id}-refresh-{int(time.time() * 1000)}"
             )
 
-            tak_data = {
-                "event_type": "artifact_metadata",
-                "name": name,
-                "timestamp": timestamp,
-                "artid": artifact_id,
-                "operation_id": operation_id,
-                "source_id": source_id or node_uid,
-                "request_id": request_id,
-                "requester_uid": requester_uid,
-                "requester_callsign": requester_callsign,
-            }
-
-            tak_data = {
-                key: value
-                for key, value in tak_data.items()
-                if value is not None
-                and not (
-                    isinstance(value, str)
-                    and value.strip() == ""
-                )
-            }
+            tak_data = _artifact_tak_data(
+                record,
+                request_id=request_id,
+                requester_uid=requester_uid,
+                requester_callsign=requester_callsign,
+            )
 
             await fissure.utils.tak_messages.send(
                 component,

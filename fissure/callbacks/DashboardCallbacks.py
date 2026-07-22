@@ -2219,12 +2219,11 @@ async def sendArtifactsListTakReturn(
     artifacts=None,
 ):
     """
-    Receives artifact metadata from HIPRFISR and updates the Tactical
+    Receives complete artifact metadata from HIPRFISR and updates the Tactical
     Node > Artifacts cache/table.
 
-    Also routes the same metadata to the TSI Conditioner so remote artifact
-    runs can populate the Conditioner table from ArtifactTracker metadata
-    without reading sensor-node-local files.
+    The normalized record preserves every field supplied by ArtifactTracker
+    while also providing stable canonical keys used by Tactical and TSI.
     """
     artifacts = artifacts or []
 
@@ -2239,7 +2238,10 @@ async def sendArtifactsListTakReturn(
         if not isinstance(artifact, dict):
             continue
 
-        artifact_id = artifact.get("id") or artifact.get("artifact_id")
+        artifact_id = (
+            artifact.get("artifact_id")
+            or artifact.get("id")
+        )
         if not artifact_id:
             continue
 
@@ -2256,36 +2258,82 @@ async def sendArtifactsListTakReturn(
             or ""
         )
 
-        normalized = {
-            "artifact_id": artifact_id,
-            "node_uid": source_id,
-            "source_id": source_id,
-            "operation_id": (
-                artifact.get("operation_id")
-                or metadata.get("operation_id")
-                or ""
-            ),
-            "name": (
-                artifact.get("name")
-                or metadata.get("name")
-                or "Artifact"
-            ),
-            "time": (
-                artifact.get("modified_at")
-                or artifact.get("created_at")
-                or metadata.get("created_at")
-                or ""
-            ),
-            "file_path": artifact.get("file_path", ""),
-            "artifact_type": (
-                artifact.get("artifact_type")
-                or metadata.get("artifact_type")
-                or ""
-            ),
-            "file_size": artifact.get("file_size", 0),
-            "checksum": artifact.get("checksum", ""),
-            "metadata": metadata,
-        }
+        operation_id = (
+            artifact.get("operation_id")
+            or metadata.get("operation_id")
+            or ""
+        )
+
+        name = (
+            artifact.get("name")
+            or artifact.get("filename")
+            or metadata.get("name")
+            or metadata.get("filename")
+            or "Artifact"
+        )
+
+        artifact_type = (
+            artifact.get("artifact_type")
+            or artifact.get("type")
+            or metadata.get("artifact_type")
+            or metadata.get("type")
+            or ""
+        )
+
+        created_at = (
+            artifact.get("created_at")
+            or metadata.get("created_at")
+            or ""
+        )
+
+        modified_at = (
+            artifact.get("modified_at")
+            or metadata.get("modified_at")
+            or created_at
+            or ""
+        )
+
+        file_size = (
+            artifact.get("file_size")
+            if artifact.get("file_size") is not None
+            else metadata.get("file_size", 0)
+        )
+
+        checksum = (
+            artifact.get("checksum")
+            or artifact.get("sha256")
+            or metadata.get("checksum")
+            or metadata.get("sha256")
+            or ""
+        )
+
+        file_path = (
+            artifact.get("file_path")
+            or metadata.get("file_path")
+            or ""
+        )
+
+        # Preserve every top-level ArtifactTracker field.
+        normalized = dict(artifact)
+
+        # Add stable aliases consumed by Tactical and TSI.
+        normalized.update(
+            {
+                "artifact_id": artifact_id,
+                "node_uid": source_id,
+                "source_id": source_id,
+                "operation_id": operation_id,
+                "name": name,
+                "artifact_type": artifact_type,
+                "created_at": created_at,
+                "modified_at": modified_at,
+                "time": modified_at or created_at,
+                "file_path": file_path,
+                "file_size": file_size,
+                "checksum": checksum,
+                "metadata": metadata,
+            }
+        )
 
         dashboard.tactical_artifacts[artifact_id] = normalized
         normalized_records.append(normalized)
@@ -2328,7 +2376,7 @@ async def sendArtifactsListTakReturn(
         component.logger.debug(
             f"Could not route artifact metadata to TSI Feature Extractor: {e}"
         )
-
+        
 
 async def sendSoisListTakReturn(
     component: object,
@@ -2412,7 +2460,7 @@ async def sendSoisListTakReturn(
             f"{error}"
         )
 
-        
+
 async def queryPluginActionsResults(
     component: object,
     requester_uid: str = "",
@@ -2693,3 +2741,22 @@ async def soiUpdate(component: object, soi=None):
         )
 
 
+async def dashboardArtifactTransferStatus(
+        component: object,
+        transfer_id: str,
+        success: bool,
+        message: str,
+    ) -> None:
+        """Handle setup failures reported before binary streaming begins."""
+        if success:
+            component.logger.info(
+                "Artifact transfer %s: %s",
+                transfer_id,
+                message,
+            )
+            return
+
+        component.artifact_transfer_controller.fail_request(
+            transfer_id,
+            message,
+        )

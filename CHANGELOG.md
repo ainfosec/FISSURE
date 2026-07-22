@@ -1,6 +1,26 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-22
+
+Add dedicated remote artifact transfer and richer TAK artifact metadata
+
+### Added
+
+- Added a dedicated binary artifact-transfer path for remote Sensor Node artifacts.
+- Added HIPRFISR-side artifact transfer handling with temporary file writes, size validation, SHA-256 verification, and atomic finalization.
+- Added reusable artifact streaming from Sensor Nodes for Dashboard and TAK retrieval workflows.
+- Added expanded artifact metadata delivery for TAK clients, including type, size, timestamps, checksum, logical source URI, and structured metadata.
+- Added selected-artifact details support in WinTAK using the enriched FISSURE artifact metadata.
+
+### Changed
+
+- Updated Dashboard remote artifact downloads to use the dedicated transfer channel instead of the normal command-message path.
+- Updated TAK artifact retrieval so HIPRFISR first receives and verifies remote artifacts through the binary transfer channel before creating the existing TAK data package.
+- Updated artifact transfer routing so HIPRFISR can act as a local transfer destination in addition to the Dashboard.
+- Updated remote artifact retrieval to keep command traffic limited to transfer coordination and metadata rather than file payloads.
+- Preserved the existing TAK data-package delivery mechanism while replacing the internal Sensor Node-to-HIPRFISR artifact transport.
+
 ## 2026-7-21
 
 Streamline Tactical target and ecosystem review workflows

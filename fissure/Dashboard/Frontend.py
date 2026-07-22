@@ -249,6 +249,7 @@ class Dashboard(QtWidgets.QMainWindow):
         self.tactical_targets = {}
         self.tactical_sois = {}
         self.tactical_artifacts = {}
+        self.tactical_node_artifact_full_details = False
         self.selected_tactical_node_uid = None
         self.selected_tactical_node_uids = []
         self.selected_tactical_target_id = None
@@ -291,6 +292,9 @@ class Dashboard(QtWidgets.QMainWindow):
 
         # Initialize selected-node SOI table context menu.
         TacticalTabSlots.initialize_tactical_node_soi_context_menu(self)
+
+        # Initialize selected-node artifact table context menu.
+        TacticalTabSlots.initialize_tactical_node_artifact_context_menu(self)
 
         # Initialize selected-node target table context menu.
         TacticalTabSlots.initialize_tactical_node_target_context_menu(self)
@@ -355,6 +359,8 @@ class Dashboard(QtWidgets.QMainWindow):
         # Tactical SOI details view mode and context menu.
         self.tactical_node_soi_full_details = False
         TacticalTabSlots.initialize_tactical_node_soi_details_context_menu(self)
+
+        TacticalTabSlots.initialize_tactical_node_artifact_details_context_menu(self)
 
         # Tactical action-parameter panel.
         parameter_scroll = (
@@ -2874,12 +2880,6 @@ def connect_tactical_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tactical_node_artifacts_download.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeArtifactsDownloadClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_artifacts_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeArtifactsDeleteRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_artifacts_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeArtifactsClearRowsClicked(dashboard)
     )
 
     # Table Widget

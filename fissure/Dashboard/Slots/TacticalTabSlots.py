@@ -2480,37 +2480,519 @@ def enable_tactical_targets_details(
         )
 
 
-def clear_tactical_node_artifact_details(dashboard: QtCore.QObject):
+def clear_tactical_node_artifact_details(
+    dashboard: QtCore.QObject,
+):
     dashboard.selected_tactical_node_artifact_id = None
 
-    # labels = [
-    #     dashboard.ui.label2_tactical_node_targets_target_id,
-    # ]
+    dashboard.ui.label2_tactical_node_artifact_details.setText("")
 
-    # for label in labels:
-    #     label.setText("")
-    
-    enable_tactical_artifacts_details(dashboard, False)
+    enable_tactical_artifacts_details(
+        dashboard,
+        False,
+    )
 
 
-def enable_tactical_artifacts_details(dashboard: QtCore.QObject, enabled=True):
-    widgets = [
-        dashboard.ui.pushButton_tactical_node_artifacts_open_folder,
-        dashboard.ui.pushButton_tactical_node_artifacts_download,
-        dashboard.ui.pushButton_tactical_node_artifacts_delete_row,
-    ]
-
-    for widget in widgets:
-        widget.setEnabled(enabled)
-
-    dashboard.ui.pushButton_tactical_node_artifacts_clear_rows.setEnabled(
-        dashboard.ui.tableWidget_tactical_node_artifacts.rowCount() > 0
+def enable_tactical_artifacts_details(
+    dashboard: QtCore.QObject,
+    enabled=True,
+):
+    dashboard.ui.scrollArea_tactical_node_artifact_details.setEnabled(
+        enabled
+    )
+    dashboard.ui.label2_tactical_node_artifact_details.setEnabled(
+        enabled
+    )
+    dashboard.ui.pushButton_tactical_node_artifacts_open_folder.setEnabled(
+        enabled
+    )
+    dashboard.ui.pushButton_tactical_node_artifacts_download.setEnabled(
+        enabled
     )
 
     dashboard.ui.pushButton_tactical_node_artifacts_refresh.setEnabled(
-        bool(getattr(dashboard, "selected_tactical_node_uid", None))
+        bool(
+            getattr(
+                dashboard,
+                "selected_tactical_node_uid",
+                None,
+            )
+        )
     )
-    
+
+
+def initialize_tactical_node_artifact_details_context_menu(
+    dashboard: QtCore.QObject,
+):
+    """
+    Applies the shared details-panel stylesheet role and adds Full Details,
+    Copy, and Select All to the artifact details label.
+    """
+    scroll_area = (
+        dashboard.ui.scrollArea_tactical_node_artifact_details
+    )
+    content_widget = scroll_area.widget()
+    label = dashboard.ui.label2_tactical_node_artifact_details
+
+    scroll_area.setHorizontalScrollBarPolicy(
+        QtCore.Qt.ScrollBarAlwaysOff
+    )
+    scroll_area.setVerticalScrollBarPolicy(
+        QtCore.Qt.ScrollBarAsNeeded
+    )
+
+    label.setWordWrap(True)
+    label.setMinimumWidth(0)
+
+    # Match the programmatic styling used by the other read-only details
+    # panels. The shared custom/dark/light stylesheets already target this
+    # dynamic property.
+    scroll_area.setProperty(
+        "uiRole",
+        "detailsPanel",
+    )
+
+    if content_widget is not None:
+        content_widget.setProperty(
+            "uiRole",
+            "detailsPanel",
+        )
+
+    label.setProperty(
+        "uiRole",
+        "detailsPanel",
+    )
+
+    # Re-polish because the dynamic property is assigned after the .ui file
+    # and application stylesheet have already been loaded.
+    widgets = [
+        scroll_area,
+        scroll_area.viewport(),
+        content_widget,
+        label,
+    ]
+
+    for widget in widgets:
+        if widget is None:
+            continue
+
+        widget.style().unpolish(widget)
+        widget.style().polish(widget)
+        widget.update()
+
+    label.setContextMenuPolicy(
+        QtCore.Qt.CustomContextMenu
+    )
+
+    label.customContextMenuRequested.connect(
+        lambda position: _showTacticalNodeArtifactDetailsContextMenu(
+            dashboard,
+            position,
+        )
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject, QtCore.QPoint)
+def _showTacticalNodeArtifactDetailsContextMenu(
+    dashboard: QtCore.QObject,
+    position: QtCore.QPoint,
+):
+    label = dashboard.ui.label2_tactical_node_artifact_details
+
+    menu = QtWidgets.QMenu(label)
+
+    action_full_details = menu.addAction(
+        "Full Details"
+    )
+    action_full_details.setCheckable(True)
+    action_full_details.setChecked(
+        bool(
+            getattr(
+                dashboard,
+                "tactical_node_artifact_full_details",
+                False,
+            )
+        )
+    )
+
+    menu.addSeparator()
+
+    action_copy = menu.addAction("Copy")
+    action_select_all = menu.addAction("Select All")
+
+    has_text = bool(label.text().strip())
+    has_selection = bool(label.hasSelectedText())
+
+    action_copy.setEnabled(has_selection)
+    action_select_all.setEnabled(has_text)
+
+    selected_action = menu.exec_(
+        label.mapToGlobal(position)
+    )
+
+    if selected_action == action_full_details:
+        dashboard.tactical_node_artifact_full_details = (
+            action_full_details.isChecked()
+        )
+
+        artifact_id = getattr(
+            dashboard,
+            "selected_tactical_node_artifact_id",
+            None,
+        )
+
+        artifact = (
+            dashboard.tactical_artifacts.get(artifact_id)
+            if artifact_id
+            else None
+        )
+
+        if isinstance(artifact, dict) and artifact:
+            populate_tactical_node_artifact_details(
+                dashboard,
+                artifact,
+            )
+
+    elif selected_action == action_copy:
+        selected_text = label.selectedText()
+
+        if selected_text:
+            QtWidgets.QApplication.clipboard().setText(
+                selected_text
+            )
+
+    elif selected_action == action_select_all:
+        label.setSelection(
+            0,
+            len(label.text()),
+        )
+
+
+def _format_tactical_artifact_file_size(value):
+    try:
+        size = int(value)
+    except (TypeError, ValueError):
+        return str(value or "")
+
+    units = [
+        "B",
+        "KB",
+        "MB",
+        "GB",
+        "TB",
+    ]
+
+    display_size = float(size)
+    unit = units[0]
+
+    for candidate_unit in units:
+        unit = candidate_unit
+
+        if display_size < 1024.0 or candidate_unit == units[-1]:
+            break
+
+        display_size /= 1024.0
+
+    if unit == "B":
+        return f"{size:,} B"
+
+    return f"{display_size:.2f} {unit} ({size:,} bytes)"
+
+
+def populate_tactical_node_artifact_details(
+    dashboard: QtCore.QObject,
+    artifact: dict,
+):
+    """
+    Displays either a curated artifact summary or the complete dynamic record.
+
+    Compact mode prioritizes common review fields.
+
+    Full Details preserves complete lookup identifiers, arbitrary nested
+    metadata, and every remaining non-empty artifact field, but presents the
+    most useful human-readable values before IDs and implementation details.
+    """
+    hidden_keys = {
+        "raw_xml",
+        "cot_xml",
+        "xml",
+        "raw_message",
+        "raw_payload",
+        "data",
+        "file_data",
+        "contents",
+    }
+
+    detail_field_groups = [
+        (
+            "Name",
+            [
+                "name",
+                "filename",
+            ],
+        ),
+        (
+            "Artifact Type",
+            [
+                "artifact_type",
+                "type",
+            ],
+        ),
+        (
+            "File Size",
+            [
+                "file_size",
+                "size",
+            ],
+        ),
+        (
+            "Created",
+            [
+                "created_at",
+                "created",
+            ],
+        ),
+        (
+            "Modified",
+            [
+                "modified_at",
+                "time",
+            ],
+        ),
+        (
+            "Source Node",
+            [
+                "source_id",
+                "node_uid",
+            ],
+        ),
+        (
+            "Operation ID",
+            [
+                "operation_id",
+            ],
+        ),
+        (
+            "Artifact ID",
+            [
+                "artifact_id",
+                "id",
+            ],
+        ),
+        (
+            "Checksum",
+            [
+                "checksum",
+                "sha256",
+            ],
+        ),
+        (
+            "File Path",
+            [
+                "file_path",
+                "path",
+            ],
+        ),
+        (
+            "Metadata",
+            [
+                "metadata",
+            ],
+        ),
+    ]
+
+    def is_empty(value):
+        if value is None:
+            return True
+
+        if isinstance(value, str):
+            return not value.strip()
+
+        if isinstance(value, (list, tuple, set, dict)):
+            return len(value) == 0
+
+        return False
+
+    def display_label(key):
+        return str(key).replace("_", " ").strip().title()
+
+    def field_label_html(label):
+        return (
+            "<span style=\"font-weight: 600;\">"
+            f"{html.escape(str(label))}:"
+            "</span>"
+        )
+
+    def first_non_empty_value(candidate_keys):
+        for key in candidate_keys:
+            value = artifact.get(key)
+
+            if not is_empty(value):
+                return key, value, False
+
+        metadata = artifact.get("metadata")
+
+        if isinstance(metadata, dict):
+            for key in candidate_keys:
+                value = metadata.get(key)
+
+                if not is_empty(value):
+                    return key, value, True
+
+        return None, None, False
+
+    def scalar_text(key, value):
+        if key in {"file_size", "size"}:
+            return _format_tactical_artifact_file_size(value)
+
+        if isinstance(value, bool):
+            return "Yes" if value else "No"
+
+        return str(value)
+
+    def append_value(
+        lines,
+        key,
+        value,
+        display_name=None,
+        indent="",
+    ):
+        normalized_key = str(key).strip().lower()
+
+        if normalized_key in hidden_keys or is_empty(value):
+            return
+
+        label = display_name or display_label(key)
+
+        if isinstance(value, dict):
+            lines.append(
+                f"{indent}{field_label_html(label)}"
+            )
+
+            for child_key, child_value in value.items():
+                append_value(
+                    lines,
+                    child_key,
+                    child_value,
+                    indent=indent + "&nbsp;&nbsp;&nbsp;&nbsp;",
+                )
+
+            return
+
+        if isinstance(value, (list, tuple, set)):
+            lines.append(
+                f"{indent}{field_label_html(label)}"
+            )
+
+            for index, child_value in enumerate(value):
+                append_value(
+                    lines,
+                    str(index + 1),
+                    child_value,
+                    display_name=str(index + 1),
+                    indent=indent + "&nbsp;&nbsp;&nbsp;&nbsp;",
+                )
+
+            return
+
+        value_text = scalar_text(
+            normalized_key,
+            value,
+        )
+
+        lines.append(
+            f"{indent}{field_label_html(label)} "
+            f"{html.escape(value_text)}"
+        )
+
+    full_details = bool(
+        getattr(
+            dashboard,
+            "tactical_node_artifact_full_details",
+            False,
+        )
+    )
+
+    lines = []
+    used_top_level_keys = set()
+    used_metadata_keys = set()
+
+    groups_to_render = (
+        detail_field_groups
+        if full_details
+        else detail_field_groups[:-1]
+    )
+
+    for display_name, candidate_keys in groups_to_render:
+        actual_key, value, from_metadata = first_non_empty_value(
+            candidate_keys
+        )
+
+        if actual_key is None:
+            continue
+
+        if from_metadata:
+            used_metadata_keys.add(actual_key)
+        else:
+            used_top_level_keys.add(actual_key)
+
+        # Treat aliases as one logical field so Full Details does not repeat
+        # source_id/node_uid, artifact_id/id, checksum/sha256, and similar
+        # values immediately afterward.
+        used_top_level_keys.update(candidate_keys)
+
+        append_value(
+            lines,
+            actual_key,
+            value,
+            display_name=display_name,
+        )
+
+    if full_details:
+        metadata = artifact.get("metadata")
+
+        # Metadata was already rendered in its preferred position above.
+        used_top_level_keys.add("metadata")
+
+        # Append every remaining top-level field so Full Details remains
+        # field-agnostic and no future ArtifactTracker values are hidden.
+        for key, value in artifact.items():
+            if key in used_top_level_keys:
+                continue
+
+            append_value(
+                lines,
+                key,
+                value,
+            )
+
+        # When selected summary values came from metadata, preserve all other
+        # metadata entries while avoiding duplicate display of those aliases.
+        if isinstance(metadata, dict):
+            remaining_metadata = {
+                key: value
+                for key, value in metadata.items()
+                if key not in used_metadata_keys
+                and not is_empty(value)
+            }
+
+            if remaining_metadata and "metadata" not in artifact:
+                append_value(
+                    lines,
+                    "metadata",
+                    remaining_metadata,
+                    display_name="Metadata",
+                )
+
+    dashboard.ui.label2_tactical_node_artifact_details.setText(
+        "<br>".join(lines)
+    )
+
+    dashboard.ui.label2_tactical_node_artifact_details.setAlignment(
+        QtCore.Qt.AlignLeft
+        | QtCore.Qt.AlignTop
+    )
+
 
 @QtCore.pyqtSlot(QtCore.QObject, str)
 def _slotTacticalTargetMapClicked(dashboard: QtCore.QObject, target_id):
@@ -4037,8 +4519,8 @@ def update_tactical_node_artifact_row(dashboard: QtCore.QObject, artifact_record
     enable_tactical_artifacts_details(dashboard, True)
 
 
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTacticalNodeSoisDownloadEvidenceClicked(
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTacticalNodeSoisDownloadEvidenceClicked(
     dashboard: QtCore.QObject
 ):
     soi_key = getattr(
@@ -4046,7 +4528,6 @@ def _slotTacticalNodeSoisDownloadEvidenceClicked(
         "selected_tactical_node_soi_id",
         None,
     )
-
     if not soi_key:
         return
 
@@ -4062,146 +4543,115 @@ def _slotTacticalNodeSoisDownloadEvidenceClicked(
         return
 
     table = dashboard.ui.tableWidget_tactical_node_artifacts
-
     for row in range(table.rowCount()):
         item = table.item(row, 0)
-
         if item is None:
             continue
-
-        row_artifact_id = item.data(QtCore.Qt.UserRole)
-
-        if row_artifact_id == artifact_id:
-
-            # Switch to Artifacts tab
+        if item.data(QtCore.Qt.UserRole) == artifact_id:
             dashboard.ui.tabWidget_tactical_node.setCurrentIndex(3)
-
-            # Select matching artifact row
             table.selectRow(row)
             table.setCurrentCell(row, 0)
-
-            # Optional: scroll into view
             table.scrollToItem(item)
+            break
 
-            return
-
-    dashboard.logger.warning(
-        f"[Tactical] Artifact not found in table: {artifact_id}"
+    local_path = dashboard.backend.artifact_transfer_controller.get_local_path(
+        artifact_id
     )
+    if local_path:
+        subprocess.Popen(["xdg-open", os.path.dirname(local_path)])
+        return
+
+    try:
+        await dashboard.backend.requestDashboardArtifactDownload(
+            artifact_id,
+            open_when_complete=True,
+        )
+    except Exception as exc:
+        dashboard.logger.error(
+            f"[Tactical] SOI evidence download request failed: {exc}"
+        )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotTacticalNodeArtifactsOpenFolderClicked(
     dashboard: QtCore.QObject
 ):
-    """
-    Opens the artifact operation folder when available,
-    otherwise opens the base hub artifacts folder.
-    """
-    artifact_folder = fissure.utils.HUB_ARTIFACTS_DIR
-
     artifact_id = getattr(
         dashboard,
         "selected_tactical_node_artifact_id",
         None,
     )
+    if not artifact_id:
+        return
 
-    if artifact_id:
-        artifact = dashboard.tactical_artifacts.get(artifact_id)
+    local_path = dashboard.backend.artifact_transfer_controller.get_local_path(
+        artifact_id
+    )
+    if local_path:
+        subprocess.Popen(["xdg-open", os.path.dirname(local_path)])
+        return
 
-        if artifact:
-            operation_id = artifact.get("operation_id")
-
-            candidate_folders = []
-
-            if operation_id:
-                candidate_folders.append(
-                    os.path.join(
-                        fissure.utils.HUB_ARTIFACTS_DIR,
-                        operation_id,
-                    )
-                )
-
-            candidate_folders.append(
-                os.path.join(
-                    fissure.utils.HUB_ARTIFACTS_DIR,
-                    artifact_id,
-                )
-            )
-
-            for candidate_folder in candidate_folders:
-                if os.path.exists(candidate_folder):
-                    artifact_folder = candidate_folder
-                    break
-            else:
-                dashboard.logger.warning(
-                    f"[Tactical] Artifact folder not found for "
-                    f"artifact_id={artifact_id}, "
-                    f"operation_id={operation_id}"
-                )
-        else:
-            dashboard.logger.warning(
-                f"[Tactical] No artifact record found for artifact_id={artifact_id}"
-            )
-
-    subprocess.Popen([
-        "xdg-open",
-        artifact_folder,
-    ])
+    dashboard.logger.warning(
+        f"[Tactical] Artifact has not been downloaded: {artifact_id}"
+    )
+    dashboard.statusBar().showMessage(
+        "Artifact has not been downloaded",
+        5000,
+    )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotTacticalNodeArtifactsRowSelectionChanged(
-    dashboard: QtCore.QObject
+    dashboard: QtCore.QObject,
 ):
     table = dashboard.ui.tableWidget_tactical_node_artifacts
 
     selected_items = table.selectedItems()
 
     if not selected_items:
-        dashboard.selected_tactical_node_artifact_id = None
-
-        dashboard.ui.label2_tactical_node_artifacts_artifact_id.setText("")
-        dashboard.ui.label2_tactical_node_artifacts_operation_id.setText("")
-
-        dashboard.ui.frame5_tactical_node_artifacts_details.setEnabled(False)
-        dashboard.ui.label2_tactical_node_artifacts_artifact_id.setEnabled(False)
-        dashboard.ui.label2_tactical_node_artifacts_operation_id.setEnabled(False)
-        dashboard.ui.label2_tactical_node_artifacts_artifact_id2.setEnabled(False)
-        dashboard.ui.label2_tactical_node_artifacts_operation_id2.setEnabled(False)
-
+        clear_tactical_node_artifact_details(
+            dashboard
+        )
         return
 
     row = selected_items[0].row()
 
     item = table.item(row, 0)
     if item is None:
-        dashboard.selected_tactical_node_artifact_id = None
+        clear_tactical_node_artifact_details(
+            dashboard
+        )
         return
 
     artifact_id = item.data(QtCore.Qt.UserRole)
     if not artifact_id:
-        dashboard.selected_tactical_node_artifact_id = None
+        clear_tactical_node_artifact_details(
+            dashboard
+        )
+        return
+
+    artifact = dashboard.tactical_artifacts.get(
+        artifact_id,
+        {},
+    )
+
+    if not isinstance(artifact, dict) or not artifact:
+        clear_tactical_node_artifact_details(
+            dashboard
+        )
         return
 
     dashboard.selected_tactical_node_artifact_id = artifact_id
 
-    artifact = dashboard.tactical_artifacts.get(artifact_id, {})
-
-    operation_id = artifact.get("operation_id", "")
-
-    dashboard.ui.label2_tactical_node_artifacts_artifact_id.setText(
-        str(artifact_id)
-    )
-    dashboard.ui.label2_tactical_node_artifacts_operation_id.setText(
-        str(operation_id)
+    populate_tactical_node_artifact_details(
+        dashboard,
+        artifact,
     )
 
-    dashboard.ui.frame5_tactical_node_artifacts_details.setEnabled(True)
-    dashboard.ui.label2_tactical_node_artifacts_artifact_id.setEnabled(True)
-    dashboard.ui.label2_tactical_node_artifacts_operation_id.setEnabled(True)
-    dashboard.ui.label2_tactical_node_artifacts_artifact_id2.setEnabled(True)
-    dashboard.ui.label2_tactical_node_artifacts_operation_id2.setEnabled(True)
+    enable_tactical_artifacts_details(
+        dashboard,
+        True,
+    )
 
 
 @qasync.asyncSlot(QtCore.QObject)
@@ -5171,15 +5621,114 @@ async def _slotTacticalNodeArtifactsRefreshClicked(
         )
 
 
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTacticalNodeArtifactsDownloadClicked(
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTacticalNodeArtifactsDownloadClicked(
+    dashboard: QtCore.QObject,
+):
+    artifact_id = getattr(
+        dashboard,
+        "selected_tactical_node_artifact_id",
+        None,
+    )
+    if not artifact_id:
+        return
+
+    local_path = dashboard.backend.artifact_transfer_controller.get_local_path(
+        artifact_id
+    )
+    if local_path:
+        subprocess.Popen(["xdg-open", os.path.dirname(local_path)])
+        return
+
+    try:
+        await dashboard.backend.requestDashboardArtifactDownload(
+            artifact_id,
+            open_when_complete=True,
+        )
+    except Exception as exc:
+        dashboard.logger.error(
+            f"[Tactical] Artifact download request failed: {exc}"
+        )
+
+
+def initialize_tactical_node_artifact_context_menu(
     dashboard: QtCore.QObject,
 ):
     """
-    First-pass behavior: open the selected artifact folder.
-    Later this can request/retrieve missing artifact files from the node.
+    Adds local table-management actions to the artifact table.
+
+    Delete Row and Clear Rows only remove metadata from the current Dashboard
+    view/cache. They do not delete files from the Sensor Node or HIPRFISR.
     """
-    _slotTacticalNodeArtifactsOpenFolderClicked(dashboard)
+    table = dashboard.ui.tableWidget_tactical_node_artifacts
+
+    table.setContextMenuPolicy(
+        QtCore.Qt.CustomContextMenu
+    )
+
+    table.customContextMenuRequested.connect(
+        lambda position: _showTacticalNodeArtifactsContextMenu(
+            dashboard,
+            position,
+        )
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject, QtCore.QPoint)
+def _showTacticalNodeArtifactsContextMenu(
+    dashboard: QtCore.QObject,
+    position: QtCore.QPoint,
+):
+    """
+    Selects the right-clicked artifact row and shows local table-management
+    actions.
+
+    Delete Row and Clear Rows only remove records from the current Dashboard
+    view/cache. They do not delete files from the Sensor Node or HIPRFISR.
+    """
+    table = dashboard.ui.tableWidget_tactical_node_artifacts
+    clicked_item = table.itemAt(position)
+
+    if clicked_item is not None:
+        table.selectRow(clicked_item.row())
+        table.setCurrentCell(
+            clicked_item.row(),
+            clicked_item.column(),
+        )
+
+        _slotTacticalNodeArtifactsRowSelectionChanged(
+            dashboard
+        )
+
+    artifact_id = getattr(
+        dashboard,
+        "selected_tactical_node_artifact_id",
+        None,
+    )
+
+    has_artifact = bool(artifact_id)
+    has_rows = table.rowCount() > 0
+
+    menu = QtWidgets.QMenu(table)
+
+    action_delete = menu.addAction("Delete Row")
+    action_clear = menu.addAction("Clear Rows")
+
+    action_delete.setEnabled(has_artifact)
+    action_clear.setEnabled(has_rows)
+
+    selected_action = menu.exec_(
+        table.viewport().mapToGlobal(position)
+    )
+
+    if selected_action == action_delete:
+        _slotTacticalNodeArtifactsDeleteRowClicked(
+            dashboard
+        )
+    elif selected_action == action_clear:
+        _slotTacticalNodeArtifactsClearRowsClicked(
+            dashboard
+        )
 
 
 def initialize_tactical_node_target_context_menu(
@@ -6248,3 +6797,22 @@ def _showTacticalEcosystemAlertContextMenu(
         _slotTacticalEcosystemAlertsClearRowsClicked(
             dashboard
         )
+
+
+def _apply_tactical_details_panel_role(*widgets):
+    """
+    Applies the shared detailsPanel stylesheet role to widgets created
+    programmatically and forces Qt to re-evaluate the active stylesheet.
+    """
+    for widget in widgets:
+        if widget is None:
+            continue
+
+        widget.setProperty("uiRole", "detailsPanel")
+
+        style = widget.style()
+        if style is not None:
+            style.unpolish(widget)
+            style.polish(widget)
+
+        widget.update()
