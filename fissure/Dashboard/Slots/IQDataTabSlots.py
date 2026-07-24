@@ -7617,156 +7617,436 @@ def _iq_format_artifact_combo_name(artifact_name: str, files_dir: str) -> str:
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_ArtifactsRefreshClicked(dashboard: QtCore.QObject):
+def _slotIQ_ArtifactsRefreshClicked(
+    dashboard: QtCore.QObject,
+):
     """
-    Refreshes the IQ Data Artifacts combo box from local unpacked artifacts.
+    Refresh the temporary IQ Artifact browser from the shared Dashboard cache.
 
-    Expected local layout:
-        FISSURE/artifacts/<artifact_id>/files/<artifact files>
+    ArtifactTransferController.local_cache is the primary discovery source, so
+    downloaded Artifacts are available immediately during IQ tab
+    initialization without first opening Tactical.
+
+    dashboard.tactical_artifacts is used only to enrich cached entries with
+    canonical names, timestamps, and manifest metadata when that information is
+    already available.
     """
     combo = dashboard.ui.comboBox_iq_artifacts
     file_list = dashboard.ui.listWidget_iq_artifacts_files
 
-    previous_artifact_dir = None
-    try:
-        current_data = combo.currentData(QtCore.Qt.UserRole)
-        if isinstance(current_data, dict):
-            previous_artifact_dir = current_data.get("artifact_dir")
-    except Exception:
-        previous_artifact_dir = None
+    previous_artifact_id = ""
+
+    current_data = combo.currentData(
+        QtCore.Qt.UserRole
+    )
+
+    if isinstance(current_data, dict):
+        previous_artifact_id = str(
+            current_data.get(
+                "artifact_id",
+                "",
+            )
+            or ""
+        ).strip()
+
+    controller = getattr(
+        dashboard.backend,
+        "artifact_transfer_controller",
+        None,
+    )
 
     combo.blockSignals(True)
     combo.clear()
     file_list.clear()
 
-    artifacts_root = fissure.utils.HUB_ARTIFACTS_DIR
-
-    if not os.path.isdir(artifacts_root):
+    if controller is None:
         combo.blockSignals(False)
-        dashboard.logger.warning(f"[IQ] Artifacts folder not found: {artifacts_root}")
+
+        dashboard.logger.warning(
+            "[IQ] Artifact transfer controller is unavailable."
+        )
         return
 
-    artifacts = []
+    local_cache = getattr(
+        controller,
+        "local_cache",
+        {},
+    )
 
-    try:
-        for artifact_name in os.listdir(artifacts_root):
-            artifact_dir = os.path.join(artifacts_root, artifact_name)
+    if not isinstance(local_cache, dict):
+        local_cache = {}
 
-            if not os.path.isdir(artifact_dir):
-                continue
+    tactical_artifacts = (
+        getattr(
+            dashboard,
+            "tactical_artifacts",
+            {},
+        )
+        or {}
+    )
 
-            files_dir = _iq_get_artifact_files_dir(artifact_dir)
+    canonical_by_id = {}
 
-            if not os.path.isdir(files_dir):
-                continue
+    if isinstance(tactical_artifacts, dict):
+        tactical_iterable = tactical_artifacts.items()
 
-            # Only include artifact folders that have at least one regular file.
-            has_files = any(
-                os.path.isfile(os.path.join(files_dir, fname))
-                for fname in os.listdir(files_dir)
+    elif isinstance(tactical_artifacts, list):
+        tactical_iterable = enumerate(
+            tactical_artifacts
+        )
+
+    else:
+        tactical_iterable = []
+
+    for artifact_key, artifact_record in tactical_iterable:
+        if not isinstance(artifact_record, dict):
+            continue
+
+        artifact_id = str(
+            artifact_record.get("artifact_id")
+            or artifact_record.get("id")
+            or artifact_key
+            or ""
+        ).strip()
+
+        if artifact_id:
+            canonical_by_id[artifact_id] = dict(
+                artifact_record
             )
-            if not has_files:
-                continue
 
-            try:
-                sort_time = os.path.getmtime(files_dir)
-            except Exception:
-                sort_time = 0
+    rows = []
 
-            display_name = _iq_format_artifact_combo_name(artifact_name, files_dir)
+    for cache_key, cache_record in local_cache.items():
+        if not isinstance(cache_record, dict):
+            continue
 
-            artifacts.append(
-                (
-                    sort_time,
-                    display_name,
-                    {
-                        "artifact_name": artifact_name,
-                        "artifact_dir": artifact_dir,
-                        "files_dir": files_dir,
-                    },
+        artifact_id = str(
+            cache_record.get("artifact_id")
+            or cache_key
+            or ""
+        ).strip()
+
+        if not artifact_id:
+            continue
+
+        local_files = controller.get_local_files(
+            artifact_id
+        )
+
+        if not isinstance(local_files, dict):
+            continue
+
+        local_files = {
+            str(file_id): str(local_path)
+            for file_id, local_path in local_files.items()
+            if (
+                str(local_path).strip()
+                and os.path.isfile(
+                    str(local_path)
                 )
             )
+        }
 
-    except Exception as e:
-        combo.blockSignals(False)
-        dashboard.logger.error(f"[IQ] Failed refreshing artifacts: {e}")
-        return
+        if not local_files:
+            continue
 
-    # Newest first
-    artifacts.sort(key=lambda item: item[0], reverse=True)
+        canonical_record = canonical_by_id.get(
+            artifact_id,
+            {},
+        )
+
+        if not isinstance(canonical_record, dict):
+            canonical_record = {}
+
+        display_record = dict(
+            cache_record
+        )
+
+        display_record.update(
+            canonical_record
+        )
+
+        name = str(
+            canonical_record.get("name")
+            or canonical_record.get("description")
+            or cache_record.get("artifact_name")
+            or cache_record.get("name")
+            or "Artifact"
+        ).strip()
+
+        timestamp_value = (
+            canonical_record.get("modified_at")
+            or canonical_record.get("created_at")
+            or canonical_record.get("time")
+            or cache_record.get("completed_at")
+            or ""
+        )
+
+        timestamp_text = ""
+
+        if timestamp_value not in (
+            None,
+            "",
+        ):
+            try:
+                if isinstance(
+                    timestamp_value,
+                    (int, float),
+                ):
+                    timestamp_text = time.strftime(
+                        "%m/%d %H:%M",
+                        time.localtime(
+                            float(timestamp_value)
+                        ),
+                    )
+
+                else:
+                    normalized_timestamp = str(
+                        timestamp_value
+                    ).replace(
+                        "Z",
+                        "+00:00",
+                    )
+
+                    parsed_timestamp = (
+                        datetime.datetime.fromisoformat(
+                            normalized_timestamp
+                        )
+                    )
+
+                    timestamp_text = (
+                        parsed_timestamp
+                        .astimezone()
+                        .strftime(
+                            "%m/%d %H:%M"
+                        )
+                    )
+
+            except Exception:
+                timestamp_text = str(
+                    timestamp_value
+                )[:16]
+
+        display_name = (
+            f"{name}  {timestamp_text}"
+            if timestamp_text
+            else name
+        )
+
+        newest_mtime = 0.0
+
+        for local_path in local_files.values():
+            try:
+                newest_mtime = max(
+                    newest_mtime,
+                    os.path.getmtime(
+                        local_path
+                    ),
+                )
+
+            except OSError:
+                pass
+
+        rows.append(
+            (
+                newest_mtime,
+                display_name,
+                {
+                    "artifact_id": artifact_id,
+                    "record": display_record,
+                    "local_files": local_files,
+                    "cache_record": dict(
+                        cache_record
+                    ),
+                },
+            )
+        )
+
+    rows.sort(
+        key=lambda row: (
+            row[0],
+            row[1].lower(),
+        ),
+        reverse=True,
+    )
 
     restore_index = -1
 
-    for _, display_name, artifact_data in artifacts:
-        combo.addItem(display_name, artifact_data)
+    for (
+        _sort_time,
+        display_name,
+        artifact_data,
+    ) in rows:
+        combo.addItem(
+            display_name,
+            artifact_data,
+        )
+
         index = combo.count() - 1
 
         combo.setItemData(
             index,
-            artifact_data["artifact_dir"],
+            artifact_data["artifact_id"],
             QtCore.Qt.ToolTipRole,
         )
 
-        if previous_artifact_dir and artifact_data["artifact_dir"] == previous_artifact_dir:
+        if (
+            previous_artifact_id
+            and artifact_data["artifact_id"]
+            == previous_artifact_id
+        ):
             restore_index = index
 
     if combo.count() > 0:
-        if restore_index >= 0:
-            combo.setCurrentIndex(restore_index)
-        else:
-            combo.setCurrentIndex(0)
+        combo.setCurrentIndex(
+            restore_index
+            if restore_index >= 0
+            else 0
+        )
 
     combo.blockSignals(False)
 
-    _slotIQ_ArtifactsChanged(dashboard)
+    _slotIQ_ArtifactsChanged(
+        dashboard
+    )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_ArtifactsChanged(dashboard: QtCore.QObject):
+def _slotIQ_ArtifactsChanged(
+    dashboard: QtCore.QObject,
+):
     """
-    Populates the IQ Data artifact file list from the selected local artifact folder.
+    Populate the temporary IQ Artifact file list from shared cached paths.
     """
     combo = dashboard.ui.comboBox_iq_artifacts
     file_list = dashboard.ui.listWidget_iq_artifacts_files
 
     file_list.clear()
 
-    artifact_data = combo.currentData(QtCore.Qt.UserRole)
+    artifact_data = combo.currentData(
+        QtCore.Qt.UserRole
+    )
 
     if not isinstance(artifact_data, dict):
         return
 
-    files_dir = artifact_data.get("files_dir", "")
+    local_files = artifact_data.get(
+        "local_files",
+        {},
+    )
 
-    if not files_dir or not os.path.isdir(files_dir):
+    if not isinstance(local_files, dict):
         return
 
-    try:
-        file_names = []
+    artifact_record = artifact_data.get(
+        "record",
+        {},
+    )
 
-        for fname in os.listdir(files_dir):
-            full_path = os.path.join(files_dir, fname)
+    if not isinstance(artifact_record, dict):
+        artifact_record = {}
 
-            if os.path.isfile(full_path):
-                file_names.append(fname)
+    manifest = artifact_record.get(
+        "files",
+        [],
+    )
 
-        file_names = sorted(file_names, key=str.lower)
+    if not isinstance(manifest, list):
+        manifest = []
 
-        for fname in file_names:
-            full_path = os.path.join(files_dir, fname)
+    manifest_by_id = {
+        str(file_record.get("id", "") or ""): file_record
+        for file_record in manifest
+        if (
+            isinstance(file_record, dict)
+            and str(
+                file_record.get("id", "")
+                or ""
+            ).strip()
+        )
+    }
 
-            item = QtWidgets.QListWidgetItem(fname)
-            item.setData(QtCore.Qt.UserRole, full_path)
-            item.setToolTip(full_path)
+    rows = []
 
-            file_list.addItem(item)
+    for file_id, local_path in local_files.items():
+        local_path = str(
+            local_path
+            or ""
+        ).strip()
 
-        if file_list.count() > 0:
-            file_list.setCurrentRow(0)
+        if not local_path or not os.path.isfile(local_path):
+            continue
 
-    except Exception as e:
-        dashboard.logger.error(f"[IQ] Failed loading artifact files from {files_dir}: {e}")
+        file_record = manifest_by_id.get(
+            str(file_id),
+            {},
+        )
 
+        if not isinstance(file_record, dict):
+            file_record = {}
+
+        filename = str(
+            file_record.get("name")
+            or file_record.get("filename")
+            or os.path.basename(local_path)
+        ).strip()
+
+        rows.append(
+            (
+                filename.lower(),
+                filename,
+                local_path,
+                str(file_id),
+                dict(file_record),
+            )
+        )
+
+    rows.sort(
+        key=lambda row: row[0]
+    )
+
+    for (
+        _sort_name,
+        filename,
+        local_path,
+        file_id,
+        file_record,
+    ) in rows:
+        item = QtWidgets.QListWidgetItem(
+            filename
+        )
+
+        item.setData(
+            QtCore.Qt.UserRole,
+            local_path,
+        )
+
+        item.setData(
+            QtCore.Qt.UserRole + 1,
+            {
+                "artifact_id": str(
+                    artifact_data.get(
+                        "artifact_id",
+                        "",
+                    )
+                    or ""
+                ),
+                "file_id": file_id,
+                "record": file_record,
+            },
+        )
+
+        item.setToolTip(
+            local_path
+        )
+
+        file_list.addItem(
+            item
+        )
+
+    if file_list.count() > 0:
+        file_list.setCurrentRow(0)
+        
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotIQ_ArtifactFileDoubleClicked(dashboard: QtCore.QObject, item=None):
@@ -7854,20 +8134,49 @@ def _slotIQ_ArtifactFileDoubleClicked(dashboard: QtCore.QObject, item=None):
     _slotIQ_LoadIQ_Data(dashboard)
 
 
-def handle_iq_record_artifact_complete(dashboard: QtCore.QObject, artifact_record: dict):
+def handle_iq_record_artifact_complete(
+    dashboard: QtCore.QObject,
+    artifact_record: dict,
+):
     """
-    Resets the IQ Record controls and refreshes the local IQ artifact browser
-    when an IQ recording artifact is received.
+    Reset IQ Record controls when the matching recording Artifact is received.
 
-    First-pass completion signal:
-      artifact CoT received -> IQ record operation produced an artifact.
+    The temporary Artifact browser can select the result only when that Artifact
+    is already present in the shared Dashboard download cache. Undownloaded
+    Artifacts remain available through Tactical until the IQ Data redesign adds
+    first-class transfer controls.
     """
-    if artifact_record.get("operation_id", "") != getattr(
-        dashboard,
-        "iq_record_pending_operation_id",
-        "",
+    if not isinstance(artifact_record, dict):
+        return
+
+    operation_id = str(
+        artifact_record.get(
+            "operation_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    expected_operation_id = str(
+        getattr(
+            dashboard,
+            "iq_record_pending_operation_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if (
+        not expected_operation_id
+        or operation_id != expected_operation_id
     ):
         return
+
+    artifact_id = str(
+        artifact_record.get("artifact_id")
+        or artifact_record.get("id")
+        or ""
+    ).strip()
 
     reset_iq_record_controls(
         dashboard,
@@ -7876,44 +8185,48 @@ def handle_iq_record_artifact_complete(dashboard: QtCore.QObject, artifact_recor
     )
 
     try:
-        _slotIQ_ArtifactsRefreshClicked(dashboard)
-    except Exception as e:
+        _slotIQ_ArtifactsRefreshClicked(
+            dashboard
+        )
+    except Exception as error:
         dashboard.logger.warning(
-            f"[IQ] Failed refreshing artifacts after IQ record completion: {e}"
+            "[IQ] Failed refreshing cached Artifacts after IQ recording: "
+            f"{error}"
+        )
+        return
+
+    if not artifact_id:
+        return
+
+    combo = dashboard.ui.comboBox_iq_artifacts
+
+    for index in range(
+        combo.count()
+    ):
+        item_data = combo.itemData(
+            index,
+            QtCore.Qt.UserRole,
         )
 
-    # Select the new artifact in the IQ Data -> Artifacts combo if possible.
-    try:
-        operation_id = artifact_record.get("operation_id", "")
-        artifact_id = artifact_record.get("artifact_id", "")
+        if not isinstance(item_data, dict):
+            continue
 
-        candidate_dirs = []
-
-        if operation_id:
-            candidate_dirs.append(
-                os.path.join(fissure.utils.HUB_ARTIFACTS_DIR, operation_id)
+        candidate_artifact_id = str(
+            item_data.get(
+                "artifact_id",
+                "",
             )
+            or ""
+        ).strip()
 
-        if artifact_id:
-            candidate_dirs.append(
-                os.path.join(fissure.utils.HUB_ARTIFACTS_DIR, artifact_id)
-            )
+        if candidate_artifact_id != artifact_id:
+            continue
 
-        combo = dashboard.ui.comboBox_iq_artifacts
-
-        for i in range(combo.count()):
-            data = combo.itemData(i, QtCore.Qt.UserRole)
-
-            if not isinstance(data, dict):
-                continue
-
-            artifact_dir = data.get("artifact_dir", "")
-
-            if artifact_dir in candidate_dirs:
-                combo.setCurrentIndex(i)
-                break
-
-    except Exception as e:
-        dashboard.logger.warning(
-            f"[IQ] Failed selecting completed IQ artifact: {e}"
+        combo.setCurrentIndex(
+            index
         )
+
+        _slotIQ_ArtifactsChanged(
+            dashboard
+        )
+        break

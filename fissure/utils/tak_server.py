@@ -503,7 +503,7 @@ class TakReceiver(pytak.QueueWorker):
                 )
 
                 # Match the original behavior: request transfer to TAK, with no inline data
-                await HiprFisrCallbacks.transferArtifactRequest(self.hipfisr, artifact_id, "tak", None)
+                await HiprFisrCallbacks.transferArtifactRequest(self.hipfisr, artifact_id, "tak")
 
             # SOIs list
             elif request in ("sois_list", "soi_list", "get_sois", "get_soi_list"):

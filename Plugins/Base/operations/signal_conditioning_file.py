@@ -578,11 +578,47 @@ class OperationMain(Operation):
             await self._set_progress(90, "Writing Conditioner metadata")
 
             payload = self._build_payload(output_dir, rows)
+            creates_artifact = self.output_mode == "Artifact"
+
+            # Allocate the final ID before writing an artifact member. This
+            # avoids rewriting the operation metadata after registration.
+            payload["artifact_id"] = (
+                str(uuid.uuid4())
+                if creates_artifact
+                else ""
+            )
+
             metadata_path = self._metadata_path(output_dir)
+            latest_metadata_path = os.path.join(
+                output_dir,
+                "signal_conditioning_file_artifact.json",
+            )
 
             payload["metadata_name"] = os.path.basename(metadata_path)
             payload["metadata_path"] = metadata_path
 
+            if uses_sigmf and uses_zip:
+                payload["artifact_format"] = "sigmf_zip_bundle"
+            elif uses_zip:
+                payload["artifact_format"] = "raw_iq_zip_bundle"
+            elif uses_sigmf:
+                payload["artifact_format"] = "sigmf_files"
+            else:
+                payload["artifact_format"] = "local_iq_files"
+
+            if uses_zip:
+                zip_path = os.path.join(
+                    output_dir,
+                    self._zip_bundle_name(),
+                )
+                payload["bundle_path"] = zip_path
+                payload["bundle_name"] = os.path.basename(zip_path)
+                payload["bundle_relative_path"] = os.path.relpath(
+                    zip_path,
+                    FISSURE_ROOT,
+                )
+
+            # Write the artifact member once in its final form.
             with open(metadata_path, "w", encoding="utf-8") as handle:
                 json.dump(payload, handle, indent=2, sort_keys=True)
 
@@ -594,27 +630,12 @@ class OperationMain(Operation):
                     rows=rows,
                     metadata_path=metadata_path,
                 )
-
-                if uses_sigmf:
-                    payload["artifact_format"] = "sigmf_zip_bundle"
-                else:
-                    payload["artifact_format"] = "raw_iq_zip_bundle"
-
-                payload["bundle_path"] = zip_path
-                payload["bundle_name"] = os.path.basename(zip_path)
                 payload["bundle_size"] = os.path.getsize(zip_path)
-                payload["bundle_relative_path"] = os.path.relpath(
-                    zip_path,
-                    FISSURE_ROOT,
-                )
 
-            elif uses_sigmf:
-                payload["artifact_format"] = "sigmf_files"
-
-            else:
-                payload["artifact_format"] = "local_iq_files"
-
-            creates_artifact = self.output_mode == "Artifact"
+            # This compatibility/poller file is not registered as an artifact
+            # member, so it may include the post-build bundle size.
+            with open(latest_metadata_path, "w", encoding="utf-8") as handle:
+                json.dump(payload, handle, indent=2, sort_keys=True)
 
             if creates_artifact:
                 await self._set_progress(97, "Registering Conditioner artifact")
@@ -622,53 +643,14 @@ class OperationMain(Operation):
             else:
                 artifact_id = ""
 
-            payload["artifact_id"] = artifact_id
             self.artifact_id = artifact_id
             self.artifact_payload = payload
-
-            await self._set_progress(98, "Finalizing Conditioner metadata")
-
-            with open(metadata_path, "w", encoding="utf-8") as handle:
-                json.dump(payload, handle, indent=2, sort_keys=True)
-
-            latest_metadata_path = os.path.join(
-                output_dir,
-                "signal_conditioning_file_artifact.json",
-            )
-
-            with open(latest_metadata_path, "w", encoding="utf-8") as handle:
-                json.dump(payload, handle, indent=2, sort_keys=True)
-
-            # Rebuild the zip after final metadata/artifact_id is known so the
-            # bundled metadata matches the files written beside it.
-            if uses_zip:
-                zip_path = self._create_zip_bundle(
-                    output_dir=output_dir,
-                    rows=rows,
-                    metadata_path=metadata_path,
-                )
-                payload["bundle_path"] = zip_path
-                payload["bundle_name"] = os.path.basename(zip_path)
-                payload["bundle_size"] = os.path.getsize(zip_path)
-                payload["bundle_relative_path"] = os.path.relpath(
-                    zip_path,
-                    FISSURE_ROOT,
-                )
-
-                with open(metadata_path, "w", encoding="utf-8") as handle:
-                    json.dump(payload, handle, indent=2, sort_keys=True)
-
-                with open(latest_metadata_path, "w", encoding="utf-8") as handle:
-                    json.dump(payload, handle, indent=2, sort_keys=True)
 
             await self._set_progress(
                 100,
                 f"Conditioner complete: {len(rows)} files",
             )
 
-            # File conditioning does not publish alerts or TAK CoT directly.
-            # Downstream actions can promote conditioned files into SOIs, alerts,
-            # classifications, or TAK messages when operationally meaningful.
             self.logger.info(
                 "File signal conditioning complete: artifact_id=%s file_count=%s output_dir=%s",
                 artifact_id,
@@ -768,12 +750,14 @@ class OperationMain(Operation):
 
         operation_id = self._operation_id() or "conditioner"
 
-        return os.path.join(
-            FISSURE_ROOT,
-            "artifacts",
-            operation_id,
-            "files",
-        )
+        artifact_manager = getattr(self, "artifact_manager", None)
+        if artifact_manager is None:
+            raise RuntimeError(
+                "Artifact output requires an ArtifactManager."
+            )
+
+        _, files_dir = artifact_manager.create_operation_dir(operation_id)
+        return files_dir
 
     def _operation_id(self) -> str:
         return str(self.operation_id or self.opid or "").strip()
@@ -1207,21 +1191,27 @@ class OperationMain(Operation):
 
         return zip_path
 
-    async def _create_artifact(self, payload: Dict[str, Any]) -> str:
+    async def _create_artifact(
+        self,
+        payload: Dict[str, Any],
+    ) -> str:
         """
-        Register file/folder Conditioner output with the Sensor Node
-        ArtifactManager.
+        Register the complete file/folder Conditioner result.
 
-        The SensorNode wraps ArtifactManager.create_artifact() and sends
-        updateArtifact to HIPRFISR after creation.
+        Files output remains individual files. ZIP output remains one ZIP.
         """
         self.artifact_payload = payload
 
-        artifact_manager = getattr(self, "artifact_manager", None)
+        artifact_manager = getattr(
+            self,
+            "artifact_manager",
+            None,
+        )
 
         if artifact_manager is None:
             self.logger.info(
-                "No artifact_manager available; skipping artifact registration."
+                "No artifact_manager available; "
+                "skipping artifact registration."
             )
             self.artifact_id = ""
             self.artifact_payload["artifact_id"] = ""
@@ -1235,75 +1225,204 @@ class OperationMain(Operation):
             or "sensor_node"
         ).strip()
 
-        bundle_path = str(payload.get("bundle_path", "") or "").strip()
+        bundle_path = str(
+            payload.get("bundle_path", "")
+            or ""
+        ).strip()
 
-        if bundle_path and os.path.isfile(bundle_path):
-            artifact = artifact_manager.create_artifact(
-                source_id=source_id,
-                operation_id=operation_id,
-                file_path=bundle_path,
-                name="Conditioner output bundle",
-                artifact_type="application/zip",
-                metadata=payload,
+        artifact_files = []
+        file_metadata: Dict[
+            str,
+            Dict[str, Any],
+        ] = {}
+
+        if bundle_path:
+            if not os.path.isfile(bundle_path):
+                raise FileNotFoundError(
+                    bundle_path
+                )
+
+            artifact_files = [bundle_path]
+            file_metadata[bundle_path] = {
+                "role": "bundle",
+                "content_type": "application/zip",
+                "output_format": self.output_format,
+            }
+
+            artifact_name = (
+                "Conditioner output bundle"
+            )
+            artifact_type = (
+                "conditioner_bundle"
             )
 
-            artifact_id = str(getattr(artifact, "id", artifact) if artifact else "")
-            self.artifact_id = artifact_id
-            self.artifact_payload["artifact_id"] = artifact_id
+        else:
+            for file_record in (
+                payload.get("files") or []
+            ):
+                if not isinstance(
+                    file_record,
+                    dict,
+                ):
+                    continue
 
-            self.logger.info(
-                "Registered Conditioner file artifact with ArtifactManager: "
-                "artifact_id=%s source_id=%s operation_id=%s file_path=%s",
-                artifact_id,
-                source_id,
-                operation_id,
-                bundle_path,
+                file_path = str(
+                    file_record.get("path", "")
+                    or ""
+                ).strip()
+
+                if (
+                    not file_path
+                    or not os.path.isfile(file_path)
+                ):
+                    continue
+
+                artifact_files.append(file_path)
+
+                per_file_metadata = dict(
+                    file_record
+                )
+                per_file_metadata.pop(
+                    "path",
+                    None,
+                )
+                per_file_metadata.pop(
+                    "relative_path",
+                    None,
+                )
+                per_file_metadata.pop(
+                    "size",
+                    None,
+                )
+                per_file_metadata.pop(
+                    "sha256",
+                    None,
+                )
+
+                per_file_metadata["role"] = (
+                    "iq_data"
+                    if not bool(
+                        file_record.get("sigmf")
+                    )
+                    else "sigmf_data"
+                )
+                per_file_metadata[
+                    "content_type"
+                ] = "application/octet-stream"
+
+                file_metadata[file_path] = (
+                    per_file_metadata
+                )
+
+                sigmf_meta_path = str(
+                    file_record.get(
+                        "sigmf_meta_path",
+                        "",
+                    )
+                    or ""
+                ).strip()
+
+                if (
+                    sigmf_meta_path
+                    and os.path.isfile(
+                        sigmf_meta_path
+                    )
+                ):
+                    artifact_files.append(
+                        sigmf_meta_path
+                    )
+                    file_metadata[
+                        sigmf_meta_path
+                    ] = {
+                        "role": "sigmf_metadata",
+                        "content_type":
+                            "application/json",
+                        "data_file_name":
+                            file_record.get(
+                                "name",
+                                "",
+                            ),
+                    }
+
+            metadata_path = str(
+                payload.get(
+                    "metadata_path",
+                    "",
+                )
+                or ""
+            ).strip()
+
+            if (
+                metadata_path
+                and os.path.isfile(
+                    metadata_path
+                )
+            ):
+                artifact_files.append(
+                    metadata_path
+                )
+                file_metadata[
+                    metadata_path
+                ] = {
+                    "role": "operation_metadata",
+                    "content_type":
+                        "application/json",
+                }
+
+            artifact_name = (
+                "Conditioner output files"
+            )
+            artifact_type = (
+                "iq_file_conditioning"
             )
 
-            return artifact_id
-
-        files = payload.get("files") or []
-
-        for file_record in files:
-            if not isinstance(file_record, dict):
-                continue
-
-            file_path = str(file_record.get("path", "") or "").strip()
-
-            if not file_path or not os.path.isfile(file_path):
-                continue
-
-            artifact = artifact_manager.create_artifact(
-                source_id=source_id,
-                operation_id=operation_id,
-                file_path=file_path,
-                name="Conditioner output file",
-                artifact_type="application/octet-stream",
-                metadata=payload,
-            )
-
-            artifact_id = str(getattr(artifact, "id", artifact) if artifact else "")
-            self.artifact_id = artifact_id
-            self.artifact_payload["artifact_id"] = artifact_id
-
-            self.logger.info(
-                "Registered Conditioner file artifact with ArtifactManager: "
-                "artifact_id=%s source_id=%s operation_id=%s file_path=%s",
-                artifact_id,
-                source_id,
-                operation_id,
-                file_path,
-            )
-
-            return artifact_id
-
-        self.logger.warning(
-            "No Conditioner file output was available for artifact registration."
+        artifact_files = list(
+            dict.fromkeys(artifact_files)
         )
 
-        self.artifact_id = ""
-        self.artifact_payload["artifact_id"] = ""
-        return ""
+        if not artifact_files:
+            self.logger.warning(
+                "No Conditioner file output was "
+                "available for artifact registration."
+            )
+            self.artifact_id = ""
+            self.artifact_payload[
+                "artifact_id"
+            ] = ""
+            return ""
+
+        artifact_id = (
+            artifact_manager.create_artifact(
+                source_id=source_id,
+                operation_id=operation_id,
+                files=artifact_files,
+                name=artifact_name,
+                artifact_type=artifact_type,
+                metadata=payload,
+                file_metadata=file_metadata,
+                artifact_id=str(payload.get("artifact_id", "") or ""),
+            )
+        )
+
+        self.artifact_id = str(
+            artifact_id or ""
+        )
+        self.artifact_payload[
+            "artifact_id"
+        ] = self.artifact_id
+
+        self.logger.info(
+            "Registered Conditioner file artifact: "
+            "artifact_id=%s source_id=%s "
+            "operation_id=%s files=%s",
+            self.artifact_id,
+            source_id,
+            operation_id,
+            len(artifact_files),
+        )
+
+        return self.artifact_id
+
 
     @staticmethod
     def _normalize_output_mode(output_mode: str) -> str:

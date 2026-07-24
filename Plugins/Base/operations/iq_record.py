@@ -208,8 +208,7 @@ class OperationMain(Operation):
         operation_id = self.operation_id
         artifact_name = f"IQ Recording {self.rx_frequency:g} MHz"
 
-        folder = os.path.join(FISSURE_ROOT, "artifacts", operation_id, "files")
-        os.makedirs(folder, exist_ok=True)
+        _, folder = self.artifact_manager.create_operation_dir(operation_id)
 
         recorded_files = []
         stopped_early = False
@@ -283,23 +282,134 @@ class OperationMain(Operation):
         artifact_id = ""
 
         if self.artifact_format == "zip":
-            artifact = self.artifact_manager.create_zip_artifact_from_folder(
-                source_id=self.node_uid or "sensor_node",
-                operation_id=operation_id,
-                folder=folder,
-                name=artifact_name,
-                metadata=metadata,
-                arc_prefix=f"iq_recording_{operation_id}",
+            artifact_id = (
+                self.artifact_manager
+                .create_zip_artifact_from_folder(
+                    source_id=(
+                        self.node_uid
+                        or "sensor_node"
+                    ),
+                    operation_id=operation_id,
+                    folder=folder,
+                    name=artifact_name,
+                    metadata=metadata,
+                    arc_prefix=(
+                        f"iq_recording_"
+                        f"{operation_id}"
+                    ),
+                )
             )
-            artifact_id = getattr(artifact, "id", "") if artifact else ""
+
         else:
-            artifact_id = self.artifact_manager.create_artifact(
-                source_id=self.node_uid or "sensor_node",
-                operation_id=operation_id,
-                file_path=recorded_files[0],
-                name=artifact_name,
-                artifact_type="application/octet-stream",
-                metadata=metadata,
+            artifact_files = list(
+                recorded_files
+            )
+
+            if (
+                manifest_path
+                and os.path.isfile(
+                    manifest_path
+                )
+            ):
+                artifact_files.append(
+                    manifest_path
+                )
+
+            artifact_files = list(
+                dict.fromkeys(
+                    artifact_files
+                )
+            )
+
+            file_metadata = {}
+
+            for recorded_path in (
+                recorded_files
+            ):
+                file_metadata[
+                    recorded_path
+                ] = {
+                    "role": (
+                        "sigmf_data"
+                        if recorded_path.endswith(
+                            ".sigmf-data"
+                        )
+                        else "iq_data"
+                    ),
+                    "content_type":
+                        "application/octet-stream",
+                    "data_type":
+                        self.data_type,
+                    "frequency_mhz":
+                        self.rx_frequency,
+                    "sample_rate_msps":
+                        self.sample_rate_msps,
+                }
+
+                if recorded_path.endswith(
+                    ".sigmf-data"
+                ):
+                    sigmf_meta_path = (
+                        recorded_path.replace(
+                            ".sigmf-data",
+                            ".sigmf-meta",
+                        )
+                    )
+
+                    if os.path.isfile(
+                        sigmf_meta_path
+                    ):
+                        artifact_files.append(
+                            sigmf_meta_path
+                        )
+                        file_metadata[
+                            sigmf_meta_path
+                        ] = {
+                            "role":
+                                "sigmf_metadata",
+                            "content_type":
+                                "application/json",
+                            "data_file_name":
+                                os.path.basename(
+                                    recorded_path
+                                ),
+                        }
+
+            if (
+                manifest_path
+                and os.path.isfile(
+                    manifest_path
+                )
+            ):
+                file_metadata[
+                    manifest_path
+                ] = {
+                    "role":
+                        "operation_metadata",
+                    "content_type":
+                        "application/json",
+                }
+
+            artifact_files = list(
+                dict.fromkeys(
+                    artifact_files
+                )
+            )
+
+            artifact_id = (
+                self.artifact_manager
+                .create_artifact(
+                    source_id=(
+                        self.node_uid
+                        or "sensor_node"
+                    ),
+                    operation_id=operation_id,
+                    files=artifact_files,
+                    name=artifact_name,
+                    artifact_type="iq_recording",
+                    metadata=metadata,
+                    file_metadata=file_metadata,
+                )
             )
 
         self.logger.info(

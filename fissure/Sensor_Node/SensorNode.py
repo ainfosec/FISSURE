@@ -314,17 +314,47 @@ class SensorNode(object):
         # initialize artifact manager
         self.artifact_manager = ArtifactManager(logger=self.logger)
 
-        # Store reference to original create_artifact method
-        self._original_create_artifact = self.artifact_manager.create_artifact
-        
-        # overload artifact manager create artifact to notify hiprfisr
-        def create_artifact_wrapper(source_id: str, operation_id: str, file_path: str, name: str, artifact_type: str, metadata: Union[Dict[str, Any], None] = None) -> str:
-            # Call original synchronous method
-            artifact_id = self._original_create_artifact(self.uuid, operation_id, file_path, name, artifact_type, metadata)
-            # Schedule async notification in background
-            asyncio.create_task(self._notify_hiprfisr_of_artifact(artifact_id))
-            return artifact_id
-        self.artifact_manager.create_artifact = create_artifact_wrapper
+        # Keep ArtifactManager as the only artifact-schema implementation.
+        # This wrapper only forces the authoritative Sensor Node source ID and
+        # schedules the existing HIPRFISR metadata notification.
+        self._original_create_artifact = (
+            self.artifact_manager.create_artifact
+        )
+
+        def create_artifact_wrapper(
+            source_id: str,
+            operation_id: str,
+            files,
+            name: str,
+            artifact_type: str,
+            metadata: Union[Dict[str, Any], None] = None,
+            relations=None,
+            file_metadata=None,
+            artifact_id: str = "",
+        ) -> str:
+            created_artifact_id = self._original_create_artifact(
+                source_id=self.uuid,
+                operation_id=operation_id,
+                files=files,
+                name=name,
+                artifact_type=artifact_type,
+                metadata=metadata,
+                relations=relations,
+                file_metadata=file_metadata,
+                artifact_id=artifact_id,
+            )
+
+            asyncio.create_task(
+                self._notify_hiprfisr_of_artifact(
+                    created_artifact_id
+                )
+            )
+
+            return created_artifact_id
+
+        self.artifact_manager.create_artifact = (
+            create_artifact_wrapper
+        )
 
 
     async def initialize_comms(self):

@@ -143,6 +143,7 @@ class OperationMain(Operation):
         operation_id: str = "",
         source_id: str = "",
         node_uid: str = "",
+        soi_id: str = "",
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Union[Callable, None] = None,
         tak_cot_callback: Union[Callable, None] = None,
@@ -176,6 +177,7 @@ class OperationMain(Operation):
 
         self.operation_id = str(operation_id or self.opid or uuid.uuid4())
         self.source_id = str(source_id or "").strip() or self.node_uid or "sensor_node"
+        self.soi_id = str(soi_id or "").strip()
 
         self.logger.info(
             "promote_to_soi init params: "
@@ -222,8 +224,10 @@ class OperationMain(Operation):
         settle_max_wait = 3.0
         settle_poll = 0.05
 
-        output_dir = os.path.join(FISSURE_ROOT, "artifacts", self.operation_id, "files")
-        os.makedirs(output_dir, exist_ok=True)
+        if not self.artifact_manager:
+            raise RuntimeError("promote_to_soi requires artifact_manager")
+
+        _, output_dir = self.artifact_manager.create_operation_dir(self.operation_id)
 
         flowgraph_path = os.path.join(
             PLUGIN_ROOT,
@@ -489,59 +493,105 @@ class OperationMain(Operation):
         manifest_path: str,
         stop_reason: str,
     ) -> List[str]:
-        artifact_ids: List[str] = []
-
+        """
+        Register the complete Promote-to-SOI capture as one logical artifact.
+        """
         if not self.artifact_manager:
-            self.logger.warning("No artifact_manager available; SOI files were not registered.")
-            return artifact_ids
+            self.logger.warning(
+                "No artifact_manager available; SOI files were not registered."
+            )
+            return []
+
+        artifact_files: List[str] = []
+        file_metadata: Dict[str, Dict[str, Any]] = {}
 
         for fname in selected:
             full_path = os.path.join(output_dir, fname)
 
             try:
-                st = final_stats.get(full_path) or os.stat(full_path)
+                stat_result = final_stats.get(full_path) or os.stat(full_path)
             except FileNotFoundError:
-                self.logger.warning(f"Skipping missing SOI artifact: {full_path}")
+                self.logger.warning(
+                    "Skipping missing SOI capture file: %s",
+                    full_path,
+                )
                 continue
 
-            metadata = {
-                "role": "promote_to_soi_file_v1",
-                "operation_id": self.operation_id,
-                "opid": self.opid,
-                "node_uid": self.node_uid,
-                "source_id": self.source_id,
-                "description": self.description,
+            artifact_files.append(full_path)
+            file_metadata[full_path] = {
+                "role": "iq_burst",
+                "content_type": "application/octet-stream",
                 "frequency_mhz": self.frequency_mhz,
                 "sample_rate": self.sample_rate,
-                "threshold": self.threshold,
-                "decay": self.decay,
-                "rx_channel": self.rx_channel,
-                "antenna": self.antenna,
-                "gain": self.gain,
-                "stop_reason": stop_reason,
-                "filename": fname,
-                "size_bytes": int(st.st_size),
-                "manifest_path": manifest_path,
-                "created_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+                "data_type": "Complex Float 32",
+                "captured_size": int(stat_result.st_size),
+                "captured_mtime": float(stat_result.st_mtime),
             }
 
-            artifact_id = self.artifact_manager.create_artifact(
-                source_id=self.source_id,
-                operation_id=self.operation_id,
-                file_path=full_path,
-                name=f"Promoted SOI {fname}",
-                artifact_type="application/octet-stream",
-                metadata=metadata,
+        if manifest_path and os.path.isfile(manifest_path):
+            artifact_files.append(manifest_path)
+            file_metadata[manifest_path] = {
+                "role": "operation_metadata",
+                "content_type": "application/json",
+            }
+
+        artifact_files = list(dict.fromkeys(artifact_files))
+
+        if not artifact_files:
+            return []
+
+        relations = []
+
+        if self.soi_id:
+            relations.append(
+                (
+                    "soi",
+                    self.soi_id,
+                    "source_capture",
+                )
             )
 
-            artifact_ids.append(str(artifact_id))
+        metadata = {
+            "role": "promote_to_soi_capture_v2",
+            "operation_id": self.operation_id,
+            "opid": self.opid,
+            "node_uid": self.node_uid,
+            "source_id": self.source_id,
+            "description": self.description,
+            "frequency_mhz": self.frequency_mhz,
+            "sample_rate": self.sample_rate,
+            "threshold": self.threshold,
+            "decay": self.decay,
+            "rx_channel": self.rx_channel,
+            "antenna": self.antenna,
+            "gain": self.gain,
+            "stop_reason": stop_reason,
+            "captured_file_count": len(selected),
+            "manifest_name": os.path.basename(manifest_path) if manifest_path else "",
+            "created_at": time.strftime(
+                "%Y-%m-%dT%H:%M:%SZ",
+                time.gmtime(),
+            ),
+        }
 
-            self.logger.info(
-                f"Registered SOI artifact: artifact_id={artifact_id}, "
-                f"path={full_path}, size={st.st_size}"
-            )
+        artifact_id = self.artifact_manager.create_artifact(
+            source_id=self.source_id,
+            operation_id=self.operation_id,
+            files=artifact_files,
+            name=self.description or "Promote to SOI Capture",
+            artifact_type="soi_capture",
+            metadata=metadata,
+            relations=relations,
+            file_metadata=file_metadata,
+        )
 
-        return artifact_ids
+        self.logger.info(
+            "Registered Promote-to-SOI artifact: artifact_id=%s files=%s",
+            artifact_id,
+            len(artifact_files),
+        )
+
+        return [str(artifact_id)]
 
     async def _emit_alert(
         self,

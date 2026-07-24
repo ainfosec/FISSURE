@@ -16,6 +16,7 @@ import asyncio
 import zmq
 import zmq.asyncio
 import zmq.auth
+from zmq.utils.monitor import parse_monitor_message
 
 import fissure.utils
 
@@ -29,6 +30,7 @@ FRAME_REGISTERED = b"REGISTERED"
 FRAME_START = b"START"
 FRAME_CHUNK = b"CHUNK"
 FRAME_COMPLETE = b"COMPLETE"
+FRAME_FILE_COMPLETE = b"FILE_COMPLETE"
 FRAME_ERROR = b"ERROR"
 FRAME_CANCEL = b"CANCEL"
 
@@ -140,22 +142,31 @@ class ArtifactTransferRouter:
     def get_sensor_identity(self, node_uid: str) -> Optional[bytes]:
         return self._sensor_identities.get(node_uid)
 
-    async def receive_and_route(self) -> Optional[Tuple[bytes, ArtifactTransferFrame]]:
-        """Receive one frame and route it when it belongs to an active transfer.
+    async def receive_and_route(
+        self,
+    ) -> Optional[Tuple[bytes, ArtifactTransferFrame]]:
+        """
+        Receive one artifact-transfer frame.
 
-        Registration frames are handled locally. Transfer frames are returned to
-        HIPRFISR after forwarding so the coordinator can update transfer state.
+        Dashboard-bound frames are forwarded only.
+        HIPRFISR-bound frames are returned to the local transfer controller.
         """
         if self._closed:
             return None
 
-        events = await self.socket.poll(ARTIFACT_POLL_TIMEOUT_MS)
+        events = await self.socket.poll(
+            ARTIFACT_POLL_TIMEOUT_MS
+        )
+
         if not events:
             return None
 
         frames = await self.socket.recv_multipart()
+
         if len(frames) < 2:
-            self.logger.warning("Discarding malformed artifact transfer frame")
+            self.logger.warning(
+                "Discarding malformed artifact transfer frame"
+            )
             return None
 
         sender_identity = frames[0]
@@ -163,39 +174,85 @@ class ArtifactTransferRouter:
         kind = payload[0]
 
         if kind == FRAME_REGISTER:
-            await self._handle_registration(sender_identity, payload)
+            await self._handle_registration(
+                sender_identity,
+                payload,
+            )
             return None
 
-        decoded = self._decode_transfer_frame(payload)
-        is_local = decoded.transfer_id in self._local_transfers
-        destination = self._transfer_destinations.get(decoded.transfer_id)
+        decoded = self._decode_transfer_frame(
+            payload
+        )
+
+        is_local = (
+            decoded.transfer_id
+            in self._local_transfers
+        )
+
+        destination = (
+            self._transfer_destinations.get(
+                decoded.transfer_id
+            )
+        )
+
         if not is_local and destination is None:
             await self.send_error(
                 sender_identity,
                 decoded.transfer_id,
                 "Unknown or inactive transfer ID",
             )
+            return None
+
+        if is_local:
+            if kind in (
+                FRAME_COMPLETE,
+                FRAME_ERROR,
+                FRAME_CANCEL,
+            ):
+                self.remove_transfer(
+                    decoded.transfer_id
+                )
+
             return sender_identity, decoded
 
-        if not is_local:
-            try:
-                await self.socket.send_multipart([destination, *payload])
-            except zmq.ZMQError as exc:
-                self.logger.error(
-                    "Unable to route artifact transfer %s: %s",
-                    decoded.transfer_id,
-                    exc,
-                )
-                await self.send_error(
-                    sender_identity,
-                    decoded.transfer_id,
-                    "Transfer destination is unavailable",
-                )
+        try:
+            await self.socket.send_multipart(
+                [
+                    destination,
+                    *payload,
+                ]
+            )
 
-        if kind in (FRAME_COMPLETE, FRAME_ERROR, FRAME_CANCEL):
-            self.remove_transfer(decoded.transfer_id)
+        except zmq.ZMQError as exc:
+            self.logger.error(
+                "Unable to route artifact transfer %s: %s",
+                decoded.transfer_id,
+                exc,
+            )
 
-        return sender_identity, decoded
+            await self.send_error(
+                sender_identity,
+                decoded.transfer_id,
+                "Transfer destination is unavailable",
+            )
+
+            self.remove_transfer(
+                decoded.transfer_id
+            )
+            return None
+
+        if kind in (
+            FRAME_COMPLETE,
+            FRAME_ERROR,
+            FRAME_CANCEL,
+        ):
+            self.remove_transfer(
+                decoded.transfer_id
+            )
+
+        # Dashboard-bound frames have already been forwarded.
+        # Do not feed them into the HIPRFISR local receiver.
+        return None
 
     async def _handle_registration(self, identity: bytes, payload: list[bytes]) -> None:
         if len(payload) != 2:
@@ -225,12 +282,23 @@ class ArtifactTransferRouter:
         )
 
     @staticmethod
-    def _decode_transfer_frame(payload: list[bytes]) -> ArtifactTransferFrame:
+    def _decode_transfer_frame(
+        payload: list[bytes],
+    ) -> ArtifactTransferFrame:
         kind = payload[0]
 
-        if kind in (FRAME_START, FRAME_COMPLETE, FRAME_ERROR, FRAME_CANCEL):
+        if kind in (
+            FRAME_START,
+            FRAME_FILE_COMPLETE,
+            FRAME_COMPLETE,
+            FRAME_ERROR,
+            FRAME_CANCEL,
+        ):
             if len(payload) != 3:
-                raise ValueError("Malformed artifact metadata frame")
+                raise ValueError(
+                    "Malformed artifact metadata frame"
+                )
+
             return ArtifactTransferFrame(
                 kind=kind,
                 transfer_id=payload[1].decode("utf-8"),
@@ -239,15 +307,24 @@ class ArtifactTransferRouter:
 
         if kind == FRAME_CHUNK:
             if len(payload) != 4:
-                raise ValueError("Malformed artifact chunk frame")
+                raise ValueError(
+                    "Malformed artifact chunk frame"
+                )
+
             return ArtifactTransferFrame(
                 kind=kind,
                 transfer_id=payload[1].decode("utf-8"),
-                sequence=int.from_bytes(payload[2], "big", signed=False),
+                sequence=int.from_bytes(
+                    payload[2],
+                    "big",
+                    signed=False,
+                ),
                 data=payload[3],
             )
 
-        raise ValueError(f"Unknown artifact transfer frame kind: {kind!r}")
+        raise ValueError(
+            f"Unknown artifact transfer frame kind: {kind!r}"
+        )
 
     async def send_error(self, identity: bytes, transfer_id: str, message: str) -> None:
         await self.socket.send_multipart(
@@ -267,9 +344,14 @@ class ArtifactTransferRouter:
 
 
 class ArtifactTransferClient:
-    """Dashboard/Sensor Node DEALER for binary artifact transfer."""
+    """Dashboard/Sensor Node DEALER for binary artifact transfer.
 
-    REGISTRATION_INTERVAL_SECONDS = 5.0
+    Registration is event-driven:
+    - one REGISTER is sent when the client starts;
+    - ZeroMQ reconnect events trigger a new REGISTER only after a real
+      disconnect/reconnect cycle;
+    - no periodic registration traffic is generated.
+    """
 
     def __init__(
         self,
@@ -295,7 +377,11 @@ class ArtifactTransferClient:
         self.node_uid = node_uid
         self._closed = False
         self._send_lock = asyncio.Lock()
-        self._registration_task: Optional[asyncio.Task] = None
+
+        self._monitor_socket = None
+        self._monitor_task: Optional[asyncio.Task] = None
+        self._ignore_next_connected_event = False
+        self._registered = False
 
         self._initialize_auth()
 
@@ -337,42 +423,84 @@ class ArtifactTransferClient:
             ]
         )
 
-    async def _registration_loop(self) -> None:
+    async def _monitor_connection(self) -> None:
         """
-        Periodically refresh registration.
+        Re-register only after ZeroMQ reports a real reconnect.
 
-        A DEALER socket reconnects automatically after the HIPRFISR ROUTER
-        restarts, but the new router has no memory of the client's prior
-        REGISTER frame. Re-sending REGISTER rebuilds that peer mapping.
+        DEALER sockets reconnect transparently when HIPRFISR restarts, but the
+        replacement ROUTER has no peer-registration state. The monitor reports
+        EVENT_CONNECTED again after that reconnect, which is the correct time
+        to send a new REGISTER frame.
         """
+        monitor_socket = self._monitor_socket
+        if monitor_socket is None:
+            return
+
         while not self._closed:
             try:
-                await self._send_registration()
+                frames = await monitor_socket.recv_multipart()
+                monitor_event = parse_monitor_message(frames)
+                event = int(monitor_event.get("event", 0))
+
+                if event == zmq.EVENT_DISCONNECTED:
+                    self._registered = False
+                    continue
+
+                if event == zmq.EVENT_CONNECTED:
+                    if self._ignore_next_connected_event:
+                        self._ignore_next_connected_event = False
+                        continue
+
+                    self.logger.debug(
+                        "Artifact transfer connection restored; "
+                        "re-registering role=%s node_uid=%s",
+                        self.role,
+                        self.node_uid or "-",
+                    )
+
+                    await self._send_registration()
+                    continue
+
+                if event == zmq.EVENT_MONITOR_STOPPED:
+                    return
+
             except asyncio.CancelledError:
                 raise
             except Exception as exc:
                 if not self._closed:
                     self.logger.debug(
-                        "Artifact transfer registration refresh failed: %s",
+                        "Artifact transfer socket monitor failed: %s",
                         exc,
                     )
-
-            await asyncio.sleep(self.REGISTRATION_INTERVAL_SECONDS)
+                return
 
     async def connect(self) -> None:
-        self.socket.connect(self.endpoint)
-        await self._send_registration()
+        if self._closed:
+            raise RuntimeError("Artifact transfer client is closed")
 
-        if (
-            self._registration_task is None
-            or self._registration_task.done()
-        ):
-            self._registration_task = asyncio.create_task(
-                self._registration_loop()
+        if self._monitor_task is None:
+            self._monitor_socket = self.socket.get_monitor_socket(
+                events=(
+                    zmq.EVENT_CONNECTED
+                    | zmq.EVENT_DISCONNECTED
+                    | zmq.EVENT_MONITOR_STOPPED
+                )
             )
-            self._registration_task.set_name(
-                f"Artifact Registration {self.identity}"
+
+            self._ignore_next_connected_event = True
+
+            self._monitor_task = asyncio.create_task(
+                self._monitor_connection()
             )
+            self._monitor_task.set_name(
+                f"Artifact Connection Monitor {self.identity}"
+            )
+
+        self.socket.connect(self.endpoint)
+
+        # Initial registration is sent exactly once here. Because IMMEDIATE is
+        # enabled, the send waits until the DEALER has a live ROUTER connection.
+        await self._send_registration()
 
     async def receive(self) -> Optional[ArtifactTransferFrame]:
         if self._closed:
@@ -388,11 +516,17 @@ class ArtifactTransferClient:
 
         if payload[0] == FRAME_REGISTERED:
             metadata = _decode_json(payload[1]) if len(payload) > 1 else {}
-            self.logger.info(
-                "Artifact transfer client registered role=%s node_uid=%s",
-                metadata.get("role", self.role),
-                metadata.get("node_uid", self.node_uid) or "-",
-            )
+
+            was_registered = self._registered
+            self._registered = True
+
+            if not was_registered:
+                self.logger.info(
+                    "Artifact transfer client registered role=%s node_uid=%s",
+                    metadata.get("role", self.role),
+                    metadata.get("node_uid", self.node_uid) or "-",
+                )
+
             return None
 
         return ArtifactTransferRouter._decode_transfer_frame(payload)
@@ -422,6 +556,25 @@ class ArtifactTransferClient:
                 transfer_id.encode("utf-8"),
                 int(sequence).to_bytes(8, "big", signed=False),
                 data,
+            ]
+        )
+
+    async def send_file_complete(
+        self,
+        transfer_id: str,
+        metadata: Dict[str, Any],
+    ) -> None:
+        """
+        Finish one file within a multi-file artifact transfer.
+
+        The transfer remains active until send_complete() sends the final
+        artifact-level completion frame.
+        """
+        await self._send_multipart(
+            [
+                FRAME_FILE_COMPLETE,
+                transfer_id.encode("utf-8"),
+                _encode_json(metadata),
             ]
         )
 
@@ -470,9 +623,22 @@ class ArtifactTransferClient:
 
         self._closed = True
 
-        registration_task = self._registration_task
-        if registration_task is not None and not registration_task.done():
-            registration_task.cancel()
-        self._registration_task = None
+        monitor_task = self._monitor_task
+        if monitor_task is not None and not monitor_task.done():
+            monitor_task.cancel()
+        self._monitor_task = None
+
+        monitor_socket = self._monitor_socket
+        if monitor_socket is not None:
+            try:
+                monitor_socket.close(0)
+            except Exception:
+                pass
+        self._monitor_socket = None
+
+        try:
+            self.socket.disable_monitor()
+        except Exception:
+            pass
 
         self.socket.close(0)

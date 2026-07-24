@@ -2497,17 +2497,67 @@ def enable_tactical_artifacts_details(
     dashboard: QtCore.QObject,
     enabled=True,
 ):
+    """
+    Enable Tactical artifact controls for the current selection.
+
+    The single artifact action button is stateful:
+        Download    when the artifact is not in the Dashboard cache.
+        Open Folder when the verified cached path exists.
+    """
+    enabled = bool(enabled)
+
     dashboard.ui.scrollArea_tactical_node_artifact_details.setEnabled(
         enabled
     )
     dashboard.ui.label2_tactical_node_artifact_details.setEnabled(
         enabled
     )
-    dashboard.ui.pushButton_tactical_node_artifacts_open_folder.setEnabled(
+
+    artifact_id = str(
+        getattr(
+            dashboard,
+            "selected_tactical_node_artifact_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    local_path = None
+
+    if enabled and artifact_id:
+        try:
+            local_path = (
+                dashboard.backend
+                .artifact_transfer_controller
+                .get_local_path(
+                    artifact_id
+                )
+            )
+        except Exception:
+            local_path = None
+
+    download_button = (
+        dashboard.ui
+        .pushButton_tactical_node_artifacts_download
+    )
+
+    download_button.setEnabled(
         enabled
     )
-    dashboard.ui.pushButton_tactical_node_artifacts_download.setEnabled(
-        enabled
+    download_button.setText(
+        "Open Folder"
+        if local_path
+        else "Download"
+    )
+    download_button.setToolTip(
+        str(
+            local_path
+            or (
+                "Download artifact to the Dashboard cache"
+                if enabled
+                else ""
+            )
+        )
     )
 
     dashboard.ui.pushButton_tactical_node_artifacts_refresh.setEnabled(
@@ -2704,13 +2754,10 @@ def populate_tactical_node_artifact_details(
     artifact: dict,
 ):
     """
-    Displays either a curated artifact summary or the complete dynamic record.
+    Display artifact-level details and the canonical file manifest.
 
-    Compact mode prioritizes common review fields.
-
-    Full Details preserves complete lookup identifiers, arbitrary nested
-    metadata, and every remaining non-empty artifact field, but presents the
-    most useful human-readable values before IDs and implementation details.
+    File paths, sizes, and checksums are shown only from individual manifest
+    entries. There is no top-level file_path, file_size, or checksum.
     """
     hidden_keys = {
         "raw_xml",
@@ -2721,85 +2768,10 @@ def populate_tactical_node_artifact_details(
         "data",
         "file_data",
         "contents",
+        "artifact_id",
+        "node_uid",
+        "time",
     }
-
-    detail_field_groups = [
-        (
-            "Name",
-            [
-                "name",
-                "filename",
-            ],
-        ),
-        (
-            "Artifact Type",
-            [
-                "artifact_type",
-                "type",
-            ],
-        ),
-        (
-            "File Size",
-            [
-                "file_size",
-                "size",
-            ],
-        ),
-        (
-            "Created",
-            [
-                "created_at",
-                "created",
-            ],
-        ),
-        (
-            "Modified",
-            [
-                "modified_at",
-                "time",
-            ],
-        ),
-        (
-            "Source Node",
-            [
-                "source_id",
-                "node_uid",
-            ],
-        ),
-        (
-            "Operation ID",
-            [
-                "operation_id",
-            ],
-        ),
-        (
-            "Artifact ID",
-            [
-                "artifact_id",
-                "id",
-            ],
-        ),
-        (
-            "Checksum",
-            [
-                "checksum",
-                "sha256",
-            ],
-        ),
-        (
-            "File Path",
-            [
-                "file_path",
-                "path",
-            ],
-        ),
-        (
-            "Metadata",
-            [
-                "metadata",
-            ],
-        ),
-    ]
 
     def is_empty(value):
         if value is None:
@@ -2808,13 +2780,21 @@ def populate_tactical_node_artifact_details(
         if isinstance(value, str):
             return not value.strip()
 
-        if isinstance(value, (list, tuple, set, dict)):
+        if isinstance(
+            value,
+            (list, tuple, set, dict),
+        ):
             return len(value) == 0
 
         return False
 
     def display_label(key):
-        return str(key).replace("_", " ").strip().title()
+        return (
+            str(key)
+            .replace("_", " ")
+            .strip()
+            .title()
+        )
 
     def field_label_html(label):
         return (
@@ -2823,33 +2803,6 @@ def populate_tactical_node_artifact_details(
             "</span>"
         )
 
-    def first_non_empty_value(candidate_keys):
-        for key in candidate_keys:
-            value = artifact.get(key)
-
-            if not is_empty(value):
-                return key, value, False
-
-        metadata = artifact.get("metadata")
-
-        if isinstance(metadata, dict):
-            for key in candidate_keys:
-                value = metadata.get(key)
-
-                if not is_empty(value):
-                    return key, value, True
-
-        return None, None, False
-
-    def scalar_text(key, value):
-        if key in {"file_size", "size"}:
-            return _format_tactical_artifact_file_size(value)
-
-        if isinstance(value, bool):
-            return "Yes" if value else "No"
-
-        return str(value)
-
     def append_value(
         lines,
         key,
@@ -2857,16 +2810,25 @@ def populate_tactical_node_artifact_details(
         display_name=None,
         indent="",
     ):
-        normalized_key = str(key).strip().lower()
+        normalized_key = str(
+            key
+        ).strip().lower()
 
-        if normalized_key in hidden_keys or is_empty(value):
+        if (
+            normalized_key in hidden_keys
+            or is_empty(value)
+        ):
             return
 
-        label = display_name or display_label(key)
+        label = (
+            display_name
+            or display_label(key)
+        )
 
         if isinstance(value, dict):
             lines.append(
-                f"{indent}{field_label_html(label)}"
+                f"{indent}"
+                f"{field_label_html(label)}"
             )
 
             for child_key, child_value in value.items():
@@ -2874,36 +2836,236 @@ def populate_tactical_node_artifact_details(
                     lines,
                     child_key,
                     child_value,
-                    indent=indent + "&nbsp;&nbsp;&nbsp;&nbsp;",
+                    indent=(
+                        indent
+                        + "&nbsp;&nbsp;&nbsp;&nbsp;"
+                    ),
                 )
 
             return
 
-        if isinstance(value, (list, tuple, set)):
+        if isinstance(
+            value,
+            (list, tuple, set),
+        ):
             lines.append(
-                f"{indent}{field_label_html(label)}"
+                f"{indent}"
+                f"{field_label_html(label)}"
             )
 
-            for index, child_value in enumerate(value):
+            for index, child_value in enumerate(
+                value,
+                start=1,
+            ):
                 append_value(
                     lines,
-                    str(index + 1),
+                    str(index),
                     child_value,
-                    display_name=str(index + 1),
-                    indent=indent + "&nbsp;&nbsp;&nbsp;&nbsp;",
+                    display_name=str(index),
+                    indent=(
+                        indent
+                        + "&nbsp;&nbsp;&nbsp;&nbsp;"
+                    ),
                 )
 
             return
 
-        value_text = scalar_text(
-            normalized_key,
-            value,
-        )
+        if (
+            normalized_key
+            in {"size", "total_size"}
+        ):
+            value_text = (
+                _format_tactical_artifact_file_size(
+                    value
+                )
+            )
+        elif isinstance(value, bool):
+            value_text = (
+                "Yes"
+                if value
+                else "No"
+            )
+        else:
+            value_text = str(value)
 
         lines.append(
-            f"{indent}{field_label_html(label)} "
+            f"{indent}"
+            f"{field_label_html(label)} "
             f"{html.escape(value_text)}"
         )
+
+    files = artifact.get("files")
+    if not isinstance(files, list):
+        files = []
+
+    file_count = int(
+        artifact.get(
+            "file_count",
+            len(files),
+        )
+        or len(files)
+    )
+
+    total_size = int(
+        artifact.get(
+            "total_size",
+            sum(
+                int(
+                    item.get("size", 0)
+                    or 0
+                )
+                for item in files
+                if isinstance(item, dict)
+            ),
+        )
+        or 0
+    )
+
+    lines = []
+
+    summary_fields = [
+        (
+            "Name",
+            artifact.get("name"),
+        ),
+        (
+            "Artifact Type",
+            artifact.get("artifact_type"),
+        ),
+        (
+            "Files",
+            file_count,
+        ),
+        (
+            "Total Size",
+            total_size,
+        ),
+        (
+            "Created",
+            artifact.get("created_at"),
+        ),
+        (
+            "Modified",
+            artifact.get("modified_at"),
+        ),
+        (
+            "Source Node",
+            artifact.get("source_id"),
+        ),
+        (
+            "Operation ID",
+            artifact.get("operation_id"),
+        ),
+        (
+            "Artifact ID",
+            (
+                artifact.get("id")
+                or artifact.get("artifact_id")
+            ),
+        ),
+    ]
+
+    for label, value in summary_fields:
+        if not is_empty(value):
+            append_value(
+                lines,
+                label,
+                value,
+                display_name=label,
+            )
+
+    if files:
+        lines.append(
+            "<br>"
+            "<span style=\"font-weight: 700;\">"
+            "Files"
+            "</span>"
+        )
+
+        for index, file_record in enumerate(
+            files,
+            start=1,
+        ):
+            if not isinstance(
+                file_record,
+                dict,
+            ):
+                continue
+
+            file_name = str(
+                file_record.get("name")
+                or file_record.get(
+                    "relative_path",
+                    "",
+                )
+                or f"File {index}"
+            )
+
+            lines.append(
+                "<br>"
+                f"<span style=\"font-weight: 600;\">"
+                f"{index}. {html.escape(file_name)}"
+                f"</span>"
+            )
+
+            file_fields = [
+                (
+                    "Relative Path",
+                    file_record.get(
+                        "relative_path"
+                    ),
+                ),
+                (
+                    "Role",
+                    file_record.get("role"),
+                ),
+                (
+                    "Content Type",
+                    file_record.get(
+                        "content_type"
+                    ),
+                ),
+                (
+                    "Size",
+                    file_record.get("size"),
+                ),
+                (
+                    "SHA-256",
+                    file_record.get("sha256"),
+                ),
+                (
+                    "File ID",
+                    file_record.get("id"),
+                ),
+            ]
+
+            for label, value in file_fields:
+                if is_empty(value):
+                    continue
+
+                append_value(
+                    lines,
+                    label,
+                    value,
+                    display_name=label,
+                    indent="&nbsp;&nbsp;&nbsp;&nbsp;",
+                )
+
+            file_metadata = file_record.get(
+                "metadata"
+            )
+
+            if (
+                isinstance(file_metadata, dict)
+                and file_metadata
+            ):
+                append_value(
+                    lines,
+                    "metadata",
+                    file_metadata,
+                    display_name="File Metadata",
+                    indent="&nbsp;&nbsp;&nbsp;&nbsp;",
+                )
 
     full_details = bool(
         getattr(
@@ -2913,75 +3075,67 @@ def populate_tactical_node_artifact_details(
         )
     )
 
-    lines = []
-    used_top_level_keys = set()
-    used_metadata_keys = set()
-
-    groups_to_render = (
-        detail_field_groups
-        if full_details
-        else detail_field_groups[:-1]
-    )
-
-    for display_name, candidate_keys in groups_to_render:
-        actual_key, value, from_metadata = first_non_empty_value(
-            candidate_keys
-        )
-
-        if actual_key is None:
-            continue
-
-        if from_metadata:
-            used_metadata_keys.add(actual_key)
-        else:
-            used_top_level_keys.add(actual_key)
-
-        # Treat aliases as one logical field so Full Details does not repeat
-        # source_id/node_uid, artifact_id/id, checksum/sha256, and similar
-        # values immediately afterward.
-        used_top_level_keys.update(candidate_keys)
-
-        append_value(
-            lines,
-            actual_key,
-            value,
-            display_name=display_name,
-        )
-
     if full_details:
         metadata = artifact.get("metadata")
+        relations = artifact.get("relations")
 
-        # Metadata was already rendered in its preferred position above.
-        used_top_level_keys.add("metadata")
-
-        # Append every remaining top-level field so Full Details remains
-        # field-agnostic and no future ArtifactTracker values are hidden.
-        for key, value in artifact.items():
-            if key in used_top_level_keys:
-                continue
-
+        if (
+            isinstance(relations, list)
+            and relations
+        ):
+            lines.append("<br>")
             append_value(
                 lines,
-                key,
-                value,
+                "relations",
+                relations,
+                display_name="Relations",
             )
 
-        # When selected summary values came from metadata, preserve all other
-        # metadata entries while avoiding duplicate display of those aliases.
-        if isinstance(metadata, dict):
-            remaining_metadata = {
-                key: value
-                for key, value in metadata.items()
-                if key not in used_metadata_keys
-                and not is_empty(value)
-            }
+        if (
+            isinstance(metadata, dict)
+            and metadata
+        ):
+            lines.append("<br>")
+            append_value(
+                lines,
+                "metadata",
+                metadata,
+                display_name="Metadata",
+            )
 
-            if remaining_metadata and "metadata" not in artifact:
+        handled = {
+            "id",
+            "artifact_id",
+            "source_id",
+            "node_uid",
+            "operation_id",
+            "name",
+            "artifact_type",
+            "created_at",
+            "modified_at",
+            "time",
+            "files",
+            "file_count",
+            "total_size",
+            "relations",
+            "metadata",
+        }
+
+        remaining = {
+            key: value
+            for key, value in artifact.items()
+            if key not in handled
+            and not is_empty(value)
+        }
+
+        if remaining:
+            lines.append("<br>")
+
+            for key, value in remaining.items():
                 append_value(
                     lines,
-                    "metadata",
-                    remaining_metadata,
-                    display_name="Metadata",
+                    key,
+                    value,
                 )
 
     dashboard.ui.label2_tactical_node_artifact_details.setText(
@@ -3245,6 +3399,15 @@ def update_tactical_node_targets_table(
     selected_target_id=None,
     select_first_if_no_match=False,
 ):
+    """
+    Rebuild the Node > Targets table.
+
+    All targets are shown.
+
+    Targets with valid node/target coordinates are sorted first by calculated
+    distance. Targets without a usable location are shown afterward with an
+    em dash in the Distance column.
+    """
     table = dashboard.ui.tableWidget_tactical_node_targets
 
     table.blockSignals(True)
@@ -3254,56 +3417,102 @@ def update_tactical_node_targets_table(
     clear_tactical_node_target_details(dashboard)
 
     if target_ids is not None:
-        target_ids = {str(target_id) for target_id in target_ids if target_id}
+        target_ids = {
+            str(target_id)
+            for target_id in target_ids
+            if target_id
+        }
 
     if selected_target_id:
-        selected_target_id = str(selected_target_id)
+        selected_target_id = str(
+            selected_target_id
+        )
 
     node_uid = dashboard.selected_tactical_node_uid
+
     if not node_uid:
         table.blockSignals(False)
         return
 
-    node = dashboard.tactical_nodes.get(node_uid)
-    if not node:
-        table.blockSignals(False)
-        return
+    node = dashboard.tactical_nodes.get(
+        node_uid,
+        {},
+    )
 
     node_lat = node.get("lat")
     node_lon = node.get("lon")
 
-    if not fissure.utils.common.is_valid_lat_lon(node_lat, node_lon):
-        table.blockSignals(False)
-        return
+    node_has_location = (
+        fissure.utils.common.is_valid_lat_lon(
+            node_lat,
+            node_lon,
+        )
+    )
 
-    rows = []
+    located_rows = []
+    unlocated_rows = []
 
     for target_id, target in dashboard.tactical_targets.items():
         target_id = str(target_id)
 
-        # Filtered refresh: only rebuild rows already visible in Node > Targets.
-        if target_ids is not None and target_id not in target_ids:
+        if (
+            target_ids is not None
+            and target_id not in target_ids
+        ):
             continue
 
         target_lat = target.get("lat")
         target_lon = target.get("lon")
 
-        if not fissure.utils.common.is_valid_lat_lon(target_lat, target_lon):
-            continue
-
-        try:
-            distance_m = fissure.utils.common.haversine_m(
-                node_lat,
-                node_lon,
+        target_has_location = (
+            fissure.utils.common.is_valid_lat_lon(
                 target_lat,
                 target_lon,
             )
-        except Exception:
-            continue
+        )
 
-        rows.append((distance_m, target_id, target))
+        distance_m = None
 
-    rows.sort(key=lambda x: x[0])
+        if node_has_location and target_has_location:
+            try:
+                distance_m = (
+                    fissure.utils.common.haversine_m(
+                        node_lat,
+                        node_lon,
+                        target_lat,
+                        target_lon,
+                    )
+                )
+            except Exception:
+                distance_m = None
+
+        row_record = (
+            distance_m,
+            target_id,
+            target,
+        )
+
+        if distance_m is None:
+            unlocated_rows.append(
+                row_record
+            )
+        else:
+            located_rows.append(
+                row_record
+            )
+
+    located_rows.sort(
+        key=lambda item: item[0]
+    )
+
+    unlocated_rows.sort(
+        key=lambda item: item[1].lower()
+    )
+
+    rows = (
+        located_rows
+        + unlocated_rows
+    )
 
     selected_row = -1
 
@@ -3311,45 +3520,116 @@ def update_tactical_node_targets_table(
         row = table.rowCount()
         table.insertRow(row)
 
+        distance_text = (
+            format_tactical_distance(
+                distance_m
+            )
+            if distance_m is not None
+            else "—"
+        )
+
         distance_item = QtWidgets.QTableWidgetItem(
-            format_tactical_distance(distance_m)
+            distance_text
         )
         type_item = QtWidgets.QTableWidgetItem(
-            str(target.get("type", ""))
+            str(
+                target.get(
+                    "type",
+                    "",
+                )
+            )
         )
         state_item = QtWidgets.QTableWidgetItem(
-            str(target.get("state", ""))
+            str(
+                target.get(
+                    "state",
+                    "",
+                )
+            )
         )
 
-        for item in [distance_item, type_item, state_item]:
-            item.setData(QtCore.Qt.UserRole, target_id)
-            item.setFlags(item.flags() & ~QtCore.Qt.ItemIsEditable)
-            item.setToolTip(target_id)
+        for item in [
+            distance_item,
+            type_item,
+            state_item,
+        ]:
+            item.setData(
+                QtCore.Qt.UserRole,
+                target_id,
+            )
+            item.setFlags(
+                item.flags()
+                & ~QtCore.Qt.ItemIsEditable
+            )
+            item.setToolTip(
+                target_id
+            )
 
-        table.setItem(row, 0, distance_item)
-        table.setItem(row, 1, type_item)
-        table.setItem(row, 2, state_item)
+        if distance_m is None:
+            distance_item.setToolTip(
+                (
+                    f"{target_id}\n"
+                    "Distance unavailable because the node or target "
+                    "does not have a valid location."
+                )
+            )
 
-        if selected_target_id and target_id == selected_target_id:
+        table.setItem(
+            row,
+            0,
+            distance_item,
+        )
+        table.setItem(
+            row,
+            1,
+            type_item,
+        )
+        table.setItem(
+            row,
+            2,
+            state_item,
+        )
+
+        if (
+            selected_target_id
+            and target_id == selected_target_id
+        ):
             selected_row = row
 
     table.resizeColumnsToContents()
     table.resizeRowsToContents()
-    table.horizontalHeader().setStretchLastSection(False)
-    table.horizontalHeader().setStretchLastSection(True)
+    table.horizontalHeader().setStretchLastSection(
+        False
+    )
+    table.horizontalHeader().setStretchLastSection(
+        True
+    )
 
     table.blockSignals(False)
 
-    if selected_row < 0 and select_first_if_no_match and table.rowCount() > 0:
+    if (
+        selected_row < 0
+        and select_first_if_no_match
+        and table.rowCount() > 0
+    ):
         selected_row = 0
 
     if selected_row >= 0:
-        table.selectRow(selected_row)
-        table.setCurrentCell(selected_row, 0)
-        _slotTacticalNodeTargetsRowSelectionChanged(dashboard)
+        table.selectRow(
+            selected_row
+        )
+        table.setCurrentCell(
+            selected_row,
+            0,
+        )
+        _slotTacticalNodeTargetsRowSelectionChanged(
+            dashboard
+        )
     else:
-        clear_tactical_node_target_details(dashboard)
-
+        clear_tactical_node_target_details(
+            dashboard
+        )
+        
 
 def format_tactical_distance(distance_m):
     try:
@@ -4573,34 +4853,6 @@ async def _slotTacticalNodeSoisDownloadEvidenceClicked(
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotTacticalNodeArtifactsOpenFolderClicked(
-    dashboard: QtCore.QObject
-):
-    artifact_id = getattr(
-        dashboard,
-        "selected_tactical_node_artifact_id",
-        None,
-    )
-    if not artifact_id:
-        return
-
-    local_path = dashboard.backend.artifact_transfer_controller.get_local_path(
-        artifact_id
-    )
-    if local_path:
-        subprocess.Popen(["xdg-open", os.path.dirname(local_path)])
-        return
-
-    dashboard.logger.warning(
-        f"[Tactical] Artifact has not been downloaded: {artifact_id}"
-    )
-    dashboard.statusBar().showMessage(
-        "Artifact has not been downloaded",
-        5000,
-    )
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
 def _slotTacticalNodeArtifactsRowSelectionChanged(
     dashboard: QtCore.QObject,
 ):
@@ -5286,27 +5538,53 @@ def clear_tactical_node_artifacts(dashboard: QtCore.QObject):
     clear_tactical_node_artifact_details(dashboard)
 
 
-def rebuild_tactical_node_artifacts(dashboard: QtCore.QObject, node_uid):
-    clear_tactical_node_artifacts(dashboard)
+def rebuild_tactical_node_artifacts(
+    dashboard: QtCore.QObject,
+    node_uid,
+):
+    clear_tactical_node_artifacts(
+        dashboard
+    )
+
+    node_uid = str(
+        node_uid or ""
+    ).strip()
 
     if not node_uid:
         return
 
-    artifacts = getattr(dashboard, "tactical_artifacts", {}) or {}
+    artifacts = getattr(
+        dashboard,
+        "tactical_artifacts",
+        {},
+    ) or {}
 
     matching_artifacts = [
         artifact
         for artifact in artifacts.values()
-        if artifact.get("node_uid") == node_uid
+        if isinstance(artifact, dict)
+        and str(
+            artifact.get("source_id", "")
+            or ""
+        ).strip() == node_uid
     ]
 
     matching_artifacts.sort(
-        key=lambda artifact: str(artifact.get("time", "")),
+        key=lambda artifact: str(
+            artifact.get("modified_at")
+            or artifact.get("created_at")
+            or ""
+        ),
         reverse=True,
     )
 
-    for artifact in reversed(matching_artifacts):
-        update_tactical_node_artifact_row(dashboard, artifact)
+    for artifact in reversed(
+        matching_artifacts
+    ):
+        update_tactical_node_artifact_row(
+            dashboard,
+            artifact,
+        )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -5625,29 +5903,67 @@ async def _slotTacticalNodeArtifactsRefreshClicked(
 async def _slotTacticalNodeArtifactsDownloadClicked(
     dashboard: QtCore.QObject,
 ):
-    artifact_id = getattr(
-        dashboard,
-        "selected_tactical_node_artifact_id",
-        None,
-    )
+    """
+    Open the verified Dashboard-cached artifact when available.
+
+    Otherwise request the same shared multi-file artifact transfer used by the
+    Conditioner tab.
+    """
+    artifact_id = str(
+        getattr(
+            dashboard,
+            "selected_tactical_node_artifact_id",
+            "",
+        )
+        or ""
+    ).strip()
+
     if not artifact_id:
         return
 
-    local_path = dashboard.backend.artifact_transfer_controller.get_local_path(
+    controller = (
+        dashboard.backend
+        .artifact_transfer_controller
+    )
+
+    local_path = controller.get_local_path(
         artifact_id
     )
+
     if local_path:
-        subprocess.Popen(["xdg-open", os.path.dirname(local_path)])
+        folder_path = (
+            local_path
+            if os.path.isdir(local_path)
+            else os.path.dirname(local_path)
+        )
+
+        if folder_path and os.path.isdir(folder_path):
+            subprocess.Popen(
+                [
+                    "xdg-open",
+                    folder_path,
+                ]
+            )
         return
 
     try:
-        await dashboard.backend.requestDashboardArtifactDownload(
-            artifact_id,
-            open_when_complete=True,
+        await (
+            dashboard.backend
+            .requestDashboardArtifactDownload(
+                artifact_id,
+                open_when_complete=True,
+            )
         )
+
     except Exception as exc:
         dashboard.logger.error(
-            f"[Tactical] Artifact download request failed: {exc}"
+            "[Tactical] Artifact download request failed: %s",
+            exc,
+        )
+
+        dashboard.statusBar().showMessage(
+            f"Artifact download request failed: {exc}",
+            5000,
         )
 
 

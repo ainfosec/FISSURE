@@ -1666,80 +1666,139 @@ async def updateNodeSettings(component: object, settings_dict: dict):
 
 
 async def streamArtifact(
-        component: object,
-        transfer_id: str,
-        artifact_id: str,
-    ) -> None:
-        """Stream one managed artifact over the dedicated binary socket."""
-        logger: logging.Logger = component.logger
-        artifact_manager: ArtifactManager = component.artifact_manager
-        transfer_client = getattr(component, "artifact_transfer_client", None)
+    component: object,
+    transfer_id: str,
+    artifact_id: str,
+) -> None:
+    """
+    Stream every declared file belonging to one logical artifact.
 
-        if transfer_client is None:
-            logger.error("Artifact transfer client is unavailable")
-            return
+    Transfer framing:
+        START          one per file
+        CHUNK          zero or more per file
+        FILE_COMPLETE  one per file
+        COMPLETE       once after the entire artifact succeeds
 
-        artifact = artifact_manager.get_artifact(artifact_id)
-        if artifact is None:
-            await transfer_client.send_error(
-                transfer_id,
-                f"Artifact not found: {artifact_id}",
+    CHUNK sequence numbers restart at zero for each START frame.
+    """
+    logger: logging.Logger = component.logger
+    artifact_manager: ArtifactManager = (
+        component.artifact_manager
+    )
+    transfer_client = getattr(
+        component,
+        "artifact_transfer_client",
+        None,
+    )
+
+    if transfer_client is None:
+        logger.error(
+            "Artifact transfer client is unavailable"
+        )
+        return
+
+    artifact = artifact_manager.get_artifact(
+        artifact_id
+    )
+
+    if artifact is None:
+        await transfer_client.send_error(
+            transfer_id,
+            f"Artifact not found: {artifact_id}",
+        )
+        return
+
+    if not artifact.files:
+        await transfer_client.send_error(
+            transfer_id,
+            "Artifact has no declared files",
+        )
+        return
+
+    artifact_file_count = int(artifact.file_count)
+    artifact_total_size = int(artifact.total_size)
+
+    total_bytes_sent = 0
+    total_chunks_sent = 0
+    completed_file_ids = []
+
+    try:
+        for file_index, artifact_file in enumerate(
+            artifact.files,
+            start=1,
+        ):
+            try:
+                file_path = (
+                    artifact_manager.resolve_artifact_file_path(
+                        artifact.id,
+                        artifact_file.id,
+                    )
+                )
+            except Exception as exc:
+                raise RuntimeError(
+                    "Unable to resolve declared artifact file "
+                    f"artifact_id={artifact.id} "
+                    f"file_id={artifact_file.id}: {exc}"
+                ) from exc
+
+            actual_size = os.path.getsize(file_path)
+
+            if actual_size != int(artifact_file.size):
+                raise RuntimeError(
+                    "Artifact file size no longer matches its manifest: "
+                    f"{artifact_file.relative_path}"
+                )
+
+            actual_checksum = (
+                fissure.utils.artifacts.calculate_file_checksum(
+                    file_path
+                )
             )
-            return
 
-        base_path = os.path.realpath(artifact_manager.base_dir)
-        file_path = os.path.realpath(artifact.file_path)
+            if actual_checksum != artifact_file.sha256:
+                raise RuntimeError(
+                    "Artifact file checksum no longer matches its manifest: "
+                    f"{artifact_file.relative_path}"
+                )
 
-        try:
-            path_is_managed = os.path.commonpath(
-                [base_path, file_path]
-            ) == base_path
-        except ValueError:
-            path_is_managed = False
+            start_metadata = {
+                "artifact_id": artifact.id,
+                "source_id": artifact.source_id,
+                "operation_id": artifact.operation_id,
+                "artifact_name": artifact.name,
+                "artifact_type": artifact.artifact_type,
+                "artifact_file_count": artifact_file_count,
+                "artifact_total_size": artifact_total_size,
+                "file_index": file_index,
+                "file_id": artifact_file.id,
+                "filename": artifact_file.name,
+                "relative_path": artifact_file.relative_path,
+                "file_size": actual_size,
+                "sha256": artifact_file.sha256,
+                "role": artifact_file.role,
+                "content_type": artifact_file.content_type,
+                "file_metadata": dict(
+                    artifact_file.metadata or {}
+                ),
+                "chunk_size": (
+                    fissure.comms.ARTIFACT_CHUNK_SIZE
+                ),
+            }
 
-        if not path_is_managed:
-            await transfer_client.send_error(
+            await transfer_client.send_start(
                 transfer_id,
-                "Artifact path is outside the managed artifact root",
+                start_metadata,
             )
-            return
-
-        if not os.path.isfile(file_path):
-            await transfer_client.send_error(
-                transfer_id,
-                "Artifact file does not exist",
-            )
-            return
-
-        actual_size = os.path.getsize(file_path)
-        if artifact.file_size and actual_size != artifact.file_size:
-            await transfer_client.send_error(
-                transfer_id,
-                "Artifact file size no longer matches its metadata",
-            )
-            return
-
-        metadata = {
-            "artifact_id": artifact.id,
-            "source_id": artifact.source_id,
-            "operation_id": artifact.operation_id,
-            "filename": os.path.basename(file_path),
-            "file_size": actual_size,
-            "checksum": artifact.checksum,
-            "artifact_type": artifact.artifact_type,
-            "chunk_size": fissure.comms.ARTIFACT_CHUNK_SIZE,
-        }
-
-        try:
-            await transfer_client.send_start(transfer_id, metadata)
 
             sequence = 0
-            bytes_sent = 0
-            with open(file_path, "rb") as artifact_file:
+            file_bytes_sent = 0
+
+            with open(file_path, "rb") as handle:
                 while True:
-                    chunk = artifact_file.read(
+                    chunk = handle.read(
                         fissure.comms.ARTIFACT_CHUNK_SIZE
                     )
+
                     if not chunk:
                         break
 
@@ -1748,82 +1807,90 @@ async def streamArtifact(
                         sequence,
                         chunk,
                     )
+
                     sequence += 1
-                    bytes_sent += len(chunk)
+                    file_bytes_sent += len(chunk)
+                    total_bytes_sent += len(chunk)
+                    total_chunks_sent += 1
+
                     await asyncio.sleep(0)
 
-            await transfer_client.send_complete(
+            if file_bytes_sent != actual_size:
+                raise RuntimeError(
+                    "Artifact file changed while streaming: "
+                    f"{artifact_file.relative_path}"
+                )
+
+            await transfer_client.send_file_complete(
                 transfer_id,
                 {
                     "artifact_id": artifact.id,
-                    "bytes_sent": bytes_sent,
+                    "file_id": artifact_file.id,
+                    "file_index": file_index,
+                    "relative_path": (
+                        artifact_file.relative_path
+                    ),
+                    "bytes_sent": file_bytes_sent,
                     "chunks_sent": sequence,
+                    "sha256": artifact_file.sha256,
                 },
             )
+
+            completed_file_ids.append(
+                artifact_file.id
+            )
+
             logger.info(
-                "Completed artifact stream transfer_id=%s artifact_id=%s bytes=%s",
+                "Completed artifact file stream "
+                "transfer_id=%s artifact_id=%s "
+                "file_id=%s file=%s bytes=%s",
                 transfer_id,
-                artifact_id,
-                bytes_sent,
+                artifact.id,
+                artifact_file.id,
+                artifact_file.relative_path,
+                file_bytes_sent,
             )
-        except Exception as exc:
-            logger.error(
-                "Artifact stream failed transfer_id=%s artifact_id=%s: %s",
+
+        await transfer_client.send_complete(
+            transfer_id,
+            {
+                "artifact_id": artifact.id,
+                "source_id": artifact.source_id,
+                "operation_id": artifact.operation_id,
+                "file_count": artifact_file_count,
+                "total_size": artifact_total_size,
+                "bytes_sent": total_bytes_sent,
+                "chunks_sent": total_chunks_sent,
+                "completed_file_ids": completed_file_ids,
+            },
+        )
+
+        logger.info(
+            "Completed artifact stream "
+            "transfer_id=%s artifact_id=%s "
+            "files=%s bytes=%s",
+            transfer_id,
+            artifact.id,
+            artifact_file_count,
+            total_bytes_sent,
+        )
+
+    except Exception as exc:
+        logger.error(
+            "Artifact stream failed "
+            "transfer_id=%s artifact_id=%s: %s",
+            transfer_id,
+            artifact_id,
+            exc,
+        )
+
+        try:
+            await transfer_client.send_error(
                 transfer_id,
-                artifact_id,
-                exc,
+                str(exc),
             )
-            try:
-                await transfer_client.send_error(transfer_id, str(exc))
-            except Exception:
-                pass
-            
-
-async def streamArtifactToDashboard(
-        component: object,
-        transfer_id: str,
-        artifact_id: str,
-    ) -> None:
-    """Backward-compatible callback for Dashboard transfer requests."""
-    await streamArtifact(component, transfer_id, artifact_id)
-                
-
-async def transferArtifactRequest(component: object, artifact_id: str, destination: str, data: Optional[bytes]) -> None:
-    """
-    Transfer Artifact Request
-
-    Parameters
-    ----------
-    component : object
-        Component
-    artifact_id : str
-        Artifact ID
-    destination : str
-        Transfer destination ('tak' or 'hiprfisr')
-    data : Optional[bytes]
-        Artifact data, currently unused
-    """
-    logger: logging.Logger = component.logger # type: ignore
-    artifact_manager: ArtifactManager = component.artifact_manager # type: ignore
-
-    data = artifact_manager.get_data(artifact_id, compress=True)
-    if data is None:
-        logger.error(f"Artifact data not found or could not be read: {artifact_id}")
-        return
-
-    PARAMETERS = {
-        "artifact_id": artifact_id,
-        "destination": destination,
-        "data": data,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "transferArtifactRequest",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.hiprfisr_socket.send_msg(
-        fissure.comms.MessageTypes.COMMANDS, msg
-    )
+        except Exception:
+            pass
 
 
 async def refresh_status(

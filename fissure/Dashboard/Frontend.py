@@ -2857,9 +2857,6 @@ def connect_tactical_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tactical_node_soi_download_evidence.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeSoisDownloadEvidenceClicked(dashboard)
     )
-    dashboard.ui.pushButton_tactical_node_artifacts_open_folder.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeArtifactsOpenFolderClicked(dashboard)
-    )
     dashboard.ui.pushButton_tactical_targets_query_actions.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalTargetsQueryActionsClicked(dashboard)
     )
@@ -3347,6 +3344,9 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tsi_detector_promote_to_target.clicked.connect(
         lambda: TSITabSlots._slotTSI_DetectorPromoteToTargetClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_run_download_artifact.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunDownloadArtifactClicked(dashboard)
     )
     
     # Radio Buttons

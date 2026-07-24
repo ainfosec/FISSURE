@@ -1,6 +1,33 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-23
+
+Complete multi-file artifact handling across Conditioner, Feature Extractor, Tactical, and IQ Data
+
+### Added
+
+- Added Download/Open controls for managed Feature Extractor results using the shared artifact transfer cache.
+- Added IQ Data artifact discovery from downloaded artifact manifests and the shared local cache.
+- Added per-file artifact metadata for role, content type, relative path, size, and SHA-256 checksum.
+
+### Changed
+
+- Updated `signal_conditioning.py` and `signal_conditioning_file.py` to register every generated output through `ArtifactManager` as one logical multi-file artifact.
+- Updated Conditioner Raw IQ, SigMF, and ZIP output handling so artifact manifests represent the complete operation result instead of a single filepath.
+- Updated Feature Extractor managed-input handling to resolve artifact members from manifests and the shared download cache.
+- Updated Feature Extractor completion handling so local and remote managed destinations finalize consistently.
+- Updated the Dashboard artifact transfer controller so Tactical, Conditioner, Feature Extractor, and IQ Data share downloaded artifact state.
+- Updated IQ Data artifact browsing to load canonical artifact metadata and verified local member paths from the shared cache.
+- Updated TAK artifact packaging to include every verified file declared by the artifact manifest without changing the existing TAK download workflow.
+- Removed remaining artifact workflow dependence on legacy top-level filepath, file size, and checksum fields.
+
+### Fixed
+
+- Fixed remote Conditioner artifacts omitting additional IQ or SigMF output files.
+- Fixed local Feature Extractor artifact runs remaining incomplete after managed results were returned.
+- Fixed downloaded artifacts not being immediately available to other Dashboard tabs.
+
 ## 2026-7-22
 
 Add dedicated remote artifact transfer and richer TAK artifact metadata

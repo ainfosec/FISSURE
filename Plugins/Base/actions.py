@@ -1437,11 +1437,8 @@ async def promote_to_soi(
 
         operation_id = op1_id
 
-        capture_folder = os.path.join(
-            FISSURE_ROOT,
-            "artifacts",
-            op1_id,
-            "files",
+        _, capture_folder = (
+            component.artifact_manager.create_operation_dir(op1_id)
         )
 
         if not _has_capture_files(capture_folder):

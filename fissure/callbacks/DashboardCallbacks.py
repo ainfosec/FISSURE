@@ -2219,17 +2219,17 @@ async def sendArtifactsListTakReturn(
     artifacts=None,
 ):
     """
-    Receives complete artifact metadata from HIPRFISR and updates the Tactical
-    Node > Artifacts cache/table.
-
-    The normalized record preserves every field supplied by ArtifactTracker
-    while also providing stable canonical keys used by Tactical and TSI.
+    Replace or upsert Dashboard artifact records using the canonical
+    manifest-only schema, then route the same complete records to Tactical,
+    Conditioner, and Feature Extractor.
     """
     artifacts = artifacts or []
-
     dashboard = component.frontend
 
-    if not hasattr(dashboard, "tactical_artifacts"):
+    if not hasattr(
+        dashboard,
+        "tactical_artifacts",
+    ):
         dashboard.tactical_artifacts = {}
 
     normalized_records = []
@@ -2238,121 +2238,147 @@ async def sendArtifactsListTakReturn(
         if not isinstance(artifact, dict):
             continue
 
-        artifact_id = (
-            artifact.get("artifact_id")
-            or artifact.get("id")
-        )
+        artifact_id = str(
+            artifact.get("id", "")
+            or ""
+        ).strip()
+
         if not artifact_id:
             continue
 
-        metadata = artifact.get("metadata") or {}
+        files = artifact.get("files")
+        relations = artifact.get("relations")
+        metadata = artifact.get("metadata")
+
+        if not isinstance(files, list):
+            files = []
+
+        if not isinstance(relations, list):
+            relations = []
+
         if not isinstance(metadata, dict):
             metadata = {}
 
-        source_id = (
-            artifact.get("source_id")
-            or artifact.get("node_uid")
-            or metadata.get("source_id")
-            or metadata.get("node_uid")
+        source_id = str(
+            artifact.get("source_id", "")
             or node_uid
             or ""
-        )
+        ).strip()
 
-        operation_id = (
-            artifact.get("operation_id")
-            or metadata.get("operation_id")
-            or ""
-        )
-
-        name = (
-            artifact.get("name")
-            or artifact.get("filename")
-            or metadata.get("name")
-            or metadata.get("filename")
-            or "Artifact"
-        )
-
-        artifact_type = (
-            artifact.get("artifact_type")
-            or artifact.get("type")
-            or metadata.get("artifact_type")
-            or metadata.get("type")
-            or ""
-        )
-
-        created_at = (
-            artifact.get("created_at")
-            or metadata.get("created_at")
-            or ""
-        )
-
-        modified_at = (
-            artifact.get("modified_at")
-            or metadata.get("modified_at")
-            or created_at
-            or ""
-        )
-
-        file_size = (
-            artifact.get("file_size")
-            if artifact.get("file_size") is not None
-            else metadata.get("file_size", 0)
-        )
-
-        checksum = (
-            artifact.get("checksum")
-            or artifact.get("sha256")
-            or metadata.get("checksum")
-            or metadata.get("sha256")
-            or ""
-        )
-
-        file_path = (
-            artifact.get("file_path")
-            or metadata.get("file_path")
-            or ""
-        )
-
-        # Preserve every top-level ArtifactTracker field.
         normalized = dict(artifact)
-
-        # Add stable aliases consumed by Tactical and TSI.
         normalized.update(
             {
+                "id": artifact_id,
                 "artifact_id": artifact_id,
                 "node_uid": source_id,
                 "source_id": source_id,
-                "operation_id": operation_id,
-                "name": name,
-                "artifact_type": artifact_type,
-                "created_at": created_at,
-                "modified_at": modified_at,
-                "time": modified_at or created_at,
-                "file_path": file_path,
-                "file_size": file_size,
-                "checksum": checksum,
+                "operation_id": str(
+                    artifact.get(
+                        "operation_id",
+                        "",
+                    )
+                    or ""
+                ),
+                "name": str(
+                    artifact.get(
+                        "name",
+                        "Artifact",
+                    )
+                    or "Artifact"
+                ),
+                "artifact_type": str(
+                    artifact.get(
+                        "artifact_type",
+                        "",
+                    )
+                    or ""
+                ),
+                "created_at": str(
+                    artifact.get(
+                        "created_at",
+                        "",
+                    )
+                    or ""
+                ),
+                "modified_at": str(
+                    artifact.get(
+                        "modified_at",
+                        "",
+                    )
+                    or ""
+                ),
+                "time": str(
+                    artifact.get(
+                        "modified_at",
+                        "",
+                    )
+                    or artifact.get(
+                        "created_at",
+                        "",
+                    )
+                    or ""
+                ),
+                "files": files,
+                "relations": relations,
+                "file_count": int(
+                    artifact.get(
+                        "file_count",
+                        len(files),
+                    )
+                    or len(files)
+                ),
+                "total_size": int(
+                    artifact.get(
+                        "total_size",
+                        sum(
+                            int(
+                                item.get(
+                                    "size",
+                                    0,
+                                )
+                                or 0
+                            )
+                            for item in files
+                            if isinstance(
+                                item,
+                                dict,
+                            )
+                        ),
+                    )
+                    or 0
+                ),
                 "metadata": metadata,
             }
         )
 
-        dashboard.tactical_artifacts[artifact_id] = normalized
-        normalized_records.append(normalized)
+        dashboard.tactical_artifacts[
+            artifact_id
+        ] = normalized
+        normalized_records.append(
+            normalized
+        )
 
-    selected_node_uid = getattr(
-        dashboard,
-        "selected_tactical_node_uid",
-        None,
-    )
+    selected_node_uid = str(
+        getattr(
+            dashboard,
+            "selected_tactical_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
 
-    if selected_node_uid == node_uid:
+    if selected_node_uid == str(
+        node_uid or ""
+    ).strip():
         try:
             TacticalTabSlots.rebuild_tactical_node_artifacts(
                 dashboard,
                 node_uid,
             )
-        except Exception as e:
+        except Exception as exc:
             component.logger.debug(
-                f"Could not rebuild Tactical node artifacts: {e}"
+                "Could not rebuild Tactical artifacts: %s",
+                exc,
             )
 
     try:
@@ -2361,9 +2387,11 @@ async def sendArtifactsListTakReturn(
             node_uid=node_uid,
             artifacts=normalized_records,
         )
-    except Exception as e:
+    except Exception as exc:
         component.logger.debug(
-            f"Could not route artifact metadata to TSI Conditioner: {e}"
+            "Could not route artifact metadata "
+            "to Conditioner: %s",
+            exc,
         )
 
     try:
@@ -2372,11 +2400,13 @@ async def sendArtifactsListTakReturn(
             node_uid=node_uid,
             artifacts=normalized_records,
         )
-    except Exception as e:
+    except Exception as exc:
         component.logger.debug(
-            f"Could not route artifact metadata to TSI Feature Extractor: {e}"
+            "Could not route artifact metadata "
+            "to Feature Extractor: %s",
+            exc,
         )
-        
+               
 
 async def sendSoisListTakReturn(
     component: object,

@@ -1777,6 +1777,81 @@ def _slotTSI_FE_RunDescriptionChanged(
     )
 
 
+def _tsi_fe_update_artifact_download_button(
+    dashboard: QtCore.QObject,
+):
+    """
+    Updates the stateful Feature Extractor analysis Artifact button.
+
+    No completed Artifact:
+        disabled, Download Artifact
+
+    Completed and uncached:
+        enabled, Download Artifact
+
+    Completed and cached:
+        enabled, Open Artifact
+    """
+    button = getattr(
+        dashboard.ui,
+        "pushButton_tsi_fe_run_download_artifact",
+        None,
+    )
+
+    if button is None:
+        return
+
+    artifact_id = str(
+        getattr(
+            dashboard,
+            "tsi_fe_artifact_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not artifact_id:
+        button.setText(
+            "Download Artifact"
+        )
+        button.setEnabled(False)
+        button.setToolTip(
+            "Run Feature Extractor with a managed Artifact destination first."
+        )
+        return
+
+    controller = getattr(
+        dashboard.backend,
+        "artifact_transfer_controller",
+        None,
+    )
+
+    local_path = (
+        controller.get_local_path(
+            artifact_id
+        )
+        if controller is not None
+        else None
+    )
+
+    if local_path:
+        button.setText(
+            "Open Artifact"
+        )
+        button.setEnabled(True)
+        button.setToolTip(
+            str(local_path)
+        )
+    else:
+        button.setText(
+            "Download Artifact"
+        )
+        button.setEnabled(True)
+        button.setToolTip(
+            f"Download analysis Artifact {artifact_id}"
+        )
+
+
 def initialize_tsi_fe_run_controls(
     dashboard: QtCore.QObject,
 ):
@@ -1813,6 +1888,8 @@ def initialize_tsi_fe_run_controls(
 
     dashboard.ui.label2_tsi_fe_run_artifact_id.setText("—")
     dashboard.ui.label2_tsi_fe_run_status.setText("Idle")
+
+    _tsi_fe_update_artifact_download_button(dashboard)
 
     dashboard.ui.progressBar_tsi_fe_run_progress.setRange(
         0,
@@ -2935,6 +3012,9 @@ async def _slotTSI_FE_RunStartStopClicked(
         source_operation_id
     )
     dashboard.tsi_fe_artifact_id = ""
+
+    _tsi_fe_update_artifact_download_button(dashboard)
+
     dashboard.tsi_fe_expected_feature_path = (
         feature_path
     )
@@ -3026,6 +3106,90 @@ async def _slotTSI_FE_RunStartStopClicked(
         )
 
 
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTSI_FE_RunDownloadArtifactClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Downloads the completed Feature Extractor analysis Artifact or opens the
+    shared Dashboard cache when it has already been downloaded.
+    """
+    artifact_id = str(
+        getattr(
+            dashboard,
+            "tsi_fe_artifact_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not artifact_id:
+        dashboard.logger.warning(
+            "[Feature Extractor] No completed analysis Artifact is available."
+        )
+        _tsi_fe_update_artifact_download_button(
+            dashboard
+        )
+        return
+
+    controller = getattr(
+        dashboard.backend,
+        "artifact_transfer_controller",
+        None,
+    )
+
+    if controller is None:
+        dashboard.logger.error(
+            "[Feature Extractor] Artifact transfer controller is unavailable."
+        )
+        return
+
+    local_path = controller.get_local_path(
+        artifact_id
+    )
+
+    if local_path:
+        open_path = (
+            local_path
+            if os.path.isdir(local_path)
+            else os.path.dirname(local_path)
+        )
+
+        try:
+            subprocess.Popen([
+                "xdg-open",
+                open_path,
+            ])
+        except Exception as error:
+            dashboard.logger.error(
+                "[Feature Extractor] Failed opening analysis Artifact: "
+                f"{error}"
+            )
+        return
+
+    button = dashboard.ui.pushButton_tsi_fe_run_download_artifact
+    button.setText(
+        "Downloading..."
+    )
+    button.setEnabled(False)
+
+    try:
+        await dashboard.backend.requestDashboardArtifactDownload(
+            artifact_id,
+            open_when_complete=True,
+        )
+
+    except Exception as error:
+        dashboard.logger.error(
+            "[Feature Extractor] Failed requesting analysis Artifact: "
+            f"{error}"
+        )
+
+        _tsi_fe_update_artifact_download_button(
+            dashboard
+        )
+
+        
 def _tsi_fe_result_text(value) -> str:
     """
     Returns a compact display string for a result-table value.
@@ -4651,371 +4815,85 @@ def _tsi_fe_artifact_display_text(
 
 
 def _tsi_fe_artifact_file_records(
+    dashboard: QtCore.QObject,
     artifact_id: str,
     record: dict,
 ) -> list:
     """
-    Resolves locally available files from one Tactical artifact record.
+    Return locally cached files for one canonical artifact record.
 
-    Supported sources:
-        - metadata["files"]
-        - record["files"]
-        - record["file_path"]
-        - local operation folder:
-              <FISSURE_ROOT>/artifacts/<operation_id>/files
-        - ZIP extraction cache:
-              <FISSURE_ROOT>/artifacts/<operation_id>/feature_extractor_input
-
-    Duplicate physical copies of the same Artifact member are collapsed by
-    logical member name. This prevents a local operation file and its extracted
-    ZIP copy from appearing as two separate Feature Extractor inputs.
-
-    Returned rows contain:
-        name
-        path
-        artifact_id
-        operation_id
-        source_type
-        record
+    The Dashboard transfer cache is the only source of local payload paths.
     """
     if not isinstance(record, dict):
-        record = {}
+        return []
+
+    controller = getattr(
+        dashboard.backend,
+        "artifact_transfer_controller",
+        None,
+    )
+
+    if controller is None:
+        return []
+
+    local_files = controller.get_local_files(
+        artifact_id
+    )
+
+    manifest = record.get("files")
+
+    if not isinstance(manifest, list):
+        manifest = []
+
+    manifest_by_id = {
+        str(item.get("id", "")): item
+        for item in manifest
+        if isinstance(item, dict)
+        and str(item.get("id", "")).strip()
+    }
 
     operation_id = str(
-        record.get("operation_id")
-        or (
-            record.get("metadata", {})
-            if isinstance(record.get("metadata"), dict)
-            else {}
-        ).get("operation_id")
+        record.get("operation_id", "")
         or ""
     ).strip()
 
     output = []
-    seen_member_names = set()
 
-    def _logical_member_name(
-        resolved_path: str,
-        file_record=None,
-    ) -> str:
-        """
-        Returns the stable identity of one file inside this Artifact.
+    for file_id, local_path in local_files.items():
+        if not os.path.isfile(local_path):
+            continue
 
-        Artifact metadata may describe the original operation file while the
-        ZIP extraction cache exposes another physical path to the same member.
-        The member basename is the shared identity used by the current GUI and
-        managed-input protocol.
-        """
-        if isinstance(file_record, dict):
-            metadata_name = str(
-                file_record.get("name")
-                or file_record.get("filename")
-                or file_record.get("file_name")
-                or ""
-            ).strip()
-
-            if metadata_name:
-                return os.path.basename(
-                    metadata_name.replace("\\", "/")
-                )
-
-        return os.path.basename(resolved_path)
-
-    def _add_file(
-        path_value,
-        file_record=None,
-    ):
-        path = str(
-            path_value
-            or ""
-        ).strip()
-
-        if not path:
-            return
-
-        candidate_paths = []
-
-        if os.path.isabs(path):
-            candidate_paths.append(path)
-
-        else:
-            if operation_id:
-                candidate_paths.append(
-                    os.path.join(
-                        fissure.utils.FISSURE_ROOT,
-                        "artifacts",
-                        operation_id,
-                        "files",
-                        path,
-                    )
-                )
-
-            candidate_paths.append(
-                os.path.join(
-                    fissure.utils.FISSURE_ROOT,
-                    "artifacts",
-                    artifact_id,
-                    "files",
-                    path,
-                )
+        file_record = dict(
+            manifest_by_id.get(
+                file_id,
+                {},
             )
-
-        resolved_path = ""
-
-        for candidate in candidate_paths:
-            candidate = os.path.abspath(
-                candidate
-            )
-
-            if os.path.isfile(candidate):
-                resolved_path = candidate
-                break
-
-        if not resolved_path:
-            return
-
-        member_name = _logical_member_name(
-            resolved_path,
-            file_record,
-        )
-
-        member_key = member_name.casefold()
-
-        if member_key in seen_member_names:
-            return
-
-        seen_member_names.add(
-            member_key
         )
 
         output.append(
             {
-                "name": member_name,
-                "path": resolved_path,
+                "name": str(
+                    file_record.get("name")
+                    or os.path.basename(local_path)
+                ),
+                "path": local_path,
+                "file_id": file_id,
                 "artifact_id": artifact_id,
                 "operation_id": operation_id,
                 "source_type": "Artifact",
-                "record": (
-                    dict(file_record)
-                    if isinstance(file_record, dict)
-                    else {}
-                ),
+                "record": file_record,
             }
         )
 
-    def _read_file_list(value):
-        if not isinstance(value, list):
-            return
-
-        for item in value:
-            if isinstance(item, str):
-                _add_file(item)
-
-            elif isinstance(item, dict):
-                _add_file(
-                    item.get("path")
-                    or item.get("local_path")
-                    or item.get("file_path")
-                    or item.get("filename")
-                    or item.get("name"),
-                    item,
-                )
-
-    _read_file_list(
-        record.get("files")
+    output.sort(
+        key=lambda item: (
+            item["name"],
+            item["file_id"],
+        )
     )
-
-    metadata = record.get(
-        "metadata"
-    )
-
-    if isinstance(metadata, dict):
-        _read_file_list(
-            metadata.get("files")
-        )
-
-    if operation_id:
-        operation_files_folder = os.path.join(
-            fissure.utils.FISSURE_ROOT,
-            "artifacts",
-            operation_id,
-            "files",
-        )
-
-        if os.path.isdir(
-            operation_files_folder
-        ):
-            for filename in sorted(
-                os.listdir(
-                    operation_files_folder
-                ),
-                key=str.lower,
-            ):
-                _add_file(
-                    os.path.join(
-                        operation_files_folder,
-                        filename,
-                    )
-                )
-
-    artifact_file_path = str(
-        record.get("file_path")
-        or ""
-    ).strip()
-
-    if (
-        artifact_file_path
-        and os.path.isfile(
-            artifact_file_path
-        )
-    ):
-        artifact_file_path = os.path.abspath(
-            artifact_file_path
-        )
-
-        if zipfile.is_zipfile(
-            artifact_file_path
-        ):
-            cache_operation_id = (
-                operation_id
-                or artifact_id
-            )
-
-            extraction_folder = os.path.join(
-                fissure.utils.FISSURE_ROOT,
-                "artifacts",
-                cache_operation_id,
-                "feature_extractor_input",
-                artifact_id,
-            )
-
-            os.makedirs(
-                extraction_folder,
-                exist_ok=True,
-            )
-
-            extraction_marker = os.path.join(
-                extraction_folder,
-                ".extracted",
-            )
-
-            archive_mtime = os.path.getmtime(
-                artifact_file_path
-            )
-
-            needs_extract = True
-
-            if os.path.isfile(
-                extraction_marker
-            ):
-                try:
-                    with open(
-                        extraction_marker,
-                        "r",
-                        encoding="utf-8",
-                    ) as marker_file:
-                        marker_value = float(
-                            marker_file.read().strip()
-                        )
-
-                    needs_extract = (
-                        marker_value
-                        != archive_mtime
-                    )
-
-                except Exception:
-                    needs_extract = True
-
-            if needs_extract:
-                for root, directories, filenames in os.walk(
-                    extraction_folder,
-                    topdown=False,
-                ):
-                    for filename in filenames:
-                        os.remove(
-                            os.path.join(
-                                root,
-                                filename,
-                            )
-                        )
-
-                    for directory in directories:
-                        directory_path = os.path.join(
-                            root,
-                            directory,
-                        )
-
-                        if os.path.isdir(
-                            directory_path
-                        ):
-                            os.rmdir(
-                                directory_path
-                            )
-
-                with zipfile.ZipFile(
-                    artifact_file_path,
-                    "r",
-                ) as archive:
-                    extraction_root = os.path.abspath(
-                        extraction_folder
-                    )
-
-                    for member in archive.infolist():
-                        member_path = os.path.abspath(
-                            os.path.join(
-                                extraction_folder,
-                                member.filename,
-                            )
-                        )
-
-                        if not (
-                            member_path
-                            == extraction_root
-                            or member_path.startswith(
-                                extraction_root
-                                + os.sep
-                            )
-                        ):
-                            raise ValueError(
-                                "Artifact ZIP contains an unsafe path."
-                            )
-
-                    archive.extractall(
-                        extraction_folder
-                    )
-
-                with open(
-                    extraction_marker,
-                    "w",
-                    encoding="utf-8",
-                ) as marker_file:
-                    marker_file.write(
-                        str(archive_mtime)
-                    )
-
-            for root, _directories, filenames in os.walk(
-                extraction_folder
-            ):
-                for filename in sorted(
-                    filenames,
-                    key=str.lower,
-                ):
-                    if filename == ".extracted":
-                        continue
-
-                    _add_file(
-                        os.path.join(
-                            root,
-                            filename,
-                        )
-                    )
-
-        else:
-            _add_file(
-                artifact_file_path
-            )
 
     return output
+
 
 def _tsi_fe_filter_managed_file_records(
     dashboard: QtCore.QObject,
@@ -5067,8 +4945,8 @@ def _tsi_fe_populate_artifact_file_list(
     artifact_context: dict,
 ):
     """
-    Resolves all locally available Artifact files, caches the complete list,
-    then populates the shared file list using the current extension filter.
+    Resolve all locally cached files for the selected Artifact and render them
+    using the current extension filter.
     """
     artifact_id = str(
         artifact_context.get(
@@ -5083,16 +4961,13 @@ def _tsi_fe_populate_artifact_file_list(
         {},
     )
 
-    all_files = (
-        _tsi_fe_artifact_file_records(
-            artifact_id,
-            record,
-        )
+    all_files = _tsi_fe_artifact_file_records(
+        dashboard,
+        artifact_id,
+        record,
     )
 
-    dashboard.tsi_fe_selected_input_artifact_files = (
-        all_files
-    )
+    dashboard.tsi_fe_selected_input_artifact_files = all_files
 
     _tsi_fe_render_managed_file_list(
         dashboard,
@@ -5656,48 +5531,40 @@ def _tsi_fe_resolve_soi_input_files(
     soi_context: dict,
 ) -> list:
     """
-    Resolves all local files from source-IQ artifacts linked to an SOI.
+    Resolve all locally cached files from source-IQ artifacts linked to an SOI.
     """
     record = soi_context.get(
         "record",
         {},
     )
 
-    artifact_ids = (
-        _tsi_fe_soi_source_artifact_ids(
-            record
-        )
+    artifact_ids = _tsi_fe_soi_source_artifact_ids(
+        record
     )
 
     output = []
     seen_paths = set()
 
     for artifact_id in artifact_ids:
-        artifact_record = (
-            _tsi_fe_find_tactical_artifact(
-                dashboard,
-                artifact_id,
-            )
+        artifact_record = _tsi_fe_find_tactical_artifact(
+            dashboard,
+            artifact_id,
         )
 
         if not artifact_record:
             continue
 
-        for file_record in (
-            _tsi_fe_artifact_file_records(
-                artifact_id,
-                artifact_record,
-            )
+        for file_record in _tsi_fe_artifact_file_records(
+            dashboard,
+            artifact_id,
+            artifact_record,
         ):
             path = str(
                 file_record.get("path", "")
                 or ""
             ).strip()
 
-            if (
-                not path
-                or path in seen_paths
-            ):
+            if not path or path in seen_paths:
                 continue
 
             seen_paths.add(path)
@@ -6387,49 +6254,113 @@ def handle_tsi_fe_artifact_metadata(
     artifacts=None,
 ):
     """
-    Completes a remote Feature Extractor run from the normal Artifact metadata
-    refresh path.
+    Completes managed Feature Extractor destinations when their matching
+    analysis Artifact appears in the normal Artifact metadata callback.
 
-    Remote feature values remain inside the analysis Artifact files. The
-    Feature Extractor results table is intentionally not populated.
+    Local Results continue to complete through local filesystem polling.
+    Managed destinations use this callback for both local and remote Sensor
+    Nodes because their authoritative completion signal is Artifact
+    registration, not Dashboard-local output paths.
     """
     artifacts = artifacts or []
 
-    # The normal Artifact callback runs after DashboardCallbacks has updated
-    # dashboard.tactical_artifacts. Rebuild the Feature Extractor selector from
-    # that fresh hub response even when no Feature Extractor operation is active.
+    if isinstance(artifacts, dict):
+        artifacts = list(artifacts.values())
+
+    if not isinstance(artifacts, list):
+        artifacts = []
+
+    # The normal Artifact callback runs after DashboardCallbacks updates
+    # dashboard.tactical_artifacts. Keep the Artifact input selector current
+    # even when no Feature Extractor operation is active.
     if _tsi_fe_current_source(dashboard) == "Artifact":
         refresh_tsi_fe_input_artifacts(dashboard)
 
-    if not _tsi_fe_selected_node_is_remote(dashboard):
+    if not bool(
+        getattr(
+            dashboard,
+            "tsi_fe_running",
+            False,
+        )
+    ):
         return
 
     expected_operation_id = str(
-        getattr(dashboard, "tsi_fe_operation_id", "") or ""
+        getattr(
+            dashboard,
+            "tsi_fe_operation_id",
+            "",
+        )
+        or ""
     ).strip()
 
     if not expected_operation_id:
         return
 
     selected_node_uid = str(
-        getattr(dashboard, "selected_node_uid", "") or ""
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
     ).strip()
 
-    if selected_node_uid and node_uid and node_uid != selected_node_uid:
+    callback_node_uid = str(
+        node_uid
+        or ""
+    ).strip()
+
+    if (
+        selected_node_uid
+        and callback_node_uid
+        and callback_node_uid != selected_node_uid
+    ):
+        return
+
+    managed_destinations = {
+        "New Analysis Artifact",
+        "Attach to Existing SOI",
+        "Create New SOI from Input",
+    }
+
+    active_destination = str(
+        dashboard.ui.comboBox_tsi_fe_run_destination.currentText()
+        or ""
+    ).strip()
+
+    if active_destination not in managed_destinations:
         return
 
     for artifact in artifacts:
         if not isinstance(artifact, dict):
             continue
 
-        metadata = artifact.get("metadata") or {}
+        metadata = artifact.get(
+            "metadata",
+            {},
+        )
+
         if not isinstance(metadata, dict):
             metadata = {}
 
-        workflow = str(metadata.get("workflow") or "").strip().lower()
+        workflow = str(
+            metadata.get(
+                "workflow",
+                "",
+            )
+            or ""
+        ).strip().lower()
+
         operation_id = str(
-            artifact.get("operation_id")
-            or metadata.get("operation_id")
+            artifact.get(
+                "operation_id",
+                "",
+            )
+            or metadata.get(
+                "operation_id",
+                "",
+            )
             or ""
         ).strip()
 
@@ -6440,53 +6371,78 @@ def handle_tsi_fe_artifact_metadata(
             continue
 
         artifact_id = str(
-            artifact.get("artifact_id")
-            or artifact.get("id")
+            artifact.get(
+                "artifact_id",
+                "",
+            )
+            or artifact.get(
+                "id",
+                "",
+            )
             or ""
         ).strip()
 
-        dashboard.tsi_fe_artifact_id = artifact_id
-        dashboard.tsi_fe_running = False
-        dashboard.tsi_fe_completed_at = time.time()
+        artifact_destination = str(
+            metadata.get(
+                "destination",
+                "",
+            )
+            or artifact.get(
+                "destination",
+                "",
+            )
+            or active_destination
+        ).strip()
 
-        dashboard.ui.label2_tsi_fe_run_status.setText(
-            "Completed — Analysis Artifact"
+        if (
+            artifact_destination
+            and artifact_destination not in managed_destinations
+        ):
+            continue
+
+        dashboard.tsi_fe_artifact_id = artifact_id
+        dashboard.tsi_fe_result_rows = []
+        dashboard.tsi_fe_result_feature_names = []
+        dashboard.tsi_fe_result_report = dict(
+            metadata
         )
-        dashboard.ui.progressBar_tsi_fe_run_progress.setRange(0, 100)
-        dashboard.ui.progressBar_tsi_fe_run_progress.setValue(100)
-        dashboard.ui.label2_tsi_fe_run_completed.setText(
-            _tsi_fe_format_timestamp(dashboard.tsi_fe_completed_at)
-        )
+        dashboard.tsi_fe_result_feature_path = ""
+        dashboard.tsi_fe_result_report_path = ""
 
         artifact_label = getattr(
             dashboard.ui,
             "label2_tsi_fe_run_artifact_id",
             None,
         )
-        if artifact_label is not None:
-            artifact_label.setText(artifact_id or "—")
 
-        dashboard.tsi_fe_result_rows = []
-        dashboard.tsi_fe_result_feature_names = []
-        dashboard.tsi_fe_result_report = dict(metadata)
+        if artifact_label is not None:
+            artifact_label.setText(
+                artifact_id
+                or "—"
+            )
+        
+        _tsi_fe_update_artifact_download_button(dashboard)
 
         table = dashboard.ui.tableWidget_tsi_fe_results
         table.clear()
         table.setRowCount(0)
         table.setColumnCount(0)
 
-        _tsi_fe_set_run_button_state(dashboard, False)
-        update_tsi_fe_run_start_state(dashboard)
-        _tsi_fe_update_result_button_state(dashboard)
+        _tsi_fe_finish_local_run(
+            dashboard,
+            status="Completed — Analysis Artifact",
+            progress=100,
+        )
 
         dashboard.logger.info(
-            "[Feature Extractor] Remote analysis Artifact available: "
+            "[Feature Extractor] Analysis Artifact available: "
             f"artifact_id={artifact_id!r}, "
             f"operation_id={operation_id!r}, "
-            f"node_uid={node_uid!r}"
+            f"destination={artifact_destination!r}, "
+            f"node_uid={callback_node_uid!r}, "
+            f"remote_selected={_tsi_fe_selected_node_is_remote(dashboard)!r}"
         )
         return
-
 
 
 

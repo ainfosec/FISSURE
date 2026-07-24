@@ -756,46 +756,17 @@ class OperationMain(Operation):
 
     @staticmethod
     def _managed_artifact_candidate_roots(
+        self,
         artifact_id: str,
         operation_id: str,
     ) -> List[str]:
         """
-        Returns node-local candidate directories for one managed Artifact.
+        Legacy directory guessing is intentionally removed.
 
-        FISSURE Artifact storage has historically used operation IDs for the
-        directory name, while some callers use the Artifact ID directly. Both
-        forms are checked without consulting the Dashboard filesystem.
+        Managed Artifact input is resolved only through ArtifactManager and the
+        artifact's declared files manifest.
         """
-        identifiers: List[str] = []
-
-        for value in (
-            operation_id,
-            artifact_id,
-        ):
-            value = str(value or "").strip()
-
-            if value and value not in identifiers:
-                identifiers.append(value)
-
-        roots: List[str] = []
-
-        for identifier in identifiers:
-            artifact_root = os.path.abspath(
-                os.path.join(
-                    FISSURE_ROOT,
-                    "artifacts",
-                    identifier,
-                )
-            )
-
-            for candidate in (
-                os.path.join(artifact_root, "files"),
-                artifact_root,
-            ):
-                if candidate not in roots:
-                    roots.append(candidate)
-
-        return roots
+        return []
 
 
     @staticmethod
@@ -837,41 +808,33 @@ class OperationMain(Operation):
         managed_input: Dict[str, Any],
     ) -> Tuple[List[str], Optional[str]]:
         """
-        Resolves an identifier-only Artifact/SOI request against storage on the
-        executing Sensor Node.
+        Resolve selected Artifact/SOI files through ArtifactManager.
 
-        No download, message-embedded data, Dashboard path, or network fallback
-        is used. A missing payload produces a clear RuntimeError.
+        The request contains artifact IDs and optional selected file IDs/names.
+        No filesystem guessing, Dashboard path, or remote absolute path is used.
         """
         if not isinstance(managed_input, dict) or not managed_input:
             return [], None
 
-        source = str(
-            managed_input.get("source", "")
-            or ""
-        ).strip()
+        if self.artifact_manager is None:
+            raise RuntimeError(
+                "Managed Artifact input requires artifact_manager."
+            )
 
-        artifact_records = managed_input.get(
-            "artifacts",
-            [],
-        )
+        artifact_records = managed_input.get("artifacts", [])
 
         if not isinstance(artifact_records, list):
             artifact_records = []
 
         if not artifact_records:
-            artifact_ids = managed_input.get(
-                "artifact_ids",
-                [],
-            )
+            artifact_ids = managed_input.get("artifact_ids", [])
 
             if not isinstance(artifact_ids, list):
-                artifact_ids = []
+                artifact_ids = [artifact_ids]
 
             artifact_records = [
                 {
                     "artifact_id": artifact_id,
-                    "operation_id": "",
                     "selected_files": [],
                 }
                 for artifact_id in artifact_ids
@@ -884,199 +847,127 @@ class OperationMain(Operation):
         missing_artifacts: List[str] = []
         missing_members: List[str] = []
 
-        def _add_file(path: str) -> None:
-            nonlocal first_parent
-
-            path = os.path.abspath(path)
-
-            if not os.path.isfile(path) or path in resolved_seen:
-                return
-
-            resolved_seen.add(path)
-            resolved_files.append(path)
-
-            if first_parent is None:
-                first_parent = os.path.dirname(path)
-
         for artifact_record in artifact_records:
             if not isinstance(artifact_record, dict):
                 continue
 
             artifact_id = str(
                 artifact_record.get("artifact_id", "")
+                or artifact_record.get("id", "")
                 or ""
             ).strip()
 
-            operation_id = str(
-                artifact_record.get("operation_id", "")
-                or ""
-            ).strip()
-
-            selected_names = self._managed_selected_names(
-                artifact_record
-            )
-
-            candidate_roots = self._managed_artifact_candidate_roots(
-                artifact_id,
-                operation_id,
-            )
-
-            available_files: List[str] = []
-            zip_files: List[str] = []
-
-            for root in candidate_roots:
-                if os.path.isfile(root):
-                    if root.lower().endswith(".zip"):
-                        zip_files.append(root)
-                    else:
-                        available_files.append(root)
-                    continue
-
-                if not os.path.isdir(root):
-                    continue
-
-                for walk_root, _directories, filenames in os.walk(root):
-                    normalized_walk_root = os.path.abspath(walk_root)
-
-                    if "feature_extractor_input" in normalized_walk_root.split(os.sep):
-                        continue
-
-                    for filename in sorted(filenames, key=str.lower):
-                        path = os.path.join(walk_root, filename)
-
-                        if filename.lower().endswith(".zip"):
-                            zip_files.append(path)
-                        else:
-                            available_files.append(path)
-
-            extraction_identifier = (
-                operation_id
-                or artifact_id
-                or uuid.uuid4().hex
-            )
-
-            extraction_root = os.path.abspath(
-                os.path.join(
-                    FISSURE_ROOT,
-                    "artifacts",
-                    extraction_identifier,
-                    "feature_extractor_input",
-                    artifact_id or extraction_identifier,
-                )
-            )
-
-            for zip_path in zip_files:
-                marker_path = os.path.join(
-                    extraction_root,
-                    ".extracted.json",
-                )
-
-                archive_state = {
-                    "path": os.path.abspath(zip_path),
-                    "mtime": os.path.getmtime(zip_path),
-                    "size": os.path.getsize(zip_path),
-                }
-
-                extract_required = True
-
-                if os.path.isfile(marker_path):
-                    try:
-                        with open(
-                            marker_path,
-                            "r",
-                            encoding="utf-8",
-                        ) as marker_file:
-                            extract_required = (
-                                json.load(marker_file)
-                                != archive_state
-                            )
-                    except Exception:
-                        extract_required = True
-
-                if extract_required:
-                    if os.path.isdir(extraction_root):
-                        shutil.rmtree(extraction_root)
-
-                    os.makedirs(extraction_root, exist_ok=True)
-                    self._safe_extract_zip(
-                        zip_path,
-                        extraction_root,
-                    )
-
-                    with open(
-                        marker_path,
-                        "w",
-                        encoding="utf-8",
-                    ) as marker_file:
-                        json.dump(
-                            archive_state,
-                            marker_file,
-                            indent=2,
-                        )
-
-                for walk_root, _directories, filenames in os.walk(
-                    extraction_root
-                ):
-                    for filename in sorted(filenames, key=str.lower):
-                        if filename == ".extracted.json":
-                            continue
-
-                        available_files.append(
-                            os.path.join(walk_root, filename)
-                        )
-
-            if not available_files:
-                missing_artifacts.append(
-                    artifact_id or operation_id or "unknown"
-                )
+            if not artifact_id:
                 continue
 
-            if selected_names:
-                matched_names = set()
+            artifact = self.artifact_manager.get_artifact(artifact_id)
 
-                for path in available_files:
-                    basename = os.path.basename(path)
-                    normalized_path = path.replace(os.sep, "/")
+            if artifact is None:
+                missing_artifacts.append(artifact_id)
+                continue
 
-                    for selected_name in selected_names:
-                        normalized_name = selected_name.replace("\\", "/")
+            selected_files = artifact_record.get("selected_files", [])
 
-                        if (
-                            basename == os.path.basename(normalized_name)
-                            or normalized_path.endswith("/" + normalized_name)
-                        ):
-                            _add_file(path)
-                            matched_names.add(selected_name)
-                            break
+            if not isinstance(selected_files, list):
+                selected_files = []
 
-                for selected_name in selected_names:
-                    if selected_name not in matched_names:
-                        missing_members.append(
-                            f"{artifact_id or operation_id}:{selected_name}"
-                        )
+            selected_ids = set()
+            selected_names = set()
 
-            else:
-                for path in available_files:
-                    _add_file(path)
+            for selected in selected_files:
+                if isinstance(selected, dict):
+                    file_id = str(
+                        selected.get("file_id")
+                        or selected.get("id")
+                        or ""
+                    ).strip()
+                    file_name = str(
+                        selected.get("name")
+                        or selected.get("filename")
+                        or selected.get("file_name")
+                        or ""
+                    ).strip()
+                else:
+                    file_id = ""
+                    file_name = str(selected or "").strip()
+
+                if file_id:
+                    selected_ids.add(file_id)
+
+                if file_name:
+                    selected_names.add(file_name)
+
+            matched_ids = set()
+            matched_names = set()
+
+            for artifact_file in artifact.files:
+                if selected_ids or selected_names:
+                    if (
+                        artifact_file.id not in selected_ids
+                        and artifact_file.name not in selected_names
+                        and artifact_file.relative_path not in selected_names
+                    ):
+                        continue
+
+                try:
+                    file_path = self.artifact_manager.resolve_artifact_file_path(
+                        artifact.id,
+                        artifact_file.id,
+                    )
+                except Exception as exc:
+                    self.logger.warning(
+                        "Unable to resolve Artifact file "
+                        "artifact_id=%s file_id=%s: %s",
+                        artifact.id,
+                        artifact_file.id,
+                        exc,
+                    )
+                    continue
+
+                if not os.path.isfile(file_path):
+                    continue
+
+                if artifact_file.id in selected_ids:
+                    matched_ids.add(artifact_file.id)
+
+                if artifact_file.name in selected_names:
+                    matched_names.add(artifact_file.name)
+
+                if artifact_file.relative_path in selected_names:
+                    matched_names.add(artifact_file.relative_path)
+
+                if file_path not in resolved_seen:
+                    resolved_seen.add(file_path)
+                    resolved_files.append(file_path)
+
+                    if first_parent is None:
+                        first_parent = os.path.dirname(file_path)
+
+            missing_members.extend(
+                f"{artifact_id}:{file_id}"
+                for file_id in sorted(selected_ids - matched_ids)
+            )
+            missing_members.extend(
+                f"{artifact_id}:{name}"
+                for name in sorted(selected_names - matched_names)
+            )
 
         if missing_artifacts:
             raise RuntimeError(
-                "Source Artifact data is not available on the selected "
-                "Sensor Node. Missing Artifact storage for: "
+                "Artifact metadata is not available on the selected Sensor Node: "
                 + ", ".join(missing_artifacts)
-                + ". Artifact transfer is not currently supported."
             )
 
         if missing_members:
             raise RuntimeError(
-                "Selected Artifact members are not available on the selected "
+                "Selected Artifact files are not available on the selected "
                 "Sensor Node: "
                 + ", ".join(missing_members)
             )
 
         if not resolved_files:
             raise RuntimeError(
-                f"No node-local IQ files resolved for managed {source or 'Artifact'} input."
+                "No node-local files resolved from the selected Artifact/SOI input."
             )
 
         return resolved_files, first_parent
@@ -1500,13 +1391,13 @@ class OperationMain(Operation):
                     )
 
             else:
-                input_folder = os.path.abspath(
-                    os.path.join(
-                        FISSURE_ROOT,
-                        "artifacts",
-                        self.opid,
-                        "files",
+                if self.artifact_manager is None:
+                    raise RuntimeError(
+                        "Managed Feature Extractor input requires artifact_manager."
                     )
+
+                _, input_folder = self.artifact_manager.create_operation_dir(
+                    self.opid
                 )
 
                 resolved_files = resolve_files_from_folder(
@@ -1583,13 +1474,8 @@ class OperationMain(Operation):
                         f"{destination} requires artifact_manager."
                     )
 
-                output_folder = os.path.abspath(
-                    os.path.join(
-                        FISSURE_ROOT,
-                        "artifacts",
-                        self.opid,
-                        "files",
-                    )
+                _, output_folder = self.artifact_manager.create_operation_dir(
+                    self.opid
                 )
 
                 artifact_id = ""
@@ -1741,11 +1627,8 @@ class OperationMain(Operation):
                 if not self.source_operation_id:
                     self.source_operation_id = str(uuid.uuid4())
 
-                source_folder = os.path.join(
-                    FISSURE_ROOT,
-                    "artifacts",
-                    self.source_operation_id,
-                    "files",
+                _, source_folder = self.artifact_manager.create_operation_dir(
+                    self.source_operation_id
                 )
 
                 source_file_records = self._copy_source_iq_files(
@@ -1797,6 +1680,17 @@ class OperationMain(Operation):
                             )
                         ),
                         metadata=_json_safe(source_metadata),
+                        relations=(
+                            [
+                                (
+                                    "soi",
+                                    soi_id,
+                                    "source_iq",
+                                )
+                            ]
+                            if soi_id
+                            else []
+                        ),
                         arc_prefix=(
                             "source_iq_"
                             f"{self.source_operation_id}"

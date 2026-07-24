@@ -1030,27 +1030,69 @@ def cot_to_tactical_soi_record(cot_message):
 
 
 def handle_tactical_artifact_message(dashboard, cot_message):
+    """
+    Handle the lightweight artifact CoT notification without replacing the
+    canonical manifest record delivered by sendArtifactsListTakReturn.
+
+    CoT contains only summary fields. If a complete artifact record already
+    exists, preserve its files, relations, file_count, total_size, metadata,
+    and timestamps while applying only non-empty CoT summary values.
+    """
     frontend = dashboard.frontend
 
-    artifact_record = cot_to_tactical_artifact_record(cot_message)
-    if not artifact_record:
+    cot_record = cot_to_tactical_artifact_record(cot_message)
+    if not cot_record:
         return
 
     if not hasattr(frontend, "tactical_artifacts"):
         frontend.tactical_artifacts = {}
 
-    artifact_id = artifact_record["artifact_id"]
+    artifact_id = cot_record["artifact_id"]
+
+    existing = frontend.tactical_artifacts.get(artifact_id)
+
+    if isinstance(existing, dict):
+        artifact_record = dict(existing)
+
+        for key, value in cot_record.items():
+            if value not in [None, "", "None"]:
+                artifact_record[key] = value
+    else:
+        artifact_record = cot_record
 
     frontend.tactical_artifacts[artifact_id] = artifact_record
 
-    selected_node_uid = getattr(frontend, "selected_tactical_node_uid", None)
-    artifact_node_uid = artifact_record.get("node_uid")
+    selected_node_uid = getattr(
+        frontend,
+        "selected_tactical_node_uid",
+        None,
+    )
+    artifact_node_uid = (
+        artifact_record.get("source_id")
+        or artifact_record.get("node_uid")
+        or ""
+    )
 
-    if selected_node_uid and artifact_node_uid == selected_node_uid:
+    if (
+        selected_node_uid
+        and artifact_node_uid == selected_node_uid
+    ):
         TacticalTabSlots.update_tactical_node_artifact_row(
             frontend,
             artifact_record,
         )
+
+        selected_artifact_id = getattr(
+            frontend,
+            "selected_tactical_node_artifact_id",
+            None,
+        )
+
+        if selected_artifact_id == artifact_id:
+            TacticalTabSlots.populate_tactical_node_artifact_details(
+                frontend,
+                artifact_record,
+            )
 
     IQDataTabSlots.handle_iq_record_artifact_complete(
         frontend,

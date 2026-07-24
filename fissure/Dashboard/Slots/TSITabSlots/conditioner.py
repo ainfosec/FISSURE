@@ -4323,52 +4323,86 @@ def _tsi_conditioner_set_run_artifact_state_from_payload(
     payload: dict,
 ):
     """
-    Updates Section 3 artifact controls from operation metadata.
+    Update Section 3 artifact controls from operation metadata.
+
+    Download/Open state is based only on the shared Dashboard artifact cache.
+    A Sensor Node source directory does not count as a completed download.
     """
     if not isinstance(payload, dict):
         payload = {}
 
-    output_mode = str(payload.get("output_mode", "") or "").strip()
+    output_mode = str(
+        payload.get("output_mode", "")
+        or ""
+    ).strip()
+
     if output_mode == "Local Folder + Artifact":
         output_mode = "Artifact"
         payload["output_mode"] = "Artifact"
 
-    artifact_id = str(payload.get("artifact_id", "") or "").strip()
+    artifact_id = str(
+        payload.get("artifact_id", "")
+        or ""
+    ).strip()
 
     artifact_enabled = (
         output_mode == "Artifact"
         and bool(artifact_id)
     )
 
-    artifact_folder = _tsi_conditioner_get_managed_artifact_folder_from_payload(
+    cached_path = None
+
+    if artifact_enabled:
+        try:
+            cached_path = (
+                dashboard.backend
+                .artifact_transfer_controller
+                .get_local_path(
+                    artifact_id
+                )
+            )
+        except Exception:
+            cached_path = None
+
+    dashboard.tsi_conditioner_last_artifact_id = (
+        artifact_id
+    )
+    dashboard.tsi_conditioner_last_artifact_payload = (
         payload
     )
-
-    dashboard.tsi_conditioner_last_artifact_id = artifact_id
-    dashboard.tsi_conditioner_last_artifact_payload = payload
 
     artifact_title_label = getattr(
         dashboard.ui,
         "label2_tsi_conditioner_run_artifact_id_label",
         None,
     )
-
     artifact_value_label = getattr(
         dashboard.ui,
         "label2_tsi_conditioner_run_artifact_id",
         None,
     )
 
-    for label in (artifact_title_label, artifact_value_label):
+    for label in (
+        artifact_title_label,
+        artifact_value_label,
+    ):
         if label is not None:
-            label.setEnabled(artifact_enabled)
+            label.setEnabled(
+                artifact_enabled
+            )
 
     if artifact_value_label is not None:
-        artifact_value_label.setText(artifact_id if artifact_id else "—")
+        artifact_value_label.setText(
+            artifact_id
+            if artifact_id
+            else "—"
+        )
         artifact_value_label.setToolTip(
-            artifact_folder
-            or artifact_id
-            or ""
+            str(
+                cached_path
+                or artifact_id
+                or ""
+            )
         )
 
     download_button = getattr(
@@ -4378,14 +4412,28 @@ def _tsi_conditioner_set_run_artifact_state_from_payload(
     )
 
     if download_button is not None:
-        download_button.setEnabled(artifact_enabled)
+        download_button.setEnabled(
+            artifact_enabled
+        )
+        download_button.setText(
+            "Open Artifact"
+            if cached_path
+            else "Download Artifact"
+        )
         download_button.setToolTip(
-            artifact_folder
-            if artifact_enabled and artifact_folder
-            else ""
+            str(
+                cached_path
+                or (
+                    "Download artifact to the Dashboard cache"
+                    if artifact_enabled
+                    else ""
+                )
+            )
         )
 
-    _tsi_conditioner_update_results_action_gate(dashboard)
+    _tsi_conditioner_update_results_action_gate(
+        dashboard
+    )
 
 def _tsi_conditioner_set_run_finished_from_payload(
     dashboard: QtCore.QObject,
@@ -4434,6 +4482,7 @@ def _tsi_conditioner_set_run_finished_from_payload(
     _tsi_conditioner_set_run_button_state(dashboard, False)
     _tsi_conditioner_update_workflow_ribbon(dashboard)
 
+
 def _tsi_conditioner_poll_run_completion(
     dashboard: QtCore.QObject,
     attempts_remaining: int = 120,
@@ -4443,7 +4492,16 @@ def _tsi_conditioner_poll_run_completion(
 
     The operation does not currently report a true percentage. Until metadata
     arrives, show bounded activity progress and mirror the selected node status.
+
+    A previously scheduled timer may still fire after artifact metadata has
+    already completed the run. Exit immediately in that case so stale polling
+    cannot overwrite the completed status with a false metadata timeout.
     """
+    if not bool(
+        getattr(dashboard, "tsi_conditioner_running", False)
+    ):
+        return
+
     uid = str(
         getattr(dashboard, "tsi_conditioner_node_uid", "")
         or getattr(dashboard, "selected_node_uid", "")
@@ -4514,6 +4572,7 @@ def _tsi_conditioner_poll_run_completion(
             attempts_remaining - 1,
         ),
     )
+
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotTSI_ConditionerResultsPreviewClicked(dashboard: QtCore.QObject):
@@ -4629,15 +4688,17 @@ def _slotTSI_ConditionerResultsPreviewClicked(dashboard: QtCore.QObject):
             sample_rate_text.setPlainText(previous_sample_rate)
             sample_rate_text.blockSignals(False)
 
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotTSI_ConditionerRunDownloadArtifactClicked(
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotTSI_ConditionerRunDownloadArtifactClicked(
     dashboard: QtCore.QObject,
 ):
     """
-    Opens the local managed Conditioner artifact folder.
+    Open a completed Dashboard-cached Conditioner artifact, or download it
+    through the same verified transfer service used by Tactical.
 
-    Remote artifact download/cache is not implemented yet, so remote artifacts
-    remain metadata-only.
+    The Sensor Node's managed source directory is intentionally not treated as
+    a Dashboard download, even when the node is local.
     """
     payload = getattr(
         dashboard,
@@ -4645,40 +4706,65 @@ def _slotTSI_ConditionerRunDownloadArtifactClicked(
         {},
     ) or {}
 
-    if _tsi_conditioner_payload_is_remote_artifact(dashboard, payload):
-        fissure.Dashboard.UI_Components.Qt5.errorMessage(
-            "Remote artifact download is not implemented yet."
-        )
-        return
-
-    artifact_folder = _tsi_conditioner_get_managed_artifact_folder_from_payload(
-        payload
-    )
-
-    if artifact_folder and os.path.isdir(artifact_folder):
-        subprocess.Popen(["xdg-open", artifact_folder])
-        return
-
-    bundle_path = str(payload.get("bundle_path", "") or "").strip()
-    if bundle_path and os.path.isfile(bundle_path):
-        bundle_folder = os.path.dirname(bundle_path)
-        if bundle_folder and os.path.isdir(bundle_folder):
-            subprocess.Popen(["xdg-open", bundle_folder])
-            return
-
     artifact_id = str(
         payload.get("artifact_id", "")
-        or getattr(dashboard, "tsi_conditioner_last_artifact_id", "")
+        or getattr(
+            dashboard,
+            "tsi_conditioner_last_artifact_id",
+            "",
+        )
         or ""
     ).strip()
 
-    dashboard.logger.warning(
-        f"[Conditioner] No local artifact folder found for {artifact_id}"
+    if not artifact_id:
+        dashboard.logger.warning(
+            "[Conditioner] No artifact ID was found for the current result."
+        )
+        fissure.Dashboard.UI_Components.Qt5.errorMessage(
+            "No artifact ID was found for this Conditioner result."
+        )
+        return
+
+    controller = (
+        dashboard.backend
+        .artifact_transfer_controller
     )
 
-    fissure.Dashboard.UI_Components.Qt5.errorMessage(
-        "No local artifact folder was found for this Conditioner artifact."
+    local_path = controller.get_local_path(
+        artifact_id
     )
+
+    if local_path:
+        local_folder = (
+            local_path
+            if os.path.isdir(local_path)
+            else os.path.dirname(local_path)
+        )
+
+        if local_folder and os.path.isdir(local_folder):
+            subprocess.Popen(
+                [
+                    "xdg-open",
+                    local_folder,
+                ]
+            )
+            return
+
+    try:
+        await (
+            dashboard.backend
+            .requestDashboardArtifactDownload(
+                artifact_id,
+                open_when_complete=True,
+            )
+        )
+
+    except Exception as exc:
+        dashboard.logger.error(
+            "[Conditioner] Artifact download request failed for %s: %s",
+            artifact_id,
+            exc,
+        )
 
 def _tsi_conditioner_numpy_dtype_for_data_type(data_type: str):
     """
@@ -6365,6 +6451,7 @@ async def _tsi_conditioner_send_promote_to_soi(
         summary=summary,
     )
 
+
 def _tsi_conditioner_promote_to_soi_done(
     dashboard: QtCore.QObject,
     future,
@@ -6373,6 +6460,10 @@ def _tsi_conditioner_promote_to_soi_done(
 ):
     """
     Handles completion of the scheduled Promote to SOI backend send.
+
+    Artifact-managed metadata files are immutable after registration. Promotion
+    state is kept in Dashboard/SOI relationship state and must not rewrite a
+    registered artifact member.
     """
     try:
         future.result()
@@ -6391,13 +6482,6 @@ def _tsi_conditioner_promote_to_soi_done(
         )
 
         dashboard.tsi_conditioner_last_artifact_payload = payload
-
-        try:
-            _tsi_conditioner_rewrite_result_metadata(dashboard, payload)
-        except Exception as e:
-            dashboard.logger.warning(
-                f"[Conditioner] Could not rewrite promoted SOI metadata: {e}"
-            )
 
         _tsi_conditioner_update_workflow_ribbon(dashboard)
 
@@ -6418,6 +6502,7 @@ def _tsi_conditioner_promote_to_soi_done(
         if button is not None:
             button.setEnabled(True)
 
+
 def _tsi_conditioner_mark_results_unpromoted(
     dashboard: QtCore.QObject,
     rewrite_metadata: bool = True,
@@ -6425,8 +6510,8 @@ def _tsi_conditioner_mark_results_unpromoted(
     """
     Marks the current Conditioner result set as not promoted.
 
-    This should only rewrite metadata when a real Conditioner payload still
-    exists. It must not recreate metadata after Delete All.
+    Registered artifact members are immutable. Metadata rewriting is allowed
+    only for editable Local Folder results.
     """
     payload = getattr(
         dashboard,
@@ -6456,9 +6541,17 @@ def _tsi_conditioner_mark_results_unpromoted(
 
     dashboard.tsi_conditioner_last_artifact_payload = payload
 
-    if rewrite_metadata:
+    output_mode = str(
+        payload.get("output_mode", "")
+        or ""
+    ).strip()
+
+    if rewrite_metadata and output_mode != "Artifact":
         try:
-            _tsi_conditioner_rewrite_result_metadata(dashboard, payload)
+            _tsi_conditioner_rewrite_result_metadata(
+                dashboard,
+                payload,
+            )
         except Exception as e:
             dashboard.logger.debug(
                 f"[Conditioner] Could not rewrite unpromoted metadata: {e}"
@@ -6466,6 +6559,7 @@ def _tsi_conditioner_mark_results_unpromoted(
 
     _tsi_conditioner_update_workflow_ribbon(dashboard)
 
+    
 def _tsi_conditioner_output_mode_is_artifact(dashboard: QtCore.QObject) -> bool:
     """
     Returns True when the Conditioner output mode is FISSURE-managed artifact
@@ -6736,6 +6830,7 @@ def _tsi_conditioner_current_results_are_artifact(
 
     return _tsi_conditioner_payload_is_artifact_mode(payload)
 
+
 def _tsi_conditioner_update_results_action_gate(
     dashboard: QtCore.QObject,
 ):
@@ -6749,7 +6844,9 @@ def _tsi_conditioner_update_results_action_gate(
         read-only managed local artifact. Preview/export/promote allowed.
 
     Remote Artifact:
-        metadata-only until download/cache exists. Export/promote allowed.
+        metadata-only until download/cache exists. Export/promote and artifact
+        download are allowed. Preview remains disabled until the artifact is
+        available locally.
     """
     table = getattr(
         dashboard.ui,
@@ -6781,16 +6878,39 @@ def _tsi_conditioner_update_results_action_gate(
         payload
     )
 
+    cached_path = ""
+    if artifact_id:
+        try:
+            cached_path = (
+                dashboard.backend.artifact_transfer_controller.get_local_path(
+                    artifact_id
+                )
+                or ""
+            )
+        except Exception:
+            cached_path = ""
+
+    artifact_available_locally = bool(
+        artifact_folder
+        or cached_path
+    )
+
     preview_button = getattr(
         dashboard.ui,
         "pushButton_tsi_conditioner_results_preview",
         None,
     )
     if preview_button is not None:
-        preview_button.setEnabled(has_rows and not remote_artifact)
+        preview_button.setEnabled(
+            has_rows
+            and (
+                not remote_artifact
+                or artifact_available_locally
+            )
+        )
         preview_button.setToolTip(
             "Remote artifact files must be downloaded before preview."
-            if remote_artifact
+            if remote_artifact and not artifact_available_locally
             else ""
         )
 
@@ -6811,11 +6931,21 @@ def _tsi_conditioner_update_results_action_gate(
         promote_button.setEnabled(has_rows)
 
     mutable_buttons = {
-        "pushButton_tsi_conditioner_results_delete": has_rows and not artifact_mode,
-        "pushButton_tsi_conditioner_results_delete_all": has_rows and not artifact_mode,
-        "pushButton_tsi_conditioner_results_strip": has_rows and not artifact_mode,
-        "pushButton_tsi_conditioner_results_strip_all": has_rows and not artifact_mode,
-        "pushButton_tsi_conditioner_results_refresh": has_rows and not artifact_mode,
+        "pushButton_tsi_conditioner_results_delete": (
+            has_rows and not artifact_mode
+        ),
+        "pushButton_tsi_conditioner_results_delete_all": (
+            has_rows and not artifact_mode
+        ),
+        "pushButton_tsi_conditioner_results_strip": (
+            has_rows and not artifact_mode
+        ),
+        "pushButton_tsi_conditioner_results_strip_all": (
+            has_rows and not artifact_mode
+        ),
+        "pushButton_tsi_conditioner_results_refresh": (
+            has_rows and not artifact_mode
+        ),
     }
 
     for button_name, enabled in mutable_buttons.items():
@@ -6850,22 +6980,28 @@ def _tsi_conditioner_update_results_action_gate(
     )
     if artifact_button is not None:
         artifact_button.setEnabled(
-            bool(artifact_mode and artifact_id and not remote_artifact)
+            bool(artifact_mode and artifact_id)
         )
 
-        if remote_artifact:
+        if remote_artifact and cached_path:
             artifact_button.setToolTip(
-                "Remote artifact download is not implemented yet."
+                cached_path
+            )
+        elif remote_artifact:
+            artifact_button.setToolTip(
+                "Download remote Conditioner artifact"
             )
         elif artifact_mode:
             artifact_button.setToolTip(
                 artifact_folder
+                or cached_path
                 or "Open managed Conditioner artifact folder"
             )
         else:
             artifact_button.setToolTip(
                 "No Conditioner artifact for Local Folder output"
             )
+
 
 def _tsi_conditioner_selected_node_is_remote(
     dashboard: QtCore.QObject,
@@ -6879,6 +7015,7 @@ def _tsi_conditioner_selected_node_is_remote(
         return selected_node_is_remote(dashboard)
     except Exception:
         return False
+
 
 def _tsi_conditioner_payload_is_remote_artifact(
     dashboard: QtCore.QObject,
@@ -7126,6 +7263,7 @@ def _tsi_conditioner_apply_artifact_metadata_payload(
     _tsi_conditioner_update_workflow_ribbon(dashboard)
     _tsi_conditioner_update_results_action_gate(dashboard)
 
+
 def handle_tsi_conditioner_artifact_metadata(
     dashboard: QtCore.QObject,
     node_uid: str = "",
@@ -7140,6 +7278,10 @@ def handle_tsi_conditioner_artifact_metadata(
 
     This must remain true even after the run finishes, because artifact-list
     refreshes can arrive later and include older Conditioner artifacts.
+
+    A remote run may clear tsi_conditioner_running before its artifact-list
+    metadata arrives. Treat a matching payload as completion when the progress
+    bar is still in its pending 1-99% state.
     """
     artifacts = artifacts or []
 
@@ -7157,7 +7299,11 @@ def handle_tsi_conditioner_artifact_metadata(
         or str(node_uid or "").strip()
     )
 
-    if expected_node_uid and node_uid and expected_node_uid != str(node_uid).strip():
+    if (
+        expected_node_uid
+        and node_uid
+        and expected_node_uid != str(node_uid).strip()
+    ):
         return
 
     active_operation_id = str(
@@ -7166,6 +7312,22 @@ def handle_tsi_conditioner_artifact_metadata(
 
     running = bool(
         getattr(dashboard, "tsi_conditioner_running", False)
+    )
+
+    progress_bar = getattr(
+        dashboard.ui,
+        "progressBar_tsi_conditioner_run_progress",
+        None,
+    )
+    progress_value = (
+        int(progress_bar.value() or 0)
+        if progress_bar is not None
+        else 0
+    )
+
+    pending_completion = bool(
+        active_operation_id
+        and 0 < progress_value < 100
     )
 
     matching_payloads = []
@@ -7187,7 +7349,11 @@ def handle_tsi_conditioner_artifact_metadata(
             or ""
         ).strip()
 
-        if expected_node_uid and payload_node_uid and payload_node_uid != expected_node_uid:
+        if (
+            expected_node_uid
+            and payload_node_uid
+            and payload_node_uid != expected_node_uid
+        ):
             continue
 
         payload_operation_id = str(
@@ -7213,7 +7379,8 @@ def handle_tsi_conditioner_artifact_metadata(
         if running:
             dashboard.logger.debug(
                 "[Conditioner] Ignoring artifact metadata while running "
-                "because active operation_id is blank. payload_opid=%s artifact_id=%s",
+                "because active operation_id is blank. payload_opid=%s "
+                "artifact_id=%s",
                 payload_operation_id,
                 payload.get("artifact_id", ""),
             )
@@ -7259,11 +7426,18 @@ def handle_tsi_conditioner_artifact_metadata(
         payload.get("operation_id", "") or ""
     ).strip()
 
-    finish_run = bool(
-        running
-        and active_operation_id
+    matches_active_operation = bool(
+        active_operation_id
         and payload_operation_id
         and payload_operation_id == active_operation_id
+    )
+
+    finish_run = bool(
+        matches_active_operation
+        and (
+            running
+            or pending_completion
+        )
     )
 
     try:
@@ -7276,7 +7450,7 @@ def handle_tsi_conditioner_artifact_metadata(
         dashboard.logger.info(
             "[Conditioner] Applying artifact payload operation_id=%s "
             "artifact_id=%s files=%s saturated_fields=%s created_at=%s "
-            "finish_run=%s active_opid=%s",
+            "finish_run=%s active_opid=%s running=%s progress=%s",
             payload.get("operation_id", ""),
             payload.get("artifact_id", ""),
             len(payload.get("files", []) or []),
@@ -7284,6 +7458,8 @@ def handle_tsi_conditioner_artifact_metadata(
             payload.get("created_at", ""),
             finish_run,
             active_operation_id,
+            running,
+            progress_value,
         )
     except Exception:
         pass
@@ -7294,11 +7470,15 @@ def handle_tsi_conditioner_artifact_metadata(
         status_text=(
             f"Remote artifact metadata loaded: "
             f"{int(payload.get('file_count', 0) or 0)} files"
-            if _tsi_conditioner_payload_is_remote_artifact(dashboard, payload)
+            if _tsi_conditioner_payload_is_remote_artifact(
+                dashboard,
+                payload,
+            )
             else ""
         ),
         finish_run=finish_run,
     )
+    
 
 def _tsi_conditioner_request_artifact_refresh_for_payload(
     dashboard: QtCore.QObject,

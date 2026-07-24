@@ -164,8 +164,7 @@ class OperationMain(Operation):
             "source": "dummy",
         }
 
-        capture_folder = os.path.join(FISSURE_ROOT, "artifacts", operation_id, "files")
-        os.makedirs(capture_folder, exist_ok=True)
+        _, capture_folder = self.artifact_manager.create_operation_dir(operation_id)
 
         if self.status_callback:
             await self.status_callback("Running: Dummy Target")

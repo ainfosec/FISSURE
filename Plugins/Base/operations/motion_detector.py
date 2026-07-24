@@ -227,8 +227,7 @@ class OperationMain(Operation):
         if not self.artifact_manager:
             raise RuntimeError("motion_detector requires artifact_manager")
 
-        folder = os.path.join(FISSURE_ROOT, "artifacts", self.operation_id, "files")
-        os.makedirs(folder, exist_ok=True)
+        _, folder = self.artifact_manager.create_operation_dir(self.operation_id)
 
         meta: Dict[str, Any] = {
             "role": "motion_capture_v1",

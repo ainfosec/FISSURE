@@ -149,9 +149,8 @@ class OperationMain(Operation):
         await _send("STARTED", "starting", {"files_present": False})
 
         # 2) Create folder + write junk
-        capture_folder = os.path.join(FISSURE_ROOT, "artifacts", operation_id, "files")
         try:
-            os.makedirs(capture_folder, exist_ok=True)
+            _, capture_folder = self.artifact_manager.create_operation_dir(operation_id)
 
             for i in range(bin_count):
                 if self._stop:
