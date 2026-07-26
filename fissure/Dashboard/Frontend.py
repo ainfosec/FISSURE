@@ -415,6 +415,17 @@ class Dashboard(QtWidgets.QMainWindow):
         self.tactical_targets_full_details = False
         TacticalTabSlots.initialize_tactical_targets_details_context_menu(self)
 
+        # Global Target data button starts disabled until a Target is selected.
+        self.ui.pushButton_tactical_targets_download_data.setText(
+            "Download Data"
+        )
+        self.ui.pushButton_tactical_targets_download_data.setToolTip(
+            "Select a Target to download its data."
+        )
+        self.ui.pushButton_tactical_targets_download_data.setEnabled(
+            False
+        )
+
         # Initialize selected Tactical node frame state
         self.ui.frame5_tactical1.setToolTip(
             "Select a Tactical node pin or ecosystem row first."
@@ -2877,6 +2888,9 @@ def connect_tactical_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tactical_node_artifacts_download.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeArtifactsDownloadClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tactical_targets_download_data.clicked.connect(
+        lambda: TacticalTabSlots._slotTacticalTargetsDownloadDataClicked(dashboard)
     )
 
     # Table Widget

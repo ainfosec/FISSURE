@@ -2406,7 +2406,7 @@ async def sendArtifactsListTakReturn(
             "to Feature Extractor: %s",
             exc,
         )
-               
+
 
 async def sendSoisListTakReturn(
     component: object,
@@ -2627,16 +2627,10 @@ async def queryPluginActionSchemaResults(
 
 async def soiUpdate(component: object, soi=None):
     """
-    Receives a hub-backed SOI record and updates the Dashboard Tactical SOI
-    model/table.
-
-    This is used by Conditioner Promote to SOI and also works for future
-    hub-originated SOI updates.
+    Receive a hub-backed SOI and preserve its complete cumulative record in the
+    Dashboard Tactical model.
     """
-    if soi is None:
-        soi = {}
-
-    if not isinstance(soi, dict):
+    if soi is None or not isinstance(soi, dict):
         return
 
     frontend = component.frontend
@@ -2655,6 +2649,65 @@ async def soiUpdate(component: object, soi=None):
         or f"{node_uid}:{soi_id}"
     )
 
+    summary = soi.get("summary", {})
+    if not isinstance(summary, dict):
+        summary = {}
+
+    artifact_ids = soi.get(
+        "artifact_ids",
+        summary.get("artifact_ids", []),
+    )
+    if not isinstance(artifact_ids, list):
+        artifact_ids = [artifact_ids]
+    artifact_ids = [
+        str(value or "").strip()
+        for value in artifact_ids
+        if str(value or "").strip()
+    ]
+
+    artifact_links = soi.get(
+        "artifact_links",
+        summary.get("artifact_links", []),
+    )
+    if not isinstance(artifact_links, list):
+        artifact_links = []
+
+    detection_snapshots = soi.get(
+        "detection_snapshots",
+        summary.get("detection_snapshots", []),
+    )
+    if not isinstance(detection_snapshots, list):
+        detection_snapshots = [detection_snapshots]
+    detection_snapshots = [
+        dict(value)
+        for value in detection_snapshots
+        if isinstance(value, dict)
+    ]
+
+    detection_ids = soi.get(
+        "detection_ids",
+        summary.get("detection_ids", []),
+    )
+    if not isinstance(detection_ids, list):
+        detection_ids = [detection_ids]
+    detection_ids = [
+        str(value or "").strip()
+        for value in detection_ids
+        if str(value or "").strip()
+    ]
+
+    analysis_history = soi.get(
+        "analysis_history",
+        summary.get("analysis_history", []),
+    )
+    if not isinstance(analysis_history, list):
+        analysis_history = [analysis_history]
+    analysis_history = [
+        dict(value)
+        for value in analysis_history
+        if isinstance(value, dict)
+    ]
+
     frequency_mhz = soi.get("frequency_mhz")
 
     frequency_display = ""
@@ -2668,108 +2721,59 @@ async def soiUpdate(component: object, soi=None):
         soi.get("model_classification", "")
         or ""
     )
-
     model_confidence = soi.get("model_confidence", "")
 
     model_display = model_classification
-    if model_classification and model_confidence not in [None, "", "None", ""]:
-        model_display = f"{model_classification} ({model_confidence}%)"
+    if (
+        model_classification
+        and model_confidence not in [None, "", "None"]
+    ):
+        model_display = (
+            f"{model_classification} ({model_confidence}%)"
+        )
 
-    record = {
+    record = dict(soi)
+    record.update({
         "soi_key": soi_key,
         "uid": f"fissure-soi-{node_uid}-{soi_id}",
         "event_id": f"fissure-soi-{node_uid}-{soi_id}",
-
         "node_uid": node_uid,
         "soi_id": soi_id,
         "operation_id": soi.get("operation_id", ""),
         "artifact_id": soi.get("artifact_id", ""),
-        "artifact_ids": list(soi.get("artifact_ids", []) or []),
-        "artifact_links": list(soi.get("artifact_links", []) or []),
-
+        "artifact_ids": artifact_ids,
+        "artifact_links": artifact_links,
+        "detection_ids": detection_ids,
+        "detection_snapshots": detection_snapshots,
+        "analysis_history": analysis_history,
         "frequency_mhz": frequency_mhz,
         "frequency_display": frequency_display,
         "status": soi.get("status", ""),
         "time": soi.get("observation_time", "") or "",
-
         "stage": soi.get("stage", ""),
         "stage_order": soi.get("stage_order"),
-
         "model_classification": model_classification,
         "model_confidence_pct": model_confidence,
         "model_classification_display": model_display,
-        "database_classification": soi.get("database_classification", ""),
-
+        "database_classification": soi.get(
+            "database_classification",
+            "",
+        ),
         "lat": soi.get("lat"),
         "lon": soi.get("lon"),
         "hae_m": soi.get("hae_m"),
-
-        "summary": soi.get("summary", {}) or {},
+        "summary": summary,
         "raw": soi,
         "raw_xml": "",
-    }
-
-    existing = frontend.tactical_sois.get(soi_key)
-    if existing:
-        new_stage_order = record.get("stage_order")
-        old_stage_order = existing.get("stage_order")
-
-        try:
-            new_stage_order = (
-                int(new_stage_order)
-                if new_stage_order is not None
-                else None
-            )
-            old_stage_order = (
-                int(old_stage_order)
-                if old_stage_order is not None
-                else None
-            )
-        except Exception:
-            new_stage_order = None
-            old_stage_order = None
-
-        if (
-            new_stage_order is not None
-            and old_stage_order is not None
-            and new_stage_order < old_stage_order
-        ):
-            frontend.logger.info(
-                f"Ignoring out-of-order SOI update: "
-                f"new={new_stage_order} < old={old_stage_order}"
-            )
-            return
+    })
 
     frontend.tactical_sois[soi_key] = record
 
-    try:
-        TSITabSlots.refresh_tsi_fe_input_sois(
-            frontend
-        )
-        TSITabSlots.refresh_tsi_fe_run_sois(
-            frontend
-        )
-    except Exception as error:
-        component.logger.debug(
-            "Could not refresh Feature Extractor SOI selectors "
-            f"after SOI update: {error}"
-        )
-
-    selected_node_uid = getattr(frontend, "selected_tactical_node_uid", None)
-
-    if selected_node_uid and selected_node_uid != node_uid:
-        return
-
-    try:
-        TacticalTabSlots.update_tactical_node_soi_row(
-            frontend,
-            record,
-        )
-    except Exception as e:
-        component.logger.error(
-            f"Failed to update Tactical SOI row: {e}"
-        )
-
+    TacticalTabSlots.update_tactical_node_soi_row(
+        frontend,
+        record,
+    )
+    
 
 async def dashboardArtifactTransferStatus(
         component: object,

@@ -172,7 +172,33 @@ async def dummy_soi(
 
 dummy_target_schema = {
     "params": [
-        {"name": "frequency_mhz", "label": "Frequency (MHz)", "type": "number", "default": 311.0},
+        {
+            "name": "target_id",
+            "label": "Existing Target ID",
+            "type": "string",
+            "default": "",
+            "description": (
+                "Leave blank to create a new Target. "
+                "Enter an existing Target ID to append "
+                "another artifact and history entry."
+            ),
+        },
+        {
+            "name": "source_soi_id",
+            "label": "Source SOI ID",
+            "type": "string",
+            "default": "",
+            "description": (
+                "Optional link to the SOI that identified "
+                "this Target."
+            ),
+        },
+        {
+            "name": "frequency_mhz",
+            "label": "Frequency (MHz)",
+            "type": "number",
+            "default": 315.0,
+        },
         {
             "name": "display_label",
             "label": "Display Label",
@@ -184,14 +210,121 @@ dummy_target_schema = {
                 "TPMS",
                 "Wireless Camera",
                 "Weather Station",
+                "Wi-Fi Access Point",
                 "Unknown",
             ],
         },
-        {"name": "ce_m", "label": "CE (m)", "type": "number", "default": 50.0},
-        {"name": "description", "label": "Description", "type": "string", "default": "Dummy Target"},
+        {
+            "name": "protocol",
+            "label": "Protocol",
+            "type": "string",
+            "default": "OOK",
+        },
+        {
+            "name": "subtype",
+            "label": "Subtype",
+            "type": "string",
+            "default": "Fixed Code Remote",
+        },
+        {
+            "name": "manufacturer",
+            "label": "Manufacturer",
+            "type": "string",
+            "default": "FISSURE Test Devices",
+        },
+        {
+            "name": "model",
+            "label": "Model",
+            "type": "string",
+            "default": "DT-315",
+        },
+        {
+            "name": "device_id",
+            "label": "Device ID",
+            "type": "string",
+            "default": "DUMMY-315-0001",
+        },
+        {
+            "name": "serial_number",
+            "label": "Serial Number",
+            "type": "string",
+            "default": "SN-DUMMY-0001",
+        },
+        {
+            "name": "channel",
+            "label": "Channel",
+            "type": "number",
+            "default": 1,
+        },
+        {
+            "name": "state",
+            "label": "State",
+            "type": "string",
+            "default": "active",
+            "options": [
+                "detected",
+                "active",
+                "monitoring",
+                "inactive",
+                "lost",
+            ],
+        },
+        {
+            "name": "confidence_pct",
+            "label": "Confidence (%)",
+            "type": "number",
+            "default": 96.0,
+            "min": 0,
+            "max": 100,
+        },
+        {
+            "name": "rssi_dbm",
+            "label": "RSSI (dBm)",
+            "type": "number",
+            "default": -43.5,
+        },
+        {
+            "name": "ce_m",
+            "label": "CE (m)",
+            "type": "number",
+            "default": 25.0,
+        },
+        {
+            "name": "use_node_location",
+            "label": "Use Current Node Location",
+            "type": "string",
+            "default": "true",
+            "options": [
+                "true",
+                "false",
+            ],
+        },
+        {
+            "name": "observation_count",
+            "label": "Observation Count",
+            "type": "number",
+            "default": 5,
+            "min": 1,
+            "max": 100,
+        },
+        {
+            "name": "blob_size_kb",
+            "label": "Sample Capture Size (KB)",
+            "type": "number",
+            "default": 128,
+            "min": 1,
+            "max": 10240,
+        },
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": (
+                "Dummy Target reference implementation"
+            ),
+        },
     ]
 }
-
 async def dummy_target(
     component: SensorNode,
     parameters: Dict[str, Any],

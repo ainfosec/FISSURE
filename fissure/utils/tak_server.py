@@ -6,6 +6,7 @@ from configparser import ConfigParser
 import logging
 import json
 
+
 from fissure.utils.common import get_fissure_config
 from fissure.callbacks import HiprFisrCallbacks
 
@@ -529,6 +530,83 @@ class TakReceiver(pytak.QueueWorker):
                 )
                 return
             
+            # Complete SOI evidence Mission Package
+            elif request in (
+                "soi_evidence_download",
+                "download_soi_evidence",
+            ):
+                soi_id = str(
+                    parameters.get("soi_id")
+                    or ""
+                ).strip()
+
+                if not soi_id:
+                    self._logger.warning(
+                        "soi_evidence_download missing soi_id "
+                        "(node_uid=%s, request_id=%s)",
+                        node_uid,
+                        request_id,
+                    )
+                    return
+
+                try:
+                    await (
+                        HiprFisrCallbacks
+                        .sendSoiEvidencePackageTak(
+                            self.hipfisr,
+                            soi_id=soi_id,
+                            requester_uid=requester_uid,
+                        )
+                    )
+                except Exception:
+                    self._logger.exception(
+                        "SOI evidence package failed "
+                        "(soi_id=%s, request_id=%s)",
+                        soi_id,
+                        request_id,
+                    )
+
+                return
+
+            # Complete Target data Mission Package
+            elif request in (
+                "target_data_download",
+                "download_target_data",
+            ):
+                target_id = str(
+                    parameters.get("target_id")
+                    or ""
+                ).strip()
+
+                if not target_id:
+                    self._logger.warning(
+                        "target_data_download missing target_id "
+                        "(node_uid=%s, request_id=%s)",
+                        node_uid,
+                        request_id,
+                    )
+                    return
+
+                try:
+                    await (
+                        HiprFisrCallbacks
+                        .sendTargetDataPackageTak(
+                            self.hipfisr,
+                            target_id=target_id,
+                            requester_uid=requester_uid,
+                        )
+                    )
+                except Exception:
+                    self._logger.exception(
+                        "Target data package failed "
+                        "(target_id=%s, request_id=%s)",
+                        target_id,
+                        request_id,
+                    )
+
+                return
+
+            
             # Promote existing detection directly to authoritative SOI
             elif request == "promote_detection_to_soi":
                 detection = parameters.get("detection")
@@ -641,11 +719,6 @@ class TakReceiver(pytak.QueueWorker):
                     "model_confidence"
                 )
 
-                artifact_id = str(
-                    soi.get("artifact_id")
-                    or ""
-                ).strip()
-
                 def _optional_float(value):
                     if value in (None, "", "None"):
                         return None
@@ -710,13 +783,14 @@ class TakReceiver(pytak.QueueWorker):
                         "source": "soi",
                     },
                     "state": "observed",
-                    "artifact_id": artifact_id,
+                    "artifact_id": "",
+                    "artifact_ids": [],
+                    "artifact_links": [],
                 }
 
                 history_entry = {
                     "event": "soi_promoted_to_target",
                     "soi_id": soi_id,
-                    "artifact_id": artifact_id,
                     "operation_id": str(
                         soi.get("operation_id")
                         or ""
@@ -730,7 +804,7 @@ class TakReceiver(pytak.QueueWorker):
                     target_id=target_id,
                     patch=patch,
                     history_entry=history_entry,
-                    artifact_id=artifact_id,
+                    artifact_id="",
                 )
 
                 self._logger.info(

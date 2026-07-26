@@ -2453,11 +2453,18 @@ def clear_tactical_targets_details(
         None,
     )
 
+    _updateTacticalTargetsDownloadDataButton(
+        dashboard,
+        None,
+    )
+
 
 def enable_tactical_targets_details(
     dashboard: QtCore.QObject,
     enabled=True,
 ):
+    enabled = bool(enabled)
+
     dashboard.ui.scrollArea_tactical_targets_details.setEnabled(
         enabled
     )
@@ -2476,6 +2483,16 @@ def enable_tactical_targets_details(
 
     if not enabled:
         dashboard.ui.pushButton_tactical_targets_geolocate.setEnabled(
+            False
+        )
+
+        dashboard.ui.pushButton_tactical_targets_download_data.setText(
+            "Download Data"
+        )
+        dashboard.ui.pushButton_tactical_targets_download_data.setToolTip(
+            "Select a Target to download its data."
+        )
+        dashboard.ui.pushButton_tactical_targets_download_data.setEnabled(
             False
         )
 
@@ -3629,7 +3646,7 @@ def update_tactical_node_targets_table(
         clear_tactical_node_target_details(
             dashboard
         )
-        
+
 
 def format_tactical_distance(distance_m):
     try:
@@ -4214,11 +4231,11 @@ def populate_tactical_node_soi_details(
     soi: dict,
 ):
     """
-    Displays either a curated SOI summary or the complete dynamic record.
+    Display a concise SOI summary or every stored SOI field.
 
-    Summary mode prioritizes the fields normally needed during Tactical review.
-    Full Details mode preserves the field-agnostic renderer for every non-empty
-    field except raw transport payloads.
+    Compact mode includes counts for cumulative relationships. Full Details is
+    field-agnostic and exposes detections, attached artifacts, operation-supplied
+    analysis history, and all flexible values associated with the SOI.
     """
     hidden_keys = {
         "raw_xml",
@@ -4231,11 +4248,7 @@ def populate_tactical_node_soi_details(
     summary_field_groups = [
         (
             "SOI ID",
-            [
-                "soi_id",
-                "uid",
-                "id",
-            ],
+            ["soi_id", "uid", "id"],
         ),
         (
             "Model Classification",
@@ -4254,18 +4267,16 @@ def populate_tactical_node_soi_details(
             ],
         ),
         (
+            "Frequency",
+            ["frequency_display", "frequency_mhz", "frequency"],
+        ),
+        (
             "Latitude",
-            [
-                "lat",
-                "latitude",
-            ],
+            ["lat", "latitude"],
         ),
         (
             "Longitude",
-            [
-                "lon",
-                "longitude",
-            ],
+            ["lon", "longitude"],
         ),
     ]
 
@@ -4274,31 +4285,15 @@ def populate_tactical_node_soi_details(
             return True
 
         if isinstance(value, str):
-            return value.strip() in [
-                "",
-                "None",
-            ]
+            return value.strip() in ["", "None"]
 
-        if isinstance(
-            value,
-            (
-                dict,
-                list,
-                tuple,
-                set,
-            ),
-        ):
+        if isinstance(value, (dict, list, tuple, set)):
             return len(value) == 0
 
         return False
 
     def make_label(key):
-        return str(
-            key
-        ).strip().replace(
-            "_",
-            " ",
-        ).strip().title()
+        return str(key).strip().replace("_", " ").strip().title()
 
     def field_label_html(label):
         return (
@@ -4308,20 +4303,16 @@ def populate_tactical_node_soi_details(
         )
 
     def format_scalar(key, value):
-        normalized_key = str(
-            key
-        ).strip().lower()
+        normalized_key = str(key).strip().lower()
 
         if normalized_key in {
             "time",
             "timestamp",
             "created_at",
             "updated_at",
+            "observation_time",
         }:
-            formatted_time = format_detection_time(
-                value
-            )
-
+            formatted_time = format_detection_time(value)
             if formatted_time:
                 return formatted_time
 
@@ -4347,16 +4338,11 @@ def populate_tactical_node_soi_details(
             except Exception:
                 pass
 
-        if normalized_key in {
-            "frequency",
-            "center_frequency",
-        }:
+        if normalized_key in {"frequency", "center_frequency"}:
             try:
                 numeric_value = float(value)
-
                 if abs(numeric_value) >= 1e5:
                     return f"{numeric_value / 1e6:.6f} MHz"
-
                 return f"{numeric_value:.6f} MHz"
             except Exception:
                 pass
@@ -4376,13 +4362,10 @@ def populate_tactical_node_soi_details(
         if normalized_key == "bandwidth":
             try:
                 numeric_value = float(value)
-
                 if abs(numeric_value) >= 1e5:
                     return f"{numeric_value / 1e6:.6f} MHz"
-
                 if abs(numeric_value) >= 1e3:
                     return f"{numeric_value / 1e3:.3f} kHz"
-
                 return str(value)
             except Exception:
                 pass
@@ -4402,13 +4385,12 @@ def populate_tactical_node_soi_details(
             "model_confidence",
             "classification_confidence",
             "database_confidence",
+            "model_confidence_pct",
         }:
             try:
                 confidence = float(value)
-
                 if 0.0 <= confidence <= 1.0:
                     confidence *= 100.0
-
                 return f"{confidence:.1f}%"
             except Exception:
                 pass
@@ -4421,7 +4403,6 @@ def populate_tactical_node_soi_details(
                 continue
 
             value = soi.get(candidate_key)
-
             if not is_empty(value):
                 return candidate_key, value
 
@@ -4434,14 +4415,9 @@ def populate_tactical_node_soi_details(
         depth=0,
         display_label=None,
     ):
-        normalized_key = str(
-            key
-        ).strip().lower()
+        normalized_key = str(key).strip().lower()
 
-        if normalized_key in hidden_keys:
-            return
-
-        if is_empty(value):
+        if normalized_key in hidden_keys or is_empty(value):
             return
 
         label = (
@@ -4450,14 +4426,10 @@ def populate_tactical_node_soi_details(
             else make_label(key)
         )
 
-        indent = "&nbsp;" * (
-            depth * 4
-        )
+        indent = "&nbsp;" * (depth * 4)
 
         if isinstance(value, dict):
-            lines.append(
-                f"{indent}{field_label_html(label)}"
-            )
+            lines.append(f"{indent}{field_label_html(label)}")
 
             for nested_key, nested_value in value.items():
                 append_value(
@@ -4466,25 +4438,14 @@ def populate_tactical_node_soi_details(
                     nested_value,
                     depth + 1,
                 )
-
             return
 
-        if isinstance(
-            value,
-            (
-                list,
-                tuple,
-                set,
-            ),
-        ):
+        if isinstance(value, (list, tuple, set)):
             values = list(value)
-
             if not values:
                 return
 
-            lines.append(
-                f"{indent}{field_label_html(label)}"
-            )
+            lines.append(f"{indent}{field_label_html(label)}")
 
             for index, item in enumerate(values):
                 if is_empty(item):
@@ -4494,83 +4455,35 @@ def populate_tactical_node_soi_details(
                     item_label = (
                         item.get("label")
                         or item.get("name")
+                        or item.get("artifact_id")
+                        or item.get("operation_id")
+                        or item.get("detection_id")
+                        or item.get("event_uid")
                         or f"Item {index + 1}"
                     )
 
-                    item_value = item.get("value")
+                    lines.append(
+                        f"{'&nbsp;' * ((depth + 1) * 4)}"
+                        "<span style='font-weight:600;'>"
+                        f"{html.escape(str(item_label))}"
+                        "</span>"
+                    )
 
-                    if (
-                        "value" in item
-                        and not is_empty(item_value)
-                    ):
-                        unit = str(
-                            item.get("unit", "")
-                            or ""
-                        ).strip()
-
-                        display_value = str(
-                            item_value
+                    for nested_key, nested_value in item.items():
+                        append_value(
+                            lines,
+                            nested_key,
+                            nested_value,
+                            depth + 2,
                         )
-
-                        if unit:
-                            display_value = (
-                                f"{display_value} {unit}"
-                            )
-
-                        lines.append(
-                            f"{'&nbsp;' * ((depth + 1) * 4)}"
-                            f"{field_label_html(item_label)} "
-                            f"{html.escape(display_value)}"
-                        )
-
-                        remaining = {
-                            nested_key: nested_value
-                            for nested_key, nested_value in item.items()
-                            if nested_key not in {
-                                "label",
-                                "name",
-                                "value",
-                                "unit",
-                            }
-                        }
-
-                        for nested_key, nested_value in remaining.items():
-                            append_value(
-                                lines,
-                                nested_key,
-                                nested_value,
-                                depth + 2,
-                            )
-
-                    else:
-                        lines.append(
-                            f"{'&nbsp;' * ((depth + 1) * 4)}"
-                            f"<span style='font-weight:600;'>"
-                            f"{html.escape(str(item_label))}"
-                            f"</span>"
-                        )
-
-                        for nested_key, nested_value in item.items():
-                            append_value(
-                                lines,
-                                nested_key,
-                                nested_value,
-                                depth + 2,
-                            )
-
                 else:
                     lines.append(
                         f"{'&nbsp;' * ((depth + 1) * 4)}"
                         f"{html.escape(str(item))}"
                     )
-
             return
 
-        display_value = format_scalar(
-            normalized_key,
-            value,
-        )
-
+        display_value = format_scalar(normalized_key, value)
         lines.append(
             f"{indent}{field_label_html(label)} "
             f"{html.escape(display_value)}"
@@ -4588,24 +4501,13 @@ def populate_tactical_node_soi_details(
 
     if full_details:
         for key, value in soi.items():
-            append_value(
-                lines,
-                key,
-                value,
-            )
-
+            append_value(lines, key, value)
     else:
-        used_keys = set()
-
         for display_label, candidate_keys in summary_field_groups:
-            actual_key, value = first_non_empty_value(
-                candidate_keys
-            )
+            actual_key, value = first_non_empty_value(candidate_keys)
 
             if actual_key is None:
                 continue
-
-            used_keys.add(actual_key)
 
             append_value(
                 lines,
@@ -4614,13 +4516,27 @@ def populate_tactical_node_soi_details(
                 display_label=display_label,
             )
 
+        artifact_count = len(soi.get("artifact_ids", []) or [])
+        detection_count = len(
+            soi.get("detection_snapshots", []) or []
+        )
+        analysis_count = len(soi.get("analysis_history", []) or [])
+
+        lines.append(
+            f"{field_label_html('Artifacts')} {artifact_count}"
+        )
+        lines.append(
+            f"{field_label_html('Detections')} {detection_count}"
+        )
+        lines.append(
+            f"{field_label_html('Analysis Entries')} {analysis_count}"
+        )
+
     dashboard.ui.label2_tactical_node_soi_details.setText(
         "<br>".join(lines)
     )
-
     dashboard.ui.label2_tactical_node_soi_details.setAlignment(
-        QtCore.Qt.AlignLeft
-        | QtCore.Qt.AlignTop
+        QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
     )
 
 
@@ -4803,53 +4719,89 @@ def update_tactical_node_artifact_row(dashboard: QtCore.QObject, artifact_record
 async def _slotTacticalNodeSoisDownloadEvidenceClicked(
     dashboard: QtCore.QObject
 ):
+    """
+    Download every artifact associated with the selected SOI, rebuild a fresh
+    SOI evidence folder from the current record, and open that folder.
+
+    Verified artifact downloads remain in the shared Dashboard cache. The SOI
+    folder is a disposable convenience view and is replaced on every request.
+    """
+    from fissure.Dashboard.SoiEvidenceController import (
+        build_soi_evidence_folder,
+        collect_soi_artifact_ids,
+    )
+
     soi_key = getattr(
         dashboard,
         "selected_tactical_node_soi_id",
         None,
     )
+
     if not soi_key:
         return
 
-    soi = dashboard.tactical_sois.get(soi_key)
-    if not soi:
-        return
-
-    artifact_id = soi.get("artifact_id")
-    if not artifact_id:
-        dashboard.logger.warning(
-            "[Tactical] Selected SOI has no artifact ID."
-        )
-        return
-
-    table = dashboard.ui.tableWidget_tactical_node_artifacts
-    for row in range(table.rowCount()):
-        item = table.item(row, 0)
-        if item is None:
-            continue
-        if item.data(QtCore.Qt.UserRole) == artifact_id:
-            dashboard.ui.tabWidget_tactical_node.setCurrentIndex(3)
-            table.selectRow(row)
-            table.setCurrentCell(row, 0)
-            table.scrollToItem(item)
-            break
-
-    local_path = dashboard.backend.artifact_transfer_controller.get_local_path(
-        artifact_id
+    soi = dashboard.tactical_sois.get(
+        soi_key
     )
-    if local_path:
-        subprocess.Popen(["xdg-open", os.path.dirname(local_path)])
+
+    if not isinstance(soi, dict) or not soi:
         return
+
+    artifact_ids = collect_soi_artifact_ids(
+        soi
+    )
+
+    button = (
+        dashboard.ui
+        .pushButton_tactical_node_soi_download_evidence
+    )
+
+    original_text = button.text()
+
+    button.setEnabled(False)
+    button.setText(
+        (
+            f"Preparing {len(artifact_ids)} Artifacts..."
+            if artifact_ids
+            else "Preparing Evidence..."
+        )
+    )
 
     try:
-        await dashboard.backend.requestDashboardArtifactDownload(
-            artifact_id,
-            open_when_complete=True,
+        evidence_path = (
+            await build_soi_evidence_folder(
+                dashboard,
+                soi,
+            )
         )
+
+        dashboard.logger.info(
+            "[Tactical] SOI evidence folder rebuilt: "
+            f"soi_id={soi_key} "
+            f"artifact_count={len(artifact_ids)} "
+            f"path={evidence_path}"
+        )
+
     except Exception as exc:
         dashboard.logger.error(
-            f"[Tactical] SOI evidence download request failed: {exc}"
+            "[Tactical] SOI evidence preparation failed: "
+            f"{exc}"
         )
+
+        QtWidgets.QMessageBox.warning(
+            dashboard,
+            "SOI Evidence",
+            (
+                "Unable to prepare the SOI evidence folder.\n\n"
+                f"{exc}"
+            ),
+        )
+
+    finally:
+        button.setText(
+            original_text or "Download Evidence"
+        )
+        button.setEnabled(True)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -5008,73 +4960,853 @@ async def _slotTacticalNodeDetectionsPromoteToTargetClicked(
     )
 
 
+def _tactical_soi_nonempty_value(value):
+    if value is None:
+        return False
+
+    if isinstance(value, str):
+        return value.strip() not in (
+            "",
+            "None",
+            "null",
+        )
+
+    if isinstance(
+        value,
+        (
+            dict,
+            list,
+            tuple,
+            set,
+        ),
+    ):
+        return bool(value)
+
+    return True
+
+
+def _tactical_soi_collect_target_identity(
+    soi: dict,
+):
+    """
+    Build a flexible Target identity/communications snapshot from an SOI.
+
+    The operation that updated the SOI remains responsible for deciding what
+    information belongs there. Promotion preserves useful identity and
+    communications context while omitting obvious signal-analysis internals.
+    """
+    identity = {}
+
+    preferred_containers = (
+        "target_attributes",
+        "identity",
+        "identifiers",
+        "communications",
+        "protocol_details",
+    )
+
+    for container_name in preferred_containers:
+        container = soi.get(container_name)
+
+        if isinstance(container, dict):
+            for key, value in container.items():
+                if _tactical_soi_nonempty_value(value):
+                    identity[key] = value
+
+    summary = soi.get("summary")
+
+    if not isinstance(summary, dict):
+        summary = {}
+
+    for container_name in preferred_containers:
+        container = summary.get(container_name)
+
+        if isinstance(container, dict):
+            for key, value in container.items():
+                if _tactical_soi_nonempty_value(value):
+                    identity[key] = value
+
+    useful_keys = (
+        "protocol",
+        "protocol_name",
+        "protocol_subtype",
+        "subtype",
+        "channel",
+        "channel_number",
+        "channel_name",
+        "network",
+        "network_id",
+        "service",
+        "service_id",
+        "talkgroup",
+        "talkgroup_id",
+        "callsign",
+        "hostname",
+        "device_name",
+        "device_id",
+        "serial",
+        "serial_number",
+        "mac",
+        "mac_address",
+        "source_mac",
+        "destination_mac",
+        "bssid",
+        "ssid",
+        "ip",
+        "ip_address",
+        "source_ip",
+        "destination_ip",
+        "imsi",
+        "imei",
+        "subscriber_id",
+        "unit_id",
+        "uuid",
+        "manufacturer",
+        "model",
+        "communicates_with",
+        "peers",
+        "contacts",
+        "notes",
+    )
+
+    for key in useful_keys:
+        value = soi.get(key)
+
+        if not _tactical_soi_nonempty_value(value):
+            value = summary.get(key)
+
+        if _tactical_soi_nonempty_value(value):
+            identity[key] = value
+
+    attributes = soi.get("attributes")
+
+    if not isinstance(attributes, dict):
+        attributes = summary.get("attributes")
+
+    if isinstance(attributes, dict):
+        excluded_attribute_keys = {
+            "artifact_id",
+            "artifact_ids",
+            "artifact_links",
+            "analysis_history",
+            "detection_snapshots",
+            "detection_ids",
+            "frequency",
+            "frequency_hz",
+            "frequency_mhz",
+            "sample_rate",
+            "sample_rate_hz",
+            "bandwidth",
+            "bandwidth_hz",
+            "power",
+            "power_db",
+            "power_dbm",
+            "rssi",
+            "rssi_dbm",
+            "snr",
+            "snr_db",
+            "noise_floor",
+            "noise_floor_db",
+            "confidence",
+            "model_confidence",
+            "model_confidence_pct",
+            "fft",
+            "fft_size",
+            "window",
+            "window_type",
+            "iq",
+            "iq_data",
+            "feature_vector",
+            "features",
+            "analysis",
+            "analysis_result",
+            "analysis_results",
+            "parameters",
+        }
+
+        useful_tokens = (
+            "id",
+            "mac",
+            "ip",
+            "serial",
+            "uuid",
+            "callsign",
+            "hostname",
+            "protocol",
+            "subtype",
+            "channel",
+            "network",
+            "service",
+            "talkgroup",
+            "ssid",
+            "bssid",
+            "imsi",
+            "imei",
+            "subscriber",
+            "manufacturer",
+            "model",
+            "peer",
+            "contact",
+            "communicat",
+            "source",
+            "destination",
+            "address",
+            "name",
+            "note",
+        )
+
+        for key, value in attributes.items():
+            normalized_key = str(key or "").strip().lower()
+
+            if (
+                not normalized_key
+                or normalized_key in excluded_attribute_keys
+                or not _tactical_soi_nonempty_value(value)
+            ):
+                continue
+
+            if any(
+                token in normalized_key
+                for token in useful_tokens
+            ):
+                identity.setdefault(
+                    str(key),
+                    value,
+                )
+
+    return identity
+
+
+async def _tactical_soi_choose_target_label(
+    dashboard,
+    soi: dict,
+):
+    """
+    Return the Target label selected from the current SOI classifications.
+
+    Clear results promote immediately. Conflicting or low-confidence results
+    use a nonblocking QDialog so Dashboard async tasks continue running.
+    """
+    import asyncio
+
+    database_label = str(
+        soi.get("database_classification", "")
+        or ""
+    ).strip()
+
+    model_label = str(
+        soi.get("model_classification", "")
+        or ""
+    ).strip()
+
+    current_label = str(
+        soi.get("classification", "")
+        or soi.get("display_label", "")
+        or model_label
+        or database_label
+        or "SOI"
+    ).strip()
+
+    confidence_value = (
+        soi.get("model_confidence_pct")
+        if soi.get("model_confidence_pct") is not None
+        else soi.get("model_confidence")
+    )
+
+    try:
+        model_confidence = float(
+            confidence_value
+        )
+    except Exception:
+        model_confidence = None
+
+    default_label = (
+        model_label
+        or database_label
+        or current_label
+        or "SOI"
+    )
+
+    labels_conflict = (
+        bool(database_label)
+        and bool(model_label)
+        and database_label.casefold()
+        != model_label.casefold()
+    )
+
+    low_confidence = (
+        bool(model_label)
+        and model_confidence is not None
+        and model_confidence < 80.0
+    )
+
+    if not labels_conflict and not low_confidence:
+        return default_label
+
+    dialog = QtWidgets.QDialog(dashboard)
+    dialog.setObjectName(
+        "MessageDialog"
+    )
+    dialog.setWindowTitle(
+        "Target Promotion"
+    )
+    dialog.setModal(True)
+    dialog.setMinimumWidth(560)
+    dialog.setSizeGripEnabled(False)
+
+    root_layout = QtWidgets.QVBoxLayout(
+        dialog
+    )
+    root_layout.setContentsMargins(
+        10,
+        10,
+        10,
+        10,
+    )
+    root_layout.setSpacing(0)
+
+    header_label = QtWidgets.QLabel(
+        "Review Target Classification",
+        dialog,
+    )
+    header_label.setObjectName(
+        "label1_target_classification_title"
+    )
+    header_label.setMinimumHeight(22)
+
+    root_layout.addWidget(
+        header_label
+    )
+
+    content_frame = QtWidgets.QFrame(
+        dialog
+    )
+    content_frame.setObjectName(
+        "frame1_target_classification_content"
+    )
+
+    content_layout = QtWidgets.QVBoxLayout(
+        content_frame
+    )
+    content_layout.setContentsMargins(
+        14,
+        12,
+        14,
+        12,
+    )
+    content_layout.setSpacing(12)
+
+    prompt_label = QtWidgets.QLabel(
+        "Review the available classifications before creating the Target.",
+        content_frame,
+    )
+    prompt_label.setObjectName(
+        "label2_target_classification_prompt"
+    )
+    prompt_label.setWordWrap(True)
+
+    content_layout.addWidget(
+        prompt_label
+    )
+
+    results_layout = QtWidgets.QGridLayout()
+    results_layout.setContentsMargins(
+        6,
+        0,
+        6,
+        0,
+    )
+    results_layout.setHorizontalSpacing(14)
+    results_layout.setVerticalSpacing(7)
+    results_layout.setColumnStretch(
+        1,
+        1,
+    )
+
+    row = 0
+
+    if model_label:
+        model_value = model_label
+
+        if model_confidence is not None:
+            model_value += (
+                f" ({model_confidence:.0f}%)"
+            )
+
+        model_name_label = QtWidgets.QLabel(
+            "Model:",
+            content_frame,
+        )
+        model_name_label.setObjectName(
+            "label2_target_classification_model_name"
+        )
+        model_name_label.setAlignment(
+            QtCore.Qt.AlignRight
+            | QtCore.Qt.AlignVCenter
+        )
+
+        model_value_label = QtWidgets.QLabel(
+            model_value,
+            content_frame,
+        )
+        model_value_label.setObjectName(
+            "label2_target_classification_model_value"
+        )
+        model_value_label.setTextInteractionFlags(
+            QtCore.Qt.TextSelectableByMouse
+        )
+
+        results_layout.addWidget(
+            model_name_label,
+            row,
+            0,
+        )
+        results_layout.addWidget(
+            model_value_label,
+            row,
+            1,
+        )
+
+        row += 1
+
+    if database_label:
+        database_name_label = QtWidgets.QLabel(
+            "Database:",
+            content_frame,
+        )
+        database_name_label.setObjectName(
+            "label2_target_classification_database_name"
+        )
+        database_name_label.setAlignment(
+            QtCore.Qt.AlignRight
+            | QtCore.Qt.AlignVCenter
+        )
+
+        database_value_label = QtWidgets.QLabel(
+            database_label,
+            content_frame,
+        )
+        database_value_label.setObjectName(
+            "label2_target_classification_database_value"
+        )
+        database_value_label.setTextInteractionFlags(
+            QtCore.Qt.TextSelectableByMouse
+        )
+
+        results_layout.addWidget(
+            database_name_label,
+            row,
+            0,
+        )
+        results_layout.addWidget(
+            database_value_label,
+            row,
+            1,
+        )
+
+    content_layout.addLayout(
+        results_layout
+    )
+
+    selection_layout = QtWidgets.QGridLayout()
+    selection_layout.setContentsMargins(
+        0,
+        0,
+        0,
+        0,
+    )
+    selection_layout.setHorizontalSpacing(12)
+    selection_layout.setColumnStretch(
+        1,
+        1,
+    )
+
+    selection_label = QtWidgets.QLabel(
+        "Target Classification:",
+        content_frame,
+    )
+    selection_label.setObjectName(
+        "label2_target_classification_selection"
+    )
+    selection_label.setAlignment(
+        QtCore.Qt.AlignRight
+        | QtCore.Qt.AlignVCenter
+    )
+
+    classification_combo = QtWidgets.QComboBox(
+        content_frame
+    )
+    classification_combo.setObjectName(
+        "comboBox_target_classification"
+    )
+    classification_combo.setMinimumWidth(
+        340
+    )
+    classification_combo.setSizePolicy(
+        QtWidgets.QSizePolicy.Expanding,
+        QtWidgets.QSizePolicy.Fixed,
+    )
+
+    choices = []
+    seen = set()
+
+    def add_choice(
+        label,
+        source_text,
+    ):
+        clean_label = str(
+            label or ""
+        ).strip()
+
+        if (
+            not clean_label
+            or clean_label.casefold() in seen
+        ):
+            return
+
+        seen.add(
+            clean_label.casefold()
+        )
+        choices.append(
+            (
+                clean_label,
+                source_text,
+            )
+        )
+
+    if model_label:
+        source_text = "Model"
+
+        if model_confidence is not None:
+            source_text += (
+                f", {model_confidence:.0f}%"
+            )
+
+        add_choice(
+            model_label,
+            source_text,
+        )
+
+    if database_label:
+        add_choice(
+            database_label,
+            "Database",
+        )
+
+    add_choice(
+        current_label,
+        "Current SOI",
+    )
+
+    for label, source_text in choices:
+        classification_combo.addItem(
+            f"{label} ({source_text})",
+            label,
+        )
+
+    default_index = (
+        classification_combo.findData(
+            default_label
+        )
+    )
+
+    if default_index >= 0:
+        classification_combo.setCurrentIndex(
+            default_index
+        )
+
+    selection_layout.addWidget(
+        selection_label,
+        0,
+        0,
+    )
+    selection_layout.addWidget(
+        classification_combo,
+        0,
+        1,
+    )
+
+    content_layout.addLayout(
+        selection_layout
+    )
+
+    button_layout = QtWidgets.QHBoxLayout()
+    button_layout.setContentsMargins(
+        0,
+        2,
+        0,
+        0,
+    )
+    button_layout.setSpacing(10)
+    button_layout.addStretch(1)
+
+    promote_button = QtWidgets.QPushButton(
+        "Promote to Target",
+        content_frame,
+    )
+    promote_button.setObjectName(
+        "pushButton_target_classification_promote"
+    )
+
+    cancel_button = QtWidgets.QPushButton(
+        "Cancel",
+        content_frame,
+    )
+    cancel_button.setObjectName(
+        "pushButton_target_classification_cancel"
+    )
+
+    action_button_width = 150
+    action_button_height = 30
+
+    for button in (
+        promote_button,
+        cancel_button,
+    ):
+        button.setFixedSize(
+            action_button_width,
+            action_button_height,
+        )
+
+    promote_button.setDefault(True)
+    promote_button.setAutoDefault(True)
+    cancel_button.setAutoDefault(False)
+
+    button_layout.addWidget(
+        promote_button
+    )
+    button_layout.addWidget(
+        cancel_button
+    )
+
+    content_layout.addLayout(
+        button_layout
+    )
+
+    root_layout.addWidget(
+        content_frame
+    )
+
+    loop = asyncio.get_running_loop()
+    result_future = loop.create_future()
+
+    def finish_with_selection():
+        if not result_future.done():
+            result_future.set_result(
+                classification_combo.currentData()
+            )
+
+        dialog.accept()
+
+    def finish_cancelled():
+        if not result_future.done():
+            result_future.set_result(
+                None
+            )
+
+        dialog.reject()
+
+    promote_button.clicked.connect(
+        finish_with_selection
+    )
+    cancel_button.clicked.connect(
+        finish_cancelled
+    )
+
+    dialog.rejected.connect(
+        lambda: (
+            None
+            if result_future.done()
+            else result_future.set_result(None)
+        )
+    )
+
+    dialog.open()
+
+    selected_label = await result_future
+
+    dialog.deleteLater()
+
+    return selected_label
+
+
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotTacticalNodeSoiPromoteToTargetClicked(
     dashboard: QtCore.QObject
 ):
-    soi_key = getattr(dashboard, "selected_tactical_node_soi_id", None)
+    """
+    Promote the selected SOI into an operational Target.
+
+    The Target links back to its source SOI for investigative evidence.
+    SOI artifacts remain owned by the SOI. Only identity, classification,
+    communications context, frequency, and current location are copied into
+    the Target.
+    """
+    soi_key = getattr(
+        dashboard,
+        "selected_tactical_node_soi_id",
+        None,
+    )
+
     if not soi_key:
         return
 
-    soi = dashboard.tactical_sois.get(soi_key)
-    if not soi:
+    soi = dashboard.tactical_sois.get(
+        soi_key
+    )
+
+    if not isinstance(soi, dict) or not soi:
         return
 
-    soi_id = soi.get("soi_id", "")
-    frequency_mhz = soi.get("frequency_mhz")
-    node_uid = soi.get("node_uid", "")
-    artifact_id = soi.get("artifact_id", "")
+    soi_id = str(
+        soi.get("soi_id", "")
+        or ""
+    ).strip()
+
+    if not soi_id:
+        dashboard.logger.warning(
+            "[Tactical] Selected SOI has no soi_id."
+        )
+        return
 
     display_label = (
-        soi.get("database_classification")
-        or soi.get("model_classification")
-        or "SOI"
+        await _tactical_soi_choose_target_label(
+            dashboard,
+            soi,
+        )
+    )
+
+    if display_label is None:
+        return
+
+    identity = (
+        _tactical_soi_collect_target_identity(
+            soi
+        )
+    )
+
+    frequency_mhz = soi.get(
+        "frequency_mhz"
+    )
+
+    node_uid = str(
+        soi.get("node_uid", "")
+        or ""
+    ).strip()
+
+    model_label = str(
+        soi.get("model_classification", "")
+        or ""
+    ).strip()
+
+    database_label = str(
+        soi.get("database_classification", "")
+        or ""
+    ).strip()
+
+    model_confidence = (
+        soi.get("model_confidence_pct")
+        if soi.get("model_confidence_pct") is not None
+        else soi.get("model_confidence")
     )
 
     target_id = f"soi-{soi_id}"
+
+    candidates = []
+
+    if database_label:
+        candidates.append(
+            {
+                "source": "database",
+                "label": database_label,
+            }
+        )
+
+    if model_label:
+        model_candidate = {
+            "source": "model",
+            "label": model_label,
+        }
+
+        if model_confidence not in (
+            None,
+            "",
+        ):
+            model_candidate["confidence"] = (
+                model_confidence
+            )
+
+        candidates.append(
+            model_candidate
+        )
+
+    location = {
+        "source": "soi",
+    }
+
+    if soi.get("lat") is not None:
+        location["lat"] = soi.get("lat")
+
+    if soi.get("lon") is not None:
+        location["lon"] = soi.get("lon")
+
+    if soi.get("hae_m") is not None:
+        location["hae_m"] = soi.get("hae_m")
+
+    if (
+        "lat" in location
+        and "lon" in location
+    ):
+        location["ce_m"] = (
+            soi.get("ce_m")
+            or 100
+        )
 
     patch = {
         "target_id": target_id,
         "node_uid": node_uid,
         "source_soi_id": soi_id,
-        "frequency_mhz": frequency_mhz,
         "classification": {
             "display_label": display_label,
-            "candidates": [
-                {
-                    "source": "database",
-                    "label": soi.get("database_classification", ""),
-                },
-                {
-                    "source": "model",
-                    "label": soi.get("model_classification", ""),
-                    "confidence": soi.get("model_confidence_pct", ""),
-                },
-            ],
+            "candidates": candidates,
+            "selected_source": "operator_review"
+            if (
+                display_label not in (
+                    model_label,
+                    database_label,
+                )
+            )
+            else "soi",
         },
-        "location": {
-            "lat": soi.get("lat"),
-            "lon": soi.get("lon"),
-            "hae_m": soi.get("hae_m"),
-            "ce_m": 100,
-            "source": "soi",
-        },
+        "identity": identity,
+        "location": location,
         "state": "imported",
-        "artifact_id": artifact_id,
     }
+
+    if frequency_mhz not in (
+        None,
+        "",
+    ):
+        patch["frequency_mhz"] = (
+            frequency_mhz
+        )
 
     history_entry = {
         "event": "soi_promoted_to_target",
         "soi_id": soi_id,
-        "artifact_id": artifact_id,
-        "operation_id": soi.get("operation_id", ""),
+        "operation_id": soi.get(
+            "operation_id",
+            "",
+        ),
+        "classification": display_label,
+        "identity": dict(identity),
     }
 
     await dashboard.backend.tacticalPromoteSoiToTarget(
         target_id=target_id,
         patch=patch,
         history_entry=history_entry,
-        artifact_id=artifact_id,
+        artifact_id="",
     )
 
 
@@ -6506,19 +7238,345 @@ def initialize_tactical_targets_details_context_menu(
     )
 
 
-@QtCore.pyqtSlot(QtCore.QObject, QtCore.QPoint)
+def _openTacticalTargetSourceSoi(
+    dashboard: QtCore.QObject,
+    target: dict,
+):
+    """
+    Navigate from the selected global Target to its originating SOI.
+
+    The SOI must already exist in the Dashboard's authoritative SOI cache.
+    The helper switches to the correct node and selects the matching SOI row.
+    """
+    source_soi_id = str(
+        target.get(
+            "source_soi_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not source_soi_id:
+        dashboard.statusBar().showMessage(
+            "The selected Target does not reference a source SOI.",
+            5000,
+        )
+        return
+
+    matching_key = None
+    matching_soi = None
+
+    for (
+        soi_key,
+        soi,
+    ) in (
+        getattr(
+            dashboard,
+            "tactical_sois",
+            {},
+        )
+        or {}
+    ).items():
+        if not isinstance(
+            soi,
+            dict,
+        ):
+            continue
+
+        candidate_ids = {
+            str(
+                soi_key or ""
+            ).strip(),
+            str(
+                soi.get(
+                    "soi_id",
+                    "",
+                )
+                or ""
+            ).strip(),
+            str(
+                soi.get(
+                    "uid",
+                    "",
+                )
+                or ""
+            ).strip(),
+        }
+
+        if (
+            source_soi_id
+            in candidate_ids
+        ):
+            matching_key = (
+                soi_key
+            )
+            matching_soi = soi
+            break
+
+    if (
+        matching_key is None
+        or matching_soi is None
+    ):
+        dashboard.statusBar().showMessage(
+            (
+                "Source SOI is not currently loaded. "
+                "Refresh the originating node's SOIs first."
+            ),
+            6000,
+        )
+        return
+
+    node_uid = str(
+        matching_soi.get(
+            "node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if (
+        node_uid
+        and node_uid
+        != str(
+            getattr(
+                dashboard,
+                "selected_tactical_node_uid",
+                "",
+            )
+            or ""
+        ).strip()
+    ):
+        dashboard.selected_tactical_node_uid = (
+            node_uid
+        )
+
+        rebuild_tactical_node_sois(
+            dashboard,
+            node_uid,
+        )
+
+    dashboard.ui.tabWidget_tactical.setCurrentIndex(
+        0
+    )
+
+    node_tabs = getattr(
+        dashboard.ui,
+        "tabWidget_tactical_node",
+        None,
+    )
+
+    if node_tabs is not None:
+        for tab_index in range(
+            node_tabs.count()
+        ):
+            tab_text = str(
+                node_tabs.tabText(
+                    tab_index
+                )
+                or ""
+            ).strip().lower()
+
+            if tab_text == "sois":
+                node_tabs.setCurrentIndex(
+                    tab_index
+                )
+                break
+
+    table = (
+        dashboard.ui
+        .tableWidget_tactical_node_sois
+    )
+
+    for row in range(
+        table.rowCount()
+    ):
+        item = table.item(
+            row,
+            0,
+        )
+
+        if item is None:
+            continue
+
+        row_key = (
+            item.data(
+                QtCore.Qt.UserRole
+            )
+        )
+
+        if row_key != matching_key:
+            continue
+
+        table.blockSignals(True)
+        table.selectRow(row)
+        table.setCurrentCell(
+            row,
+            0,
+        )
+        table.blockSignals(False)
+
+        dashboard.selected_tactical_node_soi_id = (
+            matching_key
+        )
+
+        _slotTacticalNodeSoisRowSelectionChanged(
+            dashboard
+        )
+
+        table.scrollToItem(
+            item
+        )
+        return
+
+    dashboard.statusBar().showMessage(
+        "Source SOI is loaded but was not found in the visible SOI table.",
+        5000,
+    )
+
+
+async def _downloadTacticalTargetData(
+    dashboard: QtCore.QObject,
+    target: dict,
+):
+    """
+    Download missing Target-owned artifacts, rebuild a fresh Target folder,
+    and open it without changing Tactical tabs.
+    """
+    from fissure.Dashboard.TargetDataController import (
+        build_target_data_folder,
+        collect_target_artifact_ids,
+    )
+
+    artifact_ids = (
+        collect_target_artifact_ids(
+            target
+        )
+    )
+
+    dashboard.statusBar().showMessage(
+        (
+            f"Preparing Target data with "
+            f"{len(artifact_ids)} artifact"
+            f"{'' if len(artifact_ids) == 1 else 's'}..."
+        ),
+        5000,
+    )
+
+    try:
+        target_path = (
+            await build_target_data_folder(
+                dashboard,
+                target,
+            )
+        )
+
+        dashboard.logger.info(
+            "[Tactical] Target data folder rebuilt: "
+            f"target_id={target.get('target_id', '')} "
+            f"artifact_count={len(artifact_ids)} "
+            f"path={target_path}"
+        )
+
+        dashboard.statusBar().showMessage(
+            "Target data folder prepared.",
+            5000,
+        )
+
+        _updateTacticalTargetsDownloadDataButton(
+            dashboard,
+            target,
+        )
+
+        return target_path
+
+    except Exception as exc:
+        dashboard.logger.error(
+            "[Tactical] Target data preparation failed: "
+            f"{exc}"
+        )
+
+        QtWidgets.QMessageBox.warning(
+            dashboard,
+            "Target Data",
+            (
+                "Unable to prepare the Target data folder.\n\n"
+                f"{exc}"
+            ),
+        )
+
+        _updateTacticalTargetsDownloadDataButton(
+            dashboard,
+            target,
+        )
+
+        return ""
+    
+
+@QtCore.pyqtSlot(
+    QtCore.QObject,
+    QtCore.QPoint,
+)
 def _showTacticalTargetsDetailsContextMenu(
     dashboard: QtCore.QObject,
     position: QtCore.QPoint,
 ):
-    label = dashboard.ui.label2_tactical_targets_details
+    """
+    Show presentation and source-SOI actions for the selected global Target.
 
-    menu = QtWidgets.QMenu(label)
-
-    action_full_details = menu.addAction(
-        "Full Details"
+    Target data download is exposed through the visible
+    pushButton_tactical_targets_download_data button.
+    """
+    label = (
+        dashboard.ui
+        .label2_tactical_targets_details
     )
-    action_full_details.setCheckable(True)
+
+    target_id = getattr(
+        dashboard,
+        "selected_tactical_target_id",
+        None,
+    )
+
+    target = (
+        dashboard.tactical_targets.get(
+            target_id
+        )
+        if target_id
+        else None
+    )
+
+    has_target = bool(
+        isinstance(
+            target,
+            dict,
+        )
+        and target
+    )
+
+    source_soi_id = (
+        str(
+            target.get(
+                "source_soi_id",
+                "",
+            )
+            or ""
+        ).strip()
+        if has_target
+        else ""
+    )
+
+    menu = QtWidgets.QMenu(
+        label
+    )
+
+    action_full_details = (
+        menu.addAction(
+            "Full Details"
+        )
+    )
+    action_full_details.setCheckable(
+        True
+    )
     action_full_details.setChecked(
         bool(
             getattr(
@@ -6528,57 +7586,104 @@ def _showTacticalTargetsDetailsContextMenu(
             )
         )
     )
+    action_full_details.setEnabled(
+        has_target
+    )
 
     menu.addSeparator()
 
-    action_copy = menu.addAction("Copy")
-    action_select_all = menu.addAction("Select All")
-
-    has_text = bool(label.text().strip())
-    has_selection = bool(label.hasSelectedText())
-
-    action_copy.setEnabled(has_selection)
-    action_select_all.setEnabled(has_text)
-
-    selected_action = menu.exec_(
-        label.mapToGlobal(position)
+    action_open_source_soi = (
+        menu.addAction(
+            "Open Source SOI"
+        )
+    )
+    action_open_source_soi.setEnabled(
+        bool(
+            has_target
+            and source_soi_id
+        )
     )
 
-    if selected_action == action_full_details:
+    menu.addSeparator()
+
+    action_copy = menu.addAction(
+        "Copy"
+    )
+    action_select_all = (
+        menu.addAction(
+            "Select All"
+        )
+    )
+
+    has_text = bool(
+        label.text().strip()
+    )
+    has_selection = bool(
+        label.hasSelectedText()
+    )
+
+    action_copy.setEnabled(
+        has_selection
+    )
+    action_select_all.setEnabled(
+        has_text
+    )
+
+    selected_action = menu.exec_(
+        label.mapToGlobal(
+            position
+        )
+    )
+
+    if (
+        selected_action
+        == action_full_details
+    ):
         dashboard.tactical_targets_full_details = (
             action_full_details.isChecked()
         )
 
-        target_id = getattr(
-            dashboard,
-            "selected_tactical_target_id",
-            None,
-        )
-
-        target = (
-            dashboard.tactical_targets.get(target_id)
-            if target_id
-            else None
-        )
-
-        if isinstance(target, dict) and target:
+        if has_target:
             populate_tactical_targets_details(
                 dashboard,
                 target,
             )
 
-    elif selected_action == action_copy:
-        selected_text = label.selectedText()
+    elif (
+        selected_action
+        == action_open_source_soi
+    ):
+        _openTacticalTargetSourceSoi(
+            dashboard,
+            target,
+        )
+
+    elif (
+        selected_action
+        == action_copy
+    ):
+        selected_text = (
+            label.selectedText()
+        )
 
         if selected_text:
-            QtWidgets.QApplication.clipboard().setText(
-                selected_text
+            (
+                QtWidgets.QApplication
+                .clipboard()
+                .setText(
+                    selected_text
+                )
             )
 
-    elif selected_action == action_select_all:
+    elif (
+        selected_action
+        == action_select_all
+    ):
         label.setSelection(
             0,
-            len(label.text()),
+            len(
+                label.text()
+            ),
         )
 
 
@@ -6587,8 +7692,14 @@ def populate_tactical_targets_details(
     target: dict,
 ):
     """
-    Displays either a curated Target summary or every non-empty structured
-    field except raw transport payloads.
+    Display a concise global Target summary or the complete structured Target.
+
+    This renderer is only for Tactical > Targets. The selected-node Target
+    panel remains a fixed compact operational summary.
+
+    Target-owned artifacts and operation history are cumulative. Investigative
+    SOI evidence remains linked through source_soi_id instead of being copied
+    into the Target.
     """
     hidden_keys = {
         "raw_xml",
@@ -6598,82 +7709,16 @@ def populate_tactical_targets_details(
         "raw_payload",
     }
 
-    summary_field_groups = [
-        (
-            "Target ID",
-            [
-                "target_id",
-                "uid",
-                "id",
-            ],
-        ),
-        (
-            "Display Label",
-            [
-                "type",
-                "display_label",
-                "target_label",
-                "name",
-            ],
-        ),
-        (
-            "State",
-            [
-                "state",
-                "target_state",
-                "status",
-            ],
-        ),
-        (
-            "Geolocation",
-            [
-                "geolocation_status",
-                "geolocate_status",
-            ],
-        ),
-        (
-            "Location",
-            [
-                "location",
-            ],
-        ),
-        (
-            "Frequency",
-            [
-                "target_frequency_mhz",
-                "frequency_mhz",
-                "frequency_hz",
-                "frequency",
-            ],
-        ),
-        (
-            "Updated",
-            [
-                "updated",
-                "updated_at",
-                "time",
-                "timestamp",
-            ],
-        ),
-        (
-            "Node ID",
-            [
-                "node_uid",
-                "sensor_node_id",
-                "node_id",
-            ],
-        ),
-    ]
-
     def is_empty(value):
         if value is None:
             return True
 
         if isinstance(value, str):
-            return value.strip() in [
+            return value.strip() in {
                 "",
                 "None",
-            ]
+                "null",
+            }
 
         if isinstance(
             value,
@@ -6689,15 +7734,24 @@ def populate_tactical_targets_details(
         return False
 
     def make_label(key):
-        return str(key).replace(
-            "_",
-            " ",
-        ).strip().title()
+        return (
+            str(key)
+            .replace("_", " ")
+            .strip()
+            .title()
+        )
 
     def field_label_html(label):
         return (
             "<span style='font-weight:500;'>"
             f"{html.escape(str(label))}:"
+            "</span>"
+        )
+
+    def section_header_html(label):
+        return (
+            "<span style='font-weight:700;'>"
+            f"{html.escape(str(label))}"
             "</span>"
         )
 
@@ -6709,12 +7763,16 @@ def populate_tactical_targets_details(
         if normalized_key in {
             "updated",
             "updated_at",
+            "created_time",
+            "last_update_time",
             "time",
             "timestamp",
             "last_observation_time",
         }:
-            formatted_time = format_detection_time(
-                value
+            formatted_time = (
+                format_detection_time(
+                    value
+                )
             )
 
             if formatted_time:
@@ -6725,13 +7783,17 @@ def populate_tactical_targets_details(
             "frequency_mhz",
         }:
             try:
-                return f"{float(value):.3f} MHz"
+                return (
+                    f"{float(value):.3f} MHz"
+                )
             except Exception:
                 pass
 
         if normalized_key == "frequency_hz":
             try:
-                return f"{float(value) / 1e6:.3f} MHz"
+                return (
+                    f"{float(value) / 1e6:.3f} MHz"
+                )
             except Exception:
                 pass
 
@@ -6742,7 +7804,9 @@ def populate_tactical_targets_details(
             "power_dbm",
         }:
             try:
-                return f"{float(value):.1f} dBm"
+                return (
+                    f"{float(value):.1f} dBm"
+                )
             except Exception:
                 pass
 
@@ -6753,24 +7817,56 @@ def populate_tactical_targets_details(
             "hae_m",
         }:
             try:
-                return f"{float(value):.1f} m"
+                return (
+                    f"{float(value):.1f} m"
+                )
             except Exception:
                 pass
+
+        if isinstance(value, bool):
+            return (
+                "Yes"
+                if value
+                else "No"
+            )
 
         return str(value)
 
     def build_location_value(record):
         lat = (
             record.get("lat")
-            if record.get("lat") not in [None, "", "None"]
+            if record.get("lat")
+            not in [None, "", "None"]
             else record.get("latitude")
         )
 
         lon = (
             record.get("lon")
-            if record.get("lon") not in [None, "", "None"]
+            if record.get("lon")
+            not in [None, "", "None"]
             else record.get("longitude")
         )
+
+        location_block = (
+            record.get("location")
+        )
+
+        if (
+            (
+                lat in [None, "", "None"]
+                or lon in [None, "", "None"]
+            )
+            and isinstance(
+                location_block,
+                dict,
+            )
+        ):
+            lat = location_block.get(
+                "lat"
+            )
+            lon = location_block.get(
+                "lon"
+            )
 
         if (
             lat in [None, "", "None"]
@@ -6784,46 +7880,83 @@ def populate_tactical_targets_details(
                 f"{float(lon):.6f}"
             )
         except Exception:
-            location = f"{lat}, {lon}"
+            location = (
+                f"{lat}, {lon}"
+            )
 
         ce_m = (
             record.get("ce_m")
-            if record.get("ce_m") not in [None, "", "None"]
+            if record.get("ce_m")
+            not in [None, "", "None"]
             else record.get("ce")
         )
 
-        if ce_m not in [None, "", "None"]:
-            location += f"  CE {ce_m} m"
+        if (
+            ce_m in [None, "", "None"]
+            and isinstance(
+                location_block,
+                dict,
+            )
+        ):
+            ce_m = location_block.get(
+                "ce_m"
+            )
+
+        if ce_m not in [
+            None,
+            "",
+            "None",
+        ]:
+            try:
+                location += (
+                    f"  CE {float(ce_m):.1f} m"
+                )
+            except Exception:
+                location += (
+                    f"  CE {ce_m} m"
+                )
 
         return location
 
-    def first_value(record, keys):
-        for key in keys:
-            if key == "location":
-                value = build_location_value(record)
-            else:
-                value = record.get(key)
+    def append_value(
+        lines,
+        key,
+        value,
+        depth=0,
+        display_label=None,
+    ):
+        normalized_key = (
+            str(key)
+            .strip()
+            .lower()
+        )
 
-            if not is_empty(value):
-                return key, value
-
-        return None, None
-
-    def append_value(lines, key, value, depth=0):
-        normalized_key = str(key).strip().lower()
-
-        if normalized_key in hidden_keys or is_empty(value):
+        if (
+            normalized_key in hidden_keys
+            or is_empty(value)
+        ):
             return
 
-        label = make_label(key)
-        indent = "&nbsp;" * (depth * 4)
+        label = (
+            display_label
+            or make_label(key)
+        )
+
+        indent = (
+            "&nbsp;"
+            * (depth * 4)
+        )
 
         if isinstance(value, dict):
             lines.append(
-                f"{indent}{field_label_html(label)}"
+                f"{indent}"
+                f"{field_label_html(label)}"
             )
 
-            for nested_key, nested_value in value.items():
+            for (
+                nested_key,
+                nested_value,
+            ) in value.items():
                 append_value(
                     lines,
                     nested_key,
@@ -6833,31 +7966,57 @@ def populate_tactical_targets_details(
 
             return
 
-        if isinstance(value, (list, tuple, set)):
+        if isinstance(
+            value,
+            (
+                list,
+                tuple,
+                set,
+            ),
+        ):
             values = list(value)
 
             if not values:
                 return
 
             lines.append(
-                f"{indent}{field_label_html(label)}"
+                f"{indent}"
+                f"{field_label_html(label)}"
             )
 
-            for item in values:
+            for index, item in enumerate(
+                values,
+                start=1,
+            ):
                 if is_empty(item):
                     continue
 
+                child_indent = (
+                    "&nbsp;"
+                    * ((depth + 1) * 4)
+                )
+
                 if isinstance(item, dict):
-                    for nested_key, nested_value in item.items():
+                    lines.append(
+                        f"{child_indent}"
+                        "<span style='font-weight:600;'>"
+                        f"{index}."
+                        "</span>"
+                    )
+
+                    for (
+                        nested_key,
+                        nested_value,
+                    ) in item.items():
                         append_value(
                             lines,
                             nested_key,
                             nested_value,
-                            depth + 1,
+                            depth + 2,
                         )
                 else:
                     lines.append(
-                        f"{'&nbsp;' * ((depth + 1) * 4)}"
+                        f"{child_indent}"
                         f"{html.escape(str(item))}"
                     )
 
@@ -6869,9 +8028,216 @@ def populate_tactical_targets_details(
         )
 
         lines.append(
-            f"{indent}{field_label_html(label)} "
+            f"{indent}"
+            f"{field_label_html(label)} "
             f"{html.escape(display_value)}"
         )
+
+    def append_section(
+        lines,
+        title,
+        value,
+        key_name=None,
+    ):
+        if is_empty(value):
+            return
+
+        if lines:
+            lines.append("<br>")
+
+        lines.append(
+            section_header_html(title)
+        )
+
+        if isinstance(value, dict):
+            for key, child_value in (
+                value.items()
+            ):
+                append_value(
+                    lines,
+                    key,
+                    child_value,
+                    depth=1,
+                )
+        elif isinstance(
+            value,
+            (
+                list,
+                tuple,
+                set,
+            ),
+        ):
+            append_value(
+                lines,
+                key_name or title,
+                value,
+                depth=1,
+                display_label=title,
+            )
+        else:
+            append_value(
+                lines,
+                key_name or title,
+                value,
+                depth=1,
+                display_label=title,
+            )
+
+    classification = (
+        target.get("classification")
+        if isinstance(
+            target.get(
+                "classification"
+            ),
+            dict,
+        )
+        else {}
+    )
+
+    identity = (
+        target.get("identity")
+        if isinstance(
+            target.get("identity"),
+            dict,
+        )
+        else {}
+    )
+
+    artifact_ids = (
+        target.get("artifact_ids")
+        if isinstance(
+            target.get(
+                "artifact_ids"
+            ),
+            list,
+        )
+        else []
+    )
+
+    artifact_links = (
+        target.get("artifact_links")
+        if isinstance(
+            target.get(
+                "artifact_links"
+            ),
+            list,
+        )
+        else []
+    )
+
+    history = (
+        target.get("history")
+        if isinstance(
+            target.get("history"),
+            list,
+        )
+        else []
+    )
+
+    latest_artifact_id = str(
+        target.get("artifact_id", "")
+        or ""
+    ).strip()
+
+    if (
+        latest_artifact_id
+        and latest_artifact_id
+        not in artifact_ids
+    ):
+        artifact_ids = (
+            list(artifact_ids)
+            + [latest_artifact_id]
+        )
+
+    target_id = (
+        target.get("target_id")
+        or target.get("uid")
+        or target.get("id")
+    )
+
+    display_label = (
+        target.get("type")
+        or target.get("display_label")
+        or target.get("target_label")
+        or classification.get(
+            "display_label"
+        )
+        or target.get("name")
+    )
+
+    state = (
+        target.get("state")
+        or target.get("target_state")
+        or target.get("status")
+    )
+
+    geolocation_status = (
+        target.get(
+            "geolocation_status"
+        )
+        or target.get(
+            "geolocate_status"
+        )
+    )
+
+    geolocate_block = (
+        target.get("geolocate")
+    )
+
+    if (
+        is_empty(geolocation_status)
+        and isinstance(
+            geolocate_block,
+            dict,
+        )
+    ):
+        geolocation_status = (
+            geolocate_block.get(
+                "status"
+            )
+        )
+
+    frequency = (
+        target.get(
+            "target_frequency_mhz"
+        )
+        if not is_empty(
+            target.get(
+                "target_frequency_mhz"
+            )
+        )
+        else target.get(
+            "frequency_mhz"
+        )
+    )
+
+    source_soi_id = target.get(
+        "source_soi_id"
+    )
+
+    node_id = (
+        target.get("node_uid")
+        or target.get(
+            "sensor_node_id"
+        )
+        or target.get("node_id")
+    )
+
+    updated = (
+        target.get("updated")
+        or target.get(
+            "last_update_time"
+        )
+        or target.get("updated_at")
+        or target.get("time")
+        or target.get("timestamp")
+    )
+
+    location_text = (
+        build_location_value(
+            target
+        )
+    )
 
     lines = []
 
@@ -6883,42 +8249,383 @@ def populate_tactical_targets_details(
         )
     )
 
-    if full_details:
-        for key, value in target.items():
-            append_value(
-                lines,
-                key,
-                value,
-            )
-    else:
-        for label, keys in summary_field_groups:
-            key, value = first_value(
-                target,
-                keys,
-            )
+    if not full_details:
+        summary_fields = (
+            (
+                "Target ID",
+                "target_id",
+                target_id,
+            ),
+            (
+                "Display Label",
+                "display_label",
+                display_label,
+            ),
+            (
+                "State",
+                "state",
+                state,
+            ),
+            (
+                "Geolocation",
+                "geolocation_status",
+                geolocation_status,
+            ),
+            (
+                "Source SOI",
+                "source_soi_id",
+                source_soi_id,
+            ),
+            (
+                "Location",
+                "location",
+                location_text,
+            ),
+            (
+                "Frequency",
+                "frequency_mhz",
+                frequency,
+            ),
+            (
+                "Node ID",
+                "node_uid",
+                node_id,
+            ),
+        )
 
+        for (
+            label,
+            key,
+            value,
+        ) in summary_fields:
             if is_empty(value):
                 continue
 
-            if key == "location":
-                display_value = str(value)
-            else:
-                display_value = format_scalar(
+            display_value = (
+                str(value)
+                if key == "location"
+                else format_scalar(
                     key,
                     value,
                 )
+            )
 
             lines.append(
                 f"{field_label_html(label)} "
                 f"{html.escape(display_value)}"
             )
 
+        if identity:
+            useful_identity_keys = (
+                "protocol",
+                "protocol_name",
+                "subtype",
+                "protocol_subtype",
+                "channel",
+                "channel_number",
+                "channel_name",
+                "callsign",
+                "device_name",
+                "device_id",
+                "serial",
+                "serial_number",
+                "mac",
+                "mac_address",
+                "bssid",
+                "ssid",
+                "ip",
+                "ip_address",
+                "hostname",
+                "talkgroup",
+                "talkgroup_id",
+                "network",
+                "network_id",
+                "communicates_with",
+            )
+
+            compact_identity = []
+
+            for key in useful_identity_keys:
+                value = identity.get(key)
+
+                if is_empty(value):
+                    continue
+
+                compact_identity.append(
+                    (
+                        make_label(key),
+                        value,
+                    )
+                )
+
+                if len(
+                    compact_identity
+                ) >= 6:
+                    break
+
+            if compact_identity:
+                lines.append("<br>")
+                lines.append(
+                    section_header_html(
+                        "Identity"
+                    )
+                )
+
+                for label, value in (
+                    compact_identity
+                ):
+                    lines.append(
+                        "&nbsp;&nbsp;&nbsp;&nbsp;"
+                        f"{field_label_html(label)} "
+                        f"{html.escape(str(value))}"
+                    )
+
+        lines.append(
+            f"{field_label_html('Target Artifacts')} "
+            f"{len(artifact_ids)}"
+        )
+
+        lines.append(
+            f"{field_label_html('History Entries')} "
+            f"{len(history)}"
+        )
+
+        if not is_empty(updated):
+            lines.append(
+                f"{field_label_html('Updated')} "
+                f"{html.escape(format_scalar('updated', updated))}"
+            )
+
+    else:
+        lines.append(
+            section_header_html(
+                "Target"
+            )
+        )
+
+        core_fields = (
+            (
+                "Target ID",
+                target_id,
+            ),
+            (
+                "Display Label",
+                display_label,
+            ),
+            (
+                "State",
+                state,
+            ),
+            (
+                "Geolocation",
+                geolocation_status,
+            ),
+            (
+                "Source SOI",
+                source_soi_id,
+            ),
+            (
+                "Location",
+                location_text,
+            ),
+            (
+                "Frequency",
+                (
+                    format_scalar(
+                        "frequency_mhz",
+                        frequency,
+                    )
+                    if not is_empty(
+                        frequency
+                    )
+                    else None
+                ),
+            ),
+            (
+                "Node ID",
+                node_id,
+            ),
+            (
+                "Created",
+                (
+                    format_scalar(
+                        "created_time",
+                        target.get(
+                            "created_time"
+                        ),
+                    )
+                    if not is_empty(
+                        target.get(
+                            "created_time"
+                        )
+                    )
+                    else None
+                ),
+            ),
+            (
+                "Updated",
+                (
+                    format_scalar(
+                        "updated",
+                        updated,
+                    )
+                    if not is_empty(
+                        updated
+                    )
+                    else None
+                ),
+            ),
+        )
+
+        for label, value in (
+            core_fields
+        ):
+            if is_empty(value):
+                continue
+
+            lines.append(
+                "&nbsp;&nbsp;&nbsp;&nbsp;"
+                f"{field_label_html(label)} "
+                f"{html.escape(str(value))}"
+            )
+
+        append_section(
+            lines,
+            "Classification",
+            classification,
+        )
+
+        append_section(
+            lines,
+            "Identity",
+            identity,
+        )
+
+        append_section(
+            lines,
+            "Location Record",
+            target.get("location"),
+        )
+
+        append_section(
+            lines,
+            "Wi-Fi",
+            target.get("wifi"),
+        )
+
+        append_section(
+            lines,
+            "RF",
+            target.get("rf"),
+        )
+
+        append_section(
+            lines,
+            "Geolocation",
+            target.get("geolocate"),
+        )
+
+        if artifact_ids:
+            append_section(
+                lines,
+                "Target Artifacts",
+                artifact_ids,
+                key_name="artifact_ids",
+            )
+
+        if artifact_links:
+            append_section(
+                lines,
+                "Artifact Links",
+                artifact_links,
+                key_name="artifact_links",
+            )
+
+        if history:
+            append_section(
+                lines,
+                "Operational History",
+                history,
+                key_name="history",
+            )
+
+        handled_keys = {
+            "target_id",
+            "uid",
+            "id",
+            "type",
+            "display_label",
+            "target_label",
+            "name",
+            "state",
+            "target_state",
+            "status",
+            "geolocation_status",
+            "geolocate_status",
+            "source_soi_id",
+            "target_frequency_mhz",
+            "frequency_mhz",
+            "frequency_hz",
+            "frequency",
+            "lat",
+            "latitude",
+            "lon",
+            "longitude",
+            "ce",
+            "ce_m",
+            "hae",
+            "hae_m",
+            "node_uid",
+            "sensor_node_id",
+            "node_id",
+            "created_time",
+            "last_update_time",
+            "updated",
+            "updated_at",
+            "time",
+            "timestamp",
+            "classification",
+            "identity",
+            "location",
+            "wifi",
+            "rf",
+            "geolocate",
+            "artifact_id",
+            "artifact_ids",
+            "artifact_links",
+            "history",
+        }
+
+        remaining = {
+            key: value
+            for key, value in (
+                target.items()
+            )
+            if (
+                key not in handled_keys
+                and key not in hidden_keys
+                and not is_empty(value)
+            )
+        }
+
+        append_section(
+            lines,
+            "Additional Fields",
+            remaining,
+        )
+
     dashboard.ui.label2_tactical_targets_details.setText(
         "<br>".join(lines)
     )
 
     dashboard.ui.label2_tactical_targets_details.setAlignment(
-        QtCore.Qt.AlignLeft | QtCore.Qt.AlignTop
+        QtCore.Qt.AlignLeft
+        | QtCore.Qt.AlignTop
+    )
+
+    _updateTacticalTargetsDownloadDataButton(
+        dashboard,
+        target,
     )
 
 
@@ -7132,3 +8839,144 @@ def _apply_tactical_details_panel_role(*widgets):
             style.polish(widget)
 
         widget.update()
+
+
+def _updateTacticalTargetsDownloadDataButton(
+    dashboard: QtCore.QObject,
+    target: dict = None,
+):
+    """
+    Update the global Targets Download Data button.
+
+    The button always rebuilds the latest Target export. It never changes to
+    Open Folder.
+    """
+    button = (
+        dashboard.ui
+        .pushButton_tactical_targets_download_data
+    )
+
+    if target is None:
+        target_id = getattr(
+            dashboard,
+            "selected_tactical_target_id",
+            None,
+        )
+
+        target = (
+            dashboard.tactical_targets.get(
+                target_id
+            )
+            if target_id
+            else None
+        )
+
+    has_target = bool(
+        isinstance(
+            target,
+            dict,
+        )
+        and target
+    )
+
+    button.setText(
+        "Download Data"
+    )
+
+    button.setEnabled(
+        has_target
+    )
+
+    if has_target:
+        button.setToolTip(
+            (
+                "Download missing Target-owned artifacts, "
+                "replace the existing Target data folder, "
+                "and open the rebuilt folder."
+            )
+        )
+    else:
+        button.setToolTip(
+            "Select a Target to download its data."
+        )
+
+
+@QtCore.pyqtSlot(
+    QtCore.QObject
+)
+def _slotTacticalTargetsDownloadDataClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Rebuild and open data for the selected global Target.
+
+    The previous disposable Target folder is always replaced. Verified cached
+    artifacts are reused and only missing artifacts are downloaded.
+    """
+    target_id = getattr(
+        dashboard,
+        "selected_tactical_target_id",
+        None,
+    )
+
+    target = (
+        dashboard.tactical_targets.get(
+            target_id
+        )
+        if target_id
+        else None
+    )
+
+    if not isinstance(
+        target,
+        dict,
+    ) or not target:
+        dashboard.statusBar().showMessage(
+            "Select a Target first.",
+            5000,
+        )
+        return
+
+    button = (
+        dashboard.ui
+        .pushButton_tactical_targets_download_data
+    )
+
+    button.setEnabled(
+        False
+    )
+    button.setText(
+        "Downloading..."
+    )
+
+    task = asyncio.create_task(
+        _downloadTacticalTargetData(
+            dashboard,
+            target,
+        )
+    )
+
+    def download_finished(
+        completed_task,
+    ):
+        try:
+            completed_task.result()
+
+        except asyncio.CancelledError:
+            pass
+
+        except Exception as exc:
+            dashboard.logger.error(
+                "[Tactical] Target data task failed: "
+                f"{exc}"
+            )
+
+        finally:
+            _updateTacticalTargetsDownloadDataButton(
+                dashboard,
+                target,
+            )
+
+    task.add_done_callback(
+        download_finished
+    )

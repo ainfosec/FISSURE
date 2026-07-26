@@ -1670,9 +1670,9 @@
        </property>
        <property name="geometry">
         <rect>
-         <x>170</x>
+         <x>153</x>
          <y>770</y>
-         <width>120</width>
+         <width>143</width>
          <height>25</height>
         </rect>
        </property>
@@ -1720,6 +1720,27 @@
        </property>
        <property name="text">
         <string>Geolocate</string>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="pushButton_tactical_targets_download_data">
+       <property name="enabled">
+        <bool>false</bool>
+       </property>
+       <property name="geometry">
+        <rect>
+         <x>5</x>
+         <y>770</y>
+         <width>143</width>
+         <height>25</height>
+        </rect>
+       </property>
+       <property name="font">
+        <font>
+         <pointsize>11</pointsize>
+        </font>
+       </property>
+       <property name="text">
+        <string>Download Data</string>
        </property>
       </widget>
      </widget>

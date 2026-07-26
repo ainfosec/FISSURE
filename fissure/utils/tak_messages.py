@@ -12,6 +12,8 @@ from typing import Union, Tuple
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 import zipfile
+import json
+import shutil
 
 from fissure.utils.artifacts import Artifact
 from fissure.utils.common import extractFrequencyFromUID, get_fissure_config
@@ -766,6 +768,342 @@ async def send_artifact_files_event(
     await _dispatch_cot(
         component,
         msg,
+        destination=destination,
+        requester_uid=requester_uid,
+    )
+
+
+def create_fissure_record_data_package(
+    package_uid: str,
+    package_name: str,
+    source_root: str,
+) -> Tuple[bytes, str]:
+    """
+    Create a TAK Mission Package from a prepared directory tree.
+
+    source_root is disposable staging content containing record snapshots and
+    any linked artifact directories. Every regular file below source_root is
+    included using its relative path.
+    """
+    package_uid = str(
+        package_uid or ""
+    ).strip()
+
+    package_name = str(
+        package_name or ""
+    ).strip()
+
+    source_root = os.path.abspath(
+        str(source_root or "")
+    )
+
+    if not package_uid:
+        raise ValueError(
+            "package_uid is required"
+        )
+
+    if not package_name:
+        raise ValueError(
+            "package_name is required"
+        )
+
+    if not os.path.isdir(source_root):
+        raise FileNotFoundError(
+            f"Package source directory not found: {source_root}"
+        )
+
+    safe_package_name = (
+        package_name
+        .upper()
+        .replace(" ", "_")
+    )
+
+    package_filename = (
+        f"{safe_package_name}.zip"
+    )
+
+    with tempfile.NamedTemporaryFile(
+        suffix=".zip",
+        delete=False,
+    ) as temporary_zip:
+        temporary_zip_path = (
+            temporary_zip.name
+        )
+
+    try:
+        content_entries = []
+
+        with zipfile.ZipFile(
+            temporary_zip_path,
+            "w",
+            zipfile.ZIP_DEFLATED,
+        ) as zip_handle:
+            for root, directories, filenames in os.walk(
+                source_root
+            ):
+                directories.sort()
+                filenames.sort()
+
+                for filename in filenames:
+                    local_path = os.path.join(
+                        root,
+                        filename,
+                    )
+
+                    if not os.path.isfile(local_path):
+                        continue
+
+                    relative_path = os.path.relpath(
+                        local_path,
+                        source_root,
+                    )
+
+                    normalized_relative_path = (
+                        relative_path
+                        .replace(os.sep, "/")
+                    )
+
+                    if (
+                        normalized_relative_path == ".."
+                        or normalized_relative_path.startswith(
+                            "../"
+                        )
+                    ):
+                        raise ValueError(
+                            "Invalid package-relative path: "
+                            f"{relative_path}"
+                        )
+
+                    zip_handle.write(
+                        local_path,
+                        arcname=normalized_relative_path,
+                    )
+
+                    content_entries.append(
+                        normalized_relative_path
+                    )
+
+            if not content_entries:
+                raise ValueError(
+                    "The Mission Package has no content files"
+                )
+
+            manifest = ET.Element(
+                "MissionPackageManifest",
+                version="2",
+            )
+
+            configuration = ET.SubElement(
+                manifest,
+                "Configuration",
+            )
+
+            ET.SubElement(
+                configuration,
+                "Parameter",
+                name="name",
+                value=safe_package_name,
+            )
+
+            ET.SubElement(
+                configuration,
+                "Parameter",
+                name="uid",
+                value=package_uid,
+            )
+
+            contents = ET.SubElement(
+                manifest,
+                "Contents",
+            )
+
+            for relative_path in content_entries:
+                ET.SubElement(
+                    contents,
+                    "Content",
+                    zipEntry=relative_path,
+                    ignore="false",
+                )
+
+            manifest_xml = _format_xml_pretty(
+                manifest
+            )
+
+            zip_handle.writestr(
+                "MANIFEST/manifest.xml",
+                manifest_xml.encode("UTF-8"),
+            )
+
+        with open(
+            temporary_zip_path,
+            "rb",
+        ) as package_handle:
+            package_data = (
+                package_handle.read()
+            )
+
+    finally:
+        try:
+            os.unlink(
+                temporary_zip_path
+            )
+        except OSError:
+            pass
+
+    return (
+        package_data,
+        package_filename,
+    )
+
+
+async def send_fissure_record_data_package(
+    component: object,
+    package_uid: str,
+    package_name: str,
+    source_root: str,
+    sender_source_id: str = "HIPRFISR",
+    destination: str = "tak",
+    requester_uid: str = None,
+) -> None:
+    """
+    Upload and announce a freshly rebuilt SOI or Target Mission Package.
+    """
+    try:
+        package_data, package_filename = (
+            create_fissure_record_data_package(
+                package_uid=package_uid,
+                package_name=package_name,
+                source_root=source_root,
+            )
+        )
+    except Exception:
+        component.logger.exception(
+            "Failed creating FISSURE record Mission Package "
+            "uid=%s name=%s",
+            package_uid,
+            package_name,
+        )
+        return
+
+    package_sha256 = hashlib.sha256(
+        package_data
+    ).hexdigest()
+
+    sender_url = (
+        await upload_data_package_to_tak_server(
+            package_data,
+            package_sha256,
+            package_filename,
+            component,
+        )
+    )
+
+    if not sender_url:
+        component.logger.error(
+            "Failed uploading FISSURE record Mission Package "
+            "uid=%s",
+            package_uid,
+        )
+        return
+
+    message, detail = _build_base_event(
+        uid=f"FISSURE-DP-{package_uid}",
+        stale=300,
+    )
+
+    message.set(
+        "type",
+        "b-f-t-r",
+    )
+    message.set(
+        "version",
+        "2.0",
+    )
+
+    now = datetime.datetime.utcnow().strftime(
+        "%Y-%m-%dT%H:%M:%S.%fZ"
+    )
+
+    stale_time = (
+        datetime.datetime.utcnow()
+        + datetime.timedelta(minutes=5)
+    ).strftime(
+        "%Y-%m-%dT%H:%M:%S.%fZ"
+    )
+
+    message.set("time", now)
+    message.set("start", now)
+    message.set("stale", stale_time)
+
+    fileshare = ET.SubElement(
+        detail,
+        "fileshare",
+    )
+
+    fileshare.set(
+        "filename",
+        package_filename,
+    )
+    fileshare.set(
+        "senderUrl",
+        sender_url,
+    )
+    fileshare.set(
+        "sizeInBytes",
+        str(len(package_data)),
+    )
+    fileshare.set(
+        "sha256",
+        package_sha256,
+    )
+    fileshare.set(
+        "senderUid",
+        f"FISSURE-{sender_source_id}",
+    )
+    fileshare.set(
+        "senderCallsign",
+        f"FISSURE-{sender_source_id[:8]}",
+    )
+    fileshare.set(
+        "name",
+        package_name,
+    )
+
+    acknowledgement = ET.SubElement(
+        detail,
+        "ackrequest",
+    )
+
+    acknowledgement.set(
+        "uid",
+        f"ack-{package_uid[:16]}",
+    )
+    acknowledgement.set(
+        "ackrequested",
+        "true",
+    )
+    acknowledgement.set(
+        "tag",
+        package_name,
+    )
+
+    point = message.find("point")
+
+    if point is None:
+        point = ET.SubElement(
+            message,
+            "point",
+        )
+
+    point.set("lat", "0.0")
+    point.set("lon", "0.0")
+    point.set("hae", "0.0")
+    point.set("ce", "9999999.0")
+    point.set("le", "9999999.0")
+
+    await _dispatch_cot(
+        component,
+        message,
         destination=destination,
         requester_uid=requester_uid,
     )

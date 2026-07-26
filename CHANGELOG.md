@@ -1,6 +1,29 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-26
+
+Add complete SOI evidence and Target data packaging for TAK workflows
+
+### Added
+
+- Added dedicated TAK request handling for complete SOI evidence and Target data downloads.
+- Added reusable TAK Mission Package generation for authoritative record snapshots and linked artifact directories.
+- Added JSON and readable text snapshots for exported SOI and Target records.
+- Added server-side artifact collection that reuses verified HIPRFISR cache entries and retrieves missing artifacts from their source nodes before packaging.
+
+### Changed
+
+- Updated SOI evidence packaging to rebuild each Mission Package from the current SOI record and include all SOI-linked artifacts.
+- Updated Target data packaging to rebuild each Mission Package from the current Target record and include only Target-owned artifacts.
+- Updated SOI-to-Target promotion so promoted Targets retain `source_soi_id` without inheriting the SOI's evidence artifacts.
+- Updated TAK package delivery to upload and announce freshly generated SOI and Target packages through the existing TAK data-package workflow.
+
+### Fixed
+
+- Fixed promoted Targets incorrectly treating source SOI evidence as Target-owned artifacts.
+- Fixed SOI evidence downloads being limited to a single compatibility `artifact_id` instead of the complete linked artifact set.
+
 ## 2026-7-23
 
 Complete multi-file artifact handling across Conditioner, Feature Extractor, Tactical, and IQ Data
