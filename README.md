@@ -407,7 +407,88 @@ Install FISSURE per usual on a general purpose computer. Install FISSURE on the 
 
 Change the "autorun" field from from `false` to `true` to run the default autorun playlist file on startup and forgo remote operations. New autorun playlists can be generated and saved from the Dashboard Autorun tab.
 
-The remote sensor node acts as a server and must have a set of valid certificates (generated during install) that match with the client (local computer). The server needs the "server.key_secret" and "client.key" files while the client needs the "client.key_secret" and "server.key" files. If the certificates folder was generated on the server computer, the client files must be manually transferred to the other computer.
+An IP remote sensor node connects to HIPRFISR as a CURVE client. It needs the matching `certificates/clients/client_0.key_secret` and `certificates/server/server.key` files. Keep the private key out of source control and readable only by the sensor-node service account.
+
+**Apptainer Remote Sensor Node Deployment**
+
+The dedicated Apptainer deployment packages the headless `SensorNode` install, transfers it with SCP over AsyncSSH, installs it as a systemd service, and verifies both process health and a fresh heartbeat from HIPRFISR. Runtime configuration, certificates, logs, node UUID, and the writable overlay remain outside the SIF so upgrades preserve node identity and do not bake keys into the image.
+
+Prerequisites:
+
+- Apptainer on the build computer (or pass an existing SIF with `--image`).
+- Python 3.10 or newer with the deployer's AsyncSSH and docopt dependencies.
+- SSH access to the remote node and `sudo` permission for installing/managing
+  its system service.
+- The current FISSURE installation's Sensor Node YAML, already configured with
+  the desired remote nickname and HIPRFISR address.
+- Installed certificates containing `clients/client_0.key_secret` and
+  `server/server.key`.
+
+Install the Python deployment dependencies:
+
+```
+python3 -m pip install -r Installer/requirements-node-deploy.txt
+```
+
+For the basic installation, provide only the remote IP. The deployer assumes
+the `root` SSH account and securely prompts for its password:
+
+```
+Installer/deploy_remote_sensor_node.py 192.0.2.20
+```
+
+The deployer uses `YAML/Sensor_Node_Config/default.yaml` exactly as installed
+and selects the installed
+`certificates/clients/client_0.key_secret` and
+`certificates/server/server.key`. It performs no address discovery and does not
+modify the installed YAML or certificates.
+
+Before opening SSH, a full deployment uses the existing
+`build/fissure-sensor-node.sif` or builds it locally when it does not exist.
+Pass `--image /path/to/image.sif` to select a different existing image.
+If the local Apptainer executable is also missing, the deployer first installs
+it from the official PPA and then builds the SIF. Local `sudo` may prompt in
+the terminal during this step.
+
+If Apptainer is missing remotely, a full deployment installs it from the
+official Apptainer PPA on Ubuntu-derived `amd64` or `arm64` systems. This
+requires remote internet access and adds the PPA before installing the
+`apptainer` package. Use `--no-install-apptainer` to disable local and remote
+package changes;
+unsupported systems fail with a manual-install message. A `--health-only`
+check never installs packages.
+
+Add `-i ~/.ssh/sensor-node` to use a private key instead of a password. Use an
+explicit `user@host`, `--config`, or `--certificates` to override the basic
+defaults. To deploy an existing image, add
+`--image /path/to/fissure-sensor-node.sif`.
+
+When connecting as a non-root user, the deployer first tries passwordless
+`sudo`. If it is unavailable, it securely prompts once for the sudo password,
+validates it, and reuses it for privileged package, installation, health, and
+rollback commands. The password is sent only over SSH standard input; it is
+not placed in command arguments or remote files. Direct root SSH does not
+invoke `sudo`.
+
+To check a running deployment again without changing it:
+
+```
+Installer/deploy_remote_sensor_node.py 192.0.2.20 --health-only
+```
+
+To stop the remote service and remove its SIF, configuration, certificates,
+logs, overlay, and persistent state:
+
+```
+Installer/deploy_remote_sensor_node.py 192.0.2.20 --uninstall
+```
+
+Uninstall uses the same SSH key/password and sudo handling as deployment. It
+does not remove the remote Apptainer package or the local
+`build/fissure-sensor-node.sif`, so running the basic installation command
+again reuses the existing local image.
+
+Use `-i`/`--identity` to select a private key explicitly. If it is omitted, the deployer securely prompts once for the SSH password and reuses it if deployment requires a second connection. AsyncSSH continues to apply normal OpenSSH configuration and known-hosts checks. The default health check waits for a fresh HIPRFISR heartbeat and rolls back a failed upgrade. Use `--startup-only` only when intentionally staging a node without a reachable hub. Run the script with `--help` for paths, overlay sizing, and other deployment settings.
 
 **Local Dashboard Usage**
 

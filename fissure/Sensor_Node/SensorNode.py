@@ -173,8 +173,8 @@ async def main(local_flag):
         if not local_flag:
             fissure.utils.zmq_cleanup()
 
+        sensor_node.write_health_status("stopped")
         print("[FISSURE][Sensor Node] end")
-        return
 
 
 class SensorNode(object):
@@ -324,6 +324,46 @@ class SensorNode(object):
             asyncio.create_task(self._notify_hiprfisr_of_artifact(artifact_id))
             return artifact_id
         self.artifact_manager.create_artifact = create_artifact_wrapper
+        self.write_health_status("starting")
+
+
+    def write_health_status(self, status: str, error: Optional[str] = None):
+        """Publish an atomic, machine-readable sensor-node health snapshot."""
+        health_path = os.environ.get(
+            "FISSURE_SENSOR_NODE_HEALTH_FILE",
+            os.path.expanduser("~/.fissure/sensor_node_health.json"),
+        )
+        heartbeat_time = self.heartbeats.get(
+            fissure.comms.Identifiers.HIPRFISR, 0.0
+        )
+        payload = {
+            "status": status,
+            "updated_at_epoch": time.time(),
+            "pid": os.getpid(),
+            "node_uuid": self.uuid,
+            "nickname": self.settings_dict.get("Sensor Node", {}).get("nickname", ""),
+            "network_type": self.network_type,
+            "hiprfisr_ip_address": self.hiprfisr_ip_address,
+            "hiprfisr_connected": bool(heartbeat_time),
+            "last_hiprfisr_heartbeat": heartbeat_time or None,
+        }
+        if error:
+            payload["error"] = error
+
+        temp_path = f"{health_path}.{os.getpid()}.tmp"
+        try:
+            os.makedirs(os.path.dirname(health_path) or ".", exist_ok=True)
+            with open(temp_path, "w") as health_file:
+                json.dump(payload, health_file, sort_keys=True)
+                health_file.write("\n")
+            os.replace(temp_path, health_path)
+        except Exception as exc:
+            try:
+                if os.path.exists(temp_path):
+                    os.remove(temp_path)
+            except OSError:
+                pass
+            self.logger.warning(f"Unable to publish sensor-node health: {exc}")
 
 
     async def initialize_comms(self):
@@ -338,8 +378,8 @@ class SensorNode(object):
             self.hiprfisr_address = fissure.comms.Address(
                 protocol=network_protocol,
                 address=self.hiprfisr_ip_address,
-                hb_channel=6100,  # TODO: pull from YAML anyway in case default is changed
-                msg_channel=6101,
+                hb_channel=int(self.settings_dict["Sensor Node"].get("hb_port", 6100)),
+                msg_channel=int(self.settings_dict["Sensor Node"].get("msg_port", 6101)),
             )
 
             # Single DEALER exactly like PD/TSI
@@ -1385,6 +1425,7 @@ class SensorNode(object):
         if heartbeat is not None:
             heartbeat_time = float(heartbeat.get(fissure.comms.MessageFields.TIME))
             self.heartbeats[fissure.comms.Identifiers.HIPRFISR] = heartbeat_time
+            self.write_health_status("running")
             self.logger.debug(f"received HiprFisr heartbeat ({fissure.utils.get_timestamp(heartbeat_time)})")
 
 
@@ -1404,6 +1445,7 @@ class SensorNode(object):
                 await asyncio.sleep(0.1)  # For ZMQ handshake to complete
             else:
                 self.logger.error("FAILED connecting to HIPRFISR")
+                self.write_health_status("failed", "FAILED connecting to HIPRFISR")
                 return
         elif self.network_type == "Meshtastic":
             try:
@@ -1420,10 +1462,14 @@ class SensorNode(object):
                 self.logger.error(
                     f"Failed to initialize Meshtastic on {serial_port}: {e}"
                 )
+                self.write_health_status("failed", str(e))
                 return
         else:
             self.logger.error("Unknown network type. Enter IP or Meshtastic in node YAML config file.")
+            self.write_health_status("failed", "Unknown network type")
             return
+
+        self.write_health_status("running")
         
         # Start Heartbeat Loop
         heartbeat_task = asyncio.create_task(self.heartbeat_loop())
