@@ -45,6 +45,10 @@ from remote_sensor_node_local_apptainer import (
     LocalApptainerError,
     ensure_local_apptainer,
 )
+from remote_sensor_node_local_fissure import (
+    LocalFissureError,
+    require_local_fissure_gui,
+)
 from remote_sensor_node_config import ConfigPreparationError, prepare_remote_config
 from remote_sensor_node_uninstall import uninstall_remote
 from remote_sensor_node_privilege import (
@@ -107,6 +111,8 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         options = parse_options(argv)
         validate_options(options)
+        if not options.health_only and not options.uninstall:
+            require_local_fissure_gui()
         asyncssh = load_module("asyncssh")
         asyncio.run(deploy(options, asyncssh))
         return 0
@@ -114,6 +120,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         ConfigPreparationError,
         DeploymentError,
         LocalApptainerError,
+        LocalFissureError,
         PrivilegeError,
     ) as exc:
         print(f"[!] {exc}", file=sys.stderr)
