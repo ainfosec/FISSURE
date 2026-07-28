@@ -1,0 +1,3 @@
+asyncssh>=2.24.0,<3
+docopt-ng>=0.9.0,<1
+PyYAML>=6,<7
