@@ -14,7 +14,7 @@ From: ubuntu:24.04
       /opt/FISSURE/certificates
 
     Run the image with the repository deployment helper:
-      Installer/deploy_remote_sensor_node.py --target user@node ...
+      Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py user@node
 
 %files
     __FISSURE_SOURCE__/ /opt/FISSURE
@@ -64,6 +64,11 @@ From: ubuntu:24.04
         /opt/FISSURE/certificates/server \
         /opt/FISSURE/Logs
 
+    # Preserve the stable runtime path used by SIFs built before the deployment
+    # source files were consolidated under Installer/Remote_Sensor_Node.
+    ln -s Remote_Sensor_Node/remote_sensor_node_image_check.py \
+        /opt/FISSURE/Installer/remote_sensor_node_image_check.py
+
     # Sensor-node callbacks intentionally receive files and plugins. The SIF
     # remains immutable; these permissions allow those writes into the
     # deployment's private persistent overlay.
@@ -78,6 +83,6 @@ From: ubuntu:24.04
 
 %test
     cd /opt/FISSURE
-    python3 Installer/remote_sensor_node_image_check.py \
+    python3 Installer/Remote_Sensor_Node/remote_sensor_node_image_check.py \
         --skip-certificates \
         --allow-placeholder-config

@@ -61,7 +61,7 @@ from remote_sensor_node_privilege import (
 )
 
 INSTALLER_DIR = Path(__file__).resolve().parent
-REPO_ROOT = INSTALLER_DIR.parent
+REPO_ROOT = INSTALLER_DIR.parent.parent
 DEFINITION_FILE = INSTALLER_DIR / "remote_sensor_node_apptainer.def"
 REMOTE_DIR_PATTERN = re.compile(r"^/[A-Za-z0-9._/-]+$")
 SERVICE_PATTERN = re.compile(r"^[A-Za-z0-9_.@-]+$")
@@ -339,6 +339,7 @@ def build_service_unit(options: DeployOptions, user: str, group: str, apptainer:
     common = f"{apptainer} {{command}} --cleanenv --home {home} --overlay {overlay} {binds}"
     check = common.format(command="exec") + (
         f" {image} python3 "
+        # Keep the old in-image path compatible with already-built SIFs.
         "/opt/FISSURE/Installer/remote_sensor_node_image_check.py"
     )
     start = common.format(command="run") + (
@@ -489,7 +490,8 @@ def load_module(name: str) -> Any:
     except ImportError as exc:
         raise DeploymentError(
             f"{name} is required. Install dependencies with: "
-            "python3 -m pip install -r Installer/requirements-node-deploy.txt"
+            "python3 -m pip install -r "
+            "Installer/Remote_Sensor_Node/requirements-node-deploy.txt"
         ) from exc
 
 if __name__ == "__main__":

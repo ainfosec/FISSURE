@@ -111,6 +111,7 @@ install -o "$user" -g "$group" -m 0400 \
   "$stage/client_0.key_secret" "$release/certificates/clients/client_0.key_secret"
 install -o "$user" -g "$group" -m 0444 \
   "$stage/server.key" "$release/certificates/server/server.key"
+# This stable in-image path also exists in SIFs built before the source move.
 as_service "$apptainer" exec --cleanenv \
   --home "$state/home:/home/fissure" \
   --bind "$release/default.yaml:/opt/FISSURE/YAML/Sensor_Node_Config/default.yaml:ro" \
