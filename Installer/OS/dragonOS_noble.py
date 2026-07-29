@@ -320,7 +320,10 @@ programs_dragonOS_noble.append(('Network Certificates  (4.40 MB)',
 export PYTHONPATH='""" + fissure_directory + """':$PYTHONPATH
 python3 ./fissure/generate_certificates.py
 ########## Verify ##########
-ls '""" + fissure_directory + """/certificates'
+test -f '""" + fissure_directory + """/certificates/server/server.key' &&
+test -f '""" + fissure_directory + """/certificates/server/server.key_secret' &&
+test -f '""" + fissure_directory + """/certificates/clients/client_0.key' &&
+test -f '""" + fissure_directory + """/certificates/clients/client_0.key_secret'
 """,True,'Minimum Install'))
 
 # Auto-Launch Sensor Node

@@ -1,16 +1,23 @@
 #!/bin/bash
 set -e
 
-FISSURE_DIR="__FISSURE_DIR__"
-FISSURE_MODE="__FISSURE_MODE__"
+FISSURE_DIR="/home/user/FISSURE"
+FISSURE_MODE="full"
 CONTAINER_DIR="$HOME/fissure_apptainer"
 ENV_FILE="$FISSURE_DIR/.env"
+MPL_CONFIG_DIR="$HOME/fissure_apptainer_writable/matplotlib"
+
+#######################################
+# Ensure writable runtime directories exist
+#######################################
+mkdir -p "$MPL_CONFIG_DIR"
 
 #######################################
 # Ensure PostgreSQL container is running
 #######################################
 if [[ "$FISSURE_MODE" == "full" || "$FISSURE_MODE" == "base" || "$FISSURE_MODE" == "HIPRFISR" ]]; then
     cd "$FISSURE_DIR"
+
     if [ -f "$ENV_FILE" ]; then
         source "$ENV_FILE"
     else
@@ -20,6 +27,7 @@ if [[ "$FISSURE_MODE" == "full" || "$FISSURE_MODE" == "base" || "$FISSURE_MODE" 
     fi
 
     echo "[*] Checking PostgreSQL container..."
+
     if ! sudo docker compose ps | grep -q "Up"; then
         echo "[*] Starting PostgreSQL container..."
         sudo docker compose up -d
@@ -27,24 +35,36 @@ if [[ "$FISSURE_MODE" == "full" || "$FISSURE_MODE" == "base" || "$FISSURE_MODE" 
         echo "[✓] PostgreSQL container already running."
     fi
 
-
-    # Wait for database to be ready
     echo "[*] Waiting for PostgreSQL to respond..."
     export PGPASSWORD="$POSTGRES_PASSWORD"
-    until pg_isready -U "$POSTGRES_USER" -h "$POSTGRES_HOST" -p "$POSTGRES_EXTERNAL_PORT" >/dev/null 2>&1; do
+
+    until pg_isready \
+        -U "$POSTGRES_USER" \
+        -h "$POSTGRES_HOST" \
+        -p "$POSTGRES_EXTERNAL_PORT" \
+        >/dev/null 2>&1
+    do
         sleep 2
     done
+
     echo "[✓] PostgreSQL ready."
 fi
 
 #######################################
-# Prepare Pulse Audio
+# Prepare PulseAudio
 #######################################
 if [ -f "$HOME/.config/pulse/cookie" ]; then
     cp "$HOME/.config/pulse/cookie" /tmp/pulse-cookie
     chmod 644 /tmp/pulse-cookie
 else
     echo "[!] PulseAudio cookie not found for $USER"
+fi
+
+#######################################
+# Authorize local X11 access
+#######################################
+if command -v xhost >/dev/null 2>&1 && [ -n "$DISPLAY" ]; then
+    xhost +SI:localuser:"$USER" >/dev/null
 fi
 
 #######################################
@@ -55,9 +75,14 @@ echo "[*] Launching FISSURE Apptainer..."
 APPTAINER_ARGS=(
     shell
     --bind /run/udev:/run/udev
+    --bind "$FISSURE_DIR:/opt/FISSURE"
+    --bind "$MPL_CONFIG_DIR:/tmp/matplotlib"
+    --env MPLCONFIGDIR=/tmp/matplotlib
 )
 
-# Configure PulseAudio when available.
+#######################################
+# Configure PulseAudio when available
+#######################################
 if [ -S "$XDG_RUNTIME_DIR/pulse/native" ]; then
     APPTAINER_ARGS+=(
         --bind "$XDG_RUNTIME_DIR/pulse:/tmp/pulse"
@@ -66,7 +91,9 @@ if [ -S "$XDG_RUNTIME_DIR/pulse/native" ]; then
     )
 fi
 
-# Use XWayland for Qt applications during Wayland sessions.
+#######################################
+# Configure graphical display
+#######################################
 if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
     echo "[*] Wayland session detected."
 

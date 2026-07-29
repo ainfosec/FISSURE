@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-29
+
+Improve certificate generation and Apptainer launch reliability
+
+### Changed
+
+- Updated `generate_certificates.py` to remove unnecessary Dashboard, Server, and utility imports before generating CURVE certificates.
+- Updated `CertificateGenerator.py` to use the standard Python logger instead of importing FISSURE utility modules.
+- Updated the Network Certificates installer verification to require the generated server and client public/private key files.
+- Updated `install_apptainer.sh` to generate the corrected `fissure-apptainer` launcher.
+
+### Fixed
+
+- Fixed `fissure-apptainer` Qt display authorization by granting the current local user access to the X server before launching the container.
+- Fixed read-only FISSURE runtime paths by binding the host FISSURE checkout to `/opt/FISSURE`.
+- Fixed Matplotlib cache warnings by providing a writable cache directory inside the container.
+- Preserved host udev, PulseAudio, X11, and Wayland integration without restoring the problematic `/dev/bus/usb` bind.
+
 ## 2026-7-28
 
 Improve Apptainer installation reliability and SDR hardware access
