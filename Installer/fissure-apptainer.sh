@@ -52,41 +52,36 @@ fi
 #######################################
 echo "[*] Launching FISSURE Apptainer..."
 
-# Detect display server type
-if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
-  echo "[*] Wayland session detected."
-  # Needed for GUI apps under Wayland
-  xhost +local:root 2>/dev/null || true
-  RUNTIME_DEST="/tmp/runtime-user"
-  sudo mkdir -p "$RUNTIME_DEST"
+APPTAINER_ARGS=(
+    shell
+    --bind /run/udev:/run/udev
+)
 
-  sudo apptainer shell \
-    --writable \
-    --bind /dev/bus/usb:/dev/bus/usb \
-    $(for dev in /dev/ttyACM* /dev/ttyUSB*; do [ -e "$dev" ] && echo --bind "$dev:$dev"; done) \
-    --bind /run/udev:/run/udev \
-    --bind /run/user/$(id -u $SUDO_USER)/pulse:/tmp/pulse \
-    --bind "$XDG_RUNTIME_DIR:$RUNTIME_DEST" \
-    --env DISPLAY=$DISPLAY \
-    --env XDG_RUNTIME_DIR=$RUNTIME_DEST \
-    --env QT_QPA_PLATFORM=xcb \
-    --env PULSE_SERVER=unix:/tmp/pulse/native \
-    --env PULSE_COOKIE=/tmp/pulse-cookie \
-    "$CONTAINER_DIR"
-
-else
-  echo "[*] X11 session detected."
-  xhost +local:root 2>/dev/null || true
-
-  sudo apptainer shell \
-    --writable \
-    --bind /dev/bus/usb:/dev/bus/usb \
-    $(for dev in /dev/ttyACM* /dev/ttyUSB*; do [ -e "$dev" ] && echo --bind "$dev:$dev"; done) \
-    --bind /run/udev:/run/udev \
-    --bind /tmp/.X11-unix:/tmp/.X11-unix \
-    --bind /run/user/$(id -u $SUDO_USER)/pulse:/tmp/pulse \
-    --env DISPLAY=$DISPLAY \
-    --env PULSE_SERVER=unix:/tmp/pulse/native \
-    --env PULSE_COOKIE=/tmp/pulse-cookie \
-    "$CONTAINER_DIR"
+# Configure PulseAudio when available.
+if [ -S "$XDG_RUNTIME_DIR/pulse/native" ]; then
+    APPTAINER_ARGS+=(
+        --bind "$XDG_RUNTIME_DIR/pulse:/tmp/pulse"
+        --env PULSE_SERVER=unix:/tmp/pulse/native
+        --env PULSE_COOKIE=/tmp/pulse-cookie
+    )
 fi
+
+# Use XWayland for Qt applications during Wayland sessions.
+if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+    echo "[*] Wayland session detected."
+
+    APPTAINER_ARGS+=(
+        --bind /tmp/.X11-unix:/tmp/.X11-unix
+        --env DISPLAY="$DISPLAY"
+        --env QT_QPA_PLATFORM=xcb
+    )
+else
+    echo "[*] X11 session detected."
+
+    APPTAINER_ARGS+=(
+        --bind /tmp/.X11-unix:/tmp/.X11-unix
+        --env DISPLAY="$DISPLAY"
+    )
+fi
+
+exec apptainer "${APPTAINER_ARGS[@]}" "$CONTAINER_DIR"

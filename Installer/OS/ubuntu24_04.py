@@ -76,6 +76,8 @@ python3 -m pip install gpsd-py3 --break-system-packages
 python3 -m pip install geopy --break-system-packages
 python3 -m pip install sounddevice --break-system-packages
 python3 -m pip install qasync --break-system-packages
+
+python3 -m pip install --force-reinstall "setuptools<82" --break-system-packages
 python3 -m pip install pydotplus --break-system-packages
 
 #python3 -m pip install tensorflow_cpu --break-system-packages
@@ -406,21 +408,27 @@ ls "$HOME/.config/autostart/fissure-sensor-node.desktop"
 
 # RTL-SDR
 programs_ubuntu24_04.append(('RTL-SDR',
-"""echo "[*] Installing RTL-SDR host libraries and tools..."
+"""echo "[*] Installing RTL-SDR libraries and tools..."
 
 sudo apt-get update
 sudo apt-get -y install rtl-sdr
 
 if [ -n "$APPTAINER_CONTAINER" ] || [ -n "$APPTAINER_NAME" ]; then
-    echo "[!] Detected Apptainer — skipping kernel module blacklist and udev rule (host only)."
+    echo "[*] Detected Apptainer — skipping host kernel module and udev configuration."
 else
     echo "[*] Configuring host for RTL-SDR access..."
-    echo 'blacklist dvb_usb_rtl28xxu' | sudo tee /etc/modprobe.d/rtl-sdr.conf
-    echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", GROUP="adm", MODE="0666"' \
-        | sudo tee /etc/udev/rules.d/20.rtlsdr.rules
+
+    echo 'blacklist dvb_usb_rtl28xxu' \
+        | sudo tee /etc/modprobe.d/rtl-sdr.conf >/dev/null
+
+    echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", MODE:="0666"' \
+        | sudo tee /etc/udev/rules.d/99-fissure-rtlsdr.rules >/dev/null
+
     sudo udevadm control --reload-rules
     sudo udevadm trigger
-    echo "[*] Reboot required for RTL-SDR devices to appear."
+
+    echo "[*] RTL-SDR host configuration complete."
+    echo "[!] Unplug and reconnect the RTL-SDR. A reboot may be required if the DVB driver is already loaded."
 fi
 
 ########## Verify ##########
@@ -2152,6 +2160,7 @@ programs_ubuntu24_04.append(('PyGPSClient (22.99 MB)',
 """sudo apt install -y python3-pip python3-tk python3-pil python3-pil.imagetk
 sudo apt remove -y python3-cryptography
 python3 -m pip install --upgrade PyGPSClient --break-system-packages
+python3 -m pip install --upgrade cryptography --break-system-packages
 ########## Verify ##########
 ls /usr/local/bin/pygpsclient
 """,True,'GPS'))

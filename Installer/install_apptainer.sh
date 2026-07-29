@@ -113,17 +113,43 @@ echo "[*] Apptainer FISSURE directory: $APPTAINER_FISSURE_DIR"
 #############################################
 # Install Apptainer Software
 #############################################
-if ! command -v apptainer >/dev/null 2>&1; then
-    echo "[*] Installing Apptainer and dependencies..."
+install_apptainer_suid() {
+    echo "[*] Installing Apptainer with setuid support..."
+
     sudo apt update
-    sudo apt install -y wget build-essential uuid-dev libseccomp-dev pkg-config \
-                        squashfs-tools cryptsetup libfuse3-3 uidmap
-    VERSION=1.3.2
-    wget https://github.com/apptainer/apptainer/releases/download/v${VERSION}/apptainer_${VERSION}_amd64.deb
-    sudo dpkg -i apptainer_${VERSION}_amd64.deb
+    sudo apt install -y software-properties-common
+
+    if ! grep -Rqs "ppa.launchpadcontent.net/apptainer/ppa" \
+        /etc/apt/sources.list /etc/apt/sources.list.d 2>/dev/null; then
+        sudo add-apt-repository -y ppa:apptainer/ppa
+    fi
+
+    sudo apt update
+    sudo apt install -y apptainer-suid
+}
+
+if ! command -v apptainer >/dev/null 2>&1; then
+    install_apptainer_suid
+elif ! apptainer buildcfg 2>/dev/null |
+       grep -q '^APPTAINER_SUID_INSTALL=1$'; then
+    echo "[!] Existing Apptainer installation does not have setuid support."
+    install_apptainer_suid
 else
-    echo "[*] Apptainer software already installed."
+    echo "[✓] Existing Apptainer installation has setuid support."
 fi
+
+if ! command -v apptainer >/dev/null 2>&1; then
+    echo "[ERROR] Apptainer installation failed."
+    exit 1
+fi
+
+if ! apptainer buildcfg 2>/dev/null |
+     grep -q '^APPTAINER_SUID_INSTALL=1$'; then
+    echo "[ERROR] Apptainer is installed without required setuid support."
+    exit 1
+fi
+
+echo "[✓] $(apptainer version)"
 
 #############################################
 #          Host Preparation (optional)      #
@@ -265,16 +291,22 @@ EOF
         # ---------- End UHD Host Setup ----------
         
         # ---------- RTL-SDR Host Setup ----------
-        if $RTLS_DR; then
-            echo "[*] Setting up RTL-SDR host configuration..."
-            sudo apt-get update
-            #sudo apt-get -y install rtl-sdr
-            echo 'blacklist dvb_usb_rtl28xxu' | sudo tee /etc/modprobe.d/rtl-sdr.conf
-            echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", GROUP="adm", MODE="0666"' \
-                | sudo tee /etc/udev/rules.d/20.rtlsdr.rules
+        if $RTLSDR; then
+            echo "[*] Setting up RTL-SDR host device access..."
+
+            echo 'blacklist dvb_usb_rtl28xxu' \
+                | sudo tee /etc/modprobe.d/rtl-sdr.conf >/dev/null
+
+            sudo rm -f /etc/udev/rules.d/20.rtlsdr.rules
+
+            echo 'SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", MODE:="0666"' \
+                | sudo tee /etc/udev/rules.d/99-fissure-rtlsdr.rules >/dev/null
+
             sudo udevadm control --reload-rules
             sudo udevadm trigger
-            echo "[✓] RTL-SDR host configuration complete. Reboot required."
+
+            echo "[✓] RTL-SDR host device access configured."
+            echo "[!] Unplug and reconnect the RTL-SDR. A reboot may be required if the DVB driver is already loaded."
         fi
         # ---------- End RTL-SDR Host Setup ----------
 

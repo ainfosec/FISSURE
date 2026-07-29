@@ -500,46 +500,51 @@ To connect to a remote TAK server:
 
 **Apptainer Setup**
 
-Apptainer is used to containerize most of the FISSURE installation, making deployment and testing simpler across different systems. While the majority of FISSURE runs inside the Apptainer environment, several components still require setup on the **host**:
+Apptainer is used to containerize most of the FISSURE installation, making deployment and testing simpler across different systems. While most of FISSURE runs inside the Apptainer environment, several components still require setup on the **host**:
 
-- **Docker containers** (such as the PostgreSQL database and TAK Server) run on the **host**, not inside Apptainer.  
-- **udev rules, USB drivers, and hardware interfaces** must also be installed on the host for SDRs, Wi-Fi adapters, and other peripherals to function properly.
+- **Docker containers**, including the PostgreSQL database and TAK Server, run on the host.
+- **Apptainer**, udev rules, hardware drivers, and device permissions must be configured on the host for SDRs, Wi-Fi adapters, and other peripherals.
 
-Pre-built Apptainer containers and ISO images are planned for future releases to simplify setup. These instructions are intended for users who want to **build the Apptainer container from source** or customize their installation.
+Pre-built Apptainer containers and ISO images are planned for future releases. These instructions are for users who want to build the Apptainer container from source or customize their installation.
 
 1. **Clone the FISSURE Repository**
 
 2. **Configure the Installer**
-   - Open `FISSURE/install_apptainer.sh` in a text editor.  
-   - Review and adjust the variables near the top of the script.  
-     Set each option (`true` / `false`) according to what you want to include (e.g., `UHD`, `HackRF`, `Wi-Fi`, etc.).  
+   - Open `FISSURE/Installer/install_apptainer.sh` in a text editor.
+   - Review the variables near the top of the script.
+   - Enable or disable the desired hardware and software options.
    - Choose the desired FISSURE install mode:
-     - `full` - Includes all SDR software, network tools, and utilities 
-     - `base` - Core FISSURE + GUI dependencies only (for expediting future container building)
-     - `Dashboard` - GUI-only container (no SDR tools)  
-     - `HIPRFISR` - Headless HIPRFISR server build
-     - `SensorNode` - Sensor node build only  
+     - `full` - Complete FISSURE installation with supported SDR software, network tools, and utilities
+     - `base` - Core dependencies used as a foundation for additional container builds
+     - `Dashboard` - FISSURE Dashboard and GUI dependencies
+     - `HIPRFISR` - Headless HIPRFISR server
+     - `SensorNode` - Sensor Node runtime and selected hardware support
 
 3. **Run the Installer**
    ```bash
    cd FISSURE/Installer
    ./install_apptainer.sh
    ```
-   This builds a writable **Apptainer sandbox** in your home directory and installs all selected software inside the container and on the host (where applicable).
+
+   This builds a writable Apptainer sandbox in your home directory and installs the selected software inside the container and on the host where required.
 
 4. **Launch the Container**
    ```bash
    fissure-apptainer
    ```
-   This command opens a terminal inside the FISSURE container with **USB ports, audio devices, and graphics** automatically bound for hardware and GUI access.
+
+   This opens a terminal inside the FISSURE container with graphics, audio, udev information, and hardware device access configured by the launcher.
 
 5. **Run FISSURE**
-   Once inside the container, run FISSURE just as you would on a normal system:
+
+   Once inside the container, run FISSURE as you would on a normal system:
+
    ```bash
    fissure
    fissure-sensor-node
    ```
-   The environment behaves like a standard install, but more isolated from the host. If you encounter issues while using FISSURE inside Apptainer, please let us know which programs, hardware, or features are not working correctly.
+
+   If you encounter an issue, include the host operating system, Apptainer version, selected install mode, affected hardware, and relevant installer output in the report.
 
 ## Lessons
 

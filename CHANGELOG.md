@@ -1,6 +1,32 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-28
+
+Improve Apptainer installation reliability and SDR hardware access
+
+### Added
+
+- Added setuid-enabled Apptainer installation and validation for Ubuntu hosts.
+- Added installer checks that verify required Apptainer capabilities before continuing.
+- Added clearer Apptainer setup guidance for host dependencies, install modes, launching, and issue reporting.
+
+### Changed
+
+- Updated the Apptainer launcher to rely on Apptainer's native `/dev` handling instead of rebinding `/dev/bus/usb`.
+- Updated the launcher to retain `/run/udev` access for SDR discovery without remounting USB devices with `nodev`.
+- Updated RTL-SDR udev rule installation to use a later rule priority so FISSURE permissions are not overridden by distro rules.
+- Updated Python packaging dependencies to keep `setuptools` below version 82 for compatibility with `pydotplus`.
+- Updated the Apptainer installation flow to install the current packaged setuid build instead of a pinned standalone 1.3.2 `.deb`.
+- Updated the README Apptainer section to match the current host/container split and generated launcher behavior.
+
+### Fixed
+
+- Fixed RTL-SDR, HackRF, and USRP devices being visible inside Apptainer but failing to open because `/dev/bus/usb` was rebound with the `nodev` mount option.
+- Fixed the RTL-SDR installer option typo that prevented the intended package selection.
+- Fixed `pydotplus` installation failures caused by upgrading to a `setuptools` release without `pkg_resources`.
+- Fixed missing `cryptography` and `pydotplus` dependencies preventing FISSURE from starting inside the container.
+
 ## 2026-7-26
 
 Add complete SOI evidence and Target data packaging for TAK workflows
