@@ -1,6 +1,21 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-7-30
+
+Fix Apptainer deployment mode propagation
+
+### Changed
+
+- Updated `fissure_apptainer.def` to use a dedicated install-mode placeholder instead of hardcoding the Full installation mode.
+- Updated `install_apptainer.sh` to inject the selected deployment mode while generating the temporary Apptainer definition file.
+- Added generated-definition output verification so the selected FISSURE installation mode can be confirmed before the sandbox build begins.
+- Updated the Apptainer definition help text to describe the shared Base, Dashboard, HIPRFISR, Sensor Node, Custom, and Full environment rather than a Dashboard-only image.
+
+### Fixed
+
+- Fixed Base and other role-specific Apptainer builds incorrectly running the Full FISSURE installer selection.
+
 ## 2026-7-29
 
 Expand installer deployment modes and Apptainer role selection

@@ -7,20 +7,30 @@ From: __BASE_IMAGE__
 
 
 %help
-    FISSURE Minimal Dashboard Container
+    FISSURE Apptainer Environment
     -----------------------------------
-    This image installs the minimal dependencies required to run
-    the FISSURE Dashboard GUI in headless or desktop environments.
+    This definition builds a FISSURE environment using the deployment
+    mode selected by install_apptainer.sh.
 
     Usage:
-        apptainer run fissure_min.sif         # Launch Dashboard
-        apptainer shell fissure_min.sif       # Enter container shell
-        apptainer exec fissure_min.sif bash   # Run arbitrary commands
+        fissure-apptainer                  # Enter the configured FISSURE sandbox
+        fissure                            # Launch the FISSURE Dashboard
+        fissure-hiprfisr                   # Launch a headless HIPRFISR
+        fissure-sensor-node                # Launch a Sensor Node
+
+    Direct Apptainer usage:
+        apptainer shell ~/fissure_apptainer
+        apptainer exec ~/fissure_apptainer bash
+        apptainer exec ~/fissure_apptainer fissure
 
     Notes:
-        - Requires an X11 or VNC environment for GUI.
-        - FISSURE files are installed to /opt/FISSURE.
-        - PYTHONPATH is automatically set at runtime.
+        - Dashboard use requires a working X11 or Wayland display environment.
+        - FISSURE is available at /opt/FISSURE inside the container.
+        - The host FISSURE checkout is bound to /opt/FISSURE at runtime.
+        - Hardware access depends on host drivers, udev rules, permissions,
+          and the device bindings configured by the launcher.
+        - PostgreSQL, TAK Server, and IQEngine Docker services run on the host.
+        - The installed software depends on the selected deployment mode.
 
 
 %setup
@@ -140,7 +150,7 @@ EOF
     # FISSURE installer
     cd /opt/FISSURE
     set +e  # Allow failures
-    ./install --os "__OS_LABEL__" --mode full
+    ./install --os "__OS_LABEL__" --mode __INSTALL_MODE__
     INSTALL_CODE=$?
     set -e  # Reset
 
@@ -152,8 +162,8 @@ EOF
     
 
 %runscript
-    echo "Starting FISSURE Dashboard..."
-    #fissure
+    echo "FISSURE Apptainer environment is ready."
+    echo "Run fissure, fissure-hiprfisr, or fissure-sensor-node as appropriate."
 
 
 %test

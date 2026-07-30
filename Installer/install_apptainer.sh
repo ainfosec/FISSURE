@@ -674,10 +674,11 @@ if $BUILD_APPTAINER; then
         -e "s|__BASE_IMAGE__|$BASE_IMAGE|g" \
         -e "s|__OS_LABEL__|$APPTAINER_OS|g" \
         -e "s|__HOST_FISSURE_DIR__|$HOST_FISSURE_DIR|g" \
+        -e "s|__INSTALL_MODE__|$MODE|g" \
         "$DEF_FILE" > "$DEF_TEMP"
 
-    echo "[*] Injecting install mode into definition file..."
-    sed -i "s|--os \"__OS_LABEL__\" --mode .*|--os \"${APPTAINER_OS}\" --mode ${MODE}|g" "$DEF_TEMP"
+    echo "[*] Verifying generated FISSURE install mode..."
+    grep -n -- "--mode" "$DEF_TEMP"
 
     # Remove old sandbox if it exists
     if [ -d "$SANDBOX_DIR" ]; then
