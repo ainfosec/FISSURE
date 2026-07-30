@@ -8,6 +8,7 @@ required_items = [
     "GNU Radio",
     "Scapy",
     "Wireshark",
+    "PostgreSQL Database",
     "Meshtastic",
     "Network Certificates",
     "gr-ainfosec",

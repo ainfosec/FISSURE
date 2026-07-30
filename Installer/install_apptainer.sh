@@ -15,11 +15,12 @@ set -e
 #       --db --meshtastic --uhd --hackrf --wifi --usrp-x300 --iqengine --takserver
 #
 # Common modes:
-#   base       - Core FISSURE + GUI dependencies only
-#   full       - Includes all tools, SDR software, and network utilities
-#   HIPRFISR   - Headless HIPRFISR server build
-#   Dashboard  - GUI-only container (no SDR tools)
-#   SensorNode - Sensor node code only
+#   full       - Includes every installer item enabled by default
+#   base       - Core FISSURE dependencies and shared components
+#   custom     - Uses the installer items listed in Modes/custom.py
+#   Dashboard  - Dashboard-focused installation
+#   HIPRFISR   - HIPRFISR-focused installation
+#   SensorNode - Sensor Node-focused installation
 #############################################
 
 # Detect where the script lives (Installer) and use its parent as the host FISSURE directory
@@ -78,6 +79,7 @@ while [[ "$#" -gt 0 ]]; do
             echo "Options:"
             echo "  --host-os 'Ubuntu 24.04'       Host operating system label"
             echo "  --apptainer-os 'Ubuntu 24.04'  Apptainer container OS base"
+            echo "  --mode MODE                    full, base, custom, Dashboard, HIPRFISR, or SensorNode"
             echo "  --build-apptainer              Build the writable Apptainer sandbox"
             echo "  --install-host-deps            Install host dependencies (drivers, Docker, etc.)"
             echo "  --auto-launch-sensor-node      Launches Sensor Node code on boot"
@@ -96,6 +98,37 @@ while [[ "$#" -gt 0 ]]; do
     esac
     shift
 done
+
+#############################################
+#       Validate and normalize mode         #
+#############################################
+case "${MODE,,}" in
+    full)
+        MODE="full"
+        ;;
+    base)
+        MODE="base"
+        ;;
+    custom)
+        MODE="custom"
+        ;;
+    dashboard)
+        MODE="Dashboard"
+        ;;
+    hiprfisr)
+        MODE="HIPRFISR"
+        ;;
+    sensor|sensor-node|sensor_node|sensornode)
+        MODE="SensorNode"
+        ;;
+    *)
+        echo "[ERROR] Unsupported install mode: $MODE"
+        echo "        Supported modes: full, base, custom, Dashboard, HIPRFISR, SensorNode"
+        exit 1
+        ;;
+esac
+
+echo "[*] FISSURE install mode: $MODE"
 
 #############################################
 # Verify FISSURE repo location
@@ -663,6 +696,38 @@ if $BUILD_APPTAINER; then
     echo
 else
     echo "[!] No build flag provided. Use --build-apptainer to build the image."
+fi
+
+#############################################
+#     Generate Host Network Certificates    #
+#############################################
+CERT_DIR="$HOST_FISSURE_DIR/certificates"
+
+if [ ! -f "$CERT_DIR/server/server.key" ] ||
+   [ ! -f "$CERT_DIR/server/server.key_secret" ] ||
+   [ ! -f "$CERT_DIR/clients/client_0.key" ] ||
+   [ ! -f "$CERT_DIR/clients/client_0.key_secret" ]; then
+
+    echo "[*] Generating FISSURE network certificates in the host checkout..."
+
+    apptainer exec \
+        --bind "$HOST_FISSURE_DIR:$APPTAINER_FISSURE_DIR" \
+        --env PYTHONPATH="$APPTAINER_FISSURE_DIR" \
+        "$SANDBOX_DIR" \
+        bash -c "
+            cd '$APPTAINER_FISSURE_DIR'
+            python3 ./fissure/generate_certificates.py
+        "
+
+    ########## Verify ##########
+    test -f "$CERT_DIR/server/server.key" &&
+    test -f "$CERT_DIR/server/server.key_secret" &&
+    test -f "$CERT_DIR/clients/client_0.key" &&
+    test -f "$CERT_DIR/clients/client_0.key_secret"
+
+    echo "[✓] FISSURE network certificates generated in $CERT_DIR"
+else
+    echo "[✓] Existing FISSURE network certificates found in $CERT_DIR"
 fi
 
 #############################################

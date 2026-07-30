@@ -3,6 +3,27 @@ All notable changes to this project will be documented in this file.
 
 ## 2026-7-29
 
+Expand installer deployment modes and Apptainer role selection
+
+### Added
+
+- Added Base and Custom mode buttons to the installer GUI alongside Full, Dashboard, HIPRFISR, and Sensor Node.
+- Added role-specific installer selections for complete local workstations, headless hubs, Dashboard clients, remote Sensor Nodes, and user-defined test configurations.
+
+### Changed
+
+- Updated installer mode handling to normalize Full, Base, Custom, Dashboard, HIPRFISR, and Sensor Node mode names for GUI and headless installations.
+- Updated the Base mode to include PostgreSQL and compilation of the standard FISSURE flow graph categories for standalone local operation.
+- Updated the HIPRFISR mode to include PostgreSQL and the minimum runtime dependencies required for headless hub operation.
+- Updated the Sensor Node mode to include supported hardware packages, GNU Radio out-of-tree modules, compiled flow graphs, and optional automatic startup.
+- Updated the Dashboard mode to provide the client runtime without installing a local database or automatically launching a Sensor Node.
+- Updated `install_apptainer.sh` to pass the selected deployment mode into the generated Apptainer definition and container installation.
+- Updated the Ubuntu 24.04 installer to skip Network Certificates during Apptainer builds so certificates are not generated inside the sandbox and later hidden by the host FISSURE bind.
+- Updated `install_apptainer.sh` to generate and verify FISSURE CURVE certificates through the completed Apptainer sandbox while writing them into the host FISSURE checkout.
+- Updated the README installation and Apptainer sections to document the supported deployment modes and their intended roles.
+
+## 2026-7-29
+
 Improve certificate generation and Apptainer launch reliability
 
 ### Changed

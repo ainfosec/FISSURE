@@ -373,17 +373,26 @@ fi
 python3 -c "import meshtastic"
 """,True,'Minimum Install'))
 
-# Network Certificates 
+# Network Certificates
 programs_ubuntu24_04.append(('Network Certificates (3.51 kB)',
-"""cd '""" + fissure_directory + """'
-export PYTHONPATH='""" + fissure_directory + """':$PYTHONPATH
-python3 ./fissure/generate_certificates.py
+"""if [ -n "$APPTAINER_CONTAINER" ] || [ -n "$APPTAINER_NAME" ]; then
+    echo "[*] Skipping network certificate generation inside Apptainer."
+else
+    cd '""" + fissure_directory + """'
+    export PYTHONPATH='""" + fissure_directory + """':$PYTHONPATH
+    python3 ./fissure/generate_certificates.py
+fi
+
 ########## Verify ##########
-test -f '""" + fissure_directory + """/certificates/server/server.key' &&
-test -f '""" + fissure_directory + """/certificates/server/server.key_secret' &&
-test -f '""" + fissure_directory + """/certificates/clients/client_0.key' &&
-test -f '""" + fissure_directory + """/certificates/clients/client_0.key_secret'
-""",True,'Minimum Install'))
+if [ -n "$APPTAINER_CONTAINER" ] || [ -n "$APPTAINER_NAME" ]; then
+    echo "[*] Skipping network certificate verification inside Apptainer."
+else
+    test -f '""" + fissure_directory + """/certificates/server/server.key' &&
+    test -f '""" + fissure_directory + """/certificates/server/server.key_secret' &&
+    test -f '""" + fissure_directory + """/certificates/clients/client_0.key' &&
+    test -f '""" + fissure_directory + """/certificates/clients/client_0.key_secret'
+fi
+""", True, 'Minimum Install'))
 
 # Auto-Launch Sensor Node
 programs_ubuntu24_04.append(('Auto-Launch Sensor Node',
@@ -406,7 +415,11 @@ EOF
 fi
 
 ########## Verify ##########
-ls "$HOME/.config/autostart/fissure-sensor-node.desktop"
+if [ -n "$APPTAINER_CONTAINER" ] || [ -n "$APPTAINER_NAME" ]; then
+    echo "[*] Skipping Sensor Node autostart verification inside Apptainer."
+else
+    test -f "$HOME/.config/autostart/fissure-sensor-node.desktop"
+fi
 """,False,'Remote Sensor Node'))
 
 # RTL-SDR

@@ -319,7 +319,6 @@ Operating System | FISSURE Branch | Default GNU Radio Version
 | Ubuntu 18.04 | Python2_maint-3.7 | maint-3.7 |
 | Ubuntu 20.04 | Python3 | maint-3.8 |
 | Ubuntu 22.04 | Python3 | maint-3.10 |
-| Ubuntu 22.04 | Python3 | maint-3.10 |
 | Ubuntu 24.04 / Ubuntu ARM (Orange Pi) / Ubuntu for Raspberry Pi | Python3 | maint-3.10 |
 | Windows 11 WSL2 | See Supported Linux Version | See Supported Linux Version |
 
@@ -338,11 +337,16 @@ Note: Certain software tools do not work for every OS. Refer to [Known Conflicts
 
 **Apptainer Installs**
 
-Testing is underway with apptainer to containerize FISSURE installs. Combinations of host OS, container OS, and FISSURE install mode (full, base, Dashboard, HIPRFISR, SensorNode) are still in progress. The following are supported combinations.
+FISSURE supports Apptainer-based deployment on Ubuntu 24.04. The installer can build role-specific environments using the following modes:
 
-Host Operating System | Container Operating System | FISSURE Mode
-:-------------------------:|:-------------------------:|:-------------------------:
-| Ubuntu 24.04 | Ubuntu 24.04 | full |
+- `full`: complete FISSURE installation
+- `base`: minimum complete local workstation
+- `Dashboard`: Dashboard client without a local database or Sensor Node
+- `HIPRFISR`: headless hub and database services
+- `SensorNode`: remote radio execution environment
+- `custom`: user-defined installer selection
+
+Ubuntu 24.04 hosts with Ubuntu 24.04 containers are the primary tested configuration. Additional host, container, and mode combinations may work but have not been fully validated.
 
 **Installation** 
 
@@ -378,11 +382,11 @@ Notes:
 </p>
 
 It is recommended to install FISSURE on a clean operating system to avoid conflicts with existing software. Further efforts towards virtualization and dependency management will be continued. Notes on the installer:
-- The items listed under the "Minimum Install" category are what is required to launch the FISSURE Dashboard without errors. 
+- The items listed under the "Minimum Install" category are what is required to launch the FISSURE Dashboard without errors. The Base mode extends the Minimum Install selection into a complete standalone workstation capable of running the Dashboard, HIPRFISR, and a local Sensor Node.
 - The radio hardware and out of tree modules are required to perform many actions in FISSURE.
 - The flow graphs need to be recompiled to avoid errors across GNU Radio minor versions.
 - Software programs outside the minimum install are optional and can be installed as needed. 
-- Select all the recommended checkboxes (Default button) to avoid errors while operating the various tools within FISSURE. 
+- Select the installation mode that matches the intended system role. Use Full for the broadest installation, Base for a complete local workstation, or one of the role-specific Dashboard, HIPRFISR, Sensor Node, or Custom modes. 
 - Items unchecked by default may not install properly or could possibly conflict with existing programs (please suggest fixes!). 
 - There will be multiple prompts throughout the installation, mostly asking for elevated permissions and user names. These prompts are primarily tied to third-party tools, refer to installation instructions provided by the maintainer for details.
 - If an item contains a "Verify" section at the end, the installer will run the command that follows and highlight the checkbox item green or red depending on if any errors are produced by the command. Checked items without a "Verify" section will remain black following the installation.
@@ -515,10 +519,11 @@ Pre-built Apptainer containers and ISO images are planned for future releases. T
    - Enable or disable the desired hardware and software options.
    - Choose the desired FISSURE install mode:
      - `full` - Complete FISSURE installation with supported SDR software, network tools, and utilities
-     - `base` - Core dependencies used as a foundation for additional container builds
-     - `Dashboard` - FISSURE Dashboard and GUI dependencies
-     - `HIPRFISR` - Headless HIPRFISR server
-     - `SensorNode` - Sensor Node runtime and selected hardware support
+     - `base` - Complete standalone workstation capable of running the Dashboard, HIPRFISR, and a local Sensor Node
+     - `Dashboard` - Dashboard client without a local database or Sensor Node
+     - `HIPRFISR` - Headless HIPRFISR hub with database services
+     - `SensorNode` - Remote Sensor Node runtime with supported hardware, GNU Radio modules, and compiled flow graphs
+     - `custom` - User-defined installer selection configured in `Installer/Modes/custom.py`
 
 3. **Run the Installer**
    ```bash

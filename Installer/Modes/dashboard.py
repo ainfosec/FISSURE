@@ -11,5 +11,4 @@ required_items = [
     "Meshtastic",
     "Network Certificates",
     "gr-ainfosec",
-    "Auto-Launch Sensor Node"
 ]
