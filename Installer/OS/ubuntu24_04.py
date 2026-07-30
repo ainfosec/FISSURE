@@ -16,7 +16,7 @@ programs_ubuntu24_04.append(('Misc. Dependencies (4.47 GB)',
 sudo apt-get install -y ubuntu-standard
 sudo apt-get install -y eog
 sudo apt-get -y install cmake
-sudo apt-get install -y python-setuptools python-dev-is-python3 build-essential
+sudo apt-get install -y python-dev-is-python3 build-essential
 sudo apt-get install -y curl
 sudo apt-get install -y libssl-dev libffi-dev libsqlite3-dev tk-dev
 mkdir -p ~/Installed_by_FISSURE
@@ -31,7 +31,7 @@ curl https://bootstrap.pypa.io./pip/2.7/get-pip.py | sudo python2  # Installs pi
 sudo apt-get install -y python3-pip
 python3 -m pip install cmake --upgrade --break-system-packages
 sudo apt install -y python3-testresources
-python3 -m pip install --upgrade setuptools --break-system-packages
+python3 -m pip install --upgrade "setuptools<82" --break-system-packages
 python3 -m pip install --upgrade virtualenv --break-system-packages
 #python3 -m pip install "matplotlib==3.6.3" --break-system-packages  # This version conflicts with yellowbrick
 python3 -m pip install PyYAML==5.1 --break-system-packages
@@ -43,11 +43,12 @@ sudo apt-get install -y gedit
 sudo apt-get install -y software-properties-common #python-software-properties # does Python3
 sudo add-apt-repository -y ppa:git-core/ppa
 sudo apt-get -y update
-sudo apt-get install -y git 
+sudo apt-get install -y git
 sudo apt-get install -y libcanberra-gtk-module
 python3 -m pip install bitarray --break-system-packages
 sudo apt install net-tools
 python3 -m pip install crcmod --break-system-packages
+python3 -c "import crcmod"
 python3 -m pip install pycrypto --break-system-packages
 sudo apt-get install -y python-tk
 python3 -m pip install pyzmq --break-system-packages
@@ -77,8 +78,7 @@ python3 -m pip install geopy --break-system-packages
 python3 -m pip install sounddevice --break-system-packages
 python3 -m pip install qasync --break-system-packages
 
-python3 -m pip install --force-reinstall "setuptools<82" --break-system-packages
-python3 -m pip install pydotplus --break-system-packages
+python3 -m pip install pydotplus --break-system-packages  # Needs "setuptools<82"
 
 #python3 -m pip install tensorflow_cpu --break-system-packages
 python3 -m pip install pytak --break-system-packages

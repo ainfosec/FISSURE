@@ -15,6 +15,8 @@ Fix Apptainer deployment mode propagation
 ### Fixed
 
 - Fixed Base and other role-specific Apptainer builds incorrectly running the Full FISSURE installer selection.
+- Moving setuptools to earlier in the Ubuntu 24.04 install
+- Adding auto start sensor node behavior to host in apptainer installer
 
 ## 2026-7-29
 

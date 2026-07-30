@@ -1,8 +1,50 @@
+# FISSURE Apptainer Commands
 
-# Build a Writable Sandbox
+# -----------------------------------------------------------------------------
+# Recommended FISSURE Installer Workflows
+# -----------------------------------------------------------------------------
+
+# Build and configure a writable FISSURE sandbox.
+# The installer also performs the required host-side setup.
+./install_apptainer.sh
+
+# Use an existing SIF without rebuilding the container.
+# Run the host-only option in install_apptainer.sh, then place the SIF at the
+# path expected by the FISSURE launcher or update the launcher image path.
+#
+# The host-only setup should install/configure items that remain outside the
+# container, including Apptainer, Docker/PostgreSQL, udev rules, device
+# permissions, display support, and other host integrations.
+
+
+# -----------------------------------------------------------------------------
+# Manual Image Builds
+# -----------------------------------------------------------------------------
+
+# Build a writable sandbox directly from the definition file.
 sudo apptainer build --sandbox fissure_apptainer fissure_apptainer.def
 
-# Ensure cookie exists and copy to a neutral path
+# Build an immutable SIF directly from the definition file.
+sudo apptainer build fissure_apptainer.sif fissure_apptainer.def
+
+# Convert an existing writable sandbox into an immutable SIF.
+sudo apptainer build fissure_apptainer.sif fissure_apptainer
+
+# Convert an existing SIF into a writable sandbox.
+sudo apptainer build --sandbox fissure_apptainer fissure_apptainer.sif
+
+# Note:
+# A SIF is read-only during normal use. Do not add --writable when launching it.
+# Use a sandbox or a persistent overlay when container filesystem changes must
+# survive after the session ends.
+
+
+# -----------------------------------------------------------------------------
+# PulseAudio Cookie
+# -----------------------------------------------------------------------------
+
+# Copy the current user's PulseAudio cookie to a neutral path that can be bound
+# into a container launched with sudo.
 if [ -f "$HOME/.config/pulse/cookie" ]; then
     cp "$HOME/.config/pulse/cookie" /tmp/pulse-cookie
     chmod 644 /tmp/pulse-cookie
@@ -10,43 +52,165 @@ else
     echo "[!] PulseAudio cookie not found for $USER"
 fi
 
-# Enter Writable Apptainer with GUI Support (X11)
-echo $XDG_SESSION_TYPE
-sudo apt-get install -y apptainer xauth x11-apps x11-utils x11-common libx11-6 libxext6
-sudo apt-get install -y fuse-overlayfs
-xhost +local:$USER
-sudo apptainer shell --writable --bind /tmp/.X11-unix:/tmp/.X11-unix --env DISPLAY=$DISPLAY fissure_apptainer
-sudo apptainer shell \
-  --writable \
-  --bind /dev/bus/usb:/dev/bus/usb \
-  $(for dev in /dev/ttyACM* /dev/ttyUSB*; do [ -e "$dev" ] && echo --bind "$dev:$dev"; done) \
-  --bind /run/udev:/run/udev \
-  --bind /tmp/.X11-unix:/tmp/.X11-unix \
-  --bind /run/user/$(id -u $SUDO_USER)/pulse:/tmp/pulse \
-  --env DISPLAY=$DISPLAY,PULSE_SERVER=unix:/tmp/pulse/native,PULSE_COOKIE=/tmp/pulse-cookie \
-  --env XDG_RUNTIME_DIR=/tmp/runtime-root \
-  ~/fissure_apptainer
 
-# Enter Writable Apptainer with GUI Support (Wayland)
-sudo apt-get install -y apptainer xwayland xauth x11-apps
-sudo apt-get install -y fuse-overlayfs
+# -----------------------------------------------------------------------------
+# Host GUI Packages
+# -----------------------------------------------------------------------------
+
+# X11 host packages.
+sudo apt-get install -y \
+    apptainer \
+    xauth \
+    x11-apps \
+    x11-utils \
+    x11-common \
+    libx11-6 \
+    libxext6 \
+    fuse-overlayfs
+
+# Additional Wayland/XWayland host support.
+sudo apt-get install -y xwayland
+
+
+# -----------------------------------------------------------------------------
+# Enter a Writable Sandbox with X11, Audio, and Hardware Support
+# -----------------------------------------------------------------------------
+
+echo "$XDG_SESSION_TYPE"
+
+# Permit the current local user to connect to the X server.
+xhost +local:"$USER"
+
+sudo apptainer shell \
+    --writable \
+    --bind /dev/bus/usb:/dev/bus/usb \
+    $(for dev in /dev/ttyACM* /dev/ttyUSB*; do
+        [ -e "$dev" ] && printf '%s\n' "--bind" "$dev:$dev"
+    done) \
+    --bind /run/udev:/run/udev \
+    --bind /tmp/.X11-unix:/tmp/.X11-unix \
+    --bind /run/user/$(id -u "$SUDO_USER")/pulse:/tmp/pulse \
+    --env DISPLAY="$DISPLAY" \
+    --env PULSE_SERVER=unix:/tmp/pulse/native \
+    --env PULSE_COOKIE=/tmp/pulse-cookie \
+    --env XDG_RUNTIME_DIR=/tmp/runtime-root \
+    "$HOME/fissure_apptainer"
+
+
+# -----------------------------------------------------------------------------
+# Enter a Writable Sandbox from a Wayland Session
+# -----------------------------------------------------------------------------
+
+# FISSURE/Qt still uses XWayland through the xcb backend.
 xhost +si:localuser:root
+
 sudo apptainer shell \
-  --writable \
-  --bind /tmp/.X11-unix:/tmp/.X11-unix \
-  --bind /run/user/$(id -u $SUDO_USER)/pulse:/tmp/pulse \
-  --env DISPLAY=$DISPLAY,PULSE_SERVER=unix:/tmp/pulse/native,PULSE_COOKIE=/tmp/pulse-cookie \
-  --env QT_QPA_PLATFORM=xcb \
-  --env GDK_BACKEND=x11 \
-  fissure_apptainer
+    --writable \
+    --bind /dev/bus/usb:/dev/bus/usb \
+    $(for dev in /dev/ttyACM* /dev/ttyUSB*; do
+        [ -e "$dev" ] && printf '%s\n' "--bind" "$dev:$dev"
+    done) \
+    --bind /run/udev:/run/udev \
+    --bind /tmp/.X11-unix:/tmp/.X11-unix \
+    --bind /run/user/$(id -u "$SUDO_USER")/pulse:/tmp/pulse \
+    --env DISPLAY="$DISPLAY" \
+    --env PULSE_SERVER=unix:/tmp/pulse/native \
+    --env PULSE_COOKIE=/tmp/pulse-cookie \
+    --env QT_QPA_PLATFORM=xcb \
+    --env GDK_BACKEND=x11 \
+    --env XDG_RUNTIME_DIR=/tmp/runtime-root \
+    "$HOME/fissure_apptainer"
 
-#sudo apt-get install -y x11-apps xwayland libx11-6  # Wayland (on host and in apptainer?)
 
-# Exit Apptainer
+# -----------------------------------------------------------------------------
+# Enter an Immutable SIF with X11, Audio, and Hardware Support
+# -----------------------------------------------------------------------------
+
+# This is the same runtime setup as the writable sandbox, except:
+#   1. --writable is omitted.
+#   2. The image path points to the .sif file.
+
+xhost +local:"$USER"
+
+sudo apptainer shell \
+    --bind /dev/bus/usb:/dev/bus/usb \
+    $(for dev in /dev/ttyACM* /dev/ttyUSB*; do
+        [ -e "$dev" ] && printf '%s\n' "--bind" "$dev:$dev"
+    done) \
+    --bind /run/udev:/run/udev \
+    --bind /tmp/.X11-unix:/tmp/.X11-unix \
+    --bind /run/user/$(id -u "$SUDO_USER")/pulse:/tmp/pulse \
+    --env DISPLAY="$DISPLAY" \
+    --env PULSE_SERVER=unix:/tmp/pulse/native \
+    --env PULSE_COOKIE=/tmp/pulse-cookie \
+    --env XDG_RUNTIME_DIR=/tmp/runtime-root \
+    "$HOME/fissure_apptainer.sif"
+
+
+# -----------------------------------------------------------------------------
+# Direct FISSURE Execution
+# -----------------------------------------------------------------------------
+
+# Add the same bind and environment options used above when hardware, GUI, or
+# audio access is required.
+
+# Launch the FISSURE Dashboard from a writable sandbox.
+sudo apptainer exec \
+    --writable \
+    "$HOME/fissure_apptainer" \
+    fissure
+
+# Launch the FISSURE Dashboard from an immutable SIF.
+sudo apptainer exec \
+    "$HOME/fissure_apptainer.sif" \
+    fissure
+
+# Launch a headless HIPRFISR.
+sudo apptainer exec \
+    "$HOME/fissure_apptainer.sif" \
+    fissure-hiprfisr
+
+# Launch a Sensor Node.
+sudo apptainer exec \
+    "$HOME/fissure_apptainer.sif" \
+    fissure-sensor-node
+
+
+# -----------------------------------------------------------------------------
+# Inspection and Troubleshooting
+# -----------------------------------------------------------------------------
+
+# Display the help embedded in the image.
+apptainer inspect --helpfile "$HOME/fissure_apptainer.sif"
+
+# Check the Apptainer version.
+apptainer --version
+
+# Confirm that FISSURE is available in the image.
+apptainer exec "$HOME/fissure_apptainer.sif" which fissure
+
+# Test X11 forwarding.
+xclock
+
+# Show USB devices visible on the host.
+lsusb
+
+# Show serial devices currently present.
+ls -l /dev/ttyACM* /dev/ttyUSB* 2>/dev/null
+
+# Exit the Apptainer shell.
 exit
 
-# Delete Apptainer
-sudo rm -Rf fissure_apptainer
 
+# -----------------------------------------------------------------------------
+# Cleanup
+# -----------------------------------------------------------------------------
 
+# Delete the writable sandbox.
+sudo rm -rf "$HOME/fissure_apptainer"
 
+# Delete the immutable SIF.
+rm -f "$HOME/fissure_apptainer.sif"
+
+# Remove the temporary PulseAudio cookie copy.
+rm -f /tmp/pulse-cookie
