@@ -6,6 +6,8 @@ from typing import Any
 
 import yaml
 
+from remote_sensor_node_templates import render_sensor_node_config
+
 
 LOOPBACK_NAMES = {"", "ipc", "localhost"}
 
@@ -26,15 +28,18 @@ def prepare_remote_config(
 
     network_type = str(node.get("network_type", "")).strip()
     configured_address = str(node.get("hiprfisr_ip_address", "")).strip()
-    if network_type != "IP" or _is_remote_address(configured_address):
-        return source
+    address_source = "input configuration"
+    if network_type == "IP" and not _is_remote_address(configured_address):
+        configured_address = _connection_ipv4_address(connection)
+        node["hiprfisr_ip_address"] = configured_address
+        address_source = "SSH connection local endpoint"
 
-    hub_address = _connection_ipv4_address(connection)
-    node["hiprfisr_ip_address"] = hub_address
-    destination.write_text(yaml.safe_dump(config, sort_keys=False), encoding="utf-8")
-    destination.chmod(0o600)
-    print(f"[*] Staged Sensor Node config uses HIPRFISR address {hub_address}")
-    return destination
+    rendered = render_sensor_node_config(destination, config, address_source)
+    print(
+        "[*] Rendered Sensor Node config "
+        f"with HIPRFISR address {configured_address or 'not configured'}"
+    )
+    return rendered
 
 
 def _load_config(source: Path) -> dict[str, Any]:
