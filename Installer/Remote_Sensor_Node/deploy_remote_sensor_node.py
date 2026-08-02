@@ -49,6 +49,7 @@ from remote_sensor_node_local_fissure import (
     LocalFissureError,
     require_local_fissure_gui,
 )
+from remote_sensor_node_scp import scp_with_progress
 from remote_sensor_node_config import ConfigPreparationError, prepare_remote_config
 from remote_sensor_node_uninstall import uninstall_remote
 from remote_sensor_node_privilege import (
@@ -406,7 +407,8 @@ async def upload_payload(asyncssh: Any, connection: Any, stage: str, options: De
     print(f"[*] Uploading {image.name} and runtime inputs with SCP")
     try:
         for local, remote_name in files.items():
-            await asyncssh.scp(str(local), (connection, f"{stage}/{remote_name}"))
+            destination = (connection, f"{stage}/{remote_name}")
+            await scp_with_progress(asyncssh, str(local), destination)
     except Exception as exc:
         await run_remote(connection, f"rm -rf -- {shlex.quote(stage)}", check=False)
         raise DeploymentError(f"SCP upload failed: {exc}") from exc

@@ -35,6 +35,8 @@ Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
 
 The deployer tries passwordless `sudo` after connecting as a non-root user. If
 that is unavailable, it securely prompts for the sudo password.
+During SCP, each file reports its percentage and transferred/total size. The
+multi-gigabyte SIF therefore remains visibly active throughout the upload.
 
 ## Local inputs
 
@@ -104,5 +106,6 @@ The default remote installation root is `/opt/fissure-sensor-node`.
 | `remote_sensor_node_local_apptainer.py` | Local Apptainer installation |
 | `remote_sensor_node_local_fissure.py` | Local Dashboard preflight |
 | `remote_sensor_node_privilege.py` | Remote sudo and package preparation |
+| `remote_sensor_node_scp.py` | Interactive and log-friendly SCP progress |
 | `remote_sensor_node_uninstall.py` | Remote uninstall orchestration |
 | `requirements-node-deploy.txt` | Deployment-only Python dependencies |
