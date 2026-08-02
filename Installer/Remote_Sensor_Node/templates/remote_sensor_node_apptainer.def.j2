@@ -23,7 +23,6 @@ From: ubuntu:24.04
     export PYTHONPATH=/opt/FISSURE:${PYTHONPATH:-}
     export PYTHONUNBUFFERED=1
     export MPLCONFIGDIR=${MPLCONFIGDIR:-/tmp/fissure-matplotlib}
-    export FISSURE_SENSOR_NODE_HEALTH_FILE=${FISSURE_SENSOR_NODE_HEALTH_FILE:-$HOME/.fissure/sensor_node_health.json}
 
 %post
     export DEBIAN_FRONTEND=noninteractive
