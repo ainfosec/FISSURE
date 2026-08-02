@@ -1,33 +1,8 @@
-"""Systemd and remote-shell templates used by the sensor-node deployer."""
+"""Remote shell scripts used by the sensor-node deployer."""
 
 
 class DeploymentUtilities:
-    """Templates executed or installed on the remote sensor node."""
-
-    SERVICE_UNIT = """\
-[Unit]
-Description=FISSURE Remote Sensor Node (Apptainer)
-Wants=network-online.target
-After=network-online.target
-StartLimitIntervalSec=300
-StartLimitBurst=3
-[Service]
-Type=simple
-User={user}
-Group={group}
-WorkingDirectory={remote}
-UMask=0077
-Environment=HOME=/home/fissure
-ExecStartPre={check}
-ExecStart={start}
-Restart=on-failure
-RestartSec=5
-TimeoutStopSec=30
-KillMode=mixed
-LimitMEMLOCK=infinity
-[Install]
-WantedBy=multi-user.target
-"""
+    """Shell scripts executed on the remote sensor node."""
 
     PREFLIGHT_SCRIPT = """\
 set -eu
