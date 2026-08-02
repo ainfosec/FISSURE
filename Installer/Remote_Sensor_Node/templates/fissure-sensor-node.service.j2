@@ -31,7 +31,6 @@ ExecStart={{ apptainer }} run \
     --bind {{ remote_dir }}/current/certificates:/opt/FISSURE/certificates:ro \
     --bind {{ remote_dir }}/state/logs:/opt/FISSURE/Logs \
     --bind /run/udev:/run/udev:ro \
-    --env FISSURE_SENSOR_NODE_HEALTH_FILE=/home/fissure/.fissure/sensor_node_health.json \
     {{ remote_dir }}/current/fissure-sensor-node.sif
 Restart=on-failure
 RestartSec=5
