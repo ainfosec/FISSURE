@@ -1,0 +1,43 @@
+[Unit]
+Description=FISSURE Remote Sensor Node (Apptainer)
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
+
+[Service]
+Type=simple
+User={{ user }}
+Group={{ group }}
+WorkingDirectory={{ remote_dir }}
+UMask=0077
+Environment=HOME=/home/fissure
+ExecStartPre={{ apptainer }} exec \
+    --cleanenv \
+    --home {{ remote_dir }}/state/home:/home/fissure \
+    --overlay {{ remote_dir }}/state/runtime-overlay.img \
+    --bind {{ remote_dir }}/current/default.yaml:/opt/FISSURE/YAML/Sensor_Node_Config/default.yaml:ro \
+    --bind {{ remote_dir }}/current/certificates:/opt/FISSURE/certificates:ro \
+    --bind {{ remote_dir }}/state/logs:/opt/FISSURE/Logs \
+    --bind /run/udev:/run/udev:ro \
+    {{ remote_dir }}/current/fissure-sensor-node.sif \
+    python3 /opt/FISSURE/Installer/remote_sensor_node_image_check.py \
+    --skip-runtime-import
+ExecStart={{ apptainer }} run \
+    --cleanenv \
+    --home {{ remote_dir }}/state/home:/home/fissure \
+    --overlay {{ remote_dir }}/state/runtime-overlay.img \
+    --bind {{ remote_dir }}/current/default.yaml:/opt/FISSURE/YAML/Sensor_Node_Config/default.yaml:ro \
+    --bind {{ remote_dir }}/current/certificates:/opt/FISSURE/certificates:ro \
+    --bind {{ remote_dir }}/state/logs:/opt/FISSURE/Logs \
+    --bind /run/udev:/run/udev:ro \
+    --env FISSURE_SENSOR_NODE_HEALTH_FILE=/home/fissure/.fissure/sensor_node_health.json \
+    {{ remote_dir }}/current/fissure-sensor-node.sif
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=30
+KillMode=mixed
+LimitMEMLOCK=infinity
+
+[Install]
+WantedBy=multi-user.target
