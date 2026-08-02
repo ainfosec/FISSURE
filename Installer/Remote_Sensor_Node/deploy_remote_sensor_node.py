@@ -10,10 +10,10 @@ Options:
   -h --help                  Show this help.
   --target=<destination>     Legacy [user@]IP form (default user: root).
   -i <path> --identity=<path>  SSH private key; omit to enter a password.
-  --config=<path>            Remote YAML (default: installed Sensor Node YAML).
+  --config=<path>            Values for rendered YAML (default: installed YAML).
   --certificates=<path>      Certificate root (default: installed certificates).
   --image=<path>             Existing SIF to deploy instead of building.
-  --output-image=<path>      Local SIF output (default: repository build path).
+  --output-image=<path>      Local SIF output (default: deployment build path).
   --source=<path>            FISSURE source tree (default: repository root).
   --build-with-sudo          Build with sudo instead of Apptainer fakeroot.
   --no-install-apptainer     Do not install missing local or remote Apptainer.
@@ -52,6 +52,14 @@ from remote_sensor_node_local_fissure import (
 from remote_sensor_node_health import heartbeat_is_ready
 from remote_sensor_node_scp import scp_with_progress
 from remote_sensor_node_config import ConfigPreparationError, prepare_remote_config
+from remote_sensor_node_templates import (
+    APPTAINER_TEMPLATE,
+    SENSOR_NODE_TEMPLATE,
+    SERVICE_UNIT_TEMPLATE,
+    TemplateRenderError,
+    render_apptainer_definition,
+    render_service_unit,
+)
 from remote_sensor_node_uninstall import uninstall_remote
 from remote_sensor_node_privilege import (
     PrivilegeContext,
@@ -64,7 +72,6 @@ from remote_sensor_node_privilege import (
 
 INSTALLER_DIR = Path(__file__).resolve().parent
 REPO_ROOT = INSTALLER_DIR.parent.parent
-DEFINITION_FILE = INSTALLER_DIR / "remote_sensor_node_apptainer.def"
 REMOTE_DIR_PATTERN = re.compile(r"^/[A-Za-z0-9._/-]+$")
 SERVICE_PATTERN = re.compile(r"^[A-Za-z0-9_.@-]+$")
 
@@ -124,6 +131,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         LocalApptainerError,
         LocalFissureError,
         PrivilegeError,
+        TemplateRenderError,
     ) as exc:
         print(f"[!] {exc}", file=sys.stderr)
         return 1
@@ -163,8 +171,13 @@ async def deploy(options: DeployOptions, asyncssh: Any) -> None:
                 connection,
             )
             options = replace(options, config_file=config_file)
-            unit = temp_dir / f"{options.service_name}.service"
-            unit.write_text(build_service_unit(options, environment.user, environment.group, environment.apptainer))
+            unit = render_service_unit(
+                temp_dir / f"{options.service_name}.service",
+                options.remote_dir,
+                environment.user,
+                environment.group,
+                environment.apptainer,
+            )
             await deploy_release(asyncssh, connection, options, image, unit, environment)
 
 
@@ -190,7 +203,10 @@ def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
             config_file=path("--config", source_dir / "YAML/Sensor_Node_Config/default.yaml"),
             certificates_dir=path( "--certificates", source_dir / "certificates"),
             image_file=path("--image"),
-            output_image=path("--output-image", source_dir / "build/fissure-sensor-node.sif"),
+            output_image=path(
+                "--output-image",
+                source_dir / "Installer/Remote_Sensor_Node/build/fissure-sensor-node.sif",
+            ),
             source_dir=source_dir,
             remote_dir=args["--remote-dir"].rstrip("/") or "/",
             service_name=args["--service-name"].removesuffix(".service"),
@@ -227,11 +243,13 @@ def validate_options(options: DeployOptions) -> None:
             options.config_file,
             options.certificates_dir / "clients/client_0.key_secret",
             options.certificates_dir / "server/server.key",
+            SENSOR_NODE_TEMPLATE,
+            SERVICE_UNIT_TEMPLATE,
         ]
         if options.image_file:
             local_inputs.append(options.image_file)
         else:
-            local_inputs += [DEFINITION_FILE, options.source_dir / "fissure/Sensor_Node"]
+            local_inputs += [APPTAINER_TEMPLATE, options.source_dir / "fissure/Sensor_Node"]
     missing = [str(path) for path in local_inputs if path and not path.exists()]
     if missing:
         raise DeploymentError("Missing required input(s): " + ", ".join(missing))
@@ -295,9 +313,9 @@ async def get_image(options: DeployOptions, temp_dir: Path) -> Path:
     apptainer = await ensure_local_apptainer(options.install_apptainer)
     source = temp_dir / "source"
     await asyncio.to_thread(copy_build_context, options.source_dir, source)
-    definition = temp_dir / DEFINITION_FILE.name
-    definition.write_text(
-        DEFINITION_FILE.read_text().replace("__FISSURE_SOURCE__", str(source))
+    definition = render_apptainer_definition(
+        source,
+        temp_dir / APPTAINER_TEMPLATE.stem,
     )
     options.output_image.parent.mkdir(parents=True, exist_ok=True)
     command = [apptainer, "build", "--force"]
@@ -326,31 +344,6 @@ def copy_build_context(source: Path, destination: Path) -> None:
         return ignored
 
     shutil.copytree(source.resolve(), destination, symlinks=True, ignore=ignore)
-
-
-def build_service_unit(options: DeployOptions, user: str, group: str, apptainer: str) -> str:
-    root = options.remote_dir
-    home = f"{root}/state/home:/home/fissure"
-    overlay = f"{root}/state/runtime-overlay.img"
-    binds = (
-        f"--bind {root}/current/default.yaml:/opt/FISSURE/YAML/Sensor_Node_Config/default.yaml:ro "
-        f"--bind {root}/current/certificates:/opt/FISSURE/certificates:ro "
-        f"--bind {root}/state/logs:/opt/FISSURE/Logs --bind /run/udev:/run/udev:ro"
-    )
-    image = f"{root}/current/fissure-sensor-node.sif"
-    common = f"{apptainer} {{command}} --cleanenv --home {home} --overlay {overlay} {binds}"
-    check = common.format(command="exec") + (
-        f" {image} python3 "
-        # Keep the old in-image path compatible with already-built SIFs.
-        "/opt/FISSURE/Installer/remote_sensor_node_image_check.py --skip-runtime-import"
-    )
-    start = common.format(command="run") + (
-        " --env FISSURE_SENSOR_NODE_HEALTH_FILE="
-        f"/home/fissure/.fissure/sensor_node_health.json {image}"
-    )
-    return DeploymentUtilities.SERVICE_UNIT.format(
-        user=user, group=group, remote=root, check=check, start=start
-    )
 
 
 async def deploy_release(
