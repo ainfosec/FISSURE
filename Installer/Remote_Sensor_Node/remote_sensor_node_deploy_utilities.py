@@ -71,7 +71,6 @@ set -eu
 stage=$1; root=$2; release_id=$3; service=$4
 user=$5; group=$6; apptainer=$7; overlay_size=$8
 release="$root/releases/$release_id"; state="$root/state"
-health="$state/home/.fissure/sensor_node_health.json"
 trap 'rm -rf -- "$stage"' EXIT
 as_service() {
   if [ "$user" = root ]; then "$@"; else runuser -u "$user" -- "$@"; fi
@@ -103,7 +102,6 @@ fi
 install -o root -g root -m 0644 \
   "$stage/$service.service" "/etc/systemd/system/$service.service"
 systemctl stop "$service.service" >/dev/null 2>&1 || true
-[ ! -f "$health" ] || mv "$health" "$health.previous.$release_id"
 link="$root/current.$release_id"
 ln -s "$release" "$link"
 mv -Tf "$link" "$root/current"
@@ -115,9 +113,7 @@ systemctl start "$service.service"
     ROLLBACK_SCRIPT = """\
 set -eu
 root=$1; service=$2; previous=$3
-health="$root/state/home/.fissure/sensor_node_health.json"
 systemctl stop "$service.service" >/dev/null 2>&1 || true
-[ ! -f "$health" ] || mv "$health" "$health.failed.$(date -u +%Y%m%dT%H%M%SZ)"
 if [ -n "$previous" ] && [ -d "$previous" ]; then
   link="$root/current.rollback.$$"
   ln -s "$previous" "$link"
