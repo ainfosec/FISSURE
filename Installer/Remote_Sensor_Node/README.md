@@ -93,8 +93,10 @@ intentionally staging a node before its hub is reachable.
 Run the command with `--help` for configuration, image, service, overlay, and
 health-timeout options.
 The default 180-second health window covers heavyweight SensorNode imports.
-For IP nodes, readiness accepts either an inbound HIPRFISR heartbeat or a fresh
-matching heartbeat receipt in the local HIPRFISR event log.
+Readiness is checked without modifying SensorNode runtime code. The deployer
+uses systemd state and `MainPID`, the persistent `sensor_node_uuid.uuid`, and
+the rendered remote YAML. IP nodes additionally require a fresh matching
+heartbeat receipt in the local HIPRFISR event log.
 
 ## Safety and lifecycle
 
