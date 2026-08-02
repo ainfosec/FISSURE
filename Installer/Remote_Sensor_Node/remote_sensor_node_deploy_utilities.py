@@ -9,6 +9,8 @@ class DeploymentUtilities:
 Description=FISSURE Remote Sensor Node (Apptainer)
 Wants=network-online.target
 After=network-online.target
+StartLimitIntervalSec=300
+StartLimitBurst=3
 [Service]
 Type=simple
 User={user}

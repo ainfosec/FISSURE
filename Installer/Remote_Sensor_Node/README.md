@@ -91,6 +91,8 @@ Each deployment creates a timestamped remote release. Configuration,
 certificates, logs, the writable overlay, and node identity remain outside the
 SIF. The service is promoted only after process and heartbeat validation; a
 failed upgrade restores the previous release.
+Service startup rechecks configuration and certificates without recursively
+importing heavyweight runtime modules already validated during the image build.
 
 The default remote installation root is `/opt/fissure-sensor-node`.
 

@@ -341,7 +341,7 @@ def build_service_unit(options: DeployOptions, user: str, group: str, apptainer:
     check = common.format(command="exec") + (
         f" {image} python3 "
         # Keep the old in-image path compatible with already-built SIFs.
-        "/opt/FISSURE/Installer/remote_sensor_node_image_check.py"
+        "/opt/FISSURE/Installer/remote_sensor_node_image_check.py --skip-runtime-import"
     )
     start = common.format(command="run") + (
         " --env FISSURE_SENSOR_NODE_HEALTH_FILE="

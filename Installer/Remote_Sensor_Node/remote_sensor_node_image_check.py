@@ -12,7 +12,7 @@ import yaml
 import zmq.auth
 
 
-PROJECT_ROOT = Path(__file__).resolve().parents[1]
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 DEFAULT_CONFIG = PROJECT_ROOT / "YAML" / "Sensor_Node_Config" / "default.yaml"
 DEFAULT_CERTIFICATES = PROJECT_ROOT / "certificates"
 XVFB_ACTIVE_ENV = "FISSURE_XVFB_ACTIVE"
@@ -108,6 +108,8 @@ def validate_certificates(certificates_path):
 
 def main():
     args = parse_args()
+    if not args.skip_runtime_import:
+        ensure_apptainer_display()
     network_type = validate_config(args.config, args.allow_placeholder_config)
 
     if network_type == "IP" and not args.skip_certificates:
@@ -130,7 +132,6 @@ def main():
 
 if __name__ == "__main__":
     try:
-        ensure_apptainer_display()
         main()
     except Exception as exc:
         print(f"FISSURE remote sensor-node image check failed: {exc}", file=sys.stderr)
