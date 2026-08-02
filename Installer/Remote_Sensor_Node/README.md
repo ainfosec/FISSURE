@@ -80,6 +80,9 @@ intentionally staging a node before its hub is reachable.
 
 Run the command with `--help` for configuration, image, service, overlay, and
 health-timeout options.
+The default 180-second health window covers heavyweight SensorNode imports.
+For IP nodes, readiness accepts either an inbound HIPRFISR heartbeat or a fresh
+matching heartbeat receipt in the local HIPRFISR event log.
 
 ## Safety and lifecycle
 
@@ -108,6 +111,7 @@ The default remote installation root is `/opt/fissure-sensor-node`.
 | `remote_sensor_node_local_apptainer.py` | Local Apptainer installation |
 | `remote_sensor_node_local_fissure.py` | Local Dashboard preflight |
 | `remote_sensor_node_privilege.py` | Remote sudo and package preparation |
+| `remote_sensor_node_health.py` | End-to-end heartbeat readiness checks |
 | `remote_sensor_node_scp.py` | Interactive and log-friendly SCP progress |
 | `remote_sensor_node_uninstall.py` | Remote uninstall orchestration |
 | `requirements-node-deploy.txt` | Deployment-only Python dependencies |

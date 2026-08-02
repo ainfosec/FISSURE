@@ -20,7 +20,7 @@ Options:
   --remote-dir=<path>        Installation root [default: /opt/fissure-sensor-node].
   --service-name=<name>      systemd unit name [default: fissure-sensor-node].
   --overlay-size=<mb>        Persistent overlay size [default: 4096].
-  --health-timeout=<seconds>  Health and heartbeat timeout [default: 75].
+  --health-timeout=<seconds>  Health and heartbeat timeout [default: 180].
   --startup-only             Do not require a HIPRFISR heartbeat.
   --health-only              Check without changing the deployment.
   --uninstall                Remove the remote service and deployment files.
@@ -49,6 +49,7 @@ from remote_sensor_node_local_fissure import (
     LocalFissureError,
     require_local_fissure_gui,
 )
+from remote_sensor_node_health import heartbeat_is_ready
 from remote_sensor_node_scp import scp_with_progress
 from remote_sensor_node_config import ConfigPreparationError, prepare_remote_config
 from remote_sensor_node_uninstall import uninstall_remote
@@ -466,16 +467,6 @@ async def health_is_ready(connection: Any, snapshot: dict[str, Any], options: De
         return False
     now = int((await run_remote(connection, "date +%s")).stdout.strip())
     return heartbeat_is_ready(snapshot, now, options)
-
-
-def heartbeat_is_ready(snapshot: dict[str, Any], remote_now: int, options: DeployOptions) -> bool:
-    if options.startup_only or snapshot.get("network_type") != "IP":
-        return True
-    try:
-        age = remote_now - float(snapshot.get("updated_at_epoch", 0))
-    except (TypeError, ValueError):
-        return False
-    return bool(snapshot.get("hiprfisr_connected")) and 0 <= age <= options.health_timeout
 
 
 async def run_remote(connection: Any, command: str, check: bool = True, input_data: str | None = None) -> Any:
