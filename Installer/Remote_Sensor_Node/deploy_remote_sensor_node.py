@@ -29,7 +29,6 @@ import asyncio
 from dataclasses import dataclass, replace
 import getpass
 import importlib
-import json
 from pathlib import Path
 import re
 import shlex
@@ -49,7 +48,10 @@ from remote_sensor_node_local_fissure import (
     LocalFissureError,
     require_local_fissure_gui,
 )
-from remote_sensor_node_health import heartbeat_is_ready
+from remote_sensor_node_health import (
+    HealthCheckError,
+    wait_for_sensor_node_health,
+)
 from remote_sensor_node_scp import scp_with_progress
 from remote_sensor_node_config import ConfigPreparationError, prepare_remote_config
 from remote_sensor_node_templates import (
@@ -62,11 +64,9 @@ from remote_sensor_node_templates import (
 )
 from remote_sensor_node_uninstall import uninstall_remote
 from remote_sensor_node_privilege import (
-    PrivilegeContext,
     PrivilegeError,
     RemoteEnvironment,
     prepare_remote_environment,
-    run_root_command,
     run_root_script,
 )
 
@@ -132,6 +132,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         LocalFissureError,
         PrivilegeError,
         TemplateRenderError,
+        HealthCheckError,
     ) as exc:
         print(f"[!] {exc}", file=sys.stderr)
         return 1
@@ -156,7 +157,11 @@ async def deploy(options: DeployOptions, asyncssh: Any) -> None:
         password = prompt_for_ssh_password(options)
         async with await connect(asyncssh, options, password) as connection:
             environment = await preflight(connection, False, destination)
-            await wait_for_health(connection, options, environment.privilege)
+            await wait_for_sensor_node_health(
+                connection,
+                options,
+                environment.privilege,
+            )
         return
 
     with tempfile.TemporaryDirectory(prefix="fissure-node-deploy.") as name:
@@ -374,8 +379,21 @@ async def deploy_release(
             environment.apptainer,
             str(options.overlay_size_mb),
         ]
-        await run_root_script(connection, DeploymentUtilities.INSTALL_SCRIPT, args, environment.privilege)
-        await wait_for_health(connection, options, environment.privilege)
+        await run_root_script(
+            connection,
+            DeploymentUtilities.INSTALL_SCRIPT,
+            args,
+            environment.privilege,
+        )
+        # Ignore heartbeats from the previous release; the next heartbeat from
+        # the newly started service provides the end-to-end readiness proof.
+        health_started_at = time.time()
+        await wait_for_sensor_node_health(
+            connection,
+            options,
+            environment.privilege,
+            health_started_at,
+        )
     except Exception:
         print("[!] Deployment failed; rolling back")
         await run_root_script(
@@ -406,60 +424,6 @@ async def upload_payload(asyncssh: Any, connection: Any, stage: str, options: De
     except Exception as exc:
         await run_remote(connection, f"rm -rf -- {shlex.quote(stage)}", check=False)
         raise DeploymentError(f"SCP upload failed: {exc}") from exc
-
-
-async def wait_for_health(connection: Any, options: DeployOptions, privilege: PrivilegeContext) -> None:
-    deadline = time.monotonic() + options.health_timeout
-    health_file = f"{options.remote_dir}/state/home/.fissure/sensor_node_health.json"
-    while time.monotonic() < deadline:
-        state = (
-            await run_remote(
-                connection,
-                "systemctl is-active "
-                + shlex.quote(options.service_name + ".service"),
-                check=False,
-            )
-        ).stdout.strip()
-        result = await run_remote(connection, f"cat {shlex.quote(health_file)}", check=False)
-        if state == "active" and not result.exit_status:
-            try:
-                snapshot = json.loads(result.stdout)
-            except json.JSONDecodeError:
-                snapshot = {}
-            if await health_is_ready(connection, snapshot, options):
-                print(f"[✓] Sensor node healthy: pid={snapshot['pid']}")
-                return
-        if state in {"failed", "inactive"}:
-            break
-        await asyncio.sleep(2)
-    journal = await run_root_command(
-        connection,
-        [
-            "journalctl",
-            "-u",
-            options.service_name + ".service",
-            "-n",
-            "80",
-            "--no-pager",
-        ],
-        privilege,
-        check=False,
-    )
-    print(journal.stdout, end="")
-    raise DeploymentError("Sensor node failed its health check")
-
-
-async def health_is_ready(connection: Any, snapshot: dict[str, Any], options: DeployOptions) -> bool:
-    pid = snapshot.get("pid")
-    if snapshot.get("status") != "running" or not isinstance(pid, int) or pid <= 0:
-        return False
-    process = await run_remote(
-        connection, f"kill -0 {pid} && tr '\\0' ' ' < /proc/{pid}/cmdline", check=False
-    )
-    if process.exit_status or "SensorNode.py" not in process.stdout:
-        return False
-    now = int((await run_remote(connection, "date +%s")).stdout.strip())
-    return heartbeat_is_ready(snapshot, now, options)
 
 
 async def run_remote(connection: Any, command: str, check: bool = True, input_data: str | None = None) -> Any:
