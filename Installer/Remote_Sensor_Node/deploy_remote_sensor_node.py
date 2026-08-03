@@ -20,8 +20,7 @@ Options:
   --remote-dir=<path>        Installation root [default: /opt/fissure-sensor-node].
   --service-name=<name>      systemd unit name [default: fissure-sensor-node].
   --overlay-size=<mb>        Persistent overlay size [default: 4096].
-  --health-timeout=<seconds>  Health and heartbeat timeout [default: 180].
-  --startup-only             Do not require a HIPRFISR heartbeat.
+  --health-timeout=<seconds>  Startup and diagnostic timeout [default: 180].
   --health-only              Check without changing the deployment.
   --uninstall                Remove the remote service and deployment files.
 """
@@ -43,10 +42,6 @@ from remote_sensor_node_deploy_utilities import DeploymentUtilities
 from remote_sensor_node_local_apptainer import (
     LocalApptainerError,
     ensure_local_apptainer,
-)
-from remote_sensor_node_local_fissure import (
-    LocalFissureError,
-    require_local_fissure_gui,
 )
 from remote_sensor_node_health import (
     HealthCheckError,
@@ -109,7 +104,6 @@ class DeployOptions:
     service_name: str
     health_timeout: int
     overlay_size_mb: int
-    startup_only: bool
     health_only: bool
     build_with_sudo: bool
     install_apptainer: bool
@@ -120,8 +114,6 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         options = parse_options(argv)
         validate_options(options)
-        if not options.health_only and not options.uninstall:
-            require_local_fissure_gui()
         asyncssh = load_module("asyncssh")
         asyncio.run(deploy(options, asyncssh))
         return 0
@@ -129,7 +121,6 @@ def main(argv: Sequence[str] | None = None) -> int:
         ConfigPreparationError,
         DeploymentError,
         LocalApptainerError,
-        LocalFissureError,
         PrivilegeError,
         TemplateRenderError,
         HealthCheckError,
@@ -161,6 +152,7 @@ async def deploy(options: DeployOptions, asyncssh: Any) -> None:
                 connection,
                 options,
                 environment.privilege,
+                require_heartbeat=True,
             )
         return
 
@@ -217,7 +209,6 @@ def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
             service_name=args["--service-name"].removesuffix(".service"),
             health_timeout=integer("--health-timeout"),
             overlay_size_mb=integer("--overlay-size"),
-            startup_only=bool(args["--startup-only"]),
             health_only=bool(args["--health-only"]),
             build_with_sudo=bool(args["--build-with-sudo"]),
             install_apptainer=not bool(args["--no-install-apptainer"]),
@@ -378,14 +369,13 @@ async def deploy_release(
         args,
         environment.privilege,
     )
-    health_started_at = time.time()
     await wait_for_sensor_node_health(
         connection,
         options,
         environment.privilege,
-        health_started_at,
+        require_heartbeat=False,
     )
-    print(f"[✓] Release {release_id} is active and healthy")
+    print(f"[✓] Release {release_id} started successfully")
 
 
 async def upload_payload(asyncssh: Any, connection: Any, stage: str, options: DeployOptions, image: Path, unit: Path,

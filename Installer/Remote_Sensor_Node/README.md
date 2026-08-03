@@ -17,7 +17,7 @@ python3 -m pip install -r \
   Installer/Remote_Sensor_Node/requirements-node-deploy.txt
 ```
 
-Start the local FISSURE Dashboard, then deploy by providing only the target IP:
+Deploy by providing only the target IP:
 
 ```bash
 Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py 192.0.2.20
@@ -86,28 +86,22 @@ Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
   192.0.2.20 --uninstall
 ```
 
-Uninstall preserves the remote Apptainer package and local cached SIF. Use
-`--startup-only` to accept process startup without a HIPRFISR heartbeat when
-intentionally staging a node before its hub is reachable.
+Uninstall preserves the remote Apptainer package and local cached SIF.
 
 Run the command with `--help` for configuration, image, service, overlay, and
 health-timeout options.
-The default 180-second health window covers heavyweight SensorNode imports.
-Readiness is checked without modifying SensorNode runtime code. The deployer
-uses systemd state and `MainPID`, the persistent `sensor_node_uuid.uuid`, and
-the rendered remote YAML. IP nodes additionally require a fresh matching
-heartbeat receipt in the local HIPRFISR event log.
+The default 180-second window covers heavyweight SensorNode imports. Normal
+deployment validates systemd state, `MainPID`, and the persistent
+`sensor_node_uuid.uuid` without requiring a running Dashboard or HIPRFISR.
+The explicit `--health-only` diagnostic additionally requires a fresh matching
+heartbeat receipt in the local HIPRFISR event log for IP nodes.
 
 ## Safety and lifecycle
 
-A full deployment requires the local FISSURE Dashboard process to be running.
-The check occurs before image building, credential prompts, or SSH. Health and
-uninstall operations remain available without the Dashboard.
-
 Each deployment creates a timestamped remote release. Configuration,
 certificates, logs, the writable overlay, and node identity remain outside the
-SIF. The deployer reports process and heartbeat validation failures without
-automatically changing the installed release.
+SIF. Startup and explicit diagnostic failures are reported without automatically
+changing the installed release.
 Service startup rechecks configuration and certificates without recursively
 importing heavyweight runtime modules already validated during the image build.
 
@@ -122,9 +116,8 @@ The default remote installation root is `/opt/fissure-sensor-node`.
 | `remote_sensor_node_deploy_utilities.py` | Remote lifecycle shell scripts |
 | `remote_sensor_node_image_check.py` | Image and runtime prerequisite checks |
 | `remote_sensor_node_local_apptainer.py` | Local Apptainer installation |
-| `remote_sensor_node_local_fissure.py` | Local Dashboard preflight |
 | `remote_sensor_node_privilege.py` | Remote sudo and package preparation |
-| `remote_sensor_node_health.py` | End-to-end heartbeat readiness checks |
+| `remote_sensor_node_health.py` | Startup and optional heartbeat diagnostics |
 | `remote_sensor_node_scp.py` | Interactive and log-friendly SCP progress |
 | `remote_sensor_node_templates.py` | Strict Jinja2 rendering boundary |
 | `remote_sensor_node_uninstall.py` | Remote uninstall orchestration |

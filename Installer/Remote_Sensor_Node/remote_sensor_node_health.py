@@ -23,7 +23,6 @@ class HealthCheckError(RuntimeError):
 
 
 class HealthOptions(Protocol):
-    startup_only: bool
     health_timeout: int
     source_dir: Path
     remote_dir: str
@@ -45,13 +44,20 @@ async def wait_for_sensor_node_health(
     connection: Any,
     options: HealthOptions,
     privilege: PrivilegeContext,
+    require_heartbeat: bool,
     minimum_heartbeat_epoch: float | None = None,
 ) -> None:
-    """Wait for service startup and, for IP nodes, a received heartbeat."""
+    """Wait for startup and optionally require an IP-node heartbeat."""
     minimum_epoch = minimum_heartbeat_epoch
     if minimum_epoch is None:
         minimum_epoch = time.time() - options.health_timeout
-    probe = SensorNodeHealthProbe(connection, options, privilege, minimum_epoch)
+    probe = SensorNodeHealthProbe(
+        connection,
+        options,
+        privilege,
+        require_heartbeat,
+        minimum_epoch,
+    )
     await probe.wait()
 
 
@@ -63,15 +69,19 @@ class SensorNodeHealthProbe:
         connection: Any,
         options: HealthOptions,
         privilege: PrivilegeContext,
+        require_heartbeat: bool,
         minimum_heartbeat_epoch: float,
     ) -> None:
         self.connection = connection
         self.options = options
         self.privilege = privilege
+        self.require_heartbeat = require_heartbeat
         self.minimum_heartbeat_epoch = minimum_heartbeat_epoch
 
     async def wait(self) -> None:
-        network_type = await self._read_network_type()
+        network_type = ""
+        if self.require_heartbeat:
+            network_type = await self._read_network_type()
         deadline = time.monotonic() + self.options.health_timeout
         last_state = ServiceState("unknown", "unknown", 0)
         while time.monotonic() < deadline:
@@ -95,7 +105,7 @@ class SensorNodeHealthProbe:
         node_uuid = await self._read_node_uuid()
         if not node_uuid:
             return False
-        if not self.options.startup_only and network_type == "IP":
+        if self.require_heartbeat and network_type == "IP":
             ready = hub_received_recent_heartbeat(
                 self.options.source_dir / "Logs/event.log",
                 node_uuid,
@@ -103,7 +113,9 @@ class SensorNodeHealthProbe:
             )
             if not ready:
                 return False
-        print(f"[✓] Sensor node healthy: pid={state.main_pid}, uuid={node_uuid}")
+        has_heartbeat = self.require_heartbeat and network_type == "IP"
+        status = "healthy" if has_heartbeat else "started"
+        print(f"[✓] Sensor node {status}: pid={state.main_pid}, uuid={node_uuid}")
         return True
 
     async def _read_network_type(self) -> str:
