@@ -76,8 +76,19 @@ Check an existing deployment without changing it:
 
 ```bash
 Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
-  192.0.2.20 --health-only
+    192.0.2.20 --health-only
 ```
+
+Replace only the active Sensor Node configuration and restart the service:
+
+```bash
+Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
+    192.0.2.20 --update-config=/path/to/sensor-node.yaml
+```
+
+This uses the normal configuration rendering and SSH privilege paths. It
+atomically replaces `current/default.yaml`, restarts the existing service, and
+checks startup without rebuilding or transferring the SIF.
 
 Remove the remote service and deployment state:
 

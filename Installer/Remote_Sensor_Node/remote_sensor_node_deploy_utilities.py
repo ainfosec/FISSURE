@@ -110,6 +110,24 @@ systemctl enable "$service.service" >/dev/null
 systemctl start "$service.service"
 """
 
+    UPDATE_CONFIG_SCRIPT = """\
+set -eu
+stage=$1; root=$2; service=$3
+config="$root/current/default.yaml"
+candidate="$config.new"
+trap 'rm -rf -- "$stage"; rm -f -- "$candidate"' EXIT
+test -d "$root/current" || { echo "No active sensor-node installation" >&2; exit 30; }
+test -f "$config" || { echo "Active sensor-node config is missing" >&2; exit 31; }
+systemctl cat "$service.service" >/dev/null || {
+  echo "Sensor-node service is not installed" >&2
+  exit 32
+}
+install -m 0440 "$stage/default.yaml" "$candidate"
+chown --reference="$config" "$candidate"
+mv -f -- "$candidate" "$config"
+systemctl restart "$service.service"
+"""
+
     UNINSTALL_SCRIPT = """\
 set -eu
 root=$1; service=$2

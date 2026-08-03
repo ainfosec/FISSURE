@@ -22,6 +22,7 @@ Options:
   --overlay-size=<mb>        Persistent overlay size [default: 4096].
   --health-timeout=<seconds>  Startup and diagnostic timeout [default: 180].
   --health-only              Check without changing the deployment.
+  --update-config=<path>     Replace the installed config and restart the service.
   --uninstall                Remove the remote service and deployment files.
 """
 import asyncio
@@ -107,6 +108,7 @@ class DeployOptions:
     health_only: bool
     build_with_sudo: bool
     install_apptainer: bool
+    update_config_file: Path | None
     uninstall: bool
 
 
@@ -134,6 +136,24 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 async def deploy(options: DeployOptions, asyncssh: Any) -> None:
     destination = f"{options.target.username}@{options.target.hostname}"
+    if options.update_config_file:
+        with tempfile.TemporaryDirectory(prefix="fissure-node-config.") as name:
+            password = prompt_for_ssh_password(options)
+            async with await connect(asyncssh, options, password) as connection:
+                environment = await preflight(connection, False, destination)
+                config_file = prepare_remote_config(
+                    options.update_config_file,
+                    Path(name) / "default.yaml",
+                    connection,
+                )
+                await update_remote_config(
+                    asyncssh,
+                    connection,
+                    options,
+                    config_file,
+                    environment,
+                )
+        return
     if options.uninstall:
         password = prompt_for_ssh_password(options)
         async with await connect(asyncssh, options, password) as connection:
@@ -212,6 +232,7 @@ def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
             health_only=bool(args["--health-only"]),
             build_with_sudo=bool(args["--build-with-sudo"]),
             install_apptainer=not bool(args["--no-install-apptainer"]),
+            update_config_file=path("--update-config"),
             uninstall=bool(args["--uninstall"]),
         )
     except (TypeError, ValueError) as exc:
@@ -227,14 +248,19 @@ def validate_options(options: DeployOptions) -> None:
         raise DeploymentError("Invalid --service-name")
     if options.health_timeout <= 0 or options.overlay_size_mb <= 0:
         raise DeploymentError("Timeout and overlay size must be positive")
-    if options.health_only and options.uninstall:
-        raise DeploymentError("--health-only and --uninstall cannot be combined")
+    actions = [options.health_only, options.uninstall, bool(options.update_config_file)]
+    if sum(actions) > 1:
+        raise DeploymentError(
+            "--health-only, --update-config, and --uninstall cannot be combined"
+        )
     if options.identity_file and not options.identity_file.is_file():
         raise DeploymentError(
             f"SSH identity is not a file: {options.identity_file}"
         )
     local_inputs = []
-    if not options.health_only and not options.uninstall:
+    if options.update_config_file:
+        local_inputs += [options.update_config_file, SENSOR_NODE_TEMPLATE]
+    elif not options.health_only and not options.uninstall:
         local_inputs += [
             options.config_file,
             options.certificates_dir / "clients/client_0.key_secret",
@@ -300,6 +326,41 @@ async def preflight(connection: Any,install_apptainer: bool, destination: str) -
         raise DeploymentError(str(exc)) from exc
 
 
+async def update_remote_config(
+    asyncssh: Any,
+    connection: Any,
+    options: DeployOptions,
+    config_file: Path,
+    environment: RemoteEnvironment,
+) -> None:
+    """Replace the active config and restart the existing sensor-node service."""
+    stage = await create_remote_stage(connection)
+    print(f"[*] Uploading updated configuration to {options.target.hostname}")
+    try:
+        await scp_with_progress(
+            asyncssh,
+            str(config_file),
+            (connection, f"{stage}/default.yaml"),
+        )
+    except Exception as exc:
+        await run_remote(connection, f"rm -rf -- {shlex.quote(stage)}", check=False)
+        raise DeploymentError(f"Config upload failed: {exc}") from exc
+
+    await run_root_script(
+        connection,
+        DeploymentUtilities.UPDATE_CONFIG_SCRIPT,
+        [stage, options.remote_dir, options.service_name],
+        environment.privilege,
+    )
+    await wait_for_sensor_node_health(
+        connection,
+        options,
+        environment.privilege,
+        require_heartbeat=False,
+    )
+    print("[✓] Configuration updated and service restarted successfully")
+
+
 async def get_image(options: DeployOptions, temp_dir: Path) -> Path:
     if options.image_file:
         return options.image_file.resolve()
@@ -351,10 +412,7 @@ async def deploy_release(
     environment: RemoteEnvironment,
 ) -> None:
     release_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-    stage_result = await run_remote(connection, "mktemp -d /tmp/fissure-node-deploy.XXXXXX")
-    stage = stage_result.stdout.strip()
-    if not stage.startswith("/tmp/fissure-node-deploy."):
-        raise DeploymentError(f"Unexpected remote staging path: {stage}")
+    stage = await create_remote_stage(connection)
     await upload_payload(asyncssh, connection, stage, options, image, unit)
     args = [
         stage, options.remote_dir, release_id, options.service_name,
@@ -376,6 +434,14 @@ async def deploy_release(
         require_heartbeat=False,
     )
     print(f"[✓] Release {release_id} started successfully")
+
+
+async def create_remote_stage(connection: Any) -> str:
+    result = await run_remote(connection, "mktemp -d /tmp/fissure-node-deploy.XXXXXX")
+    stage = result.stdout.strip()
+    if not stage.startswith("/tmp/fissure-node-deploy."):
+        raise DeploymentError(f"Unexpected remote staging path: {stage}")
+    return stage
 
 
 async def upload_payload(asyncssh: Any, connection: Any, stage: str, options: DeployOptions, image: Path, unit: Path,
