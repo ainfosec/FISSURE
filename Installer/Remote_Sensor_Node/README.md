@@ -100,6 +100,17 @@ Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
 The restart action performs the same startup-only validation and does not
 require a running Dashboard or HIPRFISR.
 
+Replace only the active SIF and restart the service:
+
+```bash
+Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
+    192.0.2.20 --update-image=/path/to/fissure-sensor-node.sif
+```
+
+The image update uses SCP progress reporting and atomically replaces the active
+SIF. It does not build an image, create another release, or change the external
+configuration, certificates, logs, overlay, or node identity.
+
 Remove the remote service and deployment state:
 
 ```bash

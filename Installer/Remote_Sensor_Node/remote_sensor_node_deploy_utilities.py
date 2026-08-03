@@ -139,6 +139,26 @@ systemctl cat "$service.service" >/dev/null || {
 systemctl restart "$service.service"
 """
 
+    UPDATE_IMAGE_SCRIPT = """\
+set -eu
+stage=$1; root=$2; service=$3
+image="$root/current/fissure-sensor-node.sif"
+candidate="$image.new"
+trap 'rm -rf -- "$stage"; rm -f -- "$candidate"' EXIT
+test -d "$root/current" || { echo "No active sensor-node installation" >&2; exit 30; }
+test -f "$image" || { echo "Active sensor-node SIF is missing" >&2; exit 33; }
+systemctl cat "$service.service" >/dev/null || {
+  echo "Sensor-node service is not installed" >&2
+  exit 32
+}
+# Rename only after the complete upload is installed, so a running process
+# continues using the old inode until systemd deliberately restarts it.
+install -m 0444 "$stage/fissure-sensor-node.sif" "$candidate"
+chown --reference="$image" "$candidate"
+mv -f -- "$candidate" "$image"
+systemctl restart "$service.service"
+"""
+
     UNINSTALL_SCRIPT = """\
 set -eu
 root=$1; service=$2

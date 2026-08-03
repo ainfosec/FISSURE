@@ -38,26 +38,42 @@ async def update_remote_config(
     environment: RemoteEnvironment,
 ) -> None:
     """Replace the active config and restart the existing sensor-node service."""
-    stage = await create_remote_stage(connection)
-    print(f"[*] Uploading updated configuration to {options.target.hostname}")
-    try:
-        await scp_with_progress(
-            asyncssh,
-            str(config_file),
-            (connection, f"{stage}/default.yaml"),
-        )
-    except Exception as exc:
-        await run_remote(connection, f"rm -rf -- {shlex.quote(stage)}", check=False)
-        raise RemoteOperationError(f"Config upload failed: {exc}") from exc
-
-    await run_root_script(
-        connection,
-        DeploymentUtilities.UPDATE_CONFIG_SCRIPT,
-        [stage, options.remote_dir, options.service_name],
-        environment.privilege,
+    await _upload_remote_update(
+        asyncssh=asyncssh,
+        connection=connection,
+        options=options,
+        local_file=config_file,
+        remote_name="default.yaml",
+        operation_name="configuration",
+        error_name="Config",
+        script=DeploymentUtilities.UPDATE_CONFIG_SCRIPT,
+        environment=environment,
     )
     await _check_startup(connection, options, environment)
     print("[✓] Configuration updated and service restarted successfully")
+
+
+async def update_remote_image(
+    asyncssh: Any,
+    connection: Any,
+    options: Any,
+    image_file: Path,
+    environment: RemoteEnvironment,
+) -> None:
+    """Replace the active SIF and restart the existing sensor-node service."""
+    await _upload_remote_update(
+        asyncssh=asyncssh,
+        connection=connection,
+        options=options,
+        local_file=image_file,
+        remote_name="fissure-sensor-node.sif",
+        operation_name="SIF",
+        error_name="SIF",
+        script=DeploymentUtilities.UPDATE_IMAGE_SCRIPT,
+        environment=environment,
+    )
+    await _check_startup(connection, options, environment)
+    print("[✓] SIF updated and service restarted successfully")
 
 
 async def create_remote_stage(connection: Any) -> str:
@@ -83,6 +99,38 @@ async def run_remote(
             f"Remote command failed ({result.exit_status}): {detail}"
         )
     return result
+
+
+async def _upload_remote_update(
+    *,
+    asyncssh: Any,
+    connection: Any,
+    options: Any,
+    local_file: Path,
+    remote_name: str,
+    operation_name: str,
+    error_name: str,
+    script: str,
+    environment: RemoteEnvironment,
+) -> None:
+    stage = await create_remote_stage(connection)
+    print(f"[*] Uploading updated {operation_name} to {options.target.hostname}")
+    try:
+        await scp_with_progress(
+            asyncssh,
+            str(local_file),
+            (connection, f"{stage}/{remote_name}"),
+        )
+    except Exception as exc:
+        await run_remote(connection, f"rm -rf -- {shlex.quote(stage)}", check=False)
+        raise RemoteOperationError(f"{error_name} upload failed: {exc}") from exc
+
+    await run_root_script(
+        connection,
+        script,
+        [stage, options.remote_dir, options.service_name],
+        environment.privilege,
+    )
 
 
 async def _check_startup(

@@ -23,6 +23,7 @@ Options:
   --health-timeout=<seconds>  Startup and diagnostic timeout [default: 180].
   --health-only              Check without changing the deployment.
   --update-config=<path>     Replace the installed config and restart the service.
+  --update-image=<path>      Replace the installed SIF and restart the service.
   --restart                  Restart the installed service without other changes.
   --uninstall                Remove the remote service and deployment files.
 """
@@ -57,6 +58,7 @@ from remote_sensor_node_operations import (
     restart_remote_sensor_node,
     run_remote,
     update_remote_config,
+    update_remote_image,
 )
 from remote_sensor_node_templates import (
     APPTAINER_TEMPLATE,
@@ -119,6 +121,7 @@ class DeployOptions:
     update_config_file: Path | None
     uninstall: bool
     restart: bool = False
+    update_image_file: Path | None = None
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -146,6 +149,18 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 async def deploy(options: DeployOptions, asyncssh: Any) -> None:
     destination = f"{options.target.username}@{options.target.hostname}"
+    if options.update_image_file:
+        password = prompt_for_ssh_password(options)
+        async with await connect(asyncssh, options, password) as connection:
+            environment = await preflight(connection, False, destination)
+            await update_remote_image(
+                asyncssh,
+                connection,
+                options,
+                options.update_image_file,
+                environment,
+            )
+        return
     if options.restart:
         password = prompt_for_ssh_password(options)
         async with await connect(asyncssh, options, password) as connection:
@@ -251,6 +266,7 @@ def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
             update_config_file=path("--update-config"),
             uninstall=bool(args["--uninstall"]),
             restart=bool(args["--restart"]),
+            update_image_file=path("--update-image"),
         )
     except (TypeError, ValueError) as exc:
         raise DeploymentError(f"Invalid numeric option: {exc}") from exc
@@ -269,12 +285,13 @@ def validate_options(options: DeployOptions) -> None:
         options.health_only,
         options.uninstall,
         bool(options.update_config_file),
+        bool(options.update_image_file),
         options.restart,
     ]
     if sum(actions) > 1:
         raise DeploymentError(
-            "--health-only, --update-config, --restart, and --uninstall "
-            "cannot be combined"
+            "--health-only, --update-config, --update-image, --restart, and "
+            "--uninstall cannot be combined"
         )
     if options.identity_file and not options.identity_file.is_file():
         raise DeploymentError(
@@ -283,6 +300,8 @@ def validate_options(options: DeployOptions) -> None:
     local_inputs = []
     if options.update_config_file:
         local_inputs += [options.update_config_file, SENSOR_NODE_TEMPLATE]
+    elif options.update_image_file:
+        local_inputs.append(options.update_image_file)
     elif not options.health_only and not options.uninstall and not options.restart:
         local_inputs += [
             options.config_file,
