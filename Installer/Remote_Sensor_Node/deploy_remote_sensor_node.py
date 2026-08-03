@@ -360,50 +360,31 @@ async def deploy_release(
     environment: RemoteEnvironment,
 ) -> None:
     release_id = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
-    previous = (
-        await run_remote(
-            connection, f"readlink -f {shlex.quote(options.remote_dir + '/current')} || true",
-            check=False,
-        )
-    ).stdout.strip()
     stage_result = await run_remote(connection, "mktemp -d /tmp/fissure-node-deploy.XXXXXX")
     stage = stage_result.stdout.strip()
     if not stage.startswith("/tmp/fissure-node-deploy."):
         raise DeploymentError(f"Unexpected remote staging path: {stage}")
-    try:
-        await upload_payload(asyncssh, connection, stage, options, image, unit)
-        args = [
-            stage, options.remote_dir, release_id, options.service_name,
-            environment.user,
-            environment.group,
-            environment.apptainer,
-            str(options.overlay_size_mb),
-        ]
-        await run_root_script(
-            connection,
-            DeploymentUtilities.INSTALL_SCRIPT,
-            args,
-            environment.privilege,
-        )
-        # Ignore heartbeats from the previous release; the next heartbeat from
-        # the newly started service provides the end-to-end readiness proof.
-        health_started_at = time.time()
-        await wait_for_sensor_node_health(
-            connection,
-            options,
-            environment.privilege,
-            health_started_at,
-        )
-    except Exception:
-        print("[!] Deployment failed; rolling back")
-        await run_root_script(
-            connection,
-            DeploymentUtilities.ROLLBACK_SCRIPT,
-            [options.remote_dir, options.service_name, previous],
-            environment.privilege,
-            check=False,
-        )
-        raise
+    await upload_payload(asyncssh, connection, stage, options, image, unit)
+    args = [
+        stage, options.remote_dir, release_id, options.service_name,
+        environment.user,
+        environment.group,
+        environment.apptainer,
+        str(options.overlay_size_mb),
+    ]
+    await run_root_script(
+        connection,
+        DeploymentUtilities.INSTALL_SCRIPT,
+        args,
+        environment.privilege,
+    )
+    health_started_at = time.time()
+    await wait_for_sensor_node_health(
+        connection,
+        options,
+        environment.privilege,
+        health_started_at,
+    )
     print(f"[✓] Release {release_id} is active and healthy")
 
 

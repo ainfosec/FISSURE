@@ -6,7 +6,7 @@ root.
 
 The deployer builds or reuses a local SIF, renders deployment configuration
 with Jinja2, stages the installed certificates, transfers the payload over SSH,
-and installs a rollback-aware systemd service on the target.
+and installs a systemd service on the target.
 
 ## Quick start
 
@@ -106,8 +106,8 @@ uninstall operations remain available without the Dashboard.
 
 Each deployment creates a timestamped remote release. Configuration,
 certificates, logs, the writable overlay, and node identity remain outside the
-SIF. The service is promoted only after process and heartbeat validation; a
-failed upgrade restores the previous release.
+SIF. The deployer reports process and heartbeat validation failures without
+automatically changing the installed release.
 Service startup rechecks configuration and certificates without recursively
 importing heavyweight runtime modules already validated during the image build.
 

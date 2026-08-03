@@ -110,20 +110,6 @@ systemctl enable "$service.service" >/dev/null
 systemctl start "$service.service"
 """
 
-    ROLLBACK_SCRIPT = """\
-set -eu
-root=$1; service=$2; previous=$3
-systemctl stop "$service.service" >/dev/null 2>&1 || true
-if [ -n "$previous" ] && [ -d "$previous" ]; then
-  link="$root/current.rollback.$$"
-  ln -s "$previous" "$link"
-  mv -Tf "$link" "$root/current"
-  systemctl start "$service.service"
-else
-  systemctl disable "$service.service" >/dev/null 2>&1 || true
-fi
-"""
-
     UNINSTALL_SCRIPT = """\
 set -eu
 root=$1; service=$2
