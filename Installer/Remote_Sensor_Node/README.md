@@ -90,6 +90,16 @@ This uses the normal configuration rendering and SSH privilege paths. It
 atomically replaces `current/default.yaml`, restarts the existing service, and
 checks startup without rebuilding or transferring the SIF.
 
+Restart the installed service without changing its files:
+
+```bash
+Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
+    192.0.2.20 --restart
+```
+
+The restart action performs the same startup-only validation and does not
+require a running Dashboard or HIPRFISR.
+
 Remove the remote service and deployment state:
 
 ```bash

@@ -23,6 +23,7 @@ Options:
   --health-timeout=<seconds>  Startup and diagnostic timeout [default: 180].
   --health-only              Check without changing the deployment.
   --update-config=<path>     Replace the installed config and restart the service.
+  --restart                  Restart the installed service without other changes.
   --uninstall                Remove the remote service and deployment files.
 """
 import asyncio
@@ -50,6 +51,13 @@ from remote_sensor_node_health import (
 )
 from remote_sensor_node_scp import scp_with_progress
 from remote_sensor_node_config import ConfigPreparationError, prepare_remote_config
+from remote_sensor_node_operations import (
+    RemoteOperationError,
+    create_remote_stage,
+    restart_remote_sensor_node,
+    run_remote,
+    update_remote_config,
+)
 from remote_sensor_node_templates import (
     APPTAINER_TEMPLATE,
     SENSOR_NODE_TEMPLATE,
@@ -110,6 +118,7 @@ class DeployOptions:
     install_apptainer: bool
     update_config_file: Path | None
     uninstall: bool
+    restart: bool = False
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -126,6 +135,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         PrivilegeError,
         TemplateRenderError,
         HealthCheckError,
+        RemoteOperationError,
     ) as exc:
         print(f"[!] {exc}", file=sys.stderr)
         return 1
@@ -136,6 +146,12 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 async def deploy(options: DeployOptions, asyncssh: Any) -> None:
     destination = f"{options.target.username}@{options.target.hostname}"
+    if options.restart:
+        password = prompt_for_ssh_password(options)
+        async with await connect(asyncssh, options, password) as connection:
+            environment = await preflight(connection, False, destination)
+            await restart_remote_sensor_node(connection, options, environment)
+        return
     if options.update_config_file:
         with tempfile.TemporaryDirectory(prefix="fissure-node-config.") as name:
             password = prompt_for_ssh_password(options)
@@ -234,6 +250,7 @@ def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
             install_apptainer=not bool(args["--no-install-apptainer"]),
             update_config_file=path("--update-config"),
             uninstall=bool(args["--uninstall"]),
+            restart=bool(args["--restart"]),
         )
     except (TypeError, ValueError) as exc:
         raise DeploymentError(f"Invalid numeric option: {exc}") from exc
@@ -248,10 +265,16 @@ def validate_options(options: DeployOptions) -> None:
         raise DeploymentError("Invalid --service-name")
     if options.health_timeout <= 0 or options.overlay_size_mb <= 0:
         raise DeploymentError("Timeout and overlay size must be positive")
-    actions = [options.health_only, options.uninstall, bool(options.update_config_file)]
+    actions = [
+        options.health_only,
+        options.uninstall,
+        bool(options.update_config_file),
+        options.restart,
+    ]
     if sum(actions) > 1:
         raise DeploymentError(
-            "--health-only, --update-config, and --uninstall cannot be combined"
+            "--health-only, --update-config, --restart, and --uninstall "
+            "cannot be combined"
         )
     if options.identity_file and not options.identity_file.is_file():
         raise DeploymentError(
@@ -260,7 +283,7 @@ def validate_options(options: DeployOptions) -> None:
     local_inputs = []
     if options.update_config_file:
         local_inputs += [options.update_config_file, SENSOR_NODE_TEMPLATE]
-    elif not options.health_only and not options.uninstall:
+    elif not options.health_only and not options.uninstall and not options.restart:
         local_inputs += [
             options.config_file,
             options.certificates_dir / "clients/client_0.key_secret",
@@ -324,41 +347,6 @@ async def preflight(connection: Any,install_apptainer: bool, destination: str) -
         )
     except PrivilegeError as exc:
         raise DeploymentError(str(exc)) from exc
-
-
-async def update_remote_config(
-    asyncssh: Any,
-    connection: Any,
-    options: DeployOptions,
-    config_file: Path,
-    environment: RemoteEnvironment,
-) -> None:
-    """Replace the active config and restart the existing sensor-node service."""
-    stage = await create_remote_stage(connection)
-    print(f"[*] Uploading updated configuration to {options.target.hostname}")
-    try:
-        await scp_with_progress(
-            asyncssh,
-            str(config_file),
-            (connection, f"{stage}/default.yaml"),
-        )
-    except Exception as exc:
-        await run_remote(connection, f"rm -rf -- {shlex.quote(stage)}", check=False)
-        raise DeploymentError(f"Config upload failed: {exc}") from exc
-
-    await run_root_script(
-        connection,
-        DeploymentUtilities.UPDATE_CONFIG_SCRIPT,
-        [stage, options.remote_dir, options.service_name],
-        environment.privilege,
-    )
-    await wait_for_sensor_node_health(
-        connection,
-        options,
-        environment.privilege,
-        require_heartbeat=False,
-    )
-    print("[✓] Configuration updated and service restarted successfully")
 
 
 async def get_image(options: DeployOptions, temp_dir: Path) -> Path:
@@ -436,14 +424,6 @@ async def deploy_release(
     print(f"[✓] Release {release_id} started successfully")
 
 
-async def create_remote_stage(connection: Any) -> str:
-    result = await run_remote(connection, "mktemp -d /tmp/fissure-node-deploy.XXXXXX")
-    stage = result.stdout.strip()
-    if not stage.startswith("/tmp/fissure-node-deploy."):
-        raise DeploymentError(f"Unexpected remote staging path: {stage}")
-    return stage
-
-
 async def upload_payload(asyncssh: Any, connection: Any, stage: str, options: DeployOptions, image: Path, unit: Path,
 ) -> None:
     files = {
@@ -461,14 +441,6 @@ async def upload_payload(asyncssh: Any, connection: Any, stage: str, options: De
     except Exception as exc:
         await run_remote(connection, f"rm -rf -- {shlex.quote(stage)}", check=False)
         raise DeploymentError(f"SCP upload failed: {exc}") from exc
-
-
-async def run_remote(connection: Any, command: str, check: bool = True, input_data: str | None = None) -> Any:
-    result = await connection.run(command, input=input_data, check=False)
-    if check and result.exit_status:
-        detail = result.stderr.strip() or result.stdout.strip()
-        raise DeploymentError(f"Remote command failed ({result.exit_status}): {detail}")
-    return result
 
 
 def load_module(name: str) -> Any:

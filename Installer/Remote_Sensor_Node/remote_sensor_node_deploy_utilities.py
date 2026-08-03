@@ -128,6 +128,17 @@ mv -f -- "$candidate" "$config"
 systemctl restart "$service.service"
 """
 
+    RESTART_SERVICE_SCRIPT = """\
+set -eu
+root=$1; service=$2
+test -d "$root/current" || { echo "No active sensor-node installation" >&2; exit 30; }
+systemctl cat "$service.service" >/dev/null || {
+  echo "Sensor-node service is not installed" >&2
+  exit 32
+}
+systemctl restart "$service.service"
+"""
+
     UNINSTALL_SCRIPT = """\
 set -eu
 root=$1; service=$2
