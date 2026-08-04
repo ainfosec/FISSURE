@@ -48,9 +48,6 @@ The complete deployment configuration is visible under `templates/`:
 
 Jinja2 uses strict undefined-variable handling, so an incomplete template
 context stops deployment instead of emitting a partially configured file.
-The source values for `sensor-node.yml.j2` come from the current FISSURE
-installation by default:
-
 By default, inputs come from the current FISSURE installation:
 
 - `YAML/Sensor_Node_Config/default.yaml`
@@ -63,12 +60,35 @@ Apptainer when permitted and builds the image before opening SSH. Use `--image`
 to select another SIF, or `--no-install-apptainer` to prohibit automatic local
 and remote package installation.
 
-Rendered configuration and certificates are transferred separately and
+Rendered configuration and node certificates are transferred separately and
 bind-mounted read-only. They are never baked into the SIF. Rendering preserves
 the installed Sensor Node values and replaces only a loopback HIPRFISR address
 with the local endpoint of the established SSH connection. It performs no host
 discovery and does not change the installed source YAML. Certificates remain
 ordinary external files because secrets must never be placed in templates.
+
+## Mutable runtime state
+
+The SIF supplies the immutable application and runtime dependencies. Data that
+changes while the node runs is stored under the host's `state/` directory and
+bind-mounted into the container:
+
+- `state/runtime/plugins` for installed and transferred plugins
+- `state/runtime/flow-graphs` for independently updated flow graphs
+- `state/runtime/artifacts*` for node and operation artifacts
+- `state/runtime/archive` and `state/runtime/iq-recordings` for recordings
+- `state/runtime/sensor-node` for autorun, playback, import/export, and files
+- `state/logs` and `state/runtime/plugin-logs` for core and plugin logs
+- `state/home` for the persistent sensor-node UUID and user runtime files
+
+Initial plugins, flow graphs, archive data, and sensor-node runtime files are
+seeded from the SIF only when their host directories are empty. Existing host
+content is preserved across full deployments and SIF updates. Deployments made
+with the former persistent overlay are migrated into these directories when
+they are next fully deployed; the old overlay is then no longer mounted.
+
+Apptainer uses an ephemeral writable tmpfs for incidental process writes. No
+general persistent overlay is created for new deployments.
 
 ## Operations
 
@@ -109,7 +129,8 @@ Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
 
 The image update uses SCP progress reporting and atomically replaces the active
 SIF. It does not build an image, create another release, or change the external
-configuration, certificates, logs, overlay, or node identity.
+configuration, certificates, plugins, artifacts, recordings, logs, or node
+identity.
 
 Remove the remote service and deployment state:
 
@@ -120,7 +141,7 @@ Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
 
 Uninstall preserves the remote Apptainer package and local cached SIF.
 
-Run the command with `--help` for configuration, image, service, overlay, and
+Run the command with `--help` for configuration, image, service, and
 health-timeout options.
 The default 180-second window covers heavyweight SensorNode imports. Normal
 deployment validates systemd state, `MainPID`, and the persistent
@@ -131,9 +152,10 @@ heartbeat receipt in the local HIPRFISR event log for IP nodes.
 ## Safety and lifecycle
 
 Each deployment creates a timestamped remote release. Configuration,
-certificates, logs, the writable overlay, and node identity remain outside the
-SIF. Startup and explicit diagnostic failures are reported without automatically
-changing the installed release.
+certificates, plugins, artifacts, recordings, logs, runtime files, and node
+identity remain in explicit host paths outside the SIF. Startup and explicit
+diagnostic failures are reported without automatically changing the installed
+release.
 Service startup rechecks configuration and certificates without recursively
 importing heavyweight runtime modules already validated during the image build.
 

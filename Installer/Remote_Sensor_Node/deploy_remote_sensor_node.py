@@ -19,7 +19,6 @@ Options:
   --no-install-apptainer     Do not install missing local or remote Apptainer.
   --remote-dir=<path>        Installation root [default: /opt/fissure-sensor-node].
   --service-name=<name>      systemd unit name [default: fissure-sensor-node].
-  --overlay-size=<mb>        Persistent overlay size [default: 4096].
   --health-timeout=<seconds>  Startup and diagnostic timeout [default: 180].
   --health-only              Check without changing the deployment.
   --update-config=<path>     Replace the installed config and restart the service.
@@ -114,7 +113,6 @@ class DeployOptions:
     remote_dir: str
     service_name: str
     health_timeout: int
-    overlay_size_mb: int
     health_only: bool
     build_with_sudo: bool
     install_apptainer: bool
@@ -212,7 +210,11 @@ async def deploy(options: DeployOptions, asyncssh: Any) -> None:
         image = await get_image(options, temp_dir)
         password = prompt_for_ssh_password(options)
         async with await connect(asyncssh, options, password) as connection:
-            environment = await preflight(connection, options.install_apptainer, destination, )
+            environment = await preflight(
+                connection,
+                options.install_apptainer,
+                destination,
+            )
             config_file = prepare_remote_config(
                 options.config_file,
                 temp_dir / "default.yaml",
@@ -259,7 +261,6 @@ def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
             remote_dir=args["--remote-dir"].rstrip("/") or "/",
             service_name=args["--service-name"].removesuffix(".service"),
             health_timeout=integer("--health-timeout"),
-            overlay_size_mb=integer("--overlay-size"),
             health_only=bool(args["--health-only"]),
             build_with_sudo=bool(args["--build-with-sudo"]),
             install_apptainer=not bool(args["--no-install-apptainer"]),
@@ -279,8 +280,8 @@ def validate_options(options: DeployOptions) -> None:
         raise DeploymentError("--remote-dir is too broad or contains '..'")
     if not SERVICE_PATTERN.fullmatch(options.service_name):
         raise DeploymentError("Invalid --service-name")
-    if options.health_timeout <= 0 or options.overlay_size_mb <= 0:
-        raise DeploymentError("Timeout and overlay size must be positive")
+    if options.health_timeout <= 0:
+        raise DeploymentError("Timeout must be positive")
     actions = [
         options.health_only,
         options.uninstall,
@@ -397,7 +398,8 @@ async def get_image(options: DeployOptions, temp_dir: Path) -> Path:
 def copy_build_context(source: Path, destination: Path) -> None:
     root_exclusions = {
         ".agents", ".codex", ".env", ".git", ".idea", ".venv",
-        "build", "certificates", "Logs",
+        "artifacts", "artifacts_node", "artifacts_system", "build",
+        "certificates", "Logs", "logs",
     }
 
     def ignore(directory: str, names: list[str]) -> set[str]:
@@ -426,7 +428,6 @@ async def deploy_release(
         environment.user,
         environment.group,
         environment.apptainer,
-        str(options.overlay_size_mb),
     ]
     await run_root_script(
         connection,

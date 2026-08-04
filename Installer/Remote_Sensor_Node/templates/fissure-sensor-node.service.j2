@@ -12,24 +12,51 @@ Group={{ group }}
 WorkingDirectory={{ remote_dir }}
 UMask=0077
 Environment=HOME=/home/fissure
+Environment=PYTHONDONTWRITEBYTECODE=1
 ExecStartPre={{ apptainer }} exec \
     --cleanenv \
+    --writable-tmpfs \
     --home {{ remote_dir }}/state/home:/home/fissure \
-    --overlay {{ remote_dir }}/state/runtime-overlay.img \
     --bind {{ remote_dir }}/current/default.yaml:/opt/FISSURE/YAML/Sensor_Node_Config/default.yaml:ro \
     --bind {{ remote_dir }}/current/certificates:/opt/FISSURE/certificates:ro \
     --bind {{ remote_dir }}/state/logs:/opt/FISSURE/Logs \
+    --bind {{ remote_dir }}/state/runtime/plugins:/opt/FISSURE/Plugins \
+    --bind "{{ remote_dir }}/state/runtime/flow-graphs:/opt/FISSURE/Flow Graph Library" \
+    --bind {{ remote_dir }}/state/runtime/artifacts:/opt/FISSURE/artifacts \
+    --bind {{ remote_dir }}/state/runtime/artifacts-node:/opt/FISSURE/artifacts_node \
+    --bind {{ remote_dir }}/state/runtime/artifacts-system:/opt/FISSURE/artifacts_system \
+    --bind {{ remote_dir }}/state/runtime/archive:/opt/FISSURE/Archive \
+    --bind "{{ remote_dir }}/state/runtime/iq-recordings:/opt/FISSURE/IQ Recordings" \
+    --bind {{ remote_dir }}/state/runtime/plugin-logs:/opt/FISSURE/logs \
+    --bind {{ remote_dir }}/state/runtime/sensor-node/archive-replay:/opt/FISSURE/fissure/Sensor_Node/Archive_Replay \
+    --bind {{ remote_dir }}/state/runtime/sensor-node/autorun-playlists:/opt/FISSURE/fissure/Sensor_Node/Autorun_Playlists \
+    --bind {{ remote_dir }}/state/runtime/sensor-node/iq-data-playback:/opt/FISSURE/fissure/Sensor_Node/IQ_Data_Playback \
+    --bind {{ remote_dir }}/state/runtime/sensor-node/import-export:/opt/FISSURE/fissure/Sensor_Node/Import_Export_Files \
+    --bind {{ remote_dir }}/state/runtime/sensor-node/recordings:/opt/FISSURE/fissure/Sensor_Node/Recordings \
     --bind /run/udev:/run/udev:ro \
     {{ remote_dir }}/current/fissure-sensor-node.sif \
     python3 /opt/FISSURE/Installer/remote_sensor_node_image_check.py \
     --skip-runtime-import
 ExecStart={{ apptainer }} run \
     --cleanenv \
+    --writable-tmpfs \
     --home {{ remote_dir }}/state/home:/home/fissure \
-    --overlay {{ remote_dir }}/state/runtime-overlay.img \
     --bind {{ remote_dir }}/current/default.yaml:/opt/FISSURE/YAML/Sensor_Node_Config/default.yaml:ro \
     --bind {{ remote_dir }}/current/certificates:/opt/FISSURE/certificates:ro \
     --bind {{ remote_dir }}/state/logs:/opt/FISSURE/Logs \
+    --bind {{ remote_dir }}/state/runtime/plugins:/opt/FISSURE/Plugins \
+    --bind "{{ remote_dir }}/state/runtime/flow-graphs:/opt/FISSURE/Flow Graph Library" \
+    --bind {{ remote_dir }}/state/runtime/artifacts:/opt/FISSURE/artifacts \
+    --bind {{ remote_dir }}/state/runtime/artifacts-node:/opt/FISSURE/artifacts_node \
+    --bind {{ remote_dir }}/state/runtime/artifacts-system:/opt/FISSURE/artifacts_system \
+    --bind {{ remote_dir }}/state/runtime/archive:/opt/FISSURE/Archive \
+    --bind "{{ remote_dir }}/state/runtime/iq-recordings:/opt/FISSURE/IQ Recordings" \
+    --bind {{ remote_dir }}/state/runtime/plugin-logs:/opt/FISSURE/logs \
+    --bind {{ remote_dir }}/state/runtime/sensor-node/archive-replay:/opt/FISSURE/fissure/Sensor_Node/Archive_Replay \
+    --bind {{ remote_dir }}/state/runtime/sensor-node/autorun-playlists:/opt/FISSURE/fissure/Sensor_Node/Autorun_Playlists \
+    --bind {{ remote_dir }}/state/runtime/sensor-node/iq-data-playback:/opt/FISSURE/fissure/Sensor_Node/IQ_Data_Playback \
+    --bind {{ remote_dir }}/state/runtime/sensor-node/import-export:/opt/FISSURE/fissure/Sensor_Node/Import_Export_Files \
+    --bind {{ remote_dir }}/state/runtime/sensor-node/recordings:/opt/FISSURE/fissure/Sensor_Node/Recordings \
     --bind /run/udev:/run/udev:ro \
     {{ remote_dir }}/current/fissure-sensor-node.sif
 Restart=on-failure

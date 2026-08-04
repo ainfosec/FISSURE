@@ -61,17 +61,29 @@ From: ubuntu:24.04
     install -d -m 0755 \
         /opt/FISSURE/certificates/clients \
         /opt/FISSURE/certificates/server \
-        /opt/FISSURE/Logs
+        /opt/FISSURE/Logs \
+        /opt/FISSURE/logs \
+        /opt/FISSURE/Plugins \
+        '/opt/FISSURE/Flow Graph Library' \
+        /opt/FISSURE/artifacts \
+        /opt/FISSURE/artifacts_node \
+        /opt/FISSURE/artifacts_system \
+        /opt/FISSURE/Archive \
+        '/opt/FISSURE/IQ Recordings' \
+        /opt/FISSURE/fissure/Sensor_Node/Archive_Replay \
+        /opt/FISSURE/fissure/Sensor_Node/Autorun_Playlists \
+        /opt/FISSURE/fissure/Sensor_Node/IQ_Data_Playback \
+        /opt/FISSURE/fissure/Sensor_Node/Import_Export_Files \
+        /opt/FISSURE/fissure/Sensor_Node/Recordings
 
     # Preserve the stable runtime path used by SIFs built before the deployment
     # source files were consolidated under Installer/Remote_Sensor_Node.
     ln -s Remote_Sensor_Node/remote_sensor_node_image_check.py \
         /opt/FISSURE/Installer/remote_sensor_node_image_check.py
 
-    # Sensor-node callbacks intentionally receive files and plugins. The SIF
-    # remains immutable; these permissions allow those writes into the
-    # deployment's private persistent overlay.
-    chmod -R a+rwX /opt/FISSURE
+    # Mutable runtime paths are supplied by explicit host bind mounts. Keep the
+    # application tree immutable so writes cannot silently disappear into SIF
+    # or overlay state.
 
     apt-get clean
     rm -rf /var/lib/apt/lists/*
