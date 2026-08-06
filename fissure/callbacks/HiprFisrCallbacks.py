@@ -2668,19 +2668,6 @@ async def flowGraphFinishedIQ_Playback(component: object, node_uid=""):
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def flowGraphFinishedIQ(component: object, node_uid=""):
-    """
-    Forwards the flow graph finished IQ message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphFinishedIQ",
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
 async def flowGraphFinished(component: object, node_uid="", category=""):
     """
     Forwards the flow graph finished message to the Dashboard.
@@ -2736,19 +2723,6 @@ async def flowGraphStartedIQ_Playback(component: object, node_uid=""):
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphStartedIQ_Playback",
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def flowGraphStartedIQ(component: object, node_uid=""):
-    """
-    Forwards the flow graph started IQ message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphStartedIQ",
     }
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
@@ -2860,38 +2834,39 @@ async def hardwareGuessResults(
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def saveFile(component: object, node_uid="", operation="", filepath="", data=""):
+async def saveFile(
+    component: object,
+    node_uid="",
+    operation="",
+    filepath="",
+    data="",
+):
     """
-    Saves a file from a remote sensor node to the local HIPRFISR computer.
+    Save a downloaded file from a remote Sensor Node to the HIPRFISR computer.
     """
-    # Save File and Send Message to Dashboard
-    if operation == "IQ":
-        # Save
-        if len(filepath) > 0:
-            with open(filepath, "wb") as file:
-                file.write(binascii.a2b_hex(data))
+    if operation != "Download":
+        return
 
-        # Send Message to Dashboard
-        msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphFinishedIQ",
-        }
-        if component.dashboard_connected:
-            await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+    if not filepath:
+        return
 
-    elif operation == "Download":
-        # Save
-        if len(filepath) > 0:
-            with open(filepath, "wb") as file:
-                file.write(binascii.a2b_hex(data))
+    with open(filepath, "wb") as file:
+        file.write(
+            binascii.a2b_hex(data)
+        )
 
-            # Send Message to Dashboard
-            msg = {
-                fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-                fissure.comms.MessageFields.MESSAGE_NAME: "fileDownloaded",
-            }
-            if component.dashboard_connected:
-                await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "fileDownloaded",
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
 
 async def findGPS_CoordinatesResults(component: object, coordinates=""):
@@ -5529,7 +5504,7 @@ async def sendTargetDataPackageTak(
         record=dict(record),
         requester_uid=requester_uid,
     )
-    
+
 
 async def transferArtifactRequest(
     component: object,

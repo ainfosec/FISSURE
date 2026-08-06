@@ -283,7 +283,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 792.0]
+    coordinate: [1296, 280.0]
     rotation: 0
     state: enabled
 - name: filepath
@@ -300,24 +300,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 176.0]
-    rotation: 0
-    state: enabled
-- name: ip_address
-  id: parameter
-  parameters:
-    alias: ''
-    comment: ''
-    hide: none
-    label: ''
-    short_id: ''
-    type: str
-    value: '"192.168.40.2"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1280, 88.0]
+    coordinate: [1296, 16.0]
     rotation: 0
     state: enabled
 - name: low_pass_filter_0
@@ -552,7 +535,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 616.0]
+    coordinate: [1296, 456.0]
     rotation: 0
     state: enabled
 - name: rx_channel
@@ -564,12 +547,12 @@ blocks:
     label: ''
     short_id: ''
     type: str
-    value: '"A:A"'
+    value: '"A:0"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 264.0]
+    coordinate: [1296, 632.0]
     rotation: 0
     state: enabled
 - name: rx_frequency
@@ -586,7 +569,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 352.0]
+    coordinate: [1296, 544.0]
     rotation: 0
     state: enabled
 - name: rx_gain
@@ -598,12 +581,12 @@ blocks:
     label: ''
     short_id: ''
     type: str
-    value: '"70"'
+    value: '"60"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 528.0]
+    coordinate: [1296, 192.0]
     rotation: 0
     state: enabled
 - name: sample_rate
@@ -620,7 +603,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 440.0]
+    coordinate: [1296, 104.0]
     rotation: 0
     state: enabled
 - name: serial
@@ -637,7 +620,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 704.0]
+    coordinate: [1296, 368.0]
     rotation: 0
     state: enabled
 - name: uhd_usrp_source_0_0

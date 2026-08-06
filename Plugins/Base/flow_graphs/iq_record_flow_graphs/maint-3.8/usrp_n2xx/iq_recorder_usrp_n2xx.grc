@@ -10,7 +10,7 @@ options:
     gen_linking: dynamic
     generate_options: no_gui
     hier_block_src_path: '.:'
-    id: iq_recorder_b2x0
+    id: iq_recorder_usrp_n2xx
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -41,7 +41,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [128, 467]
+    coordinate: [136, 348.0]
     rotation: 0
     state: disabled
 - name: filepath
@@ -53,19 +53,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 315]
+    coordinate: [16, 196.0]
     rotation: 0
     state: disabled
 - name: ip_address
   id: variable
   parameters:
     comment: ''
-    value: '"192.168.40.2"'
+    value: '"192.168.10.2"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 251]
+    coordinate: [16, 132.0]
     rotation: 0
     state: disabled
 - name: lpf_cutoff
@@ -77,7 +77,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 723]
+    coordinate: [16, 604.0]
     rotation: 0
     state: disabled
 - name: lpf_transition_width
@@ -89,7 +89,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 787]
+    coordinate: [16, 668.0]
     rotation: 0
     state: disabled
 - name: rx_antenna
@@ -101,19 +101,19 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 651]
+    coordinate: [16, 532.0]
     rotation: 0
     state: disabled
 - name: rx_channel
   id: variable
   parameters:
     comment: ''
-    value: '"A:A"'
+    value: '"A:0"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 379]
+    coordinate: [16, 260.0]
     rotation: 0
     state: disabled
 - name: rx_frequency
@@ -125,7 +125,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 459]
+    coordinate: [16, 340.0]
     rotation: 0
     state: disabled
 - name: rx_gain
@@ -137,7 +137,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 587]
+    coordinate: [16, 468.0]
     rotation: 0
     state: disabled
 - name: sample_rate
@@ -149,19 +149,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 523]
-    rotation: 0
-    state: disabled
-- name: serial
-  id: variable
-  parameters:
-    comment: ''
-    value: '"False"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [128, 596]
+    coordinate: [16, 404.0]
     rotation: 0
     state: disabled
 - name: squelch_threshold
@@ -173,7 +161,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [128, 531]
+    coordinate: [136, 412.0]
     rotation: 0
     state: disabled
 - name: analog_pwr_squelch_xx_0
@@ -193,7 +181,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [528, 187]
+    coordinate: [536, 324]
     rotation: 0
     state: disabled
 - name: blocks_file_sink_0
@@ -211,7 +199,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1088, 84]
+    coordinate: [1096, 195]
     rotation: 0
     state: enabled
 - name: blocks_head_0
@@ -229,27 +217,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [904, 100]
+    coordinate: [904, 212]
     rotation: 0
     state: enabled
-- name: blocks_keep_one_in_n_0
-  id: blocks_keep_one_in_n
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    n: '100'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [936, 380]
-    rotation: 0
-    state: disabled
 - name: blocks_skiphead_0
   id: blocks_skiphead
   parameters:
@@ -265,7 +235,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [624, 100]
+    coordinate: [616, 212]
     rotation: 0
     state: enabled
 - name: file_length
@@ -282,7 +252,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 532.0]
+    coordinate: [1360, 588.0]
     rotation: 0
     state: true
 - name: filepath
@@ -299,9 +269,26 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 52.0]
+    coordinate: [1360, 108.0]
     rotation: 0
     state: true
+- name: ip_address
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ''
+    short_id: ''
+    type: str
+    value: '"192.168.10.2"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1360, 28.0]
+    rotation: 0
+    state: enabled
 - name: low_pass_filter_0
   id: low_pass_filter
   parameters:
@@ -323,7 +310,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 163]
+    coordinate: [720, 300]
     rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_0
@@ -478,7 +465,7 @@ blocks:
     marker9: '-1'
     name: '""'
     nconnections: '1'
-    size: file_length
+    size: '1024'
     srate: sample_rate
     stemplot: 'False'
     style1: '1'
@@ -517,7 +504,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1088, 364]
+    coordinate: [1000, 387]
     rotation: 0
     state: disabled
 - name: rx_antenna
@@ -534,7 +521,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 452.0]
+    coordinate: [1360, 508.0]
     rotation: 0
     state: true
 - name: rx_channel
@@ -546,14 +533,14 @@ blocks:
     label: ''
     short_id: ''
     type: str
-    value: '"A:A"'
+    value: '"A:0"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 132.0]
+    coordinate: [1360, 188.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: rx_frequency
   id: parameter
   parameters:
@@ -568,9 +555,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 212.0]
+    coordinate: [1360, 268.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: rx_gain
   id: parameter
   parameters:
@@ -585,7 +572,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 372.0]
+    coordinate: [1360, 428.0]
     rotation: 0
     state: true
 - name: sample_rate
@@ -602,24 +589,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 292.0]
-    rotation: 0
-    state: true
-- name: serial
-  id: parameter
-  parameters:
-    alias: ''
-    comment: ''
-    hide: none
-    label: ''
-    short_id: ''
-    type: str
-    value: '"False"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1328, 612.0]
+    coordinate: [1360, 348.0]
     rotation: 0
     state: true
 - name: uhd_usrp_source_0_0
@@ -765,7 +735,7 @@ blocks:
     dc_offs_enb7: '""'
     dc_offs_enb8: '""'
     dc_offs_enb9: '""'
-    dev_addr: serial
+    dev_addr: '"addr="+ip_address'
     dev_args: '""'
     gain0: float(rx_gain)
     gain1: '0'
@@ -999,11 +969,10 @@ connections:
 - [analog_pwr_squelch_xx_0, '0', low_pass_filter_0, '0']
 - [analog_pwr_squelch_xx_0, '0', qtgui_time_sink_x_0, '0']
 - [blocks_head_0, '0', blocks_file_sink_0, '0']
-- [blocks_keep_one_in_n_0, '0', qtgui_time_sink_x_0_0, '0']
 - [blocks_skiphead_0, '0', blocks_head_0, '0']
 - [low_pass_filter_0, '0', blocks_head_0, '0']
+- [low_pass_filter_0, '0', qtgui_time_sink_x_0_0, '0']
 - [uhd_usrp_source_0_0, '0', analog_pwr_squelch_xx_0, '0']
-- [uhd_usrp_source_0_0, '0', blocks_keep_one_in_n_0, '0']
 - [uhd_usrp_source_0_0, '0', blocks_skiphead_0, '0']
 
 metadata:

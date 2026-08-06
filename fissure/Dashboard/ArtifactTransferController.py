@@ -8,6 +8,7 @@ import os
 import shutil
 import subprocess
 import time
+from PyQt5 import QtCore
 
 from dataclasses import dataclass, field
 from typing import Dict, Optional
@@ -296,6 +297,8 @@ class ArtifactTransferController:
             transfer_id,
             None,
         )
+
+        self.frontend.iq_record_select_after_download_id = ""
 
         if transfer is not None:
             self._discard_current_file(transfer)
@@ -876,6 +879,84 @@ class ArtifactTransferController:
             "Download",
         )
 
+        iq_select_artifact_id = str(
+            getattr(
+                self.frontend,
+                "iq_record_select_after_download_id",
+                "",
+            )
+            or ""
+        ).strip()
+
+        if (
+            iq_select_artifact_id
+            and iq_select_artifact_id
+            == transfer.artifact_id
+        ):
+            try:
+                from fissure.Dashboard.Slots import (
+                    IQDataTabSlots,
+                )
+
+                IQDataTabSlots._slotIQ_ArtifactsRefreshClicked(
+                    self.frontend
+                )
+
+                combo = (
+                    self.frontend.ui.comboBox_iq_artifacts
+                )
+
+                matching_index = -1
+
+                for index in range(
+                    combo.count()
+                ):
+                    item_data = combo.itemData(
+                        index,
+                        QtCore.Qt.UserRole,
+                    )
+
+                    if not isinstance(
+                        item_data,
+                        dict,
+                    ):
+                        continue
+
+                    candidate_artifact_id = str(
+                        item_data.get(
+                            "artifact_id",
+                            "",
+                        )
+                        or ""
+                    ).strip()
+
+                    if (
+                        candidate_artifact_id
+                        == transfer.artifact_id
+                    ):
+                        matching_index = index
+                        break
+
+                if matching_index >= 0:
+                    # Force currentIndexChanged even when the downloaded
+                    # Artifact becomes row zero after refresh.
+                    combo.setCurrentIndex(
+                        -1
+                    )
+                    combo.setCurrentIndex(
+                        matching_index
+                    )
+
+            except Exception as error:
+                self.logger.warning(
+                    "Could not refresh/select IQ Artifact "
+                    "after download: %s",
+                    error,
+                )
+
+            finally:
+                self.frontend.iq_record_select_after_download_id = ""
+
         conditioner_artifact_id = str(
             getattr(
                 self.frontend,
@@ -1252,6 +1333,69 @@ class ArtifactTransferController:
                         else (
                             "Run Feature Extractor with a managed Artifact "
                             "destination first."
+                        )
+                    )
+                )
+
+        except Exception:
+            pass
+
+        # IQ Record Artifact button.
+        try:
+            selected_artifact_id = str(
+                getattr(
+                    self.frontend,
+                    "iq_record_artifact_id",
+                    "",
+                )
+                or ""
+            ).strip()
+
+            button = (
+                self.frontend.ui
+                .pushButton_iq_record_download_artifact
+            )
+
+            matching_transfer = bool(
+                active
+                and selected_artifact_id
+                and selected_artifact_id
+                == transfer_artifact_id
+            )
+
+            if matching_transfer:
+                button.setText(
+                    text
+                )
+                button.setEnabled(
+                    False
+                )
+
+            elif not active:
+                local_path = self.get_local_path(
+                    selected_artifact_id
+                )
+
+                button.setText(
+                    "Open Artifact"
+                    if local_path
+                    else "Download Artifact"
+                )
+                button.setEnabled(
+                    bool(
+                        selected_artifact_id
+                    )
+                )
+                button.setToolTip(
+                    str(
+                        local_path
+                        or (
+                            f"Download IQ recording Artifact "
+                            f"{selected_artifact_id}"
+                            if selected_artifact_id
+                            else (
+                                "No recording Artifact is available."
+                            )
                         )
                     )
                 )

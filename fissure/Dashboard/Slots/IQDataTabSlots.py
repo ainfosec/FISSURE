@@ -27,30 +27,6 @@ import uuid
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_RecordSigMF_Clicked(dashboard: QtCore.QObject):
-    """ 
-    Follows SigMF standard for recording IQ data when enabled.
-    """
-    # Enabled
-    get_filename = str(dashboard.ui.tableWidget_iq_record.item(0,0).text())
-
-    if dashboard.ui.checkBox_iq_record_sigmf.isChecked() == True:
-        dashboard.ui.pushButton_iq_record_sigmf.setEnabled(True)
-        new_filename = get_filename.replace('.iq','.sigmf-data')
-        filename_item = QtWidgets.QTableWidgetItem(new_filename)
-        filename_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setItem(0,0,filename_item)
-
-    # Disabled
-    else:
-        dashboard.ui.pushButton_iq_record_sigmf.setEnabled(False)
-        new_filename = get_filename.replace('.sigmf-data','.iq',)
-        filename_item = QtWidgets.QTableWidgetItem(new_filename)
-        filename_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setItem(0,0,filename_item)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
 def _slotIQ_StripOverwriteClicked(dashboard: QtCore.QObject):
     """ 
     Disables/enables output directory widgets.
@@ -120,500 +96,6 @@ def _slotIQ_FilterTypeChanged(dashboard: QtCore.QObject):
         dashboard.ui.textEdit_iq_filter_start.setEnabled(False)
     elif str(dashboard.ui.comboBox_iq_filter_type.currentText()) == "bandpass":
         dashboard.ui.textEdit_iq_filter_start.setEnabled(True)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_RecordHardwareChanged(dashboard: QtCore.QObject):
-    """ 
-    Changes IQ recording settings based on hardware.
-    """
-    # Sensor Node Hardware Information
-    get_current_hardware = str(dashboard.ui.comboBox_iq_record_hardware.currentText())
-    get_hardware_type, get_hardware_uuid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
-
-    # Utility Functions   
-    get_gain = fissure.utils.hardware.getHardwareGain(get_hardware_type, "RX")
-    get_antennas = fissure.utils.hardware.getHardwareAntennas(get_hardware_type, "RX")
-    get_channels = fissure.utils.hardware.getHardwareChannels(get_hardware_type, "RX")
-
-    # Set the Values
-    if get_hardware_type == "Computer":
-        dashboard.ui.frame_iq_record.setEnabled(False)
-
-    elif get_hardware_type == "USRP X3x0":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(6000)
-        spinbox_frequency.setMinimum(50)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-
-        # Select Antenna
-        get_daughterboard = get_hardware_daughterboard
-        if "CBX-120" in get_daughterboard:
-            comboBox_antenna.setCurrentIndex(0)
-        elif "SBX-120" in get_daughterboard:
-            comboBox_antenna.setCurrentIndex(0)
-        elif "UBX-160" in get_daughterboard:
-            comboBox_antenna.setCurrentIndex(0)
-        elif "WBX-120" in get_daughterboard:
-            comboBox_antenna.setCurrentIndex(0)
-        elif "TwinRX" in get_daughterboard:
-            comboBox_antenna.setCurrentIndex(1)
-        else:
-            comboBox_antenna.setCurrentIndex(0)
-
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "USRP B2x0":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(6000)
-        spinbox_frequency.setMinimum(70)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "HackRF":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(6000)
-        spinbox_frequency.setMinimum(1)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "RTL2832U":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(1700)
-        spinbox_frequency.setMinimum(64)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        comboBox_sample_rate = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_sample_rate.addItem("0.25")
-        comboBox_sample_rate.addItem("1.024")
-        comboBox_sample_rate.addItem("1.536")
-        comboBox_sample_rate.addItem("1.792")
-        comboBox_sample_rate.addItem("1.92")
-        comboBox_sample_rate.addItem("2.048")
-        comboBox_sample_rate.addItem("2.16")
-        comboBox_sample_rate.addItem("2.56")
-        comboBox_sample_rate.addItem("2.88")
-        comboBox_sample_rate.addItem("3.2")
-        comboBox_sample_rate.setCurrentIndex(7)
-        comboBox_sample_rate.setEditable(True)
-        comboBox_sample_rate.lineEdit().setAlignment(QtCore.Qt.AlignCenter)
-        comboBox_sample_rate.lineEdit().setReadOnly(True)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,7,comboBox_sample_rate)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "802.11x Adapter":
-        dashboard.ui.frame_iq_record.setEnabled(False)
-
-    elif get_hardware_type == "USRP B20xmini":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(6000)
-        spinbox_frequency.setMinimum(70)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "LimeSDR":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(6000)
-        spinbox_frequency.setMinimum(50)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "bladeRF":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(3800)
-        spinbox_frequency.setMinimum(50)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "Open Sniffer":
-        dashboard.ui.frame_iq_record.setEnabled(False)
-
-    elif get_hardware_type == "PlutoSDR":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(3800)
-        spinbox_frequency.setMinimum(325)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "USRP2":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(6000)
-        spinbox_frequency.setMinimum(50)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "USRP N2xx":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(6000)
-        spinbox_frequency.setMinimum(50)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "bladeRF 2.0":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(6000)
-        spinbox_frequency.setMinimum(47)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "USRP X410":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(7200)
-        spinbox_frequency.setMinimum(1)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-
-        # Select Antenna
-        get_daughterboard = get_hardware_daughterboard
-        if "ZBX" in get_daughterboard:
-            comboBox_antenna.setCurrentIndex(0)
-
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "RSPduo":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(2000)
-        spinbox_frequency.setMinimum(1)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        item1 = comboBox_antenna.model().item(1)
-        item1.setFlags(item1.flags() & ~QtCore.Qt.ItemIsEnabled)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "RSPdx":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(2000)
-        spinbox_frequency.setMinimum(1)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        itemB = comboBox_antenna.model().item(1)
-        itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
-        itemC = comboBox_antenna.model().item(2)
-        itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)  
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "RSPdx R2":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(2000)
-        spinbox_frequency.setMinimum(1)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_antenna.addItems(get_antennas)
-        itemB = comboBox_antenna.model().item(1)
-        itemB.setFlags(itemB.flags() & ~QtCore.Qt.ItemIsEnabled)
-        itemC = comboBox_antenna.model().item(2)
-        itemC.setFlags(itemC.flags() & ~QtCore.Qt.ItemIsEnabled)  
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    elif get_hardware_type == "CaribouLite":
-        spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_frequency.setMaximum(6000)
-        spinbox_frequency.setMinimum(30)
-        spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,1,spinbox_frequency)
-        comboBox_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,2,comboBox_channel)
-        comboBox_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        # comboBox_antenna.addItems(get_antennas) 
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,3,comboBox_antenna)
-        spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        spinbox_gain.setMaximum(get_gain[1])
-        spinbox_gain.setMinimum(get_gain[0])
-        spinbox_gain.setValue(get_gain[2])
-        spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_record.setCellWidget(0,4,spinbox_gain)
-        dashboard.ui.tableWidget_iq_record.removeCellWidget(0,7)
-        dashboard.ui.tableWidget_iq_record.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_record.setColumnWidth(0,300)
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(False)  # Needs to toggle in PyQt5
-        dashboard.ui.tableWidget_iq_record.horizontalHeader().setStretchLastSection(True)
-
-        dashboard.ui.frame_iq_record.setEnabled(True)
-
-    # Enable Recording
-    dashboard.ui.pushButton_iq_record.setEnabled(True)
-    dashboard.ui.label2_iq_status_files.setEnabled(True)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -979,7 +461,9 @@ def _slotIQ_TabClicked(dashboard: QtCore.QObject, button_name):
     """
     # Change the Index
     if button_name == "pushButton1_iq_tab_record":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(0)
+        dashboard.ui.stackedWidget3_iq.setCurrentWidget(
+            dashboard.ui.page_iq_record
+        )
     elif button_name == "pushButton1_iq_tab_playback":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(1)
     elif button_name == "pushButton1_iq_tab_inspection":
@@ -1911,52 +1395,6 @@ def _slotIQ_OFDM_SubcarrierAddRangeClicked(dashboard: QtCore.QObject):
         item = QtWidgets.QListWidgetItem(str(i))
         item.setFlags(item.flags() | QtCore.Qt.ItemIsEditable)
         dashboard.ui.listWidget_iq_ofdm_subcarriers.addItem(item)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_PlaybackRecordFreqClicked(dashboard: QtCore.QObject):
-    """ 
-    Copies the frequency value from the Record tab table to the Playback tab table.
-    """
-    # Get Record Table Value
-    try:
-        get_frequency = float(dashboard.ui.tableWidget_iq_record.cellWidget(0,1).value())
-    except:
-        get_frequency = float(dashboard.ui.tableWidget_iq_record.item(0,1).text())
-
-    # Copy to Playback Table
-    dashboard.ui.tableWidget_iq_playback.cellWidget(0,0).setValue(get_frequency)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_PlaybackRecordGainClicked(dashboard: QtCore.QObject):
-    """ 
-    Copies the gain value from the Record tab table to the Playback tab table.
-    """
-    # Get Record Table Value
-    try:
-        get_gain = float(dashboard.ui.tableWidget_iq_record.cellWidget(0,4).value())
-    except:
-        get_gain = float(dashboard.ui.tableWidget_iq_record.item(0,4).text())
-
-    # Copy to Playback Table
-    dashboard.ui.tableWidget_iq_playback.cellWidget(0,3).setValue(get_gain)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_PlaybackRecordRateClicked(dashboard: QtCore.QObject):
-    """ 
-    Copies the sampling rate value from the Record tab table to the Playback tab table.
-    """
-    # Get Record Table Value
-    get_sample_rate = str(dashboard.ui.tableWidget_iq_record.item(0,7).text())
-
-    # Make New Item
-    sample_rate_item = QtWidgets.QTableWidgetItem(get_sample_rate)
-    sample_rate_item.setTextAlignment(QtCore.Qt.AlignCenter)
-
-    # Copy to Playback Table
-    dashboard.ui.tableWidget_iq_playback.setItem(0,4,sample_rate_item)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -6026,435 +5464,6 @@ def _slotIQ_OOK_PlotClicked(dashboard: QtCore.QObject):
     dashboard.iq_plot_range_end = 0
 
 
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_RecordSigMF_ConfigureClicked(dashboard: QtCore.QObject):
-    """ 
-    Opens a dialog for configuring SigMF metadata values.
-    """
-    # Sensor Node Hardware Information
-    get_current_hardware = str(dashboard.ui.comboBox_iq_record_hardware.currentText())
-    get_hardware_type, get_hardware_uuid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
-    
-    # Copy Values from Table
-    # Sample Rate
-    try:
-        get_widget = dashboard.ui.tableWidget_iq_record.cellWidget(0,7)
-        if get_widget == None:
-            get_sample_rate = str(float(str(dashboard.ui.tableWidget_iq_record.item(0,7).text()))*1000000)
-        else:
-            get_sample_rate = str(float(str(dashboard.ui.tableWidget_iq_record.cellWidget(0,7).currentText()))*1000000)
-    except:
-        get_sample_rate = None
-
-    # Hardware
-    try:
-        get_hw = get_hardware_type
-    except:
-        get_hw = None
-
-    # File
-    try:
-        get_dataset = str(dashboard.ui.tableWidget_iq_record.item(0,0).text())
-    except:
-        get_dataset = None
-
-    # Frequency
-    try:
-        get_widget = dashboard.ui.tableWidget_iq_record.cellWidget(0,1)
-        if get_widget == None:
-            get_frequency = str(float(str(dashboard.ui.tableWidget_iq_record.item(0,1).text()))*1000000)
-        else:
-            get_frequency = str(float(str(dashboard.ui.tableWidget_iq_record.cellWidget(0,1).value()))*1000000)
-    except:
-        get_frequency = None
-
-    # Create Default Dictionary
-    dlg = fissure.Dashboard.UI_Components.Qt5.SigMF_Dialog(dashboard, sample_rate=get_sample_rate, hw=get_hw, dataset=get_dataset, frequency=get_frequency, settings_dictionary = dashboard.sigmf_dict)
-    dlg.show()
-    dlg.exec_()
-
-    # OK Clicked
-    get_value = dlg.return_value
-    if len(get_value) > 0:
-        dashboard.sigmf_dict = dlg.settings_dictionary
-
-
-def reset_iq_record_controls(
-    dashboard: QtCore.QObject,
-    status_text: str = "Idle",
-    clear_pending: bool = True,
-):
-    dashboard.iq_file_counter = 0
-
-    if clear_pending:
-        dashboard.iq_record_pending_operation_id = ""
-        dashboard.iq_record_pending_node_uid = ""
-        dashboard.iq_record_pending_started_at = 0
-        dashboard.iq_record_pending_base_file_name = ""
-
-    dashboard.ui.pushButton_iq_record.setText("Record")
-    dashboard.ui.pushButton_iq_record.setEnabled(True)
-    dashboard.ui.label2_iq_status_files.setText(status_text)
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotIQ_RecordClicked(dashboard: QtCore.QObject, called_from_thread=False):
-    """
-    Starts/stops IQ recording through the Base plugin action path.
-
-    First-pass behavior:
-      - Dashboard collects the existing IQ Record table values.
-      - Sends Base.iq_record to the selected Sensor Node.
-      - Plugin operation handles the actual flow graph launch and artifact creation.
-      - Stop requests all plugin operations stop on the selected node for now.
-    """
-
-    # ------------------------------------------------------------
-    # Stop Recording
-    # ------------------------------------------------------------
-    if dashboard.ui.pushButton_iq_record.text() == "Stop":
-        dashboard.ui.label2_iq_status_files.setText("Stopping...")
-        dashboard.ui.pushButton_iq_record.setEnabled(False)
-
-        try:
-            await dashboard.backend.tacticalNodeStop(
-                [dashboard.selected_node_uid]
-            )
-        except Exception as e:
-            dashboard.logger.error(f"[IQ] Failed stopping IQ record operation: {e}")
-
-        reset_iq_record_controls(
-            dashboard,
-            status_text="Stopped",
-            clear_pending=True,
-        )
-
-        try:
-            _slotIQ_ArtifactsRefreshClicked(dashboard)
-        except Exception as e:
-            dashboard.logger.warning(
-                f"[IQ] Failed refreshing artifacts after IQ record stop: {e}"
-            )
-
-        # dashboard.refreshStatusBarText()
-        return
-
-    # ------------------------------------------------------------
-    # Start Recording
-    # ------------------------------------------------------------
-    if not dashboard.selected_node_uid:
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            "No sensor node selected.",
-        )
-        return
-
-    if dashboard.ui.pushButton_iq_record.text() != "Record":
-        return
-
-    if dashboard.iq_file_counter == 0:
-        dashboard.iq_file_counter = 1
-
-    if dashboard.iq_file_counter <= 0:
-        return
-
-    # ------------------------------------------------------------
-    # Sensor Node Hardware Information
-    # ------------------------------------------------------------
-    get_current_hardware = str(dashboard.ui.comboBox_iq_record_hardware.currentText())
-
-    (
-        get_hardware_type,
-        get_hardware_uuid,
-        get_hardware_radio_name,
-        get_hardware_serial,
-        get_hardware_interface,
-        get_hardware_ip,
-        get_hardware_daughterboard,
-    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
-        dashboard,
-        get_current_hardware,
-        "iq",
-    )
-
-    # ------------------------------------------------------------
-    # Read and Validate UI Values
-    # ------------------------------------------------------------
-    try:
-        get_base_file_name = str(dashboard.ui.tableWidget_iq_record.item(0, 0).text()).strip()
-
-        try:
-            get_frequency = str(dashboard.ui.tableWidget_iq_record.cellWidget(0, 1).value())
-        except Exception:
-            get_frequency = str(dashboard.ui.tableWidget_iq_record.item(0, 1).text()).strip()
-
-        get_channel = str(dashboard.ui.tableWidget_iq_record.cellWidget(0, 2).currentText()).strip()
-        get_antenna = str(dashboard.ui.tableWidget_iq_record.cellWidget(0, 3).currentText()).strip()
-
-        try:
-            get_gain = str(dashboard.ui.tableWidget_iq_record.cellWidget(0, 4).value())
-        except Exception:
-            get_gain = str(dashboard.ui.tableWidget_iq_record.item(0, 4).text()).strip()
-
-        try:
-            get_number_of_files = str(dashboard.ui.tableWidget_iq_record.cellWidget(0, 5).value())
-        except Exception:
-            get_number_of_files = str(dashboard.ui.tableWidget_iq_record.item(0, 5).text()).strip()
-
-        get_file_length = str(dashboard.ui.tableWidget_iq_record.item(0, 6).text()).strip()
-
-        try:
-            get_sample_rate = str(dashboard.ui.tableWidget_iq_record.cellWidget(0, 7).currentText()).strip()
-        except Exception:
-            get_sample_rate = str(dashboard.ui.tableWidget_iq_record.item(0, 7).text()).strip()
-
-        get_data_type = str(dashboard.ui.tableWidget_iq_record.cellWidget(0, 8).currentText()).strip()
-        get_file_interval = str(dashboard.ui.tableWidget_iq_record.item(0, 9).text()).strip()
-
-        # Validate conversions.
-        frequency_mhz = float(get_frequency)
-        gain = float(get_gain)
-        number_of_files = int(get_number_of_files)
-        file_length = int(get_file_length)
-        sample_rate_mhz = float(get_sample_rate)
-        file_interval = float(get_file_interval)
-
-        valid_freq = fissure.utils.hardware.checkFrequencyBounds(
-            frequency_mhz,
-            get_hardware_type,
-            get_hardware_daughterboard,
-        )
-
-        if valid_freq is False:
-            dashboard.iq_file_counter = 0
-            await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-                dashboard,
-                "Frequency outside of hardware bounds.",
-            )
-            return
-
-        if number_of_files < 1:
-            dashboard.iq_file_counter = 0
-            await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-                dashboard,
-                "Number of files must be >= 1.",
-            )
-            return
-
-        if file_length < 1:
-            dashboard.iq_file_counter = 0
-            await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-                dashboard,
-                "File length must be >= 1.",
-            )
-            return
-
-        if file_interval < 0:
-            dashboard.iq_file_counter = 0
-            await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-                dashboard,
-                "File interval must be positive.",
-            )
-            return
-
-    except Exception:
-        dashboard.iq_file_counter = 0
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            "Invalid input parameter.",
-        )
-        return
-
-    # ------------------------------------------------------------
-    # Flow Graph Name from Hardware
-    # Keep this for the plugin operation so the Dashboard still chooses
-    # the same recorder family as the legacy path.
-    # ------------------------------------------------------------
-    if get_hardware_type == "Computer":
-        fname = "iq_recorder"
-    elif get_hardware_type == "USRP X3x0":
-        fname = "iq_recorder_x3x0"
-    elif get_hardware_type == "USRP B2x0":
-        fname = "iq_recorder_b2x0"
-    elif get_hardware_type == "HackRF":
-        fname = "iq_recorder_hackrf"
-    elif get_hardware_type == "RTL2832U":
-        fname = "iq_recorder_rtl2832u"
-    elif get_hardware_type == "802.11x Adapter":
-        fname = "iq_recorder"
-    elif get_hardware_type == "USRP B20xmini":
-        fname = "iq_recorder_b2x0"
-    elif get_hardware_type == "LimeSDR":
-        fname = "iq_recorder_limesdr"
-    elif get_hardware_type == "bladeRF":
-        fname = "iq_recorder_bladerf"
-    elif get_hardware_type == "Open Sniffer":
-        fname = "iq_recorder"
-    elif get_hardware_type == "PlutoSDR":
-        fname = "iq_recorder_plutosdr"
-    elif get_hardware_type == "USRP2":
-        fname = "iq_recorder_usrp2"
-    elif get_hardware_type == "USRP N2xx":
-        fname = "iq_recorder_usrp_n2xx"
-    elif get_hardware_type == "bladeRF 2.0":
-        fname = "iq_recorder_bladerf2"
-    elif get_hardware_type == "USRP X410":
-        fname = "iq_recorder_usrp_x410"
-    elif get_hardware_type == "RSPduo":
-        fname = "iq_recorder_rspduo"
-    elif get_hardware_type == "RSPdx":
-        fname = "iq_recorder_rspdx"
-    elif get_hardware_type == "RSPdx R2":
-        fname = "iq_recorder_rspdx_r2"
-    elif get_hardware_type == "CaribouLite":
-        fname = "iq_recorder_cariboulite"
-    else:
-        fname = "iq_recorder"
-
-    # LimeSDR channel normalization.
-    if get_hardware_type == "LimeSDR":
-        if get_channel == "A":
-            get_channel = "0"
-        elif get_channel == "B":
-            get_channel = "1"
-
-    # ------------------------------------------------------------
-    # Hardware Serial Formatting
-    # Preserve the old serial argument behavior for flow graph support.
-    # ------------------------------------------------------------
-    if len(get_hardware_serial) > 0:
-        if get_hardware_type in [
-            "HackRF",
-            "bladeRF",
-            "bladeRF 2.0",
-            "RSPduo",
-            "RSPdx",
-            "RSPdx R2",
-        ]:
-            get_serial = get_hardware_serial
-        else:
-            get_serial = "serial=" + get_hardware_serial
-    else:
-        if get_hardware_type == "HackRF":
-            get_serial = ""
-        elif get_hardware_type in [
-            "bladeRF",
-            "bladeRF 2.0",
-            "RSPduo",
-            "RSPdx",
-            "RSPdx R2",
-        ]:
-            get_serial = "0"
-        else:
-            get_serial = "False"
-
-    # ------------------------------------------------------------
-    # Artifact Format
-    # ------------------------------------------------------------
-    artifact_format_text = dashboard.ui.comboBox_iq_record_artifact_format.currentText().strip()
-
-    artifact_format = {
-        "Raw IQ File": "raw",
-        "Zip Bundle": "zip",
-    }.get(artifact_format_text, "raw")
-
-    # ------------------------------------------------------------
-    # SigMF Timestamp Update
-    # ------------------------------------------------------------
-    try:
-        if "core:datetime" in dashboard.sigmf_dict["captures"][0]:
-            iq_record_timestamp = datetime.datetime.utcnow().isoformat("T") + "Z"
-            dashboard.sigmf_dict["captures"][0]["core:datetime"] = str(iq_record_timestamp)
-    except Exception:
-        pass
-
-    # Copy SigMF metadata so plugin-side changes do not mutate Dashboard state.
-    try:
-        sigmf_metadata = json.loads(json.dumps(dashboard.sigmf_dict))
-    except Exception:
-        sigmf_metadata = {}
-
-    # Remember File Name for Multiple File Recordings on First Attempt.
-    # The plugin should handle number_of_files now, but keeping this avoids
-    # breaking status logic that still looks at this value.
-    if dashboard.iq_file_counter == 1:
-        dashboard.iq_first_file_name = get_base_file_name
-
-    # ------------------------------------------------------------
-    # Plugin Action Parameters
-    # ------------------------------------------------------------
-    operation_id = str(uuid.uuid4())
-
-    # Track only the IQ recording started from this Dashboard's IQ Data tab.
-    # This prevents IQ artifacts launched from Tactical, TAK, another Dashboard,
-    # or automation from resetting this local IQ Record UI.
-    dashboard.iq_record_pending_operation_id = operation_id
-    dashboard.iq_record_pending_node_uid = dashboard.selected_node_uid
-    dashboard.iq_record_pending_started_at = time.time()
-    dashboard.iq_record_pending_base_file_name = get_base_file_name
-
-    parameters = {
-        # Request identity / completion correlation
-        "operation_id": operation_id,
-        "requester": "iq_data_tab",
-
-        # Legacy-ish recorder selection
-        "flow_graph_name": fname,
-
-        # File/output
-        "base_file_name": get_base_file_name,
-        "artifact_format": artifact_format,
-
-        # Hardware identity
-        "hardware_display_name": get_current_hardware,
-        "hardware_type": get_hardware_type,
-        "hardware_uuid": get_hardware_uuid,
-        "hardware_radio_name": get_hardware_radio_name,
-        "hardware_serial": get_hardware_serial,
-        "hardware_serial_argument": get_serial,
-        "hardware_interface": get_hardware_interface,
-        "hardware_ip": get_hardware_ip,
-        "hardware_daughterboard": get_hardware_daughterboard,
-
-        # RF / recorder parameters
-        "frequency_mhz": frequency_mhz,
-        "rx_frequency": get_frequency,
-        "rx_channel": get_channel,
-        "rx_antenna": get_antenna,
-        "rx_gain": gain,
-        "sample_rate_mhz": sample_rate_mhz,
-        "sample_rate": get_sample_rate,
-        "file_length": file_length,
-        "number_of_files": number_of_files,
-        "file_interval": file_interval,
-        "data_type": get_data_type,
-
-        # Metadata
-        "sigmf_enabled": bool(dashboard.ui.checkBox_iq_record_sigmf.isChecked()),
-        "sigmf_metadata": sigmf_metadata,
-    }
-
-    # ------------------------------------------------------------
-    # Send Plugin Action
-    # ------------------------------------------------------------
-    await dashboard.backend.tacticalNodeExecute(
-        [dashboard.selected_node_uid],
-        "Base",
-        "iq_record",
-        parameters,
-    )
-
-    # ------------------------------------------------------------
-    # UI State
-    # ------------------------------------------------------------
-    dashboard.ui.label2_iq_status_files.setText("Starting...")
-    dashboard.ui.pushButton_iq_record.setText("Stop")
-    dashboard.ui.pushButton_iq_record.setEnabled(True)
-
-    # if dashboard.selected_node_uid:
-    #     dashboard.refreshStatusBarText()
-
-
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotIQ_PlaybackClicked(dashboard: QtCore.QObject):
     """
@@ -8139,14 +7148,22 @@ def handle_iq_record_artifact_complete(
     artifact_record: dict,
 ):
     """
-    Reset IQ Record controls when the matching recording Artifact is received.
-
-    The temporary Artifact browser can select the result only when that Artifact
-    is already present in the shared Dashboard download cache. Undownloaded
-    Artifacts remain available through Tactical until the IQ Data redesign adds
-    first-class transfer controls.
+    Finish the active IQ Record run when its matching Artifact arrives and
+    expose that Artifact through Card 3.
     """
-    if not isinstance(artifact_record, dict):
+    if not isinstance(
+        artifact_record,
+        dict,
+    ):
+        return
+
+    if not bool(
+        getattr(
+            dashboard,
+            "iq_record_running",
+            False,
+        )
+    ):
         return
 
     operation_id = str(
@@ -8160,37 +7177,52 @@ def handle_iq_record_artifact_complete(
     expected_operation_id = str(
         getattr(
             dashboard,
-            "iq_record_pending_operation_id",
+            "iq_record_operation_id",
             "",
         )
         or ""
     ).strip()
 
     if (
-        not expected_operation_id
-        or operation_id != expected_operation_id
+        not operation_id
+        or not expected_operation_id
+        or operation_id
+        != expected_operation_id
     ):
         return
 
     artifact_id = str(
-        artifact_record.get("artifact_id")
-        or artifact_record.get("id")
+        artifact_record.get(
+            "artifact_id",
+            "",
+        )
+        or artifact_record.get(
+            "id",
+            "",
+        )
         or ""
     ).strip()
 
-    reset_iq_record_controls(
+    dashboard.iq_record_artifact_id = artifact_id
+
+    _set_iq_record_stopped(
         dashboard,
-        status_text="Finished",
-        clear_pending=True,
+        status_text="Completed",
+    )
+
+    _update_iq_record_artifact_button(
+        dashboard
     )
 
     try:
         _slotIQ_ArtifactsRefreshClicked(
             dashboard
         )
+
     except Exception as error:
         dashboard.logger.warning(
-            "[IQ] Failed refreshing cached Artifacts after IQ recording: "
+            "[IQ Record] Failed refreshing cached Artifacts "
+            "after recording: "
             f"{error}"
         )
         return
@@ -8198,7 +7230,9 @@ def handle_iq_record_artifact_complete(
     if not artifact_id:
         return
 
-    combo = dashboard.ui.comboBox_iq_artifacts
+    combo = (
+        dashboard.ui.comboBox_iq_artifacts
+    )
 
     for index in range(
         combo.count()
@@ -8208,7 +7242,10 @@ def handle_iq_record_artifact_complete(
             QtCore.Qt.UserRole,
         )
 
-        if not isinstance(item_data, dict):
+        if not isinstance(
+            item_data,
+            dict,
+        ):
             continue
 
         candidate_artifact_id = str(
@@ -8219,14 +7256,1724 @@ def handle_iq_record_artifact_complete(
             or ""
         ).strip()
 
-        if candidate_artifact_id != artifact_id:
+        if (
+            candidate_artifact_id
+            != artifact_id
+        ):
             continue
 
         combo.setCurrentIndex(
             index
         )
+        break
 
-        _slotIQ_ArtifactsChanged(
+
+def _clear_iq_record_parameter_widgets(
+    dashboard: QtCore.QObject,
+):
+    """
+    Clear the IQ Record parameter panel and its widget registry.
+    """
+    content = dashboard.ui.scrollAreaWidgetContents_iq_record_parameters
+    layout = content.layout()
+
+    if layout is None:
+        layout = QtWidgets.QFormLayout(content)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setHorizontalSpacing(10)
+        layout.setVerticalSpacing(6)
+        layout.setFieldGrowthPolicy(
+            QtWidgets.QFormLayout.AllNonFixedFieldsGrow
+        )
+    else:
+        while layout.count():
+            item = layout.takeAt(0)
+
+            if item.widget() is not None:
+                item.widget().deleteLater()
+
+            if item.layout() is not None:
+                child_layout = item.layout()
+
+                while child_layout.count():
+                    child_item = child_layout.takeAt(0)
+
+                    if child_item.widget() is not None:
+                        child_item.widget().deleteLater()
+
+                child_layout.deleteLater()
+
+    dashboard.iq_record_parameter_widgets = {}
+    dashboard.iq_record_current_schema = {}
+    dashboard.iq_record_customized = False
+    dashboard.ui.pushButton_iq_record_start_stop.setEnabled(False)
+
+
+def _reset_iq_record_action_selection(
+    dashboard: QtCore.QObject,
+):
+    """
+    Clear queried actions and customized parameters.
+    """
+    dashboard.iq_record_method_actions = []
+    dashboard.iq_record_selected_plugin = ""
+    dashboard.iq_record_selected_action = ""
+    dashboard.iq_record_action_query_pending = False
+    dashboard.iq_record_action_query_context = ""
+    dashboard.iq_record_action_query_node_uid = ""
+
+    combo = dashboard.ui.comboBox_iq_record_method
+
+    combo.blockSignals(True)
+    combo.clear()
+    combo.blockSignals(False)
+    combo.setEnabled(False)
+
+    dashboard.ui.pushButton_iq_record_customize.setEnabled(False)
+
+    _clear_iq_record_parameter_widgets(dashboard)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_RecordActionHardwareChanged(
+    dashboard: QtCore.QObject,
+):
+    """
+    Reset the action selection when the IQ Record hardware changes.
+    """
+    _reset_iq_record_action_selection(dashboard)
+
+    has_hardware = bool(
+        str(
+            dashboard.ui.comboBox_iq_record_hardware_2.currentText()
+            or ""
+        ).strip()
+    )
+
+    has_node = bool(
+        str(
+            getattr(
+                dashboard,
+                "selected_node_uid",
+                "",
+            )
+            or ""
+        ).strip()
+    )
+
+    dashboard.ui.pushButton_iq_record_query.setEnabled(
+        has_node and has_hardware
+    )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_RecordQueryClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Query the selected Sensor Node for compatible IQ Record actions.
+    """
+    node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    hardware_display_name = str(
+        dashboard.ui.comboBox_iq_record_hardware_2.currentText()
+        or ""
+    ).strip()
+
+    if not node_uid:
+        dashboard.logger.warning(
+            "Select a Sensor Node before querying IQ Record actions."
+        )
+        return
+
+    if not hardware_display_name:
+        dashboard.logger.warning(
+            "Select hardware before querying IQ Record actions."
+        )
+        return
+
+    (
+        hardware_type,
+        _hardware_uuid,
+        _hardware_radio_name,
+        _hardware_serial,
+        _hardware_interface,
+        _hardware_ip,
+        _hardware_daughterboard,
+    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
+        dashboard,
+        hardware_display_name,
+        "iq",
+    )
+
+    _reset_iq_record_action_selection(dashboard)
+
+    context = "iq.record.actions"
+
+    dashboard.iq_record_action_query_pending = True
+    dashboard.iq_record_action_query_context = context
+    dashboard.iq_record_action_query_node_uid = node_uid
+
+    dashboard.ui.pushButton_iq_record_query.setText("Querying...")
+    dashboard.ui.pushButton_iq_record_query.setEnabled(False)
+
+    await dashboard.backend.queryPluginActions(
+        node_uid,
+        context=context,
+        scope="all_plugins",
+        include_tags=["iq.record"],
+        hardware=hardware_type,
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_RecordMethodChanged(
+    dashboard: QtCore.QObject,
+):
+    """
+    Update IQ Record action state after the action selection changes.
+    """
+    record = dashboard.ui.comboBox_iq_record_method.currentData()
+
+    if not isinstance(record, dict):
+        dashboard.iq_record_selected_plugin = ""
+        dashboard.iq_record_selected_action = ""
+        dashboard.ui.pushButton_iq_record_customize.setEnabled(False)
+        _clear_iq_record_parameter_widgets(dashboard)
+        return
+
+    plugin_name = str(
+        record.get("plugin", "")
+        or ""
+    ).strip()
+    action_name = str(
+        record.get("action", "")
+        or ""
+    ).strip()
+
+    dashboard.iq_record_selected_plugin = plugin_name
+    dashboard.iq_record_selected_action = action_name
+
+    _clear_iq_record_parameter_widgets(dashboard)
+
+    has_action = bool(
+        plugin_name and action_name
+    )
+
+    dashboard.ui.pushButton_iq_record_customize.setEnabled(
+        has_action
+    )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_RecordCustomizeClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Query the selected IQ Record action schema.
+    """
+    node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    record = dashboard.ui.comboBox_iq_record_method.currentData()
+
+    if not node_uid:
+        dashboard.logger.warning(
+            "Select a Sensor Node before loading IQ Record parameters."
+        )
+        return
+
+    if not isinstance(record, dict):
+        dashboard.logger.warning(
+            "Select an IQ Record action before loading parameters."
+        )
+        return
+
+    plugin_name = str(
+        record.get("plugin", "")
+        or ""
+    ).strip()
+    action_name = str(
+        record.get("action", "")
+        or ""
+    ).strip()
+
+    if not plugin_name or not action_name:
+        dashboard.logger.warning(
+            "The selected IQ Record action is missing plugin or action information."
+        )
+        return
+
+    _clear_iq_record_parameter_widgets(dashboard)
+
+    dashboard.ui.pushButton_iq_record_customize.setText(
+        "Loading..."
+    )
+    dashboard.ui.pushButton_iq_record_customize.setEnabled(
+        False
+    )
+
+    await dashboard.backend.queryPluginActionSchema(
+        node_uid,
+        plugin_name,
+        action_name,
+        context="iq.record.schema",
+    )
+
+
+def handle_iq_record_action_query_results(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    context: str = "",
+    actions: list = None,
+):
+    """
+    Populate the IQ Record action selector from a filtered action query.
+    """
+    result_node_uid = str(node_uid or "").strip()
+    result_context = str(context or "").strip()
+
+    expected_node_uid = str(
+        getattr(
+            dashboard,
+            "iq_record_action_query_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+    expected_context = str(
+        getattr(
+            dashboard,
+            "iq_record_action_query_context",
+            "",
+        )
+        or ""
+    ).strip()
+
+    query_pending = bool(
+        getattr(
+            dashboard,
+            "iq_record_action_query_pending",
+            False,
+        )
+    )
+
+    if (
+        not query_pending
+        or result_node_uid != expected_node_uid
+        or result_context != expected_context
+    ):
+        dashboard.logger.debug(
+            "Ignoring stale IQ Record action query results: "
+            f"node_uid={result_node_uid!r}, "
+            f"context={result_context!r}"
+        )
+        return
+
+    dashboard.iq_record_action_query_pending = False
+    dashboard.iq_record_action_query_context = ""
+    dashboard.iq_record_action_query_node_uid = ""
+
+    combo = dashboard.ui.comboBox_iq_record_method
+
+    dashboard.iq_record_method_actions = (
+        actions
+        if isinstance(actions, list)
+        else []
+    )
+
+    combo.blockSignals(True)
+    combo.clear()
+
+    for action_record in dashboard.iq_record_method_actions:
+        if not isinstance(action_record, dict):
+            continue
+
+        plugin_name = str(
+            action_record.get("plugin", "")
+            or ""
+        ).strip()
+        action_name = str(
+            action_record.get("action", "")
+            or ""
+        ).strip()
+
+        if not plugin_name or not action_name:
+            continue
+
+        combo.addItem(
+            f"{plugin_name}: {action_name}",
+            {
+                "plugin": plugin_name,
+                "action": action_name,
+            },
+        )
+
+    combo.blockSignals(False)
+
+    has_actions = combo.count() > 0
+
+    combo.setEnabled(has_actions)
+    dashboard.ui.pushButton_iq_record_query.setText("Query")
+    dashboard.ui.pushButton_iq_record_query.setEnabled(True)
+    dashboard.ui.pushButton_iq_record_customize.setEnabled(has_actions)
+
+    if has_actions:
+        combo.setCurrentIndex(0)
+        _slotIQ_RecordMethodChanged(dashboard)
+    else:
+        dashboard.iq_record_selected_plugin = ""
+        dashboard.iq_record_selected_action = ""
+
+
+def _create_iq_record_parameter_widget(
+    dashboard: QtCore.QObject,
+    parameter: dict,
+):
+    """
+    Create one editor for an IQ Record action-schema parameter.
+    """
+    parameter_type = str(
+        parameter.get("type", "string")
+        or "string"
+    ).strip().lower()
+
+    default = parameter.get("default", "")
+
+    options = parameter.get("options", [])
+
+    if isinstance(options, list) and options:
+        widget = QtWidgets.QComboBox(
+            dashboard.ui.scrollAreaWidgetContents_iq_record_parameters
+        )
+        widget.addItems(
+            [
+                str(option)
+                for option in options
+            ]
+        )
+
+        default_index = widget.findText(
+            str(default)
+        )
+
+        if default_index >= 0:
+            widget.setCurrentIndex(default_index)
+
+        return widget
+
+    if parameter_type == "int":
+        widget = QtWidgets.QSpinBox(
+            dashboard.ui.scrollAreaWidgetContents_iq_record_parameters
+        )
+        widget.setMinimum(
+            int(parameter.get("min", -2147483647))
+        )
+        widget.setMaximum(
+            int(parameter.get("max", 2147483647))
+        )
+        widget.setSingleStep(
+            int(parameter.get("step", 1))
+        )
+        widget.setValue(
+            int(default or 0)
+        )
+        return widget
+
+    if parameter_type == "number":
+        widget = QtWidgets.QDoubleSpinBox(
+            dashboard.ui.scrollAreaWidgetContents_iq_record_parameters
+        )
+        widget.setDecimals(
+            int(parameter.get("decimals", 6))
+        )
+        widget.setMinimum(
+            float(parameter.get("min", -1000000000000.0))
+        )
+        widget.setMaximum(
+            float(parameter.get("max", 1000000000000.0))
+        )
+        widget.setSingleStep(
+            float(parameter.get("step", 1.0))
+        )
+        widget.setValue(
+            float(default or 0.0)
+        )
+        return widget
+
+    if parameter_type in {
+        "bool",
+        "boolean",
+    }:
+        widget = QtWidgets.QCheckBox(
+            dashboard.ui.scrollAreaWidgetContents_iq_record_parameters
+        )
+
+        if isinstance(default, str):
+            checked = default.strip().lower() in {
+                "true",
+                "1",
+                "yes",
+                "on",
+                "enabled",
+            }
+        else:
+            checked = bool(default)
+
+        widget.setChecked(checked)
+        return widget
+
+    if parameter_type == "label":
+        widget = QtWidgets.QLabel(
+            str(default),
+            dashboard.ui.scrollAreaWidgetContents_iq_record_parameters,
+        )
+        widget.setWordWrap(True)
+        widget.setTextInteractionFlags(
+            QtCore.Qt.TextSelectableByMouse
+        )
+        return widget
+
+    widget = QtWidgets.QLineEdit(
+        str(default),
+        dashboard.ui.scrollAreaWidgetContents_iq_record_parameters,
+    )
+    return widget
+
+
+def _iq_record_parameter_widget_value(
+    widget: QtWidgets.QWidget,
+):
+    """
+    Return the current value from one IQ Record parameter editor.
+    """
+    if isinstance(
+        widget,
+        QtWidgets.QComboBox,
+    ):
+        return widget.currentText()
+
+    if isinstance(
+        widget,
+        QtWidgets.QDoubleSpinBox,
+    ):
+        return widget.value()
+
+    if isinstance(
+        widget,
+        QtWidgets.QSpinBox,
+    ):
+        return widget.value()
+
+    if isinstance(
+        widget,
+        QtWidgets.QCheckBox,
+    ):
+        return widget.isChecked()
+
+    if isinstance(
+        widget,
+        QtWidgets.QLineEdit,
+    ):
+        return widget.text()
+
+    if isinstance(
+        widget,
+        QtWidgets.QLabel,
+    ):
+        return widget.text()
+
+    return None
+
+
+def _collect_iq_record_action_parameters(
+    dashboard: QtCore.QObject,
+):
+    """
+    Collect customized IQ Record parameters and selected hardware identity.
+    """
+    parameters = {}
+
+    for parameter_name, record in (
+        getattr(
+            dashboard,
+            "iq_record_parameter_widgets",
+            {},
+        )
+        or {}
+    ).items():
+        if not isinstance(record, dict):
+            continue
+
+        widget = record.get("widget")
+        schema = record.get("schema", {})
+
+        if widget is None:
+            continue
+
+        parameter_type = str(
+            schema.get("type", "string")
+            or "string"
+        ).strip().lower()
+
+        if parameter_type == "label":
+            continue
+
+        parameters[parameter_name] = (
+            _iq_record_parameter_widget_value(
+                widget
+            )
+        )
+
+    hardware_display_name = str(
+        dashboard.ui.comboBox_iq_record_hardware_2.currentText()
+        or ""
+    ).strip()
+
+    (
+        hardware_type,
+        hardware_uuid,
+        hardware_radio_name,
+        hardware_serial,
+        hardware_interface,
+        hardware_ip,
+        hardware_daughterboard,
+    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
+        dashboard,
+        hardware_display_name,
+        "iq",
+    )
+
+    raw_serial_hardware = {
+        "HackRF",
+        "RTL2832U",
+        "bladeRF",
+        "bladeRF 2.0",
+        "RSPduo",
+        "RSPdx",
+        "RSPdx R2",
+    }
+
+    zero_default_serial_hardware = {
+        "RTL2832U",
+        "bladeRF",
+        "bladeRF 2.0",
+        "RSPduo",
+        "RSPdx",
+        "RSPdx R2",
+    }
+
+    if hardware_serial:
+        if hardware_type in raw_serial_hardware:
+            hardware_serial_argument = hardware_serial
+        else:
+            hardware_serial_argument = (
+                f"serial={hardware_serial}"
+            )
+    else:
+        if hardware_type == "HackRF":
+            hardware_serial_argument = ""
+        elif hardware_type in zero_default_serial_hardware:
+            hardware_serial_argument = "0"
+        else:
+            hardware_serial_argument = "False"
+
+    parameters.update(
+        {
+            "operation_id": str(uuid.uuid4()),
+            "requester": "dashboard",
+            "hardware_display_name":
+                hardware_display_name,
+            "hardware_type":
+                hardware_type,
+            "hardware_uuid":
+                hardware_uuid,
+            "hardware_radio_name":
+                hardware_radio_name,
+            "hardware_serial":
+                hardware_serial,
+            "hardware_serial_argument":
+                hardware_serial_argument,
+            "hardware_interface":
+                hardware_interface,
+            "hardware_ip":
+                hardware_ip,
+            "hardware_daughterboard":
+                hardware_daughterboard,
+        }
+    )
+
+    if "frequency_mhz" in parameters:
+        parameters["rx_frequency"] = (
+            parameters["frequency_mhz"]
+        )
+
+    return parameters
+
+
+def handle_iq_record_action_schema(
+    dashboard: QtCore.QObject,
+    plugin_name: str = "",
+    action_name: str = "",
+    node_uid: str = "",
+    parameters: list = None,
+):
+    """
+    Build the IQ Record parameter panel from an action schema.
+    """
+    selected_node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if str(node_uid or "").strip() != selected_node_uid:
+        dashboard.logger.debug(
+            "Ignoring IQ Record action schema for a different Sensor Node."
+        )
+        return
+
+    selected_record = dashboard.ui.comboBox_iq_record_method.currentData()
+
+    if not isinstance(selected_record, dict):
+        return
+
+    selected_plugin = str(
+        selected_record.get("plugin", "")
+        or ""
+    ).strip()
+    selected_action = str(
+        selected_record.get("action", "")
+        or ""
+    ).strip()
+
+    if (
+        selected_plugin != str(plugin_name or "").strip()
+        or selected_action != str(action_name or "").strip()
+    ):
+        dashboard.logger.debug(
+            "Ignoring IQ Record action schema for a different action."
+        )
+        return
+
+    _clear_iq_record_parameter_widgets(dashboard)
+
+    content = dashboard.ui.scrollAreaWidgetContents_iq_record_parameters
+    layout = content.layout()
+
+    if layout is None:
+        layout = QtWidgets.QFormLayout(content)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setHorizontalSpacing(10)
+        layout.setVerticalSpacing(6)
+        layout.setFieldGrowthPolicy(
+            QtWidgets.QFormLayout.AllNonFixedFieldsGrow
+        )
+
+    normalized_parameters = (
+        parameters
+        if isinstance(parameters, list)
+        else []
+    )
+
+    dashboard.iq_record_current_schema = {
+        "plugin": selected_plugin,
+        "action": selected_action,
+        "params": normalized_parameters,
+    }
+
+    for parameter in normalized_parameters:
+        if not isinstance(parameter, dict):
+            continue
+
+        name = str(
+            parameter.get("name", "")
+            or ""
+        ).strip()
+
+        if not name:
+            continue
+
+        label_text = str(
+            parameter.get("label", name)
+            or name
+        )
+
+        widget = _create_iq_record_parameter_widget(
+            dashboard,
+            parameter,
+        )
+
+        parameter_type = str(
+            parameter.get("type", "string")
+            or "string"
+        ).strip().lower()
+
+        if isinstance(
+            widget,
+            QtWidgets.QDoubleSpinBox,
+        ):
+            widget.setObjectName(
+                "doubleSpinBox_iq_record_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QSpinBox,
+        ):
+            widget.setObjectName(
+                "spinBox_iq_record_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QComboBox,
+        ):
+            widget.setObjectName(
+                "comboBox_iq_record_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QCheckBox,
+        ):
+            widget.setObjectName(
+                "checkBox_iq_record_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QLineEdit,
+        ):
+            widget.setObjectName(
+                "lineEdit_iq_record_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QLabel,
+        ):
+            widget.setObjectName(
+                "label2_iq_record_parameter_info"
+            )
+
+        dashboard.iq_record_parameter_widgets[
+            name
+        ] = {
+            "widget": widget,
+            "schema": dict(parameter),
+        }
+
+        label = QtWidgets.QLabel(
+            label_text,
+            content,
+        )
+        label.setObjectName(
+            "label2_iq_record_parameter"
+        )
+        label.setWordWrap(True)
+
+        layout.addRow(
+            label,
+            widget,
+        )
+
+
+    dashboard.iq_record_selected_plugin = selected_plugin
+    dashboard.iq_record_selected_action = selected_action
+    dashboard.iq_record_customized = True
+
+    dashboard.ui.pushButton_iq_record_customize.setText(
+        "Customize"
+    )
+    dashboard.ui.pushButton_iq_record_customize.setEnabled(
+        True
+    )
+    dashboard.ui.pushButton_iq_record_start_stop.setEnabled(
+        True
+    )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_RecordDownloadArtifactClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Download the completed IQ recording Artifact or open its verified shared
+    Dashboard cache location.
+    """
+    artifact_id = str(
+        getattr(
+            dashboard,
+            "iq_record_artifact_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not artifact_id:
+        _update_iq_record_artifact_button(
             dashboard
         )
-        break
+        return
+
+    controller = getattr(
+        dashboard.backend,
+        "artifact_transfer_controller",
+        None,
+    )
+
+    if controller is None:
+        dashboard.logger.error(
+            "[IQ Record] Artifact transfer controller is unavailable."
+        )
+        return
+
+    local_path = controller.get_local_path(
+        artifact_id
+    )
+
+    if local_path:
+        open_path = (
+            local_path
+            if os.path.isdir(
+                local_path
+            )
+            else os.path.dirname(
+                local_path
+            )
+        )
+
+        if (
+            open_path
+            and os.path.isdir(
+                open_path
+            )
+        ):
+            try:
+                subprocess.Popen(
+                    [
+                        "xdg-open",
+                        open_path,
+                    ]
+                )
+
+            except Exception as error:
+                dashboard.logger.error(
+                    "[IQ Record] Failed opening Artifact: "
+                    f"{error}"
+                )
+
+        return
+
+    button = (
+        dashboard.ui.pushButton_iq_record_download_artifact
+    )
+    button.setText(
+        "Downloading..."
+    )
+    button.setEnabled(
+        False
+    )
+
+    try:
+        dashboard.iq_record_select_after_download_id = (
+            artifact_id
+        )
+
+        await (
+            dashboard.backend
+            .requestDashboardArtifactDownload(
+                artifact_id,
+                open_when_complete=False,
+            )
+        )
+
+    except Exception as error:
+        dashboard.logger.error(
+            "[IQ Record] Artifact download request failed: "
+            f"{error}"
+        )
+
+        dashboard.iq_record_select_after_download_id = ""
+
+        _update_iq_record_artifact_button(
+            dashboard
+        )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_RecordStartStopClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Start or stop the selected IQ Record action.
+    """
+    node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if bool(
+        getattr(
+            dashboard,
+            "iq_record_running",
+            False,
+        )
+    ):
+        dashboard.ui.label2_iq_record_status.setText(
+            "Stopping..."
+        )
+
+        try:
+            await dashboard.backend.tacticalNodeStop(
+                [node_uid]
+            )
+
+        except Exception as error:
+            dashboard.logger.error(
+                "Failed to stop IQ Record operation: "
+                f"{error}"
+            )
+
+            _set_iq_record_stopped(
+                dashboard,
+                status_text="Stop Failed",
+            )
+            return
+
+        _set_iq_record_stopped(
+            dashboard,
+            status_text="Stopped",
+        )
+
+        try:
+            _slotIQ_ArtifactsRefreshClicked(
+                dashboard
+            )
+
+        except Exception as error:
+            dashboard.logger.debug(
+                "Could not refresh IQ artifacts after Stop: "
+                f"{error}"
+            )
+
+        return
+
+    if not node_uid:
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "Select a Sensor Node.",
+            )
+        )
+        return
+
+    if not bool(
+        getattr(
+            dashboard,
+            "iq_record_customized",
+            False,
+        )
+    ):
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "Load the IQ Record parameters before recording.",
+            )
+        )
+        return
+
+    plugin_name = str(
+        getattr(
+            dashboard,
+            "iq_record_selected_plugin",
+            "",
+        )
+        or ""
+    ).strip()
+
+    action_name = str(
+        getattr(
+            dashboard,
+            "iq_record_selected_action",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not plugin_name or not action_name:
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "Select an IQ Record action.",
+            )
+        )
+        return
+
+    try:
+        parameters = (
+            _collect_iq_record_action_parameters(
+                dashboard
+            )
+        )
+
+    except Exception as error:
+        dashboard.logger.error(
+            "Failed to collect IQ Record parameters: "
+            f"{error}"
+        )
+
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "One or more IQ Record parameters are invalid.",
+            )
+        )
+        return
+
+    operation_id = str(
+        parameters.get(
+            "operation_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    _set_iq_record_running(
+        dashboard,
+        node_uid=node_uid,
+        operation_id=operation_id,
+    )
+
+    try:
+        await dashboard.backend.tacticalNodeExecute(
+            [node_uid],
+            plugin_name,
+            action_name,
+            parameters,
+        )
+
+    except Exception:
+        _set_iq_record_stopped(
+            dashboard,
+            status_text="Start Failed",
+        )
+        raise
+
+
+def _update_iq_record_artifact_button(
+    dashboard: QtCore.QObject,
+):
+    """
+    Update the IQ Record Artifact ID and Download/Open button from the shared
+    Dashboard Artifact cache.
+    """
+    artifact_id = str(
+        getattr(
+            dashboard,
+            "iq_record_artifact_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    artifact_label = (
+        dashboard.ui.label2_iq_record_status_artifact_id
+    )
+    download_button = (
+        dashboard.ui.pushButton_iq_record_download_artifact
+    )
+
+    artifact_label.setText(
+        artifact_id
+        if artifact_id
+        else "—"
+    )
+    artifact_label.setToolTip(
+        artifact_id
+    )
+
+    controller = getattr(
+        dashboard.backend,
+        "artifact_transfer_controller",
+        None,
+    )
+
+    cached_path = (
+        controller.get_local_path(
+            artifact_id
+        )
+        if controller is not None
+        and artifact_id
+        else None
+    )
+
+    if cached_path:
+        download_button.setText(
+            "Open Artifact"
+        )
+        download_button.setToolTip(
+            str(
+                cached_path
+            )
+        )
+
+    else:
+        download_button.setText(
+            "Download Artifact"
+        )
+        download_button.setToolTip(
+            (
+                f"Download Artifact {artifact_id}"
+                if artifact_id
+                else "No recording Artifact is available."
+            )
+        )
+
+    download_button.setEnabled(
+        bool(
+            artifact_id
+        )
+    )
+
+    download_button.style().unpolish(
+        download_button
+    )
+    download_button.style().polish(
+        download_button
+    )
+    download_button.update()
+
+
+def _set_iq_record_start_stop_button(
+    dashboard: QtCore.QObject,
+    running: bool,
+):
+    """
+    Update the IQ Record Card 3 button.
+    """
+    button = (
+        dashboard.ui.pushButton_iq_record_start_stop
+    )
+
+    button.setProperty(
+        "running",
+        bool(running),
+    )
+
+    button.setText(
+        "Stop"
+        if running
+        else "Record"
+    )
+
+    button.style().unpolish(
+        button
+    )
+    button.style().polish(
+        button
+    )
+    button.update()
+
+
+def _set_iq_record_running(
+    dashboard: QtCore.QObject,
+    node_uid: str,
+    operation_id: str,
+):
+    """
+    Mark IQ Record active before submitting the action.
+    """
+    dashboard.iq_record_running = True
+    dashboard.iq_record_node_uid = str(
+        node_uid or ""
+    )
+    dashboard.iq_record_operation_id = str(
+        operation_id or ""
+    )
+
+    # The new run has not produced an Artifact yet.
+    dashboard.iq_record_artifact_id = ""
+    _update_iq_record_artifact_button(
+        dashboard
+    )
+
+    _set_iq_record_start_stop_button(
+        dashboard,
+        True,
+    )
+
+    dashboard.ui.label2_iq_record_status.setText(
+        "Recording..."
+    )
+
+    dashboard.ui.pushButton_iq_record_start_stop.setEnabled(
+        True
+    )
+
+    for widget_name in (
+        "comboBox_iq_record_hardware_2",
+        "comboBox_iq_record_method",
+        "pushButton_iq_record_query",
+        "pushButton_iq_record_customize",
+    ):
+        widget = getattr(
+            dashboard.ui,
+            widget_name,
+            None,
+        )
+
+        if widget is not None:
+            widget.setEnabled(
+                False
+            )
+
+    for parameter_record in (
+        getattr(
+            dashboard,
+            "iq_record_parameter_widgets",
+            {},
+        )
+        or {}
+    ).values():
+        if not isinstance(
+            parameter_record,
+            dict,
+        ):
+            continue
+
+        widget = parameter_record.get(
+            "widget"
+        )
+
+        if widget is not None:
+            widget.setEnabled(
+                False
+            )
+
+
+def _set_iq_record_stopped(
+    dashboard: QtCore.QObject,
+    status_text: str = "Idle",
+):
+    """
+    Restore IQ Record controls after completion or Stop.
+    """
+    dashboard.iq_record_running = False
+    dashboard.iq_record_node_uid = ""
+    dashboard.iq_record_operation_id = ""
+
+    _set_iq_record_start_stop_button(
+        dashboard,
+        False,
+    )
+
+    dashboard.ui.label2_iq_record_status.setText(
+        str(
+            status_text or "Idle"
+        )
+    )
+
+    hardware_combo = (
+        dashboard.ui.comboBox_iq_record_hardware_2
+    )
+    method_combo = (
+        dashboard.ui.comboBox_iq_record_method
+    )
+
+    hardware_combo.setEnabled(
+        hardware_combo.count() > 0
+    )
+    method_combo.setEnabled(
+        method_combo.count() > 0
+    )
+
+    dashboard.ui.pushButton_iq_record_query.setEnabled(
+        hardware_combo.count() > 0
+    )
+    dashboard.ui.pushButton_iq_record_customize.setEnabled(
+        method_combo.count() > 0
+    )
+    dashboard.ui.pushButton_iq_record_start_stop.setEnabled(
+        bool(
+            getattr(
+                dashboard,
+                "iq_record_customized",
+                False,
+            )
+        )
+    )
+
+    for parameter_record in (
+        getattr(
+            dashboard,
+            "iq_record_parameter_widgets",
+            {},
+        )
+        or {}
+    ).values():
+        if not isinstance(
+            parameter_record,
+            dict,
+        ):
+            continue
+
+        widget = parameter_record.get(
+            "widget"
+        )
+
+        if widget is not None:
+            widget.setEnabled(
+                True
+            )
+
+
+def initialize_iq_record_controls(
+    dashboard: QtCore.QObject,
+):
+    """
+    Initialize IQ Record controls.
+    """
+    dashboard.iq_record_running = False
+    dashboard.iq_record_node_uid = ""
+    dashboard.iq_record_operation_id = ""
+    dashboard.iq_record_artifact_id = ""
+    dashboard.iq_record_select_after_download_id = ""
+
+    dashboard.iq_record_method_actions = []
+    dashboard.iq_record_selected_plugin = ""
+    dashboard.iq_record_selected_action = ""
+    dashboard.iq_record_parameter_widgets = {}
+    dashboard.iq_record_current_schema = {}
+    dashboard.iq_record_customized = False
+
+    dashboard.iq_record_action_query_pending = False
+    dashboard.iq_record_action_query_context = ""
+    dashboard.iq_record_action_query_node_uid = ""
+
+    dashboard.ui.stackedWidget3_iq.setCurrentWidget(
+        dashboard.ui.page_iq_record
+    )
+
+    dashboard.ui.stackedWidget_iq_record.setCurrentWidget(
+        dashboard.ui.page_iq_record_no_node
+    )
+
+    select_node_icon_path = os.path.join(
+        fissure.utils.UI_DIR,
+        "Icons",
+        "select_node.png",
+    )
+
+    if os.path.isfile(
+        select_node_icon_path
+    ):
+        select_node_pixmap = QtGui.QPixmap(
+            select_node_icon_path
+        )
+
+        dashboard.ui.label_iq_record_select_sensor_node_image.setPixmap(
+            select_node_pixmap
+        )
+        dashboard.ui.label_iq_record_select_sensor_node_image.setScaledContents(
+            False
+        )
+        dashboard.ui.label_iq_record_select_sensor_node_image.setAlignment(
+            QtCore.Qt.AlignCenter
+        )
+
+    step_badges = (
+        (
+            dashboard.ui.label_iq_record_setup_badge,
+            "1",
+        ),
+        (
+            dashboard.ui.label_iq_record_parameters_badge,
+            "2",
+        ),
+        (
+            dashboard.ui.label_iq_record_run_badge,
+            "3",
+        ),
+    )
+
+    for badge, badge_text in step_badges:
+        badge.setText(
+            badge_text
+        )
+        badge.setAlignment(
+            QtCore.Qt.AlignCenter
+        )
+
+    dashboard.ui.comboBox_iq_record_method.clear()
+    dashboard.ui.comboBox_iq_record_method.setEnabled(
+        False
+    )
+
+    dashboard.ui.pushButton_iq_record_query.setText(
+        "Query"
+    )
+    dashboard.ui.pushButton_iq_record_query.setEnabled(
+        False
+    )
+
+    dashboard.ui.pushButton_iq_record_customize.setText(
+        "Customize"
+    )
+    dashboard.ui.pushButton_iq_record_customize.setEnabled(
+        False
+    )
+
+    _set_iq_record_start_stop_button(
+        dashboard,
+        False,
+    )
+
+    dashboard.ui.pushButton_iq_record_start_stop.setEnabled(
+        False
+    )
+
+    dashboard.ui.label2_iq_record_status.setText(
+        "Unavailable"
+    )
+
+    dashboard.ui.label2_iq_record_status_artifact_id_label.setText(
+        "Artifact ID:"
+    )
+
+    _update_iq_record_artifact_button(
+        dashboard
+    )
+
+    scroll_area = getattr(
+        dashboard.ui,
+        "scrollArea_iq_record_parameters",
+        None,
+    )
+
+    if scroll_area is not None:
+        scroll_area.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff
+        )
+        scroll_area.setVerticalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAsNeeded
+        )
+
+        parameter_widgets = [
+            scroll_area,
+            scroll_area.viewport(),
+            scroll_area.widget(),
+        ]
+
+        for widget in parameter_widgets:
+            if widget is None:
+                continue
+
+            widget.setProperty(
+                "uiRole",
+                "parameterPanel",
+            )
+            widget.style().unpolish(
+                widget
+            )
+            widget.style().polish(
+                widget
+            )
+            widget.update()
+
+    _clear_iq_record_parameter_widgets(
+        dashboard
+    )
+
+    update_iq_record_selected_node_gate(
+        dashboard
+    )
+
+
+def update_iq_record_selected_node_gate(
+    dashboard: QtCore.QObject,
+):
+    """
+    Show IQ Record controls only when an online Sensor Node is selected.
+    """
+    selected_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    has_selected_node = bool(
+        selected_uid
+    )
+
+    if has_selected_node:
+        node_states = (
+            getattr(
+                dashboard,
+                "node_states",
+                {},
+            )
+            or {}
+        )
+
+        node_state = node_states.get(
+            selected_uid
+        )
+
+        if (
+            isinstance(
+                node_state,
+                dict,
+            )
+            and node_state.get(
+                "connected"
+            ) is False
+        ):
+            has_selected_node = False
+
+    dashboard.ui.stackedWidget3_iq.setCurrentWidget(
+        dashboard.ui.page_iq_record
+    )
+
+    dashboard.ui.stackedWidget_iq_record.setCurrentWidget(
+        dashboard.ui.page_iq_record_controls
+        if has_selected_node
+        else dashboard.ui.page_iq_record_no_node
+    )
+
+    hardware_combo = (
+        dashboard.ui.comboBox_iq_record_hardware_2
+    )
+    method_combo = (
+        dashboard.ui.comboBox_iq_record_method
+    )
+    query_button = (
+        dashboard.ui.pushButton_iq_record_query
+    )
+    customize_button = (
+        dashboard.ui.pushButton_iq_record_customize
+    )
+    start_button = (
+        dashboard.ui.pushButton_iq_record_start_stop
+    )
+
+    if bool(
+        getattr(
+            dashboard,
+            "iq_record_running",
+            False,
+        )
+    ):
+        hardware_combo.setEnabled(
+            False
+        )
+        method_combo.setEnabled(
+            False
+        )
+        query_button.setEnabled(
+            False
+        )
+        customize_button.setEnabled(
+            False
+        )
+        start_button.setEnabled(
+            True
+        )
+        return
+
+    _set_iq_record_start_stop_button(
+        dashboard,
+        False,
+    )
+
+    if not has_selected_node:
+        hardware_combo.blockSignals(
+            True
+        )
+        hardware_combo.clear()
+        hardware_combo.blockSignals(
+            False
+        )
+
+        method_combo.blockSignals(
+            True
+        )
+        method_combo.clear()
+        method_combo.blockSignals(
+            False
+        )
+
+        hardware_combo.setEnabled(
+            False
+        )
+        method_combo.setEnabled(
+            False
+        )
+        query_button.setEnabled(
+            False
+        )
+        customize_button.setEnabled(
+            False
+        )
+        start_button.setEnabled(
+            False
+        )
+
+        dashboard.ui.label2_iq_record_status.setText(
+            "Unavailable"
+        )
+        return
+
+    hardware_combo.setEnabled(
+        hardware_combo.count() > 0
+    )
+    method_combo.setEnabled(
+        method_combo.count() > 0
+    )
+    query_button.setEnabled(
+        hardware_combo.count() > 0
+    )
+    customize_button.setEnabled(
+        method_combo.count() > 0
+    )
+    start_button.setEnabled(
+        bool(
+            getattr(
+                dashboard,
+                "iq_record_customized",
+                False,
+            )
+        )
+    )
+
+    dashboard.ui.label2_iq_record_status.setText(
+        "Idle"
+    )

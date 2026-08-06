@@ -5,14 +5,15 @@ IQ recorder operation for the Base plugin.
 
 Assumptions:
   - Artifact files are local/unpacked under FISSURE/artifacts/<operation_id>/files.
-  - B2x0/B20xmini record flow graph files are under:
-      Plugins/Base/flow_graphs/iq_record_flow_graphs/<maint-version>/b2x0/
+  - Hardware-specific recorder flow graphs are stored under:
+      Plugins/Base/flow_graphs/iq_record_flow_graphs/<maint-version>/<hardware>/
   - Zip transfer/download behavior is handled elsewhere.
 """
 
 import asyncio
 import datetime
 import importlib.util
+import inspect
 import json
 import logging
 import os
@@ -33,6 +34,74 @@ from fissure.utils.plugins.operations import Operation
 from fissure.utils import FISSURE_ROOT, get_library_version
 
 
+IQ_RECORD_HARDWARE = {
+    "USRP B20xmini": {
+        "directory": "b2x0",
+        "flow_graph": "iq_recorder_b2x0",
+    },
+    "USRP B2x0": {
+        "directory": "b2x0",
+        "flow_graph": "iq_recorder_b2x0",
+    },
+    "bladeRF": {
+        "directory": "bladerf",
+        "flow_graph": "iq_recorder_bladerf",
+    },
+    "bladeRF 2.0": {
+        "directory": "bladerf2",
+        "flow_graph": "iq_recorder_bladerf2",
+    },
+    "HackRF": {
+        "directory": "hackrf",
+        "flow_graph": "iq_recorder_hackrf",
+    },
+    "LimeSDR": {
+        "directory": "limesdr",
+        "flow_graph": "iq_recorder_limesdr",
+    },
+    "PlutoSDR": {
+        "directory": "plutosdr",
+        "flow_graph": "iq_recorder_plutosdr",
+    },
+    "RTL2832U": {
+        "directory": "rtl2832u",
+        "flow_graph": "iq_recorder_rtl2832u",
+    },
+    "USRP2": {
+        "directory": "usrp2",
+        "flow_graph": "iq_recorder_usrp2",
+    },
+    "USRP N2xx": {
+        "directory": "usrp_n2xx",
+        "flow_graph": "iq_recorder_usrp_n2xx",
+    },
+    "USRP X3x0": {
+        "directory": "x3x0",
+        "flow_graph": "iq_recorder_x3x0",
+    },
+    "USRP X410": {
+        "directory": "x410",
+        "flow_graph": "iq_recorder_usrp_x410",
+    },
+    "RSPduo": (
+        "rspduo",
+        "iq_recorder_rspduo",
+    ),
+    "RSPdx": (
+        "rspdx",
+        "iq_recorder_rspdx",
+    ),
+    "RSPdx R2": (
+        "rspdx_r2",
+        "iq_recorder_rspdx_r2",
+    ),
+    "CaribouLite": (
+        "cariboulite",
+        "iq_recorder_cariboulite",
+    ),
+}
+
+
 class OperationMain(Operation):
     """IQ Record Operation"""
 
@@ -40,7 +109,7 @@ class OperationMain(Operation):
         self,
         operation_id: str = "",
         requester: str = "",
-        flow_graph_name: str = "iq_recorder_b2x0",
+        flow_graph_name: str = "",
         base_file_name: str = "capture.sigmf-data",
         artifact_format: str = "raw",
 
@@ -92,7 +161,10 @@ class OperationMain(Operation):
         self.operation_id = str(operation_id or self.opid or uuid.uuid4())
         self.requester = str(requester or "").strip()
 
-        self.flow_graph_name = str(flow_graph_name or "iq_recorder_b2x0").strip()
+        requested_flow_graph_name = str(
+            flow_graph_name or ""
+        ).strip()
+
         self.base_file_name = os.path.basename(
             str(base_file_name or "capture.sigmf-data").strip()
         )
@@ -110,6 +182,21 @@ class OperationMain(Operation):
         self.hardware_interface = str(hardware_interface or "").strip()
         self.hardware_ip = str(hardware_ip or "").strip()
         self.hardware_daughterboard = str(hardware_daughterboard or "").strip()
+
+        hardware_config = IQ_RECORD_HARDWARE.get(
+            self.hardware_type
+        )
+
+        if requested_flow_graph_name:
+            self.flow_graph_name = (
+                requested_flow_graph_name
+            )
+        elif hardware_config is not None:
+            self.flow_graph_name = (
+                hardware_config["flow_graph"]
+            )
+        else:
+            self.flow_graph_name = ""
 
         self.frequency_mhz = self._float(frequency_mhz, self._float(rx_frequency, 915.0))
         self.rx_frequency = self._float(rx_frequency, self.frequency_mhz)
@@ -177,14 +264,23 @@ class OperationMain(Operation):
         if not self.artifact_manager:
             raise RuntimeError("iq_record requires artifact_manager to be passed in")
 
-        if self.flow_graph_name != "iq_recorder_b2x0":
+        hardware_config = IQ_RECORD_HARDWARE.get(
+            self.hardware_type
+        )
+
+        if hardware_config is None:
             raise RuntimeError(
-                f"Unsupported IQ recorder flow graph for first pass: {self.flow_graph_name}"
+                f"Unsupported IQ recording hardware: {self.hardware_type}"
             )
 
-        if self.hardware_type not in {"USRP B20xmini", "USRP B2x0"}:
+        expected_flow_graph = hardware_config["flow_graph"]
+
+        if self.flow_graph_name != expected_flow_graph:
             raise RuntimeError(
-                f"Unsupported IQ recording hardware for first pass: {self.hardware_type}"
+                "IQ recorder hardware/flow-graph mismatch: "
+                f"hardware_type={self.hardware_type!r}, "
+                f"flow_graph_name={self.flow_graph_name!r}, "
+                f"expected={expected_flow_graph!r}"
             )
 
         data_type_key = str(self.data_type or "").strip().lower()
@@ -199,7 +295,7 @@ class OperationMain(Operation):
 
         if data_type_key not in supported_complex_types:
             raise RuntimeError(
-                f"Unsupported IQ recording data_type for first pass: {self.data_type}"
+                f"Unsupported IQ recording data_type: {self.data_type}"
             )
 
         self.data_type = "Complex Float 32"
@@ -430,16 +526,35 @@ class OperationMain(Operation):
 
         self.logger.info(f"Starting IQ record flow graph: {module_path}")
 
+        available_arguments = {
+            "filepath": output_path,
+            "serial": self.hardware_serial_argument,
+            "rx_channel": self.rx_channel,
+            "rx_frequency": self.rx_frequency,
+            "sample_rate": self.sample_rate_msps,
+            "rx_gain": self.rx_gain,
+            "rx_antenna": self.rx_antenna,
+            "ip_address": self.hardware_ip,
+            "file_length": self.file_length,
+        }
+
+        constructor_signature = inspect.signature(
+            top_block_cls.__init__
+        )
+
+        constructor_arguments = {
+            name: value
+            for name, value in available_arguments.items()
+            if name in constructor_signature.parameters
+        }
+
+        self.logger.info(
+            "IQ record flow-graph constructor arguments: "
+            f"{constructor_arguments}"
+        )
+
         tb = top_block_cls(
-            filepath=output_path,
-            serial=self.hardware_serial_argument,
-            rx_channel=self.rx_channel,
-            rx_frequency=self.rx_frequency,
-            sample_rate=self.sample_rate_msps,
-            rx_gain=self.rx_gain,
-            rx_antenna=self.rx_antenna,
-            ip_address=self.hardware_ip,
-            file_length=self.file_length,
+            **constructor_arguments
         )
 
         loop = asyncio.get_running_loop()
@@ -489,7 +604,26 @@ class OperationMain(Operation):
 
     def _resolve_flow_graph_path(self) -> str:
         version = get_library_version() or "maint-3.10"
-        hardware_dir = "b2x0"
+
+        hardware_config = IQ_RECORD_HARDWARE.get(
+            self.hardware_type
+        )
+
+        if hardware_config is None:
+            raise RuntimeError(
+                f"Unsupported IQ recording hardware: {self.hardware_type}"
+            )
+
+        hardware_dir = hardware_config["directory"]
+        expected_flow_graph = hardware_config["flow_graph"]
+
+        if self.flow_graph_name != expected_flow_graph:
+            raise RuntimeError(
+                "IQ recorder hardware/flow-graph mismatch while resolving path: "
+                f"hardware_type={self.hardware_type!r}, "
+                f"flow_graph_name={self.flow_graph_name!r}, "
+                f"expected={expected_flow_graph!r}"
+            )
 
         path = os.path.join(
             PLUGIN_ROOT,

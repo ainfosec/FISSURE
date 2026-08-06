@@ -410,58 +410,37 @@ async def attackFlowGraphStop(component: object, parameter="", autorun_index=0):
 
 
 async def iqFlowGraphStart(
-    component: object, flow_graph_filepath="", variable_names=[], variable_values=[], file_type=""
+    component: object,
+    flow_graph_filepath="",
+    variable_names=[],
+    variable_values=[],
+    file_type="",
 ):
     """
-    Runs the IQ flow graph with the specified file path.
+    Run the legacy IQ playback flow graph.
     """
-    # Local or Remote Directories
     if component.settings_dict["Sensor Node"]["local_remote"] == "remote":
-        for n in range(0, len(variable_names)):
-            if variable_names[n] == "filepath":
-                # Playback
-                if flow_graph_filepath.startswith('iq_playback'):
-                    return_filepath = ""
-                    variable_values[n] = os.path.join(fissure.utils.SENSOR_NODE_DIR, "IQ_Data_Playback", "playback.iq")
-                    read_filepath = ""
-                    
-                # Record
-                else:
-                    return_filepath = variable_values[n]  # For record message, HIPRFISR computer
-                    variable_values[n] = component.replaceUsername(variable_values[n], os.getenv('USER'))
-                    read_filepath = variable_values[n]  # For record message, Sensor Node computer
-    else:
-        read_filepath = ""
-        return_filepath = ""
+        for index, variable_name in enumerate(
+            variable_names
+        ):
+            if variable_name != "filepath":
+                continue
 
-    # Run Event and Do Not Block
+            variable_values[index] = os.path.join(
+                fissure.utils.SENSOR_NODE_DIR,
+                "IQ_Data_Playback",
+                "playback.iq",
+            )
+
     loop = asyncio.get_event_loop()
+
     loop.run_in_executor(
-        None, 
-        component.iqFlowGraphThread, 
+        None,
+        component.iqFlowGraphThread,
         flow_graph_filepath,
         variable_names,
         variable_values,
-        read_filepath,
-        return_filepath,
     )
-
-    # # Make a new Thread
-    # stop_event = threading.Event()
-    # if file_type == "Flow Graph":
-    #     c_thread = threading.Thread(
-    #         target=component.iqFlowGraphThread,
-    #         args=(
-    #             stop_event,
-    #             flow_graph_filepath,
-    #             variable_names,
-    #             variable_values,
-    #             read_filepath,
-    #             return_filepath,
-    #         ),
-    #     )
-    # c_thread.daemon = True
-    # c_thread.start()
 
 
 async def iqFlowGraphStop(component: object, parameter=""):

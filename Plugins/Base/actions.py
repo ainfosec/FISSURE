@@ -136,7 +136,24 @@ ACTION_HARDWARE = {
     "lfm_beacon_detection": ["RTL2832U"],
     "lfm_beacon_geolocate": ["RTL2832U"],
     "usrp_b2x0_geolocate": ["USRP B20xmini", "USRP B2x0"],
-    "iq_record": ["USRP B20xmini", "USRP B2x0"],
+    "iq_record": [
+        "USRP X3x0",
+        "USRP B2x0",
+        "HackRF",
+        "RTL2832U",
+        "USRP B20xmini",
+        "LimeSDR",
+        "bladeRF",
+        "PlutoSDR",
+        "USRP2",
+        "USRP N2xx",
+        "bladeRF 2.0",
+        "USRP X410",
+        "RSPduo",
+        "RSPdx",
+        "RSPdx R2",
+        "CaribouLite",
+    ],
     "iq_playback": ["USRP B20xmini", "USRP B2x0"],
     "signal_conditioning": ["USRP B20xmini", "USRP B2x0"],
 }
@@ -1810,15 +1827,6 @@ async def take_video(
 iq_record_schema = {
     "params": [
         {
-            "name": "flow_graph_name",
-            "label": "Flow Graph",
-            "type": "string",
-            "default": "iq_recorder_b2x0",
-            "options": [
-                "iq_recorder_b2x0",
-            ],
-        },
-        {
             "name": "base_file_name",
             "label": "Base File Name",
             "type": "string",
@@ -1829,10 +1837,7 @@ iq_record_schema = {
             "label": "Artifact Format",
             "type": "string",
             "default": "raw",
-            "options": [
-                "raw",
-                "zip",
-            ],
+            "options": ["raw", "zip"],
         },
         {
             "name": "frequency_mhz",
@@ -1887,19 +1892,14 @@ iq_record_schema = {
             "label": "Data Type",
             "type": "string",
             "default": "Complex Float 32",
-            "options": [
-                "Complex Float 32",
-            ],
+            "options": ["Complex Float 32"],
         },
         {
             "name": "sigmf_enabled",
             "label": "SigMF Enabled",
             "type": "string",
             "default": "true",
-            "options": [
-                "true",
-                "false",
-            ],
+            "options": ["true", "false"],
         },
         {
             "name": "description",
@@ -1920,18 +1920,8 @@ async def iq_record(
 
     op_params = dict(parameters or {})
 
-    flow_graph_name = str(
-        op_params.get("flow_graph_name", "iq_recorder_b2x0")
-        or "iq_recorder_b2x0"
-    ).strip()
-
     if not str(op_params.get("hardware_type", "") or "").strip():
-        if flow_graph_name == "iq_recorder_b2x0":
-            compatible_types = ["USRP B20xmini", "USRP B2x0"]
-        else:
-            raise ValueError(
-                f"Unsupported IQ recorder flow graph: {flow_graph_name}"
-            )
+        compatible_types = ACTION_HARDWARE["iq_record"]
 
         sdr_uid, sdr_entry = fissure.utils.hardware.get_compatible_sdr(
             getattr(component, "settings_dict", {}) or {},
@@ -1940,7 +1930,7 @@ async def iq_record(
 
         if not sdr_entry:
             raise ValueError(
-                f"No compatible SDR configured for {flow_graph_name}. "
+                "No compatible SDR configured for iq_record. "
                 f"Compatible types: {compatible_types}"
             )
 

@@ -39,7 +39,6 @@ from fissure.Dashboard.UI_Components.Qt5 import (
     # NewSOI,
     # OperationsThread,
     # OptionsDialog,
-    # SigMF_Dialog,
     # TreeModel,
     # TreeNode,
     # TrimSettings,

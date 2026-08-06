@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-06
+
+Replace the legacy IQ recording workflow with plugin-based artifact recording
+
+### Added
+
+- Added a guided IQ Record workflow for selecting recorder hardware and actions, customizing operation parameters, monitoring recording status, and downloading completed artifacts.
+- Added Base plugin IQ recorder flow graphs for supported GNU Radio 3.8 and 3.10 hardware, including UHD, bladeRF, HackRF, LimeSDR, PlutoSDR, RTL-SDR, SDRplay, and CaribouLite devices.
+- Added hardware-aware `iq_record` action and operation mappings for the supported recorder flow graphs.
+
+### Changed
+
+- Updated IQ recording to execute through the Base plugin action and operation framework and register completed recordings as managed artifacts.
+- Updated recorder operations to select flow graphs by hardware type and GNU Radio library version while adapting to hardware-specific constructor parameters.
+- Moved output format, multi-file recording, SigMF generation, descriptions, and radio settings into the operation-defined parameter workflow.
+- Updated the IQ Record interface and styles to match the newer Dashboard workflow patterns.
+- Removed the legacy IQ recording table, fixed controls, Dashboard-managed SigMF path, recording callbacks, and remote recording file-return logic.
+
 ## 2026-7-30
 
 Fix Apptainer deployment mode propagation

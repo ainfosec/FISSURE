@@ -1,6 +1,7 @@
 options:
   parameters:
     author: ''
+    catch_exceptions: 'True'
     category: Custom
     cmake_opt: ''
     comment: ''
@@ -10,7 +11,7 @@ options:
     gen_linking: dynamic
     generate_options: no_gui
     hier_block_src_path: '.:'
-    id: iq_recorder_b2x0
+    id: iq_recorder_usrp2
     max_nouts: '0'
     output_language: python
     placement: (0,0)
@@ -60,12 +61,12 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"192.168.40.2"'
+    value: '"192.168.10.2"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [8, 251]
+    coordinate: [9, 251]
     rotation: 0
     state: disabled
 - name: lpf_cutoff
@@ -108,7 +109,7 @@ blocks:
   id: variable
   parameters:
     comment: ''
-    value: '"A:A"'
+    value: '"A:0"'
   states:
     bus_sink: false
     bus_source: false
@@ -152,18 +153,6 @@ blocks:
     coordinate: [8, 523]
     rotation: 0
     state: disabled
-- name: serial
-  id: variable
-  parameters:
-    comment: ''
-    value: '"False"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [128, 596]
-    rotation: 0
-    state: disabled
 - name: squelch_threshold
   id: variable
   parameters:
@@ -193,7 +182,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [528, 187]
+    coordinate: [536, 324]
     rotation: 0
     state: disabled
 - name: blocks_file_sink_0
@@ -211,7 +200,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1088, 84]
+    coordinate: [936, 192.0]
     rotation: 0
     state: enabled
 - name: blocks_head_0
@@ -229,27 +218,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [904, 100]
+    coordinate: [744, 216.0]
     rotation: 0
     state: enabled
-- name: blocks_keep_one_in_n_0
-  id: blocks_keep_one_in_n
-  parameters:
-    affinity: ''
-    alias: ''
-    comment: ''
-    maxoutbuf: '0'
-    minoutbuf: '0'
-    n: '100'
-    type: complex
-    vlen: '1'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [936, 380]
-    rotation: 0
-    state: disabled
 - name: blocks_skiphead_0
   id: blocks_skiphead
   parameters:
@@ -265,7 +236,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [624, 100]
+    coordinate: [568, 216.0]
     rotation: 0
     state: enabled
 - name: file_length
@@ -282,9 +253,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 532.0]
+    coordinate: [1232, 376.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: filepath
   id: parameter
   parameters:
@@ -299,9 +270,26 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 52.0]
+    coordinate: [1232, 112.0]
     rotation: 0
-    state: true
+    state: enabled
+- name: ip_address
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: ''
+    short_id: ''
+    type: str
+    value: '"192.168.10.2"'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [1232, 24.0]
+    rotation: 0
+    state: enabled
 - name: low_pass_filter_0
   id: low_pass_filter
   parameters:
@@ -323,7 +311,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [712, 163]
+    coordinate: [720, 300]
     rotation: 0
     state: disabled
 - name: qtgui_time_sink_x_0
@@ -478,7 +466,7 @@ blocks:
     marker9: '-1'
     name: '""'
     nconnections: '1'
-    size: file_length
+    size: '1024'
     srate: sample_rate
     stemplot: 'False'
     style1: '1'
@@ -517,7 +505,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1088, 364]
+    coordinate: [936, 384.0]
     rotation: 0
     state: disabled
 - name: rx_antenna
@@ -534,9 +522,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 452.0]
+    coordinate: [1232, 464.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: rx_channel
   id: parameter
   parameters:
@@ -546,14 +534,14 @@ blocks:
     label: ''
     short_id: ''
     type: str
-    value: '"A:A"'
+    value: '"A:0"'
   states:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 132.0]
+    coordinate: [1232, 640.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: rx_frequency
   id: parameter
   parameters:
@@ -568,9 +556,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 212.0]
+    coordinate: [1232, 552.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: rx_gain
   id: parameter
   parameters:
@@ -585,9 +573,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 372.0]
+    coordinate: [1232, 288.0]
     rotation: 0
-    state: true
+    state: enabled
 - name: sample_rate
   id: parameter
   parameters:
@@ -602,26 +590,9 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1328, 292.0]
+    coordinate: [1232, 200.0]
     rotation: 0
-    state: true
-- name: serial
-  id: parameter
-  parameters:
-    alias: ''
-    comment: ''
-    hide: none
-    label: ''
-    short_id: ''
-    type: str
-    value: '"False"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1328, 612.0]
-    rotation: 0
-    state: true
+    state: enabled
 - name: uhd_usrp_source_0_0
   id: uhd_usrp_source
   parameters:
@@ -733,39 +704,71 @@ blocks:
     clock_source6: ''
     clock_source7: ''
     comment: ''
-    dc_offs_enb0: '""'
-    dc_offs_enb1: '""'
-    dc_offs_enb10: '""'
-    dc_offs_enb11: '""'
-    dc_offs_enb12: '""'
-    dc_offs_enb13: '""'
-    dc_offs_enb14: '""'
-    dc_offs_enb15: '""'
-    dc_offs_enb16: '""'
-    dc_offs_enb17: '""'
-    dc_offs_enb18: '""'
-    dc_offs_enb19: '""'
-    dc_offs_enb2: '""'
-    dc_offs_enb20: '""'
-    dc_offs_enb21: '""'
-    dc_offs_enb22: '""'
-    dc_offs_enb23: '""'
-    dc_offs_enb24: '""'
-    dc_offs_enb25: '""'
-    dc_offs_enb26: '""'
-    dc_offs_enb27: '""'
-    dc_offs_enb28: '""'
-    dc_offs_enb29: '""'
-    dc_offs_enb3: '""'
-    dc_offs_enb30: '""'
-    dc_offs_enb31: '""'
-    dc_offs_enb4: '""'
-    dc_offs_enb5: '""'
-    dc_offs_enb6: '""'
-    dc_offs_enb7: '""'
-    dc_offs_enb8: '""'
-    dc_offs_enb9: '""'
-    dev_addr: serial
+    dc_offs0: 0+0j
+    dc_offs1: 0+0j
+    dc_offs10: 0+0j
+    dc_offs11: 0+0j
+    dc_offs12: 0+0j
+    dc_offs13: 0+0j
+    dc_offs14: 0+0j
+    dc_offs15: 0+0j
+    dc_offs16: 0+0j
+    dc_offs17: 0+0j
+    dc_offs18: 0+0j
+    dc_offs19: 0+0j
+    dc_offs2: 0+0j
+    dc_offs20: 0+0j
+    dc_offs21: 0+0j
+    dc_offs22: 0+0j
+    dc_offs23: 0+0j
+    dc_offs24: 0+0j
+    dc_offs25: 0+0j
+    dc_offs26: 0+0j
+    dc_offs27: 0+0j
+    dc_offs28: 0+0j
+    dc_offs29: 0+0j
+    dc_offs3: 0+0j
+    dc_offs30: 0+0j
+    dc_offs31: 0+0j
+    dc_offs4: 0+0j
+    dc_offs5: 0+0j
+    dc_offs6: 0+0j
+    dc_offs7: 0+0j
+    dc_offs8: 0+0j
+    dc_offs9: 0+0j
+    dc_offs_enb0: default
+    dc_offs_enb1: default
+    dc_offs_enb10: default
+    dc_offs_enb11: default
+    dc_offs_enb12: default
+    dc_offs_enb13: default
+    dc_offs_enb14: default
+    dc_offs_enb15: default
+    dc_offs_enb16: default
+    dc_offs_enb17: default
+    dc_offs_enb18: default
+    dc_offs_enb19: default
+    dc_offs_enb2: default
+    dc_offs_enb20: default
+    dc_offs_enb21: default
+    dc_offs_enb22: default
+    dc_offs_enb23: default
+    dc_offs_enb24: default
+    dc_offs_enb25: default
+    dc_offs_enb26: default
+    dc_offs_enb27: default
+    dc_offs_enb28: default
+    dc_offs_enb29: default
+    dc_offs_enb3: default
+    dc_offs_enb30: default
+    dc_offs_enb31: default
+    dc_offs_enb4: default
+    dc_offs_enb5: default
+    dc_offs_enb6: default
+    dc_offs_enb7: default
+    dc_offs_enb8: default
+    dc_offs_enb9: default
+    dev_addr: '"addr="+ip_address'
     dev_args: '""'
     gain0: float(rx_gain)
     gain1: '0'
@@ -799,38 +802,102 @@ blocks:
     gain7: '0'
     gain8: '0'
     gain9: '0'
-    iq_imbal_enb0: '""'
-    iq_imbal_enb1: '""'
-    iq_imbal_enb10: '""'
-    iq_imbal_enb11: '""'
-    iq_imbal_enb12: '""'
-    iq_imbal_enb13: '""'
-    iq_imbal_enb14: '""'
-    iq_imbal_enb15: '""'
-    iq_imbal_enb16: '""'
-    iq_imbal_enb17: '""'
-    iq_imbal_enb18: '""'
-    iq_imbal_enb19: '""'
-    iq_imbal_enb2: '""'
-    iq_imbal_enb20: '""'
-    iq_imbal_enb21: '""'
-    iq_imbal_enb22: '""'
-    iq_imbal_enb23: '""'
-    iq_imbal_enb24: '""'
-    iq_imbal_enb25: '""'
-    iq_imbal_enb26: '""'
-    iq_imbal_enb27: '""'
-    iq_imbal_enb28: '""'
-    iq_imbal_enb29: '""'
-    iq_imbal_enb3: '""'
-    iq_imbal_enb30: '""'
-    iq_imbal_enb31: '""'
-    iq_imbal_enb4: '""'
-    iq_imbal_enb5: '""'
-    iq_imbal_enb6: '""'
-    iq_imbal_enb7: '""'
-    iq_imbal_enb8: '""'
-    iq_imbal_enb9: '""'
+    gain_type0: default
+    gain_type1: default
+    gain_type10: default
+    gain_type11: default
+    gain_type12: default
+    gain_type13: default
+    gain_type14: default
+    gain_type15: default
+    gain_type16: default
+    gain_type17: default
+    gain_type18: default
+    gain_type19: default
+    gain_type2: default
+    gain_type20: default
+    gain_type21: default
+    gain_type22: default
+    gain_type23: default
+    gain_type24: default
+    gain_type25: default
+    gain_type26: default
+    gain_type27: default
+    gain_type28: default
+    gain_type29: default
+    gain_type3: default
+    gain_type30: default
+    gain_type31: default
+    gain_type4: default
+    gain_type5: default
+    gain_type6: default
+    gain_type7: default
+    gain_type8: default
+    gain_type9: default
+    iq_imbal0: 0+0j
+    iq_imbal1: 0+0j
+    iq_imbal10: 0+0j
+    iq_imbal11: 0+0j
+    iq_imbal12: 0+0j
+    iq_imbal13: 0+0j
+    iq_imbal14: 0+0j
+    iq_imbal15: 0+0j
+    iq_imbal16: 0+0j
+    iq_imbal17: 0+0j
+    iq_imbal18: 0+0j
+    iq_imbal19: 0+0j
+    iq_imbal2: 0+0j
+    iq_imbal20: 0+0j
+    iq_imbal21: 0+0j
+    iq_imbal22: 0+0j
+    iq_imbal23: 0+0j
+    iq_imbal24: 0+0j
+    iq_imbal25: 0+0j
+    iq_imbal26: 0+0j
+    iq_imbal27: 0+0j
+    iq_imbal28: 0+0j
+    iq_imbal29: 0+0j
+    iq_imbal3: 0+0j
+    iq_imbal30: 0+0j
+    iq_imbal31: 0+0j
+    iq_imbal4: 0+0j
+    iq_imbal5: 0+0j
+    iq_imbal6: 0+0j
+    iq_imbal7: 0+0j
+    iq_imbal8: 0+0j
+    iq_imbal9: 0+0j
+    iq_imbal_enb0: default
+    iq_imbal_enb1: default
+    iq_imbal_enb10: default
+    iq_imbal_enb11: default
+    iq_imbal_enb12: default
+    iq_imbal_enb13: default
+    iq_imbal_enb14: default
+    iq_imbal_enb15: default
+    iq_imbal_enb16: default
+    iq_imbal_enb17: default
+    iq_imbal_enb18: default
+    iq_imbal_enb19: default
+    iq_imbal_enb2: default
+    iq_imbal_enb20: default
+    iq_imbal_enb21: default
+    iq_imbal_enb22: default
+    iq_imbal_enb23: default
+    iq_imbal_enb24: default
+    iq_imbal_enb25: default
+    iq_imbal_enb26: default
+    iq_imbal_enb27: default
+    iq_imbal_enb28: default
+    iq_imbal_enb29: default
+    iq_imbal_enb3: default
+    iq_imbal_enb30: default
+    iq_imbal_enb31: default
+    iq_imbal_enb4: default
+    iq_imbal_enb5: default
+    iq_imbal_enb6: default
+    iq_imbal_enb7: default
+    iq_imbal_enb8: default
+    iq_imbal_enb9: default
     lo_export0: 'False'
     lo_export1: 'False'
     lo_export10: 'False'
@@ -898,38 +965,6 @@ blocks:
     maxoutbuf: '0'
     minoutbuf: '0'
     nchan: '1'
-    norm_gain0: 'False'
-    norm_gain1: 'False'
-    norm_gain10: 'False'
-    norm_gain11: 'False'
-    norm_gain12: 'False'
-    norm_gain13: 'False'
-    norm_gain14: 'False'
-    norm_gain15: 'False'
-    norm_gain16: 'False'
-    norm_gain17: 'False'
-    norm_gain18: 'False'
-    norm_gain19: 'False'
-    norm_gain2: 'False'
-    norm_gain20: 'False'
-    norm_gain21: 'False'
-    norm_gain22: 'False'
-    norm_gain23: 'False'
-    norm_gain24: 'False'
-    norm_gain25: 'False'
-    norm_gain26: 'False'
-    norm_gain27: 'False'
-    norm_gain28: 'False'
-    norm_gain29: 'False'
-    norm_gain3: 'False'
-    norm_gain30: 'False'
-    norm_gain31: 'False'
-    norm_gain4: 'False'
-    norm_gain5: 'False'
-    norm_gain6: 'False'
-    norm_gain7: 'False'
-    norm_gain8: 'False'
-    norm_gain9: 'False'
     num_mboards: '1'
     otw: ''
     rx_agc0: Default
@@ -999,12 +1034,12 @@ connections:
 - [analog_pwr_squelch_xx_0, '0', low_pass_filter_0, '0']
 - [analog_pwr_squelch_xx_0, '0', qtgui_time_sink_x_0, '0']
 - [blocks_head_0, '0', blocks_file_sink_0, '0']
-- [blocks_keep_one_in_n_0, '0', qtgui_time_sink_x_0_0, '0']
 - [blocks_skiphead_0, '0', blocks_head_0, '0']
 - [low_pass_filter_0, '0', blocks_head_0, '0']
+- [low_pass_filter_0, '0', qtgui_time_sink_x_0_0, '0']
 - [uhd_usrp_source_0_0, '0', analog_pwr_squelch_xx_0, '0']
-- [uhd_usrp_source_0_0, '0', blocks_keep_one_in_n_0, '0']
 - [uhd_usrp_source_0_0, '0', blocks_skiphead_0, '0']
 
 metadata:
   file_format: 1
+  grc_version: 3.10.9.2

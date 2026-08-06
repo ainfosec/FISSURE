@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem
 import yaml
 import os
 import subprocess
-import threading
 import ast
 import asyncio
 from typing import List
@@ -45,7 +44,6 @@ from fissure.Dashboard.UI_Components.Qt5 import (
     # NewSOI,
     # OperationsThread,
     # OptionsDialog,
-    # SigMF_Dialog,
     # TreeModel,
     # TreeNode,
     # TrimSettings,
@@ -307,6 +305,16 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
             f"Could not update TSI Feature Extractor selected-node gate "
             f"after recallSettingsReturn: {e}"
         )
+    
+    try:
+        IQDataTabSlots.update_iq_record_selected_node_gate(
+            component.frontend
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update IQ Record selected-node gate "
+            f"after recallSettingsReturn: {e}"
+        )
 
 
 async def componentDisconnected(component: object, component_name=""):
@@ -412,25 +420,6 @@ async def tsiFE_Finished(component: object, table_strings=[]):
     component.frontend.ui.pushButton_tsi_fe_operation_start.setText("Start")
 
 
-async def flowGraphStartedIQ(component: object):
-    """ 
-    This will be called in response to "Flow Graph Started IQ" Messages from Sensor Node.
-    The purpose is to check the enable the cancel buttons and change the status messages to indicate the IQ flow graph is running.
-    """        
-    # Update the Pushbutton and Label
-    component.frontend.ui.pushButton_iq_record.setEnabled(True)
-    try:
-        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.cellWidget(0,5).value())  # Save value from operation start?
-    except:
-        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.item(0,5).text())
-    component.frontend.ui.label2_iq_status_files.setText("Recording File " + str(component.frontend.iq_file_counter) + " of " + get_number_of_files)
-
-    # Update the Status Dialog
-    if component.frontend.active_sensor_node > -1:
-        component.frontend.statusbar_text[component.frontend.active_sensor_node][4] = 'Running Flow Graph...'
-        component.frontend.refreshStatusBarText()
-
-
 async def flowGraphStartedIQ_Playback(component: object):
     """ 
     This will be called in response to "Flow Graph Started IQ" Messages from Sensor Node.
@@ -466,113 +455,6 @@ async def flowGraphStartedSniffer(component: object, category=""):
     elif category == "Message/PDU":
         component.frontend.ui.pushButton_pd_sniffer_msg_pdu.setEnabled(True)
 
-
-async def flowGraphFinishedIQ(component: object):
-    """ 
-    Called upon cancelling IQ recording. Changes the status and button text.
-    """       
-    # Change Status Label and Record Button Text
-    component.frontend.ui.label2_iq_status_files.setText("Not Recording")
-    # component.frontend.statusbar_text[sensor_node_id][4] = 'Not Recording'
-    component.frontend.refreshStatusBarText()
-
-    # Refresh File List
-    IQDataTabSlots._slotIQ_RefreshClicked(component.frontend)
-
-    # Get Folder and File of Recording
-    get_dir = str(component.frontend.ui.textEdit_iq_record_dir.toPlainText())
-    get_file = str(component.frontend.ui.tableWidget_iq_record.item(0,0).text())
-
-    if len(get_dir) > 0 and len(get_file) > 0:
-
-        # Load Directory and File
-        folder_index = component.frontend.ui.comboBox3_iq_folders.findText(get_dir)
-        if folder_index < 0:
-            # New Directory
-            component.frontend.ui.comboBox3_iq_folders.addItem(get_dir)
-            component.frontend.ui.comboBox3_iq_folders.setCurrentIndex(component.frontend.ui.comboBox3_iq_folders.count()-1)
-        else:
-            # Directory Exists
-            component.frontend.ui.comboBox3_iq_folders.setCurrentIndex(folder_index)
-
-        # Load File
-        file_item = component.frontend.ui.listWidget_iq_files.findItems(get_file,QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive)
-        file_index = component.frontend.ui.listWidget_iq_files.row(file_item[0])
-        component.frontend.ui.listWidget_iq_files.setCurrentRow(file_index)
-        IQDataTabSlots._slotIQ_LoadIQ_Data(component.frontend)
-        IQDataTabSlots._slotIQ_PlotAllClicked(component.frontend)
-
-    # More than One Number of Files
-    try:
-        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.cellWidget(0,5).value())  # Save value from operation start?
-    except:
-        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.item(0,5).text())
-    if int(get_number_of_files) > 1:
-
-        # Update the Counter
-        if component.frontend.iq_file_counter != "abort":
-            component.frontend.iq_file_counter = component.frontend.iq_file_counter + 1
-
-            # Write SigMF Metadata for Multiple Recordings
-            if component.frontend.ui.checkBox_iq_record_sigmf.isChecked() == True:
-                if 'core:sha512' in component.frontend.sigmf_dict['global']:
-                    proc = subprocess.Popen('sha512sum "' + str(component.frontend.ui.textEdit_iq_record_dir.toPlainText()) + '/' + get_file + '" &', shell=True, stdout=subprocess.PIPE, )
-                    output = proc.communicate()[0].decode().split(" ")[0]
-                    component.frontend.sigmf_dict['global']['core:sha512'] = str(output)
-                if 'core:dataset' in component.frontend.sigmf_dict['global']:
-                    component.frontend.sigmf_dict['global']['core:dataset'] = get_file
-                if 'core:sample_rate' in component.frontend.sigmf_dict['global']:
-                    component.frontend.sigmf_dict['global']['core:sample_rate'] = float(str(component.frontend.ui.tableWidget_iq_record.item(0,7).text()))*1000000
-                metadata_filepath = str(component.frontend.ui.textEdit_iq_record_dir.toPlainText()) + '/' + get_file.replace(".sigmf-data",".sigmf-meta")
-                component.frontend.writeSigMF(metadata_filepath,component.frontend.sigmf_dict)
-
-            # Update New File Name
-            get_file_name = component.frontend.iq_first_file_name
-            if '.' in get_file_name:
-                get_file_name = get_file_name.split('.')[0] + '_' + str(component.frontend.iq_file_counter) + '.' + get_file_name.split('.')[1]
-            else:
-                get_file_name = get_file_name + '_' + str(component.frontend.iq_file_counter)
-            component.frontend.ui.tableWidget_iq_record.setItem(0,0, QtWidgets.QTableWidgetItem(get_file_name))
-
-        # Do the Next Recording
-        if component.frontend.iq_file_counter == "abort":
-            component.frontend.iq_file_counter = int(get_number_of_files) + 1
-        if component.frontend.iq_file_counter <= int(get_number_of_files):
-            get_delay = float(str(component.frontend.ui.tableWidget_iq_record.item(0,9).text()))
-            next_record_thread = threading.Timer(get_delay, call_async_function, [component.frontend])
-            next_record_thread.start()
-            #IQDataTabSlots._slotIQ_RecordClicked()
-
-        # All Done
-        else:
-            component.frontend.iq_file_counter = 0
-            component.frontend.ui.pushButton_iq_record.setText("Record")
-    else:
-        component.frontend.iq_file_counter = 0
-        component.frontend.ui.pushButton_iq_record.setText("Record")
-
-        # Write SigMF Metadata for Single File
-        if component.frontend.ui.checkBox_iq_record_sigmf.isChecked() == True:
-            if 'core:sha512' in component.frontend.sigmf_dict['global']:
-                proc = subprocess.Popen('sha512sum "' + str(component.frontend.ui.textEdit_iq_record_dir.toPlainText()) + '/' + get_file + '" &', shell=True, stdout=subprocess.PIPE, )
-                output = proc.communicate()[0].decode().split(" ")[0]
-                component.frontend.sigmf_dict['global']['core:sha512'] = str(output)
-            if 'core:dataset' in component.frontend.sigmf_dict['global']:
-                component.frontend.sigmf_dict['global']['core:dataset'] = get_file
-            if 'core:sample_rate' in component.frontend.sigmf_dict['global']:
-                component.frontend.sigmf_dict['global']['core:sample_rate'] = float(str(component.frontend.ui.tableWidget_iq_record.item(0,7).text()))*1000000
-            metadata_filepath = str(component.frontend.ui.textEdit_iq_record_dir.toPlainText()) + '/' + get_file.replace(".sigmf-data",".sigmf-meta")
-            component.frontend.writeSigMF(metadata_filepath,component.frontend.sigmf_dict)
-
-
-# Function to wrap the async function call
-def call_async_function(component: object):
-    # Create a new event loop for this thread
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(IQDataTabSlots._slotIQ_RecordClicked(component, True))
-    loop.close()  # Close the loop when done
-    
 
 async def flowGraphFinishedIQ_Inspection(component: object):
     """
@@ -1315,13 +1197,22 @@ async def responsePluginOperationStarted(
     parameters: dict,
 ) -> None:
     """Handle Request for Plugin Operation Started."""
-    operations_list: QtWidgets.QListWidget = component.frontend.ui.listWidget_operations
-    operations_list.addItem(f"{plugin} - {operation} (ID: {operation_id})")
-    operations_list.setWrapping(True)
+    operations_list: QtWidgets.QListWidget = (
+        component.frontend.ui.listWidget_operations
+    )
+
+    operations_list.addItem(
+        f"{plugin} - {operation} (ID: {operation_id})"
+    )
+    operations_list.setWrapping(
+        True
+    )
     operations_list.scrollToBottom()
 
     try:
-        operation_name = str(operation or "").strip()
+        operation_name = str(
+            operation or ""
+        ).strip()
 
         if operation_name in [
             "signal_conditioning.py",
@@ -1329,8 +1220,16 @@ async def responsePluginOperationStarted(
             "signal_conditioning",
             "signal_conditioning_file",
         ]:
-            if bool(getattr(component.frontend, "tsi_conditioner_running", False)):
-                component.frontend.tsi_conditioner_opid = str(operation_id or "")
+            if bool(
+                getattr(
+                    component.frontend,
+                    "tsi_conditioner_running",
+                    False,
+                )
+            ):
+                component.frontend.tsi_conditioner_opid = str(
+                    operation_id or ""
+                )
                 component.frontend.tsi_conditioner_waiting_for_opid = False
 
                 component.logger.debug(
@@ -1339,14 +1238,22 @@ async def responsePluginOperationStarted(
                     operation_name,
                 )
 
-    except Exception as e:
+    except Exception as error:
         component.logger.debug(
-            f"[Conditioner] Could not track Conditioner operation id: {e}"
+            "[Conditioner] Could not track Conditioner "
+            f"operation id: {error}"
         )
 
 
-async def responsePluginOperationStopped(component: object, node_uid: str, operation_id: str, plugin: str, operation: str) -> None:
-    """Handle Request for Plugin Operation Stopped
+async def responsePluginOperationStopped(
+    component: object,
+    node_uid: str,
+    operation_id: str,
+    plugin: str,
+    operation: str,
+) -> None:
+    """
+    Handle Request for Plugin Operation Stopped.
 
     Parameters
     ----------
@@ -1361,12 +1268,21 @@ async def responsePluginOperationStopped(component: object, node_uid: str, opera
     operation : str
         Operation name
     """
-    # Remove the operation from the operations list view
-    operations_list: QtWidgets.QListWidget = component.frontend.ui.listWidget_operations
-    items = operations_list.findItems(f"{plugin} - {operation} (ID: {operation_id})", QtCore.Qt.MatchExactly)
-    if items:
-        for item in items:
-            operations_list.takeItem(operations_list.row(item))
+    operations_list: QtWidgets.QListWidget = (
+        component.frontend.ui.listWidget_operations
+    )
+
+    items = operations_list.findItems(
+        f"{plugin} - {operation} (ID: {operation_id})",
+        QtCore.Qt.MatchExactly,
+    )
+
+    for item in items:
+        operations_list.takeItem(
+            operations_list.row(
+                item
+            )
+        )
 
 
 async def savePlugin(component: object, plugin_name: str, plugin_data: str) -> None:
@@ -2016,6 +1932,13 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
                 f"after node state update: {e}"
             )
 
+        try:
+            IQDataTabSlots.update_iq_record_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                "Could not update IQ Record selected-node gate "
+            )
+
     try:
         TSITabSlots.update_tsi_detector_status_from_selected_node(
             frontend,
@@ -2043,6 +1966,13 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
     except Exception as e:
         component.logger.debug(
             f"Could not update unified TSI Detector selected-node gate: {e}"
+        )
+
+    try:
+        IQDataTabSlots.update_iq_record_selected_node_gate(frontend)
+    except Exception as e:
+        component.logger.debug(
+            "Could not update IQ Record selected-node gate "
         )
 
     component.logger.debug(
@@ -2219,9 +2149,9 @@ async def sendArtifactsListTakReturn(
     artifacts=None,
 ):
     """
-    Replace or upsert Dashboard artifact records using the canonical
+    Replace or upsert Dashboard Artifact records using the canonical
     manifest-only schema, then route the same complete records to Tactical,
-    Conditioner, and Feature Extractor.
+    Conditioner, Feature Extractor, and IQ Record.
     """
     artifacts = artifacts or []
     dashboard = component.frontend
@@ -2235,125 +2165,183 @@ async def sendArtifactsListTakReturn(
     normalized_records = []
 
     for artifact in artifacts:
-        if not isinstance(artifact, dict):
+        if not isinstance(
+            artifact,
+            dict,
+        ):
             continue
 
         artifact_id = str(
             artifact.get("id", "")
+            or artifact.get(
+                "artifact_id",
+                "",
+            )
             or ""
         ).strip()
 
         if not artifact_id:
             continue
 
-        files = artifact.get("files")
-        relations = artifact.get("relations")
-        metadata = artifact.get("metadata")
+        files = artifact.get(
+            "files"
+        )
+        relations = artifact.get(
+            "relations"
+        )
+        metadata = artifact.get(
+            "metadata"
+        )
 
-        if not isinstance(files, list):
+        if not isinstance(
+            files,
+            list,
+        ):
             files = []
 
-        if not isinstance(relations, list):
+        if not isinstance(
+            relations,
+            list,
+        ):
             relations = []
 
-        if not isinstance(metadata, dict):
+        if not isinstance(
+            metadata,
+            dict,
+        ):
             metadata = {}
 
         source_id = str(
-            artifact.get("source_id", "")
+            artifact.get(
+                "source_id",
+                "",
+            )
+            or artifact.get(
+                "node_uid",
+                "",
+            )
             or node_uid
             or ""
         ).strip()
 
-        normalized = dict(artifact)
+        operation_id = str(
+            artifact.get(
+                "operation_id",
+                "",
+            )
+            or metadata.get(
+                "operation_id",
+                "",
+            )
+            or ""
+        ).strip()
+
+        normalized = dict(
+            artifact
+        )
+
         normalized.update(
             {
-                "id": artifact_id,
-                "artifact_id": artifact_id,
-                "node_uid": source_id,
-                "source_id": source_id,
-                "operation_id": str(
-                    artifact.get(
-                        "operation_id",
-                        "",
-                    )
-                    or ""
-                ),
-                "name": str(
-                    artifact.get(
-                        "name",
-                        "Artifact",
-                    )
-                    or "Artifact"
-                ),
-                "artifact_type": str(
-                    artifact.get(
-                        "artifact_type",
-                        "",
-                    )
-                    or ""
-                ),
-                "created_at": str(
-                    artifact.get(
-                        "created_at",
-                        "",
-                    )
-                    or ""
-                ),
-                "modified_at": str(
-                    artifact.get(
-                        "modified_at",
-                        "",
-                    )
-                    or ""
-                ),
-                "time": str(
-                    artifact.get(
-                        "modified_at",
-                        "",
-                    )
-                    or artifact.get(
-                        "created_at",
-                        "",
-                    )
-                    or ""
-                ),
-                "files": files,
-                "relations": relations,
-                "file_count": int(
-                    artifact.get(
-                        "file_count",
-                        len(files),
-                    )
-                    or len(files)
-                ),
-                "total_size": int(
-                    artifact.get(
-                        "total_size",
-                        sum(
-                            int(
-                                item.get(
-                                    "size",
-                                    0,
+                "id":
+                    artifact_id,
+                "artifact_id":
+                    artifact_id,
+                "node_uid":
+                    source_id,
+                "source_id":
+                    source_id,
+                "operation_id":
+                    operation_id,
+                "name":
+                    str(
+                        artifact.get(
+                            "name",
+                            "Artifact",
+                        )
+                        or "Artifact"
+                    ),
+                "artifact_type":
+                    str(
+                        artifact.get(
+                            "artifact_type",
+                            "",
+                        )
+                        or metadata.get(
+                            "artifact_type",
+                            "",
+                        )
+                        or ""
+                    ),
+                "created_at":
+                    str(
+                        artifact.get(
+                            "created_at",
+                            "",
+                        )
+                        or ""
+                    ),
+                "modified_at":
+                    str(
+                        artifact.get(
+                            "modified_at",
+                            "",
+                        )
+                        or ""
+                    ),
+                "time":
+                    str(
+                        artifact.get(
+                            "modified_at",
+                            "",
+                        )
+                        or artifact.get(
+                            "created_at",
+                            "",
+                        )
+                        or ""
+                    ),
+                "files":
+                    files,
+                "relations":
+                    relations,
+                "file_count":
+                    int(
+                        artifact.get(
+                            "file_count",
+                            len(files),
+                        )
+                        or len(files)
+                    ),
+                "total_size":
+                    int(
+                        artifact.get(
+                            "total_size",
+                            sum(
+                                int(
+                                    item.get(
+                                        "size",
+                                        0,
+                                    )
+                                    or 0
                                 )
-                                or 0
-                            )
-                            for item in files
-                            if isinstance(
-                                item,
-                                dict,
-                            )
-                        ),
-                    )
-                    or 0
-                ),
-                "metadata": metadata,
+                                for item in files
+                                if isinstance(
+                                    item,
+                                    dict,
+                                )
+                            ),
+                        )
+                        or 0
+                    ),
+                "metadata":
+                    metadata,
             }
         )
 
         dashboard.tactical_artifacts[
             artifact_id
         ] = normalized
+
         normalized_records.append(
             normalized
         )
@@ -2375,10 +2363,11 @@ async def sendArtifactsListTakReturn(
                 dashboard,
                 node_uid,
             )
-        except Exception as exc:
+
+        except Exception as error:
             component.logger.debug(
-                "Could not rebuild Tactical artifacts: %s",
-                exc,
+                "Could not rebuild Tactical artifacts: "
+                f"{error}"
             )
 
     try:
@@ -2387,11 +2376,12 @@ async def sendArtifactsListTakReturn(
             node_uid=node_uid,
             artifacts=normalized_records,
         )
-    except Exception as exc:
+
+    except Exception as error:
         component.logger.debug(
-            "Could not route artifact metadata "
-            "to Conditioner: %s",
-            exc,
+            "Could not route Artifact metadata "
+            "to Conditioner: "
+            f"{error}"
         )
 
     try:
@@ -2400,12 +2390,27 @@ async def sendArtifactsListTakReturn(
             node_uid=node_uid,
             artifacts=normalized_records,
         )
-    except Exception as exc:
+
+    except Exception as error:
         component.logger.debug(
-            "Could not route artifact metadata "
-            "to Feature Extractor: %s",
-            exc,
+            "Could not route Artifact metadata "
+            "to Feature Extractor: "
+            f"{error}"
         )
+
+    for artifact_record in normalized_records:
+        try:
+            IQDataTabSlots.handle_iq_record_artifact_complete(
+                dashboard,
+                artifact_record,
+            )
+
+        except Exception as error:
+            component.logger.debug(
+                "Could not route Artifact metadata "
+                "to IQ Record: "
+                f"{error}"
+            )
 
 
 async def sendSoisListTakReturn(
@@ -2534,9 +2539,18 @@ async def queryPluginActionsResults(
         )
         return    
 
-    if context.startswith("iq.record") or context.startswith("iq.playback"):
+    if context.startswith("iq.record"):
+        IQDataTabSlots.handle_iq_record_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+
+    if context.startswith("iq.playback"):
         component.logger.debug(
-            f"Unhandled IQ action query context={context}, actions={actions}"
+            f"Unhandled IQ Playback action query context={context}, actions={actions}"
         )
         return
 
@@ -2605,9 +2619,19 @@ async def queryPluginActionSchemaResults(
         )
         return    
 
-    if context.startswith("iq.record") or context.startswith("iq.playback"):
+    if context.startswith("iq.record"):
+        IQDataTabSlots.handle_iq_record_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
+
+    if context.startswith("iq.playback"):
         component.logger.debug(
-            f"Unhandled IQ action schema context={context}, "
+            f"Unhandled IQ Playback action schema context={context}, "
             f"plugin={plugin_name}, action={action_name}"
         )
         return
@@ -2773,7 +2797,7 @@ async def soiUpdate(component: object, soi=None):
         frontend,
         record,
     )
-    
+
 
 async def dashboardArtifactTransferStatus(
         component: object,

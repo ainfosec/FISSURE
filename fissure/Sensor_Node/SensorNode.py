@@ -2458,51 +2458,69 @@ class SensorNode(object):
                 self.logger.error("Error running flow graph with GUI")
             
 
-    ##############  IQ Recording, IQ Playback Flow Graphs  #############
+    ##############  IQ Playback Flow Graphs  #############
     
-    def iqFlowGraphThread(self, flow_graph_filename, variable_names, variable_values, read_filepath, return_filepath):
-        """ Runs the IQ script in the new thread.
+    def iqFlowGraphThread(
+        self,
+        flow_graph_filename,
+        variable_names,
+        variable_values,
+    ):
         """
-        # Stop Any Running IQ Flow Graphs
+        Run an IQ playback flow graph in the worker thread.
+        """
         try:
             self.iqFlowGraphStop(None)
-        except:
+        except Exception:
             pass
 
         try:
-            # Overwrite Variables
-            loadedmod, class_name = self.overwriteFlowGraphVariables(flow_graph_filename, variable_names, variable_values)
+            loadedmod, class_name = (
+                self.overwriteFlowGraphVariables(
+                    flow_graph_filename,
+                    variable_names,
+                    variable_values,
+                )
+            )
 
-            # Call the "__init__" Function
-            self.iqflowtoexec = getattr(loadedmod,class_name)()
+            self.iqflowtoexec = getattr(
+                loadedmod,
+                class_name,
+            )()
 
-            # Start it
             self.iqflowtoexec.start()
-            if "iq_recorder" in flow_graph_filename:
-                asyncio.run(self.flowGraphStarted("IQ"))
-            elif "iq_playback" in flow_graph_filename:
-                asyncio.run(self.flowGraphStarted("IQ Playback"))
 
-            # Let it Run
+            asyncio.run(
+                self.flowGraphStarted(
+                    "IQ Playback"
+                )
+            )
+
             self.iqflowtoexec.wait()
 
-            # Signal on the PUB that the IQ Flow Graph is Finished
-            if "iq_recorder" in flow_graph_filename:
-                asyncio.run(self.flowGraphFinished("IQ", read_filepath, return_filepath))
-                self.iqFlowGraphStop(None)
-            elif "iq_playback" in flow_graph_filename:
-                asyncio.run(self.flowGraphFinished("IQ Playback"))
+            asyncio.run(
+                self.flowGraphFinished(
+                    "IQ Playback"
+                )
+            )
 
-        # Error Loading Flow Graph
-        except Exception as e:
-            if "iq_recorder" in flow_graph_filename:
-                asyncio.run(self.flowGraphStarted("IQ"))
-                asyncio.run(self.flowGraphFinished("IQ"))
+        except Exception:
+            asyncio.run(
+                self.flowGraphStarted(
+                    "IQ Playback"
+                )
+            )
+
+            asyncio.run(
+                self.flowGraphFinished(
+                    "IQ Playback"
+                )
+            )
+
+            try:
                 self.iqFlowGraphStop(None)
-            elif "iq_playback" in flow_graph_filename:
-                asyncio.run(self.flowGraphStarted("IQ Playback"))
-                asyncio.run(self.flowGraphFinished("IQ Playback"))
-                self.iqFlowGraphStop(None)
+            except Exception:
+                pass
 
 
     def iqFlowGraphStop(self, parameter=""):
