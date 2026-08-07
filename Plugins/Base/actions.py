@@ -154,7 +154,20 @@ ACTION_HARDWARE = {
         "RSPdx R2",
         "CaribouLite",
     ],
-    "iq_playback": ["USRP B20xmini", "USRP B2x0"],
+    "iq_playback": [
+        "USRP X3x0",
+        "USRP B2x0",
+        "HackRF",
+        "USRP B20xmini",
+        "LimeSDR",
+        "bladeRF",
+        "PlutoSDR",
+        "USRP2",
+        "USRP N2xx",
+        "bladeRF 2.0",
+        "USRP X410",
+        "CaribouLite",
+    ],
     "signal_conditioning": ["USRP B20xmini", "USRP B2x0"],
 }
 
@@ -1957,13 +1970,13 @@ async def iq_record(
 iq_playback_schema = {
     "params": [
         {
-            "name": "flow_graph_name",
-            "label": "Flow Graph",
+            "name": "playback_mode",
+            "label": "Playback Mode",
             "type": "string",
-            "default": "iq_playback_b2x0",
+            "default": "continuous",
             "options": [
-                "iq_playback_b2x0",
-                "iq_playback_single_b2x0",
+                "continuous",
+                "single",
             ],
         },
         {
@@ -2038,32 +2051,60 @@ async def iq_playback(
         f"IQ Playback action with parameters: {parameters}"
     )
 
-    op_params = dict(parameters or {})
+    op_params = dict(
+        parameters
+        or {}
+    )
 
-    flow_graph_name = str(
-        op_params.get("flow_graph_name", "iq_playback_b2x0")
-        or "iq_playback_b2x0"
-    ).strip()
+    playback_mode = str(
+        op_params.get(
+            "playback_mode",
+            "continuous",
+        )
+        or "continuous"
+    ).strip().lower()
 
-    if flow_graph_name not in {
-        "iq_playback_b2x0",
-        "iq_playback_single_b2x0",
+    if playback_mode not in {
+        "continuous",
+        "single",
     }:
         raise ValueError(
-            f"Unsupported IQ playback flow graph: {flow_graph_name}"
+            "Unsupported IQ playback mode: "
+            f"{playback_mode}"
         )
 
-    if not str(op_params.get("hardware_type", "") or "").strip():
-        compatible_types = ["USRP B20xmini", "USRP B2x0"]
+    op_params[
+        "playback_mode"
+    ] = playback_mode
 
-        sdr_uid, sdr_entry = fissure.utils.hardware.get_compatible_sdr(
-            getattr(component, "settings_dict", {}) or {},
-            compatible_types,
+    if not str(
+        op_params.get(
+            "hardware_type",
+            "",
+        )
+        or ""
+    ).strip():
+        compatible_types = (
+            ACTION_HARDWARE[
+                "iq_playback"
+            ]
+        )
+
+        sdr_uid, sdr_entry = (
+            fissure.utils.hardware.get_compatible_sdr(
+                getattr(
+                    component,
+                    "settings_dict",
+                    {},
+                )
+                or {},
+                compatible_types,
+            )
         )
 
         if not sdr_entry:
             raise ValueError(
-                f"No compatible SDR configured for {flow_graph_name}. "
+                "No compatible SDR configured for iq_playback. "
                 f"Compatible types: {compatible_types}"
             )
 

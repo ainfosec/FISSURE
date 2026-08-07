@@ -99,320 +99,6 @@ def _slotIQ_FilterTypeChanged(dashboard: QtCore.QObject):
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_PlaybackHardwareChanged(dashboard: QtCore.QObject):
-    """ 
-    Changes IQ playback settings based on hardware.
-    """
-    # Sensor Node Hardware Information
-    get_current_hardware = str(dashboard.ui.comboBox_iq_playback_hardware.currentText())
-    get_hardware_type, get_hardware_uuid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
-    
-    # Utility Functions   
-    get_gain = fissure.utils.hardware.getHardwareGain(get_hardware_type, "TX")
-    get_antennas = fissure.utils.hardware.getHardwareAntennas(get_hardware_type, "TX")
-    get_channels = fissure.utils.hardware.getHardwareChannels(get_hardware_type, "TX")
-    
-    # Set the Values
-    if get_hardware_type == "Computer":
-        pass
-
-    elif get_hardware_type == "USRP X3x0":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(6000)
-        playback_spinbox_frequency.setMinimum(50)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
-
-    elif get_hardware_type == "USRP B2x0":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(6000)
-        playback_spinbox_frequency.setMinimum(70)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
-
-    elif get_hardware_type == "HackRF":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(6000)
-        playback_spinbox_frequency.setMinimum(1)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
-
-    elif get_hardware_type == "RTL2832U":
-        pass
-
-    elif get_hardware_type == "802.11x Adapter":
-        pass
-
-    elif get_hardware_type == "USRP B20xmini":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(6000)
-        playback_spinbox_frequency.setMinimum(70)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
-
-    elif get_hardware_type == "LimeSDR":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(6000)
-        playback_spinbox_frequency.setMinimum(50)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
-
-    elif get_hardware_type == "bladeRF":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(3800)
-        playback_spinbox_frequency.setMinimum(50)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
-
-    elif get_hardware_type == "Open Sniffer":
-        pass
-
-    elif get_hardware_type == "PlutoSDR":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(3800)
-        playback_spinbox_frequency.setMinimum(325)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
-
-    elif get_hardware_type == "USRP2":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(6000)
-        playback_spinbox_frequency.setMinimum(50)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
-
-    elif get_hardware_type == "USRP N2xx":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(6000)
-        playback_spinbox_frequency.setMinimum(50)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
-
-    elif get_hardware_type == "bladeRF 2.0":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(6000)
-        playback_spinbox_frequency.setMinimum(47)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])           
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
-
-    elif get_hardware_type == "USRP X410":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(1)
-        playback_spinbox_frequency.setMinimum(7200)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)
-
-    elif get_hardware_type == "RSPduo":
-        pass
-
-    elif get_hardware_type == "RSPdx":
-        pass
-
-    elif get_hardware_type == "RSPdx R2":
-        pass
-
-    elif get_hardware_type == "CaribouLite":
-        playback_spinbox_frequency = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_frequency.setMaximum(6000)
-        playback_spinbox_frequency.setMinimum(30)
-        playback_spinbox_frequency.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,0,playback_spinbox_frequency)
-        comboBox_playback_channel = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        comboBox_playback_channel.addItems(get_channels)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,1,comboBox_playback_channel)
-        comboBox_playback_antenna = QtWidgets.QComboBox(dashboard, objectName='comboBox2_')
-        # comboBox_playback_antenna.addItems(get_antennas)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,2,comboBox_playback_antenna)
-        playback_spinbox_gain = QtWidgets.QDoubleSpinBox(dashboard)
-        playback_spinbox_gain.setMaximum(get_gain[1])
-        playback_spinbox_gain.setMinimum(get_gain[0])
-        playback_spinbox_gain.setValue(get_gain[2])
-        playback_spinbox_gain.setAlignment(QtCore.Qt.AlignCenter)
-        dashboard.ui.tableWidget_iq_playback.setCellWidget(0,3,playback_spinbox_gain)
-        dashboard.ui.tableWidget_iq_playback.resizeColumnsToContents()
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(False)
-        dashboard.ui.tableWidget_iq_playback.horizontalHeader().setStretchLastSection(True)    
-
-    # Enable Playback and Recording
-    dashboard.ui.pushButton_iq_playback.setEnabled(True)
-    dashboard.ui.label2_iq_playback_status.setEnabled(True)
-    dashboard.ui.pushButton_iq_playback_record_freq.setEnabled(True)
-    dashboard.ui.pushButton_iq_playback_record_gain.setEnabled(True)
-    dashboard.ui.pushButton_iq_playback_record_rate.setEnabled(True)
-
-    # Re-Enable Controls
-    if dashboard.ui.label2_iq_file_name.text() != "File:" and get_antennas:
-        dashboard.ui.frame_iq_playback_controls.setEnabled(True)
-    else:
-        dashboard.ui.frame_iq_playback_controls.setEnabled(False)   
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
 def _slotIQ_InspectionHardwareChanged(dashboard: QtCore.QObject):
     """ 
     Changes IQ inspection settings based on hardware.
@@ -455,109 +141,149 @@ def _slotIQ_AppendColumnClicked(dashboard: QtCore.QObject, col):
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_TabClicked(dashboard: QtCore.QObject, button_name):
-    """ 
-    Simulates a QTabWidget and changes the IQ QStackedWidget index.
+def _slotIQ_TabClicked(
+    dashboard: QtCore.QObject,
+    button_name,
+):
     """
-    # Change the Index
+    Simulates a QTabWidget and changes the IQ QStackedWidget page.
+    """
+    # Change the Page
     if button_name == "pushButton1_iq_tab_record":
         dashboard.ui.stackedWidget3_iq.setCurrentWidget(
             dashboard.ui.page_iq_record
         )
+
     elif button_name == "pushButton1_iq_tab_playback":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(1)
+        dashboard.ui.stackedWidget3_iq.setCurrentWidget(
+            dashboard.ui.page_iq_playback
+        )
+
     elif button_name == "pushButton1_iq_tab_inspection":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(2)
+
     elif button_name == "pushButton1_iq_tab_crop":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(3)
+
     elif button_name == "pushButton1_iq_tab_convert":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(4)
+
     elif button_name == "pushButton1_iq_tab_append":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(5)
+
     elif button_name == "pushButton1_iq_tab_transfer":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(6)
+
     elif button_name == "pushButton1_iq_tab_timeslot":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(7)
+
     elif button_name == "pushButton1_iq_tab_overlap":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(8)
+
     elif button_name == "pushButton1_iq_tab_resample":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(9)
+
     elif button_name == "pushButton1_iq_tab_ofdm":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(10)
+
     elif button_name == "pushButton1_iq_tab_normalize":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(11)
+
     elif button_name == "pushButton1_iq_tab_strip":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(12)
+
     elif button_name == "pushButton1_iq_tab_split":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(13)
+
     elif button_name == "pushButton1_iq_tab_ook":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(14)
+
     elif button_name == "pushButton1_iq_tab_endianness":
         dashboard.ui.stackedWidget3_iq.setCurrentIndex(15)
 
     # Reset All Stylesheets
     button_list = [
-        'pushButton1_iq_tab_record',
-        'pushButton1_iq_tab_playback',
-        'pushButton1_iq_tab_inspection',
-        'pushButton1_iq_tab_crop',
-        'pushButton1_iq_tab_convert',
-        'pushButton1_iq_tab_append',
-        'pushButton1_iq_tab_transfer',
-        'pushButton1_iq_tab_timeslot',
-        'pushButton1_iq_tab_overlap',
-        'pushButton1_iq_tab_resample',
-        'pushButton1_iq_tab_ofdm',
-        'pushButton1_iq_tab_normalize',
-        'pushButton1_iq_tab_strip',
-        'pushButton1_iq_tab_split',
-        'pushButton1_iq_tab_ook',
-        'pushButton1_iq_tab_endianness'
+        "pushButton1_iq_tab_record",
+        "pushButton1_iq_tab_playback",
+        "pushButton1_iq_tab_inspection",
+        "pushButton1_iq_tab_crop",
+        "pushButton1_iq_tab_convert",
+        "pushButton1_iq_tab_append",
+        "pushButton1_iq_tab_transfer",
+        "pushButton1_iq_tab_timeslot",
+        "pushButton1_iq_tab_overlap",
+        "pushButton1_iq_tab_resample",
+        "pushButton1_iq_tab_ofdm",
+        "pushButton1_iq_tab_normalize",
+        "pushButton1_iq_tab_strip",
+        "pushButton1_iq_tab_split",
+        "pushButton1_iq_tab_ook",
+        "pushButton1_iq_tab_endianness",
     ]
-    for n in button_list:
-        exec("dashboard.ui." + n + """.setStyleSheet("QPushButton#""" + n + """ {}")""")
-        # ~ exec("dashboard.ui." + n + """.setStyleSheet("QPushButton#""" + n + """ {"
-                                            # ~ "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d,   stop:0.85 #17365D, stop:1 #17365D);"
-                                            # ~ "color: rgb(255, 255, 255);"
-                                            # ~ "border: 1px solid #17365D;"
-                                            # ~ "border-top-left-radius: 15px;"
-                                            # ~ "border-top-right-radius: 15px;"
-                                            # ~ "width:107px;"
-                                            # ~ "margin-top: 6px;"
-                                            # ~ "height: 21px;}"
-                                            # ~ )""")
+
+    for name in button_list:
+        button = getattr(
+            dashboard.ui,
+            name,
+        )
+        button.setStyleSheet(
+            f"QPushButton#{name} {{}}"
+        )
 
     # Change Selected Stylesheet
-    if dashboard.backend.settings['color_mode'] == "Light Mode":
-        exec("dashboard.ui." + button_name + """.setStyleSheet("QPushButton#""" + button_name + """ {"
-                                                    "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 #e7eaee, stop:0.12 #455e7d, stop:0.3 #2e4a6d, stop:0.85 """ + dashboard.backend.settings['color3'] + """, stop:1 """ + dashboard.backend.settings['color3'] + """);"
-                                                    "color:rgb(0, 220, 0);"
-                                                    "border: 1px solid """ + dashboard.backend.settings['color3'] + """;"
-                                                    "border-top-left-radius: 15px;"
-                                                    "border-top-right-radius: 15px;"
-                                                    "height:27px;"
-                                                    "margin-top: 3px;}"
-                                                    )""")
-    elif dashboard.backend.settings['color_mode'] == "Dark Mode":
-        exec("dashboard.ui." + button_name + """.setStyleSheet("QPushButton#""" + button_name + """ {"
-                                                    "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 """ + dashboard.backend.settings['color3'] + """, stop:0.05 #888888, stop:0.15 """ + dashboard.backend.settings['color3'] + """, stop:0.85 """ + dashboard.backend.settings['color3'] + """, stop:1 """ + dashboard.backend.settings['color3'] + """);"
-                                                    "color:rgb(0, 220, 0);"
-                                                    "border: 1px solid """ + dashboard.backend.settings['color3'] + """;"
-                                                    "border-top-left-radius: 15px;"
-                                                    "border-top-right-radius: 15px;"
-                                                    "height:27px;"
-                                                    "margin-top: 3px;}"
-                                                    )""")
+    color3 = dashboard.backend.settings[
+        "color3"
+    ]
+
+    if (
+        dashboard.backend.settings[
+            "color_mode"
+        ]
+        == "Light Mode"
+    ):
+        selected_style = (
+            "background-color: qlineargradient("
+            "spread:pad, "
+            "x1:0, y1:0, "
+            "x2:0, y2:1, "
+            "stop:0 #e7eaee, "
+            "stop:0.12 #455e7d, "
+            "stop:0.3 #2e4a6d, "
+            f"stop:0.85 {color3}, "
+            f"stop:1 {color3}"
+            ");"
+        )
+
     else:
-        exec("dashboard.ui." + button_name + """.setStyleSheet("QPushButton#""" + button_name + """ {"
-                                                    "background-color: qlineargradient(spread:pad, x1:0, y1:0, x2:0, y2:1, stop:0 """ + dashboard.backend.settings['color3'] + """, stop:0.05 #888888, stop:0.15 """ + dashboard.backend.settings['color3'] + """, stop:0.85 """ + dashboard.backend.settings['color3'] + """, stop:1 """ + dashboard.backend.settings['color3'] + """);"
-                                                    "color:rgb(0, 220, 0);"
-                                                    "border: 1px solid """ + dashboard.backend.settings['color3'] + """;"
-                                                    "border-top-left-radius: 15px;"
-                                                    "border-top-right-radius: 15px;"
-                                                    "height:27px;"
-                                                    "margin-top: 3px;}"
-                                                    )""")
+        selected_style = (
+            "background-color: qlineargradient("
+            "spread:pad, "
+            "x1:0, y1:0, "
+            "x2:0, y2:1, "
+            f"stop:0 {color3}, "
+            "stop:0.05 #888888, "
+            f"stop:0.15 {color3}, "
+            f"stop:0.85 {color3}, "
+            f"stop:1 {color3}"
+            ");"
+        )
+
+    selected_button = getattr(
+        dashboard.ui,
+        button_name,
+    )
+
+    selected_button.setStyleSheet(
+        f"QPushButton#{button_name} {{"
+        f"{selected_style}"
+        "color: rgb(0, 220, 0);"
+        f"border: 1px solid {color3};"
+        "border-top-left-radius: 15px;"
+        "border-top-right-radius: 15px;"
+        "height: 27px;"
+        "margin-top: 3px;"
+        "}"
+    )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -808,15 +534,10 @@ def _slotIQ_LoadIQ_Data(dashboard: QtCore.QObject):
     # Sample Label
     dashboard.ui.label2_iq_samples.setText("Samples: " + str(dashboard.ui.textEdit_iq_end.toPlainText()))
 
-    # Sensor Node Hardware Information
-    get_current_hardware = str(dashboard.ui.comboBox_iq_playback_hardware.currentText())
-    get_hardware_type, get_hardware_uuid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
-    
     # Playback
-    dashboard.ui.textEdit_iq_playback_filepath.setPlainText(get_file_path)
-    get_antennas = fissure.utils.hardware.getHardwareAntennas(get_hardware_type, "TX")
-    if get_antennas:  # Transmit-Only
-        dashboard.ui.frame_iq_playback_controls.setEnabled(True)
+    dashboard.ui.textEdit_iq_playback_filepath.setPlainText(
+        get_file_path
+    )
 
     # Range Buttons
     if int(dashboard.ui.textEdit_iq_end.toPlainText()) > 1000000:
@@ -5465,321 +5186,6 @@ def _slotIQ_OOK_PlotClicked(dashboard: QtCore.QObject):
 
 
 @qasync.asyncSlot(QtCore.QObject)
-async def _slotIQ_PlaybackClicked(dashboard: QtCore.QObject):
-    """
-    Starts/stops IQ playback through the Base plugin action path.
-
-    First-pass behavior:
-      - Dashboard collects existing IQ Playback table values.
-      - Sends Base.iq_playback to the selected Sensor Node.
-      - node_path mode uses the filepath as it exists on the executing node.
-      - transfer mode stages the Dashboard-local file to the selected node first.
-      - Stop requests plugin operation stop on the selected node.
-    """
-
-    # ------------------------------------------------------------
-    # Stop Playback
-    # ------------------------------------------------------------
-    if dashboard.ui.pushButton_iq_playback.text() == "Stop":
-        dashboard.ui.label2_iq_playback_status.setText("Stopping...")
-        dashboard.ui.pushButton_iq_playback.setEnabled(False)
-        QtWidgets.QApplication.processEvents()
-
-        try:
-            await dashboard.backend.tacticalNodeStop(
-                [dashboard.selected_node_uid]
-            )
-        except Exception as e:
-            dashboard.logger.error(f"[IQ] Failed stopping IQ playback operation: {e}")
-
-        dashboard.ui.label2_iq_playback_status.setText("")
-        dashboard.ui.pushButton_iq_playback.setText("Play")
-        dashboard.ui.pushButton_iq_playback.setEnabled(True)
-
-        # await dashboard.refreshStatusBarText()
-        return
-
-    # ------------------------------------------------------------
-    # Start Playback
-    # ------------------------------------------------------------
-    if dashboard.ui.pushButton_iq_playback.text() != "Play":
-        return
-
-    if not dashboard.selected_node_uid:
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            "Select a sensor node.",
-        )
-        return
-
-    # ------------------------------------------------------------
-    # Initial UI State
-    # ------------------------------------------------------------
-    dashboard.ui.label2_iq_playback_status.setText("Starting...")
-    dashboard.ui.pushButton_iq_playback.setText("Stop")
-    dashboard.ui.pushButton_iq_playback.setEnabled(False)
-    # await dashboard.refreshStatusBarText()
-    QtWidgets.QApplication.processEvents()
-
-    # ------------------------------------------------------------
-    # Sensor Node Hardware Information
-    # ------------------------------------------------------------
-    get_current_hardware = str(
-        dashboard.ui.comboBox_iq_playback_hardware.currentText()
-    ).strip()
-
-    (
-        get_hardware_type,
-        get_hardware_uuid,
-        get_hardware_radio_name,
-        get_hardware_serial,
-        get_hardware_interface,
-        get_hardware_ip,
-        get_hardware_daughterboard,
-    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
-        dashboard,
-        get_current_hardware,
-        "iq",
-    )
-
-    # ------------------------------------------------------------
-    # Read and Validate UI Values
-    # ------------------------------------------------------------
-    try:
-        try:
-            get_frequency = str(
-                dashboard.ui.tableWidget_iq_playback.cellWidget(0, 0).value()
-            ).strip()
-        except Exception:
-            get_frequency = str(
-                dashboard.ui.tableWidget_iq_playback.item(0, 0).text()
-            ).strip()
-
-        get_channel = str(
-            dashboard.ui.tableWidget_iq_playback.cellWidget(0, 1).currentText()
-        ).strip()
-
-        get_antenna = str(
-            dashboard.ui.tableWidget_iq_playback.cellWidget(0, 2).currentText()
-        ).strip()
-
-        try:
-            get_gain = str(
-                dashboard.ui.tableWidget_iq_playback.cellWidget(0, 3).value()
-            ).strip()
-        except Exception:
-            get_gain = str(
-                dashboard.ui.tableWidget_iq_playback.item(0, 3).text()
-            ).strip()
-
-        try:
-            get_sample_rate = str(
-                dashboard.ui.tableWidget_iq_playback.cellWidget(0, 4).currentText()
-            ).strip()
-        except Exception:
-            get_sample_rate = str(
-                dashboard.ui.tableWidget_iq_playback.item(0, 4).text()
-            ).strip()
-
-        get_data_type = str(
-            dashboard.ui.tableWidget_iq_playback.cellWidget(0, 5).currentText()
-        ).strip()
-
-        get_repeat = str(
-            dashboard.ui.tableWidget_iq_playback.cellWidget(0, 6).currentText()
-        ).strip()
-
-        get_filepath = str(
-            dashboard.ui.textEdit_iq_playback_filepath.toPlainText()
-        ).strip()
-
-        playback_file_mode_text = str(
-            dashboard.ui.comboBox_iq_playback_file_mode.currentText()
-        ).strip()
-
-        playback_file_mode = {
-            "Node Path": "node_path",
-            "Transfer": "transfer",
-        }.get(playback_file_mode_text, "node_path")
-
-        dashboard.logger.info(
-            f"[IQ] Playback file mode selected: "
-            f"text={playback_file_mode_text!r}, mode={playback_file_mode!r}"
-        )
-
-        frequency_mhz = float(get_frequency)
-        tx_gain = float(get_gain)
-        sample_rate_msps = float(get_sample_rate)
-
-        if not get_filepath:
-            await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-                dashboard,
-                "Select an IQ playback file.",
-            )
-            raise ValueError("Missing IQ playback filepath.")
-
-        valid_freq = fissure.utils.hardware.checkFrequencyBounds(
-            frequency_mhz,
-            get_hardware_type,
-            get_hardware_daughterboard,
-        )
-
-        if valid_freq is False:
-            await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-                dashboard,
-                "Frequency outside of hardware bounds.",
-            )
-            raise ValueError("Frequency outside of hardware bounds.")
-
-    except Exception as e:
-        dashboard.logger.error(f"[IQ] Invalid playback input parameter: {e}")
-
-        dashboard.ui.label2_iq_playback_status.setText("")
-        dashboard.ui.pushButton_iq_playback.setText("Play")
-        dashboard.ui.pushButton_iq_playback.setEnabled(True)
-        # await dashboard.refreshStatusBarText()
-        return
-
-    # ------------------------------------------------------------
-    # First-pass Flow Graph Name from Hardware / Repeat
-    # ------------------------------------------------------------
-    if get_hardware_type in {"USRP B2x0", "USRP B20xmini"}:
-        if get_repeat == "No":
-            fname = "iq_playback_single_b2x0"
-        else:
-            fname = "iq_playback_b2x0"
-    else:
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            f"Unsupported IQ playback hardware for first pass: {get_hardware_type}",
-        )
-
-        dashboard.ui.label2_iq_playback_status.setText("")
-        dashboard.ui.pushButton_iq_playback.setText("Play")
-        dashboard.ui.pushButton_iq_playback.setEnabled(True)
-        # await dashboard.refreshStatusBarText()
-        return
-
-    # ------------------------------------------------------------
-    # Hardware Serial Formatting
-    # Preserve old UHD serial behavior.
-    # ------------------------------------------------------------
-    if len(get_hardware_serial) > 0:
-        get_serial = "serial=" + get_hardware_serial
-    else:
-        get_serial = "False"
-
-    # ------------------------------------------------------------
-    # Optional File Transfer
-    # ------------------------------------------------------------
-    action_filepath = get_filepath
-
-    if playback_file_mode == "transfer":
-        try:
-            await dashboard.backend.transferSensorNodeFile(
-                dashboard.selected_node_uid,
-                get_filepath,
-                "/IQ_Data_Playback",
-                False,
-            )
-
-            # Must match SensorNodeCallbacks.transferSensorNodeFile(), which
-            # saves /IQ_Data_Playback as Sensor_Node/IQ_Data_Playback/playback.iq.
-            action_filepath = os.path.join(
-                fissure.utils.SENSOR_NODE_DIR,
-                "IQ_Data_Playback",
-                "playback.iq",
-            )
-
-        except Exception as e:
-            dashboard.logger.error(f"[IQ] Failed transferring IQ playback file: {e}")
-
-            await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-                dashboard,
-                "Failed to transfer IQ playback file to selected node.",
-            )
-
-            dashboard.ui.label2_iq_playback_status.setText("")
-            dashboard.ui.pushButton_iq_playback.setText("Play")
-            dashboard.ui.pushButton_iq_playback.setEnabled(True)
-            # await dashboard.refreshStatusBarText()
-            return
-
-    # ------------------------------------------------------------
-    # Plugin Action Parameters
-    # ------------------------------------------------------------
-    operation_id = str(uuid.uuid4())
-
-    parameters = {
-        # Request identity
-        "operation_id": operation_id,
-        "requester": "iq_data_tab",
-
-        # Playback selection
-        "flow_graph_name": fname,
-        "playback_file_mode": playback_file_mode,
-        "filepath": action_filepath,
-
-        # Hardware identity
-        "hardware_display_name": get_current_hardware,
-        "hardware_type": get_hardware_type,
-        "hardware_uuid": get_hardware_uuid,
-        "hardware_radio_name": get_hardware_radio_name,
-        "hardware_serial": get_hardware_serial,
-        "hardware_serial_argument": get_serial,
-        "hardware_interface": get_hardware_interface,
-        "hardware_ip": get_hardware_ip,
-        "hardware_daughterboard": get_hardware_daughterboard,
-
-        # RF / playback parameters
-        "frequency_mhz": frequency_mhz,
-        "tx_frequency": frequency_mhz,
-        "tx_channel": get_channel,
-        "tx_antenna": get_antenna,
-        "tx_gain": tx_gain,
-        "sample_rate_msps": sample_rate_msps,
-        "data_type": get_data_type,
-
-        # Metadata / logging
-        "description": "IQ playback",
-    }
-
-    # ------------------------------------------------------------
-    # Send Plugin Action
-    # ------------------------------------------------------------
-    try:
-        await dashboard.backend.tacticalNodeExecute(
-            [dashboard.selected_node_uid],
-            "Base",
-            "iq_playback",
-            parameters,
-        )
-
-    except Exception as e:
-        dashboard.logger.error(f"[IQ] Failed launching IQ playback action: {e}")
-
-        await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(
-            dashboard,
-            "Failed to launch IQ playback action.",
-        )
-
-        dashboard.ui.label2_iq_playback_status.setText("")
-        dashboard.ui.pushButton_iq_playback.setText("Play")
-        dashboard.ui.pushButton_iq_playback.setEnabled(True)
-        # await dashboard.refreshStatusBarText()
-        return
-
-    # ------------------------------------------------------------
-    # UI State
-    # ------------------------------------------------------------
-    dashboard.ui.label2_iq_playback_status.setText("Starting...")
-    dashboard.ui.pushButton_iq_playback.setText("Stop")
-    dashboard.ui.pushButton_iq_playback.setEnabled(True)
-
-    # await dashboard.refreshStatusBarText()
-    
-
-@qasync.asyncSlot(QtCore.QObject)
 async def _slotIQ_InspectionFG_StartClicked(dashboard: QtCore.QObject):
     """ 
     Starts the inspection flow graph.
@@ -7345,7 +6751,7 @@ def _slotIQ_RecordActionHardwareChanged(
 
     has_hardware = bool(
         str(
-            dashboard.ui.comboBox_iq_record_hardware_2.currentText()
+            dashboard.ui.comboBox_iq_record_hardware.currentText()
             or ""
         ).strip()
     )
@@ -7383,7 +6789,7 @@ async def _slotIQ_RecordQueryClicked(
     ).strip()
 
     hardware_display_name = str(
-        dashboard.ui.comboBox_iq_record_hardware_2.currentText()
+        dashboard.ui.comboBox_iq_record_hardware.currentText()
         or ""
     ).strip()
 
@@ -7627,7 +7033,7 @@ def handle_iq_record_action_query_results(
     has_actions = combo.count() > 0
 
     combo.setEnabled(has_actions)
-    dashboard.ui.pushButton_iq_record_query.setText("Query")
+    dashboard.ui.pushButton_iq_record_query.setText("Query Actions")
     dashboard.ui.pushButton_iq_record_query.setEnabled(True)
     dashboard.ui.pushButton_iq_record_customize.setEnabled(has_actions)
 
@@ -7839,7 +7245,7 @@ def _collect_iq_record_action_parameters(
         )
 
     hardware_display_name = str(
-        dashboard.ui.comboBox_iq_record_hardware_2.currentText()
+        dashboard.ui.comboBox_iq_record_hardware.currentText()
         or ""
     ).strip()
 
@@ -8537,7 +7943,7 @@ def _set_iq_record_running(
     )
 
     for widget_name in (
-        "comboBox_iq_record_hardware_2",
+        "comboBox_iq_record_hardware",
         "comboBox_iq_record_method",
         "pushButton_iq_record_query",
         "pushButton_iq_record_customize",
@@ -8600,7 +8006,7 @@ def _set_iq_record_stopped(
     )
 
     hardware_combo = (
-        dashboard.ui.comboBox_iq_record_hardware_2
+        dashboard.ui.comboBox_iq_record_hardware
     )
     method_combo = (
         dashboard.ui.comboBox_iq_record_method
@@ -8650,6 +8056,1925 @@ def _set_iq_record_stopped(
         if widget is not None:
             widget.setEnabled(
                 True
+            )
+
+
+def _clear_iq_playback_parameter_widgets(
+    dashboard: QtCore.QObject,
+):
+    """
+    Clear the IQ Playback parameter panel and widget registry.
+    """
+    content = (
+        dashboard.ui
+        .scrollAreaWidgetContents_iq_playback_parameters
+    )
+    layout = content.layout()
+
+    if layout is None:
+        layout = QtWidgets.QFormLayout(
+            content
+        )
+        layout.setContentsMargins(
+            8,
+            8,
+            8,
+            8,
+        )
+        layout.setHorizontalSpacing(
+            10
+        )
+        layout.setVerticalSpacing(
+            6
+        )
+        layout.setFieldGrowthPolicy(
+            QtWidgets.QFormLayout.AllNonFixedFieldsGrow
+        )
+
+    else:
+        while layout.count():
+            item = layout.takeAt(0)
+
+            if item.widget() is not None:
+                item.widget().deleteLater()
+
+            if item.layout() is not None:
+                child_layout = item.layout()
+
+                while child_layout.count():
+                    child_item = child_layout.takeAt(0)
+
+                    if child_item.widget() is not None:
+                        child_item.widget().deleteLater()
+
+                child_layout.deleteLater()
+
+    dashboard.iq_playback_parameter_widgets = {}
+    dashboard.iq_playback_current_schema = {}
+    dashboard.iq_playback_customized = False
+
+    dashboard.ui.pushButton_iq_playback_start_stop.setEnabled(
+        False
+    )
+
+
+def _reset_iq_playback_action_selection(
+    dashboard: QtCore.QObject,
+):
+    """
+    Clear queried IQ Playback actions and customized parameters.
+    """
+    dashboard.iq_playback_method_actions = []
+    dashboard.iq_playback_selected_plugin = ""
+    dashboard.iq_playback_selected_action = ""
+    dashboard.iq_playback_action_query_pending = False
+    dashboard.iq_playback_action_query_context = ""
+    dashboard.iq_playback_action_query_node_uid = ""
+
+    combo = dashboard.ui.comboBox_iq_playback_method
+
+    combo.blockSignals(
+        True
+    )
+    combo.clear()
+    combo.blockSignals(
+        False
+    )
+    combo.setEnabled(
+        False
+    )
+
+    dashboard.ui.pushButton_iq_playback_customize.setEnabled(
+        False
+    )
+
+    _clear_iq_playback_parameter_widgets(
+        dashboard
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_PlaybackActionHardwareChanged(
+    dashboard: QtCore.QObject,
+):
+    """
+    Reset the selected IQ Playback action when hardware changes.
+    """
+    _reset_iq_playback_action_selection(
+        dashboard
+    )
+
+    has_node = bool(
+        str(
+            getattr(
+                dashboard,
+                "selected_node_uid",
+                "",
+            )
+            or ""
+        ).strip()
+    )
+
+    has_hardware = bool(
+        str(
+            dashboard.ui
+            .comboBox_iq_playback_hardware
+            .currentText()
+            or ""
+        ).strip()
+    )
+
+    dashboard.ui.pushButton_iq_playback_query.setEnabled(
+        has_node and has_hardware
+    )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_PlaybackQueryClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Query the selected Sensor Node for compatible IQ Playback actions.
+    """
+    node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    hardware_display_name = str(
+        dashboard.ui
+        .comboBox_iq_playback_hardware
+        .currentText()
+        or ""
+    ).strip()
+
+    if not node_uid:
+        dashboard.logger.warning(
+            "Select a Sensor Node before querying IQ Playback actions."
+        )
+        return
+
+    if not hardware_display_name:
+        dashboard.logger.warning(
+            "Select hardware before querying IQ Playback actions."
+        )
+        return
+
+    (
+        hardware_type,
+        _hardware_uuid,
+        _hardware_radio_name,
+        _hardware_serial,
+        _hardware_interface,
+        _hardware_ip,
+        _hardware_daughterboard,
+    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
+        dashboard,
+        hardware_display_name,
+        "iq",
+    )
+
+    _reset_iq_playback_action_selection(
+        dashboard
+    )
+
+    context = "iq.playback.actions"
+
+    dashboard.iq_playback_action_query_pending = True
+    dashboard.iq_playback_action_query_context = context
+    dashboard.iq_playback_action_query_node_uid = node_uid
+
+    dashboard.ui.pushButton_iq_playback_query.setText(
+        "Querying..."
+    )
+    dashboard.ui.pushButton_iq_playback_query.setEnabled(
+        False
+    )
+
+    await dashboard.backend.queryPluginActions(
+        node_uid,
+        context=context,
+        scope="all_plugins",
+        include_tags=[
+            "iq.playback",
+        ],
+        hardware=hardware_type,
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_PlaybackMethodChanged(
+    dashboard: QtCore.QObject,
+):
+    """
+    Update IQ Playback action state after action selection changes.
+    """
+    record = (
+        dashboard.ui
+        .comboBox_iq_playback_method
+        .currentData()
+    )
+
+    if not isinstance(
+        record,
+        dict,
+    ):
+        dashboard.iq_playback_selected_plugin = ""
+        dashboard.iq_playback_selected_action = ""
+
+        dashboard.ui.pushButton_iq_playback_customize.setEnabled(
+            False
+        )
+
+        _clear_iq_playback_parameter_widgets(
+            dashboard
+        )
+        return
+
+    plugin_name = str(
+        record.get(
+            "plugin",
+            "",
+        )
+        or ""
+    ).strip()
+
+    action_name = str(
+        record.get(
+            "action",
+            "",
+        )
+        or ""
+    ).strip()
+
+    dashboard.iq_playback_selected_plugin = plugin_name
+    dashboard.iq_playback_selected_action = action_name
+
+    _clear_iq_playback_parameter_widgets(
+        dashboard
+    )
+
+    dashboard.ui.pushButton_iq_playback_customize.setEnabled(
+        bool(
+            plugin_name
+            and action_name
+        )
+    )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_PlaybackCustomizeClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Query the selected IQ Playback action schema.
+    """
+    node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    record = (
+        dashboard.ui
+        .comboBox_iq_playback_method
+        .currentData()
+    )
+
+    if not node_uid:
+        dashboard.logger.warning(
+            "Select a Sensor Node before loading IQ Playback parameters."
+        )
+        return
+
+    if not isinstance(
+        record,
+        dict,
+    ):
+        dashboard.logger.warning(
+            "Select an IQ Playback action before loading parameters."
+        )
+        return
+
+    plugin_name = str(
+        record.get(
+            "plugin",
+            "",
+        )
+        or ""
+    ).strip()
+
+    action_name = str(
+        record.get(
+            "action",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not plugin_name or not action_name:
+        dashboard.logger.warning(
+            "The selected IQ Playback action is missing plugin "
+            "or action information."
+        )
+        return
+
+    _clear_iq_playback_parameter_widgets(
+        dashboard
+    )
+
+    dashboard.ui.pushButton_iq_playback_customize.setText(
+        "Loading..."
+    )
+    dashboard.ui.pushButton_iq_playback_customize.setEnabled(
+        False
+    )
+
+    await dashboard.backend.queryPluginActionSchema(
+        node_uid,
+        plugin_name,
+        action_name,
+        context="iq.playback.schema",
+    )
+
+
+def handle_iq_playback_action_query_results(
+    dashboard: QtCore.QObject,
+    node_uid: str = "",
+    context: str = "",
+    actions: list = None,
+):
+    """
+    Populate the IQ Playback action selector from a filtered action query.
+    """
+    result_node_uid = str(
+        node_uid
+        or ""
+    ).strip()
+
+    result_context = str(
+        context
+        or ""
+    ).strip()
+
+    expected_node_uid = str(
+        getattr(
+            dashboard,
+            "iq_playback_action_query_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    expected_context = str(
+        getattr(
+            dashboard,
+            "iq_playback_action_query_context",
+            "",
+        )
+        or ""
+    ).strip()
+
+    query_pending = bool(
+        getattr(
+            dashboard,
+            "iq_playback_action_query_pending",
+            False,
+        )
+    )
+
+    if (
+        not query_pending
+        or result_node_uid != expected_node_uid
+        or result_context != expected_context
+    ):
+        dashboard.logger.debug(
+            "Ignoring stale IQ Playback action query results: "
+            f"node_uid={result_node_uid!r}, "
+            f"context={result_context!r}"
+        )
+        return
+
+    dashboard.iq_playback_action_query_pending = False
+    dashboard.iq_playback_action_query_context = ""
+    dashboard.iq_playback_action_query_node_uid = ""
+
+    combo = dashboard.ui.comboBox_iq_playback_method
+
+    dashboard.iq_playback_method_actions = (
+        actions
+        if isinstance(
+            actions,
+            list,
+        )
+        else []
+    )
+
+    combo.blockSignals(
+        True
+    )
+    combo.clear()
+
+    for action_record in dashboard.iq_playback_method_actions:
+        if not isinstance(
+            action_record,
+            dict,
+        ):
+            continue
+
+        plugin_name = str(
+            action_record.get(
+                "plugin",
+                "",
+            )
+            or ""
+        ).strip()
+
+        action_name = str(
+            action_record.get(
+                "action",
+                "",
+            )
+            or ""
+        ).strip()
+
+        if not plugin_name or not action_name:
+            continue
+
+        combo.addItem(
+            f"{plugin_name}: {action_name}",
+            {
+                "plugin": plugin_name,
+                "action": action_name,
+            },
+        )
+
+    combo.blockSignals(
+        False
+    )
+
+    has_actions = combo.count() > 0
+
+    combo.setEnabled(
+        has_actions
+    )
+
+    dashboard.ui.pushButton_iq_playback_query.setText(
+        "Query Actions"
+    )
+    dashboard.ui.pushButton_iq_playback_query.setEnabled(
+        True
+    )
+
+    dashboard.ui.pushButton_iq_playback_customize.setEnabled(
+        has_actions
+    )
+
+    if has_actions:
+        combo.setCurrentIndex(
+            0
+        )
+
+        _slotIQ_PlaybackMethodChanged(
+            dashboard
+        )
+
+    else:
+        dashboard.iq_playback_selected_plugin = ""
+        dashboard.iq_playback_selected_action = ""
+
+
+def _create_iq_playback_parameter_widget(
+    dashboard: QtCore.QObject,
+    parameter: dict,
+):
+    """
+    Create one editor for an IQ Playback action-schema parameter.
+    """
+    parameter_type = str(
+        parameter.get(
+            "type",
+            "string",
+        )
+        or "string"
+    ).strip().lower()
+
+    default = parameter.get(
+        "default",
+        "",
+    )
+
+    options = parameter.get(
+        "options",
+        [],
+    )
+
+    parent = (
+        dashboard.ui
+        .scrollAreaWidgetContents_iq_playback_parameters
+    )
+
+    if isinstance(
+        options,
+        list,
+    ) and options:
+        widget = QtWidgets.QComboBox(
+            parent
+        )
+
+        for option in options:
+            widget.addItem(
+                str(option)
+            )
+
+        default_index = widget.findText(
+            str(default),
+            QtCore.Qt.MatchExactly,
+        )
+
+        if default_index >= 0:
+            widget.setCurrentIndex(
+                default_index
+            )
+
+        return widget
+
+    if parameter_type in {
+        "int",
+        "integer",
+    }:
+        widget = QtWidgets.QSpinBox(
+            parent
+        )
+        widget.setMinimum(
+            int(
+                parameter.get(
+                    "min",
+                    -2147483647,
+                )
+            )
+        )
+        widget.setMaximum(
+            int(
+                parameter.get(
+                    "max",
+                    2147483647,
+                )
+            )
+        )
+        widget.setSingleStep(
+            int(
+                parameter.get(
+                    "step",
+                    1,
+                )
+            )
+        )
+        widget.setValue(
+            int(
+                default
+                or 0
+            )
+        )
+        return widget
+
+    if parameter_type in {
+        "float",
+        "double",
+        "number",
+    }:
+        widget = QtWidgets.QDoubleSpinBox(
+            parent
+        )
+        widget.setDecimals(
+            int(
+                parameter.get(
+                    "decimals",
+                    6,
+                )
+            )
+        )
+        widget.setMinimum(
+            float(
+                parameter.get(
+                    "min",
+                    -1000000000000.0,
+                )
+            )
+        )
+        widget.setMaximum(
+            float(
+                parameter.get(
+                    "max",
+                    1000000000000.0,
+                )
+            )
+        )
+        widget.setSingleStep(
+            float(
+                parameter.get(
+                    "step",
+                    1.0,
+                )
+            )
+        )
+        widget.setValue(
+            float(
+                default
+                or 0.0
+            )
+        )
+        return widget
+
+    if parameter_type in {
+        "bool",
+        "boolean",
+    }:
+        widget = QtWidgets.QCheckBox(
+            parent
+        )
+
+        if isinstance(
+            default,
+            str,
+        ):
+            checked = default.strip().lower() in {
+                "true",
+                "1",
+                "yes",
+                "on",
+                "enabled",
+            }
+
+        else:
+            checked = bool(
+                default
+            )
+
+        widget.setChecked(
+            checked
+        )
+        return widget
+
+    if parameter_type == "label":
+        widget = QtWidgets.QLabel(
+            str(default),
+            parent,
+        )
+        widget.setWordWrap(
+            True
+        )
+        widget.setTextInteractionFlags(
+            QtCore.Qt.TextSelectableByMouse
+        )
+        return widget
+
+    return QtWidgets.QLineEdit(
+        str(default),
+        parent,
+    )
+
+
+def _iq_playback_parameter_widget_value(
+    widget: QtWidgets.QWidget,
+):
+    """
+    Return the current value from one IQ Playback parameter editor.
+    """
+    if isinstance(
+        widget,
+        QtWidgets.QComboBox,
+    ):
+        return widget.currentText()
+
+    if isinstance(
+        widget,
+        QtWidgets.QDoubleSpinBox,
+    ):
+        return widget.value()
+
+    if isinstance(
+        widget,
+        QtWidgets.QSpinBox,
+    ):
+        return widget.value()
+
+    if isinstance(
+        widget,
+        QtWidgets.QCheckBox,
+    ):
+        return widget.isChecked()
+
+    if isinstance(
+        widget,
+        QtWidgets.QLineEdit,
+    ):
+        return widget.text()
+
+    if isinstance(
+        widget,
+        QtWidgets.QLabel,
+    ):
+        return widget.text()
+
+    return None
+
+
+def _collect_iq_playback_action_parameters(
+    dashboard: QtCore.QObject,
+):
+    """
+    Collect customized IQ Playback parameters, selected hardware identity,
+    and the currently entered playback filepath.
+    """
+    parameters = {}
+
+    for parameter_name, record in (
+        getattr(
+            dashboard,
+            "iq_playback_parameter_widgets",
+            {},
+        )
+        or {}
+    ).items():
+        if not isinstance(
+            record,
+            dict,
+        ):
+            continue
+
+        widget = record.get(
+            "widget"
+        )
+        schema = record.get(
+            "schema",
+            {},
+        )
+
+        if widget is None:
+            continue
+
+        parameter_type = str(
+            schema.get(
+                "type",
+                "string",
+            )
+            or "string"
+        ).strip().lower()
+
+        if parameter_type == "label":
+            continue
+
+        parameters[
+            parameter_name
+        ] = _iq_playback_parameter_widget_value(
+            widget
+        )
+
+    hardware_display_name = str(
+        dashboard.ui
+        .comboBox_iq_playback_hardware
+        .currentText()
+        or ""
+    ).strip()
+
+    (
+        hardware_type,
+        hardware_uuid,
+        hardware_radio_name,
+        hardware_serial,
+        hardware_interface,
+        hardware_ip,
+        hardware_daughterboard,
+    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
+        dashboard,
+        hardware_display_name,
+        "iq",
+    )
+
+    raw_serial_hardware = {
+        "HackRF",
+        "RTL2832U",
+        "bladeRF",
+        "bladeRF 2.0",
+        "RSPduo",
+        "RSPdx",
+        "RSPdx R2",
+    }
+
+    zero_default_serial_hardware = {
+        "RTL2832U",
+        "bladeRF",
+        "bladeRF 2.0",
+        "RSPduo",
+        "RSPdx",
+        "RSPdx R2",
+    }
+
+    if hardware_serial:
+        if hardware_type in raw_serial_hardware:
+            hardware_serial_argument = hardware_serial
+
+        else:
+            hardware_serial_argument = (
+                f"serial={hardware_serial}"
+            )
+
+    else:
+        if hardware_type == "HackRF":
+            hardware_serial_argument = ""
+
+        elif hardware_type in zero_default_serial_hardware:
+            hardware_serial_argument = "0"
+
+        else:
+            hardware_serial_argument = "False"
+
+    filepath = str(
+        dashboard.ui
+        .textEdit_iq_playback_filepath
+        .toPlainText()
+        or ""
+    ).strip()
+
+    parameters.update(
+        {
+            "operation_id": str(
+                uuid.uuid4()
+            ),
+            "requester": "dashboard",
+            "filepath":
+                filepath,
+            "hardware_display_name":
+                hardware_display_name,
+            "hardware_type":
+                hardware_type,
+            "hardware_uuid":
+                hardware_uuid,
+            "hardware_radio_name":
+                hardware_radio_name,
+            "hardware_serial":
+                hardware_serial,
+            "hardware_serial_argument":
+                hardware_serial_argument,
+            "hardware_interface":
+                hardware_interface,
+            "hardware_ip":
+                hardware_ip,
+            "hardware_daughterboard":
+                hardware_daughterboard,
+        }
+    )
+
+    return parameters
+
+
+def handle_iq_playback_action_schema(
+    dashboard: QtCore.QObject,
+    plugin_name: str = "",
+    action_name: str = "",
+    node_uid: str = "",
+    parameters: list = None,
+):
+    """
+    Build the IQ Playback parameter panel from an action schema.
+    """
+    selected_node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if str(
+        node_uid
+        or ""
+    ).strip() != selected_node_uid:
+        dashboard.logger.debug(
+            "Ignoring IQ Playback action schema for a different Sensor Node."
+        )
+        return
+
+    selected_record = (
+        dashboard.ui
+        .comboBox_iq_playback_method
+        .currentData()
+    )
+
+    if not isinstance(
+        selected_record,
+        dict,
+    ):
+        return
+
+    selected_plugin = str(
+        selected_record.get(
+            "plugin",
+            "",
+        )
+        or ""
+    ).strip()
+
+    selected_action = str(
+        selected_record.get(
+            "action",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if (
+        selected_plugin != str(
+            plugin_name
+            or ""
+        ).strip()
+        or selected_action != str(
+            action_name
+            or ""
+        ).strip()
+    ):
+        dashboard.logger.debug(
+            "Ignoring IQ Playback action schema for a different action."
+        )
+        return
+
+    _clear_iq_playback_parameter_widgets(
+        dashboard
+    )
+
+    content = (
+        dashboard.ui
+        .scrollAreaWidgetContents_iq_playback_parameters
+    )
+    layout = content.layout()
+
+    if layout is None:
+        layout = QtWidgets.QFormLayout(
+            content
+        )
+        layout.setContentsMargins(
+            8,
+            8,
+            8,
+            8,
+        )
+        layout.setHorizontalSpacing(
+            10
+        )
+        layout.setVerticalSpacing(
+            6
+        )
+        layout.setFieldGrowthPolicy(
+            QtWidgets.QFormLayout.AllNonFixedFieldsGrow
+        )
+
+    normalized_parameters = (
+        parameters
+        if isinstance(
+            parameters,
+            list,
+        )
+        else []
+    )
+
+    dashboard.iq_playback_current_schema = {
+        "plugin":
+            selected_plugin,
+        "action":
+            selected_action,
+        "params":
+            normalized_parameters,
+    }
+
+    for parameter in normalized_parameters:
+        if not isinstance(
+            parameter,
+            dict,
+        ):
+            continue
+
+        name = str(
+            parameter.get(
+                "name",
+                "",
+            )
+            or ""
+        ).strip()
+
+        if not name:
+            continue
+
+        label_text = str(
+            parameter.get(
+                "label",
+                name,
+            )
+            or name
+        )
+
+        widget = _create_iq_playback_parameter_widget(
+            dashboard,
+            parameter,
+        )
+
+        parameter_type = str(
+            parameter.get(
+                "type",
+                "string",
+            )
+            or "string"
+        ).strip().lower()
+
+        if isinstance(
+            widget,
+            QtWidgets.QDoubleSpinBox,
+        ):
+            widget.setObjectName(
+                "doubleSpinBox_iq_playback_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QSpinBox,
+        ):
+            widget.setObjectName(
+                "spinBox_iq_playback_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QComboBox,
+        ):
+            widget.setObjectName(
+                "comboBox_iq_playback_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QCheckBox,
+        ):
+            widget.setObjectName(
+                "checkBox_iq_playback_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QLineEdit,
+        ):
+            widget.setObjectName(
+                "lineEdit_iq_playback_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QLabel,
+        ):
+            widget.setObjectName(
+                "label_iq_playback_parameter_info"
+            )
+
+        dashboard.iq_playback_parameter_widgets[
+            name
+        ] = {
+            "widget":
+                widget,
+            "schema":
+                dict(
+                    parameter
+                ),
+        }
+
+        label = QtWidgets.QLabel(
+            label_text,
+            content,
+        )
+        label.setObjectName(
+            "label_iq_playback_parameter"
+        )
+        label.setWordWrap(
+            True
+        )
+
+        layout.addRow(
+            label,
+            widget,
+        )
+
+    dashboard.iq_playback_selected_plugin = selected_plugin
+    dashboard.iq_playback_selected_action = selected_action
+    dashboard.iq_playback_customized = True
+
+    dashboard.ui.pushButton_iq_playback_customize.setText(
+        "Customize"
+    )
+    dashboard.ui.pushButton_iq_playback_customize.setEnabled(
+        True
+    )
+
+    dashboard.ui.pushButton_iq_playback_start_stop.setEnabled(
+        True
+    )
+
+    dashboard.ui.label2_iq_playback_status.setText(
+        "Idle"
+    )
+
+
+def _set_iq_playback_start_stop_button(
+    dashboard: QtCore.QObject,
+    running: bool,
+):
+    """
+    Update the IQ Playback Card 3 Play/Stop button.
+    """
+    button = (
+        dashboard.ui.pushButton_iq_playback_start_stop
+    )
+
+    button.setProperty(
+        "running",
+        bool(running),
+    )
+
+    button.setText(
+        "Stop"
+        if running
+        else "Play"
+    )
+
+    button.style().unpolish(
+        button
+    )
+    button.style().polish(
+        button
+    )
+    button.update()
+
+
+def _set_iq_playback_stopped(
+    dashboard: QtCore.QObject,
+    status_text: str = "Idle",
+):
+    """
+    Restore IQ Playback controls after Stop or natural completion.
+    """
+    dashboard.iq_playback_running = False
+    dashboard.iq_playback_start_pending = False
+    dashboard.iq_playback_node_uid = ""
+    dashboard.iq_playback_operation_id = ""
+
+    _set_iq_playback_start_stop_button(
+        dashboard,
+        False,
+    )
+
+    # Let the existing selected-node gate restore enabled/disabled controls.
+    update_iq_playback_selected_node_gate(
+        dashboard
+    )
+
+    # The gate may establish Idle/Unavailable. Apply the actual completion
+    # result after it so the user can see how the last run ended.
+    selected_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if selected_uid:
+        dashboard.ui.label2_iq_playback_status.setText(
+            status_text
+        )
+
+
+def update_iq_playback_status_from_selected_node(
+    dashboard: QtCore.QObject,
+    node_uid: str,
+    status: str,
+):
+    """
+    Update IQ Playback Card 3 from the selected Sensor Node status.
+
+    Natural completion matters for single-shot playback because there is no
+    manual Stop request for the Dashboard to await.
+    """
+    if not bool(
+        getattr(
+            dashboard,
+            "iq_playback_running",
+            False,
+        )
+    ):
+        return
+
+    tracked_node_uid = str(
+        getattr(
+            dashboard,
+            "iq_playback_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    node_uid_text = str(
+        node_uid
+        or ""
+    ).strip()
+
+    if (
+        tracked_node_uid
+        and node_uid_text
+        and tracked_node_uid != node_uid_text
+        and not tracked_node_uid.endswith(
+            node_uid_text
+        )
+        and not node_uid_text.endswith(
+            tracked_node_uid
+        )
+    ):
+        return
+
+    parameters = (
+        getattr(
+            dashboard,
+            "iq_playback_pending_parameters",
+            {},
+        )
+        or {}
+    )
+
+    playback_mode = str(
+        parameters.get(
+            "playback_mode",
+            "",
+        )
+        or ""
+    ).strip().lower()
+
+    # Continuous playback is intentionally stopped by the operator.
+    # Its UI is already restored locally after tacticalNodeStop() returns.
+    if playback_mode != "single":
+        return
+
+    status_text = str(
+        status
+        or ""
+    ).strip()
+
+    if status_text == "Idle":
+        _set_iq_playback_stopped(
+            dashboard,
+            status_text="Completed",
+        )
+        return
+
+    if status_text == "Error":
+        _set_iq_playback_stopped(
+            dashboard,
+            status_text="Error",
+        )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_PlaybackStartStopClicked(
+    dashboard: QtCore.QObject,
+):
+    """
+    Start or stop the selected IQ Playback plugin action.
+    """
+    node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    running = bool(
+        getattr(
+            dashboard,
+            "iq_playback_running",
+            False,
+        )
+    )
+
+    start_pending = bool(
+        getattr(
+            dashboard,
+            "iq_playback_start_pending",
+            False,
+        )
+    )
+
+    # ------------------------------------------------------------------
+    # Stop
+    # ------------------------------------------------------------------
+    if running or start_pending:
+        tracked_node_uid = str(
+            getattr(
+                dashboard,
+                "iq_playback_node_uid",
+                "",
+            )
+            or node_uid
+            or ""
+        ).strip()
+
+        if not tracked_node_uid:
+            return
+
+        dashboard.ui.label2_iq_playback_status.setText(
+            "Stopping..."
+        )
+        dashboard.ui.pushButton_iq_playback_start_stop.setEnabled(
+            False
+        )
+
+        try:
+            await dashboard.backend.tacticalNodeStop(
+                [tracked_node_uid]
+            )
+
+        except Exception as error:
+            dashboard.logger.error(
+                "Failed to stop IQ Playback operation: "
+                f"{error}"
+            )
+
+            dashboard.ui.label2_iq_playback_status.setText(
+                "Stop Failed"
+            )
+            dashboard.ui.pushButton_iq_playback_start_stop.setEnabled(
+                True
+            )
+            return
+
+        _set_iq_playback_stopped(
+            dashboard,
+            status_text="Stopped",
+        )
+        return
+
+    # ------------------------------------------------------------------
+    # Validate Start
+    # ------------------------------------------------------------------
+    if not node_uid:
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "Select a Sensor Node.",
+            )
+        )
+        return
+
+    if not bool(
+        getattr(
+            dashboard,
+            "iq_playback_customized",
+            False,
+        )
+    ):
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "Load the IQ Playback parameters before playing.",
+            )
+        )
+        return
+
+    plugin_name = str(
+        getattr(
+            dashboard,
+            "iq_playback_selected_plugin",
+            "",
+        )
+        or ""
+    ).strip()
+
+    action_name = str(
+        getattr(
+            dashboard,
+            "iq_playback_selected_action",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not plugin_name or not action_name:
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "Select an IQ Playback action.",
+            )
+        )
+        return
+
+    filepath = str(
+        dashboard.ui
+        .textEdit_iq_playback_filepath
+        .toPlainText()
+        or ""
+    ).strip()
+
+    if not filepath:
+        dashboard.ui.label2_iq_playback_status.setText(
+            "File Required"
+        )
+
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "Select or enter an IQ playback filepath.",
+            )
+        )
+        return
+
+    try:
+        parameters = (
+            _collect_iq_playback_action_parameters(
+                dashboard
+            )
+        )
+
+    except Exception as error:
+        dashboard.logger.error(
+            "Failed to collect IQ Playback parameters: "
+            f"{error}"
+        )
+
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "One or more IQ Playback parameters are invalid.",
+            )
+        )
+        return
+
+    dashboard.iq_playback_pending_parameters = dict(
+        parameters
+    )
+    dashboard.iq_playback_start_pending = True
+    dashboard.iq_playback_running = False
+    dashboard.iq_playback_node_uid = node_uid
+
+    # This is the request-side operation ID. The Sensor Node operation
+    # framework has its own authoritative opid, which is captured from the
+    # operation-started callback below.
+    dashboard.iq_playback_operation_id = ""
+
+    _set_iq_playback_start_stop_button(
+        dashboard,
+        True,
+    )
+
+    dashboard.ui.label2_iq_playback_status.setText(
+        "Starting..."
+    )
+
+    # Disable Setup, Parameters, and filepath while starting/running.
+    dashboard.ui.comboBox_iq_playback_hardware.setEnabled(
+        False
+    )
+    dashboard.ui.comboBox_iq_playback_method.setEnabled(
+        False
+    )
+    dashboard.ui.pushButton_iq_playback_query.setEnabled(
+        False
+    )
+    dashboard.ui.pushButton_iq_playback_customize.setEnabled(
+        False
+    )
+    dashboard.ui.textEdit_iq_playback_filepath.setEnabled(
+        False
+    )
+
+    for parameter_record in (
+        getattr(
+            dashboard,
+            "iq_playback_parameter_widgets",
+            {},
+        )
+        or {}
+    ).values():
+        if not isinstance(
+            parameter_record,
+            dict,
+        ):
+            continue
+
+        widget = parameter_record.get(
+            "widget"
+        )
+
+        if widget is not None:
+            widget.setEnabled(
+                False
+            )
+
+    # Stop should be available immediately, including during startup.
+    dashboard.ui.pushButton_iq_playback_start_stop.setEnabled(
+        True
+    )
+
+    dashboard.logger.info(
+        "Starting IQ Playback: "
+        f"plugin={plugin_name}, "
+        f"action={action_name}, "
+        f"node_uid={node_uid}, "
+        f"filepath={filepath}"
+    )
+
+    try:
+        await dashboard.backend.tacticalNodeExecute(
+            [node_uid],
+            plugin_name,
+            action_name,
+            parameters,
+        )
+
+    except Exception as error:
+        dashboard.logger.error(
+            "Failed to start IQ Playback operation: "
+            f"{error}"
+        )
+
+        _set_iq_playback_stopped(
+            dashboard,
+            status_text="Start Failed",
+        )
+        return
+
+    dashboard.iq_playback_start_pending = False
+    dashboard.iq_playback_running = True
+
+    dashboard.ui.label2_iq_playback_status.setText(
+        "Playing..."
+    )
+
+    _set_iq_playback_start_stop_button(
+        dashboard,
+        True,
+    )
+    
+
+def initialize_iq_playback_controls(
+    dashboard: QtCore.QObject,
+):
+    """
+    Initialize IQ Playback controls.
+    """
+    dashboard.iq_playback_running = False
+    dashboard.iq_playback_start_pending = False
+    dashboard.iq_playback_node_uid = ""
+    dashboard.iq_playback_operation_id = ""
+    dashboard.iq_playback_pending_parameters = {}
+
+    dashboard.iq_playback_method_actions = []
+    dashboard.iq_playback_selected_plugin = ""
+    dashboard.iq_playback_selected_action = ""
+    dashboard.iq_playback_parameter_widgets = {}
+    dashboard.iq_playback_current_schema = {}
+    dashboard.iq_playback_customized = False
+
+    dashboard.iq_playback_action_query_pending = False
+    dashboard.iq_playback_action_query_context = ""
+    dashboard.iq_playback_action_query_node_uid = ""
+
+    dashboard.ui.stackedWidget_iq_playback.setCurrentWidget(
+        dashboard.ui.page_iq_playback_no_node
+    )
+
+    select_node_icon_path = os.path.join(
+        fissure.utils.UI_DIR,
+        "Icons",
+        "select_node.png",
+    )
+
+    if os.path.isfile(
+        select_node_icon_path
+    ):
+        select_node_pixmap = QtGui.QPixmap(
+            select_node_icon_path
+        )
+
+        dashboard.ui.label_iq_playback_select_sensor_node_image.setPixmap(
+            select_node_pixmap
+        )
+        dashboard.ui.label_iq_playback_select_sensor_node_image.setScaledContents(
+            False
+        )
+        dashboard.ui.label_iq_playback_select_sensor_node_image.setAlignment(
+            QtCore.Qt.AlignCenter
+        )
+
+    step_badges = (
+        (
+            dashboard.ui.label_iq_playback_setup_badge,
+            "1",
+        ),
+        (
+            dashboard.ui.label_iq_playback_parameters_badge,
+            "2",
+        ),
+        (
+            dashboard.ui.label_iq_playback_run_badge,
+            "3",
+        ),
+    )
+
+    for badge, badge_text in step_badges:
+        badge.setText(
+            badge_text
+        )
+        badge.setAlignment(
+            QtCore.Qt.AlignCenter
+        )
+
+    dashboard.ui.comboBox_iq_playback_method.clear()
+    dashboard.ui.comboBox_iq_playback_method.setEnabled(
+        False
+    )
+
+    dashboard.ui.pushButton_iq_playback_query.setText(
+        "Query Actions"
+    )
+    dashboard.ui.pushButton_iq_playback_query.setEnabled(
+        False
+    )
+
+    dashboard.ui.pushButton_iq_playback_customize.setText(
+        "Customize"
+    )
+    dashboard.ui.pushButton_iq_playback_customize.setEnabled(
+        False
+    )
+
+    dashboard.ui.pushButton_iq_playback_start_stop.setText(
+        "Play"
+    )
+    dashboard.ui.pushButton_iq_playback_start_stop.setEnabled(
+        False
+    )
+    dashboard.ui.pushButton_iq_playback_start_stop.setProperty(
+        "running",
+        False,
+    )
+
+    dashboard.ui.label2_iq_playback_status.setText(
+        "Unavailable"
+    )
+
+    dashboard.ui.textEdit_iq_playback_filepath.setReadOnly(
+        False
+    )
+
+    scroll_area = getattr(
+        dashboard.ui,
+        "scrollArea_iq_playback_parameters",
+        None,
+    )
+
+    if scroll_area is not None:
+        scroll_area.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff
+        )
+        scroll_area.setVerticalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAsNeeded
+        )
+
+        parameter_widgets = [
+            scroll_area,
+            scroll_area.viewport(),
+            scroll_area.widget(),
+        ]
+
+        for widget in parameter_widgets:
+            if widget is None:
+                continue
+
+            widget.setProperty(
+                "uiRole",
+                "parameterPanel",
+            )
+            widget.style().unpolish(
+                widget
+            )
+            widget.style().polish(
+                widget
+            )
+            widget.update()
+
+    _clear_iq_playback_parameter_widgets(
+        dashboard
+    )
+
+    update_iq_playback_selected_node_gate(
+        dashboard
+    )
+
+
+def update_iq_playback_selected_node_gate(
+    dashboard: QtCore.QObject,
+):
+    """
+    Show IQ Playback controls only when an online Sensor Node is selected.
+
+    This function controls only the INNER Playback stack. It must never change
+    the user's currently selected outer IQ Data page.
+    """
+    selected_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    has_selected_node = bool(
+        selected_uid
+    )
+
+    if has_selected_node:
+        node_states = (
+            getattr(
+                dashboard,
+                "node_states",
+                {},
+            )
+            or {}
+        )
+
+        node_state = node_states.get(
+            selected_uid
+        )
+
+        if (
+            isinstance(
+                node_state,
+                dict,
+            )
+            and node_state.get(
+                "connected"
+            ) is False
+        ):
+            has_selected_node = False
+
+    dashboard.ui.stackedWidget_iq_playback.setCurrentWidget(
+        dashboard.ui.page_iq_playback_controls
+        if has_selected_node
+        else dashboard.ui.page_iq_playback_no_node
+    )
+
+    hardware_combo = (
+        dashboard.ui.comboBox_iq_playback_hardware
+    )
+    method_combo = (
+        dashboard.ui.comboBox_iq_playback_method
+    )
+    query_button = (
+        dashboard.ui.pushButton_iq_playback_query
+    )
+    customize_button = (
+        dashboard.ui.pushButton_iq_playback_customize
+    )
+    start_button = (
+        dashboard.ui.pushButton_iq_playback_start_stop
+    )
+    filepath_edit = (
+        dashboard.ui.textEdit_iq_playback_filepath
+    )
+
+    if bool(
+        getattr(
+            dashboard,
+            "iq_playback_running",
+            False,
+        )
+        or getattr(
+            dashboard,
+            "iq_playback_start_pending",
+            False,
+        )
+    ):
+        hardware_combo.setEnabled(
+            False
+        )
+        method_combo.setEnabled(
+            False
+        )
+        query_button.setEnabled(
+            False
+        )
+        customize_button.setEnabled(
+            False
+        )
+        filepath_edit.setEnabled(
+            False
+        )
+        start_button.setEnabled(
+            True
+        )
+        return
+
+    hardware_combo.setEnabled(
+        has_selected_node
+        and hardware_combo.count() > 0
+    )
+
+    method_combo.setEnabled(
+        has_selected_node
+        and method_combo.count() > 0
+    )
+
+    query_button.setEnabled(
+        has_selected_node
+        and hardware_combo.count() > 0
+    )
+
+    customize_button.setEnabled(
+        has_selected_node
+        and method_combo.count() > 0
+    )
+
+    filepath_edit.setEnabled(
+        has_selected_node
+    )
+    filepath_edit.setReadOnly(
+        False
+    )
+
+    start_button.setText(
+        "Play"
+    )
+    start_button.setEnabled(
+        has_selected_node
+        and bool(
+            getattr(
+                dashboard,
+                "iq_playback_customized",
+                False,
+            )
+        )
+    )
+
+    current_status = str(
+        dashboard.ui.label2_iq_playback_status.text()
+        or ""
+    ).strip()
+
+    if not has_selected_node:
+        dashboard.ui.label2_iq_playback_status.setText(
+            "Unavailable"
+        )
+
+    elif current_status in {
+        "",
+        "Unavailable",
+    }:
+        dashboard.ui.label2_iq_playback_status.setText(
+            "Idle"
+        )
+
+    for parameter_record in (
+        getattr(
+            dashboard,
+            "iq_playback_parameter_widgets",
+            {},
+        )
+        or {}
+    ).values():
+        if not isinstance(
+            parameter_record,
+            dict,
+        ):
+            continue
+
+        widget = parameter_record.get(
+            "widget"
+        )
+
+        if widget is not None:
+            widget.setEnabled(
+                has_selected_node
             )
 
 
@@ -8736,7 +10061,7 @@ def initialize_iq_record_controls(
     )
 
     dashboard.ui.pushButton_iq_record_query.setText(
-        "Query"
+        "Query Actions"
     )
     dashboard.ui.pushButton_iq_record_query.setEnabled(
         False
@@ -8820,6 +10145,9 @@ def update_iq_record_selected_node_gate(
 ):
     """
     Show IQ Record controls only when an online Sensor Node is selected.
+
+    This function controls only the INNER Record stack. It must never change
+    the user's currently selected outer IQ Data page.
     """
     selected_uid = str(
         getattr(
@@ -8859,10 +10187,6 @@ def update_iq_record_selected_node_gate(
         ):
             has_selected_node = False
 
-    dashboard.ui.stackedWidget3_iq.setCurrentWidget(
-        dashboard.ui.page_iq_record
-    )
-
     dashboard.ui.stackedWidget_iq_record.setCurrentWidget(
         dashboard.ui.page_iq_record_controls
         if has_selected_node
@@ -8870,7 +10194,7 @@ def update_iq_record_selected_node_gate(
     )
 
     hardware_combo = (
-        dashboard.ui.comboBox_iq_record_hardware_2
+        dashboard.ui.comboBox_iq_record_hardware
     )
     method_combo = (
         dashboard.ui.comboBox_iq_record_method
@@ -8914,58 +10238,29 @@ def update_iq_record_selected_node_gate(
         False,
     )
 
-    if not has_selected_node:
-        hardware_combo.blockSignals(
-            True
-        )
-        hardware_combo.clear()
-        hardware_combo.blockSignals(
-            False
-        )
-
-        method_combo.blockSignals(
-            True
-        )
-        method_combo.clear()
-        method_combo.blockSignals(
-            False
-        )
-
-        hardware_combo.setEnabled(
-            False
-        )
-        method_combo.setEnabled(
-            False
-        )
-        query_button.setEnabled(
-            False
-        )
-        customize_button.setEnabled(
-            False
-        )
-        start_button.setEnabled(
-            False
-        )
-
-        dashboard.ui.label2_iq_record_status.setText(
-            "Unavailable"
-        )
-        return
-
     hardware_combo.setEnabled(
-        hardware_combo.count() > 0
+        has_selected_node
+        and hardware_combo.count() > 0
     )
+
     method_combo.setEnabled(
-        method_combo.count() > 0
+        has_selected_node
+        and method_combo.count() > 0
     )
+
     query_button.setEnabled(
-        hardware_combo.count() > 0
+        has_selected_node
+        and hardware_combo.count() > 0
     )
+
     customize_button.setEnabled(
-        method_combo.count() > 0
+        has_selected_node
+        and method_combo.count() > 0
     )
+
     start_button.setEnabled(
-        bool(
+        has_selected_node
+        and bool(
             getattr(
                 dashboard,
                 "iq_record_customized",
@@ -8976,4 +10271,29 @@ def update_iq_record_selected_node_gate(
 
     dashboard.ui.label2_iq_record_status.setText(
         "Idle"
+        if has_selected_node
+        else "Unavailable"
     )
+
+    for parameter_record in (
+        getattr(
+            dashboard,
+            "iq_record_parameter_widgets",
+            {},
+        )
+        or {}
+    ).values():
+        if not isinstance(
+            parameter_record,
+            dict,
+        ):
+            continue
+
+        widget = parameter_record.get(
+            "widget"
+        )
+
+        if widget is not None:
+            widget.setEnabled(
+                has_selected_node
+            )

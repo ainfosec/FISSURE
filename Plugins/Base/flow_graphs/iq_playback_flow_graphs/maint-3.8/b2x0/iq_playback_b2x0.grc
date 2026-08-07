@@ -152,24 +152,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 212.0]
-    rotation: 0
-    state: true
-- name: ip_address
-  id: parameter
-  parameters:
-    alias: ''
-    comment: ''
-    hide: none
-    label: ''
-    short_id: ''
-    type: str
-    value: '"192.168.40.2"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1280, 132.0]
+    coordinate: [1272, 12.0]
     rotation: 0
     state: true
 - name: qtgui_time_sink_x_0
@@ -380,7 +363,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 452.0]
+    coordinate: [1272, 252.0]
     rotation: 0
     state: true
 - name: serial
@@ -397,7 +380,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 612.0]
+    coordinate: [1272, 412.0]
     rotation: 0
     state: true
 - name: tx_antenna
@@ -414,7 +397,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 692.0]
+    coordinate: [1272, 492.0]
     rotation: 0
     state: true
 - name: tx_channel
@@ -431,7 +414,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 292.0]
+    coordinate: [1272, 92.0]
     rotation: 0
     state: true
 - name: tx_frequency
@@ -448,7 +431,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 372.0]
+    coordinate: [1272, 172.0]
     rotation: 0
     state: true
 - name: tx_gain
@@ -465,7 +448,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1280, 532.0]
+    coordinate: [1272, 332.0]
     rotation: 0
     state: true
 - name: uhd_usrp_sink_0

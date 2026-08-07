@@ -1,6 +1,24 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-07
+
+Replace the legacy IQ playback workflow with plugin-based multi-hardware playback
+
+### Added
+
+- Added a guided IQ Playback workflow for selecting playback hardware and actions, customizing operation parameters, choosing an IQ file, and monitoring playback status.
+- Added Base plugin IQ playback flow graphs for supported GNU Radio 3.8 and 3.10 transmit hardware, including UHD, bladeRF, HackRF, LimeSDR, PlutoSDR, and CaribouLite devices.
+- Added hardware-aware `iq_playback` action and operation mappings with continuous and single-shot playback modes.
+
+### Changed
+
+- Updated IQ playback to execute through the Base plugin action and operation framework instead of the legacy Dashboard-managed flow graph path.
+- Updated playback operations to select flow graphs by hardware type, playback mode, and GNU Radio library version while adapting to hardware-specific constructor parameters.
+- Updated single-shot playback to return the Dashboard to a completed state when the selected Sensor Node reports the operation has finished.
+- Updated the IQ Playback interface and styles to match the newer Dashboard workflow patterns.
+- Removed the legacy IQ playback hardware table, fixed controls, status widgets, and playback callbacks replaced by the action-driven workflow.
+
 ## 2026-8-06
 
 Replace the legacy IQ recording workflow with plugin-based artifact recording

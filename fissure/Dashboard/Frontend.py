@@ -850,7 +850,9 @@ class Dashboard(QtWidgets.QMainWindow):
         self.ui.textEdit_iq_ofdm_phase_adjustment_cycle_end2.setPlainText("200")
 
         self.ui.textEdit_iq_strip_amplitude.setPlainText(".001")
-        self.ui.textEdit_iq_strip_output.setPlainText(str(fissure.utils.IQ_RECORDINGS_DIR))
+        self.ui.textEdit_iq_strip_output.setPlainText(
+            str(fissure.utils.IQ_RECORDINGS_DIR)
+        )
 
         # IQ Record
         try:
@@ -862,6 +864,16 @@ class Dashboard(QtWidgets.QMainWindow):
                 "Could not initialize IQ Record controls."
             )
 
+        # IQ Playback
+        try:
+            IQDataTabSlots.initialize_iq_playback_controls(
+                self
+            )
+        except Exception:
+            self.logger.exception(
+                "Could not initialize IQ Playback controls."
+            )
+
         # Open the IQ Record page and initialize shared IQ file-view state.
         IQDataTabSlots._slotIQ_TabClicked(
             self,
@@ -871,31 +883,17 @@ class Dashboard(QtWidgets.QMainWindow):
         self.ui.label_iq_folder.setVisible(False)
         self.iq_plot_range_start = 0
         self.iq_plot_range_end = 0
-        
-        # Set up IQ Playback Table
-        new_iq_playback_combobox3 = QtWidgets.QComboBox(self, objectName="comboBox2_")
-        self.ui.tableWidget_iq_playback.setCellWidget(0, 5, new_iq_playback_combobox3)
-        new_iq_playback_combobox3.addItem("Complex")
-        # new_iq_combobox4.addItem("Float/Float 32")
-        # new_iq_combobox4.addItem("Int/Int 32")
-        # new_iq_combobox4.addItem("Short/Int 16")
-        # new_iq_combobox4.addItem("Byte/Int 8")
-        new_iq_playback_combobox3.setCurrentIndex(0)
-
-        new_iq_playback_combobox4 = QtWidgets.QComboBox(self, objectName="comboBox2_")
-        self.ui.tableWidget_iq_playback.setCellWidget(0, 6, new_iq_playback_combobox4)
-        new_iq_playback_combobox4.addItem("Yes")
-        new_iq_playback_combobox4.addItem("No")
-        new_iq_playback_combobox4.setCurrentIndex(0)
-
-        self.ui.tableWidget_iq_playback.resizeColumnsToContents()
 
         self.ui.pushButton_iq_cursor1.setCheckable(True)
         self.fft_data = None
 
         # Load the Files in the Listbox
-        self.ui.comboBox3_iq_folders.addItem(str(fissure.utils.IQ_RECORDINGS_DIR))
-        self.ui.comboBox3_iq_folders.addItem(str(fissure.utils.ARCHIVE_DIR))
+        self.ui.comboBox3_iq_folders.addItem(
+            str(fissure.utils.IQ_RECORDINGS_DIR)
+        )
+        self.ui.comboBox3_iq_folders.addItem(
+            str(fissure.utils.ARCHIVE_DIR)
+        )
         self.ui.comboBox3_iq_folders.setCurrentIndex(0)
 
         # Hide Range Buttons
@@ -908,43 +906,81 @@ class Dashboard(QtWidgets.QMainWindow):
 
         # Settings Icon
         self.ui.pushButton_iq_FunctionsSettings.setIcon(
-            QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "settings.png"))
+            QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "settings.png",
+                )
+            )
         )
 
         # IQ Artifact Browser Data Type
         self.ui.comboBox_iq_artifacts_data_type.blockSignals(True)
         self.ui.comboBox_iq_artifacts_data_type.clear()
 
-        for idx in range(self.ui.comboBox_iq_data_type.count()):
+        for idx in range(
+            self.ui.comboBox_iq_data_type.count()
+        ):
             self.ui.comboBox_iq_artifacts_data_type.addItem(
-                self.ui.comboBox_iq_data_type.itemText(idx)
+                self.ui.comboBox_iq_data_type.itemText(
+                    idx
+                )
             )
 
-        if self.ui.comboBox_iq_artifacts_data_type.findText("Complex Float 32") >= 0:
-            self.ui.comboBox_iq_artifacts_data_type.setCurrentText("Complex Float 32")
+        if (
+            self.ui.comboBox_iq_artifacts_data_type.findText(
+                "Complex Float 32"
+            )
+            >= 0
+        ):
+            self.ui.comboBox_iq_artifacts_data_type.setCurrentText(
+                "Complex Float 32"
+            )
 
         self.ui.comboBox_iq_artifacts_data_type.blockSignals(False)
 
         # Initial local artifact scan
-        IQDataTabSlots._slotIQ_ArtifactsRefreshClicked(self)
+        IQDataTabSlots._slotIQ_ArtifactsRefreshClicked(
+            self
+        )
 
         # Load Inspection File Flow Graphs
-        get_inspection_file_fgs = fissure.utils.library.getInspectionFlowGraphFilename(
-            self.backend.library, 
-            "File", 
-            fissure.utils.get_library_version()
+        get_inspection_file_fgs = (
+            fissure.utils.library.getInspectionFlowGraphFilename(
+                self.backend.library,
+                "File",
+                fissure.utils.get_library_version(),
+            )
         )
-        for n in sorted(get_inspection_file_fgs, key=str.lower):
+
+        for n in sorted(
+            get_inspection_file_fgs,
+            key=str.lower,
+        ):
             if len(n) > 0:
-                self.ui.listWidget_iq_inspection_fg_file.addItem(n)
-        self.ui.listWidget_iq_inspection_fg_file.setCurrentRow(0)
+                self.ui.listWidget_iq_inspection_fg_file.addItem(
+                    n
+                )
+
+        self.ui.listWidget_iq_inspection_fg_file.setCurrentRow(
+            0
+        )
 
         # SigMF Dictionary
-        global_dict = {"core:datatype": "cf32_le", "core:version": "1.0.0"}
-        captures_dict = {"core:sample_start": "0"}
+        global_dict = {
+            "core:datatype": "cf32_le",
+            "core:version": "1.0.0",
+        }
+        captures_dict = {
+            "core:sample_start": "0"
+        }
+
         self.sigmf_dict = {}
         self.sigmf_dict["global"] = global_dict
-        self.sigmf_dict["captures"] = [captures_dict]
+        self.sigmf_dict["captures"] = [
+            captures_dict
+        ]
         self.sigmf_dict["annotations"] = []
 
         # OOK Tab Example Values
@@ -954,7 +990,9 @@ class Dashboard(QtWidgets.QMainWindow):
         self.ui.textEdit_iq_ook_sample_rate.setPlainText("1")
         self.ui.textEdit_iq_ook_chip0_duration.setPlainText("5")
         self.ui.textEdit_iq_ook_chip1_duration.setPlainText("5")
-        self.ui.textEdit_iq_ook_sequence.setPlainText("10101010101010101010")
+        self.ui.textEdit_iq_ook_sequence.setPlainText(
+            "10101010101010101010"
+        )
 
 
     def __init_Archive__(self):
@@ -1668,14 +1706,28 @@ class Dashboard(QtWidgets.QMainWindow):
         """
         Configure IQ hardware selectors for the selected Sensor Node.
 
-        Preserve each selector's current hardware when periodic node-state updates
-        refresh the selected-node hardware list.
+        Preserve each selector's current hardware when periodic node-state
+        updates refresh the selected-node hardware list.
         """
-        iq_hardware_combos = [
-            self.ui.comboBox_iq_record_hardware_2,
-            self.ui.comboBox_iq_playback_hardware,
-            self.ui.comboBox_iq_inspection_hardware,
+        iq_hardware_combos = []
+
+        combo_names = [
+            "comboBox_iq_record_hardware",
+            "comboBox_iq_playback_hardware",
+            "comboBox_iq_inspection_hardware",
         ]
+
+        for combo_name in combo_names:
+            combo = getattr(
+                self.ui,
+                combo_name,
+                None,
+            )
+
+            if combo is not None:
+                iq_hardware_combos.append(
+                    combo
+                )
 
         get_sensor_node_hardware = []
 
@@ -1689,18 +1741,27 @@ class Dashboard(QtWidgets.QMainWindow):
 
         for combo in iq_hardware_combos:
             current_text = str(
-                combo.currentText() or ""
+                combo.currentText()
+                or ""
             ).strip()
 
             existing_items = [
-                str(combo.itemText(index))
-                for index in range(combo.count())
+                str(
+                    combo.itemText(
+                        index
+                    )
+                )
+                for index in range(
+                    combo.count()
+                )
             ]
 
             if existing_items == get_sensor_node_hardware:
                 continue
 
-            combo.blockSignals(True)
+            combo.blockSignals(
+                True
+            )
 
             try:
                 combo.clear()
@@ -1718,16 +1779,27 @@ class Dashboard(QtWidgets.QMainWindow):
                         combo.setCurrentIndex(
                             restored_index
                         )
+
                     elif combo.count() > 0:
-                        combo.setCurrentIndex(0)
+                        combo.setCurrentIndex(
+                            0
+                        )
 
                 elif combo.count() > 0:
-                    combo.setCurrentIndex(0)
+                    combo.setCurrentIndex(
+                        0
+                    )
 
             finally:
-                combo.blockSignals(False)
+                combo.blockSignals(
+                    False
+                )
 
         IQDataTabSlots.update_iq_record_selected_node_gate(
+            self
+        )
+
+        IQDataTabSlots.update_iq_playback_selected_node_gate(
             self
         )
 
@@ -3763,14 +3835,17 @@ def connect_iq_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_iq_filter_type.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_FilterTypeChanged(dashboard)
     )
-    dashboard.ui.comboBox_iq_record_hardware_2.currentIndexChanged.connect(
+    dashboard.ui.comboBox_iq_record_hardware.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_RecordActionHardwareChanged(dashboard)
     )
     dashboard.ui.comboBox_iq_record_method.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_RecordMethodChanged(dashboard)
     )
     dashboard.ui.comboBox_iq_playback_hardware.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_PlaybackHardwareChanged(dashboard)
+        lambda: IQDataTabSlots._slotIQ_PlaybackActionHardwareChanged(dashboard)
+    )
+    dashboard.ui.comboBox_iq_playback_method.currentIndexChanged.connect(
+        lambda: IQDataTabSlots._slotIQ_PlaybackMethodChanged(dashboard)
     )
     dashboard.ui.comboBox_iq_inspection_hardware.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_InspectionHardwareChanged(dashboard)
@@ -4065,7 +4140,15 @@ def connect_iq_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_iq_record_download_artifact.clicked.connect(
         lambda: IQDataTabSlots._slotIQ_RecordDownloadArtifactClicked(dashboard)
     )
-    dashboard.ui.pushButton_iq_playback.clicked.connect(lambda: IQDataTabSlots._slotIQ_PlaybackClicked(dashboard))
+    dashboard.ui.pushButton_iq_playback_query.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_PlaybackQueryClicked(dashboard)
+    )
+    dashboard.ui.pushButton_iq_playback_customize.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_PlaybackCustomizeClicked(dashboard)
+    )
+    dashboard.ui.pushButton_iq_playback_start_stop.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_PlaybackStartStopClicked(dashboard)
+    )
     dashboard.ui.pushButton_iq_inspection_fg_start.clicked.connect(lambda: IQDataTabSlots._slotIQ_InspectionFG_StartClicked(dashboard))
     dashboard.ui.pushButton_iq_inspection_fg_file_start.clicked.connect(lambda: IQDataTabSlots._slotIQ_InspectionFG_FileStartClicked(dashboard))
     dashboard.ui.pushButton_iq_iqengine.clicked.connect(lambda: IQDataTabSlots._slotIQ_IQEngineClicked(dashboard))

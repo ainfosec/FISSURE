@@ -315,6 +315,16 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
             "Could not update IQ Record selected-node gate "
             f"after recallSettingsReturn: {e}"
         )
+    
+    try:
+        IQDataTabSlots.update_iq_playback_selected_node_gate(
+            component.frontend
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update IQ Playback selected-node gate "
+            f"after recallSettingsReturn: {e}"
+        )
 
 
 async def componentDisconnected(component: object, component_name=""):
@@ -420,21 +430,6 @@ async def tsiFE_Finished(component: object, table_strings=[]):
     component.frontend.ui.pushButton_tsi_fe_operation_start.setText("Start")
 
 
-async def flowGraphStartedIQ_Playback(component: object):
-    """ 
-    This will be called in response to "Flow Graph Started IQ" Messages from Sensor Node.
-    The purpose is to check the enable the cancel buttons and change the status messages to indicate the IQ flow graph is running.
-    """       
-    # Update the Pushbutton and Label
-    component.frontend.ui.pushButton_iq_playback.setEnabled(True)
-    component.frontend.ui.label2_iq_playback_status.setText("Running...")
-
-    # Update the Status Dialog
-    if component.frontend.active_sensor_node > -1:
-        component.frontend.statusbar_text[component.frontend.active_sensor_node][4] = 'Running Flow Graph...'
-        component.frontend.refreshStatusBarText()
-
-
 async def flowGraphStartedIQ_Inspection(component: object):
     """
     Inspection flow graph started at sensor node.
@@ -462,18 +457,6 @@ async def flowGraphFinishedIQ_Inspection(component: object):
     """
     # Future Use
     pass
-
-
-async def flowGraphFinishedIQ_Playback(component: object):
-    """ 
-    Called upon cancelling IQ playback. Changes the status and button text.
-    """
-    # Change Status Label and Record Button Text
-    component.frontend.ui.label2_iq_playback_status.setText("Not Running")
-    component.frontend.ui.pushButton_iq_playback.setText("Play")
-    component.frontend.ui.pushButton_iq_playback.setEnabled(True)
-    # component.frontend.statusbar_text[sensor_node_id][4] = 'Not Recording'
-    component.frontend.refreshStatusBarText()
 
 
 async def flowGraphFinishedSniffer(component: object, category=""):
@@ -1244,6 +1227,76 @@ async def responsePluginOperationStarted(
             f"operation id: {error}"
         )
 
+    # IQ Playback lifecycle only.
+    operation_name = str(
+        operation or ""
+    ).strip()
+
+    if operation_name not in {
+        "iq_playback",
+        "iq_playback.py",
+    }:
+        return
+
+    frontend = component.frontend
+
+    if not bool(
+        getattr(
+            frontend,
+            "iq_playback_start_pending",
+            False,
+        )
+    ):
+        return
+
+    tracked_node_uid = str(
+        getattr(
+            frontend,
+            "iq_playback_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if (
+        tracked_node_uid
+        and str(
+            node_uid or ""
+        ).strip() != tracked_node_uid
+    ):
+        return
+
+    frontend.iq_playback_operation_id = str(
+        operation_id or ""
+    )
+    frontend.iq_playback_start_pending = False
+    frontend.iq_playback_running = True
+
+    frontend.ui.label2_iq_playback_status.setText(
+        "Playing..."
+    )
+
+    button = (
+        frontend.ui.pushButton_iq_playback_start_stop
+    )
+    button.setText(
+        "Stop"
+    )
+    button.setEnabled(
+        True
+    )
+    button.setProperty(
+        "running",
+        True,
+    )
+    button.style().unpolish(
+        button
+    )
+    button.style().polish(
+        button
+    )
+    button.update()
+
 
 async def responsePluginOperationStopped(
     component: object,
@@ -1283,6 +1336,85 @@ async def responsePluginOperationStopped(
                 item
             )
         )
+
+    # IQ Playback lifecycle only.
+    operation_name = str(
+        operation or ""
+    ).strip()
+
+    if operation_name not in {
+        "iq_playback",
+        "iq_playback.py",
+    }:
+        return
+
+    frontend = component.frontend
+
+    playback_active = bool(
+        getattr(
+            frontend,
+            "iq_playback_running",
+            False,
+        )
+        or getattr(
+            frontend,
+            "iq_playback_start_pending",
+            False,
+        )
+    )
+
+    if not playback_active:
+        return
+
+    tracked_operation_id = str(
+        getattr(
+            frontend,
+            "iq_playback_operation_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    tracked_node_uid = str(
+        getattr(
+            frontend,
+            "iq_playback_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if (
+        tracked_operation_id
+        and str(
+            operation_id or ""
+        ).strip() != tracked_operation_id
+    ):
+        return
+
+    if (
+        tracked_node_uid
+        and str(
+            node_uid or ""
+        ).strip() != tracked_node_uid
+    ):
+        return
+
+    was_stopping = (
+        str(
+            frontend.ui.label2_iq_playback_status.text()
+            or ""
+        ).strip() == "Stopping..."
+    )
+
+    IQDataTabSlots._set_iq_playback_stopped(
+        frontend,
+        status_text=(
+            "Stopped"
+            if was_stopping
+            else "Completed"
+        ),
+    )
 
 
 async def savePlugin(component: object, plugin_name: str, plugin_data: str) -> None:
@@ -1960,6 +2092,21 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         component.logger.debug(
             f"Could not update TSI Conditioner status: {e}"
         )
+    
+    try:
+        IQDataTabSlots.update_iq_playback_status_from_selected_node(
+            frontend,
+            node_uid=node_uid,
+            status=node.get(
+                "status",
+                "",
+            ),
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update IQ Playback status "
+            f"from selected node: {e}"
+        )
 
     try:
         TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
@@ -2549,8 +2696,11 @@ async def queryPluginActionsResults(
         return
 
     if context.startswith("iq.playback"):
-        component.logger.debug(
-            f"Unhandled IQ Playback action query context={context}, actions={actions}"
+        IQDataTabSlots.handle_iq_playback_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
         )
         return
 
@@ -2630,9 +2780,12 @@ async def queryPluginActionSchemaResults(
         return
 
     if context.startswith("iq.playback"):
-        component.logger.debug(
-            f"Unhandled IQ Playback action schema context={context}, "
-            f"plugin={plugin_name}, action={action_name}"
+        IQDataTabSlots.handle_iq_playback_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
         )
         return
 
