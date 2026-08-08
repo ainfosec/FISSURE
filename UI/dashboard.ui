@@ -22964,7 +22964,7 @@ p, li { white-space: pre-wrap; }
       <string>Playback</string>
      </property>
     </widget>
-    <widget class="QStackedWidget" name="stackedWidget3_iq">
+    <widget class="QStackedWidget" name="stackedWidget3_iq_pages">
      <property name="geometry">
       <rect>
        <x>-1</x>
@@ -23914,373 +23914,500 @@ p, li { white-space: pre-wrap; }
        </widget>
       </widget>
      </widget>
-     <widget class="QWidget" name="Inspection">
-      <widget class="QFrame" name="frame1_45">
+     <widget class="QWidget" name="page_iq_inspection">
+      <widget class="QStackedWidget" name="stackedWidget_iq_inspection">
        <property name="geometry">
         <rect>
-         <x>615</x>
-         <y>25</y>
-         <width>595</width>
-         <height>180</height>
+         <x>0</x>
+         <y>0</y>
+         <width>1220</width>
+         <height>215</height>
         </rect>
        </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
+       <property name="currentIndex">
+        <number>0</number>
        </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QPushButton" name="pushButton_iq_inspection_fg_file_view">
-        <property name="geometry">
-         <rect>
-          <x>25</x>
-          <y>145</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>View</string>
-        </property>
+       <widget class="QWidget" name="page_iq_inspection_controls">
+        <widget class="QFrame" name="frame_iq_inspection_setup">
+         <property name="geometry">
+          <rect>
+           <x>9</x>
+           <y>10</y>
+           <width>393</width>
+           <height>200</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_iq_inspection_setup_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>313</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select Source &amp; Action</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_iq_inspection_setup_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>313</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Choose inspection source and plugin action.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_241">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>70</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Source:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_iq_inspection_source">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>66</y>
+            <width>300</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_iq_inspection_setup_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_251">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>114</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Action:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_iq_inspection_action">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>110</y>
+            <width>300</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_iq_inspection_query">
+          <property name="geometry">
+           <rect>
+            <x>20</x>
+            <y>165</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Query Actions</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_iq_inspection_customize">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>200</x>
+            <y>165</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Customize</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_iq_inspection_parameters">
+         <property name="geometry">
+          <rect>
+           <x>412</x>
+           <y>10</y>
+           <width>393</width>
+           <height>200</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_iq_inspection_parameters_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>313</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Parameters</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_iq_inspection_parameters_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>313</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Review and adjust parameters for the selected method.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_iq_inspection_parameters_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+         <widget class="QScrollArea" name="scrollArea_iq_inspection_parameters">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>50</y>
+            <width>383</width>
+            <height>143</height>
+           </rect>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_iq_inspection_parameters">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>381</width>
+             <height>141</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_iq_inspection_run">
+         <property name="geometry">
+          <rect>
+           <x>815</x>
+           <y>10</y>
+           <width>393</width>
+           <height>200</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_iq_inspection_run_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>313</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Run</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_iq_inspection_run_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>313</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Run inspection on local node.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_iq_inspection_status_status">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>135</y>
+            <width>70</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Status:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_iq_inspection_status">
+          <property name="geometry">
+           <rect>
+            <x>85</x>
+            <y>135</y>
+            <width>300</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Idle</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_iq_inspection_start_stop">
+          <property name="geometry">
+           <rect>
+            <x>109</x>
+            <y>165</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_iq_inspection_run_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+         <widget class="QTextEdit" name="textEdit_iq_inspection_filepath">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>85</x>
+            <y>60</y>
+            <width>295</width>
+            <height>65</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="tabChangesFocus">
+           <bool>true</bool>
+          </property>
+          <property name="html">
+           <string>&lt;!DOCTYPE HTML PUBLIC &quot;-//W3C//DTD HTML 4.0//EN&quot; &quot;http://www.w3.org/TR/REC-html40/strict.dtd&quot;&gt;
+&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
+p, li { white-space: pre-wrap; }
+&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:'Ubuntu'; font-size:11pt; font-weight:400; font-style:normal;&quot;&gt;
+&lt;p style=&quot;-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;&lt;br /&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_iq_inspection_filepath_label">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>60</y>
+            <width>70</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Filepath:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+        </widget>
        </widget>
-       <widget class="QPushButton" name="pushButton_iq_inspection_fg_file_start">
-        <property name="geometry">
-         <rect>
-          <x>373</x>
-          <y>145</y>
-          <width>99</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Start</string>
-        </property>
-       </widget>
-       <widget class="QTableWidget" name="tableWidget_iq_inspection_fg_file_values">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>260</x>
-          <y>10</y>
-          <width>325</width>
-          <height>130</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-          <italic>false</italic>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <attribute name="horizontalHeaderStretchLastSection">
-         <bool>true</bool>
-        </attribute>
-        <attribute name="verticalHeaderStretchLastSection">
-         <bool>false</bool>
-        </attribute>
-        <column>
+       <widget class="QWidget" name="page_iq_inspection_no_node">
+        <widget class="QLabel" name="label_iq_inspection_select_sensor_node_image">
+         <property name="geometry">
+          <rect>
+           <x>576</x>
+           <y>42</y>
+           <width>64</width>
+           <height>48</height>
+          </rect>
+         </property>
          <property name="text">
-          <string/>
+          <string>Image</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_iq_inspection_no_node_selected">
+         <property name="geometry">
+          <rect>
+           <x>1</x>
+           <y>112</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
          </property>
          <property name="font">
           <font>
            <pointsize>10</pointsize>
           </font>
          </property>
-        </column>
-       </widget>
-       <widget class="QPushButton" name="pushButton_iq_inspection_fg_file_load">
-        <property name="geometry">
-         <rect>
-          <x>135</x>
-          <y>145</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Load</string>
-        </property>
-       </widget>
-       <widget class="QListWidget" name="listWidget_iq_inspection_fg_file">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>10</y>
-          <width>240</width>
-          <height>130</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QLabel" name="label1_38">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>5</y>
-         <width>595</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Ubuntu</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Inspection Flow Graphs - Live</string>
-       </property>
-       <property name="scaledContents">
-        <bool>false</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="margin">
-        <number>0</number>
-       </property>
-      </widget>
-      <widget class="QFrame" name="frame1_iq_inspection_fg">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>25</y>
-         <width>595</width>
-         <height>180</height>
-        </rect>
-       </property>
-       <property name="styleSheet">
-        <string notr="true"/>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QPushButton" name="pushButton_iq_inspection_fg_start">
-        <property name="geometry">
-         <rect>
-          <x>373</x>
-          <y>145</y>
-          <width>99</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Start</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_iq_inspection_fg_load">
-        <property name="geometry">
-         <rect>
-          <x>135</x>
-          <y>145</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Load</string>
-        </property>
-       </widget>
-       <widget class="QListWidget" name="listWidget_iq_inspection_flow_graphs">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>40</y>
-          <width>240</width>
-          <height>100</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-       </widget>
-       <widget class="QTableWidget" name="tableWidget_iq_inspection_fg_values">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>260</x>
-          <y>40</y>
-          <width>325</width>
-          <height>100</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-          <italic>false</italic>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <attribute name="horizontalHeaderStretchLastSection">
-         <bool>true</bool>
-        </attribute>
-        <attribute name="verticalHeaderStretchLastSection">
-         <bool>false</bool>
-        </attribute>
-        <column>
          <property name="text">
-          <string/>
+          <string>Sensor Node Unavailable</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_iq_inspection_select_a_node">
+         <property name="geometry">
+          <rect>
+           <x>1</x>
+           <y>150</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
          </property>
          <property name="font">
           <font>
            <pointsize>10</pointsize>
           </font>
          </property>
-        </column>
+         <property name="text">
+          <string>Select an online local sensor node to configure inspection source and run the inspection action.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_iq_inspection_empty_icon">
+         <property name="geometry">
+          <rect>
+           <x>570</x>
+           <y>36</y>
+           <width>76</width>
+           <height>60</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <zorder>label_iq_inspection_empty_icon</zorder>
+        <zorder>label_iq_inspection_select_sensor_node_image</zorder>
+        <zorder>label2_iq_inspection_no_node_selected</zorder>
+        <zorder>label2_iq_inspection_select_a_node</zorder>
        </widget>
-       <widget class="QPushButton" name="pushButton_iq_inspection_fg_live_view">
-        <property name="geometry">
-         <rect>
-          <x>25</x>
-          <y>145</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>View</string>
-        </property>
+       <widget class="QWidget" name="page_iq_inspection_remote_node">
+        <widget class="QLabel" name="label2_iq_inspection_remote_node">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>99</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <pointsize>10</pointsize>
+          </font>
+         </property>
+         <property name="text">
+          <string>Inspection not supported for remote nodes at this time. Select a local node.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
        </widget>
-       <widget class="QComboBox" name="comboBox_iq_inspection_hardware">
-        <property name="geometry">
-         <rect>
-          <x>215</x>
-          <y>5</y>
-          <width>225</width>
-          <height>27</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_213">
-        <property name="geometry">
-         <rect>
-          <x>140</x>
-          <y>10</y>
-          <width>70</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Hardware:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QLabel" name="label1_41">
-       <property name="geometry">
-        <rect>
-         <x>615</x>
-         <y>5</y>
-         <width>595</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Ubuntu</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Inspection Flow Graphs - File</string>
-       </property>
-       <property name="scaledContents">
-        <bool>false</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="margin">
-        <number>0</number>
-       </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="Crop">
+     <widget class="QWidget" name="page_iq_crop">
       <widget class="QFrame" name="frame1_49">
        <property name="geometry">
         <rect>
@@ -24683,7 +24810,7 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="Convert">
+     <widget class="QWidget" name="page_iq_convert">
       <widget class="QFrame" name="frame1_72">
        <property name="geometry">
         <rect>
@@ -25217,7 +25344,7 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="Append">
+     <widget class="QWidget" name="page_iq_append">
       <widget class="QFrame" name="frame1_50">
        <property name="geometry">
         <rect>
@@ -25653,7 +25780,7 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="Transfer">
+     <widget class="QWidget" name="page_iq_transfer">
       <widget class="QFrame" name="frame1_48">
        <property name="geometry">
         <rect>
@@ -26067,7 +26194,7 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="Timeslot">
+     <widget class="QWidget" name="page_iq_timeslot">
       <widget class="QFrame" name="frame1_51">
        <property name="geometry">
         <rect>
@@ -26453,7 +26580,7 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="Overlap">
+     <widget class="QWidget" name="page_iq_overlap">
       <widget class="QFrame" name="frame1_52">
        <property name="geometry">
         <rect>
@@ -26850,7 +26977,7 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="Resample">
+     <widget class="QWidget" name="page_iq_resample">
       <widget class="QFrame" name="frame1_53">
        <property name="geometry">
         <rect>
@@ -27307,7 +27434,7 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="OFDM">
+     <widget class="QWidget" name="page_iq_ofdm">
       <widget class="QFrame" name="frame1_11">
        <property name="geometry">
         <rect>
@@ -28488,7 +28615,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </widget>
      </widget>
-     <widget class="QWidget" name="Normalize">
+     <widget class="QWidget" name="page_iq_normalize">
       <widget class="QFrame" name="frame1_73">
        <property name="geometry">
         <rect>
@@ -29015,7 +29142,7 @@ p, li { white-space: pre-wrap; }
        </property>
       </widget>
      </widget>
-     <widget class="QWidget" name="Strip">
+     <widget class="QWidget" name="page_iq_strip">
       <widget class="QLabel" name="label1_272">
        <property name="geometry">
         <rect>
@@ -29493,7 +29620,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </widget>
      </widget>
-     <widget class="QWidget" name="Split">
+     <widget class="QWidget" name="page_iq_split">
       <widget class="QLabel" name="label1_273">
        <property name="geometry">
         <rect>
@@ -29880,7 +30007,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </widget>
      </widget>
-     <widget class="QWidget" name="OOK">
+     <widget class="QWidget" name="page_iq_ook">
       <widget class="QLabel" name="label1_274">
        <property name="geometry">
         <rect>
@@ -30447,7 +30574,7 @@ p, li { white-space: pre-wrap; }
        </widget>
       </widget>
      </widget>
-     <widget class="QWidget" name="page_3">
+     <widget class="QWidget" name="page_iq_endianness">
       <widget class="QLabel" name="label1_275">
        <property name="geometry">
         <rect>
@@ -32037,7 +32164,7 @@ p, li { white-space: pre-wrap; }
     <zorder>frame1_9</zorder>
     <zorder>pushButton1_iq_tab_record</zorder>
     <zorder>pushButton1_iq_tab_playback</zorder>
-    <zorder>stackedWidget3_iq</zorder>
+    <zorder>stackedWidget3_iq_pages</zorder>
     <zorder>pushButton1_iq_tab_inspection</zorder>
     <zorder>pushButton1_iq_tab_crop</zorder>
     <zorder>pushButton1_iq_tab_convert</zorder>

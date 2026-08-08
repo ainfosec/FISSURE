@@ -64,6 +64,21 @@ ACTION_TAGS = {
         "All",
         "iq.playback",
     ],
+    "iq_inspection_live": [
+        "All",
+        "iq.inspection",
+        "iq.inspection.source.radio",
+        "tactical.inspection",
+        "client.dashboard",
+        "node.local",
+    ],
+    "iq_inspection_file": [
+        "All",
+        "iq.inspection",
+        "iq.inspection.source.file",
+        "client.dashboard",
+        "node.local",
+    ],
 
     "promote_to_soi": ["All"],
 
@@ -167,6 +182,24 @@ ACTION_HARDWARE = {
         "bladeRF 2.0",
         "USRP X410",
         "CaribouLite",
+    ],
+    "iq_inspection_live": [
+        "USRP B20xmini",
+        "USRP B2x0",
+        "bladeRF",
+        "bladeRF 2.0",
+        "HackRF",
+        "LimeSDR",
+        "PlutoSDR",
+        "RTL2832U",
+        "USRP2",
+        "USRP N2xx",
+        "USRP X3x0",
+        "USRP X410",
+        "CaribouLite",
+        "RSPduo",
+        "RSPdx",
+        "RSPdx R2",
     ],
     "signal_conditioning": ["USRP B20xmini", "USRP B2x0"],
 }
@@ -2123,6 +2156,218 @@ async def iq_playback(
         component,
         PLUGIN_NAME,
         "iq_playback.py",
+        op_params,
+        node_uid,
+    )
+
+
+iq_inspection_live_schema = {
+    "params": [
+        {
+            "name": "inspection_method",
+            "label": "Inspection Method",
+            "type": "string",
+            "default": "waterfall",
+            "options": [
+                "instantaneous_frequency",
+                "signal_envelope",
+                "time_sink",
+                "time_sink_1_10_100",
+                "waterfall",
+            ],
+        },
+        {
+            "name": "rx_channel",
+            "label": "RX Channel",
+            "type": "string",
+            "default": "A:A",
+            "options": [
+                "A:A",
+                "A:B",
+            ],
+        },
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": "Live IQ inspection",
+        },
+    ]
+}
+async def iq_inspection_live(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+    component.logger.info(
+        f"IQ Inspection Live action with parameters: {parameters}"
+    )
+
+    op_params = dict(
+        parameters
+        or {}
+    )
+
+    supported_methods = {
+        "instantaneous_frequency",
+        "signal_envelope",
+        "time_sink",
+        "time_sink_1_10_100",
+        "waterfall",
+    }
+
+    inspection_method = str(
+        op_params.get(
+            "inspection_method",
+            "waterfall",
+        )
+        or "waterfall"
+    ).strip().lower()
+
+    if inspection_method not in supported_methods:
+        raise ValueError(
+            "Unsupported live IQ Inspection method: "
+            f"{inspection_method}"
+        )
+
+    op_params[
+        "inspection_method"
+    ] = inspection_method
+
+    if not str(
+        op_params.get(
+            "hardware_type",
+            "",
+        )
+        or ""
+    ).strip():
+        compatible_types = (
+            ACTION_HARDWARE[
+                "iq_inspection_live"
+            ]
+        )
+
+        sdr_uid, sdr_entry = (
+            fissure.utils.hardware.get_compatible_sdr(
+                getattr(
+                    component,
+                    "settings_dict",
+                    {},
+                )
+                or {},
+                compatible_types,
+            )
+        )
+
+        if not sdr_entry:
+            raise ValueError(
+                "No compatible SDR configured for iq_inspection_live. "
+                f"Compatible types: {compatible_types}"
+            )
+
+        op_params.update(
+            fissure.utils.hardware.sdr_entry_to_operation_parameters(
+                sdr_uid,
+                sdr_entry,
+            )
+        )
+
+    component.logger.info(
+        f"IQ Inspection Live resolved parameters: {op_params}"
+    )
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "iq_inspection_live.py",
+        op_params,
+        node_uid,
+    )
+
+
+iq_inspection_file_schema = {
+    "params": [
+        {
+            "name": "inspection_method",
+            "label": "Inspection Method",
+            "type": "string",
+            "default": "waterfall",
+            "options": [
+                "instantaneous_frequency",
+                "signal_envelope",
+                "waterfall",
+            ],
+        },
+        {
+            "name": "filepath",
+            "label": "File Path",
+            "type": "string",
+            "default": "",
+        },
+        {
+            "name": "sample_rate",
+            "label": "Sample Rate (S/s)",
+            "type": "number",
+            "default": 1000000.0,
+            "min": 1.0,
+            "max": 100000000.0,
+            "step": 100000.0,
+            "decimals": 0,
+        },
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": "IQ file inspection",
+        },
+    ]
+}
+async def iq_inspection_file(
+    component: SensorNode,
+    parameters: Dict[str, Any],
+    node_uid: str = "",
+) -> None:
+    component.logger.info(
+        f"IQ Inspection File action with parameters: {parameters}"
+    )
+
+    op_params = dict(
+        parameters
+        or {}
+    )
+
+    supported_methods = {
+        "instantaneous_frequency",
+        "signal_envelope",
+        "waterfall",
+    }
+
+    inspection_method = str(
+        op_params.get(
+            "inspection_method",
+            "waterfall",
+        )
+        or "waterfall"
+    ).strip().lower()
+
+    if inspection_method not in supported_methods:
+        raise ValueError(
+            "Unsupported IQ file Inspection method: "
+            f"{inspection_method}"
+        )
+
+    op_params[
+        "inspection_method"
+    ] = inspection_method
+
+    component.logger.info(
+        f"IQ Inspection File resolved parameters: {op_params}"
+    )
+
+    await component.run_plugin_operation(
+        component,
+        PLUGIN_NAME,
+        "iq_inspection_file.py",
         op_params,
         node_uid,
     )

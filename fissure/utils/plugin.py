@@ -13,6 +13,7 @@ import shutil
 from subprocess import Popen, run
 import traceback
 from typing import List, Dict, Set, Any
+import copy
 
 from fissure.utils import FISSURE_ROOT, PLUGIN_DIR
 from fissure.utils.library import (
@@ -100,64 +101,345 @@ def get_local_plugin_names():
                 plugins += [root]
     return plugins
 
+
+def _normalize_action_tags(tags) -> Set[str]:
+    """Normalize ACTION_TAGS entries into a clean string set."""
+    if not isinstance(
+        tags,
+        (
+            list,
+            tuple,
+            set,
+        ),
+    ):
+        return set()
+
+    return {
+        str(tag).strip()
+        for tag in tags
+        if tag is not None
+        and str(tag).strip()
+    }
+
+
+def _requester_type_action_tag(
+    requester_type: str,
+) -> str:
+    """Translate the message requester type into the reserved client tag."""
+    requester = str(
+        requester_type
+        or ""
+    ).strip().lower()
+
+    if requester == "dashboard":
+        return "client.dashboard"
+
+    if requester in {
+        "tak",
+        "wintak",
+        "atak",
+    }:
+        return "client.tak"
+
+    return ""
+
+
+def _node_location_action_tag(
+    node_location: str,
+) -> str:
+    """Translate Sensor Node local/remote state into the reserved node tag."""
+    location = str(
+        node_location
+        or ""
+    ).strip().lower()
+
+    if location == "local":
+        return "node.local"
+
+    if location == "remote":
+        return "node.remote"
+
+    return ""
+
+
+def action_tags_allow_context(
+    tags,
+    requester_type: str = "",
+    node_location: str = "",
+) -> bool:
+    """
+    Apply optional client.* and node.* capability restrictions.
+
+    Absence of a namespace is permissive for backward compatibility.
+    Presence of a namespace requires an exact context match.
+    """
+    normalized_tags = _normalize_action_tags(
+        tags
+    )
+
+    client_tags = {
+        tag
+        for tag in normalized_tags
+        if tag.startswith(
+            "client."
+        )
+    }
+
+    if client_tags:
+        requester_tag = (
+            _requester_type_action_tag(
+                requester_type
+            )
+        )
+
+        if (
+            not requester_tag
+            or requester_tag not in client_tags
+        ):
+            return False
+
+    node_tags = {
+        tag
+        for tag in normalized_tags
+        if tag.startswith(
+            "node."
+        )
+    }
+
+    if node_tags:
+        node_tag = (
+            _node_location_action_tag(
+                node_location
+            )
+        )
+
+        if (
+            not node_tag
+            or node_tag not in node_tags
+        ):
+            return False
+
+    return True
+
+
+def action_is_allowed(
+    plugin: str,
+    action_name: str,
+    requester_type: str = "",
+    node_location: str = "",
+    logger: logging.Logger = logging.getLogger(__name__),
+) -> bool:
+    """
+    Return whether one plugin action is allowed for the supplied client/node
+    context.
+
+    Plugins without ACTION_TAGS, actions missing from ACTION_TAGS, and actions
+    without client.* / node.* restrictions remain allowed.
+    """
+    actions_path = os.path.join(
+        PLUGIN_DIR,
+        plugin,
+        "actions.py",
+    )
+
+    if not os.path.exists(
+        actions_path
+    ):
+        return False
+
+    try:
+        module_name = (
+            f"{plugin}_actions_context"
+        )
+
+        spec = (
+            importlib.util.spec_from_file_location(
+                module_name,
+                actions_path,
+            )
+        )
+
+        if (
+            spec is None
+            or spec.loader is None
+        ):
+            raise ImportError(
+                f"Cannot load module spec for {actions_path}"
+            )
+
+        module = (
+            importlib.util.module_from_spec(
+                spec
+            )
+        )
+
+        spec.loader.exec_module(
+            module
+        )
+
+        action_tags = getattr(
+            module,
+            "ACTION_TAGS",
+            {},
+        ) or {}
+
+        tags = action_tags.get(
+            action_name,
+            [],
+        )
+
+        return action_tags_allow_context(
+            tags,
+            requester_type=requester_type,
+            node_location=node_location,
+        )
+
+    except Exception as exc:
+        logger.error(
+            "Failed checking action context for "
+            f"{plugin}.{action_name}: {exc}"
+        )
+        logger.debug(
+            "Traceback while checking action context:\n%s",
+            traceback.format_exc(),
+        )
+
+        return False
+    
+
 def get_plugin_actions(
     plugin: str,
     sensor_node_settings: dict = None,
     logger: logging.Logger = logging.getLogger(__name__),
+    requester_type: str = "",
+    node_location: str = "",
 ) -> List[str]:
-    """Get plugin actions, optionally filtered by configured hardware."""
-    actions_path = os.path.join(PLUGIN_DIR, plugin, "actions.py")
+    """
+    Get plugin actions filtered by configured hardware and optional
+    client/node capability tags.
+    """
+    actions_path = os.path.join(
+        PLUGIN_DIR,
+        plugin,
+        "actions.py",
+    )
+
     actions: List[str] = []
 
-    if not os.path.exists(actions_path):
+    if not os.path.exists(
+        actions_path
+    ):
         return actions
 
     try:
         module_name = f"{plugin}_actions"
-        spec = importlib.util.spec_from_file_location(module_name, actions_path)
-        if spec is None or spec.loader is None:
-            raise ImportError(f"Cannot load module spec for {actions_path}")
 
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
+        spec = (
+            importlib.util.spec_from_file_location(
+                module_name,
+                actions_path,
+            )
+        )
 
-        # 1) discover actual action functions defined in this file
+        if (
+            spec is None
+            or spec.loader is None
+        ):
+            raise ImportError(
+                f"Cannot load module spec for {actions_path}"
+            )
+
+        module = (
+            importlib.util.module_from_spec(
+                spec
+            )
+        )
+
+        spec.loader.exec_module(
+            module
+        )
+
         discovered_actions = [
             name
-            for name, obj in inspect.getmembers(module, inspect.iscoroutinefunction)
-            if not name.startswith("_") and obj.__module__ == module.__name__
+            for name, obj in inspect.getmembers(
+                module,
+                inspect.iscoroutinefunction,
+            )
+            if not name.startswith("_")
+            and obj.__module__ == module.__name__
         ]
 
-        # 2) optional hardware metadata
-        action_hardware = getattr(module, "ACTION_HARDWARE", {}) or {}
+        action_hardware = getattr(
+            module,
+            "ACTION_HARDWARE",
+            {},
+        ) or {}
 
-        # 3) if no settings were provided, return everything
-        if not sensor_node_settings:
-            return discovered_actions
+        action_tags = getattr(
+            module,
+            "ACTION_TAGS",
+            {},
+        ) or {}
 
-        configured_hw_types = get_configured_hardware_types(sensor_node_settings)
+        configured_hw_types = (
+            get_configured_hardware_types(
+                sensor_node_settings
+            )
+            if sensor_node_settings
+            else set()
+        )
 
-        # 4) filter
         filtered_actions = []
-        for action_name in discovered_actions:
-            required_hw = action_hardware.get(action_name)
 
-            # No hardware restriction -> available everywhere
-            if not required_hw:
-                filtered_actions.append(action_name)
+        for action_name in discovered_actions:
+            required_hw = (
+                action_hardware.get(
+                    action_name
+                )
+            )
+
+            if (
+                sensor_node_settings
+                and required_hw
+                and not any(
+                    hw in configured_hw_types
+                    for hw in required_hw
+                )
+            ):
                 continue
 
-            # Match any required hardware type
-            if any(hw in configured_hw_types for hw in required_hw):
-                filtered_actions.append(action_name)
+            if not action_tags_allow_context(
+                action_tags.get(
+                    action_name,
+                    [],
+                ),
+                requester_type=(
+                    requester_type
+                ),
+                node_location=(
+                    node_location
+                ),
+            ):
+                continue
+
+            filtered_actions.append(
+                action_name
+            )
 
         actions = filtered_actions
 
-    except Exception as e:
-        logger.error(f"Failed to load actions from {actions_path}: {e}")
-        logger.debug("Traceback while loading actions:\n%s", traceback.format_exc())
+    except Exception as exc:
+        logger.error(
+            f"Failed to load actions from {actions_path}: {exc}"
+        )
+
+        logger.debug(
+            "Traceback while loading actions:\n%s",
+            traceback.format_exc(),
+        )
 
     return actions
+
 
 def get_configured_hardware_types(sensor_node_settings: Dict[str, Any]) -> Set[str]:
     """
@@ -190,6 +472,343 @@ def get_configured_hardware_types(sensor_node_settings: Dict[str, Any]) -> Set[s
         pass
 
     return hw_types
+
+
+def _load_plugin_actions_module(
+    plugin_name: str,
+    *,
+    module_name: str = "",
+):
+    """Load one plugin's actions.py module."""
+    actions_path = os.path.join(
+        PLUGIN_DIR,
+        plugin_name,
+        "actions.py",
+    )
+
+    if not os.path.isfile(
+        actions_path
+    ):
+        return None
+
+    safe_plugin_name = (
+        str(plugin_name)
+        .replace("-", "_")
+        .replace(" ", "_")
+    )
+
+    resolved_module_name = (
+        module_name
+        or f"{safe_plugin_name}_actions_delegate"
+    )
+
+    spec = (
+        importlib.util.spec_from_file_location(
+            resolved_module_name,
+            actions_path,
+        )
+    )
+
+    if (
+        spec is None
+        or spec.loader is None
+    ):
+        raise ImportError(
+            f"Cannot load module spec for {actions_path}"
+        )
+
+    module = (
+        importlib.util.module_from_spec(
+            spec
+        )
+    )
+
+    spec.loader.exec_module(
+        module
+    )
+
+    return module
+
+
+def _make_delegated_action(
+    destination_module_name: str,
+    source_plugin: str,
+    action_name: str,
+    source_action,
+):
+    """Create one coroutine wrapper around a source-plugin action."""
+    async def delegated_action(
+        component,
+        parameters,
+        node_uid: str = "",
+    ) -> None:
+        component.logger.info(
+            f"Delegating action {action_name} to {source_plugin}"
+        )
+
+        await source_action(
+            component,
+            parameters,
+            node_uid,
+        )
+
+    delegated_action.__name__ = (
+        action_name
+    )
+
+    delegated_action.__qualname__ = (
+        action_name
+    )
+
+    # Required by get_plugin_actions(), which intentionally ignores imported
+    # coroutine functions from other modules.
+    delegated_action.__module__ = (
+        destination_module_name
+    )
+
+    delegated_action.__doc__ = (
+        f"Delegate {action_name} to the "
+        f"{source_plugin} plugin."
+    )
+
+    return delegated_action
+
+
+def register_delegated_actions(
+    namespace: Dict[str, Any],
+    delegated_actions: Dict[str, str],
+    logger: logging.Logger = logging.getLogger(__name__),
+) -> None:
+    """
+    Register source-plugin actions in another plugin's actions.py namespace.
+
+    Example
+    -------
+    DELEGATED_ACTIONS = {
+        "iq_record": "Base",
+        "dummy_alert": "Dummy",
+    }
+
+    ACTION_TAGS = {}
+    ACTION_HARDWARE = {}
+
+    register_delegated_actions(
+        globals(),
+        DELEGATED_ACTIONS,
+    )
+
+    For each delegated action this automatically inherits:
+    - the source action coroutine behavior;
+    - <action_name>_schema when present;
+    - ACTION_TAGS when present;
+    - ACTION_HARDWARE when present.
+
+    Missing source plugins are skipped so unavailable dependencies are not
+    advertised. A source plugin that exists but does not contain the named
+    action is treated as a configuration error.
+    """
+    if not isinstance(
+        namespace,
+        dict,
+    ):
+        raise TypeError(
+            "namespace must be a module globals dictionary"
+        )
+
+    if not isinstance(
+        delegated_actions,
+        dict,
+    ):
+        raise TypeError(
+            "delegated_actions must be a dictionary"
+        )
+
+    destination_module_name = str(
+        namespace.get(
+            "__name__",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not destination_module_name:
+        raise ValueError(
+            "Destination module namespace is missing __name__"
+        )
+
+    action_tags = namespace.setdefault(
+        "ACTION_TAGS",
+        {},
+    )
+
+    action_hardware = namespace.setdefault(
+        "ACTION_HARDWARE",
+        {},
+    )
+
+    if not isinstance(
+        action_tags,
+        dict,
+    ):
+        raise TypeError(
+            "ACTION_TAGS must be a dictionary"
+        )
+
+    if not isinstance(
+        action_hardware,
+        dict,
+    ):
+        raise TypeError(
+            "ACTION_HARDWARE must be a dictionary"
+        )
+
+    loaded_modules = {}
+
+    for (
+        action_name,
+        source_plugin,
+    ) in delegated_actions.items():
+        action_name = str(
+            action_name
+            or ""
+        ).strip()
+
+        source_plugin = str(
+            source_plugin
+            or ""
+        ).strip()
+
+        if (
+            not action_name
+            or not source_plugin
+        ):
+            raise ValueError(
+                "Delegated action names and source plugins "
+                "must be non-empty strings"
+            )
+
+        source_module = (
+            loaded_modules.get(
+                source_plugin
+            )
+        )
+
+        if source_module is None:
+            source_module = (
+                _load_plugin_actions_module(
+                    source_plugin,
+                    module_name=(
+                        f"{destination_module_name}"
+                        f"_source_"
+                        f"{source_plugin}"
+                        f"_actions"
+                    ).replace(
+                        "-",
+                        "_",
+                    ).replace(
+                        " ",
+                        "_",
+                    ),
+                )
+            )
+
+            if source_module is None:
+                logger.warning(
+                    "Skipping delegated action "
+                    f"{action_name}: source plugin "
+                    f"{source_plugin} is unavailable"
+                )
+                continue
+
+            loaded_modules[
+                source_plugin
+            ] = source_module
+
+        source_action = getattr(
+            source_module,
+            action_name,
+            None,
+        )
+
+        if not inspect.iscoroutinefunction(
+            source_action
+        ):
+            raise AttributeError(
+                f"{source_plugin} does not provide "
+                f"async action {action_name}"
+            )
+
+        namespace[
+            action_name
+        ] = _make_delegated_action(
+            destination_module_name,
+            source_plugin,
+            action_name,
+            source_action,
+        )
+
+        schema_name = (
+            f"{action_name}_schema"
+        )
+
+        source_schema = getattr(
+            source_module,
+            schema_name,
+            None,
+        )
+
+        if isinstance(
+            source_schema,
+            dict,
+        ):
+            namespace[
+                schema_name
+            ] = copy.deepcopy(
+                source_schema
+            )
+
+        source_tags = getattr(
+            source_module,
+            "ACTION_TAGS",
+            {},
+        ) or {}
+
+        if (
+            isinstance(
+                source_tags,
+                dict,
+            )
+            and action_name in source_tags
+        ):
+            action_tags[
+                action_name
+            ] = copy.deepcopy(
+                source_tags[
+                    action_name
+                ]
+            )
+
+        source_hardware = getattr(
+            source_module,
+            "ACTION_HARDWARE",
+            {},
+        ) or {}
+
+        if (
+            isinstance(
+                source_hardware,
+                dict,
+            )
+            and action_name in source_hardware
+        ):
+            action_hardware[
+                action_name
+            ] = copy.deepcopy(
+                source_hardware[
+                    action_name
+                ]
+            )
+            
 
 # def apply_csv_to_table(conn:connection, file: str, function: object):
 #     """Apply CSV Rows to PostgreSQL Table
@@ -454,59 +1073,137 @@ def get_actions_for_classifications(
     plugin: str,
     classification_candidates: List[str],
     logger: logging.Logger = logging.getLogger(__name__),
+    requester_type: str = "",
+    node_location: str = "",
 ) -> List[str]:
     """
-    Load ACTION_TAGS from a plugin's actions.py and return matching action names.
+    Load ACTION_TAGS from a plugin and return classification-matching actions
+    that are also allowed for the current client/node context.
 
-    Matching rules:
-    - Actions tagged with "All" always match
-    - Otherwise, an action matches if any of its tags match any classification candidate
+    Classification matching remains unchanged:
+    - "All" matches every classification;
+    - otherwise any matching classification tag is sufficient.
+
+    client.* and node.* capability namespaces are then applied separately.
     """
-    actions_path = os.path.join(PLUGIN_DIR, plugin, "actions.py")
+    actions_path = os.path.join(
+        PLUGIN_DIR,
+        plugin,
+        "actions.py",
+    )
 
-    if not os.path.exists(actions_path):
-        logger.error(f"Actions file does not exist: {actions_path}")
+    if not os.path.exists(
+        actions_path
+    ):
+        logger.error(
+            f"Actions file does not exist: {actions_path}"
+        )
         return []
 
     try:
-        spec = importlib.util.spec_from_file_location(f"{plugin}_actions", actions_path)
-        if spec is None or spec.loader is None:
-            raise ImportError(f"Cannot load module spec for {actions_path}")
+        spec = (
+            importlib.util.spec_from_file_location(
+                f"{plugin}_actions",
+                actions_path,
+            )
+        )
 
-        module = importlib.util.module_from_spec(spec)
-        spec.loader.exec_module(module)
+        if (
+            spec is None
+            or spec.loader is None
+        ):
+            raise ImportError(
+                f"Cannot load module spec for {actions_path}"
+            )
 
-        action_tags = getattr(module, "ACTION_TAGS", None)
-        if not isinstance(action_tags, dict):
-            logger.warning(f"No valid ACTION_TAGS dictionary found in {actions_path}")
+        module = (
+            importlib.util.module_from_spec(
+                spec
+            )
+        )
+
+        spec.loader.exec_module(
+            module
+        )
+
+        action_tags = getattr(
+            module,
+            "ACTION_TAGS",
+            None,
+        )
+
+        if not isinstance(
+            action_tags,
+            dict,
+        ):
+            logger.warning(
+                "No valid ACTION_TAGS dictionary found in "
+                f"{actions_path}"
+            )
             return []
 
         candidates = {
-            str(x).strip()
-            for x in (classification_candidates or [])
-            if x is not None and str(x).strip()
+            str(candidate).strip()
+            for candidate
+            in (
+                classification_candidates
+                or []
+            )
+            if candidate is not None
+            and str(candidate).strip()
         }
 
         matched = []
+
         for action_name, tags in action_tags.items():
-            if not isinstance(action_name, str):
+            if not isinstance(
+                action_name,
+                str,
+            ):
                 continue
 
-            if not isinstance(tags, (list, tuple, set)):
+            normalized_tags = (
+                _normalize_action_tags(
+                    tags
+                )
+            )
+
+            if (
+                "All" not in normalized_tags
+                and candidates.isdisjoint(
+                    normalized_tags
+                )
+            ):
                 continue
 
-            normalized_tags = {
-                str(tag).strip()
-                for tag in tags
-                if tag is not None and str(tag).strip()
-            }
+            if not action_tags_allow_context(
+                normalized_tags,
+                requester_type=(
+                    requester_type
+                ),
+                node_location=(
+                    node_location
+                ),
+            ):
+                continue
 
-            if "All" in normalized_tags or not candidates.isdisjoint(normalized_tags):
-                matched.append(action_name)
+            matched.append(
+                action_name
+            )
 
-        return sorted(matched)
+        return sorted(
+            matched
+        )
 
-    except Exception as e:
-        logger.error(f"Failed to load action tags from {actions_path}: {e}")
-        logger.debug("Traceback while loading action tags:\n%s", traceback.format_exc())
+    except Exception as exc:
+        logger.error(
+            "Failed to load action tags from "
+            f"{actions_path}: {exc}"
+        )
+
+        logger.debug(
+            "Traceback while loading action tags:\n%s",
+            traceback.format_exc(),
+        )
+
         return []

@@ -98,34 +98,6 @@ def _slotIQ_FilterTypeChanged(dashboard: QtCore.QObject):
         dashboard.ui.textEdit_iq_filter_start.setEnabled(True)
 
 
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_InspectionHardwareChanged(dashboard: QtCore.QObject):
-    """ 
-    Changes IQ inspection settings based on hardware.
-    """
-    # Sensor Node Hardware Information
-    get_current_hardware = str(dashboard.ui.comboBox_iq_inspection_hardware.currentText())
-    get_hardware_type, get_hardware_uuid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
-    
-    # Clear Widgets
-    dashboard.ui.listWidget_iq_inspection_flow_graphs.clear()
-
-    # Update Flow Graphs
-    if len(get_hardware_type) > 0:
-        get_fgs = fissure.utils.library.getInspectionFlowGraphFilename(
-            dashboard.backend.library, 
-            get_hardware_type, 
-            fissure.utils.get_library_version()
-        )
-        for n in sorted(get_fgs,key=str.lower):
-            if n != "None":
-                dashboard.ui.listWidget_iq_inspection_flow_graphs.addItem(n)
-        dashboard.ui.listWidget_iq_inspection_flow_graphs.setCurrentRow(0)
-
-        # Enable Frame
-        dashboard.ui.frame1_iq_inspection_fg.setEnabled(True)
-
-
 @QtCore.pyqtSlot(QtCore.QObject, int)
 def _slotIQ_AppendColumnClicked(dashboard: QtCore.QObject, col):
     """ 
@@ -146,62 +118,36 @@ def _slotIQ_TabClicked(
     button_name,
 ):
     """
-    Simulates a QTabWidget and changes the IQ QStackedWidget page.
+    Simulate the IQ tab strip and select the corresponding IQ page.
     """
-    # Change the Page
-    if button_name == "pushButton1_iq_tab_record":
-        dashboard.ui.stackedWidget3_iq.setCurrentWidget(
-            dashboard.ui.page_iq_record
+    page_by_button = {
+        "pushButton1_iq_tab_record": dashboard.ui.page_iq_record,
+        "pushButton1_iq_tab_playback": dashboard.ui.page_iq_playback,
+        "pushButton1_iq_tab_inspection": dashboard.ui.page_iq_inspection,
+        "pushButton1_iq_tab_crop": dashboard.ui.page_iq_crop,
+        "pushButton1_iq_tab_convert": dashboard.ui.page_iq_convert,
+        "pushButton1_iq_tab_append": dashboard.ui.page_iq_append,
+        "pushButton1_iq_tab_transfer": dashboard.ui.page_iq_transfer,
+        "pushButton1_iq_tab_timeslot": dashboard.ui.page_iq_timeslot,
+        "pushButton1_iq_tab_overlap": dashboard.ui.page_iq_overlap,
+        "pushButton1_iq_tab_resample": dashboard.ui.page_iq_resample,
+        "pushButton1_iq_tab_ofdm": dashboard.ui.page_iq_ofdm,
+        "pushButton1_iq_tab_normalize": dashboard.ui.page_iq_normalize,
+        "pushButton1_iq_tab_strip": dashboard.ui.page_iq_strip,
+        "pushButton1_iq_tab_split": dashboard.ui.page_iq_split,
+        "pushButton1_iq_tab_ook": dashboard.ui.page_iq_ook,
+        "pushButton1_iq_tab_endianness": dashboard.ui.page_iq_endianness,
+    }
+
+    page = page_by_button.get(
+        button_name
+    )
+
+    if page is not None:
+        dashboard.ui.stackedWidget3_iq_pages.setCurrentWidget(
+            page
         )
 
-    elif button_name == "pushButton1_iq_tab_playback":
-        dashboard.ui.stackedWidget3_iq.setCurrentWidget(
-            dashboard.ui.page_iq_playback
-        )
-
-    elif button_name == "pushButton1_iq_tab_inspection":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(2)
-
-    elif button_name == "pushButton1_iq_tab_crop":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(3)
-
-    elif button_name == "pushButton1_iq_tab_convert":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(4)
-
-    elif button_name == "pushButton1_iq_tab_append":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(5)
-
-    elif button_name == "pushButton1_iq_tab_transfer":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(6)
-
-    elif button_name == "pushButton1_iq_tab_timeslot":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(7)
-
-    elif button_name == "pushButton1_iq_tab_overlap":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(8)
-
-    elif button_name == "pushButton1_iq_tab_resample":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(9)
-
-    elif button_name == "pushButton1_iq_tab_ofdm":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(10)
-
-    elif button_name == "pushButton1_iq_tab_normalize":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(11)
-
-    elif button_name == "pushButton1_iq_tab_strip":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(12)
-
-    elif button_name == "pushButton1_iq_tab_split":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(13)
-
-    elif button_name == "pushButton1_iq_tab_ook":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(14)
-
-    elif button_name == "pushButton1_iq_tab_endianness":
-        dashboard.ui.stackedWidget3_iq.setCurrentIndex(15)
-
-    # Reset All Stylesheets
     button_list = [
         "pushButton1_iq_tab_record",
         "pushButton1_iq_tab_playback",
@@ -226,11 +172,11 @@ def _slotIQ_TabClicked(
             dashboard.ui,
             name,
         )
+
         button.setStyleSheet(
             f"QPushButton#{name} {{}}"
         )
 
-    # Change Selected Stylesheet
     color3 = dashboard.backend.settings[
         "color3"
     ]
@@ -284,192 +230,6 @@ def _slotIQ_TabClicked(
         "margin-top: 3px;"
         "}"
     )
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_InspectionFlowGraphClicked(dashboard: QtCore.QObject):
-    """ 
-    Loads the selected inspector flow graph's default variables.
-    """
-    new_font = QtGui.QFont("Times", 10)  #,QtGui.QFont.Bold)
-
-    # Flow Graph - GUI (Inspection)
-    dashboard.ui.tableWidget_iq_inspection_fg_values.setRowCount(0)
-
-    # Get the Flow Graph Filepath
-    try:
-        fname = str(dashboard.ui.listWidget_iq_inspection_flow_graphs.item(dashboard.ui.listWidget_iq_inspection_flow_graphs.currentRow()).text())
-        fname_path = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "Inspection Flow Graphs", fname)
-    except:
-        return
-        
-    # Sensor Node Hardware Information
-    get_current_hardware = str(dashboard.ui.comboBox_iq_inspection_hardware.currentText())
-    get_hardware_type, get_hardware_uuid, get_hardware_radio_name, get_hardware_serial, get_hardware_interface, get_hardware_ip, get_hardware_daughterboard = fissure.utils.hardware.hardwareDisplayNameLookup(dashboard, get_current_hardware, 'iq')
-
-    # Read Flow Graph Variables
-    try:
-        f = open(fname_path,'r')
-        parsing = False
-        for line in f:
-            if line.startswith("    def __init__(self"):
-                parsing = True
-            elif line.startswith("        gr.top_block."):
-                parsing = False
-            if parsing:
-                # Strip Extra Text
-                fg_parameters = line[:-3].split(',')
-                parameter_names = []
-                parameter_values = []
-                for p in range(1,len(fg_parameters)):
-                    # Get Default Variable Name and Value
-                    parameter_name = fg_parameters[p].lstrip(' ').split('=')[0].replace('_','-')
-                    parameter_name_item = QtWidgets.QTableWidgetItem(parameter_name)
-
-                    # Replace with Global Constants
-                    if parameter_name == "ip-address":
-                        parameter_value = get_hardware_ip
-                    elif parameter_name == "serial":
-                        if len(get_hardware_serial) > 0:
-                            if get_hardware_type == "HackRF":
-                                parameter_value = get_hardware_serial
-                            elif get_hardware_type == "bladeRF":
-                                parameter_value = get_hardware_serial
-                            elif get_hardware_type == "bladeRF 2.0":
-                                parameter_value = get_hardware_serial
-                            elif get_hardware_type == "RTL2832U":
-                                parameter_value = get_hardware_serial
-                            elif get_hardware_type == "RSPduo":
-                                parameter_value = get_hardware_serial
-                            elif get_hardware_type == "RSPdx":
-                                parameter_value = get_hardware_serial
-                            elif get_hardware_type == "RSPdx R2":
-                                parameter_value = get_hardware_serial
-                            else:
-                                parameter_value = 'serial=' + get_hardware_serial
-                        else:
-                            if get_hardware_type == "HackRF":
-                                parameter_value = ""
-                            elif get_hardware_type == "bladeRF":
-                                parameter_value = "0"
-                            elif get_hardware_type == "bladeRF 2.0":
-                                parameter_value = "0"
-                            elif get_hardware_type == "RTL2832U":
-                                parameter_value = "0"
-                            elif get_hardware_type == "RSPduo":
-                                parameter_value = "0"
-                            elif get_hardware_type == "RSPdx":
-                                parameter_value = "0"
-                            elif get_hardware_type == "RSPdx R2":
-                                parameter_value = "0"
-                            else:
-                                parameter_value = "False"
-                    elif parameter_name == "uuid":
-                        if get_hardware_type == "CaribouLite":
-                            parameter_value = get_hardware_uuid
-                    else:
-                        parameter_value = fg_parameters[p].lstrip(' ').split('=')[1].replace('"','')
-
-                    # Fill in the "Current Values" Table
-                    parameter_value_item = QtWidgets.QTableWidgetItem(parameter_value)
-                    parameter_value_item.setFont(new_font)
-                    #parameter_value_item.setFlags(parameter_value_item.flags() & ~QtCore.Qt.ItemIsEditable)
-                    dashboard.ui.tableWidget_iq_inspection_fg_values.setRowCount(dashboard.ui.tableWidget_iq_inspection_fg_values.rowCount()+1)
-                    dashboard.ui.tableWidget_iq_inspection_fg_values.setVerticalHeaderItem(dashboard.ui.tableWidget_iq_inspection_fg_values.rowCount()-1,parameter_name_item)
-                    dashboard.ui.tableWidget_iq_inspection_fg_values.setItem(dashboard.ui.tableWidget_iq_inspection_fg_values.rowCount()-1,0,parameter_value_item)
-
-        # Close the File
-        f.close()
-
-        # Enable the Table
-        dashboard.ui.tableWidget_iq_inspection_fg_values.setEnabled(True)
-
-        # Rename the Column Header
-        header_name_item = QtWidgets.QTableWidgetItem(fname)
-        header_name_item.setFont(new_font)
-        dashboard.ui.tableWidget_iq_inspection_fg_values.setHorizontalHeaderItem(0,header_name_item)
-
-        # Adjust Table
-        #dashboard.ui.tableWidget_iq_inspection_fg_values.verticalHeader().setFont(new_header_font)
-        #dashboard.ui.tableWidget_iq_inspection_fg_values.horizontalHeader().setFont(new_header_font)
-        dashboard.ui.tableWidget_iq_inspection_fg_values.resizeRowsToContents()
-
-    except:
-        dashboard.logger.error("Error reading inspection flow graph. Recompile flow graph and try again.")
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_InspectionFG_FileClicked(dashboard: QtCore.QObject):
-    """ 
-    Loads the selected Inspection File flow graph's default variables.
-    """
-    new_font = QtGui.QFont("Times",10)
-
-    # Flow Graph - GUI (Inspection)
-    dashboard.ui.tableWidget_iq_inspection_fg_file_values.setRowCount(0)
-
-    # Get the Flow Graph Filepath
-    try:
-        fname = str(dashboard.ui.listWidget_iq_inspection_fg_file.item(dashboard.ui.listWidget_iq_inspection_fg_file.currentRow()).text())
-        fname_path = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "Inspection Flow Graphs", "File", fname)
-    except:
-        return
-
-    # Read Flow Graph Variables
-    f = open(fname_path,'r')
-    parsing = False
-    for line in f:
-        if line.startswith("    def __init__(self,"):
-            parsing = True
-        elif line.startswith("        gr.top_block."):
-            parsing = False
-        if parsing:
-            # Strip Extra Text
-            fg_parameters = line[:-3].split(',')
-            parameter_names = []
-            parameter_values = []
-            for p in range(1,len(fg_parameters)):
-                # Get Default Variable Name and Value
-                parameter_name = fg_parameters[p].lstrip(' ').split('=')[0].replace('_','-')
-                parameter_name_item = QtWidgets.QTableWidgetItem(parameter_name)
-                parameter_value = fg_parameters[p].lstrip(' ').split('=')[1].replace('"','')
-
-                # Fill in Filepath from Loaded IQ File
-                if parameter_name == "filepath":
-                    try:
-                        if len(str(dashboard.ui.listWidget_iq_files.currentItem().text())) > 0:
-                            parameter_value = str(dashboard.ui.label_iq_folder.text() + "/" + dashboard.ui.listWidget_iq_files.currentItem().text())
-                        else:
-                            parameter_value = ""
-                    except:
-                        parameter_value = ""
-
-                elif (parameter_name == "sample-rate") or (parameter_name == "samp-rate"):
-                    if len(str(dashboard.ui.textEdit_iq_sample_rate.toPlainText())) > 0:
-                        parameter_value = str(dashboard.ui.textEdit_iq_sample_rate.toPlainText()) + "e6"
-                    else:
-                        parameter_value = "1e6"
-
-                # Fill in the "Current Values" Table
-                parameter_value_item = QtWidgets.QTableWidgetItem(parameter_value)
-                parameter_value_item.setFont(new_font)
-                dashboard.ui.tableWidget_iq_inspection_fg_file_values.setRowCount(dashboard.ui.tableWidget_iq_inspection_fg_file_values.rowCount()+1)
-                dashboard.ui.tableWidget_iq_inspection_fg_file_values.setVerticalHeaderItem(dashboard.ui.tableWidget_iq_inspection_fg_file_values.rowCount()-1,parameter_name_item)
-                dashboard.ui.tableWidget_iq_inspection_fg_file_values.setItem(dashboard.ui.tableWidget_iq_inspection_fg_file_values.rowCount()-1,0,parameter_value_item)
-
-    # Close the File
-    f.close()
-
-    # Enable the Table
-    dashboard.ui.tableWidget_iq_inspection_fg_file_values.setEnabled(True)
-
-    # Rename the Column Header
-    header_name_item = QtWidgets.QTableWidgetItem(fname)
-    header_name_item.setFont(new_font)
-    dashboard.ui.tableWidget_iq_inspection_fg_file_values.setHorizontalHeaderItem(0,header_name_item)
-
-    # Adjust Table
-    dashboard.ui.tableWidget_iq_inspection_fg_file_values.resizeRowsToContents()
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -536,6 +296,11 @@ def _slotIQ_LoadIQ_Data(dashboard: QtCore.QObject):
 
     # Playback
     dashboard.ui.textEdit_iq_playback_filepath.setPlainText(
+        get_file_path
+    )
+
+    # Inspection
+    dashboard.ui.textEdit_iq_inspection_filepath.setPlainText(
         get_file_path
     )
 
@@ -1193,42 +958,6 @@ def _slotIQ_ResampleClicked(dashboard: QtCore.QObject):
 
     # Refresh Listbox
     _slotIQ_RefreshClicked(dashboard)
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_InspectionFG_LiveViewClicked(dashboard: QtCore.QObject):
-    """ 
-    Open the selected Inspection Live flow graph in GNU Radio Companion
-    """
-    # Get the Flow Graph Filepath
-    try:
-        fname = str(dashboard.ui.listWidget_iq_inspection_flow_graphs.item(dashboard.ui.listWidget_iq_inspection_flow_graphs.currentRow()).text())
-        fname_path = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "Inspection Flow Graphs", fname)
-        fname_path = fname_path.replace('.py','.grc')
-    except:
-        return
-
-    # Open the Flow Graph in GNU Radio Companion
-    osCommandString = 'gnuradio-companion "' + fname_path + '"'
-    os.system(osCommandString+ " &")
-
-
-@QtCore.pyqtSlot(QtCore.QObject)
-def _slotIQ_InspectionFG_FileViewClicked(dashboard: QtCore.QObject):
-    """ 
-    Open the selected Inspection File flow graph in GNU Radio Companion
-    """
-    # Get the Flow Graph Filepath
-    try:
-        fname = str(dashboard.ui.listWidget_iq_inspection_fg_file.item(dashboard.ui.listWidget_iq_inspection_fg_file.currentRow()).text())
-        fname_path = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "Inspection Flow Graphs", "File", fname)
-        fname_path = fname_path.replace('.py','.grc')
-    except:
-        return
-
-    # Open the Flow Graph in GNU Radio Companion
-    osCommandString = 'gnuradio-companion "' + fname_path + '"'
-    os.system(osCommandString+ " &")
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -5183,103 +4912,6 @@ def _slotIQ_OOK_PlotClicked(dashboard: QtCore.QObject):
     # Reset Range Cursor Memory
     dashboard.iq_plot_range_start = 0
     dashboard.iq_plot_range_end = 0
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotIQ_InspectionFG_StartClicked(dashboard: QtCore.QObject):
-    """ 
-    Starts the inspection flow graph.
-    """
-    # Stop Flow Graph
-    if dashboard.ui.pushButton_iq_inspection_fg_start.text() == "Stop":
-        # Send Message
-        await dashboard.backend.inspectionFlowGraphStop(dashboard.selected_node_uid, 'Flow Graph - GUI')
-
-        # Toggle the Text
-        dashboard.ui.pushButton_iq_inspection_fg_start.setText("Start")
-
-        # Enable Attack Switching
-        dashboard.ui.listWidget_iq_inspection_flow_graphs.setEnabled(True)
-        dashboard.ui.pushButton_iq_inspection_fg_load.setEnabled(True)
-
-    # Start Flow Graph
-    elif (dashboard.ui.pushButton_iq_inspection_fg_start.text() == "Start") and (dashboard.ui.pushButton_iq_inspection_fg_file_start.text() == "Start"):
-
-        # Send Message(s) to the HIPRFISR for each Variable Name and Value
-        variable_names = []
-        variable_values = []
-        for get_row in range(0,dashboard.ui.tableWidget_iq_inspection_fg_values.rowCount()):
-            # Save the Variable Name in the Row to a Dictionary
-            get_name = str(dashboard.ui.tableWidget_iq_inspection_fg_values.verticalHeaderItem(get_row).text())
-            variable_names.append(get_name)
-            variable_values.append(str(dashboard.ui.tableWidget_iq_inspection_fg_values.item(get_row,0).text()))
-
-        try:
-            # Get the Flow Graph Filepath
-            fname = str(dashboard.ui.tableWidget_iq_inspection_fg_values.horizontalHeaderItem(0).text())
-            fname = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "Inspection Flow Graphs", fname)
-        except:
-            return
-
-        # Send "Run Inspection Flow Graph" Message to the HIPRFISR
-        get_file_type = "Flow Graph - GUI"
-        await dashboard.backend.inspectionFlowGraphStart(dashboard.selected_node_uid, fname, variable_names, variable_values, get_file_type)
-
-        # Toggle the Text
-        dashboard.ui.pushButton_iq_inspection_fg_start.setText("Stop")
-
-        # Disable Attack Switching
-        dashboard.ui.listWidget_iq_inspection_flow_graphs.setEnabled(False)
-        dashboard.ui.pushButton_iq_inspection_fg_load.setEnabled(False)
-
-
-@qasync.asyncSlot(QtCore.QObject)
-async def _slotIQ_InspectionFG_FileStartClicked(dashboard: QtCore.QObject):
-    """ 
-    Starts the Inspection File flow graph.
-    """
-    # Stop Flow Graph
-    if dashboard.ui.pushButton_iq_inspection_fg_file_start.text() == "Stop":
-        # Send Message
-        await dashboard.backend.inspectionFlowGraphStop(dashboard.selected_node_uid, 'Flow Graph - GUI')
-
-        # Toggle the Text
-        dashboard.ui.pushButton_iq_inspection_fg_file_start.setText("Start")
-
-        # Enable Attack Switching
-        dashboard.ui.listWidget_iq_inspection_fg_file.setEnabled(True)
-        dashboard.ui.pushButton_iq_inspection_fg_file_load.setEnabled(True)
-
-    # Start Flow Graph
-    elif (dashboard.ui.pushButton_iq_inspection_fg_file_start.text() == "Start") and (dashboard.ui.pushButton_iq_inspection_fg_start.text() == "Start") and \
-        (len(str(dashboard.ui.tableWidget_iq_inspection_fg_file_values.horizontalHeaderItem(0).text())) > 0):
-
-        # Send Message(s) to the HIPRFISR for each Variable Name and Value
-        variable_names = []
-        variable_values = []
-        for get_row in range(0,dashboard.ui.tableWidget_iq_inspection_fg_file_values.rowCount()):
-            # Save the Variable Name in the Row to a Dictionary
-            get_name = str(dashboard.ui.tableWidget_iq_inspection_fg_file_values.verticalHeaderItem(get_row).text())
-            variable_names.append(get_name)
-            variable_values.append(str(dashboard.ui.tableWidget_iq_inspection_fg_file_values.item(get_row,0).text()))
-
-        try:
-            # Get the Flow Graph Filepath
-            fname = str(dashboard.ui.tableWidget_iq_inspection_fg_file_values.horizontalHeaderItem(0).text())
-            fname = os.path.join(fissure.utils.get_fg_library_dir(dashboard.backend.os_info), "Inspection Flow Graphs", "File", fname)
-        except:
-            return
-
-        # Send "Run Inspection Flow Graph" Message to the HIPRFISR
-        get_file_type = "Flow Graph - GUI"
-        await dashboard.backend.inspectionFlowGraphStart(dashboard.selected_node_uid, fname, variable_names, variable_values, get_file_type)
-
-        # Toggle the Text
-        dashboard.ui.pushButton_iq_inspection_fg_file_start.setText("Stop")
-
-        # Disable Attack Switching
-        dashboard.ui.listWidget_iq_inspection_fg_file.setEnabled(False)
-        dashboard.ui.pushButton_iq_inspection_fg_file_load.setEnabled(False)
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -9978,6 +9610,2065 @@ def update_iq_playback_selected_node_gate(
             )
 
 
+def _clear_iq_inspection_parameter_widgets(
+    dashboard,
+):
+    """Clear the IQ Inspection parameter panel and widget registry."""
+    content = (
+        dashboard.ui
+        .scrollAreaWidgetContents_iq_inspection_parameters
+    )
+    layout = content.layout()
+
+    if layout is None:
+        layout = QtWidgets.QFormLayout(
+            content
+        )
+        layout.setContentsMargins(
+            8,
+            8,
+            8,
+            8,
+        )
+        layout.setHorizontalSpacing(
+            10
+        )
+        layout.setVerticalSpacing(
+            6
+        )
+        layout.setFieldGrowthPolicy(
+            QtWidgets.QFormLayout.AllNonFixedFieldsGrow
+        )
+
+    else:
+        while layout.count():
+            item = layout.takeAt(0)
+
+            if item.widget() is not None:
+                item.widget().deleteLater()
+
+            if item.layout() is not None:
+                child_layout = item.layout()
+
+                while child_layout.count():
+                    child_item = child_layout.takeAt(0)
+
+                    if child_item.widget() is not None:
+                        child_item.widget().deleteLater()
+
+                child_layout.deleteLater()
+
+    dashboard.iq_inspection_parameter_widgets = {}
+    dashboard.iq_inspection_current_schema = {}
+    dashboard.iq_inspection_customized = False
+
+    dashboard.ui.pushButton_iq_inspection_start_stop.setEnabled(
+        False
+    )
+
+
+def _reset_iq_inspection_action_selection(
+    dashboard,
+):
+    """Clear queried IQ Inspection actions and customized parameters."""
+    dashboard.iq_inspection_method_actions = []
+    dashboard.iq_inspection_selected_plugin = ""
+    dashboard.iq_inspection_selected_action = ""
+    dashboard.iq_inspection_action_query_pending = False
+    dashboard.iq_inspection_action_query_context = ""
+    dashboard.iq_inspection_action_query_node_uid = ""
+
+    combo = dashboard.ui.comboBox_iq_inspection_action
+
+    combo.blockSignals(
+        True
+    )
+    combo.clear()
+    combo.blockSignals(
+        False
+    )
+    combo.setEnabled(
+        False
+    )
+
+    dashboard.ui.pushButton_iq_inspection_customize.setEnabled(
+        False
+    )
+
+    _clear_iq_inspection_parameter_widgets(
+        dashboard
+    )
+
+
+def _iq_inspection_source_is_file(
+    dashboard,
+):
+    """Return True when the Inspection Source selector is set to File."""
+    return (
+        str(
+            dashboard.ui
+            .comboBox_iq_inspection_source
+            .currentText()
+            or ""
+        ).strip().lower()
+        == "file"
+    )
+
+
+def _update_iq_inspection_source_ui(
+    dashboard,
+):
+    """Show the Run-card filepath only for File inspection."""
+    is_file = _iq_inspection_source_is_file(
+        dashboard
+    )
+
+    dashboard.ui.label2_iq_inspection_filepath_label.setVisible(
+        is_file
+    )
+    dashboard.ui.textEdit_iq_inspection_filepath.setVisible(
+        is_file
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_InspectionSourceChanged(
+    dashboard,
+):
+    """Reset stale action/schema state when the Inspection Source changes."""
+    _reset_iq_inspection_action_selection(
+        dashboard
+    )
+
+    _update_iq_inspection_source_ui(
+        dashboard
+    )
+
+    node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    has_source = bool(
+        str(
+            dashboard.ui
+            .comboBox_iq_inspection_source
+            .currentText()
+            or ""
+        ).strip()
+    )
+
+    dashboard.ui.pushButton_iq_inspection_query.setEnabled(
+        bool(
+            node_uid
+            and selected_node_is_local(
+                dashboard
+            )
+            and has_source
+        )
+    )
+
+    if node_uid and selected_node_is_local(
+        dashboard
+    ):
+        dashboard.ui.label2_iq_inspection_status.setText(
+            "Idle"
+        )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_InspectionQueryClicked(
+    dashboard,
+):
+    """Query the local Sensor Node for Inspection actions matching Source."""
+    node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    source_text = str(
+        dashboard.ui
+        .comboBox_iq_inspection_source
+        .currentText()
+        or ""
+    ).strip()
+
+    if not node_uid:
+        dashboard.logger.warning(
+            "Select a Sensor Node before querying IQ Inspection actions."
+        )
+        return
+
+    if not selected_node_is_local(
+        dashboard
+    ):
+        dashboard.logger.warning(
+            "IQ Inspection GUI actions currently require a local Sensor Node."
+        )
+        return
+
+    if not source_text:
+        dashboard.logger.warning(
+            "Select an IQ Inspection source before querying actions."
+        )
+        return
+
+    if source_text.lower() == "file":
+        include_tags = [
+            "iq.inspection",
+            "iq.inspection.source.file",
+        ]
+        hardware_type = ""
+        context = "iq.inspection.file.actions"
+
+    else:
+        (
+            hardware_type,
+            _hardware_uuid,
+            _hardware_radio_name,
+            _hardware_serial,
+            _hardware_interface,
+            _hardware_ip,
+            _hardware_daughterboard,
+        ) = fissure.utils.hardware.hardwareDisplayNameLookup(
+            dashboard,
+            source_text,
+            "iq",
+        )
+
+        if not hardware_type:
+            dashboard.logger.warning(
+                "Could not resolve the selected IQ Inspection hardware."
+            )
+            return
+
+        include_tags = [
+            "iq.inspection",
+            "iq.inspection.source.radio",
+        ]
+        context = "iq.inspection.live.actions"
+
+    _reset_iq_inspection_action_selection(
+        dashboard
+    )
+
+    dashboard.iq_inspection_action_query_pending = True
+    dashboard.iq_inspection_action_query_context = context
+    dashboard.iq_inspection_action_query_node_uid = node_uid
+
+    dashboard.ui.pushButton_iq_inspection_query.setText(
+        "Querying..."
+    )
+    dashboard.ui.pushButton_iq_inspection_query.setEnabled(
+        False
+    )
+
+    await dashboard.backend.queryPluginActions(
+        node_uid,
+        context=context,
+        scope="all_plugins",
+        include_tags=include_tags,
+        hardware=hardware_type,
+    )
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotIQ_InspectionActionChanged(
+    dashboard,
+):
+    """Update IQ Inspection action state after action selection changes."""
+    record = (
+        dashboard.ui
+        .comboBox_iq_inspection_action
+        .currentData()
+    )
+
+    if not isinstance(
+        record,
+        dict,
+    ):
+        dashboard.iq_inspection_selected_plugin = ""
+        dashboard.iq_inspection_selected_action = ""
+
+        dashboard.ui.pushButton_iq_inspection_customize.setEnabled(
+            False
+        )
+
+        _clear_iq_inspection_parameter_widgets(
+            dashboard
+        )
+        return
+
+    plugin_name = str(
+        record.get(
+            "plugin",
+            "",
+        )
+        or ""
+    ).strip()
+
+    action_name = str(
+        record.get(
+            "action",
+            "",
+        )
+        or ""
+    ).strip()
+
+    dashboard.iq_inspection_selected_plugin = plugin_name
+    dashboard.iq_inspection_selected_action = action_name
+
+    _clear_iq_inspection_parameter_widgets(
+        dashboard
+    )
+
+    dashboard.ui.pushButton_iq_inspection_customize.setEnabled(
+        bool(
+            plugin_name
+            and action_name
+            and selected_node_is_local(
+                dashboard
+            )
+        )
+    )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_InspectionCustomizeClicked(
+    dashboard,
+):
+    """Query the selected IQ Inspection action schema."""
+    node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    record = (
+        dashboard.ui
+        .comboBox_iq_inspection_action
+        .currentData()
+    )
+
+    if not node_uid:
+        dashboard.logger.warning(
+            "Select a Sensor Node before loading IQ Inspection parameters."
+        )
+        return
+
+    if not selected_node_is_local(
+        dashboard
+    ):
+        dashboard.logger.warning(
+            "IQ Inspection GUI actions currently require a local Sensor Node."
+        )
+        return
+
+    if not isinstance(
+        record,
+        dict,
+    ):
+        dashboard.logger.warning(
+            "Select an IQ Inspection action before loading parameters."
+        )
+        return
+
+    plugin_name = str(
+        record.get(
+            "plugin",
+            "",
+        )
+        or ""
+    ).strip()
+
+    action_name = str(
+        record.get(
+            "action",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not plugin_name or not action_name:
+        dashboard.logger.warning(
+            "The selected IQ Inspection action is missing plugin or action information."
+        )
+        return
+
+    _clear_iq_inspection_parameter_widgets(
+        dashboard
+    )
+
+    dashboard.ui.pushButton_iq_inspection_customize.setText(
+        "Loading..."
+    )
+    dashboard.ui.pushButton_iq_inspection_customize.setEnabled(
+        False
+    )
+
+    await dashboard.backend.queryPluginActionSchema(
+        node_uid,
+        plugin_name,
+        action_name,
+        context="iq.inspection.schema",
+    )
+
+
+def handle_iq_inspection_action_query_results(
+    dashboard,
+    node_uid: str = "",
+    context: str = "",
+    actions: list = None,
+):
+    """Populate the IQ Inspection action selector from a filtered query."""
+    result_node_uid = str(
+        node_uid
+        or ""
+    ).strip()
+    result_context = str(
+        context
+        or ""
+    ).strip()
+
+    expected_node_uid = str(
+        getattr(
+            dashboard,
+            "iq_inspection_action_query_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+    expected_context = str(
+        getattr(
+            dashboard,
+            "iq_inspection_action_query_context",
+            "",
+        )
+        or ""
+    ).strip()
+
+    query_pending = bool(
+        getattr(
+            dashboard,
+            "iq_inspection_action_query_pending",
+            False,
+        )
+    )
+
+    if (
+        not query_pending
+        or result_node_uid != expected_node_uid
+        or result_context != expected_context
+    ):
+        dashboard.logger.debug(
+            "Ignoring stale IQ Inspection action query results: "
+            f"node_uid={result_node_uid!r}, "
+            f"context={result_context!r}"
+        )
+        return
+
+    dashboard.iq_inspection_action_query_pending = False
+    dashboard.iq_inspection_action_query_context = ""
+    dashboard.iq_inspection_action_query_node_uid = ""
+
+    combo = dashboard.ui.comboBox_iq_inspection_action
+
+    dashboard.iq_inspection_method_actions = (
+        actions
+        if isinstance(
+            actions,
+            list,
+        )
+        else []
+    )
+
+    combo.blockSignals(
+        True
+    )
+    combo.clear()
+
+    for action_record in dashboard.iq_inspection_method_actions:
+        if not isinstance(
+            action_record,
+            dict,
+        ):
+            continue
+
+        plugin_name = str(
+            action_record.get(
+                "plugin",
+                "",
+            )
+            or ""
+        ).strip()
+
+        action_name = str(
+            action_record.get(
+                "action",
+                "",
+            )
+            or ""
+        ).strip()
+
+        if not plugin_name or not action_name:
+            continue
+
+        combo.addItem(
+            f"{plugin_name}: {action_name}",
+            {
+                "plugin": plugin_name,
+                "action": action_name,
+            },
+        )
+
+    combo.blockSignals(
+        False
+    )
+
+    has_actions = combo.count() > 0
+
+    combo.setEnabled(
+        has_actions
+        and selected_node_is_local(
+            dashboard
+        )
+    )
+
+    dashboard.ui.pushButton_iq_inspection_query.setText(
+        "Query Actions"
+    )
+    dashboard.ui.pushButton_iq_inspection_query.setEnabled(
+        bool(
+            selected_node_is_local(
+                dashboard
+            )
+            and str(
+                dashboard.ui
+                .comboBox_iq_inspection_source
+                .currentText()
+                or ""
+            ).strip()
+        )
+    )
+
+    dashboard.ui.pushButton_iq_inspection_customize.setEnabled(
+        has_actions
+        and selected_node_is_local(
+            dashboard
+        )
+    )
+
+    if has_actions:
+        combo.setCurrentIndex(
+            0
+        )
+
+        _slotIQ_InspectionActionChanged(
+            dashboard
+        )
+
+    else:
+        dashboard.iq_inspection_selected_plugin = ""
+        dashboard.iq_inspection_selected_action = ""
+
+
+def _create_iq_inspection_parameter_widget(
+    dashboard,
+    parameter: dict,
+):
+    """Create one editor for an IQ Inspection action-schema parameter."""
+    parameter_type = str(
+        parameter.get(
+            "type",
+            "string",
+        )
+        or "string"
+    ).strip().lower()
+
+    default = parameter.get(
+        "default",
+        "",
+    )
+
+    options = parameter.get(
+        "options",
+        [],
+    )
+
+    parent = (
+        dashboard.ui
+        .scrollAreaWidgetContents_iq_inspection_parameters
+    )
+
+    if isinstance(
+        options,
+        list,
+    ) and options:
+        widget = QtWidgets.QComboBox(
+            parent
+        )
+
+        for option in options:
+            widget.addItem(
+                str(option)
+            )
+
+        default_index = widget.findText(
+            str(default),
+            QtCore.Qt.MatchExactly,
+        )
+
+        if default_index >= 0:
+            widget.setCurrentIndex(
+                default_index
+            )
+
+        return widget
+
+    if parameter_type in {
+        "int",
+        "integer",
+    }:
+        widget = QtWidgets.QSpinBox(
+            parent
+        )
+        widget.setMinimum(
+            int(
+                parameter.get(
+                    "min",
+                    -2147483648,
+                )
+            )
+        )
+        widget.setMaximum(
+            int(
+                parameter.get(
+                    "max",
+                    2147483647,
+                )
+            )
+        )
+        widget.setSingleStep(
+            int(
+                parameter.get(
+                    "step",
+                    1,
+                )
+            )
+        )
+        widget.setValue(
+            int(
+                default
+                or 0
+            )
+        )
+        return widget
+
+    if parameter_type in {
+        "float",
+        "double",
+        "number",
+    }:
+        widget = QtWidgets.QDoubleSpinBox(
+            parent
+        )
+        widget.setDecimals(
+            int(
+                parameter.get(
+                    "decimals",
+                    6,
+                )
+            )
+        )
+        widget.setMinimum(
+            float(
+                parameter.get(
+                    "min",
+                    -1000000000000.0,
+                )
+            )
+        )
+        widget.setMaximum(
+            float(
+                parameter.get(
+                    "max",
+                    1000000000000.0,
+                )
+            )
+        )
+        widget.setSingleStep(
+            float(
+                parameter.get(
+                    "step",
+                    1.0,
+                )
+            )
+        )
+        widget.setValue(
+            float(
+                default
+                or 0.0
+            )
+        )
+        return widget
+
+    if parameter_type in {
+        "bool",
+        "boolean",
+    }:
+        widget = QtWidgets.QCheckBox(
+            parent
+        )
+
+        if isinstance(
+            default,
+            str,
+        ):
+            checked = default.strip().lower() in {
+                "true",
+                "1",
+                "yes",
+                "on",
+                "enabled",
+            }
+
+        else:
+            checked = bool(
+                default
+            )
+
+        widget.setChecked(
+            checked
+        )
+        return widget
+
+    if parameter_type == "label":
+        widget = QtWidgets.QLabel(
+            str(default),
+            parent,
+        )
+        widget.setWordWrap(
+            True
+        )
+        widget.setTextInteractionFlags(
+            QtCore.Qt.TextSelectableByMouse
+        )
+        return widget
+
+    return QtWidgets.QLineEdit(
+        str(default),
+        parent,
+    )
+
+
+def _iq_inspection_parameter_widget_value(
+    widget,
+):
+    """Return the current value from one IQ Inspection parameter editor."""
+    if isinstance(
+        widget,
+        QtWidgets.QComboBox,
+    ):
+        return widget.currentText()
+
+    if isinstance(
+        widget,
+        QtWidgets.QDoubleSpinBox,
+    ):
+        return widget.value()
+
+    if isinstance(
+        widget,
+        QtWidgets.QSpinBox,
+    ):
+        return widget.value()
+
+    if isinstance(
+        widget,
+        QtWidgets.QCheckBox,
+    ):
+        return widget.isChecked()
+
+    if isinstance(
+        widget,
+        QtWidgets.QLineEdit,
+    ):
+        return widget.text()
+
+    if isinstance(
+        widget,
+        QtWidgets.QLabel,
+    ):
+        return widget.text()
+
+    return None
+
+
+def _collect_iq_inspection_action_parameters(
+    dashboard,
+):
+    """Collect customized Inspection parameters plus Source-specific values."""
+    parameters = {}
+
+    for parameter_name, record in (
+        getattr(
+            dashboard,
+            "iq_inspection_parameter_widgets",
+            {},
+        )
+        or {}
+    ).items():
+        if not isinstance(
+            record,
+            dict,
+        ):
+            continue
+
+        widget = record.get(
+            "widget"
+        )
+        schema = record.get(
+            "schema",
+            {},
+        )
+
+        if widget is None:
+            continue
+
+        parameter_type = str(
+            schema.get(
+                "type",
+                "string",
+            )
+            or "string"
+        ).strip().lower()
+
+        if parameter_type == "label":
+            continue
+
+        parameters[
+            parameter_name
+        ] = _iq_inspection_parameter_widget_value(
+            widget
+        )
+
+    source_text = str(
+        dashboard.ui
+        .comboBox_iq_inspection_source
+        .currentText()
+        or ""
+    ).strip()
+
+    parameters[
+        "operation_id"
+    ] = str(
+        uuid.uuid4()
+    )
+    parameters[
+        "requester"
+    ] = "dashboard"
+
+    if source_text.lower() == "file":
+        parameters[
+            "filepath"
+        ] = str(
+            dashboard.ui
+            .textEdit_iq_inspection_filepath
+            .toPlainText()
+            or ""
+        ).strip()
+
+        return parameters
+
+    (
+        hardware_type,
+        hardware_uuid,
+        hardware_radio_name,
+        hardware_serial,
+        hardware_interface,
+        hardware_ip,
+        hardware_daughterboard,
+    ) = fissure.utils.hardware.hardwareDisplayNameLookup(
+        dashboard,
+        source_text,
+        "iq",
+    )
+
+    raw_serial_hardware = {
+        "HackRF",
+        "RTL2832U",
+        "bladeRF",
+        "bladeRF 2.0",
+        "RSPduo",
+        "RSPdx",
+        "RSPdx R2",
+    }
+
+    zero_default_serial_hardware = {
+        "RTL2832U",
+        "bladeRF",
+        "bladeRF 2.0",
+        "RSPduo",
+        "RSPdx",
+        "RSPdx R2",
+    }
+
+    if hardware_serial:
+        if hardware_type in raw_serial_hardware:
+            hardware_serial_argument = hardware_serial
+
+        else:
+            hardware_serial_argument = (
+                f"serial={hardware_serial}"
+            )
+
+    else:
+        if hardware_type == "HackRF":
+            hardware_serial_argument = ""
+
+        elif hardware_type in zero_default_serial_hardware:
+            hardware_serial_argument = "0"
+
+        else:
+            hardware_serial_argument = "False"
+
+    parameters.update(
+        {
+            "hardware_display_name":
+                source_text,
+            "hardware_type":
+                hardware_type,
+            "hardware_uuid":
+                hardware_uuid,
+            "hardware_radio_name":
+                hardware_radio_name,
+            "hardware_serial":
+                hardware_serial,
+            "hardware_serial_argument":
+                hardware_serial_argument,
+            "hardware_interface":
+                hardware_interface,
+            "hardware_ip":
+                hardware_ip,
+            "hardware_daughterboard":
+                hardware_daughterboard,
+        }
+    )
+
+    return parameters
+
+
+def handle_iq_inspection_action_schema(
+    dashboard,
+    plugin_name: str = "",
+    action_name: str = "",
+    node_uid: str = "",
+    parameters: list = None,
+):
+    """Build the IQ Inspection parameter panel from an action schema."""
+    selected_node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if str(
+        node_uid
+        or ""
+    ).strip() != selected_node_uid:
+        dashboard.logger.debug(
+            "Ignoring IQ Inspection action schema for a different Sensor Node."
+        )
+        return
+
+    selected_record = (
+        dashboard.ui
+        .comboBox_iq_inspection_action
+        .currentData()
+    )
+
+    if not isinstance(
+        selected_record,
+        dict,
+    ):
+        return
+
+    selected_plugin = str(
+        selected_record.get(
+            "plugin",
+            "",
+        )
+        or ""
+    ).strip()
+
+    selected_action = str(
+        selected_record.get(
+            "action",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if (
+        selected_plugin != str(
+            plugin_name
+            or ""
+        ).strip()
+        or selected_action != str(
+            action_name
+            or ""
+        ).strip()
+    ):
+        dashboard.logger.debug(
+            "Ignoring IQ Inspection action schema for a different action."
+        )
+        return
+
+    _clear_iq_inspection_parameter_widgets(
+        dashboard
+    )
+
+    content = (
+        dashboard.ui
+        .scrollAreaWidgetContents_iq_inspection_parameters
+    )
+    layout = content.layout()
+
+    if layout is None:
+        layout = QtWidgets.QFormLayout(
+            content
+        )
+        layout.setContentsMargins(
+            8,
+            8,
+            8,
+            8,
+        )
+        layout.setHorizontalSpacing(
+            10
+        )
+        layout.setVerticalSpacing(
+            6
+        )
+        layout.setFieldGrowthPolicy(
+            QtWidgets.QFormLayout.AllNonFixedFieldsGrow
+        )
+
+    normalized_parameters = (
+        parameters
+        if isinstance(
+            parameters,
+            list,
+        )
+        else []
+    )
+
+    dashboard.iq_inspection_current_schema = {
+        "plugin":
+            selected_plugin,
+        "action":
+            selected_action,
+        "params":
+            normalized_parameters,
+    }
+
+    source_is_file = _iq_inspection_source_is_file(
+        dashboard
+    )
+
+    for parameter in normalized_parameters:
+        if not isinstance(
+            parameter,
+            dict,
+        ):
+            continue
+
+        name = str(
+            parameter.get(
+                "name",
+                "",
+            )
+            or ""
+        ).strip()
+
+        if not name:
+            continue
+
+        # The file action keeps filepath in its public schema for generic
+        # callers, but IQ Data owns filepath in the Run card.
+        if source_is_file and name == "filepath":
+            continue
+
+        label_text = str(
+            parameter.get(
+                "label",
+                name,
+            )
+            or name
+        )
+
+        widget = _create_iq_inspection_parameter_widget(
+            dashboard,
+            parameter,
+        )
+
+        if isinstance(
+            widget,
+            QtWidgets.QDoubleSpinBox,
+        ):
+            widget.setObjectName(
+                "doubleSpinBox_iq_inspection_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QSpinBox,
+        ):
+            widget.setObjectName(
+                "spinBox_iq_inspection_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QComboBox,
+        ):
+            widget.setObjectName(
+                "comboBox_iq_inspection_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QCheckBox,
+        ):
+            widget.setObjectName(
+                "checkBox_iq_inspection_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QLineEdit,
+        ):
+            widget.setObjectName(
+                "lineEdit_iq_inspection_parameter"
+            )
+
+        elif isinstance(
+            widget,
+            QtWidgets.QLabel,
+        ):
+            widget.setObjectName(
+                "label_iq_inspection_parameter_info"
+            )
+
+        dashboard.iq_inspection_parameter_widgets[
+            name
+        ] = {
+            "widget":
+                widget,
+            "schema":
+                dict(
+                    parameter
+                ),
+        }
+
+        label = QtWidgets.QLabel(
+            label_text,
+            content,
+        )
+        label.setObjectName(
+            "label_iq_inspection_parameter"
+        )
+        label.setWordWrap(
+            True
+        )
+
+        layout.addRow(
+            label,
+            widget,
+        )
+
+    dashboard.iq_inspection_selected_plugin = selected_plugin
+    dashboard.iq_inspection_selected_action = selected_action
+    dashboard.iq_inspection_customized = True
+
+    dashboard.ui.pushButton_iq_inspection_customize.setText(
+        "Customize"
+    )
+    dashboard.ui.pushButton_iq_inspection_customize.setEnabled(
+        True
+    )
+
+    dashboard.ui.label2_iq_inspection_status.setText(
+        "Idle"
+    )
+
+    update_iq_inspection_selected_node_gate(
+        dashboard
+    )
+
+
+def _set_iq_inspection_start_stop_button(
+    dashboard,
+    running: bool,
+):
+    """Update the IQ Inspection Card 3 Start/Stop button."""
+    button = (
+        dashboard.ui.pushButton_iq_inspection_start_stop
+    )
+
+    button.setProperty(
+        "running",
+        bool(running),
+    )
+
+    button.setText(
+        "Stop"
+        if running
+        else "Start"
+    )
+
+    button.style().unpolish(
+        button
+    )
+    button.style().polish(
+        button
+    )
+    button.update()
+
+
+def _set_iq_inspection_stopped(
+    dashboard,
+    status_text: str = "Idle",
+):
+    """Restore IQ Inspection controls after Stop or GUI completion."""
+    dashboard.iq_inspection_running = False
+    dashboard.iq_inspection_start_pending = False
+    dashboard.iq_inspection_seen_running_status = False
+    dashboard.iq_inspection_node_uid = ""
+    dashboard.iq_inspection_operation_id = ""
+
+    _set_iq_inspection_start_stop_button(
+        dashboard,
+        False,
+    )
+
+    update_iq_inspection_selected_node_gate(
+        dashboard
+    )
+
+    selected_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if (
+        selected_uid
+        and selected_node_is_local(
+            dashboard
+        )
+    ):
+        dashboard.ui.label2_iq_inspection_status.setText(
+            status_text
+        )
+
+
+def update_iq_inspection_status_from_selected_node(
+    dashboard,
+    node_uid: str,
+    status: str,
+):
+    """Track Inspection GUI completion from the selected Sensor Node state."""
+    if not bool(
+        getattr(
+            dashboard,
+            "iq_inspection_running",
+            False,
+        )
+    ):
+        return
+
+    tracked_node_uid = str(
+        getattr(
+            dashboard,
+            "iq_inspection_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    node_uid_text = str(
+        node_uid
+        or ""
+    ).strip()
+
+    if (
+        tracked_node_uid
+        and node_uid_text
+        and tracked_node_uid != node_uid_text
+        and not tracked_node_uid.endswith(
+            node_uid_text
+        )
+        and not node_uid_text.endswith(
+            tracked_node_uid
+        )
+    ):
+        return
+
+    status_text = str(
+        status
+        or ""
+    ).strip()
+
+    if status_text.startswith(
+        "Running"
+    ):
+        dashboard.iq_inspection_seen_running_status = True
+        dashboard.ui.label2_iq_inspection_status.setText(
+            "Running..."
+        )
+        return
+
+    if status_text == "Error":
+        _set_iq_inspection_stopped(
+            dashboard,
+            status_text="Error",
+        )
+        return
+
+    if (
+        status_text == "Idle"
+        and bool(
+            getattr(
+                dashboard,
+                "iq_inspection_seen_running_status",
+                False,
+            )
+        )
+    ):
+        _set_iq_inspection_stopped(
+            dashboard,
+            status_text="Completed",
+        )
+
+
+@qasync.asyncSlot(QtCore.QObject)
+async def _slotIQ_InspectionStartStopClicked(
+    dashboard,
+):
+    """Start or stop the selected local IQ Inspection plugin action."""
+    node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    running = bool(
+        getattr(
+            dashboard,
+            "iq_inspection_running",
+            False,
+        )
+    )
+
+    start_pending = bool(
+        getattr(
+            dashboard,
+            "iq_inspection_start_pending",
+            False,
+        )
+    )
+
+    if running or start_pending:
+        tracked_node_uid = str(
+            getattr(
+                dashboard,
+                "iq_inspection_node_uid",
+                "",
+            )
+            or node_uid
+            or ""
+        ).strip()
+
+        if not tracked_node_uid:
+            return
+
+        dashboard.ui.label2_iq_inspection_status.setText(
+            "Stopping..."
+        )
+        dashboard.ui.pushButton_iq_inspection_start_stop.setEnabled(
+            False
+        )
+
+        try:
+            await dashboard.backend.tacticalNodeStop(
+                [tracked_node_uid]
+            )
+
+        except Exception as error:
+            dashboard.logger.error(
+                "Failed to stop IQ Inspection operation: "
+                f"{error}"
+            )
+
+            dashboard.ui.label2_iq_inspection_status.setText(
+                "Stop Failed"
+            )
+            dashboard.ui.pushButton_iq_inspection_start_stop.setEnabled(
+                True
+            )
+            return
+
+        _set_iq_inspection_stopped(
+            dashboard,
+            status_text="Stopped",
+        )
+        return
+
+    if not node_uid:
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "Select a Sensor Node.",
+            )
+        )
+        return
+
+    if not selected_node_is_local(
+        dashboard
+    ):
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "IQ Inspection GUI actions currently require a local Sensor Node.",
+            )
+        )
+        return
+
+    if not bool(
+        getattr(
+            dashboard,
+            "iq_inspection_customized",
+            False,
+        )
+    ):
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "Load the IQ Inspection parameters before starting.",
+            )
+        )
+        return
+
+    plugin_name = str(
+        getattr(
+            dashboard,
+            "iq_inspection_selected_plugin",
+            "",
+        )
+        or ""
+    ).strip()
+
+    action_name = str(
+        getattr(
+            dashboard,
+            "iq_inspection_selected_action",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not plugin_name or not action_name:
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "Select an IQ Inspection action.",
+            )
+        )
+        return
+
+    if _iq_inspection_source_is_file(
+        dashboard
+    ):
+        filepath = str(
+            dashboard.ui
+            .textEdit_iq_inspection_filepath
+            .toPlainText()
+            or ""
+        ).strip()
+
+        if not filepath:
+            dashboard.ui.label2_iq_inspection_status.setText(
+                "File Required"
+            )
+
+            await (
+                fissure.Dashboard.UI_Components.Qt5
+                .async_ok_dialog(
+                    dashboard,
+                    "Select or enter an IQ inspection filepath.",
+                )
+            )
+            return
+
+    try:
+        parameters = (
+            _collect_iq_inspection_action_parameters(
+                dashboard
+            )
+        )
+
+    except Exception as error:
+        dashboard.logger.error(
+            "Failed to collect IQ Inspection parameters: "
+            f"{error}"
+        )
+
+        await (
+            fissure.Dashboard.UI_Components.Qt5
+            .async_ok_dialog(
+                dashboard,
+                "One or more IQ Inspection parameters are invalid.",
+            )
+        )
+        return
+
+    dashboard.iq_inspection_start_pending = True
+    dashboard.iq_inspection_running = False
+    dashboard.iq_inspection_seen_running_status = False
+    dashboard.iq_inspection_node_uid = node_uid
+    dashboard.iq_inspection_operation_id = str(
+        parameters.get(
+            "operation_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    _set_iq_inspection_start_stop_button(
+        dashboard,
+        True,
+    )
+
+    dashboard.ui.label2_iq_inspection_status.setText(
+        "Starting..."
+    )
+
+    update_iq_inspection_selected_node_gate(
+        dashboard
+    )
+
+    dashboard.logger.info(
+        "Starting IQ Inspection: "
+        f"plugin={plugin_name}, "
+        f"action={action_name}, "
+        f"node_uid={node_uid}, "
+        f"source={dashboard.ui.comboBox_iq_inspection_source.currentText()}"
+    )
+
+    try:
+        await dashboard.backend.tacticalNodeExecute(
+            [node_uid],
+            plugin_name,
+            action_name,
+            parameters,
+        )
+
+    except Exception as error:
+        dashboard.logger.error(
+            "Failed to start IQ Inspection operation: "
+            f"{error}"
+        )
+
+        _set_iq_inspection_stopped(
+            dashboard,
+            status_text="Start Failed",
+        )
+        return
+
+    dashboard.iq_inspection_start_pending = False
+    dashboard.iq_inspection_running = True
+
+    dashboard.ui.label2_iq_inspection_status.setText(
+        "Running..."
+    )
+
+    _set_iq_inspection_start_stop_button(
+        dashboard,
+        True,
+    )
+
+
+def initialize_iq_inspection_controls(
+    dashboard,
+):
+    """Initialize the action-driven IQ Inspection workflow."""
+    dashboard.iq_inspection_running = False
+    dashboard.iq_inspection_start_pending = False
+    dashboard.iq_inspection_seen_running_status = False
+    dashboard.iq_inspection_node_uid = ""
+    dashboard.iq_inspection_operation_id = ""
+
+    dashboard.iq_inspection_method_actions = []
+    dashboard.iq_inspection_selected_plugin = ""
+    dashboard.iq_inspection_selected_action = ""
+    dashboard.iq_inspection_parameter_widgets = {}
+    dashboard.iq_inspection_current_schema = {}
+    dashboard.iq_inspection_customized = False
+
+    dashboard.iq_inspection_action_query_pending = False
+    dashboard.iq_inspection_action_query_context = ""
+    dashboard.iq_inspection_action_query_node_uid = ""
+
+    dashboard.ui.stackedWidget_iq_inspection.setCurrentWidget(
+        dashboard.ui.page_iq_inspection_no_node
+    )
+
+    select_node_icon_path = os.path.join(
+        fissure.utils.UI_DIR,
+        "Icons",
+        "select_node.png",
+    )
+
+    if os.path.isfile(
+        select_node_icon_path
+    ):
+        select_node_pixmap = QtGui.QPixmap(
+            select_node_icon_path
+        )
+
+        dashboard.ui.label_iq_inspection_select_sensor_node_image.setPixmap(
+            select_node_pixmap
+        )
+        dashboard.ui.label_iq_inspection_select_sensor_node_image.setScaledContents(
+            False
+        )
+        dashboard.ui.label_iq_inspection_select_sensor_node_image.setAlignment(
+            QtCore.Qt.AlignCenter
+        )
+
+    step_badges = (
+        (
+            dashboard.ui.label_iq_inspection_setup_badge,
+            "1",
+        ),
+        (
+            dashboard.ui.label_iq_inspection_parameters_badge,
+            "2",
+        ),
+        (
+            dashboard.ui.label_iq_inspection_run_badge,
+            "3",
+        ),
+    )
+
+    for badge, badge_text in step_badges:
+        badge.setText(
+            badge_text
+        )
+        badge.setAlignment(
+            QtCore.Qt.AlignCenter
+        )
+
+    dashboard.ui.comboBox_iq_inspection_source.clear()
+    dashboard.ui.comboBox_iq_inspection_source.setEnabled(
+        False
+    )
+
+    dashboard.ui.comboBox_iq_inspection_action.clear()
+    dashboard.ui.comboBox_iq_inspection_action.setEnabled(
+        False
+    )
+
+    dashboard.ui.pushButton_iq_inspection_query.setText(
+        "Query Actions"
+    )
+    dashboard.ui.pushButton_iq_inspection_query.setEnabled(
+        False
+    )
+
+    dashboard.ui.pushButton_iq_inspection_customize.setText(
+        "Customize"
+    )
+    dashboard.ui.pushButton_iq_inspection_customize.setEnabled(
+        False
+    )
+
+    _set_iq_inspection_start_stop_button(
+        dashboard,
+        False,
+    )
+    dashboard.ui.pushButton_iq_inspection_start_stop.setEnabled(
+        False
+    )
+
+    dashboard.ui.textEdit_iq_inspection_filepath.setReadOnly(
+        False
+    )
+    dashboard.ui.textEdit_iq_inspection_filepath.setEnabled(
+        False
+    )
+
+    dashboard.ui.label2_iq_inspection_filepath_label.setVisible(
+        False
+    )
+    dashboard.ui.textEdit_iq_inspection_filepath.setVisible(
+        False
+    )
+
+    dashboard.ui.label2_iq_inspection_status.setText(
+        "Unavailable"
+    )
+
+    scroll_area = getattr(
+        dashboard.ui,
+        "scrollArea_iq_inspection_parameters",
+        None,
+    )
+
+    if scroll_area is not None:
+        scroll_area.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAlwaysOff
+        )
+        scroll_area.setVerticalScrollBarPolicy(
+            QtCore.Qt.ScrollBarAsNeeded
+        )
+
+        parameter_widgets = [
+            scroll_area,
+            scroll_area.viewport(),
+            scroll_area.widget(),
+        ]
+
+        for widget in parameter_widgets:
+            if widget is None:
+                continue
+
+            widget.setProperty(
+                "uiRole",
+                "parameterPanel",
+            )
+            widget.style().unpolish(
+                widget
+            )
+            widget.style().polish(
+                widget
+            )
+            widget.update()
+
+    _clear_iq_inspection_parameter_widgets(
+        dashboard
+    )
+
+    update_iq_inspection_selected_node_gate(
+        dashboard
+    )
+
+
+def update_iq_inspection_selected_node_gate(
+    dashboard,
+):
+    """Select the local/remote/no-node Inspection page and gate controls."""
+    selected_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    has_selected_node = bool(
+        selected_uid
+    )
+
+    if has_selected_node:
+        node_states = (
+            getattr(
+                dashboard,
+                "node_states",
+                {},
+            )
+            or {}
+        )
+
+        node_state = node_states.get(
+            selected_uid
+        )
+
+        if (
+            isinstance(
+                node_state,
+                dict,
+            )
+            and node_state.get(
+                "connected"
+            ) is False
+        ):
+            has_selected_node = False
+
+    is_local = bool(
+        has_selected_node
+        and selected_node_is_local(
+            dashboard
+        )
+    )
+
+    is_remote = bool(
+        has_selected_node
+        and selected_node_is_remote(
+            dashboard
+        )
+    )
+
+    if not has_selected_node:
+        dashboard.ui.stackedWidget_iq_inspection.setCurrentWidget(
+            dashboard.ui.page_iq_inspection_no_node
+        )
+
+    elif is_local:
+        dashboard.ui.stackedWidget_iq_inspection.setCurrentWidget(
+            dashboard.ui.page_iq_inspection_controls
+        )
+
+    elif is_remote:
+        dashboard.ui.stackedWidget_iq_inspection.setCurrentWidget(
+            dashboard.ui.page_iq_inspection_remote_node
+        )
+
+    else:
+        dashboard.ui.stackedWidget_iq_inspection.setCurrentWidget(
+            dashboard.ui.page_iq_inspection_no_node
+        )
+
+    source_combo = (
+        dashboard.ui.comboBox_iq_inspection_source
+    )
+    action_combo = (
+        dashboard.ui.comboBox_iq_inspection_action
+    )
+    query_button = (
+        dashboard.ui.pushButton_iq_inspection_query
+    )
+    customize_button = (
+        dashboard.ui.pushButton_iq_inspection_customize
+    )
+    filepath_edit = (
+        dashboard.ui.textEdit_iq_inspection_filepath
+    )
+    start_button = (
+        dashboard.ui.pushButton_iq_inspection_start_stop
+    )
+
+    _update_iq_inspection_source_ui(
+        dashboard
+    )
+
+    if not is_local:
+        source_combo.setEnabled(
+            False
+        )
+        action_combo.setEnabled(
+            False
+        )
+        query_button.setEnabled(
+            False
+        )
+        customize_button.setEnabled(
+            False
+        )
+        filepath_edit.setEnabled(
+            False
+        )
+        start_button.setEnabled(
+            False
+        )
+
+        dashboard.ui.label2_iq_inspection_status.setText(
+            "Unavailable"
+        )
+
+        for parameter_record in (
+            getattr(
+                dashboard,
+                "iq_inspection_parameter_widgets",
+                {},
+            )
+            or {}
+        ).values():
+            if not isinstance(
+                parameter_record,
+                dict,
+            ):
+                continue
+
+            widget = parameter_record.get(
+                "widget"
+            )
+
+            if widget is not None:
+                widget.setEnabled(
+                    False
+                )
+
+        return
+
+    if bool(
+        getattr(
+            dashboard,
+            "iq_inspection_running",
+            False,
+        )
+        or getattr(
+            dashboard,
+            "iq_inspection_start_pending",
+            False,
+        )
+    ):
+        source_combo.setEnabled(
+            False
+        )
+        action_combo.setEnabled(
+            False
+        )
+        query_button.setEnabled(
+            False
+        )
+        customize_button.setEnabled(
+            False
+        )
+        filepath_edit.setEnabled(
+            False
+        )
+        start_button.setEnabled(
+            True
+        )
+
+        for parameter_record in (
+            getattr(
+                dashboard,
+                "iq_inspection_parameter_widgets",
+                {},
+            )
+            or {}
+        ).values():
+            if not isinstance(
+                parameter_record,
+                dict,
+            ):
+                continue
+
+            widget = parameter_record.get(
+                "widget"
+            )
+
+            if widget is not None:
+                widget.setEnabled(
+                    False
+                )
+
+        return
+
+    has_source = bool(
+        str(
+            source_combo.currentText()
+            or ""
+        ).strip()
+    )
+    has_action = action_combo.count() > 0
+    source_is_file = _iq_inspection_source_is_file(
+        dashboard
+    )
+
+    source_combo.setEnabled(
+        source_combo.count() > 0
+    )
+    action_combo.setEnabled(
+        has_action
+    )
+    query_button.setEnabled(
+        has_source
+    )
+    customize_button.setEnabled(
+        has_action
+    )
+    filepath_edit.setEnabled(
+        source_is_file
+    )
+    filepath_edit.setReadOnly(
+        False
+    )
+    start_button.setEnabled(
+        bool(
+            getattr(
+                dashboard,
+                "iq_inspection_customized",
+                False,
+            )
+        )
+    )
+
+    current_status = str(
+        dashboard.ui.label2_iq_inspection_status.text()
+        or ""
+    ).strip()
+
+    if current_status in {
+        "",
+        "Unavailable",
+    }:
+        dashboard.ui.label2_iq_inspection_status.setText(
+            "Idle"
+        )
+
+    for parameter_record in (
+        getattr(
+            dashboard,
+            "iq_inspection_parameter_widgets",
+            {},
+        )
+        or {}
+    ).values():
+        if not isinstance(
+            parameter_record,
+            dict,
+        ):
+            continue
+
+        widget = parameter_record.get(
+            "widget"
+        )
+
+        if widget is not None:
+            widget.setEnabled(
+                True
+            )
+
+
 def initialize_iq_record_controls(
     dashboard: QtCore.QObject,
 ):
@@ -10001,9 +11692,10 @@ def initialize_iq_record_controls(
     dashboard.iq_record_action_query_context = ""
     dashboard.iq_record_action_query_node_uid = ""
 
-    dashboard.ui.stackedWidget3_iq.setCurrentWidget(
+    dashboard.ui.stackedWidget3_iq_pages.setCurrentWidget(
         dashboard.ui.page_iq_record
     )
+
 
     dashboard.ui.stackedWidget_iq_record.setCurrentWidget(
         dashboard.ui.page_iq_record_no_node

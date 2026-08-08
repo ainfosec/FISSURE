@@ -430,14 +430,6 @@ async def tsiFE_Finished(component: object, table_strings=[]):
     component.frontend.ui.pushButton_tsi_fe_operation_start.setText("Start")
 
 
-async def flowGraphStartedIQ_Inspection(component: object):
-    """
-    Inspection flow graph started at sensor node.
-    """
-    # Future Use
-    pass
-
-
 async def flowGraphStartedSniffer(component: object, category=""):
     """ 
     Flow graph started message returned from Sensor Node.
@@ -449,14 +441,6 @@ async def flowGraphStartedSniffer(component: object, category=""):
         component.frontend.ui.pushButton_pd_sniffer_tagged_stream.setEnabled(True)
     elif category == "Message/PDU":
         component.frontend.ui.pushButton_pd_sniffer_msg_pdu.setEnabled(True)
-
-
-async def flowGraphFinishedIQ_Inspection(component: object):
-    """
-    Inspection flow graph finished at sensor node.
-    """
-    # Future Use
-    pass
 
 
 async def flowGraphFinishedSniffer(component: object, category=""):
@@ -2109,6 +2093,21 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         )
 
     try:
+        IQDataTabSlots.update_iq_inspection_status_from_selected_node(
+            frontend,
+            node_uid=node_uid,
+            status=node.get(
+                "status",
+                "",
+            ),
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update IQ Inspection status "
+            f"from selected node: {e}"
+        )
+
+    try:
         TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
     except Exception as e:
         component.logger.debug(
@@ -2704,6 +2703,15 @@ async def queryPluginActionsResults(
         )
         return
 
+    if context.startswith("iq.inspection"):
+        IQDataTabSlots.handle_iq_inspection_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+
     if context.startswith("tactical."):
         component.logger.debug(
             f"Unhandled Tactical action query context={context}, actions={actions}"
@@ -2781,6 +2789,16 @@ async def queryPluginActionSchemaResults(
 
     if context.startswith("iq.playback"):
         IQDataTabSlots.handle_iq_playback_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
+
+    if context.startswith("iq.inspection"):
+        IQDataTabSlots.handle_iq_inspection_action_schema(
             frontend,
             plugin_name=plugin_name,
             action_name=action_name,

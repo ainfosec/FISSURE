@@ -1,0 +1,344 @@
+options:
+  parameters:
+    author: ''
+    catch_exceptions: 'True'
+    category: Custom
+    cmake_opt: ''
+    comment: ''
+    copyright: ''
+    description: ''
+    gen_cmake: 'On'
+    gen_linking: dynamic
+    generate_options: qt_gui
+    hier_block_src_path: '.:'
+    id: instantaneous_frequency_rspduo
+    max_nouts: '0'
+    output_language: python
+    placement: (0,0)
+    qt_qss_theme: ''
+    realtime_scheduling: ''
+    run: 'True'
+    run_command: '{python} -u {filename}'
+    run_options: prompt
+    sizing_mode: fixed
+    thread_safe_setters: ''
+    title: ''
+    window_size: 1280, 1024
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [10, 10]
+    rotation: 0
+    state: enabled
+
+blocks:
+- name: decimation
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: 0,1,1,1
+    label: '  Keep 1 in N'
+    label0: ''
+    label1: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '["1","10","100","1000"]'
+    num_opts: '0'
+    option0: '0'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[1,10,100,1000]'
+    orient: Qt.QVBoxLayout
+    type: int
+    value: '1'
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [232, 148]
+    rotation: 0
+    state: enabled
+- name: rx_frequency
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: 2,0,1,4
+    label: ' Freq. (MHz):'
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0.001'
+    step: '.1'
+    stop: '2000'
+    value: '102.5'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [400, 148.0]
+    rotation: 0
+    state: enabled
+- name: rx_gain
+  id: variable_qtgui_range
+  parameters:
+    comment: ''
+    gui_hint: 1,0,1,4
+    label: '              Gain:'
+    min_len: '200'
+    orient: QtCore.Qt.Horizontal
+    rangeType: float
+    start: '0'
+    step: '1'
+    stop: '59'
+    value: '0'
+    widget: counter_slider
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [400, 16]
+    rotation: 0
+    state: enabled
+- name: sample_rate
+  id: variable_qtgui_chooser
+  parameters:
+    comment: ''
+    gui_hint: 0,0,1,1
+    label: Sample Rate
+    label0: ''
+    label1: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    labels: '["1 MS/s", "2 MS/s", "5 MS/s", "10 MS/s", "20 MS/s"]'
+    num_opts: '0'
+    option0: '0'
+    option1: '1'
+    option2: '2'
+    option3: '3'
+    option4: '4'
+    options: '[1e6, 2e6, 5e6, 10e6, 20e6]'
+    orient: Qt.QVBoxLayout
+    type: real
+    value: 2e6
+    widget: combo_box
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [216, 12.0]
+    rotation: 0
+    state: enabled
+- name: blocks_keep_one_in_n_0
+  id: blocks_keep_one_in_n
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    n: decimation
+    type: complex
+    vlen: '1'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [536, 496]
+    rotation: 0
+    state: enabled
+- name: dect2_phase_diff_0
+  id: dect2_phase_diff
+  parameters:
+    affinity: ''
+    alias: ''
+    comment: ''
+    maxoutbuf: '0'
+    minoutbuf: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [672, 496]
+    rotation: 0
+    state: enabled
+- name: qtgui_time_sink_x_0
+  id: qtgui_time_sink_x
+  parameters:
+    affinity: ''
+    alias: ''
+    alpha1: '1.0'
+    alpha10: '1.0'
+    alpha2: '1.0'
+    alpha3: '1.0'
+    alpha4: '1.0'
+    alpha5: '1.0'
+    alpha6: '1.0'
+    alpha7: '1.0'
+    alpha8: '1.0'
+    alpha9: '1.0'
+    autoscale: 'False'
+    axislabels: 'True'
+    color1: blue
+    color10: dark blue
+    color2: red
+    color3: green
+    color4: black
+    color5: cyan
+    color6: magenta
+    color7: yellow
+    color8: dark red
+    color9: dark green
+    comment: ''
+    ctrlpanel: 'False'
+    entags: 'True'
+    grid: 'True'
+    gui_hint: 3,0,20,4
+    label1: ''
+    label10: ''
+    label2: ''
+    label3: ''
+    label4: ''
+    label5: ''
+    label6: ''
+    label7: ''
+    label8: ''
+    label9: ''
+    legend: 'True'
+    marker1: '-1'
+    marker10: '-1'
+    marker2: '-1'
+    marker3: '-1'
+    marker4: '-1'
+    marker5: '-1'
+    marker6: '-1'
+    marker7: '-1'
+    marker8: '-1'
+    marker9: '-1'
+    name: '""'
+    nconnections: '1'
+    size: '100000'
+    srate: sample_rate/decimation
+    stemplot: 'False'
+    style1: '1'
+    style10: '1'
+    style2: '1'
+    style3: '1'
+    style4: '1'
+    style5: '1'
+    style6: '1'
+    style7: '1'
+    style8: '1'
+    style9: '1'
+    tr_chan: '0'
+    tr_delay: '0'
+    tr_level: '0.005'
+    tr_mode: qtgui.TRIG_MODE_FREE
+    tr_slope: qtgui.TRIG_SLOPE_POS
+    tr_tag: '""'
+    type: float
+    update_time: '0.1'
+    width1: '1'
+    width10: '1'
+    width2: '1'
+    width3: '1'
+    width4: '1'
+    width5: '1'
+    width6: '1'
+    width7: '1'
+    width8: '1'
+    width9: '1'
+    ylabel: Amplitude
+    ymax: '5'
+    ymin: '-5'
+    yunit: '""'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [792, 476]
+    rotation: 0
+    state: enabled
+- name: sdrplay3_rspduo_0
+  id: sdrplay3_rspduo
+  parameters:
+    AGC: 'False'
+    AGC0: 'False'
+    AGC1: 'False'
+    affinity: ''
+    agc_set_point: '-30'
+    alias: ''
+    am_notch_filter: 'False'
+    antenna: Tuner 1 50 ohm
+    antenna_both: Both Tuners
+    bandwidth: '0'
+    biasT: 'False'
+    center_freq: float(rx_frequency)*1e6
+    center_freq0: '0'
+    center_freq1: '0'
+    comment: ''
+    dab_notch_filter: 'False'
+    dc_offset_mode: 'False'
+    debug_mode: 'False'
+    freq_corr: '0'
+    if_gRdB: 59-float(rx_gain)
+    if_gRdB0: '40'
+    if_gRdB1: '40'
+    iq_balance_mode: 'False'
+    maxoutbuf: '0'
+    minoutbuf: '0'
+    output_type: fc32
+    rf_gRLNA: '0'
+    rf_gRLNA0: '0'
+    rf_gRLNA1: '0'
+    rf_gR_mode: dB
+    rf_gRdB: '0'
+    rf_gRdB0: '0'
+    rf_gRdB1: '0'
+    rf_notch_filter: 'False'
+    rsp_selector: str(serial)
+    rspduo_mode: Single Tuner
+    sample_rate: float(sample_rate)
+    sample_rate_non_single_tuner: samp_rate
+    sample_sequence_gaps_check: 'False'
+    show_gain_changes: 'False'
+    synchronous_updates: 'False'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [272, 452.0]
+    rotation: 0
+    state: true
+- name: serial
+  id: parameter
+  parameters:
+    alias: ''
+    comment: ''
+    hide: none
+    label: serial
+    short_id: ''
+    type: str
+    value: '0'
+  states:
+    bus_sink: false
+    bus_source: false
+    bus_structure: null
+    coordinate: [16, 84.0]
+    rotation: 0
+    state: true
+
+connections:
+- [blocks_keep_one_in_n_0, '0', dect2_phase_diff_0, '0']
+- [dect2_phase_diff_0, '0', qtgui_time_sink_x_0, '0']
+- [sdrplay3_rspduo_0, '0', blocks_keep_one_in_n_0, '0']
+
+metadata:
+  file_format: 1
+  grc_version: 3.10.7.0

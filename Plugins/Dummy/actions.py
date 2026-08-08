@@ -407,15 +407,9 @@ dummy_cot_types_schema = {
         },
         {
             "name": "base_lat",
-            "label": "Start Latitude",
-            "type": "number",
-            "default": 40.703052,
-        },
-        {
-            "name": "base_lat",
             "label": "Base Latitude",
             "type": "number",
-            "default": 42.0898,
+            "default": 40.703052,
             "min": -90,
             "max": 90,
             "decimals": 6,
@@ -424,7 +418,7 @@ dummy_cot_types_schema = {
             "name": "base_lon",
             "label": "Base Longitude",
             "type": "number",
-            "default": -76.8077,
+            "default": -74.016991,
             "min": -180,
             "max": 180,
             "decimals": 6,
@@ -437,7 +431,6 @@ dummy_cot_types_schema = {
         },
     ]
 }
-
 async def dummy_cot_types(
     component: SensorNode,
     parameters: Dict[str, Any],

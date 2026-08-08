@@ -1,6 +1,28 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-08
+
+Replace the legacy IQ Inspection workflow with plugin-based inspection and add context-aware plugin action filtering
+
+### Added
+
+- Added guided IQ Inspection controls for selecting a local radio or file source, querying and customizing plugin actions, starting/stopping inspection, and loading file paths from IQ Files and managed Artifacts.
+- Added Base plugin `iq_inspection_live` and `iq_inspection_file` actions with operation mappings for instantaneous frequency, signal envelope, time sink, multi-scale time sink, and waterfall inspection across supported GNU Radio 3.8/3.10 hardware.
+- Added shared `client.*` and `node.*` action capability filtering in `fissure/utils/plugin.py`, with enforcement across action discovery, schema requests, classification-based action lookup, and Sensor Node execution.
+- Added reusable delegated-action registration so mission plugins can expose actions from other plugins while inheriting their schemas, tags, hardware compatibility, validation, and implementation.
+
+### Changed
+
+- Reorganized IQ Inspection flow graphs under the Base plugin by GNU Radio version and hardware, including the missing bladeRF time-sink GRC definition.
+- Updated IQ Data Inspection to use named pages and local/no-node/remote-node gating, with GUI inspection restricted to local Dashboard use and live Inspection available through local Tactical workflows.
+- Removed the legacy IQ Inspection flow-graph launch path and related Dashboard, HIPRFISR, and Sensor Node callback/thread plumbing after the plugin-based workflow was validated.
+- Refactored `Mission-01/actions.py` into a curated delegated-action example backed by Base, WiFi, and Dummy instead of maintaining duplicate schemas, hardware lists, parameter handling, and operation wrappers.
+
+### Fixed
+
+- Fixed the Dummy CoT Types schema to remove the duplicate `base_lat` entry and align the exposed base-location defaults with the operation.
+
 ## 2026-8-07
 
 Replace the legacy IQ playback workflow with plugin-based multi-hardware playback

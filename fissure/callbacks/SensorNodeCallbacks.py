@@ -451,33 +451,6 @@ async def iqFlowGraphStop(component: object, parameter=""):
     component.iqFlowGraphStop(parameter)
 
 
-async def inspectionFlowGraphStart(
-    component: object, flow_graph_filepath="", variable_names=[], variable_values=[], file_type=""
-):
-    """Runs the flow graph with the specified file path."""
-    # Only Supports Flow Graphs with GUIs
-    if file_type == "Flow Graph - GUI":
-
-        # Run Event and Do Not Block
-        loop = asyncio.get_event_loop()
-        loop.run_in_executor(
-            None, 
-            component.inspectionFlowGraphGUI_Thread, 
-            flow_graph_filepath,
-            variable_names,
-            variable_values,
-    )
-
-
-async def inspectionFlowGraphStop(component: object, parameter=""):
-    """
-    Stop the currently running inspection flow graph.
-    """
-    # Only Supports Flow Graphs with GUIs
-    if parameter == "Flow Graph - GUI":
-        os.system("pkill -f " + '"' + component.inspection_script_name + '"')
-
-
 async def snifferFlowGraphStart(
     component: object, flow_graph_filepath="", variable_names=[], variable_values=[]
 ):
@@ -1165,53 +1138,73 @@ async def sendPluginNamesTak(
 
 
 async def sendPluginActionNamesTak(
-    component: object, 
-    requester_uid: str, 
-    requester_type: str, 
-    plugin_name: str, 
-    node_uid: str, 
-    tak_context: str
+    component: object,
+    requester_uid: str,
+    requester_type: str,
+    plugin_name: str,
+    node_uid: str,
+    tak_context: str,
 ):
-    """Send Plugin Action Names for TAK
-
-    Parameters
-    ----------
-    component : object
-        Component
-    requester_uid : str
-        TAK UID
-    requester_type : str
-        dashboard, tak, or broadcast         
-    plugin_name : str
-        Plugin name
-    node_uid : str
-        Sensor node UID
-    tak_context : str
-        node or ecosystem
-    """
+    """Send context-appropriate Plugin Action Names for TAK/Tactical."""
     try:
-        action_names = plugin.get_plugin_actions(plugin_name, component.settings_dict, component.logger)
+        action_names = (
+            plugin.get_plugin_actions(
+                plugin_name,
+                component.settings_dict,
+                component.logger,
+                requester_type=(
+                    requester_type
+                ),
+                node_location=(
+                    getattr(
+                        component,
+                        "local_remote",
+                        "",
+                    )
+                ),
+            )
+        )
 
-        # send action names
         PARAMETERS = {
             "requester_uid": requester_uid,
             "requester_type": requester_type,
             "node_uid": node_uid,
             "plugin_name": plugin_name,
             "action_names": action_names,
-            "tak_context": tak_context
+            "tak_context": tak_context,
         }
+
         msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "sendPluginActionNamesTakResults",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "sendPluginActionNamesTakResults",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
         }
-        component.logger.debug(f"Sending action names for plugin {plugin_name} and TAK UID {requester_uid}: {action_names}")
-        await component.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-    except Exception as e:
-        component.logger.error(f"Error sending action names for plugin {plugin_name} and TAK UID {requester_uid}: {e}")
-        tb = traceback.format_exc()
-        component.logger.debug(tb)
+
+        component.logger.debug(
+            "Sending action names for "
+            f"plugin={plugin_name}, "
+            f"requester_type={requester_type}, "
+            f"node_location={getattr(component, 'local_remote', '')}: "
+            f"{action_names}"
+        )
+
+        await component.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+    except Exception as exc:
+        component.logger.error(
+            "Error sending action names for "
+            f"plugin={plugin_name}, requester_uid={requester_uid}: {exc}"
+        )
+
+        component.logger.debug(
+            traceback.format_exc()
+        )
 
 
 def _load_plugin_actions_module(plugin_name: str, logger=None):
@@ -1331,6 +1324,16 @@ async def queryPluginActions(
                 candidate_plugin,
                 component.settings_dict,
                 component.logger,
+                requester_type=(
+                    requester_type
+                ),
+                node_location=(
+                    getattr(
+                        component,
+                        "local_remote",
+                        "",
+                    )
+                ),
             )
 
             for action_name in available_actions:
@@ -1915,32 +1918,77 @@ async def sendPluginActionParametersTak(
     plugin_name: str,
     action_name: str,
     node_uid: str,
-    tak_context: str
+    tak_context: str,
 ) -> None:
     """
-    Node handler for hub->node request: "sendPluginActionParameters"
-
-    Returns the action schema back to HIPRFISR.
+    Return an action schema only when the action is allowed for this client/node
+    context.
     """
-
     try:
         component.logger.info(
-            f"Fetching schema for {plugin_name}.{action_name} (node_uid={node_uid})"
+            f"Fetching schema for {plugin_name}.{action_name} "
+            f"(node_uid={node_uid})"
         )
 
-        # Validate plugin directory exists
-        plugin_path = os.path.join(fissure.utils.PLUGIN_DIR, plugin_name)
-        if not os.path.exists(plugin_path):
-            component.logger.error(f"Plugin path does not exist: {plugin_path}")
+        plugin_path = os.path.join(
+            fissure.utils.PLUGIN_DIR,
+            plugin_name,
+        )
+
+        if not os.path.exists(
+            plugin_path
+        ):
+            component.logger.error(
+                f"Plugin path does not exist: {plugin_path}"
+            )
             return
 
-        # Use existing utility function (importlib.util based)
-        schema = plugin.get_action_schema(plugin_name, action_name, component.logger)
+        if not plugin.action_is_allowed(
+            plugin_name,
+            action_name,
+            requester_type=(
+                requester_type
+            ),
+            node_location=(
+                getattr(
+                    component,
+                    "local_remote",
+                    "",
+                )
+            ),
+            logger=component.logger,
+        ):
+            component.logger.warning(
+                "Rejected action schema request for "
+                f"{plugin_name}.{action_name}: "
+                f"requester_type={requester_type}, "
+                f"node_location={getattr(component, 'local_remote', '')}"
+            )
+            return
 
-        # Normalize schema shape
-        if not isinstance(schema, dict):
-            schema = {"params": []}
-        if "params" not in schema or not isinstance(schema.get("params"), list):
+        schema = plugin.get_action_schema(
+            plugin_name,
+            action_name,
+            component.logger,
+        )
+
+        if not isinstance(
+            schema,
+            dict,
+        ):
+            schema = {
+                "params": []
+            }
+
+        if (
+            "params" not in schema
+            or not isinstance(
+                schema.get(
+                    "params"
+                ),
+                list,
+            )
+        ):
             schema["params"] = []
 
         PARAMETERS = {
@@ -1950,13 +1998,16 @@ async def sendPluginActionParametersTak(
             "action_name": action_name,
             "node_uid": node_uid,
             "schema": schema,
-            "tak_context": tak_context
+            "tak_context": tak_context,
         }
 
         msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "sendPluginActionParametersResultsTak",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "sendPluginActionParametersResultsTak",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
         }
 
         component.logger.debug(
@@ -1964,17 +2015,19 @@ async def sendPluginActionParametersTak(
             f"with {len(schema.get('params', []))} params"
         )
 
-        # Node -> Hub
         await component.hiprfisr_socket.send_msg(
             fissure.comms.MessageTypes.COMMANDS,
-            msg
+            msg,
         )
 
-    except Exception as e:
+    except Exception as exc:
         component.logger.error(
-            f"Error sending schema for {plugin_name}.{action_name}: {e}"
+            f"Error sending schema for {plugin_name}.{action_name}: {exc}"
         )
-        component.logger.debug(traceback.format_exc())
+
+        component.logger.debug(
+            traceback.format_exc()
+        )
 
 
 async def sendPluginTargetActionsTak(
@@ -1987,23 +2040,45 @@ async def sendPluginTargetActionsTak(
     classification_candidates: List[str],
 ) -> None:
     """
-    Node handler for hub->node request: get plugin action names filtered by target classification.
+    Return target-classification actions that are also valid for the requesting
+    client and current node location.
     """
     try:
         component.logger.info(
             f"Fetching target actions for plugin={plugin_name}, "
-            f"target_id={target_id}, classifications={classification_candidates}"
+            f"target_id={target_id}, "
+            f"classifications={classification_candidates}"
         )
 
-        plugin_path = os.path.join(fissure.utils.PLUGIN_DIR, plugin_name)
-        if not os.path.exists(plugin_path):
-            component.logger.error(f"Plugin path does not exist: {plugin_path}")
+        plugin_path = os.path.join(
+            fissure.utils.PLUGIN_DIR,
+            plugin_name,
+        )
+
+        if not os.path.exists(
+            plugin_path
+        ):
+            component.logger.error(
+                f"Plugin path does not exist: {plugin_path}"
+            )
             return
 
-        action_names = plugin.get_actions_for_classifications(
-            plugin_name,
-            classification_candidates,
-            component.logger
+        action_names = (
+            plugin.get_actions_for_classifications(
+                plugin_name,
+                classification_candidates,
+                component.logger,
+                requester_type=(
+                    requester_type
+                ),
+                node_location=(
+                    getattr(
+                        component,
+                        "local_remote",
+                        "",
+                    )
+                ),
+            )
         )
 
         PARAMETERS = {
@@ -2016,21 +2091,36 @@ async def sendPluginTargetActionsTak(
         }
 
         msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "sendPluginActionNamesTakResults",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "sendPluginActionNamesTakResults",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
         }
-        component.logger.debug(f"Sending action names for plugin {plugin_name} and TAK UID {requester_uid}: {action_names}")
-        await component.hiprfisr_socket.send_msg(
-            fissure.comms.MessageTypes.COMMANDS,
-            msg
+
+        component.logger.debug(
+            "Sending target action names for "
+            f"plugin={plugin_name}, "
+            f"requester_type={requester_type}, "
+            f"node_location={getattr(component, 'local_remote', '')}: "
+            f"{action_names}"
         )
 
-    except Exception as e:
-        component.logger.error(
-            f"Error sending target actions for plugin={plugin_name}, target_id={target_id}: {e}"
+        await component.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
         )
-        component.logger.debug(traceback.format_exc())
+
+    except Exception as exc:
+        component.logger.error(
+            "Error sending target actions for "
+            f"plugin={plugin_name}, target_id={target_id}: {exc}"
+        )
+
+        component.logger.debug(
+            traceback.format_exc()
+        )
 
 
 async def queryPluginActionSchema(
@@ -2043,10 +2133,8 @@ async def queryPluginActionSchema(
     context: str = "",
 ) -> None:
     """
-    Node handler for Dashboard-only plugin action schema queries.
-
-    This returns the action schema back to HIPRFISR as a normal command
-    message, not as TAK/CoT.
+    Return a Dashboard action schema only when the action is valid for the
+    requesting client and current node location.
     """
     try:
         component.logger.info(
@@ -2054,9 +2142,40 @@ async def queryPluginActionSchema(
             f"(node_uid={node_uid}, context={context})"
         )
 
-        plugin_path = os.path.join(fissure.utils.PLUGIN_DIR, plugin_name)
-        if not os.path.exists(plugin_path):
-            component.logger.error(f"Plugin path does not exist: {plugin_path}")
+        plugin_path = os.path.join(
+            fissure.utils.PLUGIN_DIR,
+            plugin_name,
+        )
+
+        if not os.path.exists(
+            plugin_path
+        ):
+            component.logger.error(
+                f"Plugin path does not exist: {plugin_path}"
+            )
+            return
+
+        if not plugin.action_is_allowed(
+            plugin_name,
+            action_name,
+            requester_type=(
+                requester_type
+            ),
+            node_location=(
+                getattr(
+                    component,
+                    "local_remote",
+                    "",
+                )
+            ),
+            logger=component.logger,
+        ):
+            component.logger.warning(
+                "Rejected Dashboard action schema request for "
+                f"{plugin_name}.{action_name}: "
+                f"requester_type={requester_type}, "
+                f"node_location={getattr(component, 'local_remote', '')}"
+            )
             return
 
         schema = plugin.get_action_schema(
@@ -2065,10 +2184,23 @@ async def queryPluginActionSchema(
             component.logger,
         )
 
-        if not isinstance(schema, dict):
-            schema = {"params": []}
+        if not isinstance(
+            schema,
+            dict,
+        ):
+            schema = {
+                "params": []
+            }
 
-        if "params" not in schema or not isinstance(schema.get("params"), list):
+        if (
+            "params" not in schema
+            or not isinstance(
+                schema.get(
+                    "params"
+                ),
+                list,
+            )
+        ):
             schema["params"] = []
 
         PARAMETERS = {
@@ -2082,26 +2214,27 @@ async def queryPluginActionSchema(
         }
 
         msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "queryPluginActionSchemaResults",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "queryPluginActionSchemaResults",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
         }
-
-        component.logger.debug(
-            f"Sending dashboard schema for {plugin_name}.{action_name} "
-            f"with {len(schema.get('params', []))} params "
-            f"(context={context})"
-        )
 
         await component.hiprfisr_socket.send_msg(
             fissure.comms.MessageTypes.COMMANDS,
             msg,
         )
 
-    except Exception as e:
+    except Exception as exc:
         component.logger.error(
-            f"Error sending dashboard schema for {plugin_name}.{action_name}: {e}"
+            "Error sending Dashboard schema for "
+            f"{plugin_name}.{action_name}: {exc}"
         )
-        component.logger.debug(traceback.format_exc())
+
+        component.logger.debug(
+            traceback.format_exc()
+        )
 
 

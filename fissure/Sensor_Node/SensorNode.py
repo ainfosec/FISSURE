@@ -30,6 +30,7 @@ import fissure.callbacks
 import fissure.comms
 import fissure.utils
 from fissure.utils import PLUGIN_DIR
+from fissure.utils import plugin
 from fissure.utils.artifacts import ArtifactManager
 
 import uuid
@@ -253,7 +254,6 @@ class SensorNode(object):
         self.archive_flow_graph_loaded = False
         self.physical_fuzzing_stop_event = False
         self.attack_script_name = ""
-        self.inspection_script_name = ""
         self.triggers_running = False
         self.alert_senders = {}
 
@@ -1320,6 +1320,25 @@ class SensorNode(object):
                 return
             self.logger.debug(f"Plugin actions module resolved: {plugin_actions_module}")
 
+            if not plugin.action_is_allowed(
+                plugin_name,
+                action_name,
+                requester_type=(
+                    requester_type
+                ),
+                node_location=(
+                    self.local_remote
+                ),
+                logger=self.logger,
+            ):
+                self.logger.warning(
+                    "Rejected plugin action execution: "
+                    f"{plugin_name}.{action_name}, "
+                    f"requester_type={requester_type}, "
+                    f"node_location={self.local_remote}"
+                )
+                return
+
             # Import and run the action function from the plugin script
             spec = importlib.util.spec_from_file_location("plugin_module", plugin_actions_module)
             if spec is None:
@@ -1871,12 +1890,6 @@ class SensorNode(object):
                         fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphFinishedIQ_Playback",
             }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-        elif flow_graph_type == "Inspection":
-            msg = {
-                        fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphFinishedIQ_Inspection",
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
         elif flow_graph_type == "Sniffer - Stream":
             PARAMETERS = {"category": "Stream"}
             msg = {
@@ -1933,12 +1946,6 @@ class SensorNode(object):
             msg = {
                         fissure.comms.MessageFields.IDENTIFIER: self.identifier,
                         fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphStartedIQ_Playback",
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-        elif flow_graph_type == "Inspection":
-            msg = {
-                        fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphStartedIQ_Inspection",
             }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
         elif flow_graph_type == "Sniffer - Stream":
@@ -2529,32 +2536,6 @@ class SensorNode(object):
         self.iqflowtoexec.stop()
         self.iqflowtoexec.wait()
         del self.iqflowtoexec  # Free up the ports
-
-
-    ####################  Inspection Flow Graphs  ######################
-
-    def inspectionFlowGraphGUI_Thread(self, flow_graph_filename, variable_names, variable_values):
-        """ Runs the inspection flow graph in the new thread.
-        """
-        try:
-            # Start it
-            filepath = self.replaceUsername(flow_graph_filename, os.getenv('USER'))
-            flow_graph_filename = flow_graph_filename.rsplit("/",1)[1]
-            arguments = ""
-            for n in range(0,len(variable_names)):
-                arguments = arguments + '--' + variable_names[n] + '="' + variable_values[n] + '" '
-
-            osCommandString = "python3 " + '"' + filepath + '" ' + arguments
-            proc = subprocess.Popen(osCommandString + " &", shell=True)
-
-            asyncio.run(self.flowGraphStarted("Inspection"))  # Signals to other components
-            self.inspection_script_name = flow_graph_filename
-
-        # Error Loading Flow Graph
-        except Exception as e:
-            asyncio.run(self.flowGraphStarted("Inspection"))
-            asyncio.run(self.flowGraphFinished("Inspection"))
-            asyncio.run(self.flowGraphError(str(e)))
 
 
     #######################  Protocol Discovery  #######################

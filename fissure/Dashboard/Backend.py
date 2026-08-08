@@ -1158,52 +1158,6 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-    async def inspectionFlowGraphStart(
-        self, 
-        node_uid="", 
-        flow_graph_filepath="", 
-        variable_names=[], 
-        variable_values=[], 
-        file_type=""
-    ):
-        """
-        Command for starting an inspection flow graph.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "flow_graph_filepath": flow_graph_filepath,
-                "variable_names": variable_names,
-                "variable_values": variable_values,
-                "file_type": file_type,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "inspectionFlowGraphStart",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def inspectionFlowGraphStop(self, node_uid="", parameter=""):
-        """
-        Command for stopping an inspection flow graph.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "parameter": parameter,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "inspectionFlowGraphStop",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
     async def findEntropy(self, message_length=0, preamble=""):
         """
         Sends a message to Protocol Discovery to find the entropy for the bit positions of fixed-length messages.

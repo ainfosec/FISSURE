@@ -1614,65 +1614,6 @@ async def iqFlowGraphStop(component: object, node_uid="", parameter=""):
     )
 
 
-async def inspectionFlowGraphStart(
-    component: object, node_uid="", flow_graph_filepath="", variable_names=[], variable_values=[], file_type=""
-):
-    """
-    Command for starting an inspection flow graph.
-    """
-    # Send Message to Sensor Node
-    PARAMETERS = {
-        "flow_graph_filepath": flow_graph_filepath,
-        "variable_names": variable_names,
-        "variable_values": variable_values,
-        "file_type": file_type,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "inspectionFlowGraphStart",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def inspectionFlowGraphStop(component: object, node_uid="", parameter=""):
-    """
-    Command for stopping an inspection flow graph.
-    """
-    # Send Message to Sensor Node,PD
-    PARAMETERS = {
-        "parameter": parameter
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "inspectionFlowGraphStop",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
 async def snifferFlowGraphStart(
     component: object, node_uid="", flow_graph_filepath="", variable_names=[], variable_values=[]
 ):
@@ -2642,18 +2583,6 @@ async def flowGraphFinishedSniffer(component: object, node_uid="", category=""):
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def flowGraphFinishedIQ_Inspection(component: object, node_uid=""):
-    """
-    Forwards the flow graph finished IQ inspection message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphFinishedIQ_Inspection",
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
 
 async def flowGraphFinishedIQ_Playback(component: object, node_uid=""):
     """
@@ -2697,19 +2626,6 @@ async def flowGraphStartedSniffer(component: object, node_uid="", category=""):
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphStartedSniffer",
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def flowGraphStartedIQ_Inspection(component: object, node_uid=""):
-    """
-    Forwards the flow graph started IQ inspection message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphStartedIQ_Inspection",
     }
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
