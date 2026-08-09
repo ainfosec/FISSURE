@@ -5947,7 +5947,12 @@ def _clickableFrameReleased(dashboard, frame: QtWidgets.QFrame, event: QtCore.QE
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotSetTacticalNodeActiveClicked(dashboard: QtCore.QObject):
     """
-    Promote the currently selected Tactical node to the dashboard-selected sensor node.
+    Promote the currently selected Tactical node to the dashboard-selected
+    Sensor Node.
+
+    A new Dashboard-selected-node context requires a live settings response
+    from the Sensor Node, so do not start selection while the node is
+    disconnected.
     """
     node_uid = getattr(dashboard, "selected_tactical_node_uid", None)
 
@@ -5955,65 +5960,144 @@ async def _slotSetTacticalNodeActiveClicked(dashboard: QtCore.QObject):
         dashboard.logger.warning("No Tactical node is selected.")
         return
 
-    # Already active
+    # Already selected in the Dashboard. If it later disconnects, it remains
+    # selected with the last settings that were successfully acquired.
     if getattr(dashboard, "selected_node_uid", None) == node_uid:
-        dashboard.logger.debug("Tactical node is already the dashboard-selected node.")
+        dashboard.logger.debug(
+            "Tactical node is already the dashboard-selected node."
+        )
         return
 
-    dashboard.logger.info(f"Setting Tactical node as active selected node: {node_uid}")
+    node_state = getattr(dashboard, "node_states", {}).get(
+        node_uid,
+        {},
+    )
+
+    if not bool(node_state.get("connected", True)):
+        dashboard.logger.info(
+            f"Cannot select disconnected Tactical node as the "
+            f"dashboard-selected Sensor Node: {node_uid}"
+        )
+        _updateTacticalNodeInfoFrameState(dashboard)
+        return
+
+    dashboard.logger.info(
+        f"Setting Tactical node as active selected node: {node_uid}"
+    )
 
     try:
         await dashboard.backend.nodeSelectIP(node_uid=node_uid)
     except TypeError:
-        # Use this fallback if your backend wrapper expects the UUID positionally.
+        # Use this fallback if the backend wrapper expects the UUID positionally.
         await dashboard.backend.nodeSelectIP(node_uid)
     except Exception as e:
-        dashboard.logger.error(f"Failed to select Tactical node through HIPRFISR: {e}")
+        dashboard.logger.error(
+            f"Failed to select Tactical node through HIPRFISR: {e}"
+        )
         return
 
 
 def _updateTacticalNodeInfoFrameState(dashboard):
     """
-    Updates the Tactical selected-node info frame state.
+    Update the Tactical selected-node info frame state.
 
-    The frame contains node information whenever a Tactical node is selected,
-    but it is only clickable when:
-    - a Tactical node is selected
-    - that Tactical node is not already the dashboard-selected node
+    The frame remains available for viewing Tactical node information while a
+    node is disconnected. Promoting a different Tactical node to the
+    Dashboard-selected Sensor Node is only offered while that node is
+    connected, because establishing that context requires a fresh settings
+    response from the Sensor Node.
     """
     frame = dashboard.ui.frame5_tactical1
 
-    tactical_node_uid = getattr(dashboard, "selected_tactical_node_uid", None)
-    active_node_uid = getattr(dashboard, "selected_node_uid", None)
+    tactical_node_uid = getattr(
+        dashboard,
+        "selected_tactical_node_uid",
+        None,
+    )
+    active_node_uid = getattr(
+        dashboard,
+        "selected_node_uid",
+        None,
+    )
 
     has_tactical_node = bool(tactical_node_uid)
-    is_active = has_tactical_node and tactical_node_uid == active_node_uid
-    is_clickable = has_tactical_node and not is_active
+    is_active = (
+        has_tactical_node
+        and tactical_node_uid == active_node_uid
+    )
 
-    node_state = getattr(dashboard, "node_states", {}).get(tactical_node_uid, {})
-    is_connected = bool(node_state.get("connected", True))
+    node_state = getattr(
+        dashboard,
+        "node_states",
+        {},
+    ).get(
+        tactical_node_uid,
+        {},
+    )
 
-    # Keep the frame enabled when it has node information so tooltip/hover can work.
+    is_connected = bool(
+        node_state.get(
+            "connected",
+            True,
+        )
+    )
+
+    is_clickable = (
+        has_tactical_node
+        and not is_active
+        and is_connected
+    )
+
+    # Keep the frame enabled whenever Tactical node information is present so
+    # cached details remain visible and tooltip/hover behavior still works.
     frame.setEnabled(has_tactical_node)
 
-    # Use string values for Qt stylesheet dynamic properties.
-    frame.setProperty("active", "true" if is_active else "false")
-    frame.setProperty("clickable", "true" if is_clickable else "false")
-    frame.setProperty("connected", "true" if is_connected else "false")
-    frame.setProperty("pressed", "false")
+    frame.setProperty(
+        "active",
+        "true" if is_active else "false",
+    )
+    frame.setProperty(
+        "clickable",
+        "true" if is_clickable else "false",
+    )
+    frame.setProperty(
+        "connected",
+        "true" if is_connected else "false",
+    )
+    frame.setProperty(
+        "pressed",
+        "false",
+    )
 
     if is_clickable:
         frame.setCursor(QtCore.Qt.PointingHandCursor)
-        frame.setToolTip("Set this Tactical node as the dashboard-selected sensor node.")
+        frame.setToolTip(
+            "Set this Tactical node as the dashboard-selected Sensor Node."
+        )
+    elif is_active and not is_connected:
+        frame.unsetCursor()
+        frame.setToolTip(
+            "This is the dashboard-selected Sensor Node and is currently "
+            "disconnected."
+        )
     elif is_active:
         frame.unsetCursor()
-        frame.setToolTip("This is the dashboard-selected sensor node.")
+        frame.setToolTip(
+            "This is the dashboard-selected Sensor Node."
+        )
+    elif has_tactical_node and not is_connected:
+        frame.unsetCursor()
+        frame.setToolTip(
+            "Reconnect this Sensor Node before selecting it as the "
+            "dashboard-selected node."
+        )
     else:
         frame.unsetCursor()
-        frame.setToolTip("Select a Tactical node pin or ecosystem row first.")
+        frame.setToolTip(
+            "Select a Tactical node pin or ecosystem row first."
+        )
 
     _refresh_frame_style(frame)
-
 
 
 

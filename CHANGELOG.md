@@ -1,6 +1,27 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-09
+
+Improve Tactical Sensor Node disconnect handling and off-map overlay visibility
+
+### Added
+
+- Added explicit Connected/Disconnected state to the Sensor Node Selection dialog while keeping disconnected nodes visible for status and last-seen review.
+- Added Dashboard-only off-map clamping for Tactical nodes, targets, detections, SOIs, and alerts, with `[off map]` labels, edge-aware label placement, and rendered-position hit testing so clamped markers remain clickable.
+
+### Changed
+
+- Updated HIPRFISR node-state handling in the Dashboard so heartbeat timeout and reconnection state propagates into existing Tactical node roster, details, and map displays.
+- Updated disconnected Tactical nodes to render gray with a dashed border and without the active indicator, while already-selected disconnected nodes remain selected and continue to show the red Dashboard/Tactical warning state until they reconnect.
+- Updated Dashboard Sensor Node selection so disconnected nodes can still be inspected in Tactical but cannot establish a new selected-node context until a live settings response can be acquired.
+- Updated Tactical map centering and marker rendering to preserve authoritative latitude/longitude while using clamped scene coordinates only for Dashboard visualization; off-map Target CE rings are not drawn around the clamped edge position.
+
+### Fixed
+
+- Fixed Tactical nodes retaining stale active/status presentation after heartbeat timeout and restored their normal presentation automatically when heartbeats resume.
+- Fixed Tactical overlays disappearing and becoming unclickable when valid coordinates fall outside the downloaded map pack.
+
 ## 2026-8-08
 
 Replace the legacy IQ Inspection workflow with plugin-based inspection and add context-aware plugin action filtering

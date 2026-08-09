@@ -1975,7 +1975,8 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
     Store the latest normalized node state from HIPRFISR.
 
     Also updates the selected-node top card when the selected node times out
-    or reconnects.
+    or reconnects, and mirrors that connection state into an existing
+    Tactical node record.
     """
     if not node_uid:
         return
@@ -1989,6 +1990,48 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         frontend.node_states = {}
 
     frontend.node_states[node_uid] = node
+
+    tactical_nodes = getattr(frontend, "tactical_nodes", None)
+    tactical_node = (
+        tactical_nodes.get(node_uid)
+        if isinstance(tactical_nodes, dict)
+        else None
+    )
+
+    if isinstance(tactical_node, dict):
+        connected = bool(node.get("connected", False))
+        reported_status = str(node.get("status") or "").strip()
+
+        tactical_node["connected"] = connected
+        tactical_node["status"] = (
+            reported_status or "Unknown"
+            if connected
+            else "Disconnected"
+        )
+
+        TacticalTabSlots.update_tactical_node_roster_row(
+            frontend,
+            tactical_node,
+        )
+
+        if getattr(frontend, "selected_tactical_node_uid", None) == node_uid:
+            TacticalTabSlots._updateTacticalNodeInfoFrameState(frontend)
+
+        if hasattr(frontend, "tactical_map"):
+            lat = tactical_node.get("lat")
+            lon = tactical_node.get("lon")
+
+            if lat is not None and lon is not None:
+                frontend.tactical_map.add_node(
+                    node_id=node_uid,
+                    lat=lat,
+                    lon=lon,
+                    label=tactical_node.get("callsign") or node_uid,
+                    active=cot_utils.is_tactical_node_active(
+                        tactical_node
+                    ),
+                    status=tactical_node.get("status", ""),
+                )
 
     selected_uid = str(getattr(frontend, "selected_node_uid", "") or "").strip()
     node_uid_text = str(node_uid or "").strip()
@@ -2127,7 +2170,7 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         f"last_seen={node.get('last_seen')} "
         f"status={node.get('status')}"
     )
-
+    
 
 async def nodeStateRemove(component: object, node_uid=""):
     """

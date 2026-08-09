@@ -1495,4 +1495,5 @@ def is_tactical_node_active(node_record):
         "idle",
         "stopped",
         "unknown",
+        "disconnected",
     ]
