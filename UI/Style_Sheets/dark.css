@@ -1052,7 +1052,9 @@ QLabel#label_tsi_conditioner_empty_icon {
 
 QFrame#frame_tsi_detector_setup,
 QFrame#frame_tsi_detector_parameters,
-QFrame#frame_tsi_detector_run {
+QFrame#frame_tsi_detector_run,
+QFrame#frame_detector_selection_setup,
+QFrame#frame_detector_selection_parameters {
     background-color: @color2;
     border: 1px solid @color3;
     border-radius: 10px;
@@ -1060,7 +1062,9 @@ QFrame#frame_tsi_detector_run {
 
 QLabel#label_tsi_detector_setup_title,
 QLabel#label_tsi_detector_parameters_title,
-QLabel#label_tsi_detector_run_title {
+QLabel#label_tsi_detector_run_title,
+QLabel#label_detector_selection_setup_title,
+QLabel#label_detector_selection_parameters_title {
     color: @color4;
     background-color: transparent;
     font: bold 11pt "Ubuntu";
@@ -1068,7 +1072,9 @@ QLabel#label_tsi_detector_run_title {
 
 QLabel#label_tsi_detector_setup_subtitle,
 QLabel#label_tsi_detector_parameters_subtitle,
-QLabel#label_tsi_detector_run_subtitle {
+QLabel#label_tsi_detector_run_subtitle,
+QLabel#label_detector_selection_setup_subtitle,
+QLabel#label_detector_selection_parameters_subtitle {
     color: @color4;
     background-color: transparent;
     font: 8pt "Ubuntu";
@@ -1076,7 +1082,9 @@ QLabel#label_tsi_detector_run_subtitle {
 
 QLabel#label_tsi_detector_setup_badge,
 QLabel#label_tsi_detector_parameters_badge,
-QLabel#label_tsi_detector_run_badge {
+QLabel#label_tsi_detector_run_badge,
+QLabel#label_detector_selection_setup_badge,
+QLabel#label_detector_selection_parameters_badge {
     qproperty-alignment: AlignCenter;
     color: @color4;
     background-color: @color3;
@@ -1089,7 +1097,8 @@ QLabel#label_tsi_detector_run_badge {
     max-height: 28px;
 }
 
-QLabel#label_tsi_detector_setup_info {
+QLabel#label_tsi_detector_setup_info,
+QLabel#label_detector_selection_setup_info {
     color: @color4;
     background-color: rgba(80, 150, 220, 25);
     border: 1px solid rgba(80, 150, 220, 120);
@@ -1284,12 +1293,14 @@ QLineEdit#lineEdit_tsi_detector_parameter {
 
 
 QScrollArea#scrollArea_tsi_detector_parameters,
+QScrollArea#scrollArea_detector_selection_parameters,
 QScrollArea#scrollArea_tsi_conditioner_method {
     border: 1px solid @color13;
     background-color: @color2;
 }
 
 QWidget#scrollAreaWidgetContents_tsi_detector_parameters,
+QWidget#scrollAreaWidgetContents_detector_selection_parameters,
 QWidget#scrollAreaWidgetContents_tsi_conditioner_parameters {
     background-color: @color2;
 }
@@ -2086,4 +2097,207 @@ QCheckBox#checkBox_iq_inspection_parameter {
 
 QLabel#label_iq_inspection_parameter_info {
     font: 8pt "Ubuntu";
+}
+
+
+/* ==========================================================
+   Archive - Replay Workflow
+   ========================================================== */
+
+QLabel#label_archive_replay_empty_icon {
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
+}
+
+QFrame#frame_archive_replay_setup,
+QFrame#frame_archive_replay_parameters,
+QFrame#frame_archive_replay_triggers,
+QFrame#frame_archive_replay_playlist,
+QFrame#frame_archive_replay_run {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_archive_replay_setup_badge,
+QLabel#label_archive_replay_parameters_badge,
+QLabel#label_archive_replay_triggers_badge,
+QLabel#label_archive_replay_playlist_badge,
+QLabel#label_archive_replay_run_badge {
+    qproperty-alignment: AlignCenter;
+    color: @color4;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_archive_replay_setup_title,
+QLabel#label_archive_replay_parameters_title,
+QLabel#label_archive_replay_triggers_title,
+QLabel#label_archive_replay_playlist_title,
+QLabel#label_archive_replay_run_title {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_archive_replay_setup_subtitle,
+QLabel#label_archive_replay_parameters_subtitle,
+QLabel#label_archive_replay_triggers_subtitle,
+QLabel#label_archive_replay_playlist_subtitle,
+QLabel#label_archive_replay_run_subtitle {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QScrollArea#scrollArea_archive_replay_parameters,
+QWidget#scrollAreaWidgetContents_archive_replay_parameters {
+    background-color: @color2;
+    color: @color4;
+}
+
+QScrollArea#scrollArea_archive_replay_parameters {
+    border: 1px solid @color13;
+}
+
+QLabel#label_archive_replay_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QDoubleSpinBox#doubleSpinBox_archive_replay_parameter,
+QSpinBox#spinBox_archive_replay_parameter,
+QComboBox#comboBox_archive_replay_parameter,
+QLineEdit#lineEdit_archive_replay_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QCheckBox#checkBox_archive_replay_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QLabel#label_archive_replay_parameter_info {
+    font: 8pt "Ubuntu";
+}
+
+QPushButton#pushButton_archive_replay_query,
+QPushButton#pushButton_archive_replay_customize {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2F5F8F,
+        stop:0.45 #1D456D,
+        stop:1 #0B2D52
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QPushButton#pushButton_archive_replay_query:hover,
+QPushButton#pushButton_archive_replay_customize:hover {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #3C76AD,
+        stop:0.45 #265A88,
+        stop:1 #123B63
+    );
+}
+
+QPushButton#pushButton_archive_replay_query:pressed,
+QPushButton#pushButton_archive_replay_customize:pressed {
+    color: #FFFFFF;
+    border: 1px solid #061F3A;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #061F3A,
+        stop:0.45 #0B2D52,
+        stop:1 #1D456D
+    );
+}
+
+QPushButton#pushButton_archive_replay_query:disabled,
+QPushButton#pushButton_archive_replay_customize:disabled {
+    color: @color13;
+    border: 1px solid @color9;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 @color8,
+        stop:1 @color9
+    );
+}
+
+QPushButton#pushButton_archive_replay_start_stop {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #18a522,
+        stop: 1 #008c0b
+    );
+    border: 1px solid #006f08;
+    border-radius: 3px;
+    font: bold 10pt "Ubuntu";
+}
+
+QPushButton#pushButton_archive_replay_start_stop:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #22bd2d,
+        stop: 1 #079811
+    );
+}
+
+QPushButton#pushButton_archive_replay_start_stop[running="true"] {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #d9534f,
+        stop: 1 #b52b27
+    );
+    border: 1px solid #8f211e;
+}
+
+QPushButton#pushButton_archive_replay_start_stop[running="true"]:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #e86763,
+        stop: 1 #c9302c
+    );
+}
+
+QPushButton#pushButton_archive_replay_start_stop:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
+}
+
+QLabel#label_sensor_nodes_fn_empty_icon {
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
 }

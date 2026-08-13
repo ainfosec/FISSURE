@@ -63,6 +63,25 @@ DELEGATED_ACTIONS = {
     "rtl_power_detection": "Base",
     "lfm_beacon_detection": "Base",
 
+    # Base Trigger-Style Detectors
+    "sensor_node_time": "Base",
+    "timer": "Base",
+    "sound_threshold": "Base",
+    "file_modified": "Base",
+    "folder_modified": "Base",
+    "temperature": "Base",
+    "weather": "Base",
+    "wind": "Base",
+    "sunrise_sunset": "Base",
+    "detect_ssid": "Base",
+    "gps_point": "Base",
+    "gps_line": "Base",
+    "x10_demod": "Base",
+    "plane_spotting": "Base",
+    "rds_keyword": "Base",
+    "cellular_tower": "Base",
+    "webserver_curl": "Base",
+
     # Base IQ Data
     "iq_record": "Base",
     "iq_playback": "Base",

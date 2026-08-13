@@ -96,6 +96,7 @@ class OperationMain(Operation):
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Union[Callable, None] = None,
         tak_cot_callback: Union[Callable, None] = None,
+        detection_callback: Union[Callable, None] = None,
         status_callback: Union[Callable, None] = None,
         target_callback: Union[Callable, None] = None,
         artifact_manager=None,
@@ -106,6 +107,7 @@ class OperationMain(Operation):
             logger=logger,
             alert_callback=alert_callback,
             tak_cot_callback=tak_cot_callback,
+            detection_callback=detection_callback,
             status_callback=status_callback,
             target_callback=target_callback,
             artifact_manager=artifact_manager,
@@ -572,29 +574,13 @@ class OperationMain(Operation):
         }
 
         detection = {k: v for k, v in detection.items() if v is not None}
-        uid_suffix = self._normalize_bssid(bssid) or str(int(ts_epoch))
-
-        tak_msg = {
-            "msg_type": "event",
-            "uid": f"wifi-geolocate-all-{uid_suffix}-{int(ts_epoch)}",
-            "kind": "detection",
-            "event_type": "detection",
-            "node_uid": str(self.node_uid),
-            "source_id": self.source_id,
-            "lat": True,
-            "lon": True,
-            "alt": True,
-            "time": True,
-            "data": detection,
-            "opid": self.opid,
-            "tak_icon": "r-x-fissure-detection",
-        }
-
-        if self.tak_cot_callback:
+        if self.detection_callback:
             try:
-                await self._callback_with_timeout(self.tak_cot_callback, tak_msg, timeout=2.0)
+                await self._callback_with_timeout(self.detection_callback, detection, timeout=2.0)
             except Exception:
-                self.logger.exception("tak_cot_callback detection emit failed")
+                self.logger.exception("detection_callback emit failed")
+        else:
+            self.logger.warning("wifi_geolocate_all has no detection_callback")
 
         if self.alert_callback:
             try:

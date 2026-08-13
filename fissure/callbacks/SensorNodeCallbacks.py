@@ -64,18 +64,6 @@ async def transferSensorNodeFile(
             await refreshSensorNodeFiles(component, os.path.dirname(remote_filepath))
 
 
-async def deleteArchiveReplayFiles(component: object):
-    """
-    Deletes all the files in the Archive_Replay folder on the sensor node ahead of file transfer for replay.
-    """
-    # Delete Files
-    folder_location = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Archive_Replay")
-    for filename in os.listdir(folder_location):
-        if os.path.isfile(os.path.join(folder_location, filename)):
-            if filename != ".gitkeep":
-                os.remove(os.path.join(folder_location, filename))
-
-
 async def overwriteDefaultAutorunPlaylist(component: object, playlist_dict={}):
     """
     Overwrites the default autorun playlist yaml file with a dictionary configured in the Dashboard.
@@ -328,49 +316,6 @@ async def multiStageAttackStop(component: object, autorun_index=0):
     # Use the Function that is Called Frequently in SensorNode.py
     loop = asyncio.get_event_loop()
     loop.run_in_executor(None, component.multiStageAttackStop, autorun_index)
-
-
-async def archivePlaylistStart(
-    component: object,
-   
-    flow_graph="",
-    filenames=[],
-    frequencies=[],
-    sample_rates=[],
-    formats=[],
-    channels=[],
-    gains=[],
-    durations=[],
-    repeat=False,
-    ip_address="",
-    serial="",
-    trigger_values=[]
-):
-    """
-    Starts a new thread for running the same replay flow graph multiple times for a specified duration.
-    """
-    if len(trigger_values) == 0:
-        # Run Event and Do Not Block
-        loop = asyncio.get_event_loop()
-        component.archive_playlist_stop_event = asyncio.Event()
-        loop.run_in_executor(None, component.archivePlaylistThreadStart, flow_graph, filenames, frequencies, sample_rates, formats, channels, gains, durations, repeat, ip_address, serial)
-    else:
-        # Run Event and Do Not Block
-        fissure_event_values = [flow_graph, filenames, frequencies, sample_rates, formats, channels, gains, durations, repeat, ip_address, serial]
-        loop = asyncio.get_event_loop()
-        loop.run_in_executor(None, component.triggerStart, trigger_values, "Archive Replay", fissure_event_values, -1)
-    await asyncio.sleep(0.1)
-
-
-async def archivePlaylistStop(component: object):
-    """
-    Stops a multi-stage attack already in progress
-    """
-    # Use the Function that is Called Frequently in SensorNode.py
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(None, component.archivePlaylistStop)
-    # component.archivePlaylistStop(sensor_node_id)
-    await asyncio.sleep(0.1)
 
 
 async def attackFlowGraphStart(

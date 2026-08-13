@@ -146,10 +146,13 @@ class ArtifactTransferRouter:
         self,
     ) -> Optional[Tuple[bytes, ArtifactTransferFrame]]:
         """
-        Receive one artifact-transfer frame.
+        Receive one transfer-plane frame and route it to its destination.
 
-        Dashboard-bound frames are forwarded only.
-        HIPRFISR-bound frames are returned to the local transfer controller.
+        Existing artifact downloads continue to use explicit transfer
+        registration. Dashboard-to-Sensor-Node file uploads may instead
+        declare ``destination_node_uid`` in their START metadata; the router
+        resolves that already-registered IP Sensor Node and creates the route
+        before forwarding the START frame.
         """
         if self._closed:
             return None
@@ -194,6 +197,56 @@ class ArtifactTransferRouter:
                 decoded.transfer_id
             )
         )
+
+        if (
+            not is_local
+            and destination is None
+            and kind == FRAME_START
+        ):
+            sender_registration = self._registered.get(
+                sender_identity,
+                {},
+            )
+
+            metadata = decoded.metadata or {}
+            destination_node_uid = str(
+                metadata.get(
+                    "destination_node_uid",
+                    "",
+                )
+                or ""
+            ).strip()
+
+            if (
+                sender_registration.get("role") == ROLE_DASHBOARD
+                and destination_node_uid
+            ):
+                destination = self._sensor_identities.get(
+                    destination_node_uid
+                )
+
+                if destination is None:
+                    await self.send_error(
+                        sender_identity,
+                        decoded.transfer_id,
+                        (
+                            "Sensor Node binary transfer peer is unavailable. "
+                            "Dashboard-to-node file upload requires an IP "
+                            "Sensor Node connected to the data plane."
+                        ),
+                    )
+                    return None
+
+                self._transfer_destinations[
+                    decoded.transfer_id
+                ] = destination
+
+                self.logger.info(
+                    "Registered Dashboard file upload transfer_id=%s "
+                    "destination_node_uid=%s",
+                    decoded.transfer_id,
+                    destination_node_uid,
+                )
 
         if not is_local and destination is None:
             await self.send_error(
@@ -250,8 +303,6 @@ class ArtifactTransferRouter:
                 decoded.transfer_id
             )
 
-        # Dashboard-bound frames have already been forwarded.
-        # Do not feed them into the HIPRFISR local receiver.
         return None
 
     async def _handle_registration(self, identity: bytes, payload: list[bytes]) -> None:

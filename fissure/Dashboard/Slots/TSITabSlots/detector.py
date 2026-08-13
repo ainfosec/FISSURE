@@ -24,6 +24,12 @@ TSI_DETECTOR_TYPES = [
     ("bluetooth", "Bluetooth"),
     ("protocol", "Protocol"),
     ("ml", "ML"),
+    ("time", "Time"),
+    ("system", "System"),
+    ("sensor", "Sensor"),
+    ("environmental", "Environmental"),
+    ("location", "Location"),
+    ("network", "Network"),
 ]
 
 
@@ -35,6 +41,15 @@ TSI_DETECTOR_MODES = [
     ("passive", "Passive"),
     ("file", "File"),
     ("simulation", "Simulation"),
+    ("scheduled", "Scheduled"),
+    ("threshold", "Threshold"),
+    ("change", "Change"),
+    ("condition", "Condition"),
+    ("presence", "Presence"),
+    ("proximity", "Proximity"),
+    ("boundary", "Boundary"),
+    ("match", "Match"),
+    ("request", "Request"),
 ]
 
 
@@ -797,21 +812,46 @@ def _set_spinbox_value_blocked(widget, value):
     widget.blockSignals(False)
 
 
+def append_tsi_active_detector_detection(
+    dashboard: QtCore.QObject,
+    detection: dict,
+):
+    """
+    Route a native FISSURE Detection into the shared TSI detector workbench.
+    """
+    if not isinstance(detection, dict) or not detection:
+        return
+
+    if str(detection.get("event_type") or detection.get("kind") or "").strip().lower() != "detection":
+        return
+
+    unified_running = bool(
+        getattr(dashboard, "tsi_detector_running", False)
+    )
+
+    if not unified_running:
+        return
+
+    _append_tsi_detector_detection(
+        dashboard,
+        detection,
+        allowed_detectors=None,
+        active_node_uid=getattr(dashboard, "tsi_detector_node_uid", ""),
+        active_opid_attr="tsi_detector_opid",
+        waiting_opid_attr="tsi_detector_waiting_for_opid",
+    )
+
+
 def append_tsi_active_detector_detection_from_cot(
     dashboard: QtCore.QObject,
     cot_message: dict,
 ):
     """
-    Routes CoT detections into the shared TSI detector workbench.
+    Route a parsed CoT Detection into the shared TSI detector workbench.
 
-    Unified, Sweep, and Fixed share:
-        - detector results table
-        - conditioner detector input table
-        - detector plot/raster area
-        - blacklist filtering
-
-    Unified detector mode is plugin/action generic. It does not maintain a
-    Dashboard-side detector allowlist.
+    This remains during detector migration so legacy detector operations and
+    externally supplied compatible CoT Detections continue to work. Native
+    FISSURE Detections are de-duplicated when their CoT copy arrives.
     """
     if not cot_message:
         return
@@ -826,7 +866,7 @@ def append_tsi_active_detector_detection_from_cot(
     if not unified_running:
         return
 
-    _append_tsi_detector_detection_from_cot(
+    _append_tsi_detector_detection(
         dashboard,
         cot_message,
         allowed_detectors=None,
@@ -836,31 +876,38 @@ def append_tsi_active_detector_detection_from_cot(
     )
 
 
-def _append_tsi_detector_detection_from_cot(
+def _append_tsi_detector_detection(
     dashboard: QtCore.QObject,
-    cot_message: dict,
+    detection: dict,
     allowed_detectors: set = None,
     active_node_uid: str = "",
     active_opid_attr: str = "",
     waiting_opid_attr: str = "",
 ):
     """
-    Append one parsed CoT detection into the shared TSI detector table/plot.
+    Append one native or parsed-CoT Detection into the shared TSI table/plot.
 
-    If allowed_detectors is None or empty, detector-name filtering is skipped.
-    That is required for the unified detector workflow.
+    Native Detection keys are preferred. Parsed-CoT detection_* aliases remain
+    supported while existing detector operations migrate to detection_callback.
     """
     allowed_detectors = allowed_detectors or set()
 
+    def first_value(*keys):
+        for key in keys:
+            value = detection.get(key)
+            if value not in (None, "", "None"):
+                return value
+        return None
+
     detector_name = str(
-        cot_message.get("detection_detector") or ""
+        first_value("detector", "detection_detector") or ""
     ).strip()
 
     if allowed_detectors and detector_name not in allowed_detectors:
         return
 
     detection_node_uid = str(
-        cot_message.get("detection_node_uid") or ""
+        first_value("node_uid", "detection_node_uid") or ""
     ).strip()
 
     active_node_uid = str(active_node_uid or "").strip()
@@ -869,7 +916,12 @@ def _append_tsi_detector_detection_from_cot(
         return
 
     detection_opid = str(
-        cot_message.get("detection_opid") or ""
+        first_value(
+            "opid",
+            "operation_id",
+            "detection_opid",
+        )
+        or ""
     ).strip()
 
     if not detection_opid:
@@ -887,11 +939,22 @@ def _append_tsi_detector_detection_from_cot(
         setattr(dashboard, waiting_opid_attr, False)
 
     try:
-        frequency_hz = float(cot_message.get("detection_frequency_hz"))
-        frequency_mhz = frequency_hz / 1e6
+        frequency_hz_value = first_value(
+            "frequency_hz",
+            "detection_frequency_hz",
+        )
+
+        if frequency_hz_value is not None:
+            frequency_hz = float(frequency_hz_value)
+            frequency_mhz = frequency_hz / 1e6
+        else:
+            frequency_mhz = float(
+                first_value("frequency_mhz", "detection_frequency_mhz")
+            )
+            frequency_hz = frequency_mhz * 1e6
     except Exception:
         dashboard.logger.debug(
-            f"[TSI Detector] Ignoring detection with invalid frequency: {cot_message}"
+            f"[TSI Detector] Ignoring detection with invalid frequency: {detection}"
         )
         return
 
@@ -902,14 +965,45 @@ def _append_tsi_detector_detection_from_cot(
         return
 
     try:
-        power_value = float(cot_message.get("detection_power_dbm"))
+        power_value = float(
+            first_value("power_dbm", "detection_power_dbm")
+        )
     except Exception:
         power_value = 0.0
 
     try:
-        time_value = float(cot_message.get("detection_timestamp"))
+        time_value = float(
+            first_value("timestamp", "detection_timestamp")
+        )
     except Exception:
         time_value = time.time()
+
+    signature = (
+        detection_node_uid,
+        detection_opid,
+        detector_name,
+        f"{frequency_hz:.3f}",
+        f"{power_value:.3f}",
+        f"{time_value:.6f}",
+    )
+
+    recent_signatures = getattr(
+        dashboard,
+        "_tsi_detector_recent_detection_signatures",
+        None,
+    )
+
+    if recent_signatures is None:
+        recent_signatures = []
+        dashboard._tsi_detector_recent_detection_signatures = recent_signatures
+
+    if signature in recent_signatures:
+        return
+
+    recent_signatures.append(signature)
+
+    if len(recent_signatures) > 512:
+        del recent_signatures[:-512]
 
     try:
         _tsi_detector_plot_add_detection(
@@ -934,13 +1028,13 @@ def _append_tsi_detector_detection_from_cot(
 
         frequency_item = QtWidgets.QTableWidgetItem(f"{frequency_mhz:.6f}")
         frequency_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        frequency_item.setData(QtCore.Qt.UserRole, cot_message)
+        frequency_item.setData(QtCore.Qt.UserRole, detection)
         frequency_item.setData(QtCore.Qt.UserRole + 1, detection_opid)
         table.setItem(row, 0, frequency_item)
 
         power_item = QtWidgets.QTableWidgetItem(f"{power_value:.1f}")
         power_item.setTextAlignment(QtCore.Qt.AlignCenter)
-        power_item.setData(QtCore.Qt.UserRole, cot_message)
+        power_item.setData(QtCore.Qt.UserRole, detection)
         power_item.setData(QtCore.Qt.UserRole + 1, detection_opid)
         table.setItem(row, 1, power_item)
 
@@ -948,7 +1042,7 @@ def _append_tsi_detector_detection_from_cot(
         time_item.setTextAlignment(QtCore.Qt.AlignCenter)
         time_item.setData(QtCore.Qt.UserRole, time_obj.msecsSinceStartOfDay())
         time_item.setData(QtCore.Qt.UserRole + 1, detection_opid)
-        time_item.setData(QtCore.Qt.UserRole + 2, cot_message)
+        time_item.setData(QtCore.Qt.UserRole + 2, detection)
         table.setItem(row, 2, time_item)
 
         table.sortItems(2, order=QtCore.Qt.DescendingOrder)

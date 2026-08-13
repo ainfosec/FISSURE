@@ -653,18 +653,43 @@ class Listener(FissureZMQNode):
 
     def disconnect(self, server_addr: Address):
         """
-        Disconnect and close subscriber socket
+        Disconnect from an open server connection.
 
-        :param server: Address Data of the server connection
-        :type server: fissure.comms.Address
+        :param server_addr: Address data for the server connection.
+        :type server_addr: fissure.comms.Address
         """
         if server_addr in self.connections:
-            self.heartbeat_channel.setsockopt(zmq.LINGER, 0)
-            self.message_channel.setsockopt(zmq.LINGER, 0)
-            self.heartbeat_channel.disconnect(server_addr.heartbeat_channel)
-            self.message_channel.disconnect(server_addr.message_channel)
-            self.connections.remove(server_addr)
-            self.logger.debug(f"[{self.name}] disconnected from {server_addr}")
+            self.heartbeat_channel.setsockopt(
+                zmq.LINGER,
+                0,
+            )
+            self.message_channel.setsockopt(
+                zmq.LINGER,
+                0,
+            )
+
+            self.heartbeat_channel.disconnect(
+                server_addr.heartbeat_channel
+            )
+            self.message_channel.disconnect(
+                server_addr.message_channel
+            )
+
+            self.connections.remove(
+                server_addr
+            )
+
+            if not getattr(
+                sys,
+                "is_finalizing",
+                lambda: False,
+            )():
+                try:
+                    self.logger.debug(
+                        f"[{self.name}] disconnected from {server_addr}"
+                    )
+                except Exception:
+                    pass
 
             # # Explicitly close sockets here if not closed yet
             # if not self.heartbeat_channel.closed:

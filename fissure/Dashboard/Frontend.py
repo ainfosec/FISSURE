@@ -988,10 +988,24 @@ class Dashboard(QtWidgets.QMainWindow):
         Initializes Archive Tabs on Dashboard launch.
         """
         # #### Archive #####
-        self.ui.comboBox3_archive_download_folder.addItem(fissure.utils.ARCHIVE_DIR)
-        self.ui.comboBox3_archive_download_folder.addItem(fissure.utils.IQ_RECORDINGS_DIR)
+        self.ui.comboBox3_archive_download_folder.addItem(
+            fissure.utils.ARCHIVE_DIR
+        )
+        self.ui.comboBox3_archive_download_folder.addItem(
+            fissure.utils.IQ_RECORDINGS_DIR
+        )
+
         self.populateArchive()
-        self.ui.label2_archive_replay_status.setVisible(False)
+
+        try:
+            ArchiveTabSlots.initialize_archive_replay_controls(
+                self
+            )
+        except Exception:
+            self.logger.exception(
+                "Could not initialize Archive Replay controls."
+            )
+
         self.ui.tableWidget_archive_replay.setColumnHidden(9, True)
         self.ui.progressBar_archive_datasets.setVisible(False)
         self.archive_database_loop = False
@@ -1023,6 +1037,8 @@ class Dashboard(QtWidgets.QMainWindow):
         )
         self.ui.dateTimeEdit_sensor_nodes_autorun.setDateTime(QtCore.QDateTime.currentDateTime())
         self.ui.textEdit_sensor_nodes_autorun_repetition_interval.setPlainText("-1")
+
+        SensorNodesTabSlots.initialize_sensor_nodes_file_navigation_controls(self)
 
 
     def __init_Library__(self):
@@ -1877,24 +1893,141 @@ class Dashboard(QtWidgets.QMainWindow):
         )
 
 
-
     def configureArchiveHardware(self):
         """
-        Configures Archive after new selected sensor node selection.
+        Configure both legacy and plugin-backed Archive Replay hardware selectors.
+
+        Preserve current selections across periodic selected-node state refreshes.
+        Only reset the plugin-backed action/customization state when the selected
+        Sensor Node changes or the selected replay hardware actually changes.
         """
-        self.ui.comboBox_archive_replay_hardware.clear()
+        hardware_combo = self.ui.comboBox_archive_replay_hardware
 
-        if not self.selected_node_uid:
-            return
-
-        get_sensor_node_hardware = (
-            fissure.utils.hardware.selectedNodeHardwareDisplayNames(
+        current_node_uid = str(
+            getattr(
                 self,
-                "archive",
+                "selected_node_uid",
+                "",
+            )
+            or ""
+        ).strip()
+
+        previous_node_uid = str(
+            getattr(
+                self,
+                "archive_replay_hardware_node_uid",
+                "",
+            )
+            or ""
+        ).strip()
+
+        node_changed = (
+            current_node_uid != previous_node_uid
+        )
+
+        self.archive_replay_hardware_node_uid = (
+            current_node_uid
+        )
+
+        hardware_items = []
+
+        if current_node_uid:
+            hardware_items = (
+                fissure.utils.hardware.selectedNodeHardwareDisplayNames(
+                    self,
+                    "archive",
+                )
+            )
+
+        def _refresh_combo_preserving_selection(
+            combo,
+            new_items,
+        ):
+            current_text = str(
+                combo.currentText()
+                or ""
+            ).strip()
+
+            existing_items = [
+                str(
+                    combo.itemText(
+                        index
+                    )
+                )
+                for index in range(
+                    combo.count()
+                )
+            ]
+
+            if existing_items == new_items:
+                return False
+
+            combo.blockSignals(
+                True
+            )
+
+            try:
+                combo.clear()
+                combo.addItems(
+                    new_items
+                )
+
+                if current_text:
+                    restored_index = combo.findText(
+                        current_text,
+                        QtCore.Qt.MatchExactly,
+                    )
+
+                    if restored_index >= 0:
+                        combo.setCurrentIndex(
+                            restored_index
+                        )
+
+                    elif combo.count() > 0:
+                        combo.setCurrentIndex(
+                            0
+                        )
+
+                elif combo.count() > 0:
+                    combo.setCurrentIndex(
+                        0
+                    )
+
+            finally:
+                combo.blockSignals(
+                    False
+                )
+
+            new_text = str(
+                combo.currentText()
+                or ""
+            ).strip()
+
+            return new_text != current_text
+
+        _refresh_combo_preserving_selection(
+            hardware_combo,
+            hardware_items,
+        )
+
+        action_hardware_changed = (
+            _refresh_combo_preserving_selection(
+                hardware_combo,
+                hardware_items,
             )
         )
 
-        self.ui.comboBox_archive_replay_hardware.addItems(get_sensor_node_hardware)
+        if (
+            node_changed
+            or action_hardware_changed
+        ):
+            ArchiveTabSlots._slotArchiveReplayActionHardwareChanged(
+                self
+            )
+
+        ArchiveTabSlots.update_archive_replay_selected_node_gate(
+            self
+        )
 
 
     def configureSensorNodeHardware(self):
@@ -4452,7 +4585,10 @@ def connect_archive_slots(dashboard: Dashboard):
         lambda: ArchiveTabSlots._slotArchiveExtensionChanged(dashboard)
     )
     dashboard.ui.comboBox_archive_replay_hardware.currentIndexChanged.connect(
-        lambda: ArchiveTabSlots._slotArchiveReplayHardwareChanged(dashboard)
+        lambda: ArchiveTabSlots._slotArchiveReplayActionHardwareChanged(dashboard)
+    )
+    dashboard.ui.comboBox_archive_replay_method.currentIndexChanged.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayMethodChanged(dashboard)
     )
 
     # List View
@@ -4461,6 +4597,12 @@ def connect_archive_slots(dashboard: Dashboard):
     )
 
     # Push Button
+    dashboard.ui.pushButton_archive_replay_query.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayQueryClicked(dashboard)
+    )
+    dashboard.ui.pushButton_archive_replay_customize.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayCustomizeClicked(dashboard)
+    )
     dashboard.ui.pushButton_archive_replay_add.clicked.connect(
         lambda: ArchiveTabSlots._slotArchiveReplayAddClicked(dashboard)
     )
@@ -4530,15 +4672,11 @@ def connect_archive_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_archive_new_folder.clicked.connect(
         lambda: ArchiveTabSlots._slotArchiveNewFolderClicked(dashboard)
     )
-    dashboard.ui.pushButton_archive_folder.clicked.connect(lambda: ArchiveTabSlots._slotArchiveFolderClicked(dashboard))
-    dashboard.ui.pushButton_archive_replay_triggers_edit.clicked.connect(
-        lambda: ArchiveTabSlots._slotArchiveReplayTriggersEditClicked(dashboard)
-    )  # Needs Trigger dialog code
+    dashboard.ui.pushButton_archive_folder.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveFolderClicked(dashboard)
+    )
     dashboard.ui.pushButton_archive_datasets_start.clicked.connect(
         lambda: ArchiveTabSlots._slotArchiveDatasetsStartClicked(dashboard)
-    )
-    dashboard.ui.pushButton_archive_replay_start.clicked.connect(
-        lambda: ArchiveTabSlots._slotArchiveReplayStartClicked(dashboard)
     )
     dashboard.ui.pushButton_archive_datasets_regenerate.clicked.connect(
         lambda: ArchiveTabSlots._slotArchiveDatasetsRegenerateClicked(dashboard)
@@ -4552,9 +4690,15 @@ def connect_archive_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_archive_download_rename.clicked.connect(
         lambda: ArchiveTabSlots._slotArchiveDownloadRenameClicked(dashboard)
     )
-    dashboard.ui.pushButton_archive_replay_triggers_clear.clicked.connect(
-        lambda: ArchiveTabSlots._slotArchiveReplayTriggersClearClicked(dashboard)
-    )  
+    dashboard.ui.pushButton_archive_replay_detector_add.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayDetectorAddClicked(dashboard)
+    )
+    dashboard.ui.pushButton_archive_replay_detector_remove.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayDetectorRemoveClicked(dashboard)
+    )
+    dashboard.ui.pushButton_archive_replay_start_stop.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayStartStopClicked(dashboard)
+    )
 
     # Table Widget
     dashboard.ui.tableWidget_archive_datasets.horizontalHeader().sectionClicked.connect(
@@ -4614,6 +4758,12 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_sensor_nodes_fn_local_choose.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalChooseClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_fn_local_select.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalSelectClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_fn_local_show_in_folder.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalShowInFolderClicked(dashboard)
     )
     dashboard.ui.pushButton_sensor_nodes_fn_local_unzip.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalUnzipClicked(dashboard)

@@ -186,6 +186,8 @@ AIS has published several articles highlighting FISSURE’s applications, update
 
 ## Upcoming/Recent Events
 
+![Conference](https://img.shields.io/badge/Event-Conference-darkgray) **September 21-24, 2026**: GNU Radio Conference 2026 - Raleigh, NC - [FISSURE: Tactical RF Operations and Situational Awareness with GNU Radio](https://events.gnuradio.org/event/28/)
+
 ![Exhibition](https://img.shields.io/badge/Event-Exhibition-darkgray) **May 5-8, 2025**: SOF Week - Assured Information Security, Inc. (AIS) booth
 
 ![Career Fair](https://img.shields.io/badge/Event-Career%20Fair-darkgray) **Thu. February 6, 2025**: Binghamton University Spring 2025 Job and Internship Fair - 1100-1500 EST
@@ -584,6 +586,17 @@ The **FISSURE Challenge** is a continuous capture-the-flag contest built around 
 - Community members are encouraged to **submit their own challenges** for others to solve.
 
 Access the challenges at: [FISSURE Challenge](https://fissure.ainfosec.com/)
+
+## Developing with AI
+
+For AI-assisted development, it is often easiest to zip the relevant parts of the repository and upload them directly to the AI tool. This gives the model enough context to understand how FISSURE is structured and to follow existing patterns instead of generating isolated code.
+
+Useful directories to include are:
+- `fissure/` - core source code
+- `Plugins/` - plugin actions, operations, schemas, and examples
+- `UI/` - Dashboard UI files and styling
+
+For smaller changes, you can usually include only the affected files plus a nearby working example.
 
 ## Contributing
 

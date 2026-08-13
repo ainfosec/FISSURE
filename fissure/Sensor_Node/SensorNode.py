@@ -251,7 +251,6 @@ class SensorNode(object):
         self.heartbeat_interval_connected = int(self.settings_dict["Sensor Node"].get("heartbeat_interval_connected", 20))
         self.sensor_node_heartbeat_time = 0
         self.attack_flow_graph_loaded = False
-        self.archive_flow_graph_loaded = False
         self.physical_fuzzing_stop_event = False
         self.attack_script_name = ""
         self.triggers_running = False
@@ -470,6 +469,118 @@ class SensorNode(object):
                 }
             }
         await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+    async def send_detection(self, detection: dict) -> None:
+        """
+        Publish one structured detector observation.
+
+        Detections remain transient. The Sensor Node is the first common
+        routing point so future local detector-group/trigger consumers can
+        react before the same Detection is forwarded to HIPRFISR.
+        """
+        if not isinstance(detection, dict):
+            self.logger.error("send_detection() requires a detection dictionary.")
+            return
+
+        detection = dict(detection)
+
+        detection["kind"] = "detection"
+        detection["event_type"] = "detection"
+        detection["node_uid"] = self.uuid
+        detection.setdefault("source_id", self.uuid)
+        detection.setdefault("detection_id", str(uuid.uuid4()))
+
+        operation_id = str(
+            detection.get("opid")
+            or detection.get("operation_id")
+            or ""
+        ).strip()
+
+        if operation_id:
+            detection["opid"] = operation_id
+            detection.setdefault("operation_id", operation_id)
+
+        detection_timestamp = detection.get("timestamp")
+        if detection_timestamp in (None, ""):
+            detection_timestamp = time.time()
+            detection["timestamp"] = detection_timestamp
+
+        observation_time = detection.get("observation_time")
+
+        if not observation_time:
+            try:
+                observation_time = datetime.fromtimestamp(
+                    float(detection_timestamp),
+                    tz=timezone.utc,
+                ).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+            except Exception:
+                if isinstance(detection_timestamp, str):
+                    observation_time = detection_timestamp.replace(" ", "T")
+                else:
+                    observation_time = datetime.now(timezone.utc).strftime(
+                        "%Y-%m-%dT%H:%M:%S.%fZ"
+                    )
+
+        lat = detection.get("latitude")
+        if lat is None:
+            lat = detection.get("lat")
+
+        lon = detection.get("longitude")
+        if lon is None:
+            lon = detection.get("lon")
+
+        alt = detection.get("altitude")
+        if alt is None:
+            alt = detection.get("alt")
+        if alt is None:
+            alt = detection.get("hae_m")
+        if alt is None:
+            alt = detection.get("hae")
+
+        gps_position = getattr(self, "gps_position", {}) or {}
+
+        if lat is None:
+            lat = gps_position.get("latitude")
+        if lon is None:
+            lon = gps_position.get("longitude")
+        if alt is None:
+            alt = gps_position.get("altitude")
+
+        if lat is not None:
+            detection.setdefault("latitude", lat)
+        if lon is not None:
+            detection.setdefault("longitude", lon)
+        if alt is not None:
+            detection.setdefault("altitude", alt)
+
+        detection.setdefault("observation_time", observation_time)
+
+        if self.network_type != "IP":
+            self.logger.warning(
+                "Structured detection returns are currently supported only "
+                "for IP Sensor Nodes."
+            )
+            return
+
+        PARAMETERS = {
+            "detection": detection,
+            "lat": lat,
+            "lon": lon,
+            "alt": alt,
+            "observation_time": observation_time,
+        }
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER: self.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "detectionReturn",
+            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+        }
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
 
     async def send_tak_cot(self, msg: dict) -> None:
@@ -1056,7 +1167,8 @@ class SensorNode(object):
         parameters["node_uid"] = node_uid
         parameters["alert_callback"] = self.send_alert
         parameters["tak_cot_callback"] = self.send_tak_cot
-        parameters["status_callback"] = self.publish_status_to_hiprfisr  # operations can set status manually
+        parameters["detection_callback"] = self.send_detection
+        parameters["status_callback"] = self.publish_status_to_hiprfisr
         parameters["target_callback"] = self.send_target_patch  #self.send_target_update
         parameters["soi_callback"] = self.send_soi_update
         parameters["artifact_manager"] = self.artifact_manager
@@ -1070,6 +1182,10 @@ class SensorNode(object):
             init_params = set(init_signature.parameters.keys())
             filtered_parameters = {k: v for k, v in parameters.items() if k in init_params}
             operation_inst = operation_main(**filtered_parameters)
+            requested_operation_id = str(parameters.get("operation_id") or "").strip()
+            if requested_operation_id:
+                operation_inst.opid = requested_operation_id
+                
         except Exception as e:
             tb_str = traceback.format_exc()
             self.logger.error(f"Error initializing operation class from {plugin_script_path}: {e}\n{tb_str}")
@@ -1453,53 +1569,112 @@ class SensorNode(object):
 
         # Connect to HIPRFISR (HB + MSG channels)
         if self.network_type == "IP":
-            ok = await self.hiprfisr_socket.connect(self.hiprfisr_address)
+            ok = await self.hiprfisr_socket.connect(
+                self.hiprfisr_address
+            )
 
             if ok:
                 self.logger.info(
                     f"Connected to HIPRFISR @ {self.hiprfisr_address}"
                 )
-                await asyncio.sleep(0.1)  # For ZMQ handshake to complete
+                await asyncio.sleep(
+                    0.1
+                )  # For ZMQ handshake to complete
 
                 artifact_host = (
                     "127.0.0.1"
                     if self.hiprfisr_address.protocol == "ipc"
                     else self.hiprfisr_address.address
                 )
-                self.artifact_transfer_client = fissure.comms.ArtifactTransferClient(
-                    endpoint=fissure.comms.build_artifact_endpoint(artifact_host),
-                    identity=f"sensor-artifacts-{self.uuid}",
-                    role=fissure.comms.ROLE_SENSOR_NODE,
-                    node_uid=self.uuid,
-                    logger=self.logger,
+
+                self.artifact_transfer_client = (
+                    fissure.comms.ArtifactTransferClient(
+                        endpoint=fissure.comms.build_artifact_endpoint(
+                            artifact_host
+                        ),
+                        identity=f"sensor-artifacts-{self.uuid}",
+                        role=fissure.comms.ROLE_SENSOR_NODE,
+                        node_uid=self.uuid,
+                        logger=self.logger,
+                    )
                 )
+
                 await self.artifact_transfer_client.connect()
+
+                from fissure.Sensor_Node.SensorNodeFileTransferController import (
+                    SensorNodeFileTransferController,
+                )
+
+                file_transfer_controller = (
+                    SensorNodeFileTransferController(
+                        self
+                    )
+                )
+
+                file_transfer_task = asyncio.create_task(
+                    file_transfer_controller.receive_loop()
+                )
+
+                file_transfer_task.set_name(
+                    f"Sensor Node File Transfer Receiver {self.uuid}"
+                )
+
+                self.child_tasks.append(
+                    file_transfer_task
+                )
+
             else:
-                self.logger.error("FAILED connecting to HIPRFISR")
+                self.logger.error(
+                    "FAILED connecting to HIPRFISR"
+                )
                 return
+
         elif self.network_type == "Meshtastic":
             try:
-                serial_port = self.pending_meshtastic_params["serial_port"]
-                self.hiprfisr_socket = fissure.comms.FissureMeshtasticNode(
-                    serial_port,
-                    self.pending_meshtastic_params["name"],
-                    self.pending_meshtastic_params["context"],
+                serial_port = (
+                    self.pending_meshtastic_params[
+                        "serial_port"
+                    ]
                 )
+
+                self.hiprfisr_socket = (
+                    fissure.comms.FissureMeshtasticNode(
+                        serial_port,
+                        self.pending_meshtastic_params[
+                            "name"
+                        ],
+                        self.pending_meshtastic_params[
+                            "context"
+                        ],
+                    )
+                )
+
                 self.logger.info(
-                    f"Connected to Meshtastic serial port: {serial_port}"
+                    "Connected to Meshtastic serial port: "
+                    f"{serial_port}"
                 )
+
             except Exception as e:
                 self.logger.error(
-                    f"Failed to initialize Meshtastic on {serial_port}: {e}"
+                    "Failed to initialize Meshtastic on "
+                    f"{serial_port}: {e}"
                 )
                 return
+
         else:
-            self.logger.error("Unknown network type. Enter IP or Meshtastic in node YAML config file.")
+            self.logger.error(
+                "Unknown network type. Enter IP or Meshtastic "
+                "in node YAML config file."
+            )
             return
-        
+
         # Start Heartbeat Loop
-        heartbeat_task = asyncio.create_task(self.heartbeat_loop())
-        self.child_tasks.append(heartbeat_task)
+        heartbeat_task = asyncio.create_task(
+            self.heartbeat_loop()
+        )
+        self.child_tasks.append(
+            heartbeat_task
+        )
 
         # Local Sensor Node should appear quickly in Dashboard/Tactical UI.
         # Do this after connect and after the heartbeat loop exists.
@@ -1511,7 +1686,9 @@ class SensorNode(object):
         # -----------------------------------------------------
         try:
             while not self.shutdown:
-                await asyncio.sleep(DELAY)
+                await asyncio.sleep(
+                    DELAY
+                )
 
                 if self.network_type == "IP":
                     await self.read_hiprfisr_messages()
@@ -1525,6 +1702,7 @@ class SensorNode(object):
         finally:
             # Stop Heartbeat Task
             heartbeat_task.cancel()
+
             try:
                 await heartbeat_task
             except asyncio.CancelledError:
@@ -1534,15 +1712,19 @@ class SensorNode(object):
             for sender in self.alert_senders.values():
                 try:
                     sender.stop()
-                except:
+                except Exception:
                     pass
 
             self.alert_senders.clear()
-    
+
             # Close Running Tasks
             for task in self.child_tasks:
                 task.cancel()
-            await asyncio.gather(*self.child_tasks, return_exceptions=True)
+
+            await asyncio.gather(
+                *self.child_tasks,
+                return_exceptions=True,
+            )
 
             # Shut Down Comms
             await self.shutdown_comms()
@@ -2783,8 +2965,6 @@ class SensorNode(object):
                 asyncio.run(self.flowGraphFinished("Attack"))
             elif fissure_event == "Multi-Stage Attack":
                 asyncio.run(self.multiStageAttackFinished())
-            elif fissure_event == "Archive Replay":
-                asyncio.run(self.archivePlaylistFinished())
             elif fissure_event == "Autorun Playlist":
                 pass
 
@@ -2801,14 +2981,6 @@ class SensorNode(object):
                 self.logger.info("Starting Multi-Stage Attack...")
                 self.multiStageAttackStart(event_values[0], event_values[1], event_values[2], event_values[3], event_values[4], event_values[5], event_values[6])
                 #self.multiStageAttackStart(filenames, variable_names, variable_values, durations, repeat, file_types, autorun_index)
-
-            elif fissure_event == "Archive Replay":
-                self.logger.info("Starting Archive Replay...")
-                
-                # Make a New Thread
-                self.archive_playlist_stop_event = threading.Event()
-                archive_playlist_thread = threading.Thread(target=self.archivePlaylistThreadStart, args=(event_values[0], event_values[1], event_values[2], event_values[3], event_values[4], event_values[5], event_values[6], event_values[7], event_values[8], event_values[9], event_values[10]))
-                archive_playlist_thread.start()
 
             elif fissure_event == "Autorun Playlist":
                 self.logger.info("Starting Autorun Playlist...")
@@ -3120,172 +3292,7 @@ class SensorNode(object):
 
             # Stop the Thread
             self.autorun_multistage_manager[autorun_index].set()
-
-
-    #######################  Archive Playlist  #########################
-
-    def archivePlaylistThreadStart(
-            self, 
-            flow_graph, 
-            filenames, 
-            frequencies, 
-            sample_rates, 
-            formats, 
-            channels, 
-            gains, 
-            durations, 
-            repeat, 
-            ip_address, 
-            serial
-        ):
-        """ Starts consecutive flow graphs with each running for a set duration with a fixed pause in between.
-        """
-        # LimeSDR Channel Nomenclature
-        for m in range(0,len(channels)):
-            if channels[m] == "A":
-                channels[m] = "0"
-            elif channels[m] == "B":
-                channels[m] = "1"
-
-        while(not self.archive_playlist_stop_event.is_set()):
-            for n in range(0,len(filenames)):
-                # Update Archive Replay Playlist Position
-                asyncio.run(self.archivePlaylistPosition(n))
-
-                # Change Variable Values
-                variable_names = ["tx_gain","tx_frequency","tx_channel","sample_rate","filepath","ip_address","serial"]
-                variable_values = [gains[n],frequencies[n],channels[n],sample_rates[n],filenames[n],ip_address, serial]
-                
-                # Adjust Filepath
-                if self.local_remote == "remote":
-                    variable_values[4] = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Archive_Replay", filenames[n].split('/')[-1])
-
-                # Make a new Thread
-                stop_event = threading.Event()
-                c_thread = threading.Thread(target=self.archiveFlowGraphThread, args=(stop_event, flow_graph, variable_names, variable_values))
-                c_thread.daemon = True
-                c_thread.start()
-                
-                # Wait for the Flow Graph to Start
-                while self.archive_flow_graph_loaded == False:
-                    time.sleep(0.05)
-
-                # Start the Timer
-                start_time = time.time()
-                while time.time() - start_time < float(durations[n]):
-                    # Check if Stop was Pressed while Running Flow Graph
-                    if self.archive_playlist_stop_event.is_set():
-                        break
-                    time.sleep(0.05)
-
-                # Stop the Flow Graph
-                self.archiveFlowGraphStop()
-                time.sleep(0.5)  # LimeSDR needs time to stop or there will be a busy error
-
-                # Break if Stop was Pressed while Running Flow Graph
-                if self.archive_playlist_stop_event.is_set():
-                    break
-
-            # End the thread
-            if repeat == False:
-                self.archivePlaylistStop()
-
-
-    def archiveFlowGraphThread(self, stop_event, flow_graph_filename, variable_names, variable_values):
-        """ Runs the attack script in the new thread.
-        """
-        # Stop Any Running Attack Flow Graphs
-        try:
-            self.attackFlowGraphStop(None)
-        except:
-            pass
-
-        try:
-            # Overwrite Variables
-            loadedmod, class_name = self.overwriteFlowGraphVariables(flow_graph_filename, variable_names, variable_values)
-
-            # Call the "__init__" Function
-            self.archiveflowtoexec = getattr(loadedmod,class_name)()
-
-            # Start it
-            self.archiveflowtoexec.start()
-            # if "archive_replay" in flow_graph_filename:
-                # pass
-            self.archive_flow_graph_loaded = True
-
-            # Let it Run
-            self.archiveflowtoexec.wait()
-
-            # Signal on the PUB that the Attack Flow Graph is Finished
-            # if "archive_replay" in flow_graph_filename:
-                # pass
-
-        # Error Loading Flow Graph
-        except Exception as e:
-            if "archive_replay" in flow_graph_filename:
-                asyncio.run(self.archivePlaylistFinished())
-            else:
-                #asyncio.run(self.flowGraphStarted("Attack"))
-                #asyncio.run(self.flowGraphFinished("Attack"))
-                asyncio.run(self.flowGraphError(str(e)))
-                #self.sensor_node_pub_server.sendmsg('Status', Identifier = 'Sensor Node', MessageName = 'Multi-Stage Attack Finished', Parameters = "")
-            #~ #raise e
-
-
-    async def archivePlaylistPosition(self, position):
-        """ Sends the archive replay playlist position to the HIPRFISR/Dashboard.
-        """
-        # Send File Position to Dashboard
-        PARAMETERS = {"position": position}
-        msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistPosition",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-        }
-        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    def archiveFlowGraphStop(self):
-        """ Stop the currently running archive flow graph.
-        """
-        self.archiveflowtoexec.stop()
-        self.archiveflowtoexec.wait()
-        del self.archiveflowtoexec  # Free up the ports
-        self.archive_flow_graph_loaded = False
-
-
-    def archivePlaylistStop(self):
-        """ Stops a multi-stage attack already in progress
-        """
-        try:
-            # Stop Triggers
-            if self.triggers_running:
-                self.triggers_running = False
-                self.trigger_done.set()
-            
-            # Signal to the Other Components
-            asyncio.run(self.archivePlaylistFinished())
-            
-            # Reset Listener Loop Variable
-            self.archive_flow_graph_loaded = False
-
-            # Stop the Thread
-            self.archive_playlist_stop_event.set()
-            
-        except Exception as e:
-            self.logger.error(f"Error in archivePlaylistStop: {e}")
-
-
-    async def archivePlaylistFinished(self):
-        """ Signals to the other components that the multi-stage attack has finished.
-        """
-        # Send the Message
-        msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: self.identifier,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistFinished",
-        }
-        await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-    
+  
     
     #######################  Autorun Playlists  ##########################
 

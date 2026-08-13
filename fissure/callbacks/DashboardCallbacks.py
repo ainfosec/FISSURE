@@ -156,37 +156,6 @@ async def flowGraphStarted(component: object, category=""):
             component.frontend.refreshStatusBarText()
 
 
-async def archivePlaylistPosition(component: object, position=0):
-    """ 
-    Highlights the active archive playlist flow graph in the table.
-    """        
-    # Select Table Row
-    try:
-        component.frontend.ui.tableWidget_archive_replay.selectRow(int(position))
-    except:
-        component.logger.error("Invalid row value")
-        
-    # Update the Status Dialog
-    # component.frontend.statusbar_text[sensor_node_id][5] = "Replaying file in row " + str(position)
-    component.frontend.refreshStatusBarText()
-
-
-async def archivePlaylistFinished(component: object):
-    """ 
-    Changes the pushbuttons and labels upon receiving a message from the sensor node.
-    """        
-    # Change the Pushbuttons and Labels
-    component.frontend.ui.pushButton_archive_replay_start.setText("Start")
-    component.frontend.ui.label2_archive_replay_status.setVisible(False)
-
-    # Update the Status Dialog
-    # component.frontend.statusbar_text[sensor_node_id][5] = "Not Running"
-    component.frontend.refreshStatusBarText()
-
-    # Enable the Controls
-    component.frontend.ui.frame_archive_replay_controls.setEnabled(True)
-
-
 async def hardwareGuessResults(component: object, table_row=0, hardware_type="", scan_results="", new_guess_index=0):
     """
     Fills the scan results table row with hardware information in the Node Configure Dialog.
@@ -323,6 +292,26 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
     except Exception as e:
         component.logger.debug(
             "Could not update IQ Playback selected-node gate "
+            f"after recallSettingsReturn: {e}"
+        )
+    
+    try:
+        ArchiveTabSlots.update_archive_replay_selected_node_gate(
+            component.frontend
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update Archive Replay selected-node gate "
+            f"after recallSettingsReturn: {e}"
+        )
+
+    try:
+        SensorNodesTabSlots.update_sensor_nodes_file_navigation_selected_node_gate(
+            component.frontend
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update Sensor Nodes File Navigation selected-node gate "
             f"after recallSettingsReturn: {e}"
         )
 
@@ -503,6 +492,68 @@ async def autorunPlaylistStarted(component: object):
     # Update the Status Dialog
     # component.frontend.statusbar_text[sensor_node_id][6] = "Running"
     component.frontend.refreshStatusBarText()
+
+
+async def sensorNodeFileTransferStatus(
+    component: object,
+    node_uid="",
+    transfer_id="",
+    success=False,
+    message="",
+    remote_filepath="",
+    remote_folder="",
+    bytes_received=0,
+    elapsed_seconds=0.0,
+    mib_per_second=0.0,
+    refresh_file_list=False,
+):
+    """Resolve one awaited Dashboard-to-Sensor-Node binary file upload."""
+    pending_uploads = getattr(
+        component,
+        "_sensor_node_file_uploads",
+        {},
+    )
+    completion_future = pending_uploads.get(
+        transfer_id
+    )
+
+    result = {
+        "success": bool(success),
+        "message": str(message),
+        "transfer_id": transfer_id,
+        "node_uid": node_uid,
+        "remote_filepath": remote_filepath,
+        "remote_folder": remote_folder,
+        "bytes_received": int(bytes_received),
+        "elapsed_seconds": float(elapsed_seconds),
+        "mib_per_second": float(mib_per_second),
+    }
+
+    if completion_future is not None and not completion_future.done():
+        completion_future.set_result(result)
+    elif success:
+        component.logger.info(
+            "Completed Sensor Node file upload transfer_id=%s path=%s",
+            transfer_id,
+            remote_filepath,
+        )
+    else:
+        component.logger.error(
+            "Sensor Node file upload failed transfer_id=%s: %s",
+            transfer_id,
+            message,
+        )
+
+    if (
+        success
+        and refresh_file_list
+        and node_uid
+        and remote_folder
+    ):
+        await component.refreshSensorNodeFiles(
+            node_uid,
+            remote_folder,
+        )
 
 
 async def refreshSensorNodeFilesResults(
@@ -1947,6 +1998,31 @@ async def nodeRefreshReturn(component: object, nodes):
     component.frontend.popups["NodeSelectDialog"].refreshNodes(nodes=nodes)
 
 
+async def detectionReturn(component: object, detection: dict):
+    """
+    Receive one native FISSURE Detection for Dashboard engineering workflows.
+
+    Tactical continues to consume the CoT copy through dashboardCoT_Message().
+    """
+    if not isinstance(detection, dict):
+        component.logger.error("Dashboard detectionReturn received invalid detection data.")
+        return
+
+    try:
+        TSITabSlots.append_tsi_active_detector_detection(component.frontend, detection)
+    except Exception as exc:
+        component.logger.error(
+            f"Failed to update TSI detector table from native Detection: {exc}"
+        )
+
+    try:
+        ArchiveTabSlots.handle_archive_replay_detection(component.frontend, detection)
+    except Exception as exc:
+        component.logger.error(
+            f"Failed to process Archive Replay detector Detection: {exc}"
+        )
+
+
 async def dashboardCoT_Message(component: object, raw_xml: str):
     """
     Receives a copy of the CoT message sent to the TAK server and hands it off for parsing.
@@ -2097,6 +2173,22 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
             component.logger.debug(
                 "Could not update IQ Record selected-node gate "
             )
+        
+        try:
+            ArchiveTabSlots.update_archive_replay_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                "Could not update Archive Replay selected-node gate "
+                f"after node state update: {e}"
+            )
+
+        try:
+            SensorNodesTabSlots.update_sensor_nodes_file_navigation_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                "Could not update Sensor Nodes File Navigation selected-node gate "
+                f"after node state update: {e}"
+            )
 
     try:
         TSITabSlots.update_tsi_detector_status_from_selected_node(
@@ -2170,7 +2262,7 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         f"last_seen={node.get('last_seen')} "
         f"status={node.get('status')}"
     )
-    
+
 
 async def nodeStateRemove(component: object, node_uid=""):
     """
@@ -2327,6 +2419,13 @@ async def nodeStateRemove(component: object, node_uid=""):
     except Exception as e:
         component.logger.debug(
             f"Could not refresh Tactical node info frame after removal: {e}"
+        )
+    
+    try:
+        SensorNodesTabSlots.update_sensor_nodes_file_navigation_selected_node_gate(frontend)
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update Sensor Nodes File Navigation gate after selected node removal: {e}"
         )
 
     component.logger.debug(f"nodeStateRemove: {node_uid}")
@@ -2685,7 +2784,7 @@ async def sendSoisListTakReturn(
         )
 
 
-async def queryPluginActionsResults(
+def queryPluginActionsResults(
     component: object,
     requester_uid: str = "",
     requester_type: str = "",
@@ -2700,6 +2799,16 @@ async def queryPluginActionsResults(
     actions = actions or []
 
     frontend = component.frontend
+
+    if context.startswith("detector.selection"):
+        dialog = frontend.popups.get("DetectorSelectionDialog")
+        if dialog is not None:
+            dialog.handle_action_query_results(
+                node_uid=node_uid,
+                context=context,
+                actions=actions,
+            )
+        return
 
     if context.startswith("tsi.detector"):
         TSITabSlots.handle_tsi_detector_action_query_results(
@@ -2755,6 +2864,15 @@ async def queryPluginActionsResults(
         )
         return
 
+    if context.startswith("archive.replay"):
+        ArchiveTabSlots.handle_archive_replay_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+
     if context.startswith("tactical."):
         component.logger.debug(
             f"Unhandled Tactical action query context={context}, actions={actions}"
@@ -2766,7 +2884,7 @@ async def queryPluginActionsResults(
     )
 
 
-async def queryPluginActionSchemaResults(
+def queryPluginActionSchemaResults(
     component: object,
     requester_uid: str = "",
     requester_type: str = "",
@@ -2789,6 +2907,17 @@ async def queryPluginActionSchemaResults(
         schema["params"] = []
 
     frontend = component.frontend
+
+    if context.startswith("detector.selection"):
+        dialog = frontend.popups.get("DetectorSelectionDialog")
+        if dialog is not None:
+            dialog.handle_action_schema(
+                plugin_name=plugin_name,
+                action_name=action_name,
+                node_uid=node_uid,
+                parameters=schema.get("params", []),
+            )
+        return
 
     if context.startswith("tsi.detector"):
         TSITabSlots.handle_tsi_detector_action_schema(
@@ -2842,6 +2971,16 @@ async def queryPluginActionSchemaResults(
 
     if context.startswith("iq.inspection"):
         IQDataTabSlots.handle_iq_inspection_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
+
+    if context.startswith("archive.replay"):
+        ArchiveTabSlots.handle_archive_replay_action_schema(
             frontend,
             plugin_name=plugin_name,
             action_name=action_name,

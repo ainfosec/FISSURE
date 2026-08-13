@@ -1,6 +1,35 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-13
+
+Migrate Archive Replay to plugin detectors and expand remote file transfer
+
+### Added
+
+- Added reusable detector selection for Archive Replay, allowing multiple plugin-based detectors to gate playlist execution and start replay when the first configured detection is received.
+- Added plugin detector actions for time, system, sensor, environmental, location, network, protocol, and RF conditions migrated from the legacy trigger workflow.
+- Added remote Archive Replay file staging over the dedicated binary transfer channel so files outside a Sensor Node archive path can be transferred to a managed staging location before replay begins.
+- Added managed Dashboard, HIPRFISR, and Sensor Node file transfer over the dedicated binary artifact channel for Sensor Node file workflows.
+- Added detector type and mode metadata to plugin actions to support reusable filtering and selection across detector workflows.
+- Added README guidance for AI-assisted development and GNU Radio Conference 2026 to the upcoming events list.
+
+### Changed
+
+- Updated Archive Replay to use plugin actions and operations instead of the legacy trigger system while preserving playlist repeat behavior after the initial detector gate.
+- Updated Archive Replay remote file handling to use managed staging with collision-safe filenames instead of relying on arbitrary remote filesystem locations.
+- Updated Sensor Node file-transfer workflows to use the dedicated high-throughput transfer path with chunked transfer, verification, and managed destination handling.
+- Updated Sensor Node plugin operation handling to preserve requested operation IDs so returned detections and stop requests can be correlated reliably.
+- Updated migrated and existing detector operations to report through the native Detection path so Dashboard workflows and TAK can consume a consistent detection format.
+- Updated detector helper flow graphs and plugin mappings for GNU Radio 3.8 and 3.10 where required by migrated detector actions.
+- Updated long-running detector polling operations to remain responsive to Stop requests while preserving their configured polling intervals.
+
+### Fixed
+
+- Fixed Archive Replay detector gating with real RF detectors by aligning detector operation IDs with returned Detection IDs.
+- Fixed sound-threshold detection to use a persistent audio input stream instead of repeatedly reopening the microphone.
+- Fixed RDS keyword detection so GNU Radio decoder output is captured reliably and matched against configured keywords.
+
 ## 2026-8-09
 
 Improve Tactical Sensor Node disconnect handling and off-map overlay visibility

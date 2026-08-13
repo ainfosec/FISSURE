@@ -32464,586 +32464,926 @@ p, li { white-space: pre-wrap; }
       <attribute name="title">
        <string>Replay</string>
       </attribute>
-      <widget class="QPushButton" name="pushButton_archive_replay_start">
-       <property name="enabled">
-        <bool>false</bool>
-       </property>
+      <widget class="QStackedWidget" name="stackedWidget_archive_replay">
        <property name="geometry">
         <rect>
-         <x>780</x>
-         <y>775</y>
-         <width>100</width>
-         <height>27</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>11</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Start</string>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label2_archive_replay_status">
-       <property name="geometry">
-        <rect>
-         <x>695</x>
-         <y>780</y>
-         <width>80</width>
-         <height>17</height>
-        </rect>
-       </property>
-       <property name="font">
-        <font>
-         <pointsize>10</pointsize>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Running...</string>
-       </property>
-      </widget>
-      <widget class="QFrame" name="frame_archive_replay_controls">
-       <property name="geometry">
-        <rect>
-         <x>5</x>
+         <x>0</x>
          <y>0</y>
-         <width>895</width>
-         <height>810</height>
+         <width>900</width>
+         <height>815</height>
         </rect>
        </property>
-       <property name="frameShape">
-        <enum>QFrame::NoFrame</enum>
+       <property name="currentIndex">
+        <number>0</number>
        </property>
-       <widget class="QCheckBox" name="checkBox_archive_replay_repeat">
-        <property name="geometry">
-         <rect>
-          <x>540</x>
-          <y>740</y>
-          <width>85</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Repeat</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_archive_replay_import_csv">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>770</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Import CSV</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_archive_replay_down">
-        <property name="geometry">
-         <rect>
-          <x>420</x>
-          <y>740</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Down</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label1_109">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>160</y>
-          <width>890</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Playlist</string>
-        </property>
-        <property name="scaledContents">
-         <bool>false</bool>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="margin">
-         <number>0</number>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="comboBox_archive_replay_hardware">
-        <property name="geometry">
-         <rect>
-          <x>329</x>
-          <y>125</y>
-          <width>225</width>
-          <height>27</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_archive_replay_add">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>740</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>&gt;&gt; Add ^^</string>
-        </property>
-       </widget>
-       <widget class="QTableWidget" name="tableWidget_archive_replay">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>180</y>
-          <width>890</width>
-          <height>555</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="styleSheet">
-         <string notr="true"/>
-        </property>
-        <property name="selectionMode">
-         <enum>QAbstractItemView::SingleSelection</enum>
-        </property>
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-        <attribute name="horizontalHeaderDefaultSectionSize">
-         <number>100</number>
-        </attribute>
-        <attribute name="horizontalHeaderStretchLastSection">
-         <bool>true</bool>
-        </attribute>
-        <attribute name="verticalHeaderVisible">
-         <bool>false</bool>
-        </attribute>
-        <column>
-         <property name="text">
-          <string>File</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Protocol</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Modulation</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Tuned Freq.</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Sample Rate</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Format</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Channel</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Gain</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Duration (s)</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-           <weight>50</weight>
-           <bold>false</bold>
-          </font>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Filepath</string>
-         </property>
-         <property name="font">
-          <font>
-           <pointsize>10</pointsize>
-          </font>
-         </property>
-        </column>
-       </widget>
-       <widget class="QTableWidget" name="tableWidget1_archive_replay_triggers">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>30</y>
-          <width>820</width>
-          <height>85</height>
-         </rect>
-        </property>
-        <property name="selectionMode">
-         <enum>QAbstractItemView::NoSelection</enum>
-        </property>
-        <property name="selectionBehavior">
-         <enum>QAbstractItemView::SelectRows</enum>
-        </property>
-        <attribute name="horizontalHeaderStretchLastSection">
-         <bool>true</bool>
-        </attribute>
-        <attribute name="verticalHeaderVisible">
-         <bool>false</bool>
-        </attribute>
-        <column>
-         <property name="text">
-          <string>Filename</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Type</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Variable Names</string>
-         </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Variable Values</string>
-         </property>
-        </column>
-       </widget>
-       <widget class="QFrame" name="frame1_83">
-        <property name="geometry">
-         <rect>
-          <x>779</x>
-          <y>30</y>
-          <width>111</width>
-          <height>85</height>
-         </rect>
-        </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <widget class="QPushButton" name="pushButton_archive_replay_triggers_edit">
+       <widget class="QWidget" name="page_archive_replay_controls">
+        <widget class="QFrame" name="frame_archive_replay_setup">
          <property name="geometry">
           <rect>
-           <x>50</x>
-           <y>15</y>
-           <width>50</width>
-           <height>27</height>
+           <x>5</x>
+           <y>10</y>
+           <width>295</width>
+           <height>200</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_archive_replay_setup_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Hardware &amp; Action</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_archive_replay_setup_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>240</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Select replay hardware and action.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_243">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>70</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Hardware:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_archive_replay_hardware">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>66</y>
+            <width>205</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_archive_replay_setup_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>1</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_252">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>114</y>
+            <width>65</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Action:</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_archive_replay_method">
+          <property name="geometry">
+           <rect>
+            <x>80</x>
+            <y>110</y>
+            <width>205</width>
+            <height>28</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_query">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>165</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Query Actions</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_customize">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>150</x>
+            <y>165</y>
+            <width>135</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Customize</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_archive_replay_parameters">
+         <property name="geometry">
+          <rect>
+           <x>305</x>
+           <y>10</y>
+           <width>295</width>
+           <height>200</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_archive_replay_parameters_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Defaults</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_archive_replay_parameters_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>240</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Playlist rows override matching values.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_archive_replay_parameters_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>2</string>
+          </property>
+         </widget>
+         <widget class="QScrollArea" name="scrollArea_archive_replay_parameters">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>50</y>
+            <width>285</width>
+            <height>143</height>
+           </rect>
+          </property>
+          <property name="widgetResizable">
+           <bool>true</bool>
+          </property>
+          <widget class="QWidget" name="scrollAreaWidgetContents_archive_replay_parameters">
+           <property name="geometry">
+            <rect>
+             <x>0</x>
+             <y>0</y>
+             <width>283</width>
+             <height>141</height>
+            </rect>
+           </property>
+          </widget>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_archive_replay_run">
+         <property name="geometry">
+          <rect>
+           <x>605</x>
+           <y>10</y>
+           <width>290</width>
+           <height>200</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_archive_replay_run_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>235</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Run</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_archive_replay_run_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>235</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Start, stop, and repeat.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_archive_replay_status_status">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>70</y>
+            <width>290</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Status:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_archive_replay_status">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>95</y>
+            <width>290</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>Idle</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_start_stop">
+          <property name="geometry">
+           <rect>
+            <x>58</x>
+            <y>165</y>
+            <width>175</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_archive_replay_run_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>5</string>
+          </property>
+         </widget>
+         <widget class="QCheckBox" name="checkBox_archive_replay_repeat">
+          <property name="geometry">
+           <rect>
+            <x>103</x>
+            <y>130</y>
+            <width>85</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Repeat</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_archive_replay_triggers">
+         <property name="geometry">
+          <rect>
+           <x>5</x>
+           <y>215</y>
+           <width>890</width>
+           <height>170</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_archive_replay_triggers_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Detectors</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_archive_replay_triggers_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>280</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Optional detectors that can start replay.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_archive_replay_triggers_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>3</string>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_archive_replay_detectors">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>60</y>
+            <width>800</width>
+            <height>100</height>
+           </rect>
+          </property>
+          <property name="horizontalScrollBarPolicy">
+           <enum>Qt::ScrollBarAlwaysOff</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Detector</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Hardware</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Parameters</string>
+           </property>
+           <property name="textAlignment">
+            <set>AlignCenter</set>
+           </property>
+          </column>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_detector_add">
+          <property name="geometry">
+           <rect>
+            <x>810</x>
+            <y>80</y>
+            <width>70</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Add</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_detector_remove">
+          <property name="geometry">
+           <rect>
+            <x>810</x>
+            <y>110</y>
+            <width>70</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame_archive_replay_playlist">
+         <property name="geometry">
+          <rect>
+           <x>5</x>
+           <y>390</y>
+           <width>890</width>
+           <height>417</height>
+          </rect>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QLabel" name="label_archive_replay_playlist_title">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>10</y>
+            <width>240</width>
+            <height>22</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Replay Playlist</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_archive_replay_playlist_subtitle">
+          <property name="geometry">
+           <rect>
+            <x>50</x>
+            <y>29</y>
+            <width>350</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>Row values control each replay.</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label_archive_replay_playlist_badge">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>10</y>
+            <width>28</width>
+            <height>28</height>
+           </rect>
+          </property>
+          <property name="text">
+           <string>4</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_export_csv">
+          <property name="geometry">
+           <rect>
+            <x>640</x>
+            <y>382</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Export CSV</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_add">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>382</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Add</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_remove">
+          <property name="geometry">
+           <rect>
+            <x>115</x>
+            <y>382</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Remove</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_remove_all">
+          <property name="geometry">
+           <rect>
+            <x>220</x>
+            <y>382</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Remove All</string>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_archive_replay">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>60</y>
+            <width>880</width>
+            <height>317</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>10</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+          <property name="selectionMode">
+           <enum>QAbstractItemView::SingleSelection</enum>
+          </property>
+          <property name="selectionBehavior">
+           <enum>QAbstractItemView::SelectRows</enum>
+          </property>
+          <attribute name="horizontalHeaderDefaultSectionSize">
+           <number>100</number>
+          </attribute>
+          <attribute name="horizontalHeaderStretchLastSection">
+           <bool>true</bool>
+          </attribute>
+          <attribute name="verticalHeaderVisible">
+           <bool>false</bool>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>File</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Protocol</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Modulation</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Tuned Freq.</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Sample Rate</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Format</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Channel</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Gain</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Duration (s)</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Filepath</string>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>10</pointsize>
+            </font>
+           </property>
+          </column>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_import_csv">
+          <property name="geometry">
+           <rect>
+            <x>535</x>
+            <y>382</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Import CSV</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_up">
+          <property name="geometry">
+           <rect>
+            <x>325</x>
+            <y>382</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Up</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_archive_replay_down">
+          <property name="geometry">
+           <rect>
+            <x>430</x>
+            <y>382</y>
+            <width>100</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Down</string>
+          </property>
+         </widget>
+        </widget>
+        <zorder>frame_archive_replay_triggers</zorder>
+        <zorder>frame_archive_replay_setup</zorder>
+        <zorder>frame_archive_replay_parameters</zorder>
+        <zorder>frame_archive_replay_run</zorder>
+        <zorder>frame_archive_replay_playlist</zorder>
+       </widget>
+       <widget class="QWidget" name="page_archive_replay_no_node">
+        <widget class="QLabel" name="label_archive_replay_select_sensor_node_image">
+         <property name="geometry">
+          <rect>
+           <x>419</x>
+           <y>292</y>
+           <width>64</width>
+           <height>48</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Image</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_archive_replay_no_node_selected">
+         <property name="geometry">
+          <rect>
+           <x>1</x>
+           <y>362</y>
+           <width>900</width>
+           <height>17</height>
           </rect>
          </property>
          <property name="font">
           <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>Edit</string>
+          <string>Sensor Node Unavailable</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
-        <widget class="QPushButton" name="pushButton_archive_replay_triggers_clear">
+        <widget class="QLabel" name="label2_archive_replay_select_a_node">
          <property name="geometry">
           <rect>
-           <x>50</x>
-           <y>45</y>
-           <width>50</width>
-           <height>27</height>
+           <x>0</x>
+           <y>400</y>
+           <width>900</width>
+           <height>17</height>
           </rect>
          </property>
          <property name="font">
           <font>
-           <pointsize>11</pointsize>
-           <strikeout>false</strikeout>
+           <pointsize>10</pointsize>
           </font>
          </property>
          <property name="text">
-          <string>Clear</string>
+          <string>Select an online sensor node to configure hardware and run the archive playlist replay.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
          </property>
         </widget>
+        <widget class="QLabel" name="label_archive_replay_empty_icon">
+         <property name="geometry">
+          <rect>
+           <x>413</x>
+           <y>286</y>
+           <width>76</width>
+           <height>60</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <zorder>label_archive_replay_empty_icon</zorder>
+        <zorder>label_archive_replay_select_sensor_node_image</zorder>
+        <zorder>label2_archive_replay_no_node_selected</zorder>
+        <zorder>label2_archive_replay_select_a_node</zorder>
        </widget>
-       <widget class="QPushButton" name="pushButton_archive_replay_remove">
-        <property name="geometry">
-         <rect>
-          <x>105</x>
-          <y>740</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Remove</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_archive_replay_up">
-        <property name="geometry">
-         <rect>
-          <x>315</x>
-          <y>740</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Up</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_archive_replay_export_csv">
-        <property name="geometry">
-         <rect>
-          <x>105</x>
-          <y>770</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Export CSV</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_archive_replay_remove_all">
-        <property name="geometry">
-         <rect>
-          <x>210</x>
-          <y>740</y>
-          <width>100</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Remove All</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_209">
-        <property name="geometry">
-         <rect>
-          <x>254</x>
-          <y>130</y>
-          <width>70</width>
-          <height>16</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <pointsize>10</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Hardware:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label1_210">
-        <property name="geometry">
-         <rect>
-          <x>0</x>
-          <y>10</y>
-          <width>890</width>
-          <height>20</height>
-         </rect>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>16777215</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>10</pointsize>
-          <weight>75</weight>
-          <italic>false</italic>
-          <bold>true</bold>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Triggers</string>
-        </property>
-        <property name="scaledContents">
-         <bool>false</bool>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="margin">
-         <number>0</number>
-        </property>
-       </widget>
-       <zorder>checkBox_archive_replay_repeat</zorder>
-       <zorder>pushButton_archive_replay_import_csv</zorder>
-       <zorder>pushButton_archive_replay_down</zorder>
-       <zorder>label1_109</zorder>
-       <zorder>comboBox_archive_replay_hardware</zorder>
-       <zorder>pushButton_archive_replay_add</zorder>
-       <zorder>tableWidget_archive_replay</zorder>
-       <zorder>frame1_83</zorder>
-       <zorder>pushButton_archive_replay_remove</zorder>
-       <zorder>pushButton_archive_replay_up</zorder>
-       <zorder>pushButton_archive_replay_export_csv</zorder>
-       <zorder>pushButton_archive_replay_remove_all</zorder>
-       <zorder>label2_209</zorder>
-       <zorder>label1_210</zorder>
-       <zorder>tableWidget1_archive_replay_triggers</zorder>
       </widget>
-      <zorder>frame_archive_replay_controls</zorder>
-      <zorder>pushButton_archive_replay_start</zorder>
-      <zorder>label2_archive_replay_status</zorder>
      </widget>
      <widget class="QWidget" name="tab_5">
       <attribute name="title">
@@ -33523,7 +33863,7 @@ p, li { white-space: pre-wrap; }
        </font>
       </property>
       <property name="text">
-       <string>Choose</string>
+       <string>Browse</string>
       </property>
      </widget>
      <widget class="QComboBox" name="comboBox3_archive_download_folder">
@@ -33918,7 +34258,7 @@ p, li { white-space: pre-wrap; }
       </font>
      </property>
      <property name="currentIndex">
-      <number>3</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tab_20">
       <attribute name="title">
@@ -34637,379 +34977,501 @@ p, li { white-space: pre-wrap; }
       <attribute name="title">
        <string>File Navigation</string>
       </attribute>
-      <widget class="QLabel" name="label1_97">
+      <widget class="QStackedWidget" name="stackedWidget_sensor_nodes_fn_node_gate">
        <property name="geometry">
         <rect>
-         <x>10</x>
-         <y>440</y>
-         <width>1195</width>
-         <height>20</height>
+         <x>0</x>
+         <y>0</y>
+         <width>1215</width>
+         <height>815</height>
         </rect>
        </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
+       <property name="currentIndex">
+        <number>1</number>
        </property>
-       <property name="font">
-        <font>
-         <family>Ubuntu</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Local</string>
-       </property>
-       <property name="scaledContents">
-        <bool>false</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="margin">
-        <number>0</number>
-       </property>
-      </widget>
-      <widget class="QLabel" name="label1_sensor_nodes_fn_sensor_node">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>10</y>
-         <width>1195</width>
-         <height>20</height>
-        </rect>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>16777215</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="font">
-        <font>
-         <family>Ubuntu</family>
-         <pointsize>10</pointsize>
-         <weight>75</weight>
-         <italic>false</italic>
-         <bold>true</bold>
-         <strikeout>false</strikeout>
-        </font>
-       </property>
-       <property name="text">
-        <string>Sensor Node</string>
-       </property>
-       <property name="scaledContents">
-        <bool>false</bool>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignCenter</set>
-       </property>
-       <property name="margin">
-        <number>0</number>
-       </property>
-      </widget>
-      <widget class="QFrame" name="frame1_85">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>30</y>
-         <width>1195</width>
-         <height>400</height>
-        </rect>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_fn_download">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>200</x>
-          <y>365</y>
-          <width>90</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Download</string>
-        </property>
-       </widget>
-       <widget class="QLabel" name="label2_76">
-        <property name="geometry">
-         <rect>
-          <x>5</x>
-          <y>10</y>
-          <width>120</width>
-          <height>17</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>9</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Sensor Node Folder:</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_fn_delete">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>105</x>
-          <y>365</y>
-          <width>90</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Delete</string>
-        </property>
-       </widget>
-       <widget class="QTableWidget" name="tableWidget_sensor_nodes_fn_files">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>35</y>
-          <width>1175</width>
-          <height>325</height>
-         </rect>
-        </property>
-        <attribute name="horizontalHeaderMinimumSectionSize">
-         <number>100</number>
-        </attribute>
-        <column>
-         <property name="text">
-          <string>Filepath</string>
+       <widget class="QWidget" name="page_sensor_nodes_fn_controls">
+        <widget class="QFrame" name="frame1_95">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>460</y>
+           <width>1175</width>
+           <height>345</height>
+          </rect>
          </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Size</string>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
          </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Type</string>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
          </property>
-        </column>
-        <column>
-         <property name="text">
-          <string>Date Modified</string>
+         <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_choose">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>5</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Ubuntu</family>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Browse</string>
+          </property>
+         </widget>
+         <widget class="QTreeView" name="treeView_sensor_nodes_fn_local_files">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>35</y>
+            <width>1155</width>
+            <height>270</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_delete">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>310</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Ubuntu</family>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Delete</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sensor_nodes_fn_local_folder">
+          <property name="geometry">
+           <rect>
+            <x>260</x>
+            <y>5</y>
+            <width>905</width>
+            <height>27</height>
+           </rect>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_unzip">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>310</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Ubuntu</family>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Unzip</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_view">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>260</x>
+            <y>310</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Ubuntu</family>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Open</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_transfer">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>1045</x>
+            <y>310</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Ubuntu</family>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Transfer</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_show_in_folder">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>385</x>
+            <y>310</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Ubuntu</family>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Show in Folder</string>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_select">
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>5</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Ubuntu</family>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Select</string>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QFrame" name="frame1_85">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>30</y>
+           <width>1175</width>
+           <height>390</height>
+          </rect>
          </property>
-        </column>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
+         </property>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
+         </property>
+         <widget class="QPushButton" name="pushButton_sensor_nodes_fn_download">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>1045</x>
+            <y>355</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Ubuntu</family>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Download</string>
+          </property>
+         </widget>
+         <widget class="QLabel" name="label2_76">
+          <property name="geometry">
+           <rect>
+            <x>5</x>
+            <y>10</y>
+            <width>120</width>
+            <height>17</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Ubuntu</family>
+            <pointsize>9</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Sensor Node Folder:</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+          </property>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sensor_nodes_fn_delete">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>135</x>
+            <y>355</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Ubuntu</family>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Delete</string>
+          </property>
+         </widget>
+         <widget class="QTableWidget" name="tableWidget_sensor_nodes_fn_files">
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>35</y>
+            <width>1155</width>
+            <height>315</height>
+           </rect>
+          </property>
+          <attribute name="horizontalHeaderMinimumSectionSize">
+           <number>100</number>
+          </attribute>
+          <column>
+           <property name="text">
+            <string>Filepath</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Size</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Type</string>
+           </property>
+          </column>
+          <column>
+           <property name="text">
+            <string>Date Modified</string>
+           </property>
+          </column>
+         </widget>
+         <widget class="QPushButton" name="pushButton_sensor_nodes_fn_refresh">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="geometry">
+           <rect>
+            <x>10</x>
+            <y>355</y>
+            <width>120</width>
+            <height>27</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Ubuntu</family>
+            <pointsize>11</pointsize>
+            <strikeout>false</strikeout>
+           </font>
+          </property>
+          <property name="text">
+           <string>Refresh</string>
+          </property>
+         </widget>
+         <widget class="QComboBox" name="comboBox_sensor_nodes_fn_folder">
+          <property name="geometry">
+           <rect>
+            <x>130</x>
+            <y>5</y>
+            <width>300</width>
+            <height>27</height>
+           </rect>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QLabel" name="label1_sensor_nodes_fn_sensor_node">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>10</y>
+           <width>1175</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Sensor Node</string>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label1_97">
+         <property name="geometry">
+          <rect>
+           <x>20</x>
+           <y>440</y>
+           <width>1175</width>
+           <height>20</height>
+          </rect>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>16777215</width>
+           <height>16777215</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Ubuntu</family>
+           <pointsize>10</pointsize>
+           <weight>75</weight>
+           <italic>false</italic>
+           <bold>true</bold>
+           <strikeout>false</strikeout>
+          </font>
+         </property>
+         <property name="text">
+          <string>Local</string>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+         <property name="margin">
+          <number>0</number>
+         </property>
+        </widget>
        </widget>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_fn_refresh">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>365</y>
-          <width>90</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Refresh</string>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="comboBox_sensor_nodes_fn_folder">
-        <property name="geometry">
-         <rect>
-          <x>130</x>
-          <y>5</y>
-          <width>300</width>
-          <height>27</height>
-         </rect>
-        </property>
-       </widget>
-      </widget>
-      <widget class="QFrame" name="frame1_95">
-       <property name="geometry">
-        <rect>
-         <x>10</x>
-         <y>460</y>
-         <width>1195</width>
-         <height>345</height>
-        </rect>
-       </property>
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_choose">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>5</y>
-          <width>81</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Choose</string>
-        </property>
-       </widget>
-       <widget class="QTreeView" name="treeView_sensor_nodes_fn_local_files">
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>35</y>
-          <width>1175</width>
-          <height>270</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_delete">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>10</x>
-          <y>310</y>
-          <width>90</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Delete</string>
-        </property>
-       </widget>
-       <widget class="QComboBox" name="comboBox_sensor_nodes_fn_local_folder">
-        <property name="geometry">
-         <rect>
-          <x>95</x>
-          <y>5</y>
-          <width>1090</width>
-          <height>27</height>
-         </rect>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_unzip">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>105</x>
-          <y>310</y>
-          <width>90</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Unzip</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_view">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>200</x>
-          <y>310</y>
-          <width>90</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>View</string>
-        </property>
-       </widget>
-       <widget class="QPushButton" name="pushButton_sensor_nodes_fn_local_transfer">
-        <property name="enabled">
-         <bool>true</bool>
-        </property>
-        <property name="geometry">
-         <rect>
-          <x>295</x>
-          <y>310</y>
-          <width>90</width>
-          <height>27</height>
-         </rect>
-        </property>
-        <property name="font">
-         <font>
-          <family>Ubuntu</family>
-          <pointsize>11</pointsize>
-          <strikeout>false</strikeout>
-         </font>
-        </property>
-        <property name="text">
-         <string>Transfer</string>
-        </property>
+       <widget class="QWidget" name="page_sensor_nodes_fn_no_node">
+        <widget class="QLabel" name="label2_sensor_nodes_fn_select_a_node">
+         <property name="geometry">
+          <rect>
+           <x>0</x>
+           <y>400</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Select an online Sensor Node to browse and transfer files.</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_sensor_nodes_fn_select_sensor_node_image">
+         <property name="geometry">
+          <rect>
+           <x>576</x>
+           <y>292</y>
+           <width>64</width>
+           <height>48</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Image</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label2_sensor_nodes_fn_no_node_selected">
+         <property name="geometry">
+          <rect>
+           <x>1</x>
+           <y>362</y>
+           <width>1215</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Sensor Node Unavailable</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+        <widget class="QLabel" name="label_sensor_nodes_fn_empty_icon">
+         <property name="geometry">
+          <rect>
+           <x>570</x>
+           <y>286</y>
+           <width>76</width>
+           <height>60</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+        </widget>
+        <zorder>label_sensor_nodes_fn_empty_icon</zorder>
+        <zorder>label2_sensor_nodes_fn_select_a_node</zorder>
+        <zorder>label2_sensor_nodes_fn_no_node_selected</zorder>
+        <zorder>label_sensor_nodes_fn_select_sensor_node_image</zorder>
        </widget>
       </widget>
      </widget>

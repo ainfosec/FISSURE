@@ -14,7 +14,7 @@ from typing import Dict, Any, Union, Callable
 from fissure.Sensor_Node.utils.resources import Resource
 from fissure.utils.artifacts import ArtifactManager, get_artifact_manager
 
-_base_params = ['self', 'node_uid', 'logger', 'alert_callback', 'tak_cot_callback', 'status_callback', 'target_callback', 'soi_callback', 'artifact_manager']
+_base_params = ['self', 'node_uid', 'logger', 'alert_callback', 'tak_cot_callback', 'detection_callback', 'status_callback', 'target_callback', 'soi_callback', 'artifact_manager']
 
 async def send_alert(node_uid: str, opid: str, message: str, logger=logging.getLogger(__name__)) -> None:
     """Placeholder for alert callback if none is provided.
@@ -29,6 +29,18 @@ async def send_alert(node_uid: str, opid: str, message: str, logger=logging.getL
         The alert message.
     """
     logger.info(f"Alert {node_uid}, {opid}: {message}")
+
+
+async def send_detection(detection: Dict[str, Any], logger=logging.getLogger(__name__)) -> None:
+    """Placeholder for detection callback if none is provided.
+
+    Parameters
+    ----------
+    detection : Dict[str, Any]
+        Structured detection emitted by a detector operation.
+    """
+    logger.info(f"Detection: {detection}")
+
 
 async def send_tak_cot(node_uid: str, opid: str, uid: str, remarks: str, lat: Union[float, bool] = True, lon: Union[float, bool] = True, alt: Union[float, bool] = True, time: Union[float, bool] = True, type: str="a-f-G-U-H", logger=logging.getLogger(__name__)) -> None:
     """Placeholder for TAK CoT callback if none is provided.
@@ -201,6 +213,7 @@ class Operation(object):
             logger: logging.Logger = logging.getLogger(__name__), 
             alert_callback: Union[Callable, None] = None, 
             tak_cot_callback: Union[Callable, None] = None, 
+            detection_callback: Union[Callable, None] = None, 
             status_callback: Union[Callable, None] = None, 
             target_callback: Union[Callable, None] = None, 
             soi_callback: Union[Callable, None] = None, 
@@ -218,6 +231,8 @@ class Operation(object):
             Callback function for alerts, by default None for logger-only alerts
         tak_cot_callback : Union[Callable, None], optional
             Callback function for TAK CoT messages, by default None for logger-only TAK CoT messages
+        detection_callback : Union[Callable, None], optional
+            Callback function for structured detections, by default None for logger-only detections
         status_callback : Union[Callable, None], optional
             Callback function for reporting status to TAK and Dashboard
         target_callback : Union[Callable, None], optional
@@ -234,6 +249,8 @@ class Operation(object):
             alert_callback = send_alert
         if tak_cot_callback is None:
             tak_cot_callback = send_tak_cot
+        if detection_callback is None:
+            detection_callback = send_detection
         if status_callback is None:
             status_callback = send_status
         if target_callback is None:
@@ -242,6 +259,7 @@ class Operation(object):
             soi_callback = send_soi                
         self.alert_callback = alert_callback
         self.tak_cot_callback = tak_cot_callback
+        self.detection_callback = detection_callback
         self.status_callback = status_callback
         self.target_callback = target_callback
         self.soi_callback = soi_callback
@@ -253,6 +271,7 @@ class Operation(object):
         # unique operation ID
         self.opid = str(uuid.uuid4())
 
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
 
@@ -262,6 +281,7 @@ class Operation(object):
         setattr(cls, 'stop', stop_decorator(cls.stop))
         setattr(cls, 'teardown', teardown_decorator(cls.teardown))
 
+
     def __repr__(self):
         sig = inspect.signature(self.__init__)
         params = list(sig.parameters.keys())
@@ -269,6 +289,7 @@ class Operation(object):
             if p in params:
                 params.remove(p)
         return f"{self.__class__.__name__}(node_uid={self.node_uid}" + ''.join([f", {p}={getattr(self, p)}" for p in params]) + ")"
+
 
     @classmethod
     def get_arguments(cls, logger: logging.Logger = logging.getLogger(__name__)) -> Dict[str, Any]:
@@ -427,6 +448,26 @@ class Operation(object):
         - the method should call `await asyncio.sleep(0)` within loops to allow for cooperative multitasking
         """
         self.logger.warning("The run() method should be implemented by the subclass.")
+
+    async def _sleep_stop_aware(self, duration_s: float, check_interval_s: float = 0.1) -> bool:
+        """Sleep for a duration while remaining responsive to an operation stop request.
+
+        Returns True when the full duration elapses, or False when ``self._stop``
+        becomes set before the duration completes.
+        """
+        duration_s = max(0.0, float(duration_s))
+        check_interval_s = max(0.01, float(check_interval_s))
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + duration_s
+
+        while not self._stop:
+            remaining_s = deadline - loop.time()
+            if remaining_s <= 0:
+                return True
+
+            await asyncio.sleep(min(check_interval_s, remaining_s))
+
+        return False
 
     def running(self) -> bool:
         """

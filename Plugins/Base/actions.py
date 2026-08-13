@@ -83,7 +83,6 @@ ACTION_TAGS = {
     "promote_to_soi": ["All"],
 
     "take_photo": ["All"],
-    "motion_detector": ["All"],
     "take_video": ["All"],
 
     "signal_conditioning": [
@@ -138,6 +137,114 @@ ACTION_TAGS = {
         "tsi.feature_extractor.profile.all_available",
         "tsi.feature_extractor.source.file",
         "tsi.feature_extractor.source.folder",
+    ],
+    "sensor_node_time": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.time",
+        "tsi.detector.mode.scheduled",
+    ],
+    "timer": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.time",
+        "tsi.detector.mode.scheduled",
+    ],
+    "sound_threshold": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.sensor",
+        "tsi.detector.mode.threshold",
+    ],
+    "file_modified": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.system",
+        "tsi.detector.mode.change",
+    ],
+    "folder_modified": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.system",
+        "tsi.detector.mode.change",
+    ],
+    "temperature": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.environmental",
+        "tsi.detector.mode.threshold",
+    ],
+    "weather": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.environmental",
+        "tsi.detector.mode.condition",
+    ],
+    "wind": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.environmental",
+        "tsi.detector.mode.threshold",
+    ],
+    "sunrise_sunset": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.time",
+        "tsi.detector.mode.scheduled",
+    ],
+    "detect_ssid": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.wifi",
+        "tsi.detector.mode.presence",
+    ],
+    "motion_detector": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.sensor",
+        "tsi.detector.mode.presence",
+    ],
+    "gps_point": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.location",
+        "tsi.detector.mode.proximity",
+    ],
+    "gps_line": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.location",
+        "tsi.detector.mode.boundary",
+    ],
+    "x10_demod": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.protocol",
+        "tsi.detector.mode.match",
+    ],
+    "plane_spotting": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.rf",
+        "tsi.detector.mode.presence",
+    ],
+    "rds_keyword": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.protocol",
+        "tsi.detector.mode.match",
+    ],
+    "cellular_tower": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.rf",
+        "tsi.detector.mode.presence",
+    ],
+    "webserver_curl": [
+        "All",
+        "tsi.detector",
+        "tsi.detector.type.network",
+        "tsi.detector.mode.request",
     ],
 }
 
@@ -202,7 +309,255 @@ ACTION_HARDWARE = {
         "RSPdx R2",
     ],
     "signal_conditioning": ["USRP B20xmini", "USRP B2x0"],
+    "x10_demod": ["USRP B20xmini", "USRP B2x0"],
+    "rds_keyword": ["USRP B20xmini", "USRP B2x0"],
+    "plane_spotting": ["RTL2832U"],
+    "cellular_tower": ["RTL2832U"],
+    "detect_ssid": ["802.11x Adapter"],
+
 }
+
+
+# =============================================================================
+# Trigger-Style Detector Actions
+# =============================================================================
+
+sensor_node_time_schema = {
+    "params": [
+        {"name": "trigger_time", "label": "Trigger Time", "type": "string", "default": ""},
+        {"name": "description", "label": "Description", "type": "string", "default": "Sensor Node time reached"},
+    ]
+}
+
+async def sensor_node_time(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Sensor Node time action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "sensor_node_time.py", parameters, node_uid, wait=True)
+
+
+timer_schema = {
+    "params": [
+        {"name": "timer_seconds", "label": "Timer (s)", "type": "number", "default": 10.0},
+        {"name": "description", "label": "Description", "type": "string", "default": "Timer expired"},
+    ]
+}
+
+async def timer(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Timer action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "timer.py", parameters, node_uid, wait=True)
+
+
+sound_threshold_schema = {
+    "params": [
+        {"name": "get_threshold", "label": "Threshold", "type": "number", "default": 0.02},
+        {"name": "get_duration", "label": "Sample Duration (s)", "type": "number", "default": 0.1},
+        {"name": "get_sample_rate", "label": "Sample Rate (Hz)", "type": "number", "default": 44100.0},
+        {"name": "warmup_s", "label": "Warmup (s)", "type": "number", "default": 0.0},
+        {"name": "description", "label": "Description", "type": "string", "default": "Sound threshold exceeded"},
+    ]
+}
+
+async def sound_threshold(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Sound threshold action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "sound_threshold.py", parameters, node_uid, wait=True)
+
+
+file_modified_schema = {
+    "params": [
+        {"name": "file_modified", "label": "File Path", "type": "string", "default": ""},
+        {"name": "poll_interval_s", "label": "Poll Interval (s)", "type": "number", "default": 0.1},
+        {"name": "description", "label": "Description", "type": "string", "default": "File modified"},
+    ]
+}
+
+async def file_modified(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"File modified action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "file_modified.py", parameters, node_uid, wait=True)
+
+
+folder_modified_schema = {
+    "params": [
+        {"name": "folder_modified", "label": "Folder Path", "type": "string", "default": ""},
+        {"name": "poll_interval_s", "label": "Poll Interval (s)", "type": "number", "default": 0.1},
+        {"name": "description", "label": "Description", "type": "string", "default": "Folder modified"},
+    ]
+}
+
+async def folder_modified(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Folder modified action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "folder_modified.py", parameters, node_uid, wait=True)
+
+
+temperature_schema = {
+    "params": [
+        {"name": "comparison", "label": "Comparison", "type": "string", "default": ">", "options": ["<", "=", ">"]},
+        {"name": "temperature", "label": "Temperature (F)", "type": "number", "default": 70},
+        {"name": "city_name", "label": "City", "type": "string", "default": ""},
+        {"name": "state_code", "label": "State Code", "type": "string", "default": ""},
+        {"name": "country_code", "label": "Country Code", "type": "string", "default": ""},
+        {"name": "poll_interval_s", "label": "Poll Interval (s)", "type": "number", "default": 10.0},
+        {"name": "description", "label": "Description", "type": "string", "default": "Temperature condition met"},
+    ]
+}
+
+async def temperature(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Temperature action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "temperature.py", parameters, node_uid, wait=True)
+
+
+weather_schema = {
+    "params": [
+        {"name": "conditions", "label": "Conditions", "type": "string", "default": "Rain", "options": ["Rain", "Snow/Sleet", "Clear", "Cloudy/Fog"]},
+        {"name": "city_name", "label": "City", "type": "string", "default": ""},
+        {"name": "state_code", "label": "State Code", "type": "string", "default": ""},
+        {"name": "country_code", "label": "Country Code", "type": "string", "default": ""},
+        {"name": "poll_interval_s", "label": "Poll Interval (s)", "type": "number", "default": 10.0},
+        {"name": "description", "label": "Description", "type": "string", "default": "Weather condition met"},
+    ]
+}
+
+async def weather(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Weather action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "weather.py", parameters, node_uid, wait=True)
+
+
+wind_schema = {
+    "params": [
+        {"name": "wind_threshold", "label": "Wind Threshold (mph)", "type": "number", "default": 10},
+        {"name": "city_name", "label": "City", "type": "string", "default": ""},
+        {"name": "state_code", "label": "State Code", "type": "string", "default": ""},
+        {"name": "country_code", "label": "Country Code", "type": "string", "default": ""},
+        {"name": "poll_interval_s", "label": "Poll Interval (s)", "type": "number", "default": 10.0},
+        {"name": "description", "label": "Description", "type": "string", "default": "Wind threshold reached"},
+    ]
+}
+
+async def wind(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Wind action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "wind.py", parameters, node_uid, wait=True)
+
+
+sunrise_sunset_schema = {
+    "params": [
+        {"name": "sunrise_sunset", "label": "Event", "type": "string", "default": "Sunrise", "options": ["Sunrise", "Sunset"]},
+        {"name": "city_name", "label": "City", "type": "string", "default": ""},
+        {"name": "state_code", "label": "State Code", "type": "string", "default": ""},
+        {"name": "country_code", "label": "Country Code", "type": "string", "default": ""},
+        {"name": "poll_interval_s", "label": "Poll Interval (s)", "type": "number", "default": 10.0},
+        {"name": "description", "label": "Description", "type": "string", "default": "Sunrise/sunset reached"},
+    ]
+}
+
+async def sunrise_sunset(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Sunrise/sunset action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "sunrise_sunset.py", parameters, node_uid, wait=True)
+
+
+detect_ssid_schema = {
+    "params": [
+        {"name": "interface", "label": "Interface", "type": "string", "default": "wlan0"},
+        {"name": "ssid", "label": "SSID", "type": "string", "default": ""},
+        {"name": "poll_interval_s", "label": "Poll Interval (s)", "type": "number", "default": 10.0},
+        {"name": "description", "label": "Description", "type": "string", "default": "SSID detected"},
+    ]
+}
+
+async def detect_ssid(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Detect SSID action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "detect_ssid.py", parameters, node_uid, wait=True)
+
+
+gps_point_schema = {
+    "params": [
+        {"name": "target_latitude", "label": "Target Latitude", "type": "number", "default": 0.0},
+        {"name": "target_longitude", "label": "Target Longitude", "type": "number", "default": 0.0},
+        {"name": "distance", "label": "Distance (m)", "type": "number", "default": 100.0},
+        {"name": "poll_interval_s", "label": "Poll Interval (s)", "type": "number", "default": 5.0},
+        {"name": "description", "label": "Description", "type": "string", "default": "GPS point reached"},
+    ]
+}
+
+async def gps_point(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"GPS point action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "gps_point.py", parameters, node_uid, wait=True)
+
+
+gps_line_schema = {
+    "params": [
+        {"name": "latitude", "label": "Latitude Threshold", "type": "string", "default": "None"},
+        {"name": "longitude", "label": "Longitude Threshold", "type": "string", "default": "None"},
+        {"name": "comparison", "label": "Comparison", "type": "string", "default": ">", "options": ["<", ">"]},
+        {"name": "poll_interval_s", "label": "Poll Interval (s)", "type": "number", "default": 5.0},
+        {"name": "description", "label": "Description", "type": "string", "default": "GPS line crossed"},
+    ]
+}
+
+async def gps_line(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"GPS line action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "gps_line.py", parameters, node_uid, wait=True)
+
+
+x10_demod_schema = {
+    "params": [
+        {"name": "matching_text", "label": "Matching Text", "type": "string", "default": "Bits: 01100000100111110000000011111111"},
+        {"name": "description", "label": "Description", "type": "string", "default": "X10 message detected"},
+    ]
+}
+
+async def x10_demod(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"X10 demod action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "x10_demod.py", parameters, node_uid, wait=True)
+
+
+plane_spotting_schema = {
+    "params": [
+        {"name": "icao", "label": "ICAO", "type": "string", "default": ""},
+        {"name": "description", "label": "Description", "type": "string", "default": "Aircraft detected"},
+    ]
+}
+
+async def plane_spotting(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Plane spotting action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "plane_spotting.py", parameters, node_uid, wait=True)
+
+
+rds_keyword_schema = {
+    "params": [
+        {"name": "keyword", "label": "Keyword", "type": "string", "default": ""},
+        {"name": "frequency", "label": "Frequency (MHz)", "type": "number", "default": 102.5},
+        {"name": "description", "label": "Description", "type": "string", "default": "RDS keyword detected"},
+    ]
+}
+
+async def rds_keyword(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"RDS keyword action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "rds_keyword.py", parameters, node_uid, wait=True)
+
+
+cellular_tower_schema = {
+    "params": [
+        {"name": "pci", "label": "PCI", "type": "number", "default": 0},
+        {"name": "frequency", "label": "Frequency (MHz)", "type": "number", "default": 900.0},
+        {"name": "retry_interval_s", "label": "Retry Interval (s)", "type": "number", "default": 10.0},
+        {"name": "description", "label": "Description", "type": "string", "default": "Cellular tower detected"},
+    ]
+}
+
+async def cellular_tower(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Cellular tower action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "cellular_tower.py", parameters, node_uid, wait=True)
+
+
+webserver_curl_schema = {
+    "params": [
+        {"name": "ip_address", "label": "IP Address", "type": "string", "default": "0.0.0.0"},
+        {"name": "port", "label": "Port", "type": "number", "default": 8080},
+        {"name": "description", "label": "Description", "type": "string", "default": "Web request received"},
+    ]
+}
+
+async def webserver_curl(component: SensorNode, parameters: Dict[str, Any], node_uid: str = "") -> None:
+    component.logger.info(f"Webserver curl action with parameters: {parameters}")
+    await component.run_plugin_operation(component, PLUGIN_NAME, "webserver_curl.py", parameters, node_uid, wait=True)
 
 
 async def signal_geolocate(

@@ -48,7 +48,7 @@ for path in (
         )
 
 from fissure.utils.plugins.operations import Operation
-from fissure.utils import get_library_version
+from fissure.utils import get_library_version, SENSOR_NODE_DIR
 
 
 IQ_PLAYBACK_HARDWARE = {
@@ -172,6 +172,11 @@ class OperationMain(Operation):
             or self.opid
             or uuid.uuid4()
         )
+
+        # Use the caller-visible operation ID as the Sensor Node registry ID.
+        # This allows callers to stop only this playback operation by opid.
+        self.opid = self.operation_id
+
         self.requester = str(
             requester
             or ""
@@ -298,11 +303,6 @@ class OperationMain(Operation):
         try:
             self._validate()
 
-            if self.status_callback:
-                await self.status_callback(
-                    "Running: IQ Playback"
-                )
-
             await self._play_file()
 
         except asyncio.CancelledError:
@@ -415,10 +415,38 @@ class OperationMain(Operation):
             self.playback_file_mode
             == "transfer"
         ):
-            self.logger.warning(
-                "iq_playback received playback_file_mode=transfer. "
-                "The file must already have been staged by the caller "
-                "before this operation starts."
+            transfer_path = str(
+                self.filepath
+                or ""
+            ).strip()
+
+            relative_path = os.path.normpath(
+                transfer_path.lstrip(
+                    "/"
+                )
+            )
+
+            if (
+                not relative_path
+                or relative_path == "."
+                or relative_path == ".."
+                or relative_path.startswith(
+                    "../"
+                )
+            ):
+                raise RuntimeError(
+                    "Invalid staged IQ playback filepath: "
+                    f"{transfer_path}"
+                )
+
+            self.filepath = os.path.join(
+                SENSOR_NODE_DIR,
+                relative_path,
+            )
+
+            self.logger.info(
+                "Resolved staged IQ playback filepath: "
+                f"{transfer_path} -> {self.filepath}"
             )
 
         if not os.path.isfile(
@@ -525,6 +553,15 @@ class OperationMain(Operation):
 
         try:
             tb.start()
+
+            self.logger.info(
+                "IQ playback flow graph started."
+            )
+
+            if self.status_callback:
+                await self.status_callback(
+                    "Running: IQ Playback"
+                )
 
             wait_future = (
                 loop.run_in_executor(

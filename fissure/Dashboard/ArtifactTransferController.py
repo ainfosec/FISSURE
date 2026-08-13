@@ -279,6 +279,26 @@ class ArtifactTransferController:
                 "Transfer failed",
             )
 
+            pending_uploads = getattr(
+                self.backend,
+                "_sensor_node_file_uploads",
+                {},
+            )
+            upload_future = pending_uploads.get(
+                frame.transfer_id
+            )
+
+            if upload_future is not None:
+                if not upload_future.done():
+                    upload_future.set_result(
+                        {
+                            "success": False,
+                            "message": str(message),
+                            "transfer_id": frame.transfer_id,
+                        }
+                    )
+                return
+
             self.fail_request(
                 frame.transfer_id,
                 str(message),

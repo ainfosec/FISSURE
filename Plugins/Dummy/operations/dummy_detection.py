@@ -25,6 +25,7 @@ class OperationMain(Operation):
 
     def __init__(
         self,
+        initial_delay_s: float = 0.0,
         period_s: float = 60.0,
         freq_mhz: float = 915.0,
         power_dbm: float = -40.0,
@@ -33,14 +34,17 @@ class OperationMain(Operation):
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Union[Callable, None] = None,
         tak_cot_callback: Union[Callable, None] = None,
+        detection_callback: Union[Callable, None] = None,
     ) -> None:
         super().__init__(
             node_uid=node_uid,
             logger=logger,
             alert_callback=alert_callback,
             tak_cot_callback=tak_cot_callback,
+            detection_callback=detection_callback,
         )
 
+        self.initial_delay_s = float(initial_delay_s)
         self.period_s = float(period_s)
         self.freq_mhz = float(freq_mhz)
         self.freq_hz = int(self.freq_mhz * 1_000_000.0)
@@ -58,6 +62,10 @@ class OperationMain(Operation):
         tick_s = 0.25
         cb_timeout_s = 2.0
 
+        end_time = time.time() + self.initial_delay_s
+        while not self._stop and time.time() < end_time:
+            await asyncio.sleep(tick_s)
+
         while not self._stop:
             ts = time.time()
 
@@ -66,7 +74,7 @@ class OperationMain(Operation):
                 "node_uid": self.node_uid,
                 "frequency_hz": int(self.freq_hz),
                 "power_dbm": float(self.power_dbm),
-                "timestamp": int(ts),
+                "timestamp": float(ts),
                 "detector": "dummy_detection",
                 "opid": self.opid,
             }
@@ -87,28 +95,18 @@ class OperationMain(Operation):
                 except Exception:
                     self.logger.exception("alert_callback failed")
 
-            if self.tak_cot_callback:
+            if self.detection_callback:
                 try:
                     await asyncio.wait_for(
-                        self.tak_cot_callback(
-                            {
-                                "msg_type": "event",
-                                "uid": f"dummy-detection-{int(ts)}",
-                                "lat": True,
-                                "lon": True,
-                                "alt": True,
-                                "time": True,
-                                "data": detection,
-                                "opid": self.opid,
-                                "tak_icon": "r-x-fissure-detection",
-                            }
-                        ),
+                        self.detection_callback(detection),
                         timeout=cb_timeout_s,
                     )
                 except asyncio.CancelledError:
                     raise
                 except Exception:
-                    self.logger.exception("tak_cot_callback failed")
+                    self.logger.exception("detection_callback failed")
+            else:
+                self.logger.warning("dummy_detection has no detection_callback")
 
             # interruptible sleep
             end_time = time.time() + self.period_s

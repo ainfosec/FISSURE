@@ -16,6 +16,7 @@ ACTION_TAGS = {
     "dummy_alert_burst": ["All"],
     "dummy_detection": [
         "All",
+        "detector",
         "tsi.detector",
         "tsi.detector.type.rf",
         "tsi.detector.mode.simulation",
@@ -117,6 +118,7 @@ async def dummy_alert_burst(
 
 dummy_detection_schema = {
     "params": [
+        {"name": "initial_delay_s", "label": "Initial Delay (s)", "type": "number", "default": 0.0},
         {"name": "period_s", "label": "Period (s)", "type": "number", "default": 60.0},
         {"name": "freq_mhz", "label": "Frequency (MHz)", "type": "number", "default": 915.0},
         {"name": "power_dbm", "label": "Power (dBm)", "type": "number", "default": -40.0},
@@ -128,7 +130,6 @@ dummy_detection_schema = {
         },
     ]
 }
-
 async def dummy_detection(
     component: SensorNode,
     parameters: Dict[str, Any],

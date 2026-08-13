@@ -1060,32 +1060,6 @@ async def transferSensorNodeFile(
     )
 
 
-async def deleteArchiveReplayFiles(component: object, node_uid=""):
-    """
-    Deletes all the files in the Archive_Replay folder on the sensor node ahead of file transfer for replay.
-    """
-    # Send Message
-    PARAMETERS = {"node_uid": node_uid}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "deleteArchiveReplayFiles",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
 async def refreshSensorNodeFiles(component: object, node_uid="", sensor_node_folder=""):
     """
     Signals to sensor node to return file details for a specified folder.
@@ -1392,84 +1366,6 @@ async def multiStageAttackStop(component: object, node_uid="", autorun_index=0):
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "multiStageAttackStop",
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def archivePlaylistStart(
-    component: object,
-    node_uid="",
-    flow_graph="",
-    filenames=[],
-    frequencies=[],
-    sample_rates=[],
-    formats=[],
-    channels=[],
-    gains=[],
-    durations=[],
-    repeat=False,
-    ip_address="",
-    serial="",
-    trigger_values=[]
-):
-    """
-    Sends message to Sensor Node to start the archive playlist.
-    """
-    # Send Message to Sensor Node
-    PARAMETERS = {
-        "flow_graph": flow_graph,
-        "filenames": filenames,
-        "frequencies": frequencies,
-        "sample_rates": sample_rates,
-        "formats": formats,
-        "channels": channels,
-        "gains": gains,
-        "durations": durations,
-        "repeat": repeat,
-        "ip_address": ip_address,
-        "serial": serial,
-        "trigger_values": trigger_values
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistStart",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def archivePlaylistStop(component: object, node_uid=""):
-    """
-    Sends message to Sensor Node to stop the archive playlist.
-    """
-    # Send Message to Sensor Node
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistStop",
     }
 
     # Resolve Identity
@@ -2458,6 +2354,46 @@ async def queryPluginActionsResults(
         )
 
 
+async def sensorNodeFileTransferStatus(
+    component: object,
+    uuid="",
+    transfer_id="",
+    success=False,
+    message="",
+    remote_filepath="",
+    remote_folder="",
+    bytes_received=0,
+    elapsed_seconds=0.0,
+    mib_per_second=0.0,
+    refresh_file_list=False,
+):
+    """Forward Sensor Node binary file-transfer completion to Dashboard."""
+    parameters = {
+        "node_uid": uuid,
+        "transfer_id": transfer_id,
+        "success": bool(success),
+        "message": message,
+        "remote_filepath": remote_filepath,
+        "remote_folder": remote_folder,
+        "bytes_received": int(bytes_received),
+        "elapsed_seconds": float(elapsed_seconds),
+        "mib_per_second": float(mib_per_second),
+        "refresh_file_list": bool(refresh_file_list),
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "sensorNodeFileTransferStatus",
+        fissure.comms.MessageFields.PARAMETERS: parameters,
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
 async def refreshSensorNodeFilesResults(
     component: object, node_uid="", filepaths=[], file_sizes=[], file_types=[], modified_dates=[]
 ):
@@ -2517,36 +2453,6 @@ async def flowGraphError(component: object, node_uid="", error=""):
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphError",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def archivePlaylistFinished(component: object, node_uid=""):
-    """
-    Forwards the Archive playlist finished message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistFinished",
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def archivePlaylistPosition(component: object, node_uid="", position=0):
-    """
-    Forwards the Archive playlist position to the Dashboard.
-    """
-    # Send the Message
-    PARAMETERS = {
-        "position": position
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistPosition",
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
     }
     if component.dashboard_connected:
@@ -2832,6 +2738,159 @@ async def alertReturn(component: object, node_uid="", alert_text=""):
     }
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+async def detectionReturn(
+    component,
+    detection: dict,
+    lat=None,
+    lon=None,
+    alt=None,
+    observation_time=None,
+):
+    """
+    Receive one native FISSURE Detection from a Sensor Node.
+
+    Detections remain transient. HIPRFISR performs any hub-side processing,
+    forwards the structured Detection to the Dashboard/TSI path, and emits a
+    CoT representation for Tactical and external TAK consumers.
+    """
+    if not isinstance(detection, dict):
+        component.logger.error("detectionReturn requires a detection dictionary.")
+        return
+
+    detection = dict(detection)
+    detection["kind"] = "detection"
+    detection["event_type"] = "detection"
+
+    node_uid = str(detection.get("node_uid") or "").strip()
+    if not node_uid:
+        component.logger.warning("detectionReturn received detection without node_uid.")
+
+    detection_id = str(
+        detection.get("detection_id")
+        or uuid.uuid4()
+    ).strip()
+    detection["detection_id"] = detection_id
+
+    operation_id = str(
+        detection.get("opid")
+        or detection.get("operation_id")
+        or ""
+    ).strip()
+
+    if operation_id:
+        detection["opid"] = operation_id
+        detection.setdefault("operation_id", operation_id)
+
+    if lat is None:
+        lat = detection.get("latitude")
+    if lat is None:
+        lat = detection.get("lat")
+
+    if lon is None:
+        lon = detection.get("longitude")
+    if lon is None:
+        lon = detection.get("lon")
+
+    if alt is None:
+        alt = detection.get("altitude")
+    if alt is None:
+        alt = detection.get("alt")
+    if alt is None:
+        alt = detection.get("hae_m")
+    if alt is None:
+        alt = detection.get("hae")
+
+    node_record = {}
+    if node_uid:
+        node_record = (getattr(component, "nodes", {}) or {}).get(node_uid, {}) or {}
+
+    if lat is None:
+        lat = node_record.get("lat")
+    if lon is None:
+        lon = node_record.get("lon")
+    if alt is None:
+        alt = node_record.get("alt")
+
+    if lat is not None:
+        detection.setdefault("latitude", lat)
+    if lon is not None:
+        detection.setdefault("longitude", lon)
+    if alt is not None:
+        detection.setdefault("altitude", alt)
+
+    if not observation_time:
+        observation_time = detection.get("observation_time")
+
+    if not observation_time:
+        detection_timestamp = detection.get("timestamp")
+        try:
+            observation_time = datetime.fromtimestamp(
+                float(detection_timestamp),
+                tz=timezone.utc,
+            ).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        except Exception:
+            observation_time = datetime.now(timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.%fZ"
+            )
+
+    detection.setdefault("observation_time", observation_time)
+
+    detector_name = str(detection.get("detector") or "detection").strip()
+    event_uid = str(
+        detection.get("event_uid")
+        or detection.get("uid")
+        or f"{detector_name}-{node_uid or 'node'}-{detection_id}"
+    ).strip()
+    detection.setdefault("event_uid", event_uid)
+
+    payload = {
+        "msg_type": "event",
+        "uid": event_uid,
+        "lat": lat if lat is not None else 0.0,
+        "lon": lon if lon is not None else 0.0,
+        "alt": alt if alt is not None else 0.0,
+        "time": observation_time,
+        "data": detection,
+        "opid": operation_id,
+        "tak_icon": "r-x-fissure-detection",
+    }
+
+    try:
+        out = maybe_ingest_detection_for_geolocation(component, payload)
+        if out is not None:
+            target_id, patch, history_entry = out
+            await targetPatch(
+                component,
+                target_id=target_id,
+                patch=patch,
+                history_entry=history_entry,
+                artifact_id="",
+            )
+    except Exception as exc:
+        component.logger.error(
+            f"detectionReturn geolocation ingest error: {exc}"
+        )
+
+    if component.dashboard_connected:
+        dashboard_msg = {
+            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "detectionReturn",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "detection": detection,
+            },
+        }
+
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            dashboard_msg,
+        )
+
+    await fissure.utils.tak_messages.send(
+        component,
+        payload,
+    )
 
 
 #######################################

@@ -125,6 +125,7 @@ class OperationMain(Operation):
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Union[Callable, None] = None,
         tak_cot_callback: Union[Callable, None] = None,
+        detection_callback: Union[Callable, None] = None,
         status_callback: Union[Callable, None] = None,
         artifact_manager=None,
     ) -> None:
@@ -133,6 +134,7 @@ class OperationMain(Operation):
             logger=logger,
             alert_callback=alert_callback,
             tak_cot_callback=tak_cot_callback,
+            detection_callback=detection_callback,
             status_callback=status_callback,
             artifact_manager=artifact_manager,
         )
@@ -286,6 +288,30 @@ class OperationMain(Operation):
                         "Stopped" if self._stop else "No motion (timeout)"
                     )
                 return
+
+            detection = {
+                "kind": "detection",
+                "event_type": "detection",
+                "node_uid": self.node_uid,
+                "source_id": self.source_id,
+                "description": self.description,
+                "label": "Motion detected",
+                "timestamp": time.time(),
+                "detector": "motion_detector",
+                "opid": self.opid,
+                "camera_index": self.camera_index,
+                "trigger": trigger_stats,
+            }
+
+            if self.detection_callback:
+                try:
+                    await asyncio.wait_for(self.detection_callback(detection), timeout=2.0)
+                except asyncio.CancelledError:
+                    raise
+                except Exception:
+                    self.logger.exception("motion_detector detection_callback failed")
+            else:
+                self.logger.warning("motion_detector has no detection_callback")
 
             if self.status_callback:
                 await self.status_callback("Motion detected! Capturing photos")

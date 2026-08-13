@@ -98,6 +98,7 @@ class OperationMain(Operation):
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Union[Callable, None] = None,
         tak_cot_callback: Union[Callable, None] = None,
+        detection_callback: Union[Callable, None] = None,
         status_callback: Union[Callable, None] = None,
         target_callback: Union[Callable, None] = None,
         artifact_manager=None,
@@ -108,6 +109,7 @@ class OperationMain(Operation):
             logger=logger,
             alert_callback=alert_callback,
             tak_cot_callback=tak_cot_callback,
+            detection_callback=detection_callback,
             status_callback=status_callback,
             target_callback=target_callback,
             artifact_manager=artifact_manager,
@@ -556,24 +558,11 @@ class OperationMain(Operation):
         # remove None values so payload stays cleaner
         detection = {k: v for k, v in detection.items() if v is not None}
 
-        uid_suffix = self._normalize_bssid(bssid) or str(int(ts_epoch))
-        tak_msg = {
-            "msg_type": "event",
-            "uid": f"wifi-geolocate-target-{uid_suffix}-{int(ts_epoch)}",
-            "lat": True,
-            "lon": True,
-            "alt": True,
-            "time": True,
-            "data": detection,
-            "opid": self.opid,
-            "tak_icon": "r-x-fissure-detection",
-            "kind": "detection",
-            "event_type": "detection",
-            "node_uid": str(self.node_uid),
-            "source_id": self.source_id,
-        }
-
-        await self._run_callback("tak_cot_callback", getattr(self, "tak_cot_callback", None), tak_msg)
+        await self._run_callback(
+            "detection_callback",
+            getattr(self, "detection_callback", None),
+            detection,
+        )
 
         if getattr(self, "alert_callback", None):
             message = (
