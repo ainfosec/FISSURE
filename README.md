@@ -186,7 +186,7 @@ AIS has published several articles highlighting FISSURE’s applications, update
 
 ## Upcoming/Recent Events
 
-![Conference](https://img.shields.io/badge/Event-Conference-darkgray) **September 21-24, 2026**: GNU Radio Conference 2026 - Raleigh, NC - [FISSURE: Tactical RF Operations and Situational Awareness with GNU Radio](https://events.gnuradio.org/event/28/)
+![Conference](https://img.shields.io/badge/Event-Conference-blue) **September 21-24, 2026**: GNU Radio Conference 2026 - Raleigh, NC - [FISSURE: Tactical RF Operations and Situational Awareness with GNU Radio](https://events.gnuradio.org/event/28/)
 
 ![Exhibition](https://img.shields.io/badge/Event-Exhibition-darkgray) **May 5-8, 2025**: SOF Week - Assured Information Security, Inc. (AIS) booth
 
