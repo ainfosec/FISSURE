@@ -22,7 +22,7 @@ import time
 
 class iq_recorder_b2x0(gr.top_block):
 
-    def __init__(self, file_length="100000", filepath="", ip_address="192.168.40.2", rx_antenna="TX/RX", rx_channel="A:A", rx_frequency="2412", rx_gain="20", sample_rate="1", serial="False"):
+    def __init__(self, file_length="100000", filepath="", rx_antenna="TX/RX", rx_channel="A:A", rx_frequency="2412", rx_gain="20", sample_rate="1", serial="False"):
         gr.top_block.__init__(self, "Iq Recorder B2X0")
 
         ##################################################
@@ -30,7 +30,6 @@ class iq_recorder_b2x0(gr.top_block):
         ##################################################
         self.file_length = file_length
         self.filepath = filepath
-        self.ip_address = ip_address
         self.rx_antenna = rx_antenna
         self.rx_channel = rx_channel
         self.rx_frequency = rx_frequency
@@ -82,12 +81,6 @@ class iq_recorder_b2x0(gr.top_block):
     def set_filepath(self, filepath):
         self.filepath = filepath
         self.blocks_file_sink_0.open(self.filepath)
-
-    def get_ip_address(self):
-        return self.ip_address
-
-    def set_ip_address(self, ip_address):
-        self.ip_address = ip_address
 
     def get_rx_antenna(self):
         return self.rx_antenna
@@ -141,9 +134,6 @@ def argument_parser():
         "--filepath", dest="filepath", type=str, default="",
         help="Set filepath [default=%(default)r]")
     parser.add_argument(
-        "--ip-address", dest="ip_address", type=str, default="192.168.40.2",
-        help="Set ip_address [default=%(default)r]")
-    parser.add_argument(
         "--rx-antenna", dest="rx_antenna", type=str, default="TX/RX",
         help="Set rx_antenna [default=%(default)r]")
     parser.add_argument(
@@ -167,7 +157,7 @@ def argument_parser():
 def main(top_block_cls=iq_recorder_b2x0, options=None):
     if options is None:
         options = argument_parser().parse_args()
-    tb = top_block_cls(file_length=options.file_length, filepath=options.filepath, ip_address=options.ip_address, rx_antenna=options.rx_antenna, rx_channel=options.rx_channel, rx_frequency=options.rx_frequency, rx_gain=options.rx_gain, sample_rate=options.sample_rate, serial=options.serial)
+    tb = top_block_cls(file_length=options.file_length, filepath=options.filepath, rx_antenna=options.rx_antenna, rx_channel=options.rx_channel, rx_frequency=options.rx_frequency, rx_gain=options.rx_gain, sample_rate=options.sample_rate, serial=options.serial)
 
     def sig_handler(sig=None, frame=None):
         tb.stop()

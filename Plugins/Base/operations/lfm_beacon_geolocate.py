@@ -37,6 +37,7 @@ class OperationMain(Operation):
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Union[Callable, None] = None,
         tak_cot_callback: Union[Callable, None] = None,
+        detection_callback: Union[Callable, None] = None,
         status_callback: Union[Callable, None] = None,
         target_callback: Union[Callable, None] = None,
         artifact_manager=None,
@@ -47,6 +48,7 @@ class OperationMain(Operation):
             logger=logger,
             alert_callback=alert_callback,
             tak_cot_callback=tak_cot_callback,
+            detection_callback=detection_callback,
             status_callback=status_callback,
             target_callback=target_callback,
             artifact_manager=artifact_manager,
@@ -238,6 +240,16 @@ class OperationMain(Operation):
             "altitude": alt,
         }
 
+        if self.detection_callback:
+            try:
+                await asyncio.wait_for(self.detection_callback(detection), timeout=cb_timeout_s)
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                self.logger.exception("detection_callback failed")
+        else:
+            self.logger.warning("lfm_beacon_geolocate has no detection_callback")
+
         if self.alert_callback:
             try:
                 await asyncio.wait_for(
@@ -256,29 +268,6 @@ class OperationMain(Operation):
                 raise
             except Exception:
                 self.logger.exception("alert_callback failed")
-
-        if self.tak_cot_callback:
-            try:
-                await asyncio.wait_for(
-                    self.tak_cot_callback(
-                        {
-                            "msg_type": "event",
-                            "uid": f"lfm-beacon-geolocate-{self.target_id}-{self.node_uid}-{int(ts)}",
-                            "lat": True,
-                            "lon": True,
-                            "alt": True,
-                            "time": True,
-                            "data": detection,
-                            "opid": self.opid,
-                            "tak_icon": "r-x-fissure-detection",
-                        }
-                    ),
-                    timeout=cb_timeout_s,
-                )
-            except asyncio.CancelledError:
-                raise
-            except Exception:
-                self.logger.exception("tak_cot_callback failed")
 
     async def run(self) -> None:
         self._apply_parameters_from_runner()

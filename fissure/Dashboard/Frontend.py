@@ -29,7 +29,6 @@ from fissure.Dashboard.UI_Components.Qt5 import (
     NewSOI,
     OperationsThread,
     OptionsDialog,
-    SigMF_Dialog,
     TreeModel,
     TreeNode,
     TrimSettings,
@@ -196,314 +195,6 @@ class Dashboard(QtWidgets.QMainWindow):
             self.__init2__()            
 
         self.logger.info("=== READY ===")
-
-
-        # ####################################################
-
-
-        #         ####################################################
-        # # Offline tile map test in Dashboard graphicsView
-
-        # import math
-
-        # TILE_SIZE = 256
-
-        # self.map_scene = QtWidgets.QGraphicsScene(self)
-        # self.ui.graphicsView.setScene(self.map_scene)
-
-        # self.ui.graphicsView.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
-        # self.ui.graphicsView.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
-        # self.ui.graphicsView.setResizeAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
-        # self.ui.graphicsView.setRenderHint(QtGui.QPainter.Antialiasing, True)
-        # self.ui.graphicsView.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, True)
-
-        # # ---- map pack selection ----
-        # # For now, hardcode one pack. Later this can come from a combobox.
-        # self.current_map_name = "elmira_demo"
-
-        # # Expected:
-        # # FISSURE/map_data/elmira_demo/tile_manifest.json
-        # # FISSURE/map_data/elmira_demo/tiles/11/... etc
-        # self.map_pack_dir = os.path.join(fissure.utils.FISSURE_ROOT, "map_data", self.current_map_name)
-        # self.map_manifest_path = os.path.join(self.map_pack_dir, "tile_manifest.json")
-
-        # if not os.path.isfile(self.map_manifest_path):
-        #     print("ERROR: tile manifest not found:", self.map_manifest_path)
-        # else:
-        #     with open(self.map_manifest_path, "r", encoding="utf-8") as f:
-        #         self.map_manifest = json.load(f)
-
-        #     self.map_reference_points = self.map_manifest.get("reference_points", [])
-        #     self.map_available_zooms = sorted(int(z) for z in self.map_manifest["zoom_levels"].keys())
-
-        #     # Pick a default zoom. Prefer 12 if present, otherwise the first available.
-        #     self.map_zoom = 12 if 12 in self.map_available_zooms else self.map_available_zooms[0]
-
-        #     def latlon_to_world(lat, lon, zoom):
-        #         lat_rad = math.radians(lat)
-        #         n = 2 ** zoom
-        #         x = (lon + 180.0) / 360.0 * n * TILE_SIZE
-        #         y = (1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n * TILE_SIZE
-        #         return x, y
-
-        #     def scene_to_latlon(scene_x, scene_y):
-        #         world_x = scene_x + self.map_x_min * TILE_SIZE
-        #         world_y = scene_y + self.map_y_min * TILE_SIZE
-
-        #         n = 2 ** self.map_zoom
-        #         lon = world_x / (n * TILE_SIZE) * 360.0 - 180.0
-        #         merc_y = math.pi * (1.0 - 2.0 * world_y / (n * TILE_SIZE))
-        #         lat = math.degrees(math.atan(math.sinh(merc_y)))
-        #         return lat, lon
-
-        #     def latlon_to_scene(lat, lon):
-        #         world_x, world_y = latlon_to_world(lat, lon, self.map_zoom)
-        #         scene_x = world_x - self.map_x_min * TILE_SIZE
-        #         scene_y = world_y - self.map_y_min * TILE_SIZE
-        #         return scene_x, scene_y
-
-        #     def clear_map_scene():
-        #         self.map_scene.clear()
-
-        #     def load_tiles_for_current_zoom():
-        #         missing = 0
-        #         tile_root = os.path.join(self.map_pack_dir, "tiles", str(self.map_zoom))
-
-        #         for x in range(self.map_x_min, self.map_x_max + 1):
-        #             for y in range(self.map_y_min, self.map_y_max + 1):
-        #                 tile_path = os.path.join(tile_root, str(x), f"{y}.png")
-        #                 scene_x = (x - self.map_x_min) * TILE_SIZE
-        #                 scene_y = (y - self.map_y_min) * TILE_SIZE
-
-        #                 if os.path.isfile(tile_path):
-        #                     pixmap = QtGui.QPixmap(tile_path)
-        #                 else:
-        #                     missing += 1
-        #                     pixmap = QtGui.QPixmap(TILE_SIZE, TILE_SIZE)
-        #                     pixmap.fill(QtGui.QColor("#f0f0f0"))
-        #                     painter = QtGui.QPainter(pixmap)
-        #                     painter.setPen(QtGui.QPen(QtGui.QColor("#999999")))
-        #                     painter.drawRect(0, 0, TILE_SIZE - 1, TILE_SIZE - 1)
-        #                     painter.drawText(20, 30, "missing")
-        #                     painter.drawText(20, 55, f"z={self.map_zoom}")
-        #                     painter.drawText(20, 80, f"x={x}")
-        #                     painter.drawText(20, 105, f"y={y}")
-        #                     painter.end()
-
-        #                 item = self.map_scene.addPixmap(pixmap)
-        #                 item.setPos(scene_x, scene_y)
-        #                 item.setZValue(0)
-
-        #         print("missing tiles:", missing)
-
-        #     def add_reference_points(points):
-        #         colors = {
-        #             "Corning": QtGui.QColor("#1d4ed8"),
-        #             "Horseheads": QtGui.QColor("#dc2626"),
-        #             "Elmira": QtGui.QColor("#16a34a"),
-        #         }
-
-        #         for p in points:
-        #             x, y = latlon_to_scene(p["lat"], p["lon"])
-        #             color = colors.get(p["name"], QtGui.QColor("#000000"))
-
-        #             item = self.map_scene.addEllipse(
-        #                 x - 5, y - 5, 10, 10,
-        #                 QtGui.QPen(QtCore.Qt.black),
-        #                 QtGui.QBrush(color)
-        #             )
-        #             item.setZValue(2)
-
-        #             label = self.map_scene.addText(p["name"])
-        #             label.setDefaultTextColor(QtGui.QColor("#111111"))
-        #             label.setPos(x + 8, y - 18)
-        #             label.setZValue(3)
-
-        #     def load_zoom(zoom, center_lat=None, center_lon=None, fit=False):
-        #         self.map_zoom = zoom
-        #         info = self.map_manifest["zoom_levels"][str(self.map_zoom)]
-        #         self.map_x_min = info["x_min"]
-        #         self.map_x_max = info["x_max"]
-        #         self.map_y_min = info["y_min"]
-        #         self.map_y_max = info["y_max"]
-
-        #         clear_map_scene()
-        #         load_tiles_for_current_zoom()
-
-        #         if self.map_reference_points:
-        #             add_reference_points(self.map_reference_points)
-
-        #         scene_width = (self.map_x_max - self.map_x_min + 1) * TILE_SIZE
-        #         scene_height = (self.map_y_max - self.map_y_min + 1) * TILE_SIZE
-        #         self.map_scene.setSceneRect(0, 0, scene_width, scene_height)
-
-        #         if fit:
-        #             self.ui.graphicsView.fitInView(self.map_scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
-        #         elif center_lat is not None and center_lon is not None:
-        #             scene_x, scene_y = latlon_to_scene(center_lat, center_lon)
-        #             self.ui.graphicsView.resetTransform()
-        #             self.ui.graphicsView.centerOn(scene_x, scene_y)
-
-        #         print("loaded map:", self.current_map_name, "zoom:", self.map_zoom)
-
-        #     def current_view_center_latlon():
-        #         viewport_center = self.ui.graphicsView.viewport().rect().center()
-        #         scene_center = self.ui.graphicsView.mapToScene(viewport_center)
-        #         return scene_to_latlon(scene_center.x(), scene_center.y())
-
-        #     def graphicsview_wheel_event(event):
-        #         direction = +1 if event.angleDelta().y() > 0 else -1
-        #         new_zoom = self.map_zoom + direction
-
-        #         if new_zoom in self.map_available_zooms:
-        #             center_lat, center_lon = current_view_center_latlon()
-        #             load_zoom(new_zoom, center_lat=center_lat, center_lon=center_lon, fit=False)
-
-        #         event.accept()
-
-        #     self.ui.graphicsView.wheelEvent = graphicsview_wheel_event
-
-        #     # Initial center:
-        #     # 1) use bounds center if present
-        #     bounds = self.map_manifest.get("bounds", {})
-        #     if all(k in bounds for k in ("north", "south", "west", "east")):
-        #         center_lat = (bounds["north"] + bounds["south"]) / 2.0
-        #         center_lon = (bounds["west"] + bounds["east"]) / 2.0
-        #     else:
-        #         center_lat = 42.1503
-        #         center_lon = -76.9517
-
-        #     load_zoom(self.map_zoom, center_lat=center_lat, center_lon=center_lon, fit=True)
-
-        # print("Dashboard tile map test loaded")
-
-        # ####################################################
-        # # ####################################################
-        # # # Temporary QGraphicsView real map test
-        # # # Uses the existing Designer widget: self.ui.graphicsView
-        # # # Expected map path: FISSURE/map_data/map.png
-
-        # # scene = QtWidgets.QGraphicsScene(self)
-        # # self.ui.graphicsView.setScene(scene)
-
-        # # # Basic view behavior
-        # # self.ui.graphicsView.setDragMode(QtWidgets.QGraphicsView.ScrollHandDrag)
-        # # self.ui.graphicsView.setTransformationAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
-        # # self.ui.graphicsView.setResizeAnchor(QtWidgets.QGraphicsView.AnchorUnderMouse)
-        # # self.ui.graphicsView.setRenderHint(QtGui.QPainter.Antialiasing, True)
-        # # self.ui.graphicsView.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, True)
-
-        # # # Load real map image
-        # # map_path = os.path.join(fissure.utils.FISSURE_ROOT, "map_data", "map.png")
-        # # pixmap = QtGui.QPixmap(map_path)
-
-        # # if pixmap.isNull():
-        # #     print("ERROR: Failed to load map:", map_path)
-
-        # #     # Fallback image so the tab still shows something
-        # #     map_width = 1400
-        # #     map_height = 900
-        # #     pixmap = QtGui.QPixmap(map_width, map_height)
-        # #     pixmap.fill(QtGui.QColor("#d9dde3"))
-
-        # #     painter = QtGui.QPainter(pixmap)
-
-        # #     grid_pen = QtGui.QPen(QtGui.QColor("#b5bcc6"))
-        # #     for x in range(0, map_width, 100):
-        # #         painter.setPen(grid_pen)
-        # #         painter.drawLine(x, 0, x, map_height)
-        # #     for y in range(0, map_height, 100):
-        # #         painter.drawLine(0, y, map_width, y)
-
-        # #     painter.setPen(QtGui.QPen(QtGui.QColor("#111111")))
-        # #     painter.setFont(QtGui.QFont("Arial", 16))
-        # #     painter.drawText(20, 30, "ERROR: map_data/map.png not found")
-
-        # #     painter.end()
-        # # else:
-        # #     print("Loaded map:", map_path)
-
-        # # map_width = pixmap.width()
-        # # map_height = pixmap.height()
-        # # print("Map size:", map_width, map_height)
-
-        # # bg_item = scene.addPixmap(pixmap)
-        # # bg_item.setZValue(0)
-
-        # # # Approximate geographic bounds for the exported Corning/Horseheads/Elmira image
-        # # # Adjust later if the markers appear slightly off.
-        # # LAT_MAX = 42.2661
-        # # LAT_MIN = 42.0342
-        # # LON_MIN = -77.2212
-        # # LON_MAX = -76.665 #-76.6822
-
-        # # def latlon_to_xy(lat, lon):
-        # #     x = (lon - LON_MIN) / (LON_MAX - LON_MIN) * map_width
-        # #     y = (LAT_MAX - lat) / (LAT_MAX - LAT_MIN) * map_height
-        # #     return x, y
-
-        # # def add_marker(lat, lon, label, color, radius=5):
-        # #     x, y = latlon_to_xy(lat, lon)
-
-        # #     item = scene.addEllipse(
-        # #         x - radius, y - radius, radius * 2, radius * 2,
-        # #         QtGui.QPen(QtCore.Qt.black),
-        # #         QtGui.QBrush(color)
-        # #     )
-        # #     item.setZValue(2)
-
-        # #     text = scene.addText(label)
-        # #     text.setDefaultTextColor(QtGui.QColor("#111111"))
-        # #     text.setPos(x + 8, y - 18)
-        # #     text.setZValue(3)
-
-        # #     return item, text
-
-        # # # Real sanity-check points
-        # # # Corning should be left-center
-        # # add_marker(42.1429, -77.0547, "Corning", QtGui.QColor("#1d4ed8"), radius=6)
-
-        # # # Horseheads should be upper-right of center
-        # # add_marker(42.1670, -76.8200, "Horseheads", QtGui.QColor("#dc2626"), radius=5)
-
-        # # # Elmira should be lower-right
-        # # elmira_x, elmira_y = latlon_to_xy(42.0898, -76.8077)
-        # # elmira_item = scene.addEllipse(
-        # #     elmira_x - 5, elmira_y - 5, 10, 10,
-        # #     QtGui.QPen(QtCore.Qt.black),
-        # #     QtGui.QBrush(QtGui.QColor("#16a34a"))
-        # # )
-        # # elmira_item.setZValue(2)
-
-        # # elmira_label = scene.addText("Elmira")
-        # # elmira_label.setDefaultTextColor(QtGui.QColor("#111111"))
-        # # elmira_label.setPos(elmira_x + 8, elmira_y - 18)
-        # # elmira_label.setZValue(3)
-
-        # # # Example CE / uncertainty ring around Elmira
-        # # ring_radius_px = 40
-        # # ring_item = scene.addEllipse(
-        # #     elmira_x - ring_radius_px, elmira_y - ring_radius_px,
-        # #     ring_radius_px * 2, ring_radius_px * 2,
-        # #     QtGui.QPen(QtGui.QColor("#444444"), 2, QtCore.Qt.DashLine),
-        # #     QtGui.QBrush(QtCore.Qt.transparent)
-        # # )
-        # # ring_item.setZValue(1)
-
-        # # scene.setSceneRect(0, 0, map_width, map_height)
-        # # self.ui.graphicsView.fitInView(scene.sceneRect(), QtCore.Qt.KeepAspectRatio)
-
-        # # # Temporary wheel zoom handler
-        # # def _graphicsview_wheel_event(event):
-        # #     factor = 1.15 if event.angleDelta().y() > 0 else (1.0 / 1.15)
-        # #     self.ui.graphicsView.scale(factor, factor)
-
-        # # self.ui.graphicsView.wheelEvent = _graphicsview_wheel_event
-
-        # # print("graphicsView real map test loaded")
-
-        # ####################################################
-        # ####################################################
         
     
     def __init2__(self):
@@ -557,6 +248,7 @@ class Dashboard(QtWidgets.QMainWindow):
         self.tactical_targets = {}
         self.tactical_sois = {}
         self.tactical_artifacts = {}
+        self.tactical_node_artifact_full_details = False
         self.selected_tactical_node_uid = None
         self.selected_tactical_node_uids = []
         self.selected_tactical_target_id = None
@@ -593,6 +285,145 @@ class Dashboard(QtWidgets.QMainWindow):
 
         # Initialize Clear Toolbutton
         self.__init_tactical_clear_menu__()
+
+        # Initialize selected-node detection table context menu.
+        TacticalTabSlots.initialize_tactical_node_detection_context_menu(self)
+
+        # Initialize selected-node SOI table context menu.
+        TacticalTabSlots.initialize_tactical_node_soi_context_menu(self)
+
+        # Initialize selected-node artifact table context menu.
+        TacticalTabSlots.initialize_tactical_node_artifact_context_menu(self)
+
+        # Initialize selected-node target table context menu.
+        TacticalTabSlots.initialize_tactical_node_target_context_menu(self)
+
+        # Initialize global Tactical Targets table context menu.
+        TacticalTabSlots.initialize_tactical_targets_context_menu(self)
+
+        # Initialize Tactical Ecosystem context menus.
+        TacticalTabSlots.initialize_tactical_ecosystem_node_context_menu(self)
+        TacticalTabSlots.initialize_tactical_ecosystem_alert_context_menu(self)
+
+        # Tactical selected-detection details panel.
+        details_scroll = (
+            self.ui.scrollArea_tactical_node_detection_details
+        )
+
+        details_widgets = [
+            details_scroll,
+            details_scroll.viewport(),
+            details_scroll.widget(),
+            self.ui.label2_tactical_node_detection_details,
+        ]
+
+        for widget in details_widgets:
+            if widget is None:
+                continue
+
+            widget.setProperty(
+                "uiRole",
+                "detailsPanel",
+            )
+
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
+            widget.update()
+        
+        # Tactical selected-SOI details panel.
+        soi_details_scroll = (
+            self.ui.scrollArea_tactical_node_soi_details
+        )
+
+        soi_details_widgets = [
+            soi_details_scroll,
+            soi_details_scroll.viewport(),
+            soi_details_scroll.widget(),
+            self.ui.label2_tactical_node_soi_details,
+        ]
+
+        for widget in soi_details_widgets:
+            if widget is None:
+                continue
+
+            widget.setProperty(
+                "uiRole",
+                "detailsPanel",
+            )
+
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
+            widget.update()
+        
+        # Tactical SOI details view mode and context menu.
+        self.tactical_node_soi_full_details = False
+        TacticalTabSlots.initialize_tactical_node_soi_details_context_menu(self)
+
+        TacticalTabSlots.initialize_tactical_node_artifact_details_context_menu(self)
+
+        # Tactical action-parameter panel.
+        parameter_scroll = (
+            self.ui.scrollArea_tactical_node_action_parameters
+        )
+
+        parameter_widgets = [
+            parameter_scroll,
+            parameter_scroll.viewport(),
+            parameter_scroll.widget(),
+        ]
+
+        for widget in parameter_widgets:
+            if widget is None:
+                continue
+
+            widget.setProperty(
+                "uiRole",
+                "parameterPanel",
+            )
+
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
+            widget.update()
+        
+        # Tactical global Target details panel.
+        target_details_scroll = (
+            self.ui.scrollArea_tactical_targets_details
+        )
+
+        target_details_widgets = [
+            target_details_scroll,
+            target_details_scroll.viewport(),
+            target_details_scroll.widget(),
+            self.ui.label2_tactical_targets_details,
+        ]
+
+        for widget in target_details_widgets:
+            if widget is None:
+                continue
+
+            widget.setProperty(
+                "uiRole",
+                "detailsPanel",
+            )
+
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
+            widget.update()
+
+        # Tactical Target details view mode and context menu.
+        self.tactical_targets_full_details = False
+        TacticalTabSlots.initialize_tactical_targets_details_context_menu(self)
+
+        # Global Target data button starts disabled until a Target is selected.
+        self.ui.pushButton_tactical_targets_download_data.setText(
+            "Download Data"
+        )
+        self.ui.pushButton_tactical_targets_download_data.setToolTip(
+            "Select a Target to download its data."
+        )
+        self.ui.pushButton_tactical_targets_download_data.setEnabled(
+            False
+        )
 
         # Initialize selected Tactical node frame state
         self.ui.frame5_tactical1.setToolTip(
@@ -647,63 +478,50 @@ class Dashboard(QtWidgets.QMainWindow):
             lambda: TacticalTabSlots.clear_tactical_map_pins(self)
         )
 
+
     def __init_TSI__(self):
         """
         Initializes TSI Tabs on Dashboard launch.
         """
-        # Detector Tab
-        self.ui.label_tsi_detector_select_sensor_node_image.setPixmap(QtGui.QPixmap(os.path.join(fissure.utils.UI_DIR, "Icons", "select_node.png")))
         try:
-            TSITabSlots.initialize_tsi_detector_controls(self)
+            TSITabSlots.initialize_tsi_detector_controls(
+                self
+            )
         except Exception as e:
-            self.logger.debug(f"Could not initialize unified TSI detector controls: {e}")
+            self.logger.debug(
+                "Could not initialize unified TSI "
+                f"detector controls: {e}"
+            )
 
         self.target_soi = []
-
-        # Create Preset Dictionary
-        self.preset_dictionary = {}
-        self.preset_count = 0
-
-        # Create SOI Blacklist
         self.soi_blacklist = []
 
-        # Resize Table Columns for Wideband and Narrowband Tables
-        self.ui.tableWidget1_tsi_wideband.resizeColumnsToContents()
-
-        # Axes Configuration for Detector Widget
-        self.wideband_zoom = False
-        self.wideband_zoom_start = 0
-        self.wideband_zoom_end = 6000e6
-
-        # Create Tooltip
-        self.ui.tabWidget.setTabToolTip(1, "Target Signal Identification")
-
-        # # Default Detector Simulator File
-        # self.ui.textEdit_tsi_detector_csv_file.setPlainText(
-        #     os.path.join(fissure.utils.TOOLS_DIR, "TSI_Detector_Sim_Data", "tsi_simulator.csv")
-        # )
-
-        # Set Conditioner Prefix
-        now = datetime.datetime.now()
-        self.ui.textEdit_tsi_conditioner_settings_prefix.setPlainText(
-            now.strftime("%Y-%m-%d %H:%M:%S").replace(" ", "_") + "_"
+        self.ui.tabWidget.setTabToolTip(
+            1,
+            "Target Signal Identification",
         )
 
-        # Set Conditioner Default Directories
-        self.ui.comboBox_tsi_conditioner_input_folders.addItem(
-            str(os.path.join(fissure.utils.FISSURE_ROOT, "Conditioner Data", "Input"))
-        )
-        self.ui.comboBox_tsi_conditioner_settings_folder.addItem(
-            str(os.path.join(fissure.utils.FISSURE_ROOT, "Conditioner Data", "Output"))
-        )
-        self.ui.comboBox_tsi_fe_input_folders.addItem(
-            str(os.path.join(fissure.utils.FISSURE_ROOT, "Conditioner Data", "Output"))
-        )
+        try:
+            TSITabSlots.initialize_tsi_conditioner_controls(
+                self
+            )
+        except Exception as e:
+            self.logger.debug(
+                "Could not initialize TSI Conditioner "
+                f"controls: {e}"
+            )
 
-        # Refresh Conditioner Selections
-        TSITabSlots._slotTSI_ConditionerInputSourceChanged(self)
+        try:
+            TSITabSlots.initialize_tsi_feature_extractor_controls(
+                self
+            )
+        except Exception as e:
+            self.logger.debug(
+                "Could not initialize TSI Feature "
+                f"Extractor controls: {e}"
+            )
 
-        # Complete Feature List
+        # Legacy Classifier feature list.
         self.all_features = [
             "Mean",
             "Max",
@@ -731,18 +549,30 @@ class Dashboard(QtWidgets.QMainWindow):
             "Relative Spectral Peak per Band",
         ]
 
-        # SOI Aggregator Defaults
+        # Legacy SOI Aggregator default.
         self.ui.textEdit_tsi_soi_browse.setPlainText(
-            str(os.path.join(fissure.utils.FISSURE_ROOT, "Conditioner Data", "Output"))
+            str(
+                os.path.join(
+                    fissure.utils.FISSURE_ROOT,
+                    "Conditioner Data",
+                    "Output",
+                )
+            )
         )
 
-        # Defaults
-        TSITabSlots._slotTSI_FE_SettingsCategoryChanged(self)
-        TSITabSlots._slotTSI_FE_SettingsClassificationChanged(self)
-        TSITabSlots._slotTSI_ClassifierTrainingCategoryChanged(self)
-        TSITabSlots._slotTSI_ClassifierTrainingTechniqueChanged(self)   
-        TSITabSlots._slotTSI_ClassifierClassificationCategoryChanged(self)
-        TSITabSlots._slotTSI_ClassifierClassificationTechniqueChanged(self)
+        # Legacy Classifier defaults.
+        TSITabSlots._slotTSI_ClassifierTrainingCategoryChanged(
+            self
+        )
+        TSITabSlots._slotTSI_ClassifierTrainingTechniqueChanged(
+            self
+        )
+        TSITabSlots._slotTSI_ClassifierClassificationCategoryChanged(
+            self
+        )
+        TSITabSlots._slotTSI_ClassifierClassificationTechniqueChanged(
+            self
+        )
 
 
     def __init_PD__(self):
@@ -1020,60 +850,60 @@ class Dashboard(QtWidgets.QMainWindow):
         self.ui.textEdit_iq_ofdm_phase_adjustment_cycle_end2.setPlainText("200")
 
         self.ui.textEdit_iq_strip_amplitude.setPlainText(".001")
-        self.ui.textEdit_iq_strip_output.setPlainText(str(fissure.utils.IQ_RECORDINGS_DIR))
+        self.ui.textEdit_iq_strip_output.setPlainText(
+            str(fissure.utils.IQ_RECORDINGS_DIR)
+        )
 
-        # Set up IQ Recording Table
-        IQDataTabSlots._slotIQ_TabClicked(self, "pushButton1_iq_tab_record")
-        self.iq_file_counter = 0
-        self.iq_first_file_name = ""
+        # IQ Record
+        try:
+            IQDataTabSlots.initialize_iq_record_controls(
+                self
+            )
+        except Exception:
+            self.logger.exception(
+                "Could not initialize IQ Record controls."
+            )
+
+        # IQ Playback
+        try:
+            IQDataTabSlots.initialize_iq_playback_controls(
+                self
+            )
+        except Exception:
+            self.logger.exception(
+                "Could not initialize IQ Playback controls."
+            )
+
+        # IQ Inspection
+        try:
+            IQDataTabSlots.initialize_iq_inspection_controls(
+                self
+            )
+        except Exception:
+            self.logger.exception(
+                "Could not initialize IQ Inspection controls."
+            )
+
+        # Open the IQ Record page and initialize shared IQ file-view state.
+        IQDataTabSlots._slotIQ_TabClicked(
+            self,
+            "pushButton1_iq_tab_record",
+        )
+
         self.ui.label_iq_folder.setVisible(False)
         self.iq_plot_range_start = 0
         self.iq_plot_range_end = 0
-
-        new_iq_combobox4 = QtWidgets.QComboBox(self, objectName="comboBox2_")
-        self.ui.tableWidget_iq_record.setCellWidget(0, 8, new_iq_combobox4)
-        new_iq_combobox4.addItem("Complex")
-        # new_iq_combobox4.addItem("Float/Float 32")
-        # new_iq_combobox4.addItem("Int/Int 32")
-        # new_iq_combobox4.addItem("Short/Int 16")
-        # new_iq_combobox4.addItem("Byte/Int 8")
-        new_iq_combobox4.setFixedSize(150, 49)
-        new_iq_combobox4.setCurrentIndex(0)
-        
-        spinbox_num_files = QtWidgets.QSpinBox(self, objectName="spinBox_")
-        spinbox_num_files.setMaximum(999)
-        spinbox_num_files.setMinimum(1)
-        spinbox_num_files.setValue(1)
-        spinbox_num_files.setAlignment(QtCore.Qt.AlignCenter)
-        self.ui.tableWidget_iq_record.setCellWidget(0,5,spinbox_num_files)
-
-        self.ui.tableWidget_iq_record.resizeColumnsToContents()
-        self.ui.tableWidget_iq_record.setColumnWidth(0, 300)
-
-        # Set up IQ Playback Table
-        new_iq_playback_combobox3 = QtWidgets.QComboBox(self, objectName="comboBox2_")
-        self.ui.tableWidget_iq_playback.setCellWidget(0, 5, new_iq_playback_combobox3)
-        new_iq_playback_combobox3.addItem("Complex")
-        # new_iq_combobox4.addItem("Float/Float 32")
-        # new_iq_combobox4.addItem("Int/Int 32")
-        # new_iq_combobox4.addItem("Short/Int 16")
-        # new_iq_combobox4.addItem("Byte/Int 8")
-        new_iq_playback_combobox3.setCurrentIndex(0)
-
-        new_iq_playback_combobox4 = QtWidgets.QComboBox(self, objectName="comboBox2_")
-        self.ui.tableWidget_iq_playback.setCellWidget(0, 6, new_iq_playback_combobox4)
-        new_iq_playback_combobox4.addItem("Yes")
-        new_iq_playback_combobox4.addItem("No")
-        new_iq_playback_combobox4.setCurrentIndex(0)
-
-        self.ui.tableWidget_iq_playback.resizeColumnsToContents()
 
         self.ui.pushButton_iq_cursor1.setCheckable(True)
         self.fft_data = None
 
         # Load the Files in the Listbox
-        self.ui.comboBox3_iq_folders.addItem(str(fissure.utils.IQ_RECORDINGS_DIR))
-        self.ui.comboBox3_iq_folders.addItem(str(fissure.utils.ARCHIVE_DIR))
+        self.ui.comboBox3_iq_folders.addItem(
+            str(fissure.utils.IQ_RECORDINGS_DIR)
+        )
+        self.ui.comboBox3_iq_folders.addItem(
+            str(fissure.utils.ARCHIVE_DIR)
+        )
         self.ui.comboBox3_iq_folders.setCurrentIndex(0)
 
         # Hide Range Buttons
@@ -1086,53 +916,59 @@ class Dashboard(QtWidgets.QMainWindow):
 
         # Settings Icon
         self.ui.pushButton_iq_FunctionsSettings.setIcon(
-            QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "settings.png"))
+            QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "settings.png",
+                )
+            )
         )
-
-        # IQ Artifact Format
-        self.ui.comboBox_iq_record_artifact_format.blockSignals(True)
-        self.ui.comboBox_iq_record_artifact_format.clear()
-        self.ui.comboBox_iq_record_artifact_format.addItems([
-            "Raw IQ File",
-            "Zip Bundle",
-        ])
-        self.ui.comboBox_iq_record_artifact_format.setCurrentText("Raw IQ File")
-        self.ui.comboBox_iq_record_artifact_format.blockSignals(False)
 
         # IQ Artifact Browser Data Type
         self.ui.comboBox_iq_artifacts_data_type.blockSignals(True)
         self.ui.comboBox_iq_artifacts_data_type.clear()
 
-        for idx in range(self.ui.comboBox_iq_data_type.count()):
+        for idx in range(
+            self.ui.comboBox_iq_data_type.count()
+        ):
             self.ui.comboBox_iq_artifacts_data_type.addItem(
-                self.ui.comboBox_iq_data_type.itemText(idx)
+                self.ui.comboBox_iq_data_type.itemText(
+                    idx
+                )
             )
 
-        if self.ui.comboBox_iq_artifacts_data_type.findText("Complex Float 32") >= 0:
-            self.ui.comboBox_iq_artifacts_data_type.setCurrentText("Complex Float 32")
+        if (
+            self.ui.comboBox_iq_artifacts_data_type.findText(
+                "Complex Float 32"
+            )
+            >= 0
+        ):
+            self.ui.comboBox_iq_artifacts_data_type.setCurrentText(
+                "Complex Float 32"
+            )
 
         self.ui.comboBox_iq_artifacts_data_type.blockSignals(False)
 
         # Initial local artifact scan
-        IQDataTabSlots._slotIQ_ArtifactsRefreshClicked(self)
-
-        # Load Inspection File Flow Graphs
-        get_inspection_file_fgs = fissure.utils.library.getInspectionFlowGraphFilename(
-            self.backend.library, 
-            "File", 
-            fissure.utils.get_library_version()
+        IQDataTabSlots._slotIQ_ArtifactsRefreshClicked(
+            self
         )
-        for n in sorted(get_inspection_file_fgs, key=str.lower):
-            if len(n) > 0:
-                self.ui.listWidget_iq_inspection_fg_file.addItem(n)
-        self.ui.listWidget_iq_inspection_fg_file.setCurrentRow(0)
 
         # SigMF Dictionary
-        global_dict = {"core:datatype": "cf32_le", "core:version": "1.0.0"}
-        captures_dict = {"core:sample_start": "0"}
+        global_dict = {
+            "core:datatype": "cf32_le",
+            "core:version": "1.0.0",
+        }
+        captures_dict = {
+            "core:sample_start": "0"
+        }
+
         self.sigmf_dict = {}
         self.sigmf_dict["global"] = global_dict
-        self.sigmf_dict["captures"] = [captures_dict]
+        self.sigmf_dict["captures"] = [
+            captures_dict
+        ]
         self.sigmf_dict["annotations"] = []
 
         # OOK Tab Example Values
@@ -1142,7 +978,9 @@ class Dashboard(QtWidgets.QMainWindow):
         self.ui.textEdit_iq_ook_sample_rate.setPlainText("1")
         self.ui.textEdit_iq_ook_chip0_duration.setPlainText("5")
         self.ui.textEdit_iq_ook_chip1_duration.setPlainText("5")
-        self.ui.textEdit_iq_ook_sequence.setPlainText("10101010101010101010")
+        self.ui.textEdit_iq_ook_sequence.setPlainText(
+            "10101010101010101010"
+        )
 
 
     def __init_Archive__(self):
@@ -1150,10 +988,24 @@ class Dashboard(QtWidgets.QMainWindow):
         Initializes Archive Tabs on Dashboard launch.
         """
         # #### Archive #####
-        self.ui.comboBox3_archive_download_folder.addItem(fissure.utils.ARCHIVE_DIR)
-        self.ui.comboBox3_archive_download_folder.addItem(fissure.utils.IQ_RECORDINGS_DIR)
+        self.ui.comboBox3_archive_download_folder.addItem(
+            fissure.utils.ARCHIVE_DIR
+        )
+        self.ui.comboBox3_archive_download_folder.addItem(
+            fissure.utils.IQ_RECORDINGS_DIR
+        )
+
         self.populateArchive()
-        self.ui.label2_archive_replay_status.setVisible(False)
+
+        try:
+            ArchiveTabSlots.initialize_archive_replay_controls(
+                self
+            )
+        except Exception:
+            self.logger.exception(
+                "Could not initialize Archive Replay controls."
+            )
+
         self.ui.tableWidget_archive_replay.setColumnHidden(9, True)
         self.ui.progressBar_archive_datasets.setVisible(False)
         self.archive_database_loop = False
@@ -1185,6 +1037,8 @@ class Dashboard(QtWidgets.QMainWindow):
         )
         self.ui.dateTimeEdit_sensor_nodes_autorun.setDateTime(QtCore.QDateTime.currentDateTime())
         self.ui.textEdit_sensor_nodes_autorun_repetition_interval.setPlainText("-1")
+
+        SensorNodesTabSlots.initialize_sensor_nodes_file_navigation_controls(self)
 
 
     def __init_Library__(self):
@@ -1361,9 +1215,29 @@ class Dashboard(QtWidgets.QMainWindow):
         # Create Wideband Matplotlib Widget
         self.wideband_width = 1201
         self.wideband_height = 801
-        rgb = tuple(int(self.backend.settings["color2"].lstrip("#")[i : i + 2], 16) for i in (0, 2, 4))
-        background_color = (float(rgb[0]) / 255, float(rgb[1]) / 255, float(rgb[2]) / 255)
-        self.wideband_data = numpy.ones((self.wideband_height, self.wideband_width, 3)) * (background_color)
+
+        rgb = tuple(
+            int(
+                self.backend.settings["color2"].lstrip("#")[i:i + 2],
+                16,
+            )
+            for i in (0, 2, 4)
+        )
+
+        background_color = (
+            float(rgb[0]) / 255,
+            float(rgb[1]) / 255,
+            float(rgb[2]) / 255,
+        )
+
+        self.wideband_data = numpy.ones(
+            (
+                self.wideband_height,
+                self.wideband_width,
+                3,
+            )
+        ) * background_color
+
         self.matplotlib_widget = MPLCanvas(
             self.ui.tab_tsi_detector,
             dpi=100,
@@ -1373,29 +1247,89 @@ class Dashboard(QtWidgets.QMainWindow):
             height=self.wideband_height,
             border=[0.08, 0.90, 0.05, 1, 0, 0],
             colorbar_fraction=0.038,
-            xlabels=["0", "", "1000", "", "2000", "", "3000", "", "4000", "", "5000", "", "6000"],
-            ylabels=["0", "5", "10", "15", "20", "25", "30", "35", "40", "45"],
+            xlabels=[
+                "0",
+                "",
+                "1000",
+                "",
+                "2000",
+                "",
+                "3000",
+                "",
+                "4000",
+                "",
+                "5000",
+                "",
+                "6000",
+            ],
+            ylabels=[
+                "0",
+                "5",
+                "10",
+                "15",
+                "20",
+                "25",
+                "30",
+                "35",
+                "40",
+                "45",
+            ],
             bg_color=self.backend.settings["color1"],
             face_color=self.backend.settings["color5"],
             text_color=self.backend.settings["color4"],
         )
-        self.matplotlib_widget.move(self.ui.frame_tsi_detector.pos())
-        self.matplotlib_widget.setGeometry(self.ui.frame_tsi_detector.geometry())
+
+        self.matplotlib_widget.move(
+            self.ui.frame_tsi_detector.pos()
+        )
+        self.matplotlib_widget.setGeometry(
+            self.ui.frame_tsi_detector.geometry()
+        )
+
         self.matplotlib_widget.axes.cla()
         self.matplotlib_widget.axes.imshow(
-            self.wideband_data, cmap="rainbow", clim=(-100, 30), extent=[0, 1201, 801, 0]
+            self.wideband_data,
+            cmap="rainbow",
+            clim=(-100, 30),
+            extent=[0, 1201, 801, 0],
         )
+
         self.matplotlib_widget.configureAxes(
             title="Detector History",
             xlabel="Frequency (MHz)",
             ylabel="Time Elapsed (s)",
-            xlabels=["0", "", "1000", "", "2000", "", "3000", "", "4000", "", "5000", "", "6000"],
-            ylabels=["0", "5", "10", "15", "20", "25", "30", "35", "40"],
+            xlabels=[
+                "0",
+                "",
+                "1000",
+                "",
+                "2000",
+                "",
+                "3000",
+                "",
+                "4000",
+                "",
+                "5000",
+                "",
+                "6000",
+            ],
+            ylabels=[
+                "0",
+                "5",
+                "10",
+                "15",
+                "20",
+                "25",
+                "30",
+                "35",
+                "40",
+            ],
             ylim=self.wideband_height,
             background_color=self.backend.settings["color1"],
             face_color=self.backend.settings["color5"],
             text_color=self.backend.settings["color4"],
         )
+
         self.matplotlib_widget.draw()
 
         # Create IQ Data Matplotlib Widget
@@ -1408,26 +1342,99 @@ class Dashboard(QtWidgets.QMainWindow):
             face_color=self.backend.settings["color5"],
             text_color=self.backend.settings["color4"],
         )
-        self.iq_matplotlib_widget.move(self.ui.frame3_iq.pos())
-        self.iq_matplotlib_widget.setGeometry(self.ui.frame3_iq.geometry())
+
+        self.iq_matplotlib_widget.move(
+            self.ui.frame3_iq.pos()
+        )
+        self.iq_matplotlib_widget.setGeometry(
+            self.ui.frame3_iq.geometry()
+        )
 
         # Add a Toolbar
-        self.mpl_toolbar = NavigationToolbar2QT(self.iq_matplotlib_widget, self.ui.tab_iq_data)
-        self.mpl_toolbar.setStyleSheet("color:" + self.backend.settings["color4"])
-        self.mpl_toolbar.setGeometry(QtCore.QRect(375, 277, 525, 35))
+        self.mpl_toolbar = NavigationToolbar2QT(
+            self.iq_matplotlib_widget,
+            self.ui.tab_iq_data,
+        )
+
+        self.mpl_toolbar.setStyleSheet(
+            "color:" + self.backend.settings["color4"]
+        )
+        self.mpl_toolbar.setGeometry(
+            QtCore.QRect(
+                375,
+                277,
+                525,
+                35,
+            )
+        )
+
         icons_buttons = {
-            "Home": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "home.png")),
-            "Pan": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "move.png")),
-            "Zoom": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "zoom_to_rect.png")),
-            "Back": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "back.png")),
-            "Forward": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "forward.png")),
-            "Subplots": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "subplots.png")),
-            "Customize": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "qt4_editor_options.png")),
-            "Save": QtGui.QIcon(os.path.join(fissure.utils.UI_DIR, "Icons", "filesave.png")),
+            "Home": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "home.png",
+                )
+            ),
+            "Pan": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "move.png",
+                )
+            ),
+            "Zoom": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "zoom_to_rect.png",
+                )
+            ),
+            "Back": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "back.png",
+                )
+            ),
+            "Forward": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "forward.png",
+                )
+            ),
+            "Subplots": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "subplots.png",
+                )
+            ),
+            "Customize": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "qt4_editor_options.png",
+                )
+            ),
+            "Save": QtGui.QIcon(
+                os.path.join(
+                    fissure.utils.UI_DIR,
+                    "Icons",
+                    "filesave.png",
+                )
+            ),
         }
+
         for action in self.mpl_toolbar.actions():
             if action.text() in icons_buttons:
-                action.setIcon(icons_buttons.get(action.text(), QtGui.QIcon()))
+                action.setIcon(
+                    icons_buttons.get(
+                        action.text(),
+                        QtGui.QIcon(),
+                    )
+                )
 
 
     @QtCore.pyqtSlot(QtCore.QObject)
@@ -1533,32 +1540,45 @@ class Dashboard(QtWidgets.QMainWindow):
 
     def configureTSI_Hardware(self):
         """
-        Configures TSI after selected Sensor Node changes.
+        Refresh TSI hardware-dependent UI after the selected Sensor Node changes.
 
-        Only refreshes the unified Detector hardware combo and Conditioner
-        isolation hardware combo. Old Fixed/Sweep detector widgets are no longer
-        part of the consolidated TSI layout.
+        Detector hardware is populated directly here because Detector methods are
+        hardware-driven.
+
+        Conditioner hardware is refreshed through TSITabSlots because the current
+        Conditioner source determines whether hardware is required:
+            File / Folder  -> No Hardware Required
+            Frequencies    -> selected-node SDR hardware
+
+        Do not clear Conditioner actions/parameters here. Those should only be
+        cleared when the user changes Conditioner source/category/method/hardware
+        context.
         """
         try:
-            if not self.selected_node_uid:
-                for combo_name in (
-                    "comboBox_tsi_detector_hardware",
-                    "comboBox_tsi_conditioner_settings_isolation_hardware",
-                ):
-                    combo = getattr(self.ui, combo_name, None)
-                    if combo is not None:
-                        combo.blockSignals(True)
-                        combo.clear()
-                        combo.blockSignals(False)
+            selected_node_uid = str(getattr(self, "selected_node_uid", "") or "").strip()
+
+            # ------------------------------------------------------------
+            # No selected node: clear Detector hardware and reset caches.
+            # Conditioner gating/hardware display is handled below/finally.
+            # ------------------------------------------------------------
+            if not selected_node_uid:
+                detector_combo = getattr(self.ui, "comboBox_tsi_detector_hardware", None)
+
+                if detector_combo is not None:
+                    detector_combo.blockSignals(True)
+                    detector_combo.clear()
+                    detector_combo.blockSignals(False)
 
                 self._tsi_last_configured_node_uid = ""
                 self._tsi_last_hardware_display_names = []
 
                 TSITabSlots.clear_tsi_detector_methods(self)
-                TSITabSlots.update_tsi_detector_selected_node_gate(self)
                 return
 
-            get_sensor_node_hardware = (
+            # ------------------------------------------------------------
+            # Load selected-node hardware display names for TSI.
+            # ------------------------------------------------------------
+            hardware_display_names = (
                 fissure.utils.hardware.selectedNodeHardwareDisplayNames(
                     self,
                     "tsi",
@@ -1566,46 +1586,56 @@ class Dashboard(QtWidgets.QMainWindow):
             )
 
             previous_node_uid = getattr(self, "_tsi_last_configured_node_uid", "")
-            previous_hardware = getattr(self, "_tsi_last_hardware_display_names", [])
-
-            hardware_changed = (
-                previous_node_uid != self.selected_node_uid
-                or previous_hardware != get_sensor_node_hardware
+            previous_hardware_display_names = getattr(
+                self,
+                "_tsi_last_hardware_display_names",
+                [],
             )
 
-            if hardware_changed:
-                current_detector_hardware = self.ui.comboBox_tsi_detector_hardware.currentText()
-                current_conditioner_hardware = self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.currentText()
+            hardware_changed = (
+                previous_node_uid != selected_node_uid
+                or previous_hardware_display_names != hardware_display_names
+            )
 
-                self.ui.comboBox_tsi_detector_hardware.blockSignals(True)
-                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.blockSignals(True)
+            if not hardware_changed:
+                return
 
-                self.ui.comboBox_tsi_detector_hardware.clear()
-                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.clear()
+            # ------------------------------------------------------------
+            # Refresh Detector hardware combo while preserving selection
+            # when possible.
+            # ------------------------------------------------------------
+            detector_combo = self.ui.comboBox_tsi_detector_hardware
+            current_detector_hardware = detector_combo.currentText()
 
-                self.ui.comboBox_tsi_detector_hardware.addItems(get_sensor_node_hardware)
-                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.addItems(get_sensor_node_hardware)
+            detector_combo.blockSignals(True)
+            detector_combo.clear()
+            detector_combo.addItems(hardware_display_names)
 
-                if (
-                    current_detector_hardware
-                    and self.ui.comboBox_tsi_detector_hardware.findText(current_detector_hardware) >= 0
-                ):
-                    self.ui.comboBox_tsi_detector_hardware.setCurrentText(current_detector_hardware)
+            if (
+                current_detector_hardware
+                and detector_combo.findText(current_detector_hardware) >= 0
+            ):
+                detector_combo.setCurrentText(current_detector_hardware)
 
-                if (
-                    current_conditioner_hardware
-                    and self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.findText(current_conditioner_hardware) >= 0
-                ):
-                    self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.setCurrentText(current_conditioner_hardware)
+            detector_combo.blockSignals(False)
 
-                self.ui.comboBox_tsi_detector_hardware.blockSignals(False)
-                self.ui.comboBox_tsi_conditioner_settings_isolation_hardware.blockSignals(False)
+            # ------------------------------------------------------------
+            # Refresh Conditioner hardware display only.
+            # This must not clear actions/parameters.
+            # ------------------------------------------------------------
+            TSITabSlots.update_tsi_conditioner_method_hardware_combo(self)
 
-                self._tsi_last_configured_node_uid = self.selected_node_uid
-                self._tsi_last_hardware_display_names = list(get_sensor_node_hardware)
+            # ------------------------------------------------------------
+            # Cache current hardware state.
+            # ------------------------------------------------------------
+            self._tsi_last_configured_node_uid = selected_node_uid
+            self._tsi_last_hardware_display_names = list(hardware_display_names)
 
-                TSITabSlots.clear_tsi_detector_methods(self)
-                TSITabSlots.reset_tsi_detector_customization(self)
+            # ------------------------------------------------------------
+            # Detector methods depend on hardware, so reset Detector query state.
+            # ------------------------------------------------------------
+            TSITabSlots.clear_tsi_detector_methods(self)
+            TSITabSlots.reset_tsi_detector_customization(self)
 
         finally:
             try:
@@ -1613,6 +1643,23 @@ class Dashboard(QtWidgets.QMainWindow):
             except Exception as e:
                 self.logger.debug(
                     f"Could not update unified TSI Detector selected-node gate: {e}"
+                )
+
+            try:
+                TSITabSlots.update_tsi_conditioner_selected_node_gate(self)
+            except Exception as e:
+                self.logger.debug(
+                    f"Could not update TSI Conditioner selected-node gate: {e}"
+                )
+
+            try:
+                TSITabSlots.update_tsi_fe_selected_node_gate(self)
+                TSITabSlots.update_tsi_fe_run_node(self)
+                TSITabSlots.update_tsi_fe_locality_controls(self)
+            except Exception as e:
+                self.logger.debug(
+                    "Could not update TSI Feature Extractor "
+                    f"selected-node state: {e}"
                 )
 
 
@@ -1661,44 +1708,326 @@ class Dashboard(QtWidgets.QMainWindow):
 
     def configureIQ_Hardware(self):
         """
-        Configures IQ after new selected sensor node selection.
+        Configure IQ hardware/source selectors for the selected Sensor Node.
+
+        Record and Playback use the selected node's SDR display names directly.
+
+        IQ Inspection uses a Source selector containing:
+            configured SDR hardware + File
+
+        Preserve current selections across periodic node-state refreshes.
         """
-        self.ui.comboBox_iq_record_hardware.clear()
-        self.ui.comboBox_iq_playback_hardware.clear()
-        self.ui.comboBox_iq_inspection_hardware.clear()
+        iq_hardware_combos = []
 
-        if not self.selected_node_uid:
-            return
+        combo_names = [
+            "comboBox_iq_record_hardware",
+            "comboBox_iq_playback_hardware",
+        ]
 
-        get_sensor_node_hardware = (
-            fissure.utils.hardware.selectedNodeHardwareDisplayNames(
-                self,
-                "archive",
+        for combo_name in combo_names:
+            combo = getattr(
+                self.ui,
+                combo_name,
+                None,
             )
+
+            if combo is not None:
+                iq_hardware_combos.append(
+                    combo
+                )
+
+        get_sensor_node_hardware = []
+
+        if self.selected_node_uid:
+            get_sensor_node_hardware = (
+                fissure.utils.hardware.selectedNodeHardwareDisplayNames(
+                    self,
+                    "archive",
+                )
+            )
+
+        for combo in iq_hardware_combos:
+            current_text = str(
+                combo.currentText()
+                or ""
+            ).strip()
+
+            existing_items = [
+                str(
+                    combo.itemText(
+                        index
+                    )
+                )
+                for index in range(
+                    combo.count()
+                )
+            ]
+
+            if existing_items == get_sensor_node_hardware:
+                continue
+
+            combo.blockSignals(
+                True
+            )
+
+            try:
+                combo.clear()
+                combo.addItems(
+                    get_sensor_node_hardware
+                )
+
+                if current_text:
+                    restored_index = combo.findText(
+                        current_text,
+                        QtCore.Qt.MatchExactly,
+                    )
+
+                    if restored_index >= 0:
+                        combo.setCurrentIndex(
+                            restored_index
+                        )
+
+                    elif combo.count() > 0:
+                        combo.setCurrentIndex(
+                            0
+                        )
+
+                elif combo.count() > 0:
+                    combo.setCurrentIndex(
+                        0
+                    )
+
+            finally:
+                combo.blockSignals(
+                    False
+                )
+
+        inspection_source_combo = getattr(
+            self.ui,
+            "comboBox_iq_inspection_source",
+            None,
         )
 
-        self.ui.comboBox_iq_record_hardware.addItems(get_sensor_node_hardware)
-        self.ui.comboBox_iq_playback_hardware.addItems(get_sensor_node_hardware)
-        self.ui.comboBox_iq_inspection_hardware.addItems(get_sensor_node_hardware)
+        if inspection_source_combo is not None:
+            inspection_sources = []
+
+            if (
+                self.selected_node_uid
+                and selected_node_is_local(
+                    self
+                )
+            ):
+                inspection_sources.extend(
+                    get_sensor_node_hardware
+                )
+
+                inspection_sources.append(
+                    "File"
+                )
+
+            current_source = str(
+                inspection_source_combo.currentText()
+                or ""
+            ).strip()
+
+            existing_sources = [
+                str(
+                    inspection_source_combo.itemText(
+                        index
+                    )
+                )
+                for index in range(
+                    inspection_source_combo.count()
+                )
+            ]
+
+            if existing_sources != inspection_sources:
+                inspection_source_combo.blockSignals(
+                    True
+                )
+
+                try:
+                    inspection_source_combo.clear()
+                    inspection_source_combo.addItems(
+                        inspection_sources
+                    )
+
+                    if current_source:
+                        restored_index = (
+                            inspection_source_combo.findText(
+                                current_source,
+                                QtCore.Qt.MatchExactly,
+                            )
+                        )
+
+                        if restored_index >= 0:
+                            inspection_source_combo.setCurrentIndex(
+                                restored_index
+                            )
+
+                        elif inspection_source_combo.count() > 0:
+                            inspection_source_combo.setCurrentIndex(
+                                0
+                            )
+
+                    elif inspection_source_combo.count() > 0:
+                        inspection_source_combo.setCurrentIndex(
+                            0
+                        )
+
+                finally:
+                    inspection_source_combo.blockSignals(
+                        False
+                    )
+
+        IQDataTabSlots.update_iq_record_selected_node_gate(
+            self
+        )
+
+        IQDataTabSlots.update_iq_playback_selected_node_gate(
+            self
+        )
+
+        IQDataTabSlots.update_iq_inspection_selected_node_gate(
+            self
+        )
 
 
     def configureArchiveHardware(self):
         """
-        Configures Archive after new selected sensor node selection.
+        Configure both legacy and plugin-backed Archive Replay hardware selectors.
+
+        Preserve current selections across periodic selected-node state refreshes.
+        Only reset the plugin-backed action/customization state when the selected
+        Sensor Node changes or the selected replay hardware actually changes.
         """
-        self.ui.comboBox_archive_replay_hardware.clear()
+        hardware_combo = self.ui.comboBox_archive_replay_hardware
 
-        if not self.selected_node_uid:
-            return
-
-        get_sensor_node_hardware = (
-            fissure.utils.hardware.selectedNodeHardwareDisplayNames(
+        current_node_uid = str(
+            getattr(
                 self,
-                "archive",
+                "selected_node_uid",
+                "",
+            )
+            or ""
+        ).strip()
+
+        previous_node_uid = str(
+            getattr(
+                self,
+                "archive_replay_hardware_node_uid",
+                "",
+            )
+            or ""
+        ).strip()
+
+        node_changed = (
+            current_node_uid != previous_node_uid
+        )
+
+        self.archive_replay_hardware_node_uid = (
+            current_node_uid
+        )
+
+        hardware_items = []
+
+        if current_node_uid:
+            hardware_items = (
+                fissure.utils.hardware.selectedNodeHardwareDisplayNames(
+                    self,
+                    "archive",
+                )
+            )
+
+        def _refresh_combo_preserving_selection(
+            combo,
+            new_items,
+        ):
+            current_text = str(
+                combo.currentText()
+                or ""
+            ).strip()
+
+            existing_items = [
+                str(
+                    combo.itemText(
+                        index
+                    )
+                )
+                for index in range(
+                    combo.count()
+                )
+            ]
+
+            if existing_items == new_items:
+                return False
+
+            combo.blockSignals(
+                True
+            )
+
+            try:
+                combo.clear()
+                combo.addItems(
+                    new_items
+                )
+
+                if current_text:
+                    restored_index = combo.findText(
+                        current_text,
+                        QtCore.Qt.MatchExactly,
+                    )
+
+                    if restored_index >= 0:
+                        combo.setCurrentIndex(
+                            restored_index
+                        )
+
+                    elif combo.count() > 0:
+                        combo.setCurrentIndex(
+                            0
+                        )
+
+                elif combo.count() > 0:
+                    combo.setCurrentIndex(
+                        0
+                    )
+
+            finally:
+                combo.blockSignals(
+                    False
+                )
+
+            new_text = str(
+                combo.currentText()
+                or ""
+            ).strip()
+
+            return new_text != current_text
+
+        _refresh_combo_preserving_selection(
+            hardware_combo,
+            hardware_items,
+        )
+
+        action_hardware_changed = (
+            _refresh_combo_preserving_selection(
+                hardware_combo,
+                hardware_items,
             )
         )
 
-        self.ui.comboBox_archive_replay_hardware.addItems(get_sensor_node_hardware)
+        if (
+            node_changed
+            or action_hardware_changed
+        ):
+            ArchiveTabSlots._slotArchiveReplayActionHardwareChanged(
+                self
+            )
+
+        ArchiveTabSlots.update_archive_replay_selected_node_gate(
+            self
+        )
 
 
     def configureSensorNodeHardware(self):
@@ -2832,80 +3161,17 @@ def connect_tactical_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tactical_ecosystem_stop.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalEcosystemStopClicked(dashboard)
     )
-    dashboard.ui.pushButton_tactical_node_detections_plot.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeDetectionsPlotClicked(dashboard)
-    ) 
-    dashboard.ui.pushButton_tactical_node_detections_plot_zoom.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeDetectionsPlotZoomClicked(dashboard)
-    ) 
-    dashboard.ui.pushButton_tactical_node_detection_remove_from_map.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeDetectionsRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_detections_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeDetectionsDeleteRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_detections_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeDetectionsClearRowsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_ecosystem_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemDeleteNodeRowClicked(dashboard)
-    ) 
-    dashboard.ui.pushButton_tactical_ecosystem_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemClearNodeRowsClicked(dashboard)
-    )
     dashboard.ui.pushButton_tactical_targets_refresh_targets.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalTargetsRefreshTargetsClicked(dashboard)
-    )       
-    dashboard.ui.pushButton_tactical_targets_plot.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_targets_plot_and_zoom.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsPlotZoomClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_targets_remove_pin.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsRemovePinClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_targets_plot_all.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsPlotAllClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_targets_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsDeleteRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_targets_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalTargetsClearRowsClicked(dashboard)
     )
     dashboard.ui.pushButton_tactical_node_targets_refresh_targets.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeTargetsRefreshTargetsClicked(dashboard)
     )
-    dashboard.ui.pushButton_tactical_node_targets_plot.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_targets_plot_and_zoom.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsPlotZoomClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_targets_remove_from_map.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsRemoveClicked(dashboard)
-    )
     dashboard.ui.pushButton_tactical_node_targets_query_actions.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeTargetsQueryActionsClicked(dashboard)
     )
-    dashboard.ui.pushButton_tactical_node_targets_more_details.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsMoreDetailsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_soi_plot.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeSoisPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_soi_plot_zoom.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeSoisPlotZoomClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_soi_remove_from_map.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeSoisRemoveClicked(dashboard)
-    )
     dashboard.ui.pushButton_tactical_node_soi_download_evidence.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeSoisDownloadEvidenceClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_artifacts_open_folder.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeArtifactsOpenFolderClicked(dashboard)
     )
     dashboard.ui.pushButton_tactical_targets_query_actions.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalTargetsQueryActionsClicked(dashboard)
@@ -2913,41 +3179,14 @@ def connect_tactical_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tactical_node_detections_promote_to_soi.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeDetectionsPromoteToSoiClicked(dashboard)
     )
+    dashboard.ui.pushButton_tactical_node_detections_promote_to_target.clicked.connect(
+        lambda: TacticalTabSlots._slotTacticalNodeDetectionsPromoteToTargetClicked(dashboard)
+    )
     dashboard.ui.pushButton_tactical_node_soi_promote_to_target.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeSoiPromoteToTargetClicked(dashboard)
     )
     dashboard.ui.pushButton_tactical_targets_geolocate.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalTargetsGeolocateClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_plot.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemAlertsPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_plot_zoom.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemAlertsPlotZoomClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_remove_from_map.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemAlertsRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemAlertsClearRowsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_ecosystem_alerts_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalEcosystemAlertsDeleteRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_soi_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeSoisDeleteRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_soi_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeSoisClearRowsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_targets_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsDeleteRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_targets_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsClearRowsClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_targets_keep_selected.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeTargetsKeepSelectedClicked(dashboard)
     )
     dashboard.ui.pushButton_tactical_node_artifacts_refresh.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeArtifactsRefreshClicked(dashboard)
@@ -2955,11 +3194,8 @@ def connect_tactical_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tactical_node_artifacts_download.clicked.connect(
         lambda: TacticalTabSlots._slotTacticalNodeArtifactsDownloadClicked(dashboard)
     )
-    dashboard.ui.pushButton_tactical_node_artifacts_delete_row.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeArtifactsDeleteRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tactical_node_artifacts_clear_rows.clicked.connect(
-        lambda: TacticalTabSlots._slotTacticalNodeArtifactsClearRowsClicked(dashboard)
+    dashboard.ui.pushButton_tactical_targets_download_data.clicked.connect(
+        lambda: TacticalTabSlots._slotTacticalTargetsDownloadDataClicked(dashboard)
     )
 
     # Table Widget
@@ -3026,12 +3262,6 @@ def connect_tactical_slots(dashboard: Dashboard):
 
 def connect_tsi_slots(dashboard: Dashboard):
     # Check Box
-    dashboard.ui.checkBox_tsi_conditioner_settings_normalize_output.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsNormalizeChecked(dashboard)
-    )
-    dashboard.ui.checkBox_tsi_conditioner_settings_saturation.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsSaturationChecked(dashboard)
-    )
     dashboard.ui.checkBox_tsi_classifier_training_retrain2_manual.clicked.connect(
         lambda: TSITabSlots._slotTSI_ClassifierTrainingRetrain2_ManualChecked(dashboard)
     )
@@ -3040,32 +3270,35 @@ def connect_tsi_slots(dashboard: Dashboard):
     )    
 
     # Combo Box
-    dashboard.ui.comboBox_tsi_conditioner_input_folders.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputFolderChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_conditioner_settings_isolation_method.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsIsolationMethodChanged(dashboard)
-    )
     dashboard.ui.comboBox_tsi_conditioner_input_source.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputSourceChanged(dashboard)
     )
-    dashboard.ui.comboBox_tsi_conditioner_settings_isolation_category.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsIsolationCategoryChanged(dashboard)
+    dashboard.ui.comboBox_tsi_conditioner_input_data_type.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputDataTypeChanged(dashboard)
     )
-    dashboard.ui.comboBox_tsi_fe_input_folders.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputFolderChanged(dashboard)
+    dashboard.ui.comboBox_tsi_conditioner_run_output_format.currentIndexChanged.connect(
+        lambda: TSITabSlots._tsi_conditioner_update_workflow_ribbon(dashboard)
     )
-    dashboard.ui.comboBox_tsi_fe_settings_classification.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsClassificationChanged(dashboard)
+    dashboard.ui.comboBox_tsi_conditioner_run_output_mode.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerRunOutputModeChanged(dashboard)
     )
-    dashboard.ui.comboBox_tsi_fe_settings_technique.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsTechniqueChanged(dashboard)
+    dashboard.ui.comboBox_tsi_conditioner_method_category.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodCategoryChanged(dashboard)
     )
-    dashboard.ui.comboBox_tsi_fe_settings_input_source.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsInputSourceChanged(dashboard)
+    dashboard.ui.comboBox_tsi_conditioner_method_method.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodMethodChanged(dashboard)
     )
-    dashboard.ui.comboBox_tsi_fe_settings_category.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsCategoryChanged(dashboard)
+    dashboard.ui.comboBox_tsi_conditioner_method_hardware.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodHardwareChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_conditioner_method_action.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodActionChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_fe_input_source.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputSourceChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_fe_run_soi.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunSOIChanged(dashboard)
     )
     dashboard.ui.comboBox_tsi_classifier_training_category.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_ClassifierTrainingCategoryChanged(dashboard)
@@ -3085,15 +3318,6 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_tsi_classifier_classification_model.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_ClassifierClassificationModelChanged(dashboard)
     )
-    dashboard.ui.comboBox_tsi_conditioner_settings_isolation_frequencies_category.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsIsolationFrequenciesCategoryChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_conditioner_settings_isolation_frequencies_method.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsIsolationFrequenciesMethodChanged(dashboard)
-    )
-    dashboard.ui.comboBox_tsi_conditioner_settings_isolation_hardware.currentIndexChanged.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsIsolationFrequenciesHardwareChanged(dashboard)
-    )
     dashboard.ui.comboBox_tsi_detector_type.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_DetectorTypeChanged(dashboard)
     )
@@ -3106,13 +3330,28 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.comboBox_tsi_detector_method.currentIndexChanged.connect(
         lambda: TSITabSlots._slotTSI_DetectorMethodChanged(dashboard)
     )
+    dashboard.ui.comboBox_tsi_fe_method_profile.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_MethodProfileChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_fe_method_action.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_MethodActionChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_fe_run_destination.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunDestinationChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_fe_input_artifact.currentIndexChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputArtifactChanged(dashboard)
+    )
+    dashboard.ui.comboBox_tsi_fe_input_soi.currentIndexChanged.connect(
+            lambda: TSITabSlots._slotTSI_FE_InputSOIChanged(dashboard)
+    )
 
     # List Widget
-    dashboard.ui.listWidget_tsi_conditioner_input_files.itemDoubleClicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputLoadFileClicked(dashboard)
+    dashboard.ui.listWidget_tsi_conditioner_input_files.itemSelectionChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputSelectionChanged(dashboard)
     )
-    dashboard.ui.listWidget_tsi_fe_input_files.itemDoubleClicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputLoadFileClicked(dashboard)
+    dashboard.ui.listWidget_tsi_fe_input_files.itemSelectionChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputSelectionChanged(dashboard)
     )
 
     # Push Button
@@ -3122,125 +3361,59 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tsi_conditioner_input_folder.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputFolderClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_input_load_file.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputLoadFileClicked(dashboard)
-    )
     dashboard.ui.pushButton_tsi_conditioner_input_refresh.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputRefreshClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_remove.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_rename.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputRenameClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_terminal.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputTerminalClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_conditioner_input_preview.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputPreviewClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_settings_browse.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsBrowseClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_apply_to_all.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesApplyToAllClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_settings_now.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsNowClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_add.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesAddClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_results_preview.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsPreviewClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_import_tsi.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesImportTsiClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_results_folder.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsFolderClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_import_tactical.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesImportTacticalClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_results_export.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsExportClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_up.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesUpClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_results_delete.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsDeleteClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_down.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesDownClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_settings_view.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsViewClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_remove.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesRemoveClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_conditioner_results_strip.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsStripClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_results_strip_all.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsStripAllClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_results_refresh.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsRefreshClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_results_delete_all.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerResultsDeleteAllClicked(dashboard)
+    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_clear.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesClearClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_fe_input_folder.clicked.connect(
         lambda: TSITabSlots._slotTSI_FE_InputFolderClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_input_load_file.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputLoadFileClicked(dashboard)
-    )
     dashboard.ui.pushButton_tsi_fe_input_refresh.clicked.connect(
         lambda: TSITabSlots._slotTSI_FE_InputRefreshClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_input_remove.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_input_rename.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputRenameClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_input_terminal.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_InputTerminalClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_fe_input_preview.clicked.connect(
         lambda: TSITabSlots._slotTSI_FE_InputPreviewClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_results_preview.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsPreviewClicked(dashboard)
+    dashboard.ui.pushButton_tsi_fe_method_query_actions.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_MethodQueryActionsClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_results_plot_column.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsPlotColumnClicked(dashboard)
+    dashboard.ui.pushButton_tsi_fe_method_query_parameters.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_MethodQueryParametersClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_settings_deselect_all.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsDeselectAllClicked(dashboard)
+    dashboard.ui.pushButton_tsi_fe_run_start_stop.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunStartStopClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_settings_select_all.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_SettingsSelectAllClicked(dashboard)
+    dashboard.ui.pushButton_tsi_fe_input_artifact_refresh.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputArtifactRefreshClicked(dashboard)
     )
-    dashboard.ui.pushButton_tsi_fe_results_export.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsExportClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_plot_avg.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsPlotAvgClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_trim.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsTrimClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_import.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsImportClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_joint_plot.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsJointPlotClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_remove_row.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsRemoveRowClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_results_remove_col.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_ResultsRemoveColClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_clear_wideband_list.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ClearWidebandListClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_blacklist_add.clicked.connect(
-        lambda: TSITabSlots._slotTSI_BlacklistAddClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_blacklist_remove.clicked.connect(
-        lambda: TSITabSlots._slotTSI_BlacklistRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_operation_start.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerOperationStartClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_fe_operation_start.clicked.connect(
-        lambda: TSITabSlots._slotTSI_FE_OperationStartClicked(dashboard)
+    dashboard.ui.pushButton_tsi_fe_input_soi_refresh.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputSOIRefreshClicked(dashboard)
     )
     dashboard.ui.pushButton_tsi_classifier_training_import_fe.clicked.connect(
         lambda: TSITabSlots._slotTSI_ClassifierTrainingImportFE_Clicked(dashboard)
@@ -3406,37 +3579,7 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_tsi_soi_browse.clicked.connect(
         lambda: TSITabSlots._slotTSI_SOI_BrowseClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_detector_clear.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputDetectorClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_detector_up.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputDetectorUpClicked(dashboard)
-    )    
-    dashboard.ui.pushButton_tsi_conditioner_input_detector_down.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputDetectorDownClicked(dashboard)
-    )    
-    dashboard.ui.pushButton_tsi_conditioner_input_detector_remove.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputDetectorRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_settings_frequencies_view.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsFrequenciesViewClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_clear.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesClearClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_up.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesUpClicked(dashboard)
-    )    
-    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_down.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesDownClicked(dashboard)
-    )    
-    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_remove.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerInputFrequenciesRemoveClicked(dashboard)
-    )
-    dashboard.ui.pushButton_tsi_conditioner_input_frequencies_add.clicked.connect(
-        lambda: TSITabSlots._slotTSI_ConditionerSettingsFrequenciesAddClicked(dashboard)
-    )
+    ) 
     dashboard.ui.pushButton_tsi_detector_query.clicked.connect(
         lambda: TSITabSlots._slotTSI_DetectorQueryClicked(dashboard)
     )
@@ -3446,6 +3589,84 @@ def connect_tsi_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_tsi_detector_start_stop.clicked.connect(
         lambda: TSITabSlots._slotTSI_DetectorStartStopClicked(dashboard)
     )
+    dashboard.ui.pushButton_tsi_conditioner_method_query_actions.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodQueryActionsClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_method_query_parameters.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerMethodQueryParametersClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_run_browse.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerRunBrowseClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_run_now.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerRunNowClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_run_start_stop.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerRunStartStopClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_run_download_artifact.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerRunDownloadArtifactClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_preview.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsPreviewClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_delete.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsDeleteClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_folder.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsFolderClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_delete_all.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsDeleteAllClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_strip.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsStripClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_strip_all.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsStripAllClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_refresh.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsRefreshClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_export.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsExportClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_conditioner_results_promote_to_soi.clicked.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerResultsPromoteToSoiClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_results_open_folder.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsOpenFolderClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_results_preview.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsPreviewClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_results_export_csv.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsExportCSVClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_results_export_json.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsExportJSONClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_results_plot_feature.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsPlotFeatureClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_results_plot_distribution.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultsPlotDistributionClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_run_soi_refresh.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunSOIRefreshClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_detector_blacklist.clicked.connect(
+        lambda: TSITabSlots._slotTSI_DetectorBlacklistClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_detector_promote_to_soi.clicked.connect(
+        lambda: TSITabSlots._slotTSI_DetectorPromoteToSoiClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_detector_promote_to_target.clicked.connect(
+        lambda: TSITabSlots._slotTSI_DetectorPromoteToTargetClicked(dashboard)
+    )
+    dashboard.ui.pushButton_tsi_fe_run_download_artifact.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunDownloadArtifactClicked(dashboard)
+    )
     
     # Radio Buttons
     dashboard.ui.radioButton_tsi_conditioner_input_extensions_all.clicked.connect(
@@ -3453,6 +3674,43 @@ def connect_tsi_slots(dashboard: Dashboard):
     )
     dashboard.ui.radioButton_tsi_conditioner_input_extensions_custom.clicked.connect(
         lambda: TSITabSlots._slotTSI_ConditionerInputExtensionsCustomClicked(dashboard)
+    )
+    dashboard.ui.radioButton_tsi_fe_input_extensions_all.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputExtensionsAllClicked(dashboard)
+    )
+    dashboard.ui.radioButton_tsi_fe_input_extensions_custom.clicked.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputExtensionsCustomClicked(dashboard)
+    )
+
+    # Table Widget
+    dashboard.ui.tableWidget_tsi_fe_results.itemSelectionChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_ResultSelectionChanged(dashboard)
+    )
+    dashboard.ui.tableWidget1_tsi_wideband.customContextMenuRequested.connect(
+        lambda position: TSITabSlots._show_tsi_detector_results_context_menu(
+            dashboard,
+            position,
+        )
+    )
+    dashboard.ui.tableWidget1_tsi_wideband.itemSelectionChanged.connect(
+        lambda: TSITabSlots._slotTSI_DetectorResultSelectionChanged(dashboard)
+    )
+
+    # Text Edit
+    dashboard.ui.textEdit_tsi_conditioner_file_path.textChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputPathEdited(dashboard)
+    )
+    dashboard.ui.textEdit_tsi_conditioner_file_sample_rate.textChanged.connect(
+        lambda: TSITabSlots._slotTSI_ConditionerInputDataTypeChanged(dashboard)
+    )
+    dashboard.ui.textEdit_tsi_fe_file_path.textChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputPathEdited(dashboard)
+    )
+    dashboard.ui.textEdit_tsi_fe_input_extensions.textChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_InputExtensionsEdited(dashboard)
+    )
+    dashboard.ui.textEdit_tsi_fe_run_description.textChanged.connect(
+        lambda: TSITabSlots._slotTSI_FE_RunDescriptionChanged(dashboard)
     )
 
 
@@ -3770,7 +4028,6 @@ def connect_pd_slots(dashboard: Dashboard):
 
 def connect_iq_slots(dashboard: Dashboard):
     # Check Box
-    dashboard.ui.checkBox_iq_record_sigmf.clicked.connect(lambda: IQDataTabSlots._slotIQ_RecordSigMF_Clicked(dashboard))
     dashboard.ui.checkBox_iq_strip_overwrite.clicked.connect(
         lambda: IQDataTabSlots._slotIQ_StripOverwriteClicked(dashboard)
     )
@@ -3786,13 +4043,22 @@ def connect_iq_slots(dashboard: Dashboard):
         lambda: IQDataTabSlots._slotIQ_FilterTypeChanged(dashboard)
     )
     dashboard.ui.comboBox_iq_record_hardware.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_RecordHardwareChanged(dashboard)
+        lambda: IQDataTabSlots._slotIQ_RecordActionHardwareChanged(dashboard)
+    )
+    dashboard.ui.comboBox_iq_record_method.currentIndexChanged.connect(
+        lambda: IQDataTabSlots._slotIQ_RecordMethodChanged(dashboard)
     )
     dashboard.ui.comboBox_iq_playback_hardware.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_PlaybackHardwareChanged(dashboard)
+        lambda: IQDataTabSlots._slotIQ_PlaybackActionHardwareChanged(dashboard)
     )
-    dashboard.ui.comboBox_iq_inspection_hardware.currentIndexChanged.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionHardwareChanged(dashboard)
+    dashboard.ui.comboBox_iq_playback_method.currentIndexChanged.connect(
+        lambda: IQDataTabSlots._slotIQ_PlaybackMethodChanged(dashboard)
+    )
+    dashboard.ui.comboBox_iq_inspection_source.currentIndexChanged.connect(
+        lambda: IQDataTabSlots._slotIQ_InspectionSourceChanged(dashboard)
+    )
+    dashboard.ui.comboBox_iq_inspection_action.currentIndexChanged.connect(
+        lambda: IQDataTabSlots._slotIQ_InspectionActionChanged(dashboard)
     )
     dashboard.ui.comboBox_iq_artifacts.currentIndexChanged.connect(
         lambda: IQDataTabSlots._slotIQ_ArtifactsChanged(dashboard)
@@ -3805,12 +4071,6 @@ def connect_iq_slots(dashboard: Dashboard):
     )
 
     # List Widget
-    dashboard.ui.listWidget_iq_inspection_flow_graphs.itemDoubleClicked.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionFlowGraphClicked(dashboard)
-    )
-    dashboard.ui.listWidget_iq_inspection_fg_file.itemDoubleClicked.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionFG_FileClicked(dashboard)
-    )
     dashboard.ui.listWidget_iq_files.itemDoubleClicked.connect(
         lambda: IQDataTabSlots._slotIQ_LoadIQ_Data(dashboard)
     )
@@ -3906,28 +4166,7 @@ def connect_iq_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_iq_ofdm_subcarrier_add_range.clicked.connect(
         lambda: IQDataTabSlots._slotIQ_OFDM_SubcarrierAddRangeClicked(dashboard)
     )
-    dashboard.ui.pushButton_iq_playback_record_freq.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_PlaybackRecordFreqClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_playback_record_gain.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_PlaybackRecordGainClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_playback_record_rate.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_PlaybackRecordRateClicked(dashboard)
-    )
     dashboard.ui.pushButton_iq_resample.clicked.connect(lambda: IQDataTabSlots._slotIQ_ResampleClicked(dashboard))
-    dashboard.ui.pushButton_iq_inspection_fg_load.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionFlowGraphClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_inspection_fg_file_load.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionFG_FileClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_inspection_fg_live_view.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionFG_LiveViewClicked(dashboard)
-    )
-    dashboard.ui.pushButton_iq_inspection_fg_file_view.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_InspectionFG_FileViewClicked(dashboard)
-    )
     dashboard.ui.pushButton_iq_folder.clicked.connect(lambda: IQDataTabSlots._slotIQ_FolderClicked(dashboard))
     dashboard.ui.pushButton_iq_transfer_file_select.clicked.connect(
         lambda: IQDataTabSlots._slotIQ_TransferFileSelectClicked(dashboard)
@@ -4081,13 +4320,36 @@ def connect_iq_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_iq_unwrap.clicked.connect(lambda: IQDataTabSlots._slotIQ_UnwrapClicked(dashboard))
     dashboard.ui.pushButton_iq_filter.clicked.connect(lambda: IQDataTabSlots._slotIQ_FilterClicked(dashboard))
     dashboard.ui.pushButton_iq_ook_plot.clicked.connect(lambda: IQDataTabSlots._slotIQ_OOK_PlotClicked(dashboard))
-    dashboard.ui.pushButton_iq_record_sigmf.clicked.connect(
-        lambda: IQDataTabSlots._slotIQ_RecordSigMF_ConfigureClicked(dashboard)
+    dashboard.ui.pushButton_iq_record_query.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_RecordQueryClicked(dashboard)
     )
-    dashboard.ui.pushButton_iq_record.clicked.connect(lambda: IQDataTabSlots._slotIQ_RecordClicked(dashboard))
-    dashboard.ui.pushButton_iq_playback.clicked.connect(lambda: IQDataTabSlots._slotIQ_PlaybackClicked(dashboard))
-    dashboard.ui.pushButton_iq_inspection_fg_start.clicked.connect(lambda: IQDataTabSlots._slotIQ_InspectionFG_StartClicked(dashboard))
-    dashboard.ui.pushButton_iq_inspection_fg_file_start.clicked.connect(lambda: IQDataTabSlots._slotIQ_InspectionFG_FileStartClicked(dashboard))
+    dashboard.ui.pushButton_iq_record_customize.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_RecordCustomizeClicked(dashboard)
+    )
+    dashboard.ui.pushButton_iq_record_start_stop.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_RecordStartStopClicked(dashboard)
+    )
+    dashboard.ui.pushButton_iq_record_download_artifact.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_RecordDownloadArtifactClicked(dashboard)
+    )
+    dashboard.ui.pushButton_iq_playback_query.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_PlaybackQueryClicked(dashboard)
+    )
+    dashboard.ui.pushButton_iq_playback_customize.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_PlaybackCustomizeClicked(dashboard)
+    )
+    dashboard.ui.pushButton_iq_playback_start_stop.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_PlaybackStartStopClicked(dashboard)
+    )
+    dashboard.ui.pushButton_iq_inspection_query.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_InspectionQueryClicked(dashboard)
+    )
+    dashboard.ui.pushButton_iq_inspection_customize.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_InspectionCustomizeClicked(dashboard)
+    )
+    dashboard.ui.pushButton_iq_inspection_start_stop.clicked.connect(
+        lambda: IQDataTabSlots._slotIQ_InspectionStartStopClicked(dashboard)
+    )
     dashboard.ui.pushButton_iq_iqengine.clicked.connect(lambda: IQDataTabSlots._slotIQ_IQEngineClicked(dashboard))
     dashboard.ui.pushButton1_iq_tab_endianness.clicked.connect(
         lambda: IQDataTabSlots._slotIQ_TabClicked(dashboard, button_name="pushButton1_iq_tab_endianness")
@@ -4323,7 +4585,10 @@ def connect_archive_slots(dashboard: Dashboard):
         lambda: ArchiveTabSlots._slotArchiveExtensionChanged(dashboard)
     )
     dashboard.ui.comboBox_archive_replay_hardware.currentIndexChanged.connect(
-        lambda: ArchiveTabSlots._slotArchiveReplayHardwareChanged(dashboard)
+        lambda: ArchiveTabSlots._slotArchiveReplayActionHardwareChanged(dashboard)
+    )
+    dashboard.ui.comboBox_archive_replay_method.currentIndexChanged.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayMethodChanged(dashboard)
     )
 
     # List View
@@ -4332,6 +4597,12 @@ def connect_archive_slots(dashboard: Dashboard):
     )
 
     # Push Button
+    dashboard.ui.pushButton_archive_replay_query.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayQueryClicked(dashboard)
+    )
+    dashboard.ui.pushButton_archive_replay_customize.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayCustomizeClicked(dashboard)
+    )
     dashboard.ui.pushButton_archive_replay_add.clicked.connect(
         lambda: ArchiveTabSlots._slotArchiveReplayAddClicked(dashboard)
     )
@@ -4401,15 +4672,11 @@ def connect_archive_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_archive_new_folder.clicked.connect(
         lambda: ArchiveTabSlots._slotArchiveNewFolderClicked(dashboard)
     )
-    dashboard.ui.pushButton_archive_folder.clicked.connect(lambda: ArchiveTabSlots._slotArchiveFolderClicked(dashboard))
-    dashboard.ui.pushButton_archive_replay_triggers_edit.clicked.connect(
-        lambda: ArchiveTabSlots._slotArchiveReplayTriggersEditClicked(dashboard)
-    )  # Needs Trigger dialog code
+    dashboard.ui.pushButton_archive_folder.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveFolderClicked(dashboard)
+    )
     dashboard.ui.pushButton_archive_datasets_start.clicked.connect(
         lambda: ArchiveTabSlots._slotArchiveDatasetsStartClicked(dashboard)
-    )
-    dashboard.ui.pushButton_archive_replay_start.clicked.connect(
-        lambda: ArchiveTabSlots._slotArchiveReplayStartClicked(dashboard)
     )
     dashboard.ui.pushButton_archive_datasets_regenerate.clicked.connect(
         lambda: ArchiveTabSlots._slotArchiveDatasetsRegenerateClicked(dashboard)
@@ -4423,9 +4690,15 @@ def connect_archive_slots(dashboard: Dashboard):
     dashboard.ui.pushButton_archive_download_rename.clicked.connect(
         lambda: ArchiveTabSlots._slotArchiveDownloadRenameClicked(dashboard)
     )
-    dashboard.ui.pushButton_archive_replay_triggers_clear.clicked.connect(
-        lambda: ArchiveTabSlots._slotArchiveReplayTriggersClearClicked(dashboard)
-    )  
+    dashboard.ui.pushButton_archive_replay_detector_add.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayDetectorAddClicked(dashboard)
+    )
+    dashboard.ui.pushButton_archive_replay_detector_remove.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayDetectorRemoveClicked(dashboard)
+    )
+    dashboard.ui.pushButton_archive_replay_start_stop.clicked.connect(
+        lambda: ArchiveTabSlots._slotArchiveReplayStartStopClicked(dashboard)
+    )
 
     # Table Widget
     dashboard.ui.tableWidget_archive_datasets.horizontalHeader().sectionClicked.connect(
@@ -4485,6 +4758,12 @@ def connect_sensor_nodes_slots(dashboard: Dashboard):
     )
     dashboard.ui.pushButton_sensor_nodes_fn_local_choose.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalChooseClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_fn_local_select.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalSelectClicked(dashboard)
+    )
+    dashboard.ui.pushButton_sensor_nodes_fn_local_show_in_folder.clicked.connect(
+        lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalShowInFolderClicked(dashboard)
     )
     dashboard.ui.pushButton_sensor_nodes_fn_local_unzip.clicked.connect(
         lambda: SensorNodesTabSlots._slotSensorNodesFileNavigationLocalUnzipClicked(dashboard)
@@ -4694,5 +4973,4 @@ async def wait_for_backend_shutdown(dashboard: QtCore.QObject):
     while dashboard.backend.hiprfisr_connected is True:
         await asyncio.sleep(1)
     dashboard.logger.critical("BACKEND SHUTDOWN COMPLETE")
-
 

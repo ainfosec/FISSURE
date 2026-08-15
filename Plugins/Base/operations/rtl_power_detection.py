@@ -148,6 +148,7 @@ class OperationMain(Operation):
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Optional[Callable] = None,
         tak_cot_callback: Optional[Callable] = None,
+        detection_callback: Optional[Callable] = None,
         status_callback: Optional[Callable] = None,
     ):
         super().__init__(
@@ -155,6 +156,7 @@ class OperationMain(Operation):
             logger=logger,
             alert_callback=alert_callback,
             tak_cot_callback=tak_cot_callback,
+            detection_callback=detection_callback,
             status_callback=status_callback,
         )
 
@@ -477,6 +479,16 @@ class OperationMain(Operation):
             "detection_threshold_db": self.detection_threshold_db,
         }
 
+        if self.detection_callback:
+            try:
+                await asyncio.wait_for(self.detection_callback(detection), timeout=cb_timeout_s)
+            except asyncio.CancelledError:
+                raise
+            except Exception:
+                self.logger.exception("[RTL-POWER] detection_callback failed")
+        else:
+            self.logger.warning("[RTL-POWER] No detection_callback configured")
+
         if self.alert_callback:
             try:
                 await asyncio.wait_for(
@@ -492,29 +504,6 @@ class OperationMain(Operation):
                 raise
             except Exception:
                 self.logger.exception("[RTL-POWER] alert_callback failed")
-
-        if self.tak_cot_callback:
-            try:
-                await asyncio.wait_for(
-                    self.tak_cot_callback(
-                        {
-                            "msg_type": "event",
-                            "uid": f"rtl-detection-{self.node_uid}-{int(ts)}",
-                            "lat": True,
-                            "lon": True,
-                            "alt": True,
-                            "time": True,
-                            "data": detection,
-                            "opid": self.opid,
-                            "tak_icon": "r-x-fissure-detection",
-                        }
-                    ),
-                    timeout=cb_timeout_s,
-                )
-            except asyncio.CancelledError:
-                raise
-            except Exception:
-                self.logger.exception("[RTL-POWER] tak_cot_callback failed")
 
     @staticmethod
     def _float(value, default: float) -> float:

@@ -64,6 +64,173 @@ def _slotSensorNodesAutorunPlaylistsChanged(dashboard: QtCore.QObject):
             _slotSensorNodesAutorunImportClicked(dashboard, filepath=os.path.join(fissure.utils.SENSOR_NODE_DIR, "Autorun_Playlists",get_playlist))
             
 
+def _sensor_nodes_file_navigation_node_label(
+    dashboard: QtCore.QObject,
+) -> str:
+    """
+    Returns the display label for the selected Sensor Node.
+    """
+    node_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if not node_uid:
+        return "Sensor Node: —"
+
+    settings = (
+        getattr(
+            dashboard,
+            "selected_node_settings",
+            {},
+        )
+        or {}
+    )
+
+    nickname = str(
+        settings.get(
+            "nickname"
+        )
+        or settings.get(
+            "name"
+        )
+        or ""
+    ).strip()
+
+    if not nickname:
+        node_state = (
+            getattr(
+                dashboard,
+                "node_states",
+                {},
+            )
+            or {}
+        ).get(
+            node_uid,
+            {},
+        )
+
+        if isinstance(
+            node_state,
+            dict,
+        ):
+            nickname = str(
+                node_state.get(
+                    "nickname"
+                )
+                or node_state.get(
+                    "name"
+                )
+                or node_state.get(
+                    "callsign"
+                )
+                or ""
+            ).strip()
+
+    if nickname:
+        return (
+            f"Sensor Node: {nickname} "
+            f"({node_uid})"
+        )
+
+    return f"Sensor Node: {node_uid}"
+
+
+def initialize_sensor_nodes_file_navigation_controls(
+    dashboard: QtCore.QObject,
+):
+    """
+    Initializes the Sensor Nodes File Navigation node gate.
+    """
+    dashboard.ui.stackedWidget_sensor_nodes_fn_node_gate.setCurrentWidget(
+        dashboard.ui.page_sensor_nodes_fn_no_node
+    )
+
+    select_node_icon_path = os.path.join(
+        fissure.utils.UI_DIR,
+        "Icons",
+        "select_node.png",
+    )
+
+    if os.path.isfile(
+        select_node_icon_path
+    ):
+        select_node_pixmap = QtGui.QPixmap(
+            select_node_icon_path
+        )
+
+        dashboard.ui.label_sensor_nodes_fn_select_sensor_node_image.setPixmap(
+            select_node_pixmap
+        )
+
+        dashboard.ui.label_sensor_nodes_fn_select_sensor_node_image.setScaledContents(
+            False
+        )
+
+        dashboard.ui.label_sensor_nodes_fn_select_sensor_node_image.setAlignment(
+            QtCore.Qt.AlignCenter
+        )
+
+    update_sensor_nodes_file_navigation_selected_node_gate(
+        dashboard
+    )
+
+
+def update_sensor_nodes_file_navigation_selected_node_gate(
+    dashboard: QtCore.QObject,
+):
+    """
+    Show File Navigation controls only when an online Sensor Node is selected.
+    """
+    selected_uid = str(
+        getattr(
+            dashboard,
+            "selected_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    has_selected_node = bool(
+        selected_uid
+    )
+
+    if has_selected_node:
+        node_states = (
+            getattr(
+                dashboard,
+                "node_states",
+                {},
+            )
+            or {}
+        )
+
+        node_state = node_states.get(
+            selected_uid
+        )
+
+        if (
+            isinstance(
+                node_state,
+                dict,
+            )
+            and node_state.get(
+                "connected"
+            ) is False
+        ):
+            has_selected_node = False
+
+    dashboard.ui.stackedWidget_sensor_nodes_fn_node_gate.setCurrentWidget(
+        dashboard.ui.page_sensor_nodes_fn_controls
+        if has_selected_node
+        else dashboard.ui.page_sensor_nodes_fn_no_node
+    )
+
+
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotSensorNodesFileNavigationLocalFolderChanged(dashboard: QtCore.QObject):
     """ 
@@ -104,10 +271,6 @@ def _slotSensorNodesAutorunRemoveClicked(dashboard: QtCore.QObject):
         dashboard.ui.tableWidget_sensor_nodes_autorun.setCurrentCell(0,0)
     else:
         dashboard.ui.tableWidget_sensor_nodes_autorun.setCurrentCell(get_current_row-1,0)
-
-    # # Disable PushButtons
-    # if dashboard.ui.tableWidget_sensor_nodes_autorun.rowCount() < 1:
-        # dashboard.ui.pushButton_archive_replay_start.setEnabled(False)
 
 
 @QtCore.pyqtSlot(QtCore.QObject, str)
@@ -421,19 +584,27 @@ def _slotSensorNodesAutorunRefreshClicked(dashboard: QtCore.QObject):
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotSensorNodesFileNavigationLocalDeleteClicked(dashboard: QtCore.QObject):
-    """ 
-    Deletes a local folder or file.
     """
-    # Get Folder/File
-    get_item_path = str(dashboard.ui.treeView_sensor_nodes_fn_local_files.model().filePath(dashboard.ui.treeView_sensor_nodes_fn_local_files.currentIndex()))
-    
-    # Delete the Folder/File
-    qm = QtWidgets.QMessageBox
-    ret = qm.question(dashboard,'', "Are you sure?", qm.Yes | qm.No)
-    if ret == qm.Yes:
-        os.system('rm -Rf "' + get_item_path + '"')
-    else:
+    Deletes a selected local folder or file.
+    """
+    tree_view = dashboard.ui.treeView_sensor_nodes_fn_local_files
+    current_index = tree_view.currentIndex()
+
+    if not current_index.isValid():
         return
+
+    get_item_path = str(tree_view.model().filePath(current_index) or "").strip()
+
+    if not get_item_path or not os.path.exists(get_item_path):
+        return
+
+    qm = QtWidgets.QMessageBox
+    ret = qm.question(dashboard, "", "Are you sure?", qm.Yes | qm.No)
+
+    if ret != qm.Yes:
+        return
+
+    os.system('rm -Rf "' + get_item_path + '"')
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
@@ -451,35 +622,117 @@ def _slotSensorNodesFileNavigationLocalChooseClicked(dashboard: QtCore.QObject):
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
-def _slotSensorNodesFileNavigationLocalUnzipClicked(dashboard: QtCore.QObject):
-    """ 
-    Unzips a local zip file.
+def _slotSensorNodesFileNavigationLocalSelectClicked(dashboard: QtCore.QObject):
     """
-    # Unzip the File
-    get_zip_file = str(dashboard.ui.treeView_sensor_nodes_fn_local_files.model().filePath(dashboard.ui.treeView_sensor_nodes_fn_local_files.currentIndex()))
-    if get_zip_file[-4:] == '.zip':
-        os.system('unzip ' + get_zip_file + ' -d ' + get_zip_file[:-4])
+    Uses the selected local folder as the File Navigation root.
+
+    If a file is selected, its parent folder is used.
+    """
+    tree_view = dashboard.ui.treeView_sensor_nodes_fn_local_files
+    current_index = tree_view.currentIndex()
+
+    if not current_index.isValid():
+        return
+
+    selected_path = str(tree_view.model().filePath(current_index) or "").strip()
+
+    if not selected_path:
+        return
+
+    if os.path.isfile(selected_path):
+        selected_path = os.path.dirname(selected_path)
+
+    if not os.path.isdir(selected_path):
+        return
+
+    folder_combo = dashboard.ui.comboBox_sensor_nodes_fn_local_folder
+    existing_index = folder_combo.findText(selected_path, QtCore.Qt.MatchExactly)
+
+    if existing_index >= 0:
+        folder_combo.setCurrentIndex(existing_index)
     else:
-        fissure.Dashboard.UI_Components.Qt5.errorMessage("Cannot unzip file")
+        folder_combo.addItem(selected_path)
+        folder_combo.setCurrentIndex(folder_combo.count() - 1)
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotSensorNodesFileNavigationLocalShowInFolderClicked(dashboard: QtCore.QObject):
+    """
+    Opens the selected local item location in the system file manager.
+
+    If nothing is selected, opens the current Local Folder.
+    """
+    tree_view = dashboard.ui.treeView_sensor_nodes_fn_local_files
+    current_index = tree_view.currentIndex()
+    selected_path = ""
+
+    if current_index.isValid():
+        selected_path = str(tree_view.model().filePath(current_index) or "").strip()
+
+    if selected_path and os.path.isfile(selected_path):
+        folder_path = os.path.dirname(selected_path)
+    elif selected_path and os.path.isdir(selected_path):
+        folder_path = selected_path
+    else:
+        folder_path = str(dashboard.ui.comboBox_sensor_nodes_fn_local_folder.currentText() or "").strip()
+
+    if not os.path.isdir(folder_path):
+        return
+
+    QtGui.QDesktopServices.openUrl(QtCore.QUrl.fromLocalFile(folder_path))
+
+
+@QtCore.pyqtSlot(QtCore.QObject)
+def _slotSensorNodesFileNavigationLocalUnzipClicked(dashboard: QtCore.QObject):
+    """
+    Unzips a selected local zip file.
+    """
+    tree_view = dashboard.ui.treeView_sensor_nodes_fn_local_files
+    current_index = tree_view.currentIndex()
+
+    if not current_index.isValid():
+        return
+
+    get_zip_file = str(tree_view.model().filePath(current_index) or "").strip()
+
+    if not get_zip_file:
+        return
+
+    if not os.path.isfile(get_zip_file):
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Select a zip file.")
+        return
+
+    if not get_zip_file.lower().endswith(".zip"):
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("Cannot unzip file.")
+        return
+
+    os.system('unzip "' + get_zip_file + '" -d "' + get_zip_file[:-4] + '"')
 
 
 @QtCore.pyqtSlot(QtCore.QObject)
 def _slotSensorNodesFileNavigationLocalViewClicked(dashboard: QtCore.QObject):
-    """ 
-    Opens a file in the Sensor Nodes File Navigation tab based on size and type.
     """
-    # Get the File
-    get_file = str(dashboard.ui.treeView_sensor_nodes_fn_local_files.model().filePath(dashboard.ui.treeView_sensor_nodes_fn_local_files.currentIndex()))
-    number_of_bytes = os.path.getsize(get_file)
-    
-    # Check the Size
-    if number_of_bytes > 1000000:  # Adjust limit for IQ data, relocate size check inside type check
-        fissure.Dashboard.UI_Components.Qt5.errorMessage("File is too large to view")
+    Opens a selected local text file when it is small enough to view.
+    """
+    tree_view = dashboard.ui.treeView_sensor_nodes_fn_local_files
+    current_index = tree_view.currentIndex()
+
+    if not current_index.isValid():
         return
-    
-    # Check the Type
-    if get_file[-4:] == '.txt':
-        os.system("gedit " + get_file + " &")
+
+    get_file = str(tree_view.model().filePath(current_index) or "").strip()
+
+    if not get_file or not os.path.isfile(get_file):
+        return
+
+    number_of_bytes = os.path.getsize(get_file)
+
+    if number_of_bytes > 1000000:
+        fissure.Dashboard.UI_Components.Qt5.errorMessage("File is too large to view.")
+        return
+
+    if get_file.lower().endswith(".txt"):
+        os.system('gedit "' + get_file + '" &')
     else:
         fissure.Dashboard.UI_Components.Qt5.errorMessage("Not a valid file extension.")
 
@@ -725,7 +978,11 @@ async def _slotSensorNodesFileNavigationRefreshClicked(dashboard: QtCore.QObject
     # Update the Tree Widget
     get_folder = str(dashboard.ui.comboBox_sensor_nodes_fn_folder.currentText())
     if (dashboard.selected_node_uid) and (len(get_folder) > 0):
-        dashboard.ui.label1_sensor_nodes_fn_sensor_node.setText(dashboard.selected_node_uid)
+        dashboard.ui.label1_sensor_nodes_fn_sensor_node.setText(
+            _sensor_nodes_file_navigation_node_label(
+                dashboard
+            )
+        )
         dashboard.ui.tableWidget_sensor_nodes_fn_files.setRowCount(0)
         
         # Local
@@ -763,75 +1020,123 @@ async def _slotSensorNodesFileNavigationRefreshClicked(dashboard: QtCore.QObject
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotSensorNodesFileNavigationDeleteClicked(dashboard: QtCore.QObject):
-    """ 
-    Deletes a folder or file on the sensor node.
     """
-    # Get Folder/File
-    try:
-        get_item_path = str(dashboard.ui.tableWidget_sensor_nodes_fn_files.item(dashboard.ui.tableWidget_sensor_nodes_fn_files.currentRow(),0).text())
-    except:
-        fissure.Dashboard.UI_Components.Qt5.errorMessage("Select a file to delete.")
+    Deletes a selected folder or file on the Sensor Node.
+    """
+    if not dashboard.selected_node_uid:
         return
-    
-    # Delete the Folder/File
-    if (dashboard.selected_node_uid) and (len(get_item_path) > 0):            
-        ret = await fissure.Dashboard.UI_Components.Qt5.async_yes_no_dialog(dashboard, "Are you sure?")
-        if ret == QtWidgets.QMessageBox.Yes:
-            # Local
-            if selected_node_is_local(dashboard):
-                os.system('rm -Rf "' + get_item_path + '"')
-                
-            # Remote
-            else:
-                # Send the Message
-                await dashboard.backend.deleteSensorNodeFile(dashboard.selected_node_uid, get_item_path)
 
-            dashboard.ui.tableWidget_sensor_nodes_fn_files.removeRow(dashboard.ui.tableWidget_sensor_nodes_fn_files.currentRow())
-            await _slotSensorNodesFileNavigationRefreshClicked(dashboard)
-        else:
-            return
+    table = dashboard.ui.tableWidget_sensor_nodes_fn_files
+    current_row = table.currentRow()
+
+    if current_row < 0:
+        return
+
+    path_item = table.item(current_row, 0)
+
+    if path_item is None:
+        return
+
+    get_item_path = str(path_item.text() or "").strip()
+
+    if not get_item_path:
+        return
+
+    ret = await fissure.Dashboard.UI_Components.Qt5.async_yes_no_dialog(
+        dashboard,
+        "Are you sure?",
+    )
+
+    if ret != QtWidgets.QMessageBox.Yes:
+        return
+
+    if selected_node_is_local(dashboard):
+        os.system('rm -Rf "' + get_item_path + '"')
+    else:
+        await dashboard.backend.deleteSensorNodeFile(
+            dashboard.selected_node_uid,
+            get_item_path,
+        )
+
+    table.removeRow(current_row)
+    await _slotSensorNodesFileNavigationRefreshClicked(dashboard)
 
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotSensorNodesFileNavigationDownloadClicked(dashboard: QtCore.QObject):
-    """ 
-    Downloads a folder or file from the sensor node.
     """
-    # Get Folder/File
-    try:
-        get_item_path = str(dashboard.ui.tableWidget_sensor_nodes_fn_files.item(dashboard.ui.tableWidget_sensor_nodes_fn_files.currentRow(),0).text())
-    except:
-        fissure.Dashboard.UI_Components.Qt5.errorMessage("Select a file to download.")
-        return            
-    
-    # Download the Folder/File
-    if (dashboard.selected_node_uid) and (len(get_item_path) > 0):
-        # Local
-        if selected_node_is_local(dashboard):
-            get_new_path = str(dashboard.ui.comboBox_sensor_nodes_fn_local_folder.currentText()) + '/' + get_item_path.split('/')[-1]
-            os.system('cp -r "' + get_item_path + '" "' + get_new_path + '"')
-            
-        # Remote
-        else:
-            # Send the Message
-            get_new_path = str(dashboard.ui.comboBox_sensor_nodes_fn_local_folder.currentText())
-            await dashboard.backend.downloadSensorNodeFile(dashboard.selected_node_uid, get_item_path, get_new_path)
+    Downloads a selected folder or file from the Sensor Node.
+    """
+    if not dashboard.selected_node_uid:
+        return
+
+    table = dashboard.ui.tableWidget_sensor_nodes_fn_files
+    current_row = table.currentRow()
+
+    if current_row < 0:
+        return
+
+    path_item = table.item(current_row, 0)
+
+    if path_item is None:
+        return
+
+    get_item_path = str(path_item.text() or "").strip()
+
+    if not get_item_path:
+        return
+
+    get_local_folder = str(
+        dashboard.ui.comboBox_sensor_nodes_fn_local_folder.currentText() or ""
+    ).strip()
+
+    if not get_local_folder:
+        return
+
+    if selected_node_is_local(dashboard):
+        get_new_path = os.path.join(
+            get_local_folder,
+            os.path.basename(get_item_path),
+        )
+        os.system('cp -r "' + get_item_path + '" "' + get_new_path + '"')
+    else:
+        await dashboard.backend.downloadSensorNodeFile(
+            dashboard.selected_node_uid,
+            get_item_path,
+            get_local_folder,
+        )
 
 
 @qasync.asyncSlot(QtCore.QObject)
 async def _slotSensorNodesFileNavigationLocalTransferClicked(dashboard: QtCore.QObject):
-    """ 
-    Transfers a local file to the selected sensor node folder.
     """
-    if dashboard.selected_node_uid:
-        # Obtain File Information
-        get_local_file = str(dashboard.ui.treeView_sensor_nodes_fn_local_files.model().filePath(dashboard.ui.treeView_sensor_nodes_fn_local_files.currentIndex()))
-        if os.path.isfile(get_local_file):
-            get_remote_folder = str(dashboard.ui.comboBox_sensor_nodes_fn_folder.currentText())
-            refresh_file_list = True
-            
-            # Send the Message
-            await dashboard.backend.transferSensorNodeFile(dashboard.selected_node_uid, get_local_file, get_remote_folder, refresh_file_list)
+    Transfers a selected local file to the selected Sensor Node folder.
+    """
+    if not dashboard.selected_node_uid:
+        return
+
+    tree_view = dashboard.ui.treeView_sensor_nodes_fn_local_files
+    current_index = tree_view.currentIndex()
+
+    if not current_index.isValid():
+        return
+
+    get_local_file = str(tree_view.model().filePath(current_index) or "").strip()
+
+    if not get_local_file or not os.path.isfile(get_local_file):
+        return
+
+    get_remote_folder = str(dashboard.ui.comboBox_sensor_nodes_fn_folder.currentText() or "").strip()
+
+    if not get_remote_folder:
+        return
+
+    await dashboard.backend.transferSensorNodeFile(
+        dashboard.selected_node_uid,
+        get_local_file,
+        get_remote_folder,
+        True,
+    )
 
 
 @QtCore.pyqtSlot(QtCore.QObject)

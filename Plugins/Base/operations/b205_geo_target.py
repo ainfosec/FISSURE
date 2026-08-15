@@ -336,8 +336,11 @@ class OperationMain(Operation):
         freq_hz: float,
         snapshot: Dict[str, Any],
     ) -> str:
-        evidence_dir = os.path.join(FISSURE_ROOT, "artifacts", operation_id, "files")
-        os.makedirs(evidence_dir, exist_ok=True)
+        if self.artifact_manager:
+            _, evidence_dir = self.artifact_manager.create_operation_dir(operation_id)
+        else:
+            evidence_dir = os.path.join(FISSURE_ROOT, "artifacts", operation_id, "files")
+            os.makedirs(evidence_dir, exist_ok=True)
         path = os.path.join(evidence_dir, "b205_geo_evidence.json")
         with open(path, "w", encoding="utf-8") as handle:
             json.dump(snapshot, handle, indent=2, default=_json_default)

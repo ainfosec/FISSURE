@@ -49,6 +49,7 @@ class OperationMain(Operation):
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Union[Callable, None] = None,
         tak_cot_callback: Union[Callable, None] = None,
+        detection_callback: Union[Callable, None] = None,
         status_callback: Union[Callable, None] = None,
         target_callback: Union[Callable, None] = None,
         artifact_manager=None,
@@ -59,6 +60,7 @@ class OperationMain(Operation):
             logger=logger,
             alert_callback=alert_callback,
             tak_cot_callback=tak_cot_callback,
+            detection_callback=detection_callback,
             status_callback=status_callback,
             target_callback=target_callback,
             artifact_manager=artifact_manager,
@@ -77,7 +79,6 @@ class OperationMain(Operation):
 
         self.source_id: str = str(node_uid or "sensor_node")
         self.emit_alerts: bool = False
-        self.emit_tak_cot: bool = True
 
         self._gps_stop = asyncio.Event()
         self._current_position: Dict[str, Any] = {"lat": None, "lon": None, "alt": 0.0}
@@ -187,7 +188,6 @@ class OperationMain(Operation):
 
         self.source_id = str(p.get("source_id", self.source_id) or self.node_uid or "sensor_node")
         self.emit_alerts = bool(p.get("emit_alerts", self.emit_alerts))
-        self.emit_tak_cot = bool(p.get("emit_tak_cot", self.emit_tak_cot))
 
     async def _gps_loop(self) -> None:
         self.logger.info("Starting GPS loop (GPSD)")
@@ -304,6 +304,11 @@ class OperationMain(Operation):
             alt=alt,
         )
 
+        if self.detection_callback:
+            await self._call_callback(self.detection_callback, detection)
+        else:
+            self.logger.warning("usrp_b2x0_geolocate has no detection_callback")
+
         if self.emit_alerts and self.alert_callback:
             alert_payload = {
                 **detection,
@@ -313,21 +318,6 @@ class OperationMain(Operation):
                 "message": f"USRP B2x0 detection for {self.target_id} @ {frequency_hz / 1e6:.3f} MHz",
             }
             await self._call_callback(self.alert_callback, alert_payload)
-
-        if self.emit_tak_cot and self.tak_cot_callback:
-            cot_payload = {
-                "msg_type": "event",
-                "uid": f"usrp-b2x0-geolocate-{self.target_id}-{int(det_time)}",
-                "lat": True,
-                "lon": True,
-                "alt": True,
-                "time": True,
-                "data": detection,
-                "opid": self.opid,
-                "operation_id": self.opid,
-                "tak_icon": "r-x-fissure-detection",
-            }
-            await self._call_callback(self.tak_cot_callback, cot_payload)
 
     def _resolve_flowgraph_script(self) -> str:
         script_path = os.path.join(FLOW_GRAPH_DIR, "fixed_threshold_b2x0.py")

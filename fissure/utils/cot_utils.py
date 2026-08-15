@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import json
 import xml.etree.ElementTree as ET
 from fissure.Dashboard.Slots import (
     TacticalTabSlots,
@@ -16,7 +17,9 @@ def parse_cot_xml(raw_xml):
         return None
 
     if isinstance(raw_xml, bytes):
-        raw_xml = raw_xml.decode("utf-8")
+        raw_xml = raw_xml.decode(
+            "utf-8"
+        )
 
     root = ET.fromstring(raw_xml)
 
@@ -57,6 +60,10 @@ def parse_cot_xml(raw_xml):
         "target_state": None,
         "target_frequency_mhz": None,
         "target_geolocation_status": None,
+        "target_identity": {},
+        "target_artifact_ids": [],
+        "target_artifact_links": [],
+        "target_history": [],
         "node_uid": None,
         "ssid": None,
         "bssid": None,
@@ -86,195 +93,421 @@ def parse_cot_xml(raw_xml):
     }
 
     point = root.find("point")
+
     if point is not None:
-        cot_message["lat"] = _safe_float(point.get("lat"))
-        cot_message["lon"] = _safe_float(point.get("lon"))
-        cot_message["hae"] = _safe_float(point.get("hae"))
-        cot_message["ce"] = _safe_float(point.get("ce"))
-        cot_message["le"] = _safe_float(point.get("le"))
+        cot_message["lat"] = _safe_float(
+            point.get("lat")
+        )
+        cot_message["lon"] = _safe_float(
+            point.get("lon")
+        )
+        cot_message["hae"] = _safe_float(
+            point.get("hae")
+        )
+        cot_message["ce"] = _safe_float(
+            point.get("ce")
+        )
+        cot_message["le"] = _safe_float(
+            point.get("le")
+        )
 
     detail = root.find("detail")
+
     if detail is not None:
         contact = detail.find("contact")
+
         if contact is not None:
-            cot_message["callsign"] = contact.get("callsign")
+            cot_message["callsign"] = (
+                contact.get("callsign")
+            )
 
         # -----------------------------------------------------------------
         # Node
         # -----------------------------------------------------------------
-        fissure_node = detail.find("./fissure/node")
+        fissure_node = detail.find(
+            "./fissure/node"
+        )
+
         if fissure_node is not None:
             cot_message["kind"] = "node"
-
             cot_message["node_status"] = (
-                fissure_node.findtext("status")
+                fissure_node.findtext(
+                    "status"
+                )
             )
-
             cot_message["node_version"] = (
-                fissure_node.findtext("version")
+                fissure_node.findtext(
+                    "version"
+                )
             )
 
         # -----------------------------------------------------------------
         # Alert
         # -----------------------------------------------------------------
-        fissure_alert = detail.find("./fissure/alert")
+        fissure_alert = detail.find(
+            "./fissure/alert"
+        )
+
         if fissure_alert is not None:
             cot_message["kind"] = "alert"
-
             cot_message["alert_kind"] = (
-                fissure_alert.findtext("kind")
+                fissure_alert.findtext(
+                    "kind"
+                )
             )
-
             cot_message["alert_summary"] = (
-                fissure_alert.findtext("summary")
+                fissure_alert.findtext(
+                    "summary"
+                )
             )
 
         # -----------------------------------------------------------------
         # Detection
         # -----------------------------------------------------------------
-        fissure_detection = detail.find("./fissure/detection")
+        fissure_detection = detail.find(
+            "./fissure/detection"
+        )
+
         if fissure_detection is not None:
-            cot_message["kind"] = "detection"
-
-            cot_message["detection_node_uid"] = (
-                fissure_detection.findtext("node_uid")
+            cot_message["kind"] = (
+                "detection"
             )
-
-            cot_message["detection_frequency_hz"] = (
-                fissure_detection.findtext("frequency_hz")
+            cot_message[
+                "detection_node_uid"
+            ] = fissure_detection.findtext(
+                "node_uid"
             )
-
-            cot_message["detection_power_dbm"] = (
-                fissure_detection.findtext("power_dbm")
+            cot_message[
+                "detection_frequency_hz"
+            ] = fissure_detection.findtext(
+                "frequency_hz"
             )
-
-            cot_message["detection_timestamp"] = (
-                fissure_detection.findtext("timestamp")
+            cot_message[
+                "detection_power_dbm"
+            ] = fissure_detection.findtext(
+                "power_dbm"
             )
-
-            cot_message["detection_detector"] = (
-                fissure_detection.findtext("detector")
+            cot_message[
+                "detection_timestamp"
+            ] = fissure_detection.findtext(
+                "timestamp"
             )
-
-            cot_message["detection_opid"] = (
-                fissure_detection.findtext("opid")
+            cot_message[
+                "detection_detector"
+            ] = fissure_detection.findtext(
+                "detector"
             )
-
+            cot_message[
+                "detection_opid"
+            ] = fissure_detection.findtext(
+                "opid"
+            )
 
         # -----------------------------------------------------------------
         # Target
         # -----------------------------------------------------------------
-        fissure_target = detail.find("./fissure/target")
+        fissure_target = detail.find(
+            "./fissure/target"
+        )
+
         if fissure_target is not None:
             cot_message["kind"] = "target"
 
-            cot_message["target_id"] = fissure_target.findtext("target_id")
-            cot_message["target_label"] = fissure_target.findtext("display_label")
-            cot_message["target_state"] = fissure_target.findtext("state")
-
-            cot_message["node_uid"] = fissure_target.findtext("node_uid")
-            cot_message["ssid"] = fissure_target.findtext("ssid")
-            cot_message["bssid"] = fissure_target.findtext("bssid")
-            cot_message["rssi_dbm"] = fissure_target.findtext("rssi_dbm")
-            cot_message["last_observation_time"] = fissure_target.findtext("last_observation_time")
-            cot_message["source_soi_id"] = fissure_target.findtext("source_soi_id")
-
-            cot_message["target_geolocation_status"] = (
-                fissure_target.findtext("geolocation_status")
-                or fissure_target.findtext("geolocate_status")
+            cot_message["target_id"] = (
+                fissure_target.findtext(
+                    "target_id"
+                )
+            )
+            cot_message["target_label"] = (
+                fissure_target.findtext(
+                    "display_label"
+                )
+            )
+            cot_message["target_state"] = (
+                fissure_target.findtext(
+                    "state"
+                )
             )
 
-            cot_message["target_frequency_mhz"] = (
-                fissure_target.findtext("frequency_mhz")
-                or fissure_target.findtext("target_frequency_mhz")
+            cot_message["node_uid"] = (
+                fissure_target.findtext(
+                    "node_uid"
+                )
+            )
+            cot_message["ssid"] = (
+                fissure_target.findtext(
+                    "ssid"
+                )
+            )
+            cot_message["bssid"] = (
+                fissure_target.findtext(
+                    "bssid"
+                )
+            )
+            cot_message["rssi_dbm"] = (
+                fissure_target.findtext(
+                    "rssi_dbm"
+                )
+            )
+            cot_message[
+                "last_observation_time"
+            ] = fissure_target.findtext(
+                "last_observation_time"
+            )
+            cot_message["source_soi_id"] = (
+                fissure_target.findtext(
+                    "source_soi_id"
+                )
             )
 
-            target_lat = _safe_float(fissure_target.findtext("lat"))
-            target_lon = _safe_float(fissure_target.findtext("lon"))
-            target_hae = _safe_float(fissure_target.findtext("hae_m"))
-            target_ce = _safe_float(fissure_target.findtext("ce_m"))
+            cot_message[
+                "target_geolocation_status"
+            ] = (
+                fissure_target.findtext(
+                    "geolocation_status"
+                )
+                or fissure_target.findtext(
+                    "geolocate_status"
+                )
+            )
+
+            cot_message[
+                "target_frequency_mhz"
+            ] = (
+                fissure_target.findtext(
+                    "frequency_mhz"
+                )
+                or fissure_target.findtext(
+                    "target_frequency_mhz"
+                )
+            )
+
+            target_json_fields = (
+                (
+                    "identity_json",
+                    "target_identity",
+                    {},
+                ),
+                (
+                    "artifact_ids_json",
+                    "target_artifact_ids",
+                    [],
+                ),
+                (
+                    "artifact_links_json",
+                    "target_artifact_links",
+                    [],
+                ),
+                (
+                    "history_json",
+                    "target_history",
+                    [],
+                ),
+            )
+
+            for (
+                xml_field,
+                message_field,
+                fallback,
+            ) in target_json_fields:
+                field_text = (
+                    fissure_target.findtext(
+                        xml_field
+                    )
+                )
+
+                if not field_text:
+                    cot_message[
+                        message_field
+                    ] = fallback
+                    continue
+
+                try:
+                    parsed_value = json.loads(
+                        field_text
+                    )
+                except Exception:
+                    parsed_value = fallback
+
+                cot_message[
+                    message_field
+                ] = parsed_value
+
+            target_lat = _safe_float(
+                fissure_target.findtext(
+                    "lat"
+                )
+            )
+            target_lon = _safe_float(
+                fissure_target.findtext(
+                    "lon"
+                )
+            )
+            target_hae = _safe_float(
+                fissure_target.findtext(
+                    "hae_m"
+                )
+            )
+            target_ce = _safe_float(
+                fissure_target.findtext(
+                    "ce_m"
+                )
+            )
 
             if target_lat is not None:
-                cot_message["lat"] = target_lat
+                cot_message["lat"] = (
+                    target_lat
+                )
 
             if target_lon is not None:
-                cot_message["lon"] = target_lon
+                cot_message["lon"] = (
+                    target_lon
+                )
 
             if target_hae is not None:
-                cot_message["hae"] = target_hae
+                cot_message["hae"] = (
+                    target_hae
+                )
 
             if target_ce is not None:
-                cot_message["ce"] = target_ce
+                cot_message["ce"] = (
+                    target_ce
+                )
 
         # -----------------------------------------------------------------
         # SOI
         # -----------------------------------------------------------------
-        fissure_soi = detail.find("./fissure/soi")
+        fissure_soi = detail.find(
+            "./fissure/soi"
+        )
+
         if fissure_soi is not None:
             cot_message["kind"] = "soi"
 
             cot_message["soi_node_uid"] = (
-                fissure_soi.findtext("node_uid")
+                fissure_soi.findtext(
+                    "node_uid"
+                )
             )
-
             cot_message["soi_id"] = (
-                fissure_soi.findtext("soi_id")
+                fissure_soi.findtext(
+                    "soi_id"
+                )
             )
-
-            cot_message["soi_frequency_mhz"] = (
-                fissure_soi.findtext("frequency_mhz")
+            cot_message[
+                "soi_frequency_mhz"
+            ] = fissure_soi.findtext(
+                "frequency_mhz"
             )
-
             cot_message["soi_status"] = (
-                fissure_soi.findtext("status")
+                fissure_soi.findtext(
+                    "status"
+                )
             )
-
-            cot_message["soi_operation_id"] = (
-                fissure_soi.findtext("operation_id")
+            cot_message[
+                "soi_operation_id"
+            ] = fissure_soi.findtext(
+                "operation_id"
             )
-
-            cot_message["soi_artifact_id"] = (
-                fissure_soi.findtext("artifact_id")
+            cot_message[
+                "soi_artifact_id"
+            ] = fissure_soi.findtext(
+                "artifact_id"
             )
-
-            cot_message["soi_database_classification"] = (
-                fissure_soi.findtext("database_classification")
+            cot_message[
+                "soi_database_classification"
+            ] = fissure_soi.findtext(
+                "database_classification"
             )
-
-            cot_message["soi_model_classification"] = (
-                fissure_soi.findtext("model_classification")
+            cot_message[
+                "soi_model_classification"
+            ] = fissure_soi.findtext(
+                "model_classification"
             )
-
-            cot_message["soi_model_confidence"] = (
-                fissure_soi.findtext("model_confidence")
+            cot_message[
+                "soi_model_confidence"
+            ] = fissure_soi.findtext(
+                "model_confidence"
             )
-
             cot_message["soi_stage"] = (
-                fissure_soi.findtext("stage")
+                fissure_soi.findtext(
+                    "stage"
+                )
             )
 
-            stage_order_text = fissure_soi.findtext("stage_order")
+            stage_order_text = (
+                fissure_soi.findtext(
+                    "stage_order"
+                )
+            )
+
             try:
-                cot_message["soi_stage_order"] = int(stage_order_text)
-            except (TypeError, ValueError):
-                cot_message["soi_stage_order"] = None         
+                cot_message[
+                    "soi_stage_order"
+                ] = int(stage_order_text)
+            except (
+                TypeError,
+                ValueError,
+            ):
+                cot_message[
+                    "soi_stage_order"
+                ] = None
 
         # -----------------------------------------------------------------
         # Artifact Metadata
         # -----------------------------------------------------------------
-        fissure_artifact = detail.find("./fissure/artifact_metadata")
-        if fissure_artifact is not None:
-            name_text = fissure_artifact.findtext("name")
-            timestamp_text = fissure_artifact.findtext("timestamp")
-            artid = fissure_artifact.findtext("artid")
+        fissure_artifact = detail.find(
+            "./fissure/artifact_metadata"
+        )
 
-            if name_text and timestamp_text and artid:
-                cot_message["kind"] = "artifact"
-                cot_message["artifact_name"] = name_text
-                cot_message["artifact_timestamp"] = timestamp_text
-                cot_message["artifact_id"] = artid
-                cot_message["artifact_operation_id"] = fissure_artifact.findtext("operation_id")
-                cot_message["artifact_node_uid"] = fissure_artifact.findtext("source_id")
+        if fissure_artifact is not None:
+            name_text = (
+                fissure_artifact.findtext(
+                    "name"
+                )
+            )
+            timestamp_text = (
+                fissure_artifact.findtext(
+                    "timestamp"
+                )
+            )
+            artifact_id = (
+                fissure_artifact.findtext(
+                    "artid"
+                )
+            )
+
+            if (
+                name_text
+                and timestamp_text
+                and artifact_id
+            ):
+                cot_message["kind"] = (
+                    "artifact"
+                )
+                cot_message[
+                    "artifact_name"
+                ] = name_text
+                cot_message[
+                    "artifact_timestamp"
+                ] = timestamp_text
+                cot_message[
+                    "artifact_id"
+                ] = artifact_id
+                cot_message[
+                    "artifact_operation_id"
+                ] = (
+                    fissure_artifact.findtext(
+                        "operation_id"
+                    )
+                )
+                cot_message[
+                    "artifact_node_uid"
+                ] = (
+                    fissure_artifact.findtext(
+                        "source_id"
+                    )
+                )
 
     return cot_message
 
@@ -520,44 +753,181 @@ def handle_tactical_target_message(dashboard, cot_message):
         TacticalTabSlots._slotTacticalTargetsRowSelectionChanged(frontend)
 
 
-def cot_to_tactical_target_record(cot_message):
-    target_id = cot_message.get("target_id")
+def cot_to_tactical_target_record(
+    cot_message,
+):
+    target_id = cot_message.get(
+        "target_id"
+    )
+
     if not target_id:
         return None
 
+    identity = cot_message.get(
+        "target_identity",
+        {},
+    )
+
+    if not isinstance(
+        identity,
+        dict,
+    ):
+        identity = {}
+
+    artifact_ids = cot_message.get(
+        "target_artifact_ids",
+        [],
+    )
+
+    if not isinstance(
+        artifact_ids,
+        list,
+    ):
+        artifact_ids = []
+
+    artifact_links = cot_message.get(
+        "target_artifact_links",
+        [],
+    )
+
+    if not isinstance(
+        artifact_links,
+        list,
+    ):
+        artifact_links = []
+
+    history = cot_message.get(
+        "target_history",
+        [],
+    )
+
+    if not isinstance(
+        history,
+        list,
+    ):
+        history = []
+
+    latest_artifact_id = str(
+        cot_message.get(
+            "artifact_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if (
+        latest_artifact_id
+        and latest_artifact_id
+        not in artifact_ids
+    ):
+        artifact_ids.append(
+            latest_artifact_id
+        )
+
     return {
-        "uid": cot_message.get("uid"),
-        "target_id": target_id,
+        "uid":
+            cot_message.get("uid"),
+        "target_id":
+            target_id,
 
         "type": (
-            cot_message.get("target_label")
-            or cot_message.get("display_label")
-            or cot_message.get("target_frequency_mhz")
+            cot_message.get(
+                "target_label"
+            )
+            or cot_message.get(
+                "display_label"
+            )
+            or cot_message.get(
+                "target_frequency_mhz"
+            )
             or "Unknown"
         ),
-        "state": cot_message.get("target_state", ""),
-        "updated": cot_message.get("time", ""),
+        "display_label": (
+            cot_message.get(
+                "target_label"
+            )
+            or cot_message.get(
+                "display_label"
+            )
+            or ""
+        ),
+        "state":
+            cot_message.get(
+                "target_state",
+                "",
+            ),
+        "updated":
+            cot_message.get(
+                "time",
+                "",
+            ),
 
-        "lat": cot_message.get("lat"),
-        "lon": cot_message.get("lon"),
-        "ce_m": cot_message.get("ce"),
-        "hae_m": cot_message.get("hae"),
+        "lat":
+            cot_message.get("lat"),
+        "lon":
+            cot_message.get("lon"),
+        "ce_m":
+            cot_message.get("ce"),
+        "hae_m":
+            cot_message.get("hae"),
 
-        "node_uid": cot_message.get("node_uid", ""),
-        "ssid": cot_message.get("ssid", ""),
-        "bssid": cot_message.get("bssid", ""),
-        "rssi_dbm": cot_message.get("rssi_dbm", ""),
-        "last_observation_time": cot_message.get("last_observation_time", ""),
+        "node_uid":
+            cot_message.get(
+                "node_uid",
+                "",
+            ),
+        "ssid":
+            cot_message.get(
+                "ssid",
+                "",
+            ),
+        "bssid":
+            cot_message.get(
+                "bssid",
+                "",
+            ),
+        "rssi_dbm":
+            cot_message.get(
+                "rssi_dbm",
+                "",
+            ),
+        "last_observation_time":
+            cot_message.get(
+                "last_observation_time",
+                "",
+            ),
         "geolocation_status": (
-            cot_message.get("target_geolocation_status")
+            cot_message.get(
+                "target_geolocation_status"
+            )
             or "idle"
         ),
 
-        "target_frequency_mhz": cot_message.get("target_frequency_mhz"),
-        "source_soi_id": cot_message.get("source_soi_id", ""),
-        "artifact_id": cot_message.get("artifact_id", ""),
+        "target_frequency_mhz":
+            cot_message.get(
+                "target_frequency_mhz"
+            ),
+        "source_soi_id":
+            cot_message.get(
+                "source_soi_id",
+                "",
+            ),
 
-        "raw_xml": cot_message.get("raw_xml"),
+        "identity":
+            identity,
+        "artifact_id":
+            latest_artifact_id,
+        "artifact_ids":
+            artifact_ids,
+        "artifact_links":
+            artifact_links,
+        "history":
+            history,
+
+        "raw_xml":
+            cot_message.get(
+                "raw_xml"
+            ),
     }
 
 
@@ -1030,27 +1400,69 @@ def cot_to_tactical_soi_record(cot_message):
 
 
 def handle_tactical_artifact_message(dashboard, cot_message):
+    """
+    Handle the lightweight artifact CoT notification without replacing the
+    canonical manifest record delivered by sendArtifactsListTakReturn.
+
+    CoT contains only summary fields. If a complete artifact record already
+    exists, preserve its files, relations, file_count, total_size, metadata,
+    and timestamps while applying only non-empty CoT summary values.
+    """
     frontend = dashboard.frontend
 
-    artifact_record = cot_to_tactical_artifact_record(cot_message)
-    if not artifact_record:
+    cot_record = cot_to_tactical_artifact_record(cot_message)
+    if not cot_record:
         return
 
     if not hasattr(frontend, "tactical_artifacts"):
         frontend.tactical_artifacts = {}
 
-    artifact_id = artifact_record["artifact_id"]
+    artifact_id = cot_record["artifact_id"]
+
+    existing = frontend.tactical_artifacts.get(artifact_id)
+
+    if isinstance(existing, dict):
+        artifact_record = dict(existing)
+
+        for key, value in cot_record.items():
+            if value not in [None, "", "None"]:
+                artifact_record[key] = value
+    else:
+        artifact_record = cot_record
 
     frontend.tactical_artifacts[artifact_id] = artifact_record
 
-    selected_node_uid = getattr(frontend, "selected_tactical_node_uid", None)
-    artifact_node_uid = artifact_record.get("node_uid")
+    selected_node_uid = getattr(
+        frontend,
+        "selected_tactical_node_uid",
+        None,
+    )
+    artifact_node_uid = (
+        artifact_record.get("source_id")
+        or artifact_record.get("node_uid")
+        or ""
+    )
 
-    if selected_node_uid and artifact_node_uid == selected_node_uid:
+    if (
+        selected_node_uid
+        and artifact_node_uid == selected_node_uid
+    ):
         TacticalTabSlots.update_tactical_node_artifact_row(
             frontend,
             artifact_record,
         )
+
+        selected_artifact_id = getattr(
+            frontend,
+            "selected_tactical_node_artifact_id",
+            None,
+        )
+
+        if selected_artifact_id == artifact_id:
+            TacticalTabSlots.populate_tactical_node_artifact_details(
+                frontend,
+                artifact_record,
+            )
 
     IQDataTabSlots.handle_iq_record_artifact_complete(
         frontend,
@@ -1083,4 +1495,5 @@ def is_tactical_node_active(node_record):
         "idle",
         "stopped",
         "unknown",
+        "disconnected",
     ]

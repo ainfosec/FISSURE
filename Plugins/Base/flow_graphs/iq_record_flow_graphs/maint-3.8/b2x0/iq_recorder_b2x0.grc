@@ -282,7 +282,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1312, 660.0]
+    coordinate: [1328, 532.0]
     rotation: 0
     state: true
 - name: filepath
@@ -299,24 +299,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1312, 180.0]
-    rotation: 0
-    state: true
-- name: ip_address
-  id: parameter
-  parameters:
-    alias: ''
-    comment: ''
-    hide: none
-    label: ''
-    short_id: ''
-    type: str
-    value: '"192.168.40.2"'
-  states:
-    bus_sink: false
-    bus_source: false
-    bus_structure: null
-    coordinate: [1312, 100.0]
+    coordinate: [1328, 52.0]
     rotation: 0
     state: true
 - name: low_pass_filter_0
@@ -551,7 +534,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1312, 580.0]
+    coordinate: [1328, 452.0]
     rotation: 0
     state: true
 - name: rx_channel
@@ -568,7 +551,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1312, 260.0]
+    coordinate: [1328, 132.0]
     rotation: 0
     state: true
 - name: rx_frequency
@@ -585,7 +568,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1312, 340.0]
+    coordinate: [1328, 212.0]
     rotation: 0
     state: true
 - name: rx_gain
@@ -602,7 +585,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1312, 500.0]
+    coordinate: [1328, 372.0]
     rotation: 0
     state: true
 - name: sample_rate
@@ -619,7 +602,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1312, 420.0]
+    coordinate: [1328, 292.0]
     rotation: 0
     state: true
 - name: serial
@@ -636,7 +619,7 @@ blocks:
     bus_sink: false
     bus_source: false
     bus_structure: null
-    coordinate: [1312, 740.0]
+    coordinate: [1328, 612.0]
     rotation: 0
     state: true
 - name: uhd_usrp_source_0_0

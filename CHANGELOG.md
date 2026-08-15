@@ -1,6 +1,424 @@
 # Change Log
 All notable changes to this project will be documented in this file.
 
+## 2026-8-13
+
+Migrate Archive Replay to plugin detectors and expand remote file transfer
+
+### Added
+
+- Added reusable detector selection for Archive Replay, allowing multiple plugin-based detectors to gate playlist execution and start replay when the first configured detection is received.
+- Added plugin detector actions for time, system, sensor, environmental, location, network, protocol, and RF conditions migrated from the legacy trigger workflow.
+- Added remote Archive Replay file staging over the dedicated binary transfer channel so files outside a Sensor Node archive path can be transferred to a managed staging location before replay begins.
+- Added managed Dashboard, HIPRFISR, and Sensor Node file transfer over the dedicated binary artifact channel for Sensor Node file workflows.
+- Added detector type and mode metadata to plugin actions to support reusable filtering and selection across detector workflows.
+- Added README guidance for AI-assisted development and GNU Radio Conference 2026 to the upcoming events list.
+
+### Changed
+
+- Updated Archive Replay to use plugin actions and operations instead of the legacy trigger system while preserving playlist repeat behavior after the initial detector gate.
+- Updated Archive Replay remote file handling to use managed staging with collision-safe filenames instead of relying on arbitrary remote filesystem locations.
+- Updated Sensor Node file-transfer workflows to use the dedicated high-throughput transfer path with chunked transfer, verification, and managed destination handling.
+- Updated Sensor Node plugin operation handling to preserve requested operation IDs so returned detections and stop requests can be correlated reliably.
+- Updated migrated and existing detector operations to report through the native Detection path so Dashboard workflows and TAK can consume a consistent detection format.
+- Updated detector helper flow graphs and plugin mappings for GNU Radio 3.8 and 3.10 where required by migrated detector actions.
+- Updated long-running detector polling operations to remain responsive to Stop requests while preserving their configured polling intervals.
+
+### Fixed
+
+- Fixed Archive Replay detector gating with real RF detectors by aligning detector operation IDs with returned Detection IDs.
+- Fixed sound-threshold detection to use a persistent audio input stream instead of repeatedly reopening the microphone.
+- Fixed RDS keyword detection so GNU Radio decoder output is captured reliably and matched against configured keywords.
+
+## 2026-8-09
+
+Improve Tactical Sensor Node disconnect handling and off-map overlay visibility
+
+### Added
+
+- Added explicit Connected/Disconnected state to the Sensor Node Selection dialog while keeping disconnected nodes visible for status and last-seen review.
+- Added Dashboard-only off-map clamping for Tactical nodes, targets, detections, SOIs, and alerts, with `[off map]` labels, edge-aware label placement, and rendered-position hit testing so clamped markers remain clickable.
+
+### Changed
+
+- Updated HIPRFISR node-state handling in the Dashboard so heartbeat timeout and reconnection state propagates into existing Tactical node roster, details, and map displays.
+- Updated disconnected Tactical nodes to render gray with a dashed border and without the active indicator, while already-selected disconnected nodes remain selected and continue to show the red Dashboard/Tactical warning state until they reconnect.
+- Updated Dashboard Sensor Node selection so disconnected nodes can still be inspected in Tactical but cannot establish a new selected-node context until a live settings response can be acquired.
+- Updated Tactical map centering and marker rendering to preserve authoritative latitude/longitude while using clamped scene coordinates only for Dashboard visualization; off-map Target CE rings are not drawn around the clamped edge position.
+
+### Fixed
+
+- Fixed Tactical nodes retaining stale active/status presentation after heartbeat timeout and restored their normal presentation automatically when heartbeats resume.
+- Fixed Tactical overlays disappearing and becoming unclickable when valid coordinates fall outside the downloaded map pack.
+
+## 2026-8-08
+
+Replace the legacy IQ Inspection workflow with plugin-based inspection and add context-aware plugin action filtering
+
+### Added
+
+- Added guided IQ Inspection controls for selecting a local radio or file source, querying and customizing plugin actions, starting/stopping inspection, and loading file paths from IQ Files and managed Artifacts.
+- Added Base plugin `iq_inspection_live` and `iq_inspection_file` actions with operation mappings for instantaneous frequency, signal envelope, time sink, multi-scale time sink, and waterfall inspection across supported GNU Radio 3.8/3.10 hardware.
+- Added shared `client.*` and `node.*` action capability filtering in `fissure/utils/plugin.py`, with enforcement across action discovery, schema requests, classification-based action lookup, and Sensor Node execution.
+- Added reusable delegated-action registration so mission plugins can expose actions from other plugins while inheriting their schemas, tags, hardware compatibility, validation, and implementation.
+
+### Changed
+
+- Reorganized IQ Inspection flow graphs under the Base plugin by GNU Radio version and hardware, including the missing bladeRF time-sink GRC definition.
+- Updated IQ Data Inspection to use named pages and local/no-node/remote-node gating, with GUI inspection restricted to local Dashboard use and live Inspection available through local Tactical workflows.
+- Removed the legacy IQ Inspection flow-graph launch path and related Dashboard, HIPRFISR, and Sensor Node callback/thread plumbing after the plugin-based workflow was validated.
+- Refactored `Mission-01/actions.py` into a curated delegated-action example backed by Base, WiFi, and Dummy instead of maintaining duplicate schemas, hardware lists, parameter handling, and operation wrappers.
+
+### Fixed
+
+- Fixed the Dummy CoT Types schema to remove the duplicate `base_lat` entry and align the exposed base-location defaults with the operation.
+
+## 2026-8-07
+
+Replace the legacy IQ playback workflow with plugin-based multi-hardware playback
+
+### Added
+
+- Added a guided IQ Playback workflow for selecting playback hardware and actions, customizing operation parameters, choosing an IQ file, and monitoring playback status.
+- Added Base plugin IQ playback flow graphs for supported GNU Radio 3.8 and 3.10 transmit hardware, including UHD, bladeRF, HackRF, LimeSDR, PlutoSDR, and CaribouLite devices.
+- Added hardware-aware `iq_playback` action and operation mappings with continuous and single-shot playback modes.
+
+### Changed
+
+- Updated IQ playback to execute through the Base plugin action and operation framework instead of the legacy Dashboard-managed flow graph path.
+- Updated playback operations to select flow graphs by hardware type, playback mode, and GNU Radio library version while adapting to hardware-specific constructor parameters.
+- Updated single-shot playback to return the Dashboard to a completed state when the selected Sensor Node reports the operation has finished.
+- Updated the IQ Playback interface and styles to match the newer Dashboard workflow patterns.
+- Removed the legacy IQ playback hardware table, fixed controls, status widgets, and playback callbacks replaced by the action-driven workflow.
+
+## 2026-8-06
+
+Replace the legacy IQ recording workflow with plugin-based artifact recording
+
+### Added
+
+- Added a guided IQ Record workflow for selecting recorder hardware and actions, customizing operation parameters, monitoring recording status, and downloading completed artifacts.
+- Added Base plugin IQ recorder flow graphs for supported GNU Radio 3.8 and 3.10 hardware, including UHD, bladeRF, HackRF, LimeSDR, PlutoSDR, RTL-SDR, SDRplay, and CaribouLite devices.
+- Added hardware-aware `iq_record` action and operation mappings for the supported recorder flow graphs.
+
+### Changed
+
+- Updated IQ recording to execute through the Base plugin action and operation framework and register completed recordings as managed artifacts.
+- Updated recorder operations to select flow graphs by hardware type and GNU Radio library version while adapting to hardware-specific constructor parameters.
+- Moved output format, multi-file recording, SigMF generation, descriptions, and radio settings into the operation-defined parameter workflow.
+- Updated the IQ Record interface and styles to match the newer Dashboard workflow patterns.
+- Removed the legacy IQ recording table, fixed controls, Dashboard-managed SigMF path, recording callbacks, and remote recording file-return logic.
+
+## 2026-7-30
+
+Fix Apptainer deployment mode propagation
+
+### Changed
+
+- Updated `fissure_apptainer.def` to use a dedicated install-mode placeholder instead of hardcoding the Full installation mode.
+- Updated `install_apptainer.sh` to inject the selected deployment mode while generating the temporary Apptainer definition file.
+- Added generated-definition output verification so the selected FISSURE installation mode can be confirmed before the sandbox build begins.
+- Updated the Apptainer definition help text to describe the shared Base, Dashboard, HIPRFISR, Sensor Node, Custom, and Full environment rather than a Dashboard-only image.
+
+### Fixed
+
+- Fixed Base and other role-specific Apptainer builds incorrectly running the Full FISSURE installer selection.
+- Moving setuptools to earlier in the Ubuntu 24.04 install
+- Adding auto start sensor node behavior to host in apptainer installer
+
+## 2026-7-29
+
+Expand installer deployment modes and Apptainer role selection
+
+### Added
+
+- Added Base and Custom mode buttons to the installer GUI alongside Full, Dashboard, HIPRFISR, and Sensor Node.
+- Added role-specific installer selections for complete local workstations, headless hubs, Dashboard clients, remote Sensor Nodes, and user-defined test configurations.
+
+### Changed
+
+- Updated installer mode handling to normalize Full, Base, Custom, Dashboard, HIPRFISR, and Sensor Node mode names for GUI and headless installations.
+- Updated the Base mode to include PostgreSQL and compilation of the standard FISSURE flow graph categories for standalone local operation.
+- Updated the HIPRFISR mode to include PostgreSQL and the minimum runtime dependencies required for headless hub operation.
+- Updated the Sensor Node mode to include supported hardware packages, GNU Radio out-of-tree modules, compiled flow graphs, and optional automatic startup.
+- Updated the Dashboard mode to provide the client runtime without installing a local database or automatically launching a Sensor Node.
+- Updated `install_apptainer.sh` to pass the selected deployment mode into the generated Apptainer definition and container installation.
+- Updated the Ubuntu 24.04 installer to skip Network Certificates during Apptainer builds so certificates are not generated inside the sandbox and later hidden by the host FISSURE bind.
+- Updated `install_apptainer.sh` to generate and verify FISSURE CURVE certificates through the completed Apptainer sandbox while writing them into the host FISSURE checkout.
+- Updated the README installation and Apptainer sections to document the supported deployment modes and their intended roles.
+
+## 2026-7-29
+
+Improve certificate generation and Apptainer launch reliability
+
+### Changed
+
+- Updated `generate_certificates.py` to remove unnecessary Dashboard, Server, and utility imports before generating CURVE certificates.
+- Updated `CertificateGenerator.py` to use the standard Python logger instead of importing FISSURE utility modules.
+- Updated the Network Certificates installer verification to require the generated server and client public/private key files.
+- Updated `install_apptainer.sh` to generate the corrected `fissure-apptainer` launcher.
+
+### Fixed
+
+- Fixed `fissure-apptainer` Qt display authorization by granting the current local user access to the X server before launching the container.
+- Fixed read-only FISSURE runtime paths by binding the host FISSURE checkout to `/opt/FISSURE`.
+- Fixed Matplotlib cache warnings by providing a writable cache directory inside the container.
+- Preserved host udev, PulseAudio, X11, and Wayland integration without restoring the problematic `/dev/bus/usb` bind.
+
+## 2026-7-28
+
+Improve Apptainer installation reliability and SDR hardware access
+
+### Added
+
+- Added setuid-enabled Apptainer installation and validation for Ubuntu hosts.
+- Added installer checks that verify required Apptainer capabilities before continuing.
+- Added clearer Apptainer setup guidance for host dependencies, install modes, launching, and issue reporting.
+
+### Changed
+
+- Updated the Apptainer launcher to rely on Apptainer's native `/dev` handling instead of rebinding `/dev/bus/usb`.
+- Updated the launcher to retain `/run/udev` access for SDR discovery without remounting USB devices with `nodev`.
+- Updated RTL-SDR udev rule installation to use a later rule priority so FISSURE permissions are not overridden by distro rules.
+- Updated Python packaging dependencies to keep `setuptools` below version 82 for compatibility with `pydotplus`.
+- Updated the Apptainer installation flow to install the current packaged setuid build instead of a pinned standalone 1.3.2 `.deb`.
+- Updated the README Apptainer section to match the current host/container split and generated launcher behavior.
+
+### Fixed
+
+- Fixed RTL-SDR, HackRF, and USRP devices being visible inside Apptainer but failing to open because `/dev/bus/usb` was rebound with the `nodev` mount option.
+- Fixed the RTL-SDR installer option typo that prevented the intended package selection.
+- Fixed `pydotplus` installation failures caused by upgrading to a `setuptools` release without `pkg_resources`.
+- Fixed missing `cryptography` and `pydotplus` dependencies preventing FISSURE from starting inside the container.
+
+## 2026-7-26
+
+Add complete SOI evidence and Target data packaging for TAK workflows
+
+### Added
+
+- Added dedicated TAK request handling for complete SOI evidence and Target data downloads.
+- Added reusable TAK Mission Package generation for authoritative record snapshots and linked artifact directories.
+- Added JSON and readable text snapshots for exported SOI and Target records.
+- Added server-side artifact collection that reuses verified HIPRFISR cache entries and retrieves missing artifacts from their source nodes before packaging.
+
+### Changed
+
+- Updated SOI evidence packaging to rebuild each Mission Package from the current SOI record and include all SOI-linked artifacts.
+- Updated Target data packaging to rebuild each Mission Package from the current Target record and include only Target-owned artifacts.
+- Updated SOI-to-Target promotion so promoted Targets retain `source_soi_id` without inheriting the SOI's evidence artifacts.
+- Updated TAK package delivery to upload and announce freshly generated SOI and Target packages through the existing TAK data-package workflow.
+
+### Fixed
+
+- Fixed promoted Targets incorrectly treating source SOI evidence as Target-owned artifacts.
+- Fixed SOI evidence downloads being limited to a single compatibility `artifact_id` instead of the complete linked artifact set.
+
+## 2026-7-23
+
+Complete multi-file artifact handling across Conditioner, Feature Extractor, Tactical, and IQ Data
+
+### Added
+
+- Added Download/Open controls for managed Feature Extractor results using the shared artifact transfer cache.
+- Added IQ Data artifact discovery from downloaded artifact manifests and the shared local cache.
+- Added per-file artifact metadata for role, content type, relative path, size, and SHA-256 checksum.
+
+### Changed
+
+- Updated `signal_conditioning.py` and `signal_conditioning_file.py` to register every generated output through `ArtifactManager` as one logical multi-file artifact.
+- Updated Conditioner Raw IQ, SigMF, and ZIP output handling so artifact manifests represent the complete operation result instead of a single filepath.
+- Updated Feature Extractor managed-input handling to resolve artifact members from manifests and the shared download cache.
+- Updated Feature Extractor completion handling so local and remote managed destinations finalize consistently.
+- Updated the Dashboard artifact transfer controller so Tactical, Conditioner, Feature Extractor, and IQ Data share downloaded artifact state.
+- Updated IQ Data artifact browsing to load canonical artifact metadata and verified local member paths from the shared cache.
+- Updated TAK artifact packaging to include every verified file declared by the artifact manifest without changing the existing TAK download workflow.
+- Removed remaining artifact workflow dependence on legacy top-level filepath, file size, and checksum fields.
+
+### Fixed
+
+- Fixed remote Conditioner artifacts omitting additional IQ or SigMF output files.
+- Fixed local Feature Extractor artifact runs remaining incomplete after managed results were returned.
+- Fixed downloaded artifacts not being immediately available to other Dashboard tabs.
+
+## 2026-7-22
+
+Add dedicated remote artifact transfer and richer TAK artifact metadata
+
+### Added
+
+- Added a dedicated binary artifact-transfer path for remote Sensor Node artifacts.
+- Added HIPRFISR-side artifact transfer handling with temporary file writes, size validation, SHA-256 verification, and atomic finalization.
+- Added reusable artifact streaming from Sensor Nodes for Dashboard and TAK retrieval workflows.
+- Added expanded artifact metadata delivery for TAK clients, including type, size, timestamps, checksum, logical source URI, and structured metadata.
+- Added selected-artifact details support in WinTAK using the enriched FISSURE artifact metadata.
+
+### Changed
+
+- Updated Dashboard remote artifact downloads to use the dedicated transfer channel instead of the normal command-message path.
+- Updated TAK artifact retrieval so HIPRFISR first receives and verifies remote artifacts through the binary transfer channel before creating the existing TAK data package.
+- Updated artifact transfer routing so HIPRFISR can act as a local transfer destination in addition to the Dashboard.
+- Updated remote artifact retrieval to keep command traffic limited to transfer coordination and metadata rather than file payloads.
+- Preserved the existing TAK data-package delivery mechanism while replacing the internal Sensor Node-to-HIPRFISR artifact transport.
+
+## 2026-7-21
+
+Streamline Tactical target and ecosystem review workflows
+
+### Added
+
+- Added scrollable compact and full-detail views for Tactical Targets.
+- Added right-click Target actions for plotting, zooming, map removal, row deletion, and clearing.
+- Added right-click Node Roster actions for map navigation and row management.
+- Added right-click Alert actions for plotting, zooming, map removal, row deletion, and clearing.
+- Added theme-aware styling for dynamically generated Tactical multi-node action parameters.
+
+### Changed
+
+- Reworked the Tactical Targets layout to prioritize the target list, dynamic details, geolocation controls, and plugin actions.
+- Moved secondary Target plotting and row-management controls out of the permanent layout and into the Target context menu.
+- Updated Target deletion and clearing to remove corresponding map overlays.
+- Simplified the Tactical Ecosystem Node Roster to keep only Select All, Unselect, and Refresh Status visible.
+- Removed permanent Alert action buttons and expanded the Alerts table into the available space.
+- Updated Tactical multi-node parameter panels and generated labels to follow light, dark, and custom themes.
+
+## 2026-7-21
+
+Streamline Tactical SOI and Node Target review workflows
+
+### Added
+
+- Added scrollable dynamic SOI details with compact and full-detail views.
+- Added right-click SOI actions for refreshing, deleting, clearing, plotting, zooming, and removing map items.
+- Added right-click Node Target actions for details, filtering, plotting, zooming, map removal, and row management.
+- Added target ID shortening with full-value tooltips in the Tactical Node Targets details panel.
+
+### Changed
+
+- Reworked the Tactical SOI layout to prioritize evidence review and promotion actions.
+- Moved secondary SOI controls from permanent buttons into the results-table context menu.
+- Updated Tactical SOI details to show a concise operational summary by default while preserving access to all structured fields.
+- Reworked the Tactical Node Targets layout around permanent Refresh Targets and Query Actions controls.
+- Moved secondary Node Target controls from permanent buttons into the results-table context menu.
+- Kept Node Target refresh behavior manual so displayed distances remain explicit snapshots relative to the selected Sensor Node.
+
+## 2026-7-20
+
+Unify detection promotion, simulation, and review styling across Dashboard and WinTAK
+
+### Added
+
+- Added authoritative detection-to-SOI and detection-to-Target promotion paths shared by Tactical, TSI Detector, and WinTAK.
+- Added complete structured detection forwarding during promotion so detector-specific fields are preserved.
+- Added Simulation as a TSI Detector mode.
+- Added Dummy detector discovery in the TSI Detector workflow through RF Simulation tags.
+- Added reusable themed details-panel and parameter-panel styles for Tactical and TSI interfaces.
+- Added theme-aware styling for dynamically generated Tactical action parameter labels.
+
+### Changed
+
+- Replaced Tactical and TSI detection promotion behavior with direct HIPRFISR record promotion instead of plugin-action execution.
+- Updated promoted SOIs and Targets to use generic detection-promotion source metadata.
+- Updated promoted detection normalization to support Tactical, TSI, and WinTAK field aliases consistently.
+- Updated promoted SOI location handling to use detection coordinates, Sensor Node coordinates, or a valid fallback TAK point.
+- Updated Tactical action parameter and selected-detection panels to use neutral structural borders.
+- Kept the TSI selected-detection panel border aligned with the TSI blue accent styling.
+- Updated light, dark, and custom themes so detection details and dynamic parameter panels follow the active color palette.
+- Updated disabled panel states to use recessed backgrounds and disabled text colors.
+- Updated the Dummy detector description to identify it as a simulated RF detector for workflow testing.
+
+## 2026-7-19
+
+Improve Tactical and TSI detection review workflows
+
+### Added
+
+- Added scrollable dynamic detection details panels for Tactical and TSI detector results.
+- Added Promote to Target actions for detections in both Tactical and TSI workflows.
+- Added right-click result-table actions for clearing, plotting, zooming, removing, and deleting detections.
+- Added a persistent TSI detector blacklist management dialog.
+- Added automatic first-row selection and selected-detection detail updates for TSI detector results.
+
+### Changed
+
+- Reworked Tactical and TSI detection layouts to prioritize result review and promotion workflows.
+- Moved secondary Tactical detection actions from permanent buttons into a context menu.
+- Moved TSI blacklist controls out of the main detector layout and into a popup dialog.
+- Updated detection details rendering to display all non-empty structured fields, including nested values.
+- Excluded raw XML and raw transport payloads from the primary detection details view.
+- Rebalanced TSI detector plot, results, and selected-detection panel sizing.
+
+## 2026-7-17
+
+Separate TSI Detector and Conditioner functionality from legacy slot handling
+
+### Changed
+
+- Moved TSI Detector functionality into a dedicated `detector.py` module.
+- Moved TSI Conditioner functionality into a dedicated `conditioner.py` module.
+- Updated the TSI slot package to expose the Detector, Conditioner, and Feature Extractor modules alongside the remaining legacy handlers.
+- Consolidated shared utility functions to prevent duplicate definitions across wildcard-imported TSI modules.
+- Reduced the remaining legacy TSI slot code to the Classifier, SOI Aggregator, and Direction Finding workflows.
+- Kept Dashboard-level plot construction where required while moving tab-specific control initialization into the corresponding TSI modules.
+
+## 2026-7-16
+
+Rework TSI Feature Extractor workflow around plugin actions, managed artifacts, and SOI analysis
+
+### Added
+
+- Added a consolidated TSI Feature Extractor workflow for Files, Folder, Artifact, and SOI inputs.
+- Added time-domain, frequency-domain, combined, all-available, and custom feature extraction profiles.
+- Added schema-driven plugin-action querying, parameter customization, execution, and stop controls.
+- Added multi-file selection for Files input and filtered batch processing for Folder input.
+- Added IQ preview support for local and managed inputs.
+- Added local and remote Feature Extractor execution through selected Sensor Nodes.
+- Added Local Results, New Analysis Artifact, Attach to Existing SOI, and Create New SOI from Input destinations.
+- Added feature results display, CSV and JSON export, feature plotting, and result-file access.
+- Added managed source-IQ and feature-analysis artifact relationships for SOI workflows.
+- Added SOI refresh controls for the Dashboard Feature Extractor and WinTAK.
+- Added authoritative SOI list retrieval so each client can refresh its own SOI view independently.
+- Added dedicated Feature Extractor slot handling within the reorganized TSI slot package.
+
+### Changed
+
+- Replaced the previous Feature Extractor interface with a selected-node, plugin-driven workbench.
+- Updated feature extraction operations to support explicit file lists, filtered folder batches, managed Artifact and SOI inputs, and operation-scoped outputs.
+- Updated Feature Extractor results and reports to preserve source, operation, profile, and artifact metadata.
+- Updated local input behavior so Files supports explicit multi-selection while Folder processes every filtered file.
+- Updated TSI slot organization by moving legacy handlers into a package and separating Feature Extractor functionality.
+- Updated Dashboard styling, navigation, ribbon state, selected-node gating, and local-versus-remote availability rules.
+- Updated SOI and Artifact callbacks to support authoritative refreshes and durable analysis relationships.
+
+## 2026-7-09
+
+Rework TSI Conditioner workflow around plugin actions and artifact-based processing
+
+### Added
+
+- Added consolidated TSI Conditioner workflow for file, folder, detector result, and frequency-based inputs.
+- Added plugin-action query, customization, execution, and stop controls for conditioner operations.
+- Added schema-driven conditioner parameter controls and action details.
+- Added IQ input previewing with configurable sample rate.
+- Added conditioner results display, CSV export, and SOI promotion.
+- Added artifact generation for raw IQ files, SigMF recordings, and ZIP bundles.
+- Added selected-node conditioner status mirroring and progress reporting.
+
+### Changed
+
+- Replaced the previous Conditioner workflow with a unified selected-node workbench.
+- Updated conditioner execution to support local and remote plugin actions.
+- Updated input handling to resolve files, folders, detector results, and generated frequency selections consistently.
+- Updated conditioner outputs to use operation-scoped artifact directories.
+- Updated the Conditioner interface, styling, navigation, and node-selection behavior.
+
+### Fixed
+
+- Fixed raw IQ and SigMF ZIP bundle creation for file and folder inputs.
+- Fixed conditioner status updates so action progress and node messages are reflected in the Dashboard.
+- Fixed Conditioner initialization and reset behavior when selecting, removing, or changing sensor nodes.
+- Fixed SOI promotion state handling after successful promotion.
+
 ## 2026-7-02
 
 Rework TSI detector workflow around consolidated plugin-action controls

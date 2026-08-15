@@ -440,6 +440,11 @@ class TacticalMapView(QtCore.QObject):
     # Map navigation
     def center_on_latlon(self, lat, lon):
         scene_x, scene_y = self.latlon_to_scene(lat, lon)
+        scene_x, scene_y, _ = self._clamp_scene_point(
+            scene_x,
+            scene_y,
+            margin=0,
+        )
         self.graphics_view.centerOn(scene_x, scene_y)
 
 
@@ -489,11 +494,57 @@ class TacticalMapView(QtCore.QObject):
         y = (1.0 - math.asinh(math.tan(lat_rad)) / math.pi) / 2.0 * n * TILE_SIZE
         return x, y
 
+
     def latlon_to_scene(self, lat, lon):
         world_x, world_y = self.latlon_to_world(lat, lon, self.map_zoom)
         scene_x = world_x - self.map_x_min * TILE_SIZE
         scene_y = world_y - self.map_y_min * TILE_SIZE
         return scene_x, scene_y
+    
+
+    def _clamp_scene_point(self, scene_x, scene_y, margin=0.0):
+        """
+        Clamp a rendered point to the current downloaded map extent.
+
+        Latitude/longitude records are not modified. The returned point is only
+        used for Dashboard rendering so valid off-map overlays remain visible
+        and clickable at the nearest map edge.
+        """
+        scene_width = (
+            self.map_x_max - self.map_x_min + 1
+        ) * TILE_SIZE
+        scene_height = (
+            self.map_y_max - self.map_y_min + 1
+        ) * TILE_SIZE
+
+        if scene_width <= 0 or scene_height <= 0:
+            return scene_x, scene_y, False
+
+        off_map = (
+            scene_x < 0
+            or scene_x > scene_width
+            or scene_y < 0
+            or scene_y > scene_height
+        )
+
+        margin = max(0.0, float(margin))
+
+        min_x = min(margin, scene_width / 2.0)
+        max_x = max(min_x, scene_width - margin)
+        min_y = min(margin, scene_height / 2.0)
+        max_y = max(min_y, scene_height - margin)
+
+        clamped_x = min(
+            max(scene_x, min_x),
+            max_x,
+        )
+        clamped_y = min(
+            max(scene_y, min_y),
+            max_y,
+        )
+
+        return clamped_x, clamped_y, off_map
+    
 
     def scene_to_latlon(self, scene_x, scene_y):
         world_x = scene_x + self.map_x_min * TILE_SIZE
@@ -504,6 +555,7 @@ class TacticalMapView(QtCore.QObject):
         merc_y = math.pi * (1.0 - 2.0 * world_y / (n * TILE_SIZE))
         lat = math.degrees(math.atan(math.sinh(merc_y)))
         return lat, lon
+
 
     def meters_to_scene_pixels(self, lat, meters):
         """Approximate meter radius in scene pixels at the current zoom/latitude."""
@@ -528,6 +580,7 @@ class TacticalMapView(QtCore.QObject):
         self.graphics_view.setRenderHint(QtGui.QPainter.Antialiasing, True)
         self.graphics_view.setRenderHint(QtGui.QPainter.SmoothPixmapTransform, True)
         self.graphics_view.wheelEvent = self._wheel_event
+
 
     def _wheel_event(self, event):
         if not self.map_available_zooms or self.map_zoom is None:
@@ -560,6 +613,7 @@ class TacticalMapView(QtCore.QObject):
 
         event.accept()
 
+
     def _initial_center_latlon(self):
         bounds = self.map_manifest.get("bounds", {})
         if all(k in bounds for k in ("north", "south", "west", "east")):
@@ -568,6 +622,7 @@ class TacticalMapView(QtCore.QObject):
             return center_lat, center_lon
 
         return 42.1503, -76.9517
+
 
     def _load_tiles_for_current_zoom(self):
         missing = 0
@@ -614,6 +669,7 @@ class TacticalMapView(QtCore.QObject):
         print("loaded tiles:", loaded)
         print("missing tiles:", missing)
 
+
     def _missing_tile_pixmap(self, x, y):
         pixmap = QtGui.QPixmap(TILE_SIZE, TILE_SIZE)
         pixmap.fill(QtGui.QColor("#f0f0f0"))
@@ -626,6 +682,7 @@ class TacticalMapView(QtCore.QObject):
         painter.drawText(20, 105, f"y={y}")
         painter.end()
         return pixmap
+
 
     def _add_reference_points(self, points):
         colors = {
@@ -658,11 +715,13 @@ class TacticalMapView(QtCore.QObject):
 
             self.reference_items.extend([marker, label])
 
+
     def _update_scene_rect(self):
         scene_width = (self.map_x_max - self.map_x_min + 1) * TILE_SIZE
         scene_height = (self.map_y_max - self.map_y_min + 1) * TILE_SIZE
         self.scene.setSceneRect(0, 0, scene_width, scene_height)
 
+    
     def _add_or_update_marker(
         self,
         collection,
@@ -681,7 +740,25 @@ class TacticalMapView(QtCore.QObject):
     ):
         self._remove_marker(collection, item_id)
 
-        x, y = self.latlon_to_scene(lat, lon)
+        true_x, true_y = self.latlon_to_scene(
+            lat,
+            lon,
+        )
+
+        x, y, off_map = self._clamp_scene_point(
+            true_x,
+            true_y,
+            margin=radius + 2,
+        )
+
+        normalized_status = str(
+            status or ""
+        ).strip().lower()
+
+        disconnected = (
+            marker_kind == "node"
+            and normalized_status == "disconnected"
+        )
 
         marker = TacticalMarkerItem(
             x - radius,
@@ -693,19 +770,102 @@ class TacticalMapView(QtCore.QObject):
             click_callback=click_callback,
         )
 
-        marker.setPen(QtGui.QPen(QtCore.Qt.black))
-        marker.setBrush(QtGui.QBrush(color))
+        if disconnected:
+            marker.setPen(
+                QtGui.QPen(
+                    QtGui.QColor("#555555"),
+                    2,
+                    QtCore.Qt.DashLine,
+                )
+            )
+            marker.setBrush(
+                QtGui.QBrush(
+                    QtGui.QColor("#808080")
+                )
+            )
+        else:
+            marker.setPen(
+                QtGui.QPen(QtCore.Qt.black)
+            )
+            marker.setBrush(
+                QtGui.QBrush(color)
+            )
+
         marker.setZValue(z_value)
         self.scene.addItem(marker)
 
-        # Label with outline for readability on OSM and satellite maps
+        # Label with outline for readability on OSM and satellite maps.
         font = QtGui.QFont()
         font.setBold(True)
         font.setPointSize(10)
 
         label_text = str(label)
-        label_x = x + radius + 3
+
+        if off_map:
+            label_text = f"{label_text} [off map]"
+
+        # Measure the rendered text so off-map labels can flip direction
+        # only when a map edge requires it. Normal marker spacing is preserved.
+        measure_item = QtWidgets.QGraphicsTextItem(
+            label_text
+        )
+        measure_item.setFont(font)
+        label_rect = measure_item.boundingRect()
+
+        scene_width = (
+            self.map_x_max - self.map_x_min + 1
+        ) * TILE_SIZE
+        scene_height = (
+            self.map_y_max - self.map_y_min + 1
+        ) * TILE_SIZE
+
+        hit_right_edge = (
+            off_map
+            and true_x > scene_width
+        )
+        hit_top_edge = (
+            off_map
+            and true_y < 0
+        )
+
+        # Preserve the original above/right spacing unless an off-map marker
+        # lands on an edge that requires the label to flip.
+        if hit_right_edge:
+            label_x = (
+                x
+                - radius
+                - 3
+                - label_rect.width()
+            )
+        else:
+            label_x = x + radius + 3
+
         label_y = y - 18
+
+        # Final safety clamp for unusually long labels or very small map packs.
+        if scene_width > 0:
+            max_label_x = max(
+                2.0,
+                scene_width
+                - label_rect.width()
+                - 2.0,
+            )
+            label_x = min(
+                max(label_x, 2.0),
+                max_label_x,
+            )
+
+        if scene_height > 0:
+            max_label_y = max(
+                2.0,
+                scene_height
+                - label_rect.height()
+                - 2.0,
+            )
+            label_y = min(
+                max(label_y, 2.0),
+                max_label_y,
+            )
 
         outline_items = []
         outline_offsets = [
@@ -720,25 +880,50 @@ class TacticalMapView(QtCore.QObject):
         ]
 
         for dx, dy in outline_offsets:
-            outline = QtWidgets.QGraphicsTextItem(label_text)
+            outline = QtWidgets.QGraphicsTextItem(
+                label_text
+            )
             outline.setFont(font)
-            outline.setDefaultTextColor(QtGui.QColor(0, 0, 0, 180))
-            outline.setPos(label_x + dx, label_y + dy)
+            outline.setDefaultTextColor(
+                QtGui.QColor(0, 0, 0, 180)
+            )
+            outline.setPos(
+                label_x + dx,
+                label_y + dy,
+            )
             outline.setZValue(z_value + 1)
             self.scene.addItem(outline)
             outline_items.append(outline)
 
-        text = QtWidgets.QGraphicsTextItem(label_text)
+        text = QtWidgets.QGraphicsTextItem(
+            label_text
+        )
         text.setFont(font)
-        text.setDefaultTextColor(QtGui.QColor("#ffffff"))
-        text.setPos(label_x, label_y)
+        text.setDefaultTextColor(
+            QtGui.QColor("#ffffff")
+        )
+        text.setPos(
+            label_x,
+            label_y,
+        )
         text.setZValue(z_value + 2)
         self.scene.addItem(text)
 
-        items = [marker] + outline_items + [text]
+        items = [
+            marker,
+            *outline_items,
+            text,
+        ]
 
-        if marker_kind == "node" and active:
-            active_dot_radius = max(3, int(radius * 0.35))
+        if (
+            marker_kind == "node"
+            and active
+            and not disconnected
+        ):
+            active_dot_radius = max(
+                3,
+                int(radius * 0.35),
+            )
 
             active_dot = self.scene.addEllipse(
                 x - active_dot_radius,
@@ -752,30 +937,55 @@ class TacticalMapView(QtCore.QObject):
             active_dot.setZValue(z_value + 3)
             items.append(active_dot)
 
-        if self.show_ce_rings and ce_m is not None and ce_m > 0:
-            ce_px = self.meters_to_scene_pixels(lat, ce_m)
+        # A CE ring is geographically meaningful only around the true target
+        # position. Do not draw one around an edge-clamped surrogate position.
+        if (
+            self.show_ce_rings
+            and not off_map
+            and ce_m is not None
+            and ce_m > 0
+        ):
+            ce_px = self.meters_to_scene_pixels(
+                lat,
+                ce_m,
+            )
+
             if ce_px is not None and ce_px > 0:
                 ring = self.scene.addEllipse(
                     x - ce_px,
                     y - ce_px,
                     ce_px * 2,
                     ce_px * 2,
-                    QtGui.QPen(QtGui.QColor("#ffffff"), 2, QtCore.Qt.DashLine),
-                    QtGui.QBrush(QtCore.Qt.transparent),
+                    QtGui.QPen(
+                        QtGui.QColor("#ffffff"),
+                        2,
+                        QtCore.Qt.DashLine,
+                    ),
+                    QtGui.QBrush(
+                        QtCore.Qt.transparent
+                    ),
                 )
                 ring.setZValue(z_value - 1)
                 items.append(ring)
 
         collection[item_id] = {
+            # Preserve the authoritative location exactly as received.
             "lat": lat,
             "lon": lon,
             "label": label,
             "active": active,
             "status": status,
+
+            # Dashboard-rendering metadata only.
+            "scene_x": x,
+            "scene_y": y,
+            "off_map": off_map,
+
             "items": items,
         }
 
         return collection[item_id]
+    
     
     def _remove_marker(self, collection, item_id):
         marker_record = collection.pop(item_id, None)
@@ -785,9 +995,11 @@ class TacticalMapView(QtCore.QObject):
         for item in marker_record.get("items", []):
             self.scene.removeItem(item)
 
+
     def _clear_collection(self, collection):
         for item_id in list(collection.keys()):
             self._remove_marker(collection, item_id)
+
 
     def _show_error_scene(self, title, detail):
         self.scene.clear()
@@ -797,6 +1009,7 @@ class TacticalMapView(QtCore.QObject):
         text.setDefaultTextColor(QtGui.QColor("#111111"))
         text.setPos(20, 20)
         text.setZValue(10)
+
 
     def _replot_overlays(self):
         """Redraw persistent node/target/alert records after scene reload."""
@@ -913,17 +1126,34 @@ class TacticalMapView(QtCore.QObject):
             ("soi", self.soi_items),
         ]:
             for marker_id, record in collection.items():
-                lat = record.get("lat")
-                lon = record.get("lon")
+                x = record.get("scene_x")
+                y = record.get("scene_y")
 
-                if lat is None or lon is None:
-                    continue
+                if x is None or y is None:
+                    lat = record.get("lat")
+                    lon = record.get("lon")
 
-                x, y = self.latlon_to_scene(lat, lon)
-                distance = math.hypot(scene_pos.x() - x, scene_pos.y() - y)
+                    if lat is None or lon is None:
+                        continue
+
+                    x, y = self.latlon_to_scene(
+                        lat,
+                        lon,
+                    )
+
+                distance = math.hypot(
+                    scene_pos.x() - x,
+                    scene_pos.y() - y,
+                )
 
                 if distance <= pixel_radius:
-                    matches.append((marker_kind, marker_id, record))
+                    matches.append(
+                        (
+                            marker_kind,
+                            marker_id,
+                            record,
+                        )
+                    )
 
         return matches
 

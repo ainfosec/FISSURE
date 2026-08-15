@@ -190,8 +190,7 @@ class OperationMain(Operation):
         if not self.artifact_manager:
             raise RuntimeError("take_photo requires artifact_manager to be passed in")
 
-        folder = os.path.join(FISSURE_ROOT, "artifacts", self.operation_id, "files")
-        os.makedirs(folder, exist_ok=True)
+        _, folder = self.artifact_manager.create_operation_dir(self.operation_id)
 
         meta = {
             "role": "photo_capture_v1",

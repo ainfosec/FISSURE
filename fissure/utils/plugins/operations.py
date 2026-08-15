@@ -14,7 +14,7 @@ from typing import Dict, Any, Union, Callable
 from fissure.Sensor_Node.utils.resources import Resource
 from fissure.utils.artifacts import ArtifactManager, get_artifact_manager
 
-_base_params = ['self', 'node_uid', 'logger', 'alert_callback', 'tak_cot_callback', 'status_callback', 'target_callback', 'soi_callback', 'artifact_manager']
+_base_params = ['self', 'node_uid', 'logger', 'alert_callback', 'tak_cot_callback', 'detection_callback', 'status_callback', 'target_callback', 'soi_callback', 'artifact_manager']
 
 async def send_alert(node_uid: str, opid: str, message: str, logger=logging.getLogger(__name__)) -> None:
     """Placeholder for alert callback if none is provided.
@@ -29,6 +29,18 @@ async def send_alert(node_uid: str, opid: str, message: str, logger=logging.getL
         The alert message.
     """
     logger.info(f"Alert {node_uid}, {opid}: {message}")
+
+
+async def send_detection(detection: Dict[str, Any], logger=logging.getLogger(__name__)) -> None:
+    """Placeholder for detection callback if none is provided.
+
+    Parameters
+    ----------
+    detection : Dict[str, Any]
+        Structured detection emitted by a detector operation.
+    """
+    logger.info(f"Detection: {detection}")
+
 
 async def send_tak_cot(node_uid: str, opid: str, uid: str, remarks: str, lat: Union[float, bool] = True, lon: Union[float, bool] = True, alt: Union[float, bool] = True, time: Union[float, bool] = True, type: str="a-f-G-U-H", logger=logging.getLogger(__name__)) -> None:
     """Placeholder for TAK CoT callback if none is provided.
@@ -201,6 +213,7 @@ class Operation(object):
             logger: logging.Logger = logging.getLogger(__name__), 
             alert_callback: Union[Callable, None] = None, 
             tak_cot_callback: Union[Callable, None] = None, 
+            detection_callback: Union[Callable, None] = None, 
             status_callback: Union[Callable, None] = None, 
             target_callback: Union[Callable, None] = None, 
             soi_callback: Union[Callable, None] = None, 
@@ -218,6 +231,8 @@ class Operation(object):
             Callback function for alerts, by default None for logger-only alerts
         tak_cot_callback : Union[Callable, None], optional
             Callback function for TAK CoT messages, by default None for logger-only TAK CoT messages
+        detection_callback : Union[Callable, None], optional
+            Callback function for structured detections, by default None for logger-only detections
         status_callback : Union[Callable, None], optional
             Callback function for reporting status to TAK and Dashboard
         target_callback : Union[Callable, None], optional
@@ -234,6 +249,8 @@ class Operation(object):
             alert_callback = send_alert
         if tak_cot_callback is None:
             tak_cot_callback = send_tak_cot
+        if detection_callback is None:
+            detection_callback = send_detection
         if status_callback is None:
             status_callback = send_status
         if target_callback is None:
@@ -242,6 +259,7 @@ class Operation(object):
             soi_callback = send_soi                
         self.alert_callback = alert_callback
         self.tak_cot_callback = tak_cot_callback
+        self.detection_callback = detection_callback
         self.status_callback = status_callback
         self.target_callback = target_callback
         self.soi_callback = soi_callback
@@ -253,6 +271,7 @@ class Operation(object):
         # unique operation ID
         self.opid = str(uuid.uuid4())
 
+
     def __init_subclass__(cls, **kwargs):
         super().__init_subclass__(**kwargs)
 
@@ -262,6 +281,7 @@ class Operation(object):
         setattr(cls, 'stop', stop_decorator(cls.stop))
         setattr(cls, 'teardown', teardown_decorator(cls.teardown))
 
+
     def __repr__(self):
         sig = inspect.signature(self.__init__)
         params = list(sig.parameters.keys())
@@ -269,6 +289,7 @@ class Operation(object):
             if p in params:
                 params.remove(p)
         return f"{self.__class__.__name__}(node_uid={self.node_uid}" + ''.join([f", {p}={getattr(self, p)}" for p in params]) + ")"
+
 
     @classmethod
     def get_arguments(cls, logger: logging.Logger = logging.getLogger(__name__)) -> Dict[str, Any]:
@@ -428,6 +449,26 @@ class Operation(object):
         """
         self.logger.warning("The run() method should be implemented by the subclass.")
 
+    async def _sleep_stop_aware(self, duration_s: float, check_interval_s: float = 0.1) -> bool:
+        """Sleep for a duration while remaining responsive to an operation stop request.
+
+        Returns True when the full duration elapses, or False when ``self._stop``
+        becomes set before the duration completes.
+        """
+        duration_s = max(0.0, float(duration_s))
+        check_interval_s = max(0.01, float(check_interval_s))
+        loop = asyncio.get_running_loop()
+        deadline = loop.time() + duration_s
+
+        while not self._stop:
+            remaining_s = deadline - loop.time()
+            if remaining_s <= 0:
+                return True
+
+            await asyncio.sleep(min(check_interval_s, remaining_s))
+
+        return False
+
     def running(self) -> bool:
         """
         Check if operation is running.
@@ -451,79 +492,106 @@ class Operation(object):
         """
         return
 
-    def create_artifact(self, file_path: str, name: str, artifact_type: str, metadata: Union[dict, None] = None) -> str:
-        """Create an artifact record for a file generated by the operation.
-
-        This method creates an artifact record in the system and returns the artifact ID.
-
-        Parameters
-        ----------
-        file_path : str
-            The file path of the artifact.
-        name : str
-            The name of the artifact.
-        artifact_type : str
-            The type of the artifact (e.g., "log", "data", "image").
-        metadata : Union[dict, None], optional
-            Additional metadata for the artifact, by default None
-
-        Returns
-        -------
-        str
-            The artifact ID.
+    def create_artifact(
+        self,
+        files,
+        name: str,
+        artifact_type: str,
+        metadata: Union[dict, None] = None,
+        relations=None,
+        file_metadata: Union[Dict[str, Dict[str, Any]], None] = None,
+    ) -> str:
         """
-        try:
-            return self.artifact_manager.create_artifact(
-                source_id=str(self.node_uid),
-                operation_id=self.opid,
-                file_path=file_path,
-                name=name,
-                artifact_type=artifact_type,
-                metadata=metadata or {}
-            )
-        except Exception as e:
-            self.logger.error(f"Failed to create artifact: {e}")
-            return ""
+        Register one logical artifact containing one or more files generated by
+        this operation.
 
-    def update_artifact(self, artifact_id: str, file_path: Union[str, None] = None, metadata: Union[Dict[str, Any], None] = None) -> bool:
-        """Update the metadata of an existing artifact.
-
-        Parameters
-        ----------
-        artifact_id : str
-            The ID of the artifact to update.
-        file_path : str, optional
-            The new file path for the artifact.
-        metadata : dict, optional
-            The metadata to update.
-
-        Returns
-        -------
-        bool
-            True if the update was successful, False otherwise.
+        ArtifactManager owns manifest creation, file IDs, relative paths,
+        checksums, sizes, totals, validation, and persistence.
         """
         if not self.artifact_manager:
-            self.logger.error("Artifact manager is not initialized.")
+            self.logger.error(
+                "Artifact manager is not initialized."
+            )
+            return ""
+
+        try:
+            return self.artifact_manager.create_artifact(
+                source_id=str(
+                    self.node_uid or "sensor_node"
+                ),
+                operation_id=self.opid,
+                files=files,
+                name=name,
+                artifact_type=artifact_type,
+                metadata=metadata or {},
+                relations=relations,
+                file_metadata=file_metadata,
+            )
+
+        except Exception as exc:
+            self.logger.error(
+                "Failed to create artifact: %s",
+                exc,
+            )
+            return ""
+
+    def update_artifact(
+        self,
+        artifact_id: str,
+        files=None,
+        metadata: Union[Dict[str, Any], None] = None,
+        relations=None,
+        file_metadata: Union[
+            Dict[str, Dict[str, Any]],
+            None,
+        ] = None,
+    ) -> bool:
+        """
+        Update the files, metadata, or relations of an artifact owned by this
+        operation.
+        """
+        if not self.artifact_manager:
+            self.logger.error(
+                "Artifact manager is not initialized."
+            )
             return False
 
-        artifact = self.artifact_manager.get_artifact(artifact_id)
+        artifact = self.artifact_manager.get_artifact(
+            artifact_id
+        )
+
         if artifact is None:
-            self.logger.error(f"Artifact {artifact_id} not found.")
+            self.logger.error(
+                "Artifact %s not found.",
+                artifact_id,
+            )
             return False
 
         if artifact.operation_id != self.opid:
-            self.logger.error(f"Artifact {artifact_id} does not belong to operation {self.opid}.")
+            self.logger.error(
+                "Artifact %s does not belong to operation %s.",
+                artifact_id,
+                self.opid,
+            )
             return False
 
         try:
             return self.artifact_manager.update_artifact(
                 artifact_id=artifact_id,
-                file_path=file_path,
-                metadata=metadata
+                files=files,
+                metadata=metadata,
+                relations=relations,
+                file_metadata=file_metadata,
             )
-        except Exception as e:
-            self.logger.error(f"Failed to update artifact {artifact_id}: {e}")
+
+        except Exception as exc:
+            self.logger.error(
+                "Failed to update artifact %s: %s",
+                artifact_id,
+                exc,
+            )
             return False
+        
 
 def main(*args, **kwargs) -> object:
     """Create an instance of the operation class.

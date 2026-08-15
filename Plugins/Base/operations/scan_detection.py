@@ -162,6 +162,7 @@ class OperationMain(Operation):
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Union[Callable, None] = None,
         tak_cot_callback: Union[Callable, None] = None,
+        detection_callback: Union[Callable, None] = None,
         status_callback: Union[Callable, None] = None,
         **kwargs,
     ) -> None:
@@ -170,6 +171,7 @@ class OperationMain(Operation):
             logger=logger,
             alert_callback=alert_callback,
             tak_cot_callback=tak_cot_callback,
+            detection_callback=detection_callback,
             status_callback=status_callback,
         )
 
@@ -681,30 +683,15 @@ class OperationMain(Operation):
             f"opid={self.opid}"
         )
 
-        if self.tak_cot_callback:
+        if self.detection_callback:
             try:
-                await asyncio.wait_for(
-                    self.tak_cot_callback(
-                        {
-                            "msg_type": "event",
-                            "uid": f"scan-detection-{self.node_uid}-{int(ts)}",
-                            "lat": True,
-                            "lon": True,
-                            "alt": True,
-                            "time": True,
-                            "data": detection,
-                            "opid": self.opid,
-                            "tak_icon": "r-x-fissure-detection",
-                        }
-                    ),
-                    timeout=cb_timeout_s,
-                )
+                await asyncio.wait_for(self.detection_callback(detection), timeout=cb_timeout_s)
             except asyncio.CancelledError:
                 raise
             except Exception:
-                self.logger.exception("[SCAN] tak_cot_callback failed")
+                self.logger.exception("[SCAN] detection_callback failed")
         else:
-            self.logger.warning("[SCAN] No tak_cot_callback configured")
+            self.logger.warning("[SCAN] No detection_callback configured")
 
         if self.alert_callback:
             try:

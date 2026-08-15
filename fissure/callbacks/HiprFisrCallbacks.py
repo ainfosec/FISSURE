@@ -7,6 +7,8 @@ import xml.etree.ElementTree as ET
 
 import base64
 import binascii
+import json
+import re
 import fissure.comms
 import fissure.utils
 import fissure.utils.library
@@ -14,7 +16,6 @@ from fissure.utils.common import PLUGIN_DIR
 from fissure.utils import plugin
 from fissure.utils import plugin_editor
 from fissure.utils.artifacts import ArtifactTracker
-from fissure.utils.tak_messages import create_artifact_data_package
 import os
 import time
 import yaml
@@ -27,6 +28,7 @@ import importlib
 import traceback
 import zmq
 from datetime import datetime, timezone
+import uuid
 from fissure.Listeners import (
     MeshtasticListener,
     FilesystemListener,
@@ -836,32 +838,6 @@ async def stopTSI_Conditioner(component):
 # ############################# From TSI #################################
 
 
-async def conditionerProgressBarReturn(component: object, progress=0, file_index=0):
-    """."""
-    # Forward Message to Dashboard
-    PARAMETERS = {"progress": progress, "file_index": file_index}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "conditionerProgressBarReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def tsiConditionerFinished(component: object, table_strings=[]):
-    """."""
-    # Forward Message to Dashboard
-    PARAMETERS = {"table_strings": table_strings}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "tsiConditionerFinished",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
 async def feProgressBarReturn(component: object, progress=0, file_index=0):
     """."""
     # Forward Message to Dashboard
@@ -1067,32 +1043,6 @@ async def transferSensorNodeFile(
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "transferSensorNodeFile",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def deleteArchiveReplayFiles(component: object, node_uid=""):
-    """
-    Deletes all the files in the Archive_Replay folder on the sensor node ahead of file transfer for replay.
-    """
-    # Send Message
-    PARAMETERS = {"node_uid": node_uid}
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "deleteArchiveReplayFiles",
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
     }
 
@@ -1432,84 +1382,6 @@ async def multiStageAttackStop(component: object, node_uid="", autorun_index=0):
     )
 
 
-async def archivePlaylistStart(
-    component: object,
-    node_uid="",
-    flow_graph="",
-    filenames=[],
-    frequencies=[],
-    sample_rates=[],
-    formats=[],
-    channels=[],
-    gains=[],
-    durations=[],
-    repeat=False,
-    ip_address="",
-    serial="",
-    trigger_values=[]
-):
-    """
-    Sends message to Sensor Node to start the archive playlist.
-    """
-    # Send Message to Sensor Node
-    PARAMETERS = {
-        "flow_graph": flow_graph,
-        "filenames": filenames,
-        "frequencies": frequencies,
-        "sample_rates": sample_rates,
-        "formats": formats,
-        "channels": channels,
-        "gains": gains,
-        "durations": durations,
-        "repeat": repeat,
-        "ip_address": ip_address,
-        "serial": serial,
-        "trigger_values": trigger_values
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistStart",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def archivePlaylistStop(component: object, node_uid=""):
-    """
-    Sends message to Sensor Node to stop the archive playlist.
-    """
-    # Send Message to Sensor Node
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistStop",
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
 async def attackFlowGraphStop(component: object, node_uid="", parameter="", autorun_index=0):
     """
     Sends message to Sensor Node to stop a running attack flow graph.
@@ -1622,65 +1494,6 @@ async def iqFlowGraphStop(component: object, node_uid="", parameter=""):
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "iqFlowGraphStop",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def inspectionFlowGraphStart(
-    component: object, node_uid="", flow_graph_filepath="", variable_names=[], variable_values=[], file_type=""
-):
-    """
-    Command for starting an inspection flow graph.
-    """
-    # Send Message to Sensor Node
-    PARAMETERS = {
-        "flow_graph_filepath": flow_graph_filepath,
-        "variable_names": variable_names,
-        "variable_values": variable_values,
-        "file_type": file_type,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "inspectionFlowGraphStart",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    # Resolve Identity
-    identity = component.nodes[node_uid].get("identity", None)
-    if identity is None:
-        return
-    
-    # Send through ROUTER
-    await component.sensor_node_router.send_msg(
-        fissure.comms.MessageTypes.COMMANDS,
-        msg,
-        target_ids=[identity]
-    )
-
-
-async def inspectionFlowGraphStop(component: object, node_uid="", parameter=""):
-    """
-    Command for stopping an inspection flow graph.
-    """
-    # Send Message to Sensor Node,PD
-    PARAMETERS = {
-        "parameter": parameter
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "inspectionFlowGraphStop",
         fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
     }
 
@@ -2541,6 +2354,46 @@ async def queryPluginActionsResults(
         )
 
 
+async def sensorNodeFileTransferStatus(
+    component: object,
+    uuid="",
+    transfer_id="",
+    success=False,
+    message="",
+    remote_filepath="",
+    remote_folder="",
+    bytes_received=0,
+    elapsed_seconds=0.0,
+    mib_per_second=0.0,
+    refresh_file_list=False,
+):
+    """Forward Sensor Node binary file-transfer completion to Dashboard."""
+    parameters = {
+        "node_uid": uuid,
+        "transfer_id": transfer_id,
+        "success": bool(success),
+        "message": message,
+        "remote_filepath": remote_filepath,
+        "remote_folder": remote_folder,
+        "bytes_received": int(bytes_received),
+        "elapsed_seconds": float(elapsed_seconds),
+        "mib_per_second": float(mib_per_second),
+        "refresh_file_list": bool(refresh_file_list),
+    }
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "sensorNodeFileTransferStatus",
+        fissure.comms.MessageFields.PARAMETERS: parameters,
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
 async def refreshSensorNodeFilesResults(
     component: object, node_uid="", filepaths=[], file_sizes=[], file_types=[], modified_dates=[]
 ):
@@ -2606,36 +2459,6 @@ async def flowGraphError(component: object, node_uid="", error=""):
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def archivePlaylistFinished(component: object, node_uid=""):
-    """
-    Forwards the Archive playlist finished message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistFinished",
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def archivePlaylistPosition(component: object, node_uid="", position=0):
-    """
-    Forwards the Archive playlist position to the Dashboard.
-    """
-    # Send the Message
-    PARAMETERS = {
-        "position": position
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistPosition",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
 async def multiStageAttackFinished(component: object, node_uid=""):
     """
     Forwards the multi-stage attack finished message to the Dashboard.
@@ -2666,18 +2489,6 @@ async def flowGraphFinishedSniffer(component: object, node_uid="", category=""):
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def flowGraphFinishedIQ_Inspection(component: object, node_uid=""):
-    """
-    Forwards the flow graph finished IQ inspection message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphFinishedIQ_Inspection",
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
 
 async def flowGraphFinishedIQ_Playback(component: object, node_uid=""):
     """
@@ -2687,19 +2498,6 @@ async def flowGraphFinishedIQ_Playback(component: object, node_uid=""):
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphFinishedIQ_Playback",
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def flowGraphFinishedIQ(component: object, node_uid=""):
-    """
-    Forwards the flow graph finished IQ message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphFinishedIQ",
     }
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
@@ -2739,19 +2537,6 @@ async def flowGraphStartedSniffer(component: object, node_uid="", category=""):
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def flowGraphStartedIQ_Inspection(component: object, node_uid=""):
-    """
-    Forwards the flow graph started IQ inspection message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphStartedIQ_Inspection",
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
 async def flowGraphStartedIQ_Playback(component: object, node_uid=""):
     """
     Forwards the flow graph started IQ playback message to the Dasbhoard.
@@ -2760,19 +2545,6 @@ async def flowGraphStartedIQ_Playback(component: object, node_uid=""):
     msg = {
         fissure.comms.MessageFields.IDENTIFIER: component.identifier,
         fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphStartedIQ_Playback",
-    }
-    if component.dashboard_connected:
-        await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-async def flowGraphStartedIQ(component: object, node_uid=""):
-    """
-    Forwards the flow graph started IQ message to the Dashboard.
-    """
-    # Send the Message
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphStartedIQ",
     }
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
@@ -2884,38 +2656,39 @@ async def hardwareGuessResults(
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-async def saveFile(component: object, node_uid="", operation="", filepath="", data=""):
+async def saveFile(
+    component: object,
+    node_uid="",
+    operation="",
+    filepath="",
+    data="",
+):
     """
-    Saves a file from a remote sensor node to the local HIPRFISR computer.
+    Save a downloaded file from a remote Sensor Node to the HIPRFISR computer.
     """
-    # Save File and Send Message to Dashboard
-    if operation == "IQ":
-        # Save
-        if len(filepath) > 0:
-            with open(filepath, "wb") as file:
-                file.write(binascii.a2b_hex(data))
+    if operation != "Download":
+        return
 
-        # Send Message to Dashboard
-        msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "flowGraphFinishedIQ",
-        }
-        if component.dashboard_connected:
-            await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+    if not filepath:
+        return
 
-    elif operation == "Download":
-        # Save
-        if len(filepath) > 0:
-            with open(filepath, "wb") as file:
-                file.write(binascii.a2b_hex(data))
+    with open(filepath, "wb") as file:
+        file.write(
+            binascii.a2b_hex(data)
+        )
 
-            # Send Message to Dashboard
-            msg = {
-                fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-                fissure.comms.MessageFields.MESSAGE_NAME: "fileDownloaded",
-            }
-            if component.dashboard_connected:
-                await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "fileDownloaded",
+    }
+
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
 
 
 async def findGPS_CoordinatesResults(component: object, coordinates=""):
@@ -2965,6 +2738,159 @@ async def alertReturn(component: object, node_uid="", alert_text=""):
     }
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+async def detectionReturn(
+    component,
+    detection: dict,
+    lat=None,
+    lon=None,
+    alt=None,
+    observation_time=None,
+):
+    """
+    Receive one native FISSURE Detection from a Sensor Node.
+
+    Detections remain transient. HIPRFISR performs any hub-side processing,
+    forwards the structured Detection to the Dashboard/TSI path, and emits a
+    CoT representation for Tactical and external TAK consumers.
+    """
+    if not isinstance(detection, dict):
+        component.logger.error("detectionReturn requires a detection dictionary.")
+        return
+
+    detection = dict(detection)
+    detection["kind"] = "detection"
+    detection["event_type"] = "detection"
+
+    node_uid = str(detection.get("node_uid") or "").strip()
+    if not node_uid:
+        component.logger.warning("detectionReturn received detection without node_uid.")
+
+    detection_id = str(
+        detection.get("detection_id")
+        or uuid.uuid4()
+    ).strip()
+    detection["detection_id"] = detection_id
+
+    operation_id = str(
+        detection.get("opid")
+        or detection.get("operation_id")
+        or ""
+    ).strip()
+
+    if operation_id:
+        detection["opid"] = operation_id
+        detection.setdefault("operation_id", operation_id)
+
+    if lat is None:
+        lat = detection.get("latitude")
+    if lat is None:
+        lat = detection.get("lat")
+
+    if lon is None:
+        lon = detection.get("longitude")
+    if lon is None:
+        lon = detection.get("lon")
+
+    if alt is None:
+        alt = detection.get("altitude")
+    if alt is None:
+        alt = detection.get("alt")
+    if alt is None:
+        alt = detection.get("hae_m")
+    if alt is None:
+        alt = detection.get("hae")
+
+    node_record = {}
+    if node_uid:
+        node_record = (getattr(component, "nodes", {}) or {}).get(node_uid, {}) or {}
+
+    if lat is None:
+        lat = node_record.get("lat")
+    if lon is None:
+        lon = node_record.get("lon")
+    if alt is None:
+        alt = node_record.get("alt")
+
+    if lat is not None:
+        detection.setdefault("latitude", lat)
+    if lon is not None:
+        detection.setdefault("longitude", lon)
+    if alt is not None:
+        detection.setdefault("altitude", alt)
+
+    if not observation_time:
+        observation_time = detection.get("observation_time")
+
+    if not observation_time:
+        detection_timestamp = detection.get("timestamp")
+        try:
+            observation_time = datetime.fromtimestamp(
+                float(detection_timestamp),
+                tz=timezone.utc,
+            ).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
+        except Exception:
+            observation_time = datetime.now(timezone.utc).strftime(
+                "%Y-%m-%dT%H:%M:%S.%fZ"
+            )
+
+    detection.setdefault("observation_time", observation_time)
+
+    detector_name = str(detection.get("detector") or "detection").strip()
+    event_uid = str(
+        detection.get("event_uid")
+        or detection.get("uid")
+        or f"{detector_name}-{node_uid or 'node'}-{detection_id}"
+    ).strip()
+    detection.setdefault("event_uid", event_uid)
+
+    payload = {
+        "msg_type": "event",
+        "uid": event_uid,
+        "lat": lat if lat is not None else 0.0,
+        "lon": lon if lon is not None else 0.0,
+        "alt": alt if alt is not None else 0.0,
+        "time": observation_time,
+        "data": detection,
+        "opid": operation_id,
+        "tak_icon": "r-x-fissure-detection",
+    }
+
+    try:
+        out = maybe_ingest_detection_for_geolocation(component, payload)
+        if out is not None:
+            target_id, patch, history_entry = out
+            await targetPatch(
+                component,
+                target_id=target_id,
+                patch=patch,
+                history_entry=history_entry,
+                artifact_id="",
+            )
+    except Exception as exc:
+        component.logger.error(
+            f"detectionReturn geolocation ingest error: {exc}"
+        )
+
+    if component.dashboard_connected:
+        dashboard_msg = {
+            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME: "detectionReturn",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "detection": detection,
+            },
+        }
+
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            dashboard_msg,
+        )
+
+    await fissure.utils.tak_messages.send(
+        component,
+        payload,
+    )
 
 
 #######################################
@@ -3355,6 +3281,7 @@ async def iwconfigIP_Return(component: object, iwconfig: str):
     }
     if component.dashboard_connected:
         await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg) 
+
 
 
 ##########################################################################
@@ -4703,192 +4630,1137 @@ async def sendPluginActionParametersTak(
     )    
 
 
-async def updateArtifact(component: object, artifact: dict) -> None:
-    """Handle a new or updated artifact event."""
+async def updateArtifact(
+    component: object,
+    artifact: dict,
+) -> None:
+    """
+    Store and publish one canonical manifest-only Artifact record.
+
+    HIPRFISR does not rewrite Sensor Node paths, create sensor:// URIs, or
+    inspect payload files. The declared files manifest is authoritative.
+    """
     if not isinstance(artifact, dict):
-        component.logger.error("Invalid artifact update: artifact is not a dict")
+        component.logger.error(
+            "Invalid artifact update: artifact is not a dict"
+        )
         return
 
-    artifact_id = artifact.get("id")
-    if not artifact_id:
-        component.logger.error("Artifact missing 'id' field")
-        return
-
-    metadata = artifact.get("metadata") or {}
-    if not isinstance(metadata, dict):
-        metadata = {}
-
-    # Canonical artifact source identity.
-    # For Tactical node scoping, this should be the source Sensor Node UID.
-    source_id = (
-        artifact.get("source_id")
-        or metadata.get("source_id")
-        or metadata.get("node_uid")  # Backward-compat fallback only.
+    artifact_id = str(
+        artifact.get("id", "")
         or ""
-    )
+    ).strip()
 
-    if source_id:
-        artifact["source_id"] = source_id
-
-    local_node_uuid = getattr(component, "local_node_uuid", "")
-    is_remote_artifact = bool(source_id) and source_id != local_node_uuid
-
-    def _is_sensor_uri(path: str) -> bool:
-        return isinstance(path, str) and path.startswith("sensor-") and "://" in path
-
-    def _sensor_uri(path: str) -> str:
-        if not path:
-            return ""
-        if _is_sensor_uri(path):
-            return path
-        return f"sensor-{source_id}://{path}"
-
-    def _local_file_matches_checksum(path: str, expected_checksum: str) -> bool:
-        if not path or not expected_checksum:
-            return False
-
-        if not os.path.isfile(path):
-            return False
-
-        try:
-            return fissure.utils.calculate_file_checksum(path) == expected_checksum
-        except Exception:
-            component.logger.exception(
-                f"Failed calculating checksum for artifact file: {path}"
-            )
-            return False
-
-    # Remote artifacts should point to cached local files when available,
-    # otherwise use a sensor URI so the original node can be requested later.
-    if is_remote_artifact:
-        file_path = artifact.get("file_path") or ""
-        checksum = artifact.get("checksum") or ""
-
-        existing_artifact = component.artifact_tracker.get_artifact(artifact_id)
-
-        existing_file_path = ""
-        if existing_artifact:
-            existing_checksum = existing_artifact.get("checksum") or ""
-            candidate_path = existing_artifact.get("file_path") or ""
-
-            if (
-                checksum
-                and existing_checksum == checksum
-                and candidate_path
-                and os.path.isfile(candidate_path)
-            ):
-                existing_file_path = candidate_path
-
-        if existing_file_path:
-            artifact["file_path"] = existing_file_path
-        elif _local_file_matches_checksum(file_path, checksum):
-            artifact["file_path"] = file_path
-        elif file_path:
-            artifact["file_path"] = _sensor_uri(file_path)
-        else:
-            component.logger.warning(
-                f"Remote artifact {artifact_id} from {source_id} has no file_path"
-            )
-
-    # Update artifact tracker even if TAK metadata cannot be emitted.
-    component.artifact_tracker.update_artifact(artifact)
-
-    name = artifact.get("name")
-    if not name:
+    if not artifact_id:
         component.logger.error(
-            "Artifact missing 'name' field, cannot send metadata to TAK"
+            "Artifact missing 'id' field"
         )
         return
 
-    timestamp = artifact.get("modified_at")
-    if not timestamp:
+    files = artifact.get("files")
+    relations = artifact.get("relations")
+    metadata = artifact.get("metadata")
+
+    if not isinstance(files, list):
         component.logger.error(
-            "Artifact missing 'modified_at' field, cannot send metadata to TAK"
+            "Artifact %s has no valid files manifest",
+            artifact_id,
         )
         return
 
-    operation_id = artifact.get("operation_id", "")
+    if not isinstance(relations, list):
+        component.logger.error(
+            "Artifact %s has no valid relations list",
+            artifact_id,
+        )
+        return
 
-    event_uid_source = source_id or "unknown-source"
-    event_uid = f"{event_uid_source}-artifact_metadata-{int(time.time() * 1000)}"
+    if not isinstance(metadata, dict):
+        component.logger.error(
+            "Artifact %s has no valid metadata object",
+            artifact_id,
+        )
+        return
+
+    try:
+        component.artifact_tracker.update_artifact(
+            artifact
+        )
+    except Exception:
+        component.logger.exception(
+            "Failed storing artifact %s",
+            artifact_id,
+        )
+        return
+
+    source_id = str(
+        artifact.get("source_id", "")
+        or ""
+    ).strip()
+
+    if component.dashboard_connected:
+        dashboard_msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "sendArtifactsListTakReturn",
+            fissure.comms.MessageFields.PARAMETERS: {
+                "node_uid": source_id,
+                "artifacts": [artifact],
+            },
+        }
+
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            dashboard_msg,
+        )
+
+    name = str(
+        artifact.get("name", "")
+        or ""
+    ).strip()
+    timestamp = str(
+        artifact.get("modified_at", "")
+        or artifact.get("created_at", "")
+        or ""
+    ).strip()
+
+    if not name or not timestamp:
+        component.logger.error(
+            "Artifact %s cannot emit TAK metadata "
+            "without name and timestamp",
+            artifact_id,
+        )
+        return
 
     msg = {
         "msg_type": "event",
-        "uid": event_uid,
+        "uid": (
+            f"{source_id or 'unknown-source'}"
+            f"-artifact_metadata-"
+            f"{int(time.time() * 1000)}"
+        ),
         "data": {
             "event_type": "artifact_metadata",
             "name": name,
             "timestamp": timestamp,
             "artid": artifact_id,
-            "operation_id": operation_id,
+            "operation_id": str(
+                artifact.get(
+                    "operation_id",
+                    "",
+                )
+                or ""
+            ),
             "source_id": source_id,
+            "artifact_type": str(
+                artifact.get(
+                    "artifact_type",
+                    "",
+                )
+                or ""
+            ),
+            "file_count": int(
+                artifact.get(
+                    "file_count",
+                    len(files),
+                )
+                or len(files)
+            ),
+            "total_size": int(
+                artifact.get(
+                    "total_size",
+                    sum(
+                        int(
+                            item.get("size", 0)
+                            or 0
+                        )
+                        for item in files
+                        if isinstance(
+                            item,
+                            dict,
+                        )
+                    ),
+                )
+                or 0
+            ),
         },
     }
 
-    await fissure.utils.tak_messages.send(component, msg)
+    await fissure.utils.tak_messages.send(
+        component,
+        msg,
+    )
 
 
-async def transferArtifactRequest(component: object, artifact_id: str, destination: str, data: Optional[bytes]) -> None:
-    """Handle Artifact Transfer Request
+async def requestDashboardArtifactTransfer(
+        component: object,
+        transfer_id: str,
+        artifact_id: str,
+    ) -> None:
+    """Coordinate one Sensor Node-to-Dashboard artifact stream."""
+    artifact = component.artifact_tracker.get_artifact(artifact_id)
+    if artifact is None:
+        await _send_dashboard_artifact_status(
+            component, transfer_id, artifact_id, False, "Artifact metadata not found"
+        )
+        return
 
-    Parameters
-    ----------
-    component : object
-        Component
-    artifact_id : str
-        Artifact ID
-    destination : str
-        Destination path, currently supported: 'tak', 'hiprfisr'
-    data : Optional[bytes]
-        File data if sent from source
+    source_id = artifact.source_id
+    identity = component.nodes.get(source_id, {}).get("identity")
+    if identity is None:
+        await _send_dashboard_artifact_status(
+            component, transfer_id, artifact_id, False, "Source Sensor Node is unavailable"
+        )
+        return
+
+    if not component.artifact_transfer_router.register_transfer(
+        transfer_id, fissure.comms.ROLE_DASHBOARD
+    ):
+        await _send_dashboard_artifact_status(
+            component, transfer_id, artifact_id, False, "Dashboard transfer channel is unavailable"
+        )
+        return
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "streamArtifact",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "transfer_id": transfer_id,
+            "artifact_id": artifact_id,
+        },
+    }
+    try:
+        await component.sensor_node_router.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+            target_ids=[identity],
+        )
+    except Exception as exc:
+        component.artifact_transfer_router.remove_transfer(transfer_id)
+        await _send_dashboard_artifact_status(
+            component, transfer_id, artifact_id, False, f"Unable to request artifact stream: {exc}"
+        )
+
+
+async def _send_dashboard_artifact_status(
+        component: object,
+        transfer_id: str,
+        artifact_id: str,
+        success: bool,
+        message: str,
+    ) -> None:
+    if not component.dashboard_connected:
+        return
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME: "dashboardArtifactTransferStatus",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "transfer_id": transfer_id,
+            "artifact_id": artifact_id,
+            "success": success,
+            "message": message,
+        },
+    }
+    await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+
+
+def _collect_record_artifact_ids(
+    record: dict,
+) -> List[str]:
     """
-    artifact_tracker: ArtifactTracker = component.artifact_tracker
+    Return deduplicated artifact IDs from modern and compatibility fields.
+    """
+    if not isinstance(record, dict):
+        return []
 
-    if data is not None:
-        # Received file data; save to local artifact path
-        if not artifact_tracker.save_data(artifact_id, data, compressed=True):
-            component.logger.error(f"Failed to save artifact data for artifact ID {artifact_id}")
-            return
-    else:
-        # No data received; determine if local data exists
-        data = artifact_tracker.get_data(artifact_id)
+    artifact_ids = []
 
-        if data is None:
-            # no local data; request transfer from source
-            node_uid = artifact['source_id']
-            PARAMETERS = {
-                "artifact_id": artifact_id,
-                "destination": destination,
-                "data": None
-            }
-            msg = {
-                fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-                fissure.comms.MessageFields.MESSAGE_NAME: "transferArtifactRequest",
-                fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
+    def add_artifact_id(value):
+        artifact_id = str(
+            value or ""
+        ).strip()
 
-            # Resolve Identity
-            identity = component.nodes[node_uid].get("identity", None)
-            if identity is None:
-                component.logger.error(f"Could not resolve identity for sensor node UUID {node_uid}")
-                return
-            
-            # Send through ROUTER
-            await component.sensor_node_router.send_msg(
-                fissure.comms.MessageTypes.COMMANDS,
-                msg,
-                target_ids=[identity]
+        if (
+            artifact_id
+            and artifact_id not in artifact_ids
+        ):
+            artifact_ids.append(
+                artifact_id
             )
 
-    if data is not None:
-        # Send data to destination
-        if destination == 'tak':
-            # Send artifact via TAK
-            artifact = component.artifact_tracker.get_artifact(artifact_id)
-            await fissure.utils.tak_messages.send_artifact_event(component, artifact, data)
+    modern_ids = record.get(
+        "artifact_ids"
+    )
 
-        elif destination == 'hiprfisr':
-            component.logger.info(f"Artifact {artifact_id} saved to hiprfisr")
+    if isinstance(modern_ids, list):
+        for artifact_id in modern_ids:
+            add_artifact_id(
+                artifact_id
+            )
+
+    modern_links = record.get(
+        "artifact_links"
+    )
+
+    if isinstance(modern_links, list):
+        for link in modern_links:
+            if isinstance(link, dict):
+                add_artifact_id(
+                    link.get("artifact_id")
+                    or link.get("id")
+                )
+            else:
+                add_artifact_id(
+                    link
+                )
+
+    compatibility_id = record.get(
+        "artifact_id"
+    )
+
+    add_artifact_id(
+        compatibility_id
+    )
+
+    return artifact_ids
+
+
+def _render_record_text(
+    value,
+    indent: int = 0,
+) -> List[str]:
+    """
+    Render nested record data into a readable plain-text snapshot.
+    """
+    prefix = " " * indent
+    lines = []
+
+    if isinstance(value, dict):
+        for key, child_value in value.items():
+            label = str(key)
+
+            if isinstance(
+                child_value,
+                (dict, list),
+            ):
+                lines.append(
+                    f"{prefix}{label}:"
+                )
+
+                lines.extend(
+                    _render_record_text(
+                        child_value,
+                        indent + 2,
+                    )
+                )
+            else:
+                lines.append(
+                    f"{prefix}{label}: {child_value}"
+                )
+
+        return lines
+
+    if isinstance(value, list):
+        if not value:
+            return [
+                f"{prefix}[]"
+            ]
+
+        for index, child_value in enumerate(
+            value
+        ):
+            if isinstance(
+                child_value,
+                (dict, list),
+            ):
+                lines.append(
+                    f"{prefix}[{index}]"
+                )
+
+                lines.extend(
+                    _render_record_text(
+                        child_value,
+                        indent + 2,
+                    )
+                )
+            else:
+                lines.append(
+                    f"{prefix}[{index}] {child_value}"
+                )
+
+        return lines
+
+    return [
+        f"{prefix}{value}"
+    ]
+
+
+def _write_record_snapshots(
+    staging_root: str,
+    record_name: str,
+    record: dict,
+) -> None:
+    json_path = os.path.join(
+        staging_root,
+        f"{record_name}_details.json",
+    )
+
+    text_path = os.path.join(
+        staging_root,
+        f"{record_name}_details.txt",
+    )
+
+    with open(
+        json_path,
+        "w",
+        encoding="utf-8",
+    ) as json_handle:
+        json.dump(
+            record,
+            json_handle,
+            indent=2,
+            sort_keys=False,
+            default=str,
+        )
+
+    text_lines = _render_record_text(
+        record
+    )
+
+    with open(
+        text_path,
+        "w",
+        encoding="utf-8",
+    ) as text_handle:
+        text_handle.write(
+            "\n".join(text_lines)
+        )
+        text_handle.write("\n")
+
+
+async def _ensure_hiprfisr_artifact_cached(
+    component: object,
+    artifact_id: str,
+    timeout_seconds: float = 60.0,
+) -> str:
+    """
+    Reuse a verified HIPRFISR cache entry or request the artifact and wait for
+    the existing transfer controller to commit it.
+    """
+    artifact_id = str(
+        artifact_id or ""
+    ).strip()
+
+    if not artifact_id:
+        raise ValueError(
+            "artifact_id is required"
+        )
+
+    controller = (
+        component.artifact_transfer_controller
+    )
+
+    local_path = (
+        controller.get_local_path(
+            artifact_id
+        )
+    )
+
+    if local_path:
+        return local_path
+
+    await transferArtifactRequest(
+        component,
+        artifact_id,
+        "hiprfisr",
+    )
+
+    loop = asyncio.get_running_loop()
+    deadline = (
+        loop.time()
+        + timeout_seconds
+    )
+
+    while loop.time() < deadline:
+        local_path = (
+            controller.get_local_path(
+                artifact_id
+            )
+        )
+
+        if local_path:
+            return local_path
+
+        await asyncio.sleep(
+            0.1
+        )
+
+    raise TimeoutError(
+        "Timed out waiting for artifact "
+        f"{artifact_id}"
+    )
+
+
+def _copy_cached_artifact_to_staging(
+    component: object,
+    artifact_id: str,
+    artifacts_root: str,
+) -> None:
+    """
+    Copy one complete verified cached artifact into the disposable package tree.
+    """
+    controller = (
+        component.artifact_transfer_controller
+    )
+
+    cache_record = (
+        controller.local_cache.get(
+            artifact_id,
+            {},
+        )
+    )
+
+    artifact_destination = (
+        os.path.join(
+            artifacts_root,
+            artifact_id,
+        )
+    )
+
+    artifact_root = ""
+
+    if isinstance(cache_record, dict):
+        artifact_root = str(
+            cache_record.get(
+                "artifact_root",
+                "",
+            )
+            or ""
+        ).strip()
+
+    if (
+        artifact_root
+        and os.path.isdir(
+            artifact_root
+        )
+    ):
+        shutil.copytree(
+            artifact_root,
+            artifact_destination,
+        )
+        return
+
+    local_path = (
+        controller.get_local_path(
+            artifact_id
+        )
+    )
+
+    if not local_path:
+        raise RuntimeError(
+            "Verified artifact cache path missing: "
+            f"{artifact_id}"
+        )
+
+    if os.path.isdir(
+        local_path
+    ):
+        shutil.copytree(
+            local_path,
+            artifact_destination,
+        )
+        return
+
+    os.makedirs(
+        artifact_destination,
+        exist_ok=True,
+    )
+
+    shutil.copy2(
+        local_path,
+        os.path.join(
+            artifact_destination,
+            os.path.basename(
+                local_path
+            ),
+        ),
+    )
+
+
+async def _send_record_package_tak(
+    component: object,
+    record_type: str,
+    record_id: str,
+    record: dict,
+    requester_uid: str = "",
+) -> None:
+    """
+    Rebuild and transmit one fresh SOI or Target Mission Package.
+    """
+    record_type = str(
+        record_type or ""
+    ).strip().lower()
+
+    record_id = str(
+        record_id or ""
+    ).strip()
+
+    if record_type not in (
+        "soi",
+        "target",
+    ):
+        raise ValueError(
+            f"Unsupported record type: {record_type}"
+        )
+
+    if not record_id:
+        raise ValueError(
+            f"{record_type} ID is required"
+        )
+
+    if not isinstance(
+        record,
+        dict,
+    ):
+        raise TypeError(
+            f"{record_type} record must be a dictionary"
+        )
+
+    artifact_ids = (
+        _collect_record_artifact_ids(
+            record
+        )
+    )
+
+    for artifact_id in artifact_ids:
+        await _ensure_hiprfisr_artifact_cached(
+            component,
+            artifact_id,
+        )
+
+    staging_root = tempfile.mkdtemp(
+        prefix=(
+            f"fissure_{record_type}_"
+            f"{record_id[:16]}_"
+        )
+    )
+
+    try:
+        _write_record_snapshots(
+            staging_root,
+            record_type,
+            record,
+        )
+
+        if artifact_ids:
+            artifacts_root = os.path.join(
+                staging_root,
+                "artifacts",
+            )
+
+            os.makedirs(
+                artifacts_root,
+                exist_ok=True,
+            )
+
+            for artifact_id in artifact_ids:
+                _copy_cached_artifact_to_staging(
+                    component,
+                    artifact_id,
+                    artifacts_root,
+                )
+
+        package_name = (
+            f"FISSURE_{record_type.upper()}_"
+            f"{record_id}"
+        )
+
+        package_uid = (
+            f"{record_type}-{record_id}-"
+            f"{uuid.uuid4()}"
+        )
+
+        await (
+            fissure.utils.tak_messages
+            .send_fissure_record_data_package(
+                component,
+                package_uid=package_uid,
+                package_name=package_name,
+                source_root=staging_root,
+                sender_source_id=(
+                    record.get("node_uid")
+                    or component.identifier
+                ),
+                destination="tak",
+                requester_uid=(
+                    requester_uid
+                    or None
+                ),
+            )
+        )
+
+    finally:
+        shutil.rmtree(
+            staging_root,
+            ignore_errors=True,
+        )
+
+
+async def sendSoiEvidencePackageTak(
+    component: object,
+    soi_id: str,
+    requester_uid: str = "",
+) -> None:
+    """
+    Send a freshly rebuilt package for the complete authoritative SOI.
+    """
+    soi_id = str(
+        soi_id or ""
+    ).strip()
+
+    if not soi_id:
+        raise ValueError(
+            "soi_id is required"
+        )
+
+    soi_store = (
+        getattr(
+            component,
+            "sois",
+            {},
+        )
+        or {}
+    )
+
+    record = None
+
+    if isinstance(
+        soi_store,
+        dict,
+    ):
+        direct_record = (
+            soi_store.get(
+                soi_id
+            )
+        )
+
+        if isinstance(
+            direct_record,
+            dict,
+        ):
+            record = direct_record
+        else:
+            for candidate in soi_store.values():
+                if (
+                    isinstance(candidate, dict)
+                    and str(
+                        candidate.get(
+                            "soi_id",
+                            "",
+                        )
+                        or ""
+                    ).strip()
+                    == soi_id
+                ):
+                    record = candidate
+                    break
+
+    elif isinstance(
+        soi_store,
+        list,
+    ):
+        for candidate in soi_store:
+            if (
+                isinstance(candidate, dict)
+                and str(
+                    candidate.get(
+                        "soi_id",
+                        "",
+                    )
+                    or ""
+                ).strip()
+                == soi_id
+            ):
+                record = candidate
+                break
+
+    if not isinstance(
+        record,
+        dict,
+    ):
+        raise KeyError(
+            f"SOI not found: {soi_id}"
+        )
+
+    await _send_record_package_tak(
+        component,
+        record_type="soi",
+        record_id=soi_id,
+        record=dict(record),
+        requester_uid=requester_uid,
+    )
+
+
+async def sendTargetDataPackageTak(
+    component: object,
+    target_id: str,
+    requester_uid: str = "",
+) -> None:
+    """
+    Send a freshly rebuilt package for the complete authoritative Target.
+
+    Only Target-owned artifact_ids/artifact_links are included. source_soi_id
+    is preserved in the snapshot but source SOI artifacts are not traversed.
+    """
+    target_id = str(
+        target_id or ""
+    ).strip()
+
+    if not target_id:
+        raise ValueError(
+            "target_id is required"
+        )
+
+    target_store = (
+        getattr(
+            component,
+            "targets",
+            {},
+        )
+        or {}
+    )
+
+    record = None
+
+    if isinstance(
+        target_store,
+        dict,
+    ):
+        direct_record = (
+            target_store.get(
+                target_id
+            )
+        )
+
+        if isinstance(
+            direct_record,
+            dict,
+        ):
+            record = direct_record
+        else:
+            for candidate in target_store.values():
+                if (
+                    isinstance(candidate, dict)
+                    and str(
+                        candidate.get(
+                            "target_id",
+                            "",
+                        )
+                        or ""
+                    ).strip()
+                    == target_id
+                ):
+                    record = candidate
+                    break
+
+    if not isinstance(
+        record,
+        dict,
+    ):
+        raise KeyError(
+            f"Target not found: {target_id}"
+        )
+
+    await _send_record_package_tak(
+        component,
+        record_type="target",
+        record_id=target_id,
+        record=dict(record),
+        requester_uid=requester_uid,
+    )
+
+
+async def transferArtifactRequest(
+    component: object,
+    artifact_id: str,
+    destination: str,
+) -> None:
+    """
+    Retrieve a complete artifact for HIPRFISR or TAK through the dedicated
+    binary data plane.
+
+    Inline payload bytes are no longer accepted.
+    """
+    artifact = (
+        component.artifact_tracker
+        .get_artifact(
+            artifact_id
+        )
+    )
+
+    if artifact is None:
+        component.logger.error(
+            "Artifact metadata not found: %s",
+            artifact_id,
+        )
+        return
+
+    local_path = (
+        component.artifact_transfer_controller
+        .get_local_path(
+            artifact_id
+        )
+    )
+
+    if local_path is not None:
+        if destination == "tak":
+            await (
+                component.artifact_transfer_controller
+                ._send_cached_artifact_to_tak(
+                    artifact
+                )
+            )
+
+        elif destination == "hiprfisr":
+            component.logger.info(
+                "Artifact %s is already cached at HIPRFISR",
+                artifact_id,
+            )
+
+        return
+
+    source_id = artifact.source_id
+    identity = component.nodes.get(
+        source_id,
+        {},
+    ).get("identity")
+
+    if identity is None:
+        component.logger.error(
+            "Could not resolve Sensor Node identity for %s",
+            source_id,
+        )
+        return
+
+    transfer_id = str(uuid.uuid4())
+
+    component.artifact_transfer_controller.register_request(
+        transfer_id=transfer_id,
+        artifact_id=artifact_id,
+        destination=destination,
+    )
+
+    if not component.artifact_transfer_router.register_transfer(
+        transfer_id,
+        fissure.comms.ROLE_HIPRFISR,
+    ):
+        component.artifact_transfer_controller.fail(
+            transfer_id,
+            "Unable to register HIPRFISR artifact receiver",
+        )
+        return
+
+    msg = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "streamArtifact",
+        fissure.comms.MessageFields.PARAMETERS: {
+            "transfer_id": transfer_id,
+            "artifact_id": artifact_id,
+        },
+    }
+
+    try:
+        await component.sensor_node_router.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+            target_ids=[identity],
+        )
+
+    except Exception as exc:
+        component.artifact_transfer_router.remove_transfer(
+            transfer_id
+        )
+        component.artifact_transfer_controller.fail(
+            transfer_id,
+            str(exc),
+        )
+
+
+def _merge_soi_artifact_links(
+    existing_links,
+    incoming_links,
+):
+    """
+    Merge SOI artifact links while preserving insertion order.
+
+    artifact_id is the stable identity. Repeated updates for the same artifact
+    enrich the existing link instead of creating duplicate entries. The link
+    remains intentionally field-agnostic so operations may attach whatever
+    relationship context they need.
+    """
+    merged = []
+    index_by_artifact_id = {}
+
+    for source in (
+        existing_links,
+        incoming_links,
+    ):
+        if not isinstance(source, list):
+            continue
+
+        for link in source:
+            if not isinstance(link, dict):
+                continue
+
+            artifact_id = str(
+                link.get("artifact_id", "")
+                or ""
+            ).strip()
+
+            if not artifact_id:
+                continue
+
+            if artifact_id in index_by_artifact_id:
+                merged[
+                    index_by_artifact_id[artifact_id]
+                ].update(link)
+                continue
+
+            normalized_link = dict(link)
+            normalized_link["artifact_id"] = artifact_id
+
+            index_by_artifact_id[artifact_id] = len(merged)
+            merged.append(normalized_link)
+
+    return merged
+
+
+def _merge_soi_detection_snapshots(
+    existing_snapshots,
+    incoming_snapshots,
+):
+    """
+    Append complete detection snapshots while suppressing duplicate callbacks.
+
+    A stable detection/event identifier is preferred. When none exists, the
+    complete normalized snapshot is used as the duplicate key so unkeyed but
+    distinct detections are still preserved.
+    """
+    merged = []
+    seen_keys = set()
+
+    def snapshot_key(snapshot):
+        for key in (
+            "detection_id",
+            "event_uid",
+            "uid",
+            "event_id",
+        ):
+            value = str(snapshot.get(key, "") or "").strip()
+            if value:
+                return (key, value)
+
+        try:
+            return (
+                "snapshot",
+                json.dumps(
+                    snapshot,
+                    sort_keys=True,
+                    default=str,
+                ),
+            )
+        except Exception:
+            return ("snapshot", repr(snapshot))
+
+    for source in (
+        existing_snapshots,
+        incoming_snapshots,
+    ):
+        if not isinstance(source, list):
+            continue
+
+        for snapshot in source:
+            if not isinstance(snapshot, dict):
+                continue
+
+            key = snapshot_key(snapshot)
+            if key in seen_keys:
+                continue
+
+            seen_keys.add(key)
+            merged.append(dict(snapshot))
+
+    return merged
+
+
+def _merge_soi_analysis_history(
+    existing_history,
+    incoming_history,
+):
+    """
+    Append operation-supplied SOI analysis records.
+
+    Each execution normally has a unique operation_id. Receiving the same
+    operation_id again is treated as a duplicate/update callback and enriches
+    that entry rather than duplicating it. Records without an operation_id are
+    preserved and deduplicated by their complete content.
+    """
+    merged = []
+    index_by_key = {}
+
+    def history_key(entry):
+        operation_id = str(
+            entry.get("operation_id", "")
+            or ""
+        ).strip()
+
+        if operation_id:
+            return ("operation_id", operation_id)
+
+        analysis_id = str(
+            entry.get("analysis_id", "")
+            or ""
+        ).strip()
+
+        if analysis_id:
+            return ("analysis_id", analysis_id)
+
+        try:
+            return (
+                "entry",
+                json.dumps(
+                    entry,
+                    sort_keys=True,
+                    default=str,
+                ),
+            )
+        except Exception:
+            return ("entry", repr(entry))
+
+    for source in (
+        existing_history,
+        incoming_history,
+    ):
+        if not isinstance(source, list):
+            continue
+
+        for entry in source:
+            if not isinstance(entry, dict):
+                continue
+
+            key = history_key(entry)
+
+            if key in index_by_key:
+                merged[index_by_key[key]].update(entry)
+                continue
+
+            index_by_key[key] = len(merged)
+            merged.append(dict(entry))
+
+    return merged
 
 
 async def soiUpdate(component: object,
@@ -4905,57 +5777,21 @@ async def soiUpdate(component: object,
                     observation_time=None
                     ):
     """
-    SOI update callback (node -> HIPRFISR).
+    Store an authoritative, cumulative SOI record at HIPRFISR.
 
-    Stores/updates SOI state at the hub and forwards:
-    - a dashboard update (so WinTAK/Dashboard can update SOI table)
-    - a TAK EVENT (so SOI lifecycle is visible in TAK)
+    SOIs are append-oriented investigation records:
+    - artifact links accumulate by artifact_id;
+    - detection snapshots accumulate by detection/event identity;
+    - analysis history contains only records explicitly supplied by operations;
+    - partial updates do not erase previously known values.
 
-    Behavior
-    --------
-    • Upserts a single SOI record (no duplicates)
-    • Uses a single payload blob: "summary"
-    • Supports stage + stage_order lifecycle
-    • Guards against out-of-order regressions
-    • Emits TAK event for each valid update
+    Location contract:
+    SensorNode.send_soi_update() resolves True to live node GPS/time values.
+    This hub callback receives concrete values and preserves prior values only
+    when a field is omitted or empty.
     """
-
-    # ==============================================================
-    # 1) Normalize Inputs
-    # ==============================================================
-
-    if summary is None:
+    if summary is None or not isinstance(summary, dict):
         summary = {}
-    if not isinstance(summary, dict):
-        summary = {}
-
-    # Lifecycle
-    stage = summary.get("stage")
-    stage_order = summary.get("stage_order")
-    try:
-        stage_order = int(stage_order) if stage_order is not None else None
-    except Exception:
-        stage_order = None
-
-    # ML fields (single convention)
-    model_classification = summary.get("model_classification")
-    model_confidence = summary.get("model_confidence")
-
-    # normalize confidence -> percent int or None
-    try:
-        if model_confidence is not None:
-            model_confidence = int(round(float(model_confidence)))
-    except Exception:
-        model_confidence = None
-
-    # Avoid literal "None" strings propagating to CoT/WinTAK
-    if model_classification in (None, "None"):
-        model_classification = ""
-
-
-    # ==============================================================
-    # 2) Build Stable SOI Key
-    # ==============================================================
 
     if soi_id:
         soi_key = f"{node_uid}:{soi_id}"
@@ -4963,125 +5799,321 @@ async def soiUpdate(component: object,
         soi_key = f"{node_uid}:{operation_id or 'unknown'}"
 
     now = time.time()
-
-
-    # ==============================================================
-    # 3) Frequency Database Classification
-    # ==============================================================
-
-    database_classification_result = ""
-    if frequency_mhz:
-        database_classification_result = (
-            fissure.utils.library.classifyFrequencyFromTextDirect(
-                str(frequency_mhz), True
-            )
-        )
-        component.logger.info(database_classification_result)
-
-
-    # ==============================================================
-    # 4) Update Hub-side SOI Store (Upsert + Ordering Guard)
-    # ==============================================================
-
     existing = component.sois.get(soi_key, {})
-    prev_stage_order = existing.get("stage_order")
+
+    if not isinstance(existing, dict):
+        existing = {}
+
+    existing_summary = existing.get("summary", {})
+    if not isinstance(existing_summary, dict):
+        existing_summary = {}
+
+    stage_supplied = "stage" in summary
+    stage_order_supplied = "stage_order" in summary
+
+    incoming_stage = summary.get("stage")
+    incoming_stage_order = summary.get("stage_order")
 
     try:
-        prev_stage_order = int(prev_stage_order) if prev_stage_order is not None else None
+        incoming_stage_order = (
+            int(incoming_stage_order)
+            if incoming_stage_order is not None
+            else None
+        )
     except Exception:
-        prev_stage_order = None
+        incoming_stage_order = None
 
-    # Prevent out-of-order regressions
-    if (stage_order is not None
-            and prev_stage_order is not None
-            and stage_order < prev_stage_order):
+    previous_stage_order = existing.get("stage_order")
+    try:
+        previous_stage_order = (
+            int(previous_stage_order)
+            if previous_stage_order is not None
+            else None
+        )
+    except Exception:
+        previous_stage_order = None
+
+    if (
+        stage_order_supplied
+        and incoming_stage_order is not None
+        and previous_stage_order is not None
+        and incoming_stage_order < previous_stage_order
+    ):
         component.logger.info(
-            f"Ignoring out-of-order SOI update "
-            f"(new={stage_order} < prev={prev_stage_order})"
+            "Ignoring out-of-order SOI update "
+            f"(new={incoming_stage_order} < prev={previous_stage_order})"
         )
         return
+
+    merged_summary = dict(existing_summary)
+
+    collection_keys = {
+        "artifact_links",
+        "artifact_ids",
+        "detection_snapshots",
+        "detection_ids",
+        "analysis_history",
+    }
+
+    for key, value in summary.items():
+        if key not in collection_keys:
+            merged_summary[key] = value
+
+    existing_artifact_links = existing.get(
+        "artifact_links",
+        existing_summary.get("artifact_links", []),
+    )
+    incoming_artifact_links = summary.get("artifact_links", [])
+
+    merged_artifact_links = _merge_soi_artifact_links(
+        existing_artifact_links,
+        incoming_artifact_links,
+    )
+
+    incoming_artifact_ids = summary.get("artifact_ids", [])
+    if not isinstance(incoming_artifact_ids, list):
+        incoming_artifact_ids = [incoming_artifact_ids]
+
+    compatibility_links = []
+
+    for linked_artifact_id in incoming_artifact_ids:
+        linked_artifact_id = str(
+            linked_artifact_id or ""
+        ).strip()
+
+        if linked_artifact_id:
+            compatibility_links.append({
+                "artifact_id": linked_artifact_id,
+                "operation_id": operation_id,
+            })
+
+    artifact_id = str(artifact_id or "").strip()
+
+    if artifact_id:
+        compatibility_links.append({
+            "artifact_id": artifact_id,
+            "operation_id": operation_id,
+        })
+
+    merged_artifact_links = _merge_soi_artifact_links(
+        merged_artifact_links,
+        compatibility_links,
+    )
+
+    artifact_ids = []
+    for link in merged_artifact_links:
+        linked_artifact_id = str(
+            link.get("artifact_id", "")
+            or ""
+        ).strip()
+
+        if (
+            linked_artifact_id
+            and linked_artifact_id not in artifact_ids
+        ):
+            artifact_ids.append(linked_artifact_id)
+
+    existing_detection_snapshots = existing.get(
+        "detection_snapshots",
+        existing_summary.get("detection_snapshots", []),
+    )
+    incoming_detection_snapshots = summary.get(
+        "detection_snapshots",
+        [],
+    )
+
+    if not isinstance(incoming_detection_snapshots, list):
+        incoming_detection_snapshots = [
+            incoming_detection_snapshots
+        ]
+
+    merged_detection_snapshots = _merge_soi_detection_snapshots(
+        existing_detection_snapshots,
+        incoming_detection_snapshots,
+    )
+
+    detection_ids = []
+    for snapshot in merged_detection_snapshots:
+        detection_id = ""
+
+        for key in (
+            "detection_id",
+            "event_uid",
+            "uid",
+            "event_id",
+        ):
+            detection_id = str(
+                snapshot.get(key, "")
+                or ""
+            ).strip()
+
+            if detection_id:
+                break
+
+        if detection_id and detection_id not in detection_ids:
+            detection_ids.append(detection_id)
+
+    existing_analysis_history = existing.get(
+        "analysis_history",
+        existing_summary.get("analysis_history", []),
+    )
+    incoming_analysis_history = summary.get(
+        "analysis_history",
+        [],
+    )
+
+    if not isinstance(incoming_analysis_history, list):
+        incoming_analysis_history = [incoming_analysis_history]
+
+    merged_analysis_history = _merge_soi_analysis_history(
+        existing_analysis_history,
+        incoming_analysis_history,
+    )
+
+    merged_summary["artifact_links"] = merged_artifact_links
+    merged_summary["artifact_ids"] = artifact_ids
+    merged_summary["detection_snapshots"] = merged_detection_snapshots
+    merged_summary["detection_ids"] = detection_ids
+    merged_summary["analysis_history"] = merged_analysis_history
 
     record = dict(existing)
 
     record.update({
         "soi_key": soi_key,
-        "node_uid": node_uid,
-        "soi_id": soi_id,
-        "frequency_mhz": frequency_mhz,
-        "status": status,
-        "operation_id": operation_id,
-        "artifact_id": artifact_id,
-
-        # keep the raw payload for debugging / future UI
-        "summary": summary,
-
+        "node_uid": node_uid or existing.get("node_uid", ""),
+        "soi_id": soi_id or existing.get("soi_id", ""),
+        "summary": merged_summary,
+        "artifact_links": merged_artifact_links,
+        "artifact_ids": artifact_ids,
+        "detection_snapshots": merged_detection_snapshots,
+        "detection_ids": detection_ids,
+        "analysis_history": merged_analysis_history,
         "updated_at": now,
-        "stage": stage,
-        "stage_order": stage_order,
-
-        "model_classification": model_classification,
-        "model_confidence": model_confidence,
-        "database_classification": database_classification_result,
     })
+
+    if frequency_mhz not in (None, "", "None"):
+        record["frequency_mhz"] = frequency_mhz
+
+        database_classification_result = (
+            fissure.utils.library.classifyFrequencyFromTextDirect(
+                str(frequency_mhz),
+                True,
+            )
+        )
+        record["database_classification"] = (
+            database_classification_result
+        )
+        component.logger.info(database_classification_result)
+
+    if status not in (None, "", "None"):
+        record["status"] = status
+
+    if operation_id not in (None, "", "None"):
+        record["operation_id"] = operation_id
+
+    if artifact_id:
+        record["artifact_id"] = artifact_id
+    elif "artifact_id" not in record:
+        record["artifact_id"] = ""
+
+    if stage_supplied:
+        record["stage"] = incoming_stage
+
+    if stage_order_supplied:
+        record["stage_order"] = incoming_stage_order
+
+    if "model_classification" in summary:
+        model_classification = summary.get("model_classification")
+        if model_classification in (None, "None"):
+            model_classification = ""
+        record["model_classification"] = model_classification
+
+    if "model_confidence" in summary:
+        model_confidence = summary.get("model_confidence")
+        try:
+            if model_confidence is not None:
+                model_confidence = int(round(float(model_confidence)))
+        except Exception:
+            model_confidence = None
+        record["model_confidence"] = model_confidence
+
+    # SensorNode.send_soi_update() resolves True location/time requests to
+    # concrete values before this callback is sent. At the hub, omitted/empty
+    # values mean preserve the existing SOI value.
+    if lat not in (None, "", "None"):
+        record["lat"] = lat
+
+    if lon not in (None, "", "None"):
+        record["lon"] = lon
+
+    if alt not in (None, "", "None"):
+        record["hae_m"] = alt
+
+    if observation_time not in (None, "", "None"):
+        record["observation_time"] = observation_time
 
     if "created_at" not in record:
         record["created_at"] = now
 
     component.sois[soi_key] = record
 
+    parameters = {"soi": record}
+    message = {
+        fissure.comms.MessageFields.IDENTIFIER:
+            component.identifier,
+        fissure.comms.MessageFields.MESSAGE_NAME:
+            "soiUpdate",
+        fissure.comms.MessageFields.PARAMETERS:
+            parameters,
+    }
 
-    # ==============================================================
-    # 5) Forward to Dashboard (future)
-    # ==============================================================
-    # PARAMETERS = {"soi": record}
-    # msg = {
-    #     fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-    #     fissure.comms.MessageFields.MESSAGE_NAME: "soiUpdate",
-    #     fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    # }
-    # if component.dashboard_connected:
-    #     await component.dashboard_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
+    if component.dashboard_connected:
+        await component.dashboard_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            message,
+        )
 
-
-    # ==============================================================
-    # 6) Emit TAK EVENT
-    # ==============================================================
-
-    uid_core = soi_id or operation_id or soi_key
-    tak_uid = f"fissure-soi-{node_uid}-{uid_core}"
+    uid_core = (
+        record.get("soi_id")
+        or record.get("operation_id")
+        or soi_key
+    )
+    tak_uid = f"fissure-soi-{record.get('node_uid', '')}-{uid_core}"
 
     tak_data = {
         "event_type": "soi",
-        "node_uid": node_uid,
-        "soi_id": soi_id,
-        "frequency_mhz": frequency_mhz,
-        "status": status,
-        "operation_id": operation_id,
-        "artifact_id": artifact_id,
-
-        "model_classification": model_classification,
-        "model_confidence": model_confidence,
-        "database_classification": database_classification_result,
-
-        "stage": stage,
-        "stage_order": stage_order,
+        "node_uid": record.get("node_uid", ""),
+        "soi_id": record.get("soi_id", ""),
+        "frequency_mhz": record.get("frequency_mhz"),
+        "status": record.get("status", ""),
+        "operation_id": record.get("operation_id", ""),
+        "artifact_id": record.get("artifact_id", ""),
+        "artifact_ids": list(record.get("artifact_ids", []) or []),
+        "model_classification": record.get(
+            "model_classification",
+            "",
+        ),
+        "model_confidence": record.get("model_confidence"),
+        "database_classification": record.get(
+            "database_classification",
+            "",
+        ),
+        "stage": record.get("stage"),
+        "stage_order": record.get("stage_order"),
     }
 
-    # Optional: if you want the raw payload visible downstream, keep ONE name.
-    # If you don't need it in TAK, delete this block entirely.
-    if summary:
-        tak_data["summary"] = summary
+    if merged_summary:
+        tak_data["summary"] = merged_summary
 
     await fissure.utils.tak_messages.send(component, {
         "msg_type": "event",
         "uid": tak_uid,
         "data": tak_data,
         "tak_icon": "r-x-fissure-soi",
-        "lat": lat,
-        "lon": lon,
-        "alt": alt
+        "lat": record.get("lat", 0.0),
+        "lon": record.get("lon", 0.0),
+        "alt": record.get("hae_m", 0.0),
     })
-
 
 # ---- Measurement aggregation support (sensor nodes can send raw samples via targetUpdate) ----
 def _fissure_geo_process_measurement(component, *, target_id, frequency_hz, node_uid, lat, lon, rssi_db, observation_time):
@@ -5447,31 +6479,118 @@ def _default_geolocate_block() -> dict:
     }
 
 
-def _normalize_target_record(record: dict, target_id: str) -> dict:
+def _normalize_target_record(
+    record: dict,
+    target_id: str,
+) -> dict:
     """
-    Ensure required canonical target fields exist and have sane types.
+    Ensure required canonical Target fields exist and have sane types.
+
+    Target artifacts represent work performed on the Target after promotion.
+    Investigative SOI evidence remains reachable through source_soi_id.
     """
-    if not isinstance(record.get("classification"), dict):
+    if not isinstance(
+        record.get("classification"),
+        dict,
+    ):
         record["classification"] = {}
 
-    if not isinstance(record.get("location"), dict):
+    if not isinstance(
+        record.get("identity"),
+        dict,
+    ):
+        record["identity"] = {}
+
+    if not isinstance(
+        record.get("location"),
+        dict,
+    ):
         record["location"] = {}
 
-    if not isinstance(record.get("geolocate"), dict):
-        record["geolocate"] = _default_geolocate_block()
+    if not isinstance(
+        record.get("geolocate"),
+        dict,
+    ):
+        record["geolocate"] = (
+            _default_geolocate_block()
+        )
     else:
-        merged_geo = _default_geolocate_block()
-        merged_geo.update(record["geolocate"])
-        record["geolocate"] = merged_geo
+        merged_geo = (
+            _default_geolocate_block()
+        )
+        merged_geo.update(
+            record["geolocate"]
+        )
+        record["geolocate"] = (
+            merged_geo
+        )
 
-    if not isinstance(record.get("history"), list):
+    if not isinstance(
+        record.get("history"),
+        list,
+    ):
         record["history"] = []
 
-    record.setdefault("target_id", target_id)
-    record.setdefault("node_uid", "")
-    record.setdefault("source_soi_id", "")
-    record.setdefault("frequency_mhz", None)
-    record.setdefault("state", "detected")
+    if not isinstance(
+        record.get("artifact_ids"),
+        list,
+    ):
+        existing_artifact_ids = (
+            record.get("artifact_ids")
+        )
+
+        if isinstance(
+            existing_artifact_ids,
+            (tuple, set),
+        ):
+            record["artifact_ids"] = list(
+                existing_artifact_ids
+            )
+        else:
+            record["artifact_ids"] = []
+
+    if not isinstance(
+        record.get("artifact_links"),
+        list,
+    ):
+        existing_artifact_links = (
+            record.get("artifact_links")
+        )
+
+        if isinstance(
+            existing_artifact_links,
+            dict,
+        ):
+            record["artifact_links"] = [
+                existing_artifact_links
+            ]
+        else:
+            record["artifact_links"] = []
+
+    record.setdefault(
+        "target_id",
+        target_id,
+    )
+    record.setdefault(
+        "node_uid",
+        "",
+    )
+    record.setdefault(
+        "source_soi_id",
+        "",
+    )
+    record.setdefault(
+        "frequency_mhz",
+        None,
+    )
+    record.setdefault(
+        "state",
+        "detected",
+    )
+    record.setdefault(
+        "artifact_id",
+        "",
+    )
 
     return record
 
@@ -5485,50 +6604,388 @@ def upsert_target_patch(
     artifact_id: str = "",
 ):
     """
-    Merge a canonical target-shaped patch into the authoritative hub record.
+    Merge a canonical Target patch into the authoritative hub record.
+
+    Target-owned artifacts and operation history are cumulative. Duplicate
+    delivery of the same callback does not create duplicate relationships.
     """
     if not target_id:
         return None
 
-    if not isinstance(patch, dict):
+    if not isinstance(
+        patch,
+        dict,
+    ):
         patch = {}
 
-    if history_entry is None or not isinstance(history_entry, dict):
+    if (
+        history_entry is None
+        or not isinstance(
+            history_entry,
+            dict,
+        )
+    ):
         history_entry = {}
 
-    ts_iso = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    ts_iso = (
+        datetime.now(timezone.utc)
+        .strftime("%Y-%m-%dT%H:%M:%SZ")
+    )
     now_epoch = time.time()
 
-    existing = component.targets.get(target_id, {})
-    record = dict(existing) if existing else {}
+    existing = component.targets.get(
+        target_id,
+        {},
+    )
 
-    created_time = record.get("created_time") or patch.get("created_time") or ts_iso
+    record = (
+        dict(existing)
+        if existing
+        else {}
+    )
 
-    # --- SAVE geolocate BEFORE merge ---
-    existing_geolocate = record.get("geolocate")
+    created_time = (
+        record.get("created_time")
+        or patch.get("created_time")
+        or ts_iso
+    )
 
-    _normalize_target_record(record, target_id)
-    _deep_merge_dict(record, patch)
-    _normalize_target_record(record, target_id)
+    existing_geolocate = (
+        record.get("geolocate")
+    )
 
-    # --- RESTORE geolocate if patch didn't include it ---
-    if "geolocate" not in patch and existing_geolocate:
-        record["geolocate"] = existing_geolocate
+    existing_history = list(
+        record.get("history", [])
+        if isinstance(
+            record.get("history"),
+            list,
+        )
+        else []
+    )
+
+    existing_artifact_ids = list(
+        record.get("artifact_ids", [])
+        if isinstance(
+            record.get("artifact_ids"),
+            list,
+        )
+        else []
+    )
+
+    existing_artifact_links = list(
+        record.get("artifact_links", [])
+        if isinstance(
+            record.get("artifact_links"),
+            list,
+        )
+        else []
+    )
+
+    incoming_artifact_ids = []
+
+    patch_artifact_ids = patch.get(
+        "artifact_ids",
+        [],
+    )
+
+    if isinstance(
+        patch_artifact_ids,
+        (list, tuple, set),
+    ):
+        incoming_artifact_ids.extend(
+            patch_artifact_ids
+        )
+
+    patch_artifact_links = patch.get(
+        "artifact_links",
+        [],
+    )
+
+    if isinstance(
+        patch_artifact_links,
+        dict,
+    ):
+        patch_artifact_links = [
+            patch_artifact_links
+        ]
+
+    if not isinstance(
+        patch_artifact_links,
+        (list, tuple),
+    ):
+        patch_artifact_links = []
+
+    patch_without_cumulative = dict(
+        patch
+    )
+    patch_without_cumulative.pop(
+        "history",
+        None,
+    )
+    patch_without_cumulative.pop(
+        "artifact_ids",
+        None,
+    )
+    patch_without_cumulative.pop(
+        "artifact_links",
+        None,
+    )
+
+    _normalize_target_record(
+        record,
+        target_id,
+    )
+
+    _deep_merge_dict(
+        record,
+        patch_without_cumulative,
+    )
+
+    _normalize_target_record(
+        record,
+        target_id,
+    )
+
+    if (
+        "geolocate" not in patch
+        and existing_geolocate
+    ):
+        record["geolocate"] = (
+            existing_geolocate
+        )
+
+    latest_artifact_id = str(
+        artifact_id
+        or patch.get("artifact_id")
+        or ""
+    ).strip()
+
+    if latest_artifact_id:
+        incoming_artifact_ids.append(
+            latest_artifact_id
+        )
+        record["artifact_id"] = (
+            latest_artifact_id
+        )
+
+    merged_artifact_ids = []
+    seen_artifact_ids = set()
+
+    for candidate in (
+        existing_artifact_ids
+        + incoming_artifact_ids
+    ):
+        candidate_text = str(
+            candidate or ""
+        ).strip()
+
+        if (
+            not candidate_text
+            or candidate_text
+            in seen_artifact_ids
+        ):
+            continue
+
+        seen_artifact_ids.add(
+            candidate_text
+        )
+        merged_artifact_ids.append(
+            candidate_text
+        )
+
+    record["artifact_ids"] = (
+        merged_artifact_ids
+    )
+
+    merged_artifact_links = []
+    seen_artifact_links = set()
+
+    for link in (
+        existing_artifact_links
+        + list(patch_artifact_links)
+    ):
+        if isinstance(link, dict):
+            normalized_link = dict(link)
+            link_artifact_id = str(
+                normalized_link.get(
+                    "artifact_id",
+                    "",
+                )
+                or ""
+            ).strip()
+
+            if not link_artifact_id:
+                continue
+
+            normalized_link[
+                "artifact_id"
+            ] = link_artifact_id
+
+            link_key = (
+                link_artifact_id,
+                str(
+                    normalized_link.get(
+                        "operation_id",
+                        "",
+                    )
+                    or ""
+                ).strip(),
+                str(
+                    normalized_link.get(
+                        "role",
+                        "",
+                    )
+                    or ""
+                ).strip(),
+            )
+        else:
+            link_artifact_id = str(
+                link or ""
+            ).strip()
+
+            if not link_artifact_id:
+                continue
+
+            normalized_link = {
+                "artifact_id":
+                    link_artifact_id,
+            }
+            link_key = (
+                link_artifact_id,
+                "",
+                "",
+            )
+
+        if link_key in seen_artifact_links:
+            continue
+
+        seen_artifact_links.add(
+            link_key
+        )
+        merged_artifact_links.append(
+            normalized_link
+        )
+
+        if (
+            link_artifact_id
+            not in seen_artifact_ids
+        ):
+            seen_artifact_ids.add(
+                link_artifact_id
+            )
+            record[
+                "artifact_ids"
+            ].append(
+                link_artifact_id
+            )
+
+    if latest_artifact_id:
+        latest_link_key = (
+            latest_artifact_id,
+            str(
+                history_entry.get(
+                    "operation_id",
+                    "",
+                )
+                or ""
+            ).strip(),
+            "",
+        )
+
+        if (
+            latest_link_key
+            not in seen_artifact_links
+        ):
+            merged_artifact_links.append(
+                {
+                    "artifact_id":
+                        latest_artifact_id,
+                    "operation_id":
+                        history_entry.get(
+                            "operation_id",
+                            "",
+                        ),
+                }
+            )
+
+    record["artifact_links"] = (
+        merged_artifact_links
+    )
+
+    record["history"] = (
+        existing_history
+    )
 
     if history_entry:
-        entry = dict(history_entry)
-        entry.setdefault("timestamp", ts_iso)
-        record["history"].append(entry)
+        entry = dict(
+            history_entry
+        )
+        entry.setdefault(
+            "timestamp",
+            ts_iso,
+        )
 
-    if artifact_id:
-        record["artifact_id"] = artifact_id
+        entry_operation_id = str(
+            entry.get(
+                "operation_id",
+                "",
+            )
+            or ""
+        ).strip()
 
-    record["target_id"] = target_id
-    record["created_time"] = created_time
-    record["last_update_time"] = ts_iso
-    record["updated_at"] = now_epoch
+        duplicate_history = False
 
-    component.targets[target_id] = record
+        for existing_entry in (
+            record["history"]
+        ):
+            if not isinstance(
+                existing_entry,
+                dict,
+            ):
+                continue
+
+            existing_operation_id = str(
+                existing_entry.get(
+                    "operation_id",
+                    "",
+                )
+                or ""
+            ).strip()
+
+            if (
+                entry_operation_id
+                and existing_operation_id
+                == entry_operation_id
+            ):
+                duplicate_history = True
+                break
+
+            if existing_entry == entry:
+                duplicate_history = True
+                break
+
+        if not duplicate_history:
+            record["history"].append(
+                entry
+            )
+
+    record["target_id"] = (
+        target_id
+    )
+    record["created_time"] = (
+        created_time
+    )
+    record["last_update_time"] = (
+        ts_iso
+    )
+    record["updated_at"] = (
+        now_epoch
+    )
+
+    component.targets[target_id] = (
+        record
+    )
+
     return record
 
 
@@ -5542,12 +6999,15 @@ async def targetPatch(
     """
     Canonical target patch callback (node -> HIPRFISR).
 
-    Stores/updates a target record at the hub using the same dictionary
-    structure used in the target store, then emits the flat TAK target event
-    that WinTAK already expects.
+    Stores or updates the authoritative Target record, then emits a flat TAK
+    Target event. Flexible identity, cumulative Target-owned artifacts, and
+    Target history are serialized as JSON strings for Dashboard and WinTAK
+    consumers while preserving the existing flat fields.
     """
     if not target_id:
-        component.logger.info("Ignoring target patch with empty target_id")
+        component.logger.info(
+            "Ignoring target patch with empty target_id"
+        )
         return
 
     patch = patch or {}
@@ -5560,50 +7020,83 @@ async def targetPatch(
         history_entry=history_entry,
         artifact_id=artifact_id or "",
     )
+
     if not record:
         return
 
     geo = record.get("geolocate") or {}
 
-    # Mark that this target actually received observations while geolocation is active.
-    # This intentionally does NOT trigger on empty hub-only UI/status refreshes.
-    if geo.get("status") in ("starting", "running", "stopping"):
+    # Mark that this Target received observations while geolocation is active.
+    # Empty hub-only UI or status refreshes do not count as observations.
+    if geo.get("status") in (
+        "starting",
+        "running",
+        "stopping",
+    ):
         loc_patch = patch.get("location") or {}
         rf_patch = patch.get("rf") or {}
         wifi_patch = patch.get("wifi") or {}
 
-        had_observation = any([
-            bool(history_entry),
-            bool(artifact_id),
-            ("lat" in loc_patch and "lon" in loc_patch),
-            ("ce_m" in loc_patch),
-            ("frequency_mhz" in patch),
-            ("last_observation_time" in rf_patch),
-            ("last_observation_time" in wifi_patch),
-            ("rssi_dbm" in wifi_patch),
-        ])
+        had_observation = any(
+            [
+                bool(history_entry),
+                bool(artifact_id),
+                (
+                    "lat" in loc_patch
+                    and "lon" in loc_patch
+                ),
+                "ce_m" in loc_patch,
+                "frequency_mhz" in patch,
+                "last_observation_time" in rf_patch,
+                "last_observation_time" in wifi_patch,
+                "rssi_dbm" in wifi_patch,
+            ]
+        )
 
         if had_observation:
             geo["had_detections"] = True
             record["geolocate"] = geo
 
-    cls = record.get("classification") or {}
-    loc = record.get("location") or {}
+    classification = (
+        record.get("classification")
+        or {}
+    )
+    location = (
+        record.get("location")
+        or {}
+    )
+    identity = (
+        record.get("identity")
+        or {}
+    )
 
     display_label = ""
+
     try:
-        display_label = (record.get("display_label") or cls.get("display_label") or "").strip()
+        display_label = (
+            record.get("display_label")
+            or classification.get("display_label")
+            or ""
+        ).strip()
     except Exception:
         display_label = ""
 
-    out_lat = loc.get("lat")
-    out_lon = loc.get("lon")
-    out_hae = loc.get("hae_m")
-    out_ce = loc.get("ce_m")
-    out_loc_ts = loc.get("timestamp") or record.get("last_update_time")
+    out_lat = location.get("lat")
+    out_lon = location.get("lon")
+    out_hae = location.get("hae_m")
+    out_ce = location.get("ce_m")
+    out_loc_ts = (
+        location.get("timestamp")
+        or record.get("last_update_time")
+    )
 
-    node_uid = record.get("node_uid", "")
-    tak_uid = f"fissure-target-{node_uid}-{target_id}"
+    node_uid = record.get(
+        "node_uid",
+        "",
+    )
+    tak_uid = (
+        f"fissure-target-{node_uid}-{target_id}"
+    )
 
     wifi = record.get("wifi") or {}
 
@@ -5611,12 +7104,39 @@ async def targetPatch(
         "event_type": "target",
         "node_uid": node_uid,
         "target_id": target_id,
-        "source_soi_id": record.get("source_soi_id", ""),
+        "source_soi_id": record.get(
+            "source_soi_id",
+            "",
+        ),
         "display_label": display_label,
         "state": record.get("state"),
-        "frequency_mhz": record.get("frequency_mhz"),
-        "artifact_id": record.get("artifact_id", ""),
-        "geolocation_status": geo.get("status", "idle"),
+        "frequency_mhz": record.get(
+            "frequency_mhz"
+        ),
+        "artifact_id": record.get(
+            "artifact_id",
+            "",
+        ),
+        "identity_json": json.dumps(
+            identity,
+            default=str,
+        ),
+        "artifact_ids_json": json.dumps(
+            record.get("artifact_ids") or [],
+            default=str,
+        ),
+        "artifact_links_json": json.dumps(
+            record.get("artifact_links") or [],
+            default=str,
+        ),
+        "history_json": json.dumps(
+            record.get("history") or [],
+            default=str,
+        ),
+        "geolocation_status": geo.get(
+            "status",
+            "idle",
+        ),
         "lat": out_lat,
         "lon": out_lon,
         "hae_m": out_hae,
@@ -5629,19 +7149,28 @@ async def targetPatch(
         "channel": wifi.get("channel"),
         "band": wifi.get("band", ""),
         "rssi_dbm": wifi.get("rssi_dbm"),
-        "encryption": wifi.get("encryption", ""),
-        "last_observation_time": wifi.get("last_observation_time", ""),
+        "encryption": wifi.get(
+            "encryption",
+            "",
+        ),
+        "last_observation_time": wifi.get(
+            "last_observation_time",
+            "",
+        ),
     }
 
-    await fissure.utils.tak_messages.send(component, {
-        "msg_type": "event",
-        "uid": tak_uid,
-        "data": tak_data,
-        "tak_icon": "r-x-fissure-target",
-        "lat": out_lat,
-        "lon": out_lon,
-        "alt": out_hae,
-    })
+    await fissure.utils.tak_messages.send(
+        component,
+        {
+            "msg_type": "event",
+            "uid": tak_uid,
+            "data": tak_data,
+            "tak_icon": "r-x-fissure-target",
+            "lat": out_lat,
+            "lon": out_lon,
+            "alt": out_hae,
+        },
+    )
 
 
 async def sendTargetsListTak(
@@ -5649,61 +7178,112 @@ async def sendTargetsListTak(
     requester_uid: str = "",
     requester_type: str = "tak",
     request_id: str = "",
-    requester_callsign: str = ""
+    requester_callsign: str = "",
 ) -> None:
     """
-    Respond to WinTAK 'targets_list' request by emitting one TAK event per target.
-    WinTAK will upsert rows by target_id.
+    Respond to a TAK targets_list request by emitting one event per Target.
+
+    Existing flat fields remain available. Flexible identity, cumulative
+    Target-owned artifacts, and Target operation history are included as JSON
+    strings so Dashboard and WinTAK can reconstruct the complete record.
     """
     try:
-        targets = getattr(component, "targets", {}) or {}
+        targets = (
+            getattr(
+                component,
+                "targets",
+                {},
+            )
+            or {}
+        )
     except Exception:
         targets = {}
 
-    for tgt_id, tgt in targets.items():
+    for target_id, target in targets.items():
         try:
-            classification = tgt.get("classification") or {}
-            location = tgt.get("location") or {}
+            classification = (
+                target.get("classification")
+                or {}
+            )
+            location = (
+                target.get("location")
+                or {}
+            )
+            identity = (
+                target.get("identity")
+                or {}
+            )
 
             lat = location.get("lat")
             lon = location.get("lon")
 
             event_uid = (
-                f"fissure-target-{tgt_id}-"
+                f"fissure-target-{target_id}-"
                 f"{int(time.time() * 1000)}"
+            )
+
+            display_label = (
+                target.get("display_label")
+                or classification.get(
+                    "display_label"
+                )
+                or ""
             )
 
             tak_data = {
                 "event_type": "target",
-
-                "target_id": tgt_id,
-                "node_uid": tgt.get("node_uid"),
-                "source_soi_id": tgt.get("source_soi_id"),
-
-                "display_label": classification.get("display_label"),
-
-                "state": tgt.get("state"),
-
-                "frequency_mhz": tgt.get("frequency_mhz"),
-
-                "artifact_id": tgt.get("artifact_id"),
-
+                "target_id": target_id,
+                "node_uid": target.get(
+                    "node_uid"
+                ),
+                "source_soi_id": target.get(
+                    "source_soi_id"
+                ),
+                "display_label": display_label,
+                "state": target.get("state"),
+                "frequency_mhz": target.get(
+                    "frequency_mhz"
+                ),
+                "artifact_id": target.get(
+                    "artifact_id"
+                ),
+                "identity_json": json.dumps(
+                    identity,
+                    default=str,
+                ),
+                "artifact_ids_json": json.dumps(
+                    target.get("artifact_ids")
+                    or [],
+                    default=str,
+                ),
+                "artifact_links_json": json.dumps(
+                    target.get("artifact_links")
+                    or [],
+                    default=str,
+                ),
+                "history_json": json.dumps(
+                    target.get("history")
+                    or [],
+                    default=str,
+                ),
                 "request_id": request_id,
                 "requester_uid": requester_uid,
-                "requester_callsign": requester_callsign,
+                "requester_callsign":
+                    requester_callsign,
             }
 
             # -------------------------------------------------------------
             # Optional location
             # -------------------------------------------------------------
-            if lat is not None and lon is not None:
+            if (
+                lat is not None
+                and lon is not None
+            ):
                 tak_data["lat"] = lat
                 tak_data["lon"] = lon
-
                 tak_data["ce_m"] = (
                     location.get("ce_m")
                 )
-
                 tak_data["hae_m"] = (
                     location.get("hae_m")
                 )
@@ -5712,43 +7292,75 @@ async def sendTargetsListTak(
             # Remove empty core fields
             # -------------------------------------------------------------
             tak_data = {
-                k: v for k, v in tak_data.items()
-                if v is not None
+                key: value
+                for key, value in tak_data.items()
+                if value is not None
                 and not (
-                    isinstance(v, str)
-                    and v.strip() == ""
+                    isinstance(value, str)
+                    and value.strip() == ""
                 )
             }
 
             # -------------------------------------------------------------
-            # WIFI (no prefix)
+            # Wi-Fi fields remain unprefixed for compatibility
             # -------------------------------------------------------------
-            for key, value in (tgt.get("wifi") or {}).items():
-                if value is not None and not (
-                    isinstance(value, str)
-                    and value.strip() == ""
+            for (
+                key,
+                value,
+            ) in (
+                target.get("wifi")
+                or {}
+            ).items():
+                if (
+                    value is not None
+                    and not (
+                        isinstance(value, str)
+                        and value.strip() == ""
+                    )
                 ):
                     tak_data[key] = value
 
             # -------------------------------------------------------------
-            # RF (prefixed)
+            # RF fields remain prefixed
             # -------------------------------------------------------------
-            for key, value in (tgt.get("rf") or {}).items():
-                if value is not None and not (
-                    isinstance(value, str)
-                    and value.strip() == ""
+            for (
+                key,
+                value,
+            ) in (
+                target.get("rf")
+                or {}
+            ).items():
+                if (
+                    value is not None
+                    and not (
+                        isinstance(value, str)
+                        and value.strip() == ""
+                    )
                 ):
-                    tak_data[f"rf_{key}"] = value
+                    tak_data[
+                        f"rf_{key}"
+                    ] = value
 
             # -------------------------------------------------------------
-            # GEOLOCATE (prefixed)
+            # Geolocation fields remain prefixed
             # -------------------------------------------------------------
-            for key, value in (tgt.get("geolocate") or {}).items():
-                if value is not None and not (
-                    isinstance(value, str)
-                    and value.strip() == ""
+            for (
+                key,
+                value,
+            ) in (
+                target.get("geolocate")
+                or {}
+            ).items():
+                if (
+                    value is not None
+                    and not (
+                        isinstance(value, str)
+                        and value.strip() == ""
+                    )
                 ):
-                    tak_data[f"geolocate_{key}"] = value
+                    tak_data[
+                        f"geolocate_{key}"
+                    ] = value
 
             await fissure.utils.tak_messages.send(
                 component,
@@ -5761,9 +7373,10 @@ async def sendTargetsListTak(
                 requester_uid,
             )
 
-        except Exception as e:
+        except Exception as exc:
             component.logger.error(
-                f"Failed sending target {tgt_id} to TAK: {e}"
+                "Failed sending target "
+                f"{target_id} to TAK: {exc}"
             )
 
 
@@ -6568,107 +8181,496 @@ async def geolocate_target_stop(
                 )
 
 
-async def sendArtifactsListTak(
-    component: object,
-    requester_uid: str = "",
-    requester_type: str = "dashboard",
-    node_uid: str = "",
+def _normalize_promoted_detection(detection):
+    """
+    Normalize structured detections from WinTAK, Tactical, or TSI.
+
+    Every non-empty detector-defined field is retained. Common Dashboard and
+    parsed-CoT aliases are also copied into stable canonical keys so promotion
+    behavior is identical regardless of which interface initiated it.
+    """
+    if not isinstance(detection, dict):
+        return {}
+
+    raw_keys = {
+        "raw_xml",
+        "cot_xml",
+        "xml",
+        "raw_message",
+        "raw_payload",
+    }
+
+    normalized = {}
+
+    for key, value in detection.items():
+        key_text = str(
+            key or ""
+        ).strip()
+
+        if not key_text:
+            continue
+
+        if key_text.lower() in raw_keys:
+            continue
+
+        if value is None:
+            continue
+
+        if isinstance(value, str):
+            value = value.strip()
+
+            if not value or value == "None":
+                continue
+
+        normalized[key_text] = value
+
+        if key_text.startswith("detection_"):
+            canonical_key = key_text[
+                len("detection_"):
+            ]
+
+            if canonical_key:
+                normalized.setdefault(
+                    canonical_key,
+                    value,
+                )
+
+    alias_map = {
+        "uid": "event_uid",
+        "frequency": "frequency_mhz",
+        "lat": "latitude",
+        "lon": "longitude",
+        "hae_m": "hae_meters",
+        "operation_id": "opid",
+    }
+
+    for source_key, canonical_key in alias_map.items():
+        value = normalized.get(
+            source_key
+        )
+
+        if value not in (
+            None,
+            "",
+            "None",
+        ):
+            normalized.setdefault(
+                canonical_key,
+                value,
+            )
+
+    return normalized
+
+
+def _promoted_detection_float(detection, *keys):
+    for key in keys:
+        value = detection.get(key)
+
+        if value in (None, ""):
+            continue
+
+        try:
+            return float(value)
+        except Exception:
+            continue
+
+    return None
+
+
+def _promoted_detection_frequency_mhz(detection):
+    frequency_mhz = _promoted_detection_float(
+        detection,
+        "frequency_mhz",
+        "freq_mhz",
+    )
+
+    if frequency_mhz is not None:
+        return frequency_mhz
+
+    frequency_hz = _promoted_detection_float(
+        detection,
+        "frequency_hz",
+        "freq_hz",
+    )
+
+    if frequency_hz is not None:
+        return frequency_hz / 1e6
+
+    return None
+
+
+def _promoted_detection_label(detection):
+    """Pick a useful initial display label without making the record Wi-Fi-specific."""
+    for key in (
+        "display_label",
+        "classification",
+        "label",
+        "ssid",
+        "bssid",
+        "mac",
+        "detector",
+    ):
+        value = str(detection.get(key) or "").strip()
+        if value:
+            return value
+
+    return "Promoted Detection"
+
+
+def _promoted_detection_location(
+    component,
+    detection,
+    node_uid,
 ):
     """
-    Sends known artifact metadata for a selected node back to the Dashboard.
+    Resolve a valid TAK point for a promoted detection.
 
-    This reads HIPRFISR's ArtifactTracker only. It does not retrieve/download
-    artifact file contents from sensor nodes.
+    Priority:
+      1. Location carried by the detection
+      2. Latest HIPRFISR node location
+      3. Valid suppressed 0/0/0 point
     """
-    artifacts = []
+    lat = _promoted_detection_float(
+        detection,
+        "latitude",
+        "lat",
+        "point_lat",
+        "point_latitude",
+    )
+
+    lon = _promoted_detection_float(
+        detection,
+        "longitude",
+        "lon",
+        "point_lon",
+        "point_longitude",
+    )
+
+    alt = _promoted_detection_float(
+        detection,
+        "hae_meters",
+        "hae_m",
+        "hae",
+        "alt",
+        "altitude",
+        "point_hae",
+    )
+
+    node_record = {}
 
     try:
-        tracker = getattr(component, "artifact_tracker", None)
-
-        if tracker is None:
-            component.logger.warning("sendArtifactsListTak: no artifact_tracker")
-            return
-
-        # Prefer the public source-id helper.
-        if node_uid:
-            artifact_objects = tracker.get_artifacts_source_id(
-                node_uid,
-                sortby="modified_at",
-            )
-        else:
-            # ArtifactTracker has no public get_all_artifacts() right now.
-            # Use the internal cache only for this hub-side metadata list.
-            artifact_objects = list(
-                getattr(tracker, "_artifacts", {}).values()
-            )
-
-        for artifact in artifact_objects:
-            try:
-                if hasattr(artifact, "to_dict"):
-                    record = artifact.to_dict()
-                elif isinstance(artifact, dict):
-                    record = dict(artifact)
-                else:
-                    continue
-
-                metadata = record.get("metadata") or {}
-                if not isinstance(metadata, dict):
-                    metadata = {}
-
-                source_id = (
-                    record.get("source_id")
-                    or metadata.get("source_id")
-                    or metadata.get("node_uid")
-                    or ""
-                )
-
-                # Backward compatibility: some older artifact records may have
-                # node_uid only in metadata.
-                if node_uid and source_id != node_uid:
-                    continue
-
-                if source_id:
-                    record["source_id"] = source_id
-
-                artifacts.append(record)
-
-            except Exception:
-                component.logger.exception(
-                    "sendArtifactsListTak: failed normalizing artifact record"
-                )
-
-        artifacts.sort(
-            key=lambda a: str(
-                a.get("modified_at")
-                or a.get("created_at")
-                or ""
-            ),
-            reverse=True,
-        )
-
+        node_record = (
+            getattr(component, "nodes", {})
+            or {}
+        ).get(
+            node_uid,
+            {},
+        ) or {}
     except Exception:
-        component.logger.exception("sendArtifactsListTak failed")
-        artifacts = []
+        node_record = {}
 
-    PARAMETERS = {
-        "node_uid": node_uid,
-        "artifacts": artifacts,
-    }
-
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "sendArtifactsListTakReturn",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-
-    if requester_type == "dashboard" and component.dashboard_connected:
-        await component.dashboard_socket.send_msg(
-            fissure.comms.MessageTypes.COMMANDS,
-            msg,
+    if lat is None:
+        lat = _promoted_detection_float(
+            node_record,
+            "lat",
+            "latitude",
         )
 
+    if lon is None:
+        lon = _promoted_detection_float(
+            node_record,
+            "lon",
+            "longitude",
+        )
 
-async def sendArtifactsListTak(
+    if alt is None:
+        alt = _promoted_detection_float(
+            node_record,
+            "alt",
+            "altitude",
+            "hae_m",
+            "hae",
+        )
+
+    # A CoT event must always contain numeric point values. A zero point with
+    # high uncertainty is preferable to emitting lat="None"/lon="None".
+    if lat is None or lon is None:
+        lat = 0.0
+        lon = 0.0
+
+    if alt is None:
+        alt = 0.0
+
+    return (
+        float(lat),
+        float(lon),
+        float(alt),
+    )
+
+
+async def promoteDetectionToSoi(
+    component: object,
+    detection=None,
+    requester_uid: str = "",
+    requester_callsign: str = "",
+):
+    """
+    Promote one complete structured detection into a new authoritative SOI.
+
+    The textual detection is retained as a snapshot. Any artifact references
+    already present on the detection are linked to the SOI without duplicating
+    artifact metadata.
+    """
+    detection = _normalize_promoted_detection(detection)
+
+    if not detection:
+        component.logger.warning(
+            "promoteDetectionToSoi received an empty detection"
+        )
+        return
+
+    node_uid = str(detection.get("node_uid") or "").strip()
+    frequency_mhz = _promoted_detection_frequency_mhz(detection)
+
+    if not node_uid:
+        component.logger.warning(
+            "promoteDetectionToSoi detection missing node_uid"
+        )
+        return
+
+    if frequency_mhz is None:
+        component.logger.warning(
+            "promoteDetectionToSoi detection missing a valid frequency"
+        )
+        return
+
+    soi_id = str(uuid.uuid4())
+    operation_id = str(
+        detection.get("opid")
+        or detection.get("operation_id")
+        or ""
+    ).strip()
+
+    observation_time = (
+        detection.get("timestamp")
+        or detection.get("observation_time")
+        or datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%S.%fZ"
+        )
+    )
+
+    lat, lon, alt = _promoted_detection_location(
+        component,
+        detection,
+        node_uid,
+    )
+
+    artifact_ids = []
+
+    for candidate in (
+        detection.get("artifact_ids", []),
+        detection.get("artifact_id", ""),
+    ):
+        values = candidate if isinstance(candidate, list) else [candidate]
+
+        for value in values:
+            value = str(value or "").strip()
+            if value and value not in artifact_ids:
+                artifact_ids.append(value)
+
+    artifact_links = []
+
+    for link in detection.get("artifact_links", []) or []:
+        if not isinstance(link, dict):
+            continue
+
+        linked_artifact_id = str(
+            link.get("artifact_id", "")
+            or ""
+        ).strip()
+
+        if not linked_artifact_id:
+            continue
+
+        artifact_links.append(dict(link))
+
+        if linked_artifact_id not in artifact_ids:
+            artifact_ids.append(linked_artifact_id)
+
+    for linked_artifact_id in artifact_ids:
+        if any(
+            str(link.get("artifact_id", "") or "").strip()
+            == linked_artifact_id
+            for link in artifact_links
+        ):
+            continue
+
+        artifact_links.append({
+            "artifact_id": linked_artifact_id,
+            "operation_id": operation_id,
+        })
+
+    summary = {
+        "source": "detection_promotion",
+        "promoted_by_uid": requester_uid or "",
+        "promoted_by_callsign": requester_callsign or "",
+        "detection_snapshots": [dict(detection)],
+        "artifact_ids": artifact_ids,
+        "artifact_links": artifact_links,
+        "stage": "PROMOTED",
+        "stage_order": 5,
+    }
+
+    await soiUpdate(
+        component,
+        node_uid=node_uid,
+        soi_id=soi_id,
+        frequency_mhz=frequency_mhz,
+        status="PROMOTED",
+        operation_id=operation_id,
+        artifact_id=(artifact_ids[-1] if artifact_ids else ""),
+        summary=summary,
+        lat=lat,
+        lon=lon,
+        alt=alt,
+        observation_time=observation_time,
+    )
+
+    component.logger.info(
+        "Promoted detection to SOI "
+        f"soi_id={soi_id}, node_uid={node_uid}"
+    )
+
+
+async def promoteDetectionToTarget(
+    component: object,
+    detection=None,
+    requester_uid: str = "",
+    requester_callsign: str = "",
+):
+    """
+    Convert an existing structured detection directly into an authoritative target.
+    No plugin action or Sensor Node execution is involved.
+    """
+    detection = _normalize_promoted_detection(detection)
+
+    if not detection:
+        component.logger.warning(
+            "promoteDetectionToTarget received an empty detection"
+        )
+        return
+
+    node_uid = str(detection.get("node_uid") or "").strip()
+
+    if not node_uid:
+        component.logger.warning(
+            "promoteDetectionToTarget detection missing node_uid"
+        )
+        return
+
+    target_id = str(uuid.uuid4())
+    frequency_mhz = _promoted_detection_frequency_mhz(detection)
+
+    observation_time = (
+        detection.get("timestamp")
+        or detection.get("observation_time")
+        or datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%S.%fZ"
+        )
+    )
+
+    lat = _promoted_detection_float(
+        detection,
+        "latitude",
+        "lat",
+    )
+
+    lon = _promoted_detection_float(
+        detection,
+        "longitude",
+        "lon",
+    )
+
+    alt = _promoted_detection_float(
+        detection,
+        "hae_meters",
+        "hae_m",
+        "alt",
+    )
+
+    location = {}
+
+    if lat is not None:
+        location["lat"] = lat
+
+    if lon is not None:
+        location["lon"] = lon
+
+    if alt is not None:
+        location["hae_m"] = alt
+
+    if observation_time:
+        location["timestamp"] = observation_time
+
+    location["source"] = "wintak_detection_promotion"
+
+    display_label = _promoted_detection_label(detection)
+
+    classification = {
+        "display_label": display_label,
+        "confidence": None,
+        "source": "promoted_detection",
+        "candidates": [],
+    }
+
+    summary = {
+        "source": "detection_promotion",
+        "promoted_by_uid": requester_uid or "",
+        "promoted_by_callsign": requester_callsign or "",
+        "detection_event_uid": str(
+            detection.get("event_uid") or ""
+        ),
+        "attributes": dict(detection),
+    }
+
+    history_entry = {
+        "event": "promoted_from_detection",
+        "source": "detection_promotion",
+        "requester_uid": requester_uid or "",
+        "requester_callsign": requester_callsign or "",
+        "detection_event_uid": str(
+            detection.get("event_uid") or ""
+        ),
+        "timestamp": datetime.now(timezone.utc).strftime(
+            "%Y-%m-%dT%H:%M:%S.%fZ"
+        ),
+    }
+
+    await targetUpdate(
+        component,
+        node_uid=node_uid,
+        target_id=target_id,
+        source_soi_id="",
+        frequency_mhz=frequency_mhz,
+        state="detected",
+        artifact_id="",
+        classification=classification,
+        location=location,
+        history_entry=history_entry,
+        summary=summary,
+        lat=lat,
+        lon=lon,
+        alt=alt,
+        observation_time=observation_time,
+    )
+
+    component.logger.info(
+        f"Promoted detection to target "
+        f"target_id={target_id}, node_uid={node_uid}"
+    )
+
+
+async def sendSoisListTak(
     component: object,
     requester_uid: str = "",
     requester_type: str = "tak",
@@ -6677,107 +8679,50 @@ async def sendArtifactsListTak(
     requester_callsign: str = "",
 ) -> None:
     """
-    Respond to WinTAK/Dashboard artifact-list refresh requests.
+    Return HIPRFISR's authoritative merged SOI records.
 
-    For TAK, emit one artifact_metadata event per matching artifact so WinTAK
-    can reuse its normal artifact_metadata parser/upsert path.
-
-    For Dashboard, return a structured list over the Dashboard socket.
+    Dashboard receives one structured list over ZMQ. TAK receives one normal
+    SOI CoT event per record so WinTAK can reuse its existing SOI parser/upsert
+    path.
     """
-    tracker = getattr(component, "artifact_tracker", None)
-
-    if tracker is None:
-        component.logger.warning("sendArtifactsListTak: no artifact_tracker")
-        return
-
-    def _artifact_to_dict(artifact):
-        if artifact is None:
-            return None
-
-        if isinstance(artifact, dict):
-            return dict(artifact)
-
-        if hasattr(artifact, "to_dict"):
-            return artifact.to_dict()
-
-        # Defensive fallback for dataclass-like objects.
-        out = {}
-        for key in (
-            "id",
-            "source_id",
-            "operation_id",
-            "name",
-            "file_path",
-            "artifact_type",
-            "file_size",
-            "created_at",
-            "modified_at",
-            "metadata",
-            "checksum",
-        ):
-            if hasattr(artifact, key):
-                out[key] = getattr(artifact, key)
-
-        return out
-
-    def _source_id_for_record(record):
-        metadata = record.get("metadata") or {}
-
-        if not isinstance(metadata, dict):
-            metadata = {}
-
-        return (
-            record.get("source_id")
-            or metadata.get("source_id")
-            or metadata.get("node_uid")
-            or ""
-        )
-
-    # Scan the tracker cache instead of only using get_artifacts_source_id().
-    # Some older/dummy artifacts may have node_uid only in metadata, while
-    # newer records use top-level source_id.
     records = []
 
     try:
-        artifact_objects = list(getattr(tracker, "_artifacts", {}).values())
+        soi_store = getattr(component, "sois", {}) or {}
+
+        if isinstance(soi_store, dict):
+            iterable = soi_store.values()
+        elif isinstance(soi_store, list):
+            iterable = soi_store
+        else:
+            iterable = []
+
+        for soi in iterable:
+            if not isinstance(soi, dict):
+                continue
+
+            soi_node_uid = str(
+                soi.get("node_uid", "")
+                or ""
+            ).strip()
+
+            if node_uid and soi_node_uid != str(node_uid).strip():
+                continue
+
+            records.append(dict(soi))
+
+        records.sort(
+            key=lambda record: float(
+                record.get("updated_at")
+                or record.get("created_at")
+                or 0
+            ),
+            reverse=True,
+        )
+
     except Exception:
-        component.logger.exception("sendArtifactsListTak: failed reading artifact tracker")
-        artifact_objects = []
-
-    for artifact in artifact_objects:
-        try:
-            record = _artifact_to_dict(artifact)
-
-            if not isinstance(record, dict):
-                continue
-
-            artifact_id = record.get("id") or record.get("artifact_id")
-            if not artifact_id:
-                continue
-
-            source_id = _source_id_for_record(record)
-
-            if node_uid and source_id != node_uid:
-                continue
-
-            if source_id:
-                record["source_id"] = source_id
-
-            records.append(record)
-
-        except Exception:
-            component.logger.exception(
-                "sendArtifactsListTak: failed normalizing artifact record"
-            )
-
-    records.sort(
-        key=lambda r: str(
-            r.get("modified_at")
-            or r.get("created_at")
-            or ""
-        ),
-        reverse=True,
-    )
+        component.logger.exception("sendSoisListTak failed")
+        records = []
 
     # -------------------------------------------------------------
     # Dashboard response: structured list over ZMQ
@@ -6785,13 +8730,16 @@ async def sendArtifactsListTak(
     if requester_type == "dashboard":
         PARAMETERS = {
             "node_uid": node_uid,
-            "artifacts": records,
+            "sois": records,
         }
 
         msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "sendArtifactsListTakReturn",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "sendSoisListTakReturn",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
         }
 
         if component.dashboard_connected:
@@ -6803,44 +8751,77 @@ async def sendArtifactsListTak(
         return
 
     # -------------------------------------------------------------
-    # TAK response: replay artifact_metadata CoT events
+    # TAK response: replay normal SOI CoT events
     # -------------------------------------------------------------
     for record in records:
         try:
-            artifact_id = record.get("id") or record.get("artifact_id")
-            name = record.get("name") or ""
-            timestamp = (
-                record.get("modified_at")
-                or record.get("created_at")
+            soi_node_uid = str(
+                record.get("node_uid", "")
+                or node_uid
                 or ""
-            )
-            operation_id = record.get("operation_id") or ""
-            source_id = _source_id_for_record(record)
+            ).strip()
 
-            if not artifact_id or not name or not timestamp:
+            soi_id = str(
+                record.get("soi_id", "")
+                or ""
+            ).strip()
+
+            operation_id = str(
+                record.get("operation_id", "")
+                or ""
+            ).strip()
+
+            soi_key = str(
+                record.get("soi_key", "")
+                or ""
+            ).strip()
+
+            uid_core = soi_id or operation_id or soi_key
+
+            if not soi_node_uid or not uid_core:
                 component.logger.warning(
-                    "sendArtifactsListTak: skipping malformed artifact record "
-                    f"artifact_id={artifact_id} name={name} timestamp={timestamp}"
+                    "sendSoisListTak: skipping malformed SOI record "
+                    f"node_uid={soi_node_uid!r}, soi_id={soi_id!r}, "
+                    f"operation_id={operation_id!r}"
                 )
                 continue
 
-            event_uid_source = source_id or node_uid or "unknown-source"
-            event_uid = (
-                f"{event_uid_source}-artifact_metadata-"
-                f"{artifact_id}-refresh-{int(time.time() * 1000)}"
+            tak_uid = (
+                f"fissure-soi-{soi_node_uid}-{uid_core}-"
+                f"refresh-{int(time.time() * 1000)}"
             )
 
+            summary = record.get("summary") or {}
+
+            if not isinstance(summary, dict):
+                summary = {}
+
             tak_data = {
-                "event_type": "artifact_metadata",
-                "name": name,
-                "timestamp": timestamp,
-                "artid": artifact_id,
+                "event_type": "soi",
+                "node_uid": soi_node_uid,
+                "soi_id": soi_id,
+                "frequency_mhz": record.get("frequency_mhz"),
+                "status": record.get("status", ""),
                 "operation_id": operation_id,
-                "source_id": source_id or node_uid,
+                "artifact_id": record.get("artifact_id", ""),
+
+                "model_classification":
+                    record.get("model_classification", ""),
+                "model_confidence":
+                    record.get("model_confidence"),
+                "database_classification":
+                    record.get("database_classification", ""),
+
+                "stage": record.get("stage"),
+                "stage_order": record.get("stage_order"),
+
                 "request_id": request_id,
                 "requester_uid": requester_uid,
                 "requester_callsign": requester_callsign,
             }
+
+            if summary:
+                tak_data["summary"] = summary
 
             tak_data = {
                 key: value
@@ -6856,8 +8837,12 @@ async def sendArtifactsListTak(
                 component,
                 {
                     "msg_type": "event",
-                    "uid": event_uid,
+                    "uid": tak_uid,
                     "data": tak_data,
+                    "tak_icon": "r-x-fissure-soi",
+                    "lat": record.get("lat"),
+                    "lon": record.get("lon"),
+                    "alt": record.get("hae_m"),
                 },
                 requester_type,
                 requester_uid,
@@ -6865,5 +8850,352 @@ async def sendArtifactsListTak(
 
         except Exception:
             component.logger.exception(
-                "sendArtifactsListTak: failed sending artifact_metadata event"
+                "sendSoisListTak: failed emitting SOI refresh event"
             )
+      
+
+def _artifact_metadata_for_tak(metadata):
+    """Return XML-safe, display-oriented Artifact metadata for TAK clients."""
+    if not isinstance(metadata, dict):
+        return {}
+
+    normalized = {}
+
+    for raw_key, value in metadata.items():
+        key = re.sub(r"[^A-Za-z0-9_.-]+", "_", str(raw_key)).strip("_.-")
+        if not key:
+            key = "field"
+        if key[0].isdigit():
+            key = "field_" + key
+
+        base_key = key
+        suffix = 2
+        while key in normalized:
+            key = f"{base_key}_{suffix}"
+            suffix += 1
+
+        if isinstance(value, (dict, list, tuple)):
+            try:
+                normalized[key] = json.dumps(value, sort_keys=True, default=str)
+            except Exception:
+                normalized[key] = str(value)
+        elif value is not None:
+            normalized[key] = str(value)
+
+    return normalized
+
+
+def _artifact_tak_data(
+    record,
+    request_id="",
+    requester_uid="",
+    requester_callsign="",
+):
+    """
+    Build manifest-only artifact metadata for TAK clients.
+    """
+    metadata = record.get("metadata")
+    if not isinstance(metadata, dict):
+        metadata = {}
+
+    files = record.get("files")
+    if not isinstance(files, list):
+        files = []
+
+    relations = record.get("relations")
+    if not isinstance(relations, list):
+        relations = []
+
+    source_id = str(
+        record.get("source_id", "")
+        or ""
+    )
+
+    file_count = int(
+        record.get(
+            "file_count",
+            len(files),
+        )
+        or len(files)
+    )
+
+    total_size = int(
+        record.get(
+            "total_size",
+            sum(
+                int(
+                    item.get("size", 0)
+                    or 0
+                )
+                for item in files
+                if isinstance(item, dict)
+            ),
+        )
+        or 0
+    )
+
+    file_summaries = []
+
+    for file_record in files:
+        if not isinstance(file_record, dict):
+            continue
+
+        file_summaries.append(
+            {
+                "id": str(
+                    file_record.get("id", "")
+                    or ""
+                ),
+                "name": str(
+                    file_record.get("name", "")
+                    or ""
+                ),
+                "relative_path": str(
+                    file_record.get(
+                        "relative_path",
+                        "",
+                    )
+                    or ""
+                ),
+                "size": int(
+                    file_record.get("size", 0)
+                    or 0
+                ),
+                "sha256": str(
+                    file_record.get("sha256", "")
+                    or ""
+                ),
+                "role": str(
+                    file_record.get("role", "")
+                    or ""
+                ),
+                "content_type": str(
+                    file_record.get(
+                        "content_type",
+                        "",
+                    )
+                    or ""
+                ),
+            }
+        )
+
+    data = {
+        "event_type": "artifact_metadata",
+        "name": record.get("name") or "",
+        "timestamp": (
+            record.get("modified_at")
+            or record.get("created_at")
+            or ""
+        ),
+        "artid": (
+            record.get("id")
+            or record.get("artifact_id")
+            or ""
+        ),
+        "operation_id":
+            record.get("operation_id") or "",
+        "source_id": source_id,
+        "artifact_type":
+            record.get("artifact_type") or "",
+        "file_count": file_count,
+        "total_size": total_size,
+        "created_at":
+            record.get("created_at") or "",
+        "modified_at":
+            record.get("modified_at") or "",
+        "files": file_summaries,
+        "relations": relations,
+        "metadata":
+            _artifact_metadata_for_tak(
+                metadata
+            ),
+        "request_id": request_id,
+        "requester_uid": requester_uid,
+        "requester_callsign":
+            requester_callsign,
+    }
+
+    return {
+        key: value
+        for key, value in data.items()
+        if value is not None
+        and value != {}
+        and value != []
+        and not (
+            isinstance(value, str)
+            and value.strip() == ""
+        )
+    }
+
+
+async def sendArtifactsListTak(
+    component: object,
+    requester_uid: str = "",
+    requester_type: str = "dashboard",
+    node_uid: str = "",
+    request_id: str = "",
+    requester_callsign: str = "",
+) -> None:
+    """
+    Return canonical artifact metadata to Dashboard or TAK clients.
+    """
+    tracker = getattr(
+        component,
+        "artifact_tracker",
+        None,
+    )
+
+    if tracker is None:
+        component.logger.warning(
+            "sendArtifactsListTak: no artifact_tracker"
+        )
+        return
+
+    node_uid = str(
+        node_uid or ""
+    ).strip()
+
+    try:
+        if node_uid:
+            artifact_objects = (
+                tracker.get_artifacts_source_id(
+                    node_uid,
+                    sortby="modified_at",
+                )
+            )
+        else:
+            artifact_objects = (
+                tracker.get_all_artifacts()
+            )
+
+    except Exception:
+        component.logger.exception(
+            "sendArtifactsListTak: "
+            "failed reading artifact tracker"
+        )
+        artifact_objects = []
+
+    records = []
+
+    for artifact in artifact_objects:
+        try:
+            if isinstance(artifact, dict):
+                record = dict(artifact)
+            elif hasattr(
+                artifact,
+                "to_dict",
+            ):
+                record = artifact.to_dict()
+            else:
+                continue
+
+            artifact_id = str(
+                record.get("id", "")
+                or ""
+            ).strip()
+
+            source_id = str(
+                record.get("source_id", "")
+                or ""
+            ).strip()
+
+            if not artifact_id:
+                continue
+
+            if node_uid and source_id != node_uid:
+                continue
+
+            records.append(record)
+
+        except Exception:
+            component.logger.exception(
+                "sendArtifactsListTak: "
+                "failed normalizing artifact record"
+            )
+
+    records.sort(
+        key=lambda record: str(
+            record.get("modified_at")
+            or record.get("created_at")
+            or ""
+        ),
+        reverse=True,
+    )
+
+    if requester_type == "dashboard":
+        parameters = {
+            "node_uid": node_uid,
+            "artifacts": records,
+        }
+
+        message = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "sendArtifactsListTakReturn",
+            fissure.comms.MessageFields.PARAMETERS:
+                parameters,
+        }
+
+        if component.dashboard_connected:
+            await component.dashboard_socket.send_msg(
+                fissure.comms.MessageTypes.COMMANDS,
+                message,
+            )
+
+        return
+
+    for record in records:
+        artifact_id = str(
+            record.get("id", "")
+            or ""
+        ).strip()
+        name = str(
+            record.get("name", "")
+            or ""
+        ).strip()
+        timestamp = str(
+            record.get("modified_at")
+            or record.get("created_at")
+            or ""
+        ).strip()
+        source_id = str(
+            record.get("source_id", "")
+            or ""
+        ).strip()
+
+        if (
+            not artifact_id
+            or not name
+            or not timestamp
+        ):
+            component.logger.warning(
+                "sendArtifactsListTak: "
+                "skipping malformed artifact %s",
+                artifact_id,
+            )
+            continue
+
+        event_uid = (
+            f"{source_id or node_uid or 'unknown-source'}"
+            f"-artifact_metadata-"
+            f"{artifact_id}-refresh-"
+            f"{int(time.time() * 1000)}"
+        )
+
+        await fissure.utils.tak_messages.send(
+            component,
+            {
+                "msg_type": "event",
+                "uid": event_uid,
+                "data": _artifact_tak_data(
+                    record,
+                    request_id=request_id,
+                    requester_uid=requester_uid,
+                    requester_callsign=
+                        requester_callsign,
+                ),
+            },
+            requester_type,
+            requester_uid,
+        )

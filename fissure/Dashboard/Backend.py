@@ -3,18 +3,19 @@ from inspect import isfunction
 from PyQt5 import QtCore
 from types import ModuleType
 from typing import Dict, List, Tuple
-
 import asyncio
-import fissure.comms
-import fissure.utils
-from fissure.utils import PLUGIN_DIR
-# from fissure.utils.plugin import modify_database
 import logging
 import multiprocessing
 import time
 import zmq
 import signal
 import uuid
+
+import fissure.comms
+import fissure.utils
+from fissure.utils import PLUGIN_DIR
+# from fissure.utils.plugin import modify_database
+from fissure.Dashboard.ArtifactTransferController import ArtifactTransferController
 
 EVENT_LOOP_DELAY = 0.1  # Seconds
 
@@ -83,6 +84,7 @@ class DashboardBackend:
 
         self.ip_address = fissure.utils.get_ip_address()
         self.hiprfisr_socket = None
+        self.artifact_transfer_client = None
         # self.initialize_comms()
         self.os_info = fissure.utils.get_os_info()
 
@@ -117,6 +119,8 @@ class DashboardBackend:
         self.initial_database_retrieval = True
 
         self.frontend = frontend
+
+        self.artifact_transfer_controller = ArtifactTransferController(self)
 
         # Register Callbacks
         self.register_callbacks(fissure.callbacks.GenericCallbacks)
@@ -155,6 +159,14 @@ class DashboardBackend:
                 await self.shutdown_hiprfisr()
             else:
                 await self.disconnect_from_hiprfisr()
+
+        artifact_client = self.artifact_transfer_client
+        if artifact_client is not None:
+            try:
+                artifact_client.close()
+            except Exception:
+                pass
+        self.artifact_transfer_client = None
 
         # SAFE SHUTDOWN (avoid NoneType crash)
         sock = self.hiprfisr_socket
@@ -461,7 +473,10 @@ class DashboardBackend:
 
     async def connect_to_hiprfisr(self, addr: fissure.comms.Address = None):
         """
-        Connect Dashboard to a HiprFisr instance at the specified address
+        Connect Dashboard to a HiprFisr instance at the specified address.
+
+        The artifact client uses its own binary data socket so large transfers
+        never share the normal command or heartbeat channels.
 
         :param addr: address of the HiprFisr instance
         :type addr: fissure.comms.Address
@@ -470,6 +485,30 @@ class DashboardBackend:
         if await self.hiprfisr_socket.connect(server_addr=self.hiprfisr_address, timeout=15):  # Small timeout affects connection on startup
             self.logger.info(f"connected to HiprFisr @ {self.hiprfisr_address}")
             self.hiprfisr_connected = True
+
+            artifact_host = (
+                "127.0.0.1"
+                if self.hiprfisr_address.protocol == "ipc"
+                else self.hiprfisr_address.address
+            )
+            artifact_endpoint = fissure.comms.build_artifact_endpoint(artifact_host)
+
+            if self.artifact_transfer_client is not None:
+                self.artifact_transfer_client.close()
+
+            self.artifact_transfer_client = fissure.comms.ArtifactTransferClient(
+                endpoint=artifact_endpoint,
+                identity=f"dashboard-artifacts-{self.socket_id}",
+                role=fissure.comms.ROLE_DASHBOARD,
+                logger=self.logger,
+            )
+            await self.artifact_transfer_client.connect()
+
+            artifact_receive_task = asyncio.create_task(
+                self.artifact_transfer_controller.receive_loop()
+            )
+            artifact_receive_task.set_name("Dashboard Artifact Transfer Receiver")
+            self.child_tasks.append(artifact_receive_task)
 
             # Set Session Flag
             self.session_active = True
@@ -710,65 +749,6 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-    async def archivePlaylistStart(
-        self,
-        node_uid,
-        flow_graph,
-        filenames,
-        frequencies,
-        sample_rates,
-        formats,
-        channels,
-        gains,
-        durations,
-        repeat,
-        ip_address,
-        serial,
-        trigger_values,
-    ):
-        """
-        Starts Archive Playlist in response to button press.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "flow_graph": flow_graph,
-                "filenames": filenames,
-                "frequencies": frequencies,
-                "sample_rates": sample_rates,
-                "formats": formats,
-                "channels": channels,
-                "gains": gains,
-                "durations": durations,
-                "repeat": repeat,
-                "ip_address": ip_address,
-                "serial": serial,
-                "trigger_values": trigger_values,
-            }
-            msg = {
-                fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistStart",
-                fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def archivePlaylistStop(self, node_uid):
-        """
-        Stops Archive Playlist in response to button press.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {"node_uid": node_uid}
-            msg = {
-                fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                fissure.comms.MessageFields.MESSAGE_NAME: "archivePlaylistStop",
-                fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
     async def attackFlowGraphStart(self, node_uid, flow_graph_filepath, variable_names, variable_values, file_type, run_with_sudo, autorun_index, trigger_values):
         """
         Sends a message to start a single-stage attack.
@@ -984,24 +964,265 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
-    async def transferSensorNodeFile(self, node_uid="", local_file="", remote_folder="", refresh_file_list=False):
+    async def transferSensorNodeFile(
+        self,
+        node_uid="",
+        local_file="",
+        remote_folder="",
+        refresh_file_list=False,
+    ):
         """
-        Loads a local file and transfers the data to a remote sensor node.
+        Transfer one Dashboard-local file to a Sensor Node over the dedicated
+        binary data plane.
+
+        The existing caller contract is preserved: ``remote_folder`` is a
+        Sensor_Node-relative folder such as ``/Archive_Replay``. The
+        destination folder must already exist on the Sensor Node.
         """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "local_file": local_file,
-                "remote_folder": remote_folder,
-                "refresh_file_list": refresh_file_list
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "transferSensorNodeFile",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg) 
+        import os
+        from fissure.utils.artifacts import calculate_file_checksum
+
+        if self.hiprfisr_connected is not True:
+            self.logger.error(
+                "Cannot transfer Sensor Node file while HIPRFISR is disconnected"
+            )
+            return False
+
+        transfer_client = self.artifact_transfer_client
+
+        if transfer_client is None:
+            self.logger.error(
+                "Sensor Node binary transfer channel is unavailable"
+            )
+            return False
+
+        local_file = str(local_file or "").strip()
+        node_uid = str(node_uid or "").strip()
+        remote_folder = str(remote_folder or "").strip()
+
+        if not node_uid:
+            self.logger.error(
+                "Cannot transfer Sensor Node file without a node UID"
+            )
+            return False
+
+        if not os.path.isfile(local_file):
+            self.logger.error(
+                "Invalid local filepath for Sensor Node transfer: %s",
+                local_file,
+            )
+            return False
+
+        filename = os.path.basename(local_file)
+        remote_filepath = (
+            remote_folder.rstrip("/")
+            + "/"
+            + filename
+        )
+
+        if not remote_filepath.startswith("/"):
+            remote_filepath = "/" + remote_filepath
+
+        file_size = os.path.getsize(local_file)
+        transfer_id = str(uuid.uuid4())
+
+        loop = asyncio.get_running_loop()
+
+        checksum_started = time.monotonic()
+        sha256 = await loop.run_in_executor(
+            None,
+            calculate_file_checksum,
+            local_file,
+        )
+        checksum_elapsed = time.monotonic() - checksum_started
+
+        pending_uploads = getattr(
+            self,
+            "_sensor_node_file_uploads",
+            None,
+        )
+
+        if pending_uploads is None:
+            pending_uploads = {}
+            self._sensor_node_file_uploads = pending_uploads
+
+        completion_future = loop.create_future()
+        pending_uploads[transfer_id] = completion_future
+
+        transfer_started = time.monotonic()
+        complete_sent = False
+
+        self.logger.info(
+            "Starting binary Sensor Node file upload "
+            "transfer_id=%s node_uid=%s source=%s destination=%s "
+            "bytes=%s sha256=%s checksum_time=%.3fs",
+            transfer_id,
+            node_uid,
+            local_file,
+            remote_filepath,
+            file_size,
+            sha256,
+            checksum_elapsed,
+        )
+
+        try:
+            await transfer_client.send_start(
+                transfer_id,
+                {
+                    "transfer_type": "sensor_node_file_upload",
+                    "destination_node_uid": node_uid,
+                    "filename": filename,
+                    "remote_filepath": remote_filepath,
+                    "file_size": file_size,
+                    "sha256": sha256,
+                    "refresh_file_list": bool(refresh_file_list),
+                    "chunk_size": fissure.comms.ARTIFACT_CHUNK_SIZE,
+                },
+            )
+
+            sequence = 0
+            bytes_sent = 0
+
+            with open(local_file, "rb") as handle:
+                while True:
+                    if completion_future.done():
+                        early_result = completion_future.result()
+
+                        if not bool(
+                            early_result.get(
+                                "success",
+                                False,
+                            )
+                        ):
+                            raise RuntimeError(
+                                str(
+                                    early_result.get(
+                                        "message",
+                                        "Sensor Node rejected the file transfer",
+                                    )
+                                )
+                            )
+
+                    chunk = handle.read(
+                        fissure.comms.ARTIFACT_CHUNK_SIZE
+                    )
+
+                    if not chunk:
+                        break
+
+                    await transfer_client.send_chunk(
+                        transfer_id,
+                        sequence,
+                        chunk,
+                    )
+
+                    sequence += 1
+                    bytes_sent += len(chunk)
+                    await asyncio.sleep(0)
+
+            if bytes_sent != file_size:
+                raise RuntimeError(
+                    "Local file changed while it was being transferred"
+                )
+
+            await transfer_client.send_file_complete(
+                transfer_id,
+                {
+                    "filename": filename,
+                    "remote_filepath": remote_filepath,
+                    "bytes_sent": bytes_sent,
+                    "chunks_sent": sequence,
+                    "sha256": sha256,
+                },
+            )
+
+            await transfer_client.send_complete(
+                transfer_id,
+                {
+                    "filename": filename,
+                    "remote_filepath": remote_filepath,
+                    "bytes_sent": bytes_sent,
+                    "chunks_sent": sequence,
+                    "sha256": sha256,
+                },
+            )
+            complete_sent = True
+
+            result = await asyncio.wait_for(
+                asyncio.shield(completion_future),
+                timeout=20.0,
+            )
+
+            if not bool(result.get("success", False)):
+                self.logger.error(
+                    "Sensor Node file upload failed "
+                    "transfer_id=%s: %s",
+                    transfer_id,
+                    result.get("message", "Transfer failed"),
+                )
+                return False
+
+            elapsed = max(
+                0.000001,
+                time.monotonic() - transfer_started,
+            )
+            mib_per_second = (
+                file_size
+                / (1024.0 * 1024.0)
+                / elapsed
+            )
+
+            self.logger.info(
+                "Completed binary Sensor Node file upload "
+                "transfer_id=%s node_uid=%s destination=%s "
+                "bytes=%s elapsed=%.3fs rate=%.2f MiB/s "
+                "sensor_elapsed=%.3fs sensor_rate=%.2f MiB/s",
+                transfer_id,
+                node_uid,
+                result.get("remote_filepath", remote_filepath),
+                file_size,
+                elapsed,
+                mib_per_second,
+                float(result.get("elapsed_seconds", 0.0) or 0.0),
+                float(result.get("mib_per_second", 0.0) or 0.0),
+            )
+
+            return True
+
+        except asyncio.TimeoutError:
+            self.logger.error(
+                "Sensor Node file upload verification timed out "
+                "transfer_id=%s destination=%s",
+                transfer_id,
+                remote_filepath,
+            )
+            return False
+
+        except Exception as exc:
+            self.logger.error(
+                "Sensor Node file upload failed "
+                "transfer_id=%s destination=%s: %s",
+                transfer_id,
+                remote_filepath,
+                exc,
+            )
+
+            if not complete_sent:
+                try:
+                    await transfer_client.send_cancel(
+                        transfer_id,
+                        str(exc),
+                    )
+                except Exception:
+                    pass
+
+            return False
+
+        finally:
+            pending_uploads.pop(
+                transfer_id,
+                None,
+            )
 
 
     async def searchLibrary(self, soi_data="", field_data=""):
@@ -1114,52 +1335,6 @@ class DashboardBackend:
             msg = {
                     fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
                     fissure.comms.MessageFields.MESSAGE_NAME: "iqFlowGraphStop",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def inspectionFlowGraphStart(
-        self, 
-        node_uid="", 
-        flow_graph_filepath="", 
-        variable_names=[], 
-        variable_values=[], 
-        file_type=""
-    ):
-        """
-        Command for starting an inspection flow graph.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "flow_graph_filepath": flow_graph_filepath,
-                "variable_names": variable_names,
-                "variable_values": variable_values,
-                "file_type": file_type,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "inspectionFlowGraphStart",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def inspectionFlowGraphStop(self, node_uid="", parameter=""):
-        """
-        Command for stopping an inspection flow graph.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-                "parameter": parameter,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "inspectionFlowGraphStop",
                     fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
             }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
@@ -1610,23 +1785,6 @@ class DashboardBackend:
             msg = {
                     fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
                     fissure.comms.MessageFields.MESSAGE_NAME: "stopScapy",
-                    fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-            }
-            await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-
-
-    async def deleteArchiveReplayFiles(self, node_uid=""):
-        """
-        Deletes all the files in the Archive_Replay folder on the sensor node ahead of file transfer for replay.
-        """
-        # Send the Message
-        if self.hiprfisr_connected is True:
-            PARAMETERS = {
-                "node_uid": node_uid,
-            }
-            msg = {
-                    fissure.comms.MessageFields.IDENTIFIER: fissure.comms.Identifiers.DASHBOARD,
-                    fissure.comms.MessageFields.MESSAGE_NAME: "deleteArchiveReplayFiles",
                     fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
             }
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
@@ -2358,6 +2516,33 @@ class DashboardBackend:
             )
 
 
+    async def stopPluginOperation(
+        self,
+        node_uid,
+        operation_id,
+    ):
+        """Stop one specific plugin operation on a Sensor Node."""
+        if self.hiprfisr_connected is True:
+            PARAMETERS = {
+                "node_uid": node_uid,
+                "operation_id": operation_id,
+            }
+
+            msg = {
+                fissure.comms.MessageFields.IDENTIFIER:
+                    fissure.comms.Identifiers.DASHBOARD,
+                fissure.comms.MessageFields.MESSAGE_NAME:
+                    "stop_plugin_operation",
+                fissure.comms.MessageFields.PARAMETERS:
+                    PARAMETERS,
+            }
+
+            await self.hiprfisr_socket.send_msg(
+                fissure.comms.MessageTypes.COMMANDS,
+                msg,
+            )
+
+
     async def tacticalNodeStop(self, uids):
         """
         Sends a message to the HIPRFISR to stop a plugin action.
@@ -2455,6 +2640,70 @@ class DashboardBackend:
             await self.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
 
 
+    async def promoteDetection(
+        self,
+        detection,
+        destination,
+    ):
+        """
+        Promote a complete Dashboard detection directly at HIPRFISR.
+
+        destination:
+            "soi"
+            "target"
+        """
+        destination = str(
+            destination or ""
+        ).strip().lower()
+
+        if destination not in {
+            "soi",
+            "target",
+        }:
+            self.logger.warning(
+                f"Unsupported detection promotion destination: {destination}"
+            )
+            return
+
+        if not isinstance(detection, dict) or not detection:
+            self.logger.warning(
+                "Cannot promote an empty detection."
+            )
+            return
+
+        if self.hiprfisr_connected is not True:
+            self.logger.warning(
+                "Cannot promote detection while HIPRFISR is disconnected."
+            )
+            return
+
+        message_name = (
+            "promoteDetectionToSoi"
+            if destination == "soi"
+            else "promoteDetectionToTarget"
+        )
+
+        parameters = {
+            "detection": detection,
+            "requester_uid": self.socket_id,
+            "requester_callsign": "FISSURE Dashboard",
+        }
+
+        msg = {
+            fissure.comms.MessageFields.IDENTIFIER:
+                fissure.comms.Identifiers.DASHBOARD,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                message_name,
+            fissure.comms.MessageFields.PARAMETERS:
+                parameters,
+        }
+
+        await self.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+
     async def tacticalPromoteSoiToTarget(
         self,
         target_id,
@@ -2546,6 +2795,36 @@ class DashboardBackend:
             )
 
 
+    async def tacticalNodeSoisRefresh(self, node_uid):
+            """
+            Requests the authoritative SOI record set from HIPRFISR for a node.
+
+            HIPRFISR owns the complete merged SOI lifecycle records. The Dashboard
+            response callback replaces the local cache for this node and refreshes
+            every SOI-dependent widget.
+            """
+            if self.hiprfisr_connected is True:
+                PARAMETERS = {
+                    "requester_uid": self.socket_id,
+                    "requester_type": "dashboard",
+                    "node_uid": node_uid,
+                }
+
+                msg = {
+                    fissure.comms.MessageFields.IDENTIFIER:
+                        fissure.comms.Identifiers.DASHBOARD,
+                    fissure.comms.MessageFields.MESSAGE_NAME:
+                        "sendSoisListTak",
+                    fissure.comms.MessageFields.PARAMETERS:
+                        PARAMETERS,
+                }
+
+                await self.hiprfisr_socket.send_msg(
+                    fissure.comms.MessageTypes.COMMANDS,
+                    msg,
+                )
+
+
     async def tacticalNodeArtifactsRefresh(self, node_uid):
         """
         Requests known artifact metadata from HIPRFISR for a selected node.
@@ -2570,6 +2849,53 @@ class DashboardBackend:
                 fissure.comms.MessageTypes.COMMANDS,
                 msg,
             )
+
+
+    async def requestDashboardArtifactDownload(
+            self,
+            artifact_id,
+            open_when_complete=False,
+        ):
+            """Request one managed artifact through the dedicated data plane."""
+            if not self.hiprfisr_connected:
+                raise RuntimeError("Dashboard is not connected to HIPRFISR")
+
+            if self.artifact_transfer_client is None:
+                raise RuntimeError("Artifact transfer channel is not connected")
+
+            transfer_id = str(uuid.uuid4())
+            self.artifact_transfer_controller.register_request(
+                transfer_id=transfer_id,
+                artifact_id=artifact_id,
+                open_when_complete=open_when_complete,
+            )
+
+            PARAMETERS = {
+                "transfer_id": transfer_id,
+                "artifact_id": artifact_id,
+            }
+            msg = {
+                fissure.comms.MessageFields.IDENTIFIER:
+                    fissure.comms.Identifiers.DASHBOARD,
+                fissure.comms.MessageFields.MESSAGE_NAME:
+                    "requestDashboardArtifactTransfer",
+                fissure.comms.MessageFields.PARAMETERS:
+                    PARAMETERS,
+            }
+
+            try:
+                await self.hiprfisr_socket.send_msg(
+                    fissure.comms.MessageTypes.COMMANDS,
+                    msg,
+                )
+            except Exception:
+                self.artifact_transfer_controller.fail_request(
+                    transfer_id,
+                    "Unable to send artifact request to HIPRFISR",
+                )
+                raise
+
+            return transfer_id
 
 
     async def queryPluginActions(
@@ -2652,6 +2978,55 @@ class DashboardBackend:
             fissure.comms.MessageTypes.COMMANDS,
             msg,
         )
+
+
+    async def tacticalConditionerPromoteToSoi(
+        self,
+        node_uid,
+        soi_id,
+        frequency_mhz=None,
+        status="EVIDENCE_READY",
+        operation_id="",
+        artifact_id="",
+        summary=None,
+    ):
+        """
+        Promotes existing Conditioner result metadata into a hub-backed SOI.
+
+        This does not start a sensor-node operation. It sends an SOI update directly
+        to HIPRFISR so the hub remains the source of truth.
+        """
+        if summary is None:
+            summary = {}
+
+        if self.hiprfisr_connected is True:
+            PARAMETERS = {
+                "node_uid": node_uid,
+                "soi_id": soi_id,
+                "frequency_mhz": frequency_mhz,
+                "status": status,
+                "operation_id": operation_id or "",
+                "artifact_id": artifact_id or "",
+                "summary": summary,
+                "lat": None,
+                "lon": None,
+                "alt": None,
+                "observation_time": None,
+            }
+
+            msg = {
+                fissure.comms.MessageFields.IDENTIFIER:
+                    fissure.comms.Identifiers.DASHBOARD,
+                fissure.comms.MessageFields.MESSAGE_NAME:
+                    "soiUpdate",
+                fissure.comms.MessageFields.PARAMETERS:
+                    PARAMETERS,
+            }
+
+            await self.hiprfisr_socket.send_msg(
+                fissure.comms.MessageTypes.COMMANDS,
+                msg,
+            )
 
 
 #######################################################################################

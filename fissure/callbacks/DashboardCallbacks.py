@@ -6,7 +6,6 @@ from PyQt5.QtWidgets import QTableWidget, QTableWidgetItem
 import yaml
 import os
 import subprocess
-import threading
 import ast
 import asyncio
 from typing import List
@@ -45,7 +44,6 @@ from fissure.Dashboard.UI_Components.Qt5 import (
     # NewSOI,
     # OperationsThread,
     # OptionsDialog,
-    # SigMF_Dialog,
     # TreeModel,
     # TreeNode,
     # TrimSettings,
@@ -158,37 +156,6 @@ async def flowGraphStarted(component: object, category=""):
             component.frontend.refreshStatusBarText()
 
 
-async def archivePlaylistPosition(component: object, position=0):
-    """ 
-    Highlights the active archive playlist flow graph in the table.
-    """        
-    # Select Table Row
-    try:
-        component.frontend.ui.tableWidget_archive_replay.selectRow(int(position))
-    except:
-        component.logger.error("Invalid row value")
-        
-    # Update the Status Dialog
-    # component.frontend.statusbar_text[sensor_node_id][5] = "Replaying file in row " + str(position)
-    component.frontend.refreshStatusBarText()
-
-
-async def archivePlaylistFinished(component: object):
-    """ 
-    Changes the pushbuttons and labels upon receiving a message from the sensor node.
-    """        
-    # Change the Pushbuttons and Labels
-    component.frontend.ui.pushButton_archive_replay_start.setText("Start")
-    component.frontend.ui.label2_archive_replay_status.setVisible(False)
-
-    # Update the Status Dialog
-    # component.frontend.statusbar_text[sensor_node_id][5] = "Not Running"
-    component.frontend.refreshStatusBarText()
-
-    # Enable the Controls
-    component.frontend.ui.frame_archive_replay_controls.setEnabled(True)
-
-
 async def hardwareGuessResults(component: object, table_row=0, hardware_type="", scan_results="", new_guess_index=0):
     """
     Fills the scan results table row with hardware information in the Node Configure Dialog.
@@ -227,6 +194,16 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
     """
     Store selected sensor node settings and update the selected node display.
     """
+    previous_selected_node_uid = str(
+        getattr(component.frontend, "selected_node_uid", "") or ""
+    ).strip()
+    new_selected_node_uid = str(node_uuid or "").strip()
+
+    selected_node_changed = (
+        new_selected_node_uid != ""
+        and new_selected_node_uid != previous_selected_node_uid
+    )
+
     component.frontend.selected_node_uid = node_uuid
     component.frontend.selected_node_ip = node_ip_address
     component.frontend.selected_node_settings = settings_dict or {}
@@ -264,6 +241,16 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
     if hasattr(component.frontend, "selected_tactical_node_uid"):
         TacticalTabSlots._updateTacticalNodeInfoFrameState(component.frontend)
 
+    if selected_node_changed:
+        try:
+            TSITabSlots.reset_tsi_conditioner_method_for_selected_node_change(
+                component.frontend
+            )
+        except Exception as e:
+            component.logger.debug(
+                f"Could not reset TSI Conditioner after selected-node change: {e}"
+            )
+
     component.frontend.configureSelectedNodeHardware()
 
     try:
@@ -271,6 +258,61 @@ async def recallSettingsReturn(component: object, node_uuid: str, node_ip_addres
     except Exception as e:
         component.logger.debug(
             f"Could not update unified TSI Detector selected-node gate after recallSettingsReturn: {e}"
+        )
+
+    try:
+        TSITabSlots.update_tsi_conditioner_selected_node_gate(component.frontend)
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update TSI Conditioner selected-node gate after recallSettingsReturn: {e}"
+        )
+    
+    try:
+        TSITabSlots.update_tsi_fe_selected_node_gate(component.frontend)
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update TSI Feature Extractor selected-node gate "
+            f"after recallSettingsReturn: {e}"
+        )
+    
+    try:
+        IQDataTabSlots.update_iq_record_selected_node_gate(
+            component.frontend
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update IQ Record selected-node gate "
+            f"after recallSettingsReturn: {e}"
+        )
+    
+    try:
+        IQDataTabSlots.update_iq_playback_selected_node_gate(
+            component.frontend
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update IQ Playback selected-node gate "
+            f"after recallSettingsReturn: {e}"
+        )
+    
+    try:
+        ArchiveTabSlots.update_archive_replay_selected_node_gate(
+            component.frontend
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update Archive Replay selected-node gate "
+            f"after recallSettingsReturn: {e}"
+        )
+
+    try:
+        SensorNodesTabSlots.update_sensor_nodes_file_navigation_selected_node_gate(
+            component.frontend
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update Sensor Nodes File Navigation selected-node gate "
+            f"after recallSettingsReturn: {e}"
         )
 
 
@@ -317,54 +359,6 @@ async def hiprfisrConnectedSerial(component: object):
     Keeps track if the Meshtastic serial port at the HIPRFISR is connected.
     """
     component.hiprfisr_serial_connected = True
-
-
-async def conditionerProgressBarReturn(component: object, progress=0, file_index=0):
-    """ 
-    Updates the TSI Conditioner progress bar.
-    """
-    # Update the Progress Bar
-    progress_value = progress
-    if int(progress) < 100:
-        component.frontend.ui.progressBar_tsi_conditioner_operation.setValue(int(progress))
-        if component.frontend.ui.comboBox_tsi_conditioner_input_source.currentText() == "Folder":
-            component.frontend.ui.listWidget_tsi_conditioner_input_files.setCurrentRow(file_index)
-            TSITabSlots._slotTSI_ConditionerInputLoadFileClicked(component.frontend)
-
-
-async def tsiConditionerFinished(component: object, table_strings=[]):
-    """ 
-    Acting on a TSI Conditioner Finished message from the TSI Component.
-    """                
-    # File Count
-    component.frontend.ui.label2_tsi_conditioner_results_file_count.setText("File Count: " + str(len(table_strings)))
-                    
-    # Clear Table
-    for row in reversed(range(0,component.frontend.ui.tableWidget_tsi_conditioner_results.rowCount())):
-        component.frontend.ui.tableWidget_tsi_conditioner_results.removeRow(row)
-            
-    # Row
-    for n in range(0,len(table_strings)):
-        component.frontend.ui.tableWidget_tsi_conditioner_results.setRowCount(component.frontend.ui.tableWidget_tsi_conditioner_results.rowCount()+1)
-        
-        # Column
-        for m in range(0,len(table_strings[0])):            
-            table_item = QtWidgets.QTableWidgetItem(table_strings[n][m])
-            table_item.setTextAlignment(QtCore.Qt.AlignCenter)
-            component.frontend.ui.tableWidget_tsi_conditioner_results.setItem(component.frontend.ui.tableWidget_tsi_conditioner_results.rowCount()-1,m,table_item)
-
-    # Resize Table
-    component.frontend.ui.tableWidget_tsi_conditioner_results.resizeRowsToContents()
-    component.frontend.ui.tableWidget_tsi_conditioner_results.resizeColumnsToContents()
-    component.frontend.ui.tableWidget_tsi_conditioner_results.horizontalHeader().setStretchLastSection(False)
-    component.frontend.ui.tableWidget_tsi_conditioner_results.horizontalHeader().setStretchLastSection(True)
-    
-    # Set Progress Bar
-    component.frontend.ui.progressBar_tsi_conditioner_operation.setValue(100)
-    component.frontend.ui.pushButton_tsi_conditioner_operation_start.setText("Start")
-    
-    # Refresh FE Listbox
-    TSITabSlots._slotTSI_FE_InputRefreshClicked(component.frontend)
 
 
 async def feProgressBarReturn(component: object, progress=0, file_index=0):
@@ -425,48 +419,6 @@ async def tsiFE_Finished(component: object, table_strings=[]):
     component.frontend.ui.pushButton_tsi_fe_operation_start.setText("Start")
 
 
-async def flowGraphStartedIQ(component: object):
-    """ 
-    This will be called in response to "Flow Graph Started IQ" Messages from Sensor Node.
-    The purpose is to check the enable the cancel buttons and change the status messages to indicate the IQ flow graph is running.
-    """        
-    # Update the Pushbutton and Label
-    component.frontend.ui.pushButton_iq_record.setEnabled(True)
-    try:
-        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.cellWidget(0,5).value())  # Save value from operation start?
-    except:
-        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.item(0,5).text())
-    component.frontend.ui.label2_iq_status_files.setText("Recording File " + str(component.frontend.iq_file_counter) + " of " + get_number_of_files)
-
-    # Update the Status Dialog
-    if component.frontend.active_sensor_node > -1:
-        component.frontend.statusbar_text[component.frontend.active_sensor_node][4] = 'Running Flow Graph...'
-        component.frontend.refreshStatusBarText()
-
-
-async def flowGraphStartedIQ_Playback(component: object):
-    """ 
-    This will be called in response to "Flow Graph Started IQ" Messages from Sensor Node.
-    The purpose is to check the enable the cancel buttons and change the status messages to indicate the IQ flow graph is running.
-    """       
-    # Update the Pushbutton and Label
-    component.frontend.ui.pushButton_iq_playback.setEnabled(True)
-    component.frontend.ui.label2_iq_playback_status.setText("Running...")
-
-    # Update the Status Dialog
-    if component.frontend.active_sensor_node > -1:
-        component.frontend.statusbar_text[component.frontend.active_sensor_node][4] = 'Running Flow Graph...'
-        component.frontend.refreshStatusBarText()
-
-
-async def flowGraphStartedIQ_Inspection(component: object):
-    """
-    Inspection flow graph started at sensor node.
-    """
-    # Future Use
-    pass
-
-
 async def flowGraphStartedSniffer(component: object, category=""):
     """ 
     Flow graph started message returned from Sensor Node.
@@ -478,133 +430,6 @@ async def flowGraphStartedSniffer(component: object, category=""):
         component.frontend.ui.pushButton_pd_sniffer_tagged_stream.setEnabled(True)
     elif category == "Message/PDU":
         component.frontend.ui.pushButton_pd_sniffer_msg_pdu.setEnabled(True)
-
-
-async def flowGraphFinishedIQ(component: object):
-    """ 
-    Called upon cancelling IQ recording. Changes the status and button text.
-    """       
-    # Change Status Label and Record Button Text
-    component.frontend.ui.label2_iq_status_files.setText("Not Recording")
-    # component.frontend.statusbar_text[sensor_node_id][4] = 'Not Recording'
-    component.frontend.refreshStatusBarText()
-
-    # Refresh File List
-    IQDataTabSlots._slotIQ_RefreshClicked(component.frontend)
-
-    # Get Folder and File of Recording
-    get_dir = str(component.frontend.ui.textEdit_iq_record_dir.toPlainText())
-    get_file = str(component.frontend.ui.tableWidget_iq_record.item(0,0).text())
-
-    if len(get_dir) > 0 and len(get_file) > 0:
-
-        # Load Directory and File
-        folder_index = component.frontend.ui.comboBox3_iq_folders.findText(get_dir)
-        if folder_index < 0:
-            # New Directory
-            component.frontend.ui.comboBox3_iq_folders.addItem(get_dir)
-            component.frontend.ui.comboBox3_iq_folders.setCurrentIndex(component.frontend.ui.comboBox3_iq_folders.count()-1)
-        else:
-            # Directory Exists
-            component.frontend.ui.comboBox3_iq_folders.setCurrentIndex(folder_index)
-
-        # Load File
-        file_item = component.frontend.ui.listWidget_iq_files.findItems(get_file,QtCore.Qt.MatchExactly|QtCore.Qt.MatchRecursive)
-        file_index = component.frontend.ui.listWidget_iq_files.row(file_item[0])
-        component.frontend.ui.listWidget_iq_files.setCurrentRow(file_index)
-        IQDataTabSlots._slotIQ_LoadIQ_Data(component.frontend)
-        IQDataTabSlots._slotIQ_PlotAllClicked(component.frontend)
-
-    # More than One Number of Files
-    try:
-        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.cellWidget(0,5).value())  # Save value from operation start?
-    except:
-        get_number_of_files = str(component.frontend.ui.tableWidget_iq_record.item(0,5).text())
-    if int(get_number_of_files) > 1:
-
-        # Update the Counter
-        if component.frontend.iq_file_counter != "abort":
-            component.frontend.iq_file_counter = component.frontend.iq_file_counter + 1
-
-            # Write SigMF Metadata for Multiple Recordings
-            if component.frontend.ui.checkBox_iq_record_sigmf.isChecked() == True:
-                if 'core:sha512' in component.frontend.sigmf_dict['global']:
-                    proc = subprocess.Popen('sha512sum "' + str(component.frontend.ui.textEdit_iq_record_dir.toPlainText()) + '/' + get_file + '" &', shell=True, stdout=subprocess.PIPE, )
-                    output = proc.communicate()[0].decode().split(" ")[0]
-                    component.frontend.sigmf_dict['global']['core:sha512'] = str(output)
-                if 'core:dataset' in component.frontend.sigmf_dict['global']:
-                    component.frontend.sigmf_dict['global']['core:dataset'] = get_file
-                if 'core:sample_rate' in component.frontend.sigmf_dict['global']:
-                    component.frontend.sigmf_dict['global']['core:sample_rate'] = float(str(component.frontend.ui.tableWidget_iq_record.item(0,7).text()))*1000000
-                metadata_filepath = str(component.frontend.ui.textEdit_iq_record_dir.toPlainText()) + '/' + get_file.replace(".sigmf-data",".sigmf-meta")
-                component.frontend.writeSigMF(metadata_filepath,component.frontend.sigmf_dict)
-
-            # Update New File Name
-            get_file_name = component.frontend.iq_first_file_name
-            if '.' in get_file_name:
-                get_file_name = get_file_name.split('.')[0] + '_' + str(component.frontend.iq_file_counter) + '.' + get_file_name.split('.')[1]
-            else:
-                get_file_name = get_file_name + '_' + str(component.frontend.iq_file_counter)
-            component.frontend.ui.tableWidget_iq_record.setItem(0,0, QtWidgets.QTableWidgetItem(get_file_name))
-
-        # Do the Next Recording
-        if component.frontend.iq_file_counter == "abort":
-            component.frontend.iq_file_counter = int(get_number_of_files) + 1
-        if component.frontend.iq_file_counter <= int(get_number_of_files):
-            get_delay = float(str(component.frontend.ui.tableWidget_iq_record.item(0,9).text()))
-            next_record_thread = threading.Timer(get_delay, call_async_function, [component.frontend])
-            next_record_thread.start()
-            #IQDataTabSlots._slotIQ_RecordClicked()
-
-        # All Done
-        else:
-            component.frontend.iq_file_counter = 0
-            component.frontend.ui.pushButton_iq_record.setText("Record")
-    else:
-        component.frontend.iq_file_counter = 0
-        component.frontend.ui.pushButton_iq_record.setText("Record")
-
-        # Write SigMF Metadata for Single File
-        if component.frontend.ui.checkBox_iq_record_sigmf.isChecked() == True:
-            if 'core:sha512' in component.frontend.sigmf_dict['global']:
-                proc = subprocess.Popen('sha512sum "' + str(component.frontend.ui.textEdit_iq_record_dir.toPlainText()) + '/' + get_file + '" &', shell=True, stdout=subprocess.PIPE, )
-                output = proc.communicate()[0].decode().split(" ")[0]
-                component.frontend.sigmf_dict['global']['core:sha512'] = str(output)
-            if 'core:dataset' in component.frontend.sigmf_dict['global']:
-                component.frontend.sigmf_dict['global']['core:dataset'] = get_file
-            if 'core:sample_rate' in component.frontend.sigmf_dict['global']:
-                component.frontend.sigmf_dict['global']['core:sample_rate'] = float(str(component.frontend.ui.tableWidget_iq_record.item(0,7).text()))*1000000
-            metadata_filepath = str(component.frontend.ui.textEdit_iq_record_dir.toPlainText()) + '/' + get_file.replace(".sigmf-data",".sigmf-meta")
-            component.frontend.writeSigMF(metadata_filepath,component.frontend.sigmf_dict)
-
-
-# Function to wrap the async function call
-def call_async_function(component: object):
-    # Create a new event loop for this thread
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
-    loop.run_until_complete(IQDataTabSlots._slotIQ_RecordClicked(component, True))
-    loop.close()  # Close the loop when done
-    
-
-async def flowGraphFinishedIQ_Inspection(component: object):
-    """
-    Inspection flow graph finished at sensor node.
-    """
-    # Future Use
-    pass
-
-
-async def flowGraphFinishedIQ_Playback(component: object):
-    """ 
-    Called upon cancelling IQ playback. Changes the status and button text.
-    """
-    # Change Status Label and Record Button Text
-    component.frontend.ui.label2_iq_playback_status.setText("Not Running")
-    component.frontend.ui.pushButton_iq_playback.setText("Play")
-    component.frontend.ui.pushButton_iq_playback.setEnabled(True)
-    # component.frontend.statusbar_text[sensor_node_id][4] = 'Not Recording'
-    component.frontend.refreshStatusBarText()
 
 
 async def flowGraphFinishedSniffer(component: object, category=""):
@@ -667,6 +492,68 @@ async def autorunPlaylistStarted(component: object):
     # Update the Status Dialog
     # component.frontend.statusbar_text[sensor_node_id][6] = "Running"
     component.frontend.refreshStatusBarText()
+
+
+async def sensorNodeFileTransferStatus(
+    component: object,
+    node_uid="",
+    transfer_id="",
+    success=False,
+    message="",
+    remote_filepath="",
+    remote_folder="",
+    bytes_received=0,
+    elapsed_seconds=0.0,
+    mib_per_second=0.0,
+    refresh_file_list=False,
+):
+    """Resolve one awaited Dashboard-to-Sensor-Node binary file upload."""
+    pending_uploads = getattr(
+        component,
+        "_sensor_node_file_uploads",
+        {},
+    )
+    completion_future = pending_uploads.get(
+        transfer_id
+    )
+
+    result = {
+        "success": bool(success),
+        "message": str(message),
+        "transfer_id": transfer_id,
+        "node_uid": node_uid,
+        "remote_filepath": remote_filepath,
+        "remote_folder": remote_folder,
+        "bytes_received": int(bytes_received),
+        "elapsed_seconds": float(elapsed_seconds),
+        "mib_per_second": float(mib_per_second),
+    }
+
+    if completion_future is not None and not completion_future.done():
+        completion_future.set_result(result)
+    elif success:
+        component.logger.info(
+            "Completed Sensor Node file upload transfer_id=%s path=%s",
+            transfer_id,
+            remote_filepath,
+        )
+    else:
+        component.logger.error(
+            "Sensor Node file upload failed transfer_id=%s: %s",
+            transfer_id,
+            message,
+        )
+
+    if (
+        success
+        and refresh_file_list
+        and node_uid
+        and remote_folder
+    ):
+        await component.refreshSensorNodeFiles(
+            node_uid,
+            remote_folder,
+        )
 
 
 async def refreshSensorNodeFilesResults(
@@ -1319,33 +1206,142 @@ async def responsePluginOperationParameters(component: object, plugin: str, oper
     res_table.resizeRowsToContents()
 
 
-async def responsePluginOperationStarted(component: object, node_uid: str, operation_id: str, plugin: str, operation: str, parameters: dict) -> None:
-    """Handle Request for Plugin Operation Started
+async def responsePluginOperationStarted(
+    component: object,
+    node_uid: str,
+    operation_id: str,
+    plugin: str,
+    operation: str,
+    parameters: dict,
+) -> None:
+    """Handle Request for Plugin Operation Started."""
+    operations_list: QtWidgets.QListWidget = (
+        component.frontend.ui.listWidget_operations
+    )
 
-    Parameters
-    ----------
-    component : object
-        Component
-    node_uid : str
-        Sensor node UID
-    operation_id : str
-        Operation ID
-    plugin : str
-        Plugin name
-    operation : str
-        Operation name
-    parameters : dict
-        Parameters for the operation
-    """
-    # Add the operation to the operations list view
-    operations_list: QtWidgets.QListWidget = component.frontend.ui.listWidget_operations
-    operations_list.addItem(f"{plugin} - {operation} (ID: {operation_id})")
-    operations_list.setWrapping(True)
+    operations_list.addItem(
+        f"{plugin} - {operation} (ID: {operation_id})"
+    )
+    operations_list.setWrapping(
+        True
+    )
     operations_list.scrollToBottom()
 
+    try:
+        operation_name = str(
+            operation or ""
+        ).strip()
 
-async def responsePluginOperationStopped(component: object, node_uid: str, operation_id: str, plugin: str, operation: str) -> None:
-    """Handle Request for Plugin Operation Stopped
+        if operation_name in [
+            "signal_conditioning.py",
+            "signal_conditioning_file.py",
+            "signal_conditioning",
+            "signal_conditioning_file",
+        ]:
+            if bool(
+                getattr(
+                    component.frontend,
+                    "tsi_conditioner_running",
+                    False,
+                )
+            ):
+                component.frontend.tsi_conditioner_opid = str(
+                    operation_id or ""
+                )
+                component.frontend.tsi_conditioner_waiting_for_opid = False
+
+                component.logger.debug(
+                    "[Conditioner] Tracked operation_id=%s for %s",
+                    operation_id,
+                    operation_name,
+                )
+
+    except Exception as error:
+        component.logger.debug(
+            "[Conditioner] Could not track Conditioner "
+            f"operation id: {error}"
+        )
+
+    # IQ Playback lifecycle only.
+    operation_name = str(
+        operation or ""
+    ).strip()
+
+    if operation_name not in {
+        "iq_playback",
+        "iq_playback.py",
+    }:
+        return
+
+    frontend = component.frontend
+
+    if not bool(
+        getattr(
+            frontend,
+            "iq_playback_start_pending",
+            False,
+        )
+    ):
+        return
+
+    tracked_node_uid = str(
+        getattr(
+            frontend,
+            "iq_playback_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if (
+        tracked_node_uid
+        and str(
+            node_uid or ""
+        ).strip() != tracked_node_uid
+    ):
+        return
+
+    frontend.iq_playback_operation_id = str(
+        operation_id or ""
+    )
+    frontend.iq_playback_start_pending = False
+    frontend.iq_playback_running = True
+
+    frontend.ui.label2_iq_playback_status.setText(
+        "Playing..."
+    )
+
+    button = (
+        frontend.ui.pushButton_iq_playback_start_stop
+    )
+    button.setText(
+        "Stop"
+    )
+    button.setEnabled(
+        True
+    )
+    button.setProperty(
+        "running",
+        True,
+    )
+    button.style().unpolish(
+        button
+    )
+    button.style().polish(
+        button
+    )
+    button.update()
+
+
+async def responsePluginOperationStopped(
+    component: object,
+    node_uid: str,
+    operation_id: str,
+    plugin: str,
+    operation: str,
+) -> None:
+    """
+    Handle Request for Plugin Operation Stopped.
 
     Parameters
     ----------
@@ -1360,12 +1356,100 @@ async def responsePluginOperationStopped(component: object, node_uid: str, opera
     operation : str
         Operation name
     """
-    # Remove the operation from the operations list view
-    operations_list: QtWidgets.QListWidget = component.frontend.ui.listWidget_operations
-    items = operations_list.findItems(f"{plugin} - {operation} (ID: {operation_id})", QtCore.Qt.MatchExactly)
-    if items:
-        for item in items:
-            operations_list.takeItem(operations_list.row(item))
+    operations_list: QtWidgets.QListWidget = (
+        component.frontend.ui.listWidget_operations
+    )
+
+    items = operations_list.findItems(
+        f"{plugin} - {operation} (ID: {operation_id})",
+        QtCore.Qt.MatchExactly,
+    )
+
+    for item in items:
+        operations_list.takeItem(
+            operations_list.row(
+                item
+            )
+        )
+
+    # IQ Playback lifecycle only.
+    operation_name = str(
+        operation or ""
+    ).strip()
+
+    if operation_name not in {
+        "iq_playback",
+        "iq_playback.py",
+    }:
+        return
+
+    frontend = component.frontend
+
+    playback_active = bool(
+        getattr(
+            frontend,
+            "iq_playback_running",
+            False,
+        )
+        or getattr(
+            frontend,
+            "iq_playback_start_pending",
+            False,
+        )
+    )
+
+    if not playback_active:
+        return
+
+    tracked_operation_id = str(
+        getattr(
+            frontend,
+            "iq_playback_operation_id",
+            "",
+        )
+        or ""
+    ).strip()
+
+    tracked_node_uid = str(
+        getattr(
+            frontend,
+            "iq_playback_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if (
+        tracked_operation_id
+        and str(
+            operation_id or ""
+        ).strip() != tracked_operation_id
+    ):
+        return
+
+    if (
+        tracked_node_uid
+        and str(
+            node_uid or ""
+        ).strip() != tracked_node_uid
+    ):
+        return
+
+    was_stopping = (
+        str(
+            frontend.ui.label2_iq_playback_status.text()
+            or ""
+        ).strip() == "Stopping..."
+    )
+
+    IQDataTabSlots._set_iq_playback_stopped(
+        frontend,
+        status_text=(
+            "Stopped"
+            if was_stopping
+            else "Completed"
+        ),
+    )
 
 
 async def savePlugin(component: object, plugin_name: str, plugin_data: str) -> None:
@@ -1914,6 +1998,31 @@ async def nodeRefreshReturn(component: object, nodes):
     component.frontend.popups["NodeSelectDialog"].refreshNodes(nodes=nodes)
 
 
+async def detectionReturn(component: object, detection: dict):
+    """
+    Receive one native FISSURE Detection for Dashboard engineering workflows.
+
+    Tactical continues to consume the CoT copy through dashboardCoT_Message().
+    """
+    if not isinstance(detection, dict):
+        component.logger.error("Dashboard detectionReturn received invalid detection data.")
+        return
+
+    try:
+        TSITabSlots.append_tsi_active_detector_detection(component.frontend, detection)
+    except Exception as exc:
+        component.logger.error(
+            f"Failed to update TSI detector table from native Detection: {exc}"
+        )
+
+    try:
+        ArchiveTabSlots.handle_archive_replay_detection(component.frontend, detection)
+    except Exception as exc:
+        component.logger.error(
+            f"Failed to process Archive Replay detector Detection: {exc}"
+        )
+
+
 async def dashboardCoT_Message(component: object, raw_xml: str):
     """
     Receives a copy of the CoT message sent to the TAK server and hands it off for parsing.
@@ -1942,7 +2051,8 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
     Store the latest normalized node state from HIPRFISR.
 
     Also updates the selected-node top card when the selected node times out
-    or reconnects.
+    or reconnects, and mirrors that connection state into an existing
+    Tactical node record.
     """
     if not node_uid:
         return
@@ -1957,7 +2067,60 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
 
     frontend.node_states[node_uid] = node
 
-    if getattr(frontend, "selected_node_uid", None) == node_uid:
+    tactical_nodes = getattr(frontend, "tactical_nodes", None)
+    tactical_node = (
+        tactical_nodes.get(node_uid)
+        if isinstance(tactical_nodes, dict)
+        else None
+    )
+
+    if isinstance(tactical_node, dict):
+        connected = bool(node.get("connected", False))
+        reported_status = str(node.get("status") or "").strip()
+
+        tactical_node["connected"] = connected
+        tactical_node["status"] = (
+            reported_status or "Unknown"
+            if connected
+            else "Disconnected"
+        )
+
+        TacticalTabSlots.update_tactical_node_roster_row(
+            frontend,
+            tactical_node,
+        )
+
+        if getattr(frontend, "selected_tactical_node_uid", None) == node_uid:
+            TacticalTabSlots._updateTacticalNodeInfoFrameState(frontend)
+
+        if hasattr(frontend, "tactical_map"):
+            lat = tactical_node.get("lat")
+            lon = tactical_node.get("lon")
+
+            if lat is not None and lon is not None:
+                frontend.tactical_map.add_node(
+                    node_id=node_uid,
+                    lat=lat,
+                    lon=lon,
+                    label=tactical_node.get("callsign") or node_uid,
+                    active=cot_utils.is_tactical_node_active(
+                        tactical_node
+                    ),
+                    status=tactical_node.get("status", ""),
+                )
+
+    selected_uid = str(getattr(frontend, "selected_node_uid", "") or "").strip()
+    node_uid_text = str(node_uid or "").strip()
+
+    selected_node_changed = (
+        selected_uid == node_uid_text
+        or selected_uid.endswith(node_uid_text)
+        or node_uid_text.endswith(selected_uid)
+        or selected_uid in node_uid_text
+        or node_uid_text in selected_uid
+    ) if selected_uid and node_uid_text else False
+
+    if selected_node_changed:
         connected = bool(node.get("connected", False))
 
         frontend.selected_node_ip = (
@@ -1989,6 +2152,44 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
                 f"Could not update unified TSI Detector selected-node gate after node state update: {e}"
             )
 
+        try:
+            TSITabSlots.update_tsi_conditioner_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not update TSI Conditioner selected-node gate after node state update: {e}"
+            )
+        
+        try:
+            TSITabSlots.update_tsi_fe_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not update TSI Feature Extractor selected-node gate "
+                f"after node state update: {e}"
+            )
+
+        try:
+            IQDataTabSlots.update_iq_record_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                "Could not update IQ Record selected-node gate "
+            )
+        
+        try:
+            ArchiveTabSlots.update_archive_replay_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                "Could not update Archive Replay selected-node gate "
+                f"after node state update: {e}"
+            )
+
+        try:
+            SensorNodesTabSlots.update_sensor_nodes_file_navigation_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                "Could not update Sensor Nodes File Navigation selected-node gate "
+                f"after node state update: {e}"
+            )
+
     try:
         TSITabSlots.update_tsi_detector_status_from_selected_node(
             frontend,
@@ -2001,10 +2202,58 @@ async def nodeStateUpdate(component: object, node_uid="", node={}):
         )
 
     try:
+        TSITabSlots.update_tsi_conditioner_status_from_selected_node(
+            frontend,
+            node_uid=node_uid,
+            status=node.get("status", ""),
+        )
+    except Exception as e:
+        component.logger.debug(
+            f"Could not update TSI Conditioner status: {e}"
+        )
+    
+    try:
+        IQDataTabSlots.update_iq_playback_status_from_selected_node(
+            frontend,
+            node_uid=node_uid,
+            status=node.get(
+                "status",
+                "",
+            ),
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update IQ Playback status "
+            f"from selected node: {e}"
+        )
+
+    try:
+        IQDataTabSlots.update_iq_inspection_status_from_selected_node(
+            frontend,
+            node_uid=node_uid,
+            status=node.get(
+                "status",
+                "",
+            ),
+        )
+    except Exception as e:
+        component.logger.debug(
+            "Could not update IQ Inspection status "
+            f"from selected node: {e}"
+        )
+
+    try:
         TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
     except Exception as e:
         component.logger.debug(
             f"Could not update unified TSI Detector selected-node gate: {e}"
+        )
+
+    try:
+        IQDataTabSlots.update_iq_record_selected_node_gate(frontend)
+    except Exception as e:
+        component.logger.debug(
+            "Could not update IQ Record selected-node gate "
         )
 
     component.logger.debug(
@@ -2100,7 +2349,22 @@ async def nodeStateRemove(component: object, node_uid=""):
     # ---------------------------------------------------------
     # Top-bar selected node cleanup
     # ---------------------------------------------------------
-    if getattr(frontend, "selected_node_uid", "") == node_uid:
+    selected_uid = str(getattr(frontend, "selected_node_uid", "") or "").strip()
+    removed_uid = str(node_uid or "").strip()
+
+    selected_node_removed = (
+        selected_uid
+        and removed_uid
+        and (
+            selected_uid == removed_uid
+            or selected_uid.endswith(removed_uid)
+            or removed_uid.endswith(selected_uid)
+            or selected_uid in removed_uid
+            or removed_uid in selected_uid
+        )
+    )
+
+    if selected_node_removed:
         try:
             TopBarSlots.clearSelectedNode(frontend)
         except Exception as e:
@@ -2108,9 +2372,6 @@ async def nodeStateRemove(component: object, node_uid=""):
                 f"Could not clear selected node after node removal: {e}"
             )
 
-        # Ensure selected-node-dependent TSI widgets flip to their no-node page.
-        # clearSelectedNode should clear selected_node_uid, but force the local
-        # state empty here too in case the top-bar helper changes later.
         frontend.selected_node_uid = ""
         frontend.selected_node_ip = ""
         frontend.selected_node_settings = {}
@@ -2129,6 +2390,21 @@ async def nodeStateRemove(component: object, node_uid=""):
                 f"Could not update unified TSI Detector selected-node gate after node removal: {e}"
             )
 
+        try:
+            TSITabSlots.update_tsi_conditioner_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not update TSI Conditioner gate after selected node removal: {e}"
+            )
+        
+        try:
+            TSITabSlots.update_tsi_fe_selected_node_gate(frontend)
+        except Exception as e:
+            component.logger.debug(
+                f"Could not update TSI Feature Extractor gate "
+                f"after selected node removal: {e}"
+            )
+        
     # Recompute ecosystem selected-node labels/buttons after row removal.
     try:
         TacticalTabSlots.update_selected_tactical_nodes(frontend)
@@ -2144,14 +2420,12 @@ async def nodeStateRemove(component: object, node_uid=""):
         component.logger.debug(
             f"Could not refresh Tactical node info frame after removal: {e}"
         )
-
-    # Final TSI gate pass in case this removal affected node state but did not
-    # clear the top-bar selection above.
+    
     try:
-        TSITabSlots.update_tsi_detector_selected_node_gate(frontend)
+        SensorNodesTabSlots.update_sensor_nodes_file_navigation_selected_node_gate(frontend)
     except Exception as e:
         component.logger.debug(
-            f"Could not refresh unified TSI Detector gate after node removal: {e}"
+            f"Could not update Sensor Nodes File Navigation gate after selected node removal: {e}"
         )
 
     component.logger.debug(f"nodeStateRemove: {node_uid}")
@@ -2163,76 +2437,354 @@ async def sendArtifactsListTakReturn(
     artifacts=None,
 ):
     """
-    Receives artifact metadata from HIPRFISR and updates the Tactical
-    Node > Artifacts cache/table.
+    Replace or upsert Dashboard Artifact records using the canonical
+    manifest-only schema, then route the same complete records to Tactical,
+    Conditioner, Feature Extractor, and IQ Record.
     """
     artifacts = artifacts or []
-
     dashboard = component.frontend
 
-    if not hasattr(dashboard, "tactical_artifacts"):
+    if not hasattr(
+        dashboard,
+        "tactical_artifacts",
+    ):
         dashboard.tactical_artifacts = {}
 
+    normalized_records = []
+
     for artifact in artifacts:
-        if not isinstance(artifact, dict):
+        if not isinstance(
+            artifact,
+            dict,
+        ):
             continue
 
-        artifact_id = artifact.get("id") or artifact.get("artifact_id")
+        artifact_id = str(
+            artifact.get("id", "")
+            or artifact.get(
+                "artifact_id",
+                "",
+            )
+            or ""
+        ).strip()
+
         if not artifact_id:
             continue
 
-        metadata = artifact.get("metadata") or {}
-        if not isinstance(metadata, dict):
+        files = artifact.get(
+            "files"
+        )
+        relations = artifact.get(
+            "relations"
+        )
+        metadata = artifact.get(
+            "metadata"
+        )
+
+        if not isinstance(
+            files,
+            list,
+        ):
+            files = []
+
+        if not isinstance(
+            relations,
+            list,
+        ):
+            relations = []
+
+        if not isinstance(
+            metadata,
+            dict,
+        ):
             metadata = {}
 
-        source_id = (
-            artifact.get("source_id")
-            or metadata.get("source_id")
-            or metadata.get("node_uid")
+        source_id = str(
+            artifact.get(
+                "source_id",
+                "",
+            )
+            or artifact.get(
+                "node_uid",
+                "",
+            )
             or node_uid
             or ""
+        ).strip()
+
+        operation_id = str(
+            artifact.get(
+                "operation_id",
+                "",
+            )
+            or metadata.get(
+                "operation_id",
+                "",
+            )
+            or ""
+        ).strip()
+
+        normalized = dict(
+            artifact
         )
 
-        normalized = {
-            "artifact_id": artifact_id,
-            "node_uid": source_id,
-            "source_id": source_id,
-            "operation_id": (
-                artifact.get("operation_id")
-                or metadata.get("operation_id")
-                or ""
-            ),
-            "name": artifact.get("name", ""),
-            "time": (
-                artifact.get("modified_at")
-                or artifact.get("created_at")
-                or ""
-            ),
-            "file_path": artifact.get("file_path", ""),
-            "artifact_type": artifact.get("artifact_type", ""),
-            "file_size": artifact.get("file_size", 0),
-            "checksum": artifact.get("checksum", ""),
-            "metadata": metadata,
-        }
+        normalized.update(
+            {
+                "id":
+                    artifact_id,
+                "artifact_id":
+                    artifact_id,
+                "node_uid":
+                    source_id,
+                "source_id":
+                    source_id,
+                "operation_id":
+                    operation_id,
+                "name":
+                    str(
+                        artifact.get(
+                            "name",
+                            "Artifact",
+                        )
+                        or "Artifact"
+                    ),
+                "artifact_type":
+                    str(
+                        artifact.get(
+                            "artifact_type",
+                            "",
+                        )
+                        or metadata.get(
+                            "artifact_type",
+                            "",
+                        )
+                        or ""
+                    ),
+                "created_at":
+                    str(
+                        artifact.get(
+                            "created_at",
+                            "",
+                        )
+                        or ""
+                    ),
+                "modified_at":
+                    str(
+                        artifact.get(
+                            "modified_at",
+                            "",
+                        )
+                        or ""
+                    ),
+                "time":
+                    str(
+                        artifact.get(
+                            "modified_at",
+                            "",
+                        )
+                        or artifact.get(
+                            "created_at",
+                            "",
+                        )
+                        or ""
+                    ),
+                "files":
+                    files,
+                "relations":
+                    relations,
+                "file_count":
+                    int(
+                        artifact.get(
+                            "file_count",
+                            len(files),
+                        )
+                        or len(files)
+                    ),
+                "total_size":
+                    int(
+                        artifact.get(
+                            "total_size",
+                            sum(
+                                int(
+                                    item.get(
+                                        "size",
+                                        0,
+                                    )
+                                    or 0
+                                )
+                                for item in files
+                                if isinstance(
+                                    item,
+                                    dict,
+                                )
+                            ),
+                        )
+                        or 0
+                    ),
+                "metadata":
+                    metadata,
+            }
+        )
 
-        dashboard.tactical_artifacts[artifact_id] = normalized
+        dashboard.tactical_artifacts[
+            artifact_id
+        ] = normalized
 
-    selected_node_uid = getattr(
-        dashboard,
-        "selected_tactical_node_uid",
-        None,
-    )
+        normalized_records.append(
+            normalized
+        )
+
+    selected_node_uid = str(
+        getattr(
+            dashboard,
+            "selected_tactical_node_uid",
+            "",
+        )
+        or ""
+    ).strip()
+
+    if selected_node_uid == str(
+        node_uid or ""
+    ).strip():
+        try:
+            TacticalTabSlots.rebuild_tactical_node_artifacts(
+                dashboard,
+                node_uid,
+            )
+
+        except Exception as error:
+            component.logger.debug(
+                "Could not rebuild Tactical artifacts: "
+                f"{error}"
+            )
+
+    try:
+        TSITabSlots.handle_tsi_conditioner_artifact_metadata(
+            dashboard,
+            node_uid=node_uid,
+            artifacts=normalized_records,
+        )
+
+    except Exception as error:
+        component.logger.debug(
+            "Could not route Artifact metadata "
+            "to Conditioner: "
+            f"{error}"
+        )
+
+    try:
+        TSITabSlots.handle_tsi_fe_artifact_metadata(
+            dashboard,
+            node_uid=node_uid,
+            artifacts=normalized_records,
+        )
+
+    except Exception as error:
+        component.logger.debug(
+            "Could not route Artifact metadata "
+            "to Feature Extractor: "
+            f"{error}"
+        )
+
+    for artifact_record in normalized_records:
+        try:
+            IQDataTabSlots.handle_iq_record_artifact_complete(
+                dashboard,
+                artifact_record,
+            )
+
+        except Exception as error:
+            component.logger.debug(
+                "Could not route Artifact metadata "
+                "to IQ Record: "
+                f"{error}"
+            )
+
+
+async def sendSoisListTakReturn(
+    component: object,
+    node_uid: str = "",
+    sois=None,
+):
+    """
+    Replaces the Dashboard SOI cache for one node with HIPRFISR's
+    authoritative merged SOI records, then refreshes every SOI consumer.
+
+    Linked Artifact metadata is also requested because Feature Extractor SOI
+    inputs resolve their files through the shared Artifact cache.
+    """
+    frontend = component.frontend
+    sois = sois or []
+    node_uid = str(node_uid or "").strip()
+
+    if not hasattr(frontend, "tactical_sois"):
+        frontend.tactical_sois = {}
+
+    stale_keys = [
+        soi_key
+        for soi_key, record in frontend.tactical_sois.items()
+        if isinstance(record, dict)
+        and str(record.get("node_uid", "") or "").strip() == node_uid
+    ]
+
+    for soi_key in stale_keys:
+        frontend.tactical_sois.pop(soi_key, None)
+
+        try:
+            frontend.tactical_map.remove_soi(soi_key)
+        except Exception:
+            pass
+
+    for soi in sois:
+        if not isinstance(soi, dict):
+            continue
+
+        await soiUpdate(
+            component,
+            soi=soi,
+        )
+
+    selected_node_uid = str(
+        getattr(frontend, "selected_tactical_node_uid", "")
+        or ""
+    ).strip()
 
     if selected_node_uid == node_uid:
-        from fissure.Dashboard.Slots import TacticalTabSlots
+        try:
+            TacticalTabSlots.rebuild_tactical_node_sois(
+                frontend,
+                node_uid,
+            )
+        except Exception as error:
+            component.logger.debug(
+                f"Could not rebuild Tactical SOIs after refresh: {error}"
+            )
 
-        TacticalTabSlots.rebuild_tactical_node_artifacts(
-            dashboard,
-            node_uid,
+    try:
+        TSITabSlots.refresh_tsi_fe_input_sois(
+            frontend
+        )
+        TSITabSlots.refresh_tsi_fe_run_sois(
+            frontend
+        )
+    except Exception as error:
+        component.logger.debug(
+            "Could not refresh Feature Extractor SOI selectors "
+            f"after authoritative SOI refresh: {error}"
+        )
+
+    try:
+        await component.tacticalNodeArtifactsRefresh(
+            node_uid
+        )
+    except Exception as error:
+        component.logger.debug(
+            "Could not refresh linked Artifact metadata after SOI refresh: "
+            f"{error}"
         )
 
 
-async def queryPluginActionsResults(
+def queryPluginActionsResults(
     component: object,
     requester_uid: str = "",
     requester_type: str = "",
@@ -2248,6 +2800,16 @@ async def queryPluginActionsResults(
 
     frontend = component.frontend
 
+    if context.startswith("detector.selection"):
+        dialog = frontend.popups.get("DetectorSelectionDialog")
+        if dialog is not None:
+            dialog.handle_action_query_results(
+                node_uid=node_uid,
+                context=context,
+                actions=actions,
+            )
+        return
+
     if context.startswith("tsi.detector"):
         TSITabSlots.handle_tsi_detector_action_query_results(
             frontend,
@@ -2257,17 +2819,61 @@ async def queryPluginActionsResults(
         )
         return
 
-    if context.startswith("iq.record") or context.startswith("iq.playback"):
-        # Later:
-        # IQDataTabSlots.handle_iq_action_query_results(...)
-        component.logger.debug(
-            f"Unhandled IQ action query context={context}, actions={actions}"
+    if context.startswith("tsi.conditioner"):
+        TSITabSlots.handle_tsi_conditioner_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+
+    if context.startswith("tsi.feature_extractor"):
+        TSITabSlots.handle_tsi_fe_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return    
+
+    if context.startswith("iq.record"):
+        IQDataTabSlots.handle_iq_record_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+
+    if context.startswith("iq.playback"):
+        IQDataTabSlots.handle_iq_playback_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+
+    if context.startswith("iq.inspection"):
+        IQDataTabSlots.handle_iq_inspection_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
+        )
+        return
+
+    if context.startswith("archive.replay"):
+        ArchiveTabSlots.handle_archive_replay_action_query_results(
+            frontend,
+            node_uid=node_uid,
+            context=context,
+            actions=actions,
         )
         return
 
     if context.startswith("tactical."):
-        # Later:
-        # TacticalTabSlots.handle_tactical_filtered_action_query_results(...)
         component.logger.debug(
             f"Unhandled Tactical action query context={context}, actions={actions}"
         )
@@ -2278,7 +2884,7 @@ async def queryPluginActionsResults(
     )
 
 
-async def queryPluginActionSchemaResults(
+def queryPluginActionSchemaResults(
     component: object,
     requester_uid: str = "",
     requester_type: str = "",
@@ -2302,6 +2908,17 @@ async def queryPluginActionSchemaResults(
 
     frontend = component.frontend
 
+    if context.startswith("detector.selection"):
+        dialog = frontend.popups.get("DetectorSelectionDialog")
+        if dialog is not None:
+            dialog.handle_action_schema(
+                plugin_name=plugin_name,
+                action_name=action_name,
+                node_uid=node_uid,
+                parameters=schema.get("params", []),
+            )
+        return
+
     if context.startswith("tsi.detector"):
         TSITabSlots.handle_tsi_detector_action_schema(
             frontend,
@@ -2311,11 +2928,64 @@ async def queryPluginActionSchemaResults(
             parameters=schema.get("params", []),
         )
         return
+    
+    if context.startswith("tsi.conditioner"):
+        TSITabSlots.handle_tsi_conditioner_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
 
-    if context.startswith("iq.record") or context.startswith("iq.playback"):
-        component.logger.debug(
-            f"Unhandled IQ action schema context={context}, "
-            f"plugin={plugin_name}, action={action_name}"
+    if context.startswith("tsi.feature_extractor"):
+        TSITabSlots.handle_tsi_fe_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return    
+
+    if context.startswith("iq.record"):
+        IQDataTabSlots.handle_iq_record_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
+
+    if context.startswith("iq.playback"):
+        IQDataTabSlots.handle_iq_playback_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
+
+    if context.startswith("iq.inspection"):
+        IQDataTabSlots.handle_iq_inspection_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
+        )
+        return
+
+    if context.startswith("archive.replay"):
+        ArchiveTabSlots.handle_archive_replay_action_schema(
+            frontend,
+            plugin_name=plugin_name,
+            action_name=action_name,
+            node_uid=node_uid,
+            parameters=schema.get("params", []),
         )
         return
 
@@ -2330,3 +3000,174 @@ async def queryPluginActionSchemaResults(
         f"Unhandled plugin action schema context={context}, "
         f"plugin={plugin_name}, action={action_name}"
     )
+
+
+async def soiUpdate(component: object, soi=None):
+    """
+    Receive a hub-backed SOI and preserve its complete cumulative record in the
+    Dashboard Tactical model.
+    """
+    if soi is None or not isinstance(soi, dict):
+        return
+
+    frontend = component.frontend
+
+    if not hasattr(frontend, "tactical_sois"):
+        frontend.tactical_sois = {}
+
+    node_uid = str(soi.get("node_uid", "") or "").strip()
+    soi_id = str(soi.get("soi_id", "") or "").strip()
+
+    if not soi_id:
+        return
+
+    soi_key = str(
+        soi.get("soi_key", "")
+        or f"{node_uid}:{soi_id}"
+    )
+
+    summary = soi.get("summary", {})
+    if not isinstance(summary, dict):
+        summary = {}
+
+    artifact_ids = soi.get(
+        "artifact_ids",
+        summary.get("artifact_ids", []),
+    )
+    if not isinstance(artifact_ids, list):
+        artifact_ids = [artifact_ids]
+    artifact_ids = [
+        str(value or "").strip()
+        for value in artifact_ids
+        if str(value or "").strip()
+    ]
+
+    artifact_links = soi.get(
+        "artifact_links",
+        summary.get("artifact_links", []),
+    )
+    if not isinstance(artifact_links, list):
+        artifact_links = []
+
+    detection_snapshots = soi.get(
+        "detection_snapshots",
+        summary.get("detection_snapshots", []),
+    )
+    if not isinstance(detection_snapshots, list):
+        detection_snapshots = [detection_snapshots]
+    detection_snapshots = [
+        dict(value)
+        for value in detection_snapshots
+        if isinstance(value, dict)
+    ]
+
+    detection_ids = soi.get(
+        "detection_ids",
+        summary.get("detection_ids", []),
+    )
+    if not isinstance(detection_ids, list):
+        detection_ids = [detection_ids]
+    detection_ids = [
+        str(value or "").strip()
+        for value in detection_ids
+        if str(value or "").strip()
+    ]
+
+    analysis_history = soi.get(
+        "analysis_history",
+        summary.get("analysis_history", []),
+    )
+    if not isinstance(analysis_history, list):
+        analysis_history = [analysis_history]
+    analysis_history = [
+        dict(value)
+        for value in analysis_history
+        if isinstance(value, dict)
+    ]
+
+    frequency_mhz = soi.get("frequency_mhz")
+
+    frequency_display = ""
+    if frequency_mhz not in [None, "", "None"]:
+        try:
+            frequency_display = f"{float(frequency_mhz):.3f} MHz"
+        except Exception:
+            frequency_display = str(frequency_mhz)
+
+    model_classification = str(
+        soi.get("model_classification", "")
+        or ""
+    )
+    model_confidence = soi.get("model_confidence", "")
+
+    model_display = model_classification
+    if (
+        model_classification
+        and model_confidence not in [None, "", "None"]
+    ):
+        model_display = (
+            f"{model_classification} ({model_confidence}%)"
+        )
+
+    record = dict(soi)
+    record.update({
+        "soi_key": soi_key,
+        "uid": f"fissure-soi-{node_uid}-{soi_id}",
+        "event_id": f"fissure-soi-{node_uid}-{soi_id}",
+        "node_uid": node_uid,
+        "soi_id": soi_id,
+        "operation_id": soi.get("operation_id", ""),
+        "artifact_id": soi.get("artifact_id", ""),
+        "artifact_ids": artifact_ids,
+        "artifact_links": artifact_links,
+        "detection_ids": detection_ids,
+        "detection_snapshots": detection_snapshots,
+        "analysis_history": analysis_history,
+        "frequency_mhz": frequency_mhz,
+        "frequency_display": frequency_display,
+        "status": soi.get("status", ""),
+        "time": soi.get("observation_time", "") or "",
+        "stage": soi.get("stage", ""),
+        "stage_order": soi.get("stage_order"),
+        "model_classification": model_classification,
+        "model_confidence_pct": model_confidence,
+        "model_classification_display": model_display,
+        "database_classification": soi.get(
+            "database_classification",
+            "",
+        ),
+        "lat": soi.get("lat"),
+        "lon": soi.get("lon"),
+        "hae_m": soi.get("hae_m"),
+        "summary": summary,
+        "raw": soi,
+        "raw_xml": "",
+    })
+
+    frontend.tactical_sois[soi_key] = record
+
+    TacticalTabSlots.update_tactical_node_soi_row(
+        frontend,
+        record,
+    )
+
+
+async def dashboardArtifactTransferStatus(
+        component: object,
+        transfer_id: str,
+        success: bool,
+        message: str,
+    ) -> None:
+        """Handle setup failures reported before binary streaming begins."""
+        if success:
+            component.logger.info(
+                "Artifact transfer %s: %s",
+                transfer_id,
+                message,
+            )
+            return
+
+        component.artifact_transfer_controller.fail_request(
+            transfer_id,
+            message,
+        )

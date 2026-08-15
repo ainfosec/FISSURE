@@ -1035,7 +1035,8 @@ QTableWidget#tableWidget_tactical_targets {
     width: 130px;
 }
 
-QLabel#label_tsi_detector_empty_icon {
+QLabel#label_tsi_detector_empty_icon,
+QLabel#label_tsi_conditioner_empty_icon {
     background-color: @color3;
     border-radius: 24px;
     padding: 6px;
@@ -1051,7 +1052,9 @@ QLabel#label_tsi_detector_empty_icon {
 
 QFrame#frame_tsi_detector_setup,
 QFrame#frame_tsi_detector_parameters,
-QFrame#frame_tsi_detector_run {
+QFrame#frame_tsi_detector_run,
+QFrame#frame_detector_selection_setup,
+QFrame#frame_detector_selection_parameters {
     background-color: @color2;
     border: 1px solid @color3;
     border-radius: 10px;
@@ -1059,7 +1062,9 @@ QFrame#frame_tsi_detector_run {
 
 QLabel#label_tsi_detector_setup_title,
 QLabel#label_tsi_detector_parameters_title,
-QLabel#label_tsi_detector_run_title {
+QLabel#label_tsi_detector_run_title,
+QLabel#label_detector_selection_setup_title,
+QLabel#label_detector_selection_parameters_title {
     color: @color4;
     background-color: transparent;
     font: bold 11pt "Ubuntu";
@@ -1067,7 +1072,9 @@ QLabel#label_tsi_detector_run_title {
 
 QLabel#label_tsi_detector_setup_subtitle,
 QLabel#label_tsi_detector_parameters_subtitle,
-QLabel#label_tsi_detector_run_subtitle {
+QLabel#label_tsi_detector_run_subtitle,
+QLabel#label_detector_selection_setup_subtitle,
+QLabel#label_detector_selection_parameters_subtitle {
     color: @color4;
     background-color: transparent;
     font: 8pt "Ubuntu";
@@ -1075,7 +1082,9 @@ QLabel#label_tsi_detector_run_subtitle {
 
 QLabel#label_tsi_detector_setup_badge,
 QLabel#label_tsi_detector_parameters_badge,
-QLabel#label_tsi_detector_run_badge {
+QLabel#label_tsi_detector_run_badge,
+QLabel#label_detector_selection_setup_badge,
+QLabel#label_detector_selection_parameters_badge {
     qproperty-alignment: AlignCenter;
     color: @color4;
     background-color: @color3;
@@ -1088,7 +1097,8 @@ QLabel#label_tsi_detector_run_badge {
     max-height: 28px;
 }
 
-QLabel#label_tsi_detector_setup_info {
+QLabel#label_tsi_detector_setup_info,
+QLabel#label_detector_selection_setup_info {
     color: @color4;
     background-color: rgba(80, 150, 220, 25);
     border: 1px solid rgba(80, 150, 220, 120);
@@ -1101,10 +1111,12 @@ QLabel#label_tsi_detector_setup_info {
 }
 
 /* ==========================================================
-   TSI Detector Start / Stop Buttons
+   TSI Detector / Conditioner / Feature Extractor Start / Stop
    ========================================================== */
 
-QPushButton#pushButton_tsi_detector_start_stop {
+QPushButton#pushButton_tsi_detector_start_stop,
+QPushButton#pushButton_tsi_conditioner_run_start_stop,
+QPushButton#pushButton_tsi_fe_run_start_stop {
     color: white;
     border: 1px solid #006600;
     border-radius: 4px;
@@ -1118,7 +1130,9 @@ QPushButton#pushButton_tsi_detector_start_stop {
     padding-bottom: 1px;
 }
 
-QPushButton#pushButton_tsi_detector_start_stop:hover {
+QPushButton#pushButton_tsi_detector_start_stop:hover,
+QPushButton#pushButton_tsi_conditioner_run_start_stop:hover,
+QPushButton#pushButton_tsi_fe_run_start_stop:hover {
     border: 1px solid #008000;
     background-color: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,
@@ -1128,7 +1142,9 @@ QPushButton#pushButton_tsi_detector_start_stop:hover {
     );
 }
 
-QPushButton#pushButton_tsi_detector_start_stop:pressed {
+QPushButton#pushButton_tsi_detector_start_stop:pressed,
+QPushButton#pushButton_tsi_conditioner_run_start_stop:pressed,
+QPushButton#pushButton_tsi_fe_run_start_stop:pressed {
     border: 1px solid #005800;
     background-color: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,
@@ -1138,7 +1154,10 @@ QPushButton#pushButton_tsi_detector_start_stop:pressed {
 }
 
 /* Running / Stop state */
-QPushButton#pushButton_tsi_detector_start_stop[running="true"] {
+
+QPushButton#pushButton_tsi_detector_start_stop[running="true"],
+QPushButton#pushButton_tsi_conditioner_run_start_stop[running="true"],
+QPushButton#pushButton_tsi_fe_run_start_stop[running="true"] {
     color: white;
     border: 1px solid #8a0000;
     border-radius: 4px;
@@ -1152,7 +1171,9 @@ QPushButton#pushButton_tsi_detector_start_stop[running="true"] {
     padding-bottom: 1px;
 }
 
-QPushButton#pushButton_tsi_detector_start_stop[running="true"]:hover {
+QPushButton#pushButton_tsi_detector_start_stop[running="true"]:hover,
+QPushButton#pushButton_tsi_conditioner_run_start_stop[running="true"]:hover,
+QPushButton#pushButton_tsi_fe_run_start_stop[running="true"]:hover {
     border: 1px solid #b00000;
     background-color: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,
@@ -1162,7 +1183,9 @@ QPushButton#pushButton_tsi_detector_start_stop[running="true"]:hover {
     );
 }
 
-QPushButton#pushButton_tsi_detector_start_stop[running="true"]:pressed {
+QPushButton#pushButton_tsi_detector_start_stop[running="true"]:pressed,
+QPushButton#pushButton_tsi_conditioner_run_start_stop[running="true"]:pressed,
+QPushButton#pushButton_tsi_fe_run_start_stop[running="true"]:pressed {
     border: 1px solid #650000;
     background-color: qlineargradient(
         x1:0, y1:0, x2:0, y2:1,
@@ -1171,9 +1194,14 @@ QPushButton#pushButton_tsi_detector_start_stop[running="true"]:pressed {
     );
 }
 
-/* Disabled must come after normal/running states */
+/* Disabled must remain after normal and running states */
+
 QPushButton#pushButton_tsi_detector_start_stop:disabled,
-QPushButton#pushButton_tsi_detector_start_stop[running="true"]:disabled {
+QPushButton#pushButton_tsi_detector_start_stop[running="true"]:disabled,
+QPushButton#pushButton_tsi_conditioner_run_start_stop:disabled,
+QPushButton#pushButton_tsi_conditioner_run_start_stop[running="true"]:disabled,
+QPushButton#pushButton_tsi_fe_run_start_stop:disabled,
+QPushButton#pushButton_tsi_fe_run_start_stop[running="true"]:disabled {
     color: @color13;
     border: 1px solid @color1;
     border-radius: 4px;
@@ -1188,7 +1216,11 @@ QPushButton#pushButton_tsi_detector_start_stop[running="true"]:disabled {
 
 
 QPushButton#pushButton_tsi_detector_query,
-QPushButton#pushButton_tsi_detector_customize {
+QPushButton#pushButton_tsi_detector_customize,
+QPushButton#pushButton_iq_record_query,
+QPushButton#pushButton_iq_record_customize,
+QPushButton#pushButton_iq_playback_query,
+QPushButton#pushButton_iq_playback_customize {
     color: #FFFFFF;
     border: 1px solid #1B5A8A;
     border-radius: 4px;
@@ -1203,7 +1235,11 @@ QPushButton#pushButton_tsi_detector_customize {
 }
 
 QPushButton#pushButton_tsi_detector_query:hover,
-QPushButton#pushButton_tsi_detector_customize:hover {
+QPushButton#pushButton_tsi_detector_customize:hover,
+QPushButton#pushButton_iq_record_query:hover,
+QPushButton#pushButton_iq_record_customize:hover,
+QPushButton#pushButton_iq_playback_query:hover,
+QPushButton#pushButton_iq_playback_customize:hover {
     color: #FFFFFF;
     border: 1px solid #2A74AA;
     background-color: qlineargradient(
@@ -1215,7 +1251,11 @@ QPushButton#pushButton_tsi_detector_customize:hover {
 }
 
 QPushButton#pushButton_tsi_detector_query:pressed,
-QPushButton#pushButton_tsi_detector_customize:pressed {
+QPushButton#pushButton_tsi_detector_customize:pressed,
+QPushButton#pushButton_iq_record_query:pressed,
+QPushButton#pushButton_iq_record_customize:pressed,
+QPushButton#pushButton_iq_playback_query:pressed,
+QPushButton#pushButton_iq_playback_customize:pressed {
     color: #FFFFFF;
     border: 1px solid #0B2D52;
     background-color: qlineargradient(
@@ -1227,7 +1267,11 @@ QPushButton#pushButton_tsi_detector_customize:pressed {
 }
 
 QPushButton#pushButton_tsi_detector_query:disabled,
-QPushButton#pushButton_tsi_detector_customize:disabled {
+QPushButton#pushButton_tsi_detector_customize:disabled,
+QPushButton#pushButton_iq_record_query:disabled,
+QPushButton#pushButton_iq_record_customize:disabled,
+QPushButton#pushButton_iq_playback_query:disabled,
+QPushButton#pushButton_iq_playback_customize:disabled {
     color: @color13;
     border: 1px solid @color9;
     background-color: qlineargradient(
@@ -1237,12 +1281,27 @@ QPushButton#pushButton_tsi_detector_customize:disabled {
     );
 }
 
-QScrollArea#scrollArea_tsi_detector_parameters {
+QLabel#label2_tsi_detector_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QDoubleSpinBox#doubleSpinBox_tsi_detector_parameter,
+QComboBox#comboBox_tsi_detector_parameter,
+QLineEdit#lineEdit_tsi_detector_parameter {
+    font: 9pt "Ubuntu";
+}
+
+
+QScrollArea#scrollArea_tsi_detector_parameters,
+QScrollArea#scrollArea_detector_selection_parameters,
+QScrollArea#scrollArea_tsi_conditioner_method {
     border: 1px solid @color13;
     background-color: @color2;
 }
 
-QWidget#scrollAreaWidgetContents_tsi_detector_parameters {
+QWidget#scrollAreaWidgetContents_tsi_detector_parameters,
+QWidget#scrollAreaWidgetContents_detector_selection_parameters,
+QWidget#scrollAreaWidgetContents_tsi_conditioner_parameters {
     background-color: @color2;
 }
 
@@ -1252,4 +1311,993 @@ QLabel#label2_tsi_detector_status {
 
 QLabel#label2_tsi_detector_status:disabled {
     color: #888888;
+}
+
+
+QLabel#label2_tsi_conditioner_method_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QDoubleSpinBox#doubleSpinBox_tsi_conditioner_method_parameter,
+QComboBox#comboBox_tsi_conditioner_method_parameter,
+QLineEdit#lineEdit_tsi_conditioner_method_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QCheckBox#checkBox_tsi_conditioner_method_parameter {
+    font: 9pt "Ubuntu";
+}
+
+
+
+
+/* ==========================================================
+   TSI Conditioner Workflow Ribbon
+   Dark Theme
+   ========================================================== */
+
+QFrame#frame_tsi_conditioner_workflow {
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #20252b,
+        stop:0.55 #1b2026,
+        stop:1 #171c22
+    );
+    border: 1px solid #31577d;
+    border-radius: 8px;
+}
+
+/* Title */
+
+QLabel#label_tsi_conditioner_workflow_title {
+    color: #e3edf7;
+    background: transparent;
+    font: bold 10pt "Ubuntu";
+}
+
+QLabel#label_tsi_conditioner_workflow_info_icon {
+    color: #2f8fe8;
+    background: transparent;
+    font: bold 11pt "Ubuntu";
+    qproperty-alignment: AlignCenter;
+}
+
+/* Icons */
+
+QLabel#label_tsi_conditioner_workflow_source_icon,
+QLabel#label_tsi_conditioner_workflow_node_icon,
+QLabel#label_tsi_conditioner_workflow_method_icon,
+QLabel#label_tsi_conditioner_workflow_action_icon,
+QLabel#label_tsi_conditioner_workflow_format_icon,
+QLabel#label_tsi_conditioner_workflow_count_icon,
+QLabel#label_tsi_conditioner_workflow_artifact_icon,
+QLabel#label_tsi_conditioner_workflow_promoted_icon {
+    color: #2f8fe8;
+    background: transparent;
+    font: bold 16pt "Ubuntu";
+    qproperty-alignment: AlignCenter;
+}
+
+/* Field titles */
+
+QLabel#label_tsi_conditioner_workflow_source_title,
+QLabel#label_tsi_conditioner_workflow_node_title,
+QLabel#label_tsi_conditioner_workflow_method_title,
+QLabel#label_tsi_conditioner_workflow_action_title,
+QLabel#label_tsi_conditioner_workflow_format_title,
+QLabel#label_tsi_conditioner_workflow_count_title,
+QLabel#label_tsi_conditioner_workflow_artifact_title,
+QLabel#label_tsi_conditioner_workflow_promoted_title {
+    color: #69a8e4;
+    background: transparent;
+    font: bold 8pt "Ubuntu";
+}
+
+/* Field values */
+
+QLabel#label_tsi_conditioner_workflow_source,
+QLabel#label_tsi_conditioner_workflow_node,
+QLabel#label_tsi_conditioner_workflow_method,
+QLabel#label_tsi_conditioner_workflow_action,
+QLabel#label_tsi_conditioner_workflow_format,
+QLabel#label_tsi_conditioner_workflow_count,
+QLabel#label_tsi_conditioner_workflow_artifact,
+QLabel#label_tsi_conditioner_workflow_promoted {
+    color: #f1f3f5;
+    background: transparent;
+    font: 9pt "Ubuntu";
+}
+
+/* Optional value states for later */
+
+QLabel#label_tsi_conditioner_workflow_count[count_empty="true"] {
+    color: #9aa3ad;
+}
+
+QLabel#label_tsi_conditioner_workflow_artifact[artifact_available="false"] {
+    color: #9aa3ad;
+}
+
+QLabel#label_tsi_conditioner_workflow_artifact[artifact_available="true"] {
+    color: #5aa8f0;
+    font: bold 9pt "Ubuntu";
+}
+
+QLabel#label_tsi_conditioner_workflow_promoted[promoted="false"] {
+    color: #9aa3ad;
+}
+
+QLabel#label_tsi_conditioner_workflow_promoted[promoted="true"] {
+    color: #7edc8a;
+    font: bold 9pt "Ubuntu";
+}
+
+
+
+/* ==========================================================
+   TSI Feature Extractor
+   Additions matching the Conditioner styling
+   ========================================================== */
+
+QLabel#label_tsi_fe_empty_icon {
+    background-color: @color3;
+    border-radius: 24px;
+    padding: 6px;
+}
+
+QScrollArea#scrollArea_tsi_fe_method {
+    border: 1px solid @color13;
+    background-color: @color2;
+}
+
+QWidget#scrollAreaWidgetContents_tsi_fe_parameters {
+    background-color: @color2;
+}
+
+QLabel#label2_tsi_fe_method_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QDoubleSpinBox#doubleSpinBox_tsi_fe_method_parameter,
+QComboBox#comboBox_tsi_fe_method_parameter,
+QLineEdit#lineEdit_tsi_fe_method_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QCheckBox#checkBox_tsi_fe_method_parameter {
+    font: 9pt "Ubuntu";
+}
+
+
+QFrame#frame_tsi_fe_workflow {
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #20252b,
+        stop:0.55 #1b2026,
+        stop:1 #171c22
+    );
+    border: 1px solid #31577d;
+    border-radius: 8px;
+}
+
+QLabel#label_tsi_fe_workflow_title {
+    color: #e3edf7;
+    background: transparent;
+    font: bold 10pt "Ubuntu";
+}
+
+QLabel#label_tsi_fe_workflow_source_icon,
+QLabel#label_tsi_fe_workflow_node_icon,
+QLabel#label_tsi_fe_workflow_action_icon,
+QLabel#label_tsi_fe_workflow_inputs_icon,
+QLabel#label_tsi_fe_workflow_profile_icon,
+QLabel#label_tsi_fe_workflow_output_type_icon {
+    color: #2f8fe8;
+    background: transparent;
+    font: bold 16pt "Ubuntu";
+    qproperty-alignment: AlignCenter;
+}
+
+QLabel#label_tsi_fe_workflow_source_title,
+QLabel#label_tsi_fe_workflow_node_title,
+QLabel#label_tsi_fe_workflow_action_title,
+QLabel#label_tsi_fe_workflow_inputs_title,
+QLabel#label_tsi_fe_workflow_profile_title,
+QLabel#label_tsi_fe_workflow_output_type_title {
+    color: #69a8e4;
+    background: transparent;
+    font: bold 8pt "Ubuntu";
+}
+
+QLabel#label_tsi_fe_workflow_source,
+QLabel#label_tsi_fe_workflow_node,
+QLabel#label_tsi_fe_workflow_action,
+QLabel#label_tsi_fe_workflow_inputs,
+QLabel#label_tsi_fe_workflow_profile,
+QLabel#label_tsi_fe_workflow_output_type {
+    color: #f1f3f5;
+    background: transparent;
+    font: 9pt "Ubuntu";
+}
+
+
+/* ==========================================================
+   Read-only Details Panels
+   ========================================================== */
+
+QScrollArea[uiRole="detailsPanel"],
+QWidget[uiRole="detailsPanel"],
+QLabel[uiRole="detailsPanel"] {
+    background-color: @color2;
+    color: @color4;
+}
+
+QScrollArea[uiRole="detailsPanel"] {
+    border: 1px solid @color13;
+}
+
+/* TSI Detector keeps the blue accent border. */
+QScrollArea#scrollArea_tsi_detector_detection_details {
+    border: 1px solid @color3;
+}
+
+QScrollArea[uiRole="detailsPanel"]:disabled,
+QWidget[uiRole="detailsPanel"]:disabled,
+QLabel[uiRole="detailsPanel"]:disabled {
+    background-color: @color9;
+    color: @color13;
+}
+
+QScrollArea[uiRole="detailsPanel"]:disabled {
+    border: 1px solid @color13;
+}
+
+
+/* ==========================================================
+   Dynamic Parameter Panels
+   ========================================================== */
+
+QScrollArea[uiRole="parameterPanel"],
+QWidget[uiRole="parameterPanel"] {
+    background-color: @color2;
+    color: @color4;
+}
+
+QScrollArea[uiRole="parameterPanel"] {
+    border: 1px solid @color13;
+}
+
+QScrollArea[uiRole="parameterPanel"]:disabled,
+QWidget[uiRole="parameterPanel"]:disabled {
+    background-color: @color9;
+    color: @color13;
+}
+
+QScrollArea[uiRole="parameterPanel"]:disabled {
+    border: 1px solid @color13;
+}
+
+QLabel[uiRole="parameterLabel"] {
+    background-color: transparent;
+    color: @color4;
+}
+
+QLabel[uiRole="parameterLabel"]:disabled {
+    background-color: transparent;
+    color: @color13;
+}
+
+
+/* ==========================================================
+   IQ Data - Record Workflow
+   ========================================================== */
+
+QLabel#label_iq_record_empty_icon {
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
+}
+
+QFrame#frame_iq_record_setup,
+QFrame#frame_iq_record_parameters,
+QFrame#frame_iq_record_run {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_iq_record_setup_badge,
+QLabel#label_iq_record_parameters_badge,
+QLabel#label_iq_record_run_badge {
+    qproperty-alignment: AlignCenter;
+    color: @color4;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_iq_record_setup_title,
+QLabel#label_iq_record_parameters_title,
+QLabel#label_iq_record_run_title {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_iq_record_setup_subtitle,
+QLabel#label_iq_record_parameters_subtitle,
+QLabel#label_iq_record_run_subtitle {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QScrollArea#scrollArea_iq_record_parameters,
+QWidget#scrollAreaWidgetContents_iq_record_parameters {
+    background-color: @color2;
+    color: @color4;
+}
+
+QScrollArea#scrollArea_iq_record_parameters {
+    border: 1px solid @color13;
+}
+
+QPushButton#pushButton_iq_record_start_stop {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #18a522,
+        stop: 1 #008c0b
+    );
+    border: 1px solid #006f08;
+    border-radius: 3px;
+    font: bold 10pt "Ubuntu";
+}
+
+QPushButton#pushButton_iq_record_start_stop:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #22bd2d,
+        stop: 1 #079811
+    );
+}
+
+QPushButton#pushButton_iq_record_start_stop[running="true"] {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #d9534f,
+        stop: 1 #b52b27
+    );
+    border: 1px solid #8f211e;
+}
+
+QPushButton#pushButton_iq_record_start_stop[running="true"]:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #e86763,
+        stop: 1 #c9302c
+    );
+}
+
+QPushButton#pushButton_iq_record_start_stop:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
+}
+
+QLabel#label2_iq_record_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QDoubleSpinBox#doubleSpinBox_iq_record_parameter,
+QSpinBox#spinBox_iq_record_parameter,
+QComboBox#comboBox_iq_record_parameter,
+QLineEdit#lineEdit_iq_record_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QCheckBox#checkBox_iq_record_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QLabel#label2_iq_record_parameter_info {
+    font: 8pt "Ubuntu";
+}
+
+QLabel#label_iq_playback_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QDoubleSpinBox#doubleSpinBox_iq_playback_parameter,
+QSpinBox#spinBox_iq_playback_parameter,
+QComboBox#comboBox_iq_playback_parameter,
+QLineEdit#lineEdit_iq_playback_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QCheckBox#checkBox_iq_playback_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QLabel#label_iq_playback_parameter_info {
+    font: 8pt "Ubuntu";
+}
+
+QPushButton#pushButton_iq_record_download_artifact:enabled {
+    color: #FFFFFF;
+    font: bold 9pt "Ubuntu";
+    border: 1px solid #17365D;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #315F8C,
+        stop: 1 #17365D
+    );
+}
+
+QPushButton#pushButton_iq_record_download_artifact:enabled:hover {
+    color: #FFFFFF;
+    font: bold 9pt "Ubuntu";
+    border: 1px solid #214D78;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #3D73A8,
+        stop: 1 #214D78
+    );
+}
+
+QPushButton#pushButton_iq_record_download_artifact:enabled:pressed {
+    color: #FFFFFF;
+    font: bold 9pt "Ubuntu";
+    border: 1px solid #0B2D52;
+    background-color: #17365D;
+}
+
+QPushButton#pushButton_iq_record_download_artifact:disabled {
+    color: #D7DCE2;
+    font: bold 9pt "Ubuntu";
+    border: 1px solid #8D99A5;
+    border-radius: 4px;
+    background-color: #A8B3BF;
+}
+
+
+/* ==========================================================
+   IQ Data - Playback Workflow
+   ========================================================== */
+
+QLabel#label_iq_playback_empty_icon {
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
+}
+
+QFrame#frame_iq_playback_setup,
+QFrame#frame_iq_playback_parameters,
+QFrame#frame_iq_playback_run {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_iq_playback_setup_badge,
+QLabel#label_iq_playback_parameters_badge,
+QLabel#label_iq_playback_run_badge {
+    qproperty-alignment: AlignCenter;
+    color: @color4;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_iq_playback_setup_title,
+QLabel#label_iq_playback_parameters_title,
+QLabel#label_iq_playback_run_title {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_iq_playback_setup_subtitle,
+QLabel#label_iq_playback_parameters_subtitle,
+QLabel#label_iq_playback_run_subtitle {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QScrollArea#scrollArea_iq_playback_parameters,
+QWidget#scrollAreaWidgetContents_iq_playback_parameters {
+    background-color: @color2;
+    color: @color4;
+}
+
+QScrollArea#scrollArea_iq_playback_parameters {
+    border: 1px solid @color13;
+}
+
+QPushButton#pushButton_iq_playback_start_stop {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #18a522,
+        stop: 1 #008c0b
+    );
+    border: 1px solid #006f08;
+    border-radius: 3px;
+    font: bold 10pt "Ubuntu";
+}
+
+QPushButton#pushButton_iq_playback_start_stop:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #22bd2d,
+        stop: 1 #079811
+    );
+}
+
+QPushButton#pushButton_iq_playback_start_stop[running="true"] {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #d9534f,
+        stop: 1 #b52b27
+    );
+    border: 1px solid #8f211e;
+}
+
+QPushButton#pushButton_iq_playback_start_stop[running="true"]:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #e86763,
+        stop: 1 #c9302c
+    );
+}
+
+QPushButton#pushButton_iq_playback_start_stop:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
+}
+
+QLabel#label2_iq_playback_parameter {
+    font: 9pt "Ubuntu";
+}
+
+
+/* ==========================================================
+   IQ Data - Inspection Workflow
+   ========================================================== */
+
+QLabel#label_iq_inspection_empty_icon {
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
+}
+
+QFrame#frame_iq_inspection_setup,
+QFrame#frame_iq_inspection_parameters,
+QFrame#frame_iq_inspection_run {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_iq_inspection_setup_badge,
+QLabel#label_iq_inspection_parameters_badge,
+QLabel#label_iq_inspection_run_badge {
+    qproperty-alignment: AlignCenter;
+    color: @color4;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_iq_inspection_setup_title,
+QLabel#label_iq_inspection_parameters_title,
+QLabel#label_iq_inspection_run_title {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_iq_inspection_setup_subtitle,
+QLabel#label_iq_inspection_parameters_subtitle,
+QLabel#label_iq_inspection_run_subtitle {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QScrollArea#scrollArea_iq_inspection_parameters,
+QWidget#scrollAreaWidgetContents_iq_inspection_parameters {
+    background-color: @color2;
+    color: @color4;
+}
+
+QScrollArea#scrollArea_iq_inspection_parameters {
+    border: 1px solid @color13;
+}
+
+QPushButton#pushButton_iq_inspection_query,
+QPushButton#pushButton_iq_inspection_customize {
+    color: #FFFFFF;
+    border: 1px solid #1B5A8A;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2F6F9F,
+        stop:0.45 #1E527C,
+        stop:1 #123A5D
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QPushButton#pushButton_iq_inspection_query:hover,
+QPushButton#pushButton_iq_inspection_customize:hover {
+    color: #FFFFFF;
+    border: 1px solid #2A74AA;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #3E84BA,
+        stop:0.45 #28699C,
+        stop:1 #1A4D78
+    );
+}
+
+QPushButton#pushButton_iq_inspection_query:pressed,
+QPushButton#pushButton_iq_inspection_customize:pressed {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #0B2D52,
+        stop:0.45 #123A5D,
+        stop:1 #1E527C
+    );
+}
+
+QPushButton#pushButton_iq_inspection_query:disabled,
+QPushButton#pushButton_iq_inspection_customize:disabled {
+    color: @color13;
+    border: 1px solid @color9;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 @color8,
+        stop:1 @color9
+    );
+}
+
+QPushButton#pushButton_iq_inspection_start_stop {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #18a522,
+        stop: 1 #008c0b
+    );
+    border: 1px solid #006f08;
+    border-radius: 3px;
+    font: bold 10pt "Ubuntu";
+}
+
+QPushButton#pushButton_iq_inspection_start_stop:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #22bd2d,
+        stop: 1 #079811
+    );
+}
+
+QPushButton#pushButton_iq_inspection_start_stop[running="true"] {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #d9534f,
+        stop: 1 #b52b27
+    );
+    border: 1px solid #8f211e;
+}
+
+QPushButton#pushButton_iq_inspection_start_stop[running="true"]:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #e86763,
+        stop: 1 #c9302c
+    );
+}
+
+QPushButton#pushButton_iq_inspection_start_stop:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
+}
+
+QLabel#label_iq_inspection_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QDoubleSpinBox#doubleSpinBox_iq_inspection_parameter,
+QSpinBox#spinBox_iq_inspection_parameter,
+QComboBox#comboBox_iq_inspection_parameter,
+QLineEdit#lineEdit_iq_inspection_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QCheckBox#checkBox_iq_inspection_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QLabel#label_iq_inspection_parameter_info {
+    font: 8pt "Ubuntu";
+}
+
+
+/* ==========================================================
+   Archive - Replay Workflow
+   ========================================================== */
+
+QLabel#label_archive_replay_empty_icon {
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
+}
+
+QFrame#frame_archive_replay_setup,
+QFrame#frame_archive_replay_parameters,
+QFrame#frame_archive_replay_triggers,
+QFrame#frame_archive_replay_playlist,
+QFrame#frame_archive_replay_run {
+    background-color: @color2;
+    border: 1px solid @color3;
+    border-radius: 10px;
+}
+
+QLabel#label_archive_replay_setup_badge,
+QLabel#label_archive_replay_parameters_badge,
+QLabel#label_archive_replay_triggers_badge,
+QLabel#label_archive_replay_playlist_badge,
+QLabel#label_archive_replay_run_badge {
+    qproperty-alignment: AlignCenter;
+    color: @color4;
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 14px;
+    font: bold 10pt "Ubuntu";
+    min-width: 28px;
+    max-width: 28px;
+    min-height: 28px;
+    max-height: 28px;
+}
+
+QLabel#label_archive_replay_setup_title,
+QLabel#label_archive_replay_parameters_title,
+QLabel#label_archive_replay_triggers_title,
+QLabel#label_archive_replay_playlist_title,
+QLabel#label_archive_replay_run_title {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: bold 11pt "Ubuntu";
+}
+
+QLabel#label_archive_replay_setup_subtitle,
+QLabel#label_archive_replay_parameters_subtitle,
+QLabel#label_archive_replay_triggers_subtitle,
+QLabel#label_archive_replay_playlist_subtitle,
+QLabel#label_archive_replay_run_subtitle {
+    color: @color4;
+    background-color: transparent;
+    border: none;
+    font: 8pt "Ubuntu";
+}
+
+QScrollArea#scrollArea_archive_replay_parameters,
+QWidget#scrollAreaWidgetContents_archive_replay_parameters {
+    background-color: @color2;
+    color: @color4;
+}
+
+QScrollArea#scrollArea_archive_replay_parameters {
+    border: 1px solid @color13;
+}
+
+QLabel#label_archive_replay_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QDoubleSpinBox#doubleSpinBox_archive_replay_parameter,
+QSpinBox#spinBox_archive_replay_parameter,
+QComboBox#comboBox_archive_replay_parameter,
+QLineEdit#lineEdit_archive_replay_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QCheckBox#checkBox_archive_replay_parameter {
+    font: 9pt "Ubuntu";
+}
+
+QLabel#label_archive_replay_parameter_info {
+    font: 8pt "Ubuntu";
+}
+
+QPushButton#pushButton_archive_replay_query,
+QPushButton#pushButton_archive_replay_customize {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    border-radius: 4px;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #2F5F8F,
+        stop:0.45 #1D456D,
+        stop:1 #0B2D52
+    );
+    font: bold 10pt "Ubuntu";
+    padding-bottom: 1px;
+}
+
+QPushButton#pushButton_archive_replay_query:hover,
+QPushButton#pushButton_archive_replay_customize:hover {
+    color: #FFFFFF;
+    border: 1px solid #0B2D52;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #3C76AD,
+        stop:0.45 #265A88,
+        stop:1 #123B63
+    );
+}
+
+QPushButton#pushButton_archive_replay_query:pressed,
+QPushButton#pushButton_archive_replay_customize:pressed {
+    color: #FFFFFF;
+    border: 1px solid #061F3A;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 #061F3A,
+        stop:0.45 #0B2D52,
+        stop:1 #1D456D
+    );
+}
+
+QPushButton#pushButton_archive_replay_query:disabled,
+QPushButton#pushButton_archive_replay_customize:disabled {
+    color: @color13;
+    border: 1px solid @color9;
+    background-color: qlineargradient(
+        x1:0, y1:0, x2:0, y2:1,
+        stop:0 @color8,
+        stop:1 @color9
+    );
+}
+
+QPushButton#pushButton_archive_replay_start_stop {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #18a522,
+        stop: 1 #008c0b
+    );
+    border: 1px solid #006f08;
+    border-radius: 3px;
+    font: bold 10pt "Ubuntu";
+}
+
+QPushButton#pushButton_archive_replay_start_stop:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #22bd2d,
+        stop: 1 #079811
+    );
+}
+
+QPushButton#pushButton_archive_replay_start_stop[running="true"] {
+    color: #FFFFFF;
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #d9534f,
+        stop: 1 #b52b27
+    );
+    border: 1px solid #8f211e;
+}
+
+QPushButton#pushButton_archive_replay_start_stop[running="true"]:hover {
+    background-color: qlineargradient(
+        x1: 0,
+        y1: 0,
+        x2: 0,
+        y2: 1,
+        stop: 0 #e86763,
+        stop: 1 #c9302c
+    );
+}
+
+QPushButton#pushButton_archive_replay_start_stop:disabled {
+    color: @color13;
+    background-color: @color9;
+    border: 1px solid @color13;
+}
+
+QLabel#label_sensor_nodes_fn_empty_icon {
+    background-color: @color3;
+    border: 1px solid @color3;
+    border-radius: 24px;
+    padding: 6px;
 }

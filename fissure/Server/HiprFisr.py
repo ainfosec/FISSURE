@@ -21,6 +21,7 @@ from fissure.utils.tak_server import load_config as load_tak_config
 from fissure.utils.tak_server import TakReceiver
 import pytak
 from fissure.utils.artifacts import ArtifactTracker
+from fissure.Server.HiprFisrArtifactTransferController import HiprFisrArtifactTransferController
 
 
 HEARTBEAT_LOOP_DELAY = 0.1  # Seconds
@@ -172,6 +173,16 @@ class HiprFisr:
         # Initialize artifact tracker
         self.artifact_tracker = ArtifactTracker(logger=self.logger)
 
+        # Dedicated binary artifact-transfer router. This is intentionally
+        # separate from the normal command and heartbeat channels.
+        self.artifact_transfer_router = fissure.comms.ArtifactTransferRouter(
+            bind_endpoint=fissure.comms.build_artifact_endpoint("0.0.0.0"),
+            logger=self.logger,
+        )
+        self.artifact_transfer_router.start()
+
+        self.artifact_transfer_controller = HiprFisrArtifactTransferController(self)
+
         self.logger.info("=== READY ===")
         self.logger.info(f"Server listening @ {listen_addr}")
 
@@ -296,6 +307,14 @@ class HiprFisr:
                 s.close_sockets()
             except Exception:
                 pass
+        
+        artifact_router = getattr(self, "artifact_transfer_router", None)
+        if artifact_router is not None:
+            try:
+                artifact_router.close()
+            except Exception:
+                pass
+            self.artifact_transfer_router = None
 
         # Stop ZAP authenticator (must run before ctx.destroy, does not work in zmq_cleanup, HIPRFISR is the last program that closes)
         try:
@@ -303,6 +322,22 @@ class HiprFisr:
             authenticator_cleanup()
         except Exception:
             pass
+
+
+    async def artifact_transfer_loop(self):
+            """Route dedicated binary artifact-transfer frames."""
+            while not self.shutdown:
+                try:
+                    routed = await self.artifact_transfer_router.receive_and_route()
+                    if routed is not None:
+                        _sender_identity, frame = routed
+                        await self.artifact_transfer_controller.handle_frame(frame)
+                    self.artifact_transfer_controller.expire_stalled_transfers()
+                except asyncio.CancelledError:
+                    raise
+                except Exception as exc:
+                    self.logger.error(f"Artifact transfer router error: {exc}")
+                    await asyncio.sleep(EVENT_LOOP_DELAY)
 
 
     async def heartbeat_loop(self):
@@ -338,6 +373,9 @@ class HiprFisr:
 
         heartbeat_task = asyncio.create_task(self.heartbeat_loop())
         self.child_tasks.append(heartbeat_task)
+
+        artifact_transfer_task = asyncio.create_task(self.artifact_transfer_loop())
+        self.child_tasks.append(artifact_transfer_task)
 
         # Load TAK config
         from fissure.utils.common import get_fissure_config

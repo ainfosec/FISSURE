@@ -45,12 +45,14 @@ class OperationMain(Operation):
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Union[Callable, None] = None,
         tak_cot_callback: Union[Callable, None] = None,
+        detection_callback: Union[Callable, None] = None,
     ) -> None:
         super().__init__(
             node_uid=node_uid,
             logger=logger,
             alert_callback=alert_callback,
             tak_cot_callback=tak_cot_callback,
+            detection_callback=detection_callback,
         )
 
         self.freq_mhz = float(freq_mhz)
@@ -240,6 +242,16 @@ class OperationMain(Operation):
 
                 self.logger.info(f"fixed_detection parsed detection: {detection}")
 
+                if self.detection_callback:
+                    try:
+                        await asyncio.wait_for(self.detection_callback(detection), timeout=cb_timeout_s)
+                    except asyncio.CancelledError:
+                        raise
+                    except Exception:
+                        self.logger.exception("detection_callback failed")
+                else:
+                    self.logger.warning("fixed_detection has no detection_callback")
+
                 if self.alert_callback:
                     try:
                         await asyncio.wait_for(
@@ -257,31 +269,6 @@ class OperationMain(Operation):
                         self.logger.exception("alert_callback failed")
                 else:
                     self.logger.warning("fixed_detection has no alert_callback")
-
-                if self.tak_cot_callback:
-                    try:
-                        await asyncio.wait_for(
-                            self.tak_cot_callback(
-                                {
-                                    "msg_type": "event",
-                                    "uid": f"fixed-detection-{self.node_uid}-{int(ts)}",
-                                    "lat": True,
-                                    "lon": True,
-                                    "alt": True,
-                                    "time": True,
-                                    "data": detection,
-                                    "opid": self.opid,
-                                    "tak_icon": "r-x-fissure-detection",
-                                }
-                            ),
-                            timeout=cb_timeout_s,
-                        )
-                    except asyncio.CancelledError:
-                        raise
-                    except Exception:
-                        self.logger.exception("tak_cot_callback failed")
-                else:
-                    self.logger.warning("fixed_detection has no tak_cot_callback")
 
         finally:
             if stderr_task and not stderr_task.done():

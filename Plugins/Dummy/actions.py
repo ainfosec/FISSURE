@@ -14,7 +14,15 @@ ACTION_TAGS = {
     "dummy_artifact": ["All"],
     "dummy_alert": ["All"],
     "dummy_alert_burst": ["All"],
-    "dummy_detection": ["All"],
+    "dummy_detection": [
+        "All",
+        "detector",
+        "tsi.detector",
+        "tsi.detector.type.rf",
+        "tsi.detector.mode.simulation",
+        "tsi.detector.view.rf_raster",
+        "tactical.detection",
+    ],
     "dummy_soi": ["All"],
     "dummy_target": ["All"],
     "dummy_status": ["All"],
@@ -110,13 +118,18 @@ async def dummy_alert_burst(
 
 dummy_detection_schema = {
     "params": [
+        {"name": "initial_delay_s", "label": "Initial Delay (s)", "type": "number", "default": 0.0},
         {"name": "period_s", "label": "Period (s)", "type": "number", "default": 60.0},
         {"name": "freq_mhz", "label": "Frequency (MHz)", "type": "number", "default": 915.0},
         {"name": "power_dbm", "label": "Power (dBm)", "type": "number", "default": -40.0},
-        {"name": "description", "label": "Description", "type": "string", "default": "Periodic dummy detection"},
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": "Periodic simulated RF detection for testing detector workflows",
+        },
     ]
 }
-
 async def dummy_detection(
     component: SensorNode,
     parameters: Dict[str, Any],
@@ -160,7 +173,33 @@ async def dummy_soi(
 
 dummy_target_schema = {
     "params": [
-        {"name": "frequency_mhz", "label": "Frequency (MHz)", "type": "number", "default": 311.0},
+        {
+            "name": "target_id",
+            "label": "Existing Target ID",
+            "type": "string",
+            "default": "",
+            "description": (
+                "Leave blank to create a new Target. "
+                "Enter an existing Target ID to append "
+                "another artifact and history entry."
+            ),
+        },
+        {
+            "name": "source_soi_id",
+            "label": "Source SOI ID",
+            "type": "string",
+            "default": "",
+            "description": (
+                "Optional link to the SOI that identified "
+                "this Target."
+            ),
+        },
+        {
+            "name": "frequency_mhz",
+            "label": "Frequency (MHz)",
+            "type": "number",
+            "default": 315.0,
+        },
         {
             "name": "display_label",
             "label": "Display Label",
@@ -172,14 +211,121 @@ dummy_target_schema = {
                 "TPMS",
                 "Wireless Camera",
                 "Weather Station",
+                "Wi-Fi Access Point",
                 "Unknown",
             ],
         },
-        {"name": "ce_m", "label": "CE (m)", "type": "number", "default": 50.0},
-        {"name": "description", "label": "Description", "type": "string", "default": "Dummy Target"},
+        {
+            "name": "protocol",
+            "label": "Protocol",
+            "type": "string",
+            "default": "OOK",
+        },
+        {
+            "name": "subtype",
+            "label": "Subtype",
+            "type": "string",
+            "default": "Fixed Code Remote",
+        },
+        {
+            "name": "manufacturer",
+            "label": "Manufacturer",
+            "type": "string",
+            "default": "FISSURE Test Devices",
+        },
+        {
+            "name": "model",
+            "label": "Model",
+            "type": "string",
+            "default": "DT-315",
+        },
+        {
+            "name": "device_id",
+            "label": "Device ID",
+            "type": "string",
+            "default": "DUMMY-315-0001",
+        },
+        {
+            "name": "serial_number",
+            "label": "Serial Number",
+            "type": "string",
+            "default": "SN-DUMMY-0001",
+        },
+        {
+            "name": "channel",
+            "label": "Channel",
+            "type": "number",
+            "default": 1,
+        },
+        {
+            "name": "state",
+            "label": "State",
+            "type": "string",
+            "default": "active",
+            "options": [
+                "detected",
+                "active",
+                "monitoring",
+                "inactive",
+                "lost",
+            ],
+        },
+        {
+            "name": "confidence_pct",
+            "label": "Confidence (%)",
+            "type": "number",
+            "default": 96.0,
+            "min": 0,
+            "max": 100,
+        },
+        {
+            "name": "rssi_dbm",
+            "label": "RSSI (dBm)",
+            "type": "number",
+            "default": -43.5,
+        },
+        {
+            "name": "ce_m",
+            "label": "CE (m)",
+            "type": "number",
+            "default": 25.0,
+        },
+        {
+            "name": "use_node_location",
+            "label": "Use Current Node Location",
+            "type": "string",
+            "default": "true",
+            "options": [
+                "true",
+                "false",
+            ],
+        },
+        {
+            "name": "observation_count",
+            "label": "Observation Count",
+            "type": "number",
+            "default": 5,
+            "min": 1,
+            "max": 100,
+        },
+        {
+            "name": "blob_size_kb",
+            "label": "Sample Capture Size (KB)",
+            "type": "number",
+            "default": 128,
+            "min": 1,
+            "max": 10240,
+        },
+        {
+            "name": "description",
+            "label": "Description",
+            "type": "string",
+            "default": (
+                "Dummy Target reference implementation"
+            ),
+        },
     ]
 }
-
 async def dummy_target(
     component: SensorNode,
     parameters: Dict[str, Any],
@@ -262,15 +408,9 @@ dummy_cot_types_schema = {
         },
         {
             "name": "base_lat",
-            "label": "Start Latitude",
-            "type": "number",
-            "default": 40.703052,
-        },
-        {
-            "name": "base_lat",
             "label": "Base Latitude",
             "type": "number",
-            "default": 42.0898,
+            "default": 40.703052,
             "min": -90,
             "max": 90,
             "decimals": 6,
@@ -279,7 +419,7 @@ dummy_cot_types_schema = {
             "name": "base_lon",
             "label": "Base Longitude",
             "type": "number",
-            "default": -76.8077,
+            "default": -74.016991,
             "min": -180,
             "max": 180,
             "decimals": 6,
@@ -292,7 +432,6 @@ dummy_cot_types_schema = {
         },
     ]
 }
-
 async def dummy_cot_types(
     component: SensorNode,
     parameters: Dict[str, Any],

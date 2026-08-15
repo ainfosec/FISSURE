@@ -12,6 +12,8 @@ from typing import Union, Tuple
 import xml.etree.ElementTree as ET
 import xml.dom.minidom
 import zipfile
+import json
+import shutil
 
 from fissure.utils.artifacts import Artifact
 from fissure.utils.common import extractFrequencyFromUID, get_fissure_config
@@ -435,154 +437,330 @@ def _format_xml_pretty(element: ET.Element) -> str:
     reparsed = xml.dom.minidom.parseString(rough_string)
     return reparsed.toprettyxml(indent="  ", encoding='UTF-8').decode('UTF-8')
 
+def create_artifact_data_package(
+    artifact: Union[Artifact, dict],
+    local_files: dict,
+) -> Tuple[bytes, str]:
+    """
+    Create one TAK Mission Package containing every declared artifact file.
 
-def create_artifact_data_package(artifact: Union[Artifact, dict], file_data: bytes) -> Tuple[bytes, str]:
-    """Create TAK-compatible data package for artifact
-    
-    Parameters
-    ----------
-    artifact : Union[Artifact, dict]
-        Artifact object or dict
-    file_data : bytes
-        Raw bytes of the artifact file
+    local_files must be:
+        {artifact_file_id: verified_local_path}
 
-    Returns
-    -------
-    Tuple[bytes, str]
-        ZIP data as bytes and the artifact filename
+    The artifact manifest controls package membership and archive paths.
     """
     if isinstance(artifact, dict):
         artifact = Artifact.from_dict(artifact)
 
-    # Generate a proper package name
-    package_name = f"DP-{artifact.name[:20].upper().replace(' ', '_')}"
+    if not isinstance(local_files, dict):
+        raise TypeError(
+            "local_files must be a dictionary keyed by artifact file ID"
+        )
+
+    if not artifact.files:
+        raise ValueError(
+            f"Artifact {artifact.id} has no declared files"
+        )
+
+    package_name = (
+        f"DP-{artifact.name[:20].upper().replace(' ', '_')}"
+    )
     package_uid = artifact.id
 
-    # Create subdirectory
-    subdir = artifact.id.replace('-', '').replace('_', '')[:32]
-    if not subdir:
-        subdir = "artifacts"
-    
-    # Create temporary ZIP file
-    with tempfile.NamedTemporaryFile(suffix=".zip", delete=False) as temp_zip:
-        with zipfile.ZipFile(temp_zip.name, 'w', zipfile.ZIP_DEFLATED) as zipf:
-            # Add the artifact file in subdirectory structure
-            artifact_filename = os.path.basename(artifact.file_path)
-            # Ensure we have a valid filename
-            if not artifact_filename:
-                artifact_filename = f"{artifact.name}.bin"
-            
-            zip_entry_path = f"{subdir}/{artifact_filename}"
-            zipf.writestr(zip_entry_path, file_data)
+    subdir = (
+        artifact.id
+        .replace("-", "")
+        .replace("_", "")[:32]
+        or "artifacts"
+    )
 
-            # Create simple MANIFEST.xml
-            manifest = ET.Element("MissionPackageManifest", version="2")
-            
-            # Configuration - name first, then uid
-            config = ET.SubElement(manifest, "Configuration")
-            ET.SubElement(config, "Parameter", name="name", value=package_name)
-            ET.SubElement(config, "Parameter", name="uid", value=package_uid)
-            
-            # Contents section
-            contents = ET.SubElement(manifest, "Contents")
-            ET.SubElement(contents, "Content", 
-                         zipEntry=zip_entry_path,
-                         ignore="false")
-            
-            # Format XML
-            manifest_xml = _format_xml_pretty(manifest)
-            
-            # Save manifest in MANIFEST folder
-            zipf.writestr("MANIFEST/manifest.xml", manifest_xml.encode('UTF-8'))
-        
-        # Read the ZIP data
-        with open(temp_zip.name, "rb") as f:
-            zip_data = f.read()
-            
-        # Clean up temp file
-        os.unlink(temp_zip.name)
-    
-    return zip_data, artifact_filename
+    package_filename = f"{package_name}.zip"
+
+    with tempfile.NamedTemporaryFile(
+        suffix=".zip",
+        delete=False,
+    ) as temp_zip:
+        temp_zip_path = temp_zip.name
+
+    try:
+        with zipfile.ZipFile(
+            temp_zip_path,
+            "w",
+            zipfile.ZIP_DEFLATED,
+        ) as zip_handle:
+            content_entries = []
+
+            for artifact_file in artifact.files:
+                local_path = str(
+                    local_files.get(
+                        artifact_file.id,
+                        "",
+                    )
+                    or ""
+                ).strip()
+
+                if not local_path or not os.path.isfile(local_path):
+                    raise FileNotFoundError(
+                        "Missing cached artifact file "
+                        f"artifact_id={artifact.id} "
+                        f"file_id={artifact_file.id}"
+                    )
+
+                actual_size = os.path.getsize(local_path)
+                if actual_size != int(artifact_file.size):
+                    raise ValueError(
+                        "Cached artifact file size does not match manifest: "
+                        f"{artifact_file.relative_path}"
+                    )
+
+                actual_sha256 = hashlib.sha256()
+
+                with open(local_path, "rb") as source_handle:
+                    while True:
+                        chunk = source_handle.read(
+                            1024 * 1024
+                        )
+                        if not chunk:
+                            break
+                        actual_sha256.update(chunk)
+
+                if (
+                    actual_sha256.hexdigest()
+                    != artifact_file.sha256
+                ):
+                    raise ValueError(
+                        "Cached artifact file checksum does not match manifest: "
+                        f"{artifact_file.relative_path}"
+                    )
+
+                relative_path = os.path.normpath(
+                    artifact_file.relative_path
+                )
+
+                if (
+                    os.path.isabs(relative_path)
+                    or relative_path == ".."
+                    or relative_path.startswith(
+                        f"..{os.sep}"
+                    )
+                ):
+                    raise ValueError(
+                        "Invalid artifact relative path: "
+                        f"{artifact_file.relative_path}"
+                    )
+
+                zip_entry_path = (
+                    f"{subdir}/"
+                    f"{relative_path.replace(os.sep, '/')}"
+                )
+
+                zip_handle.write(
+                    local_path,
+                    arcname=zip_entry_path,
+                )
+
+                content_entries.append(
+                    zip_entry_path
+                )
+
+            manifest = ET.Element(
+                "MissionPackageManifest",
+                version="2",
+            )
+
+            config = ET.SubElement(
+                manifest,
+                "Configuration",
+            )
+
+            ET.SubElement(
+                config,
+                "Parameter",
+                name="name",
+                value=package_name,
+            )
+
+            ET.SubElement(
+                config,
+                "Parameter",
+                name="uid",
+                value=package_uid,
+            )
+
+            contents = ET.SubElement(
+                manifest,
+                "Contents",
+            )
+
+            for zip_entry_path in content_entries:
+                ET.SubElement(
+                    contents,
+                    "Content",
+                    zipEntry=zip_entry_path,
+                    ignore="false",
+                )
+
+            manifest_xml = _format_xml_pretty(
+                manifest
+            )
+
+            zip_handle.writestr(
+                "MANIFEST/manifest.xml",
+                manifest_xml.encode("UTF-8"),
+            )
+
+        with open(
+            temp_zip_path,
+            "rb",
+        ) as package_handle:
+            zip_data = package_handle.read()
+
+    finally:
+        try:
+            os.unlink(temp_zip_path)
+        except OSError:
+            pass
+
+    return zip_data, package_filename
 
 
-async def send_artifact_event(
+async def send_artifact_files_event(
     component: object,
     artifact: Union[Artifact, dict],
-    artifact_data: bytes,
+    local_files: dict,
     destination="broadcast",
     requester_uid=None,
 ) -> None:
-    """Send artifact event to TAK clients
-    
-    Parameters
-    ----------
-    component : object
-        FISSURE component with TAK clitool
-    artifact : Union[Artifact, dict]
-        Artifact object or dict
-    artifact_data : bytes
-        Raw bytes of the artifact file
+    """
+    Package and send every verified file belonging to one artifact.
     """
     if isinstance(artifact, dict):
         artifact = Artifact.from_dict(artifact)
 
     artifact_id = artifact.id
-    tak_data, _ = create_artifact_data_package(artifact, artifact_data)
-    
-    # Calculate SHA256 checksum
-    sha256_hash = hashlib.sha256(tak_data).hexdigest()
 
-    # Build CoT message manually for fileshare
-    msg, detail = _build_base_event(
-        uid=f"FISSURE-DP-{artifact_id}",  # More descriptive UID
-        stale=300  # 5 minute stale time (longer for file transfers)
-    )
-
-    # Set proper CoT type for data package - WinTAK uses b-f-t-r for file transfers
-    msg.set("type", "b-f-t-r")  # File transfer request
-    msg.set("version", "2.0")
-    
-    # Set proper time attributes
-    now = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-    msg.set("time", now)
-    msg.set("start", now)
-    stale_time = (datetime.datetime.utcnow() + datetime.timedelta(minutes=5)).strftime("%Y-%m-%dT%H:%M:%S.%fZ")
-    msg.set("stale", stale_time)
-
-    # Upload the data package to TAK server first
-    package_filename = f"DP-{artifact.name[:20].upper().replace(' ', '_')}.zip"
-    
-    # Try to upload to TAK server
-    sender_url = await upload_data_package_to_tak_server(tak_data, sha256_hash, package_filename, component)
-    
-    if not sender_url:
-        component.logger.error("Failed to upload data package to TAK server. Artifact event not sent.") # type: ignore
+    try:
+        tak_data, package_filename = (
+            create_artifact_data_package(
+                artifact,
+                local_files,
+            )
+        )
+    except Exception:
+        component.logger.exception(
+            "Failed creating TAK data package for artifact %s",
+            artifact_id,
+        )
         return
 
-    # Create fileshare element directly under detail (TAK standard)
-    fileshare = ET.SubElement(detail, "fileshare")
-    
-    # Add attributes
-    fileshare.set("filename", package_filename)
-    fileshare.set("senderUrl", sender_url)  
-    fileshare.set("sizeInBytes", str(len(tak_data)))
-    fileshare.set("sha256", sha256_hash)
-    fileshare.set("senderUid", f"FISSURE-{artifact.source_id}")
-    fileshare.set("senderCallsign", f"FISSURE-{artifact.source_id[:8]}")
-    fileshare.set("name", f"DP-{artifact.name[:20].upper().replace(' ', '_')}")
+    sha256_hash = hashlib.sha256(
+        tak_data
+    ).hexdigest()
 
-    # Add ackrequest element
-    ackrequest = ET.SubElement(detail, "ackrequest")
-    ackrequest.set("uid", f"ack-{artifact_id[:8]}")
-    ackrequest.set("ackrequested", "true")
-    ackrequest.set("tag", f"DP-{artifact.name[:20].upper().replace(' ', '_')}")
+    msg, detail = _build_base_event(
+        uid=f"FISSURE-DP-{artifact_id}",
+        stale=300,
+    )
 
-    # Set point coordinates (0,0 with high uncertainty)
+    msg.set("type", "b-f-t-r")
+    msg.set("version", "2.0")
+
+    now = datetime.datetime.utcnow().strftime(
+        "%Y-%m-%dT%H:%M:%S.%fZ"
+    )
+    stale_time = (
+        datetime.datetime.utcnow()
+        + datetime.timedelta(minutes=5)
+    ).strftime(
+        "%Y-%m-%dT%H:%M:%S.%fZ"
+    )
+
+    msg.set("time", now)
+    msg.set("start", now)
+    msg.set("stale", stale_time)
+
+    sender_url = (
+        await upload_data_package_to_tak_server(
+            tak_data,
+            sha256_hash,
+            package_filename,
+            component,
+        )
+    )
+
+    if not sender_url:
+        component.logger.error(
+            "Failed to upload TAK data package for artifact %s",
+            artifact_id,
+        )
+        return
+
+    fileshare = ET.SubElement(
+        detail,
+        "fileshare",
+    )
+
+    fileshare.set(
+        "filename",
+        package_filename,
+    )
+    fileshare.set(
+        "senderUrl",
+        sender_url,
+    )
+    fileshare.set(
+        "sizeInBytes",
+        str(len(tak_data)),
+    )
+    fileshare.set(
+        "sha256",
+        sha256_hash,
+    )
+    fileshare.set(
+        "senderUid",
+        f"FISSURE-{artifact.source_id}",
+    )
+    fileshare.set(
+        "senderCallsign",
+        f"FISSURE-{artifact.source_id[:8]}",
+    )
+    fileshare.set(
+        "name",
+        (
+            f"DP-"
+            f"{artifact.name[:20].upper().replace(' ', '_')}"
+        ),
+    )
+
+    ackrequest = ET.SubElement(
+        detail,
+        "ackrequest",
+    )
+    ackrequest.set(
+        "uid",
+        f"ack-{artifact_id[:8]}",
+    )
+    ackrequest.set(
+        "ackrequested",
+        "true",
+    )
+    ackrequest.set(
+        "tag",
+        (
+            f"DP-"
+            f"{artifact.name[:20].upper().replace(' ', '_')}"
+        ),
+    )
+
     point = msg.find("point")
     if point is None:
-        point = ET.SubElement(msg, "point")
+        point = ET.SubElement(
+            msg,
+            "point",
+        )
+
     point.set("lat", "0.0")
-    point.set("lon", "0.0") 
+    point.set("lon", "0.0")
     point.set("hae", "0.0")
     point.set("ce", "9999999.0")
     point.set("le", "9999999.0")
@@ -595,6 +773,342 @@ async def send_artifact_event(
     )
 
 
+def create_fissure_record_data_package(
+    package_uid: str,
+    package_name: str,
+    source_root: str,
+) -> Tuple[bytes, str]:
+    """
+    Create a TAK Mission Package from a prepared directory tree.
+
+    source_root is disposable staging content containing record snapshots and
+    any linked artifact directories. Every regular file below source_root is
+    included using its relative path.
+    """
+    package_uid = str(
+        package_uid or ""
+    ).strip()
+
+    package_name = str(
+        package_name or ""
+    ).strip()
+
+    source_root = os.path.abspath(
+        str(source_root or "")
+    )
+
+    if not package_uid:
+        raise ValueError(
+            "package_uid is required"
+        )
+
+    if not package_name:
+        raise ValueError(
+            "package_name is required"
+        )
+
+    if not os.path.isdir(source_root):
+        raise FileNotFoundError(
+            f"Package source directory not found: {source_root}"
+        )
+
+    safe_package_name = (
+        package_name
+        .upper()
+        .replace(" ", "_")
+    )
+
+    package_filename = (
+        f"{safe_package_name}.zip"
+    )
+
+    with tempfile.NamedTemporaryFile(
+        suffix=".zip",
+        delete=False,
+    ) as temporary_zip:
+        temporary_zip_path = (
+            temporary_zip.name
+        )
+
+    try:
+        content_entries = []
+
+        with zipfile.ZipFile(
+            temporary_zip_path,
+            "w",
+            zipfile.ZIP_DEFLATED,
+        ) as zip_handle:
+            for root, directories, filenames in os.walk(
+                source_root
+            ):
+                directories.sort()
+                filenames.sort()
+
+                for filename in filenames:
+                    local_path = os.path.join(
+                        root,
+                        filename,
+                    )
+
+                    if not os.path.isfile(local_path):
+                        continue
+
+                    relative_path = os.path.relpath(
+                        local_path,
+                        source_root,
+                    )
+
+                    normalized_relative_path = (
+                        relative_path
+                        .replace(os.sep, "/")
+                    )
+
+                    if (
+                        normalized_relative_path == ".."
+                        or normalized_relative_path.startswith(
+                            "../"
+                        )
+                    ):
+                        raise ValueError(
+                            "Invalid package-relative path: "
+                            f"{relative_path}"
+                        )
+
+                    zip_handle.write(
+                        local_path,
+                        arcname=normalized_relative_path,
+                    )
+
+                    content_entries.append(
+                        normalized_relative_path
+                    )
+
+            if not content_entries:
+                raise ValueError(
+                    "The Mission Package has no content files"
+                )
+
+            manifest = ET.Element(
+                "MissionPackageManifest",
+                version="2",
+            )
+
+            configuration = ET.SubElement(
+                manifest,
+                "Configuration",
+            )
+
+            ET.SubElement(
+                configuration,
+                "Parameter",
+                name="name",
+                value=safe_package_name,
+            )
+
+            ET.SubElement(
+                configuration,
+                "Parameter",
+                name="uid",
+                value=package_uid,
+            )
+
+            contents = ET.SubElement(
+                manifest,
+                "Contents",
+            )
+
+            for relative_path in content_entries:
+                ET.SubElement(
+                    contents,
+                    "Content",
+                    zipEntry=relative_path,
+                    ignore="false",
+                )
+
+            manifest_xml = _format_xml_pretty(
+                manifest
+            )
+
+            zip_handle.writestr(
+                "MANIFEST/manifest.xml",
+                manifest_xml.encode("UTF-8"),
+            )
+
+        with open(
+            temporary_zip_path,
+            "rb",
+        ) as package_handle:
+            package_data = (
+                package_handle.read()
+            )
+
+    finally:
+        try:
+            os.unlink(
+                temporary_zip_path
+            )
+        except OSError:
+            pass
+
+    return (
+        package_data,
+        package_filename,
+    )
+
+
+async def send_fissure_record_data_package(
+    component: object,
+    package_uid: str,
+    package_name: str,
+    source_root: str,
+    sender_source_id: str = "HIPRFISR",
+    destination: str = "tak",
+    requester_uid: str = None,
+) -> None:
+    """
+    Upload and announce a freshly rebuilt SOI or Target Mission Package.
+    """
+    try:
+        package_data, package_filename = (
+            create_fissure_record_data_package(
+                package_uid=package_uid,
+                package_name=package_name,
+                source_root=source_root,
+            )
+        )
+    except Exception:
+        component.logger.exception(
+            "Failed creating FISSURE record Mission Package "
+            "uid=%s name=%s",
+            package_uid,
+            package_name,
+        )
+        return
+
+    package_sha256 = hashlib.sha256(
+        package_data
+    ).hexdigest()
+
+    sender_url = (
+        await upload_data_package_to_tak_server(
+            package_data,
+            package_sha256,
+            package_filename,
+            component,
+        )
+    )
+
+    if not sender_url:
+        component.logger.error(
+            "Failed uploading FISSURE record Mission Package "
+            "uid=%s",
+            package_uid,
+        )
+        return
+
+    message, detail = _build_base_event(
+        uid=f"FISSURE-DP-{package_uid}",
+        stale=300,
+    )
+
+    message.set(
+        "type",
+        "b-f-t-r",
+    )
+    message.set(
+        "version",
+        "2.0",
+    )
+
+    now = datetime.datetime.utcnow().strftime(
+        "%Y-%m-%dT%H:%M:%S.%fZ"
+    )
+
+    stale_time = (
+        datetime.datetime.utcnow()
+        + datetime.timedelta(minutes=5)
+    ).strftime(
+        "%Y-%m-%dT%H:%M:%S.%fZ"
+    )
+
+    message.set("time", now)
+    message.set("start", now)
+    message.set("stale", stale_time)
+
+    fileshare = ET.SubElement(
+        detail,
+        "fileshare",
+    )
+
+    fileshare.set(
+        "filename",
+        package_filename,
+    )
+    fileshare.set(
+        "senderUrl",
+        sender_url,
+    )
+    fileshare.set(
+        "sizeInBytes",
+        str(len(package_data)),
+    )
+    fileshare.set(
+        "sha256",
+        package_sha256,
+    )
+    fileshare.set(
+        "senderUid",
+        f"FISSURE-{sender_source_id}",
+    )
+    fileshare.set(
+        "senderCallsign",
+        f"FISSURE-{sender_source_id[:8]}",
+    )
+    fileshare.set(
+        "name",
+        package_name,
+    )
+
+    acknowledgement = ET.SubElement(
+        detail,
+        "ackrequest",
+    )
+
+    acknowledgement.set(
+        "uid",
+        f"ack-{package_uid[:16]}",
+    )
+    acknowledgement.set(
+        "ackrequested",
+        "true",
+    )
+    acknowledgement.set(
+        "tag",
+        package_name,
+    )
+
+    point = message.find("point")
+
+    if point is None:
+        point = ET.SubElement(
+            message,
+            "point",
+        )
+
+    point.set("lat", "0.0")
+    point.set("lon", "0.0")
+    point.set("hae", "0.0")
+    point.set("ce", "9999999.0")
+    point.set("le", "9999999.0")
+
+    await _dispatch_cot(
+        component,
+        message,
+        destination=destination,
+        requester_uid=requester_uid,
+    )
+
+    
 async def upload_data_package_to_tak_server(tak_data: bytes, sha256_hash: str, filename: str, component) -> Union[str, None]:
     """Upload data package to TAK server sync endpoint
     

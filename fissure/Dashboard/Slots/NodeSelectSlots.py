@@ -25,29 +25,47 @@ async def refreshClicked(HWSelect: QtCore.QObject):
 @qasync.asyncSlot(QtCore.QObject)
 async def selectClicked(HWSelect: QtCore.QObject):
     """
-    Send command to HiprFisr to.
+    Select the current connected Sensor Node.
+
+    The Sensor Node must answer nodeSelectIP with its current settings before
+    the Dashboard establishes a new selected-node context.
     """
-    # Get Node UUID
-    tableWidget_node_list_widget = HWSelect.tableWidget_node_list
+    table = HWSelect.tableWidget_node_list
+    row = table.currentRow()
 
-    row = tableWidget_node_list_widget.currentRow()
-    node_uuid = str(tableWidget_node_list_widget.item(row, 1).text())
-    node_assigned_id = str(tableWidget_node_list_widget.item(row,3).text())
+    if row < 0:
+        return
 
-    # Send Message to Backend
-    await HWSelect.dashboard.backend.nodeSelectIP(node_uuid)
+    uuid_item = table.item(row, 1)
+    connection_item = table.item(row, 5)
 
-    # Close Dialog
+    if uuid_item is None or connection_item is None:
+        return
+
+    connected_value = connection_item.data(
+        QtCore.Qt.UserRole
+    )
+
+    if connected_value is None:
+        connected = (
+            connection_item.text().strip().lower()
+            == "connected"
+        )
+    else:
+        connected = bool(connected_value)
+
+    if not connected:
+        HWSelect.dashboard.logger.info(
+            "[Node Select] Disconnected Sensor Node was not selected."
+        )
+        return
+
+    node_uuid = str(
+        uuid_item.text()
+    )
+
+    await HWSelect.dashboard.backend.nodeSelectIP(
+        node_uuid
+    )
+
     HWSelect.close()
-
-    # # Check if Meshtastic handshake is completed
-    # if node_assigned_id == "0":
-    #     ret = await fissure.Dashboard.UI_Components.Qt5.async_ok_dialog(HWSelect, "Assigned ID = 0. Meshtastic node needs to complete handshake. Please wait for the assigned ID to update and then click Refresh before selecting.")
-    #     return
-
-    # # Send Message to Backend
-    # get_network_type = str(getattr(HWSelect, f"comboBox_network_type_{tab_index+1}").currentText())
-    # if get_network_type == "IP":
-    #     await HWSelect.dashboard.backend.nodeSelectIP(str(tab_index), node_uuid)
-    # elif get_network_type == "Meshtastic":
-    #     await HWSelect.dashboard.backend.nodeSelectLT(str(tab_index), node_uuid)

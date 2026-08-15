@@ -271,37 +271,37 @@ def refreshCustomWidgets(dashboard: QtWidgets.QMainWindow):
     """
     Reloads the custom widgets for the new stylesheet settings.
     """
-    if dashboard.ui.stackedWidget3_iq.currentIndex() == 0:
+    if dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 0:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_record")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 1:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 1:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_playback")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 2:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 2:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_inspection")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 3:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 3:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_crop")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 4:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 4:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_convert")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 5:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 5:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_append")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 6:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 6:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_transfer")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 7:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 7:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_timeslot")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 8:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 8:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_overlap")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 9:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 9:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_resample")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 10:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 10:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_ofdm")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 11:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 11:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_normalize")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 12:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 12:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_strip")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 13:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 13:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_split")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 14:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 14:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_ook")
-    elif dashboard.ui.stackedWidget3_iq.currentIndex() == 15:
+    elif dashboard.ui.stackedWidget3_iq_pages.currentIndex() == 15:
         IQDataTabSlots._slotIQ_TabClicked(dashboard, "pushButton1_iq_tab_endianness")        
 
     dashboard.iq_matplotlib_widget.configureAxes(polar=False,background_color=dashboard.backend.settings['color2'],face_color=dashboard.backend.settings['color5'],text_color=dashboard.backend.settings['color4'])
@@ -314,6 +314,10 @@ def refreshCustomWidgets(dashboard: QtWidgets.QMainWindow):
     except Exception:
         pass
 
+    try:
+        TSITabSlots.restyle_tsi_conditioner_preview_canvas(dashboard)
+    except Exception as e:
+        pass
 
 @QtCore.pyqtSlot()
 def _slotMenuHelpUserManualClicked():

@@ -57,6 +57,7 @@ class OperationMain(Operation):
         logger: logging.Logger = logging.getLogger(__name__),
         alert_callback: Union[Callable, None] = None,
         tak_cot_callback: Union[Callable, None] = None,
+        detection_callback: Union[Callable, None] = None,
         status_callback: Union[Callable, None] = None,
         parameters: Optional[Dict[str, Any]] = None,
     ) -> None:
@@ -65,6 +66,7 @@ class OperationMain(Operation):
             logger=logger,
             alert_callback=alert_callback,
             tak_cot_callback=tak_cot_callback,
+            detection_callback=detection_callback,
             status_callback=status_callback,
         )
 
@@ -74,7 +76,6 @@ class OperationMain(Operation):
         self.description = description or "LFM beacon detection"
         self.source_id = str(self.parameters.get("source_id") or node_uid or "sensor_node")
         self.emit_alerts = bool(self.parameters.get("emit_alerts", True))
-        self.emit_tak_cot = bool(self.parameters.get("emit_tak_cot", True))
 
         self.resource_args = {
             "freq_mhz": self.freq_mhz,
@@ -178,7 +179,6 @@ class OperationMain(Operation):
             params.get("source_id") or getattr(self, "node_uid", "") or "sensor_node"
         )
         self.emit_alerts = bool(params.get("emit_alerts", self.emit_alerts))
-        self.emit_tak_cot = bool(params.get("emit_tak_cot", self.emit_tak_cot))
 
     async def _drain_stderr(self, process: asyncio.subprocess.Process) -> None:
         if not process.stderr:
@@ -258,28 +258,15 @@ class OperationMain(Operation):
             "configured_frequency_mhz": float(self.freq_mhz),
         }
 
-    async def _emit_tak_detection(self, detection: Dict[str, Any]) -> None:
-        if not self.emit_tak_cot or not self.tak_cot_callback:
+    async def _emit_detection(self, detection: Dict[str, Any]) -> None:
+        if not self.detection_callback:
+            self.logger.warning("lfm_beacon_detection has no detection_callback")
             return
 
-        ts = float(detection.get("timestamp") or time.time())
-
-        event = {
-            "msg_type": "event",
-            "uid": f"lfm-beacon-detection-{self.source_id}-{int(ts)}",
-            "lat": True,
-            "lon": True,
-            "alt": True,
-            "time": True,
-            "data": detection,
-            "opid": self.opid,
-            "tak_icon": "r-x-fissure-detection",
-        }
-
         try:
-            await self._call_with_timeout(self.tak_cot_callback, event)
+            await self._call_with_timeout(self.detection_callback, detection)
         except Exception:
-            self.logger.exception("tak_cot_callback failed for lfm_beacon_detection")
+            self.logger.exception("detection_callback failed for lfm_beacon_detection")
 
     async def _emit_alert(self, detection: Dict[str, Any]) -> None:
         if not self.emit_alerts or not self.alert_callback:
@@ -416,7 +403,7 @@ class OperationMain(Operation):
                     det_time=det_time if det_time > 0 else now,
                 )
 
-                await self._emit_tak_detection(detection)
+                await self._emit_detection(detection)
                 await self._emit_alert(detection)
 
         except asyncio.CancelledError:

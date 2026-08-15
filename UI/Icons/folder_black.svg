@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20">
+  <title>Browse Folder</title>
+  <path
+    d="M2.5 5.25
+       C2.5 4.56 3.06 4 3.75 4
+       H7.35
+       C7.72 4 8.07 4.16 8.31 4.44
+       L9.25 5.55
+       C9.49 5.83 9.84 6 10.21 6
+       H16.25
+       C16.94 6 17.5 6.56 17.5 7.25
+       V15.25
+       C17.5 15.94 16.94 16.5 16.25 16.5
+       H3.75
+       C3.06 16.5 2.5 15.94 2.5 15.25
+       Z"
+    fill="none"
+    stroke="#071f3a"
+    stroke-width="1.7"
+    stroke-linejoin="round"
+  />
+  <path
+    d="M2.8 8.1 H17.2"
+    fill="none"
+    stroke="#071f3a"
+    stroke-width="1.7"
+    stroke-linecap="round"
+  />
+</svg>

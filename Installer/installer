@@ -160,8 +160,7 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
 
             
     def _connectSlots(self):
-        """ Contains the connect functions for all the signals and slots
-        """   
+        """Contains the connect functions for all signals and slots."""
         # Push Buttons
         self.pushButton_ok.clicked.connect(self._slotOK_Clicked)
         self.pushButton_cancel.clicked.connect(self._slotCancelClicked)
@@ -172,11 +171,15 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
         self.pushButton_collapse_all.clicked.connect(self._slotCollapseAllClicked)
         self.pushButton_import.clicked.connect(self._slotImportClicked)
         self.pushButton_export.clicked.connect(self._slotExportClicked)
+
+        # Install Modes
         self.pushButton_full.clicked.connect(self._slotFullClicked)
-        self.pushButton_sensor_node.clicked.connect(self._slotSensorNodeClicked)       
+        self.pushButton_base.clicked.connect(self._slotBaseClicked)
+        self.pushButton_custom.clicked.connect(self._slotCustomClicked)
+        self.pushButton_sensor_node.clicked.connect(self._slotSensorNodeClicked)
         self.pushButton_hiprfisr.clicked.connect(self._slotHiprfisrClicked)
         self.pushButton_dashboard.clicked.connect(self._slotDashboardClicked)
-        
+
         # Tables
         self.treeWidget_software.clicked.connect(self._slotTableItemClicked)
 
@@ -562,6 +565,48 @@ class InstallDialog2(QtWidgets.QDialog, form_class2):
             if item_name in required_items:
                 item.setCheckState(0, QtCore.Qt.Checked)
             iterator += 1
+    
+
+    def _slotBaseClicked(self):
+        """Checks the installer items required for the FISSURE base mode."""
+        from Modes.base import required_items
+
+        # Uncheck all items.
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
+        while iterator.value():
+            item = iterator.value()
+            item.setCheckState(0, QtCore.Qt.Unchecked)
+            iterator += 1
+
+        # Check only items included in the base mode.
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
+        while iterator.value():
+            item = iterator.value()
+            item_name = item.text(0).split('(')[0].strip()
+            if item_name in required_items:
+                item.setCheckState(0, QtCore.Qt.Checked)
+            iterator += 1
+
+
+    def _slotCustomClicked(self):
+        """Checks the installer items defined by the FISSURE custom mode."""
+        from Modes.custom import required_items
+
+        # Uncheck all items.
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
+        while iterator.value():
+            item = iterator.value()
+            item.setCheckState(0, QtCore.Qt.Unchecked)
+            iterator += 1
+
+        # Check only items included in the custom mode.
+        iterator = QtWidgets.QTreeWidgetItemIterator(self.treeWidget_software)
+        while iterator.value():
+            item = iterator.value()
+            item_name = item.text(0).split('(')[0].strip()
+            if item_name in required_items:
+                item.setCheckState(0, QtCore.Qt.Checked)
+            iterator += 1
 
         
 class MyThread(QtCore.QThread):
@@ -749,40 +794,54 @@ def main(argv):
             sys.exit(1)
 
         # --- Select Install Mode ---
-        mode_arg = mode_arg.lower()
+        mode_arg = mode_arg.strip().lower()
         selected_programs = []
 
         if mode_arg == "full":
             selected_programs = [p for p in programs if p[2] is True]
 
         elif mode_arg == "base":
-            print("Base install not supported yet. Exiting.")
-            sys.exit(1)
             from Modes.base import required_items
-            selected_programs = [p for p in programs if p[0].split('(')[0].strip() in required_items]
-
-        elif mode_arg == "hiprfisr":
-            print("HIPRFISR install not supported yet. Exiting.")
-            sys.exit(1)
-            from Modes.hiprfisr import required_items
-            selected_programs = [p for p in programs if p[0].split('(')[0].strip() in required_items]
-
-        elif mode_arg == "dashboard":
-            print("Dashboard install not supported yet. Exiting.")
-            sys.exit(1)
-            from Modes.dashboard import required_items
-            selected_programs = [p for p in programs if p[0].split('(')[0].strip() in required_items]
-
-        elif mode_arg in ("sensor", "sensornode"):
-            from Modes.sensornode import required_items         
-            selected_programs = [p for p in programs if p[0].split('(')[0].strip() in required_items]
+            selected_programs = [
+                p for p in programs
+                if p[0].split('(')[0].strip() in required_items
+            ]
 
         elif mode_arg == "custom":
             from Modes.custom import required_items
-            selected_programs = [p for p in programs if p[0].split('(')[0].strip() in required_items]
+            selected_programs = [
+                p for p in programs
+                if p[0].split('(')[0].strip() in required_items
+            ]
+
+        elif mode_arg == "dashboard":
+            from Modes.dashboard import required_items
+            selected_programs = [
+                p for p in programs
+                if p[0].split('(')[0].strip() in required_items
+            ]
+
+        elif mode_arg == "hiprfisr":
+            from Modes.hiprfisr import required_items
+            selected_programs = [
+                p for p in programs
+                if p[0].split('(')[0].strip() in required_items
+            ]
+
+        elif mode_arg in ("sensor", "sensor-node", "sensor_node", "sensornode"):
+            from Modes.sensornode import required_items
+            selected_programs = [
+                p for p in programs
+                if p[0].split('(')[0].strip() in required_items
+            ]
 
         else:
             print(f"Unknown mode: {mode_arg}")
+            print("Supported modes: full, base, custom, Dashboard, HIPRFISR, SensorNode")
+            sys.exit(1)
+
+        if not selected_programs:
+            print(f"Error: mode '{mode_arg}' selected no installer items.")
             sys.exit(1)
 
         # --- Run Installs Sequentially ---

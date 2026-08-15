@@ -571,8 +571,7 @@ class OperationMain(Operation):
 
     def _create_batch_artifact(self, csv_path: str, rows: List[Dict[str, Any]], batch_index: int) -> str:
         operation_id = str(uuid.uuid4())
-        capture_folder = os.path.join(FISSURE_ROOT, "artifacts", operation_id, "files")
-        os.makedirs(capture_folder, exist_ok=True)
+        _, capture_folder = self.artifact_manager.create_operation_dir(operation_id)
 
         dst_csv = os.path.join(capture_folder, os.path.basename(csv_path))
         with open(csv_path, "r", encoding="utf-8") as src, open(dst_csv, "w", encoding="utf-8") as dst:

@@ -64,18 +64,6 @@ async def transferSensorNodeFile(
             await refreshSensorNodeFiles(component, os.path.dirname(remote_filepath))
 
 
-async def deleteArchiveReplayFiles(component: object):
-    """
-    Deletes all the files in the Archive_Replay folder on the sensor node ahead of file transfer for replay.
-    """
-    # Delete Files
-    folder_location = os.path.join(fissure.utils.SENSOR_NODE_DIR, "Archive_Replay")
-    for filename in os.listdir(folder_location):
-        if os.path.isfile(os.path.join(folder_location, filename)):
-            if filename != ".gitkeep":
-                os.remove(os.path.join(folder_location, filename))
-
-
 async def overwriteDefaultAutorunPlaylist(component: object, playlist_dict={}):
     """
     Overwrites the default autorun playlist yaml file with a dictionary configured in the Dashboard.
@@ -330,49 +318,6 @@ async def multiStageAttackStop(component: object, autorun_index=0):
     loop.run_in_executor(None, component.multiStageAttackStop, autorun_index)
 
 
-async def archivePlaylistStart(
-    component: object,
-   
-    flow_graph="",
-    filenames=[],
-    frequencies=[],
-    sample_rates=[],
-    formats=[],
-    channels=[],
-    gains=[],
-    durations=[],
-    repeat=False,
-    ip_address="",
-    serial="",
-    trigger_values=[]
-):
-    """
-    Starts a new thread for running the same replay flow graph multiple times for a specified duration.
-    """
-    if len(trigger_values) == 0:
-        # Run Event and Do Not Block
-        loop = asyncio.get_event_loop()
-        component.archive_playlist_stop_event = asyncio.Event()
-        loop.run_in_executor(None, component.archivePlaylistThreadStart, flow_graph, filenames, frequencies, sample_rates, formats, channels, gains, durations, repeat, ip_address, serial)
-    else:
-        # Run Event and Do Not Block
-        fissure_event_values = [flow_graph, filenames, frequencies, sample_rates, formats, channels, gains, durations, repeat, ip_address, serial]
-        loop = asyncio.get_event_loop()
-        loop.run_in_executor(None, component.triggerStart, trigger_values, "Archive Replay", fissure_event_values, -1)
-    await asyncio.sleep(0.1)
-
-
-async def archivePlaylistStop(component: object):
-    """
-    Stops a multi-stage attack already in progress
-    """
-    # Use the Function that is Called Frequently in SensorNode.py
-    loop = asyncio.get_event_loop()
-    loop.run_in_executor(None, component.archivePlaylistStop)
-    # component.archivePlaylistStop(sensor_node_id)
-    await asyncio.sleep(0.1)
-
-
 async def attackFlowGraphStart(
     component: object,
     flow_graph_filepath="",
@@ -410,58 +355,37 @@ async def attackFlowGraphStop(component: object, parameter="", autorun_index=0):
 
 
 async def iqFlowGraphStart(
-    component: object, flow_graph_filepath="", variable_names=[], variable_values=[], file_type=""
+    component: object,
+    flow_graph_filepath="",
+    variable_names=[],
+    variable_values=[],
+    file_type="",
 ):
     """
-    Runs the IQ flow graph with the specified file path.
+    Run the legacy IQ playback flow graph.
     """
-    # Local or Remote Directories
     if component.settings_dict["Sensor Node"]["local_remote"] == "remote":
-        for n in range(0, len(variable_names)):
-            if variable_names[n] == "filepath":
-                # Playback
-                if flow_graph_filepath.startswith('iq_playback'):
-                    return_filepath = ""
-                    variable_values[n] = os.path.join(fissure.utils.SENSOR_NODE_DIR, "IQ_Data_Playback", "playback.iq")
-                    read_filepath = ""
-                    
-                # Record
-                else:
-                    return_filepath = variable_values[n]  # For record message, HIPRFISR computer
-                    variable_values[n] = component.replaceUsername(variable_values[n], os.getenv('USER'))
-                    read_filepath = variable_values[n]  # For record message, Sensor Node computer
-    else:
-        read_filepath = ""
-        return_filepath = ""
+        for index, variable_name in enumerate(
+            variable_names
+        ):
+            if variable_name != "filepath":
+                continue
 
-    # Run Event and Do Not Block
+            variable_values[index] = os.path.join(
+                fissure.utils.SENSOR_NODE_DIR,
+                "IQ_Data_Playback",
+                "playback.iq",
+            )
+
     loop = asyncio.get_event_loop()
+
     loop.run_in_executor(
-        None, 
-        component.iqFlowGraphThread, 
+        None,
+        component.iqFlowGraphThread,
         flow_graph_filepath,
         variable_names,
         variable_values,
-        read_filepath,
-        return_filepath,
     )
-
-    # # Make a new Thread
-    # stop_event = threading.Event()
-    # if file_type == "Flow Graph":
-    #     c_thread = threading.Thread(
-    #         target=component.iqFlowGraphThread,
-    #         args=(
-    #             stop_event,
-    #             flow_graph_filepath,
-    #             variable_names,
-    #             variable_values,
-    #             read_filepath,
-    #             return_filepath,
-    #         ),
-    #     )
-    # c_thread.daemon = True
-    # c_thread.start()
 
 
 async def iqFlowGraphStop(component: object, parameter=""):
@@ -470,33 +394,6 @@ async def iqFlowGraphStop(component: object, parameter=""):
     """
     # Use the Function that is Called Frequently in SensorNode.py
     component.iqFlowGraphStop(parameter)
-
-
-async def inspectionFlowGraphStart(
-    component: object, flow_graph_filepath="", variable_names=[], variable_values=[], file_type=""
-):
-    """Runs the flow graph with the specified file path."""
-    # Only Supports Flow Graphs with GUIs
-    if file_type == "Flow Graph - GUI":
-
-        # Run Event and Do Not Block
-        loop = asyncio.get_event_loop()
-        loop.run_in_executor(
-            None, 
-            component.inspectionFlowGraphGUI_Thread, 
-            flow_graph_filepath,
-            variable_names,
-            variable_values,
-    )
-
-
-async def inspectionFlowGraphStop(component: object, parameter=""):
-    """
-    Stop the currently running inspection flow graph.
-    """
-    # Only Supports Flow Graphs with GUIs
-    if parameter == "Flow Graph - GUI":
-        os.system("pkill -f " + '"' + component.inspection_script_name + '"')
 
 
 async def snifferFlowGraphStart(
@@ -1186,53 +1083,73 @@ async def sendPluginNamesTak(
 
 
 async def sendPluginActionNamesTak(
-    component: object, 
-    requester_uid: str, 
-    requester_type: str, 
-    plugin_name: str, 
-    node_uid: str, 
-    tak_context: str
+    component: object,
+    requester_uid: str,
+    requester_type: str,
+    plugin_name: str,
+    node_uid: str,
+    tak_context: str,
 ):
-    """Send Plugin Action Names for TAK
-
-    Parameters
-    ----------
-    component : object
-        Component
-    requester_uid : str
-        TAK UID
-    requester_type : str
-        dashboard, tak, or broadcast         
-    plugin_name : str
-        Plugin name
-    node_uid : str
-        Sensor node UID
-    tak_context : str
-        node or ecosystem
-    """
+    """Send context-appropriate Plugin Action Names for TAK/Tactical."""
     try:
-        action_names = plugin.get_plugin_actions(plugin_name, component.settings_dict, component.logger)
+        action_names = (
+            plugin.get_plugin_actions(
+                plugin_name,
+                component.settings_dict,
+                component.logger,
+                requester_type=(
+                    requester_type
+                ),
+                node_location=(
+                    getattr(
+                        component,
+                        "local_remote",
+                        "",
+                    )
+                ),
+            )
+        )
 
-        # send action names
         PARAMETERS = {
             "requester_uid": requester_uid,
             "requester_type": requester_type,
             "node_uid": node_uid,
             "plugin_name": plugin_name,
             "action_names": action_names,
-            "tak_context": tak_context
+            "tak_context": tak_context,
         }
+
         msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "sendPluginActionNamesTakResults",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "sendPluginActionNamesTakResults",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
         }
-        component.logger.debug(f"Sending action names for plugin {plugin_name} and TAK UID {requester_uid}: {action_names}")
-        await component.hiprfisr_socket.send_msg(fissure.comms.MessageTypes.COMMANDS, msg)
-    except Exception as e:
-        component.logger.error(f"Error sending action names for plugin {plugin_name} and TAK UID {requester_uid}: {e}")
-        tb = traceback.format_exc()
-        component.logger.debug(tb)
+
+        component.logger.debug(
+            "Sending action names for "
+            f"plugin={plugin_name}, "
+            f"requester_type={requester_type}, "
+            f"node_location={getattr(component, 'local_remote', '')}: "
+            f"{action_names}"
+        )
+
+        await component.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
+        )
+
+    except Exception as exc:
+        component.logger.error(
+            "Error sending action names for "
+            f"plugin={plugin_name}, requester_uid={requester_uid}: {exc}"
+        )
+
+        component.logger.debug(
+            traceback.format_exc()
+        )
 
 
 def _load_plugin_actions_module(plugin_name: str, logger=None):
@@ -1352,6 +1269,16 @@ async def queryPluginActions(
                 candidate_plugin,
                 component.settings_dict,
                 component.logger,
+                requester_type=(
+                    requester_type
+                ),
+                node_location=(
+                    getattr(
+                        component,
+                        "local_remote",
+                        "",
+                    )
+                ),
             )
 
             for action_name in available_actions:
@@ -1665,42 +1592,232 @@ async def updateNodeSettings(component: object, settings_dict: dict):
     component.logger.info("Sensor Node settings updated in memory.")
 
 
-async def transferArtifactRequest(component: object, artifact_id: str, destination: str, data: Optional[bytes]) -> None:
+async def streamArtifact(
+    component: object,
+    transfer_id: str,
+    artifact_id: str,
+) -> None:
     """
-    Transfer Artifact Request
+    Stream every declared file belonging to one logical artifact.
 
-    Parameters
-    ----------
-    component : object
-        Component
-    artifact_id : str
-        Artifact ID
-    destination : str
-        Transfer destination ('tak' or 'hiprfisr')
-    data : Optional[bytes]
-        Artifact data, currently unused
+    Transfer framing:
+        START          one per file
+        CHUNK          zero or more per file
+        FILE_COMPLETE  one per file
+        COMPLETE       once after the entire artifact succeeds
+
+    CHUNK sequence numbers restart at zero for each START frame.
     """
-    logger: logging.Logger = component.logger # type: ignore
-    artifact_manager: ArtifactManager = component.artifact_manager # type: ignore
+    logger: logging.Logger = component.logger
+    artifact_manager: ArtifactManager = (
+        component.artifact_manager
+    )
+    transfer_client = getattr(
+        component,
+        "artifact_transfer_client",
+        None,
+    )
 
-    data = artifact_manager.get_data(artifact_id, compress=True)
-    if data is None:
-        logger.error(f"Artifact data not found or could not be read: {artifact_id}")
+    if transfer_client is None:
+        logger.error(
+            "Artifact transfer client is unavailable"
+        )
         return
 
-    PARAMETERS = {
-        "artifact_id": artifact_id,
-        "destination": destination,
-        "data": data,
-    }
-    msg = {
-        fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-        fissure.comms.MessageFields.MESSAGE_NAME: "transferArtifactRequest",
-        fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
-    }
-    await component.hiprfisr_socket.send_msg(
-        fissure.comms.MessageTypes.COMMANDS, msg
+    artifact = artifact_manager.get_artifact(
+        artifact_id
     )
+
+    if artifact is None:
+        await transfer_client.send_error(
+            transfer_id,
+            f"Artifact not found: {artifact_id}",
+        )
+        return
+
+    if not artifact.files:
+        await transfer_client.send_error(
+            transfer_id,
+            "Artifact has no declared files",
+        )
+        return
+
+    artifact_file_count = int(artifact.file_count)
+    artifact_total_size = int(artifact.total_size)
+
+    total_bytes_sent = 0
+    total_chunks_sent = 0
+    completed_file_ids = []
+
+    try:
+        for file_index, artifact_file in enumerate(
+            artifact.files,
+            start=1,
+        ):
+            try:
+                file_path = (
+                    artifact_manager.resolve_artifact_file_path(
+                        artifact.id,
+                        artifact_file.id,
+                    )
+                )
+            except Exception as exc:
+                raise RuntimeError(
+                    "Unable to resolve declared artifact file "
+                    f"artifact_id={artifact.id} "
+                    f"file_id={artifact_file.id}: {exc}"
+                ) from exc
+
+            actual_size = os.path.getsize(file_path)
+
+            if actual_size != int(artifact_file.size):
+                raise RuntimeError(
+                    "Artifact file size no longer matches its manifest: "
+                    f"{artifact_file.relative_path}"
+                )
+
+            actual_checksum = (
+                fissure.utils.artifacts.calculate_file_checksum(
+                    file_path
+                )
+            )
+
+            if actual_checksum != artifact_file.sha256:
+                raise RuntimeError(
+                    "Artifact file checksum no longer matches its manifest: "
+                    f"{artifact_file.relative_path}"
+                )
+
+            start_metadata = {
+                "artifact_id": artifact.id,
+                "source_id": artifact.source_id,
+                "operation_id": artifact.operation_id,
+                "artifact_name": artifact.name,
+                "artifact_type": artifact.artifact_type,
+                "artifact_file_count": artifact_file_count,
+                "artifact_total_size": artifact_total_size,
+                "file_index": file_index,
+                "file_id": artifact_file.id,
+                "filename": artifact_file.name,
+                "relative_path": artifact_file.relative_path,
+                "file_size": actual_size,
+                "sha256": artifact_file.sha256,
+                "role": artifact_file.role,
+                "content_type": artifact_file.content_type,
+                "file_metadata": dict(
+                    artifact_file.metadata or {}
+                ),
+                "chunk_size": (
+                    fissure.comms.ARTIFACT_CHUNK_SIZE
+                ),
+            }
+
+            await transfer_client.send_start(
+                transfer_id,
+                start_metadata,
+            )
+
+            sequence = 0
+            file_bytes_sent = 0
+
+            with open(file_path, "rb") as handle:
+                while True:
+                    chunk = handle.read(
+                        fissure.comms.ARTIFACT_CHUNK_SIZE
+                    )
+
+                    if not chunk:
+                        break
+
+                    await transfer_client.send_chunk(
+                        transfer_id,
+                        sequence,
+                        chunk,
+                    )
+
+                    sequence += 1
+                    file_bytes_sent += len(chunk)
+                    total_bytes_sent += len(chunk)
+                    total_chunks_sent += 1
+
+                    await asyncio.sleep(0)
+
+            if file_bytes_sent != actual_size:
+                raise RuntimeError(
+                    "Artifact file changed while streaming: "
+                    f"{artifact_file.relative_path}"
+                )
+
+            await transfer_client.send_file_complete(
+                transfer_id,
+                {
+                    "artifact_id": artifact.id,
+                    "file_id": artifact_file.id,
+                    "file_index": file_index,
+                    "relative_path": (
+                        artifact_file.relative_path
+                    ),
+                    "bytes_sent": file_bytes_sent,
+                    "chunks_sent": sequence,
+                    "sha256": artifact_file.sha256,
+                },
+            )
+
+            completed_file_ids.append(
+                artifact_file.id
+            )
+
+            logger.info(
+                "Completed artifact file stream "
+                "transfer_id=%s artifact_id=%s "
+                "file_id=%s file=%s bytes=%s",
+                transfer_id,
+                artifact.id,
+                artifact_file.id,
+                artifact_file.relative_path,
+                file_bytes_sent,
+            )
+
+        await transfer_client.send_complete(
+            transfer_id,
+            {
+                "artifact_id": artifact.id,
+                "source_id": artifact.source_id,
+                "operation_id": artifact.operation_id,
+                "file_count": artifact_file_count,
+                "total_size": artifact_total_size,
+                "bytes_sent": total_bytes_sent,
+                "chunks_sent": total_chunks_sent,
+                "completed_file_ids": completed_file_ids,
+            },
+        )
+
+        logger.info(
+            "Completed artifact stream "
+            "transfer_id=%s artifact_id=%s "
+            "files=%s bytes=%s",
+            transfer_id,
+            artifact.id,
+            artifact_file_count,
+            total_bytes_sent,
+        )
+
+    except Exception as exc:
+        logger.error(
+            "Artifact stream failed "
+            "transfer_id=%s artifact_id=%s: %s",
+            transfer_id,
+            artifact_id,
+            exc,
+        )
+
+        try:
+            await transfer_client.send_error(
+                transfer_id,
+                str(exc),
+            )
+        except Exception:
+            pass
 
 
 async def refresh_status(
@@ -1746,32 +1863,77 @@ async def sendPluginActionParametersTak(
     plugin_name: str,
     action_name: str,
     node_uid: str,
-    tak_context: str
+    tak_context: str,
 ) -> None:
     """
-    Node handler for hub->node request: "sendPluginActionParameters"
-
-    Returns the action schema back to HIPRFISR.
+    Return an action schema only when the action is allowed for this client/node
+    context.
     """
-
     try:
         component.logger.info(
-            f"Fetching schema for {plugin_name}.{action_name} (node_uid={node_uid})"
+            f"Fetching schema for {plugin_name}.{action_name} "
+            f"(node_uid={node_uid})"
         )
 
-        # Validate plugin directory exists
-        plugin_path = os.path.join(fissure.utils.PLUGIN_DIR, plugin_name)
-        if not os.path.exists(plugin_path):
-            component.logger.error(f"Plugin path does not exist: {plugin_path}")
+        plugin_path = os.path.join(
+            fissure.utils.PLUGIN_DIR,
+            plugin_name,
+        )
+
+        if not os.path.exists(
+            plugin_path
+        ):
+            component.logger.error(
+                f"Plugin path does not exist: {plugin_path}"
+            )
             return
 
-        # Use existing utility function (importlib.util based)
-        schema = plugin.get_action_schema(plugin_name, action_name, component.logger)
+        if not plugin.action_is_allowed(
+            plugin_name,
+            action_name,
+            requester_type=(
+                requester_type
+            ),
+            node_location=(
+                getattr(
+                    component,
+                    "local_remote",
+                    "",
+                )
+            ),
+            logger=component.logger,
+        ):
+            component.logger.warning(
+                "Rejected action schema request for "
+                f"{plugin_name}.{action_name}: "
+                f"requester_type={requester_type}, "
+                f"node_location={getattr(component, 'local_remote', '')}"
+            )
+            return
 
-        # Normalize schema shape
-        if not isinstance(schema, dict):
-            schema = {"params": []}
-        if "params" not in schema or not isinstance(schema.get("params"), list):
+        schema = plugin.get_action_schema(
+            plugin_name,
+            action_name,
+            component.logger,
+        )
+
+        if not isinstance(
+            schema,
+            dict,
+        ):
+            schema = {
+                "params": []
+            }
+
+        if (
+            "params" not in schema
+            or not isinstance(
+                schema.get(
+                    "params"
+                ),
+                list,
+            )
+        ):
             schema["params"] = []
 
         PARAMETERS = {
@@ -1781,13 +1943,16 @@ async def sendPluginActionParametersTak(
             "action_name": action_name,
             "node_uid": node_uid,
             "schema": schema,
-            "tak_context": tak_context
+            "tak_context": tak_context,
         }
 
         msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "sendPluginActionParametersResultsTak",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "sendPluginActionParametersResultsTak",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
         }
 
         component.logger.debug(
@@ -1795,17 +1960,19 @@ async def sendPluginActionParametersTak(
             f"with {len(schema.get('params', []))} params"
         )
 
-        # Node -> Hub
         await component.hiprfisr_socket.send_msg(
             fissure.comms.MessageTypes.COMMANDS,
-            msg
+            msg,
         )
 
-    except Exception as e:
+    except Exception as exc:
         component.logger.error(
-            f"Error sending schema for {plugin_name}.{action_name}: {e}"
+            f"Error sending schema for {plugin_name}.{action_name}: {exc}"
         )
-        component.logger.debug(traceback.format_exc())
+
+        component.logger.debug(
+            traceback.format_exc()
+        )
 
 
 async def sendPluginTargetActionsTak(
@@ -1818,23 +1985,45 @@ async def sendPluginTargetActionsTak(
     classification_candidates: List[str],
 ) -> None:
     """
-    Node handler for hub->node request: get plugin action names filtered by target classification.
+    Return target-classification actions that are also valid for the requesting
+    client and current node location.
     """
     try:
         component.logger.info(
             f"Fetching target actions for plugin={plugin_name}, "
-            f"target_id={target_id}, classifications={classification_candidates}"
+            f"target_id={target_id}, "
+            f"classifications={classification_candidates}"
         )
 
-        plugin_path = os.path.join(fissure.utils.PLUGIN_DIR, plugin_name)
-        if not os.path.exists(plugin_path):
-            component.logger.error(f"Plugin path does not exist: {plugin_path}")
+        plugin_path = os.path.join(
+            fissure.utils.PLUGIN_DIR,
+            plugin_name,
+        )
+
+        if not os.path.exists(
+            plugin_path
+        ):
+            component.logger.error(
+                f"Plugin path does not exist: {plugin_path}"
+            )
             return
 
-        action_names = plugin.get_actions_for_classifications(
-            plugin_name,
-            classification_candidates,
-            component.logger
+        action_names = (
+            plugin.get_actions_for_classifications(
+                plugin_name,
+                classification_candidates,
+                component.logger,
+                requester_type=(
+                    requester_type
+                ),
+                node_location=(
+                    getattr(
+                        component,
+                        "local_remote",
+                        "",
+                    )
+                ),
+            )
         )
 
         PARAMETERS = {
@@ -1847,21 +2036,36 @@ async def sendPluginTargetActionsTak(
         }
 
         msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "sendPluginActionNamesTakResults",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "sendPluginActionNamesTakResults",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
         }
-        component.logger.debug(f"Sending action names for plugin {plugin_name} and TAK UID {requester_uid}: {action_names}")
-        await component.hiprfisr_socket.send_msg(
-            fissure.comms.MessageTypes.COMMANDS,
-            msg
+
+        component.logger.debug(
+            "Sending target action names for "
+            f"plugin={plugin_name}, "
+            f"requester_type={requester_type}, "
+            f"node_location={getattr(component, 'local_remote', '')}: "
+            f"{action_names}"
         )
 
-    except Exception as e:
-        component.logger.error(
-            f"Error sending target actions for plugin={plugin_name}, target_id={target_id}: {e}"
+        await component.hiprfisr_socket.send_msg(
+            fissure.comms.MessageTypes.COMMANDS,
+            msg,
         )
-        component.logger.debug(traceback.format_exc())
+
+    except Exception as exc:
+        component.logger.error(
+            "Error sending target actions for "
+            f"plugin={plugin_name}, target_id={target_id}: {exc}"
+        )
+
+        component.logger.debug(
+            traceback.format_exc()
+        )
 
 
 async def queryPluginActionSchema(
@@ -1874,10 +2078,8 @@ async def queryPluginActionSchema(
     context: str = "",
 ) -> None:
     """
-    Node handler for Dashboard-only plugin action schema queries.
-
-    This returns the action schema back to HIPRFISR as a normal command
-    message, not as TAK/CoT.
+    Return a Dashboard action schema only when the action is valid for the
+    requesting client and current node location.
     """
     try:
         component.logger.info(
@@ -1885,9 +2087,40 @@ async def queryPluginActionSchema(
             f"(node_uid={node_uid}, context={context})"
         )
 
-        plugin_path = os.path.join(fissure.utils.PLUGIN_DIR, plugin_name)
-        if not os.path.exists(plugin_path):
-            component.logger.error(f"Plugin path does not exist: {plugin_path}")
+        plugin_path = os.path.join(
+            fissure.utils.PLUGIN_DIR,
+            plugin_name,
+        )
+
+        if not os.path.exists(
+            plugin_path
+        ):
+            component.logger.error(
+                f"Plugin path does not exist: {plugin_path}"
+            )
+            return
+
+        if not plugin.action_is_allowed(
+            plugin_name,
+            action_name,
+            requester_type=(
+                requester_type
+            ),
+            node_location=(
+                getattr(
+                    component,
+                    "local_remote",
+                    "",
+                )
+            ),
+            logger=component.logger,
+        ):
+            component.logger.warning(
+                "Rejected Dashboard action schema request for "
+                f"{plugin_name}.{action_name}: "
+                f"requester_type={requester_type}, "
+                f"node_location={getattr(component, 'local_remote', '')}"
+            )
             return
 
         schema = plugin.get_action_schema(
@@ -1896,10 +2129,23 @@ async def queryPluginActionSchema(
             component.logger,
         )
 
-        if not isinstance(schema, dict):
-            schema = {"params": []}
+        if not isinstance(
+            schema,
+            dict,
+        ):
+            schema = {
+                "params": []
+            }
 
-        if "params" not in schema or not isinstance(schema.get("params"), list):
+        if (
+            "params" not in schema
+            or not isinstance(
+                schema.get(
+                    "params"
+                ),
+                list,
+            )
+        ):
             schema["params"] = []
 
         PARAMETERS = {
@@ -1913,24 +2159,27 @@ async def queryPluginActionSchema(
         }
 
         msg = {
-            fissure.comms.MessageFields.IDENTIFIER: component.identifier,
-            fissure.comms.MessageFields.MESSAGE_NAME: "queryPluginActionSchemaResults",
-            fissure.comms.MessageFields.PARAMETERS: PARAMETERS,
+            fissure.comms.MessageFields.IDENTIFIER:
+                component.identifier,
+            fissure.comms.MessageFields.MESSAGE_NAME:
+                "queryPluginActionSchemaResults",
+            fissure.comms.MessageFields.PARAMETERS:
+                PARAMETERS,
         }
-
-        component.logger.debug(
-            f"Sending dashboard schema for {plugin_name}.{action_name} "
-            f"with {len(schema.get('params', []))} params "
-            f"(context={context})"
-        )
 
         await component.hiprfisr_socket.send_msg(
             fissure.comms.MessageTypes.COMMANDS,
             msg,
         )
 
-    except Exception as e:
+    except Exception as exc:
         component.logger.error(
-            f"Error sending dashboard schema for {plugin_name}.{action_name}: {e}"
+            "Error sending Dashboard schema for "
+            f"{plugin_name}.{action_name}: {exc}"
         )
-        component.logger.debug(traceback.format_exc())
+
+        component.logger.debug(
+            traceback.format_exc()
+        )
+
+

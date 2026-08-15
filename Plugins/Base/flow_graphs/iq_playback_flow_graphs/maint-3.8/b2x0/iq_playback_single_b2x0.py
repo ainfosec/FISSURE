@@ -23,14 +23,13 @@ import time
 
 class iq_playback_single_b2x0(gr.top_block):
 
-    def __init__(self, filepath="", ip_address="192.168.40.2", sample_rate="4", serial="False", tx_antenna='"TX/RX', tx_channel="A:A", tx_frequency="2425.715", tx_gain="70"):
+    def __init__(self, filepath="", sample_rate="4", serial="False", tx_antenna='"TX/RX', tx_channel="A:A", tx_frequency="2425.715", tx_gain="70"):
         gr.top_block.__init__(self, "Iq Playback Single B2X0")
 
         ##################################################
         # Parameters
         ##################################################
         self.filepath = filepath
-        self.ip_address = ip_address
         self.sample_rate = sample_rate
         self.serial = serial
         self.tx_antenna = tx_antenna
@@ -72,12 +71,6 @@ class iq_playback_single_b2x0(gr.top_block):
     def set_filepath(self, filepath):
         self.filepath = filepath
         self.blocks_file_source_0.open(self.filepath, False)
-
-    def get_ip_address(self):
-        return self.ip_address
-
-    def set_ip_address(self, ip_address):
-        self.ip_address = ip_address
 
     def get_sample_rate(self):
         return self.sample_rate
@@ -128,9 +121,6 @@ def argument_parser():
         "--filepath", dest="filepath", type=str, default="",
         help="Set filepath [default=%(default)r]")
     parser.add_argument(
-        "--ip-address", dest="ip_address", type=str, default="192.168.40.2",
-        help="Set ip_address [default=%(default)r]")
-    parser.add_argument(
         "--sample-rate", dest="sample_rate", type=str, default="4",
         help="Set sample_rate [default=%(default)r]")
     parser.add_argument(
@@ -154,7 +144,7 @@ def argument_parser():
 def main(top_block_cls=iq_playback_single_b2x0, options=None):
     if options is None:
         options = argument_parser().parse_args()
-    tb = top_block_cls(filepath=options.filepath, ip_address=options.ip_address, sample_rate=options.sample_rate, serial=options.serial, tx_antenna=options.tx_antenna, tx_channel=options.tx_channel, tx_frequency=options.tx_frequency, tx_gain=options.tx_gain)
+    tb = top_block_cls(filepath=options.filepath, sample_rate=options.sample_rate, serial=options.serial, tx_antenna=options.tx_antenna, tx_channel=options.tx_channel, tx_frequency=options.tx_frequency, tx_gain=options.tx_gain)
 
     def sig_handler(sig=None, frame=None):
         tb.stop()

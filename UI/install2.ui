@@ -289,12 +289,12 @@
   </widget>
   <widget class="QPushButton" name="pushButton_dashboard">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="geometry">
     <rect>
-     <x>575</x>
-     <y>520</y>
+     <x>785</x>
+     <y>490</y>
      <width>100</width>
      <height>27</height>
     </rect>
@@ -305,7 +305,7 @@
   </widget>
   <widget class="QPushButton" name="pushButton_hiprfisr">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="geometry">
     <rect>
@@ -317,6 +317,35 @@
    </property>
    <property name="text">
     <string>HIPRFISR</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_base">
+   <property name="geometry">
+    <rect>
+     <x>575</x>
+     <y>520</y>
+     <width>100</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Base</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton_custom">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>785</x>
+     <y>520</y>
+     <width>100</width>
+     <height>27</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Custom</string>
    </property>
   </widget>
   <zorder>treeWidget_software</zorder>
@@ -338,6 +367,8 @@
   <zorder>pushButton_sensor_node</zorder>
   <zorder>pushButton_dashboard</zorder>
   <zorder>pushButton_hiprfisr</zorder>
+  <zorder>pushButton_base</zorder>
+  <zorder>pushButton_custom</zorder>
  </widget>
  <resources/>
  <connections/>
