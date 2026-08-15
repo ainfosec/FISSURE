@@ -174,6 +174,59 @@ systemctl cat "$service.service" >/dev/null || {
 systemctl restart "$service.service"
 """
 
+    CLEAR_DATA_SCRIPT = """\
+set -eu
+root=$1; service=$2; data_kind=$3
+runtime="$root/state/runtime"; sensor_data="$runtime/sensor-node"
+test -d "$root/current" || { echo "No active sensor-node installation" >&2; exit 30; }
+systemctl cat "$service.service" >/dev/null || {
+  echo "Sensor-node service is not installed" >&2
+  exit 32
+}
+case "$data_kind" in
+  logs)
+    targets=("$root/state/logs" "$runtime/plugin-logs")
+    ;;
+  artifacts)
+    targets=(
+      "$runtime/artifacts"
+      "$runtime/artifacts-node"
+      "$runtime/artifacts-system"
+    )
+    ;;
+  recordings)
+    targets=(
+      "$runtime/archive"
+      "$runtime/iq-recordings"
+      "$sensor_data/archive-replay"
+      "$sensor_data/recordings"
+    )
+    ;;
+  *)
+    echo "Unsupported data category: $data_kind" >&2
+    exit 34
+    ;;
+esac
+for directory in "${targets[@]}"; do
+  test -d "$directory" || { echo "Data directory is missing: $directory" >&2; exit 35; }
+done
+service_stopped=false
+restart_if_stopped() {
+  if [ "$service_stopped" = true ]; then systemctl start "$service.service"; fi
+}
+# Bring the service back if cleanup fails after it has stopped.
+trap restart_if_stopped EXIT
+systemctl stop "$service.service"
+service_stopped=true
+for directory in "${targets[@]}"; do
+  # Do not cross a filesystem mounted below a data directory.
+  find "$directory" -mindepth 1 -xdev -delete
+done
+systemctl start "$service.service"
+service_stopped=false
+trap - EXIT
+"""
+
     UPDATE_IMAGE_SCRIPT = """\
 set -eu
 stage=$1; root=$2; service=$3

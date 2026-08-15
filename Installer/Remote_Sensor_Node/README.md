@@ -132,6 +132,24 @@ SIF. It does not build an image, create another release, or change the external
 configuration, certificates, plugins, artifacts, recordings, logs, or node
 identity.
 
+Clear one category of mutable host data and restart the service:
+
+```bash
+Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
+    192.0.2.20 --clear-data=logs
+```
+
+The operation stops the service, removes the contents of the selected category,
+and starts the service again. It preserves the directories, their ownership,
+and all other mutable data.
+
+- `logs`: core logs and plugin logs
+- `artifacts`: general, node, and system artifact directories
+- `recordings`: archive, IQ recording, archive-replay, and Sensor Node recording
+  directories
+
+`logs` does not clear the host's systemd journal.
+
 Remove the remote service and deployment state:
 
 ```bash
@@ -170,6 +188,7 @@ The default remote installation root is `/opt/fissure-sensor-node`.
 | `remote_sensor_node_deploy_utilities.py` | Remote lifecycle shell scripts |
 | `remote_sensor_node_image_check.py` | Image and runtime prerequisite checks |
 | `remote_sensor_node_local_apptainer.py` | Local Apptainer installation |
+| `remote_sensor_node_options.py` | CLI option models and validation |
 | `remote_sensor_node_privilege.py` | Remote sudo and package preparation |
 | `remote_sensor_node_health.py` | Startup and optional heartbeat diagnostics |
 | `remote_sensor_node_scp.py` | Interactive and log-friendly SCP progress |

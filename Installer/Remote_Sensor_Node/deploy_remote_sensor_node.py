@@ -24,14 +24,14 @@ Options:
   --update-config=<path>     Replace the installed config and restart the service.
   --update-image=<path>      Replace the installed SIF and restart the service.
   --restart                  Restart the installed service without other changes.
+  --clear-data=<kind>        Clear logs, artifacts, or recordings and restart.
   --uninstall                Remove the remote service and deployment files.
 """
 import asyncio
-from dataclasses import dataclass, replace
+from dataclasses import replace
 import getpass
 import importlib
 from pathlib import Path
-import re
 import shlex
 import shutil
 import sys
@@ -53,16 +53,21 @@ from remote_sensor_node_scp import scp_with_progress
 from remote_sensor_node_config import ConfigPreparationError, prepare_remote_config
 from remote_sensor_node_operations import (
     RemoteOperationError,
+    clear_remote_data,
     create_remote_stage,
     restart_remote_sensor_node,
     run_remote,
     update_remote_config,
     update_remote_image,
 )
+from remote_sensor_node_options import (
+    DeployOptions,
+    DeploymentError,
+    HostSpec,
+    validate_options,
+)
 from remote_sensor_node_templates import (
     APPTAINER_TEMPLATE,
-    SENSOR_NODE_TEMPLATE,
-    SERVICE_UNIT_TEMPLATE,
     TemplateRenderError,
     render_apptainer_definition,
     render_service_unit,
@@ -77,49 +82,6 @@ from remote_sensor_node_privilege import (
 
 INSTALLER_DIR = Path(__file__).resolve().parent
 REPO_ROOT = INSTALLER_DIR.parent.parent
-REMOTE_DIR_PATTERN = re.compile(r"^/[A-Za-z0-9._/-]+$")
-SERVICE_PATTERN = re.compile(r"^[A-Za-z0-9_.@-]+$")
-
-
-class DeploymentError(RuntimeError):
-    pass
-
-
-@dataclass(frozen=True)
-class HostSpec:
-    hostname: str
-    username: str | None = None
-
-    @classmethod
-    def parse(cls, value: str) -> "HostSpec":
-        username, separator, hostname = value.rpartition("@")
-        if not separator:
-            hostname, username = value, "root"
-        hostname = hostname.strip("[]")
-        if not hostname or hostname.startswith("-") or "\n" in hostname:
-            raise DeploymentError(f"Invalid SSH target: {value!r}")
-        return cls(hostname, username or None)
-
-
-@dataclass(frozen=True)
-class DeployOptions:
-    target: HostSpec
-    identity_file: Path | None
-    config_file: Path
-    certificates_dir: Path
-    image_file: Path | None
-    output_image: Path
-    source_dir: Path
-    remote_dir: str
-    service_name: str
-    health_timeout: int
-    health_only: bool
-    build_with_sudo: bool
-    install_apptainer: bool
-    update_config_file: Path | None
-    uninstall: bool
-    restart: bool = False
-    update_image_file: Path | None = None
 
 
 def main(argv: Sequence[str] | None = None) -> int:
@@ -147,63 +109,135 @@ def main(argv: Sequence[str] | None = None) -> int:
 
 async def deploy(options: DeployOptions, asyncssh: Any) -> None:
     destination = f"{options.target.username}@{options.target.hostname}"
+    if await run_selected_maintenance_action(options, asyncssh, destination):
+        return
+    await deploy_new_release(options, asyncssh, destination)
+
+
+async def run_selected_maintenance_action(
+    options: DeployOptions,
+    asyncssh: Any,
+    destination: str,
+) -> bool:
+    if options.clear_data:
+        await run_clear_data_action(options, asyncssh, destination)
+        return True
     if options.update_image_file:
+        await run_image_update_action(options, asyncssh, destination)
+        return True
+    if options.restart:
+        await run_restart_action(options, asyncssh, destination)
+        return True
+    if options.update_config_file:
+        await run_config_update_action(options, asyncssh, destination)
+        return True
+    if options.uninstall:
+        await run_uninstall_action(options, asyncssh, destination)
+        return True
+    if options.health_only:
+        await run_health_check_action(options, asyncssh, destination)
+        return True
+    return False
+
+
+async def run_clear_data_action(
+    options: DeployOptions,
+    asyncssh: Any,
+    destination: str,
+) -> None:
+    password = prompt_for_ssh_password(options)
+    async with await connect(asyncssh, options, password) as connection:
+        environment = await preflight(connection, False, destination)
+        await clear_remote_data(connection, options, environment)
+
+
+async def run_image_update_action(
+    options: DeployOptions,
+    asyncssh: Any,
+    destination: str,
+) -> None:
+    password = prompt_for_ssh_password(options)
+    async with await connect(asyncssh, options, password) as connection:
+        environment = await preflight(connection, False, destination)
+        await update_remote_image(
+            asyncssh,
+            connection,
+            options,
+            options.update_image_file,
+            environment,
+        )
+
+
+async def run_restart_action(
+    options: DeployOptions,
+    asyncssh: Any,
+    destination: str,
+) -> None:
+    password = prompt_for_ssh_password(options)
+    async with await connect(asyncssh, options, password) as connection:
+        environment = await preflight(connection, False, destination)
+        await restart_remote_sensor_node(connection, options, environment)
+
+
+async def run_config_update_action(
+    options: DeployOptions,
+    asyncssh: Any,
+    destination: str,
+) -> None:
+    with tempfile.TemporaryDirectory(prefix="fissure-node-config.") as name:
         password = prompt_for_ssh_password(options)
         async with await connect(asyncssh, options, password) as connection:
             environment = await preflight(connection, False, destination)
-            await update_remote_image(
+            config_file = prepare_remote_config(
+                options.update_config_file,
+                Path(name) / "default.yaml",
+                connection,
+            )
+            await update_remote_config(
                 asyncssh,
                 connection,
                 options,
-                options.update_image_file,
+                config_file,
                 environment,
             )
-        return
-    if options.restart:
-        password = prompt_for_ssh_password(options)
-        async with await connect(asyncssh, options, password) as connection:
-            environment = await preflight(connection, False, destination)
-            await restart_remote_sensor_node(connection, options, environment)
-        return
-    if options.update_config_file:
-        with tempfile.TemporaryDirectory(prefix="fissure-node-config.") as name:
-            password = prompt_for_ssh_password(options)
-            async with await connect(asyncssh, options, password) as connection:
-                environment = await preflight(connection, False, destination)
-                config_file = prepare_remote_config(
-                    options.update_config_file,
-                    Path(name) / "default.yaml",
-                    connection,
-                )
-                await update_remote_config(
-                    asyncssh,
-                    connection,
-                    options,
-                    config_file,
-                    environment,
-                )
-        return
-    if options.uninstall:
-        password = prompt_for_ssh_password(options)
-        async with await connect(asyncssh, options, password) as connection:
-            await uninstall_remote(
-                connection,
-                destination,
-                options.remote_dir,
-                options.service_name,
-            )
-        return
-    if options.health_only:
-        password = prompt_for_ssh_password(options)
-        async with await connect(asyncssh, options, password) as connection:
-            environment = await preflight(connection, False, destination)
-            await wait_for_sensor_node_health(
-                connection,
-                options,
-                environment.privilege,
-                require_heartbeat=True,
-            )
-        return
+
+
+async def run_uninstall_action(
+    options: DeployOptions,
+    asyncssh: Any,
+    destination: str,
+) -> None:
+    password = prompt_for_ssh_password(options)
+    async with await connect(asyncssh, options, password) as connection:
+        await uninstall_remote(
+            connection,
+            destination,
+            options.remote_dir,
+            options.service_name,
+        )
+
+
+async def run_health_check_action(
+    options: DeployOptions,
+    asyncssh: Any,
+    destination: str,
+) -> None:
+    password = prompt_for_ssh_password(options)
+    async with await connect(asyncssh, options, password) as connection:
+        environment = await preflight(connection, False, destination)
+        await wait_for_sensor_node_health(
+            connection,
+            options,
+            environment.privilege,
+            require_heartbeat=True,
+        )
+
+
+async def deploy_new_release(
+    options: DeployOptions,
+    asyncssh: Any,
+    destination: str,
+) -> None:
 
     with tempfile.TemporaryDirectory(prefix="fissure-node-deploy.") as name:
         temp_dir = Path(name)
@@ -268,56 +302,10 @@ def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
             uninstall=bool(args["--uninstall"]),
             restart=bool(args["--restart"]),
             update_image_file=path("--update-image"),
+            clear_data=args["--clear-data"],
         )
     except (TypeError, ValueError) as exc:
         raise DeploymentError(f"Invalid numeric option: {exc}") from exc
-
-
-def validate_options(options: DeployOptions) -> None:
-    if not REMOTE_DIR_PATTERN.fullmatch(options.remote_dir):
-        raise DeploymentError("--remote-dir must be absolute and contain no spaces")
-    if options.remote_dir in {"/", "/opt"} or ".." in Path(options.remote_dir).parts:
-        raise DeploymentError("--remote-dir is too broad or contains '..'")
-    if not SERVICE_PATTERN.fullmatch(options.service_name):
-        raise DeploymentError("Invalid --service-name")
-    if options.health_timeout <= 0:
-        raise DeploymentError("Timeout must be positive")
-    actions = [
-        options.health_only,
-        options.uninstall,
-        bool(options.update_config_file),
-        bool(options.update_image_file),
-        options.restart,
-    ]
-    if sum(actions) > 1:
-        raise DeploymentError(
-            "--health-only, --update-config, --update-image, --restart, and "
-            "--uninstall cannot be combined"
-        )
-    if options.identity_file and not options.identity_file.is_file():
-        raise DeploymentError(
-            f"SSH identity is not a file: {options.identity_file}"
-        )
-    local_inputs = []
-    if options.update_config_file:
-        local_inputs += [options.update_config_file, SENSOR_NODE_TEMPLATE]
-    elif options.update_image_file:
-        local_inputs.append(options.update_image_file)
-    elif not options.health_only and not options.uninstall and not options.restart:
-        local_inputs += [
-            options.config_file,
-            options.certificates_dir / "clients/client_0.key_secret",
-            options.certificates_dir / "server/server.key",
-            SENSOR_NODE_TEMPLATE,
-            SERVICE_UNIT_TEMPLATE,
-        ]
-        if options.image_file:
-            local_inputs.append(options.image_file)
-        else:
-            local_inputs += [APPTAINER_TEMPLATE, options.source_dir / "fissure/Sensor_Node"]
-    missing = [str(path) for path in local_inputs if path and not path.exists()]
-    if missing:
-        raise DeploymentError("Missing required input(s): " + ", ".join(missing))
 
 
 def prompt_for_ssh_password(options: DeployOptions) -> str | None:

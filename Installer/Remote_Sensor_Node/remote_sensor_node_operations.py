@@ -14,6 +14,22 @@ class RemoteOperationError(RuntimeError):
     """Raised when a lightweight remote operation cannot be completed."""
 
 
+async def clear_remote_data(
+    connection: Any,
+    options: Any,
+    environment: RemoteEnvironment,
+) -> None:
+    """Clear the selected data and verify that the service restarts."""
+    await run_root_script(
+        connection,
+        DeploymentUtilities.CLEAR_DATA_SCRIPT,
+        [options.remote_dir, options.service_name, options.clear_data],
+        environment.privilege,
+    )
+    await _check_startup(connection, options, environment)
+    print(f"[✓] Cleared remote {options.clear_data} and restarted the service")
+
+
 async def restart_remote_sensor_node(
     connection: Any,
     options: Any,
