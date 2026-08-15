@@ -56,6 +56,7 @@ class DeployOptions:
     uninstall: bool
     build_image: bool = False
     deploy_image: bool = False
+    hiprfisr_address: str | None = None
     restart: bool = False
     update_image_file: Path | None = None
     clear_data: str | None = None
@@ -249,6 +250,7 @@ def options_from_arguments(
             uninstall=bool(args["--uninstall"]),
             build_image=bool(args["--build"]),
             deploy_image=bool(args["--deploy"]),
+            hiprfisr_address=args["--hiprfisr-address"],
             restart=bool(args["--restart"]),
             update_image_file=path("--update-image"),
             clear_data=args["--clear-data"],

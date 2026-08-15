@@ -20,6 +20,7 @@ def prepare_remote_config(
     source: Path,
     destination: Path,
     connection: Any,
+    hiprfisr_address: str | None = None,
 ) -> Path:
     config = _load_config(source)
     node = config.get("Sensor Node")
@@ -29,7 +30,11 @@ def prepare_remote_config(
     network_type = str(node.get("network_type", "")).strip()
     configured_address = str(node.get("hiprfisr_ip_address", "")).strip()
     address_source = "input configuration"
-    if network_type == "IP" and not _is_remote_address(configured_address):
+    if hiprfisr_address:
+        configured_address = hiprfisr_address
+        node["hiprfisr_ip_address"] = configured_address
+        address_source = "--hiprfisr-address"
+    elif network_type == "IP" and not _is_remote_address(configured_address):
         configured_address = _connection_ipv4_address(connection)
         node["hiprfisr_ip_address"] = configured_address
         address_source = "SSH connection local endpoint"

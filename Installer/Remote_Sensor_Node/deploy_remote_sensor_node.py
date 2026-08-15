@@ -16,6 +16,7 @@ Options:
   --deploy                   Deploy an existing SIF without building one.
   -i <path> --identity=<path>  SSH private key; omit to enter a password.
   --config=<path>            Values for rendered YAML (default: installed YAML).
+  --hiprfisr-address=<host>  HIPRFISR endpoint; overrides config and SSH default.
   --certificates=<path>      Certificate root (default: installed certificates).
   --image=<path>             Existing SIF to deploy instead of building.
   --output-image=<path>      Build output and default SIF used by --deploy.
@@ -281,6 +282,7 @@ async def run_config_update_action(
                 options.update_config_file,
                 Path(name) / "default.yaml",
                 connection,
+                options.hiprfisr_address,
             )
             await update_remote_config(
                 asyncssh,
@@ -342,6 +344,7 @@ async def deploy_new_release(
                 options.config_file,
                 temp_dir / "default.yaml",
                 connection,
+                options.hiprfisr_address,
             )
             options = replace(options, config_file=config_file)
             unit = render_service_unit(

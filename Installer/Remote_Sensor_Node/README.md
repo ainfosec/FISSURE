@@ -71,10 +71,12 @@ installation for the selected action.
 
 Rendered configuration and node certificates are transferred separately and
 bind-mounted read-only. They are never baked into the SIF. Rendering preserves
-the installed Sensor Node values and replaces only a loopback HIPRFISR address
-with the local endpoint of the established SSH connection. It performs no host
-discovery and does not change the installed source YAML. Certificates remain
-ordinary external files because secrets must never be placed in templates.
+the installed Sensor Node values. Use `--hiprfisr-address` when the FISSURE
+communications route differs from the SSH route. Otherwise, a loopback
+HIPRFISR address is replaced with the local endpoint of the established SSH
+connection. Rendering performs no host discovery and does not change the
+installed source YAML. Certificates remain ordinary external files because
+secrets must never be placed in templates.
 
 ## Mutable runtime state
 
