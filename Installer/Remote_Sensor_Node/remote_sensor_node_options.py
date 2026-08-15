@@ -56,6 +56,7 @@ class DeployOptions:
     restart: bool = False
     update_image_file: Path | None = None
     clear_data: str | None = None
+    sync_plugins_dir: Path | None = None
 
 
 def validate_options(options: DeployOptions) -> None:
@@ -63,6 +64,7 @@ def validate_options(options: DeployOptions) -> None:
     _validate_remote_destination(options)
     _validate_action_selection(options)
     _validate_identity_file(options.identity_file)
+    _validate_plugin_directory(options.sync_plugins_dir)
     _validate_local_inputs(_required_local_inputs(options))
 
 
@@ -88,11 +90,12 @@ def _validate_action_selection(options: DeployOptions) -> None:
         bool(options.update_image_file),
         options.restart,
         bool(options.clear_data),
+        bool(options.sync_plugins_dir),
     )
     if sum(actions) > 1:
         raise DeploymentError(
             "--health-only, --update-config, --update-image, --restart, "
-            "--clear-data, and --uninstall cannot be combined"
+            "--clear-data, --sync-plugins, and --uninstall cannot be combined"
         )
 
 
@@ -101,11 +104,20 @@ def _validate_identity_file(identity_file: Path | None) -> None:
         raise DeploymentError(f"SSH identity is not a file: {identity_file}")
 
 
+def _validate_plugin_directory(plugin_directory: Path | None) -> None:
+    if plugin_directory and not plugin_directory.is_dir():
+        raise DeploymentError(
+            f"Plugin sync source is not a directory: {plugin_directory}"
+        )
+
+
 def _required_local_inputs(options: DeployOptions) -> list[Path]:
     if options.update_config_file:
         return [options.update_config_file, SENSOR_NODE_TEMPLATE]
     if options.update_image_file:
         return [options.update_image_file]
+    if options.sync_plugins_dir:
+        return [options.sync_plugins_dir]
     if _needs_no_local_files(options):
         return []
 

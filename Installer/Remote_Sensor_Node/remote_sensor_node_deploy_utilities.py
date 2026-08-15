@@ -227,6 +227,46 @@ service_stopped=false
 trap - EXIT
 """
 
+    SYNC_PLUGINS_SCRIPT = """\
+set -eu
+stage=$1; root=$2; service=$3; user=$4; group=$5
+archive="$stage/plugins.tar"; source="$stage/plugins"
+target="$root/state/runtime/plugins"
+service_stopped=false
+finish() {
+  status=$?
+  trap - EXIT
+  if [ "$service_stopped" = true ]; then
+    systemctl start "$service.service" || status=$?
+  fi
+  rm -rf -- "$stage" || true
+  exit "$status"
+}
+# Restart the service if applying the archive fails after it has stopped.
+trap finish EXIT
+test -d "$root/current" || { echo "No active sensor-node installation" >&2; exit 30; }
+test -f "$archive" || { echo "Plugin archive is missing" >&2; exit 36; }
+test -d "$target" && test ! -L "$target" || {
+  echo "Plugin directory is missing or unsafe: $target" >&2
+  exit 37
+}
+systemctl cat "$service.service" >/dev/null || {
+  echo "Sensor-node service is not installed" >&2
+  exit 32
+}
+mkdir -m 0700 "$source"
+tar -xf "$archive" -C "$source"
+systemctl stop "$service.service"
+service_stopped=true
+# Merge local files into the host directory; remote-only plugins remain in place.
+cp -a --remove-destination "$source"/. "$target"/
+find "$target" -type d -name __pycache__ -prune -exec rm -rf -- {} +
+find "$target" -type f \\( -name '*.pyc' -o -name '*.pyo' \\) -delete
+chown -R "$user:$group" "$target"
+systemctl start "$service.service"
+service_stopped=false
+"""
+
     UPDATE_IMAGE_SCRIPT = """\
 set -eu
 stage=$1; root=$2; service=$3

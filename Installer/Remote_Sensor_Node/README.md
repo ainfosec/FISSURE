@@ -150,6 +150,17 @@ and all other mutable data.
 
 `logs` does not clear the host's systemd journal.
 
+Synchronize local plugins without removing plugins that exist only on the node:
+
+```bash
+Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
+    192.0.2.20 --sync-plugins=/path/to/Plugins
+```
+
+The sync adds new files and overwrites matching files in the host plugin
+directory. It ignores local Python caches and repository metadata, clears stale
+remote Python caches, restarts the service, and performs a startup check.
+
 Remove the remote service and deployment state:
 
 ```bash
@@ -187,8 +198,10 @@ The default remote installation root is `/opt/fissure-sensor-node`.
 | `remote_sensor_node_config.py` | Remote configuration staging |
 | `remote_sensor_node_deploy_utilities.py` | Remote lifecycle shell scripts |
 | `remote_sensor_node_image_check.py` | Image and runtime prerequisite checks |
+| `remote_sensor_node_image.py` | Local image selection and build context |
 | `remote_sensor_node_local_apptainer.py` | Local Apptainer installation |
 | `remote_sensor_node_options.py` | CLI option models and validation |
+| `remote_sensor_node_plugin_sync.py` | Plugin archive and synchronization |
 | `remote_sensor_node_privilege.py` | Remote sudo and package preparation |
 | `remote_sensor_node_health.py` | Startup and optional heartbeat diagnostics |
 | `remote_sensor_node_scp.py` | Interactive and log-friendly SCP progress |

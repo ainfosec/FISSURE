@@ -25,6 +25,7 @@ Options:
   --update-image=<path>      Replace the installed SIF and restart the service.
   --restart                  Restart the installed service without other changes.
   --clear-data=<kind>        Clear logs, artifacts, or recordings and restart.
+  --sync-plugins=<path>      Add or update plugins without deleting remote-only files.
   --uninstall                Remove the remote service and deployment files.
 """
 import asyncio
@@ -33,7 +34,6 @@ import getpass
 import importlib
 from pathlib import Path
 import shlex
-import shutil
 import sys
 import tempfile
 import time
@@ -41,10 +41,7 @@ from typing import Any, Mapping, Sequence
 import warnings
 
 from remote_sensor_node_deploy_utilities import DeploymentUtilities
-from remote_sensor_node_local_apptainer import (
-    LocalApptainerError,
-    ensure_local_apptainer,
-)
+from remote_sensor_node_local_apptainer import LocalApptainerError
 from remote_sensor_node_health import (
     HealthCheckError,
     wait_for_sensor_node_health,
@@ -66,10 +63,17 @@ from remote_sensor_node_options import (
     HostSpec,
     validate_options,
 )
+from remote_sensor_node_image import (
+    copy_build_context as copy_build_context,
+    get_image,
+)
+from remote_sensor_node_plugin_sync import (
+    PluginSyncError,
+    create_plugin_archive,
+    sync_remote_plugins,
+)
 from remote_sensor_node_templates import (
-    APPTAINER_TEMPLATE,
     TemplateRenderError,
-    render_apptainer_definition,
     render_service_unit,
 )
 from remote_sensor_node_uninstall import uninstall_remote
@@ -99,6 +103,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         TemplateRenderError,
         HealthCheckError,
         RemoteOperationError,
+        PluginSyncError,
     ) as exc:
         print(f"[!] {exc}", file=sys.stderr)
         return 1
@@ -121,6 +126,9 @@ async def run_selected_maintenance_action(
 ) -> bool:
     if options.clear_data:
         await run_clear_data_action(options, asyncssh, destination)
+        return True
+    if options.sync_plugins_dir:
+        await run_plugin_sync_action(options, asyncssh, destination)
         return True
     if options.update_image_file:
         await run_image_update_action(options, asyncssh, destination)
@@ -149,6 +157,29 @@ async def run_clear_data_action(
     async with await connect(asyncssh, options, password) as connection:
         environment = await preflight(connection, False, destination)
         await clear_remote_data(connection, options, environment)
+
+
+async def run_plugin_sync_action(
+    options: DeployOptions,
+    asyncssh: Any,
+    destination: str,
+) -> None:
+    with tempfile.TemporaryDirectory(prefix="fissure-node-plugins.") as name:
+        archive = await asyncio.to_thread(
+            create_plugin_archive,
+            options.sync_plugins_dir,
+            Path(name) / "plugins.tar",
+        )
+        password = prompt_for_ssh_password(options)
+        async with await connect(asyncssh, options, password) as connection:
+            environment = await preflight(connection, False, destination)
+            await sync_remote_plugins(
+                asyncssh,
+                connection,
+                options,
+                archive,
+                environment,
+            )
 
 
 async def run_image_update_action(
@@ -285,7 +316,7 @@ def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
             target=HostSpec.parse(args["<destination>"] or args["--target"]),
             identity_file=path("--identity"),
             config_file=path("--config", source_dir / "YAML/Sensor_Node_Config/default.yaml"),
-            certificates_dir=path( "--certificates", source_dir / "certificates"),
+            certificates_dir=path("--certificates", source_dir / "certificates"),
             image_file=path("--image"),
             output_image=path(
                 "--output-image",
@@ -303,6 +334,7 @@ def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
             restart=bool(args["--restart"]),
             update_image_file=path("--update-image"),
             clear_data=args["--clear-data"],
+            sync_plugins_dir=path("--sync-plugins"),
         )
     except (TypeError, ValueError) as exc:
         raise DeploymentError(f"Invalid numeric option: {exc}") from exc
@@ -346,7 +378,11 @@ async def connect(
         raise DeploymentError(f"SSH connection failed: {exc}") from exc
 
 
-async def preflight(connection: Any,install_apptainer: bool, destination: str) -> RemoteEnvironment:
+async def preflight(
+    connection: Any,
+    install_apptainer: bool,
+    destination: str,
+) -> RemoteEnvironment:
     try:
         return await prepare_remote_environment(
             connection,
@@ -355,49 +391,6 @@ async def preflight(connection: Any,install_apptainer: bool, destination: str) -
         )
     except PrivilegeError as exc:
         raise DeploymentError(str(exc)) from exc
-
-
-async def get_image(options: DeployOptions, temp_dir: Path) -> Path:
-    if options.image_file:
-        return options.image_file.resolve()
-    if options.output_image.is_file():
-        print(f"[✓] Using existing image {options.output_image}")
-        return options.output_image.resolve()
-    apptainer = await ensure_local_apptainer(options.install_apptainer)
-    source = temp_dir / "source"
-    await asyncio.to_thread(copy_build_context, options.source_dir, source)
-    definition = render_apptainer_definition(
-        source,
-        temp_dir / APPTAINER_TEMPLATE.stem,
-    )
-    options.output_image.parent.mkdir(parents=True, exist_ok=True)
-    command = [apptainer, "build", "--force"]
-    command += ["--fakeroot"] if not options.build_with_sudo else []
-    command += [str(options.output_image), str(definition)]
-    if options.build_with_sudo:
-        command.insert(0, "sudo")
-    print(f"[*] Building {options.output_image}")
-    process = await asyncio.create_subprocess_exec(*command)
-    if await process.wait():
-        raise DeploymentError(f"Build failed: {shlex.join(command)}")
-    return options.output_image.resolve()
-
-
-def copy_build_context(source: Path, destination: Path) -> None:
-    root_exclusions = {
-        ".agents", ".codex", ".env", ".git", ".idea", ".venv",
-        "artifacts", "artifacts_node", "artifacts_system", "build",
-        "certificates", "Logs", "logs",
-    }
-
-    def ignore(directory: str, names: list[str]) -> set[str]:
-        ignored = {name for name in names if name in {".git", "__pycache__", ".pytest_cache"}}
-        if Path(directory).resolve() == source.resolve():
-            ignored.update(root_exclusions.intersection(names))
-        ignored.update(name for name in names if name.endswith(".key_secret"))
-        return ignored
-
-    shutil.copytree(source.resolve(), destination, symlinks=True, ignore=ignore)
 
 
 async def deploy_release(
@@ -412,7 +405,10 @@ async def deploy_release(
     stage = await create_remote_stage(connection)
     await upload_payload(asyncssh, connection, stage, options, image, unit)
     args = [
-        stage, options.remote_dir, release_id, options.service_name,
+        stage,
+        options.remote_dir,
+        release_id,
+        options.service_name,
         environment.user,
         environment.group,
         environment.apptainer,
@@ -432,7 +428,13 @@ async def deploy_release(
     print(f"[✓] Release {release_id} started successfully")
 
 
-async def upload_payload(asyncssh: Any, connection: Any, stage: str, options: DeployOptions, image: Path, unit: Path,
+async def upload_payload(
+    asyncssh: Any,
+    connection: Any,
+    stage: str,
+    options: DeployOptions,
+    image: Path,
+    unit: Path,
 ) -> None:
     files = {
         image: "fissure-sensor-node.sif",
