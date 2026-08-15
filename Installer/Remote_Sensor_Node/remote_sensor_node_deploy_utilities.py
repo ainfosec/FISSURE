@@ -1,5 +1,12 @@
 """Remote shell scripts used by the sensor-node deployer."""
 
+from pathlib import Path
+
+
+APPTAINER_INSTALLER = (
+    Path(__file__).resolve().parent.parent / "install_apptainer_package.sh"
+)
+
 
 class DeploymentUtilities:
     """Shell scripts executed on the remote sensor node."""
@@ -39,32 +46,7 @@ fi
 printf '%s\\n' "$privilege"
 """
 
-    INSTALL_APPTAINER_SCRIPT = """\
-set -eu
-. /etc/os-release
-case " ${ID:-} ${ID_LIKE:-} " in
-  *" ubuntu "*) ;;
-  *)
-    echo "Automatic Apptainer installation supports Ubuntu-derived systems only" >&2
-    exit 20
-    ;;
-esac
-architecture=$(dpkg --print-architecture)
-case "$architecture" in
-  amd64|arm64) ;;
-  *)
-    echo "Automatic Apptainer installation does not support $architecture" >&2
-    exit 21
-    ;;
-esac
-# The signed Apptainer PPA tracks supported Ubuntu releases and architectures.
-apt-get update
-env DEBIAN_FRONTEND=noninteractive apt-get install -y software-properties-common
-add-apt-repository -y ppa:apptainer/ppa
-apt-get update
-env DEBIAN_FRONTEND=noninteractive apt-get install -y apptainer
-apptainer version >/dev/null
-"""
+    INSTALL_APPTAINER_SCRIPT = APPTAINER_INSTALLER.read_text(encoding="utf-8")
 
     INSTALL_SCRIPT = """\
 set -eu

@@ -68,6 +68,8 @@ By default, inputs come from the current FISSURE installation:
 another existing SIF. Deployment never starts a local image build. Use
 `--no-install-apptainer` to prohibit automatic local or remote Apptainer
 installation for the selected action.
+Automatic installation uses the same `Installer/install_apptainer_package.sh`
+path as the standard FISSURE Apptainer installer.
 
 Rendered configuration and node certificates are transferred separately and
 bind-mounted read-only. They are never baked into the SIF. Rendering preserves

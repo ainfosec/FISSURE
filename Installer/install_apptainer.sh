@@ -113,16 +113,10 @@ echo "[*] Apptainer FISSURE directory: $APPTAINER_FISSURE_DIR"
 #############################################
 # Install Apptainer Software
 #############################################
-if ! command -v apptainer >/dev/null 2>&1; then
-    echo "[*] Installing Apptainer and dependencies..."
-    sudo apt update
-    sudo apt install -y wget build-essential uuid-dev libseccomp-dev pkg-config \
-                        squashfs-tools cryptsetup libfuse3-3 uidmap
-    VERSION=1.3.2
-    wget https://github.com/apptainer/apptainer/releases/download/v${VERSION}/apptainer_${VERSION}_amd64.deb
-    sudo dpkg -i apptainer_${VERSION}_amd64.deb
+if command -v apptainer >/dev/null 2>&1; then
+    "$INSTALLER_DIR/install_apptainer_package.sh"
 else
-    echo "[*] Apptainer software already installed."
+    sudo "$INSTALLER_DIR/install_apptainer_package.sh"
 fi
 
 #############################################
