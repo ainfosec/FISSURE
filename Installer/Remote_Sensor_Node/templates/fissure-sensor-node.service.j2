@@ -17,6 +17,7 @@ ExecStartPre={{ apptainer }} exec \
     --cleanenv \
     --writable-tmpfs \
     --home {{ remote_dir }}/state/home:/home/fissure \
+    --bind {{ remote_dir }}/state/source/fissure:/opt/FISSURE/fissure \
     --bind {{ remote_dir }}/current/default.yaml:/opt/FISSURE/YAML/Sensor_Node_Config/default.yaml:ro \
     --bind {{ remote_dir }}/current/certificates:/opt/FISSURE/certificates:ro \
     --bind {{ remote_dir }}/state/logs:/opt/FISSURE/Logs \
@@ -41,6 +42,7 @@ ExecStart={{ apptainer }} run \
     --cleanenv \
     --writable-tmpfs \
     --home {{ remote_dir }}/state/home:/home/fissure \
+    --bind {{ remote_dir }}/state/source/fissure:/opt/FISSURE/fissure \
     --bind {{ remote_dir }}/current/default.yaml:/opt/FISSURE/YAML/Sensor_Node_Config/default.yaml:ro \
     --bind {{ remote_dir }}/current/certificates:/opt/FISSURE/certificates:ro \
     --bind {{ remote_dir }}/state/logs:/opt/FISSURE/Logs \

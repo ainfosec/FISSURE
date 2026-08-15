@@ -31,6 +31,7 @@ Options:
   --restart                  Restart the installed service without other changes.
   --clear-data=<kind>        Clear logs, artifacts, or recordings and restart.
   --sync-plugins=<path>      Add or update plugins without deleting remote-only files.
+  --sync-source=<path>       Add or update host source without deleting remote-only files.
   --uninstall                Remove the remote service and deployment files.
 """
 import asyncio
@@ -42,7 +43,7 @@ import shlex
 import sys
 import tempfile
 import time
-from typing import Any, Mapping, Sequence
+from typing import Any, Sequence
 import warnings
 
 from remote_sensor_node_deploy_utilities import DeploymentUtilities
@@ -66,6 +67,7 @@ from remote_sensor_node_options import (
     DeployOptions,
     DeploymentError,
     HostSpec,
+    options_from_arguments,
     validate_options,
 )
 from remote_sensor_node_image import (
@@ -77,6 +79,11 @@ from remote_sensor_node_plugin_sync import (
     PluginSyncError,
     create_plugin_archive,
     sync_remote_plugins,
+)
+from remote_sensor_node_source_sync import (
+    SourceSyncError,
+    create_source_archive,
+    sync_remote_source,
 )
 from remote_sensor_node_templates import (
     TemplateRenderError,
@@ -113,6 +120,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         HealthCheckError,
         RemoteOperationError,
         PluginSyncError,
+        SourceSyncError,
     ) as exc:
         print(f"[!] {exc}", file=sys.stderr)
         return 1
@@ -144,6 +152,9 @@ async def run_selected_maintenance_action(
         return True
     if options.sync_plugins_dir:
         await run_plugin_sync_action(options, asyncssh, destination)
+        return True
+    if options.sync_source_dir:
+        await run_source_sync_action(options, asyncssh, destination)
         return True
     if options.update_image_file:
         await run_image_update_action(options, asyncssh, destination)
@@ -193,6 +204,38 @@ async def run_plugin_sync_action(
                 connection,
                 options,
                 archive,
+                environment,
+            )
+
+
+async def run_source_sync_action(
+    options: DeployOptions,
+    asyncssh: Any,
+    destination: str,
+) -> None:
+    with tempfile.TemporaryDirectory(prefix="fissure-node-source.") as name:
+        temp_dir = Path(name)
+        archive = await asyncio.to_thread(
+            create_source_archive,
+            options.sync_source_dir,
+            temp_dir / "source.tar",
+        )
+        password = prompt_for_ssh_password(options)
+        async with await connect(asyncssh, options, password) as connection:
+            environment = await preflight(connection, False, destination)
+            unit = render_service_unit(
+                temp_dir / f"{options.service_name}.service",
+                options.remote_dir,
+                environment.user,
+                environment.group,
+                environment.apptainer,
+            )
+            await sync_remote_source(
+                asyncssh,
+                connection,
+                options,
+                archive,
+                unit,
                 environment,
             )
 
@@ -314,48 +357,7 @@ async def deploy_new_release(
 def parse_options(argv: Sequence[str] | None = None) -> DeployOptions:
     docopt = load_module("docopt").docopt
     args = docopt(__doc__, argv=list(argv) if argv is not None else None)
-    return options_from_arguments(args)
-
-
-def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
-    def path(name: str, default: Path | None = None) -> Path | None:
-        value = args[name]
-        return Path(value).expanduser() if value else default
-
-    def integer(name: str) -> int:
-        return int(args[name])
-
-    try:
-        source_dir = path("--source", REPO_ROOT) or REPO_ROOT
-        raw_target = args["<destination>"] or args["--target"]
-        return DeployOptions(
-            target=HostSpec.parse(raw_target) if raw_target else None,
-            identity_file=path("--identity"),
-            config_file=path("--config", source_dir / "YAML/Sensor_Node_Config/default.yaml"),
-            certificates_dir=path("--certificates", source_dir / "certificates"),
-            image_file=path("--image"),
-            output_image=path(
-                "--output-image",
-                source_dir / "Installer/Remote_Sensor_Node/build/fissure-sensor-node.sif",
-            ),
-            source_dir=source_dir,
-            remote_dir=args["--remote-dir"].rstrip("/") or "/",
-            service_name=args["--service-name"].removesuffix(".service"),
-            health_timeout=integer("--health-timeout"),
-            health_only=bool(args["--health-only"]),
-            build_with_sudo=bool(args["--build-with-sudo"]),
-            install_apptainer=not bool(args["--no-install-apptainer"]),
-            update_config_file=path("--update-config"),
-            uninstall=bool(args["--uninstall"]),
-            build_image=bool(args["--build"]),
-            deploy_image=bool(args["--deploy"]),
-            restart=bool(args["--restart"]),
-            update_image_file=path("--update-image"),
-            clear_data=args["--clear-data"],
-            sync_plugins_dir=path("--sync-plugins"),
-        )
-    except (TypeError, ValueError) as exc:
-        raise DeploymentError(f"Invalid numeric option: {exc}") from exc
+    return options_from_arguments(args, REPO_ROOT)
 
 
 def prompt_for_ssh_password(options: DeployOptions) -> str | None:

@@ -1,6 +1,6 @@
 """Lightweight operations against an installed remote sensor-node service."""
 
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import shlex
 from typing import Any
 
@@ -12,6 +12,9 @@ from remote_sensor_node_scp import scp_with_progress
 
 class RemoteOperationError(RuntimeError):
     """Raised when a lightweight remote operation cannot be completed."""
+
+
+REMOTE_STAGE_PREFIX = "fissure-node-deploy."
 
 
 async def clear_remote_data(
@@ -96,9 +99,14 @@ async def create_remote_stage(connection: Any) -> str:
     """Create and validate a narrowly scoped remote staging directory."""
     result = await run_remote(connection, "mktemp -d /tmp/fissure-node-deploy.XXXXXX")
     stage = result.stdout.strip()
-    if not stage.startswith("/tmp/fissure-node-deploy."):
-        raise RemoteOperationError(f"Unexpected remote staging path: {stage}")
+    _validate_remote_stage(stage)
     return stage
+
+
+async def remove_remote_stage(connection: Any, stage: str) -> None:
+    """Remove a validated remote staging directory after an upload failure."""
+    _validate_remote_stage(stage)
+    await run_remote(connection, f"rm -rf -- {shlex.quote(stage)}", check=False)
 
 
 async def run_remote(
@@ -115,6 +123,14 @@ async def run_remote(
             f"Remote command failed ({result.exit_status}): {detail}"
         )
     return result
+
+
+def _validate_remote_stage(stage: str) -> None:
+    path = PurePosixPath(stage)
+    if path.parent != PurePosixPath("/tmp") or not path.name.startswith(
+        REMOTE_STAGE_PREFIX
+    ):
+        raise RemoteOperationError(f"Unexpected remote staging path: {stage}")
 
 
 async def _upload_remote_update(
@@ -138,7 +154,7 @@ async def _upload_remote_update(
             (connection, f"{stage}/{remote_name}"),
         )
     except Exception as exc:
-        await run_remote(connection, f"rm -rf -- {shlex.quote(stage)}", check=False)
+        await remove_remote_stage(connection, stage)
         raise RemoteOperationError(f"{error_name} upload failed: {exc}") from exc
 
     await run_root_script(

@@ -72,6 +72,7 @@ stage=$1; root=$2; release_id=$3; service=$4
 user=$5; group=$6; apptainer=$7
 release="$root/releases/$release_id"; state="$root/state"
 runtime="$state/runtime"; sensor_data="$runtime/sensor-node"
+source_root="$state/source"; source_tree="$source_root/fissure"
 trap 'rm -rf -- "$stage"' EXIT
 as_service() {
   if [ "$user" = root ]; then "$@"; else runuser -u "$user" -- "$@"; fi
@@ -94,7 +95,8 @@ install -d -m 0755 "$root" "$root/releases"
 install -d -o "$user" -g "$group" -m 0700 \
   "$release" "$release/certificates" "$release/certificates/clients" \
   "$release/certificates/server" "$state" "$state/home" "$state/logs" \
-  "$runtime" "$runtime/plugins" "$runtime/flow-graphs" \
+  "$source_root" "$source_tree" "$runtime" \
+  "$runtime/plugins" "$runtime/flow-graphs" \
   "$runtime/artifacts" "$runtime/artifacts-node" "$runtime/artifacts-system" \
   "$runtime/archive" \
   "$runtime/iq-recordings" "$runtime/plugin-logs" "$sensor_data" \
@@ -109,6 +111,11 @@ install -o "$user" -g "$group" -m 0400 \
   "$stage/client_0.key_secret" "$release/certificates/clients/client_0.key_secret"
 install -o "$user" -g "$group" -m 0444 \
   "$stage/server.key" "$release/certificates/server/server.key"
+seed_runtime_directory "$source_tree" /opt/FISSURE/fissure
+test -f "$source_tree/Sensor_Node/SensorNode.py" || {
+  echo "Sensor Node source is missing from the image" >&2
+  exit 43
+}
 seed_runtime_directory "$runtime/plugins" /opt/FISSURE/Plugins
 seed_runtime_directory "$runtime/flow-graphs" '/opt/FISSURE/Flow Graph Library'
 seed_runtime_directory "$runtime/archive" /opt/FISSURE/Archive
@@ -263,6 +270,82 @@ cp -a --remove-destination "$source"/. "$target"/
 find "$target" -type d -name __pycache__ -prune -exec rm -rf -- {} +
 find "$target" -type f \\( -name '*.pyc' -o -name '*.pyo' \\) -delete
 chown -R "$user:$group" "$target"
+systemctl start "$service.service"
+service_stopped=false
+"""
+
+    SYNC_SOURCE_SCRIPT = """\
+set -eu
+stage=$1; root=$2; service=$3; user=$4; group=$5
+unit_dir=${6:-/etc/systemd/system}
+archive="$stage/source.tar"; source="$stage/source"
+source_root="$root/state/source"; target="$source_root/fissure"
+unit="$stage/$service.service"
+service_stopped=false
+finish() {
+  status=$?
+  trap - EXIT
+  if [ "$service_stopped" = true ]; then
+    systemctl start "$service.service" || status=$?
+  fi
+  rm -rf -- "$stage" || true
+  exit "$status"
+}
+# Keep the existing service available if applying source or its unit fails.
+trap finish EXIT
+test -d "$root/current" || { echo "No active sensor-node installation" >&2; exit 30; }
+test -f "$archive" || { echo "Source archive is missing" >&2; exit 38; }
+test -f "$unit" || { echo "Updated service unit is missing" >&2; exit 39; }
+if [ -e "$source_root" ]; then
+  test -d "$source_root" && test ! -L "$source_root" || {
+    echo "Source root is unsafe: $source_root" >&2
+    exit 40
+  }
+else
+  install -d -o "$user" -g "$group" -m 0700 "$source_root"
+fi
+if [ -e "$target" ]; then
+  test -d "$target" && test ! -L "$target" || {
+    echo "Source directory is unsafe: $target" >&2
+    exit 41
+  }
+else
+  install -d -o "$user" -g "$group" -m 0700 "$target"
+fi
+systemctl cat "$service.service" >/dev/null || {
+  echo "Sensor-node service is not installed" >&2
+  exit 32
+}
+mkdir -m 0700 "$source"
+tar -xf "$archive" -C "$source"
+systemctl stop "$service.service"
+service_stopped=true
+# Merge source explicitly; files that exist only on the node remain in place.
+cp -a --remove-destination "$source"/. "$target"/
+test -f "$target/Sensor_Node/SensorNode.py" || {
+  echo "Synchronized Sensor Node source is missing" >&2
+  exit 43
+}
+find "$target" -type d -name __pycache__ -prune -exec rm -rf -- {} +
+find "$target" -type f \\( -name '*.pyc' -o -name '*.pyo' \\) -delete
+# Nested bind targets must not redirect root-owned setup outside the source tree.
+for runtime_dir in \
+  Archive_Replay Autorun_Playlists IQ_Data_Playback \
+  Import_Export_Files Recordings; do
+  test ! -L "$target/Sensor_Node/$runtime_dir" || {
+    echo "Source runtime directory is unsafe: $runtime_dir" >&2
+    exit 42
+  }
+done
+install -d -o "$user" -g "$group" -m 0700 \
+  "$target/Sensor_Node/Archive_Replay" \
+  "$target/Sensor_Node/Autorun_Playlists" \
+  "$target/Sensor_Node/IQ_Data_Playback" \
+  "$target/Sensor_Node/Import_Export_Files" \
+  "$target/Sensor_Node/Recordings"
+chown -R -h "$user:$group" "$target"
+install -m 0644 "$unit" "$unit_dir/$service.service"
+systemctl daemon-reload
 systemctl start "$service.service"
 service_stopped=false
 """

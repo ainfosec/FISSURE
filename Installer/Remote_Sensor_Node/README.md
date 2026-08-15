@@ -78,10 +78,11 @@ ordinary external files because secrets must never be placed in templates.
 
 ## Mutable runtime state
 
-The SIF supplies the immutable application and runtime dependencies. Data that
-changes while the node runs is stored under the host's `state/` directory and
-bind-mounted into the container:
+The SIF supplies runtime dependencies and the initial application source. Data
+that changes outside the image is stored under the host's `state/` directory
+and bind-mounted into the container:
 
+- `state/source/fissure` for Python application source and runtime overrides
 - `state/runtime/plugins` for installed and transferred plugins
 - `state/runtime/flow-graphs` for independently updated flow graphs
 - `state/runtime/artifacts*` for node and operation artifacts
@@ -90,11 +91,12 @@ bind-mounted into the container:
 - `state/logs` and `state/runtime/plugin-logs` for core and plugin logs
 - `state/home` for the persistent sensor-node UUID and user runtime files
 
-Initial plugins, flow graphs, archive data, and sensor-node runtime files are
-seeded from the SIF only when their host directories are empty. Existing host
-content is preserved across full deployments and SIF updates. Deployments made
-with the former persistent overlay are migrated into these directories when
-they are next fully deployed; the old overlay is then no longer mounted.
+Initial source, plugins, flow graphs, archive data, and sensor-node runtime
+files are seeded from the SIF only when their host directories are empty.
+Existing host content is preserved across full deployments and SIF updates.
+Deployments made with the former persistent overlay are migrated into these
+directories when they are next fully deployed; the old overlay is then no
+longer mounted.
 
 Apptainer uses an ephemeral writable tmpfs for incidental process writes. No
 general persistent overlay is created for new deployments.
@@ -138,8 +140,8 @@ Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
 
 The image update uses SCP progress reporting and atomically replaces the active
 SIF. It does not build an image, create another release, or change the external
-configuration, certificates, plugins, artifacts, recordings, logs, or node
-identity.
+source, configuration, certificates, plugins, artifacts, recordings, logs, or
+node identity.
 
 Clear one category of mutable host data and restart the service:
 
@@ -170,6 +172,21 @@ The sync adds new files and overwrites matching files in the host plugin
 directory. It ignores local Python caches and repository metadata, clears stale
 remote Python caches, restarts the service, and performs a startup check.
 
+Synchronize a local FISSURE source tree without removing files that exist only
+on the node:
+
+```bash
+Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
+    192.0.2.20 --sync-source=/path/to/FISSURE
+```
+
+The source sync copies the local `fissure/` application tree while excluding
+caches, secrets, symbolic links, and Sensor Node directories already managed
+as separate mutable state. It merges that tree into `state/source/fissure`,
+installs the source-aware service unit when needed, restarts the service, and
+performs a startup check. Build-time content such as `Custom_Blocks` remains
+supplied by the SIF. Later SIF updates preserve the synchronized Python source.
+
 Remove the remote service and deployment state:
 
 ```bash
@@ -189,7 +206,7 @@ heartbeat receipt in the local HIPRFISR event log for IP nodes.
 
 ## Safety and lifecycle
 
-Each deployment creates a timestamped remote release. Configuration,
+Each deployment creates a timestamped remote release. Source, configuration,
 certificates, plugins, artifacts, recordings, logs, runtime files, and node
 identity remain in explicit host paths outside the SIF. Startup and explicit
 diagnostic failures are reported without automatically changing the installed
@@ -205,12 +222,14 @@ The default remote installation root is `/opt/fissure-sensor-node`.
 | --- | --- |
 | `deploy_remote_sensor_node.py` | CLI entrypoint and deployment orchestration |
 | `remote_sensor_node_config.py` | Remote configuration staging |
+| `remote_sensor_node_archive.py` | Filtered directory archives for synchronization |
 | `remote_sensor_node_deploy_utilities.py` | Remote lifecycle shell scripts |
 | `remote_sensor_node_image_check.py` | Image and runtime prerequisite checks |
 | `remote_sensor_node_image.py` | Local image selection and build context |
 | `remote_sensor_node_local_apptainer.py` | Local Apptainer installation |
-| `remote_sensor_node_options.py` | CLI option models and validation |
+| `remote_sensor_node_options.py` | CLI option parsing, models, and validation |
 | `remote_sensor_node_plugin_sync.py` | Plugin archive and synchronization |
+| `remote_sensor_node_source_sync.py` | Source archive and synchronization |
 | `remote_sensor_node_privilege.py` | Remote sudo and package preparation |
 | `remote_sensor_node_health.py` | Startup and optional heartbeat diagnostics |
 | `remote_sensor_node_scp.py` | Interactive and log-friendly SCP progress |

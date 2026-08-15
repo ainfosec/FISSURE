@@ -3,6 +3,7 @@
 from dataclasses import dataclass
 from pathlib import Path
 import re
+from typing import Any, Mapping
 
 from remote_sensor_node_templates import (
     APPTAINER_TEMPLATE,
@@ -59,6 +60,7 @@ class DeployOptions:
     update_image_file: Path | None = None
     clear_data: str | None = None
     sync_plugins_dir: Path | None = None
+    sync_source_dir: Path | None = None
 
 
 def validate_options(options: DeployOptions) -> None:
@@ -68,7 +70,9 @@ def validate_options(options: DeployOptions) -> None:
     if not options.build_image:
         _validate_remote_destination(options)
         _validate_identity_file(options.identity_file)
-    _validate_plugin_directory(options.sync_plugins_dir)
+    _validate_sync_directory("Plugin", options.sync_plugins_dir)
+    _validate_sync_directory("Source", options.sync_source_dir)
+    _validate_fissure_source(options.sync_source_dir)
     _validate_deployment_image(options)
     _validate_local_inputs(_required_local_inputs(options))
 
@@ -98,6 +102,7 @@ def _validate_action_selection(options: DeployOptions) -> None:
         options.restart,
         bool(options.clear_data),
         bool(options.sync_plugins_dir),
+        bool(options.sync_source_dir),
     )
     if sum(actions) > 1:
         raise DeploymentError(
@@ -121,10 +126,19 @@ def _validate_identity_file(identity_file: Path | None) -> None:
         raise DeploymentError(f"SSH identity is not a file: {identity_file}")
 
 
-def _validate_plugin_directory(plugin_directory: Path | None) -> None:
-    if plugin_directory and not plugin_directory.is_dir():
+def _validate_sync_directory(name: str, directory: Path | None) -> None:
+    if directory and not directory.is_dir():
+        raise DeploymentError(f"{name} sync source is not a directory: {directory}")
+
+
+def _validate_fissure_source(source: Path | None) -> None:
+    if not source or not source.is_dir():
+        return
+    sensor_node = source / "fissure/Sensor_Node/SensorNode.py"
+    if not sensor_node.is_file():
         raise DeploymentError(
-            f"Plugin sync source is not a directory: {plugin_directory}"
+            "Source sync directory is not a FISSURE source tree; missing: "
+            "fissure/Sensor_Node/SensorNode.py"
         )
 
 
@@ -150,6 +164,7 @@ def _is_full_deployment(options: DeployOptions) -> bool:
             options.restart,
             options.clear_data,
             options.sync_plugins_dir,
+            options.sync_source_dir,
         )
     )
 
@@ -163,6 +178,8 @@ def _required_local_inputs(options: DeployOptions) -> list[Path]:
         return [options.update_image_file]
     if options.sync_plugins_dir:
         return [options.sync_plugins_dir]
+    if options.sync_source_dir:
+        return [options.sync_source_dir, SERVICE_UNIT_TEMPLATE]
     if _needs_no_local_files(options):
         return []
 
@@ -192,3 +209,51 @@ def _validate_local_inputs(inputs: list[Path]) -> None:
     missing = [str(path) for path in inputs if not path.exists()]
     if missing:
         raise DeploymentError("Missing required input(s): " + ", ".join(missing))
+
+
+def options_from_arguments(
+    args: Mapping[str, Any],
+    repository_root: Path,
+) -> DeployOptions:
+    """Map docopt values into the deployment model."""
+
+    def path(name: str, default: Path | None = None) -> Path | None:
+        value = args[name]
+        return Path(value).expanduser() if value else default
+
+    try:
+        source_dir = path("--source", repository_root) or repository_root
+        raw_target = args["<destination>"] or args["--target"]
+        return DeployOptions(
+            target=HostSpec.parse(raw_target) if raw_target else None,
+            identity_file=path("--identity"),
+            config_file=path(
+                "--config",
+                source_dir / "YAML/Sensor_Node_Config/default.yaml",
+            ),
+            certificates_dir=path("--certificates", source_dir / "certificates"),
+            image_file=path("--image"),
+            output_image=path(
+                "--output-image",
+                source_dir
+                / "Installer/Remote_Sensor_Node/build/fissure-sensor-node.sif",
+            ),
+            source_dir=source_dir,
+            remote_dir=args["--remote-dir"].rstrip("/") or "/",
+            service_name=args["--service-name"].removesuffix(".service"),
+            health_timeout=int(args["--health-timeout"]),
+            health_only=bool(args["--health-only"]),
+            build_with_sudo=bool(args["--build-with-sudo"]),
+            install_apptainer=not bool(args["--no-install-apptainer"]),
+            update_config_file=path("--update-config"),
+            uninstall=bool(args["--uninstall"]),
+            build_image=bool(args["--build"]),
+            deploy_image=bool(args["--deploy"]),
+            restart=bool(args["--restart"]),
+            update_image_file=path("--update-image"),
+            clear_data=args["--clear-data"],
+            sync_plugins_dir=path("--sync-plugins"),
+            sync_source_dir=path("--sync-source"),
+        )
+    except (TypeError, ValueError) as exc:
+        raise DeploymentError(f"Invalid numeric option: {exc}") from exc
