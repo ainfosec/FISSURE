@@ -38,7 +38,7 @@ class HostSpec:
 
 @dataclass(frozen=True)
 class DeployOptions:
-    target: HostSpec
+    target: HostSpec | None
     identity_file: Path | None
     config_file: Path
     certificates_dir: Path
@@ -53,6 +53,8 @@ class DeployOptions:
     install_apptainer: bool
     update_config_file: Path | None
     uninstall: bool
+    build_image: bool = False
+    deploy_image: bool = False
     restart: bool = False
     update_image_file: Path | None = None
     clear_data: str | None = None
@@ -61,10 +63,13 @@ class DeployOptions:
 
 def validate_options(options: DeployOptions) -> None:
     """Validate paths, action selection, and required local inputs."""
-    _validate_remote_destination(options)
     _validate_action_selection(options)
-    _validate_identity_file(options.identity_file)
+    _validate_action_target(options)
+    if not options.build_image:
+        _validate_remote_destination(options)
+        _validate_identity_file(options.identity_file)
     _validate_plugin_directory(options.sync_plugins_dir)
+    _validate_deployment_image(options)
     _validate_local_inputs(_required_local_inputs(options))
 
 
@@ -84,6 +89,8 @@ def _validate_action_selection(options: DeployOptions) -> None:
         choices = ", ".join(CLEAR_DATA_KINDS)
         raise DeploymentError(f"--clear-data must be one of: {choices}")
     actions = (
+        options.build_image,
+        options.deploy_image,
         options.health_only,
         options.uninstall,
         bool(options.update_config_file),
@@ -94,9 +101,19 @@ def _validate_action_selection(options: DeployOptions) -> None:
     )
     if sum(actions) > 1:
         raise DeploymentError(
-            "--health-only, --update-config, --update-image, --restart, "
-            "--clear-data, --sync-plugins, and --uninstall cannot be combined"
+            "--build, --deploy, and maintenance actions cannot be combined"
         )
+
+
+def _validate_action_target(options: DeployOptions) -> None:
+    if options.build_image:
+        if options.target:
+            raise DeploymentError("--build does not accept an SSH destination")
+        if options.image_file:
+            raise DeploymentError("--build uses --output-image, not --image")
+        return
+    if not options.target:
+        raise DeploymentError("An SSH destination is required for deployment actions")
 
 
 def _validate_identity_file(identity_file: Path | None) -> None:
@@ -111,7 +128,35 @@ def _validate_plugin_directory(plugin_directory: Path | None) -> None:
         )
 
 
+def _validate_deployment_image(options: DeployOptions) -> None:
+    if not _is_full_deployment(options):
+        return
+    image = options.image_file or options.output_image
+    if not image.is_file():
+        raise DeploymentError(
+            f"Deployment image is not a file: {image}. "
+            "Run --build first or provide --image."
+        )
+
+
+def _is_full_deployment(options: DeployOptions) -> bool:
+    return not any(
+        (
+            options.build_image,
+            options.health_only,
+            options.uninstall,
+            options.update_config_file,
+            options.update_image_file,
+            options.restart,
+            options.clear_data,
+            options.sync_plugins_dir,
+        )
+    )
+
+
 def _required_local_inputs(options: DeployOptions) -> list[Path]:
+    if options.build_image:
+        return [APPTAINER_TEMPLATE, options.source_dir / "fissure/Sensor_Node"]
     if options.update_config_file:
         return [options.update_config_file, SENSOR_NODE_TEMPLATE]
     if options.update_image_file:
@@ -128,10 +173,7 @@ def _required_local_inputs(options: DeployOptions) -> list[Path]:
         SENSOR_NODE_TEMPLATE,
         SERVICE_UNIT_TEMPLATE,
     ]
-    if options.image_file:
-        inputs.append(options.image_file)
-    else:
-        inputs.extend([APPTAINER_TEMPLATE, options.source_dir / "fissure/Sensor_Node"])
+    inputs.append(options.image_file or options.output_image)
     return inputs
 
 

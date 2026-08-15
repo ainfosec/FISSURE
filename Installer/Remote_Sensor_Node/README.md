@@ -4,9 +4,10 @@ This directory contains the complete Apptainer-based deployment workflow for a
 remote FISSURE Sensor Node. Run all commands below from the FISSURE repository
 root.
 
-The deployer builds or reuses a local SIF, renders deployment configuration
-with Jinja2, stages the installed certificates, transfers the payload over SSH,
-and installs a systemd service on the target.
+The utility builds a Sensor Node SIF locally or deploys an existing SIF over
+SSH. Deployment renders configuration with Jinja2, stages the installed
+certificates, transfers the payload, and installs a systemd service on the
+target.
 
 ## Quick start
 
@@ -17,10 +18,17 @@ python3 -m pip install -r \
   Installer/Remote_Sensor_Node/requirements-node-deploy.txt
 ```
 
-Deploy by providing only the target IP:
+Build the Sensor Node SIF without connecting to a remote host:
 
 ```bash
-Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py 192.0.2.20
+Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py --build
+```
+
+Deploy that SIF to a target:
+
+```bash
+Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
+  192.0.2.20 --deploy
 ```
 
 An IP-only target uses the remote `root` account. Without `-i`, the deployer
@@ -30,7 +38,7 @@ To use a non-root account and an SSH key:
 
 ```bash
 Installer/Remote_Sensor_Node/deploy_remote_sensor_node.py \
-  fissure@192.0.2.20 -i ~/.ssh/fissure-node
+  fissure@192.0.2.20 --deploy -i ~/.ssh/fissure-node
 ```
 
 The deployer tries passwordless `sudo` after connecting as a non-root user. If
@@ -55,10 +63,11 @@ By default, inputs come from the current FISSURE installation:
 - `certificates/server/server.key`
 - `Installer/Remote_Sensor_Node/build/fissure-sensor-node.sif`
 
-The SIF is reused when present. Otherwise, the deployer installs local
-Apptainer when permitted and builds the image before opening SSH. Use `--image`
-to select another SIF, or `--no-install-apptainer` to prohibit automatic local
-and remote package installation.
+`--build` installs local Apptainer when permitted and writes the SIF to
+`--output-image`. `--deploy` uses that output by default, or `--image` to select
+another existing SIF. Deployment never starts a local image build. Use
+`--no-install-apptainer` to prohibit automatic local or remote Apptainer
+installation for the selected action.
 
 Rendered configuration and node certificates are transferred separately and
 bind-mounted read-only. They are never baked into the SIF. Rendering preserves

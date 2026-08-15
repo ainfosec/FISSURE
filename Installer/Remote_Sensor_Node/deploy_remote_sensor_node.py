@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
-"""Deploy and health-check a FISSURE sensor node with Apptainer and AsyncSSH.
+"""Build, deploy, and maintain a FISSURE Sensor Node with Apptainer and SSH.
 
 Usage:
+  deploy_remote_sensor_node.py --build [options]
+  deploy_remote_sensor_node.py <destination> --deploy [options]
+  deploy_remote_sensor_node.py --target=<destination> --deploy [options]
   deploy_remote_sensor_node.py <destination> [options]
   deploy_remote_sensor_node.py --target=<destination> [options]
   deploy_remote_sensor_node.py (-h | --help)
@@ -9,11 +12,13 @@ Usage:
 Options:
   -h --help                  Show this help.
   --target=<destination>     Legacy [user@]IP form (default user: root).
+  --build                    Build the Sensor Node SIF locally without SSH.
+  --deploy                   Deploy an existing SIF without building one.
   -i <path> --identity=<path>  SSH private key; omit to enter a password.
   --config=<path>            Values for rendered YAML (default: installed YAML).
   --certificates=<path>      Certificate root (default: installed certificates).
   --image=<path>             Existing SIF to deploy instead of building.
-  --output-image=<path>      Local SIF output (default: deployment build path).
+  --output-image=<path>      Build output and default SIF used by --deploy.
   --source=<path>            FISSURE source tree (default: repository root).
   --build-with-sudo          Build with sudo instead of Apptainer fakeroot.
   --no-install-apptainer     Do not install missing local or remote Apptainer.
@@ -64,8 +69,9 @@ from remote_sensor_node_options import (
     validate_options,
 )
 from remote_sensor_node_image import (
+    build_sensor_node_image,
     copy_build_context as copy_build_context,
-    get_image,
+    select_deployment_image,
 )
 from remote_sensor_node_plugin_sync import (
     PluginSyncError,
@@ -92,6 +98,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         options = parse_options(argv)
         validate_options(options)
+        if options.build_image:
+            asyncio.run(run_build_action(options))
+            return 0
         asyncssh = load_module("asyncssh")
         asyncio.run(deploy(options, asyncssh))
         return 0
@@ -108,12 +117,18 @@ def main(argv: Sequence[str] | None = None) -> int:
         print(f"[!] {exc}", file=sys.stderr)
         return 1
     except KeyboardInterrupt:
-        print("\n[!] Deployment interrupted", file=sys.stderr)
+        print("\n[!] Operation interrupted", file=sys.stderr)
         return 130
 
 
+async def run_build_action(options: DeployOptions) -> None:
+    with tempfile.TemporaryDirectory(prefix="fissure-node-build.") as name:
+        await build_sensor_node_image(options, Path(name))
+
+
 async def deploy(options: DeployOptions, asyncssh: Any) -> None:
-    destination = f"{options.target.username}@{options.target.hostname}"
+    target = require_target(options)
+    destination = f"{target.username}@{target.hostname}"
     if await run_selected_maintenance_action(options, asyncssh, destination):
         return
     await deploy_new_release(options, asyncssh, destination)
@@ -272,7 +287,7 @@ async def deploy_new_release(
 
     with tempfile.TemporaryDirectory(prefix="fissure-node-deploy.") as name:
         temp_dir = Path(name)
-        image = await get_image(options, temp_dir)
+        image = select_deployment_image(options)
         password = prompt_for_ssh_password(options)
         async with await connect(asyncssh, options, password) as connection:
             environment = await preflight(
@@ -312,8 +327,9 @@ def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
 
     try:
         source_dir = path("--source", REPO_ROOT) or REPO_ROOT
+        raw_target = args["<destination>"] or args["--target"]
         return DeployOptions(
-            target=HostSpec.parse(args["<destination>"] or args["--target"]),
+            target=HostSpec.parse(raw_target) if raw_target else None,
             identity_file=path("--identity"),
             config_file=path("--config", source_dir / "YAML/Sensor_Node_Config/default.yaml"),
             certificates_dir=path("--certificates", source_dir / "certificates"),
@@ -331,6 +347,8 @@ def options_from_arguments(args: Mapping[str, Any]) -> DeployOptions:
             install_apptainer=not bool(args["--no-install-apptainer"]),
             update_config_file=path("--update-config"),
             uninstall=bool(args["--uninstall"]),
+            build_image=bool(args["--build"]),
+            deploy_image=bool(args["--deploy"]),
             restart=bool(args["--restart"]),
             update_image_file=path("--update-image"),
             clear_data=args["--clear-data"],
@@ -344,8 +362,9 @@ def prompt_for_ssh_password(options: DeployOptions) -> str | None:
     if options.identity_file:
         return None
 
-    username = f"{options.target.username}@" if options.target.username else ""
-    prompt = f"SSH password for {username}{options.target.hostname}: "
+    target = require_target(options)
+    username = f"{target.username}@" if target.username else ""
+    prompt = f"SSH password for {username}{target.hostname}: "
     try:
         # getpass otherwise falls back to echoed stdin when no secure terminal exists.
         with warnings.catch_warnings():
@@ -363,9 +382,10 @@ def prompt_for_ssh_password(options: DeployOptions) -> str | None:
 async def connect(
     asyncssh: Any, options: DeployOptions, password: str | None
 ) -> Any:
+    target = require_target(options)
     kwargs: dict[str, Any] = {"keepalive_interval": 30}
-    if options.target.username:
-        kwargs["username"] = options.target.username
+    if target.username:
+        kwargs["username"] = target.username
     if options.identity_file:
         kwargs["client_keys"] = [str(options.identity_file)]
     elif password:
@@ -373,9 +393,15 @@ async def connect(
     else:
         raise DeploymentError("SSH password is required when -i is not specified")
     try:
-        return await asyncssh.connect(options.target.hostname, **kwargs)
+        return await asyncssh.connect(target.hostname, **kwargs)
     except (OSError, asyncssh.Error) as exc:
         raise DeploymentError(f"SSH connection failed: {exc}") from exc
+
+
+def require_target(options: DeployOptions) -> HostSpec:
+    if not options.target:
+        raise DeploymentError("An SSH destination is required for this action")
+    return options.target
 
 
 async def preflight(

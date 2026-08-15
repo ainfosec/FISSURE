@@ -1,4 +1,4 @@
-"""Select or build the Sensor Node image used for deployment."""
+"""Build or select the Sensor Node image used by the deployment CLI."""
 
 import asyncio
 from pathlib import Path
@@ -13,13 +13,8 @@ from remote_sensor_node_templates import (
 )
 
 
-async def get_image(options: DeployOptions, temp_dir: Path) -> Path:
-    if options.image_file:
-        return options.image_file.resolve()
-    if options.output_image.is_file():
-        print(f"[✓] Using existing image {options.output_image}")
-        return options.output_image.resolve()
-
+async def build_sensor_node_image(options: DeployOptions, temp_dir: Path) -> Path:
+    """Build a fresh SIF at the requested output path."""
     apptainer = await ensure_local_apptainer(options.install_apptainer)
     source = temp_dir / "source"
     await asyncio.to_thread(copy_build_context, options.source_dir, source)
@@ -39,7 +34,21 @@ async def get_image(options: DeployOptions, temp_dir: Path) -> Path:
     process = await asyncio.create_subprocess_exec(*command)
     if await process.wait():
         raise DeploymentError(f"Build failed: {shlex.join(command)}")
-    return options.output_image.resolve()
+    image = options.output_image.resolve()
+    print(f"[✓] Built Sensor Node image {image}")
+    return image
+
+
+def select_deployment_image(options: DeployOptions) -> Path:
+    """Select a supplied SIF or the output from an earlier build."""
+    image = options.image_file or options.output_image
+    if not image.is_file():
+        raise DeploymentError(
+            f"Deployment image is not a file: {image}. "
+            "Run --build first or provide --image."
+        )
+    print(f"[✓] Using existing image {image}")
+    return image.resolve()
 
 
 def copy_build_context(source: Path, destination: Path) -> None:
